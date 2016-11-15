@@ -36,7 +36,7 @@ module.exports = function(config) {
         sauceLabs: {
             testName: "ivijs",
             retryLimit: 3,
-            startConnect: true,
+            startConnect: false,
             recordVideo: false,
             recordScreenshots: false,
             options: {
