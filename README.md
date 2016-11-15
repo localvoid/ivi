@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/ivijs/ivi" title="ivi - javascript (TypeScript) web UI library"><img width="300" height="300" src="https://ivijs.github.io/ivi/logo.png"></a>
+  <a href="https://github.com/ivijs/ivi" title="ivi - javascript (TypeScript) web UI library"><img width="200" height="200" src="https://ivijs.github.io/ivi/logo.png"></a>
 </p>
 
 <p align="center">
@@ -33,6 +33,11 @@ javascript bundles.
 - Fast performance
 - Development Mode with improved stack traces
 
+## Questions
+
+For questions and support please use the [Gitter chat room](https://gitter.im/ivijs/ivi). The issue list of this repo is
+exclusively for bug reports and feature requests.
+
 ## Documentation
 
 ### General
@@ -47,11 +52,6 @@ javascript bundles.
 ### Extensions
 
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/extensions/synthetic-events.md)
-
-## Questions
-
-For questions and support please use the [Gitter chat room](https://gitter.im/ivijs/ivi). The issue list of this repo is
-exclusively for bug reports and feature requests.
 
 ## Getting Started
 
