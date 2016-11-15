@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/ivijs/ivi" title="ivi - javascript (TypeScript) web UI library"><img width="360" height="200" src="https://ivijs.github.io/ivi/logo.png"></a>
+  <a href="https://github.com/ivijs/ivi" title="ivi - javascript (TypeScript) web UI library"><img width="300" height="300" src="https://ivijs.github.io/ivi/logo.png"></a>
 </p>
 
 <p align="center">
