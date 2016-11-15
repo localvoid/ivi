@@ -155,7 +155,7 @@ function StatelessComponent(text: string) {
 render(
     $c(StatelessComponent, "Hello Stateless Component!"),
     document.getElementById("app")!,
-)
+);
 ```
 
 #### Stateful Components
@@ -189,7 +189,7 @@ class StatefulComponent extends Component<null> {
 render(
     $c(StatefulComponent),
     document.getElementById("app")!,
-)
+);
 ```
 
 ### Examples and demo applications
@@ -245,8 +245,8 @@ TypeScript that doesn't need any additional JSX-like syntax.
 
 JSX is also easier for newcomers who already familiar with HTML when they start playing with jsx, but it also creates
 a problem that there are still many developers who thinks thas JSX is a some kind of template, and not just a syntax
-sugar for creating javascript values, and because of it they are still don't fully understand why it is much flexible
-than templates.
+sugar for creating javascript values, and because of it they are still don't fully understand why it is much more
+flexible than templates.
 
 It is possible to implement a JSX transformer that will create ivi `VNode` instances from jsx. The current API just
 works way much better with TypeScript type checking and autocompletion, and there are no plans for JSX support for ivi
