@@ -106,7 +106,7 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
     }
 
     if (node) {
-        augmentVNode(container, container.firstChild!, node, context)
+        augmentVNode(container, container.firstChild!, node, context);
         roots.push({
             container: container,
             vNode: node,

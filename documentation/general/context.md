@@ -112,7 +112,6 @@ interface Context {
     new(data: any, from?: Context);
     get<V>(key: V): V;
     get<V>(key: string): V | undefined;
-    get<V>(key: string | V): V | undefined;
 }
 ```
 
