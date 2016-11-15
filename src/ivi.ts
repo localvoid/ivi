@@ -31,7 +31,7 @@ export { NOOP } from "./common/noop";
 export { isPropsNotIdentical, isPropsNotShallowEqual } from "./common/equality";
 export {
     setInitialNestingState, pushNestingState, restoreNestingState, nestingStateAncestorFlags, nestingStateParentTagName,
-    checkNestingViolation,
+    checkNestingViolation, AncestorFlags,
 } from "./common/html_nesting_rules";
 
 /**
