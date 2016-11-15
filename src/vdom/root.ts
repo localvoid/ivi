@@ -47,8 +47,8 @@ export function render<T extends Node>(
 ): T | undefined {
     if (__IVI_DEV__) {
         if (container === document.body) {
-            throw new Error("Rendering in the <body> aren't allowed because of browsers bugs that can't be solved " +
-                +"when root container is a body element.");
+            throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
+                "your application.");
         }
     }
 
@@ -100,8 +100,8 @@ export function render<T extends Node>(
 export function augment(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
-            throw new Error("Rendering in the <body> aren't allowed because of browsers bugs that can't be solved " +
-                +"when root container is a body element.");
+            throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
+                "your application.");
         }
     }
 
