@@ -4,7 +4,7 @@
  * NOTE: Do not implement any browser detection that aren't used in `ivi` library.
  */
 
-const ua = navigator ? navigator.userAgent : "";
+const ua = __IVI_BROWSER__ && navigator ? navigator.userAgent : "";
 
 /**
  * User Agent Flags.
@@ -21,6 +21,8 @@ export const enum UserAgentFlags {
  */
 export let USER_AGENT: UserAgentFlags = 0;
 
-if (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream) {
-    USER_AGENT |= UserAgentFlags.iOS;
+if (__IVI_BROWSER__) {
+    if (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream) {
+        USER_AGENT |= UserAgentFlags.iOS;
+    }
 }

@@ -82,8 +82,10 @@ function removeScreenOfDeath(): void {
     }
 }
 
-if (!(DEV_MODE & (DevModeFlags.DisableScreenOfDeath | DevModeFlags.DisableScreenOfDeathGlobalErrorHandling))) {
-    window.addEventListener("error", function screenOfDeathErrorHandler(e: ErrorEvent) {
-        injectScreenOfDeath(`Global Error: ${e.error.message}`, e.error.stack);
-    });
+if (__IVI_BROWSER__) {
+    if (!(DEV_MODE & (DevModeFlags.DisableScreenOfDeath | DevModeFlags.DisableScreenOfDeathGlobalErrorHandling))) {
+        window.addEventListener("error", function screenOfDeathErrorHandler(e: ErrorEvent) {
+            injectScreenOfDeath(`Global Error: ${e.error.message}`, e.error.stack);
+        });
+    }
 }
