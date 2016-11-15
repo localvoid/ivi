@@ -9,6 +9,5 @@ import "./lifecycle.spec";
 import "./ref.spec";
 import "./context.spec";
 import "./events.spec";
-import "./render_to_string";
 import "./augment";
 import "./scheduler.spec";

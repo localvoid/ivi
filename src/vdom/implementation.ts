@@ -921,6 +921,18 @@ function vNodeAugment(
         const flags = vnode._flags;
 
         if (flags & (VNodeFlags.Element | VNodeFlags.Text)) {
+            // Push nesting state and check for nesting violation.
+            let _prevNestingStateParentTagName: string | undefined;
+            let _prevNestingStateAncestorFlags: AncestorFlags | undefined;
+            if (__IVI_DEV__) {
+                if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+                    _prevNestingStateParentTagName = nestingStateParentTagName();
+                    _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
+                    pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
+                    checkNestingViolation();
+                }
+            }
+
             if (flags & VNodeFlags.Element) {
                 if (vnode._events) {
                     syncEvents(node as Element, null, vnode._events);
@@ -941,6 +953,13 @@ function vNodeAugment(
                     } else if (flags & VNodeFlags.InputElement) {
                         setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
                     }
+                }
+            }
+
+            // Restore nesting state.
+            if (__IVI_DEV__) {
+                if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+                    restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags!);
                 }
             }
         } else { // (flags & VNodeFlags.Component)

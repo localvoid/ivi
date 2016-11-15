@@ -6,7 +6,6 @@ import { ROOT_CONTEXT } from "../src/vdom/context";
 import { Context } from "../src/vdom/context";
 import { Component } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
-import { renderToString } from "../src/vdom/render_to_string";
 
 const expect = chai.expect;
 
@@ -74,7 +73,7 @@ export function render<T extends Node>(
     return result;
 }
 
-export function augment(node: VNode<any>, container?: Element): Element {
+export function augment(node: VNode<any>, innerHTML: string, container?: Element): Element {
     if (!container) {
         container = document.createElement("div");
     }
@@ -85,7 +84,7 @@ export function augment(node: VNode<any>, container?: Element): Element {
     }
 
     (container as any).__ivi_root = node;
-    container.innerHTML = renderToString(node);
+    container.innerHTML = innerHTML;
     augmentVNode(container, container.firstChild, node, ROOT_CONTEXT);
     checkRefs(container.firstChild!, node);
 
