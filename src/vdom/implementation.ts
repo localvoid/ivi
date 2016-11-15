@@ -4,6 +4,8 @@
  * There are so many circular dependencies between functions in this module, so just leave it all here instead of
  * creating many circular dependencies between JS modules.
  *
+ * Code in this module is working only in browser environments.
+ *
  * Tags:
  *
  * #entry - Entry point, function that will be invoked just once when the reconciliation process is started with a root

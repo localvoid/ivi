@@ -110,27 +110,29 @@ export class FrameTasksGroup {
      * @param component
      */
     updateComponent(component: Component<any>): void {
-        if (__IVI_DEV__) {
-            if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
-                throw new Error("Failed to add update component task to the current frame, current frame is locked " +
-                    "for read and write tasks.");
-            }
-        }
-
-        if ((component.flags & ComponentFlags.InUpdateQueue) === 0) {
-            component.flags |= ComponentFlags.InUpdateQueue;
-            const priority = component.depth;
-
-            this._flags |= FrameTasksGroupFlags.Component;
-            while (priority >= this._componentTasks.length) {
-                this._componentTasks.push(null);
+        if (__IVI_BROWSER__) {
+            if (__IVI_DEV__) {
+                if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
+                    throw new Error("Failed to add update component task to the current frame, current frame is " +
+                        "locked for read and write tasks.");
+                }
             }
 
-            const group = this._componentTasks[priority];
-            if (group === null) {
-                this._componentTasks[priority] = [component];
-            } else {
-                group.push(component);
+            if ((component.flags & ComponentFlags.InUpdateQueue) === 0) {
+                component.flags |= ComponentFlags.InUpdateQueue;
+                const priority = component.depth;
+
+                this._flags |= FrameTasksGroupFlags.Component;
+                while (priority >= this._componentTasks.length) {
+                    this._componentTasks.push(null);
+                }
+
+                const group = this._componentTasks[priority];
+                if (group === null) {
+                    this._componentTasks[priority] = [component];
+                } else {
+                    group.push(component);
+                }
             }
         }
     }
@@ -328,10 +330,12 @@ function handleNextFrame(): void {
     scheduler.currentFrame._rwUnlock();
     scheduler.nextFrame._rwUnlock();
 
-    // Mark all update components as dirty. But don't update until all write tasks are finished. It is possible that we
-    // won't need to update component if it is removed.
-    for (i = 0; i < updateComponents.length; i++) {
-        updateComponents[i].flags |= ComponentFlags.DirtyState;
+    if (__IVI_BROWSER__) {
+        // Mark all update components as dirty. But don't update until all write tasks are finished. It is possible that
+        // we won't need to update component if it is removed.
+        for (i = 0; i < updateComponents.length; i++) {
+            updateComponents[i].flags |= ComponentFlags.DirtyState;
+        }
     }
 
     // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
@@ -348,16 +352,18 @@ function handleNextFrame(): void {
         }
 
         while ((frame._flags & (FrameTasksGroupFlags.Component | FrameTasksGroupFlags.Write)) !== 0) {
-            if ((frame._flags & FrameTasksGroupFlags.Component) !== 0) {
-                frame._flags &= ~FrameTasksGroupFlags.Component;
-                const componentGroups = frame._componentTasks;
+            if (__IVI_BROWSER__) {
+                if ((frame._flags & FrameTasksGroupFlags.Component) !== 0) {
+                    frame._flags &= ~FrameTasksGroupFlags.Component;
+                    const componentGroups = frame._componentTasks;
 
-                for (i = 0; i < componentGroups.length; i++) {
-                    const componentGroup = componentGroups[i];
-                    if (componentGroup !== null) {
-                        componentGroups[i] = null;
-                        for (j = 0; j < componentGroup.length; j++) {
-                            updateComponent(componentGroup[j]);
+                    for (i = 0; i < componentGroups.length; i++) {
+                        const componentGroup = componentGroups[i];
+                        if (componentGroup !== null) {
+                            componentGroups[i] = null;
+                            for (j = 0; j < componentGroup.length; j++) {
+                                updateComponent(componentGroup[j]);
+                            }
                         }
                     }
                 }
@@ -373,22 +379,24 @@ function handleNextFrame(): void {
             }
         }
 
-        // Update components registered for updating on each frame.
-        // Remove components that doesn't have UPDATE_EACH_FRAME flag.
-        i = 0;
-        j = updateComponents.length;
+        if (__IVI_BROWSER__) {
+            // Update components registered for updating on each frame.
+            // Remove components that doesn't have UPDATE_EACH_FRAME flag.
+            i = 0;
+            j = updateComponents.length;
 
-        while (i < j) {
-            const component = updateComponents[i++];
-            if ((component.flags & ComponentFlags.UpdateEachFrame) === 0) {
-                component.flags &= ~ComponentFlags.InUpdateEachFrameQueue;
-                if (i === j) {
-                    updateComponents.pop();
+            while (i < j) {
+                const component = updateComponents[i++];
+                if ((component.flags & ComponentFlags.UpdateEachFrame) === 0) {
+                    component.flags &= ~ComponentFlags.InUpdateEachFrameQueue;
+                    if (i === j) {
+                        updateComponents.pop();
+                    } else {
+                        updateComponents[--i] = updateComponents.pop() !;
+                    }
                 } else {
-                    updateComponents[--i] = updateComponents.pop() !;
+                    updateComponent(component);
                 }
-            } else {
-                updateComponent(component);
             }
         }
     } while ((frame._flags & (FrameTasksGroupFlags.Component |
@@ -411,8 +419,10 @@ function handleNextFrame(): void {
         }
     }
 
-    if (updateComponents.length > 0) {
-        requestNextFrame();
+    if (__IVI_BROWSER__) {
+        if (updateComponents.length > 0) {
+            requestNextFrame();
+        }
     }
 
     scheduler.clock++;
@@ -494,6 +504,8 @@ export function currentFrame(): FrameTasksGroup {
  * @param component
  */
 export function startUpdateComponentEachFrame(component: Component<any>): void {
-    requestNextFrame();
-    scheduler.updateComponents.push(component);
+    if (__IVI_BROWSER__) {
+        requestNextFrame();
+        scheduler.updateComponents.push(component);
+    }
 }

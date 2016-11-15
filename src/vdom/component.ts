@@ -98,8 +98,10 @@ export abstract class Component<P> {
         this._context = context;
         this.owner = owner;
         this.root = null;
-        this._parentDOMNode = null;
-        this._rootDOMNode = null;
+        if (__IVI_BROWSER__) {
+            this._parentDOMNode = null;
+            this._rootDOMNode = null;
+        }
     }
 
     /**
@@ -238,14 +240,18 @@ export abstract class Component<P> {
      * Invalidate view.
      */
     invalidate(): void {
-        invalidateComponent(this, ComponentFlags.DirtyState);
+        if (__IVI_BROWSER__) {
+            invalidateComponent(this, ComponentFlags.DirtyState);
+        }
     }
 
     /**
      * Invalidate context.
      */
     invalidateContext(): void {
-        invalidateComponent(this, ComponentFlags.DirtyContext);
+        if (__IVI_BROWSER__) {
+            invalidateComponent(this, ComponentFlags.DirtyContext);
+        }
     }
 }
 
@@ -256,11 +262,13 @@ export abstract class Component<P> {
  * @param dirtyFlags
  */
 export function invalidateComponent<P>(component: Component<P>, dirtyFlags: number): void {
-    if (component.flags & ComponentFlags.Mounted) {
-        component.flags |= dirtyFlags;
-        component.didInvalidate();
-        if (!(component.flags & ComponentFlags.InUpdateQueue)) {
-            currentFrame().updateComponent(component);
+    if (__IVI_BROWSER__) {
+        if (component.flags & ComponentFlags.Mounted) {
+            component.flags |= dirtyFlags;
+            component.didInvalidate();
+            if (!(component.flags & ComponentFlags.InUpdateQueue)) {
+                currentFrame().updateComponent(component);
+            }
         }
     }
 }
