@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "es6",
+        "moduleResolution": "node",
+        "rootDir": ".",
+        "outDir": "build/es6",
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "removeComments": false,
+        "types": [
+            "node",
+            "chai",
+            "mocha"
+        ],
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "strictNullChecks": true
+    },
+    "include": [
+        "src/**/*.ts",
+        "tests/**/*.ts"
+    ],
+    "compileOnSave": false
+}

@@ -1,0 +1,4 @@
+List of polyfills that required for older browsers:
+
+IE10: Map()
+IE11: Object.fill
