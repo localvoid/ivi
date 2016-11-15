@@ -8,9 +8,13 @@
         "inlineSourceMap": true,
         "inlineSources": true,
         "removeComments": false,
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
         "types": [
             "chai",
-            "mocha"
+            "mocha",
+            "node"
         ],
         "lib": [
             "es6",
@@ -26,6 +30,9 @@
     "include": [
         "src/**/*.ts",
         "tests/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
     ],
     "compileOnSave": false
 }

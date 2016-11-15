@@ -116,6 +116,7 @@ function bundleCDN(devMode) {
                 rollupReplace({
                     values: {
                         "__IVI_DEV__": devMode,
+                        "__IVI_BROWSER__": true,
                     },
                 }),
             ],
@@ -177,6 +178,7 @@ function bundleTests(enableCoverageReport) {
             rollupReplace({
                 values: {
                     "__IVI_DEV__": true,
+                    "__IVI_BROWSER__": true,
                 },
             })
         );

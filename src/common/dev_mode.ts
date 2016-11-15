@@ -4,17 +4,6 @@
  * Development Mode is enabled when global variable `__IVI_DEV__` is `true`.
  */
 
-declare global {
-    /* tslint:disable:no-unused-variable */
-    /**
-     * Global variable that enables Development Mode.
-     *
-     * @define {boolean}
-     */
-    const __IVI_DEV__: boolean;
-    /* tslint:enable:no-unused-variable */
-}
-
 /**
  * Dev Mode Flags.
  *

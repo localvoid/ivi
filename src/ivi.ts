@@ -3,6 +3,24 @@
  */
 
 /**
+ * Global variables.
+ */
+declare global {
+    /* tslint:disable:no-unused-variable */
+    /**
+     * Global variable that enables Development Mode.
+     *
+     * @define {boolean}
+     */
+    const __IVI_DEV__: boolean;
+    /**
+     * Global variable that indicates that code is executed in a browser environment.
+     */
+    const __IVI_BROWSER__: boolean;
+    /* tslint:enable:no-unused-variable */
+}
+
+/**
  * Common:
  */
 export { DevModeFlags, DEV_MODE, setDevModeFlags, printError } from "./common/dev_mode";
@@ -52,8 +70,10 @@ export { Root, findRoot, render, augment } from "./vdom/root";
 export { STACK_TRACE } from "./vdom/stack_trace";
 
 if (__IVI_DEV__) {
-    if (document) {
-        document.title += " [DEV MODE]";
+    if (__IVI_BROWSER__) {
+        if (document) {
+            document.title += " [DEV MODE]";
+        }
     }
-    console.info("IVI: dev mode");
+    console.info("IVI: DEVELOPMENT MODE");
 }

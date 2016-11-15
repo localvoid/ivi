@@ -1,5 +1,8 @@
 /**
- * Global Scheduler.
+ * Universal Scheduler.
+ *
+ * When scheduler is running on server, all frame tasks will be executed inside a macrotask registered with a
+ * `setImmediate` call.
  */
 
 import { Component } from "../vdom/component";
@@ -223,18 +226,20 @@ const scheduler = {
     currentFrame: new FrameTasksGroup(),
     nextFrame: new FrameTasksGroup(),
     updateComponents: [] as Component<any>[],
-    microtaskNode: document.createTextNode(""),
-    microtaskToggle: 0,
-    macrotaskMessage: "__ivi" + Math.random(),
 };
 
-// Microtask scheduler based on mutation observer
-const microtaskObserver = new MutationObserver(runMicrotasks);
-microtaskObserver.observe(scheduler.microtaskNode, { characterData: true });
+const microtaskNode = __IVI_BROWSER__ ? document.createTextNode("") : undefined;
+let microtaskToggle = 0;
+const macrotaskMessage = __IVI_BROWSER__ ? "__ivi" + Math.random() : undefined;
 
-// Macrotask scheduler based on postMessage
-window.addEventListener("message", handleWindowMessage);
+if (__IVI_BROWSER__) {
+    // Microtask scheduler based on mutation observer
+    const microtaskObserver = new MutationObserver(runMicrotasks);
+    microtaskObserver.observe(microtaskNode!, { characterData: true });
 
+    // Macrotask scheduler based on postMessage
+    window.addEventListener("message", handleWindowMessage);
+}
 scheduler.currentFrame._rwLock();
 
 /**
@@ -252,8 +257,12 @@ export function clock(): number {
 function requestMicrotaskExecution(): void {
     if ((scheduler.flags & SchedulerFlags.MicrotaskPending) === 0) {
         scheduler.flags |= SchedulerFlags.MicrotaskPending;
-        scheduler.microtaskToggle ^= 1;
-        scheduler.microtaskNode.nodeValue = scheduler.microtaskToggle ? "1" : "0";
+        if (__IVI_BROWSER__) {
+            microtaskToggle ^= 1;
+            microtaskNode!.nodeValue = microtaskToggle ? "1" : "0";
+        } else {
+            process.nextTick(runMicrotasks);
+        }
     }
 }
 
@@ -263,7 +272,11 @@ function requestMicrotaskExecution(): void {
 function requestMacrotaskExecution(): void {
     if ((scheduler.flags & SchedulerFlags.MacrotaskPending) === 0) {
         scheduler.flags |= SchedulerFlags.MacrotaskPending;
-        window.postMessage(scheduler.macrotaskMessage, "*");
+        if (__IVI_BROWSER__) {
+            window.postMessage(macrotaskMessage, "*");
+        } else {
+            setImmediate(runMacrotasks);
+        }
     }
 }
 
@@ -273,7 +286,11 @@ function requestMacrotaskExecution(): void {
 function requestNextFrame(): void {
     if ((scheduler.flags & SchedulerFlags.FrametaskPending) === 0) {
         scheduler.flags |= SchedulerFlags.FrametaskPending;
-        requestAnimationFrame(handleNextFrame);
+        if (__IVI_BROWSER__) {
+            requestAnimationFrame(handleNextFrame);
+        } else {
+            setImmediate(handleNextFrame);
+        }
     }
 }
 
@@ -283,7 +300,7 @@ function requestNextFrame(): void {
  * @param ev Message event.
  */
 function handleWindowMessage(ev: MessageEvent): void {
-    if (ev.source === window && ev.data === scheduler.macrotaskMessage) {
+    if (ev.source === window && ev.data === macrotaskMessage) {
         runMacrotasks();
     }
 }
@@ -293,7 +310,7 @@ function handleWindowMessage(ev: MessageEvent): void {
  *
  * @param t Current time.
  */
-function handleNextFrame(_t: number): void {
+function handleNextFrame(): void {
     const updateComponents = scheduler.updateComponents;
     let tasks: SchedulerTask[];
     let i: number;
