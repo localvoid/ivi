@@ -98,7 +98,7 @@ Basic boilerplate configured with:
 - [Browsersync](https://www.browsersync.io/)
 
 ```sh
-git clone https://github.com/ivijs/boilerplate
+$ git clone https://github.com/ivijs/boilerplate
 ```
 
 ### Declarative Rendering with Virtual DOM
