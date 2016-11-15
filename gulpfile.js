@@ -48,13 +48,13 @@ function lint() {
 }
 
 function compile(args) {
-    const fn = function(done) {
+    const fn = function (done) {
         let cmd = "./node_modules/typescript/bin/tsc";
         if (args) {
             cmd += " " + args;
         }
         exec(cmd,
-            function(err, stdout, stderr) {
+            function (err, stdout, stderr) {
                 if (stdout) {
                     console.log(stdout);
                 }
@@ -107,7 +107,7 @@ function bundleNPM() {
 
 function bundleCDN(devMode) {
     const dest = devMode ? "dist/cdn/ivi.dev.js" : "dist/cdn/ivi.js";
-    const fn = function() {
+    const fn = function () {
         return rollup.rollup({
             entry: "build/es5/src/ivi.js",
             context: "window",
@@ -245,8 +245,8 @@ function runTestsSauce(done) {
             "sl_mac_safari",
             "sl_edge",
             "sl_ie_11",
-            "sl_ie_10",
-            "sl_ios_safari_9",
+            // Temporarily disable ios safari, it is insanely slow
+            // "sl_ios_safari_9",
             "sl_android_4_4",
             "sl_android_5_1",
         ],
