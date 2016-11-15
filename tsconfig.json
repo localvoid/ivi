@@ -9,7 +9,6 @@
         "inlineSources": true,
         "removeComments": false,
         "types": [
-            "node",
             "chai",
             "mocha"
         ],
