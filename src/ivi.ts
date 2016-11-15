@@ -29,6 +29,10 @@ export { UserAgentFlags, USER_AGENT } from "./common/user_agent";
 export { nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "./common/dom";
 export { NOOP } from "./common/noop";
 export { isPropsNotIdentical, isPropsNotShallowEqual } from "./common/equality";
+export {
+    setInitialNestingState, pushNestingState, restoreNestingState, nestingStateAncestorFlags, nestingStateParentTagName,
+    checkNestingViolation,
+} from "./common/html_nesting_rules";
 
 /**
  * Scheduler:
