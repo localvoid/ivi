@@ -3,6 +3,11 @@
 Context is an important part to build encapsulated and reusable components. Context implicitly propagates data through
 component trees.
 
+Almost all React-like libraries have implemented Contexts, but nobody is actually using them, except for some simple
+use cases, because they are [completely broken](https://facebook.github.io/react/docs/context.html#updating-context).
+ivi Context implementation doesn't have such problems, its syncing algorithm is built around optimization hints instead
+of `shouldComponentUpdate` method that completely prevents any updates for all its children.
+
 ## Context API for Components
 
 The natural way to update context is to use context API for stateful components.

@@ -31,6 +31,8 @@ javascript bundles.
 - Components (stateless functions and stateful ES6 classes)
 - Extensible synthetic event subsystem
 - Fast performance
+- Server side rendering
+- Context that doesn't have any issues with updates
 - Development Mode with improved stack traces
 
 ## Questions
@@ -230,11 +232,6 @@ render(
 
 - [Pointer Events](https://ivijs.github.io/examples/playground/pointer-events/)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/playground/pointer-events)]
-
-## Server Side Rendering
-
-The key parts of the server side rendering and augmentation are implemented, but there are still some edge cases that
-require some attention.
 
 ## Why not JSX?
 
