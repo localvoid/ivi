@@ -17,6 +17,13 @@ export const enum FeatureFlags {
      * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
      */
     PassiveEvents = 1,
+    /**
+     * The `performancemark()` method creates a timestamp in the browser's performance entry buffer with the given
+     * name.
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
+     */
+    DevModePerfMarks = 1 << 1,
 }
 
 /**
@@ -33,7 +40,7 @@ if (__IVI_BROWSER__) {
     try {
         // Test via a getter in the options object to see if the passive property is accessed
         const opts = Object.defineProperty({}, "passive", {
-            get: function() {
+            get: function () {
                 FEATURES |= FeatureFlags.PassiveEvents;
             },
         });
@@ -41,5 +48,11 @@ if (__IVI_BROWSER__) {
     } catch (e) {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
+    }
+
+    if (__IVI_DEV__) {
+        if (performance && performance.mark && performance.measure) {
+            FEATURES |= FeatureFlags.DevModePerfMarks;
+        }
     }
 }

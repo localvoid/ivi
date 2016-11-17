@@ -1,3 +1,4 @@
+import { getFunctionName, nextDebugId } from "../common/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
 import { AncestorFlags } from "../common/html_nesting_rules";
 import { ComponentFlags } from "./flags";
@@ -89,6 +90,10 @@ export abstract class Component<P> {
      * Ancestor Flags are used to check child nesting violations.
      */
     _ancestorFlags: AncestorFlags;
+    /**
+     * Unique ID thas is available in Dev Mode.
+     */
+    _debugId: number;
 
     constructor(props: P, context: Context, owner: Component<any> | undefined) {
         this.flags = 0;
@@ -101,6 +106,9 @@ export abstract class Component<P> {
         if (__IVI_BROWSER__) {
             this._parentDOMNode = null;
             this._rootDOMNode = null;
+        }
+        if (__IVI_DEV__) {
+            this._debugId = nextDebugId();
         }
     }
 
@@ -327,4 +335,18 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Compon
         (target as ComponentFunction<any>).isPropsChanged = isPropsNotShallowEqual;
     }
     return target;
+}
+
+/**
+ * Get component name from component instance or component function.
+ *
+ * @param component Component.
+ * @return Component name.
+ */
+export function getComponentName(component: Component<any> | ComponentFunction<any>): string {
+    return getFunctionName(
+        (component as Function).prototype.render ?
+            (component as Object).constructor :
+            component as ComponentFunction<any>,
+    );
 }

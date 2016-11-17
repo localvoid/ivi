@@ -57,6 +57,10 @@ export interface VNode<P> {
      * Ref callback.
      */
     _ref: ((ref: Node | Component<any> | null) => void) | null;
+    /**
+     * Unique ID thas is available in Dev Mode.
+     */
+    _debugId: number;
 }
 
 /**

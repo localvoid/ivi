@@ -46,7 +46,7 @@ export function stackTraceToString(): string {
     let result = "";
     for (let i = 0; i < STACK_TRACE.length; i++) {
         const c = STACK_TRACE[i];
-        result += `\n    [${c.prototype.render ? "C" : "F"}]${(c as any)["displayName"] || c.name}`;
+        result += `\n    [${c.prototype.render ? "C" : "F"}]${c.name}`;
     }
     return result;
 }

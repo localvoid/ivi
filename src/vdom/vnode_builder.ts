@@ -1,3 +1,4 @@
+import { nextDebugId } from "../common/dev_mode";
 import { VNode } from "./vnode";
 import { VNodeFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
@@ -80,6 +81,7 @@ export class VNodeBuilder<P> implements VNode<P> {
     _children: VNode<any>[] | VNode<any> | string | number | boolean | Component<any> | null | undefined;
     _dom: Node | null;
     _ref: ((ref: Node | Component<any> | null) => void) | null;
+    _debugId: number;
 
     constructor(
         flags: number,
@@ -98,6 +100,9 @@ export class VNodeBuilder<P> implements VNode<P> {
         this._children = children;
         this._dom = null;
         this._ref = null;
+        if (__IVI_DEV__) {
+            this._debugId = nextDebugId();
+        }
     }
 
     /**
