@@ -934,6 +934,27 @@ function vNodeAugment(
             }
 
             if (flags & VNodeFlags.Element) {
+                if (__IVI_DEV__) {
+                    if (node.nodeType !== 1) {
+                        throw new Error(`Invalid node type: expected "1", actual "${node.nodeType}".`);
+                    }
+                    if (vnode._className) {
+                        const className = (node as Element).getAttribute("class");
+                        if (className !== vnode._className) {
+                            throw new Error(`Invalid class name: expected "${vnode._className}", ` +
+                                `actual "${className}".`);
+                        }
+                    }
+                    // We can't check any style properties, because browsers ignore style names they don't understand,
+                    // like style names with browser specific prefixes.
+                    if (vnode._children === null) {
+                        if (node.hasChildNodes()) {
+                            throw new Error(`Invalid children: expected "0" children, ` +
+                                `actual "${node.childNodes.length}".`);
+                        }
+                    }
+                }
+
                 if (vnode._events) {
                     syncEvents(node as Element, null, vnode._events);
                 }
@@ -944,15 +965,50 @@ function vNodeAugment(
                         if (flags & VNodeFlags.ChildrenArray) {
                             const children = vnode._children as VNode<any>[];
                             for (let i = 0; i < children.length; i++) {
+                                if (__IVI_DEV__) {
+                                    if (domChild === null) {
+                                        throw new Error(`Invalid children: expected to find ${children.length} ` +
+                                            `children nodes.`);
+                                    }
+                                }
                                 vNodeAugment(node, domChild, children[i], context, owner);
                                 domChild = getNonCommentNode(node, domChild!.nextSibling);
                             }
+                            if (__IVI_DEV__) {
+                                if (getNonCommentNode(node, domChild) !== null) {
+                                    throw new Error(`Invalid children: document contains more children nodes than ` +
+                                        `expected.`);
+                                }
+                            }
                         } else {
+                            if (__IVI_DEV__) {
+                                if (domChild === null) {
+                                    throw new Error(`Invalid children: expected to find 1 child node.`);
+                                }
+                                if (getNonCommentNode(node, domChild.nextSibling) !== null) {
+                                    throw new Error(`Invalid children: document contains more children nodes than ` +
+                                        `expected.`);
+                                }
+                            }
                             vNodeAugment(node, domChild, vnode._children as VNode<any>, context, owner);
                         }
+
                     } else if (flags & VNodeFlags.InputElement) {
-                        setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
+                        // Do not override input value when augmenting.
+                        //
+                        // TODO: What should be the default behavior when input element is changed before scripts
+                        // are loaded. Maybe we should fire onInput event, is synthetic event enough, or it should be
+                        // a native event?
+                        //
+                        // setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
                     }
+                }
+            } else if (__IVI_DEV__) { // (flags & VNodeFlags.Text)
+                if (node.nodeType !== 3) {
+                    throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
+                }
+                if (node.nodeValue !== (vnode._children as number | boolean | string).toString()) {
+                    throw new Error(`Invalid text content: expected "${vnode._children}", actual "${node.nodeValue}".`);
                 }
             }
 
