@@ -456,9 +456,7 @@ function _updateComponentFunction(
 
     if (a === b || !fn.isPropsChanged || fn.isPropsChanged(a._props, b._props)) {
         const oldRoot = a._children as VNode<any>;
-        componentPerfMarkBegin(b._debugId, "render");
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
-        componentPerfMarkEnd(b._debugId, "render", false, fn);
         ref = vNodeSyncOrReplace(parent, oldRoot, newRoot, context, owner);
     } else {
         b._children = a._children;
@@ -614,10 +612,13 @@ function vNodePropagateNewContext(parent: Node, vnode: VNode<any>, context: Cont
         }
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
+            componentPerfMarkBegin(component._debugId, "propagateContext");
             componentUpdateParentContext(component, context);
             _updateComponent(component);
+            componentPerfMarkEnd(component._debugId, "propagateContext", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             const fn = vnode._tag as ComponentFunction<any>;
+            componentPerfMarkBegin(vnode._debugId, "propagateContext");
             // Optimization that checks if function is using context parameter. When function doesn't use context, it
             // means that we can ignore re-renders when context is changed, and just propagate a new context through
             // existing subtree.
@@ -629,6 +630,7 @@ function vNodePropagateNewContext(parent: Node, vnode: VNode<any>, context: Cont
                 _updateComponentFunction(parent, vnode._children as VNode<any>, vnode._children as VNode<any>, context,
                     owner);
             }
+            componentPerfMarkEnd(vnode._debugId, "propagateContext", false, fn);
         }
         if (__IVI_DEV__) {
             if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
@@ -702,9 +704,7 @@ function componentUpdateParentContext<P>(component: Component<P>, newParentConte
         component.flags |= ComponentFlags.DirtyContext;
         const oldContext = component._parentContext;
         component._parentContext = newParentContext;
-        componentPerfMarkBegin(component._debugId, "didReceiveNewContext");
         component.didReceiveNewContext(oldContext, newParentContext);
-        componentPerfMarkEnd(component._debugId, "didReceiveNewContext", true, component);
     }
 }
 
@@ -717,9 +717,7 @@ function componentUpdateParentContext<P>(component: Component<P>, newParentConte
  */
 function componentUpdateContext<P>(component: Component<P>): void {
     component.flags &= ~(ComponentFlags.CheckUsingProps | ComponentFlags.ContextUsingProps);
-    componentPerfMarkBegin(component._debugId, "updateContext");
     const contextData = component.updateContext();
-    componentPerfMarkEnd(component._debugId, "updateContext", true, component);
     component.flags |= (component.flags & ComponentFlags.CheckUsingProps) << 1;
     const newContext = contextData ? new Context(contextData, component._parentContext) : component._parentContext;
     component._context = newContext;
@@ -740,11 +738,9 @@ function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
 
         component._props = newProps;
 
-        componentPerfMarkBegin(component._debugId, "didReceiveNewProps");
         // There is no reason to call `didReceiveNewProps` when props aren't changed, even when they are reassigned
         // later to reduce memory usage.
         component.didReceiveNewProps(oldProps, newProps);
-        componentPerfMarkEnd(component._debugId, "didReceiveNewProps", true, component);
         if (component.flags & ComponentFlags.ContextUsingProps) {
             component.flags |= ComponentFlags.DirtyContext;
         }
@@ -765,9 +761,7 @@ function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
  * @param component
  */
 function componentWillUpdate<P>(component: Component<P>): void {
-    componentPerfMarkBegin(component._debugId, "willUpdate");
     component.willUpdate();
-    componentPerfMarkEnd(component._debugId, "willUpdate", true, component);
 }
 
 /**
@@ -778,9 +772,7 @@ function componentWillUpdate<P>(component: Component<P>): void {
  * @param component
  */
 function componentDidUpdate<P>(component: Component<P>): void {
-    componentPerfMarkBegin(component._debugId, "didUpdate");
     component.didUpdate();
-    componentPerfMarkEnd(component._debugId, "didUpdate", true, component);
 }
 
 /**
@@ -791,9 +783,7 @@ function componentDidUpdate<P>(component: Component<P>): void {
  * @param component
  */
 function componentDidMount<P>(component: Component<P>): void {
-    componentPerfMarkBegin(component._debugId, "didMount");
     component.didMount();
-    componentPerfMarkEnd(component._debugId, "didMount", true, component);
 }
 
 /**
@@ -804,9 +794,7 @@ function componentDidMount<P>(component: Component<P>): void {
  * @param component
  */
 function componentDidUnmount<P>(component: Component<P>): void {
-    componentPerfMarkBegin(component._debugId, "didUnmount");
     component.didUnmount();
-    componentPerfMarkEnd(component._debugId, "didUnmount", true, component);
 }
 
 /**
@@ -819,9 +807,7 @@ function componentDidUnmount<P>(component: Component<P>): void {
  */
 function componentClassRender<P>(component: Component<P>): VNode<any> {
     component.flags &= ~(ComponentFlags.CheckUsingContext | ComponentFlags.UsingContext);
-    componentPerfMarkBegin(component._debugId, "render");
     const root = component.root = component.render() || $t("");
-    componentPerfMarkEnd(component._debugId, "render", true, component);
     component.flags |= (component.flags & ComponentFlags.CheckUsingContext) << 1;
     return root;
 }
@@ -964,10 +950,8 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
             componentPerfMarkEnd(component._debugId, "instantiate", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             componentPerfMarkBegin(vnode._debugId, "instantiate");
-            componentPerfMarkBegin(vnode._debugId, "render");
             const root = vnode._children =
                 componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
-            componentPerfMarkEnd(vnode._debugId, "render", false, vnode._tag as ComponentFunction<any>);
             ref = vnode._dom = vNodeRender(parent, root, context, owner);
             componentPerfMarkEnd(vnode._debugId, "instantiate", false, vnode._tag as ComponentFunction<any>);
         }
