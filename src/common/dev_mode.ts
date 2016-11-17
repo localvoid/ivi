@@ -53,3 +53,51 @@ export function printError(message: string): void {
         /* tslint:enable:no-empty */
     }
 }
+
+/**
+ * Dev Mode configuration via query parameters:
+ *
+ * _nv=false  Disable Nesting Validation.
+ * _st=false  Disable Stack Trace Augmentation.
+ * _sod=false Disable Screen of Death.
+ * _geh=false Disable Screen of Death Global Event Handler.
+ */
+if (__IVI_DEV__ && __IVI_BROWSER__) {
+    function parseQueryString(query: string): { [key: string]: string } {
+        const a = query.substr(1).split("&");
+
+        if (a.length === 0) {
+            return {};
+        }
+
+        const b: { [key: string]: string } = {};
+        for (let i = 0; i < a.length; ++i) {
+            const p = a[i].split("=", 2);
+            if (p.length === 1) {
+                b[p[0]] = "";
+            } else {
+                b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+            }
+        }
+        return b;
+    }
+
+    function initQueryParams() {
+        const query = parseQueryString(window.location.search);
+
+        if (query["_nv"] === "false") {
+            DEV_MODE |= DevModeFlags.DisableNestingValidation;
+        }
+        if (query["_st"] === "false") {
+            DEV_MODE |= DevModeFlags.DisableStackTraceAugmentation;
+        }
+        if (query["_sod"] === "false") {
+            DEV_MODE |= DevModeFlags.DisableScreenOfDeath;
+        }
+        if (query["_geh"] === "false") {
+            DEV_MODE |= DevModeFlags.DisableScreenOfDeathGlobalErrorHandling;
+        }
+    }
+
+    initQueryParams();
+}
