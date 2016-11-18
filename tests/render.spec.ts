@@ -272,6 +272,13 @@ describe("render", () => {
             expect(n.childNodes[1].nodeValue).to.equal("true");
             expect(n.children[1].tagName.toLowerCase()).to.equal("span");
         });
+
+        it("<div unsafeHTML='<span>abc</span>'></div>", () => {
+            const n = render<HTMLElement>($h("div").unsafeHTML("<span>abc</span>"));
+            expect(n.childNodes.length).to.equal(1);
+            expect(n.children[0].tagName.toLowerCase()).to.equal("span");
+            expect(n.children[0].firstChild.nodeValue).to.equal("abc");
+        });
     });
 
     describe("component", () => {

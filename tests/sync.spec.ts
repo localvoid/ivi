@@ -619,6 +619,14 @@ describe("sync", () => {
                 expect(b.firstChild!.nodeValue).to.equal("cde");
             });
 
+            it("'' => 'cde'", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children(""), f);
+                const b = render<HTMLElement>($h("div").children("cde"), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.firstChild!.nodeValue).to.equal("cde");
+            });
+
             it("'abc' => 10", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children("abc"), f);
@@ -699,6 +707,13 @@ describe("sync", () => {
                 expect(b.children[0].tagName.toLowerCase()).to.equal("div");
             });
 
+            it("<div> => null", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children($h("div")), f);
+                const b = render<HTMLElement>($h("div"), f);
+                expect(b.childNodes.length).to.equal(0);
+            });
+
             it("[<div>] => null", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children([$h("div")]), f);
@@ -720,6 +735,117 @@ describe("sync", () => {
                 render<HTMLElement>($h("div").children([$h("div"), $h("div")]), f);
                 const b = render<HTMLElement>($h("div"), f);
                 expect(b.childNodes.length).to.equal(0);
+            });
+
+            it("null => unsafeHTML('abc')", () => {
+                const f = frag();
+                render<HTMLElement>($h("div"), f);
+                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.firstChild.nodeValue).to.equal("abc");
+            });
+
+            it("123 => unsafeHTML('abc')", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children(123), f);
+                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.firstChild.nodeValue).to.equal("abc");
+            });
+
+            it("123 => [<h1><h2>]", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children(123), f);
+                const b = render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
+                expect(b.childNodes.length).to.equal(2);
+                expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
+                expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
+            });
+
+            it("[<h1><h2>] => 123", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
+                const b = render<HTMLElement>($h("div").children(123), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.firstChild.nodeValue).to.equal("123");
+            });
+
+            it("[<h1><h2>] => unsafeHTML('abc')", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
+                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.firstChild.nodeValue).to.equal("abc");
+            });
+
+            it("[<h1><h2>] => <div>", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
+                const b = render<HTMLElement>($h("div").children($h("div")), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+            });
+
+            it("[] => <div>", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children([]), f);
+                const b = render<HTMLElement>($h("div").children($h("div")), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+            });
+
+            it("<div> => unsafeHTML('abc')", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children($h("div")), f);
+                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.firstChild.nodeValue).to.equal("abc");
+            });
+
+            it("<h1> => <h2>", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children($h("h1")), f);
+                const b = render<HTMLElement>($h("div").children($h("h2")), f);
+                expect(b.childNodes.length).to.equal(1);
+                expect(b.children[0].tagName.toLowerCase()).to.equal("h2");
+            });
+
+            it("<div> => [<h1><h2>]", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children($h("div")), f);
+                const b = render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
+                expect(b.childNodes.length).to.equal(2);
+                expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
+                expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
+            });
+
+            it("<div> => []", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children($h("div")), f);
+                const b = render<HTMLElement>($h("div").children([]), f);
+                expect(b.childNodes.length).to.equal(0);
+            });
+
+            it("<div> => <div> (identical node)", () => {
+                const f = frag();
+                const v = $h("div");
+                render<HTMLElement>(v, f);
+                const b = render<HTMLElement>(v.children("abc"), f);
+                expect(b.tagName.toLowerCase()).to.equal("div");
+                expect(b.firstChild).to.null;
+            });
+
+            it("<div><h2><h1><h2></div> => <div><h2><h1><h2></div> (change order of identical nodes)", () => {
+                const f = frag();
+                const v1 = $h("h2");
+                const v2 = $h("h1");
+                const v3 = $h("h2");
+                render<HTMLElement>($h("div").children([v1, v2, v3]), f);
+                const b = render<HTMLElement>($h("div").children([v3, v2, v1]), f, true);
+                expect(b.tagName.toLowerCase()).to.equal("div");
+                expect(b.children[0].tagName.toLowerCase()).to.equal("h2");
+                expect(b.children[1].tagName.toLowerCase()).to.equal("h1");
+                expect(b.children[2].tagName.toLowerCase()).to.equal("h2");
             });
         });
 
