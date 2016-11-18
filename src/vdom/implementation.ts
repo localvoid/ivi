@@ -108,7 +108,8 @@ export function renderVNode(
             setInitialNestingState("", 0);
         }
 
-        if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
+        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
+            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
                 return _renderVNode(parent, refChild, vnode, context, owner);
             } catch (e) {
@@ -170,7 +171,8 @@ export function syncVNode(
             setInitialNestingState("", 0);
         }
 
-        if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
+        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
+            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
                 return _syncVNode(parent, a, b, context, owner);
             } catch (e) {
@@ -223,7 +225,8 @@ export function removeVNode(parent: Node, node: VNode<any>): void {
             setInitialNestingState("", 0);
         }
 
-        if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
+        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
+            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
                 _removeVNode(parent, node);
                 return;
@@ -279,7 +282,8 @@ export function augmentVNode(
             setInitialNestingState("", 0);
         }
 
-        if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
+        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
+            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
                 _augmentVNode(parent, node, vnode, context, owner);
                 return;
@@ -327,7 +331,8 @@ function _augmentVNode(
  */
 export function updateComponent<P>(component: Component<P>): Node {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
+        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
+            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
                 stackTracePushComponent((component as Object).constructor as ComponentClass<any>);
                 const ret = _updateComponent(component);
