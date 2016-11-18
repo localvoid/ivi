@@ -247,8 +247,7 @@ function runTestsSauce(done) {
             "sl_mac_safari",
             "sl_edge",
             "sl_ie_11",
-            // Temporarily disable ios safari, it is insanely slow
-            // "sl_ios_safari_9",
+            "sl_ios_safari_9",
             "sl_android_4_4",
             "sl_android_5_1",
         ],

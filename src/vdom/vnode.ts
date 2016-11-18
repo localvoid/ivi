@@ -90,7 +90,7 @@ export function isElementNode(node: VNode<any>): boolean {
  * @returns true when VNode is representing a text node.
  */
 export function isSVGNode(node: VNode<any>): boolean {
-    return !!(node._flags & (VNodeFlags.Element | VNodeFlags.SvgElement));
+    return !!(node._flags & VNodeFlags.SvgElement);
 }
 
 /**
