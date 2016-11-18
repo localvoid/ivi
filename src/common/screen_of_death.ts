@@ -31,40 +31,42 @@ let bodyPadding: string | null;
  */
 export function injectScreenOfDeath(title: string, content: string): void {
     if (__IVI_DEV__ && __IVI_BROWSER__) {
-        if (!screenOfDeathElement) {
-            // Save original body margin and padding.
-            bodyMargin = document.body.style.margin;
-            bodyPadding = document.body.style.padding;
+        if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
+            if (!screenOfDeathElement) {
+                // Save original body margin and padding.
+                bodyMargin = document.body.style.margin;
+                bodyPadding = document.body.style.padding;
 
-            // Remove body margin and padding.
-            document.body.style.margin = "0";
-            document.body.style.padding = "0";
+                // Remove body margin and padding.
+                document.body.style.margin = "0";
+                document.body.style.padding = "0";
 
-            // Inject Screen of Death.
-            screenOfDeathElement = document.createElement("div");
-            const style = screenOfDeathElement.style;
-            style.zIndex = "2147483647";
-            style.backgroundColor = "#600";
-            style.position = "absolute";
-            style.width = "100%";
-            style.height = "100%";
-            style.boxSizing = "border-box";
-            style.padding = "1em";
-            screenOfDeathElement.innerHTML = `` +
-                `<div style="color:#fff;font-family:monospace;font-weight:bold;font-size:2em;line-height:2em">` +
-                `${title}</div>` +
-                `<pre style="color:#fff;font-weight:bold;font-size:1.2em">${content}</pre>` +
-                `<div` +
-                ` style="position:absolute;top:0;right:0;padding:1em;color:#fff;cursor:pointer;` +
-                `font-size:2em;line-height:1em;font-weight:bold"` +
-                ` class="ivi-screen-of-death-close">x</div>`;
-            screenOfDeathElement.style.color = "#fff";
-            screenOfDeathElement.addEventListener("click", (ev) => {
-                if ((getEventTarget(ev) as Element).className === "ivi-screen-of-death-close") {
-                    removeScreenOfDeath();
-                }
-            });
-            document.body.appendChild(screenOfDeathElement);
+                // Inject Screen of Death.
+                screenOfDeathElement = document.createElement("div");
+                const style = screenOfDeathElement.style;
+                style.zIndex = "2147483647";
+                style.backgroundColor = "#600";
+                style.position = "absolute";
+                style.width = "100%";
+                style.height = "100%";
+                style.boxSizing = "border-box";
+                style.padding = "1em";
+                screenOfDeathElement.innerHTML = `` +
+                    `<div style="color:#fff;font-family:monospace;font-weight:bold;font-size:2em;line-height:2em">` +
+                    `${title}</div>` +
+                    `<pre style="color:#fff;font-weight:bold;font-size:1.2em">${content}</pre>` +
+                    `<div` +
+                    ` style="position:absolute;top:0;right:0;padding:1em;color:#fff;cursor:pointer;` +
+                    `font-size:2em;line-height:1em;font-weight:bold"` +
+                    ` class="ivi-screen-of-death-close">x</div>`;
+                screenOfDeathElement.style.color = "#fff";
+                screenOfDeathElement.addEventListener("click", (ev) => {
+                    if ((getEventTarget(ev) as Element).className === "ivi-screen-of-death-close") {
+                        removeScreenOfDeath();
+                    }
+                });
+                document.body.appendChild(screenOfDeathElement);
+            }
         }
     }
 }
@@ -74,14 +76,16 @@ export function injectScreenOfDeath(title: string, content: string): void {
  */
 function removeScreenOfDeath(): void {
     if (__IVI_DEV__ && __IVI_BROWSER__) {
-        if (screenOfDeathElement) {
-            // Restore original body margin and padding.
-            document.body.style.margin = bodyMargin;
-            document.body.style.padding = bodyPadding;
+        if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
+            if (screenOfDeathElement) {
+                // Restore original body margin and padding.
+                document.body.style.margin = bodyMargin;
+                document.body.style.padding = bodyPadding;
 
-            // Remove Screen of Death.
-            document.body.removeChild(screenOfDeathElement);
-            screenOfDeathElement = undefined;
+                // Remove Screen of Death.
+                document.body.removeChild(screenOfDeathElement);
+                screenOfDeathElement = undefined;
+            }
         }
     }
 }
