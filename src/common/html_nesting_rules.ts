@@ -10,6 +10,8 @@
  * `setDevModeFlags(DevModeFlags.DisableNestingValidation)`.
  */
 
+import { DEV_MODE, DevModeFlags } from "./dev_mode";
+
 /**
  * Ancestor Flags.
  */
@@ -183,8 +185,12 @@ let _childTagName: string | undefined;
  * @param ancestorFlags
  */
 export function setInitialNestingState(parentTagName: string, ancestorFlags: AncestorFlags): void {
-    _parentTagName = parentTagName;
-    _ancestorFlags = ancestorFlags;
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+            _parentTagName = parentTagName;
+            _ancestorFlags = ancestorFlags;
+        }
+    }
 }
 
 /**
@@ -193,11 +199,15 @@ export function setInitialNestingState(parentTagName: string, ancestorFlags: Anc
  * @param childTagName
  */
 export function pushNestingState(childTagName: string): void {
-    if (_parentTagName) {
-        _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+            if (_parentTagName) {
+                _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
+            }
+            _parentTagName = _childTagName;
+            _childTagName = childTagName;
+        }
     }
-    _parentTagName = _childTagName;
-    _childTagName = childTagName;
 }
 
 /**
@@ -205,23 +215,37 @@ export function pushNestingState(childTagName: string): void {
  * unwinding stack.
  */
 export function restoreNestingState(parentTagName: string | undefined, ancestorFlags: AncestorFlags): void {
-    _parentTagName = parentTagName;
-    _ancestorFlags = ancestorFlags;
-    _childTagName = undefined;
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+            _parentTagName = parentTagName;
+            _ancestorFlags = ancestorFlags;
+            _childTagName = undefined;
+        }
+    }
 }
 
 /**
  * Get current parent tag name.
  */
 export function nestingStateParentTagName(): string | undefined {
-    return _parentTagName;
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+            return _parentTagName;
+        }
+    }
+    return;
 }
 
 /**
  * Get current ancestor flags.
  */
 export function nestingStateAncestorFlags(): AncestorFlags {
-    return _ancestorFlags;
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+            return _ancestorFlags;
+        }
+    }
+    return 0;
 }
 
 const REPORT_MSG = "If you are certain that you aren't violating any HTML nesting rules, please submit an issue, and " +
@@ -233,23 +257,27 @@ const REPORT_MSG = "If you are certain that you aren't violating any HTML nestin
  * @throws Error when child nesting rules are violated.
  */
 export function checkNestingViolation(): void {
-    if (_parentTagName) {
-        const validChild = validChildList[_parentTagName];
-        if (validChild) {
-            for (let i = 0; i < validChild.length; i++) {
-                if (_childTagName === validChild[i]) {
-                    return;
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
+            if (_parentTagName) {
+                const validChild = validChildList[_parentTagName];
+                if (validChild) {
+                    for (let i = 0; i < validChild.length; i++) {
+                        if (_childTagName === validChild[i]) {
+                            return;
+                        }
+                    }
+                    throw Error(`HTML child nesting rule violation: <${_parentTagName}> element can contain ` +
+                        `[${validChild.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
                 }
-            }
-            throw Error(`HTML child nesting rule violation: <${_parentTagName}> element can contain ` +
-                `[${validChild.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
-        }
 
-        if (_childTagName && _childTagName !== "$t") {
-            const invalidAncestorFlags = invalidAncestorList[_childTagName];
-            if (invalidAncestorFlags && (_ancestorFlags & invalidAncestorFlags)) {
-                throw Error(`HTML child nesting rule violation: <${_childTagName}> element has invalid ancestor ` +
-                    `[${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n` + REPORT_MSG);
+                if (_childTagName && _childTagName !== "$t") {
+                    const invalidAncestorFlags = invalidAncestorList[_childTagName];
+                    if (invalidAncestorFlags && (_ancestorFlags & invalidAncestorFlags)) {
+                        throw Error(`HTML child nesting rule violation: <${_childTagName}> element has invalid ` +
+                            `ancestor [${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n` + REPORT_MSG);
+                    }
+                }
             }
         }
     }

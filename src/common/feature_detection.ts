@@ -50,6 +50,9 @@ if (__IVI_BROWSER__) {
         /* tslint:enable:no-empty */
     }
 
+    /**
+     * Check `performance.mark` availability.
+     */
     if (__IVI_DEV__) {
         if (performance && performance.mark && performance.measure) {
             FEATURES |= FeatureFlags.DevModePerfMarks;

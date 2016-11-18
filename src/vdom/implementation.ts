@@ -20,7 +20,7 @@ import { injectScreenOfDeath } from "../common/screen_of_death";
 import { SVG_NAMESPACE } from "../common/dom";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
-    nestingStateParentTagName, AncestorFlags,
+    nestingStateParentTagName,
 } from "../common/html_nesting_rules";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
@@ -102,27 +102,19 @@ export function renderVNode(
     owner?: Component<any>,
 ): Node {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-            if ((parent as Element).tagName) {
-                setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
-            } else {
-                setInitialNestingState("", 0);
-            }
+        if ((parent as Element).tagName) {
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+        } else {
+            setInitialNestingState("", 0);
         }
 
         if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
             try {
                 return _renderVNode(parent, refChild, vnode, context, owner);
             } catch (e) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceAugment(e);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
-                    injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceReset();
-                }
+                stackTraceAugment(e);
+                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+                stackTraceReset();
                 throw e;
             }
         }
@@ -172,27 +164,19 @@ export function syncVNode(
     owner?: Component<any>,
 ): Node {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-            if ((parent as Element).tagName) {
-                setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
-            } else {
-                setInitialNestingState("", 0);
-            }
+        if ((parent as Element).tagName) {
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+        } else {
+            setInitialNestingState("", 0);
         }
 
         if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
             try {
                 return _syncVNode(parent, a, b, context, owner);
             } catch (e) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceAugment(e);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
-                    injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceReset();
-                }
+                stackTraceAugment(e);
+                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+                stackTraceReset();
                 throw e;
             }
         }
@@ -233,12 +217,10 @@ function _syncVNode(
  */
 export function removeVNode(parent: Node, node: VNode<any>): void {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-            if ((parent as Element).tagName) {
-                setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
-            } else {
-                setInitialNestingState("", 0);
-            }
+        if ((parent as Element).tagName) {
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+        } else {
+            setInitialNestingState("", 0);
         }
 
         if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
@@ -246,15 +228,9 @@ export function removeVNode(parent: Node, node: VNode<any>): void {
                 _removeVNode(parent, node);
                 return;
             } catch (e) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceAugment(e);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
-                    injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceReset();
-                }
+                stackTraceAugment(e);
+                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+                stackTraceReset();
                 throw e;
             }
         }
@@ -297,12 +273,10 @@ export function augmentVNode(
     owner?: Component<any>,
 ): void {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-            if ((parent as Element).tagName) {
-                setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
-            } else {
-                setInitialNestingState("", 0);
-            }
+        if ((parent as Element).tagName) {
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+        } else {
+            setInitialNestingState("", 0);
         }
 
         if (!(DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath))) {
@@ -310,15 +284,9 @@ export function augmentVNode(
                 _augmentVNode(parent, node, vnode, context, owner);
                 return;
             } catch (e) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceAugment(e);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
-                    injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceReset();
-                }
+                stackTraceAugment(e);
+                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+                stackTraceReset();
                 throw e;
             }
         }
@@ -366,15 +334,9 @@ export function updateComponent<P>(component: Component<P>): Node {
                 stackTracePopComponent();
                 return ret;
             } catch (e) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceAugment(e);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableScreenOfDeath)) {
-                    injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                }
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTraceReset();
-                }
+                stackTraceAugment(e);
+                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+                stackTraceReset();
                 throw e;
             }
         }
@@ -406,13 +368,11 @@ function _updateComponent<P>(component: Component<P>): Node {
 
         if (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState | ComponentFlags.UsingContext)) {
             if (__IVI_DEV__) {
-                if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                    if ((component._parentDOMNode as Element).tagName) {
-                        setInitialNestingState((component._parentDOMNode as Element).tagName.toLowerCase(),
-                            component._ancestorFlags);
-                    } else {
-                        setInitialNestingState("", component._ancestorFlags);
-                    }
+                if ((component._parentDOMNode as Element).tagName) {
+                    setInitialNestingState((component._parentDOMNode as Element).tagName.toLowerCase(),
+                        component._ancestorFlags);
+                } else {
+                    setInitialNestingState("", component._ancestorFlags);
                 }
             }
             const parentNode = component._parentDOMNode;
@@ -477,11 +437,7 @@ function vNodeMount(vnode: VNode<any>): void {
     const flags = vnode._flags;
 
     if (flags & VNodeFlags.Component) {
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
-            }
-        }
+        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
             componentPerfMarkBegin(component._debugId, "mount");
@@ -501,11 +457,7 @@ function vNodeMount(vnode: VNode<any>): void {
             vNodeMount(vnode._children as VNode<any>);
             componentPerfMarkEnd(vnode._debugId, "mount", false, vnode._tag as ComponentFunction<any>);
         }
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePopComponent();
-            }
-        }
+        stackTracePopComponent();
     } else if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
         let children = vnode._children;
         if (children !== null && (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray))) {
@@ -533,11 +485,7 @@ function vNodeMount(vnode: VNode<any>): void {
 function vNodeUnmount(vnode: VNode<any>): void {
     const flags = vnode._flags;
     if (flags & VNodeFlags.Component) {
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
-            }
-        }
+        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
             componentPerfMarkBegin(component._debugId, "unmount");
@@ -556,11 +504,7 @@ function vNodeUnmount(vnode: VNode<any>): void {
             vNodeUnmount(vnode._children as VNode<any>);
             componentPerfMarkEnd(vnode._debugId, "unmount", false, vnode._tag as ComponentFunction<any>);
         }
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePopComponent();
-            }
-        }
+        stackTracePopComponent();
     } else if (flags & VNodeFlags.Element) {
         if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
             let children = vnode._children;
@@ -605,11 +549,7 @@ function vNodeUnmountAll(vnodes: VNode<any>[]): void {
 function vNodePropagateNewContext(parent: Node, vnode: VNode<any>, context: Context, owner?: Component<any>): void {
     const flags = vnode._flags;
     if (flags & VNodeFlags.Component) {
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
-            }
-        }
+        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
             componentPerfMarkBegin(component._debugId, "propagateContext");
@@ -632,11 +572,7 @@ function vNodePropagateNewContext(parent: Node, vnode: VNode<any>, context: Cont
             }
             componentPerfMarkEnd(vnode._debugId, "propagateContext", false, fn);
         }
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePopComponent();
-            }
-        }
+        stackTracePopComponent();
     } else if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
         let children = vnode._children;
         if (children !== null && (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray))) {
@@ -863,16 +799,11 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
 
     if (flags & (VNodeFlags.Text | VNodeFlags.Element)) {
         // Push nesting state and check for nesting violation.
-        let _prevNestingStateParentTagName: string | undefined;
-        let _prevNestingStateAncestorFlags: AncestorFlags | undefined;
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                _prevNestingStateParentTagName = nestingStateParentTagName();
-                _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
-                pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
-                checkNestingViolation();
-            }
-        }
+        const _prevNestingStateParentTagName = nestingStateParentTagName();
+        const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
+        pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
+        checkNestingViolation();
+
         if (flags & VNodeFlags.Text) {
             ref = document.createTextNode(vnode._children as string);
         } else { // (flags & VNodeFlags.Element)
@@ -922,26 +853,16 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                 }
             }
         }
-        // Restore nesting state.
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags!);
-            }
-        }
+
+        restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
     } else { // (flags & VNodeFlags.Component)
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
-            }
-        }
+        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
 
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
             componentPerfMarkBegin(component._debugId, "instantiate");
             if (__IVI_DEV__) {
-                if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                    component._ancestorFlags = nestingStateAncestorFlags();
-                }
+                component._ancestorFlags = nestingStateAncestorFlags();
             }
             component._parentDOMNode = parent;
             componentUpdateContext(component);
@@ -956,11 +877,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
             componentPerfMarkEnd(vnode._debugId, "instantiate", false, vnode._tag as ComponentFunction<any>);
         }
 
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePopComponent();
-            }
-        }
+        stackTracePopComponent();
     }
 
     vnode._dom = ref;
@@ -1040,16 +957,10 @@ function vNodeAugment(
 
         if (flags & (VNodeFlags.Element | VNodeFlags.Text)) {
             // Push nesting state and check for nesting violation.
-            let _prevNestingStateParentTagName: string | undefined;
-            let _prevNestingStateAncestorFlags: AncestorFlags | undefined;
-            if (__IVI_DEV__) {
-                if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                    _prevNestingStateParentTagName = nestingStateParentTagName();
-                    _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
-                    pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
-                    checkNestingViolation();
-                }
-            }
+            const _prevNestingStateParentTagName = nestingStateParentTagName();
+            const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
+            pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
+            checkNestingViolation();
 
             if (flags & VNodeFlags.Element) {
                 if (__IVI_DEV__) {
@@ -1130,27 +1041,16 @@ function vNodeAugment(
                 }
             }
 
-            // Restore nesting state.
-            if (__IVI_DEV__) {
-                if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                    restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags!);
-                }
-            }
+            restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
         } else { // (flags & VNodeFlags.Component)
-            if (__IVI_DEV__) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
-                }
-            }
+            stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
 
             if (flags & VNodeFlags.ComponentClass) {
                 const component = vnode._children =
                     new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
 
                 if (__IVI_DEV__) {
-                    if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-                        component._ancestorFlags = nestingStateAncestorFlags();
-                    }
+                    component._ancestorFlags = nestingStateAncestorFlags();
                 }
 
                 component._parentDOMNode = parent;
@@ -1164,11 +1064,7 @@ function vNodeAugment(
                 vNodeAugment(parent, node, root, context, owner);
             }
 
-            if (__IVI_DEV__) {
-                if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                    stackTracePopComponent();
-                }
-            }
+            stackTracePopComponent();
         }
     } else {
         node = vNodeRenderInto(parent, null, vnode, context, owner);
@@ -1250,11 +1146,7 @@ function vNodeSync(parent: Node, a: VNode<any>, b: VNode<any>, context: Context,
             }
         }
     } else { // (flags & VNodeFlags.Component)
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePushComponent(b._tag as ComponentClass<any> | ComponentFunction<any>);
-            }
-        }
+        stackTracePushComponent(b._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = b._children = a._children as Component<any>;
             componentUpdateProps(component, b._props);
@@ -1263,11 +1155,7 @@ function vNodeSync(parent: Node, a: VNode<any>, b: VNode<any>, context: Context,
         } else { // (flags & VNodeFlags.ComponentFunction)
             ref = b._dom = _updateComponentFunction(parent, a, b, context, owner);
         }
-        if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                stackTracePopComponent();
-            }
-        }
+        stackTracePopComponent();
     }
 
     return ref;

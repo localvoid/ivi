@@ -3,7 +3,7 @@
  *
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
-
+import { DEV_MODE, DevModeFlags, getFunctionName } from "../common/dev_mode";
 import { ComponentClass, ComponentFunction } from "./component";
 
 /**
@@ -17,24 +17,36 @@ export let STACK_TRACE: Array<ComponentClass<any> | ComponentFunction<any>>;
  * @param component Component.
  */
 export function stackTracePushComponent(component: ComponentClass<any> | ComponentFunction<any>): void {
-    if (!STACK_TRACE) {
-        STACK_TRACE = [];
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+            if (!STACK_TRACE) {
+                STACK_TRACE = [];
+            }
+            STACK_TRACE.push(component);
+        }
     }
-    STACK_TRACE.push(component);
 }
 
 /**
  * Pop component from stack trace.
  */
 export function stackTracePopComponent(): void {
-    STACK_TRACE.pop();
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+            STACK_TRACE.pop();
+        }
+    }
 }
 
 /**
  * Reset stack trace.
  */
 export function stackTraceReset(): void {
-    STACK_TRACE = [];
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+            STACK_TRACE = [];
+        }
+    }
 }
 
 /**
@@ -42,11 +54,11 @@ export function stackTraceReset(): void {
  *
  * @returns Stack trace.
  */
-export function stackTraceToString(): string {
+function stackTraceToString(): string {
     let result = "";
     for (let i = 0; i < STACK_TRACE.length; i++) {
         const c = STACK_TRACE[i];
-        result += `\n    [${c.prototype.render ? "C" : "F"}]${c.name}`;
+        result += `\n    [${c.prototype.render ? "C" : "F"}]${getFunctionName(c)}`;
     }
     return result;
 }
@@ -57,7 +69,11 @@ export function stackTraceToString(): string {
  * @param e Error instance.
  */
 export function stackTraceAugment(e: Error): void {
-    if (e.stack) {
-        e.stack += "\nComponents stack trace:" + stackTraceToString();
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+            if (e.stack) {
+                e.stack += "\nComponents stack trace:" + stackTraceToString();
+            }
+        }
     }
 }

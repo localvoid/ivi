@@ -46,7 +46,9 @@ export const enum DevModeFlags {
 export let DEV_MODE: DevModeFlags = 0;
 
 export function setDevModeFlags(flags: DevModeFlags): void {
-    DEV_MODE |= flags;
+    if (__IVI_DEV__) {
+        DEV_MODE |= flags;
+    }
 }
 
 /**
