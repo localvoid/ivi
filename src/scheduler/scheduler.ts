@@ -352,6 +352,15 @@ function handleNextFrame(): void {
         }
 
         while ((frame._flags & (FrameTasksGroupFlags.Component | FrameTasksGroupFlags.Write)) !== 0) {
+            if ((frame._flags & FrameTasksGroupFlags.Write) !== 0) {
+                frame._flags &= ~FrameTasksGroupFlags.Write;
+                tasks = frame._writeTasks!;
+                frame._writeTasks = null;
+                for (i = 0; i < tasks.length; i++) {
+                    tasks[i]();
+                }
+            }
+
             if (__IVI_BROWSER__) {
                 if ((frame._flags & FrameTasksGroupFlags.Component) !== 0) {
                     frame._flags &= ~FrameTasksGroupFlags.Component;
@@ -366,15 +375,6 @@ function handleNextFrame(): void {
                             }
                         }
                     }
-                }
-            }
-
-            if ((frame._flags & FrameTasksGroupFlags.Write) !== 0) {
-                frame._flags &= ~FrameTasksGroupFlags.Write;
-                tasks = frame._writeTasks!;
-                frame._writeTasks = null;
-                for (i = 0; i < tasks.length; i++) {
-                    tasks[i]();
                 }
             }
         }
