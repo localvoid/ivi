@@ -1728,6 +1728,61 @@ function syncChildrenTrackByKeys(
     let bNode: VNode<any>;
     let node: VNode<any>;
 
+    // Check that items without keys at the beginning and at the end doesn't change their shape.
+    if (__IVI_DEV__) {
+        outer: while (true) {
+            while (aStartNode._key === null) {
+                if (bStartNode._key !== null) {
+                    throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
+                        "change their shape.");
+                }
+                aStart++;
+                bStart++;
+                if (aStart > aEnd || bStart > bEnd) {
+                    break outer;
+                }
+                aStartNode = a[aStart];
+                bStartNode = b[bStart];
+            }
+
+            if (bStartNode._key === null) {
+                throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
+                    "change their shape.");
+            }
+
+            while (aEndNode._key === null) {
+                if (bEndNode._key !== null) {
+                    throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
+                        "change their shape.");
+                }
+                aEnd--;
+                bEnd--;
+                if (aStart > aEnd || bStart > bEnd) {
+                    break outer;
+                }
+                aEndNode = a[aEnd];
+                bEndNode = b[bEnd];
+            }
+
+            if (bEndNode._key === null) {
+                throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
+                    "change their shape.");
+            }
+
+            break;
+        }
+
+        // restore variables after checking.
+        aStart = 0;
+        bStart = 0;
+        aEnd = a.length - 1;
+        bEnd = b.length - 1;
+        aStartNode = a[aStart];
+        bStartNode = b[bStart];
+        aEndNode = a[aEnd];
+        bEndNode = b[bEnd];
+    }
+
     // Step 1
     outer: while (true) {
         // Sync nodes with the same key at the beginning.
