@@ -88,3 +88,17 @@ export function syncEvents(
 
     setEventHandlerListToDOMNode(node, b === null ? undefined : b);
 }
+
+/**
+ * Remove DOM events.
+ *
+ * @param node HTML or SVG Element.
+ * @param a Old events.
+ * @param b New events.
+ */
+export function removeEvents(events: EventHandlerList): void {
+    const keys = Object.keys(events);
+    for (let i = 0; i < keys.length; i++) {
+        unregisterEventHandler(events[keys[i]]);
+    }
+}

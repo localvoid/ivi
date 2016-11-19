@@ -29,7 +29,7 @@ import { ComponentClass, ComponentFunction, Component } from "./component";
 import { stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment } from "./stack_trace";
 import { Context } from "./context";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
-import { syncEvents } from "../events/sync_events";
+import { syncEvents, removeEvents } from "../events/sync_events";
 
 /**
  * Begin component perf mark.
@@ -525,7 +525,7 @@ function vNodeUnmount(vnode: VNode<any>): void {
             }
         }
         if (vnode._events) {
-            syncEvents(vnode._dom as Element, vnode._events, null);
+            removeEvents(vnode._events);
         }
     }
 
