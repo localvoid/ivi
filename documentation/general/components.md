@@ -285,10 +285,10 @@ This functions can be used to modify existing functions, modify existing classes
 or as a class decorator.
 
 ```ts
+checkPropsIdentity(StatelessComponent);
 function StatelessComponent(text: string) {
     return $h("div").children(text);
 }
-checkPropsIdentity(StatelessComponent);
 ```
 ```ts
 const StatelessComponent = checkPropsIdentity(function(text: string) {
@@ -304,10 +304,10 @@ class StatefulComponent extends Component<string> {
 }
 ```
 ```ts
+checkPropsIdentity(StatefulComponent);
 class StatefulComponent extends Component<string> {
     render() {
         return $h("div").children(this.props);
     }
 }
-checkPropsIdentity(StatefulComponent);
 ```
