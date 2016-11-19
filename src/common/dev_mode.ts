@@ -92,7 +92,7 @@ export function printError(message: string): void {
  * @returns Function name.
  */
 export function getFunctionName(fn: Function): string {
-    return fn.name;
+    return fn.name || "(anonymous function)";
 }
 
 /**
