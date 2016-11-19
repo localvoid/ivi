@@ -10,7 +10,7 @@ import { scheduleMacrotask } from "../scheduler/scheduler";
  * Native Event Dispatcher.
  */
 export class NativeEventDispatcher<E extends SyntheticEventClass<Event, SyntheticDOMEvent<any>>>
-    extends EventDispatcher<null, string> {
+    extends EventDispatcher<null> {
     /**
      * See `EventDispatcherFlags` for details.
      */
@@ -59,7 +59,7 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
         }
 
         if (s) {
-            this.dispatchEventToSubscribers(s, ev.type);
+            this.dispatchEventToSubscribers(s);
         }
     }
 

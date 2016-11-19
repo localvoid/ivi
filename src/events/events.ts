@@ -26,7 +26,7 @@ import {
  * @returns EventHandler object.
  */
 export function createEventHandler<E extends SyntheticEvent<any>>(
-    dispatcher: EventDispatcher<any, any>,
+    dispatcher: EventDispatcher<any>,
     fn: (ev: E) => void,
     capture?: boolean): EventHandler<E> {
 

@@ -1,20 +1,23 @@
+/**
+ * Event Dispatchers
+ *
+ * **EXPERIMENTAL API**
+ */
 
 import { SyntheticEvent } from "./synthetic_event";
 
 /**
  * Event Dispatcher Subscription Flags.
+ *
+ * Reserved for future use.
  */
 export const enum EventDispatcherSubscriptionFlags {
-    /**
-     * Type filtering is using bitmask AND operation.
-     */
-    MaskType = 1,
 }
 
 /**
  * Event Dispatcher Subscription.
  */
-export interface EventDispatcherSubscription<D, T> {
+export interface EventDispatcherSubscription<D> {
     /**
      * See `EventDispatcherSubscriptionFlags` for details.
      */
@@ -22,11 +25,11 @@ export interface EventDispatcherSubscription<D, T> {
     /**
      * Event Dispatcher.
      */
-    dispatcher: EventDispatcher<D, T>;
+    dispatcher: EventDispatcher<D>;
     /**
      * Type filter.
      */
-    type: T;
+    type: number | undefined;
     /**
      * Opaque data.
      */
@@ -36,12 +39,10 @@ export interface EventDispatcherSubscription<D, T> {
 /**
  * Abstract Event Dispatcher.
  *
- * **EXPERIMENTAL API**
- *
  * @template D Opaque data type.
  * @template T Outgoing synthetic event type.
  */
-export abstract class EventDispatcher<D, T> {
+export abstract class EventDispatcher<D> {
     /**
      * Number of registered dependencies (Event Handlers and Event Dispatcher subscribers).
      *
@@ -54,7 +55,7 @@ export abstract class EventDispatcher<D, T> {
      *
      * All outgoing events will be filtered by `type` property.
      */
-    subscribers: EventDispatcherSubscription<any, any>[] | null;
+    subscribers: EventDispatcherSubscription<any>[] | null;
 
     constructor() {
         this.counter = 0;
@@ -66,7 +67,7 @@ export abstract class EventDispatcher<D, T> {
      *
      * @param ev Event to dispatch.
      */
-    dispatch(_ev: SyntheticEvent<any>, data: D, type?: T): void {
+    dispatch(_ev: SyntheticEvent<any>, data: D, type?: number): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
@@ -76,13 +77,13 @@ export abstract class EventDispatcher<D, T> {
      *
      * @param events Events to dispatch.
      */
-    dispatchEventToSubscribers(event: SyntheticEvent<any>, type: T): void {
+    dispatchEventToSubscribers(event: SyntheticEvent<any>, type?: number): void {
         if (this.subscribers) {
-            for (let i = 0; i < this.subscribers.length; i++) {
-                const sub = this.subscribers[i];
-                if (type === undefined ||
-                    ((sub.flags & EventDispatcherSubscriptionFlags.MaskType) && (sub.type & (type as any as number))) ||
-                    sub.type === type) {
+            // We need to clone because while we are dispatching, subs may unsub from this list.
+            const subs = this.subscribers.slice();
+            for (let i = 0; i < subs.length; i++) {
+                const sub = subs[i];
+                if (type === undefined || (sub.type & (type as any as number))) {
                     sub.dispatcher.dispatch(event, sub.data, type);
                 }
             }
@@ -108,20 +109,17 @@ export abstract class EventDispatcher<D, T> {
     /**
      * Subscribe for events.
      *
-     * @param flags Subscription flags.
      * @param dispatcher Event Dispatcher.
      * @param data Opaque data that will be returned to subscriber.
      * @param type Type that will be used to filter incoming events.
+     * @param flags Subscription flags.
      */
     subscribe(
-        flags: EventDispatcherSubscriptionFlags,
-        dispatcher: EventDispatcher<any, any>,
+        dispatcher: EventDispatcher<any>,
         data: any,
-        type?: T,
+        type?: number,
+        flags: EventDispatcherSubscriptionFlags = 0,
     ): void {
-        if (this.counter++ === 0) {
-            this.activate();
-        }
         if (this.subscribers === null) {
             this.subscribers = [];
         }
@@ -131,27 +129,30 @@ export abstract class EventDispatcher<D, T> {
             data: data,
             type: type,
         });
+        if (this.counter++ === 0) {
+            this.activate();
+        }
     }
 
     /**
      * Unsubscribe from events.
      *
-     * @param flags Subscription flags.
      * @param dispatcher Event Dispatcher.
      * @param data Opaque data that will be returned to subscriber.
      * @param type Type that will be used to filter incoming events.
+     * @param flags Subscription flags.
      */
     unsubscribe(
-        flags: EventDispatcherSubscriptionFlags,
-        dispatcher: EventDispatcher<any, any>,
+        dispatcher: EventDispatcher<any>,
         data: any,
-        type?: T,
+        type?: number,
+        flags: EventDispatcherSubscriptionFlags = 0,
     ): void {
         if (--this.counter === 0) {
             this.deactivate();
         }
         if (this.subscribers!.length > 1) {
-            let match: EventDispatcherSubscription<any, T> | undefined;
+            let match: EventDispatcherSubscription<any> | undefined;
             let i = 0;
             for (i; i < this.subscribers!.length; i++) {
                 const sub = this.subscribers![i];

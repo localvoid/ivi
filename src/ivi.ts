@@ -50,7 +50,7 @@ export { NativeEventDispatcher } from "./events/native_event_dispatcher";
 export { EventHandler, EventHandlerList } from "./events/event_handler";
 export {
     NativeEventDispatchersList, NativeActiveEventDispatchersList, NativeEventDispatchers, NativeActiveEventDispatchers,
-    Events, ActiveEvents,
+    Events, ActiveEvents, createEventHandler,
 } from "./events/events";
 export {
     SyntheticEvent, SyntheticDOMEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,

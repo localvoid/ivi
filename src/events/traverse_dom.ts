@@ -27,7 +27,7 @@ export interface DispatchTarget {
 export function accumulateDispatchTargetsFromElement(
     result: DispatchTarget[],
     target: Element,
-    dispatcher: EventDispatcher<any, any>,
+    dispatcher: EventDispatcher<any>,
 ): void {
     const events = getEventHandlerListFromDOMNode(target);
     if (events) {
@@ -62,7 +62,7 @@ export function accumulateDispatchTargetsFromElement(
  */
 export function accumulateDispatchTargets(
     target: Element | null,
-    dispatcher: EventDispatcher<any, any>,
+    dispatcher: EventDispatcher<any>,
 ): DispatchTarget[] {
     const result: DispatchTarget[] = [];
 
@@ -101,8 +101,8 @@ export interface DispatchTargetsWithCommonAncestor {
 export function accumulateDispatchTargetsUntilCommonAncestor(
     a: Element,
     b: Element,
-    aDispatcher: EventDispatcher<any, any>,
-    bDispatcher: EventDispatcher<any, any>,
+    aDispatcher: EventDispatcher<any>,
+    bDispatcher: EventDispatcher<any>,
 ): DispatchTargetsWithCommonAncestor {
 
     const result: DispatchTargetsWithCommonAncestor = {

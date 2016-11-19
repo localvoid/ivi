@@ -9,7 +9,7 @@ export interface EventHandler<E extends SyntheticEvent<any>> {
     /**
      * Event Dispatcher instance.
      */
-    dispatcher: EventDispatcher<any, any>;
+    dispatcher: EventDispatcher<any>;
     /**
      * See `EventHandlerFlags` for details.
      */
