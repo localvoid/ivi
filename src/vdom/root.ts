@@ -1,5 +1,6 @@
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
+import { nextFrame } from "../scheduler/scheduler";
 import { Context, ROOT_CONTEXT } from "./context";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
@@ -9,8 +10,11 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementat
  */
 export interface Root {
     container: Element;
-    vNode: VNode<any>;
-    domNode: Node;
+    currentVNode: VNode<any> | null;
+    newVNode: VNode<any> | null;
+    newContext: Context | null;
+    domNode: Node | null;
+    invalidated: boolean;
 }
 
 const roots = [] as Root[];
@@ -35,6 +39,48 @@ export function findRoot(container: Element): Root | undefined {
 /**
  * Render VNode into container.
  *
+ * @param root Root data.
+ * @returns rendered Node.
+ */
+function _render<T extends Node>(root: Root): T | undefined {
+    let result: Node | undefined;
+    const currentVNode = root.currentVNode;
+    const newVNode = root.newVNode;
+
+    if (newVNode) {
+        if (currentVNode) {
+            result = syncVNode(root.container, currentVNode, newVNode, root.newContext!);
+        } else {
+            result = renderVNode(root.container, null, newVNode!, root.newContext!);
+            /**
+             * Fix for the Mouse Event bubbling on iOS devices.
+             *
+             * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+             */
+            if (USER_AGENT & UserAgentFlags.iOS) {
+                (root.container as HTMLElement).onclick = NOOP;
+            }
+        }
+        root.currentVNode = newVNode;
+        root.domNode = result;
+    } else if (currentVNode) {
+        removeVNode(root.container, currentVNode);
+        const last = roots.pop();
+        if (last !== root && roots.length) {
+            roots[roots.indexOf(root)] = last!;
+        }
+    }
+
+    root.newVNode = null;
+    root.newContext = null;
+    root.invalidated = false;
+
+    return result as T | undefined;
+}
+
+/**
+ * Render VNode into container.
+ *
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
  * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
@@ -52,39 +98,67 @@ export function render<T extends Node>(
         }
     }
 
-    let result: Node | undefined;
-    const root = findRoot(container);
-    if (node) {
-        if (root) {
-            result = syncVNode(container, root.vNode, node, context);
-            root.vNode = node;
-            root.domNode = result;
-        } else {
-            result = renderVNode(container, null, node, context);
-            roots.push({
-                container: container,
-                vNode: node,
-                domNode: result,
-            });
-            /**
-             * Fix for the Mouse Event bubbling on iOS devices.
-             *
-             * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-             */
-            if (USER_AGENT & UserAgentFlags.iOS) {
-                (container as HTMLElement).onclick = NOOP;
-            }
-        }
-    } else if (root) {
-        removeVNode(container, root.vNode);
-        const last = roots.pop();
-        if (last !== root && roots.length) {
-            roots[roots.indexOf(root)] = last!;
-        }
-        result = root.domNode;
+    let root = findRoot(container);
+    if (root) {
+        root.newVNode = node;
+        root.newContext = context;
+    } else {
+        root = {
+            container: container,
+            currentVNode: null,
+            newVNode: node,
+            newContext: context,
+            domNode: null,
+            invalidated: false,
+        } as Root;
+        roots.push(root);
     }
 
-    return result as T | undefined;
+    return _render<T>(root);
+}
+
+/**
+ * Render VNode into container on the next frame.
+ *
+ * @param node VNode to render.
+ * @param container DOM Node that will contain rendered node.
+ * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
+ * @returns rendered Node.
+ */
+export function renderNextFrame(
+    node: VNode<any> | null,
+    container: Element,
+    context: Context = ROOT_CONTEXT,
+): void {
+    if (__IVI_DEV__) {
+        if (container === document.body) {
+            throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
+                "your application.");
+        }
+    }
+
+    let root = findRoot(container);
+    if (root) {
+        root.newVNode = node;
+        root.newContext = context;
+    } else {
+        root = {
+            container: container,
+            currentVNode: null,
+            newVNode: node,
+            newContext: context,
+            domNode: null,
+            invalidated: false,
+        } as Root;
+        roots.push(root);
+    }
+    if (!root.invalidated) {
+        nextFrame().write(function () {
+            if (root!.invalidated) {
+                _render(root!);
+            }
+        });
+    }
 }
 
 /**
@@ -103,14 +177,21 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
                 "your application.");
         }
+
+        if (findRoot(container)) {
+            throw new Error("Failed to augment, container is associated with a Virtual DOM.");
+        }
     }
 
     if (node) {
         augmentVNode(container, container.firstChild!, node, context);
         roots.push({
             container: container,
-            vNode: node,
+            currentVNode: node,
+            newVNode: null,
+            newContext: null,
             domNode: container.firstChild!,
+            invalidated: false,
         });
         /**
          * Fix for the Mouse Event bubbling on iOS devices.

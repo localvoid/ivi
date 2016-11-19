@@ -70,7 +70,7 @@ export { ComponentClass, ComponentFunction, Component, checkPropsIdentity } from
 export { VNodeFlags } from "./vdom/flags";
 export { VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMRef, getComponentRef } from "./vdom/vnode";
 export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m } from "./vdom/vnode_builder";
-export { Root, findRoot, render, augment } from "./vdom/root";
+export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 export { STACK_TRACE } from "./vdom/stack_trace";
 
 if (__IVI_DEV__) {
