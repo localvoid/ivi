@@ -14,6 +14,10 @@ export const enum UserAgentFlags {
      * iOS browser (iPad, iPhone, iPod).
      */
     iOS = 1,
+    /**
+     * Android browser.
+     */
+    Android = 1 << 1,
 };
 
 /**
@@ -24,5 +28,9 @@ export let USER_AGENT: UserAgentFlags = 0;
 if (__IVI_BROWSER__) {
     if (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream) {
         USER_AGENT |= UserAgentFlags.iOS;
+    }
+
+    if (/Android/.test(ua)) {
+        USER_AGENT |= UserAgentFlags.Android;
     }
 }
