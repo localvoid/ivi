@@ -334,7 +334,7 @@ export function updateComponent<P>(component: Component<P>): Node {
         if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
             (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
-                stackTracePushComponent((component as Object).constructor as ComponentClass<any>);
+                stackTracePushComponent((component as Object).constructor as ComponentClass<any>, component);
                 const ret = _updateComponent(component);
                 stackTracePopComponent();
                 return ret;
@@ -442,9 +442,9 @@ function vNodeMount(vnode: VNode<any>): void {
     const flags = vnode._flags;
 
     if (flags & VNodeFlags.Component) {
-        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
+            stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "mount");
 
             if (__IVI_DEV__) {
@@ -458,6 +458,7 @@ function vNodeMount(vnode: VNode<any>): void {
             vNodeMount(component.root!);
             componentPerfMarkEnd(component._debugId, "mount", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
+            stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "mount");
             vNodeMount(vnode._children as VNode<any>);
             componentPerfMarkEnd(vnode._debugId, "mount", false, vnode._tag as ComponentFunction<any>);
@@ -490,9 +491,9 @@ function vNodeMount(vnode: VNode<any>): void {
 function vNodeUnmount(vnode: VNode<any>): void {
     const flags = vnode._flags;
     if (flags & VNodeFlags.Component) {
-        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
+            stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "unmount");
 
             if (__IVI_DEV__) {
@@ -505,6 +506,7 @@ function vNodeUnmount(vnode: VNode<any>): void {
             componentDidUnmount(component);
             componentPerfMarkEnd(component._debugId, "unmount", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
+            stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "unmount");
             vNodeUnmount(vnode._children as VNode<any>);
             componentPerfMarkEnd(vnode._debugId, "unmount", false, vnode._tag as ComponentFunction<any>);
@@ -554,15 +556,16 @@ function vNodeUnmountAll(vnodes: VNode<any>[]): void {
 function vNodePropagateNewContext(parent: Node, vnode: VNode<any>, context: Context, owner?: Component<any>): void {
     const flags = vnode._flags;
     if (flags & VNodeFlags.Component) {
-        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children as Component<any>;
+            stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "propagateContext");
             componentUpdateParentContext(component, context);
             _updateComponent(component);
             componentPerfMarkEnd(component._debugId, "propagateContext", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             const fn = vnode._tag as ComponentFunction<any>;
+            stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "propagateContext");
             // Optimization that checks if function is using context parameter. When function doesn't use context, it
             // means that we can ignore re-renders when context is changed, and just propagate a new context through
@@ -861,10 +864,10 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
 
         restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
     } else { // (flags & VNodeFlags.Component)
-        stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
 
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+            stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "instantiate");
             if (__IVI_DEV__) {
                 component._ancestorFlags = nestingStateAncestorFlags();
@@ -875,6 +878,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
             ref = component._rootDOMNode = vNodeRender(parent, root, component._context, component);
             componentPerfMarkEnd(component._debugId, "instantiate", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
+            stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "instantiate");
             const root = vnode._children =
                 componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
@@ -1048,11 +1052,11 @@ function vNodeAugment(
 
             restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
         } else { // (flags & VNodeFlags.Component)
-            stackTracePushComponent(vnode._tag as ComponentClass<any> | ComponentFunction<any>);
 
             if (flags & VNodeFlags.ComponentClass) {
                 const component = vnode._children =
                     new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+                stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
 
                 if (__IVI_DEV__) {
                     component._ancestorFlags = nestingStateAncestorFlags();
@@ -1064,6 +1068,7 @@ function vNodeAugment(
                 const root = componentClassRender(component);
                 vNodeAugment(parent, node, root, component._context, component);
             } else {
+                stackTracePushComponent(vnode._tag as ComponentFunction<any>);
                 const root = vnode._children =
                     componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
                 vNodeAugment(parent, node, root, context, owner);
@@ -1151,13 +1156,14 @@ function vNodeSync(parent: Node, a: VNode<any>, b: VNode<any>, context: Context,
             }
         }
     } else { // (flags & VNodeFlags.Component)
-        stackTracePushComponent(b._tag as ComponentClass<any> | ComponentFunction<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = b._children = a._children as Component<any>;
+            stackTracePushComponent(b._tag as ComponentClass<any>, component);
             componentUpdateProps(component, b._props);
             componentUpdateParentContext(component, context);
             ref = b._dom = _updateComponent(component);
         } else { // (flags & VNodeFlags.ComponentFunction)
+            stackTracePushComponent(b._tag as ComponentFunction<any>);
             ref = b._dom = _updateComponentFunction(parent, a, b, context, owner);
         }
         stackTracePopComponent();

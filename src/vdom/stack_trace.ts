@@ -4,25 +4,40 @@
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
 import { DEV_MODE, DevModeFlags, getFunctionName } from "../common/dev_mode";
-import { ComponentClass, ComponentFunction } from "./component";
+import { ComponentClass, ComponentFunction, Component } from "./component";
 
 /**
- * Components stack trace.
+ * Components stack trace from an entry point.
  */
-export let STACK_TRACE: Array<ComponentClass<any> | ComponentFunction<any>>;
+export let STACK_TRACE: Array<ComponentClass<any> | ComponentFunction<any>> | undefined;
+/**
+ * Component instances stack trace.
+ */
+export let STACK_TRACE_INSTANCES: Array<Component<any>> | undefined;
 
 /**
  * Push component into stack trace.
  *
  * @param component Component.
  */
-export function stackTracePushComponent(component: ComponentClass<any> | ComponentFunction<any>): void {
+export function stackTracePushComponent(component: ComponentClass<any>, instance: Component<any>): void;
+export function stackTracePushComponent(component: ComponentFunction<any>): void;
+export function stackTracePushComponent(
+    component: ComponentClass<any> | ComponentFunction<any>,
+    instance?: Component<any>,
+): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
             if (!STACK_TRACE) {
                 STACK_TRACE = [];
             }
             STACK_TRACE.push(component);
+            if (instance) {
+                if (!STACK_TRACE_INSTANCES) {
+                    STACK_TRACE_INSTANCES = [];
+                }
+                STACK_TRACE_INSTANCES.push(instance);
+            }
         }
     }
 }
@@ -33,7 +48,10 @@ export function stackTracePushComponent(component: ComponentClass<any> | Compone
 export function stackTracePopComponent(): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-            STACK_TRACE.pop();
+            const c = STACK_TRACE!.pop();
+            if ((c as ComponentClass<any>).prototype.render) {
+                STACK_TRACE_INSTANCES!.pop();
+            }
         }
     }
 }
@@ -44,7 +62,8 @@ export function stackTracePopComponent(): void {
 export function stackTraceReset(): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-            STACK_TRACE = [];
+            STACK_TRACE = undefined;
+            STACK_TRACE_INSTANCES = undefined;
         }
     }
 }
@@ -56,9 +75,24 @@ export function stackTraceReset(): void {
  */
 function stackTraceToString(): string {
     let result = "";
-    for (let i = 0; i < STACK_TRACE.length; i++) {
-        const c = STACK_TRACE[i];
-        result += `\n    [${c.prototype.render ? "C" : "F"}]${getFunctionName(c)}`;
+    if (STACK_TRACE && (STACK_TRACE.length > 0)) {
+        for (let i = 0; i < STACK_TRACE.length; i++) {
+            const c = STACK_TRACE[i];
+            if (c.prototype.render) {
+                result += `\n    [C`;
+            } else {
+                result += `\n    [F`;
+            }
+            result += `]${getFunctionName(c)}`;
+        }
+        result += " <== Entry Point";
+        if (STACK_TRACE_INSTANCES && (STACK_TRACE_INSTANCES.length > 0)) {
+            let i = STACK_TRACE_INSTANCES[0].owner;
+            while (i) {
+                result += `\n    [C]${getFunctionName(i.constructor)}`;
+                i = i.owner;
+            }
+        }
     }
     return result;
 }
