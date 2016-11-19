@@ -65,7 +65,9 @@ Key to uniquely identify Virtual Node among its siblings. It is used by children
 rearrange nodes when they are moved, removed or inserted.
 
 ```ts
-key(key: any): VNode<P>;
+interface VNode<P> {
+    key(key: any): VNode<P>;
+}
 ```
 
 Ref callback is used to get reference for an actual DOM Node or a Component instance. When VNode is mounted, ref
@@ -73,7 +75,9 @@ callback will be invoked with a Node value for an element or a Component instanc
 callback will be invoked with a `null` value.
 
 ```ts
-ref(ref: (ref: Node | Component<P> | null) => void): VNode<P>;
+interface VNode<P> {
+    ref(ref: (ref: Node | Component<P> | null) => void): VNode<P>;
+}
 ```
 
 ### HTML, SVG, Input and Media elements
@@ -81,19 +85,25 @@ ref(ref: (ref: Node | Component<P> | null) => void): VNode<P>;
 CSS Style in string format or as an object.
 
 ```ts
-style(style: CSSStyleProps | string | null): VNode<P>;
+interface VNode<P> {
+    style(style: CSSStyleProps | string | null): VNode<P>;
+}
 ```
 
 Event Handler List.
 
 ```ts
-events(events: EventHandlerList | null): VNode<P>;
+interface VNode<P> {
+    events(events: EventHandlerList | null): VNode<P>;
+}
 ```
 
 DOM attributes.
 
 ```ts
-props(props: P): VNode<P>;
+interface VNode<P> {
+    props(props: P): VNode<P>;
+}
 ```
 
 ### HTML and SVG elements (nodes that can contain children nodes)
@@ -103,7 +113,9 @@ basic objects and null values. It will automatically normalize recursive lists b
 and replacing basic objects with text nodes.
 
 ```ts
-children(children: VNodeRecursiveArray | VNode<any> | string | number | boolean | null): VNode<P>;
+interface VNode<P> {
+    children(children: VNodeRecursiveArray | VNode<any> | string | number | boolean | null): VNode<P>;
+}
 ```
 
 To preserve internal state of all children we need to correctly identify which nodes has been moved, inserted or
@@ -117,26 +129,56 @@ the end.
 This method enables track by key algorithm and assigns children. `children` parameter is a recursive array of VNodes.
 
 ```ts
-trackByKeyChildren(children: VNodeRecursiveArray | null): VNode<P>;
+interface VNode<P> {
+    trackByKeyChildren(children: VNodeRecursiveArray | null): VNode<P>;
+}
 ```
 
 Unsafe HTML is used to specify `innerHTML`, ivi doesn't provide any XSS protection for unsafe HTML, HTML string
 specified in `html` parameter will be directly injected into the node.
 
 ```ts
-unsafeHTML(html: string): VNode<P>
+interface VNode<P> {
+   unsafeHTML(html: string): VNode<P>
+}
 ```
 
 ### Input Elements
 
-Value property.
+Input Value and Checked properties.
 
 ```ts
-value(value: string | null): VNode<P>;
+interface VNode<P> {
+    value(value: string | null): VNode<P>;
+    checked(checked: boolean | null): VNode<P>;
+}
 ```
 
-Checked property.
+## Rendering and Augmentation
+
+Render Virtual DOM into container.
 
 ```ts
-checked(checked: boolean | null): VNode<P>;
+function render<T extends Node>(
+    node: VNode<any> | null,
+    container: Element,
+    context: Context = ROOT_CONTEXT,
+): T | undefined;
+```
+
+Render Virtual DOM into container asynchronously. This function will update DOM tree once per animation frame, even
+when it is invoked multiple times.
+
+```ts
+function renderNextFrame(
+    node: VNode<any> | null,
+    container: Element,
+    context: Context = ROOT_CONTEXT,
+): void;
+```
+
+Augment existing DOM tree with a Virtual DOM.
+
+```ts
+function augment(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void;
 ```
