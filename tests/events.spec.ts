@@ -17,16 +17,16 @@ function createMouseEvent(type: string): MouseEvent {
 
 export interface EventCounter {
     value: number;
-    event: EventHandler<any, any>;
+    event: EventHandler<any>;
 }
 
 export function eventCounter(handlerFactory: (
     handler: (ev: SyntheticEvent<any>) => void,
-    capture?: boolean) => EventHandler<any, any>,
+    capture?: boolean) => EventHandler<any>,
 ): EventCounter {
     const c = {
         value: 0,
-        event: null as EventHandler<any, any> | null,
+        event: null as EventHandler<any> | null,
     };
     c.event = handlerFactory(() => {
         c.value++;

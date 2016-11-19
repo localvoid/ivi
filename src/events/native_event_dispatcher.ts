@@ -1,5 +1,5 @@
 import { NativeEventDispatcherFlags } from "./flags";
-import { SyntheticEvent, SyntheticEventClass } from "./synthetic_event";
+import { SyntheticDOMEvent, SyntheticEventClass } from "./synthetic_event";
 import { EventDispatcher } from "./event_dispatcher";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
@@ -9,7 +9,8 @@ import { scheduleMacrotask } from "../scheduler/scheduler";
 /**
  * Native Event Dispatcher.
  */
-export class NativeEventDispatcher<I extends Event, O extends SyntheticEvent<I>> extends EventDispatcher<I, O> {
+export class NativeEventDispatcher<E extends SyntheticEventClass<Event, SyntheticDOMEvent<any>>>
+    extends EventDispatcher<null, string> {
     /**
      * See `EventDispatcherFlags` for details.
      */
@@ -21,30 +22,34 @@ export class NativeEventDispatcher<I extends Event, O extends SyntheticEvent<I>>
     /**
      * Synthetic Event Constructor.
      */
-    readonly eventType: SyntheticEventClass<I, O>;
+    readonly eventType: E;
     /**
      * `dispatch` method with bounded context.
      */
-    private readonly _dispatch: (ev: I) => void;
+    private readonly _dispatch: (ev: Event) => void;
     /**
      * Flag indicating that Event Dispatcher will be deactivated in the macrotask.
      */
     private _deactivating: boolean;
 
-    constructor(flags: NativeEventDispatcherFlags, name: string, eventType: SyntheticEventClass<I, O>) {
+    constructor(
+        flags: NativeEventDispatcherFlags,
+        name: string,
+        eventType: E,
+    ) {
         super();
         this.flags = flags;
         this.name = name;
         this.eventType = eventType;
-        this._dispatch = this.dispatch.bind(this);
+        this._dispatch = this.dispatchNativeEvent.bind(this);
         this._deactivating = false;
     }
 
-    dispatch(ev: I): void {
-        const deps = this.dependents;
+    private dispatchNativeEvent(ev: Event): void {
+        const deps = this.subscribers;
         const handlers = accumulateDispatchTargets(getEventTarget(ev) as Element, this);
 
-        let s: O | undefined;
+        let s: SyntheticDOMEvent<any> | undefined;
         if (handlers || deps) {
             s = new this.eventType(0, ev, getEventTarget(ev));
         }
@@ -54,7 +59,7 @@ export class NativeEventDispatcher<I extends Event, O extends SyntheticEvent<I>>
         }
 
         if (s) {
-            this.dispatchEventsToDependents(s);
+            this.dispatchEventToSubscribers(s, ev.type);
         }
     }
 

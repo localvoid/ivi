@@ -42,6 +42,18 @@ export abstract class SyntheticEvent<D> {
         return 1;
     }
 
+    get CAPTURING_PHASE(): number {
+        return 1;
+    }
+
+    get AT_TARGET(): number {
+        return 2;
+    }
+
+    get BUBBLING_PHASE(): number {
+        return 3;
+    }
+
     stopPropagation() {
         this._flags |= SyntheticEventFlags.StoppedPropagation;
     }
@@ -53,7 +65,6 @@ export abstract class SyntheticEvent<D> {
     preventDefault() {
         this._flags |= SyntheticEventFlags.PreventedDefault;
     }
-
 }
 
 export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
@@ -91,18 +102,6 @@ export class SyntheticDOMEvent<D extends Event> extends SyntheticEvent<D> implem
 
     get type() {
         return this._data.type;
-    }
-
-    get AT_TARGET(): number {
-        return this._data.AT_TARGET;
-    }
-
-    get BUBBLING_PHASE(): number {
-        return this._data.BUBBLING_PHASE;
-    }
-
-    get CAPTURING_PHASE(): number {
-        return this._data.CAPTURING_PHASE;
     }
 
     preventDefault() {

@@ -5,11 +5,11 @@ import { SyntheticEvent } from "./synthetic_event";
 /**
  * Event Handler.
  */
-export interface EventHandler<I, O extends SyntheticEvent<any>> {
+export interface EventHandler<E extends SyntheticEvent<any>> {
     /**
      * Event Dispatcher instance.
      */
-    dispatcher: EventDispatcher<I, O>;
+    dispatcher: EventDispatcher<any, any>;
     /**
      * See `EventHandlerFlags` for details.
      */
@@ -17,12 +17,16 @@ export interface EventHandler<I, O extends SyntheticEvent<any>> {
     /**
      * Event Handler function.
      */
-    fn: (ev: O) => void;
+    fn: (ev: E) => void;
+    /**
+     * Event Handler options.
+     */
+    options?: any;
 }
 
 /**
  * Event List.
  */
 export interface EventHandlerList {
-    [key: string]: EventHandler<any, any>;
+    [key: string]: EventHandler<SyntheticEvent<any>>;
 };

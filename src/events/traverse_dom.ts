@@ -14,7 +14,7 @@ export interface DispatchTarget {
     /**
      * Matched Event Handlers.
      */
-    handlers: EventHandler<any, any>[];
+    handlers: EventHandler<any>[];
 }
 
 /**
@@ -31,7 +31,7 @@ export function accumulateDispatchTargetsFromElement(
 ): void {
     const events = getEventHandlerListFromDOMNode(target);
     if (events) {
-        let matches: EventHandler<any, any>[] | undefined;
+        let matches: EventHandler<any>[] | undefined;
         const keys = Object.keys(events);
         for (let i = 0; i < keys.length; i++) {
             const ev = events[keys[i]];
