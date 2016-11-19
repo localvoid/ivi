@@ -18,9 +18,23 @@ const enum DevModeFlags {
     DisableStackTraceAugmentation = 1 << 1,
     DisableScreenOfDeath = 1 << 2,
     DisableScreenOfDeathGlobalErrorHandling = 1 << 3,
+    EnableComponentPerformanceProfiling = 1 << 4,
 }
 
 function setDevModeFlags(flags: DevModeFlags): void;
+```
+
+Development Mode Flags are also configurable via query parameters. For example, `http://example.com?_perf=true` will
+enable component performance profiling.
+
+Full list of query parameters:
+
+```
+_nv=false  Disable Nesting Validation.
+_st=false  Disable Stack Trace Augmentation.
+_sod=false Disable Screen of Death.
+_geh=false Disable Screen of Death Global Event Handler.
+_perf=true Enable Component Performance Profiling.
 ```
 
 ## Nesting Validation
@@ -44,3 +58,8 @@ the current stack trace for an exception.
 By default, Screen of Death will be displayed for all unhandled exceptions. `DisableScreenOfDeathGlobalErrorHandling`
 flag disables global error handler. when this flag is enabled, Screen of Death will be displayed only when exception is
 thrown inside an ivi boundaries.
+
+## Component Performance Profiling
+
+Component performance profiling will add marks on the dev tools timeline. They can help you get additional information
+about components performance.
