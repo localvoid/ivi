@@ -7,13 +7,12 @@ import { SyntheticEvent } from "./synthetic_event";
  */
 export abstract class EventDispatcher<I, O extends SyntheticEvent<any>> {
     /**
-     * Number of registered event handlers or other dependencies.
+     * Number of registered dependencies (Event Handlers and Event Dispatchers).
+     *
+     * When this number goes from 0 to 1, lifecycle method `activate` is invoked.
+     * When this number goes to 0, lifecycle method `deactivate` is invoked.
      */
     counter: number;
-    /**
-     * Event Dispatcher dependencies.
-     */
-    dependencies: EventDispatcher<any, SyntheticEvent<any>>[] | null;
     /**
      * Event Dispatcher dependents will receive all events produced by this event handler.
      */
@@ -21,7 +20,6 @@ export abstract class EventDispatcher<I, O extends SyntheticEvent<any>> {
 
     constructor() {
         this.counter = 0;
-        this.dependencies = null;
         this.dependents = null;
     }
 
@@ -52,22 +50,16 @@ export abstract class EventDispatcher<I, O extends SyntheticEvent<any>> {
      * Lifecycle method `activate` is invoked when Event Dispatcher is activated.
      */
     activate(): void {
-        if (this.dependencies) {
-            for (let i = 0; this.dependencies.length; i++) {
-                this.dependencies[i].registerDispatcher(this);
-            }
-        }
+        /* tslint:disable:no-empty */
+        /* tslint:enable:no-empty */
     }
 
     /**
      * Lifecycle method `deactivate` is invoked when Event Dispatcher is deactivated.
      */
     deactivate(): void {
-        if (this.dependencies) {
-            for (let i = 0; this.dependencies.length; i++) {
-                this.dependencies[i].unregisterDispatcher(this);
-            }
-        }
+        /* tslint:disable:no-empty */
+        /* tslint:enable:no-empty */
     }
 
     /**
@@ -94,6 +86,8 @@ export abstract class EventDispatcher<I, O extends SyntheticEvent<any>> {
         if (--this.counter === 0) {
             this.deactivate();
         }
+        // We doesn't depend on the order of dependents, so we can remove with O(1) operation that swaps with the last
+        // item and removes last.
         if (this.dependents!.length > 1) {
             this.dependents![this.dependents!.indexOf(dispatcher)] = this.dependents!.pop() !;
         } else {
