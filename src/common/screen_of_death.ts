@@ -47,8 +47,10 @@ export function injectScreenOfDeath(title: string, content: string): void {
                 style.zIndex = "2147483647";
                 style.backgroundColor = "#600";
                 style.position = "absolute";
-                style.width = "100%";
-                style.height = "100%";
+                style.top = "0";
+                style.right = "0";
+                style.bottom = "0";
+                style.left = "0";
                 style.boxSizing = "border-box";
                 style.padding = "1em";
                 screenOfDeathElement.innerHTML = `` +
