@@ -118,10 +118,19 @@ export class ElementDescriptor<P> {
         let ref = this._ref;
 
         if (ref === null) {
-            if ((this._flags & ElementDescriptorFlags.Svg) === 0) {
-                ref = document.createElement(this._tagName);
-            } else {
+            if (this._flags & ElementDescriptorFlags.Svg) {
                 ref = document.createElementNS(SVG_NAMESPACE, this._tagName);
+            } else {
+                if (this._flags & ElementDescriptorFlags.InputElement) {
+                    if (this._flags & ElementDescriptorFlags.TextAreaElement) {
+                        ref = document.createElement("textarea");
+                    } else {
+                        ref = document.createElement("input");
+                        (ref as HTMLInputElement).type = this._tagName as string;
+                    }
+                } else {
+                    ref = document.createElement(this._tagName);
+                }
             }
 
             if (this._props) {
