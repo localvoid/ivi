@@ -66,7 +66,9 @@ export { getEventTarget, getEventOptions } from "./events/utils";
  * Virtual DOM:
  */
 export { Context, ROOT_CONTEXT } from "./vdom/context";
-export { ComponentClass, ComponentFunction, Component, checkPropsIdentity } from "./vdom/component";
+export {
+    ComponentClass, ComponentFunction, Component, findComponentByDebugId, checkPropsIdentity, checkPropsShallowEquality,
+} from "./vdom/component";
 export { VNodeFlags } from "./vdom/flags";
 export { VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMRef, getComponentRef } from "./vdom/vnode";
 export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m } from "./vdom/vnode_builder";

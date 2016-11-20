@@ -25,7 +25,7 @@ import {
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
 import { cloneVNode, $t } from "./vnode_builder";
-import { ComponentClass, ComponentFunction, Component } from "./component";
+import { ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent } from "./component";
 import {
     stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
     getFunctionalComponentStackTrace,
@@ -521,6 +521,7 @@ function vNodeUnmount(vnode: VNode<any>): void {
             component.flags &= ~(ComponentFlags.Mounted | ComponentFlags.UpdateEachFrame);
             componentDidUnmount(component);
             componentPerfMarkEnd(component._debugId, "unmount", true, component);
+            unregisterComponent(component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "unmount");
@@ -883,6 +884,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
 
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+            registerComponent(component);
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "instantiate");
             if (__IVI_DEV__) {
@@ -1073,6 +1075,7 @@ function vNodeAugment(
             if (flags & VNodeFlags.ComponentClass) {
                 const component = vnode._children =
                     new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+                registerComponent(component);
                 stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
 
                 if (__IVI_DEV__) {

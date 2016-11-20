@@ -298,6 +298,49 @@ export function invalidateComponent<P>(component: Component<P>, dirtyFlags: numb
 }
 
 /**
+ * Global Component registry available in Dev Mode. It is used to find components by their `debugId`.
+ */
+let COMPONENT_REGISTRY: Map<number, Component<any>>;
+if (__IVI_DEV__) {
+    COMPONENT_REGISTRY = new Map<number, Component<any>>();
+}
+
+/**
+ * Register a Component in Component Registry by its `debugId`.
+ *
+ * @param component Component instance.
+ */
+export function registerComponent(component: Component<any>): void {
+    if (__IVI_DEV__) {
+        COMPONENT_REGISTRY.set(component._debugId, component);
+    }
+}
+
+/**
+ * Unregister a Component from Component Registry by its `debugId`.
+ *
+ * @param component Component instance.
+ */
+export function unregisterComponent(component: Component<any>): void {
+    if (__IVI_DEV__) {
+        COMPONENT_REGISTRY.delete(component._debugId);
+    }
+}
+
+/**
+ * Find Component instance by `debugId` in Component Registry.
+ *
+ * @param debugId Debug ID.
+ * @returns Component associtated with `debugId` or an `undefined` if component is missing.
+ */
+export function findComponentByDebugId(debugId: number): Component<any> | undefined {
+    if (__IVI_DEV__) {
+        return COMPONENT_REGISTRY.get(debugId);
+    }
+    return;
+}
+
+/**
  * Checks props for identity.
  *
  * This function can be used as a wrapper for function expression, or as a class decorator.
