@@ -2,6 +2,7 @@ import { EventHandlerList } from "../events/event_handler";
 import { CSSStyleProps } from "./dom_props";
 import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
+import { ElementDescriptor } from "./element_descriptor";
 
 /**
  * VNode object is the core object in ivi Virtual DOM, it can represent any node type.
@@ -17,7 +18,7 @@ export interface VNode<P> {
      * When VNode represents a Component, tag property should contain reference to a `ComponentClass` if it is a
      * stateful component or `ComponentFunction` for stateless components.
      */
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | null;
+    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> | null;
     /**
      * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.

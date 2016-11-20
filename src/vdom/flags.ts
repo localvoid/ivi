@@ -55,6 +55,10 @@ export const enum VNodeFlags {
      * VNode is an SVGElement.
      */
     SvgElement = 1 << 12,
+    /**
+     * VNode is an Element Descriptor.
+     */
+    ElementDescriptor = 1 << 13,
 
     /**
      * VNode represents a Component.
@@ -63,7 +67,8 @@ export const enum VNodeFlags {
     /**
      * Flags that should match to be compatible for syncing.
      */
-    Syncable = Text | Element | Component | InputElement | TextAreaElement | MediaElement | SvgElement,
+    Syncable = Text | Element | Component | InputElement | TextAreaElement | MediaElement | SvgElement |
+    ElementDescriptor,
 }
 
 /**
@@ -128,4 +133,29 @@ export const enum ComponentFlags {
      * Component is dirty and should be updated.
      */
     Dirty = DirtyProps | DirtyState | DirtyContext,
+}
+
+/**
+ * Element Descriptor flags.
+ */
+export const enum ElementDescriptorFlags {
+    /**
+     * Clone nodes from a base node with `Node.cloneNode(false)` method.
+     */
+    EnabledCloning = 1,
+
+    // it is important that flags below match `VNodeFlags`, because they will be copied to VNode.
+    Element = VNodeFlags.Element,
+    InputElement = VNodeFlags.InputElement,
+    TextAreaElement = VNodeFlags.TextAreaElement,
+    MediaElement = VNodeFlags.MediaElement,
+    Svg = VNodeFlags.SvgElement,
+    ElementDescriptor = VNodeFlags.ElementDescriptor,
+
+    /**
+     * Copy flags to VNode.
+     */
+    CopyFlags = ElementDescriptorFlags.Element | ElementDescriptorFlags.InputElement |
+    ElementDescriptorFlags.TextAreaElement | ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.Svg |
+    ElementDescriptorFlags.ElementDescriptor,
 }

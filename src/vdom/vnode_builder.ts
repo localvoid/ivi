@@ -1,7 +1,9 @@
 import { nextDebugId } from "../common/dev_mode";
+import { InputType } from "../common/dom";
 import { VNode } from "./vnode";
-import { VNodeFlags } from "./flags";
+import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
+import { ElementDescriptor } from "./element_descriptor";
 import { EventHandlerList } from "../events/event_handler";
 import {
     HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
@@ -72,7 +74,7 @@ import {
  */
 export class VNodeBuilder<P> implements VNode<P> {
     _flags: VNodeFlags;
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | null;
+    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> | null;
     _key: any;
     _props: P | null;
     _className: string | null;
@@ -85,7 +87,7 @@ export class VNodeBuilder<P> implements VNode<P> {
 
     constructor(
         flags: number,
-        tag: string | ComponentFunction<P> | ComponentClass<P> | null,
+        tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> | null,
         props: P | null,
         className: string | null,
         children: VNode<any>[] | VNode<any> | string | number | boolean | Component<any> | null | undefined,
@@ -526,7 +528,7 @@ export function $h(tagName: string, className?: string): VNodeBuilder<HTMLElemen
  * Create a VNodeBuilder representing a SVGElement node.
  *
  * @param tagName SVG Element tag name.
- * @param props SVG Element props.
+ * @param className Class name.
  * @returns VNodeBuilder object.
  */
 export function $s(tagName: "circle", className?: string): VNodeBuilder<SVGCircleElementProps | null>;
@@ -591,10 +593,6 @@ export function $s(tagName: string, className?: string): VNodeBuilder<SVGElement
         null);
 }
 
-export type InputType = "textarea" | "button" | "checkbox" | "color" | "date" | "datetime" | "datetime-local" |
-    "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "reset" | "search" |
-    "submit" | "tel" | "text" | "time" | "url" | "week";
-
 function isInputTypeSupportsCheckedValue(type: InputType): boolean {
     if (type === "checkbox" || type === "radio") {
         return true;
@@ -606,7 +604,7 @@ function isInputTypeSupportsCheckedValue(type: InputType): boolean {
  * Create a VNodeBuilder representing an HTMLInputElement node.
  *
  * @param type Input Element type. When type param has value "textarea", HTMLTextAreaElement will be created.
- * @param props Input Element props.
+ * @param className Class name.
  * @returns VNodeBuilder object.
  */
 export function $i(type: "textarea", className?: string): VNodeBuilder<HTMLTextAreaElementProps | null>;
@@ -648,12 +646,12 @@ export function $i(type: InputType, className?: string): VNodeBuilder<HTMLInputE
  * Create a VNodeBuilder representing an HTMLMediaElement node.
  *
  * @param tagName Media element tag name.
- * @param props
+ * @param className Class name.
  * @returns VNodeBuilder object.
  */
 export function $m(tagName: "audio", className?: string): VNodeBuilder<HTMLAudioElementProps | null>;
 export function $m(tagName: "video", className?: string): VNodeBuilder<HTMLVideoElementProps | null>;
-export function $m(tagName: string, className?: string): VNodeBuilder<HTMLMediaElementProps | null> {
+export function $m(tagName: "audio" | "video", className?: string): VNodeBuilder<HTMLMediaElementProps | null> {
     return new VNodeBuilder<HTMLMediaElementProps | null>(
         VNodeFlags.Element | VNodeFlags.MediaElement,
         tagName,
@@ -678,6 +676,22 @@ export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props?: P): V
         c,
         props!,
         null,
+        null);
+}
+
+/**
+ * Create a VNodeBuilder representing an ElementDescriptor.
+ *
+ * @param d Element Descriptor.
+ * @param className Class name.
+ * @returns VNodeBuilder object.
+ */
+export function $e<P>(d: ElementDescriptor<P>, className?: string): VNodeBuilder<P> {
+    return new VNodeBuilder<P>(
+        d._flags & ElementDescriptorFlags.CopyFlags,
+        d,
+        null,
+        className === undefined ? null : className,
         null);
 }
 

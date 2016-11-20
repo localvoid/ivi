@@ -24,6 +24,7 @@ import {
 } from "../common/html_nesting_rules";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
+import { ElementDescriptor } from "./element_descriptor";
 import { cloneVNode, $t } from "./vnode_builder";
 import { ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent } from "./component";
 import {
@@ -826,13 +827,19 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
         // Push nesting state and check for nesting violation.
         const _prevNestingStateParentTagName = nestingStateParentTagName();
         const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
-        pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
-        checkNestingViolation();
 
         if (flags & VNodeFlags.Text) {
+            pushNestingState("$t");
+            checkNestingViolation();
             ref = document.createTextNode(vnode._children as string);
         } else { // (flags & VNodeFlags.Element)
-            if (flags & VNodeFlags.InputElement) {
+            pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
+                (vnode._tag as ElementDescriptor<any>)._tagName :
+                vnode._tag as string);
+            checkNestingViolation();
+            if (flags & VNodeFlags.ElementDescriptor) {
+                ref = (vnode._tag as ElementDescriptor<any>).createElement();
+            } else if (flags & VNodeFlags.InputElement) {
                 if (flags & VNodeFlags.TextAreaElement) {
                     ref = document.createElement("textarea");
                 } else {
@@ -987,11 +994,13 @@ function vNodeAugment(
             // Push nesting state and check for nesting violation.
             const _prevNestingStateParentTagName = nestingStateParentTagName();
             const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
-            pushNestingState((flags & VNodeFlags.Text) ? "$t" : vnode._tag as string);
-            checkNestingViolation();
 
             if (flags & VNodeFlags.Element) {
                 if (__IVI_DEV__) {
+                    pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
+                        (vnode._tag as ElementDescriptor<any>)._tagName :
+                        vnode._tag as string);
+                    checkNestingViolation();
                     if (node.nodeType !== 1) {
                         throw new Error(`Invalid node type: expected "1", actual "${node.nodeType}".`);
                     }
@@ -1061,6 +1070,9 @@ function vNodeAugment(
                     }
                 }
             } else if (__IVI_DEV__) { // (flags & VNodeFlags.Text)
+                pushNestingState("$t");
+                checkNestingViolation();
+
                 if (node.nodeType !== 3) {
                     throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
                 }
