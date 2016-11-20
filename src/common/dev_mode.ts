@@ -9,6 +9,9 @@
  *   _sod=false Disable Screen of Death.
  *   _geh=false Disable Screen of Death Global Event Handler.
  *   _perf=true Enable Component Performance Profiling.
+ *
+ * Development Mode global export variable can be changed via query parameter:
+ *   _export=<name>
  */
 import { FeatureFlags, FEATURES } from "./feature_detection";
 
@@ -45,6 +48,16 @@ export const enum DevModeFlags {
  */
 export let DEV_MODE: DevModeFlags = 0;
 
+/**
+ * Name of the global variable that will be used to export `ivi` Dev Mode API.
+ */
+export let GLOBAL_EXPORT: string;
+
+/**
+ * Set `DevModeFlags`.
+ *
+ * @param flags See `DevModeFlags` for details.
+ */
 export function setDevModeFlags(flags: DevModeFlags): void {
     if (__IVI_DEV__) {
         DEV_MODE |= flags;
@@ -166,5 +179,8 @@ if (__IVI_DEV__ && __IVI_BROWSER__) {
     }
     if (query["_perf"] === "true") {
         DEV_MODE |= DevModeFlags.EnableComponentPerformanceProfiling;
+    }
+    if (query["_export"] !== undefined) {
+        GLOBAL_EXPORT = query["_export"];
     }
 }

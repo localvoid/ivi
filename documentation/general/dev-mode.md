@@ -63,3 +63,31 @@ thrown inside an ivi boundaries.
 
 Component performance profiling will add marks on the dev tools timeline. They can help you get additional information
 about components performance.
+
+## Global API
+
+When ivi is running in Development Mode, parts of its API will be available globally. By default, Dev Mode API is
+available in global variable `ivi`.
+
+### Find Component by Debug ID
+
+When stack augmentation is enabled and exception is thrown, stack trace will contain information about all component
+instances in the current tree and their debug ids.
+
+To make it easier to investigate current state in the Console, ivi Dev Mode API provides functions that find component
+instances by their debug id:
+
+```ts
+findComponentByDebugId(debugId: number): Component<any>;
+$(debugId: any): Component<any>;
+```
+
+`$` is a shortcut for `findComponentByDebugId` that also automatically converts all objects to numbers.
+
+### Changing global variable
+
+Global variable can be dynamically changed via query parameter `_export=<name>`.
+
+```
+http://127.0.0.1/?_export=devMode
+```

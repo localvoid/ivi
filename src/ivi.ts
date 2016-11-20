@@ -75,10 +75,29 @@ export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m } fro
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 export { STACK_TRACE } from "./vdom/stack_trace";
 
+/**
+ * Dev Mode exported functions:
+ */
+import { GLOBAL_EXPORT } from "./common/dev_mode";
+import { findComponentByDebugId } from "./vdom/component";
+
 if (__IVI_DEV__) {
     if (__IVI_BROWSER__) {
         if (document) {
             document.title += " [DEV MODE]";
+        }
+
+        const devModeExport = {
+            "findComponentByDebugId": findComponentByDebugId,
+            "$": function (v: any) {
+                return findComponentByDebugId(Number(v));
+            },
+        };
+
+        if (GLOBAL_EXPORT && !window.hasOwnProperty(GLOBAL_EXPORT)) {
+            (window as any)[GLOBAL_EXPORT] = devModeExport;
+        } else if (!window.hasOwnProperty("ivi")) {
+            (window as any)["ivi"] = devModeExport;
         }
     }
     console.info("IVI: DEVELOPMENT MODE");
