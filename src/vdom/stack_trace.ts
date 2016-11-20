@@ -76,21 +76,38 @@ export function stackTraceReset(): void {
 function stackTraceToString(): string {
     let result = "";
     if (STACK_TRACE && (STACK_TRACE.length > 0)) {
-        for (let i = 0; i < STACK_TRACE.length; i++) {
+        for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
             const c = STACK_TRACE[i];
-            if (c.prototype.render) {
-                result += `\n    [C`;
+            result += "\n";
+            if (i === 0) {
+                result += " => ";
             } else {
-                result += `\n    [F`;
+                result += "    ";
             }
-            result += `]${getFunctionName(c)}`;
+            if (c.prototype.render) {
+                result += "[C]";
+            } else {
+                result += "[F]";
+            }
+            result += getFunctionName(c);
         }
-        result += " <== Entry Point";
         if (STACK_TRACE_INSTANCES && (STACK_TRACE_INSTANCES.length > 0)) {
-            let i = STACK_TRACE_INSTANCES[0].owner;
-            while (i) {
-                result += `\n    [C]${getFunctionName(i.constructor)}`;
-                i = i.owner;
+            let c: Component<any> | undefined = STACK_TRACE_INSTANCES[0];
+            if (STACK_TRACE[0].prototype.render) {
+                if (c._stackTrace) {
+                    for (let i = c._stackTrace.length - 1; i >= 0; i--) {
+                        result += `\n    [F]${getFunctionName(c._stackTrace[i])}`;
+                    }
+                }
+            }
+            c = c.owner;
+            while (c) {
+                result += `\n    [C]${getFunctionName(c.constructor)}`;
+                if (c._stackTrace) {
+                    for (let i = c._stackTrace.length - 1; i >= 0; i--) {
+                        result += `\n    [F]${getFunctionName(c._stackTrace[i])}`;
+                    }
+                }
             }
         }
     }
@@ -106,8 +123,36 @@ export function stackTraceAugment(e: Error): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
             if (e.stack) {
-                e.stack += "\nComponents stack trace:" + stackTraceToString();
+                e.stack += "\n\nComponents stack trace:" + stackTraceToString();
             }
         }
     }
+}
+
+/**
+ * It goes through current stack trace and finds all parent functional components. It will stop immediately when it
+ * finds a stateful component on the stack.
+ *
+ * Because functional components doesn't have any instances, we can't have any other way to find out parent component
+ * functions when execution was started deep in the components tree. So we just store this information when we
+ * instantiate components.
+ *
+ * @returns Functional Component stack trace.
+ */
+export function getFunctionalComponentStackTrace(): ComponentFunction<any>[] | null {
+    let result: ComponentFunction<any>[] | null = null;
+
+    if (STACK_TRACE) {
+        for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
+            const c = STACK_TRACE[i];
+            if (!c.prototype.render) {
+                if (!result) {
+                    result = [];
+                }
+                result.push(c as ComponentFunction<any>);
+            }
+        }
+    }
+
+    return result;
 }

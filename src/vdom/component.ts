@@ -88,10 +88,24 @@ export abstract class Component<P> {
     _rootDOMNode: Node | null;
     /**
      * Ancestor Flags are used to check child nesting violations.
+     *
+     * Dev Mode.
      */
     _ancestorFlags: AncestorFlags;
     /**
-     * Unique ID thas is available in Dev Mode.
+     * Component function stack trace.
+     *
+     * Component functions doesn't have any instances, so we need to store them separately.
+     *
+     * Dev Mode.
+     */
+    _stackTrace: ComponentFunction<any>[] | null;
+    /**
+     * Unique ID.
+     *
+     * ID generator is using `dev_mode.uniqueId()` function, so it will be unique across all Dev Mode ids.
+     *
+     * Dev Mode.
      */
     _debugId: number;
 
@@ -108,6 +122,8 @@ export abstract class Component<P> {
             this._rootDOMNode = null;
         }
         if (__IVI_DEV__) {
+            this._ancestorFlags = 0;
+            this._stackTrace = null;
             this._debugId = nextDebugId();
         }
     }

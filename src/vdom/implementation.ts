@@ -26,7 +26,10 @@ import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
 import { cloneVNode, $t } from "./vnode_builder";
 import { ComponentClass, ComponentFunction, Component } from "./component";
-import { stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment } from "./stack_trace";
+import {
+    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
+    getFunctionalComponentStackTrace,
+} from "./stack_trace";
 import { Context } from "./context";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
@@ -871,6 +874,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
             componentPerfMarkBegin(component._debugId, "instantiate");
             if (__IVI_DEV__) {
                 component._ancestorFlags = nestingStateAncestorFlags();
+                component._stackTrace = getFunctionalComponentStackTrace();
             }
             component._parentDOMNode = parent;
             componentUpdateContext(component);
@@ -1060,6 +1064,7 @@ function vNodeAugment(
 
                 if (__IVI_DEV__) {
                     component._ancestorFlags = nestingStateAncestorFlags();
+                    component._stackTrace = getFunctionalComponentStackTrace();
                 }
 
                 component._parentDOMNode = parent;
