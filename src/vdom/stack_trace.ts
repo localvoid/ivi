@@ -76,6 +76,7 @@ export function stackTraceReset(): void {
 function stackTraceToString(): string {
     let result = "";
     if (STACK_TRACE && (STACK_TRACE.length > 0)) {
+        let j = STACK_TRACE_INSTANCES ? STACK_TRACE_INSTANCES.length - 1 : 0;
         for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
             const c = STACK_TRACE[i];
             result += "\n";
@@ -90,6 +91,9 @@ function stackTraceToString(): string {
                 result += "[F]";
             }
             result += getFunctionName(c);
+            if (STACK_TRACE_INSTANCES && c.prototype.render) {
+                result += ` #${STACK_TRACE_INSTANCES[j--]._debugId}`;
+            }
         }
         if (STACK_TRACE_INSTANCES && (STACK_TRACE_INSTANCES.length > 0)) {
             let c: Component<any> | undefined = STACK_TRACE_INSTANCES[0];
@@ -102,7 +106,7 @@ function stackTraceToString(): string {
             }
             c = c.owner;
             while (c) {
-                result += `\n    [C]${getFunctionName(c.constructor)}`;
+                result += `\n    [C]${getFunctionName(c.constructor)} #${c._debugId}`;
                 if (c._stackTrace) {
                     for (let i = c._stackTrace.length - 1; i >= 0; i--) {
                         result += `\n    [F]${getFunctionName(c._stackTrace[i])}`;
