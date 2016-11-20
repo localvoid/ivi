@@ -76,7 +76,7 @@ function componentPerfMarkEnd(
     if (__IVI_DEV__) {
         if (DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) {
             perfMarkEnd(
-                `[${instance ? "C" : "F"}]${getFunctionName(
+                `${instance ? "[C]" : "[F]"}${getFunctionName(
                     (instance ? component.constructor : component) as Function
                 )}::${method}`,
                 `${debugId}::${method}`,
