@@ -26,7 +26,7 @@ export interface DispatchTarget {
 export function accumulateDispatchTargetsFromElement(
     result: DispatchTarget[],
     target: Element,
-    dispatcher: EventDispatcher<any>,
+    dispatcher: EventDispatcher,
 ): void {
     const events = getEventHandlerListFromDOMNode(target);
     if (events) {
@@ -61,7 +61,7 @@ export function accumulateDispatchTargetsFromElement(
  */
 export function accumulateDispatchTargets(
     target: Element | null,
-    dispatcher: EventDispatcher<any>,
+    dispatcher: EventDispatcher,
 ): DispatchTarget[] {
     const result: DispatchTarget[] = [];
 

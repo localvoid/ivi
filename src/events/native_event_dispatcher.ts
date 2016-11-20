@@ -10,7 +10,7 @@ import { scheduleMacrotask } from "../scheduler/scheduler";
  * Native Event Dispatcher.
  */
 export class NativeEventDispatcher<E extends SyntheticEventClass<Event, SyntheticDOMEvent<any>>>
-    extends EventDispatcher<null> {
+    extends EventDispatcher {
     /**
      * See `EventDispatcherFlags` for details.
      */
@@ -46,11 +46,11 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
     }
 
     private dispatchNativeEvent(ev: Event): void {
-        const deps = this.subscribers;
+        const subs = this._nextSubscription;
         const handlers = accumulateDispatchTargets(getEventTarget(ev) as Element, this);
 
         let s: SyntheticDOMEvent<any> | undefined;
-        if (handlers || deps) {
+        if (handlers || subs) {
             s = new this.eventType(0, ev, getEventTarget(ev));
         }
 

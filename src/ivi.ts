@@ -45,7 +45,9 @@ export {
  * Events:
  */
 export { NativeEventDispatcherFlags, EventHandlerFlags, SyntheticEventFlags } from "./events/flags";
-export { EventDispatcher } from "./events/event_dispatcher";
+export {
+    EventDispatcher, EventDispatcherSubscriptionFlags, EventDispatcherSubscription,
+} from "./events/event_dispatcher";
 export { NativeEventDispatcher } from "./events/native_event_dispatcher";
 export { EventHandler, EventHandlerList } from "./events/event_handler";
 export {
