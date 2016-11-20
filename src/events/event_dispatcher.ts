@@ -4,7 +4,6 @@
  * **EXPERIMENTAL API**
  */
 
-import { scheduleMicrotask } from "../scheduler/scheduler";
 import { SyntheticEvent } from "./synthetic_event";
 
 /**
@@ -65,7 +64,10 @@ export class EventDispatcherSubscription {
         if (!(this.flags & EventDispatcherSubscriptionFlags.Canceled)) {
             if (this.dispatcher.isDispatching && (!(this.flags & EventDispatcherSubscriptionFlags.Canceling))) {
                 this.flags |= EventDispatcherSubscriptionFlags.Canceling;
-                scheduleMicrotask(() => this.cancel());
+                if (!this.dispatcher._disposeQueue) {
+                    this.dispatcher._disposeQueue = [];
+                }
+                this.dispatcher._disposeQueue.push(this);
             } else {
                 if (this._prev) {
                     this._prev._next = this._next;
@@ -105,11 +107,16 @@ export abstract class EventDispatcher {
      * Event Dispatcher subscribers implemented with a Linked List.
      */
     _nextSubscription: EventDispatcherSubscription | null;
+    /**
+     * Event Dispatcher subscribers that should be disposed when dispatching to subscribers is finished.
+     */
+    _disposeQueue: EventDispatcherSubscription[] | null;
 
     constructor() {
         this.counter = 0;
         this.isDispatching = false;
         this._nextSubscription = null;
+        this._disposeQueue = null;
     }
 
     /**
@@ -129,6 +136,11 @@ export abstract class EventDispatcher {
             s = s._next;
         }
         this.isDispatching = false;
+        if (this._disposeQueue) {
+            for (let i = 0; i < this._disposeQueue.length; i++) {
+                this._disposeQueue[i].cancel();
+            }
+        }
     }
 
     /**
