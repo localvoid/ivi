@@ -82,6 +82,8 @@ import { GLOBAL_EXPORT } from "./common/dev_mode";
 import { findComponentByDebugId } from "./vdom/component";
 
 if (__IVI_DEV__) {
+    console.info("IVI: DEVELOPMENT MODE");
+
     if (__IVI_BROWSER__) {
         if (document) {
             document.title += " [DEV MODE]";
@@ -96,9 +98,12 @@ if (__IVI_DEV__) {
 
         if (GLOBAL_EXPORT && !window.hasOwnProperty(GLOBAL_EXPORT)) {
             (window as any)[GLOBAL_EXPORT] = devModeExport;
+            console.info(`DevMode API is exported to: ${GLOBAL_EXPORT}`);
         } else if (!window.hasOwnProperty("ivi")) {
             (window as any)["ivi"] = devModeExport;
+            console.info(`DevMode API is exported to: ivi`);
+        } else {
+            console.info(`DevMode API is not exported`);
         }
     }
-    console.info("IVI: DEVELOPMENT MODE");
 }
