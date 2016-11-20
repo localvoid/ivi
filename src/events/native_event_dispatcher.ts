@@ -1,4 +1,4 @@
-import { NativeEventDispatcherFlags } from "./flags";
+import { NativeEventDispatcherFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticDOMEvent, SyntheticEventClass } from "./synthetic_event";
 import { EventDispatcher } from "./event_dispatcher";
 import { accumulateDispatchTargets } from "./traverse_dom";
@@ -47,20 +47,26 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
 
     private dispatchNativeEvent(ev: Event): void {
         const subs = this._nextSubscription;
-        const handlers = accumulateDispatchTargets(getEventTarget(ev) as Element, this);
 
         let s: SyntheticDOMEvent<any> | undefined;
-        if (handlers || subs) {
+        if (subs) {
             s = new this.eventType(0, ev, getEventTarget(ev));
+            this.dispatchEventToSubscribers(s);
         }
 
+        if (s &&
+            (s._flags & (SyntheticEventFlags.StoppedImmediatePropagation | SyntheticEventFlags.StoppedPropagation))) {
+            return;
+        }
+        const handlers = accumulateDispatchTargets(getEventTarget(ev) as Element, this);
+
         if (handlers.length > 0) {
+            if (!s) {
+                s = new this.eventType(0, ev, getEventTarget(ev));
+            }
             dispatchEvent(handlers, s!, !!(this.flags & NativeEventDispatcherFlags.Bubbles));
         }
 
-        if (s) {
-            this.dispatchEventToSubscribers(s);
-        }
     }
 
     activate(): void {
