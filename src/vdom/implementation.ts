@@ -20,7 +20,7 @@ import { injectScreenOfDeath } from "../common/screen_of_death";
 import { SVG_NAMESPACE } from "../common/dom";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
-    nestingStateParentTagName,
+    nestingStateParentTagName, AncestorFlags, AncestorFlagsByTagName,
 } from "../common/html_nesting_rules";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
@@ -86,6 +86,25 @@ function componentPerfMarkEnd(
 }
 
 /**
+ * Traverses tree to the body and calculates `AncestorFlags`.
+ *
+ * @param element
+ * @returns Ancestor Flags.
+ */
+function ancestorFlags(element: Element): AncestorFlags {
+    if (__IVI_DEV__) {
+        let result = 0;
+        while (element && (element !== document.body)) {
+            result |= AncestorFlagsByTagName[element.tagName.toLowerCase()];
+            element = element.parentElement;
+        }
+        return result;
+    }
+
+    return 0;
+}
+
+/**
  * Render VNode entry point tryCatch wrapper.
  *
  * #entry
@@ -106,7 +125,7 @@ export function renderVNode(
 ): Node {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
         } else {
             setInitialNestingState("", 0);
         }
@@ -169,7 +188,7 @@ export function syncVNode(
 ): Node {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
         } else {
             setInitialNestingState("", 0);
         }
@@ -222,12 +241,6 @@ function _syncVNode(
  */
 export function removeVNode(parent: Node, node: VNode<any>): void {
     if (__IVI_DEV__) {
-        if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
-        } else {
-            setInitialNestingState("", 0);
-        }
-
         if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
             (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
             try {
@@ -280,7 +293,7 @@ export function augmentVNode(
 ): void {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), 0);
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
         } else {
             setInitialNestingState("", 0);
         }

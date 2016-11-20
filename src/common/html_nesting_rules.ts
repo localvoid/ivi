@@ -35,7 +35,7 @@ export const enum AncestorFlags {
 /**
  * AncestorFlags associated with a `tagName`.
  */
-const AncestorFlagsByTagName: { [tagName: string]: AncestorFlags } = {
+export const AncestorFlagsByTagName: { [tagName: string]: AncestorFlags } = {
     "select": AncestorFlags.Select,
     "optgroup": AncestorFlags.OptGroup,
     "option": AncestorFlags.Option,
