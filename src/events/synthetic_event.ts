@@ -1,20 +1,57 @@
 import { SyntheticEventFlags } from "./flags";
+import { EventDispatcher } from "./event_dispatcher";
 
 /**
  * Synthetic Event.
  */
-export abstract class SyntheticEvent<D> {
+export abstract class SyntheticEvent<D> implements Event {
+    /**
+     * @deprecated
+     */
+    initEvent: (eventTypeArg: string, canBubbleArg: boolean, cancelableArg: boolean) => void;
+
+    /**
+     * Old IE Property.
+     *
+     * @deprecated
+     */
+    cancelBubble: boolean;
+    /**
+     * Old IE Property.
+     *
+     * @deprecated
+     */
+    returnValue: boolean;
+    /**
+     * Old IE Property.
+     *
+     * @deprecated
+     */
+    readonly srcElement: Element | null;
+
+    readonly dispatcher: EventDispatcher;
     _flags: SyntheticEventFlags;
     _data: D;
     readonly target: EventTarget;
     currentTarget: EventTarget;
     timeStamp: number;
+    type: any;
 
-    constructor(flags: SyntheticEventFlags, data: D, target: EventTarget) {
+    constructor(
+        dispatcher: EventDispatcher,
+        flags: SyntheticEventFlags,
+        data: D,
+        target: EventTarget,
+        timeStamp: number,
+        type: any,
+    ) {
+        this.dispatcher = dispatcher;
         this._flags = flags;
         this._data = data;
         this.target = target;
         this.currentTarget = target;
+        this.timeStamp = timeStamp;
+        this.type = type;
     }
 
     get defaultPrevented(): boolean {
@@ -68,42 +105,17 @@ export abstract class SyntheticEvent<D> {
 }
 
 export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
-    new (flags: SyntheticEventFlags, data: D, target: EventTarget): E;
+    new (
+        dispatcher: EventDispatcher,
+        flags: SyntheticEventFlags,
+        data: D,
+        target: EventTarget,
+        timeStamp: number,
+        type: any,
+    ): E;
 }
 
-export class SyntheticDOMEvent<D extends Event> extends SyntheticEvent<D> implements Event {
-    /**
-     * @deprecated
-     */
-    initEvent: (eventTypeArg: string, canBubbleArg: boolean, cancelableArg: boolean) => void;
-
-    /**
-     * Old IE Property.
-     *
-     * @deprecated
-     */
-    cancelBubble: boolean;
-    /**
-     * Old IE Property.
-     *
-     * @deprecated
-     */
-    returnValue: boolean;
-    /**
-     * Old IE Property.
-     *
-     * @deprecated
-     */
-    readonly srcElement: Element | null;
-
-    get timeStamp() {
-        return this._data.timeStamp;
-    }
-
-    get type() {
-        return this._data.type;
-    }
-
+export class SyntheticDOMEvent<D extends Event> extends SyntheticEvent<D> {
     preventDefault() {
         this._flags |= SyntheticEventFlags.PreventedDefault;
         this._data.preventDefault();

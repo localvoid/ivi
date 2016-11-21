@@ -50,7 +50,7 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
 
         let s: SyntheticDOMEvent<any> | undefined;
         if (subs) {
-            s = new this.eventType(0, ev, getEventTarget(ev));
+            s = new this.eventType(this, 0, ev, getEventTarget(ev), ev.timeStamp, ev.type);
             this.dispatchEventToSubscribers(s);
         }
 
@@ -62,7 +62,7 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
 
         if (handlers.length > 0) {
             if (!s) {
-                s = new this.eventType(0, ev, getEventTarget(ev));
+                s = new this.eventType(this, 0, ev, getEventTarget(ev), ev.timeStamp, ev.type);
             }
             dispatchEvent(handlers, s!, !!(this.flags & NativeEventDispatcherFlags.Bubbles));
         }
