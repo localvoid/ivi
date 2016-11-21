@@ -140,6 +140,7 @@ export abstract class EventDispatcher {
             for (let i = 0; i < this._disposeQueue.length; i++) {
                 this._disposeQueue[i].cancel();
             }
+            this._disposeQueue = null;
         }
     }
 
