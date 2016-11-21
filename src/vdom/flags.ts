@@ -139,11 +139,6 @@ export const enum ComponentFlags {
  * Element Descriptor flags.
  */
 export const enum ElementDescriptorFlags {
-    /**
-     * Clone nodes from a base node with `Node.cloneNode(false)` method.
-     */
-    EnabledCloning = 1,
-
     // it is important that flags below match `VNodeFlags`, because they will be copied to VNode.
     Element = VNodeFlags.Element,
     InputElement = VNodeFlags.InputElement,
@@ -158,4 +153,21 @@ export const enum ElementDescriptorFlags {
     CopyFlags = ElementDescriptorFlags.Element | ElementDescriptorFlags.InputElement |
     ElementDescriptorFlags.TextAreaElement | ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.Svg |
     ElementDescriptorFlags.ElementDescriptor,
+
+    /**
+     * Clone nodes from a base node with `Node.cloneNode(false)` method.
+     */
+    EnabledCloning = 1 << 15,
+    /**
+     * Protect class name from overriding.
+     */
+    ProtectClassName = 1 << 16,
+    /**
+     * Protect props from overriding.
+     */
+    ProtectProps = 1 << 17,
+    /**
+     * Protect style from overriding.
+     */
+    ProtectStyle = 1 << 18,
 }

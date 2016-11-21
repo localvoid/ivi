@@ -68,6 +68,14 @@ export class ElementDescriptor<P> {
      * Reference to an element that will be cloned when DOM node cloning is enabled.
      */
     private _ref: Element | null;
+    /**
+     * Props protected from overriding.
+     */
+    _protectedProps: { [key: string]: boolean } | null;
+    /**
+     * Styles protected from overriding.
+     */
+    _protectedStyle: { [key: string]: boolean } | null;
 
     constructor(tagName: string, flags: ElementDescriptorFlags = 0) {
         this._flags = flags;
@@ -76,15 +84,28 @@ export class ElementDescriptor<P> {
         this._className = null;
         this._style = null;
         this._ref = null;
+        if (__IVI_DEV__) {
+            this._protectedProps = null;
+            this._protectedStyle = null;
+        }
     }
 
     /**
      * Set props.
      *
-     * @param props.
+     * @param props
+     * @param protect
      * @returns ElementDescriptor.
      */
-    props(props: P): ElementDescriptor<P> {
+    props(props: P, protect?: boolean | { [key: string]: boolean }): ElementDescriptor<P> {
+        if (__IVI_DEV__) {
+            if (protect) {
+                this._flags |= ElementDescriptorFlags.ProtectProps;
+                if (typeof protect === "object") {
+                    this._protectedProps = protect;
+                }
+            }
+        }
         this._props = props;
         return this;
     }
@@ -92,21 +113,36 @@ export class ElementDescriptor<P> {
     /**
      * Set className.
      *
-     * @param className.
+     * @param className
+     * @param protect
      * @returns ElementDescriptor.
      */
-    className(classes: string): ElementDescriptor<P> {
-        this._className = classes;
+    className(className: string, protect?: boolean): ElementDescriptor<P> {
+        if (__IVI_DEV__) {
+            if (protect) {
+                this._flags |= ElementDescriptorFlags.ProtectClassName;
+            }
+        }
+        this._className = className;
         return this;
     }
 
     /**
      * Set style.
      *
-     * @param style.
+     * @param style
+     * @param protect
      * @returns ElementDescriptor.
      */
-    style(style: string): ElementDescriptor<P> {
+    style(style: string, protect?: boolean | { [key: string]: boolean }): ElementDescriptor<P> {
+        if (__IVI_DEV__) {
+            if (protect) {
+                this._flags |= ElementDescriptorFlags.ProtectStyle;
+                if (typeof protect === "object") {
+                    this._protectedProps = protect;
+                }
+            }
+        }
         this._style = style;
         return this;
     }
@@ -295,60 +331,60 @@ export function createElementDescriptor(tagName: string, clone = false): Element
  * @param props SVG Element props.
  * @returns VNodeBuilder object.
  */
-export function createSvgElementDescriptor(tagName: "circle", clone?: boolean): ElementDescriptor<SVGCircleElementProps | null>;
-export function createSvgElementDescriptor(tagName: "clippath", clone?: boolean): ElementDescriptor<SVGClipPathElementProps | null>;
-export function createSvgElementDescriptor(tagName: "defs", clone?: boolean): ElementDescriptor<SVGDefsElementProps | null>;
-export function createSvgElementDescriptor(tagName: "desc", clone?: boolean): ElementDescriptor<SVGDescElementProps | null>;
-export function createSvgElementDescriptor(tagName: "ellipse", clone?: boolean): ElementDescriptor<SVGEllipseElementProps | null>;
-export function createSvgElementDescriptor(tagName: "feblend", clone?: boolean): ElementDescriptor<SVGFEBlendElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fecolormatrix", clone?: boolean): ElementDescriptor<SVGFEColorMatrixElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fecomponenttransfer", clone?: boolean): ElementDescriptor<SVGFEComponentTransferElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fecomposite", clone?: boolean): ElementDescriptor<SVGFECompositeElementProps | null>;
-export function createSvgElementDescriptor(tagName: "feconvolvematrix", clone?: boolean): ElementDescriptor<SVGFEConvolveMatrixElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fediffuselighting", clone?: boolean): ElementDescriptor<SVGFEDiffuseLightingElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fedisplacementmap", clone?: boolean): ElementDescriptor<SVGFEDisplacementMapElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fedistantlight", clone?: boolean): ElementDescriptor<SVGFEDistantLightElementProps | null>;
-export function createSvgElementDescriptor(tagName: "feflood", clone?: boolean): ElementDescriptor<SVGFEFloodElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fefunca", clone?: boolean): ElementDescriptor<SVGFEFuncAElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fefuncb", clone?: boolean): ElementDescriptor<SVGFEFuncBElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fefuncg", clone?: boolean): ElementDescriptor<SVGFEFuncGElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fefuncr", clone?: boolean): ElementDescriptor<SVGFEFuncRElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fegaussianblur", clone?: boolean): ElementDescriptor<SVGFEGaussianBlurElementProps | null>;
-export function createSvgElementDescriptor(tagName: "feimage", clone?: boolean): ElementDescriptor<SVGFEImageElementProps | null>;
-export function createSvgElementDescriptor(tagName: "femerge", clone?: boolean): ElementDescriptor<SVGFEMergeElementProps | null>;
-export function createSvgElementDescriptor(tagName: "femergenode", clone?: boolean): ElementDescriptor<SVGFEMergeNodeElementProps | null>;
-export function createSvgElementDescriptor(tagName: "femorphology", clone?: boolean): ElementDescriptor<SVGFEMorphologyElementProps | null>;
-export function createSvgElementDescriptor(tagName: "feoffset", clone?: boolean): ElementDescriptor<SVGFEOffsetElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fepointlight", clone?: boolean): ElementDescriptor<SVGFEPointLightElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fespecularlighting", clone?: boolean): ElementDescriptor<SVGFESpecularLightingElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fespotlight", clone?: boolean): ElementDescriptor<SVGFESpotLightElementProps | null>;
-export function createSvgElementDescriptor(tagName: "fetile", clone?: boolean): ElementDescriptor<SVGFETileElementProps | null>;
-export function createSvgElementDescriptor(tagName: "feturbulence", clone?: boolean): ElementDescriptor<SVGFETurbulenceElementProps | null>;
-export function createSvgElementDescriptor(tagName: "filter", clone?: boolean): ElementDescriptor<SVGFilterElementProps | null>;
-export function createSvgElementDescriptor(tagName: "foreignobject", clone?: boolean): ElementDescriptor<SVGForeignObjectElementProps | null>;
-export function createSvgElementDescriptor(tagName: "g", clone?: boolean): ElementDescriptor<SVGGElementProps | null>;
-export function createSvgElementDescriptor(tagName: "image", clone?: boolean): ElementDescriptor<SVGImageElementProps | null>;
-export function createSvgElementDescriptor(tagName: "line", clone?: boolean): ElementDescriptor<SVGLineElementProps | null>;
-export function createSvgElementDescriptor(tagName: "lineargradient", clone?: boolean): ElementDescriptor<SVGLinearGradientElementProps | null>;
-export function createSvgElementDescriptor(tagName: "marker", clone?: boolean): ElementDescriptor<SVGMarkerElementProps | null>;
-export function createSvgElementDescriptor(tagName: "mask", clone?: boolean): ElementDescriptor<SVGMaskElementProps | null>;
-export function createSvgElementDescriptor(tagName: "metadata", clone?: boolean): ElementDescriptor<SVGMetadataElementProps | null>;
-export function createSvgElementDescriptor(tagName: "path", clone?: boolean): ElementDescriptor<SVGPathElementProps | null>;
-export function createSvgElementDescriptor(tagName: "pattern", clone?: boolean): ElementDescriptor<SVGPatternElementProps | null>;
-export function createSvgElementDescriptor(tagName: "polygon", clone?: boolean): ElementDescriptor<SVGPolygonElementProps | null>;
-export function createSvgElementDescriptor(tagName: "polyline", clone?: boolean): ElementDescriptor<SVGPolylineElementProps | null>;
-export function createSvgElementDescriptor(tagName: "radialgradient", clone?: boolean): ElementDescriptor<SVGRadialGradientElementProps | null>;
-export function createSvgElementDescriptor(tagName: "rect", clone?: boolean): ElementDescriptor<SVGRectElementProps | null>;
-export function createSvgElementDescriptor(tagName: "stop", clone?: boolean): ElementDescriptor<SVGStopElementProps | null>;
-export function createSvgElementDescriptor(tagName: "svg", clone?: boolean): ElementDescriptor<SVGSVGElementProps | null>;
-export function createSvgElementDescriptor(tagName: "switch", clone?: boolean): ElementDescriptor<SVGSwitchElementProps | null>;
-export function createSvgElementDescriptor(tagName: "symbol", clone?: boolean): ElementDescriptor<SVGSymbolElementProps | null>;
-export function createSvgElementDescriptor(tagName: "text", clone?: boolean): ElementDescriptor<SVGTextElementProps | null>;
-export function createSvgElementDescriptor(tagName: "textpath", clone?: boolean): ElementDescriptor<SVGTextPathElementProps | null>;
-export function createSvgElementDescriptor(tagName: "tspan", clone?: boolean): ElementDescriptor<SVGTSpanElementProps | null>;
-export function createSvgElementDescriptor(tagName: "use", clone?: boolean): ElementDescriptor<SVGUseElementProps | null>;
-export function createSvgElementDescriptor(tagName: "view", clone?: boolean): ElementDescriptor<SVGViewElementProps | null>;
-export function createSvgElementDescriptor(tagName: string, clone = false): ElementDescriptor<SVGElementProps | null> {
+export function createSVGElementDescriptor(tagName: "circle", clone?: boolean): ElementDescriptor<SVGCircleElementProps | null>;
+export function createSVGElementDescriptor(tagName: "clippath", clone?: boolean): ElementDescriptor<SVGClipPathElementProps | null>;
+export function createSVGElementDescriptor(tagName: "defs", clone?: boolean): ElementDescriptor<SVGDefsElementProps | null>;
+export function createSVGElementDescriptor(tagName: "desc", clone?: boolean): ElementDescriptor<SVGDescElementProps | null>;
+export function createSVGElementDescriptor(tagName: "ellipse", clone?: boolean): ElementDescriptor<SVGEllipseElementProps | null>;
+export function createSVGElementDescriptor(tagName: "feblend", clone?: boolean): ElementDescriptor<SVGFEBlendElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fecolormatrix", clone?: boolean): ElementDescriptor<SVGFEColorMatrixElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fecomponenttransfer", clone?: boolean): ElementDescriptor<SVGFEComponentTransferElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fecomposite", clone?: boolean): ElementDescriptor<SVGFECompositeElementProps | null>;
+export function createSVGElementDescriptor(tagName: "feconvolvematrix", clone?: boolean): ElementDescriptor<SVGFEConvolveMatrixElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fediffuselighting", clone?: boolean): ElementDescriptor<SVGFEDiffuseLightingElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fedisplacementmap", clone?: boolean): ElementDescriptor<SVGFEDisplacementMapElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fedistantlight", clone?: boolean): ElementDescriptor<SVGFEDistantLightElementProps | null>;
+export function createSVGElementDescriptor(tagName: "feflood", clone?: boolean): ElementDescriptor<SVGFEFloodElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fefunca", clone?: boolean): ElementDescriptor<SVGFEFuncAElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fefuncb", clone?: boolean): ElementDescriptor<SVGFEFuncBElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fefuncg", clone?: boolean): ElementDescriptor<SVGFEFuncGElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fefuncr", clone?: boolean): ElementDescriptor<SVGFEFuncRElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fegaussianblur", clone?: boolean): ElementDescriptor<SVGFEGaussianBlurElementProps | null>;
+export function createSVGElementDescriptor(tagName: "feimage", clone?: boolean): ElementDescriptor<SVGFEImageElementProps | null>;
+export function createSVGElementDescriptor(tagName: "femerge", clone?: boolean): ElementDescriptor<SVGFEMergeElementProps | null>;
+export function createSVGElementDescriptor(tagName: "femergenode", clone?: boolean): ElementDescriptor<SVGFEMergeNodeElementProps | null>;
+export function createSVGElementDescriptor(tagName: "femorphology", clone?: boolean): ElementDescriptor<SVGFEMorphologyElementProps | null>;
+export function createSVGElementDescriptor(tagName: "feoffset", clone?: boolean): ElementDescriptor<SVGFEOffsetElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fepointlight", clone?: boolean): ElementDescriptor<SVGFEPointLightElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fespecularlighting", clone?: boolean): ElementDescriptor<SVGFESpecularLightingElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fespotlight", clone?: boolean): ElementDescriptor<SVGFESpotLightElementProps | null>;
+export function createSVGElementDescriptor(tagName: "fetile", clone?: boolean): ElementDescriptor<SVGFETileElementProps | null>;
+export function createSVGElementDescriptor(tagName: "feturbulence", clone?: boolean): ElementDescriptor<SVGFETurbulenceElementProps | null>;
+export function createSVGElementDescriptor(tagName: "filter", clone?: boolean): ElementDescriptor<SVGFilterElementProps | null>;
+export function createSVGElementDescriptor(tagName: "foreignobject", clone?: boolean): ElementDescriptor<SVGForeignObjectElementProps | null>;
+export function createSVGElementDescriptor(tagName: "g", clone?: boolean): ElementDescriptor<SVGGElementProps | null>;
+export function createSVGElementDescriptor(tagName: "image", clone?: boolean): ElementDescriptor<SVGImageElementProps | null>;
+export function createSVGElementDescriptor(tagName: "line", clone?: boolean): ElementDescriptor<SVGLineElementProps | null>;
+export function createSVGElementDescriptor(tagName: "lineargradient", clone?: boolean): ElementDescriptor<SVGLinearGradientElementProps | null>;
+export function createSVGElementDescriptor(tagName: "marker", clone?: boolean): ElementDescriptor<SVGMarkerElementProps | null>;
+export function createSVGElementDescriptor(tagName: "mask", clone?: boolean): ElementDescriptor<SVGMaskElementProps | null>;
+export function createSVGElementDescriptor(tagName: "metadata", clone?: boolean): ElementDescriptor<SVGMetadataElementProps | null>;
+export function createSVGElementDescriptor(tagName: "path", clone?: boolean): ElementDescriptor<SVGPathElementProps | null>;
+export function createSVGElementDescriptor(tagName: "pattern", clone?: boolean): ElementDescriptor<SVGPatternElementProps | null>;
+export function createSVGElementDescriptor(tagName: "polygon", clone?: boolean): ElementDescriptor<SVGPolygonElementProps | null>;
+export function createSVGElementDescriptor(tagName: "polyline", clone?: boolean): ElementDescriptor<SVGPolylineElementProps | null>;
+export function createSVGElementDescriptor(tagName: "radialgradient", clone?: boolean): ElementDescriptor<SVGRadialGradientElementProps | null>;
+export function createSVGElementDescriptor(tagName: "rect", clone?: boolean): ElementDescriptor<SVGRectElementProps | null>;
+export function createSVGElementDescriptor(tagName: "stop", clone?: boolean): ElementDescriptor<SVGStopElementProps | null>;
+export function createSVGElementDescriptor(tagName: "svg", clone?: boolean): ElementDescriptor<SVGSVGElementProps | null>;
+export function createSVGElementDescriptor(tagName: "switch", clone?: boolean): ElementDescriptor<SVGSwitchElementProps | null>;
+export function createSVGElementDescriptor(tagName: "symbol", clone?: boolean): ElementDescriptor<SVGSymbolElementProps | null>;
+export function createSVGElementDescriptor(tagName: "text", clone?: boolean): ElementDescriptor<SVGTextElementProps | null>;
+export function createSVGElementDescriptor(tagName: "textpath", clone?: boolean): ElementDescriptor<SVGTextPathElementProps | null>;
+export function createSVGElementDescriptor(tagName: "tspan", clone?: boolean): ElementDescriptor<SVGTSpanElementProps | null>;
+export function createSVGElementDescriptor(tagName: "use", clone?: boolean): ElementDescriptor<SVGUseElementProps | null>;
+export function createSVGElementDescriptor(tagName: "view", clone?: boolean): ElementDescriptor<SVGViewElementProps | null>;
+export function createSVGElementDescriptor(tagName: string, clone = false): ElementDescriptor<SVGElementProps | null> {
     return new ElementDescriptor<SVGElementProps | null>(
         tagName,
         clone ?

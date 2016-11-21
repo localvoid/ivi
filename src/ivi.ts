@@ -74,7 +74,7 @@ export {
 export { VNodeFlags, ElementDescriptorFlags } from "./vdom/flags";
 export { VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMRef, getComponentRef } from "./vdom/vnode";
 export {
-    ElementDescriptor, createElementDescriptor, createSvgElementDescriptor, createInputElementDescriptor,
+    ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
     createMediaElementDescriptor,
 } from "./vdom/element_descriptor";
 export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m, $e } from "./vdom/vnode_builder";

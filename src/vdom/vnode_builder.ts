@@ -130,8 +130,15 @@ export class VNodeBuilder<P> implements VNode<P> {
     className(className: string | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set className on VNode: className method should be called on element " +
-                    "nodes only.");
+                throw new Error("Failed to set className, className is available on element nodes only.");
+            }
+            if (className !== null) {
+                if (this._flags & VNodeFlags.ElementDescriptor) {
+                    const d = this._tag as ElementDescriptor<P>;
+                    if (d._flags & ElementDescriptorFlags.ProtectClassName) {
+                        throw new Error("Failed to set className, className is protected by an ElementDescriptor.");
+                    }
+                }
             }
         }
         this._className = className;
@@ -147,7 +154,30 @@ export class VNodeBuilder<P> implements VNode<P> {
     style(style: CSSStyleProps | string | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set style on VNode: style method should be called on element nodes only.");
+                throw new Error("Failed to set style, style is available on element nodes only.");
+            }
+
+            if (style !== null) {
+                if (this._flags & VNodeFlags.ElementDescriptor) {
+                    const d = this._tag as ElementDescriptor<P>;
+                    if (d._flags & ElementDescriptorFlags.ProtectStyle) {
+                        if (typeof style === "string") {
+                            throw new Error("Failed to set style, style is protected by an ElementDescriptor.");
+                        }
+                        if (d._protectedStyle) {
+                            const keys = Object.keys(d._protectedStyle);
+                            for (let i = 0; i < keys.length; i++) {
+                                const key = keys[i];
+                                if (style.hasOwnProperty(key)) {
+                                    throw new Error(`Failed to set style, "${key}" style is protected by an ` +
+                                        `ElementDescriptor.`);
+                                }
+                            }
+                        } else {
+                            throw new Error("Failed to set style, style is protected by an ElementDescriptor.");
+                        }
+                    }
+                }
             }
         }
         this._style = style;
@@ -163,7 +193,7 @@ export class VNodeBuilder<P> implements VNode<P> {
     events(events: EventHandlerList | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set events on VNode: event method should be called on element nodes only.");
+                throw new Error("Failed to set events, events are available on element nodes only.");
             }
         }
         this._events = events;
@@ -177,6 +207,27 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @returns VNodeBuilder.
      */
     props(props: P): VNodeBuilder<P> {
+        if (__IVI_DEV__) {
+            if (props) {
+                if (this._flags & VNodeFlags.ElementDescriptor) {
+                    const d = this._tag as ElementDescriptor<P>;
+                    if (d._flags & ElementDescriptorFlags.ProtectProps) {
+                        if (d._protectedProps) {
+                            const keys = Object.keys(d._protectedProps);
+                            for (let i = 0; i < keys.length; i++) {
+                                const key = keys[i];
+                                if (props.hasOwnProperty(key)) {
+                                    throw new Error(`Failed to set props, "${key}" property is protected by an ` +
+                                        `ElementDescriptor.`);
+                                }
+                            }
+                        } else {
+                            throw new Error("Failed to set props, props are protected by an ElementDescriptor.");
+                        }
+                    }
+                }
+            }
+        }
         this._props = props;
         return this;
     }
@@ -192,14 +243,13 @@ export class VNodeBuilder<P> implements VNode<P> {
     children(children: VNodeRecursiveArray | VNode<any> | string | number | boolean | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set children on VNode: children method should be called on element nodes " +
-                    "only.");
+                throw new Error("Failed to set children, children are available on element nodes only.");
             }
             if (this._flags & VNodeFlags.InputElement) {
-                throw new Error("Failed to set children on VNode: input elements can't have children.");
+                throw new Error("Failed to set children, input elements can't have children.");
             }
             if (this._flags & VNodeFlags.MediaElement) {
-                throw new Error("Failed to set children on VNode: media elements can't have children.");
+                throw new Error("Failed to set children, media elements can't have children.");
             }
         }
         if (Array.isArray(children)) {
@@ -235,14 +285,13 @@ export class VNodeBuilder<P> implements VNode<P> {
     trackByKeyChildren(children: VNodeRecursiveArray | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set children on VNode: children method should be called on element nodes " +
-                    "only.");
+                throw new Error("Failed to set children, children are available on element nodes only.");
             }
             if (this._flags & VNodeFlags.InputElement) {
-                throw new Error("Failed to set children on VNode: input elements can't have children.");
+                throw new Error("Failed to set children, input elements can't have children.");
             }
             if (this._flags & VNodeFlags.MediaElement) {
-                throw new Error("Failed to set children on VNode: media elements can't have children.");
+                throw new Error("Failed to set children, media elements can't have children.");
             }
 
         }
@@ -277,11 +326,11 @@ export class VNodeBuilder<P> implements VNode<P> {
                     child = childrenArray[start];
                     const key = child._key;
                     if (key === null) {
-                        throw new Error(`Failed to set children on VNode: invalid keyed children list, keyed ` +
+                        throw new Error(`Failed to set children, invalid keyed children list, keyed ` +
                             `children should have a shape like [non-keyed, keyed, non-keyed].`);
                     }
                     if (usedKeys.has(key)) {
-                        throw new Error(`Failed to set children on VNode: invalid children list, key: "${key}" is ` +
+                        throw new Error(`Failed to set children, invalid children list, key: "${key}" is ` +
                             `used multiple times.`);
                     }
                     usedKeys.add(key);
@@ -301,14 +350,13 @@ export class VNodeBuilder<P> implements VNode<P> {
     unsafeHTML(html: string): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set unsafeHTML on VNode: unsafeHTML method should be called on element " +
-                    "nodes only.");
+                throw new Error("Failed to set unsafeHTML, unsafeHTML is available on element nodes only.");
             }
             if (this._flags & VNodeFlags.InputElement) {
-                throw new Error("Failed to set unsafeHTML on VNode: input elements can't have innerHTML.");
+                throw new Error("Failed to set unsafeHTML, input elements can't have innerHTML.");
             }
             if (this._flags & VNodeFlags.MediaElement) {
-                throw new Error("Failed to set children on VNode: media elements can't have children.");
+                throw new Error("Failed to set children, media elements can't have children.");
             }
         }
         this._flags |= VNodeFlags.UnsafeHTML;
@@ -325,7 +373,7 @@ export class VNodeBuilder<P> implements VNode<P> {
     value(value: string | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.InputElement)) {
-                throw new Error("Failed to set value on VNode: value method is working only with input elements.");
+                throw new Error("Failed to set value, value is available on input elements only.");
             }
         }
         this._children = value;
@@ -341,10 +389,10 @@ export class VNodeBuilder<P> implements VNode<P> {
     checked(checked: boolean | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.InputElement)) {
-                throw new Error("Failed to set checked on VNode: checked method is working only with input elements.");
+                throw new Error("Failed to set checked, checked is available on input elements only.");
             }
             if (!isInputTypeSupportsCheckedValue(this._tag as InputType)) {
-                throw new Error(`Failed to set checked on VNode: input elements with type ${this._tag} doesn't have `
+                throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
                     + `checked value.`);
             }
         }
