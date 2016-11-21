@@ -18,27 +18,6 @@ get it from `arguments` list. Syncing algorithm can detect that component doesn'
 modified, instead of performing updating components that doesn't use contexts it will propagate new context through
 existing virtual dom tree.
 
-### Optimization hints
-
-When stateless component is about to be updated, syncing algorithm will check `isPropsChanged` property on the function
-that is used to render component. This function provides a hint for syncing algorithm that props aren't changed. This
-hint can prevent unnecessary updates in some situations. Optimization hints doesn't guarantee that component won't be
-updated.
-
-```ts
-isPropsChanged(oldProps: P, newProps: P): boolean;
-```
-
-```ts
-function StatelessComponent(props: string) {
-    return $h("div").children(`Hello ${props}`);
-}
-
-StatelessComponent.isPropsChanged = function(oldProps: string, newProps: string): boolean {
-    return oldProps !== newProps;
-}
-```
-
 ## Stateful Component
 
 Stateful components are implemented with ES6 classes and should be extended from the base component class
@@ -258,56 +237,4 @@ Component did invalidated.
 
 ```ts
 didInvalidate(): void;
-```
-
-### Optimization hints
-
-When stateful component is about to be updated, syncing algorithm will invoke `isPropsChanged` method. This method
-provides a hint for syncing algorithm that props aren't changed. This hint can prevent unnecessary updates in some
-situations. Optimization hints doesn't guarantee that component won't be updated.
-
-```ts
-isPropsChanged(oldProps: P, newProps: P): boolean;
-```
-
-## Helper functions
-
-### Optimization hints
-
-Check props for identity `a === b` or shallow equality.
-
-```ts
-checkPropsIdentity<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P;
-checkPropsShallowEquality<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P;
-```
-
-This functions can be used to modify existing functions, modify existing classes, as a wrapper for function expressions
-or as a class decorator.
-
-```ts
-checkPropsIdentity(StatelessComponent);
-function StatelessComponent(text: string) {
-    return $h("div").children(text);
-}
-```
-```ts
-const StatelessComponent = checkPropsIdentity(function(text: string) {
-    return $h("div").children(text);
-});
-```
-```ts
-@checkPropsIdentity
-class StatefulComponent extends Component<string> {
-    render() {
-        return $h("div").children(this.props);
-    }
-}
-```
-```ts
-checkPropsIdentity(StatefulComponent);
-class StatefulComponent extends Component<string> {
-    render() {
-        return $h("div").children(this.props);
-    }
-}
 ```

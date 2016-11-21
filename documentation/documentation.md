@@ -7,7 +7,12 @@
 - [Synthetic Events](general/synthetic-events.md)
 - [Context](general/context.md)
 - [Scheduler](general/scheduler.md)
-- [Development Mode](general/dev-mode.md)
+
+## Advanced
+
+- [Optimization Hints](advanced/optimization-hints.md)
+- [Partially Static Elements](advanced/partially-static-elements.md)
+- [Development Mode](advanced/dev-mode.md)
 
 ## Extensions
 
