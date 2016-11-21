@@ -11,13 +11,6 @@ function StatelessComponent(props: string) {
 }
 ```
 
-### Context
-
-It is important that to access current context, component function is using `context` parameter instead of trying to
-get it from `arguments` list. Syncing algorithm can detect that component doesn't use context and when context is
-modified, instead of performing updating components that doesn't use contexts it will propagate new context through
-existing virtual dom tree.
-
 ## Stateful Component
 
 Stateful components are implemented with ES6 classes and should be extended from the base component class

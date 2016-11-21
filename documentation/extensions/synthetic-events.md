@@ -2,5 +2,5 @@
 
 Synthetic Events subsystem provides an **experimental** API for building your own `EventDispatcher`.
 
-One of the upcoming features will be cross-browser support for [pointer events](https://www.w3.org/TR/pointerevents/)
-and custom gesture events, implemented as an extension on top of this API.
+There are no documentation at this time, looking at the source code should help understand its architecture. It is
+pretty simple and flexible, but there is a high chance that API will be changed in the future.
