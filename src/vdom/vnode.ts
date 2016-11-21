@@ -35,7 +35,7 @@ export interface VNode<P> {
     /**
      * Style.
      */
-    _style: CSSStyleProps | string | null;
+    _style: CSSStyleProps | null;
     /**
      * Events.
      */

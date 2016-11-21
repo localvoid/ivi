@@ -10,6 +10,7 @@ import "./sync.spec";
 import "./lifecycle.spec";
 import "./ref.spec";
 import "./context.spec";
+import "./element_descriptor.spec";
 import "./events.spec";
-import "./augment";
+import "./augment.spec";
 import "./scheduler.spec";

@@ -32,11 +32,6 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
  *
  * In this example `color` style will receive a `null` value.
  *
- * DOM style syncing also supports `string` values, and they can be used interchangeably.
- *
- *    a: "backgroundColor: #333; color: #fff"
- *    b: { backgroundColor: "#333" }
- *
  * Implementation detail: Syncing algorithm has an optimization with an early detection of object shape changes.
  * Objects with static shape will make syncing algorithm slightly faster because it doesn't need to check which
  * properties didn't existed before, so it is possible to just use the static object shapes, and use `undefined` values
@@ -48,8 +43,8 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
  */
 export function syncStyle(
     node: HTMLElement | SVGStylable,
-    a: CSSStyleProps | string | null,
-    b: CSSStyleProps | string | null,
+    a: CSSStyleProps | null,
+    b: CSSStyleProps | null,
 ): void {
     let i: number;
     let keys: string[];
@@ -60,67 +55,46 @@ export function syncStyle(
         if (b !== null) {
             // a is empty, insert all styles from b.
             style = node.style;
-            if (typeof b === "string") {
-                style.cssText = b;
-            } else {
-                keys = Object.keys(b);
-                for (i = 0; i < keys.length; i++) {
-                    key = keys[i];
-                    (style as any)[key] = (b as any)[key];
-                }
+            keys = Object.keys(b);
+            for (i = 0; i < keys.length; i++) {
+                key = keys[i];
+                (style as any)[key] = (b as any)[key];
             }
         }
     } else if (b === null) {
         // b is empty, remove all styles from a.
         style = node.style;
-        if (typeof a === "string") {
-            style.cssText = "";
-        } else {
-            keys = Object.keys(a);
-            for (i = 0; i < keys.length; i++) {
-                (style as any)[keys[i]] = null;
-            }
+        keys = Object.keys(a);
+        for (i = 0; i < keys.length; i++) {
+            (style as any)[keys[i]] = null;
         }
     } else {
         style = node.style;
-        if (typeof b === "string") {
-            style.cssText = b;
-        } else {
-            if (typeof a === "string") {
-                style.cssText = "";
-                keys = Object.keys(b);
-                for (i = 0; i < keys.length; i++) {
-                    key = keys[i];
-                    (style as any)[key] = (b as any)[key];
+        let matchCount = 0;
+
+        keys = Object.keys(a);
+        for (i = 0; i < keys.length; i++) {
+            key = keys[i];
+            const bValue = (b as any)[key];
+
+            if (bValue !== undefined) {
+                const aValue = (a as any)[key];
+                if (aValue !== bValue) {
+                    (style as any)[key] = bValue;
                 }
+                matchCount++;
             } else {
-                let matchCount = 0;
+                (style as any)[key] = null;
+            }
+        }
 
-                keys = Object.keys(a);
-                for (i = 0; i < keys.length; i++) {
-                    key = keys[i];
-                    const bValue = (b as any)[key];
-
-                    if (bValue !== undefined) {
-                        const aValue = (a as any)[key];
-                        if (aValue !== bValue) {
-                            (style as any)[key] = bValue;
-                        }
-                        matchCount++;
-                    } else {
-                        (style as any)[key] = null;
-                    }
-                }
-
-                keys = Object.keys(b);
-                i = 0;
-                while (matchCount < keys.length && i < keys.length) {
-                    key = keys[i++];
-                    if (!a.hasOwnProperty(key)) {
-                        (style as any)[key] = (b as any)[key];
-                        matchCount++;
-                    }
-                }
+        keys = Object.keys(b);
+        i = 0;
+        while (matchCount < keys.length && i < keys.length) {
+            key = keys[i++];
+            if (!a.hasOwnProperty(key)) {
+                (style as any)[key] = (b as any)[key];
+                matchCount++;
             }
         }
     }

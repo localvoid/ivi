@@ -55,7 +55,7 @@ export class ElementDescriptor<P> {
     /**
      * Style.
      */
-    _style: CSSStyleProps | string | null;
+    _style: CSSStyleProps | null;
     /**
      * Properties.
      */
@@ -134,7 +134,7 @@ export class ElementDescriptor<P> {
      * @param protect
      * @returns ElementDescriptor.
      */
-    style(style: string, protect?: boolean | { [key: string]: boolean }): ElementDescriptor<P> {
+    style(style: CSSStyleProps | null, protect?: boolean | { [key: string]: boolean }): ElementDescriptor<P> {
         if (__IVI_DEV__) {
             if (protect) {
                 this._flags |= ElementDescriptorFlags.ProtectStyle;

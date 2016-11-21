@@ -198,20 +198,6 @@ describe("sync", () => {
     });
 
     describe("style", () => {
-        it("'' => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style(""), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.style.cssText).to.equal("");
-        });
-
-        it("null => ''", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div").style(""), f);
-            expect(b.style.cssText).to.equal("");
-        });
-
         it("{} => null", () => {
             const f = frag();
             render<HTMLElement>($h("div").style({}), f);
@@ -233,20 +219,6 @@ describe("sync", () => {
             expect(b.style.cssText).to.equal("");
         });
 
-        it("null => 'top: 10px'", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div").style("top: 10px"), f);
-            expect(b.style.top).to.equal("10px");
-        });
-
-        it("'top: 10px' => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style("top: 10px"), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.style.top).to.equal("");
-        });
-
         it("null => {top: 10px}", () => {
             const f = frag();
             render<HTMLElement>($h("div"), f);
@@ -259,21 +231,6 @@ describe("sync", () => {
             render<HTMLElement>($h("div").style({}), f);
             const b = render<HTMLElement>($h("div").style({ top: "10px" }), f);
             expect(b.style.top).to.equal("10px");
-        });
-
-        it("'' => {top: 10px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style(""), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px" }), f);
-            expect(b.style.top).to.equal("10px");
-        });
-
-        it("'left: 20px' => {top: 10px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style(""), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px" }), f);
-            expect(b.style.top).to.equal("10px");
-            expect(b.style.left).to.equal("");
         });
 
         it("null => {top: 10px, left: 20px}", () => {
@@ -341,22 +298,6 @@ describe("sync", () => {
             const b = render<HTMLElement>($h("div").style({}), f);
             expect(b.style.top).to.equal("");
             expect(b.style.left).to.equal("");
-        });
-
-        it("{top: 1px, left: 1px} => ''", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style(""), f);
-            expect(b.style.cssText).to.equal("");
-        });
-
-        it("{top: 1px, left: 1px} => 'right: 30px'", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style("right: 30px"), f);
-            expect(b.style.top).to.equal("");
-            expect(b.style.left).to.equal("");
-            expect(b.style.right).to.equal("30px");
         });
 
         it("{top: 1px, left: 1px} => null", () => {

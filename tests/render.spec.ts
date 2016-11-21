@@ -78,21 +78,6 @@ describe("render", () => {
         expect(n.style.cssText).to.equal("");
     });
 
-    it("<div style=''>", () => {
-        const n = render<HTMLElement>($h("div").style(""));
-        expect(n.style.cssText).to.equal("");
-    });
-
-    it("<div style={}>", () => {
-        const n = render<HTMLElement>($h("div").style(""));
-        expect(n.style.cssText).to.equal("");
-    });
-
-    it("<div style='top: 10px'>", () => {
-        const n = render<HTMLElement>($h("div").style("top: 10px"));
-        expect(n.style.top).to.equal("10px");
-    });
-
     it("<div style={top: 10px}>", () => {
         const n = render<HTMLElement>($h("div").style({ top: "10px" }));
         expect(n.style.top).to.equal("10px");
@@ -195,11 +180,6 @@ describe("render", () => {
         it("<circle class='a'>", () => {
             const n = render<SVGCircleElement>($s("circle", "a"));
             expect(n.getAttribute("class")).to.equal("a");
-        });
-
-        it("<circle style='top: 10px'>", () => {
-            const n = render<SVGCircleElement>($s("circle").style("top: 10px"));
-            expect(n.style.top).to.equal("10px");
         });
 
         it("<circle style={top: 10px}>", () => {

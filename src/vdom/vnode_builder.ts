@@ -78,7 +78,7 @@ export class VNodeBuilder<P> implements VNode<P> {
     _key: any;
     _props: P | null;
     _className: string | null;
-    _style: CSSStyleProps | string | null;
+    _style: CSSStyleProps | null;
     _events: EventHandlerList | null;
     _children: VNode<any>[] | VNode<any> | string | number | boolean | Component<any> | null | undefined;
     _dom: Node | null;
@@ -151,7 +151,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param style.
      * @returns VNodeBuilder.
      */
-    style(style: CSSStyleProps | string | null): VNodeBuilder<P> {
+    style(style: CSSStyleProps | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set style, style is available on element nodes only.");
@@ -161,9 +161,6 @@ export class VNodeBuilder<P> implements VNode<P> {
                 if (this._flags & VNodeFlags.ElementDescriptor) {
                     const d = this._tag as ElementDescriptor<P>;
                     if (d._flags & ElementDescriptorFlags.ProtectStyle) {
-                        if (typeof style === "string") {
-                            throw new Error("Failed to set style, style is protected by an ElementDescriptor.");
-                        }
                         if (d._protectedStyle) {
                             const keys = Object.keys(d._protectedStyle);
                             for (let i = 0; i < keys.length; i++) {

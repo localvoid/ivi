@@ -66,13 +66,13 @@ ref callback will be invoked with a `null` value.
 
 ```ts
 interface VNode<P> {
-    style(style: CSSStyleProps | string | null): VNode<P>;
+    style(style: CSSStyleProps | null): VNode<P>;
     events(events: EventHandlerList | null): VNode<P>;
     props(props: P): VNode<P>;
 }
 ```
 
-`style` is a CSS style in string format or an object with styles.
+`style` is a an object with styles.
 
 `events` is an object with event handlers.
 
