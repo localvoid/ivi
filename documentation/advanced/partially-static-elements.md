@@ -32,7 +32,7 @@ const PartialDiv = createElementDescriptor("div")
 interface ElementDescriptor<P> {
     props(props: P | null, protected?: boolean | { [key: string]: boolean }): ElementDescriptor<P>;
     className(className: string | null, protected?: boolean): ElementDescriptor<P>;
-    style(style: string | null, protected?: boolean | { [key: string]: boolean }): ElementDescriptor<P>;
+    style(style: CSSStyleProps | null, protected?: boolean | { [key: string]: boolean }): ElementDescriptor<P>;
     // ...
 }
 ```
