@@ -20,12 +20,12 @@ is using context, and context has been changed, syncing algorithm will find this
 ```ts
 interface ComponentFunction<P> {
   isPropsChanged(oldProps: P, newProps: P): boolean;
-  ...
+  // ...
 }
 
 interface Component<P> {
   isPropsChanged(oldProps: P, newProps: P): boolean;
-  ...
+  // ...
 }
 ```
 
@@ -47,7 +47,9 @@ chance that it should be updated, checking component's internal state for change
 
 ### Helper functions
 
-Check props for identity `a === b` or shallow equality.
+There are already two functions for the most common cases with props checking. One function is checking props for
+identity `a === b`, and another one performs shallow equality check. This functions can be applied to component classes,
+or component functions.
 
 ```ts
 checkPropsIdentity<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P;
@@ -79,3 +81,10 @@ time context is changed, syncing algorithm will trigger an update for component.
 Accessing props when updating context gives a hint to the syncing algorithm that context depends on the props, and each
 time props are modified and they are changed `isPropsChanged`, syncing algorithm will trigger context update for
 component.
+
+## Best practices
+
+Try to avoid any optimizations until you've found a bottleneck in your application.
+
+This optimizations should be applied as a last resort when building an application. All underlying algorithms in ivi are
+extremely optimized, so that you can focus on building your application instead of trying to optimize it.
