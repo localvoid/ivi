@@ -3,7 +3,7 @@
 ## Stateless Component
 
 Stateless components are implemented with simple functions. Component functions has two parameters: `props` parameter
-for component properties and optional parameter `context` with current Context.
+for component properties and optional parameter `context` with current context.
 
 ```ts
 function StatelessComponent(props: string) {
@@ -57,26 +57,26 @@ class StatefulComponent extends Component<string> {
 
 ### Properties
 
-To get current context, always use `this.context`, unless you want to cache its values and prevent any updates when
-context is modified.
-
 ```ts
-get context(): Context;
+interface Component<P> {
+    get context(): Context;
+    get props(): P;
+}
 ```
 
-Get current props.
+`context` getter returns current context.
 
-```ts
-get props(): P;
-```
+`props` getter returns current props.
 
 ### Methods
 
-Invalidate current view and add Component to the update queue. This method should be invoked when internal state changes
+Invalidate current view and add component to the update queue. This method should be invoked when internal state changes
 should trigger an update of the current view.
 
 ```ts
-invalidate(): void;
+interface Component<P> {
+    invalidate(): void;
+}
 ```
 
 ```ts
@@ -96,11 +96,13 @@ class StatefulComponent extends Component<null> {
 }
 ```
 
-Invalidate current context and add Component to the update queue. This method should be invoked when internal state
+Invalidate current context and add component to the update queue. This method should be invoked when internal state
 changes should trigger an update of the current context.
 
 ```ts
-invalidateContext(): void;
+interface Component<P> {
+    invalidateContext(): void;
+}
 ```
 
 ```ts
@@ -131,7 +133,9 @@ class StatefulComponent extends Component<null> {
 Render component representation with a Virtual DOM.
 
 ```ts
-render(): VNode<any> | undefined;
+interface Component<P> {
+    render(): VNode<any> | undefined;
+}
 ```
 
 ```ts
@@ -145,7 +149,9 @@ class StatefulComponent extends Component<string> {
 Component received a new props.
 
 ```ts
-didReceiveNewProps(oldProps: P, newProps: P): void;
+interface Component<P> {
+    didReceiveNewProps(oldProps: P, newProps: P): void;
+}
 ```
 
 ```ts
@@ -165,7 +171,9 @@ class StatefulComponent extends Component<string> {
 Component received a new context.
 
 ```ts
-didReceiveNewContext(oldContext: Context, newContext: Context): void;
+interface Component<P> {
+    didReceiveNewContext(oldContext: Context, newContext: Context): void;
+}
 ```
 
 ```ts
@@ -185,7 +193,9 @@ class StatefulComponent extends Component<null> {
 Update current context.
 
 ```ts
-updateContext<C>(): C | undefined;
+interface Component<P> {
+    updateContext<C>(): C | undefined;
+}
 ```
 
 ```ts
@@ -205,29 +215,39 @@ class StatefulComponent extends Component<string> {
 Component is mounted to the document.
 
 ```ts
-didMount(): void;
+interface Component<P> {
+    didMount(): void;
+}
 ```
 
 Component is unmounted from the document.
 
 ```ts
-didUnmount(): void;
+interface Component<P> {
+    didUnmount(): void;
+}
 ```
 
 Component will be updated.
 
 ```ts
-willUpdate(): void;
+interface Component<P> {
+    willUpdate(): void;
+}
 ```
 
 Component did updated.
 
 ```ts
-didUpdate(): void;
+interface Component<P> {
+    didUpdate(): void;
+}
 ```
 
 Component did invalidated.
 
 ```ts
-didInvalidate(): void;
+interface Component<P> {
+    didInvalidate(): void;
+}
 ```

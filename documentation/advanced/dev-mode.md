@@ -5,8 +5,7 @@ provide a good developer experience, especially when something doesn't work as e
 
 The biggest chunk of the code base is an implementation of different features and runtime checks for Development Mode.
 All Development Mode features are carefully implemented to make sure that everything will be removed from
-production build. When application is build for production, all this code is removed and generated javascript bundle is
-relatively small.
+production build.
 
 ## Configuration
 

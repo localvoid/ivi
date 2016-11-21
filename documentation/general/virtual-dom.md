@@ -16,8 +16,8 @@ Virtual Nodes are created with factory functions. There are 7 VNode factory func
 just two, one for HTML elements and one for Components.
 
 ```ts
-$h(tagName: string, className?: string): VNode<P>;
-$c<P>(component: ComponentFunction<P> | ComponentClass<P>, props: P): VNode<P>;
+function $h(tagName: string, className?: string): VNode<P>;
+function $c<P>(component: ComponentFunction<P> | ComponentClass<P>, props: P): VNode<P>;
 ```
 
 `$h` function creates nodes for HTML elements. `tagName` parameter specifies HTML tag name, and optional `className`
@@ -29,10 +29,10 @@ or a component class. `props` parameter is an object with component properties.
 ### Other Virtual Node types
 
 ```ts
-$s(tagName: string, className?: string): VNode<P>;
-$i(type: string, className?: string): VNode<P>;
-$m(tagName: string, className?: string): VNode<P>;
-$t(content: string): VNode<P>;
+function $s(tagName: string, className?: string): VNode<P>;
+function $i(type: string, className?: string): VNode<P>;
+function $m(tagName: string, className?: string): VNode<P>;
+function $t(content: string): VNode<P>;
 ```
 
 `$s` function creates nodes for SVG elements.

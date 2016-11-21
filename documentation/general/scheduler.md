@@ -6,8 +6,8 @@ Scheduler provides functions to add callbacks to different
 [Browser Task Queues](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue): microtasks and macrotasks.
 
 ```ts
-scheduleMicrotask(cb: () => void): void`
-scheduleMacrotask(cb: () => void): void`
+function scheduleMicrotask(cb: () => void): void;
+function scheduleMacrotask(cb: () => void): void;
 ```
 
 ## Frame tasks
@@ -20,8 +20,8 @@ switching between read and write tasks until there are no frame tasks left.
 There are two functions to access frame tasks: one to get current frame tasks and another for the next frame tasks.
 
 ```ts
-currentFrame(): FrameTasksGroup;
-nextFrame(): FrameTasksGroup;
+function currentFrame(): FrameTasksGroup;
+function nextFrame(): FrameTasksGroup;
 ```
 
 `FrameTasksGroup` object provides task queues for Components, read, write tasks, and tasks that will be executed when
@@ -39,7 +39,7 @@ currentFrame().after(task: () => void): void;
 Each time scheduler finishes executing tasks from one of the groups, it increments internal clock.
 
 ```ts
-clock(): number;
+function clock(): number;
 ```
 
 This clock can be used to detect when property has been changed since the last update.
