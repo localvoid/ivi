@@ -1,8 +1,5 @@
 # Development Mode
 
-There many different runtime checks and other useful features when Development Mode is enabled. It is important to
-provide a good developer experience, especially when something doesn't work as expected.
-
 The biggest chunk of the code base is an implementation of different features and runtime checks for Development Mode.
 All Development Mode features are carefully implemented to make sure that everything will be removed from
 production build.
