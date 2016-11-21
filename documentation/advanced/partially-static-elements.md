@@ -72,7 +72,7 @@ $e(ProtectedDiv)
 // No Exception
 ```
 
-It is also possible to protect some part of propertied instead of protecting all of them. To do so, pass an inline
+It is also possible to protect some part of properties instead of protecting all of them. To do so, pass an inline
 object with keys that should be protected:
 
 ```ts

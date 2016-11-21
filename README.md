@@ -272,6 +272,9 @@ Even without any benchmark specific optimizations, simple and idiomatic ivi
 [uibench](https://localvoid.github.io/uibench) implementation is still one of the fastest, in some use cases it is even
 faster than kivi.
 
+You can read more about that in the article I wrote on
+[How to win in Web Framework Benchmarks](https://medium.com/@localvoid/how-to-win-in-web-framework-benchmarks-8bc31af76ce7).
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
