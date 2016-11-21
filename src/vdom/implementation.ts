@@ -494,10 +494,6 @@ function vNodeMount(vnode: VNode<any>): void {
             }
         }
     }
-
-    if (vnode._ref) {
-        vnode._ref((flags & VNodeFlags.Component) ? vnode._children as Component<any> : vnode._dom);
-    }
 }
 
 /**
@@ -887,8 +883,11 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
         }
 
         restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
-    } else { // (flags & VNodeFlags.Component)
 
+        if (vnode._ref) {
+            vnode._ref(ref);
+        }
+    } else { // (flags & VNodeFlags.Component)
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
             registerComponent(component);
@@ -903,6 +902,10 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
             const root = componentClassRender(component);
             ref = component._rootDOMNode = vNodeRender(parent, root, component._context, component);
             componentPerfMarkEnd(component._debugId, "instantiate", true, component);
+
+            if (vnode._ref) {
+                vnode._ref(component);
+            }
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "instantiate");
@@ -910,8 +913,11 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                 componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
             ref = vnode._dom = vNodeRender(parent, root, context, owner);
             componentPerfMarkEnd(vnode._debugId, "instantiate", false, vnode._tag as ComponentFunction<any>);
-        }
 
+            if (vnode._ref) {
+                vnode._ref(ref);
+            }
+        }
         stackTracePopComponent();
     }
 
@@ -1082,8 +1088,11 @@ function vNodeAugment(
             }
 
             restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
-        } else { // (flags & VNodeFlags.Component)
 
+            if (vnode._ref) {
+                vnode._ref(node);
+            }
+        } else { // (flags & VNodeFlags.Component)
             if (flags & VNodeFlags.ComponentClass) {
                 const component = vnode._children =
                     new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
@@ -1100,11 +1109,17 @@ function vNodeAugment(
                 componentUpdateContext(component);
                 const root = componentClassRender(component);
                 vNodeAugment(parent, node, root, component._context, component);
+                if (vnode._ref) {
+                    vnode._ref(component);
+                }
             } else {
                 stackTracePushComponent(vnode._tag as ComponentFunction<any>);
                 const root = vnode._children =
                     componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
                 vNodeAugment(parent, node, root, context, owner);
+                if (vnode._ref) {
+                    vnode._ref(node);
+                }
             }
 
             stackTracePopComponent();

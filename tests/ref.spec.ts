@@ -9,13 +9,13 @@ describe("ref", () => {
     describe("mount", () => {
         it("'abc'", () => {
             let r: Node | null | undefined;
-            const n = render<Text>($t("abc").ref((ref) => r = ref));
+            const n = render<HTMLDivElement>($t("abc").ref((ref) => r = ref));
             expect(r).to.equal(n);
         });
 
         it("<div>", () => {
             let r: Node | null | undefined;
-            const n = render<Text>($h("div").ref((ref) => r = ref));
+            const n = render<HTMLDivElement>($h("div").ref((ref) => r = ref));
             expect(r).to.equal(n);
         });
 
@@ -27,10 +27,9 @@ describe("ref", () => {
         });
 
         it("<F><div></F>", () => {
-            let r: Component<any> | null | undefined;
-            const v = $c(TestComponentFunction, {}).ref((ref: Component<any>) => r = ref);
-            render<Text>(v);
-            expect(r).to.equal(getComponentRef(v));
+            let r: Node | null | undefined;
+            const n = render<HTMLDivElement>($c(TestComponentFunction, {}).ref((ref: Node) => r = ref));
+            expect(r).to.equal(n);
         });
     });
 
