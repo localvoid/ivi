@@ -45,15 +45,13 @@ export interface VNode<P> {
      * child.
      *
      * When virtual node represents an input field, children property will contain input value.
-     *
-     * When virtual node represents a component, children property will contain a reference to a component instance.
      */
-    _children: VNode<any>[] | VNode<any> | string | number | boolean | Component<any> | null | undefined;
+    _children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined;
     /**
-     * Reference to a HTML Node. It will be available after virtual node is created or synced. Each time VNode is
-     * synced, reference to the HTML Node is transferred from the old VNode to the new one.
+     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
+     * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
-    _dom: Node | null;
+    _instance: Node | Component<any> | null;
     /**
      * Ref callback.
      */
@@ -110,8 +108,15 @@ export function isComponentNode(node: VNode<any>): boolean {
  * @param node VNode which contains reference to a DOM node.
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
-export function getDOMRef<T extends Node>(node: VNode<any>): T | null {
-    return node._dom as T;
+export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | null {
+    if (node._flags & VNodeFlags.Component) {
+        if (node._flags & VNodeFlags.ComponentClass) {
+            return getDOMInstanceFromVNode<T>((node._instance as Component<any>).root!);
+        } else {
+            return getDOMInstanceFromVNode<T>(node._children as VNode<any>);
+        }
+    }
+    return node._instance as T;
 }
 
 /**
@@ -126,5 +131,5 @@ export function getComponentRef<P>(node: VNode<P>): Component<P> | null {
             throw new Error("Failed to get component reference: VNode should represent a Component.");
         }
     }
-    return node._children as Component<P> | null;
+    return node._instance as Component<P> | null;
 }

@@ -1,5 +1,5 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "../src/common/dom";
-import { render, TestComponent, TestComponentFunction } from "./utils";
+import { render, TestComponent, TestComponentFunction, TestComponentFunctionWrapper } from "./utils";
 import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode_builder";
 
 const expect = chai.expect;
@@ -302,6 +302,13 @@ describe("render", () => {
 
         it("<F><F><F>''</F></F></F> (render => undefined)", () => {
             const n = render<HTMLElement>($c(TestComponentFunction, { returnUndefined: true, wrapDepth: 3 }));
+            expect(n.nodeType).to.equal(Node.TEXT_NODE);
+            expect(n.nodeValue).to.equal("");
+        });
+
+        it("<F><C>''</C></F> (render => undefined)", () => {
+            const n = render<HTMLElement>($c(TestComponentFunctionWrapper,
+                $c(TestComponent, { returnUndefined: true, wrapDepth: 1 })));
             expect(n.nodeType).to.equal(Node.TEXT_NODE);
             expect(n.nodeValue).to.equal("");
         });

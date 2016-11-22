@@ -2,7 +2,9 @@ import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame } from "../scheduler/scheduler";
 import { Context, ROOT_CONTEXT } from "./context";
+import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
+import { Component, getDOMInstanceFromComponent } from "./component";
 import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
 /**
@@ -42,8 +44,8 @@ export function findRoot(container: Element): Root | undefined {
  * @param root Root data.
  * @returns rendered Node.
  */
-function _render<T extends Node>(root: Root): T | undefined {
-    let result: Node | undefined;
+function _render<T>(root: Root): T | undefined {
+    let result: Node | Component<any> | undefined;
     const currentVNode = root.currentVNode;
     const newVNode = root.newVNode;
 
@@ -62,7 +64,9 @@ function _render<T extends Node>(root: Root): T | undefined {
             }
         }
         root.currentVNode = newVNode;
-        root.domNode = result;
+        root.domNode = (newVNode._flags & VNodeFlags.ComponentClass) ?
+            getDOMInstanceFromComponent(result as Component<any>) :
+            result as Node;
     } else if (currentVNode) {
         removeVNode(root.container, currentVNode);
         const last = roots.pop();

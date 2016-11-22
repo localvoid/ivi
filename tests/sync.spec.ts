@@ -1,4 +1,7 @@
+import { ComponentFlags } from "../src/vdom/flags";
 import { VNode } from "../src/vdom/vnode";
+import { Component } from "../src/vdom/component";
+import { updateComponent } from "../src/vdom/implementation";
 import { $t, $h, $c, $i, $m } from "../src/vdom/vnode_builder";
 import { frag, render, TestComponent, TestComponentFunction } from "./utils";
 
@@ -1142,6 +1145,122 @@ describe("sync", () => {
             expect(a.firstChild!.nodeValue).to.equal("a");
             expect(b.childNodes.length).to.equal(1);
             expect(b.firstChild!.nodeValue).to.equal("b");
+        });
+    });
+
+    describe("complex transformations", () => {
+        /**
+         * When component is an entry point for update and it completely changes a root node, refs to DOM Nodes on
+         * parent vnodes should be updated, or parent vnodes shouldn't rely on this refs and use another way to find
+         * DOM Nodes.
+         */
+
+        class A extends Component<number> {
+            state = this.props;
+
+            isPropsChanged() {
+                return false;
+            }
+
+            render() {
+                if (this.state === 1) {
+                    return $h("span").children(1);
+                }
+                return $h("div").children(0);
+            }
+
+            syncUpdate(state: number) {
+                this.state = state;
+                this.flags |= ComponentFlags.DirtyState;
+                updateComponent(this);
+            }
+        }
+
+        class B extends Component<VNode<any>> {
+            render() {
+                return this.props;
+            }
+        }
+
+        it("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
+            const f = frag();
+            let c: A | null = null;
+            function ref(r: A | null) {
+                c = r;
+            }
+
+            render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $h("h1").key(0),
+                $c(A, 0).key(1).ref(ref),
+            ]), f);
+            c!.syncUpdate(1);
+            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $c(A, 1).key(1).ref(ref),
+                $h("h1").key(0),
+            ]), f);
+            expect(n.children[0].tagName.toLowerCase()).to.equal("span");
+            expect(n.children[0].firstChild.nodeValue).to.equal("1");
+        });
+
+        it("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
+            const f = frag();
+            let c: A | null = null;
+            function ref(r: A | null) {
+                c = r;
+            }
+
+            render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $h("h1").key(0),
+                $c(B, $c(A, 0).ref(ref)).key(1),
+            ]), f);
+            c!.syncUpdate(1);
+            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $c(B, $c(A, 1).ref(ref)).key(1),
+                $h("h1").key(0),
+            ]), f);
+            expect(n.children[0].tagName.toLowerCase()).to.equal("span");
+            expect(n.children[0].firstChild.nodeValue).to.equal("1");
+        });
+
+        // same tests in the opposite direction
+        it("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
+            const f = frag();
+            let c: A | null = null;
+            function ref(r: A | null) {
+                c = r;
+            }
+
+            render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $c(A, 0).key(1).ref(ref),
+                $h("h1").key(0),
+            ]), f);
+            c!.syncUpdate(1);
+            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $h("h1").key(0),
+                $c(A, 1).key(1).ref(ref),
+            ]), f);
+            expect(n.children[1].tagName.toLowerCase()).to.equal("span");
+            expect(n.children[1].firstChild.nodeValue).to.equal("1");
+        });
+
+        it("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
+            const f = frag();
+            let c: A | null = null;
+            function ref(r: A | null) {
+                c = r;
+            }
+
+            render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $c(B, $c(A, 0).ref(ref)).key(1),
+                $h("h1").key(0),
+            ]), f);
+            c!.syncUpdate(1);
+            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+                $h("h1").key(0),
+                $c(B, $c(A, 1).ref(ref)).key(1),
+            ]), f);
+            expect(n.children[1].tagName.toLowerCase()).to.equal("span");
+            expect(n.children[1].firstChild.nodeValue).to.equal("1");
         });
     });
 });

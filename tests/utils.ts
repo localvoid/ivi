@@ -1,10 +1,10 @@
 import { setInitialNestingState } from "../src/common/html_nesting_rules";
-import { VNode } from "../src/vdom/vnode";
+import { VNode, getDOMInstanceFromVNode } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { $h, $c } from "../src/vdom/vnode_builder";
 import { ROOT_CONTEXT } from "../src/vdom/context";
 import { Context } from "../src/vdom/context";
-import { Component } from "../src/vdom/component";
+import { Component, getDOMInstanceFromComponent } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
 
 const expect = chai.expect;
@@ -16,13 +16,13 @@ export function frag() {
 export function checkRefs(n: Node, v: VNode<any>) {
     const flags = v._flags;
 
-    expect(v._dom).to.equal(n);
+    expect(getDOMInstanceFromVNode(v)).to.equal(n);
 
     if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
-            const component = (v._children as Component<any>);
+            const component = (v._instance as Component<any>);
             expect(component._parentDOMNode).to.equal(n.parentNode);
-            expect(component._rootDOMNode).to.equal(n);
+            expect(getDOMInstanceFromComponent(component)).to.equal(n);
             const root = component.root;
             if (root) {
                 checkRefs(n, root!);
@@ -62,9 +62,13 @@ export function render<T extends Node>(
 
     const oldRoot = (container as any).__ivi_root as VNode<any> | undefined;
     (container as any).__ivi_root = node;
-    const result = (oldRoot ?
-        syncVNode(container, oldRoot, node, ROOT_CONTEXT) :
-        renderVNode(container, null, node, ROOT_CONTEXT)) as T;
+    if (oldRoot) {
+        syncVNode(container, oldRoot, node, ROOT_CONTEXT);
+    } else {
+        renderVNode(container, null, node, ROOT_CONTEXT);
+    }
+
+    const result = getDOMInstanceFromVNode(node) as T;
 
     if (!disableCheckRefs) {
         checkRefs(result, node);
@@ -118,7 +122,7 @@ export function TestComponentFunction(props: TestComponentOptions): VNode<any> |
     const { returnUndefined, wrapDepth } = props;
 
     if (wrapDepth) {
-        return $c(TestComponent, {
+        return $c(TestComponentFunction, {
             returnUndefined,
             wrapDepth: wrapDepth - 1,
         });
@@ -129,6 +133,10 @@ export function TestComponentFunction(props: TestComponentOptions): VNode<any> |
     }
 
     return $h("div");
+}
+
+export function TestComponentFunctionWrapper(props: VNode<any>): VNode<any> {
+    return props;
 }
 
 export class LifecycleCounter {

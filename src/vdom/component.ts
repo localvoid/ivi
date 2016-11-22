@@ -3,7 +3,7 @@ import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality"
 import { AncestorFlags } from "../common/html_nesting_rules";
 import { ComponentFlags } from "./flags";
 import { Context } from "./context";
-import { VNode } from "./vnode";
+import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { currentFrame } from "../scheduler/scheduler";
 
 /**
@@ -81,12 +81,6 @@ export abstract class Component<P> {
      */
     _parentDOMNode: Node | null;
     /**
-     * Root DOM node.
-     *
-     * When component is returning another component, they'll share the same DOM node.
-     */
-    _rootDOMNode: Node | null;
-    /**
      * Ancestor Flags are used to check child nesting violations.
      *
      * Dev Mode.
@@ -119,7 +113,6 @@ export abstract class Component<P> {
         this.root = null;
         if (__IVI_BROWSER__) {
             this._parentDOMNode = null;
-            this._rootDOMNode = null;
         }
         if (__IVI_DEV__) {
             this._ancestorFlags = 0;
@@ -394,6 +387,21 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Compon
         (target as ComponentFunction<any>).isPropsChanged = isPropsNotShallowEqual;
     }
     return target;
+}
+
+/**
+ * Get reference to a DOM node from a Component instance.
+ *
+ * @param component Component instance.
+ * @returns DOM node.
+ */
+export function getDOMInstanceFromComponent<T extends Node>(component: Component<any>): T {
+    if (__IVI_DEV__) {
+        if (!component.root) {
+            throw new Error("Failed to get DOM instance from component, component is not initialized.");
+        }
+    }
+    return getDOMInstanceFromVNode<T>(component.root!) !;
 }
 
 /**

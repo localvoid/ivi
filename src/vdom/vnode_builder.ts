@@ -80,8 +80,8 @@ export class VNodeBuilder<P> implements VNode<P> {
     _className: string | null;
     _style: CSSStyleProps | null;
     _events: EventHandlerList | null;
-    _children: VNode<any>[] | VNode<any> | string | number | boolean | Component<any> | null | undefined;
-    _dom: Node | null;
+    _children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined;
+    _instance: Node | Component<any> | null;
     _ref: ((ref: Node | Component<any> | null) => void) | null;
     _debugId: number;
 
@@ -90,7 +90,7 @@ export class VNodeBuilder<P> implements VNode<P> {
         tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> | null,
         props: P | null,
         className: string | null,
-        children: VNode<any>[] | VNode<any> | string | number | boolean | Component<any> | null | undefined,
+        children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
     ) {
         this._flags = flags;
         this._tag = tag;
@@ -100,7 +100,7 @@ export class VNodeBuilder<P> implements VNode<P> {
         this._style = null;
         this._events = null;
         this._children = children;
-        this._dom = null;
+        this._instance = null;
         this._ref = null;
         if (__IVI_DEV__) {
             this._debugId = nextDebugId();

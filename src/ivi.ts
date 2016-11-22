@@ -69,10 +69,13 @@ export { getEventTarget, getEventOptions } from "./events/utils";
  */
 export { Context, ROOT_CONTEXT } from "./vdom/context";
 export {
-    ComponentClass, ComponentFunction, Component, findComponentByDebugId, checkPropsIdentity, checkPropsShallowEquality,
+    ComponentClass, ComponentFunction, Component, getDOMInstanceFromComponent, findComponentByDebugId,
+    checkPropsIdentity, checkPropsShallowEquality,
 } from "./vdom/component";
 export { VNodeFlags, ElementDescriptorFlags } from "./vdom/flags";
-export { VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMRef, getComponentRef } from "./vdom/vnode";
+export {
+    VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode, getComponentRef,
+} from "./vdom/vnode";
 export {
     ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
     createMediaElementDescriptor,
