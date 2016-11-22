@@ -11,8 +11,17 @@ export type OnComponentCreatedHook = (instance: Component<any>) => void;
 export type OnComponentDisposedHook = (instance: Component<any>) => void;
 
 export interface DevModeHooks {
+    /**
+     * onError hook is invoked when unhandled exception is thrown.
+     */
     onError: OnErrorHook[] | null;
+    /**
+     * onComponentCreated is invoked when stateful component is instantiated.
+     */
     onComponentCreated: OnComponentCreatedHook[] | null;
+    /**
+     * onComponentDisposed is invoked when stateful component is disposed.
+     */
     onComponentDisposed: OnComponentDisposedHook[] | null;
 }
 

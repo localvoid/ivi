@@ -16,3 +16,5 @@ interface DevModeHooks {
     onComponentDisposed: OnComponentDisposedHook[] | null;
 }
 ```
+
+If you have an interesting idea for an extension that needs more hooks, just let us know and they will be added.
