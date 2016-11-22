@@ -55,7 +55,7 @@ export {
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
 export {
-    SyntheticEvent, SyntheticDOMEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
+    SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
     SyntheticAriaRequestEvent, SyntheticErrorEvent, SyntheticEventClass, SyntheticFocusEvent, SyntheticKeyboardEvent,
     SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent, SyntheticMouseEvent, SyntheticPointerEvent,
     SyntheticProgressEvent, SyntheticTouchEvent, SyntheticWheelEvent,

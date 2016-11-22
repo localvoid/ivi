@@ -1,5 +1,5 @@
 import { NativeEventDispatcherFlags, SyntheticEventFlags } from "./flags";
-import { SyntheticDOMEvent, SyntheticEventClass } from "./synthetic_event";
+import { SyntheticEvent, SyntheticEventClass } from "./synthetic_event";
 import { EventDispatcher } from "./event_dispatcher";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
@@ -9,7 +9,7 @@ import { scheduleMacrotask } from "../scheduler/scheduler";
 /**
  * Native Event Dispatcher.
  */
-export class NativeEventDispatcher<E extends SyntheticEventClass<Event, SyntheticDOMEvent<any>>>
+export class NativeEventDispatcher<E extends SyntheticEventClass<Event, SyntheticEvent<any>>>
     extends EventDispatcher {
     /**
      * See `EventDispatcherFlags` for details.
@@ -48,7 +48,7 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
     private dispatchNativeEvent(ev: Event): void {
         const subs = this._nextSubscription;
 
-        let s: SyntheticDOMEvent<any> | undefined;
+        let s: SyntheticEvent<any> | undefined;
         if (subs) {
             s = new this.eventType(this, 0, ev, getEventTarget(ev), ev.timeStamp, ev.type);
             this.dispatchEventToSubscribers(s);
@@ -67,6 +67,9 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
             dispatchEvent(handlers, s!, !!(this.flags & NativeEventDispatcherFlags.Bubbles));
         }
 
+        if (s && s._flags & SyntheticEventFlags.PreventedDefault) {
+            ev.preventDefault();
+        }
     }
 
     activate(): void {

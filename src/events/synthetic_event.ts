@@ -4,7 +4,7 @@ import { EventDispatcher } from "./event_dispatcher";
 /**
  * Synthetic Event.
  */
-export abstract class SyntheticEvent<D> implements Event {
+export class SyntheticEvent<D> implements Event {
     /**
      * @deprecated
      */
@@ -115,14 +115,7 @@ export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
     ): E;
 }
 
-export class SyntheticDOMEvent<D extends Event> extends SyntheticEvent<D> {
-    preventDefault() {
-        this._flags |= SyntheticEventFlags.PreventedDefault;
-        this._data.preventDefault();
-    }
-}
-
-export class SyntheticUIEvent<T extends UIEvent> extends SyntheticDOMEvent<T> implements UIEvent {
+export class SyntheticUIEvent<T extends UIEvent> extends SyntheticEvent<T> implements UIEvent {
     /**
      * @deprecated
      */
@@ -591,7 +584,7 @@ export class SyntheticFocusEvent extends SyntheticUIEvent<FocusEvent> implements
     }
 }
 
-export class SyntheticAriaRequestEvent extends SyntheticDOMEvent<AriaRequestEvent> implements AriaRequestEvent {
+export class SyntheticAriaRequestEvent extends SyntheticEvent<AriaRequestEvent> implements AriaRequestEvent {
     get attributeName(): string {
         return this._data.attributeName;
     }
@@ -604,13 +597,13 @@ export class SyntheticAriaRequestEvent extends SyntheticDOMEvent<AriaRequestEven
     }
 }
 
-export class SyntheticClipboardEvent extends SyntheticDOMEvent<ClipboardEvent> implements ClipboardEvent {
+export class SyntheticClipboardEvent extends SyntheticEvent<ClipboardEvent> implements ClipboardEvent {
     get clipboardData(): DataTransfer {
         return this._data.clipboardData;
     }
 }
 
-export class SyntheticErrorEvent extends SyntheticDOMEvent<ErrorEvent> implements ErrorEvent {
+export class SyntheticErrorEvent extends SyntheticEvent<ErrorEvent> implements ErrorEvent {
     /**
      * @deprecated
      */
@@ -644,7 +637,7 @@ export class SyntheticErrorEvent extends SyntheticDOMEvent<ErrorEvent> implement
     }
 }
 
-export class SyntheticMediaEncryptedEvent extends SyntheticDOMEvent<MediaEncryptedEvent>
+export class SyntheticMediaEncryptedEvent extends SyntheticEvent<MediaEncryptedEvent>
     implements MediaEncryptedEvent {
 
     get initData(): ArrayBuffer | null {
@@ -656,7 +649,7 @@ export class SyntheticMediaEncryptedEvent extends SyntheticDOMEvent<MediaEncrypt
     }
 }
 
-export class SyntheticMediaStreamErrorEvent extends SyntheticDOMEvent<MediaStreamErrorEvent>
+export class SyntheticMediaStreamErrorEvent extends SyntheticEvent<MediaStreamErrorEvent>
     implements MediaStreamErrorEvent {
 
     get error(): MediaStreamError | null {
@@ -664,7 +657,7 @@ export class SyntheticMediaStreamErrorEvent extends SyntheticDOMEvent<MediaStrea
     }
 }
 
-export class SyntheticProgressEvent extends SyntheticDOMEvent<ProgressEvent> implements ProgressEvent {
+export class SyntheticProgressEvent extends SyntheticEvent<ProgressEvent> implements ProgressEvent {
     /**
      * @deprecated
      */
