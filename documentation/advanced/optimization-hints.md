@@ -47,7 +47,7 @@ chance that it should be updated, checking component's internal state for change
 
 ### Helper functions
 
-There are already two functions for the most common cases with props checking. One function is checking props for
+Two functions for the most common cases with props checking are included in ivi. One function is checking props for
 identity `a === b`, and another one performs shallow equality check. This functions can be applied to component classes,
 or component functions.
 
