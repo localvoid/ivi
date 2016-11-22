@@ -1,4 +1,4 @@
-# Synthetic Events
+# Synthetic Events Extensions
 
 Synthetic Events subsystem provides an **experimental** API for building your own `EventDispatcher`.
 

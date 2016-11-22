@@ -16,6 +16,7 @@
  */
 
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../common/dev_mode";
+import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed } from "../common/dev_hooks";
 import { injectScreenOfDeath } from "../common/screen_of_death";
 import { SVG_NAMESPACE } from "../common/dom";
 import {
@@ -131,16 +132,14 @@ export function renderVNode(
             setInitialNestingState("", 0);
         }
 
-        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
-            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
-            try {
-                return _renderVNode(parent, refChild, vnode, context, owner);
-            } catch (e) {
-                stackTraceAugment(e);
-                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                stackTraceReset();
-                throw e;
-            }
+        try {
+            return _renderVNode(parent, refChild, vnode, context, owner);
+        } catch (e) {
+            stackTraceAugment(e);
+            devModeOnError(e);
+            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+            stackTraceReset();
+            throw e;
         }
     }
     return _renderVNode(parent, refChild, vnode, context, owner);
@@ -194,16 +193,14 @@ export function syncVNode(
             setInitialNestingState("", 0);
         }
 
-        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
-            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
-            try {
-                return _syncVNode(parent, a, b, context, owner);
-            } catch (e) {
-                stackTraceAugment(e);
-                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                stackTraceReset();
-                throw e;
-            }
+        try {
+            return _syncVNode(parent, a, b, context, owner);
+        } catch (e) {
+            stackTraceAugment(e);
+            devModeOnError(e);
+            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+            stackTraceReset();
+            throw e;
         }
     }
     return _syncVNode(parent, a, b, context, owner);
@@ -242,17 +239,15 @@ function _syncVNode(
  */
 export function removeVNode(parent: Node, node: VNode<any>): void {
     if (__IVI_DEV__) {
-        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
-            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
-            try {
-                _removeVNode(parent, node);
-                return;
-            } catch (e) {
-                stackTraceAugment(e);
-                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                stackTraceReset();
-                throw e;
-            }
+        try {
+            _removeVNode(parent, node);
+            return;
+        } catch (e) {
+            stackTraceAugment(e);
+            devModeOnError(e);
+            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+            stackTraceReset();
+            throw e;
         }
     }
     _removeVNode(parent, node);
@@ -299,17 +294,15 @@ export function augmentVNode(
             setInitialNestingState("", 0);
         }
 
-        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
-            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
-            try {
-                _augmentVNode(parent, node, vnode, context, owner);
-                return;
-            } catch (e) {
-                stackTraceAugment(e);
-                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                stackTraceReset();
-                throw e;
-            }
+        try {
+            _augmentVNode(parent, node, vnode, context, owner);
+            return;
+        } catch (e) {
+            stackTraceAugment(e);
+            devModeOnError(e);
+            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+            stackTraceReset();
+            throw e;
         }
     }
     _augmentVNode(parent, node, vnode, context, owner);
@@ -348,19 +341,17 @@ function _augmentVNode(
  */
 export function updateComponent<P>(component: Component<P>): Node {
     if (__IVI_DEV__) {
-        if ((DEV_MODE & (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) !==
-            (DevModeFlags.DisableStackTraceAugmentation | DevModeFlags.DisableScreenOfDeath)) {
-            try {
-                stackTracePushComponent((component as Object).constructor as ComponentClass<any>, component);
-                const ret = _updateComponent(component);
-                stackTracePopComponent();
-                return ret;
-            } catch (e) {
-                stackTraceAugment(e);
-                injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
-                stackTraceReset();
-                throw e;
-            }
+        try {
+            stackTracePushComponent((component as Object).constructor as ComponentClass<any>, component);
+            const ret = _updateComponent(component);
+            stackTracePopComponent();
+            return ret;
+        } catch (e) {
+            stackTraceAugment(e);
+            devModeOnError(e);
+            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
+            stackTraceReset();
+            throw e;
         }
     }
     return _updateComponent(component);
@@ -519,6 +510,7 @@ function vNodeUnmount(vnode: VNode<any>): void {
             componentDidUnmount(component);
             componentPerfMarkEnd(component._debugId, "unmount", true, component);
             unregisterComponent(component);
+            devModeOnComponentDisposed(component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "unmount");
@@ -891,6 +883,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._children = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
             registerComponent(component);
+            devModeOnComponentCreated(component);
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "instantiate");
             if (__IVI_DEV__) {
@@ -1097,6 +1090,7 @@ function vNodeAugment(
                 const component = vnode._children =
                     new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
                 registerComponent(component);
+                devModeOnComponentCreated(component);
                 stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
 
                 if (__IVI_DEV__) {

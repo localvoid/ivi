@@ -7,6 +7,7 @@
  * `setDevModeFlags(DevModeFlags.DisableScreenOfDeath)`.
  */
 import { DevModeFlags, DEV_MODE } from "./dev_mode";
+import { devModeOnError } from "./dev_hooks";
 import { getEventTarget } from "../events/utils";
 
 /**
@@ -98,6 +99,7 @@ function removeScreenOfDeath(): void {
 if (__IVI_DEV__ && __IVI_BROWSER__) {
     if (!(DEV_MODE & (DevModeFlags.DisableScreenOfDeath | DevModeFlags.DisableScreenOfDeathGlobalErrorHandling))) {
         window.addEventListener("error", function screenOfDeathErrorHandler(e: ErrorEvent) {
+            devModeOnError(e.error);
             injectScreenOfDeath(`Global Error: ${e.error.message}`, e.error.stack);
         });
     }

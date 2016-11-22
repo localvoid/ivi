@@ -16,4 +16,5 @@
 
 ## Extensions
 
+- [Development Mode](extensions/dev-mode.md)
 - [Synthetic Events](extensions/events.md)

@@ -50,7 +50,7 @@ exclusively for bug reports and feature requests.
 - [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
 - [Scheduler](https://github.com/ivijs/ivi/blob/master/documentation/general/scheduler.md)
 
-## Advanced
+### Advanced
 
 - [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
 - [Partially Static Elements](https://github.com/ivijs/ivi/blob/master/documentation/advanced/partially-static-elements.md)
@@ -58,6 +58,7 @@ exclusively for bug reports and feature requests.
 
 ### Extensions
 
+- [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/extensions/dev-mode.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/extensions/synthetic-events.md)
 
 ## Getting Started
