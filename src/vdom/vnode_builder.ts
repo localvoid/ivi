@@ -749,11 +749,18 @@ export function $e<P>(d: ElementDescriptor<P>, className?: string): VNodeBuilder
 export function cloneVNode(node: VNode<any>): VNode<any> {
     const flags = node._flags;
     let children = node._children;
-    if (children !== null && (flags & VNodeFlags.ChildrenArray)) {
-        children = children as VNode<any>[];
-        const newChildren = new Array<VNode<any>>(children.length);
-        for (let i = 0; i < 0; i++) {
-            newChildren[i] = cloneVNode(children[i]);
+    if (children !== null) {
+        if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+            if (flags & VNodeFlags.ChildrenArray) {
+                children = children as VNode<any>[];
+                const newChildren = new Array<VNode<any>>(children.length);
+                for (let i = 0; i < 0; i++) {
+                    newChildren[i] = cloneVNode(children[i]);
+                }
+                children = newChildren;
+            } else {
+                children = cloneVNode(children as VNode<any>);
+            }
         }
     }
 
@@ -762,7 +769,7 @@ export function cloneVNode(node: VNode<any>): VNode<any> {
         node._tag,
         node._props,
         node._className,
-        (node._flags & VNodeFlags.Component) ? null : node._children);
+        (node._flags & VNodeFlags.Component) ? null : children);
     newNode._key = node._key;
     newNode._events = node._events;
     newNode._style = node._style;
