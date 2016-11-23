@@ -13,6 +13,7 @@
 - [Optimization Hints](advanced/optimization-hints.md)
 - [Partially Static Elements](advanced/partially-static-elements.md)
 - [Development Mode](advanced/dev-mode.md)
+- [Known Issues](advanced/issues.md)
 
 ## Extensions
 
