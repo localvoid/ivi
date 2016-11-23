@@ -81,7 +81,7 @@ function componentPerfMarkEnd(
         if (DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) {
             perfMarkEnd(
                 `${instance ? "[C]" : "[F]"}${getFunctionName(
-                    (instance ? component.constructor : component) as Function
+                    (instance ? component.constructor : component) as Function,
                 )}::${method}`,
                 `${debugId}::${method}`,
             );
