@@ -1,7 +1,7 @@
 /**
  * Universal Scheduler.
  *
- * When scheduler is running on server, all frame tasks will be executed inside a macrotask registered with a
+ * When scheduler is running on server, all frame tasks will be executed inside a task registered with a
  * `setImmediate` call.
  */
 
@@ -23,9 +23,9 @@ const enum SchedulerFlags {
      */
     MicrotaskPending = 1,
     /**
-     * Macrotasks are pending for execution in macrotasks queue.
+     * Tasks are pending for execution in tasks queue.
      */
-    MacrotaskPending = 1 << 1,
+    TaskPending = 1 << 1,
     /**
      * Frametasks are pending for execution in frametasks queue.
      */
@@ -224,7 +224,7 @@ const scheduler = {
     clock: 0,
     time: 0,
     microtasks: [] as SchedulerTask[],
-    macrotasks: [] as SchedulerTask[],
+    tasks: [] as SchedulerTask[],
     currentFrame: new FrameTasksGroup(),
     nextFrame: new FrameTasksGroup(),
     updateComponents: [] as Component<any>[],
@@ -232,14 +232,14 @@ const scheduler = {
 
 const microtaskNode = __IVI_BROWSER__ ? document.createTextNode("") : undefined;
 let microtaskToggle = 0;
-const macrotaskMessage = __IVI_BROWSER__ ? "__ivi" + Math.random() : undefined;
+const taskMessage = __IVI_BROWSER__ ? "__ivi" + Math.random() : undefined;
 
 if (__IVI_BROWSER__) {
     // Microtask scheduler based on mutation observer
     const microtaskObserver = new MutationObserver(runMicrotasks);
     microtaskObserver.observe(microtaskNode!, { characterData: true });
 
-    // Macrotask scheduler based on postMessage
+    // Task scheduler based on postMessage
     window.addEventListener("message", handleWindowMessage);
 }
 scheduler.currentFrame._rwLock();
@@ -269,15 +269,15 @@ function requestMicrotaskExecution(): void {
 }
 
 /**
- * Trigger macrotasks execution.
+ * Trigger tasks execution.
  */
-function requestMacrotaskExecution(): void {
-    if ((scheduler.flags & SchedulerFlags.MacrotaskPending) === 0) {
-        scheduler.flags |= SchedulerFlags.MacrotaskPending;
+function requestTaskExecution(): void {
+    if ((scheduler.flags & SchedulerFlags.TaskPending) === 0) {
+        scheduler.flags |= SchedulerFlags.TaskPending;
         if (__IVI_BROWSER__) {
-            window.postMessage(macrotaskMessage, "*");
+            window.postMessage(taskMessage, "*");
         } else {
-            setImmediate(runMacrotasks);
+            setImmediate(runTasks);
         }
     }
 }
@@ -297,13 +297,13 @@ function requestNextFrame(): void {
 }
 
 /**
- * Macrotask scheduler event handler.
+ * Task scheduler event handler.
  *
  * @param ev Message event.
  */
 function handleWindowMessage(ev: MessageEvent): void {
-    if (ev.source === window && ev.data === macrotaskMessage) {
-        runMacrotasks();
+    if (ev.source === window && ev.data === taskMessage) {
+        runTasks();
     }
 }
 
@@ -443,12 +443,12 @@ function runMicrotasks(): void {
     scheduler.flags &= ~SchedulerFlags.MicrotaskPending;
 }
 
-function runMacrotasks(): void {
-    scheduler.flags &= ~SchedulerFlags.MacrotaskPending;
+function runTasks(): void {
+    scheduler.flags &= ~SchedulerFlags.TaskPending;
     scheduler.time = Date.now();
 
-    let tasks = scheduler.macrotasks;
-    scheduler.macrotasks = [];
+    let tasks = scheduler.tasks;
+    scheduler.tasks = [];
     for (let i = 0; i < tasks.length; i++) {
         tasks[i]();
     }
@@ -467,13 +467,13 @@ export function scheduleMicrotask(task: () => void): void {
 }
 
 /**
- * Add task to the macrotask queue.
+ * Add task to the task queue.
  *
  * @param task
  */
-export function scheduleMacrotask(task: () => void): void {
-    requestMacrotaskExecution();
-    scheduler.macrotasks.push(task);
+export function scheduleTask(task: () => void): void {
+    requestTaskExecution();
+    scheduler.tasks.push(task);
 }
 
 /**

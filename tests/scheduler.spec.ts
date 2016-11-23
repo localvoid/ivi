@@ -1,12 +1,12 @@
-import { scheduleMicrotask, scheduleMacrotask, currentFrame, nextFrame, clock } from "../src/scheduler/scheduler";
+import { scheduleMicrotask, scheduleTask, currentFrame, nextFrame, clock } from "../src/scheduler/scheduler";
 
 const expect = chai.expect;
 
 describe("scheduler", () => {
     describe("execution order", () => {
-        it("microtasks before macrotasks", (done) => {
+        it("microtasks before tasks", (done) => {
             let i = 0;
-            scheduleMacrotask(() => {
+            scheduleTask(() => {
                 expect(i).to.equal(1);
                 done();
             });
@@ -67,9 +67,9 @@ describe("scheduler", () => {
             });
         });
 
-        it("advance clock by 1 after macrotask execution", (done) => {
+        it("advance clock by 1 after task execution", (done) => {
             const c = clock();
-            scheduleMacrotask(() => {
+            scheduleTask(() => {
                 expect(clock()).to.equal(c);
                 setTimeout(() => {
                     expect(clock()).to.equal(c + 1);

@@ -38,7 +38,7 @@ export {
  * Scheduler:
  */
 export {
-    FrameTasksGroup, clock, scheduleMicrotask, scheduleMacrotask, currentFrame, nextFrame
+    FrameTasksGroup, clock, scheduleMicrotask, scheduleTask, currentFrame, nextFrame
 } from "./scheduler/scheduler";
 
 /**

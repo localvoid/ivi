@@ -4,7 +4,7 @@ import { EventDispatcher } from "./event_dispatcher";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
 import { getEventTarget, getEventOptions } from "./utils";
-import { scheduleMacrotask } from "../scheduler/scheduler";
+import { scheduleTask } from "../scheduler/scheduler";
 
 /**
  * Native Event Dispatcher.
@@ -28,7 +28,7 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
      */
     private readonly _dispatch: (ev: Event) => void;
     /**
-     * Flag indicating that Event Dispatcher will be deactivated in the macrotask.
+     * Flag indicating that Event Dispatcher will be deactivated in the task.
      */
     private _deactivating: boolean;
 
@@ -87,7 +87,7 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
     deactivate(): void {
         if (!this._deactivating) {
             this._deactivating = true;
-            scheduleMacrotask(() => {
+            scheduleTask(() => {
                 if (this._deactivating) {
                     document.removeEventListener(
                         this.name,

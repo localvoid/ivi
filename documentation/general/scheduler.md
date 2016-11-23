@@ -1,13 +1,13 @@
 # Scheduler
 
-## Microtasks and Macrotasks
+## Microtasks and Tasks
 
 Scheduler provides functions to add callbacks to different
-[Browser Task Queues](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue): microtasks and macrotasks.
+[Browser Task Queues](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue): microtasks and tasks.
 
 ```ts
 function scheduleMicrotask(cb: () => void): void;
-function scheduleMacrotask(cb: () => void): void;
+function scheduleTask(cb: () => void): void;
 ```
 
 ## Frame tasks
