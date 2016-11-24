@@ -12,13 +12,13 @@ const node = $h("div")
 
 ## Creating Virtual Nodes
 
-Virtual Nodes are created with factory functions. There are 7 VNode factory functions, but most of the time you'll need
-just two, one for HTML elements and one for Components.
-
 ```ts
 function $h(tagName: string, className?: string): VNode<P>;
 function $c<P>(component: ComponentFunction<P> | ComponentClass<P>, props: P): VNode<P>;
 ```
+
+This is the two most common factory function that will be used, one creates nodes for HTML element another one creates
+nodes for components.
 
 `$h` function creates nodes for HTML elements. `tagName` parameter specifies HTML tag name, and optional `className`
 parameter specifies a class name.
