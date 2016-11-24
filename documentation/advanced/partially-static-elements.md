@@ -1,8 +1,13 @@
 # Partially Static Elements
 
-Partially static elements are elements with predefined tag name, class names, styles and attributes. They are quite
-useful for widget libraries. With partially static elements it will be easy to make global changes in elements without
-breaking an API.
+Partially static elements are elements with predefined tag name, class names, styles and attributes.
+
+They are quite useful for widget libraries. With partially static elements it will be easy to make global changes in
+elements without breaking an API.
+
+Another use case for partially static elements is elements with [Aria](https://www.w3.org/TR/wai-aria/) attributes.
+Some aria attributes like `role` are usually static, so that instead of defining attributes each time when we
+instantiating this elements, we can just create partially static elements with predefined aria attributes.
 
 ## Creating Partially Static Elements
 
