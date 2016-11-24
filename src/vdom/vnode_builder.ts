@@ -1,5 +1,5 @@
 import { nextDebugId } from "../common/dev_mode";
-import { InputType } from "../common/dom";
+import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
@@ -560,7 +560,7 @@ export function $h(tagName: "var", className?: string): VNodeBuilder<HTMLElement
 export function $h(tagName: "wbr", className?: string): VNodeBuilder<HTMLElementProps | null>;
 export function $h(tagName: "x-ms-webview", className?: string): VNodeBuilder<MSHTMLWebViewElementProps | null>;
 export function $h(tagName: "xmp", className?: string): VNodeBuilder<HTMLPreElementProps | null>;
-export function $h(tagName: string, className?: string): VNodeBuilder<HTMLElementProps | null> {
+export function $h(tagName: HTMLTagType, className?: string): VNodeBuilder<HTMLElementProps | null> {
     return new VNodeBuilder<HTMLElementProps | null>(
         VNodeFlags.Element,
         tagName,
@@ -629,7 +629,7 @@ export function $s(tagName: "textpath", className?: string): VNodeBuilder<SVGTex
 export function $s(tagName: "tspan", className?: string): VNodeBuilder<SVGTSpanElementProps | null>;
 export function $s(tagName: "use", className?: string): VNodeBuilder<SVGUseElementProps | null>;
 export function $s(tagName: "view", className?: string): VNodeBuilder<SVGViewElementProps | null>;
-export function $s(tagName: string, className?: string): VNodeBuilder<SVGElementProps | null> {
+export function $s(tagName: SVGTagType, className?: string): VNodeBuilder<SVGElementProps | null> {
     return new VNodeBuilder<SVGElementProps | null>(
         VNodeFlags.Element | VNodeFlags.SvgElement,
         tagName,
@@ -696,7 +696,7 @@ export function $i(type: InputType, className?: string): VNodeBuilder<HTMLInputE
  */
 export function $m(tagName: "audio", className?: string): VNodeBuilder<HTMLAudioElementProps | null>;
 export function $m(tagName: "video", className?: string): VNodeBuilder<HTMLVideoElementProps | null>;
-export function $m(tagName: "audio" | "video", className?: string): VNodeBuilder<HTMLMediaElementProps | null> {
+export function $m(tagName: MediaTagType, className?: string): VNodeBuilder<HTMLMediaElementProps | null> {
     return new VNodeBuilder<HTMLMediaElementProps | null>(
         VNodeFlags.Element | VNodeFlags.MediaElement,
         tagName,
@@ -735,6 +735,22 @@ export function $e<P>(d: ElementDescriptor<P>, className?: string): VNodeBuilder
     return new VNodeBuilder<P>(
         d._flags & ElementDescriptorFlags.CopyFlags,
         d,
+        null,
+        className === undefined ? null : className,
+        null);
+}
+
+/**
+ * Create a VNodeBuilder representing a Custom Element (WebComponent).
+ *
+ * @param d Element Descriptor.
+ * @param className Class name.
+ * @returns VNodeBuilder object.
+ */
+export function $w(tagName: string, className?: string): VNodeBuilder<{ [key: string]: any } | null> {
+    return new VNodeBuilder<HTMLElementProps | null>(
+        VNodeFlags.Element | VNodeFlags.WebComponent,
+        tagName,
         null,
         className === undefined ? null : className,
         null);

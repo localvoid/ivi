@@ -59,6 +59,10 @@ export const enum VNodeFlags {
      * VNode is an Element Descriptor.
      */
     ElementDescriptor = 1 << 13,
+    /**
+     * VNode is a Custom Element.
+     */
+    WebComponent = 1 << 14,
 
     /**
      * VNode represents a Component.
@@ -68,7 +72,7 @@ export const enum VNodeFlags {
      * Flags that should match to be compatible for syncing.
      */
     Syncable = Text | Element | Component | InputElement | TextAreaElement | MediaElement | SvgElement |
-    ElementDescriptor,
+    ElementDescriptor | WebComponent,
 }
 
 /**
@@ -146,13 +150,14 @@ export const enum ElementDescriptorFlags {
     MediaElement = VNodeFlags.MediaElement,
     Svg = VNodeFlags.SvgElement,
     ElementDescriptor = VNodeFlags.ElementDescriptor,
+    WebComponent = VNodeFlags.WebComponent,
 
     /**
      * Copy flags to VNode.
      */
     CopyFlags = ElementDescriptorFlags.Element | ElementDescriptorFlags.InputElement |
     ElementDescriptorFlags.TextAreaElement | ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.Svg |
-    ElementDescriptorFlags.ElementDescriptor,
+    ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.WebComponent,
 
     /**
      * Clone nodes from a base node with `Node.cloneNode(false)` method.

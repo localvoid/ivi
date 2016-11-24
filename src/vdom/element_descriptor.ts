@@ -1,4 +1,4 @@
-import { SVG_NAMESPACE, InputType } from "../common/dom";
+import { SVG_NAMESPACE, HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { ElementDescriptorFlags } from "./flags";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import {
@@ -191,7 +191,7 @@ export class ElementDescriptor<P> {
  * Create an ElementDescriptor.
  *
  * @param tagName HTML Element tag name.
- * @param clone Enable cloning
+ * @param clone Enable DOM node cloning.
  * @returns ElementDescriptor object.
  */
 export function createElementDescriptor(tagName: "a", clone?: boolean): ElementDescriptor<HTMLAnchorElementProps | null>;
@@ -314,7 +314,7 @@ export function createElementDescriptor(tagName: "var", clone?: boolean): Elemen
 export function createElementDescriptor(tagName: "wbr", clone?: boolean): ElementDescriptor<HTMLElementProps | null>;
 export function createElementDescriptor(tagName: "x-ms-webview", clone?: boolean): ElementDescriptor<MSHTMLWebViewElementProps | null>;
 export function createElementDescriptor(tagName: "xmp", clone?: boolean): ElementDescriptor<HTMLPreElementProps | null>;
-export function createElementDescriptor(tagName: string, clone = false): ElementDescriptor<HTMLElementProps | null> {
+export function createElementDescriptor(tagName: HTMLTagType, clone = false): ElementDescriptor<HTMLElementProps | null> {
     return new ElementDescriptor<HTMLElementProps | null>(
         tagName,
         clone ?
@@ -322,13 +322,13 @@ export function createElementDescriptor(tagName: string, clone = false): Element
                 ElementDescriptorFlags.EnabledCloning) :
             ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor,
     );
-};
+}
 
 /**
  * Create an ElementDescriptor with an SVG flag.
  *
  * @param tagName SVG Element tag name.
- * @param props SVG Element props.
+ * @param clone Enable DOM node cloning.
  * @returns VNodeBuilder object.
  */
 export function createSVGElementDescriptor(tagName: "circle", clone?: boolean): ElementDescriptor<SVGCircleElementProps | null>;
@@ -384,7 +384,7 @@ export function createSVGElementDescriptor(tagName: "textpath", clone?: boolean)
 export function createSVGElementDescriptor(tagName: "tspan", clone?: boolean): ElementDescriptor<SVGTSpanElementProps | null>;
 export function createSVGElementDescriptor(tagName: "use", clone?: boolean): ElementDescriptor<SVGUseElementProps | null>;
 export function createSVGElementDescriptor(tagName: "view", clone?: boolean): ElementDescriptor<SVGViewElementProps | null>;
-export function createSVGElementDescriptor(tagName: string, clone = false): ElementDescriptor<SVGElementProps | null> {
+export function createSVGElementDescriptor(tagName: SVGTagType, clone = false): ElementDescriptor<SVGElementProps | null> {
     return new ElementDescriptor<SVGElementProps | null>(
         tagName,
         clone ?
@@ -398,7 +398,7 @@ export function createSVGElementDescriptor(tagName: string, clone = false): Elem
  * Create an Element Descriptor for HTMLInputElement node.
  *
  * @param type Input Element type. When type param has value "textarea", HTMLTextAreaElement will be created.
- * @param props Input Element props.
+ * @param clone Enable DOM node cloning.
  * @returns VNodeBuilder object.
  */
 export function createInputElementDescriptor(type: "textarea", clone?: boolean): ElementDescriptor<HTMLTextAreaElementProps | null>;
@@ -451,12 +451,12 @@ export function createInputElementDescriptor(type: InputType, clone?: boolean): 
  * Create a VNodeBuilder representing an HTMLMediaElement node.
  *
  * @param tagName Media element tag name.
- * @param props
+ * @param clone Enable DOM node cloning.
  * @returns VNodeBuilder object.
  */
 export function createMediaElementDescriptor(tagName: "audio", clone?: boolean): ElementDescriptor<HTMLAudioElementProps | null>;
 export function createMediaElementDescriptor(tagName: "video", clone?: boolean): ElementDescriptor<HTMLVideoElementProps | null>;
-export function createMediaElementDescriptor(tagName: "audio" | "video", clone?: boolean): ElementDescriptor<HTMLMediaElementProps | null> {
+export function createMediaElementDescriptor(tagName: MediaTagType, clone?: boolean): ElementDescriptor<HTMLMediaElementProps | null> {
     return new ElementDescriptor<HTMLInputElementProps | null>(
         tagName,
         clone ?
@@ -464,6 +464,24 @@ export function createMediaElementDescriptor(tagName: "audio" | "video", clone?:
                 ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.EnabledCloning) :
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
                 ElementDescriptorFlags.MediaElement),
+    );
+}
+
+/**
+ * Create a VNodeBuilder representing a Custom Element.
+ *
+ * @param tagName Custom element tag name.
+ * @param clone Enable DOM node cloning.
+ * @returns VNodeBuilder object.
+ */
+export function createCustomElementDescriptor(tagName: string, clone = false): ElementDescriptor<{ [key: string]: any } | null> {
+    return new ElementDescriptor<HTMLElementProps | null>(
+        tagName,
+        clone ?
+            (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
+                ElementDescriptorFlags.WebComponent | ElementDescriptorFlags.EnabledCloning) :
+            ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
+            ElementDescriptorFlags.WebComponent,
     );
 }
 /* tslint:enable:max-line-length */
