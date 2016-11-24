@@ -128,7 +128,7 @@ export abstract class Component<P> {
      */
     get context(): Context {
         this.flags |= ComponentFlags.CheckUsingContext;
-        return this._context;
+        return this._parentContext;
     }
 
     /**
@@ -142,14 +142,12 @@ export abstract class Component<P> {
     }
 
     /**
-     * Is Component mounted.
+     * Is component attached.
      *
-     * `isMounted` should be used only in one case, to prevent unnecessary work in asynchronous tasks.
-     *
-     * @returns `true` when Component is mounted.
+     * @returns `true` when Component is attached.
      */
-    get isMounted(): boolean {
-        return !!(this.flags & ComponentFlags.Mounted);
+    get isAttached(): boolean {
+        return !!(this.flags & ComponentFlags.Attached);
     }
 
     /**
@@ -166,12 +164,12 @@ export abstract class Component<P> {
     }
 
     /**
-     * Lifecycle method `didReceiveNewProps` is invoked after new props are assigned.
+     * Lifecycle method `newPropsReceived` is invoked after new props are assigned.
      *
      * @param oldProps Old props.
      * @param newProps New props.
      */
-    didReceiveNewProps(oldProps: P, newProps: P): void {
+    newPropsReceived(oldProps: P, newProps: P): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
@@ -182,14 +180,7 @@ export abstract class Component<P> {
      * @param oldContext Old context.
      * @param newContext New Context.
      */
-    didReceiveNewContext(oldContext: Context, newContext: Context): void {
-        // TODO: this lifecycle method might be slightly confusing because it actually works with parent contexts.
-        // Maybe rename it to something more appropriate?
-        //
-        // NOTE: `willReceiveNewContext` will be even more confusing because components provide an API to get current
-        // context with `this.context`. `willReceiveNewProps` were changed to `didReceiveNewProps` to make it look like
-        // this lifecycle method.
-
+    newContextReceived(oldContext: Context, newContext: Context): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
@@ -207,25 +198,25 @@ export abstract class Component<P> {
     }
 
     /**
-     * Lifecycle method `didMount` is invoked when component is mounted to the document.
+     * Lifecycle method `attached` is invoked when component is attached to the document.
      */
-    didMount(): void {
+    attached(): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
 
     /**
-     * Lifecycle method `didUnmount` is invoked when component is unmounted from the document.
+     * Lifecycle method `detached` is invoked when component is detached from the document.
      */
-    didUnmount(): void {
+    detached(): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
 
     /**
-     * Lifecycle method `willUpdate` is invoked before update.
+     * Lifecycle method `beforeUpdate` is invoked before update.
      */
-    willUpdate(): void {
+    beforeUpdate(): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
@@ -233,15 +224,15 @@ export abstract class Component<P> {
     /**
      * Lifecycle method `updated` is invoked after update.
      */
-    didUpdate(): void {
+    updated(): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
 
     /**
-     * Lifecycle method `didInvalidate` is invoked after `invalidate` method is invoked.
+     * Lifecycle method `invalidated` is invoked after `invalidate` method is invoked.
      */
-    didInvalidate(): void {
+    invalidated(): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
@@ -280,9 +271,9 @@ export abstract class Component<P> {
  */
 export function invalidateComponent<P>(component: Component<P>, dirtyFlags: number): void {
     if (__IVI_BROWSER__) {
-        if (component.flags & ComponentFlags.Mounted) {
+        if (component.flags & ComponentFlags.Attached) {
             component.flags |= dirtyFlags;
-            component.didInvalidate();
+            component.invalidated();
             if (!(component.flags & ComponentFlags.InUpdateQueue)) {
                 currentFrame().updateComponent(component);
             }

@@ -19,7 +19,8 @@ interface Component<P> {
 }
 ```
 
-`updateContext` method is used to modify current context. All component descendants will receive a modified context.
+`updateContext` method is used to modify context. Values assigned with `updateContext` method won't be available to the
+component that updates context, new context values will be propagated to children.
 
 ```ts
 function A(props: null, context: Context) {
@@ -49,7 +50,7 @@ it will trigger context update.
 class StatefulComponent extends Component<null> {
     private counter = 0;
 
-    didMount() {
+    attached() {
         setInterval(() => {
             this.counter++;
             this.invalidateContext();
@@ -88,7 +89,7 @@ B.isPropsChanged = () => false;
 class C extends Component<null> {
     private counter = 0;
 
-    didMount() {
+    attached() {
         setInterval(() => {
             this.counter++;
             this.invalidateContext();

@@ -59,7 +59,7 @@ interface VNode<P> {
 find how to rearrange nodes when they are moved, removed or inserted.
 
 `ref` callback is used to get reference for an actual DOM Node or a Component instance. When VNode is instantiated, ref
-callback will be invoked with a node value for a node or a component instance for components. When VNode is unmounted,
+callback will be invoked with a node value for a node or a component instance for components. When VNode is detached,
 ref callback will be invoked with a `null` value.
 
 ### HTML, SVG, Input and Media elements

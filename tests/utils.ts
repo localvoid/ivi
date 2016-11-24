@@ -152,14 +152,14 @@ export class LifecycleMonitor {
     construct: number;
     init: number;
     isPropsChanged: number;
-    didReceiveNewProps: number;
-    didReceiveNewContext: number;
+    newPropsReceived: number;
+    newContextReceived: number;
     updateContext: number;
-    didMount: number;
-    didUnmount: number;
-    willUpdate: number;
-    didUpdate: number;
-    didInvalidate: number;
+    attached: number;
+    detached: number;
+    beforeUpdate: number;
+    updated: number;
+    invalidated: number;
     render: number;
 
     constructor(counter: LifecycleCounter) {
@@ -167,19 +167,19 @@ export class LifecycleMonitor {
         this.construct = -1;
         this.init = -1;
         this.isPropsChanged = -1;
-        this.didReceiveNewProps = -1;
-        this.didReceiveNewContext = -1;
+        this.newPropsReceived = -1;
+        this.newContextReceived = -1;
         this.updateContext = -1;
-        this.didMount = -1;
-        this.didUnmount = -1;
-        this.willUpdate = -1;
-        this.didUpdate = -1;
-        this.didInvalidate = -1;
+        this.attached = -1;
+        this.detached = -1;
+        this.beforeUpdate = -1;
+        this.updated = -1;
+        this.invalidated = -1;
         this.render = -1;
     }
 
-    touch(name: "construct" | "init" | "isPropsChanged" | "didReceiveNewProps" | "didReceiveNewContext" |
-        "updateContext" | "didMount" | "didUnmount" | "willUpdate" | "didUpdate" | "didInvalidate" | "render"): void {
+    touch(name: "construct" | "init" | "isPropsChanged" | "newPropsReceived" | "newContextReceived" |
+        "updateContext" | "attached" | "detached" | "beforeUpdate" | "updated" | "invalidated" | "render"): void {
 
         switch (name) {
             case "construct":
@@ -188,29 +188,29 @@ export class LifecycleMonitor {
             case "isPropsChanged":
                 this.isPropsChanged = this.counter.value++;
                 break;
-            case "didReceiveNewProps":
-                this.didReceiveNewProps = this.counter.value++;
+            case "newPropsReceived":
+                this.newPropsReceived = this.counter.value++;
                 break;
-            case "didReceiveNewContext":
-                this.didReceiveNewContext = this.counter.value++;
+            case "newContextReceived":
+                this.newContextReceived = this.counter.value++;
                 break;
             case "updateContext":
                 this.updateContext = this.counter.value++;
                 break;
-            case "didMount":
-                this.didMount = this.counter.value++;
+            case "attached":
+                this.attached = this.counter.value++;
                 break;
-            case "didUnmount":
-                this.didUnmount = this.counter.value++;
+            case "detached":
+                this.detached = this.counter.value++;
                 break;
-            case "willUpdate":
-                this.willUpdate = this.counter.value++;
+            case "beforeUpdate":
+                this.beforeUpdate = this.counter.value++;
                 break;
-            case "didUpdate":
-                this.didUpdate = this.counter.value++;
+            case "updated":
+                this.updated = this.counter.value++;
                 break;
-            case "didInvalidate":
-                this.didInvalidate = this.counter.value++;
+            case "invalidated":
+                this.invalidated = this.counter.value++;
                 break;
             case "render":
                 this.render = this.counter.value++;
@@ -235,12 +235,12 @@ export class LifecycleTestComponent extends Component<LifecycleTestComponentProp
         return true;
     }
 
-    didReceiveNewProps(oldProps: LifecycleTestComponentProps, newProps: LifecycleTestComponentProps): void {
-        this.props.monitor.touch("didReceiveNewProps");
+    newPropsReceived(oldProps: LifecycleTestComponentProps, newProps: LifecycleTestComponentProps): void {
+        this.props.monitor.touch("newPropsReceived");
     }
 
-    didReceiveNewContext(oldContext: Context, newContext: Context): void {
-        this.props.monitor.touch("didReceiveNewContext");
+    newContextReceived(oldContext: Context, newContext: Context): void {
+        this.props.monitor.touch("newContextReceived");
     }
 
     updateContext<C>(): C | undefined {
@@ -248,24 +248,24 @@ export class LifecycleTestComponent extends Component<LifecycleTestComponentProp
         return;
     }
 
-    didMount(): void {
-        this.props.monitor.touch("didMount");
+    attached(): void {
+        this.props.monitor.touch("attached");
     }
 
-    didUnmount(): void {
-        this.props.monitor.touch("didUnmount");
+    detached(): void {
+        this.props.monitor.touch("detached");
     }
 
-    willUpdate(): void {
-        this.props.monitor.touch("willUpdate");
+    beforeUpdate(): void {
+        this.props.monitor.touch("beforeUpdate");
     }
 
-    didUpdate(): void {
-        this.props.monitor.touch("didUpdate");
+    updated(): void {
+        this.props.monitor.touch("updated");
     }
 
-    didInvalidate(): void {
-        this.props.monitor.touch("didInvalidate");
+    invalidated(): void {
+        this.props.monitor.touch("invalidated");
     }
 
     render() {

@@ -92,51 +92,55 @@ export const enum ComponentFlags {
      */
     DirtyContext = 1 << 2,
     /**
+     * Component is dirty (parent context) and should be updated.
+     */
+    DirtyParentContext = 1 << 3,
+    /**
      * Component is attached to the document.
      */
-    Mounted = 1 << 3,
+    Attached = 1 << 4,
     /**
      * Check that component is using context in `render` method.
      */
-    CheckUsingContext = 1 << 4,
+    CheckUsingContext = 1 << 5,
     /**
      * Component is using context in `render` method.
      *
      * NOTE: UsingContext value should be equal to (CheckUsingContext << 1)
      */
-    UsingContext = 1 << 5,
+    UsingContext = 1 << 6,
     /**
      * Check that component is using props in `updateContext` method.
      */
-    CheckUsingProps = 1 << 6,
+    CheckUsingProps = 1 << 7,
     /**
      * Component is using props in `updateContext` method.
      *
      * NOTE: UsingProps value should be equal to (CheckUsingProps << 1)
      */
-    ContextUsingProps = 1 << 7,
+    ContextUsingProps = 1 << 8,
     /**
      * Component should be updated on each frame.
      */
-    UpdateEachFrame = 1 << 8,
+    UpdateEachFrame = 1 << 9,
     /**
      * Component is registered in update each frame queue, when this flag is off, it will be removed from queue on next
      * frame.
      */
-    InUpdateEachFrameQueue = 1 << 9,
+    InUpdateEachFrameQueue = 1 << 10,
     /**
      * Component is registered in scheduler frame task queue for updates.
      */
-    InUpdateQueue = 1 << 10,
+    InUpdateQueue = 1 << 11,
     /**
      * Component function is using local context.
      */
-    ComponentFunctionContext = 1 << 11,
+    ComponentFunctionContext = 1 << 12,
 
     /**
      * Component is dirty and should be updated.
      */
-    Dirty = DirtyProps | DirtyState | DirtyContext,
+    Dirty = DirtyProps | DirtyState | DirtyContext | DirtyParentContext,
 }
 
 /**

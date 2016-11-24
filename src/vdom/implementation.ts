@@ -148,7 +148,7 @@ export function renderVNode(
 }
 
 /**
- * Render VNode entry point. Renders VNode into container and invokes `didMount` lifecycle methods after VNode is
+ * Render VNode entry point. Renders VNode into container and invokes `attached` lifecycle methods after VNode is
  * inserted into container.
  *
  * #entry
@@ -265,7 +265,7 @@ export function removeVNode(parent: Node, node: VNode<any>): void {
  */
 function _removeVNode(parent: Node, node: VNode<any>): void {
     parent.removeChild(getDOMInstanceFromVNode(node) !);
-    vNodeUnmount(node);
+    vNodeDetach(node);
 }
 
 /**
@@ -309,7 +309,7 @@ export function augmentVNode(
 }
 
 /**
- * Augment entry point. Augments DOM tree with a Virtual DOM tree and performs mounting.
+ * Augment entry point. Augments DOM tree with a Virtual DOM tree and performs attaching.
  *
  * #entry
  * #augment
@@ -368,17 +368,20 @@ export function updateComponent<P>(component: Component<P>): void {
 function _updateComponent<P>(component: Component<P>): void {
     const flags = component.flags;
 
-    if ((flags & ComponentFlags.Mounted) && (flags & ComponentFlags.Dirty)) {
+    if ((flags & ComponentFlags.Attached) && (flags & ComponentFlags.Dirty)) {
         componentPerfMarkBegin(component._debugId, "update");
 
         const oldRoot = component.root!;
-        if (flags & ComponentFlags.DirtyContext) {
-            componentUpdateContext(component);
-        }
 
         componentWillUpdate(component);
 
-        if (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState | ComponentFlags.UsingContext)) {
+        if (flags & (ComponentFlags.DirtyParentContext | ComponentFlags.DirtyContext)) {
+            componentUpdateContext(component);
+        }
+
+        if ((flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState)) ||
+            (flags & (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ===
+            (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) {
             if (__IVI_DEV__) {
                 if ((component._parentDOMNode as Element).tagName) {
                     setInitialNestingState((component._parentDOMNode as Element).tagName.toLowerCase(),
@@ -391,7 +394,7 @@ function _updateComponent<P>(component: Component<P>): void {
             const newRoot = componentClassRender(component);
             vNodeSyncOrReplace(parentNode!, oldRoot, newRoot, component._context);
             component.flags &= ~(ComponentFlags.Dirty | ComponentFlags.InUpdateQueue);
-        } else if (oldRoot) {
+        } else if (oldRoot) { // (flags & (ComponentFlags.DirtyContext | ComponentFlags.DirtyParentContext))
             vNodePropagateNewContext(component._parentDOMNode!, oldRoot, component._context, component);
         }
 
@@ -440,34 +443,34 @@ function _updateComponentFunction(
 }
 
 /**
- * Recursively mount all nodes.
+ * Recursively attach all nodes.
  *
  * @param vnode VNode.
  */
-function vNodeMount(vnode: VNode<any>): void {
+function vNodeAttach(vnode: VNode<any>): void {
     const flags = vnode._flags;
 
     if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
-            componentPerfMarkBegin(component._debugId, "mount");
+            componentPerfMarkBegin(component._debugId, "attach");
 
             if (__IVI_DEV__) {
-                if (component.flags & ComponentFlags.Mounted) {
-                    throw new Error("Failed to mount Component: component is already mounted.");
+                if (component.flags & ComponentFlags.Attached) {
+                    throw new Error("Failed to attach Component: component is already attached.");
                 }
             }
 
-            component.flags |= ComponentFlags.Mounted;
-            componentDidMount(component);
-            vNodeMount(component.root!);
-            componentPerfMarkEnd(component._debugId, "mount", true, component);
+            component.flags |= ComponentFlags.Attached;
+            componentAttached(component);
+            vNodeAttach(component.root!);
+            componentPerfMarkEnd(component._debugId, "attach", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
-            componentPerfMarkBegin(vnode._debugId, "mount");
-            vNodeMount(vnode._children as VNode<any>);
-            componentPerfMarkEnd(vnode._debugId, "mount", false, vnode._tag as ComponentFunction<any>);
+            componentPerfMarkBegin(vnode._debugId, "attach");
+            vNodeAttach(vnode._children as VNode<any>);
+            componentPerfMarkEnd(vnode._debugId, "attach", false, vnode._tag as ComponentFunction<any>);
         }
         stackTracePopComponent();
     } else if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
@@ -476,44 +479,44 @@ function vNodeMount(vnode: VNode<any>): void {
             if (flags & VNodeFlags.ChildrenArray) {
                 children = children as VNode<any>[];
                 for (let i = 0; i < children.length; i++) {
-                    vNodeMount(children[i]);
+                    vNodeAttach(children[i]);
                 }
             } else {
-                vNodeMount(children as VNode<any>);
+                vNodeAttach(children as VNode<any>);
             }
         }
     }
 }
 
 /**
- * Recursively unmount all nodes.
+ * Recursively detach all nodes.
  *
  * @param vnode VNode.
  */
-function vNodeUnmount(vnode: VNode<any>): void {
+function vNodeDetach(vnode: VNode<any>): void {
     const flags = vnode._flags;
     if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
-            componentPerfMarkBegin(component._debugId, "unmount");
+            componentPerfMarkBegin(component._debugId, "detach");
 
             if (__IVI_DEV__) {
-                if (!(component.flags & ComponentFlags.Mounted)) {
-                    throw new Error("Failed to unmount Component: component is already unmounted.");
+                if (!(component.flags & ComponentFlags.Attached)) {
+                    throw new Error("Failed to detach Component: component is already detached.");
                 }
             }
-            vNodeUnmount(component.root!);
-            component.flags &= ~(ComponentFlags.Mounted | ComponentFlags.UpdateEachFrame);
-            componentDidUnmount(component);
-            componentPerfMarkEnd(component._debugId, "unmount", true, component);
+            vNodeDetach(component.root!);
+            component.flags &= ~(ComponentFlags.Attached | ComponentFlags.UpdateEachFrame);
+            componentDetached(component);
+            componentPerfMarkEnd(component._debugId, "detach", true, component);
             unregisterComponent(component);
             devModeOnComponentDisposed(component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
-            componentPerfMarkBegin(vnode._debugId, "unmount");
-            vNodeUnmount(vnode._children as VNode<any>);
-            componentPerfMarkEnd(vnode._debugId, "unmount", false, vnode._tag as ComponentFunction<any>);
+            componentPerfMarkBegin(vnode._debugId, "detach");
+            vNodeDetach(vnode._children as VNode<any>);
+            componentPerfMarkEnd(vnode._debugId, "detach", false, vnode._tag as ComponentFunction<any>);
         }
         stackTracePopComponent();
     } else if (flags & VNodeFlags.Element) {
@@ -523,10 +526,10 @@ function vNodeUnmount(vnode: VNode<any>): void {
                 if (flags & VNodeFlags.ChildrenArray) {
                     children = children as VNode<any>[];
                     for (let i = 0; i < children.length; i++) {
-                        vNodeUnmount(children[i]);
+                        vNodeDetach(children[i]);
                     }
                 } else {
-                    vNodeUnmount(children as VNode<any>);
+                    vNodeDetach(children as VNode<any>);
                 }
             }
         }
@@ -541,13 +544,13 @@ function vNodeUnmount(vnode: VNode<any>): void {
 }
 
 /**
- * Unmount all nodes and its subtrees.
+ * Detach all nodes and its subtrees.
  *
  * @param vnodes Array of VNodes.
  */
-function vNodeUnmountAll(vnodes: VNode<any>[]): void {
+function vNodeDetachAll(vnodes: VNode<any>[]): void {
     for (let i = 0; i < vnodes.length; i++) {
-        vNodeUnmount(vnodes[i]);
+        vNodeDetach(vnodes[i]);
     }
 }
 
@@ -614,27 +617,27 @@ function vNodeMoveChild(parent: Node, node: VNode<any>, nextRef: Node | null): v
 /**
  * Remove all children.
  *
- * `didUnmount` lifecycle methods will be invoked in all children and their subtrees.
+ * `detach` lifecycle methods will be invoked for all children and their subtrees.
  *
  * @param parent Parent DOM node.
  * @param nodes Arrays of VNodes to remove.
  */
 function vNodeRemoveAllChildren(parent: Node, nodes: VNode<any>[]): void {
     parent.textContent = "";
-    vNodeUnmountAll(nodes);
+    vNodeDetachAll(nodes);
 }
 
 /**
  * Remove child.
  *
- * `didUnmount` lifecycle methods will be invoked in removed node and its subtree.
+ * `detach` lifecycle methods will be invoked for removed node and its subtree.
  *
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
  */
 function vNodeRemoveChild(parent: Node, node: VNode<any>): void {
     parent.removeChild(getDOMInstanceFromVNode(node) !);
-    vNodeUnmount(node);
+    vNodeDetach(node);
 }
 
 /**
@@ -649,10 +652,10 @@ function vNodeRemoveChild(parent: Node, node: VNode<any>): void {
  */
 function componentUpdateParentContext<P>(component: Component<P>, newParentContext: Context): void {
     if (component._parentContext !== newParentContext) {
-        component.flags |= ComponentFlags.DirtyContext;
+        component.flags |= ComponentFlags.DirtyParentContext;
         const oldContext = component._parentContext;
         component._parentContext = newParentContext;
-        component.didReceiveNewContext(oldContext, newParentContext);
+        component.newContextReceived(oldContext, newParentContext);
     }
 }
 
@@ -688,7 +691,7 @@ function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
 
         // There is no reason to call `didReceiveNewProps` when props aren't changed, even when they are reassigned
         // later to reduce memory usage.
-        component.didReceiveNewProps(oldProps, newProps);
+        component.newPropsReceived(oldProps, newProps);
         if (component.flags & ComponentFlags.ContextUsingProps) {
             component.flags |= ComponentFlags.DirtyContext;
         }
@@ -709,7 +712,7 @@ function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
  * @param component
  */
 function componentWillUpdate<P>(component: Component<P>): void {
-    component.willUpdate();
+    component.beforeUpdate();
 }
 
 /**
@@ -720,29 +723,29 @@ function componentWillUpdate<P>(component: Component<P>): void {
  * @param component
  */
 function componentDidUpdate<P>(component: Component<P>): void {
-    component.didUpdate();
+    component.updated();
 }
 
 /**
- * Invoke `component.didMount` method.
+ * Invoke `component.attached` method.
  *
  * #component
  *
  * @param component
  */
-function componentDidMount<P>(component: Component<P>): void {
-    component.didMount();
+function componentAttached<P>(component: Component<P>): void {
+    component.attached();
 }
 
 /**
- * Invoke `component.didMount` method.
+ * Invoke `component.detached` method.
  *
  * #component
  *
  * @param component
  */
-function componentDidUnmount<P>(component: Component<P>): void {
-    component.didUnmount();
+function componentDetached<P>(component: Component<P>): void {
+    component.detached();
 }
 
 /**
@@ -924,10 +927,10 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
 }
 
 /**
- * Render VNode into container and invoke `didMount` lifecycle methods after VNode is inserted into container.
+ * Render VNode into container and invoke `attached` lifecycle methods after VNode is inserted into container.
  *
- * It is important that `didMount` methods are invoked only after DOM Nodes have been inserted into container, so it
- * goes twice through the entire vnode tree, first time when everything is rendered and the second time when `didMount`
+ * It is important that `attached` methods are invoked only after DOM Nodes have been inserted into container, so it
+ * goes twice through the entire vnode tree, first time when everything is rendered and the second time when `attached`
  * methods are invoked.
  *
  * @param container Container Node.
@@ -946,7 +949,7 @@ function vNodeRenderInto(
 ): Node | Component<any> {
     const instance = vNodeRender(container, vnode, context, owner);
     container.insertBefore(getDOMInstanceFromVNode(vnode) !, refChild);
-    vNodeMount(vnode);
+    vNodeAttach(vnode);
     return instance;
 }
 
@@ -1252,8 +1255,8 @@ function vNodeSyncOrReplace(
         (b._flags & VNodeFlags.ComponentClass) ?
             getDOMInstanceFromComponent(newInstance as Component<any>) :
             newInstance as Element, getDOMInstanceFromVNode(a) !);
-    vNodeUnmount(a);
-    vNodeMount(b);
+    vNodeDetach(a);
+    vNodeAttach(b);
     return newInstance;
 }
 
@@ -1342,7 +1345,7 @@ function syncChildren(
                 } else {
                     setInnerHTML(parent as Element, b as string);
                 }
-                vNodeUnmountAll(a);
+                vNodeDetachAll(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as VNode<any>[];
                 if (a.length === 0) {
@@ -1381,7 +1384,7 @@ function syncChildren(
                 } else {
                     setInnerHTML(parent as Element, b as string);
                 }
-                vNodeUnmount(a);
+                vNodeDetach(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as VNode<any>[];
                 if (b.length > 0) {

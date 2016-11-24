@@ -66,7 +66,7 @@ class StatefulComponent extends Component<Data> {
         return this.mtime < newProps.mtime;
     }
 
-    didUpdate() {
+    updated() {
         this.mtime = clock();
     }
 

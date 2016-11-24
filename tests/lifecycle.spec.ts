@@ -16,15 +16,15 @@ describe("lifecycle", () => {
         expect(m.construct).to.equal(0);
         expect(m.updateContext).to.equal(1);
         expect(m.render).to.equal(2);
-        expect(m.didMount).to.equal(3);
+        expect(m.attached).to.equal(3);
 
         expect(m.isPropsChanged).to.equal(-1);
-        expect(m.didReceiveNewProps).to.equal(-1);
-        expect(m.didReceiveNewContext).to.equal(-1);
-        expect(m.didUnmount).to.equal(-1);
-        expect(m.willUpdate).to.equal(-1);
-        expect(m.didUpdate).to.equal(-1);
-        expect(m.didInvalidate).to.equal(-1);
+        expect(m.newPropsReceived).to.equal(-1);
+        expect(m.newContextReceived).to.equal(-1);
+        expect(m.detached).to.equal(-1);
+        expect(m.beforeUpdate).to.equal(-1);
+        expect(m.updated).to.equal(-1);
+        expect(m.invalidated).to.equal(-1);
     });
 
     it("<C><div></C> => <div>", () => {
@@ -41,15 +41,15 @@ describe("lifecycle", () => {
         expect(m.construct).to.equal(0);
         expect(m.updateContext).to.equal(1);
         expect(m.render).to.equal(2);
-        expect(m.didMount).to.equal(3);
-        expect(m.didUnmount).to.equal(4);
+        expect(m.attached).to.equal(3);
+        expect(m.detached).to.equal(4);
 
         expect(m.isPropsChanged).to.equal(-1);
-        expect(m.didReceiveNewProps).to.equal(-1);
-        expect(m.didReceiveNewContext).to.equal(-1);
-        expect(m.willUpdate).to.equal(-1);
-        expect(m.didUpdate).to.equal(-1);
-        expect(m.didInvalidate).to.equal(-1);
+        expect(m.newPropsReceived).to.equal(-1);
+        expect(m.newContextReceived).to.equal(-1);
+        expect(m.beforeUpdate).to.equal(-1);
+        expect(m.updated).to.equal(-1);
+        expect(m.invalidated).to.equal(-1);
     });
 
     it("<div> => <C><div></C>", () => {
@@ -66,15 +66,15 @@ describe("lifecycle", () => {
         expect(m.construct).to.equal(0);
         expect(m.updateContext).to.equal(1);
         expect(m.render).to.equal(2);
-        expect(m.didMount).to.equal(3);
+        expect(m.attached).to.equal(3);
 
         expect(m.isPropsChanged).to.equal(-1);
-        expect(m.didReceiveNewProps).to.equal(-1);
-        expect(m.didReceiveNewContext).to.equal(-1);
-        expect(m.didUnmount).to.equal(-1);
-        expect(m.willUpdate).to.equal(-1);
-        expect(m.didUpdate).to.equal(-1);
-        expect(m.didInvalidate).to.equal(-1);
+        expect(m.newPropsReceived).to.equal(-1);
+        expect(m.newContextReceived).to.equal(-1);
+        expect(m.detached).to.equal(-1);
+        expect(m.beforeUpdate).to.equal(-1);
+        expect(m.updated).to.equal(-1);
+        expect(m.invalidated).to.equal(-1);
     });
 
     it("<C><C><div></C></C>", () => {
@@ -93,28 +93,28 @@ describe("lifecycle", () => {
         expect(m1.construct).to.equal(0);
         expect(m1.updateContext).to.equal(1);
         expect(m1.render).to.equal(2);
-        expect(m1.didMount).to.equal(6);
+        expect(m1.attached).to.equal(6);
 
         expect(m2.construct).to.equal(3);
         expect(m2.updateContext).to.equal(4);
         expect(m2.render).to.equal(5);
-        expect(m2.didMount).to.equal(7);
+        expect(m2.attached).to.equal(7);
 
         expect(m1.isPropsChanged).to.equal(-1);
-        expect(m1.didReceiveNewProps).to.equal(-1);
-        expect(m1.didReceiveNewContext).to.equal(-1);
-        expect(m1.didUnmount).to.equal(-1);
-        expect(m1.willUpdate).to.equal(-1);
-        expect(m1.didUpdate).to.equal(-1);
-        expect(m1.didInvalidate).to.equal(-1);
+        expect(m1.newPropsReceived).to.equal(-1);
+        expect(m1.newContextReceived).to.equal(-1);
+        expect(m1.detached).to.equal(-1);
+        expect(m1.beforeUpdate).to.equal(-1);
+        expect(m1.updated).to.equal(-1);
+        expect(m1.invalidated).to.equal(-1);
 
         expect(m2.isPropsChanged).to.equal(-1);
-        expect(m2.didReceiveNewProps).to.equal(-1);
-        expect(m2.didReceiveNewContext).to.equal(-1);
-        expect(m2.didUnmount).to.equal(-1);
-        expect(m2.willUpdate).to.equal(-1);
-        expect(m2.didUpdate).to.equal(-1);
-        expect(m2.didInvalidate).to.equal(-1);
+        expect(m2.newPropsReceived).to.equal(-1);
+        expect(m2.newContextReceived).to.equal(-1);
+        expect(m2.detached).to.equal(-1);
+        expect(m2.beforeUpdate).to.equal(-1);
+        expect(m2.updated).to.equal(-1);
+        expect(m2.invalidated).to.equal(-1);
     });
 
     it("<C><C><div></C></C> => <div>", () => {
@@ -135,28 +135,28 @@ describe("lifecycle", () => {
         expect(m1.construct).to.equal(0);
         expect(m1.updateContext).to.equal(1);
         expect(m1.render).to.equal(2);
-        expect(m1.didMount).to.equal(6);
-        expect(m1.didUnmount).to.equal(9);
+        expect(m1.attached).to.equal(6);
+        expect(m1.detached).to.equal(9);
 
         expect(m2.construct).to.equal(3);
         expect(m2.updateContext).to.equal(4);
         expect(m2.render).to.equal(5);
-        expect(m2.didMount).to.equal(7);
-        expect(m2.didUnmount).to.equal(8);
+        expect(m2.attached).to.equal(7);
+        expect(m2.detached).to.equal(8);
 
         expect(m1.isPropsChanged).to.equal(-1);
-        expect(m1.didReceiveNewProps).to.equal(-1);
-        expect(m1.didReceiveNewContext).to.equal(-1);
-        expect(m1.willUpdate).to.equal(-1);
-        expect(m1.didUpdate).to.equal(-1);
-        expect(m1.didInvalidate).to.equal(-1);
+        expect(m1.newPropsReceived).to.equal(-1);
+        expect(m1.newContextReceived).to.equal(-1);
+        expect(m1.beforeUpdate).to.equal(-1);
+        expect(m1.updated).to.equal(-1);
+        expect(m1.invalidated).to.equal(-1);
 
         expect(m2.isPropsChanged).to.equal(-1);
-        expect(m2.didReceiveNewProps).to.equal(-1);
-        expect(m2.didReceiveNewContext).to.equal(-1);
-        expect(m2.willUpdate).to.equal(-1);
-        expect(m2.didUpdate).to.equal(-1);
-        expect(m2.didInvalidate).to.equal(-1);
+        expect(m2.newPropsReceived).to.equal(-1);
+        expect(m2.newContextReceived).to.equal(-1);
+        expect(m2.beforeUpdate).to.equal(-1);
+        expect(m2.updated).to.equal(-1);
+        expect(m2.invalidated).to.equal(-1);
     });
 
     it("<C><div></C> => <C><div></C>", () => {
@@ -175,18 +175,18 @@ describe("lifecycle", () => {
         }), f);
 
         expect(m.construct).to.equal(0);
-        // updateContext is executed twice becasue LifecycleTestComponent is accessing `props` in updateContext.
-        expect(m.updateContext).to.equal(6);
-        expect(m.render).to.equal(8);
-        expect(m.didMount).to.equal(3);
+        // updateContext is executed twice because LifecycleTestComponent is accessing `props` in updateContext.
+        expect(m.updateContext).to.equal(7); // 1
+        expect(m.render).to.equal(8); // 2
+        expect(m.attached).to.equal(3);
         expect(m.isPropsChanged).to.equal(4);
-        expect(m.didReceiveNewProps).to.equal(5);
-        expect(m.willUpdate).to.equal(7);
-        expect(m.didUpdate).to.equal(9);
+        expect(m.newPropsReceived).to.equal(5);
+        expect(m.beforeUpdate).to.equal(6);
+        expect(m.updated).to.equal(9);
 
-        expect(m.didReceiveNewContext).to.equal(-1);
-        expect(m.didUnmount).to.equal(-1);
-        expect(m.didInvalidate).to.equal(-1);
+        expect(m.newContextReceived).to.equal(-1);
+        expect(m.detached).to.equal(-1);
+        expect(m.invalidated).to.equal(-1);
     });
 
     it("<S><C><div></C></S> => <S><C><div></C></S>", () => {
@@ -206,14 +206,14 @@ describe("lifecycle", () => {
         expect(m.construct).to.equal(0);
         expect(m.updateContext).to.equal(1);
         expect(m.render).to.equal(2);
-        expect(m.didMount).to.equal(3);
+        expect(m.attached).to.equal(3);
 
         expect(m.isPropsChanged).to.equal(-1);
-        expect(m.didReceiveNewProps).to.equal(-1);
-        expect(m.didReceiveNewContext).to.equal(-1);
-        expect(m.willUpdate).to.equal(-1);
-        expect(m.didUpdate).to.equal(-1);
-        expect(m.didUnmount).to.equal(-1);
-        expect(m.didInvalidate).to.equal(-1);
+        expect(m.newPropsReceived).to.equal(-1);
+        expect(m.newContextReceived).to.equal(-1);
+        expect(m.beforeUpdate).to.equal(-1);
+        expect(m.updated).to.equal(-1);
+        expect(m.detached).to.equal(-1);
+        expect(m.invalidated).to.equal(-1);
     });
 });

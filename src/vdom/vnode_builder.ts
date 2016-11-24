@@ -400,10 +400,10 @@ export class VNodeBuilder<P> implements VNode<P> {
     /**
      * Set ref callback.
      *
-     * When VNode is mounted ref callback will be invoked with a Node value for DOM Elements or Component instance for
-     * components.
+     * When VNode is instantiated ref callback will be invoked with a Node value for DOM Elements or Component
+     * instance for components.
      *
-     * When VNode is unmounted ref callback will be invoked with a `null` value.
+     * When VNode is detached, ref callback will be invoked with a `null` value.
      *
      * @param ref callback.
      * @returns VNodeBuilder.

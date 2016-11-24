@@ -180,14 +180,14 @@ class StatefulComponent extends Component<null> {
     private time = 0;
     private timeoutId = 0;
 
-    didMount() {
+    attached() {
         this.timeoutId = setInterval(() => {
             this.time++;
             this.invalidate();
         }, 1000);
     }
 
-    didUnmount() {
+    detached() {
         clearInterval(this.timeoutId);
     }
 

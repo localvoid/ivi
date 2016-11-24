@@ -83,7 +83,7 @@ interface Component<P> {
 class StatefulComponent extends Component<null> {
     private counter = 0;
 
-    didMount() {
+    attached() {
         setInterval(() => {
             this.counter++;
             this.invalidate();
@@ -109,7 +109,7 @@ interface Component<P> {
 class StatefulComponent extends Component<null> {
     private counter = 0;
 
-    didMount() {
+    attached() {
         setInterval(() => {
             this.counter++;
             this.invalidateContext();
@@ -150,7 +150,7 @@ Component received a new props.
 
 ```ts
 interface Component<P> {
-    didReceiveNewProps(oldProps: P, newProps: P): void;
+    newPropsReceived(oldProps: P, newProps: P): void;
 }
 ```
 
@@ -158,7 +158,7 @@ interface Component<P> {
 class StatefulComponent extends Component<string> {
     private internalState = this.props + "!!";
 
-    didReceiveNewProps(oldProps: string, newProps: string) {
+    newPropsReceived(oldProps: string, newProps: string) {
         this.internalState = newProps + "!!";
     }
 
@@ -172,7 +172,7 @@ Component received a new context.
 
 ```ts
 interface Component<P> {
-    didReceiveNewContext(oldContext: Context, newContext: Context): void;
+    newContextReceived(oldContext: Context, newContext: Context): void;
 }
 ```
 
@@ -180,7 +180,7 @@ interface Component<P> {
 class StatefulComponent extends Component<null> {
     private internalState = this.context.get("key") + "!!";
 
-    didReceiveNewContext(oldContext: Context, newContext: Context) {
+    newContextReceived(oldContext: Context, newContext: Context) {
         this.internalState = newContext.get("key") + "!!";
     }
 
@@ -212,19 +212,19 @@ class StatefulComponent extends Component<string> {
 }
 ```
 
-Component is mounted to the document.
+Component is attached to the document. Attached methods are invoked in top to bottom order.
 
 ```ts
 interface Component<P> {
-    didMount(): void;
+    attached(): void;
 }
 ```
 
-Component is unmounted from the document.
+Component is detached from the document. Detached methods are invoked in bottom to top order.
 
 ```ts
 interface Component<P> {
-    didUnmount(): void;
+    detached(): void;
 }
 ```
 
@@ -232,22 +232,22 @@ Component will be updated.
 
 ```ts
 interface Component<P> {
-    willUpdate(): void;
+    beforeUpdate(): void;
 }
 ```
 
-Component did updated.
+Component updated.
 
 ```ts
 interface Component<P> {
-    didUpdate(): void;
+    updated(): void;
 }
 ```
 
-Component did invalidated.
+Component nvalidated.
 
 ```ts
 interface Component<P> {
-    didInvalidate(): void;
+    invalidated(): void;
 }
 ```

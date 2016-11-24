@@ -6,7 +6,7 @@ import { $t, $h, $c } from "../src/vdom/vnode_builder";
 const expect = chai.expect;
 
 describe("ref", () => {
-    describe("mount", () => {
+    describe("attach", () => {
         it("'abc'", () => {
             let r: Node | null | undefined;
             const n = render<HTMLDivElement>($t("abc").ref((ref) => r = ref));
@@ -33,7 +33,7 @@ describe("ref", () => {
         });
     });
 
-    describe("unmount", () => {
+    describe("detach", () => {
         it("'abc'", () => {
             const f = frag();
             let r: Node | null | undefined;
