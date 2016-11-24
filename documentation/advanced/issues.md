@@ -2,8 +2,11 @@
 
 ## Input Values
 
-When input value is changing, it doesn't provide any information how its been changed, and the only way to get the
-latest value is to retrieve it from input element. Now imagine this situation:
+When input value is changing, it doesn't provide any information how its been changed, and the only thing we can do is
+to retrieve the latest value from input element. This information isn't enough when our applications are
+nondetermenistic.
+
+Imagine this situation:
 
 - Input Event is fired when value has been changed.
 - Saving the latest value in external store.
