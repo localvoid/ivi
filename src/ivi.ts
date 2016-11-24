@@ -99,7 +99,7 @@ import { VERSION, GLOBAL_EXPORT } from "./common/dev_mode";
 import { findComponentByDebugId } from "./vdom/component";
 
 if (__IVI_DEV__) {
-    console.info("IVI: DEVELOPMENT MODE");
+    console.info(`IVI [${VERSION}]: DEVELOPMENT MODE`);
 
     if (__IVI_BROWSER__) {
         if (document) {
