@@ -75,9 +75,9 @@ Just include with a `<script>` tag. `ivi` will be registered as a global variabl
 
 There are several versions of standalone packages:
 
-- [Dev Mode](https://unpkg.com/ivi@0.1.1/dist/cdn/ivi.dev.js)
-- [Production](https://unpkg.com/ivi@0.1.1/dist/cdn/ivi.js)
-- [Production (minified)](https://unpkg.com/ivi@0.1.1/dist/cdn/ivi.min.js)
+- [Dev Mode](https://unpkg.com/ivi@^0.2.0/dist/cdn/ivi.dev.js)
+- [Production](https://unpkg.com/ivi@^0.2.0/dist/cdn/ivi.js)
+- [Production (minified)](https://unpkg.com/ivi@^0.2.0/dist/cdn/ivi.min.js)
 
 Standalone packages are distributed via [unpkg](https://unpkg.com) CDN.
 
