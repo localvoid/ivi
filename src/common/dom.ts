@@ -7,6 +7,22 @@ export const XLINK_NAMESPACE = "http://www.w3.org/1999/xlink";
 export const XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 
 /**
+ * Set inner HTML.
+ *
+ * @param element DOM Element.
+ * @param content Inner HTML.
+ */
+export function setInnerHTML(element: Element, content: string): void {
+    // #msapp
+    //
+    // innerHTML should be invoked inside an unsafe context `MSApp.execUnsafeLocalFunction`
+    // All details here: https://msdn.microsoft.com/en-us/library/windows/apps/hh767331.aspx
+
+    // Doesn't work on SVG Elements in IE. Latest Edge versions are working fine.
+    element.innerHTML = content;
+}
+
+/**
  * Traverses the DOM to the top and calculates DOM Node depth.
  *
  * @param node DOM Node.

@@ -18,7 +18,7 @@
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../common/dev_mode";
 import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed } from "../common/dev_hooks";
 import { injectScreenOfDeath } from "../common/screen_of_death";
-import { SVG_NAMESPACE } from "../common/dom";
+import { SVG_NAMESPACE, setInnerHTML } from "../common/dom";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
     nestingStateParentTagName, AncestorFlags, AncestorFlagsByTagName,
@@ -882,7 +882,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                 } else if (flags & VNodeFlags.InputElement) {
                     setHTMLInputValue(instance as HTMLInputElement, children as string | boolean);
                 } else { // (flags & VNodeFlags.UnsafeHTML)
-                    (instance as Element).innerHTML = children as string;
+                    setInnerHTML((instance as Element), children as string);
                 }
             }
         }
@@ -1294,7 +1294,7 @@ function syncChildren(
         } else if (bParentFlags & VNodeFlags.InputElement) {
             setHTMLInputValue(parent as HTMLInputElement, b as string | boolean);
         } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
-            (parent as Element).innerHTML = b as string;
+            setInnerHTML(parent as Element, b as string);
         }
     } else if (b === null) {
         if (aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
@@ -1321,7 +1321,7 @@ function syncChildren(
                         parent.textContent = b as string;
                     }
                 } else {
-                    (parent as Element).innerHTML = b as string;
+                    setInnerHTML((parent as Element), b as string);
                 }
             } else {
                 parent.textContent = "";
@@ -1340,7 +1340,7 @@ function syncChildren(
                 if (bParentFlags & VNodeFlags.ChildrenBasic) {
                     parent.textContent = b as string;
                 } else {
-                    (parent as Element).innerHTML = b as string;
+                    setInnerHTML(parent as Element, b as string);
                 }
                 vNodeUnmountAll(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
@@ -1379,7 +1379,7 @@ function syncChildren(
                 if (bParentFlags & VNodeFlags.ChildrenBasic) {
                     parent.textContent = b as string;
                 } else {
-                    (parent as Element).innerHTML = b as string;
+                    setInnerHTML(parent as Element, b as string);
                 }
                 vNodeUnmount(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
