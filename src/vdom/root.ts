@@ -100,6 +100,9 @@ export function render<T extends Node>(
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
                 "your application.");
         }
+        if (!document.body.contains(container)) {
+            throw new Error("Container element should be attached to the document.");
+        }
     }
 
     let root = findRoot(container);
@@ -138,6 +141,9 @@ export function renderNextFrame(
         if (container === document.body) {
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
                 "your application.");
+        }
+        if (!document.body.contains(container)) {
+            throw new Error("Container element should be attached to the document.");
         }
     }
 
@@ -180,6 +186,9 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
         if (container === document.body) {
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
                 "your application.");
+        }
+        if (!document.body.contains(container)) {
+            throw new Error("Container element should be attached to the document.");
         }
 
         if (findRoot(container)) {
