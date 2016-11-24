@@ -822,7 +822,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
             instance = document.createTextNode(vnode._children as string);
         } else { // (flags & VNodeFlags.Element)
             pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
-                (vnode._tag as ElementDescriptor<any>)._tagName :
+                (vnode._tag as ElementDescriptor<any>)._tag :
                 vnode._tag as string);
             checkNestingViolation();
             if (flags & VNodeFlags.ElementDescriptor) {
@@ -1006,7 +1006,7 @@ function vNodeAugment(
             if (flags & VNodeFlags.Element) {
                 if (__IVI_DEV__) {
                     pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
-                        (vnode._tag as ElementDescriptor<any>)._tagName :
+                        (vnode._tag as ElementDescriptor<any>)._tag :
                         vnode._tag as string);
                     checkNestingViolation();
                     if (node.nodeType !== 1) {

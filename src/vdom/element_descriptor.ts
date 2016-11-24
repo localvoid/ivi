@@ -51,7 +51,7 @@ export class ElementDescriptor<P> {
     /**
      * Tag name of the element.
      */
-    _tagName: string;
+    _tag: string;
     /**
      * Style.
      */
@@ -79,7 +79,7 @@ export class ElementDescriptor<P> {
 
     constructor(tagName: string, flags: ElementDescriptorFlags = 0) {
         this._flags = flags;
-        this._tagName = tagName;
+        this._tag = tagName;
         this._props = null;
         this._className = null;
         this._style = null;
@@ -155,17 +155,17 @@ export class ElementDescriptor<P> {
 
         if (ref === null) {
             if (this._flags & ElementDescriptorFlags.Svg) {
-                ref = document.createElementNS(SVG_NAMESPACE, this._tagName);
+                ref = document.createElementNS(SVG_NAMESPACE, this._tag);
             } else {
                 if (this._flags & ElementDescriptorFlags.InputElement) {
                     if (this._flags & ElementDescriptorFlags.TextAreaElement) {
                         ref = document.createElement("textarea");
                     } else {
                         ref = document.createElement("input");
-                        (ref as HTMLInputElement).type = this._tagName as string;
+                        (ref as HTMLInputElement).type = this._tag as string;
                     }
                 } else {
-                    ref = document.createElement(this._tagName);
+                    ref = document.createElement(this._tag);
                 }
             }
 
