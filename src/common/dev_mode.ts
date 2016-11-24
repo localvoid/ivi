@@ -16,6 +16,11 @@
 import { FeatureFlags, FEATURES } from "./feature_detection";
 
 /**
+ * Version number in string format.
+ */
+export const VERSION = __IVI_VERSION__;
+
+/**
  * Dev Mode Flags.
  *
  * `setDevModeFlags` function is used to set Dev Mode flags.

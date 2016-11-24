@@ -8,6 +8,12 @@
 declare global {
     /* tslint:disable:no-unused-variable */
     /**
+     * Global variable with a version string.
+     *
+     * @define {string}
+     */
+    const __IVI_VERSION__: string;
+    /**
      * Global variable that enables Development Mode.
      *
      * @define {boolean}
@@ -15,6 +21,8 @@ declare global {
     const __IVI_DEV__: boolean;
     /**
      * Global variable that indicates that code is executed in a browser environment.
+     *
+     * @define {boolean}
      */
     const __IVI_BROWSER__: boolean;
     /* tslint:enable:no-unused-variable */
@@ -87,7 +95,7 @@ export { STACK_TRACE } from "./vdom/stack_trace";
 /**
  * Dev Mode exported functions:
  */
-import { GLOBAL_EXPORT } from "./common/dev_mode";
+import { VERSION, GLOBAL_EXPORT } from "./common/dev_mode";
 import { findComponentByDebugId } from "./vdom/component";
 
 if (__IVI_DEV__) {
@@ -99,6 +107,7 @@ if (__IVI_DEV__) {
         }
 
         const devModeExport = {
+            "VERSION": VERSION,
             "findComponentByDebugId": findComponentByDebugId,
             "$": function (v: any) {
                 return findComponentByDebugId(Number(v));

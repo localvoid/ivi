@@ -89,6 +89,11 @@ function bundleNPM() {
                 tslib: "node_modules/tslib/tslib.es6.js",
             }),
             rollupNodeResolve(),
+            rollupReplace({
+                values: {
+                    "__IVI_VERSION__": JSON.stringify(pkg["version"]),
+                },
+            }),
         ],
     }).then((bundle) => Promise.all([
         bundle.write({
@@ -115,6 +120,7 @@ function bundleCDN(devMode) {
                 rollupSourceMaps(),
                 rollupReplace({
                     values: {
+                        "__IVI_VERSION__": JSON.stringify(pkg["version"]),
                         "__IVI_DEV__": devMode,
                         "__IVI_BROWSER__": true,
                     },
@@ -177,6 +183,7 @@ function bundleTests(enableCoverageReport) {
             rollupNodeResolve(),
             rollupReplace({
                 values: {
+                    "__IVI_VERSION__": JSON.stringify(pkg["version"]),
                     "__IVI_DEV__": true,
                     "__IVI_BROWSER__": true,
                 },
