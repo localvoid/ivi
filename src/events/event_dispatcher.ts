@@ -11,7 +11,6 @@ import { SyntheticEvent } from "./synthetic_event";
  */
 export const enum EventDispatcherSubscriptionFlags {
     Canceled = 1,
-    Canceling = 1 << 1,
 }
 
 /**
@@ -62,29 +61,31 @@ export class EventDispatcherSubscription {
      */
     cancel(): void {
         if (!(this.flags & EventDispatcherSubscriptionFlags.Canceled)) {
-            if (this.dispatcher.isDispatching && (!(this.flags & EventDispatcherSubscriptionFlags.Canceling))) {
-                this.flags |= EventDispatcherSubscriptionFlags.Canceling;
-                if (!this.dispatcher._disposeQueue) {
-                    this.dispatcher._disposeQueue = [];
-                }
-                this.dispatcher._disposeQueue.push(this);
-            } else {
-                if (this._prev) {
-                    this._prev._next = this._next;
-                } else {
-                    this.dispatcher._nextSubscription = this._next;
-                }
-                if (this._next) {
-                    this._next._prev = this._prev;
-                }
-
-                this.flags |= EventDispatcherSubscriptionFlags.Canceled;
-
-                if (--this.dispatcher.counter === 0) {
-                    this.dispatcher.deactivate();
-                }
+            this.flags |= EventDispatcherSubscriptionFlags.Canceled;
+            if (this.dispatcher._currentSubscription !== this) {
+                unsubscribe(this);
             }
         }
+    }
+}
+
+/**
+ * Unsubscribe Event Dispatcher.
+ *
+ * @param sub Event dispatcher subscription.
+ */
+function unsubscribe(sub: EventDispatcherSubscription): void {
+    if (sub._prev) {
+        sub._prev._next = sub._next;
+    } else {
+        sub.dispatcher._nextSubscription = sub._next;
+    }
+    if (sub._next) {
+        sub._next._prev = sub._prev;
+    }
+
+    if (--sub.dispatcher.counter === 0) {
+        sub.dispatcher.deactivate();
     }
 }
 
@@ -100,23 +101,20 @@ export abstract class EventDispatcher {
      */
     counter: number;
     /**
-     * Flag indicating that Dispatcher is currently dispatching event to subscribers.
-     */
-    isDispatching: boolean;
-    /**
      * Event Dispatcher subscribers implemented with a Linked List.
      */
     _nextSubscription: EventDispatcherSubscription | null;
     /**
-     * Event Dispatcher subscribers that should be disposed when dispatching to subscribers is finished.
+     * Currently executing subscription.
+     *
+     * When subscription is executed and canceled, canceling should be delayed until it finishes.
      */
-    _disposeQueue: EventDispatcherSubscription[] | null;
+    _currentSubscription: EventDispatcherSubscription | null;
 
     constructor() {
         this.counter = 0;
-        this.isDispatching = false;
         this._nextSubscription = null;
-        this._disposeQueue = null;
+        this._currentSubscription = null;
     }
 
     /**
@@ -125,23 +123,21 @@ export abstract class EventDispatcher {
      * @param events Events to dispatch.
      */
     dispatchEventToSubscribers(event: SyntheticEvent<any>, type?: number): void {
-        this.isDispatching = true;
         let s = this._nextSubscription;
         while (s) {
-            if (!(s.flags & (EventDispatcherSubscriptionFlags.Canceled | EventDispatcherSubscriptionFlags.Canceling))) {
-                if (type === undefined || (s.filter & (type as any as number))) {
-                    s.handler(event, type);
-                }
+            if (type === undefined || (s.filter & (type as any as number))) {
+                this._currentSubscription = s;
+                s.handler(event, type);
             }
-            s = s._next;
-        }
-        this.isDispatching = false;
-        if (this._disposeQueue) {
-            for (let i = 0; i < this._disposeQueue.length; i++) {
-                this._disposeQueue[i].cancel();
+            if (s.flags & EventDispatcherSubscriptionFlags.Canceled) {
+                const tmp = s;
+                s = s._next;
+                unsubscribe(tmp);
+            } else {
+                s = s._next;
             }
-            this._disposeQueue = null;
         }
+        this._currentSubscription = null;
     }
 
     /**
