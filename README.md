@@ -32,8 +32,7 @@ javascript bundles.
 - Extensible synthetic event subsystem
 - Fast performance
 - Server side rendering
-- Context that doesn't have any issues with updates
-- Development Mode with improved stack traces
+- Advanced development mode
 
 ## Questions
 

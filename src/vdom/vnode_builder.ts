@@ -1,4 +1,4 @@
-import { nextDebugId } from "../common/dev_mode";
+import { nextDebugId, isVoidElement } from "../common/dev_mode";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
@@ -248,6 +248,9 @@ export class VNodeBuilder<P> implements VNode<P> {
             if (this._flags & VNodeFlags.MediaElement) {
                 throw new Error("Failed to set children, media elements can't have children.");
             }
+            if (isVoidElement(this._tag as string)) {
+                throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
+            }
         }
         if (Array.isArray(children)) {
             this._flags |= VNodeFlags.ChildrenArray;
@@ -290,7 +293,9 @@ export class VNodeBuilder<P> implements VNode<P> {
             if (this._flags & VNodeFlags.MediaElement) {
                 throw new Error("Failed to set children, media elements can't have children.");
             }
-
+            if (isVoidElement(this._tag as string)) {
+                throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
+            }
         }
         this._flags |= VNodeFlags.TrackByKeyChildren | VNodeFlags.ChildrenArray;
         if (children) {
@@ -353,7 +358,10 @@ export class VNodeBuilder<P> implements VNode<P> {
                 throw new Error("Failed to set unsafeHTML, input elements can't have innerHTML.");
             }
             if (this._flags & VNodeFlags.MediaElement) {
-                throw new Error("Failed to set children, media elements can't have children.");
+                throw new Error("Failed to set unsafeHTML, media elements can't have children.");
+            }
+            if (isVoidElement(this._tag as string)) {
+                throw new Error(`Failed to set unsafeHTML, ${this._tag} elements can't have children.`);
             }
         }
         this._flags |= VNodeFlags.UnsafeHTML;
