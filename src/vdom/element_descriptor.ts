@@ -1,4 +1,4 @@
-import { checkDOMAttributesForTypos } from "../common/dev_mode";
+import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../common/dev_mode";
 import { SVG_NAMESPACE, HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { ElementDescriptorFlags } from "./flags";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
@@ -106,8 +106,9 @@ export class ElementDescriptor<P> {
                     this._protectedProps = protect;
                 }
             }
-
-            checkDOMAttributesForTypos(props);
+            if (props) {
+                checkDOMAttributesForTypos(props);
+            }
         }
         this._props = props;
         return this;
@@ -144,6 +145,9 @@ export class ElementDescriptor<P> {
                 if (typeof protect === "object") {
                     this._protectedProps = protect;
                 }
+            }
+            if (style) {
+                checkDOMStylesForTypos(style);
             }
         }
         this._style = style;

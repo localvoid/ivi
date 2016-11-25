@@ -1,4 +1,6 @@
-import { nextDebugId, isVoidElement, isValidTag, checkDOMAttributesForTypos } from "../common/dev_mode";
+import {
+    nextDebugId, isVoidElement, isValidTag, checkDOMAttributesForTypos, checkDOMStylesForTypos,
+} from "../common/dev_mode";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
@@ -157,7 +159,9 @@ export class VNodeBuilder<P> implements VNode<P> {
                 throw new Error("Failed to set style, style is available on element nodes only.");
             }
 
-            if (style !== null) {
+            if (style) {
+                checkDOMStylesForTypos(style);
+
                 if (this._flags & VNodeFlags.ElementDescriptor) {
                     const d = this._tag as ElementDescriptor<P>;
                     if (d._flags & ElementDescriptorFlags.ProtectStyle) {

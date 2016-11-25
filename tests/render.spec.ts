@@ -83,6 +83,11 @@ describe("render", () => {
         expect(n.style.top).to.equal("10px");
     });
 
+    it("<div style={float: 'left'}>", () => {
+        const n = render<HTMLElement>($h("div").style({ cssFloat: "left" }));
+        expect(n.style.cssFloat).to.equal("left");
+    });
+
     it("<div style={top: 10px; left: 20px}>", () => {
         const n = render<HTMLElement>($h("div").style({ top: "10px", left: "20px" }));
         expect(n.style.top).to.equal("10px");

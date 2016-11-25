@@ -9,12 +9,13 @@
  *   _sod=false  Disable Screen of Death.
  *   _geh=false  Disable Screen of Death Global Event Handler.
  *   _perf=true  Enable Component Performance Profiling.
- *   _typos=true Enable Checking Attribute for Typos.
+ *   _typos=true Enable Checking for Typos.
  *
  * Development Mode global export variable can be changed via query parameter:
  *   _export=<name>
  */
 import { FeatureFlags, FEATURES } from "./feature_detection";
+import { CSSStyleProps } from "../vdom/dom_props";
 
 /**
  * Version number in string format.
@@ -44,13 +45,13 @@ export const enum DevModeFlags {
      */
     DisableScreenOfDeathGlobalErrorHandling = 1 << 3,
     /**
+     * Disable Checking for Typos.
+     */
+    DisableCheckingForTypos = 1 << 4,
+    /**
      * Enable Component Performance Profiling.
      */
-    EnableComponentPerformanceProfiling = 1 << 4,
-    /**
-     * Enable Checking Attributes for Typos.
-     */
-    EnableCheckingAttributesForTypos = 1 << 5,
+    EnableComponentPerformanceProfiling = 1 << 5,
 }
 
 /**
@@ -195,27 +196,69 @@ export function isValidTag(tag: string): boolean {
     return true;
 }
 
+let DOMAttributeTypos: { [key: string]: string };
+if (__IVI_DEV__) {
+    DOMAttributeTypos = {
+        "autoFocus": "autofocus",
+    };
+}
+
 /**
  * Checks DOM attribute typos and prints warning message with possible typos.
  *
- * @param attr Attribute name.
+ * @param attrr Attributes.
  */
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
     if (__IVI_DEV__) {
-        if (DEV_MODE & DevModeFlags.EnableCheckingAttributesForTypos) {
+        if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
             const keys = Object.keys(attrs);
             for (let i = 0; i < keys.length; i++) {
-                const attr = attrs[keys[i]];
-
-                let match;
-                switch (attr) {
-                    case "autoFocus":
-                        match = "autofocus";
-                        break;
-                }
+                const attrName = keys[i];
+                const match = DOMAttributeTypos[attrName];
 
                 if (match) {
-                    printError(`Typo in the attribute name ${attr}, replace it with ${match}.`);
+                    printError(`Typo: attribute name "${attrName}" should be "${match}".`);
+                }
+            }
+        }
+    }
+}
+
+let DOMStyleTypos: { [key: string]: string };
+if (__IVI_DEV__) {
+    DOMStyleTypos = {
+        "float": "cssFloat",
+    };
+}
+
+/**
+ * Checks DOM style typos and prints warning message with possible typos.
+ *
+ * @param styles Styles.
+ */
+export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
+            const keys = Object.keys(styles);
+            for (let i = 0; i < keys.length; i++) {
+                const styleName = keys[i];
+                const styleValue = (styles as any)[styleName];
+
+                const match = DOMStyleTypos[styleName];
+                if (match) {
+                    printError(`Typo: style name "${styleName}" should be "${match}".`);
+                } else if (styleName.indexOf("-") > -1) {
+                    printError(`Typo: style "${styleName}" contains hyphen symbol.`);
+                }
+
+                if (typeof styleValue === "string") {
+                    if (/;\s*$/.test(styleValue)) {
+                        printError(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
+                    }
+                } else if (typeof styleValue === "number") {
+                    if (isNaN(styleValue)) {
+                        printError(`Typo: style "${styleName}" has a numeric NaN value.`);
+                    }
                 }
             }
         }
@@ -262,11 +305,11 @@ if (__IVI_DEV__ && __IVI_BROWSER__) {
     if (query["_geh"] === "false") {
         DEV_MODE |= DevModeFlags.DisableScreenOfDeathGlobalErrorHandling;
     }
+    if (query["_typos"] === "false") {
+        DEV_MODE |= DevModeFlags.DisableCheckingForTypos;
+    }
     if (query["_perf"] === "true") {
         DEV_MODE |= DevModeFlags.EnableComponentPerformanceProfiling;
-    }
-    if (query["_typos"] === "true") {
-        DEV_MODE |= DevModeFlags.EnableCheckingAttributesForTypos;
     }
     if (query["_export"] !== undefined) {
         GLOBAL_EXPORT = query["_export"];
