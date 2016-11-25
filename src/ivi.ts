@@ -46,7 +46,8 @@ export {
  * Scheduler:
  */
 export {
-    FrameTasksGroup, clock, scheduleMicrotask, scheduleTask, currentFrame, nextFrame, syncFrameUpdate,
+    FrameTasksGroup, DOMReader, clock, scheduleMicrotask, scheduleTask, currentFrame, nextFrame, syncFrameUpdate,
+    registerDOMReader,
 } from "./scheduler/scheduler";
 
 /**

@@ -214,6 +214,16 @@ export class FrameTasksGroup {
 }
 
 /**
+ * DOM Reader flags.
+ */
+export const enum DOMReaderFlags {
+    /**
+     * DOM Reader is canceled.
+     */
+    Canceled = 1,
+}
+
+/**
  * Scheduler.
  */
 const scheduler = {
@@ -228,6 +238,8 @@ const scheduler = {
     currentFrame: new FrameTasksGroup(),
     nextFrame: new FrameTasksGroup(),
     updateComponents: [] as Component<any>[],
+    nextReader: null as DOMReader | null,
+    currentReader: null as DOMReader | null,
 };
 
 const microtaskNode = __IVI_BROWSER__ ? document.createTextNode("") : undefined;
@@ -336,12 +348,31 @@ function handleNextFrame(): void {
     scheduler.currentFrame._rwUnlock();
     scheduler.nextFrame._rwUnlock();
 
+    // Mark all update components as dirty. But don't update until all write tasks are finished. It is possible that
+    // we won't need to update component if it is removed.
     if (__IVI_BROWSER__) {
-        // Mark all update components as dirty. But don't update until all write tasks are finished. It is possible that
-        // we won't need to update component if it is removed.
         for (i = 0; i < updateComponents.length; i++) {
             updateComponents[i].flags |= ComponentFlags.DirtyState;
         }
+    }
+
+    /**
+     * Execute DOM Reader tasks.
+     */
+    if (__IVI_BROWSER__) {
+        let nextReader = scheduler.nextReader;
+        while (nextReader) {
+            scheduler.currentReader = nextReader;
+            nextReader.task();
+            if (nextReader.flags & DOMReaderFlags.Canceled) {
+                const tmp = nextReader;
+                nextReader = nextReader._next;
+                unregisterDOMReader(tmp);
+            } else {
+                nextReader = nextReader._next;
+            }
+        }
+        scheduler.currentReader = null;
     }
 
     // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
@@ -520,5 +551,69 @@ export function startUpdateComponentEachFrame(component: Component<any>): void {
     if (__IVI_BROWSER__) {
         requestNextFrame();
         scheduler.updateComponents.push(component);
+    }
+}
+
+/**
+ * DOM Reader.
+ */
+export class DOMReader {
+    /**
+     * See `DOMReaderFlags` for details.
+     */
+    flags: DOMReaderFlags;
+    /**
+     * Task that will be executed when scheduler starts a read phase. It will be executed once per frame.
+     */
+    readonly task: () => void;
+    _prev: DOMReader | null;
+    _next: DOMReader | null;
+
+    constructor(action: () => void) {
+        this.flags = 0;
+        this.task = action;
+        this._prev = null;
+        this._next = null;
+    }
+
+    cancel() {
+        if (!(this.flags & DOMReaderFlags.Canceled)) {
+            this.flags |= DOMReaderFlags.Canceled;
+            if (scheduler.currentReader !== this) {
+                unregisterDOMReader(this);
+            }
+        }
+    }
+}
+
+/**
+ * Register a DOM Reader that will be invoked on each frame in the read phase.
+ *
+ * @param task Task that will be executed.
+ * @returns DOMReader instance.
+ */
+export function registerDOMReader(task: () => void): DOMReader {
+    const reader = new DOMReader(task);
+    if (scheduler.nextReader) {
+        scheduler.nextReader._prev = reader;
+        reader._next = scheduler.nextReader;
+    }
+    scheduler.nextReader = reader;
+    return reader;
+}
+
+/**
+ * Unregister a DOM Reader.
+ *
+ * @param reader DOMReader instance.
+ */
+function unregisterDOMReader(reader: DOMReader): void {
+    if (reader._prev) {
+        reader._prev._next = reader._next;
+    } else {
+        scheduler.nextReader = reader._next;
+    }
+    if (reader._next) {
+        reader._next._prev = reader._prev;
     }
 }
