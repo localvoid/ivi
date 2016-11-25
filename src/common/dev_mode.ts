@@ -4,11 +4,12 @@
  * Development Mode is enabled when global variable `__IVI_DEV__` is `true`.
  *
  * Development Mode can be configured via query parameters:
- *   _nv=false  Disable Nesting Validation.
- *   _st=false  Disable Stack Trace Augmentation.
- *   _sod=false Disable Screen of Death.
- *   _geh=false Disable Screen of Death Global Event Handler.
- *   _perf=true Enable Component Performance Profiling.
+ *   _nv=false   Disable Nesting Validation.
+ *   _st=false   Disable Stack Trace Augmentation.
+ *   _sod=false  Disable Screen of Death.
+ *   _geh=false  Disable Screen of Death Global Event Handler.
+ *   _perf=true  Enable Component Performance Profiling.
+ *   _typos=true Enable Checking Attribute for Typos.
  *
  * Development Mode global export variable can be changed via query parameter:
  *   _export=<name>
@@ -46,6 +47,10 @@ export const enum DevModeFlags {
      * Enable Component Performance Profiling.
      */
     EnableComponentPerformanceProfiling = 1 << 4,
+    /**
+     * Enable Checking Attributes for Typos.
+     */
+    EnableCheckingAttributesForTypos = 1 << 5,
 }
 
 /**
@@ -191,6 +196,33 @@ export function isValidTag(tag: string): boolean {
 }
 
 /**
+ * Checks DOM attribute typos and prints warning message with possible typos.
+ *
+ * @param attr Attribute name.
+ */
+export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
+    if (__IVI_DEV__) {
+        if (DEV_MODE & DevModeFlags.EnableCheckingAttributesForTypos) {
+            const keys = Object.keys(attrs);
+            for (let i = 0; i < keys.length; i++) {
+                const attr = attrs[keys[i]];
+
+                let match;
+                switch (attr) {
+                    case "autoFocus":
+                        match = "autofocus";
+                        break;
+                }
+
+                if (match) {
+                    printError(`Typo in the attribute name ${attr}, replace it with ${match}.`);
+                }
+            }
+        }
+    }
+}
+
+/**
  * Parse query string.
  *
  * @param query Query string.
@@ -232,6 +264,9 @@ if (__IVI_DEV__ && __IVI_BROWSER__) {
     }
     if (query["_perf"] === "true") {
         DEV_MODE |= DevModeFlags.EnableComponentPerformanceProfiling;
+    }
+    if (query["_typos"] === "true") {
+        DEV_MODE |= DevModeFlags.EnableCheckingAttributesForTypos;
     }
     if (query["_export"] !== undefined) {
         GLOBAL_EXPORT = query["_export"];

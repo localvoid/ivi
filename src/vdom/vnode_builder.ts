@@ -1,4 +1,4 @@
-import { nextDebugId, isVoidElement, isValidTag } from "../common/dev_mode";
+import { nextDebugId, isVoidElement, isValidTag, checkDOMAttributesForTypos } from "../common/dev_mode";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
@@ -203,9 +203,11 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param props.
      * @returns VNodeBuilder.
      */
-    props(props: P): VNodeBuilder<P> {
+    props(props: P | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (props) {
+                checkDOMAttributesForTypos(props);
+
                 if (this._flags & VNodeFlags.ElementDescriptor) {
                     const d = this._tag as ElementDescriptor<P>;
                     if (d._flags & ElementDescriptorFlags.ProtectProps) {
@@ -363,7 +365,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param html innerHTML in a string format.
      * @returns VNodeBuilder.
     */
-    unsafeHTML(html: string): VNodeBuilder<P> {
+    unsafeHTML(html: string | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (this._flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenBasic)) {
                 throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
