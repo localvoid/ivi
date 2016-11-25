@@ -30,7 +30,7 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
  *    a: { backgroundColor: "#333", color: "#fff" }
  *    b: { backgroundColor: "#333" }
  *
- * In this example `color` style will receive a `null` value.
+ * In this example `color` style will receive a `""` value.
  *
  * Implementation detail: Syncing algorithm has an optimization with an early detection of object shape changes.
  * Objects with static shape will make syncing algorithm slightly faster because it doesn't need to check which
@@ -66,7 +66,7 @@ export function syncStyle(
         style = node.style;
         keys = Object.keys(a);
         for (i = 0; i < keys.length; i++) {
-            (style as any)[keys[i]] = null;
+            (style as any)[keys[i]] = "";
         }
     } else {
         style = node.style;
@@ -84,7 +84,7 @@ export function syncStyle(
                 }
                 matchCount++;
             } else {
-                (style as any)[key] = null;
+                (style as any)[key] = "";
             }
         }
 
