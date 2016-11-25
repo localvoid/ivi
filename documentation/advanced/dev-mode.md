@@ -109,11 +109,22 @@ instances in the current components stack.
 There are two functions that can find component instance by their unique debug id:
 
 ```ts
-findComponentByDebugId(debugId: number): Component<any>;
-$(debugId: any): Component<any>;
+function findComponentByDebugId(debugId: number): Component<any>;
+function $(debugId: any): Component<any>;
 ```
 
 `$` is a shortcut for `findComponentByDebugId` that also automatically converts all objects to numbers.
+
+### Explore Component Tree
+
+Dev Mode API exposes a function to explore component trees. This function returns a component tree that is easy to
+explore in the console.
+
+```ts
+function componentTree(component?: Component<any>): DebugComponentNode[] | null;
+```
+
+When optional parameter `component` isn't specified, it will return component trees for all root nodes.
 
 ### Changing global variable
 

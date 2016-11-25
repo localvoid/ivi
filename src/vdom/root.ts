@@ -1,10 +1,11 @@
+import { getFunctionName } from "../common/dev_mode";
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/scheduler";
 import { Context, ROOT_CONTEXT } from "./context";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
-import { Component, getDOMInstanceFromComponent } from "./component";
+import { Component, ComponentFunction, getDOMInstanceFromComponent } from "./component";
 import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
 /**
@@ -184,4 +185,124 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
 
         syncFrameUpdate();
     }
+}
+
+export interface DebugComponentNode {
+    type: "F" | "C";
+    name: string;
+    id?: number;
+    instance?: Component<any>;
+    children?: DebugComponentNode[];
+}
+
+function componentTreeVisitElement(node: VNode<any>): DebugComponentNode[] | null {
+    if (node._children) {
+        if (node._flags & VNodeFlags.ChildrenArray) {
+            let result: DebugComponentNode[] | null = null;
+            const children = node._children as VNode<any>[];
+            for (let i = 0; i < children.length; i++) {
+                const child = componentTreeVisitNode(children[i]);
+                if (child) {
+                    if (!result) {
+                        result = child;
+                    } else {
+                        result = result.concat(child);
+                    }
+                }
+            }
+            return result;
+        } else if (node._flags & VNodeFlags.ChildrenBasic) {
+            const child = componentTreeVisitNode(node._children as VNode<any>);
+            if (child) {
+                return child;
+            }
+        }
+    }
+    return null;
+}
+
+function componentTreeVisitComponent(node: VNode<any>): DebugComponentNode | null {
+    if (node._flags & VNodeFlags.ComponentFunction) {
+        const result = {
+            type: "F",
+            name: getFunctionName(node._tag as ComponentFunction<any>),
+        } as DebugComponentNode;
+
+        const children = componentTreeVisitNode(node._children as VNode<any>);
+        if (children) {
+            result.children = children;
+        }
+
+        return result;
+    }
+
+    const component = node._instance as Component<any>;
+    const result = {
+        type: "C",
+        name: getFunctionName(component.constructor),
+        id: component._debugId,
+        instance: component,
+    } as DebugComponentNode;
+
+    if (component.root) {
+        const children = componentTreeVisitNode(component.root);
+        if (children) {
+            result.children = children;
+        }
+    }
+
+    return result;
+}
+
+function componentTreeVisitNode(node: VNode<any>): DebugComponentNode[] | null {
+    if (node._flags & VNodeFlags.Element) {
+        return componentTreeVisitElement(node);
+    } else if (node._flags & VNodeFlags.Component) {
+        const component = componentTreeVisitComponent(node);
+        if (component) {
+            return [component];
+        }
+    }
+    return null;
+}
+
+/**
+ * Generate a readable component tree representation.
+ *
+ * @param component Optional paramer that specifies which component should be used as a root, when component isn't
+ * specified, all root nodes will be used to generate component tree.
+ */
+export function componentTree(component?: Component<any>): DebugComponentNode[] | null {
+    if (__IVI_DEV__) {
+        if (component) {
+            const result = {
+                type: "C",
+                name: getFunctionName(component.constructor),
+                id: component._debugId,
+                instance: component,
+            } as DebugComponentNode;
+            if (component.root) {
+                const children = componentTreeVisitNode(component.root);
+                if (children) {
+                    result.children = children;
+                }
+            }
+
+            return [result];
+        } else {
+            let result: DebugComponentNode[] | null = null;
+            for (let i = 0; i < roots.length; i++) {
+                const child = componentTreeVisitNode(roots[i].currentVNode!);
+                if (child) {
+                    if (!result) {
+                        result = child;
+                    } else {
+                        result = result.concat(child);
+                    }
+                }
+            }
+        }
+    }
+
+    return null;
 }

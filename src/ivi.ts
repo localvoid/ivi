@@ -97,6 +97,7 @@ export { STACK_TRACE } from "./vdom/stack_trace";
  * Dev Mode exported functions:
  */
 import { VERSION, GLOBAL_EXPORT } from "./common/dev_mode";
+import { componentTree } from "./vdom/root";
 import { findComponentByDebugId } from "./vdom/component";
 
 if (__IVI_DEV__) {
@@ -109,6 +110,7 @@ if (__IVI_DEV__) {
 
         const devModeExport = {
             "VERSION": VERSION,
+            "componentTree": componentTree,
             "findComponentByDebugId": findComponentByDebugId,
             "$": function (v: any) {
                 return findComponentByDebugId(Number(v));
