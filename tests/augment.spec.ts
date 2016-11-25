@@ -60,16 +60,8 @@ describe("augment", () => {
         augment($h("div").style(null), `<div></div>`);
     });
 
-    it("<div style=''>", () => {
-        augment($h("div").style(""), `<div style=""></div>`);
-    });
-
     it("<div style={}>", () => {
         augment($h("div").style(""), `<div></div>`);
-    });
-
-    it("<div style='top: 10px'>", () => {
-        augment($h("div").style("top: 10px"), `<div style="top: 10px"></div>`);
     });
 
     it("<div style={top: 10px}>", () => {
@@ -134,10 +126,6 @@ describe("augment", () => {
 
         it("<circle class='a'>", () => {
             augment($s("circle", "a"), `<circle class="a"></circle>`);
-        });
-
-        it("<circle style='top: 10px'>", () => {
-            augment($s("circle").style("top: 10px"), `<circle style="top: 10px"></circle>`);
         });
 
         it("<circle style={top: 10px}>", () => {
