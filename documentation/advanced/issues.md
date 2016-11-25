@@ -27,3 +27,40 @@ Most of the time nobody will notice such behavior and thousands "broken" apps ar
 ideal solutions at this time, all existing solutions has its own pros and cons.
 
 In the future, it will be possible to solve this issue with new [input events](https://w3c.github.io/input-events/).
+
+### Simple solution with locks
+
+```ts
+class Form extends Component<null> {
+    private lock = false;
+    private value = "";
+
+    private onInput = Event.onInput((ev) => {
+        if (!this.lock) {
+            this.value = (ev.target as HTMLInputElement).value;
+        }
+    });
+
+    private onSubmit = Events.onSubmit((ev) => {
+        ev.preventDefault();
+
+        if (this.value) {
+            this.value = "";
+            this.lock = true;
+            this.invalidate();
+        }
+    });
+
+    render() {
+        return $h("form").children([
+            $i("text")
+                .events({ input: this.onInput })
+                .value(this.value);
+        ]);
+    }
+
+    updated() {
+        this.lock = false;
+    }
+}
+```
