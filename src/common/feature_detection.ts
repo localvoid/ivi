@@ -24,6 +24,10 @@ export const enum FeatureFlags {
      * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
      */
     DevModePerfMarks = 1 << 1,
+    /**
+     * IE and some Edge versions doesn't support `innerHTML` on SVG elements.
+     */
+    SVGInnerHTML = 1 << 2,
 }
 
 /**
@@ -57,5 +61,12 @@ if (__IVI_BROWSER__) {
         if (performance && performance.mark && performance.measure) {
             FEATURES |= FeatureFlags.DevModePerfMarks;
         }
+    }
+
+    /**
+     * Check `innerHTML` availability in `SVGElement`s.
+     */
+    if ("innerHTML" in SVGElement.prototype) {
+        FEATURES |= FeatureFlags.SVGInnerHTML;
     }
 }

@@ -885,7 +885,7 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                 } else if (flags & VNodeFlags.InputElement) {
                     setHTMLInputValue(instance as HTMLInputElement, children as string | boolean);
                 } else { // (flags & VNodeFlags.UnsafeHTML)
-                    setInnerHTML((instance as Element), children as string);
+                    setInnerHTML((instance as Element), children as string, !!(flags & VNodeFlags.SvgElement));
                 }
             }
         }
@@ -1297,7 +1297,7 @@ function syncChildren(
         } else if (bParentFlags & VNodeFlags.InputElement) {
             setHTMLInputValue(parent as HTMLInputElement, b as string | boolean);
         } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
-            setInnerHTML(parent as Element, b as string);
+            setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
         }
     } else if (b === null) {
         if (aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
@@ -1324,7 +1324,7 @@ function syncChildren(
                         parent.textContent = b as string;
                     }
                 } else {
-                    setInnerHTML((parent as Element), b as string);
+                    setInnerHTML((parent as Element), b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
             } else {
                 parent.textContent = "";
@@ -1343,7 +1343,7 @@ function syncChildren(
                 if (bParentFlags & VNodeFlags.ChildrenBasic) {
                     parent.textContent = b as string;
                 } else {
-                    setInnerHTML(parent as Element, b as string);
+                    setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
                 vNodeDetachAll(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
@@ -1382,7 +1382,7 @@ function syncChildren(
                 if (bParentFlags & VNodeFlags.ChildrenBasic) {
                     parent.textContent = b as string;
                 } else {
-                    setInnerHTML(parent as Element, b as string);
+                    setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
                 vNodeDetach(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
