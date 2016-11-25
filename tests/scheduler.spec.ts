@@ -79,7 +79,7 @@ describe("scheduler", () => {
         });
 
         it("advance clock by 1 after after next frame", (done) => {
-            const c = clock();
+            const c = clock() + 1;
             nextFrame().after(() => {
                 expect(clock()).to.equal(c);
                 setTimeout(() => {
@@ -90,7 +90,7 @@ describe("scheduler", () => {
         });
 
         it("should have the same clock when switching between read and write batches", (done) => {
-            const c = clock();
+            const c = clock() + 1;
             nextFrame().write(() => {
                 expect(clock()).to.equal(c);
                 currentFrame().read(() => {

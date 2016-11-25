@@ -1,6 +1,6 @@
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
-import { nextFrame } from "../scheduler/scheduler";
+import { nextFrame, syncFrameUpdate } from "../scheduler/scheduler";
 import { Context, ROOT_CONTEXT } from "./context";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
@@ -39,34 +39,38 @@ export function findRoot(container: Element): Root | undefined {
 }
 
 /**
+  * Fix for the Mouse Event bubbling on iOS devices.
+  *
+  * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+  */
+function iOSFixEventBubbling(container: Element): void {
+    if (USER_AGENT & UserAgentFlags.iOS) {
+        (container as HTMLElement).onclick = NOOP;
+    }
+}
+
+/**
  * Render VNode into container.
  *
  * @param root Root data.
  * @returns rendered Node.
  */
-function _render<T>(root: Root): T | undefined {
-    let result: Node | Component<any> | undefined;
+function _render(root: Root): void {
     const currentVNode = root.currentVNode;
     const newVNode = root.newVNode;
 
     if (newVNode) {
+        let instance;
         if (currentVNode) {
-            result = syncVNode(root.container, currentVNode, newVNode, root.newContext!);
+            instance = syncVNode(root.container, currentVNode, newVNode, root.newContext!);
         } else {
-            result = renderVNode(root.container, null, newVNode!, root.newContext!);
-            /**
-             * Fix for the Mouse Event bubbling on iOS devices.
-             *
-             * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-             */
-            if (USER_AGENT & UserAgentFlags.iOS) {
-                (root.container as HTMLElement).onclick = NOOP;
-            }
+            instance = renderVNode(root.container, null, newVNode!, root.newContext!);
+            iOSFixEventBubbling(root.container);
         }
         root.currentVNode = newVNode;
         root.domNode = (newVNode._flags & VNodeFlags.ComponentClass) ?
-            getDOMInstanceFromComponent(result as Component<any>) :
-            result as Node;
+            getDOMInstanceFromComponent(instance as Component<any>) :
+            instance as Node;
     } else if (currentVNode) {
         removeVNode(root.container, currentVNode);
         const last = roots.pop();
@@ -78,8 +82,6 @@ function _render<T>(root: Root): T | undefined {
     root.newVNode = null;
     root.newContext = null;
     root.invalidated = false;
-
-    return result as T | undefined;
 }
 
 /**
@@ -88,40 +90,10 @@ function _render<T>(root: Root): T | undefined {
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
  * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
- * @returns rendered Node.
  */
-export function render<T extends Node>(
-    node: VNode<any> | null,
-    container: Element,
-    context: Context = ROOT_CONTEXT,
-): T | undefined {
-    if (__IVI_DEV__) {
-        if (container === document.body) {
-            throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
-                "your application.");
-        }
-        if (!document.body.contains(container)) {
-            throw new Error("Container element should be attached to the document.");
-        }
-    }
-
-    let root = findRoot(container);
-    if (root) {
-        root.newVNode = node;
-        root.newContext = context;
-    } else {
-        root = {
-            container: container,
-            currentVNode: null,
-            newVNode: node,
-            newContext: context,
-            domNode: null,
-            invalidated: false,
-        } as Root;
-        roots.push(root);
-    }
-
-    return _render<T>(root);
+export function render(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void {
+    renderNextFrame(node, container, context);
+    syncFrameUpdate();
 }
 
 /**
@@ -132,11 +104,7 @@ export function render<T extends Node>(
  * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
  * @returns rendered Node.
  */
-export function renderNextFrame(
-    node: VNode<any> | null,
-    container: Element,
-    context: Context = ROOT_CONTEXT,
-): void {
+export function renderNextFrame(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
@@ -163,6 +131,7 @@ export function renderNextFrame(
         roots.push(root);
     }
     if (!root.invalidated) {
+        root.invalidated = true;
         nextFrame().write(function () {
             if (root!.invalidated) {
                 _render(root!);
@@ -197,7 +166,6 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
     }
 
     if (node) {
-        augmentVNode(container, container.firstChild!, node, context);
         roots.push({
             container: container,
             currentVNode: node,
@@ -206,13 +174,12 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
             domNode: container.firstChild!,
             invalidated: false,
         });
-        /**
-         * Fix for the Mouse Event bubbling on iOS devices.
-         *
-         * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-         */
-        if (USER_AGENT & UserAgentFlags.iOS) {
-            (container as HTMLElement).onclick = NOOP;
-        }
+
+        nextFrame().write(function augment() {
+            augmentVNode(container, container.firstChild!, node, context);
+            iOSFixEventBubbling(container);
+        });
+
+        syncFrameUpdate();
     }
 }

@@ -282,17 +282,23 @@ function requestTaskExecution(): void {
     }
 }
 
+function _requestNextFrame(): void {
+    if (scheduler.flags & SchedulerFlags.FrametaskPending) {
+        if (__IVI_BROWSER__) {
+            requestAnimationFrame(handleNextFrame);
+        } else {
+            setImmediate(handleNextFrame);
+        }
+    }
+}
+
 /**
  * Trigger next frame tasks execution.
  */
 function requestNextFrame(): void {
     if ((scheduler.flags & SchedulerFlags.FrametaskPending) === 0) {
         scheduler.flags |= SchedulerFlags.FrametaskPending;
-        if (__IVI_BROWSER__) {
-            requestAnimationFrame(handleNextFrame);
-        } else {
-            setImmediate(handleNextFrame);
-        }
+        scheduleMicrotask(_requestNextFrame);
     }
 }
 
@@ -496,6 +502,13 @@ export function currentFrame(): FrameTasksGroup {
         return scheduler.currentFrame;
     }
     return nextFrame();
+}
+
+/**
+ * Perform a synchronous frame update.
+ */
+export function syncFrameUpdate(): void {
+    handleNextFrame();
 }
 
 /**
