@@ -239,6 +239,13 @@ export class VNodeBuilder<P> implements VNode<P> {
      */
     children(children: VNodeRecursiveArray | VNode<any> | string | number | boolean | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
+            if (this._flags &
+                (VNodeFlags.ChildrenArray |
+                    VNodeFlags.ChildrenVNode |
+                    VNodeFlags.ChildrenBasic |
+                    VNodeFlags.UnsafeHTML)) {
+                throw new Error("Failed to set children, VNode element is already having children.");
+            }
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set children, children are available on element nodes only.");
             }
@@ -284,6 +291,13 @@ export class VNodeBuilder<P> implements VNode<P> {
      */
     trackByKeyChildren(children: VNodeRecursiveArray | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
+            if (this._flags &
+                (VNodeFlags.ChildrenArray |
+                    VNodeFlags.ChildrenVNode |
+                    VNodeFlags.ChildrenBasic |
+                    VNodeFlags.UnsafeHTML)) {
+                throw new Error("Failed to set children, VNode element is already having children.");
+            }
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set children, children are available on element nodes only.");
             }
@@ -351,6 +365,9 @@ export class VNodeBuilder<P> implements VNode<P> {
     */
     unsafeHTML(html: string): VNodeBuilder<P> {
         if (__IVI_DEV__) {
+            if (this._flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenBasic)) {
+                throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
+            }
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set unsafeHTML, unsafeHTML is available on element nodes only.");
             }
