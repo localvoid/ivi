@@ -17,7 +17,8 @@ const enum DevModeFlags {
     DisableStackTraceAugmentation = 1 << 1,
     DisableScreenOfDeath = 1 << 2,
     DisableScreenOfDeathGlobalErrorHandling = 1 << 3,
-    EnableComponentPerformanceProfiling = 1 << 4,
+    DisableCheckingForTypos = 1 << 4,
+    EnableComponentPerformanceProfiling = 1 << 5,
 }
 
 function setDevModeFlags(flags: DevModeFlags): void;
@@ -31,11 +32,12 @@ enable component performance profiling.
 Full list of query parameters:
 
 ```
-_nv=false  Disable Nesting Validation.
-_st=false  Disable Stack Trace Augmentation.
-_sod=false Disable Screen of Death.
-_geh=false Disable Screen of Death Global Event Handler.
-_perf=true Enable Component Performance Profiling.
+_nv=false   Disable Nesting Validation.
+_st=false   Disable Stack Trace Augmentation.
+_sod=false  Disable Screen of Death.
+_geh=false  Disable Screen of Death Global Event Handler.
+_typo=false Disable Checking for Typos.
+_perf=true  Enable Component Performance Profiling.
 ```
 
 ## Nesting Validation
@@ -80,6 +82,11 @@ trace for an exception.
 By default, Screen of Death will be displayed for all unhandled exceptions. `DisableScreenOfDeathGlobalErrorHandling`
 flag disables global error handler. When this flag is enabled, Screen of Death will be displayed only when exception is
 thrown inside the boundaries of a syncing algorithm.
+
+## Typo Checking
+
+When typo checking is enabled, DOM attribute and styles will be checked for typos. So when you make a typo in attribute
+name, like `autoFocus`, it will suggest you to replace it with `autofocus`.
 
 ## Component Performance Profiling
 
