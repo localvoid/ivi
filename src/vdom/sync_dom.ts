@@ -133,6 +133,21 @@ function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: a
 
     if (value === undefined) {
         /**
+         * Edge cases when property name doesn't match attribute name.
+         */
+        if (key.length > 6) {
+            switch (key) {
+                case "acceptCharset":
+                    key = "accept-charset";
+                    break;
+                case "htmlFor":
+                    key = "for";
+                    break;
+                case "httpEquiv":
+                    key = "http-equiv";
+            }
+        }
+        /**
          * Because there is no generic way to assign a default value for a property when it is removed, it is always
          * removed with `removeAttribute` method.
          */
