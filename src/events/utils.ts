@@ -5,6 +5,8 @@ import { EventHandlerList } from "./event_handler";
 /**
  * Gets the target node from a native Event.
  *
+ * #quirks
+ *
  * @param ev Native DOM Event.
  * @returns Target Node.
  */

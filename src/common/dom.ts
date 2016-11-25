@@ -9,6 +9,8 @@ export const XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 /**
  * Set inner HTML.
  *
+ * #quirks
+ *
  * @param element DOM Element.
  * @param content Inner HTML.
  */

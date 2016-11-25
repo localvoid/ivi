@@ -39,10 +39,12 @@ export function findRoot(container: Element): Root | undefined {
 }
 
 /**
-  * Fix for the Mouse Event bubbling on iOS devices.
-  *
-  * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-  */
+ * Fix for the Mouse Event bubbling on iOS devices.
+ *
+ * #quirks
+ *
+ * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+ */
 function iOSFixEventBubbling(container: Element): void {
     if (USER_AGENT & UserAgentFlags.iOS) {
         (container as HTMLElement).onclick = NOOP;
