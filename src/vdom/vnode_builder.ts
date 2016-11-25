@@ -1,4 +1,4 @@
-import { nextDebugId, isVoidElement } from "../common/dev_mode";
+import { nextDebugId, isVoidElement, isValidTag } from "../common/dev_mode";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
@@ -773,6 +773,11 @@ export function $e<P>(d: ElementDescriptor<P>, className?: string): VNodeBuilder
  * @returns VNodeBuilder object.
  */
 export function $w(tagName: string, className?: string): VNodeBuilder<{ [key: string]: any } | null> {
+    if (__IVI_DEV__) {
+        if (!isValidTag(tagName)) {
+            throw new Error(`Invalid tag: ${tagName}`);
+        }
+    }
     return new VNodeBuilder<HTMLElementProps | null>(
         VNodeFlags.Element | VNodeFlags.WebComponent,
         tagName,

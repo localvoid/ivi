@@ -178,6 +178,19 @@ export function isVoidElement(tag: string): boolean {
 }
 
 /**
+ * Is tag valid.
+ *
+ * @param tag Tag name.
+ * @returns `true` when tag name is valid.
+ */
+export function isValidTag(tag: string): boolean {
+    if (__IVI_DEV__) {
+        return /^[a-zA-Z][a-zA-Z:_\.\-\d]*$/.test(tag);
+    }
+    return true;
+}
+
+/**
  * Parse query string.
  *
  * @param query Query string.
