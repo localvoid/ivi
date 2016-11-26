@@ -40,6 +40,7 @@ exclusively for bug reports and feature requests.
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/general/synthetic-events.md)
 - [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
 - [Scheduler](https://github.com/ivijs/ivi/blob/master/documentation/general/scheduler.md)
+- [Build Configuration](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md)
 
 ### Advanced
 
@@ -90,6 +91,10 @@ or with [Yarn](https://github.com/yarnpkg/yarn)
 ```sh
 $ yarn add ivi
 ```
+
+When building an application with an NPM module, make sure that you properly
+[configure](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md) your bundler and
+specify all configuration variables.
 
 #### Boilerplate
 
@@ -229,7 +234,7 @@ render(
 
 #### Test Playground
 
-- [Pointer Events](https://ivijs.github.io/examples/playground/pointer-events/)
+- [Pointer Events](https://ivijs.github.io/examples/playground/pointer-events/) (27kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/playground/pointer-events)]
 
 ## Why not JSX?

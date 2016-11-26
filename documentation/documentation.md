@@ -7,6 +7,7 @@
 - [Synthetic Events](general/synthetic-events.md)
 - [Context](general/context.md)
 - [Scheduler](general/scheduler.md)
+- [Build Configuration](general/build-configuration.md)
 
 ## Advanced
 
