@@ -155,6 +155,9 @@ if (__IVI_DEV__) {
     if (typeof Object.keys !== "function") {
         printError("`Object.keys` function is missing.");
     }
+    if (typeof Map !== "function") {
+        printError("`Map` constructor is missing.");
+    }
 
     if (__IVI_BROWSER__) {
         if (document) {
