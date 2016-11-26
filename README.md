@@ -15,15 +15,7 @@
   <a href="https://saucelabs.com/u/ivijs"><img src="https://saucelabs.com/browser-matrix/ivijs.svg" alt="Sauce Test Status"></a>
 </p>
 
-[ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces with a
-focus on developer productivity.
-
-The recommended way to build large applications with ivi is to use [TypeScript](https://www.typescriptlang.org). ivi
-has great type coverage and its API is designed to work nicely with TypeScript and IDEs. Also, one of the upcoming
-features will be an optimizing pass for TypeScript compiler that will use type information to optimize Virtual DOM
-instantiation, combined with a [tsickle](https://github.com/angular/tsickle) annotator and
-[Google Closure Compiler](https://github.com/google/closure-compiler) it will be possible to generate very efficient
-javascript bundles.
+[ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces.
 
 ## Features
 
@@ -205,34 +197,34 @@ render(
 
 #### Basic
 
-- [Introduction](https://ivijs.github.io/examples/01_introduction/)
+- [Introduction](https://ivijs.github.io/examples/01_introduction/) (16kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/01_introduction)]
-- [Stateful Component](https://ivijs.github.io/examples/02_stateful_component/)
+- [Stateful Component](https://ivijs.github.io/examples/02_stateful_component/) (17kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/02_stateful_component)]
-- [Events](https://ivijs.github.io/examples/03_events/)
+- [Events](https://ivijs.github.io/examples/03_events/) (23kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/03_events)]
-- [Forms](https://ivijs.github.io/examples/04_forms/)
+- [Forms](https://ivijs.github.io/examples/04_forms/) (21kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/04_forms)]
-- [Collapsable](https://ivijs.github.io/examples/05_collapsable/)
+- [Collapsable](https://ivijs.github.io/examples/05_collapsable/) (23kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/05_collapsable)]
 
 #### Apps
 
-- [TodoMVC](https://ivijs.github.io/examples/todomvc/)
+- [TodoMVC](https://ivijs.github.io/examples/todomvc/) (31kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/todomvc)]
 
 #### Games
 
-- [Snake](https://ivijs.github.io/examples/games/snake/)
+- [Snake](https://ivijs.github.io/examples/games/snake/) (25kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/games/snake)]
 
 #### Benchmarks
 
-- [UIBench](https://ivijs.github.io/examples/benchmarks/uibench/)
+- [UIBench](https://ivijs.github.io/examples/benchmarks/uibench/) (25kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/uibench)]
-- [DBMon](https://ivijs.github.io/examples/benchmarks/dbmon/)
+- [DBMon](https://ivijs.github.io/examples/benchmarks/dbmon/) (23kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/dbmon)]
-- [10k Components](https://ivijs.github.io/examples/benchmarks/10k/)
+- [10k Components](https://ivijs.github.io/examples/benchmarks/10k/) (22kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/10k)]
 
 #### Test Playground
