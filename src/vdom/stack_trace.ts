@@ -146,17 +146,36 @@ export function stackTraceAugment(e: Error): void {
 export function getFunctionalComponentStackTrace(): ComponentFunction<any>[] | null {
     let result: ComponentFunction<any>[] | null = null;
 
-    if (STACK_TRACE) {
-        for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
-            const c = STACK_TRACE[i];
-            if (!c.prototype.render) {
-                if (!result) {
-                    result = [];
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+            if (STACK_TRACE) {
+                for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
+                    const c = STACK_TRACE[i];
+                    if (!c.prototype.render) {
+                        if (!result) {
+                            result = [];
+                        }
+                        result.push(c as ComponentFunction<any>);
+                    }
                 }
-                result.push(c as ComponentFunction<any>);
             }
         }
     }
 
     return result;
+}
+
+/**
+ * Prints current component stack trace to the console.
+ */
+export function printStackTrace(): void {
+    if (__IVI_DEV__) {
+        if (__IVI_BROWSER__) {
+            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+                console.groupCollapsed("Component Stack Trace:");
+                console.log(stackTraceToString());
+                console.groupEnd();
+            }
+        }
+    }
 }

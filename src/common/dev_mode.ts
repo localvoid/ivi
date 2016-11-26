@@ -16,6 +16,7 @@
  */
 import { FeatureFlags, FEATURES } from "./feature_detection";
 import { CSSStyleProps } from "../vdom/dom_props";
+import { printStackTrace } from "../vdom/stack_trace";
 
 /**
  * Version number in string format.
@@ -100,6 +101,25 @@ export function nextDebugId(): number {
  * @param message Error message.
  */
 export function printError(message: string): void {
+    printStackTrace();
+    console.error(message);
+    try {
+        throw new Error(message);
+    } catch (_) {
+        /* tslint:disable:no-empty */
+        /* tslint:enable:no-empty */
+    }
+}
+
+/**
+ * Print warning to the console and throw local exception.
+ *
+ * Local exception is thrown so that we can break on caught errors.
+ *
+ * @param message Error message.
+ */
+export function printWarn(message: string): void {
+    printStackTrace();
     console.error(message);
     try {
         throw new Error(message);
@@ -217,7 +237,7 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
                 const match = DOMAttributeTypos[attrName];
 
                 if (match) {
-                    printError(`Typo: attribute name "${attrName}" should be "${match}".`);
+                    printWarn(`Typo: attribute name "${attrName}" should be "${match}".`);
                 }
             }
         }
@@ -246,18 +266,18 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
 
                 const match = DOMStyleTypos[styleName];
                 if (match) {
-                    printError(`Typo: style name "${styleName}" should be "${match}".`);
+                    printWarn(`Typo: style name "${styleName}" should be "${match}".`);
                 } else if (styleName.indexOf("-") > -1) {
-                    printError(`Typo: style "${styleName}" contains hyphen symbol.`);
+                    printWarn(`Typo: style "${styleName}" contains hyphen symbol.`);
                 }
 
                 if (typeof styleValue === "string") {
                     if (/;\s*$/.test(styleValue)) {
-                        printError(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
+                        printWarn(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
                     }
                 } else if (typeof styleValue === "number") {
                     if (isNaN(styleValue)) {
-                        printError(`Typo: style "${styleName}" has a numeric NaN value.`);
+                        printWarn(`Typo: style "${styleName}" has a numeric NaN value.`);
                     }
                 }
             }

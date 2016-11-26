@@ -31,7 +31,7 @@ declare global {
 /**
  * Common:
  */
-export { DevModeFlags, DEV_MODE, setDevModeFlags, printError } from "./common/dev_mode";
+export { DevModeFlags, DEV_MODE, setDevModeFlags, printError, printWarn } from "./common/dev_mode";
 export { FeatureFlags, FEATURES } from "./common/feature_detection";
 export { UserAgentFlags, USER_AGENT } from "./common/user_agent";
 export { nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "./common/dom";
