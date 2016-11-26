@@ -196,7 +196,7 @@ export interface DebugComponentNode {
 }
 
 function componentTreeVisitElement(node: VNode<any>): DebugComponentNode[] | null {
-    if (node._children) {
+    if (node._children !== null) {
         if (node._flags & VNodeFlags.ChildrenArray) {
             let result: DebugComponentNode[] | null = null;
             const children = node._children as VNode<any>[];
@@ -211,7 +211,7 @@ function componentTreeVisitElement(node: VNode<any>): DebugComponentNode[] | nul
                 }
             }
             return result;
-        } else if (node._flags & VNodeFlags.ChildrenBasic) {
+        } else if (node._flags & VNodeFlags.ChildrenVNode) {
             const child = componentTreeVisitNode(node._children as VNode<any>);
             if (child) {
                 return child;
@@ -228,9 +228,11 @@ function componentTreeVisitComponent(node: VNode<any>): DebugComponentNode | nul
             name: getFunctionName(node._tag as ComponentFunction<any>),
         } as DebugComponentNode;
 
-        const children = componentTreeVisitNode(node._children as VNode<any>);
-        if (children) {
-            result.children = children;
+        if (node._children) {
+            const children = componentTreeVisitNode(node._children as VNode<any>);
+            if (children) {
+                result.children = children;
+            }
         }
 
         return result;
@@ -304,5 +306,71 @@ export function componentTree(component?: Component<any>): DebugComponentNode[] 
         }
     }
 
+    return null;
+}
+
+function _findComponentByNode(
+    node: Node,
+    vnode: VNode<any>,
+    owner: Component<any> | null,
+): Component<any> | null | undefined {
+    if (vnode._flags & (VNodeFlags.Element | VNodeFlags.Text)) {
+        if (vnode._instance === node) {
+            return owner;
+        }
+        if (vnode._flags & VNodeFlags.Element) {
+            if (vnode._children !== null) {
+                if (vnode._flags & VNodeFlags.ChildrenArray) {
+                    const children = vnode._children as VNode<any>[];
+                    for (let i = 0; i < children.length; i++) {
+                        const result = _findComponentByNode(node, children[i], owner);
+                        if (result !== undefined) {
+                            return result;
+                        }
+                    }
+                } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
+                    const result = _findComponentByNode(node, vnode._children as VNode<any>, owner);
+                    if (result !== undefined) {
+                        return result;
+                    }
+                }
+            }
+        }
+    } else if (vnode._flags & VNodeFlags.ComponentClass) {
+        const component = vnode._instance as Component<any>;
+        if (component.root) {
+            const result = _findComponentByNode(node, component.root, component);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    } else if (vnode._flags & VNodeFlags.ComponentFunction) {
+        const root = vnode._children as VNode<any> | null;
+        if (root) {
+            const result = _findComponentByNode(node, root, owner);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
+
+    return undefined;
+}
+
+/**
+ * Find component instance that owns DOM node.
+ *
+ * @param node DOM node.
+ * @returns Component instance or `null` if it isn't owned by any component.
+ */
+export function findComponentByNode(node: Node): Component<any> | null {
+    if (__IVI_DEV__) {
+        for (let i = 0; i < roots.length; i++) {
+            const result = _findComponentByNode(node, roots[i].currentVNode!, null);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
     return null;
 }
