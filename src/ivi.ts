@@ -97,8 +97,31 @@ export { STACK_TRACE } from "./vdom/stack_trace";
  * Dev Mode exported functions:
  */
 import { VERSION, GLOBAL_EXPORT } from "./common/dev_mode";
-import { componentTree, findComponentByNode } from "./vdom/root";
+import { DebugNode, componentTree, findComponentByNode } from "./vdom/root";
 import { Component, findComponentByDebugId } from "./vdom/component";
+
+function _printComponentTreeVisitNode(node: DebugNode): void {
+    if (node.instance) {
+        console.groupCollapsed(`[C]${node.name} #${node.instance._debugId}`);
+        console.log(node.instance);
+    } else {
+        console.groupCollapsed(`[F]${node.name}`);
+    }
+    if (node.children) {
+        _printComponentTreeVisitChildren(node.children);
+    }
+    console.groupEnd();
+}
+
+function _printComponentTreeVisitChildren(nodes: DebugNode[]): void {
+    for (let i = 0; i < nodes.length; i++) {
+        _printComponentTreeVisitNode(nodes[i]);
+    }
+}
+
+function printComponentTree(nodes: DebugNode[]): void {
+    _printComponentTreeVisitChildren(nodes);
+}
 
 if (__IVI_DEV__) {
     console.info(`IVI [${VERSION}]: DEVELOPMENT MODE`);
@@ -114,20 +137,27 @@ if (__IVI_DEV__) {
             "findComponentByDebugId": findComponentByDebugId,
             "findComponentByNode": findComponentByNode,
             "$": function (v?: number | Node | Component<any>) {
+                let result;
                 if (v === undefined) {
-                    return componentTree();
+                    result = componentTree();
                 } else if (typeof v === "number") {
                     const c = findComponentByDebugId(v);
                     if (c) {
-                        return componentTree(c);
+                        result = componentTree(c);
                     }
                 } else if (v instanceof Node) {
                     const c = findComponentByNode(v);
                     if (c) {
-                        return componentTree(c);
+                        result = componentTree(c);
                     }
-                } // Component<any>
-                return componentTree(v as Component<any>);
+                } else if (v instanceof Component) {
+                    result = componentTree(v as Component<any>);
+                } else {
+                    throw new Error("Invalid value");
+                }
+                if (result) {
+                    printComponentTree(result);
+                }
             },
         };
 

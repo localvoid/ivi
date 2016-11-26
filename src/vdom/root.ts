@@ -187,18 +187,38 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
     }
 }
 
-export interface DebugComponentNode {
-    type: "F" | "C";
+export interface DebugNode {
     name: string;
-    id?: number;
+    children?: DebugNode[];
     instance?: Component<any>;
-    children?: DebugComponentNode[];
 }
 
-function componentTreeVisitElement(node: VNode<any>): DebugComponentNode[] | null {
+interface ComponentInstance extends DebugNode {
+    constructor(name: string, instance: Component<any>): ComponentInstance;
+    name: string;
+    children?: DebugNode[];
+    instance?: Component<any>;
+}
+
+function ComponentInstance(this: ComponentInstance, name: string, instance: Component<any>): void {
+    this.name = name;
+    this.instance = instance;
+}
+
+interface FunctionalComponent extends DebugNode {
+    constructor(name: string): FunctionalComponent;
+    name: string;
+    children?: DebugNode[];
+}
+
+function FunctionalComponent(this: FunctionalComponent, name: string): void {
+    this.name = name;
+}
+
+function componentTreeVisitElement(node: VNode<any>): DebugNode[] | null {
     if (node._children !== null) {
         if (node._flags & VNodeFlags.ChildrenArray) {
-            let result: DebugComponentNode[] | null = null;
+            let result: DebugNode[] | null = null;
             const children = node._children as VNode<any>[];
             for (let i = 0; i < children.length; i++) {
                 const child = componentTreeVisitNode(children[i]);
@@ -212,21 +232,15 @@ function componentTreeVisitElement(node: VNode<any>): DebugComponentNode[] | nul
             }
             return result;
         } else if (node._flags & VNodeFlags.ChildrenVNode) {
-            const child = componentTreeVisitNode(node._children as VNode<any>);
-            if (child) {
-                return child;
-            }
+            return componentTreeVisitNode(node._children as VNode<any>);
         }
     }
     return null;
 }
 
-function componentTreeVisitComponent(node: VNode<any>): DebugComponentNode | null {
+function componentTreeVisitComponent(node: VNode<any>): DebugNode | null {
     if (node._flags & VNodeFlags.ComponentFunction) {
-        const result = {
-            type: "F",
-            name: getFunctionName(node._tag as ComponentFunction<any>),
-        } as DebugComponentNode;
+        const result = new FunctionalComponent(getFunctionName(node._tag as ComponentFunction<any>));
 
         if (node._children) {
             const children = componentTreeVisitNode(node._children as VNode<any>);
@@ -239,12 +253,7 @@ function componentTreeVisitComponent(node: VNode<any>): DebugComponentNode | nul
     }
 
     const component = node._instance as Component<any>;
-    const result = {
-        type: "C",
-        name: getFunctionName(component.constructor),
-        id: component._debugId,
-        instance: component,
-    } as DebugComponentNode;
+    const result = new ComponentInstance(getFunctionName(component.constructor), component);
 
     if (component.root) {
         const children = componentTreeVisitNode(component.root);
@@ -256,7 +265,7 @@ function componentTreeVisitComponent(node: VNode<any>): DebugComponentNode | nul
     return result;
 }
 
-function componentTreeVisitNode(node: VNode<any>): DebugComponentNode[] | null {
+function componentTreeVisitNode(node: VNode<any>): DebugNode[] | null {
     if (node._flags & VNodeFlags.Element) {
         return componentTreeVisitElement(node);
     } else if (node._flags & VNodeFlags.Component) {
@@ -265,6 +274,7 @@ function componentTreeVisitNode(node: VNode<any>): DebugComponentNode[] | null {
             return [component];
         }
     }
+
     return null;
 }
 
@@ -274,15 +284,10 @@ function componentTreeVisitNode(node: VNode<any>): DebugComponentNode[] | null {
  * @param component Optional paramer that specifies which component should be used as a root, when component isn't
  * specified, all root nodes will be used to generate component tree.
  */
-export function componentTree(component?: Component<any>): DebugComponentNode[] | null {
+export function componentTree(component?: Component<any>): DebugNode[] | null {
     if (__IVI_DEV__) {
         if (component) {
-            const result = {
-                type: "C",
-                name: getFunctionName(component.constructor),
-                id: component._debugId,
-                instance: component,
-            } as DebugComponentNode;
+            const result = new ComponentInstance(getFunctionName(component.constructor), component);
             if (component.root) {
                 const children = componentTreeVisitNode(component.root);
                 if (children) {
@@ -292,7 +297,7 @@ export function componentTree(component?: Component<any>): DebugComponentNode[] 
 
             return [result];
         } else {
-            let result: DebugComponentNode[] | null = null;
+            let result: DebugNode[] | null = null;
             for (let i = 0; i < roots.length; i++) {
                 const child = componentTreeVisitNode(roots[i].currentVNode!);
                 if (child) {
@@ -303,6 +308,7 @@ export function componentTree(component?: Component<any>): DebugComponentNode[] 
                     }
                 }
             }
+            return result;
         }
     }
 

@@ -121,7 +121,11 @@ stack trace for all instances.
 `findComponentByNode` finds component instance that owns DOM node.
 
 `$` is a shortcut that depending on the value type will either find component by debug id, find component by DOM node.
-And when it finds component, it will generate component tree that is easy to explore in the console.
+And when it finds component, it will display component tree in the console.
+
+<p align="center">
+  <img width="793" height="405" src="https://ivijs.github.io/ivi/dev-mode-component-tree.png">
+</p>
 
 ### Changing global variable
 
