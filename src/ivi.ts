@@ -104,7 +104,7 @@ export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 /**
  * Dev Mode exported functions:
  */
-import { VERSION, GLOBAL_EXPORT } from "./dev_mode/dev_mode";
+import { VERSION, GLOBAL_EXPORT, printError } from "./dev_mode/dev_mode";
 import { DebugNode, componentTree, findComponentByNode } from "./dev_mode/component_tree";
 import { Component, findComponentByDebugId } from "./vdom/component";
 
@@ -144,6 +144,16 @@ if (__IVI_DEV__) {
             "It looks like you're using a minified script in Development Mode. " +
             "When deploying ivi apps to production, disable Development Mode. It" +
             "will remove many runtime checks and will work significantly faster.");
+    }
+
+    if (typeof Array.isArray !== "function") {
+        printError("`Array.isArray` function is missing.");
+    }
+    if (typeof Object.assign !== "function") {
+        printError("`Object.assign` function is missing.");
+    }
+    if (typeof Object.keys !== "function") {
+        printError("`Object.keys` function is missing.");
     }
 
     if (__IVI_BROWSER__) {
