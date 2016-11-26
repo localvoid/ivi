@@ -34,7 +34,10 @@ declare global {
 export { DevModeFlags, DEV_MODE, setDevModeFlags, printError, printWarn } from "./dev_mode/dev_mode";
 export { FeatureFlags, FEATURES } from "./common/feature_detection";
 export { UserAgentFlags, USER_AGENT } from "./common/user_agent";
-export { nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, getEventTarget } from "./common/dom";
+export {
+    nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, getEventTarget, getEventCharCode, getEventKey, firstLeaf,
+    nextSibling, setInnerHTML,
+} from "./common/dom";
 export { NOOP } from "./common/noop";
 export { isPropsNotIdentical, isPropsNotShallowEqual } from "./common/equality";
 

@@ -28,6 +28,10 @@ export const enum FeatureFlags {
      * IE and some Edge versions doesn't support `innerHTML` on SVG elements.
      */
     SVGInnerHTML = 1 << 2,
+    /**
+     * `key` property on KeyboardEvent instances.
+     */
+    KeyboardEventKey = 1 << 3,
 }
 
 /**
@@ -68,5 +72,12 @@ if (__IVI_BROWSER__) {
      */
     if ("innerHTML" in SVGElement.prototype) {
         FEATURES |= FeatureFlags.SVGInnerHTML;
+    }
+
+    /**
+     * Check `key` availability in `KeyboardEvent`s.
+     */
+    if ("key" in KeyboardEvent.prototype) {
+        FEATURES |= FeatureFlags.KeyboardEventKey;
     }
 }
