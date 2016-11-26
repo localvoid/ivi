@@ -8,6 +8,8 @@
 import { Component } from "../vdom/component";
 import { updateComponent } from "../vdom/implementation";
 import { ComponentFlags } from "../vdom/flags";
+import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
+import { DOMReaderFlags, firstDOMReader, setCurrentDOMReader, unregisterDOMReader } from "./dom_reader";
 
 /**
  * Scheduler Task.
@@ -37,193 +39,6 @@ const enum SchedulerFlags {
 }
 
 /**
- * Frame Tasks Group flags.
- */
-const enum FrameTasksGroupFlags {
-    /**
-     * Group contains component update tasks.
-     */
-    Component = 1,
-    /**
-     * Group contains "write" tasks.
-     */
-    Write = 1 << 1,
-    /**
-     * Group contains "read" tasks".
-     */
-    Read = 1 << 2,
-    /**
-     * Group contains "after" tasks.
-     */
-    After = 1 << 3,
-    /**
-     * Group is locked from reading and writing.
-     */
-    RWLock = 1 << 4,
-}
-
-/**
- * Frame tasks group contains tasks for updating components, read dom and write dom tasks, and tasks that should be
- * executed after all other tasks are finished.
- *
- * To get access to the frame tasks group, use: `currentFrame()` and `nextFrame()` scheduler methods.
- *
- *     scheduler.currentFrame().read(() => {
- *       console.log(element.clientWidth);
- *     });
- *
- * @final
- */
-export class FrameTasksGroup {
-    /**
-     * See `FrameTasksGroupFlags` for details.
-     */
-    _flags: number;
-    /**
-     * Array of component arrays indexed by their depth.
-     */
-    _componentTasks: Array<Component<any>[] | null>;
-    /**
-     * Write DOM task queue.
-     */
-    _writeTasks: SchedulerTask[] | null;
-    /**
-     * Read DOM task queue.
-     */
-    _readTasks: SchedulerTask[] | null;
-    /**
-     * Tasks that should be executed when all other tasks are finished.
-     */
-    _afterTasks: SchedulerTask[] | null;
-
-    constructor() {
-        this._flags = 0;
-        this._componentTasks = [];
-        this._writeTasks = null;
-        this._readTasks = null;
-        this._afterTasks = null;
-    }
-
-    /**
-     * Add Component to the components queue.
-     *
-     * @param component
-     */
-    updateComponent(component: Component<any>): void {
-        if (__IVI_BROWSER__) {
-            if (__IVI_DEV__) {
-                if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
-                    throw new Error("Failed to add update component task to the current frame, current frame is " +
-                        "locked for read and write tasks.");
-                }
-            }
-
-            if ((component.flags & ComponentFlags.InUpdateQueue) === 0) {
-                component.flags |= ComponentFlags.InUpdateQueue;
-                const priority = component.depth;
-
-                this._flags |= FrameTasksGroupFlags.Component;
-                while (priority >= this._componentTasks.length) {
-                    this._componentTasks.push(null);
-                }
-
-                const group = this._componentTasks[priority];
-                if (group === null) {
-                    this._componentTasks[priority] = [component];
-                } else {
-                    group.push(component);
-                }
-            }
-        }
-    }
-
-    /**
-     * Add new task to the write DOM task queue.
-     *
-     * @param callback
-     */
-    write(callback: SchedulerTask): void {
-        if (__IVI_DEV__) {
-            if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
-                throw new Error("Failed to add update component task to the current frame, current frame is locked " +
-                    "for read and write tasks.");
-            }
-        }
-
-        this._flags |= FrameTasksGroupFlags.Write;
-        if (this._writeTasks === null) {
-            this._writeTasks = [];
-        }
-        this._writeTasks.push(callback);
-    }
-
-    /**
-     * Add new task to the read DOM task queue.
-     *
-     * @param callback
-     */
-    read(callback: SchedulerTask): void {
-        if (__IVI_DEV__) {
-            if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
-                throw new Error("Failed to add update component task to the current frame, current frame is locked " +
-                    "for read and write tasks.");
-            }
-        }
-
-        this._flags |= FrameTasksGroupFlags.Read;
-        if (this._readTasks === null) {
-            this._readTasks = [];
-        }
-        this._readTasks.push(callback);
-    }
-
-    /**
-     * Add new task to the task queue that will execute tasks when all DOM tasks are finished.
-     *
-     * @param callback
-     */
-    after(callback: SchedulerTask): void {
-        this._flags |= FrameTasksGroupFlags.After;
-        if (this._afterTasks === null) {
-            this._afterTasks = [];
-        }
-        this._afterTasks.push(callback);
-    }
-
-    /**
-     * Lock read and write task queues.
-     *
-     * Works in DEBUG mode only.
-     */
-    _rwLock(): void {
-        if (__IVI_DEV__) {
-            this._flags |= FrameTasksGroupFlags.RWLock;
-        }
-    }
-
-    /**
-     * Unlock read and write task queue.
-     *
-     * Works in DEBUG mode only.
-     */
-    _rwUnlock(): void {
-        if (__IVI_DEV__) {
-            this._flags &= ~FrameTasksGroupFlags.RWLock;
-        }
-    }
-}
-
-/**
- * DOM Reader flags.
- */
-export const enum DOMReaderFlags {
-    /**
-     * DOM Reader is canceled.
-     */
-    Canceled = 1,
-}
-
-/**
  * Scheduler.
  */
 const scheduler = {
@@ -238,8 +53,6 @@ const scheduler = {
     currentFrame: new FrameTasksGroup(),
     nextFrame: new FrameTasksGroup(),
     updateComponents: [] as Component<any>[],
-    nextReader: null as DOMReader | null,
-    currentReader: null as DOMReader | null,
 };
 
 const microtaskNode = __IVI_BROWSER__ ? document.createTextNode("") : undefined;
@@ -360,9 +173,9 @@ function handleNextFrame(): void {
      * Execute DOM Reader tasks.
      */
     if (__IVI_BROWSER__) {
-        let nextReader = scheduler.nextReader;
+        let nextReader = firstDOMReader();
         while (nextReader) {
-            scheduler.currentReader = nextReader;
+            setCurrentDOMReader(nextReader);
             nextReader.task();
             if (nextReader.flags & DOMReaderFlags.Canceled) {
                 const tmp = nextReader;
@@ -372,7 +185,7 @@ function handleNextFrame(): void {
                 nextReader = nextReader._next;
             }
         }
-        scheduler.currentReader = null;
+        setCurrentDOMReader(null);
     }
 
     // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
@@ -551,69 +364,5 @@ export function startUpdateComponentEachFrame(component: Component<any>): void {
     if (__IVI_BROWSER__) {
         requestNextFrame();
         scheduler.updateComponents.push(component);
-    }
-}
-
-/**
- * DOM Reader.
- */
-export class DOMReader {
-    /**
-     * See `DOMReaderFlags` for details.
-     */
-    flags: DOMReaderFlags;
-    /**
-     * Task that will be executed when scheduler starts a read phase. It will be executed once per frame.
-     */
-    readonly task: () => void;
-    _prev: DOMReader | null;
-    _next: DOMReader | null;
-
-    constructor(action: () => void) {
-        this.flags = 0;
-        this.task = action;
-        this._prev = null;
-        this._next = null;
-    }
-
-    cancel() {
-        if (!(this.flags & DOMReaderFlags.Canceled)) {
-            this.flags |= DOMReaderFlags.Canceled;
-            if (scheduler.currentReader !== this) {
-                unregisterDOMReader(this);
-            }
-        }
-    }
-}
-
-/**
- * Register a DOM Reader that will be invoked on each frame in the read phase.
- *
- * @param task Task that will be executed.
- * @returns DOMReader instance.
- */
-export function registerDOMReader(task: () => void): DOMReader {
-    const reader = new DOMReader(task);
-    if (scheduler.nextReader) {
-        scheduler.nextReader._prev = reader;
-        reader._next = scheduler.nextReader;
-    }
-    scheduler.nextReader = reader;
-    return reader;
-}
-
-/**
- * Unregister a DOM Reader.
- *
- * @param reader DOMReader instance.
- */
-function unregisterDOMReader(reader: DOMReader): void {
-    if (reader._prev) {
-        reader._prev._next = reader._next;
-    } else {
-        scheduler.nextReader = reader._next;
-    }
-    if (reader._next) {
-        reader._next._prev = reader._prev;
     }
 }
