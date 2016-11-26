@@ -1,6 +1,6 @@
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
-import { nextFrame, syncFrameUpdate } from "../scheduler/scheduler";
+import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { Context, ROOT_CONTEXT } from "./context";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";

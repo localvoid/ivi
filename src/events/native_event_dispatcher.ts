@@ -5,7 +5,7 @@ import { EventDispatcher } from "./event_dispatcher";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
 import { getEventOptions } from "./utils";
-import { scheduleTask } from "../scheduler/scheduler";
+import { scheduleTask } from "../scheduler/task";
 
 /**
  * Native Event Dispatcher.

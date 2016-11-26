@@ -49,15 +49,15 @@ export {
     checkNestingViolation, AncestorFlags,
 } from "./dev_mode/html_nesting_rules";
 
-
 /**
  * Scheduler:
  */
 export { FrameTasksGroup } from "./scheduler/frame_tasks_group";
 export { DOMReader, registerDOMReader } from "./scheduler/dom_reader";
-export {
-    clock, scheduleMicrotask, scheduleTask, currentFrame, nextFrame, syncFrameUpdate,
-} from "./scheduler/scheduler";
+export { clock } from "./scheduler/clock";
+export { scheduleMicrotask } from "./scheduler/microtask";
+export { scheduleTask } from "./scheduler/task";
+export { currentFrame, nextFrame, syncFrameUpdate } from "./scheduler/frame";
 
 /**
  * Events:

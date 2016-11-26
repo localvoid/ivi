@@ -1,6 +1,6 @@
 
-let nextReader: DOMReader | null = null;
-let currentReader: DOMReader | null = null;
+let _nextReader: DOMReader | null = null;
+let _currentReader: DOMReader | null = null;
 
 /**
  * DOM Reader flags.
@@ -37,7 +37,7 @@ export class DOMReader {
     cancel() {
         if (!(this.flags & DOMReaderFlags.Canceled)) {
             this.flags |= DOMReaderFlags.Canceled;
-            if (currentReader !== this) {
+            if (_currentReader !== this) {
                 unregisterDOMReader(this);
             }
         }
@@ -50,7 +50,7 @@ export class DOMReader {
  * @returns First DOMReader.
  */
 export function firstDOMReader(): DOMReader | null {
-    return nextReader;
+    return _nextReader;
 }
 
 /**
@@ -59,7 +59,7 @@ export function firstDOMReader(): DOMReader | null {
  * @param reader DOMReader instance.
  */
 export function setCurrentDOMReader(reader: DOMReader | null): void {
-    currentReader = reader;
+    _currentReader = reader;
 }
 
 /**
@@ -70,11 +70,11 @@ export function setCurrentDOMReader(reader: DOMReader | null): void {
  */
 export function registerDOMReader(task: () => void): DOMReader {
     const reader = new DOMReader(task);
-    if (nextReader) {
-        nextReader._prev = reader;
-        reader._next = nextReader;
+    if (_nextReader) {
+        _nextReader._prev = reader;
+        reader._next = _nextReader;
     }
-    nextReader = reader;
+    _nextReader = reader;
     return reader;
 }
 
@@ -87,7 +87,7 @@ export function unregisterDOMReader(reader: DOMReader): void {
     if (reader._prev) {
         reader._prev._next = reader._next;
     } else {
-        nextReader = reader._next;
+        _nextReader = reader._next;
     }
     if (reader._next) {
         reader._next._prev = reader._prev;

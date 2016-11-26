@@ -4,7 +4,7 @@ import { AncestorFlags } from "../dev_mode/html_nesting_rules";
 import { ComponentFlags } from "./flags";
 import { Context } from "./context";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
-import { currentFrame } from "../scheduler/scheduler";
+import { currentFrame } from "../scheduler/frame";
 
 /**
  * Component function constructor.

@@ -1,114 +1,22 @@
-/**
- * Universal Scheduler.
- *
- * When scheduler is running on server, all frame tasks will be executed inside a task registered with a
- * `setImmediate` call.
- */
 
 import { Component } from "../vdom/component";
 import { updateComponent } from "../vdom/implementation";
 import { ComponentFlags } from "../vdom/flags";
 import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
 import { DOMReaderFlags, firstDOMReader, setCurrentDOMReader, unregisterDOMReader } from "./dom_reader";
+import { incrementClock } from "./clock";
+import { scheduleMicrotask } from "./microtask";
 
-/**
- * Scheduler Task.
- */
-export type SchedulerTask = () => void;
+let _pending = false;
+let _currentFrameReady = false;
+let _currentFrame = new FrameTasksGroup();
+let _nextFrame = new FrameTasksGroup();
+let _updateComponents: Component<any>[] = [];
 
-/**
- * Scheduler flags.
- */
-const enum SchedulerFlags {
-    /**
-     * Microtasks are pending for execution in microtasks queue.
-     */
-    MicrotaskPending = 1,
-    /**
-     * Tasks are pending for execution in tasks queue.
-     */
-    TaskPending = 1 << 1,
-    /**
-     * Frametasks are pending for execution in frametasks queue.
-     */
-    FrametaskPending = 1 << 2,
-    /**
-     * Current frame ready.
-     */
-    CurrentFrameReady = 1 << 3,
-}
-
-/**
- * Scheduler.
- */
-const scheduler = {
-    /**
-     * See `SchedulerFlags` for details.
-     */
-    flags: 0,
-    clock: 0,
-    time: 0,
-    microtasks: [] as SchedulerTask[],
-    tasks: [] as SchedulerTask[],
-    currentFrame: new FrameTasksGroup(),
-    nextFrame: new FrameTasksGroup(),
-    updateComponents: [] as Component<any>[],
-};
-
-const microtaskNode = __IVI_BROWSER__ ? document.createTextNode("") : undefined;
-let microtaskToggle = 0;
-const taskMessage = __IVI_BROWSER__ ? "__ivi" + Math.random() : undefined;
-
-if (__IVI_BROWSER__) {
-    // Microtask scheduler based on mutation observer
-    const microtaskObserver = new MutationObserver(runMicrotasks);
-    microtaskObserver.observe(microtaskNode!, { characterData: true });
-
-    // Task scheduler based on postMessage
-    window.addEventListener("message", handleWindowMessage);
-}
-scheduler.currentFrame._rwLock();
-
-/**
- * Monotonically increasing clock.
- *
- * @returns current clock value.
- */
-export function clock(): number {
-    return scheduler.clock;
-}
-
-/**
- * Trigger microtasks execution.
- */
-function requestMicrotaskExecution(): void {
-    if ((scheduler.flags & SchedulerFlags.MicrotaskPending) === 0) {
-        scheduler.flags |= SchedulerFlags.MicrotaskPending;
-        if (__IVI_BROWSER__) {
-            microtaskToggle ^= 1;
-            microtaskNode!.nodeValue = microtaskToggle ? "1" : "0";
-        } else {
-            process.nextTick(runMicrotasks);
-        }
-    }
-}
-
-/**
- * Trigger tasks execution.
- */
-function requestTaskExecution(): void {
-    if ((scheduler.flags & SchedulerFlags.TaskPending) === 0) {
-        scheduler.flags |= SchedulerFlags.TaskPending;
-        if (__IVI_BROWSER__) {
-            window.postMessage(taskMessage, "*");
-        } else {
-            setImmediate(runTasks);
-        }
-    }
-}
+_currentFrame._rwLock();
 
 function _requestNextFrame(): void {
-    if (scheduler.flags & SchedulerFlags.FrametaskPending) {
+    if (_pending) {
         if (__IVI_BROWSER__) {
             requestAnimationFrame(handleNextFrame);
         } else {
@@ -121,20 +29,9 @@ function _requestNextFrame(): void {
  * Trigger next frame tasks execution.
  */
 function requestNextFrame(): void {
-    if ((scheduler.flags & SchedulerFlags.FrametaskPending) === 0) {
-        scheduler.flags |= SchedulerFlags.FrametaskPending;
+    if (!_pending) {
+        _pending = true;
         scheduleMicrotask(_requestNextFrame);
-    }
-}
-
-/**
- * Task scheduler event handler.
- *
- * @param ev Message event.
- */
-function handleWindowMessage(ev: MessageEvent): void {
-    if (ev.source === window && ev.data === taskMessage) {
-        runTasks();
     }
 }
 
@@ -144,22 +41,20 @@ function handleWindowMessage(ev: MessageEvent): void {
  * @param t Current time.
  */
 function handleNextFrame(): void {
-    const updateComponents = scheduler.updateComponents;
-    let tasks: SchedulerTask[];
+    const updateComponents = _updateComponents;
+    let tasks: (() => void)[];
     let i: number;
     let j: number;
 
-    scheduler.flags &= ~SchedulerFlags.FrametaskPending;
-    scheduler.flags |= SchedulerFlags.CurrentFrameReady;
+    _pending = false;
+    _currentFrameReady = true;
 
-    scheduler.time = Date.now();
+    const frame = _nextFrame;
+    _nextFrame = _currentFrame;
+    _currentFrame = frame;
 
-    const frame = scheduler.nextFrame;
-    scheduler.nextFrame = scheduler.currentFrame;
-    scheduler.currentFrame = frame;
-
-    scheduler.currentFrame._rwUnlock();
-    scheduler.nextFrame._rwUnlock();
+    _currentFrame._rwUnlock();
+    _nextFrame._rwUnlock();
 
     // Mark all update components as dirty. But don't update until all write tasks are finished. It is possible that
     // we won't need to update component if it is removed.
@@ -253,10 +148,10 @@ function handleNextFrame(): void {
         FrameTasksGroupFlags.Write |
         FrameTasksGroupFlags.Read)) !== 0);
 
-    scheduler.flags &= ~SchedulerFlags.CurrentFrameReady;
+    _currentFrameReady = false;
 
     // Lock current from adding read and write tasks in debug mode.
-    scheduler.currentFrame._rwLock();
+    _currentFrame._rwLock();
 
     // Perform tasks that should be executed when all DOM ops are finished.
     while ((frame._flags & FrameTasksGroupFlags.After) !== 0) {
@@ -270,60 +165,12 @@ function handleNextFrame(): void {
     }
 
     if (__IVI_BROWSER__) {
-        if (updateComponents.length > 0) {
+        if (_updateComponents.length > 0) {
             requestNextFrame();
         }
     }
 
-    scheduler.clock++;
-}
-
-function runMicrotasks(): void {
-    scheduler.time = Date.now();
-
-    while (scheduler.microtasks.length > 0) {
-        const tasks = scheduler.microtasks;
-        scheduler.microtasks = [];
-        for (let i = 0; i < tasks.length; i++) {
-            tasks[i]();
-        }
-        scheduler.clock++;
-    }
-
-    scheduler.flags &= ~SchedulerFlags.MicrotaskPending;
-}
-
-function runTasks(): void {
-    scheduler.flags &= ~SchedulerFlags.TaskPending;
-    scheduler.time = Date.now();
-
-    let tasks = scheduler.tasks;
-    scheduler.tasks = [];
-    for (let i = 0; i < tasks.length; i++) {
-        tasks[i]();
-    }
-
-    scheduler.clock++;
-}
-
-/**
- * Add task to the microtask queue.
- *
- * @param task
- */
-export function scheduleMicrotask(task: () => void): void {
-    requestMicrotaskExecution();
-    scheduler.microtasks.push(task);
-}
-
-/**
- * Add task to the task queue.
- *
- * @param task
- */
-export function scheduleTask(task: () => void): void {
-    requestTaskExecution();
-    scheduler.tasks.push(task);
+    incrementClock();
 }
 
 /**
@@ -333,7 +180,7 @@ export function scheduleTask(task: () => void): void {
  */
 export function nextFrame(): FrameTasksGroup {
     requestNextFrame();
-    return scheduler.nextFrame;
+    return _nextFrame;
 }
 
 /**
@@ -342,8 +189,8 @@ export function nextFrame(): FrameTasksGroup {
  * @returns Frame tasks group.
  */
 export function currentFrame(): FrameTasksGroup {
-    if (scheduler.flags & SchedulerFlags.CurrentFrameReady) {
-        return scheduler.currentFrame;
+    if (_currentFrameReady) {
+        return _currentFrame;
     }
     return nextFrame();
 }
@@ -363,6 +210,6 @@ export function syncFrameUpdate(): void {
 export function startUpdateComponentEachFrame(component: Component<any>): void {
     if (__IVI_BROWSER__) {
         requestNextFrame();
-        scheduler.updateComponents.push(component);
+        _updateComponents.push(component);
     }
 }
