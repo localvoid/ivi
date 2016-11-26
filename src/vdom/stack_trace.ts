@@ -172,9 +172,11 @@ export function printStackTrace(): void {
     if (__IVI_DEV__) {
         if (__IVI_BROWSER__) {
             if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                console.groupCollapsed("Component Stack Trace:");
-                console.log(stackTraceToString());
-                console.groupEnd();
+                if (STACK_TRACE && STACK_TRACE.length > 0) {
+                    console.groupCollapsed("Component Stack Trace:");
+                    console.log(stackTraceToString());
+                    console.groupEnd();
+                }
             }
         }
     }
