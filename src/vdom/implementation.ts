@@ -578,9 +578,7 @@ function vNodePropagateNewContext(parent: Node, vnode: VNode<any>, context: Cont
             // means that we can ignore re-renders when context is changed, and just propagate a new context through
             // existing subtree.
             if (fn.length < 2) {
-                if (vnode._children) {
-                    vNodePropagateNewContext(parent, vnode._children as VNode<any>, context, owner);
-                }
+                vNodePropagateNewContext(parent, vnode._children as VNode<any>, context, owner);
             } else {
                 _updateComponentFunction(parent, vnode._children as VNode<any>, vnode._children as VNode<any>, context,
                     owner);
