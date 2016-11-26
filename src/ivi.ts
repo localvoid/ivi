@@ -134,6 +134,18 @@ function printComponentTree(nodes: DebugNode[]): void {
 if (__IVI_DEV__) {
     console.info(`IVI [${VERSION}]: DEVELOPMENT MODE`);
 
+    // Minification test.
+    const testFunc = function testFn() {
+        /* tslint:disable:no-empty */
+        /* tslint:enable:no-empty */
+    };
+    if ((testFunc.name || testFunc.toString()).indexOf("testFn") !== -1) {
+        console.info(
+            "It looks like you're using a minified script in Development Mode. " +
+            "When deploying ivi apps to production, disable Development Mode. It" +
+            "will remove many runtime checks and will work significantly faster.");
+    }
+
     if (__IVI_BROWSER__) {
         if (document) {
             document.title += " [DEV MODE]";
