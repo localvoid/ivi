@@ -1,3 +1,4 @@
+import { getEventCharCode, getEventKey } from "../common/dom";
 import { SyntheticEventFlags } from "./flags";
 import { EventDispatcher } from "./event_dispatcher";
 
@@ -161,7 +162,7 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get charCode(): number {
-        return this._data.charCode;
+        return getEventCharCode(this._data);
     }
 
     get ctrlKey(): boolean {
@@ -169,7 +170,7 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get key(): string {
-        return this._data.key;
+        return getEventKey(this._data);
     }
 
     get keyCode(): number {
