@@ -101,30 +101,27 @@ very useful because you can look at a relative performance of your components.
 In Development Mode, parts of the ivi API will be available globally. By default, Dev Mode API is available in global
 variable `ivi`.
 
-### Find Component by Debug ID
+### Exploring Component Trees
 
-When stack augmentation is enabled and exception is thrown, stack trace will contain debug ids for all component
-instances in the current components stack.
-
-There are two functions that can find component instance by their unique debug id:
-
-```ts
-function findComponentByDebugId(debugId: number): Component<any>;
-function $(debugId: any): Component<any>;
-```
-
-`$` is a shortcut for `findComponentByDebugId` that also automatically converts all objects to numbers.
-
-### Explore Component Tree
-
-Dev Mode API exposes a function to explore component trees. This function returns a component tree that is easy to
-explore in the console.
+Dev Mode API has several functions to explore component trees:
 
 ```ts
 function componentTree(component?: Component<any>): DebugComponentNode[] | null;
+function findComponentByDebugId(debugId: number): Component<any>;
+function findComponentByNode(node: Node): Component<any> | null;
+function $(v?: number | Node | Component<any>): DebugComponentNode[] | null;
 ```
 
-When optional parameter `component` isn't specified, it will return component trees for all root nodes.
+`componentTree` function will returns an object with component tree that is easy to explore in the console. When
+optional parameter `component` isn't specified, it will return component trees for all root nodes.
+
+`findComponentByDebugId` finds component instance by their debug ids. Debug ids are displayed in components
+stack trace for all instances.
+
+`findComponentByNode` finds component instance that owns DOM node.
+
+`$` is a shortcut that depending on the value type will either find component by debug id, find component by DOM node.
+And when it finds component, it will generate component tree that is easy to explore in the console.
 
 ### Changing global variable
 

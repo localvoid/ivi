@@ -98,7 +98,7 @@ export { STACK_TRACE } from "./vdom/stack_trace";
  */
 import { VERSION, GLOBAL_EXPORT } from "./common/dev_mode";
 import { componentTree, findComponentByNode } from "./vdom/root";
-import { findComponentByDebugId } from "./vdom/component";
+import { Component, findComponentByDebugId } from "./vdom/component";
 
 if (__IVI_DEV__) {
     console.info(`IVI [${VERSION}]: DEVELOPMENT MODE`);
@@ -113,8 +113,21 @@ if (__IVI_DEV__) {
             "componentTree": componentTree,
             "findComponentByDebugId": findComponentByDebugId,
             "findComponentByNode": findComponentByNode,
-            "$": function (v: any) {
-                return findComponentByDebugId(Number(v));
+            "$": function (v?: number | Node | Component<any>) {
+                if (v === undefined) {
+                    return componentTree();
+                } else if (typeof v === "number") {
+                    const c = findComponentByDebugId(v);
+                    if (c) {
+                        return componentTree(c);
+                    }
+                } else if (v instanceof Node) {
+                    const c = findComponentByNode(v);
+                    if (c) {
+                        return componentTree(c);
+                    }
+                } // Component<any>
+                return componentTree(v as Component<any>);
             },
         };
 
