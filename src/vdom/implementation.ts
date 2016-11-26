@@ -15,14 +15,18 @@
  * #component - Component related functions.
  */
 
-import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../common/dev_mode";
-import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed } from "../common/dev_hooks";
-import { injectScreenOfDeath } from "../common/screen_of_death";
 import { SVG_NAMESPACE, setInnerHTML } from "../common/dom";
+import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
+import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed } from "../dev_mode/hooks";
+import { injectScreenOfDeath } from "../dev_mode/screen_of_death";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
     nestingStateParentTagName, AncestorFlags, AncestorFlagsByTagName,
-} from "../common/html_nesting_rules";
+} from "../dev_mode/html_nesting_rules";
+import {
+    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
+    getFunctionalComponentStackTrace,
+} from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ElementDescriptor } from "./element_descriptor";
@@ -30,10 +34,6 @@ import { cloneVNode, $t } from "./vnode_builder";
 import {
     ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent, getDOMInstanceFromComponent,
 } from "./component";
-import {
-    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
-    getFunctionalComponentStackTrace,
-} from "./stack_trace";
 import { Context } from "./context";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";

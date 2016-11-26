@@ -8,6 +8,32 @@ export const XLINK_NAMESPACE = "http://www.w3.org/1999/xlink";
 export const XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 
 /**
+ * Gets target element from an Event.
+ *
+ * #quirks
+ *
+ * @param ev Native DOM Event.
+ * @returns Target Element.
+ */
+export function getEventTarget(ev: Event): EventTarget {
+    let target = ev.target || window;
+
+    /**
+     * Fix for `SVGUseElement` in old browsers.
+     */
+    if ((target as any).correspondingUseElement) {
+        target = (target as any).correspondingUseElement;
+    }
+
+    /**
+     * Safari fires events on Text Nodes.
+     *
+     * http://www.quirksmode.org/js/events_properties.html
+     */
+    return (target as Node).nodeType === 3 ? (target as Node).parentNode! : target;
+}
+
+/**
  * Set inner HTML.
  *
  * #quirks

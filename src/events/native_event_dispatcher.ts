@@ -1,9 +1,10 @@
+import { getEventTarget } from "../common/dom";
 import { NativeEventDispatcherFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticEvent, SyntheticEventClass } from "./synthetic_event";
 import { EventDispatcher } from "./event_dispatcher";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
-import { getEventTarget, getEventOptions } from "./utils";
+import { getEventOptions } from "./utils";
 import { scheduleTask } from "../scheduler/scheduler";
 
 /**

@@ -14,9 +14,8 @@
  * Development Mode global export variable can be changed via query parameter:
  *   _export=<name>
  */
-import { FeatureFlags, FEATURES } from "./feature_detection";
-import { CSSStyleProps } from "../vdom/dom_props";
-import { printStackTrace } from "../vdom/stack_trace";
+import { FeatureFlags, FEATURES } from "../common/feature_detection";
+import { printStackTrace } from "./stack_trace";
 
 /**
  * Version number in string format.
@@ -164,123 +163,6 @@ export function perfMarkEnd(measureName: string, markName: string): void {
             performance.measure(measureName, markName);
             performance.clearMarks(markName);
             performance.clearMeasures(measureName);
-        }
-    }
-}
-
-let VOID_ELEMENTS: { [key: string]: number };
-if (__IVI_DEV__) {
-    VOID_ELEMENTS = {
-        "area": 0,
-        "base": 0,
-        "br": 0,
-        "col": 0,
-        "embed": 0,
-        "hr": 0,
-        "img": 0,
-        "input": 0,
-        "keygen": 0,
-        "link": 0,
-        "meta": 0,
-        "param": 0,
-        "source": 0,
-        "track": 0,
-        "wbr": 0,
-        "menuitem": 0,
-    };
-}
-
-/**
- * Is element can contain any children.
- *
- * @param tag Tag name.
- * @returns `true` when element can't contain any children.
- */
-export function isVoidElement(tag: string): boolean {
-    if (__IVI_DEV__) {
-        return VOID_ELEMENTS[tag] !== undefined;
-    }
-    return false;
-}
-
-/**
- * Is tag valid.
- *
- * @param tag Tag name.
- * @returns `true` when tag name is valid.
- */
-export function isValidTag(tag: string): boolean {
-    if (__IVI_DEV__) {
-        return /^[a-zA-Z][a-zA-Z:_\.\-\d]*$/.test(tag);
-    }
-    return true;
-}
-
-let DOMAttributeTypos: { [key: string]: string };
-if (__IVI_DEV__) {
-    DOMAttributeTypos = {
-        "autoFocus": "autofocus",
-    };
-}
-
-/**
- * Checks DOM attribute typos and prints warning message with possible typos.
- *
- * @param attrr Attributes.
- */
-export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
-    if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
-            const keys = Object.keys(attrs);
-            for (let i = 0; i < keys.length; i++) {
-                const attrName = keys[i];
-                const match = DOMAttributeTypos[attrName];
-
-                if (match) {
-                    printWarn(`Typo: attribute name "${attrName}" should be "${match}".`);
-                }
-            }
-        }
-    }
-}
-
-let DOMStyleTypos: { [key: string]: string };
-if (__IVI_DEV__) {
-    DOMStyleTypos = {
-        "float": "cssFloat",
-    };
-}
-
-/**
- * Checks DOM style typos and prints warning message with possible typos.
- *
- * @param styles Styles.
- */
-export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
-    if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
-            const keys = Object.keys(styles);
-            for (let i = 0; i < keys.length; i++) {
-                const styleName = keys[i];
-                const styleValue = (styles as any)[styleName];
-
-                const match = DOMStyleTypos[styleName];
-                if (match) {
-                    printWarn(`Typo: style name "${styleName}" should be "${match}".`);
-                } else if (styleName.indexOf("-") > -1) {
-                    printWarn(`Typo: style "${styleName}" contains hyphen symbol.`);
-                }
-
-                if (typeof styleValue === "string") {
-                    if (/;\s*$/.test(styleValue)) {
-                        printWarn(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
-                    }
-                } else if (typeof styleValue === "number") {
-                    if (isNaN(styleValue)) {
-                        printWarn(`Typo: style "${styleName}" has a numeric NaN value.`);
-                    }
-                }
-            }
         }
     }
 }

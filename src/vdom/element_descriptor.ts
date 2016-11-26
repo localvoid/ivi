@@ -1,4 +1,5 @@
-import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../common/dev_mode";
+import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../dev_mode/typos";
+import { isValidTag } from "../dev_mode/dom";
 import { SVG_NAMESPACE, HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { ElementDescriptorFlags } from "./flags";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
@@ -35,7 +36,7 @@ import {
     SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 
     CSSStyleProps,
-} from "./dom_props";
+} from "../common/dom_props";
 
 /**
  * Element Descriptor.
@@ -482,6 +483,12 @@ export function createMediaElementDescriptor(tagName: MediaTagType, clone?: bool
  * @returns VNodeBuilder object.
  */
 export function createCustomElementDescriptor(tagName: string, clone = false): ElementDescriptor<{ [key: string]: any } | null> {
+    if (__IVI_DEV__) {
+        if (!isValidTag(tagName)) {
+            throw new Error(`Invalid tag: ${tagName}`);
+        }
+    }
+
     return new ElementDescriptor<HTMLElementProps | null>(
         tagName,
         clone ?

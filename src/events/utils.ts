@@ -3,32 +3,6 @@ import { NativeEventDispatcherFlags } from "./flags";
 import { EventHandlerList } from "./event_handler";
 
 /**
- * Gets the target node from a native Event.
- *
- * #quirks
- *
- * @param ev Native DOM Event.
- * @returns Target Node.
- */
-export function getEventTarget(ev: Event): EventTarget {
-    let target = ev.target || window;
-
-    /**
-     * Fix for `SVGUseElement` in old browsers.
-     */
-    if ((target as any).correspondingUseElement) {
-        target = (target as any).correspondingUseElement;
-    }
-
-    /**
-     * Safari fires events on Text Nodes.
-     *
-     * http://www.quirksmode.org/js/events_properties.html
-     */
-    return (target as Node).nodeType === 3 ? (target as Node).parentNode! : target;
-}
-
-/**
  * `{ capture: true, passive: true }` object that should be used as a third parameter in `addEventListener`.
  */
 export const EVENT_CAPTURE_PASSIVE_OPTIONS =

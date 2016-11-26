@@ -1,6 +1,6 @@
-import { getFunctionName, nextDebugId } from "../common/dev_mode";
+import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
-import { AncestorFlags } from "../common/html_nesting_rules";
+import { AncestorFlags } from "../dev_mode/html_nesting_rules";
 import { ComponentFlags } from "./flags";
 import { Context } from "./context";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";

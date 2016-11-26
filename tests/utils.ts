@@ -1,4 +1,4 @@
-import { setInitialNestingState } from "../src/common/html_nesting_rules";
+import { setInitialNestingState } from "../src/dev_mode/html_nesting_rules";
 import { VNode, getDOMInstanceFromVNode } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { $h, $c } from "../src/vdom/vnode_builder";

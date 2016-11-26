@@ -1,6 +1,6 @@
-import {
-    nextDebugId, isVoidElement, isValidTag, checkDOMAttributesForTypos, checkDOMStylesForTypos,
-} from "../common/dev_mode";
+import { nextDebugId } from "../dev_mode/dev_mode";
+import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../dev_mode/typos";
+import { isVoidElement, isValidTag } from "../dev_mode/dom";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
@@ -40,7 +40,7 @@ import {
     SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 
     CSSStyleProps,
-} from "./dom_props";
+} from "../common/dom_props";
 
 /**
  * VNode Builder provides a chain-method API to build VNodes.

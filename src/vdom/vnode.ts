@@ -1,5 +1,5 @@
 import { EventHandlerList } from "../events/event_handler";
-import { CSSStyleProps } from "./dom_props";
+import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";

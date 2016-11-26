@@ -31,16 +31,21 @@ declare global {
 /**
  * Common:
  */
-export { DevModeFlags, DEV_MODE, setDevModeFlags, printError, printWarn } from "./common/dev_mode";
+export { DevModeFlags, DEV_MODE, setDevModeFlags, printError, printWarn } from "./dev_mode/dev_mode";
 export { FeatureFlags, FEATURES } from "./common/feature_detection";
 export { UserAgentFlags, USER_AGENT } from "./common/user_agent";
-export { nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "./common/dom";
+export { nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, getEventTarget } from "./common/dom";
 export { NOOP } from "./common/noop";
 export { isPropsNotIdentical, isPropsNotShallowEqual } from "./common/equality";
+
+/**
+ * Dev Mode:
+ */
 export {
     setInitialNestingState, pushNestingState, restoreNestingState, nestingStateAncestorFlags, nestingStateParentTagName,
     checkNestingViolation, AncestorFlags,
-} from "./common/html_nesting_rules";
+} from "./dev_mode/html_nesting_rules";
+
 
 /**
  * Scheduler:
@@ -71,7 +76,7 @@ export {
 } from "./events/synthetic_event";
 export { DispatchTarget, accumulateDispatchTargetsFromElement, accumulateDispatchTargets } from "./events/traverse_dom";
 export { dispatchEvent } from "./events/dispatch_event";
-export { getEventTarget, getEventOptions } from "./events/utils";
+export { getEventOptions } from "./events/utils";
 
 /**
  * Virtual DOM:
@@ -91,13 +96,12 @@ export {
 } from "./vdom/element_descriptor";
 export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m, $e, $w } from "./vdom/vnode_builder";
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
-export { STACK_TRACE } from "./vdom/stack_trace";
 
 /**
  * Dev Mode exported functions:
  */
-import { VERSION, GLOBAL_EXPORT } from "./common/dev_mode";
-import { DebugNode, componentTree, findComponentByNode } from "./vdom/root";
+import { VERSION, GLOBAL_EXPORT } from "./dev_mode/dev_mode";
+import { DebugNode, componentTree, findComponentByNode } from "./dev_mode/component_tree";
 import { Component, findComponentByDebugId } from "./vdom/component";
 
 function _printComponentTreeVisitNode(node: DebugNode): void {

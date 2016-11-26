@@ -7,8 +7,8 @@
  * `setDevModeFlags(DevModeFlags.DisableScreenOfDeath)`.
  */
 import { DevModeFlags, DEV_MODE } from "./dev_mode";
-import { devModeOnError } from "./dev_hooks";
-import { getEventTarget } from "../events/utils";
+import { devModeOnError } from "./hooks";
+import { getEventTarget } from "../common/dom";
 
 /**
  * Screen of Death Element.

@@ -1,6 +1,6 @@
 import { XML_NAMESPACE, XLINK_NAMESPACE } from "../common/dom";
 import { VNodeFlags } from "./flags";
-import { CSSStyleProps } from "./dom_props";
+import { CSSStyleProps } from "../common/dom_props";
 
 /**
  * Sync DOM class names.

@@ -3,8 +3,8 @@
  *
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
-import { DEV_MODE, DevModeFlags, getFunctionName } from "../common/dev_mode";
-import { ComponentClass, ComponentFunction, Component } from "./component";
+import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
+import { ComponentClass, ComponentFunction, Component } from "../vdom/component";
 
 /**
  * Components stack trace from an entry point.

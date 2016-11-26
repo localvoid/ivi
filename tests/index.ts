@@ -1,4 +1,4 @@
-import { DevModeFlags, setDevModeFlags } from "../src/common/dev_mode";
+import { DevModeFlags, setDevModeFlags } from "../src/dev_mode/dev_mode";
 
 setDevModeFlags(DevModeFlags.DisableScreenOfDeath);
 
