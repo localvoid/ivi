@@ -30,7 +30,7 @@ import {
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ElementDescriptor } from "./element_descriptor";
-import { cloneVNode, $t } from "./vnode_builder";
+import { cloneVNodeChildren, $t } from "./vnode_builder";
 import {
     ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent, getDOMInstanceFromComponent,
 } from "./component";
@@ -801,9 +801,16 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
  * @returns Rendered DOM Node.
  */
 function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: Component<any>): Node | Component<any> {
-    // if VNode already has an instance, perform a deep clone
-    if (vnode._instance) {
-        vnode = cloneVNode(vnode);
+    if (__IVI_DEV__) {
+        if (vnode._instance) {
+            throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
+                "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
+        }
+
+        if ((vnode._flags & (VNodeFlags.Immutable | VNodeFlags.ImmutableChildren)) === VNodeFlags.Immutable) {
+            throw new Error("Immutable VNodes can't be used to render trees, create a ref to an immutable VNode with " +
+                "a factory function `$r`.");
+        }
     }
 
     const flags = vnode._flags;
@@ -856,6 +863,10 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
 
             let children = vnode._children;
             if (children !== null) {
+                if (flags & VNodeFlags.ImmutableChildren) {
+                    vnode._children = children = cloneVNodeChildren(flags, children);
+                }
+
                 if (flags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) {
                     if (flags & VNodeFlags.ChildrenBasic) {
                         instance.textContent = children as string;
@@ -987,9 +998,16 @@ function vNodeAugment(
     context: Context,
     owner?: Component<any>,
 ): Node | Component<any> {
-    // if VNode already has a reference to a DOM Node, perform a deep clone of vnodes
-    if (vnode._instance) {
-        vnode = cloneVNode(vnode);
+    if (__IVI_DEV__) {
+        if (vnode._instance) {
+            throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
+                "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
+        }
+
+        if ((vnode._flags & (VNodeFlags.Immutable | VNodeFlags.ImmutableChildren)) === VNodeFlags.Immutable) {
+            throw new Error("Immutable VNodes can't be used to render trees, create a ref to an immutable VNode with " +
+                "a factory function `$r`.");
+        }
     }
 
     let instance: Node | Component<any>;
@@ -1035,6 +1053,10 @@ function vNodeAugment(
                 }
 
                 if (vnode._children !== null) {
+                    if (flags & VNodeFlags.ImmutableChildren) {
+                        vnode._children = cloneVNodeChildren(flags, vnode._children);
+                    }
+
                     if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
                         let domChild = getNonCommentNode(node, node.firstChild);
                         if (flags & VNodeFlags.ChildrenArray) {
@@ -1164,20 +1186,30 @@ function vNodeSync(
     context: Context,
     owner?: Component<any>,
 ): Node | Component<any> {
-    if (a === b) {
-        return b._instance!;
-    }
+    if (__IVI_DEV__) {
+        if (b._instance) {
+            throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
+                "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
+        }
 
-    if (b._instance) {
-        b = cloneVNode(b);
+        if ((b._flags & (VNodeFlags.Immutable | VNodeFlags.ImmutableChildren)) === VNodeFlags.Immutable) {
+            throw new Error("Immutable VNodes can't be used to render trees, create a ref to an immutable VNode with " +
+                "a factory function `$r`.");
+        }
     }
 
     const flags = a._flags;
-    let instance: Node | Component<any> | undefined;
+    let instance = b._instance = a._instance;
+
+    if (a === b) {
+        if (flags & VNodeFlags.ImmutableChildren) {
+            b._children = a._children;
+        }
+
+        return instance!;
+    }
 
     if (flags & (VNodeFlags.Text | VNodeFlags.Element)) {
-        instance = b._instance = a._instance!;
-
         if (flags & VNodeFlags.Text) {
             if (a._children !== b._children) {
                 (instance as Text).nodeValue = b._children as string;
@@ -1197,6 +1229,10 @@ function vNodeSync(
             }
 
             if (a._children !== b._children) {
+                if (b._flags & VNodeFlags.ImmutableChildren) {
+                    b._children = cloneVNodeChildren(b._flags, b._children);
+                }
+
                 syncChildren(
                     instance as Element,
                     a._flags,
@@ -1209,7 +1245,7 @@ function vNodeSync(
         }
     } else { // (flags & VNodeFlags.Component)
         if (flags & VNodeFlags.ComponentClass) {
-            const component = instance = b._instance = a._instance as Component<any>;
+            const component = instance as Component<any>;
             stackTracePushComponent(b._tag as ComponentClass<any>, component);
             componentUpdateProps(component, b._props);
             componentUpdateParentContext(component, context);
@@ -1221,7 +1257,7 @@ function vNodeSync(
         stackTracePopComponent();
     }
 
-    return instance;
+    return instance!;
 }
 
 /**

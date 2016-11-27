@@ -1,6 +1,6 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "../src/common/dom";
 import { render, TestComponent, TestComponentFunction, TestComponentFunctionWrapper } from "./utils";
-import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode_builder";
+import { $t, $h, $s, $c, $i, $m, cloneVNode } from "../src/vdom/vnode_builder";
 
 const expect = chai.expect;
 
@@ -379,7 +379,7 @@ describe("render", () => {
         it("<div>a</div>", () => {
             const v = $h("div").children("a");
             const a = render<HTMLDivElement>(v, undefined, true);
-            const b = render<HTMLDivElement>(v, undefined, true);
+            const b = render<HTMLDivElement>(cloneVNode(v), undefined, true);
             expect(a.childNodes.length).to.equal(1);
             expect(a.firstChild!.nodeValue).to.equal("a");
             expect(b.childNodes.length).to.equal(1);

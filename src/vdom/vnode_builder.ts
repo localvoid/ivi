@@ -445,6 +445,19 @@ export class VNodeBuilder<P> implements VNode<P> {
         this._ref = ref;
         return this;
     }
+
+    /**
+     * Marks VNode as an immutable.
+     *
+     * Immutable VNodes can't be used directly when rendering trees. `$r` factory function is used to create nodes that
+     * reference immutable nodes.
+     *
+     * @returns VNodeBuilder.
+     */
+    immutable(): VNodeBuilder<P> {
+        this._flags |= VNodeFlags.Immutable;
+        return this;
+    }
 }
 
 export type VNodeRecursiveListValue = VNodeRecursiveArray | VNode<any> | string | number | boolean | null;
@@ -793,14 +806,43 @@ export function $w(tagName: string, className?: string): VNodeBuilder<{ [key: st
 }
 
 /**
- * Perform a deep VNode cloning with DOM and Component reference erasure.
+ * Creates a VNodeBuilder that references another immutable VNode.
  *
- * @param node VNode to clone.
- * @returns Cloned VNode.
+ * @param node VNode.
+ * @returns VNodeBuilder object.
  */
-export function cloneVNode(node: VNode<any>): VNode<any> {
+export function $r<P>(node: VNode<P>): VNodeBuilder<P> {
+    if (__IVI_DEV__) {
+        if (!(node._flags & VNodeFlags.Immutable)) {
+            throw new Error("Invalid node, ref nodes are working only with immutable VNodes.");
+        }
+    }
     const flags = node._flags;
-    let children = node._children;
+    const r = new VNodeBuilder<P>(
+        flags | VNodeFlags.ImmutableChildren,
+        node._tag,
+        node._props,
+        node._className,
+        (flags & VNodeFlags.Component) ?
+            null :
+            node._children);
+    r._key = node._key;
+    r._events = node._events;
+    r._style = node._style;
+    return r;
+}
+
+/**
+ * Deep clone of VNode children with instance refs erasure.
+ *
+ * @param flags Parent VNode flags.
+ * @param children Children.
+ * @returns Cloned children.
+ */
+export function cloneVNodeChildren(
+    flags: VNodeFlags,
+    children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
+): VNode<any>[] | VNode<any> | string | number | boolean | null | undefined {
     if (children !== null) {
         if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
             if (flags & VNodeFlags.ChildrenArray) {
@@ -809,19 +851,33 @@ export function cloneVNode(node: VNode<any>): VNode<any> {
                 for (let i = 0; i < 0; i++) {
                     newChildren[i] = cloneVNode(children[i]);
                 }
-                children = newChildren;
+                return newChildren;
             } else {
-                children = cloneVNode(children as VNode<any>);
+                return cloneVNode(children as VNode<any>);
             }
         }
     }
 
+    return children;
+}
+
+/**
+ * Deep clone of VNode with instance refs erasure.
+ *
+ * @param node VNode to clone.
+ * @returns Cloned VNode.
+ */
+export function cloneVNode(node: VNode<any>): VNode<any> {
+    const flags = node._flags;
+
     const newNode = new VNodeBuilder(
-        node._flags,
+        flags,
         node._tag,
         node._props,
         node._className,
-        (node._flags & VNodeFlags.Component) ? null : children);
+        (flags & VNodeFlags.Component) ?
+            null :
+            cloneVNodeChildren(flags, node._children));
     newNode._key = node._key;
     newNode._events = node._events;
     newNode._style = node._style;

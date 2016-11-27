@@ -469,7 +469,7 @@ describe("sync", () => {
             [6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }]],
         ];
 
-        describe("syncChildren string children", () => {
+        describe("syncChildren", () => {
             it("null => 'abc'", () => {
                 const f = frag();
                 render<HTMLElement>($h("div"), f);
@@ -770,27 +770,6 @@ describe("sync", () => {
                 expect(b.childNodes.length).to.equal(0);
             });
 
-            it("<div> => <div> (identical node)", () => {
-                const f = frag();
-                const v = $h("div");
-                render<HTMLElement>(v, f);
-                const b = render<HTMLElement>(v.children("abc"), f);
-                expect(b.tagName.toLowerCase()).to.equal("div");
-                expect(b.firstChild).to.null;
-            });
-
-            it("<div><h2><h1><h2></div> => <div><h2><h1><h2></div> (change order of identical nodes)", () => {
-                const f = frag();
-                const v1 = $h("h2");
-                const v2 = $h("h1");
-                const v3 = $h("h2");
-                render<HTMLElement>($h("div").children([v1, v2, v3]), f);
-                const b = render<HTMLElement>($h("div").children([v3, v2, v1]), f, true);
-                expect(b.tagName.toLowerCase()).to.equal("div");
-                expect(b.children[0].tagName.toLowerCase()).to.equal("h2");
-                expect(b.children[1].tagName.toLowerCase()).to.equal("h1");
-                expect(b.children[2].tagName.toLowerCase()).to.equal("h2");
-            });
         });
 
         describe("with trackByKey", () => {
@@ -1132,19 +1111,6 @@ describe("sync", () => {
             render<HTMLAudioElement>($m("audio").props({ volume: 0.3 }), f);
             const b = render<HTMLAudioElement>($m("audio"), f);
             expect(b.volume).to.equal(0);
-        });
-    });
-
-    describe("reusing vnodes", () => {
-        it("<div>a</div> => <div>a</div> => <div>b</div>", () => {
-            const v = $h("div").children("a");
-            const a = render<HTMLDivElement>(v);
-            render<HTMLDivElement>(v, undefined, true);
-            const b = render<HTMLDivElement>($h("div").children("b"));
-            expect(a.childNodes.length).to.equal(1);
-            expect(a.firstChild!.nodeValue).to.equal("a");
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("b");
         });
     });
 

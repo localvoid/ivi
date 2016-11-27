@@ -63,6 +63,15 @@ export const enum VNodeFlags {
      * VNode is a Custom Element.
      */
     WebComponent = 1 << 14,
+    /**
+     * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
+     * prototype for building mutable trees.
+     */
+    Immutable = 1 << 15,
+    /**
+     * VNode is instantiated from an immutable VNode and has a list of immutable children.
+     */
+    ImmutableChildren = 1 << 16,
 
     /**
      * VNode represents a Component.
@@ -166,17 +175,17 @@ export const enum ElementDescriptorFlags {
     /**
      * Clone nodes from a base node with `Node.cloneNode(false)` method.
      */
-    EnabledCloning = 1 << 15,
+    EnabledCloning = 1 << 17,
     /**
      * Protect class name from overriding.
      */
-    ProtectClassName = 1 << 16,
+    ProtectClassName = 1 << 18,
     /**
      * Protect props from overriding.
      */
-    ProtectProps = 1 << 17,
+    ProtectProps = 1 << 19,
     /**
      * Protect style from overriding.
      */
-    ProtectStyle = 1 << 18,
+    ProtectStyle = 1 << 20,
 }
