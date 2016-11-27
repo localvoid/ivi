@@ -66,6 +66,11 @@ export function syncStyle(
         style = node.style;
         keys = Object.keys(a);
         for (i = 0; i < keys.length; i++) {
+            /**
+             * #quirks
+             *
+             * Should work with `null` values in all modern browsers. IE9 had problems with `null` values.
+             */
             (style as any)[keys[i]] = "";
         }
     } else {
