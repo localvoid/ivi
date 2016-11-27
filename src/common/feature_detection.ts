@@ -32,6 +32,12 @@ export const enum FeatureFlags {
      * `key` property on KeyboardEvent instances.
      */
     KeyboardEventKey = 1 << 3,
+    /**
+     * Browser supports native promises.
+     *
+     * IE11 and Android 4.4 doesn't support native promises.
+     */
+    NativePromise = 1 << 4,
 }
 
 /**
@@ -79,5 +85,12 @@ if (__IVI_BROWSER__) {
      */
     if ("key" in KeyboardEvent.prototype) {
         FEATURES |= FeatureFlags.KeyboardEventKey;
+    }
+
+    /**
+     * Check native `Promise` availability.
+     */
+    if (typeof Promise !== "undefined" && Promise.toString().indexOf("native code") > -1) {
+        FEATURES |= FeatureFlags.NativePromise;
     }
 }
