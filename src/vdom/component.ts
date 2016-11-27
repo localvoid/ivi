@@ -1,3 +1,4 @@
+import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
 import { AncestorFlags } from "../dev_mode/html_nesting_rules";
@@ -376,6 +377,34 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Compon
         target.prototype.isPropsChanged = isPropsNotShallowEqual;
     } else {
         (target as ComponentFunction<any>).isPropsChanged = isPropsNotShallowEqual;
+    }
+    return target;
+}
+
+/**
+ * Marks component as static.
+ *
+ * This function can be used as a wrapper for function expression, or as a class decorator.
+ *
+ *     const MyComponent = staticComponent(function(props: { text: string }) {
+ *         return $h("div").children(props.text);
+ *     });
+ *
+ *     @staticComponent
+ *     class MyClassComponent extends Component<{ text: string }> {
+ *         render() {
+ *             return $h("div").children(this.props.text);
+ *         }
+ *     }
+ *
+ * @param target Component constructor.
+ * @returns Component constructor with static property.
+ */
+export function staticComponent<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P {
+    if (target.prototype.render) {
+        target.prototype.isPropsChanged = NOOP_FALSE;
+    } else {
+        (target as ComponentFunction<any>).isPropsChanged = NOOP_FALSE;
     }
     return target;
 }
