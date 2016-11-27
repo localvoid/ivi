@@ -53,7 +53,7 @@ export {
  * Scheduler:
  */
 export { FrameTasksGroup } from "./scheduler/frame_tasks_group";
-export { DOMReader, registerDOMReader } from "./scheduler/dom_reader";
+export { DOMReader, addDOMReader } from "./scheduler/dom_reader";
 export { clock } from "./scheduler/clock";
 export { scheduleMicrotask } from "./scheduler/microtask";
 export { scheduleTask } from "./scheduler/task";

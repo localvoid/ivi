@@ -38,7 +38,7 @@ export class DOMReader {
         if (!(this.flags & DOMReaderFlags.Canceled)) {
             this.flags |= DOMReaderFlags.Canceled;
             if (_currentReader !== this) {
-                unregisterDOMReader(this);
+                removeDOMReader(this);
             }
         }
     }
@@ -68,7 +68,7 @@ export function setCurrentDOMReader(reader: DOMReader | null): void {
  * @param task Task that will be executed.
  * @returns DOMReader instance.
  */
-export function registerDOMReader(task: () => void): DOMReader {
+export function addDOMReader(task: () => void): DOMReader {
     const reader = new DOMReader(task);
     if (_nextReader) {
         _nextReader._prev = reader;
@@ -83,7 +83,7 @@ export function registerDOMReader(task: () => void): DOMReader {
  *
  * @param reader DOMReader instance.
  */
-export function unregisterDOMReader(reader: DOMReader): void {
+export function removeDOMReader(reader: DOMReader): void {
     if (reader._prev) {
         reader._prev._next = reader._next;
     } else {
