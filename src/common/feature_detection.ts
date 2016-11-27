@@ -37,7 +37,7 @@ export const enum FeatureFlags {
      *
      * IE11 and Android 4.4 doesn't support native promises.
      */
-    NativePromise = 1 << 4,
+    // NativePromise = 1 << 4,
 }
 
 /**
@@ -90,7 +90,7 @@ if (__IVI_BROWSER__) {
     /**
      * Check native `Promise` availability.
      */
-    if (typeof Promise !== "undefined" && Promise.toString().indexOf("native code") > -1) {
-        FEATURES |= FeatureFlags.NativePromise;
-    }
+    // if (typeof Promise !== "undefined" && Promise.toString().indexOf("native code") > -1) {
+    //     FEATURES |= FeatureFlags.NativePromise;
+    // }
 }

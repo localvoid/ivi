@@ -1,6 +1,7 @@
-import { FEATURES, FeatureFlags } from "../common/feature_detection";
+import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { incrementClock } from "./clock";
+import { scheduleTask } from "./task";
 
 let _pending = false;
 let _microtasks: (() => void)[] = [];
@@ -8,7 +9,7 @@ let _microtaskNode: Text;
 let _microtaskToggle = 0;
 
 if (__IVI_BROWSER__) {
-    if (!(FEATURES & FeatureFlags.NativePromise)) {
+    if (!(USER_AGENT & UserAgentFlags.iOSStandalone)) {
         const microtaskObserver = new MutationObserver(runMicrotasks);
         _microtaskNode = document.createTextNode("");
         microtaskObserver.observe(_microtaskNode, { characterData: true });
@@ -20,9 +21,13 @@ function runMicrotasksInPromise(): void {
     /**
      * #quirks
      *
-     * And again broken UIWebView, flush microtask queue with a `setTimeout` hack.
+     * Flush microtask queue.
+     * - iOS 8.3+
+     * - UIWebView 9.3.3+
+     *
+     * This function is running only on this browsers, so there is no need for an additional check.
      */
-    setTimeout(NOOP);
+    scheduleTask(NOOP);
 }
 
 function runMicrotasks(): void {
@@ -48,11 +53,13 @@ function requestMicrotaskExecution(): void {
             /**
              * #quirks
              *
-             * Microtask queue based on `MutationObserver` has some serious problems in UIWebView >= 9.3.3 when
-             * mutation events are fired inside touch event contexts. It stops firing events after several recursive
-             * events.
+             * Following browsers have problems with microtasks implementation based on `MutationObserver`:
+             * - iOS 8.3+(full screen mode `navigator.standalone`)
+             * - UIWebView 9.3.3+
+             *
+             * Mutation events do not fire when code is executed in touch event context.
              */
-            if (FEATURES & FeatureFlags.NativePromise) {
+            if (USER_AGENT & UserAgentFlags.iOSStandalone) {
                 Promise.resolve().then(runMicrotasksInPromise);
             } else {
                 _microtaskToggle ^= 1;

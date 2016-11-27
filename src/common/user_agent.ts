@@ -15,9 +15,13 @@ export const enum UserAgentFlags {
      */
     iOS = 1,
     /**
+     * iOS full screen mode.
+     */
+    iOSStandalone = 1 << 1,
+    /**
      * Android browser.
      */
-    Android = 1 << 1,
+    Android = 1 << 2,
 };
 
 /**
@@ -26,11 +30,13 @@ export const enum UserAgentFlags {
 export let USER_AGENT: UserAgentFlags = 0;
 
 if (__IVI_BROWSER__) {
-    if (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream) {
-        USER_AGENT |= UserAgentFlags.iOS;
+    if (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) {
+        USER_AGENT |= ("standalone" in navigator) ?
+            UserAgentFlags.iOS | UserAgentFlags.iOSStandalone :
+            UserAgentFlags.iOS;
     }
 
-    if (/Android/.test(ua)) {
+    if (ua.indexOf("Android") > -1) {
         USER_AGENT |= UserAgentFlags.Android;
     }
 }
