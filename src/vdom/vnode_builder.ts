@@ -459,6 +459,53 @@ export class VNodeBuilder<P> implements VNode<P> {
         }
         return this;
     }
+
+    /**
+     * Merge props with existing props.
+     *
+     * @param props
+     * @return VNodeBuilder.
+     */
+    mergeProps(props: P | null): VNodeBuilder<P> {
+        if (__IVI_DEV__) {
+            if (props && typeof props !== "object") {
+                throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
+            }
+            if (this._props && typeof this._props !== "object") {
+                throw new Error(`Failed to merge props, props object has type "${typeof this._props}".`);
+            }
+        }
+        if (props) {
+            return this.props(this._props ? Object.assign({}, this._props, props) : props);
+        }
+        return this;
+    }
+
+    /**
+     * Merge style with existing style.
+     *
+     * @param props
+     * @return VNodeBuilder.
+     */
+    mergeStyle(style: CSSStyleProps | null): VNodeBuilder<P> {
+        if (style) {
+            return this.style(this._style ? Object.assign({}, this._style, style) : style);
+        }
+        return this;
+    }
+
+    /**
+     * Merge events with existing events.
+     *
+     * @param props
+     * @return VNodeBuilder.
+     */
+    mergeEvents(events: EventHandlerList | null): VNodeBuilder<P> {
+        if (events) {
+            return this.events(this._events ? Object.assign({}, this._events, events) : events);
+        }
+        return this;
+    }
 }
 
 export type VNodeRecursiveListValue = VNodeRecursiveArray | VNode<any> | string | number | boolean | null;
