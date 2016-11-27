@@ -68,10 +68,6 @@ export const enum VNodeFlags {
      * prototype for building mutable trees.
      */
     Immutable = 1 << 15,
-    /**
-     * VNode is instantiated from an immutable VNode and has a list of immutable children.
-     */
-    ImmutableChildren = 1 << 16,
 
     /**
      * VNode represents a Component.

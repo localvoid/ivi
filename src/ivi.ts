@@ -98,7 +98,7 @@ export {
     ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
     createMediaElementDescriptor, createCustomElementDescriptor,
 } from "./vdom/element_descriptor";
-export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m, $e, $w, $r } from "./vdom/vnode_builder";
+export { VNodeBuilder, cloneVNode, normalizeVNodes, $t, $h, $s, $c, $i, $m, $e, $w } from "./vdom/vnode_builder";
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 
 /**

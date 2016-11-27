@@ -449,13 +449,14 @@ export class VNodeBuilder<P> implements VNode<P> {
     /**
      * Marks VNode as an immutable.
      *
-     * Immutable VNodes can't be used directly when rendering trees. `$r` factory function is used to create nodes that
-     * reference immutable nodes.
+     * Immutable VNodes can't be used directly when rendering trees, they should be cloned with a `cloneVNode` function.
      *
      * @returns VNodeBuilder.
      */
     immutable(): VNodeBuilder<P> {
-        this._flags |= VNodeFlags.Immutable;
+        if (__IVI_DEV__) {
+            this._flags |= VNodeFlags.Immutable;
+        }
         return this;
     }
 }
@@ -806,33 +807,6 @@ export function $w(tagName: string, className?: string): VNodeBuilder<{ [key: st
 }
 
 /**
- * Creates a VNodeBuilder that references another immutable VNode.
- *
- * @param node VNode.
- * @returns VNodeBuilder object.
- */
-export function $r<P>(node: VNode<P>): VNodeBuilder<P> {
-    if (__IVI_DEV__) {
-        if (!(node._flags & VNodeFlags.Immutable)) {
-            throw new Error("Invalid node, ref nodes are working only with immutable VNodes.");
-        }
-    }
-    const flags = node._flags;
-    const r = new VNodeBuilder<P>(
-        flags | VNodeFlags.ImmutableChildren,
-        node._tag,
-        node._props,
-        node._className,
-        (flags & VNodeFlags.Component) ?
-            null :
-            node._children);
-    r._key = node._key;
-    r._events = node._events;
-    r._style = node._style;
-    return r;
-}
-
-/**
  * Deep clone of VNode children with instance refs erasure.
  *
  * @param flags Parent VNode flags.
@@ -867,7 +841,7 @@ export function cloneVNodeChildren(
  * @param node VNode to clone.
  * @returns Cloned VNode.
  */
-export function cloneVNode(node: VNode<any>): VNode<any> {
+export function cloneVNode(node: VNode<any>): VNodeBuilder<any> {
     const flags = node._flags;
 
     const newNode = new VNodeBuilder(

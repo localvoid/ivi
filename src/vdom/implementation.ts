@@ -30,7 +30,7 @@ import {
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ElementDescriptor } from "./element_descriptor";
-import { cloneVNodeChildren, $t } from "./vnode_builder";
+import { $t } from "./vnode_builder";
 import {
     ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent, getDOMInstanceFromComponent,
 } from "./component";
@@ -807,9 +807,9 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
 
-        if ((vnode._flags & (VNodeFlags.Immutable | VNodeFlags.ImmutableChildren)) === VNodeFlags.Immutable) {
-            throw new Error("Immutable VNodes can't be used to render trees, create a ref to an immutable VNode with " +
-                "a factory function `$r`.");
+        if (vnode._flags & VNodeFlags.Immutable) {
+            throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
+                "`cloneVNode` function.");
         }
     }
 
@@ -863,10 +863,6 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
 
             let children = vnode._children;
             if (children !== null) {
-                if (flags & VNodeFlags.ImmutableChildren) {
-                    vnode._children = children = cloneVNodeChildren(flags, children);
-                }
-
                 if (flags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) {
                     if (flags & VNodeFlags.ChildrenBasic) {
                         instance.textContent = children as string;
@@ -1004,9 +1000,9 @@ function vNodeAugment(
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
 
-        if ((vnode._flags & (VNodeFlags.Immutable | VNodeFlags.ImmutableChildren)) === VNodeFlags.Immutable) {
-            throw new Error("Immutable VNodes can't be used to render trees, create a ref to an immutable VNode with " +
-                "a factory function `$r`.");
+        if (vnode._flags & VNodeFlags.Immutable) {
+            throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
+                "`cloneVNode` function.");
         }
     }
 
@@ -1053,10 +1049,6 @@ function vNodeAugment(
                 }
 
                 if (vnode._children !== null) {
-                    if (flags & VNodeFlags.ImmutableChildren) {
-                        vnode._children = cloneVNodeChildren(flags, vnode._children);
-                    }
-
                     if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
                         let domChild = getNonCommentNode(node, node.firstChild);
                         if (flags & VNodeFlags.ChildrenArray) {
@@ -1192,22 +1184,18 @@ function vNodeSync(
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
 
-        if ((b._flags & (VNodeFlags.Immutable | VNodeFlags.ImmutableChildren)) === VNodeFlags.Immutable) {
-            throw new Error("Immutable VNodes can't be used to render trees, create a ref to an immutable VNode with " +
-                "a factory function `$r`.");
+        if (b._flags & VNodeFlags.Immutable) {
+            throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
+                "`cloneVNode` function.");
         }
+    }
+
+    if (a === b) {
+        return b._instance!;
     }
 
     const flags = a._flags;
     let instance = b._instance = a._instance;
-
-    if (a === b) {
-        if (flags & VNodeFlags.ImmutableChildren) {
-            b._children = a._children;
-        }
-
-        return instance!;
-    }
 
     if (flags & (VNodeFlags.Text | VNodeFlags.Element)) {
         if (flags & VNodeFlags.Text) {
@@ -1229,10 +1217,6 @@ function vNodeSync(
             }
 
             if (a._children !== b._children) {
-                if (b._flags & VNodeFlags.ImmutableChildren) {
-                    b._children = cloneVNodeChildren(b._flags, b._children);
-                }
-
                 syncChildren(
                     instance as Element,
                     a._flags,
