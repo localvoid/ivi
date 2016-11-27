@@ -1,6 +1,6 @@
 import { nextDebugId } from "../dev_mode/dev_mode";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../dev_mode/typos";
-import { isVoidElement, isValidTag } from "../dev_mode/dom";
+import { isVoidElement, isValidTag, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
@@ -419,7 +419,7 @@ export class VNodeBuilder<P> implements VNode<P> {
             if (!(this._flags & VNodeFlags.InputElement)) {
                 throw new Error("Failed to set checked, checked is available on input elements only.");
             }
-            if (!isInputTypeSupportsCheckedValue(this._tag as InputType)) {
+            if (!isInputTypeHasCheckedProperty(this._tag as InputType)) {
                 throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
                     + `checked value.`);
             }
@@ -683,13 +683,6 @@ export function $s(tagName: SVGTagType, className?: string): VNodeBuilder<SVGEle
         null);
 }
 
-function isInputTypeSupportsCheckedValue(type: InputType): boolean {
-    if (type === "checkbox" || type === "radio") {
-        return true;
-    }
-    return false;
-}
-
 /**
  * Create a VNodeBuilder representing an HTMLInputElement node.
  *
@@ -852,6 +845,33 @@ export function cloneVNode(node: VNode<any>): VNodeBuilder<any> {
         (flags & VNodeFlags.Component) ?
             null :
             cloneVNodeChildren(flags, node._children));
+    newNode._key = node._key;
+    newNode._events = node._events;
+    newNode._style = node._style;
+
+    return newNode;
+}
+
+/**
+ * Shallow clone of VNode with instance refs erasure.
+ *
+ * @param node VNode to clone.
+ * @returns Cloned VNode.
+ */
+export function shallowCloneVNode(node: VNode<any>): VNodeBuilder<any> {
+    const flags = node._flags;
+
+    const newNode = new VNodeBuilder(
+        flags & ~(
+            VNodeFlags.ChildrenArray |
+            VNodeFlags.ChildrenBasic |
+            VNodeFlags.ChildrenVNode |
+            VNodeFlags.UnsafeHTML
+        ),
+        node._tag,
+        node._props,
+        node._className,
+        null);
     newNode._key = node._key;
     newNode._events = node._events;
     newNode._style = node._style;

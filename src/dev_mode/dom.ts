@@ -1,4 +1,6 @@
 
+import { InputType } from "../common/dom";
+
 /**
  * Is tag valid.
  *
@@ -43,6 +45,19 @@ if (__IVI_DEV__) {
 export function isVoidElement(tag: string): boolean {
     if (__IVI_DEV__) {
         return VOID_ELEMENTS[tag] !== undefined;
+    }
+    return false;
+}
+
+/**
+ * Is input type has checked property.
+ *
+ * @param type Input type.
+ * @returns `true` if Input type has `checked` property.
+ */
+export function isInputTypeHasCheckedProperty(type: InputType): boolean {
+    if (type === "checkbox" || type === "radio") {
+        return true;
     }
     return false;
 }
