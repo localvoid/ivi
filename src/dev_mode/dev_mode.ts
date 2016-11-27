@@ -119,7 +119,7 @@ export function printError(message: string): void {
  */
 export function printWarn(message: string): void {
     printStackTrace();
-    console.error(message);
+    console.warn(message);
     try {
         throw new Error(message);
     } catch (_) {

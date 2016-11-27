@@ -60,7 +60,7 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
                     if (styleValue.indexOf("\n") > -1) {
                         printWarn(`Typo: style "${styleName}" has a value with a newline character "${styleValue}".`);
                     }
-                    if (styleValue.indexOf(";")) {
+                    if (styleValue.indexOf(";") > -1) {
                         printWarn(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
                     }
                 } else if (typeof styleValue === "number") {
