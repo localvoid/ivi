@@ -507,7 +507,7 @@ function vNodeDetach(vnode: VNode<any>): void {
                 }
             }
             vNodeDetach(component.root!);
-            component.flags &= ~(ComponentFlags.Attached | ComponentFlags.UpdateEachFrame);
+            component.flags &= ~(ComponentFlags.Attached | ComponentFlags.Animated);
             componentDetached(component);
             componentPerfMarkEnd(component._debugId, "detach", true, component);
             unregisterComponent(component);

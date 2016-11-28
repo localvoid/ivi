@@ -1,17 +1,18 @@
 
-import { Component } from "../vdom/component";
 import { updateComponent } from "../vdom/implementation";
-import { ComponentFlags } from "../vdom/flags";
 import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
-import { DOMReaderFlags, firstDOMReader, setCurrentDOMReader, unregisterDOMReader } from "./dom_reader";
+import { executeDOMReaders } from "./dom_reader";
 import { incrementClock } from "./clock";
 import { scheduleMicrotask } from "./microtask";
+import {
+    prepareAnimatedComponents, updateAnimatedComponents, cleanAnimatedComponents, executeAnimations, cleanAnimations,
+    shouldRequestNextFrameForAnimations,
+} from "./animation";
 
 let _pending = false;
 let _currentFrameReady = false;
 let _currentFrame = new FrameTasksGroup();
 let _nextFrame = new FrameTasksGroup();
-let _updateComponents: Component<any>[] = [];
 
 _currentFrame._rwLock();
 
@@ -28,7 +29,7 @@ function _requestNextFrame(): void {
 /**
  * Trigger next frame tasks execution.
  */
-function requestNextFrame(): void {
+export function requestNextFrame(): void {
     if (!_pending) {
         _pending = true;
         scheduleMicrotask(_requestNextFrame);
@@ -41,7 +42,6 @@ function requestNextFrame(): void {
  * @param t Current time.
  */
 function handleNextFrame(): void {
-    const updateComponents = _updateComponents;
     let tasks: (() => void)[];
     let i: number;
     let j: number;
@@ -56,32 +56,11 @@ function handleNextFrame(): void {
     _currentFrame._rwUnlock();
     _nextFrame._rwUnlock();
 
-    // Mark all update components as dirty. But don't update until all write tasks are finished. It is possible that
-    // we won't need to update component if it is removed.
-    if (__IVI_BROWSER__) {
-        for (i = 0; i < updateComponents.length; i++) {
-            updateComponents[i].flags |= ComponentFlags.DirtyState;
-        }
-    }
+    // Mark all animated components as dirty. But don't update them until all write tasks are finished. It is possible
+    // that we won't need to update component if it is removed, or it is already updated.
+    prepareAnimatedComponents();
 
-    /**
-     * Execute DOM Reader tasks.
-     */
-    if (__IVI_BROWSER__) {
-        let nextReader = firstDOMReader();
-        while (nextReader) {
-            setCurrentDOMReader(nextReader);
-            nextReader.task();
-            if (nextReader.flags & DOMReaderFlags.Canceled) {
-                const tmp = nextReader;
-                nextReader = nextReader._next;
-                unregisterDOMReader(tmp);
-            } else {
-                nextReader = nextReader._next;
-            }
-        }
-        setCurrentDOMReader(null);
-    }
+    executeDOMReaders();
 
     // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
     // and repeat until all read and write tasks are executed.
@@ -124,25 +103,9 @@ function handleNextFrame(): void {
             }
         }
 
-        if (__IVI_BROWSER__) {
-            // Update components registered for updating on each frame.
-            // Remove components that doesn't have UPDATE_EACH_FRAME flag.
-            i = 0;
-            j = updateComponents.length;
-
-            while (i < j) {
-                const component = updateComponents[i++];
-                if ((component.flags & ComponentFlags.UpdateEachFrame) === 0) {
-                    component.flags &= ~ComponentFlags.InUpdateEachFrameQueue;
-                    if (i === j) {
-                        updateComponents.pop();
-                    } else {
-                        updateComponents[--i] = updateComponents.pop() !;
-                    }
-                } else {
-                    updateComponent(component);
-                }
-            }
+        const canceledAnimatedComponents = updateAnimatedComponents();
+        if (canceledAnimatedComponents) {
+            cleanAnimatedComponents();
         }
     } while ((frame._flags & (FrameTasksGroupFlags.Component |
         FrameTasksGroupFlags.Write |
@@ -150,8 +113,13 @@ function handleNextFrame(): void {
 
     _currentFrameReady = false;
 
-    // Lock current from adding read and write tasks in debug mode.
+    // Lock current frame from adding read and write tasks in debug mode.
     _currentFrame._rwLock();
+
+    const canceledAnimations = executeAnimations();
+    if (canceledAnimations) {
+        cleanAnimations();
+    }
 
     // Perform tasks that should be executed when all DOM ops are finished.
     while ((frame._flags & FrameTasksGroupFlags.After) !== 0) {
@@ -164,10 +132,8 @@ function handleNextFrame(): void {
         }
     }
 
-    if (__IVI_BROWSER__) {
-        if (_updateComponents.length > 0) {
-            requestNextFrame();
-        }
+    if (shouldRequestNextFrameForAnimations()) {
+        requestNextFrame();
     }
 
     incrementClock();
@@ -200,16 +166,4 @@ export function currentFrame(): FrameTasksGroup {
  */
 export function syncFrameUpdate(): void {
     handleNextFrame();
-}
-
-/**
- * Add component to the list of components that will be updated each frame.
- *
- * @param component
- */
-export function startUpdateComponentEachFrame(component: Component<any>): void {
-    if (__IVI_BROWSER__) {
-        requestNextFrame();
-        _updateComponents.push(component);
-    }
 }

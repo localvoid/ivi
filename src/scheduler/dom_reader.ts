@@ -45,24 +45,6 @@ export class DOMReader {
 }
 
 /**
- * Finds first DOMReader instance.
- *
- * @returns First DOMReader.
- */
-export function firstDOMReader(): DOMReader | null {
-    return _nextReader;
-}
-
-/**
- * Assigns a current DOMReader instance.
- *
- * @param reader DOMReader instance.
- */
-export function setCurrentDOMReader(reader: DOMReader | null): void {
-    _currentReader = reader;
-}
-
-/**
  * Register a DOM Reader that will be invoked on each frame in the read phase.
  *
  * @param task Task that will be executed.
@@ -91,5 +73,26 @@ export function removeDOMReader(reader: DOMReader): void {
     }
     if (reader._next) {
         reader._next._prev = reader._prev;
+    }
+}
+
+/**
+ * Execute DOM Reader tasks.
+ */
+export function executeDOMReaders(): void {
+    if (__IVI_BROWSER__) {
+        let nextReader = _nextReader;
+        while (nextReader) {
+            _currentReader = nextReader;
+            nextReader.task();
+            if (nextReader.flags & DOMReaderFlags.Canceled) {
+                const tmp = nextReader;
+                nextReader = nextReader._next;
+                removeDOMReader(tmp);
+            } else {
+                nextReader = nextReader._next;
+            }
+        }
+        _currentReader = null;
     }
 }

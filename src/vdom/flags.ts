@@ -125,16 +125,15 @@ export const enum ComponentFlags {
      */
     ContextUsingProps = 1 << 8,
     /**
-     * Component should be updated on each frame.
+     * Component is animated.
      */
-    UpdateEachFrame = 1 << 9,
+    Animated = 1 << 9,
     /**
-     * Component is registered in update each frame queue, when this flag is off, it will be removed from queue on next
-     * frame.
+     * Component in the animation queue.
      */
-    InUpdateEachFrameQueue = 1 << 10,
+    InAnimationQueue = 1 << 10,
     /**
-     * Component is registered in scheduler frame task queue for updates.
+     * Component in the update queue.
      */
     InUpdateQueue = 1 << 11,
     /**
