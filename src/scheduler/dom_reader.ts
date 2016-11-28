@@ -1,78 +1,18 @@
 
-let _nextReader: DOMReader | null = null;
-let _currentReader: DOMReader | null = null;
+export type DOMReader = () => boolean | undefined;
+
+const _readers: DOMReader[] = [];
 
 /**
- * DOM Reader flags.
- */
-export const enum DOMReaderFlags {
-    /**
-     * DOM Reader is canceled.
-     */
-    Canceled = 1,
-}
-
-/**
- * DOM Reader.
- */
-export class DOMReader {
-    /**
-     * See `DOMReaderFlags` for details.
-     */
-    flags: DOMReaderFlags;
-    /**
-     * Task that will be executed when scheduler starts a read phase. It will be executed once per frame.
-     */
-    readonly task: () => void;
-    _prev: DOMReader | null;
-    _next: DOMReader | null;
-
-    constructor(action: () => void) {
-        this.flags = 0;
-        this.task = action;
-        this._prev = null;
-        this._next = null;
-    }
-
-    cancel() {
-        if (!(this.flags & DOMReaderFlags.Canceled)) {
-            this.flags |= DOMReaderFlags.Canceled;
-            if (_currentReader !== this) {
-                removeDOMReader(this);
-            }
-        }
-    }
-}
-
-/**
- * Register a DOM Reader that will be invoked on each frame in the read phase.
+ * Add DOM Reader.
  *
- * @param task Task that will be executed.
- * @returns DOMReader instance.
- */
-export function addDOMReader(task: () => void): DOMReader {
-    const reader = new DOMReader(task);
-    if (_nextReader) {
-        _nextReader._prev = reader;
-        reader._next = _nextReader;
-    }
-    _nextReader = reader;
-    return reader;
-}
-
-/**
- * Unregister a DOM Reader.
+ * DOM Reader will be be invoked on each frame in the read phase.
  *
- * @param reader DOMReader instance.
+ * @param reader Task that will be executed until it returns `false`.
  */
-export function removeDOMReader(reader: DOMReader): void {
-    if (reader._prev) {
-        reader._prev._next = reader._next;
-    } else {
-        _nextReader = reader._next;
-    }
-    if (reader._next) {
-        reader._next._prev = reader._prev;
+export function addDOMReader(reader: DOMReader): void {
+    if (__IVI_BROWSER__) {
+        _readers.push(reader);
     }
 }
 
@@ -81,18 +21,15 @@ export function removeDOMReader(reader: DOMReader): void {
  */
 export function executeDOMReaders(): void {
     if (__IVI_BROWSER__) {
-        let nextReader = _nextReader;
-        while (nextReader) {
-            _currentReader = nextReader;
-            nextReader.task();
-            if (nextReader.flags & DOMReaderFlags.Canceled) {
-                const tmp = nextReader;
-                nextReader = nextReader._next;
-                removeDOMReader(tmp);
-            } else {
-                nextReader = nextReader._next;
+        for (let i = 0; i < _readers.length; i++) {
+            const reader = _readers[i];
+            if (reader()) {
+                if (i === _readers.length) {
+                    _readers.pop();
+                } else {
+                    _readers[i--] = _readers.pop() !;
+                }
             }
         }
-        _currentReader = null;
     }
 }

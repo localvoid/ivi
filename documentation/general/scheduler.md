@@ -61,19 +61,14 @@ but solving it in lifecycle methods has a huge downside that it triggers a reflo
 reader tasks we just registering it when component is attached to the document, and reading from DOM in the read DOM
 phase, and when component is updated we just need to register `after` task that will update scroll position.
 
-DOM reader tasks are registered with `registerDOMReader` function.
+DOM reader tasks are registered with `addDOMReader` function.
 
 ```ts
-function addDOMReader(task: () => void): DOMReader;
+type DOMReader = () => boolean | undefined;
+function addDOMReader(reader: DOMReader): void;
 ```
 
-Each `DOMReader` instance provides a `cancel` method that will unregister it.
-
-```ts
-interface DOMReader {
-    cancel();
-}
-```
+`Animation` return value indicates when reader should be canceled.
 
 ## Animations
 
@@ -97,16 +92,11 @@ Animation tasks will be executed just once per each animation frame when all "re
 before "after" tasks.
 
 ```ts
-function addAnimation(task: () => void): Animation;
+type Animation = () => boolean | undefined;
+function addAnimation(animation: Animation): void;
 ```
 
-Each `Animation` instance provides a `cancel` method that will remove it from the animation list.
-
-```ts
-interface Animation {
-    cancel(): void;
-}
-```
+`Animation` return value indicates when animation should be canceled.
 
 ## Monotonically increasing clock
 

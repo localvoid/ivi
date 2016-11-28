@@ -1,11 +1,9 @@
-/**
- * animations should run only in rAF context(not sync)
- */
-
 import { ComponentFlags } from "../vdom/flags";
 import { Component } from "../vdom/component";
 import { updateComponent } from "../vdom/implementation";
 import { requestNextFrame } from "./frame";
+
+export type Animation = () => boolean | undefined;
 
 const _animations: Animation[] = [];
 const _animatedComponents: Component<any>[] = [];
@@ -47,42 +45,19 @@ export function prepareAnimatedComponents(): void {
 
 /**
  * Update animated components.
- *
- * @returns `true` if there are canceled animated components.
  */
-export function updateAnimatedComponents(): boolean {
+export function updateAnimatedComponents(): void {
     if (__IVI_BROWSER__) {
-        let canceled = false;
         for (let i = 0; i < _animatedComponents.length; i++) {
             const component = _animatedComponents[i];
             if (component.flags & ComponentFlags.Animated) {
                 updateComponent(component);
             } else {
-                canceled = true;
-            }
-        }
-        return canceled;
-    }
-
-    return false;
-}
-
-/**
- * Clean canceled animated components.
- */
-export function cleanAnimatedComponents(): void {
-    if (__IVI_BROWSER__) {
-        let j = _animatedComponents.length;
-
-        for (let i = 0; i < j; i++) {
-            const component = _animatedComponents[i];
-            if (!(component.flags & ComponentFlags.Animated)) {
                 component.flags &= ~ComponentFlags.InAnimationQueue;
-                if (i === j) {
+                if (i === _animatedComponents.length) {
                     _animatedComponents.pop();
                 } else {
-                    _animatedComponents[--i] = _animatedComponents.pop() !;
-                    j--;
+                    _animatedComponents[i--] = _animatedComponents.pop() !;
                 }
             }
         }
@@ -90,84 +65,28 @@ export function cleanAnimatedComponents(): void {
 }
 
 /**
- * Animation Flags.
- */
-export const enum AnimationFlags {
-    /**
-     * Animation has been canceled.
-     */
-    Canceled = 1,
-}
-
-/**
- * Animation task.
- */
-export class Animation {
-    flags: AnimationFlags;
-    readonly task: () => void;
-
-    constructor(task: () => void) {
-        this.flags = 0;
-        this.task = task;
-    }
-
-    /**
-     * Cancel animation task.
-     */
-    cancel() {
-        this.flags |= AnimationFlags.Canceled;
-    }
-}
-
-/**
  * Add animation.
  *
- * @param task Animation task.
- * @returns Animation instance.
+ * @param animation Animation task.
  */
-export function addAnimation(task: () => void): Animation {
-    const anim = new Animation(task);
+export function addAnimation(animation: Animation): void {
     if (__IVI_BROWSER__) {
-        _animations.push(anim);
+        _animations.push(animation);
     }
-    return anim;
 }
 
 /**
  * Execute animations.
- *
- * @returns `true` if there are canceled animation tasks.
  */
-export function executeAnimations(): boolean {
+export function executeAnimations(): void {
     if (__IVI_BROWSER__) {
-        let canceled = false;
         for (let i = 0; i < _animations.length; i++) {
-            if (_animations[i].flags & AnimationFlags.Canceled) {
-                canceled = true;
-            } else {
-                _animations[i].task();
-            }
-        }
-
-        return canceled;
-    }
-
-    return false;
-}
-
-/**
- * Clean canceled animations.
- */
-export function cleanAnimations(): void {
-    if (__IVI_BROWSER__) {
-        let j = _animations.length;
-        for (let i = 0; i < j; i++) {
-            if (_animations[i].flags & AnimationFlags.Canceled) {
+            const animation = _animations[i];
+            if (animation()) {
                 if (i === _animations.length) {
                     _animations.pop();
                 } else {
-                    _animations[--i] = _animations.pop() !;
-                    j--;
+                    _animations[i--] = _animations.pop() !;
                 }
             }
         }

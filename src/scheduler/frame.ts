@@ -6,8 +6,7 @@ import { executeDOMReaders } from "./dom_reader";
 import { incrementClock } from "./clock";
 import { scheduleMicrotask } from "./microtask";
 import {
-    prepareAnimatedComponents, updateAnimatedComponents, cleanAnimatedComponents, executeAnimations, cleanAnimations,
-    shouldRequestNextFrameForAnimations,
+    prepareAnimatedComponents, updateAnimatedComponents, executeAnimations, shouldRequestNextFrameForAnimations,
 } from "./animation";
 
 let _pending = false;
@@ -79,7 +78,7 @@ function handleNextFrame(time?: number): void {
 
     // Mark all animated components as dirty. But don't update them until all write tasks are finished. It is possible
     // that we won't need to update component if it is removed, or it is already updated.
-    if (isVisible) {
+    if (isVisible()) {
         prepareAnimatedComponents();
     }
 
@@ -126,11 +125,8 @@ function handleNextFrame(time?: number): void {
             }
         }
 
-        if (isVisible) {
-            const canceledAnimatedComponents = updateAnimatedComponents();
-            if (canceledAnimatedComponents) {
-                cleanAnimatedComponents();
-            }
+        if (isVisible()) {
+            updateAnimatedComponents();
         }
     } while ((frame._flags & (FrameTasksGroupFlags.Component |
         FrameTasksGroupFlags.Write |
@@ -141,11 +137,8 @@ function handleNextFrame(time?: number): void {
     // Lock current frame from adding read and write tasks in debug mode.
     _currentFrame._rwLock();
 
-    if (isVisible) {
-        const canceledAnimations = executeAnimations();
-        if (canceledAnimations) {
-            cleanAnimations();
-        }
+    if (isVisible()) {
+        executeAnimations();
     }
 
     // Perform tasks that should be executed when all DOM ops are finished.
