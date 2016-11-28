@@ -64,7 +64,7 @@ phase, and when component is updated we just need to register `after` task that 
 DOM reader tasks are registered with `registerDOMReader` function.
 
 ```ts
-function registerDOMReader(task: () => void): DOMReader;
+function addDOMReader(task: () => void): DOMReader;
 ```
 
 Each `DOMReader` instance provides a `cancel` method that will unregister it.
@@ -72,6 +72,39 @@ Each `DOMReader` instance provides a `cancel` method that will unregister it.
 ```ts
 interface DOMReader {
     cancel();
+}
+```
+
+## Animations
+
+There are several special task queues for animations. The biggest difference between animation tasks and other tasks is
+that animation tasks won't be executed when window isn't visible.
+
+### Animated Components
+
+```ts
+function startComponentAnimation(component: Component<any>): void;
+function stopComponentAnimation(component: Component<any>): void;
+```
+
+When component is added to the animated component list with `startComponentAnimation` function, it will be updated on
+each animation frame. When component is detached from the document it will be automatically removed from the animated
+component list, so there is no need to call `stopComponentAnimation`.
+
+### Animation Tasks
+
+Animation tasks will be executed just once per each animation frame when all "read" and "write" tasks are finished, but
+before "after" tasks.
+
+```ts
+function addAnimation(task: () => void): Animation;
+```
+
+Each `Animation` instance provides a `cancel` method that will remove it from the animation list.
+
+```ts
+interface Animation {
+    cancel(): void;
 }
 ```
 
