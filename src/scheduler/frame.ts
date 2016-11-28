@@ -1,4 +1,5 @@
 
+import { isVisible, addVisibilityObserver } from "../common/visibility";
 import { updateComponent } from "../vdom/implementation";
 import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
 import { executeDOMReaders } from "./dom_reader";
@@ -78,7 +79,9 @@ function handleNextFrame(time?: number): void {
 
     // Mark all animated components as dirty. But don't update them until all write tasks are finished. It is possible
     // that we won't need to update component if it is removed, or it is already updated.
-    prepareAnimatedComponents();
+    if (isVisible) {
+        prepareAnimatedComponents();
+    }
 
     executeDOMReaders();
 
@@ -123,9 +126,11 @@ function handleNextFrame(time?: number): void {
             }
         }
 
-        const canceledAnimatedComponents = updateAnimatedComponents();
-        if (canceledAnimatedComponents) {
-            cleanAnimatedComponents();
+        if (isVisible) {
+            const canceledAnimatedComponents = updateAnimatedComponents();
+            if (canceledAnimatedComponents) {
+                cleanAnimatedComponents();
+            }
         }
     } while ((frame._flags & (FrameTasksGroupFlags.Component |
         FrameTasksGroupFlags.Write |
@@ -136,9 +141,11 @@ function handleNextFrame(time?: number): void {
     // Lock current frame from adding read and write tasks in debug mode.
     _currentFrame._rwLock();
 
-    const canceledAnimations = executeAnimations();
-    if (canceledAnimations) {
-        cleanAnimations();
+    if (isVisible) {
+        const canceledAnimations = executeAnimations();
+        if (canceledAnimations) {
+            cleanAnimations();
+        }
     }
 
     // Perform tasks that should be executed when all DOM ops are finished.
@@ -186,4 +193,16 @@ export function currentFrame(): FrameTasksGroup {
  */
 export function syncFrameUpdate(): void {
     handleNextFrame();
+}
+
+function handleVisibilityChange(visible: boolean): void {
+    if (visible) {
+        if (shouldRequestNextFrameForAnimations()) {
+            requestNextFrame();
+        }
+    }
+}
+
+if (__IVI_BROWSER__) {
+    addVisibilityObserver(handleVisibilityChange);
 }

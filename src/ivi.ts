@@ -40,6 +40,7 @@ export {
 } from "./common/dom";
 export { NOOP } from "./common/noop";
 export { isPropsNotIdentical, isPropsNotShallowEqual } from "./common/equality";
+export { isVisible, VisibilityObserverFlags, VisibilityObserver, addVisibilityObserver } from "./common/visibility";
 
 /**
  * Dev Mode:
