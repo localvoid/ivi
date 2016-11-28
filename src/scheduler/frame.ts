@@ -13,8 +13,26 @@ let _pending = false;
 let _currentFrameReady = false;
 let _currentFrame = new FrameTasksGroup();
 let _nextFrame = new FrameTasksGroup();
+let _frameStartTime = 0;
 
 _currentFrame._rwLock();
+
+function _updateFrameStartTime(time?: number): void {
+    if (__IVI_BROWSER__) {
+        _frameStartTime = (time === undefined ? performance.now() : time) / 1000;
+    } else {
+        _frameStartTime = time === undefined ? Date.now() : time / 1000;
+    }
+}
+
+/**
+ * @returns current frame start time.
+ */
+export function frameStartTime(): number {
+    return _frameStartTime;
+}
+
+_updateFrameStartTime();
 
 function _requestNextFrame(): void {
     if (_pending) {
@@ -41,7 +59,9 @@ export function requestNextFrame(): void {
  *
  * @param t Current time.
  */
-function handleNextFrame(): void {
+function handleNextFrame(time?: number): void {
+    _updateFrameStartTime(time);
+
     let tasks: (() => void)[];
     let i: number;
     let j: number;

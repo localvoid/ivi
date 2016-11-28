@@ -60,7 +60,7 @@ export { DOMReader, addDOMReader } from "./scheduler/dom_reader";
 export {
     startComponentAnimation, stopComponentAnimation, Animation, AnimationFlags, addAnimation,
 } from "./scheduler/animation";
-export { currentFrame, nextFrame, syncFrameUpdate } from "./scheduler/frame";
+export { frameStartTime, currentFrame, nextFrame, syncFrameUpdate } from "./scheduler/frame";
 
 /**
  * Events:
