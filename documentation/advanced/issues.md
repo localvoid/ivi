@@ -64,3 +64,12 @@ class Form extends Component<null> {
     }
 }
 ```
+
+## Rendering into External Documents
+
+There are many issues with rendering into external documents, so instead of fixing all this issues by significantly
+overcomplicating code base, ivi just doesn't work with this use cases.
+
+This use cases are usually has way much better solutions than direct manipulation of external documents. For example,
+by communicating between different documents with a
+[postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
