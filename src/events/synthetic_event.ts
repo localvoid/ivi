@@ -166,7 +166,10 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
         /**
          * #quirks
          */
-        return getEventCharCode(this._data);
+        if (this._data.type === "keypress") {
+            return getEventCharCode(this._data);
+        }
+        return 0;
     }
 
     get ctrlKey(): boolean {
@@ -181,7 +184,16 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get keyCode(): number {
-        return this._data.keyCode;
+        /**
+         * #quirks
+         */
+        switch (this._data.type) {
+            case "keydown":
+            case "keyup":
+                return this._data.keyCode;
+        }
+
+        return 0;
     }
 
     get locale(): string {
@@ -205,7 +217,18 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get which(): number {
-        return this._data.which;
+        /**
+         * #quirks
+         */
+        switch (this._data.type) {
+            case "keypress":
+                return getEventCharCode(this._data);
+            case "keydown":
+            case "keyup":
+                return this._data.keyCode;
+        }
+
+        return 0;
     }
 
     get code(): string {
