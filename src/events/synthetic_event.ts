@@ -1,4 +1,5 @@
 import { getEventCharCode, getEventKey } from "../common/dom";
+import { printWarn } from "../dev_mode/dev_mode";
 import { SyntheticEventFlags } from "./flags";
 import { EventDispatcher } from "./event_dispatcher";
 
@@ -271,6 +272,16 @@ export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<
     }
 
     get buttons(): number {
+        /**
+         * #quirks
+         *
+         * Doesn't work in Safari.
+         */
+        if (__IVI_DEV__) {
+            printWarn("MouseEvent 'buttons' property doesn't work on Safari, and there is no easy way to polyfill " +
+                "this property on browsers that doesn't support it. Almost all use cases should be solved with a " +
+                "'button' property.");
+        }
         return this._data.buttons;
     }
 
