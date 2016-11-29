@@ -21,6 +21,8 @@ export const EVENT_PASSIVE_OPTIONS =
 /**
  * Get Event options that should be used when adding Event Listener.
  *
+ * #quirks
+ *
  * @param flags See `EventDispatcherFlags` for details.
  * @returns Option object that can be used as a 3rd parameter in `addEventListener` call.
  */

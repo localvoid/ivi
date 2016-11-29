@@ -85,7 +85,9 @@ if (__IVI_BROWSER__) {
         document.addEventListener("visibilitychange", handleVisibilityChange);
     } else if (typeof (document as any)["webkitHidden"] !== "undefined") {
         /**
-         * Android 4.4+
+         * #quirks
+         *
+         * Android 4.4
          */
         _isHidden = function () {
             return (document as any)["webkitHidden"];

@@ -162,6 +162,9 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get charCode(): number {
+        /**
+         * #quirks
+         */
         return getEventCharCode(this._data);
     }
 
@@ -170,6 +173,9 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get key(): string {
+        /**
+         * #quirks
+         */
         return getEventKey(this._data);
     }
 
