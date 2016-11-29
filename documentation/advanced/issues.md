@@ -65,7 +65,12 @@ class Form extends Component<null> {
 }
 ```
 
-## Rendering into External Documents
+## Multiple ivi instances in one document
+
+Application will work when there is only one ivi instance. Building application that depends on several different
+versions of ivi is not supported.
+
+## Rendering into external documents
 
 There are many issues with rendering into external documents, so instead of fixing all this issues by significantly
 overcomplicating code base, ivi just doesn't work with this use cases.
