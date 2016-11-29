@@ -89,6 +89,9 @@ thrown inside the boundaries of a syncing algorithm.
 When typo checking is enabled, DOM attribute and styles will be checked for typos. So when you make a typo in attribute
 name, like `autoFocus`, it will suggest you to replace it with `autofocus`.
 
+All typos that can be covered with a static analysis in TypeScript won't be checked in runtime. If you don't want to
+spend countless hours because of some small typos, consider switching to TypeScript.
+
 ## Unsupported Features Warnings
 
 When unsupported features warnings is enabled, warnings will be printed to the console when you try to use some feature
