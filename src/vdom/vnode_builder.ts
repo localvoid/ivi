@@ -1,5 +1,5 @@
 import { nextDebugId } from "../dev_mode/dev_mode";
-import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../dev_mode/typos";
+import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isVoidElement, isValidTag, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { VNode } from "./vnode";
@@ -211,6 +211,10 @@ export class VNodeBuilder<P> implements VNode<P> {
         if (__IVI_DEV__) {
             if (props) {
                 checkDOMAttributesForTypos(props);
+
+                if (this._flags & VNodeFlags.SvgElement) {
+                    checkDeprecatedDOMSVGAttributes(this._tag as string, props);
+                }
 
                 if (this._flags & VNodeFlags.ElementDescriptor) {
                     const d = this._tag as ElementDescriptor<P>;

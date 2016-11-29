@@ -11,7 +11,7 @@ if (__IVI_DEV__) {
 /**
  * Checks DOM attribute typos and prints warning message with possible typos.
  *
- * @param attrr Attributes.
+ * @param attr Attributes.
  */
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
     if (__IVI_DEV__) {
@@ -68,6 +68,25 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
                         printWarn(`Typo: style "${styleName}" has a numeric NaN value.`);
                     }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Check deprecated DOM SVG attributes.
+ *
+ * @param tag Tag name.
+ * @param attrs SVG attributes.
+ */
+export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
+    if (__IVI_DEV__) {
+        if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
+            switch (tag) {
+                case "svg":
+                    if (attrs.hasOwnProperty("viewport")) {
+                        printWarn(`SVG attribute "viewport" is deprecated.`);
+                    }
             }
         }
     }

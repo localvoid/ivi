@@ -156,7 +156,7 @@ export const enum ElementDescriptorFlags {
     InputElement = VNodeFlags.InputElement,
     TextAreaElement = VNodeFlags.TextAreaElement,
     MediaElement = VNodeFlags.MediaElement,
-    Svg = VNodeFlags.SvgElement,
+    SvgElement = VNodeFlags.SvgElement,
     ElementDescriptor = VNodeFlags.ElementDescriptor,
     WebComponent = VNodeFlags.WebComponent,
 
@@ -164,7 +164,7 @@ export const enum ElementDescriptorFlags {
      * Copy flags to VNode.
      */
     CopyFlags = ElementDescriptorFlags.Element | ElementDescriptorFlags.InputElement |
-    ElementDescriptorFlags.TextAreaElement | ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.Svg |
+    ElementDescriptorFlags.TextAreaElement | ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.SvgElement |
     ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.WebComponent,
 
     /**

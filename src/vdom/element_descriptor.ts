@@ -1,4 +1,4 @@
-import { checkDOMAttributesForTypos, checkDOMStylesForTypos } from "../dev_mode/typos";
+import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isValidTag } from "../dev_mode/dom";
 import { SVG_NAMESPACE, HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import { ElementDescriptorFlags } from "./flags";
@@ -109,6 +109,9 @@ export class ElementDescriptor<P> {
             }
             if (props) {
                 checkDOMAttributesForTypos(props);
+                if (this._flags & ElementDescriptorFlags.SvgElement) {
+                    checkDeprecatedDOMSVGAttributes(this._tag as string, props);
+                }
             }
         }
         this._props = props;
@@ -162,7 +165,7 @@ export class ElementDescriptor<P> {
         let ref = this._ref;
 
         if (ref === null) {
-            if (this._flags & ElementDescriptorFlags.Svg) {
+            if (this._flags & ElementDescriptorFlags.SvgElement) {
                 ref = document.createElementNS(SVG_NAMESPACE, this._tag);
             } else {
                 if (this._flags & ElementDescriptorFlags.InputElement) {
@@ -397,8 +400,8 @@ export function createSVGElementDescriptor(tagName: SVGTagType, clone = false): 
         tagName,
         clone ?
             (ElementDescriptorFlags.EnabledCloning | ElementDescriptorFlags.Element |
-                ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.Svg) :
-            ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.Svg,
+                ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.SvgElement) :
+            ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.SvgElement,
     );
 }
 
