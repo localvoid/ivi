@@ -8,6 +8,30 @@ export const XLINK_NAMESPACE = "http://www.w3.org/1999/xlink";
 export const XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 
 /**
+ * Mouse Buttons.
+ *
+ * @quirks
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+ */
+export const enum MouseButtons {
+    Left = 1,
+    Right = 1 << 1,
+    /**
+     * Wheel or middle button.
+     */
+    Middle = 1 << 2,
+    /**
+     * Typically the "Browser Back" button.
+     */
+    Fourh = 1 << 3,
+    /**
+     * Typically the "Browser Forward" button.
+     */
+    Fifth = 1 << 4,
+}
+
+/**
  * Gets target element from an Event.
  *
  * #quirks
