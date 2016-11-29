@@ -1016,7 +1016,7 @@ describe("sync", () => {
             const b = render<HTMLInputElement>($i("text"), f);
             expect(b.tagName.toLowerCase()).to.equal("input");
             expect(b.type).to.equal("text");
-            expect(b.value).to.equal("");
+            expect(b.value).to.equal("abc");
         });
 
         it("<input type='checkbox'> => <input type='checkbox checked=true'>", () => {
@@ -1043,7 +1043,7 @@ describe("sync", () => {
             const b = render<HTMLInputElement>($i("checkbox"), f);
             expect(b.tagName.toLowerCase()).to.equal("input");
             expect(b.type).to.equal("checkbox");
-            expect(b.checked).to.equal(false);
+            expect(b.checked).to.equal(true);
         });
 
         it("<input type='text'> => <textarea>", () => {
@@ -1082,7 +1082,7 @@ describe("sync", () => {
             render<HTMLTextAreaElement>($i("textarea").value("abc"), f);
             const b = render<HTMLTextAreaElement>($i("textarea"), f);
             expect(b.tagName.toLowerCase()).to.equal("textarea");
-            expect(b.value).to.equal("");
+            expect(b.value).to.equal("abc");
         });
 
         it("<audio> => <video>", () => {
@@ -1110,7 +1110,7 @@ describe("sync", () => {
             const f = frag();
             render<HTMLAudioElement>($m("audio").props({ volume: 0.3 }), f);
             const b = render<HTMLAudioElement>($m("audio"), f);
-            expect(b.volume).to.equal(0);
+            expect(b.volume).to.equal(0.3);
         });
     });
 

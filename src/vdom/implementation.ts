@@ -1337,11 +1337,9 @@ function syncChildren(
         } else if (aParentFlags & VNodeFlags.ChildrenVNode) {
             vNodeRemoveChild(parent, a as VNode<any>);
         } else { // (bParentFlags & VNodeFlags.InputElement)
-            if (typeof a === "string") {
-                (parent as HTMLInputElement).value = "";
-            } else {
-                (parent as HTMLInputElement).checked = false;
-            }
+            /**
+             * When value/checked isn't specified, we should just ignore it.
+             */
         }
     } else {
         if (aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
