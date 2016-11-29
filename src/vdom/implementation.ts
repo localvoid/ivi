@@ -1429,6 +1429,19 @@ function syncChildren(
                 vNodeSyncOrReplace(parent, a, b as VNode<any>, context, owner);
             }
         } else { // (aParentFlags & VNodeFlags.InputElement)
+            /**
+             * Input elements has an internal state with a `value` property, so it should be checked before an
+             * assignment to prevent unnecessary events when `value` is the same as the `value` in the internal
+             * state.
+             *
+             * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning props
+             * to such elements should be treated as a one-time assignment, so it works almost like `value` attribute,
+             * except when a new value is passed down, it can override previous value when it doesn't match the previous
+             * one. There is absolutely no reasons to overcomplicate such behaviour just to make it more beatiful like
+             * it is a declarative assignment and can't be changed, because in real applications, component that
+             * controls this element will always track changes, and when it changes it will invalidate its
+             * representation, so everything will stay in-sync.
+             */
             if (typeof b === "string") {
                 if ((parent as HTMLInputElement).value !== b) {
                     (parent as HTMLInputElement).value = b;

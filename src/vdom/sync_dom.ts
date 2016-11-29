@@ -114,28 +114,6 @@ export function syncStyle(
  * @param value Attribute value.
  */
 function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: any, prevValue?: any): void {
-    if (flags & VNodeFlags.MediaElement) {
-        /**
-         * HTMLMediaElements has an internal state with a `volume` property, so it should be checked before an
-         * assignment to prevent unnecessary events when `volume` value is the same as the `volume` in the internal
-         * state.
-         *
-         * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning props
-         * to such elements should be treated as a one-time assignment, so it works almost like `volume` attribute,
-         * except when a new value is passed down, it can override previous value when it doesn't match the previous
-         * one. There is absolutely no reasons to overcomplicate such behaviour just to make it more beatiful like it
-         * is a declarative assignment and can't be changed, because in real applications, component that controls this
-         * element will always track changes to propagate them into its own state or an external state, and when it
-         * changes it will invalidate its representation, so everything stays in-sync.
-         */
-        if (key === "volume") {
-            if ((node as HTMLMediaElement).volume !== value) {
-                (node as HTMLMediaElement).volume = value === undefined ? null : value;
-            }
-            return;
-        }
-    }
-
     if (value === undefined) {
         /**
          * Edge cases when property name doesn't match attribute name.
