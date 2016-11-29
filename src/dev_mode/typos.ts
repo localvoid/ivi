@@ -1,5 +1,5 @@
 import { CSSStyleProps } from "../common/dom_props";
-import { DEV_MODE, DevModeFlags, printWarn } from "./dev_mode";
+import { DEV_MODE, DevModeFlags, printWarn, printWarnOnce } from "./dev_mode";
 
 let DOMAttributeTypos: { [key: string]: string };
 if (__IVI_DEV__) {
@@ -53,7 +53,7 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
                 if (match) {
                     printWarn(`Typo: style name "${styleName}" should be "${match}".`);
                 } else if (styleName.indexOf("-") > -1) {
-                    printWarn(`Typo: style "${styleName}" contains hyphen symbol.`);
+                    printWarn(`Typo: style "${styleName}" contains a hyphen symbol.`);
                 }
 
                 if (typeof styleValue === "string") {
@@ -85,12 +85,12 @@ export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: stri
             switch (tag) {
                 case "svg":
                     if (attrs.hasOwnProperty("viewport")) {
-                        printWarn(`SVG attribute "viewport" is deprecated.`);
+                        printWarnOnce("svg.attribute.viewport", `SVG attribute "viewport" is deprecated.`);
                     }
                     break;
                 case "view":
                     if (attrs.hasOwnProperty("viewTarget")) {
-                        printWarn(`SVG attribute "viewTarget" is deprecated.`);
+                        printWarnOnce("svg.attribute.viewTarget", `SVG attribute "viewTarget" is deprecated.`);
                     }
                     break;
             }
