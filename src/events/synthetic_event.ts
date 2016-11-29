@@ -38,6 +38,9 @@ export class SyntheticEvent<D> implements Event {
     currentTarget: EventTarget;
     timeStamp: number;
     type: any;
+    CAPTURING_PHASE: number;
+    AT_TARGET: number;
+    BUBBLING_PHASE: number;
 
     constructor(
         dispatcher: EventDispatcher,
@@ -81,18 +84,6 @@ export class SyntheticEvent<D> implements Event {
         return 1;
     }
 
-    get CAPTURING_PHASE(): number {
-        return 1;
-    }
-
-    get AT_TARGET(): number {
-        return 2;
-    }
-
-    get BUBBLING_PHASE(): number {
-        return 3;
-    }
-
     stopPropagation() {
         this._flags |= SyntheticEventFlags.StoppedPropagation;
     }
@@ -105,6 +96,10 @@ export class SyntheticEvent<D> implements Event {
         this._flags |= SyntheticEventFlags.PreventedDefault;
     }
 }
+
+SyntheticEvent.prototype.CAPTURING_PHASE = 1;
+SyntheticEvent.prototype.AT_TARGET = 2;
+SyntheticEvent.prototype.BUBBLING_PHASE = 3;
 
 export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
     new (

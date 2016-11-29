@@ -64,7 +64,6 @@ function handleNextFrame(time?: number): void {
 
     let tasks: (() => void)[];
     let i: number;
-    let j: number;
 
     _pending = false;
     _currentFrameReady = true;
@@ -116,7 +115,7 @@ function handleNextFrame(time?: number): void {
                         const componentGroup = componentGroups[i];
                         if (componentGroup !== null) {
                             componentGroups[i] = null;
-                            for (j = 0; j < componentGroup.length; j++) {
+                            for (let j = 0; j < componentGroup.length; j++) {
                                 updateComponent(componentGroup[j]);
                             }
                         }

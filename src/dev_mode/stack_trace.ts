@@ -144,9 +144,8 @@ export function stackTraceAugment(e: Error): void {
  * @returns Functional Component stack trace.
  */
 export function getFunctionalComponentStackTrace(): ComponentFunction<any>[] | null {
-    let result: ComponentFunction<any>[] | null = null;
-
     if (__IVI_DEV__) {
+        let result: ComponentFunction<any>[] | null = null;
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
             if (STACK_TRACE) {
                 for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
@@ -160,9 +159,11 @@ export function getFunctionalComponentStackTrace(): ComponentFunction<any>[] | n
                 }
             }
         }
+
+        return result;
     }
 
-    return result;
+    return null;
 }
 
 /**

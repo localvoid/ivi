@@ -40,22 +40,26 @@ export class VisibilityObserver {
 
 export function addVisibilityObserver(cb: (visible: boolean) => void): VisibilityObserver {
     const observer = new VisibilityObserver(cb);
-    if (_nextVisibilityObserver) {
-        _nextVisibilityObserver._prev = observer;
-        observer._next = _nextVisibilityObserver;
+    if (__IVI_BROWSER__) {
+        if (_nextVisibilityObserver) {
+            _nextVisibilityObserver._prev = observer;
+            observer._next = _nextVisibilityObserver;
+        }
+        _nextVisibilityObserver = observer;
     }
-    _nextVisibilityObserver = observer;
     return observer;
 }
 
 function removeVisibilityObserver(observer: VisibilityObserver): void {
-    if (observer._prev) {
-        observer._prev._next = observer._next;
-    } else {
-        _nextVisibilityObserver = observer._next;
-    }
-    if (observer._next) {
-        observer._next._prev = observer._prev;
+    if (__IVI_BROWSER__) {
+        if (observer._prev) {
+            observer._prev._next = observer._next;
+        } else {
+            _nextVisibilityObserver = observer._next;
+        }
+        if (observer._next) {
+            observer._next._prev = observer._prev;
+        }
     }
 }
 
