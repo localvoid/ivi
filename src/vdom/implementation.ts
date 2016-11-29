@@ -840,6 +840,12 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                     instance = document.createElement("textarea");
                 } else {
                     instance = document.createElement("input");
+                    /**
+                     * #quirks
+                     *
+                     * It is important that we assign `type` before any other properties. IE11 will remove assigned
+                     * `value` when `type` is assigned.
+                     */
                     (instance as HTMLInputElement).type = vnode._tag as string;
                 }
             } else if (flags & VNodeFlags.SvgElement) {
@@ -888,6 +894,12 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                             childInstance as Node,
                         null);
                 } else if (flags & VNodeFlags.InputElement) {
+                    /**
+                     * #quirks
+                     *
+                     * It is important that input value is assigned after all properties. It prevents some issues with
+                     * rounding, etc. `value` should be assigned after `step`, `min` and `max` properties.
+                     */
                     setHTMLInputValue(instance as HTMLInputElement, children as string | boolean);
                 } else { // (flags & VNodeFlags.UnsafeHTML)
                     setInnerHTML((instance as Element), children as string, !!(flags & VNodeFlags.SvgElement));
