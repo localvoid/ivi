@@ -143,7 +143,7 @@ if (__IVI_DEV__) {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     };
-    if ((testFunc.name || testFunc.toString()).indexOf("testFn") !== -1) {
+    if ((testFunc.name || testFunc.toString()).indexOf("testFn") === -1) {
         console.info(
             "It looks like you're using a minified script in Development Mode. " +
             "When deploying ivi apps to production, disable Development Mode. It" +
