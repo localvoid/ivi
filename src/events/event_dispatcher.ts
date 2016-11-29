@@ -11,6 +11,7 @@ import { SyntheticEvent } from "./synthetic_event";
  */
 export const enum EventDispatcherSubscriptionFlags {
     Canceled = 1,
+    Locked = 1 << 1,
 }
 
 /**
@@ -62,7 +63,7 @@ export class EventDispatcherSubscription {
     cancel(): void {
         if (!(this.flags & EventDispatcherSubscriptionFlags.Canceled)) {
             this.flags |= EventDispatcherSubscriptionFlags.Canceled;
-            if (this.dispatcher._currentSubscription !== this) {
+            if (!(this.flags & EventDispatcherSubscriptionFlags.Locked)) {
                 unsubscribe(this);
             }
         }
@@ -104,17 +105,10 @@ export abstract class EventDispatcher {
      * Event Dispatcher subscribers implemented with a Linked List.
      */
     _nextSubscription: EventDispatcherSubscription | null;
-    /**
-     * Currently executing subscription.
-     *
-     * When subscription is executed and canceled, canceling should be delayed until it finishes.
-     */
-    _currentSubscription: EventDispatcherSubscription | null;
 
     constructor() {
         this.counter = 0;
         this._nextSubscription = null;
-        this._currentSubscription = null;
     }
 
     /**
@@ -126,8 +120,9 @@ export abstract class EventDispatcher {
         let s = this._nextSubscription;
         while (s) {
             if (type === undefined || (s.filter & (type as any as number))) {
-                this._currentSubscription = s;
+                s.flags |= EventDispatcherSubscriptionFlags.Locked;
                 s.handler(event, type);
+                s.flags &= ~EventDispatcherSubscriptionFlags.Locked;
             }
             if (s.flags & EventDispatcherSubscriptionFlags.Canceled) {
                 const tmp = s;
@@ -137,7 +132,6 @@ export abstract class EventDispatcher {
                 s = s._next;
             }
         }
-        this._currentSubscription = null;
     }
 
     /**

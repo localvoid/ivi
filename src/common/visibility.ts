@@ -2,7 +2,6 @@
 let _visible = true;
 let _isHidden: () => boolean;
 let _nextVisibilityObserver: VisibilityObserver | null = null;
-let _currentVisibilityObserver: VisibilityObserver | null = null;
 
 export function isVisible(): boolean {
     if (__IVI_BROWSER__) {
@@ -13,6 +12,7 @@ export function isVisible(): boolean {
 
 export const enum VisibilityObserverFlags {
     Canceled = 1,
+    Locked = 1 << 1,
 }
 
 export class VisibilityObserver {
@@ -31,7 +31,7 @@ export class VisibilityObserver {
     cancel(): void {
         if (!(this.flags & VisibilityObserverFlags.Canceled)) {
             this.flags |= VisibilityObserverFlags.Canceled;
-            if (_currentVisibilityObserver !== this) {
+            if (!(this.flags & VisibilityObserverFlags.Locked)) {
                 removeVisibilityObserver(this);
             }
         }
@@ -65,15 +65,15 @@ function handleVisibilityChange(): void {
         _visible = newVisible;
         let next = _nextVisibilityObserver;
         while (next) {
-            _currentVisibilityObserver = next;
+            next.flags |= VisibilityObserverFlags.Locked;
             next.callback(newVisible);
+            next.flags &= ~VisibilityObserverFlags.Locked;
             const tmp = next._next;
             if (next.flags & VisibilityObserverFlags.Canceled) {
                 removeVisibilityObserver(next);
             }
             next = tmp;
         }
-        _currentVisibilityObserver = null;
     }
 }
 
