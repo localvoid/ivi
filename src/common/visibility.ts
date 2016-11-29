@@ -1,7 +1,13 @@
 
+import { scheduleMicrotask } from "../scheduler/microtask";
+
 let _visible = true;
 let _isHidden: () => boolean;
-let _nextVisibilityObserver: VisibilityObserver | null = null;
+let _visibilityObservers: ((visible: boolean) => void)[];
+let _lock = false;
+if (__IVI_BROWSER__) {
+    _visibilityObservers = [];
+}
 
 export function isVisible(): boolean {
     if (__IVI_BROWSER__) {
@@ -10,55 +16,27 @@ export function isVisible(): boolean {
     return false;
 }
 
-export const enum VisibilityObserverFlags {
-    Canceled = 1,
-    Locked = 1 << 1,
-}
-
-export class VisibilityObserver {
-    flags: VisibilityObserverFlags;
-    readonly callback: (visible: boolean) => void;
-    _prev: VisibilityObserver | null;
-    _next: VisibilityObserver | null;
-
-    constructor(callback: (visible: boolean) => void) {
-        this.flags = 0;
-        this.callback = callback;
-        this._prev = null;
-        this._next = null;
-    }
-
-    cancel(): void {
-        if (!(this.flags & VisibilityObserverFlags.Canceled)) {
-            this.flags |= VisibilityObserverFlags.Canceled;
-            if (!(this.flags & VisibilityObserverFlags.Locked)) {
-                removeVisibilityObserver(this);
-            }
-        }
-    }
-}
-
-export function addVisibilityObserver(cb: (visible: boolean) => void): VisibilityObserver {
-    const observer = new VisibilityObserver(cb);
+export function addVisibilityObserver(observer: (visible: boolean) => void): void {
     if (__IVI_BROWSER__) {
-        if (_nextVisibilityObserver) {
-            _nextVisibilityObserver._prev = observer;
-            observer._next = _nextVisibilityObserver;
-        }
-        _nextVisibilityObserver = observer;
+        _visibilityObservers.push(observer);
     }
-    return observer;
 }
 
-function removeVisibilityObserver(observer: VisibilityObserver): void {
+export function removeVisibilityObserver(observer: (visible: boolean) => void): void {
     if (__IVI_BROWSER__) {
-        if (observer._prev) {
-            observer._prev._next = observer._next;
+        if (_lock) {
+            scheduleMicrotask(function () {
+                removeVisibilityObserver(observer);
+            });
         } else {
-            _nextVisibilityObserver = observer._next;
-        }
-        if (observer._next) {
-            observer._next._prev = observer._prev;
+            const index = _visibilityObservers.indexOf(observer);
+            if (index > -1) {
+                if (index === _visibilityObservers.length) {
+                    _visibilityObservers.pop();
+                } else {
+                    _visibilityObservers[index] = _visibilityObservers.pop() !;
+                }
+            }
         }
     }
 }
@@ -66,18 +44,11 @@ function removeVisibilityObserver(observer: VisibilityObserver): void {
 function handleVisibilityChange(): void {
     const newVisible = !_isHidden();
     if (_visible !== newVisible) {
-        _visible = newVisible;
-        let next = _nextVisibilityObserver;
-        while (next) {
-            next.flags |= VisibilityObserverFlags.Locked;
-            next.callback(newVisible);
-            next.flags &= ~VisibilityObserverFlags.Locked;
-            const tmp = next._next;
-            if (next.flags & VisibilityObserverFlags.Canceled) {
-                removeVisibilityObserver(next);
-            }
-            next = tmp;
+        _lock = true;
+        for (let i = 0; i < _visibilityObservers.length; i++) {
+            _visibilityObservers[i](newVisible);
         }
+        _lock = false;
     }
 }
 
