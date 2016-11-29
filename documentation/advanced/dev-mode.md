@@ -18,7 +18,8 @@ const enum DevModeFlags {
     DisableScreenOfDeath = 1 << 2,
     DisableScreenOfDeathGlobalErrorHandling = 1 << 3,
     DisableCheckingForTypos = 1 << 4,
-    EnableComponentPerformanceProfiling = 1 << 5,
+    DisableWarningsForUnsupportedFeatures = 1 << 5,
+    EnableComponentPerformanceProfiling = 1 << 6,
 }
 
 function setDevModeFlags(flags: DevModeFlags): void;
@@ -87,6 +88,14 @@ thrown inside the boundaries of a syncing algorithm.
 
 When typo checking is enabled, DOM attribute and styles will be checked for typos. So when you make a typo in attribute
 name, like `autoFocus`, it will suggest you to replace it with `autofocus`.
+
+## Unsupported Features Warnings
+
+When unsupported features warnings is enabled, warnings will be printed to the console when you try to use some feature
+that isn't properly supported by all major browsers.
+
+Obviously we can't cover all features, but in some cases it will save you a huge amount of time when you are aware
+about potential problems in other browsers.
 
 ## Component Performance Profiling
 

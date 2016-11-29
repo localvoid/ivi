@@ -1,5 +1,5 @@
 import { getEventCharCode, getEventKey } from "../common/dom";
-import { printWarn } from "../dev_mode/dev_mode";
+import { DEV_MODE, DevModeFlags, printWarn } from "../dev_mode/dev_mode";
 import { SyntheticEventFlags } from "./flags";
 import { EventDispatcher } from "./event_dispatcher";
 
@@ -232,6 +232,15 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
     }
 
     get code(): string {
+        /**
+         * #quirks
+         */
+        if (__IVI_DEV__) {
+            if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
+                printWarn("KeyboardEvent 'code' property doesn't work in many major browsers, and there is no easy " +
+                    "way to polyfill this property on browsers that doesn't support it.");
+            }
+        }
         return this._data.code;
     }
 
@@ -301,9 +310,11 @@ export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<
          * Doesn't work in Safari.
          */
         if (__IVI_DEV__) {
-            printWarn("MouseEvent 'buttons' property doesn't work on Safari, and there is no easy way to polyfill " +
-                "this property on browsers that doesn't support it. Almost all use cases should be solved with a " +
-                "'button' property.");
+            if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
+                printWarn("MouseEvent 'buttons' property doesn't work on Safari, and there is no easy way to " +
+                    "polyfill this property on browsers that doesn't support it. Almost all use cases should be " +
+                    "solved with a 'button' property.");
+            }
         }
         return this._data.buttons;
     }

@@ -49,9 +49,13 @@ export const enum DevModeFlags {
      */
     DisableCheckingForTypos = 1 << 4,
     /**
+     * Disable Warnings for Unsupported Features.
+     */
+    DisableWarningsForUnsupportedFeatures = 1 << 5,
+    /**
      * Enable Component Performance Profiling.
      */
-    EnableComponentPerformanceProfiling = 1 << 5,
+    EnableComponentPerformanceProfiling = 1 << 6,
 }
 
 /**
