@@ -87,6 +87,12 @@ export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: stri
                     if (attrs.hasOwnProperty("viewport")) {
                         printWarn(`SVG attribute "viewport" is deprecated.`);
                     }
+                    break;
+                case "view":
+                    if (attrs.hasOwnProperty("viewTarget")) {
+                        printWarn(`SVG attribute "viewTarget" is deprecated.`);
+                    }
+                    break;
             }
         }
     }
