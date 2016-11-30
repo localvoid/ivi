@@ -86,7 +86,7 @@ function handleNextFrame(time?: number): void {
     // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
     // and repeat until all read and write tasks are executed.
     do {
-        while ((frame._flags & FrameTasksGroupFlags.Read) !== 0) {
+        while (frame._flags & FrameTasksGroupFlags.Read) {
             frame._flags &= ~FrameTasksGroupFlags.Read;
             tasks = frame._readTasks!;
             frame._readTasks = null;
@@ -96,8 +96,8 @@ function handleNextFrame(time?: number): void {
             }
         }
 
-        while ((frame._flags & (FrameTasksGroupFlags.Component | FrameTasksGroupFlags.Write)) !== 0) {
-            if ((frame._flags & FrameTasksGroupFlags.Write) !== 0) {
+        while (frame._flags & (FrameTasksGroupFlags.Component | FrameTasksGroupFlags.Write)) {
+            if (frame._flags & FrameTasksGroupFlags.Write) {
                 frame._flags &= ~FrameTasksGroupFlags.Write;
                 tasks = frame._writeTasks!;
                 frame._writeTasks = null;
@@ -107,7 +107,7 @@ function handleNextFrame(time?: number): void {
             }
 
             if (__IVI_BROWSER__) {
-                if ((frame._flags & FrameTasksGroupFlags.Component) !== 0) {
+                if (frame._flags & FrameTasksGroupFlags.Component) {
                     frame._flags &= ~FrameTasksGroupFlags.Component;
                     const componentGroups = frame._componentTasks;
 
@@ -127,9 +127,11 @@ function handleNextFrame(time?: number): void {
         if (isVisible()) {
             updateAnimatedComponents();
         }
-    } while ((frame._flags & (FrameTasksGroupFlags.Component |
+    } while (frame._flags & (
+        FrameTasksGroupFlags.Component |
         FrameTasksGroupFlags.Write |
-        FrameTasksGroupFlags.Read)) !== 0);
+        FrameTasksGroupFlags.Read
+    ));
 
     _currentFrameReady = false;
 

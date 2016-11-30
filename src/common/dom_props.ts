@@ -194,7 +194,7 @@ export interface CSSStyleProps {
     msTextSizeAdjust?: any;
     msTouchAction?: string | null;
     msTouchSelect?: string | null;
-    msUserSelect?: string | null;
+    msUserSelect?: "none" | "auto" | "text" | "all" | null;
     msWrapFlow?: string;
     msWrapMargin?: any;
     msWrapThrough?: string;
@@ -268,6 +268,7 @@ export interface CSSStyleProps {
     transitionProperty?: string | null;
     transitionTimingFunction?: string | null;
     unicodeBidi?: string | null;
+    userSelect?: "none" | "auto" | "text" | "all" | null;
     verticalAlign?: string | null;
     visibility?: "visible" | "hidden" | "collapse" | null;
     webkitAlignContent?: string | null;
@@ -336,7 +337,7 @@ export interface CSSStyleProps {
     webkitTransitionProperty?: string | null;
     webkitTransitionTimingFunction?: string | null;
     webkitUserModify?: string | null;
-    webkitUserSelect?: string | null;
+    webkitUserSelect?: "none" | "auto" | "text" | "all" | null;
     webkitWritingMode?: string | null;
     whiteSpace?: "normal" | "pre" | "nowrap" | "pre-wrap" | "pre-line" | null;
     widows?: number | string | null;

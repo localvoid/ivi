@@ -77,13 +77,13 @@ export class FrameTasksGroup {
     updateComponent(component: Component<any>): void {
         if (__IVI_BROWSER__) {
             if (__IVI_DEV__) {
-                if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
+                if ((this._flags & FrameTasksGroupFlags.RWLock)) {
                     throw new Error("Failed to add update component task to the current frame, current frame is " +
                         "locked for read and write tasks.");
                 }
             }
 
-            if ((component.flags & ComponentFlags.InUpdateQueue) === 0) {
+            if (!(component.flags & ComponentFlags.InUpdateQueue)) {
                 component.flags |= ComponentFlags.InUpdateQueue;
                 const priority = component.depth;
 
@@ -109,7 +109,7 @@ export class FrameTasksGroup {
      */
     write(task: () => void): void {
         if (__IVI_DEV__) {
-            if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
+            if ((this._flags & FrameTasksGroupFlags.RWLock)) {
                 throw new Error("Failed to add update component task to the current frame, current frame is locked " +
                     "for read and write tasks.");
             }
@@ -129,7 +129,7 @@ export class FrameTasksGroup {
      */
     read(task: () => void): void {
         if (__IVI_DEV__) {
-            if ((this._flags & FrameTasksGroupFlags.RWLock) !== 0) {
+            if ((this._flags & FrameTasksGroupFlags.RWLock)) {
                 throw new Error("Failed to add update component task to the current frame, current frame is locked " +
                     "for read and write tasks.");
             }
