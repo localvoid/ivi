@@ -10,7 +10,7 @@ export const XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 /**
  * Mouse Buttons.
  *
- * @quirks
+ * #quirks
  *
  * https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
  */
