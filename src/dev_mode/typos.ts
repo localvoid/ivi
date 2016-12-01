@@ -22,7 +22,8 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
                 const match = DOMAttributeTypos[attrName];
 
                 if (match) {
-                    printWarn(`Typo: attribute name "${attrName}" should be "${match}".`);
+                    printWarnOnce(`typo.attribute.${attrName}`,
+                        `Typo: attribute name "${attrName}" should be "${match}".`);
                 }
             }
         }
@@ -51,9 +52,11 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
 
                 const match = DOMStyleTypos[styleName];
                 if (match) {
-                    printWarn(`Typo: style name "${styleName}" should be "${match}".`);
+                    printWarnOnce(`typo.style.${styleName}`,
+                        `Typo: style name "${styleName}" should be "${match}".`);
                 } else if (styleName.indexOf("-") > -1) {
-                    printWarn(`Typo: style "${styleName}" contains a hyphen symbol.`);
+                    printWarnOnce(`typo.style.${styleName}`,
+                        `Typo: style "${styleName}" contains a hyphen symbol.`);
                 }
 
                 if (typeof styleValue === "string") {
@@ -85,12 +88,14 @@ export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: stri
             switch (tag) {
                 case "svg":
                     if (attrs.hasOwnProperty("viewport")) {
-                        printWarnOnce("svg.attribute.viewport", `SVG attribute "viewport" is deprecated.`);
+                        printWarnOnce("deprecated.svg.attribute.viewport",
+                            `SVG attribute "viewport" is deprecated.`);
                     }
                     break;
                 case "view":
                     if (attrs.hasOwnProperty("viewTarget")) {
-                        printWarnOnce("svg.attribute.viewTarget", `SVG attribute "viewTarget" is deprecated.`);
+                        printWarnOnce("deprecated.svg.attribute.viewTarget",
+                            `SVG attribute "viewTarget" is deprecated.`);
                     }
                     break;
             }
