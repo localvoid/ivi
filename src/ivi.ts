@@ -110,6 +110,7 @@ export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
  */
 import { VERSION, GLOBAL_EXPORT, printError } from "./dev_mode/dev_mode";
 import { DebugNode, componentTree, findComponentByNode } from "./dev_mode/component_tree";
+import { printComponentStackTrace } from "./dev_mode/stack_trace";
 import { Component, findComponentByDebugId } from "./vdom/component";
 
 function _printComponentTreeVisitNode(node: DebugNode): void {
@@ -173,6 +174,7 @@ if (__IVI_DEV__) {
             "componentTree": componentTree,
             "findComponentByDebugId": findComponentByDebugId,
             "findComponentByNode": findComponentByNode,
+            "stackTrace": printComponentStackTrace,
             "$": function (v?: number | Node | Component<any>) {
                 let result;
                 if (v === undefined) {

@@ -15,7 +15,7 @@
  *   _export=<name>
  */
 import { FeatureFlags, FEATURES } from "../common/feature_detection";
-import { printStackTrace } from "./stack_trace";
+import { printComponentStackTrace } from "./stack_trace";
 
 /**
  * Version number in string format.
@@ -105,7 +105,7 @@ export function nextDebugId(): number {
  */
 export function printError(message: string): void {
     if (__IVI_DEV__) {
-        printStackTrace();
+        printComponentStackTrace();
         console.error(message);
         try {
             throw new Error(message);
@@ -125,7 +125,7 @@ export function printError(message: string): void {
  */
 export function printWarn(message: string): void {
     if (__IVI_DEV__) {
-        printStackTrace();
+        printComponentStackTrace();
         console.warn(message);
         try {
             throw new Error(message);
@@ -151,7 +151,7 @@ export function printWarnOnce(key: string, message: string): void {
         }
         if (!_printedWarnings.has(key)) {
             _printedWarnings.add(key);
-            printStackTrace();
+            printComponentStackTrace();
             console.warn(message);
             try {
                 throw new Error(message);

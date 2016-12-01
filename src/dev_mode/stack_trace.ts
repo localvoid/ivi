@@ -68,6 +68,91 @@ export function stackTraceReset(): void {
     }
 }
 
+export interface ComponentStackTraceFrame {
+    type: "F" | "C";
+    name: string;
+    debugId: number | null;
+    instance: Component<any> | null;
+    entry: boolean;
+}
+
+/**
+ * Build current stack trace.
+ *
+ * @returns Current component stack.
+ */
+export function componentStackTrace(): ComponentStackTraceFrame[] | null {
+    if (__IVI_DEV__) {
+        if (STACK_TRACE && (STACK_TRACE.length > 0)) {
+            const result: ComponentStackTraceFrame[] = [];
+
+            let j = STACK_TRACE_INSTANCES ? STACK_TRACE_INSTANCES.length - 1 : 0;
+            for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
+                const c = STACK_TRACE[i];
+                if (c.prototype.render) {
+                    result.push({
+                        type: "F",
+                        name: getFunctionName(c),
+                        debugId: null,
+                        instance: null,
+                        entry: i === 0,
+                    });
+                } else {
+                    const instance = STACK_TRACE_INSTANCES![j--];
+                    result.push({
+                        type: "C",
+                        name: getFunctionName(c),
+                        debugId: instance._debugId,
+                        instance: instance,
+                        entry: i === 0,
+                    });
+                }
+            }
+            if (STACK_TRACE_INSTANCES && (STACK_TRACE_INSTANCES.length > 0)) {
+                let c: Component<any> | undefined = STACK_TRACE_INSTANCES[0];
+                if (STACK_TRACE[0].prototype.render) {
+                    if (c._stackTrace) {
+                        for (let i = c._stackTrace.length - 1; i >= 0; i--) {
+                            result.push({
+                                type: "F",
+                                name: getFunctionName(c._stackTrace[i]),
+                                debugId: null,
+                                instance: null,
+                                entry: false,
+                            });
+                        }
+                    }
+                }
+                c = c.owner;
+                while (c) {
+                    result.push({
+                        type: "C",
+                        name: getFunctionName(c.constructor),
+                        debugId: c._debugId,
+                        instance: c,
+                        entry: false,
+                    });
+
+                    if (c._stackTrace) {
+                        for (let i = c._stackTrace.length - 1; i >= 0; i--) {
+                            result.push({
+                                type: "F",
+                                name: getFunctionName(c._stackTrace[i]),
+                                debugId: null,
+                                instance: null,
+                                entry: false,
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+    }
+
+    return null;
+}
+
 /**
  * Print current Components stack trace.
  *
@@ -75,43 +160,21 @@ export function stackTraceReset(): void {
  */
 function stackTraceToString(): string {
     let result = "";
-    if (STACK_TRACE && (STACK_TRACE.length > 0)) {
-        let j = STACK_TRACE_INSTANCES ? STACK_TRACE_INSTANCES.length - 1 : 0;
-        for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
-            const c = STACK_TRACE[i];
+    const components = componentStackTrace();
+
+    if (components) {
+        for (let i = 0; i < components.length; i++) {
+            const component = components[i];
             result += "\n";
-            if (i === 0) {
+            if (component.entry) {
                 result += " => ";
             } else {
                 result += "    ";
             }
-            if (c.prototype.render) {
-                result += "[C]";
+            if (component.type === "F") {
+                result += `[F]${component.name}`;
             } else {
-                result += "[F]";
-            }
-            result += getFunctionName(c);
-            if (STACK_TRACE_INSTANCES && c.prototype.render) {
-                result += ` #${STACK_TRACE_INSTANCES[j--]._debugId}`;
-            }
-        }
-        if (STACK_TRACE_INSTANCES && (STACK_TRACE_INSTANCES.length > 0)) {
-            let c: Component<any> | undefined = STACK_TRACE_INSTANCES[0];
-            if (STACK_TRACE[0].prototype.render) {
-                if (c._stackTrace) {
-                    for (let i = c._stackTrace.length - 1; i >= 0; i--) {
-                        result += `\n    [F]${getFunctionName(c._stackTrace[i])}`;
-                    }
-                }
-            }
-            c = c.owner;
-            while (c) {
-                result += `\n    [C]${getFunctionName(c.constructor)} #${c._debugId}`;
-                if (c._stackTrace) {
-                    for (let i = c._stackTrace.length - 1; i >= 0; i--) {
-                        result += `\n    [F]${getFunctionName(c._stackTrace[i])}`;
-                    }
-                }
+                result += `[C]${component.name} #${component.debugId}`;
             }
         }
     }
@@ -169,15 +232,29 @@ export function getFunctionalComponentStackTrace(): ComponentFunction<any>[] | n
 /**
  * Prints current component stack trace to the console.
  */
-export function printStackTrace(): void {
+export function printComponentStackTrace(): void {
     if (__IVI_DEV__) {
         if (__IVI_BROWSER__) {
-            if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-                if (STACK_TRACE && STACK_TRACE.length > 0) {
-                    console.groupCollapsed("Component Stack Trace:");
-                    console.log(stackTraceToString());
-                    console.groupEnd();
+            const components = componentStackTrace();
+            if (components) {
+                console.groupCollapsed("Component Stack Trace:");
+                for (let i = 0; i < components.length; i++) {
+                    const component = components[i];
+                    let prefix;
+                    if (component.entry) {
+                        prefix = " => ";
+                    } else {
+                        prefix = "    ";
+                    }
+                    if (component.type === "F") {
+                        console.log(`${prefix}[F]${component.name}`);
+                    } else {
+                        console.groupCollapsed(`${prefix}[C]${component.name} #${component.debugId}`);
+                        console.log(component.instance);
+                        console.groupEnd();
+                    }
                 }
+                console.groupEnd();
             }
         }
     }
