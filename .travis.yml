@@ -12,6 +12,7 @@ addons:
     packages:
       - g++
       - google-chrome-stable
+      - openjdk-7-jre-headless
 
 cache:
   directories:
