@@ -321,49 +321,50 @@ export class VNodeBuilder<P> implements VNode<P> {
                 throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
             }
         }
-        this._flags |= VNodeFlags.TrackByKeyChildren | VNodeFlags.ChildrenArray;
         if (children) {
+            this._flags |= VNodeFlags.TrackByKeyChildren | VNodeFlags.ChildrenArray;
             this._children = normalizeVNodes(children);
-        }
 
-        if (__IVI_DEV__) {
-            const childrenArray = this._children as VNode<any>[];
-            let child: VNode<any>;
-            let start = 0;
-            let end = childrenArray.length - 1;
-            while (start <= end) {
-                child = childrenArray[start];
-                if (child._key !== null) {
-                    break;
-                }
-                start++;
-            }
-            while (start <= end) {
-                child = childrenArray[end];
-                if (child._key !== null) {
-                    break;
-                }
-                end--;
-            }
-
-            if (start <= end) {
-                const usedKeys = new Set<any>();
+            if (__IVI_DEV__) {
+                const childrenArray = this._children as VNode<any>[];
+                let child: VNode<any>;
+                let start = 0;
+                let end = childrenArray.length - 1;
                 while (start <= end) {
                     child = childrenArray[start];
-                    const key = child._key;
-                    if (key === null) {
-                        throw new Error(`Failed to set children, invalid keyed children list, keyed ` +
-                            `children should have a shape like [non-keyed, keyed, non-keyed].`);
+                    if (child._key !== null) {
+                        break;
                     }
-                    if (usedKeys.has(key)) {
-                        throw new Error(`Failed to set children, invalid children list, key: "${key}" is ` +
-                            `used multiple times.`);
-                    }
-                    usedKeys.add(key);
                     start++;
+                }
+                while (start <= end) {
+                    child = childrenArray[end];
+                    if (child._key !== null) {
+                        break;
+                    }
+                    end--;
+                }
+
+                if (start <= end) {
+                    const usedKeys = new Set<any>();
+                    while (start <= end) {
+                        child = childrenArray[start];
+                        const key = child._key;
+                        if (key === null) {
+                            throw new Error(`Failed to set children, invalid keyed children list, keyed ` +
+                                `children should have a shape like [non-keyed, keyed, non-keyed].`);
+                        }
+                        if (usedKeys.has(key)) {
+                            throw new Error(`Failed to set children, invalid children list, key: "${key}" is ` +
+                                `used multiple times.`);
+                        }
+                        usedKeys.add(key);
+                        start++;
+                    }
                 }
             }
         }
+
         return this;
     }
 

@@ -665,6 +665,20 @@ describe("sync", () => {
                 expect(b.childNodes.length).to.equal(0);
             });
 
+            it("[<div>] => null", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").children([$h("div")]), f);
+                const b = render<HTMLElement>($h("div").children(null), f);
+                expect(b.childNodes.length).to.equal(0);
+            });
+
+            it("[<div>] => null", () => {
+                const f = frag();
+                render<HTMLElement>($h("div").trackByKeyChildren([$h("div")]), f);
+                const b = render<HTMLElement>($h("div").trackByKeyChildren(null), f);
+                expect(b.childNodes.length).to.equal(0);
+            });
+
             it("null => [<div>, <div>]", () => {
                 const f = frag();
                 render<HTMLElement>($h("div"), f);
