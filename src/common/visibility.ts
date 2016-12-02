@@ -3,11 +3,8 @@ import { scheduleMicrotask } from "../scheduler/microtask";
 
 let _visible = true;
 let _isHidden: () => boolean;
-let _visibilityObservers: ((visible: boolean) => void)[];
+let _visibilityObservers: ((visible: boolean) => void)[] | undefined = (__IVI_BROWSER__) ? [] : undefined;
 let _lock = false;
-if (__IVI_BROWSER__) {
-    _visibilityObservers = [];
-}
 
 export function isVisible(): boolean {
     if (__IVI_BROWSER__) {
@@ -18,7 +15,7 @@ export function isVisible(): boolean {
 
 export function addVisibilityObserver(observer: (visible: boolean) => void): void {
     if (__IVI_BROWSER__) {
-        _visibilityObservers.push(observer);
+        _visibilityObservers!.push(observer);
     }
 }
 
@@ -29,12 +26,12 @@ export function removeVisibilityObserver(observer: (visible: boolean) => void): 
                 removeVisibilityObserver(observer);
             });
         } else {
-            const index = _visibilityObservers.indexOf(observer);
+            const index = _visibilityObservers!.indexOf(observer);
             if (index > -1) {
-                if (index === _visibilityObservers.length) {
-                    _visibilityObservers.pop();
+                if (index === _visibilityObservers!.length) {
+                    _visibilityObservers!.pop();
                 } else {
-                    _visibilityObservers[index] = _visibilityObservers.pop() !;
+                    _visibilityObservers![index] = _visibilityObservers!.pop() !;
                 }
             }
         }
@@ -45,8 +42,8 @@ function handleVisibilityChange(): void {
     const newVisible = !_isHidden();
     if (_visible !== newVisible) {
         _lock = true;
-        for (let i = 0; i < _visibilityObservers.length; i++) {
-            _visibilityObservers[i](newVisible);
+        for (let i = 0; i < _visibilityObservers!.length; i++) {
+            _visibilityObservers![i](newVisible);
         }
         _lock = false;
     }
