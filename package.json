@@ -59,12 +59,11 @@
     "mocha": "^2.2.5",
     "remap-istanbul": "^0.7.0",
     "rollup": "^0.36.3",
-    "rollup-plugin-alias": "^1.2.0",
     "rollup-plugin-istanbul": "^1.1.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-sourcemaps": "^0.4.1",
-    "tslib": "^1.1.0",
+    "tslib": "^1.2.0",
     "tslint": "^4.0.0",
     "typescript": "^2.1.0"
   }

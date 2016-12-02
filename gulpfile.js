@@ -25,7 +25,6 @@ const gulpSourcemaps = require("gulp-sourcemaps");
 const rollup = require("rollup");
 const rollupSourceMaps = require("rollup-plugin-sourcemaps");
 const rollupIstanbul = require("rollup-plugin-istanbul");
-const rollupAlias = require("rollup-plugin-alias");
 const rollupNodeResolve = require("rollup-plugin-node-resolve");
 const rollupReplace = require("rollup-plugin-replace");
 const remapIstanbul = require("remap-istanbul/lib/gulpRemapIstanbul");
@@ -85,9 +84,6 @@ function bundleNPM() {
         treeshake: false,
         plugins: [
             rollupSourceMaps(),
-            rollupAlias({
-                tslib: "node_modules/tslib/tslib.es6.js",
-            }),
             rollupNodeResolve(),
             rollupReplace({
                 values: {
@@ -177,9 +173,6 @@ function bundleTests(enableCoverageReport) {
             }));
         }
         plugins.push(
-            rollupAlias({
-                tslib: "node_modules/tslib/tslib.es6.js",
-            }),
             rollupNodeResolve(),
             rollupReplace({
                 values: {
