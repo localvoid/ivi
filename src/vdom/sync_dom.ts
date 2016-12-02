@@ -125,9 +125,9 @@ function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: a
                     break;
                 case "htmlFor":
                     key = "for";
-                    break;
-                case "httpEquiv":
-                    key = "http-equiv";
+                //     break;
+                // case "httpEquiv": // meta tags aren't supported
+                //     key = "http-equiv";
             }
         }
         /**
