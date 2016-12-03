@@ -14,6 +14,7 @@
 - [Optimization Hints](advanced/optimization-hints.md)
 - [Partially Static Elements](advanced/partially-static-elements.md)
 - [Development Mode](advanced/dev-mode.md)
+- [TypeScript Enums](advanced/typescript-enums.md)
 - [Security](advanced/security.md)
 - [Known Issues](advanced/issues.md)
 

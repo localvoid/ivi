@@ -53,6 +53,7 @@ exclusively for bug reports and feature requests.
 - [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
 - [Partially Static Elements](https://github.com/ivijs/ivi/blob/master/documentation/advanced/partially-static-elements.md)
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/advanced/dev-mode.md)
+- [TypeScript Enums](https://github.com/ivijs/ivi/blob/master/documentation/advanced/typescript-enums.md)
 - [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
 - [Known Issues](https://github.com/ivijs/ivi/blob/master/documentation/advanced/issues.md)
 
