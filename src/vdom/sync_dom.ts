@@ -118,16 +118,18 @@ function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: a
         /**
          * Edge cases when property name doesn't match attribute name.
          */
-        if (key.length > 6) {
-            switch (key) {
-                case "acceptCharset":
-                    key = "accept-charset";
-                    break;
-                case "htmlFor":
-                    key = "for";
-                //     break;
-                // case "httpEquiv": // meta tags aren't supported
-                //     key = "http-equiv";
+        if (!(flags & VNodeFlags.SvgElement)) {
+            if (key.length > 6) {
+                switch (key) {
+                    case "acceptCharset":
+                        key = "accept-charset";
+                        break;
+                    case "htmlFor":
+                        key = "for";
+                    //     break;
+                    // case "httpEquiv": // meta tags aren't supported
+                    //     key = "http-equiv";
+                }
             }
         }
         /**
@@ -136,37 +138,48 @@ function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: a
          */
         node.removeAttribute(key);
     } else {
-        if (key.length > 5) {
-            if (key.charCodeAt(0) === 120 &&
-                (key.charCodeAt(3) === 58 || key.charCodeAt(5) === 58)) { // 58 === ":" "xml:", "xlink:"
-                if (key.charCodeAt(1) === 109 && key.charCodeAt(2) === 108) { // [109, 108] === "ml"
+        if (flags & VNodeFlags.SvgElement) {
+            if (key.length > 5) {
+                if (key.charCodeAt(0) === 120 &&
+                    (key.charCodeAt(3) === 58 || key.charCodeAt(5) === 58)) { // 58 === ":" "xml:", "xlink:"
+                    if (key.charCodeAt(1) === 109 && key.charCodeAt(2) === 108) { // [109, 108] === "ml"
+                        /**
+                         * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
+                         */
+                        node.setAttributeNS(XML_NAMESPACE, key, value);
+                        return;
+                    } else if (key.charCodeAt(1) === 108 &&
+                        key.charCodeAt(2) === 105 &&
+                        key.charCodeAt(3) === 110 &&
+                        key.charCodeAt(4) === 107) { // [108, 105, 110, 107] === "link"
+                        /**
+                         * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
+                         */
+                        node.setAttributeNS(XLINK_NAMESPACE, key, value);
+                        return;
+                    }
+                }
+            }
+
+            /**
+             * SVG props should be always assigned with a `setAttribute` call.
+             */
+            node.setAttribute(key, value);
+        } else {
+            if (key.length > 5) {
+                if (key.charCodeAt(4) === 45) { // 45 === "-" "data-", "aria-"
                     /**
-                     * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
+                     * Attributes that has "-" character at the 4th position will be assigned with a `setAttribute`
+                     * method. It should work with "data-" and "aria-" attributes. Otherwise just use property
+                     * assignment instead of `setAttribute`.
                      */
-                    node.setAttributeNS(XML_NAMESPACE, key, value);
-                    return;
-                } else if (key.charCodeAt(1) === 108 &&
-                    key.charCodeAt(2) === 105 &&
-                    key.charCodeAt(3) === 110 &&
-                    key.charCodeAt(4) === 107) { // [108, 105, 110, 107] === "link"
-                    /**
-                     * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
-                     */
-                    node.setAttributeNS(XLINK_NAMESPACE, key, value);
+                    node.setAttribute(key, value);
                     return;
                 }
-            } else if (key.charCodeAt(4) === 45) { // 45 === "-" "data-", "aria-"
-                /**
-                 * Attributes that has "-" character at the 4th position will be assigned with a `setAttribute` method.
-                 * It should work with "data-" and "aria-" attributes. Otherwise just use property assignment instead
-                 * of `setAttribute`.
-                 */
-                node.setAttribute(key, value);
-                return;
             }
-        }
 
-        (node as any)[key] = value;
+            (node as any)[key] = value;
+        }
     }
 }
 
