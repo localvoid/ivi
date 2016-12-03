@@ -182,6 +182,18 @@ export const enum KeyCode {
 }
 
 /**
+ * KeyboardEvent keyLocation values.
+ */
+export const enum KeyLocation {
+    Standard = 0,
+    Left = 1,
+    Right = 2,
+    NumPad = 3,
+    Mobile = 4,
+    Joystick = 5,
+}
+
+/**
  * Flags for MouseEvent buttons property.
  *
  * Buttons property aren't widely supported by all major browsers at this time, and there is no easy way to polyfill
