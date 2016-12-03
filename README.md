@@ -17,6 +17,12 @@
 
 [ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces.
 
+It is based on the ideas from the [React](https://facebook.github.io/react/) library, but tries to solve some
+long-standing issues, like completely broken
+[Contexts](https://facebook.github.io/react/docs/context.html#updating-context),
+[incorrect componentDidMount order](https://github.com/facebook/react/issues/2763), etc. Many of this issues aren't
+possible to solve efficiently without breaking changes.
+
 ## Features
 
 - Declarative rendering with a Virtual DOM
