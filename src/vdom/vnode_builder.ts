@@ -373,7 +373,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      *
      * @param html innerHTML in a string format.
      * @returns VNodeBuilder.
-    */
+     */
     unsafeHTML(html: string | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (this._flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenBasic)) {

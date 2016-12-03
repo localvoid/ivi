@@ -200,36 +200,39 @@ render(
 
 ### Examples and demo applications
 
+Bundles for all examples are including polyfills for ES6 features like Map, WeakMap, Promise, etc. Minified size of the
+polyfills is 7.5kb, so for example size of the "Introduction" bundle without polyfills will be just 12kb.
+
 #### Basic
 
-- [Introduction](https://ivijs.github.io/examples/01_introduction/) (16kb)
+- [Introduction](https://ivijs.github.io/examples/01_introduction/) (19kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/01_introduction)]
-- [Stateful Component](https://ivijs.github.io/examples/02_stateful_component/) (17kb)
+- [Stateful Component](https://ivijs.github.io/examples/02_stateful_component/) (20kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/02_stateful_component)]
-- [Events](https://ivijs.github.io/examples/03_events/) (23kb)
+- [Events](https://ivijs.github.io/examples/03_events/) (26kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/03_events)]
-- [Forms](https://ivijs.github.io/examples/04_forms/) (21kb)
+- [Forms](https://ivijs.github.io/examples/04_forms/) (24kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/04_forms)]
-- [Collapsable](https://ivijs.github.io/examples/05_collapsable/) (23kb)
+- [Collapsable](https://ivijs.github.io/examples/05_collapsable/) (26kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/05_collapsable)]
 
 #### Apps
 
-- [TodoMVC](https://ivijs.github.io/examples/todomvc/) (31kb)
+- [TodoMVC](https://ivijs.github.io/examples/todomvc/) (34kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/todomvc)]
 
 #### Games
 
-- [Snake](https://ivijs.github.io/examples/games/snake/) (25kb)
+- [Snake](https://ivijs.github.io/examples/games/snake/) (28kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/games/snake)]
 
 #### Benchmarks
 
-- [UIBench](https://ivijs.github.io/examples/benchmarks/uibench/) (25kb)
+- [UIBench](https://ivijs.github.io/examples/benchmarks/uibench/) (28kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/uibench)]
-- [DBMon](https://ivijs.github.io/examples/benchmarks/dbmon/) (23kb)
+- [DBMon](https://ivijs.github.io/examples/benchmarks/dbmon/) (26kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/dbmon)]
-- [10k Components](https://ivijs.github.io/examples/benchmarks/10k/) (22kb)
+- [10k Components](https://ivijs.github.io/examples/benchmarks/10k/) (25kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/10k)]
 
 #### Test Playground
