@@ -299,7 +299,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      *   lists by flattening and filtering out null values.
      * @returns VNodeBuilder.
      */
-    trackByKeyChildren(children: VNodeRecursiveArray | null): VNodeBuilder<P> {
+    trackByKeyChildren(children: VNodeRecursiveKeyedArray | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (this._flags &
                 (VNodeFlags.ChildrenArray |
@@ -323,7 +323,7 @@ export class VNodeBuilder<P> implements VNode<P> {
         }
         if (children) {
             this._flags |= VNodeFlags.TrackByKeyChildren | VNodeFlags.ChildrenArray;
-            this._children = normalizeVNodes(children);
+            this._children = normalizeKeyedVNodes(children);
 
             if (__IVI_DEV__) {
                 const childrenArray = this._children as VNode<any>[];
@@ -513,11 +513,17 @@ export class VNodeBuilder<P> implements VNode<P> {
     }
 }
 
-export type VNodeRecursiveListValue = VNodeRecursiveArray | VNode<any> | string | number | boolean | null;
+export type VNodeRecursiveArrayValue = VNodeRecursiveArray | VNode<any> | string | number | boolean | null;
 /**
- * Recursive VNode List.
+ * Recursive VNode Array.
  */
-export interface VNodeRecursiveArray extends Array<VNodeRecursiveListValue> { }
+export interface VNodeRecursiveArray extends Array<VNodeRecursiveArrayValue> { }
+
+export type VNodeRecursiveKeyedArrayValue = VNodeRecursiveArray | VNode<any>;
+/**
+ * Recursive Keyed VNode Array.
+ */
+export interface VNodeRecursiveKeyedArray extends Array<VNodeRecursiveKeyedArrayValue> { }
 
 /**
  * Create a VNodeBuilder representing a Text node.
@@ -931,22 +937,8 @@ export function shallowCloneVNode(node: VNode<any>): VNodeBuilder<any> {
     return newNode;
 }
 
-function _normalizeVNodes(nodes: VNodeRecursiveArray, result: VNode<any>[], i: number): void {
-    for (; i < nodes.length; i++) {
-        const n = nodes[i];
-        if (n !== null) {
-            if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
-            } else {
-                result.push(typeof n === "object" ? n as VNode<any> : $t(n));
-            }
-        }
-    }
-}
-
 /**
- * Normalizes recursive VNode lists by flattening all nodes, filtering out `null` children and converting strings to
- * text nodes.
+ * Normalizes recursive VNode array by flattening all nodes and converting strings to text nodes.
  *
  * @param nodes
  * @returns Normalized VNode array.
@@ -955,14 +947,70 @@ export function normalizeVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
     for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
 
-        if (n === null || Array.isArray(n)) {
-            const result = nodes.slice(0, i) as VNode<any>[];
-            _normalizeVNodes(nodes, result, i);
-            return result;
-        } else if (typeof n !== "object") {
+        if (typeof n === "object") {
+            if (n === null) {
+                nodes[i] = $t("");
+            } else if (Array.isArray(n)) {
+                const result = nodes.slice(0, i) as VNode<any>[];
+                _normalizeVNodes(nodes, result, i);
+                return result;
+            }
+        } else {
             nodes[i] = $t(n);
         }
     }
 
     return nodes as VNode<any>[];
+}
+
+function _normalizeVNodes(nodes: VNodeRecursiveArray, result: (VNode<any> | null)[], i: number): void {
+    for (; i < nodes.length; i++) {
+        const n = nodes[i];
+        if (typeof n === "object") {
+            if (n === null) {
+                result.push($t(""));
+            } else if (Array.isArray(n)) {
+                _normalizeVNodes(n, result, 0);
+            } else {
+                result.push(n as VNode<any>);
+            }
+        } else {
+            result.push($t(n));
+        }
+    }
+}
+
+/**
+ * Normalizes recursive VNode array by flattening all nodes and converting strings to text nodes.
+ *
+ * @param nodes
+ * @returns Normalized VNode array.
+ */
+export function normalizeKeyedVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
+    for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+
+        if (n === null || Array.isArray(n)) {
+            const result = nodes.slice(0, i) as VNode<any>[];
+            _normalizeKeyedVNodes(nodes, result, i);
+            return result;
+        }
+    }
+
+    return nodes as VNode<any>[];
+}
+
+function _normalizeKeyedVNodes(nodes: VNodeRecursiveArray, result: VNode<any>[], i: number): void {
+    for (; i < nodes.length; i++) {
+        const n = nodes[i];
+        if (typeof n === "object") {
+            if (Array.isArray(n)) {
+                _normalizeVNodes(n, result, 0);
+            } else {
+                result.push(n as VNode<any>);
+            }
+        } else if (n !== null) {
+            result.push($t(n));
+        }
+    }
 }

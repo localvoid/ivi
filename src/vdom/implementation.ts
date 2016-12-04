@@ -1066,14 +1066,19 @@ function vNodeAugment(
                         if (flags & VNodeFlags.ChildrenArray) {
                             const children = vnode._children as VNode<any>[];
                             for (let i = 0; i < children.length; i++) {
-                                if (__IVI_DEV__) {
-                                    if (domChild === null) {
-                                        throw new Error(`Invalid children: expected to find ${children.length} ` +
-                                            `children nodes.`);
+                                const child = children[i];
+                                if (child._flags & VNodeFlags.Text && child._children === "") {
+                                    vNodeRenderInto(node, domChild, child, context, owner);
+                                } else {
+                                    if (__IVI_DEV__) {
+                                        if (domChild === null) {
+                                            throw new Error(`Invalid children: expected to find ${children.length} ` +
+                                                `children nodes.`);
+                                        }
                                     }
+                                    vNodeAugment(node, domChild, children[i], context, owner);
+                                    domChild = getNonCommentNode(node, domChild!.nextSibling);
                                 }
-                                vNodeAugment(node, domChild, children[i], context, owner);
-                                domChild = getNonCommentNode(node, domChild!.nextSibling);
                             }
                             if (__IVI_DEV__) {
                                 if (getNonCommentNode(node, domChild) !== null) {
