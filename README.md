@@ -284,6 +284,15 @@ faster than kivi.
 You can read more about that in the article I wrote on
 [How to win in Web Framework Benchmarks](https://medium.com/@localvoid/how-to-win-in-web-framework-benchmarks-8bc31af76ce7).
 
+## Inspired by Other Libraries
+
+- [React](https://facebook.github.io/react/) - key ideas, dev experience, synthetic events, browser quirks.
+- [Bobril](https://github.com/Bobris/Bobril) - single pass reconciliation, prefix/suffix optimization.
+- [Vidom](https://github.com/dfilatov/vidom) - method chaining API for Virtual DOM construction.
+- [Vue](https://github.com/vuejs/vue) - browser quirks.
+- [Polymer](https://www.polymer-project.org/2.0/) - gesture events.
+- [AMP](https://www.ampproject.org/) - animations, browser quirks.
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
