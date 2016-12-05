@@ -864,22 +864,23 @@ export function shallowCloneVNode(node: VNode<any>): VNodeBuilder<any> {
  * @returns Normalized VNode array.
  */
 export function normalizeVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
+    let keyOffset = 0;
     for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
 
         if (typeof n === "object") {
             if (n === null || Array.isArray(n)) {
                 const result = nodes.slice(0, i) as VNode<any>[];
-                _normalizeVNodes(nodes, result, i, 0);
+                _normalizeVNodes(nodes, result, i, 0, keyOffset);
                 return result;
             } else {
                 if (!(n._flags & VNodeFlags.Key)) {
-                    n._key = i;
+                    n._key = keyOffset++;
                 }
             }
         } else { // basic object
             const node = $t(n);
-            node._key = i;
+            node._key = keyOffset++;
             nodes[i] = node;
         }
     }
@@ -887,26 +888,31 @@ export function normalizeVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
     return nodes as VNode<any>[];
 }
 
-function _normalizeVNodes(nodes: VNodeRecursiveArray, result: VNode<any>[], i: number, keyOffset: number): number {
-    let count = i;
-
+function _normalizeVNodes(
+    nodes: VNodeRecursiveArray,
+    result: VNode<any>[],
+    i: number,
+    keyOffset: number,
+    count: number,
+): number {
     for (; i < nodes.length; i++) {
         const n = nodes[i];
         if (typeof n === "object") {
             if (Array.isArray(n)) {
-                count += _normalizeVNodes(n, result, 0, keyOffset + count);
-            } else if (n !== null) {
+                count += _normalizeVNodes(n, result, 0, keyOffset + count, 0) + 1;
+            } else if (n === null) {
+                count++;
+            } else {
                 if (!(n._flags & VNodeFlags.Key)) {
-                    n._key = keyOffset + count;
+                    n._key = keyOffset + count++;
                 }
                 result.push(n);
             }
         } else { // basic object
             const node = $t(n);
-            node._key = keyOffset + count;
+            node._key = keyOffset + count++;
             result.push(node);
         }
-        count++;
     }
 
     return count;

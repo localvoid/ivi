@@ -123,6 +123,6 @@ describe("normalization", () => {
         expect(n.length).to.equal(3);
         expect(n[0]._key).to.equal(0);
         expect(n[1]._key).to.equal(0);
-        expect(n[2]._key).to.equal(2);
+        expect(n[2]._key).to.equal(1);
     });
 });
