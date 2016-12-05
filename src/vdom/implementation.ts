@@ -46,6 +46,10 @@ export const enum SyncFlags {
      * Context is dirty.
      */
     DirtyContext = 1,
+    /**
+     * Force update for all components.
+     */
+    ForceUpdate = 1 << 1,
 }
 
 /**
@@ -390,9 +394,12 @@ function _updateComponent<P>(component: Component<P>, syncFlags: SyncFlags): voi
             syncFlags |= SyncFlags.DirtyContext;
         }
 
-        if ((flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState)) ||
-            (flags & (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ===
-            (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) {
+        if (
+            (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState)) ||
+            ((flags & (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ===
+                (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ||
+            (syncFlags & SyncFlags.ForceUpdate)
+        ) {
             if (__IVI_DEV__) {
                 if ((component._parentDOMNode as Element).tagName) {
                     setInitialNestingState((component._parentDOMNode as Element).tagName.toLowerCase(),
@@ -439,7 +446,13 @@ function _updateComponentFunction(
 
     componentPerfMarkBegin(b._debugId, "update");
 
-    if (a === b || !fn.isPropsChanged || fn.isPropsChanged(a._props, b._props)) {
+    if (a !== b &&
+        (
+            (syncFlags & SyncFlags.ForceUpdate) ||
+            !fn.isPropsChanged ||
+            fn.isPropsChanged(a._props, b._props)
+        )
+    ) {
         const oldRoot = a._children as VNode<any>;
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
         instance = vNodeSyncOrReplace(parent, oldRoot, newRoot, context, syncFlags, owner);
@@ -1244,19 +1257,21 @@ function vNodeSync(
     owner?: Component<any>,
 ): Node | Component<any> {
     if (__IVI_DEV__) {
-        if (b._instance) {
-            throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
-                "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
-        }
-
         if (b._flags & VNodeFlags.Immutable) {
             throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
                 "`cloneVNode` function.");
         }
     }
 
-    if (a === b) {
+    if (a === b && (!(syncFlags & (SyncFlags.DirtyContext | SyncFlags.ForceUpdate)))) {
         return b._instance!;
+    }
+
+    if (__IVI_DEV__) {
+        if (b._instance) {
+            throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
+                "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
+        }
     }
 
     const flags = a._flags;
