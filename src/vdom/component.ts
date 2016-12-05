@@ -30,9 +30,9 @@ export interface ComponentClass<P> {
  * Example:
  *
  *     class Hello extends Component<string> {
- *       render() {
- *         return $t(`Hello ${this.props}`);
- *       }
+ *         render() {
+ *             return $t(`Hello ${this.props}`);
+ *         }
  *     }
  *
  *     render($c(Hello, "world"), document.getElementById("App")!);
@@ -330,7 +330,8 @@ export function findComponentByDebugId(debugId: number): Component<any> | undefi
  *
  * This function can be used as a wrapper for function expression, or as a class decorator.
  *
- *     const MyComponent = checkPropsIdentity(function(text: string) {
+ *     checkPropsIdentity(MyComponent);
+ *     function MyComponent(text: string) {
  *         return $h("div").children(text);
  *     });
  *
@@ -358,7 +359,8 @@ export function checkPropsIdentity<P extends ComponentClass<any> | ComponentFunc
  *
  * This function can be used as a wrapper for function expression, or as a class decorator.
  *
- *     const MyComponent = checkPropsShallowEquality(function(props: { text: string }) {
+ *     checkPropsShallowEquality(MyComponent);
+ *     function MyComponent(props: { text: string }) {
  *         return $h("div").children(props.text);
  *     });
  *
@@ -386,7 +388,8 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Compon
  *
  * This function can be used as a wrapper for function expression, or as a class decorator.
  *
- *     const MyComponent = staticComponent(function(props: { text: string }) {
+ *     staticComponent(MyComponent);
+ *     function MyComponent(props: { text: string }) {
  *         return $h("div").children(props.text);
  *     });
  *

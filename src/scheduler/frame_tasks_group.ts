@@ -34,7 +34,7 @@ export const enum FrameTasksGroupFlags {
  * To get access to the frame tasks group, use: `currentFrame()` and `nextFrame()` scheduler methods.
  *
  *     scheduler.currentFrame().read(() => {
- *       console.log(element.clientWidth);
+ *         console.log(element.clientWidth);
  *     });
  *
  * @final
