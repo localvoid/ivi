@@ -277,6 +277,20 @@ export class VNodeBuilder<P> implements VNode<P> {
         if (Array.isArray(children)) {
             this._flags |= VNodeFlags.ChildrenArray;
             this._children = normalizeVNodes(children);
+
+            if (__IVI_DEV__) {
+                const keys = new Set<any>();
+                for (let i = 0; i < this._children.length; i++) {
+                    const child = this._children[i];
+                    if (child._flags & VNodeFlags.Key) {
+                        if (keys.has(child._key)) {
+                            throw new Error(`Failed to set children, invalid children list, key: "${child._key}" is ` +
+                                `used multiple times.`);
+                        }
+                        keys.add(child._key);
+                    }
+                }
+            }
         } else {
             if (children === null) {
                 this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenBasic);
