@@ -4,7 +4,7 @@ import { VNodeFlags } from "../src/vdom/flags";
 import { $h, $c } from "../src/vdom/vnode_builder";
 import { ROOT_CONTEXT } from "../src/vdom/context";
 import { Context } from "../src/vdom/context";
-import { Component, getDOMInstanceFromComponent } from "../src/vdom/component";
+import { Component, getDOMInstanceFromComponent, staticComponent } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
 
 const expect = chai.expect;
@@ -275,12 +275,14 @@ export class LifecycleTestComponent extends Component<LifecycleTestComponentProp
     }
 }
 
-export class StaticComponentTest extends Component<VNode<any>> {
-    isPropsChanged(_oldProps: VNode<any>, _newProps: VNode<any>) {
-        return false;
-    }
+staticComponent(StaticComponentFunctionTest);
+export function StaticComponentFunctionTest(child: VNode<any>) {
+    return child;
+}
 
+export class StaticComponentTest extends Component<VNode<any>> {
     render() {
         return this.props;
     }
 }
+staticComponent(StaticComponentTest);

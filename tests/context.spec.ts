@@ -1,4 +1,4 @@
-import { frag, render, StaticComponentTest } from "./utils";
+import { frag, render, StaticComponentFunctionTest, StaticComponentTest } from "./utils";
 import { Context } from "../src/vdom/context";
 import { Component } from "../src/vdom/component";
 import { VNode } from "../src/vdom/vnode";
@@ -120,6 +120,19 @@ describe("context", () => {
             const b = render<HTMLElement>($c(ContextTestComponent, {
                 value: 20,
                 child: $c(StaticComponentTest, $c(ContextTestPrinter)),
+            }), f);
+            expect(b.nodeValue).to.equal("20");
+        });
+
+        it("<C><SF>10</SF></C> => <C><SF>20</SF></C>", () => {
+            const f = frag();
+            render<HTMLElement>($c(ContextTestComponent, {
+                value: 10,
+                child: $c(StaticComponentFunctionTest, $c(ContextTestPrinter)),
+            }), f);
+            const b = render<HTMLElement>($c(ContextTestComponent, {
+                value: 20,
+                child: $c(StaticComponentFunctionTest, $c(ContextTestPrinter)),
             }), f);
             expect(b.nodeValue).to.equal("20");
         });
