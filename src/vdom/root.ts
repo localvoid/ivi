@@ -5,7 +5,7 @@ import { Context, ROOT_CONTEXT } from "./context";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 import { Component, getDOMInstanceFromComponent } from "./component";
-import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
+import { SyncFlags, renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
 /**
  * Root.
@@ -13,6 +13,7 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementat
 export interface Root {
     container: Element;
     currentVNode: VNode<any> | null;
+    currentContext: Context | null;
     newVNode: VNode<any> | null;
     newContext: Context | null;
     domNode: Node | null;
@@ -60,16 +61,19 @@ function iOSFixEventBubbling(container: Element): void {
 function _render(root: Root): void {
     const currentVNode = root.currentVNode;
     const newVNode = root.newVNode;
+    const newContext = root.newContext;
 
     if (newVNode) {
         let instance;
         if (currentVNode) {
-            instance = syncVNode(root.container, currentVNode, newVNode, root.newContext!);
+            const syncFlags = root.currentContext === newContext ? 0 : SyncFlags.DirtyContext;
+            instance = syncVNode(root.container, currentVNode, newVNode, root.newContext!, syncFlags);
         } else {
             instance = renderVNode(root.container, null, newVNode!, root.newContext!);
             iOSFixEventBubbling(root.container);
         }
         root.currentVNode = newVNode;
+        root.currentContext = newContext;
         root.domNode = (newVNode._flags & VNodeFlags.ComponentClass) ?
             getDOMInstanceFromComponent(instance as Component<any>) :
             instance as Node;
@@ -125,6 +129,7 @@ export function renderNextFrame(node: VNode<any> | null, container: Element, con
         root = {
             container: container,
             currentVNode: null,
+            currentContext: null,
             newVNode: node,
             newContext: context,
             domNode: null,
@@ -171,6 +176,7 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
         ROOTS.push({
             container: container,
             currentVNode: node,
+            currentContext: context,
             newVNode: null,
             newContext: null,
             domNode: container.firstChild!,

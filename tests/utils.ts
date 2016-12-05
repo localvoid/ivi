@@ -63,7 +63,7 @@ export function render<T extends Node>(
     const oldRoot = (container as any).__ivi_root as VNode<any> | undefined;
     (container as any).__ivi_root = node;
     if (oldRoot) {
-        syncVNode(container, oldRoot, node, ROOT_CONTEXT);
+        syncVNode(container, oldRoot, node, ROOT_CONTEXT, 0);
     } else {
         renderVNode(container, null, node, ROOT_CONTEXT);
     }

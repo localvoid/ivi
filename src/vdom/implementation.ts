@@ -200,6 +200,7 @@ export function syncVNode(
     a: VNode<any>,
     b: VNode<any>,
     context: Context,
+    syncFlags: SyncFlags,
     owner?: Component<any>,
 ): Node | Component<any> {
     if (__IVI_DEV__) {
