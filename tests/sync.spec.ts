@@ -1243,4 +1243,78 @@ describe("sync", () => {
             expect(n.children[1].firstChild.nodeValue).to.equal("1");
         });
     });
+
+    describe("keyed+non-keyed", () => {
+        it("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
+            const f = frag();
+            render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
+            ]), f);
+            const b = render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("b").key(0), $t("c").key(1), $t("e").key(2), $t("d"),
+            ]), f);
+            expect(b.childNodes[0].nodeValue).to.equal("a");
+            expect(b.childNodes[1].nodeValue).to.equal("b");
+            expect(b.childNodes[2].nodeValue).to.equal("c");
+            expect(b.childNodes[3].nodeValue).to.equal("e");
+            expect(b.childNodes[4].nodeValue).to.equal("d");
+        });
+
+        it("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
+            const f = frag();
+            render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
+            ]), f);
+            const b = render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("b").key(0), $t("d"),
+            ]), f);
+            expect(b.childNodes[0].nodeValue).to.equal("a");
+            expect(b.childNodes[1].nodeValue).to.equal("b");
+            expect(b.childNodes[2].nodeValue).to.equal("d");
+        });
+
+        it("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
+            const f = frag();
+            render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
+            ]), f);
+            const b = render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("c").key(1), $t("b").key(0), $t("d"),
+            ]), f);
+            expect(b.childNodes[0].nodeValue).to.equal("a");
+            expect(b.childNodes[1].nodeValue).to.equal("c");
+            expect(b.childNodes[2].nodeValue).to.equal("b");
+            expect(b.childNodes[3].nodeValue).to.equal("d");
+        });
+
+        it("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
+            const f = frag();
+            render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"),
+            ]), f);
+            const b = render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
+            ]), f);
+            expect(b.childNodes[0].nodeValue).to.equal("a");
+            expect(b.childNodes[1].nodeValue).to.equal("c");
+            expect(b.childNodes[2].nodeValue).to.equal("e");
+            expect(b.childNodes[3].nodeValue).to.equal("b");
+            expect(b.childNodes[4].nodeValue).to.equal("d");
+        });
+
+        it("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
+            const f = frag();
+            render<HTMLDivElement>($h("div").children([
+                $h("div"), $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"), $h("div"),
+            ]), f);
+            const b = render<HTMLDivElement>($h("div").children([
+                $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
+            ]), f);
+            expect(b.childNodes[0].nodeValue).to.equal("a");
+            expect(b.childNodes[1].nodeValue).to.equal("c");
+            expect(b.childNodes[2].nodeValue).to.equal("e");
+            expect(b.childNodes[3].nodeValue).to.equal("b");
+            expect(b.childNodes[4].nodeValue).to.equal("d");
+        });
+    });
 });
