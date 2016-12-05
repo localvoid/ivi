@@ -1837,12 +1837,15 @@ function syncChildrenTrackByKeys(
                 }
             }
         } else {
-            const keyIndex = new Map<any, number>();
+            let keyIndex: Map<any, number> | undefined;
             let artificialKeyIndex: Map<number, number> | undefined;
 
             for (i = bStart; i <= bEnd; i++) {
                 node = b[i];
                 if (node._flags & VNodeFlags.Key) {
+                    if (keyIndex === undefined) {
+                        keyIndex = new Map<any, number>();
+                    }
                     keyIndex.set(node._key, i);
                 } else {
                     if (artificialKeyIndex === undefined) {
@@ -1856,10 +1859,12 @@ function syncChildrenTrackByKeys(
                 aNode = a[i];
 
                 if (synced < bLength) {
-                    if (aNode._flags & VNodeFlags.Key) {
+                    if (keyIndex !== undefined && aNode._flags & VNodeFlags.Key) {
                         j = keyIndex.get(aNode._key);
                     } else if (artificialKeyIndex !== undefined) {
                         j = artificialKeyIndex.get(aNode._key);
+                    } else {
+                        j = undefined;
                     }
 
                     if (j !== undefined) {
