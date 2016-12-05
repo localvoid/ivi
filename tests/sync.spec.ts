@@ -19,7 +19,7 @@ function genVNodes(item: any, keys: boolean): VNode<any> | VNode<any>[] {
     } else {
         let e = $h("div").key(item.key);
         if (keys) {
-            e.trackByKeyChildren(genVNodes(item.children, keys) as VNode<any>[]);
+            e.children(genVNodes(item.children, keys) as VNode<any>[]);
         } else {
             e.children(genVNodes(item.children, keys) as VNode<any>[]);
         }
@@ -32,9 +32,9 @@ function checkInnerHtmlEquals(ax: VNode<any>[], bx: VNode<any>[], cx: VNode<any>
     const b = $h("div");
     const c = $h("div");
     if (keys) {
-        a.trackByKeyChildren(ax);
-        b.trackByKeyChildren(bx);
-        c.trackByKeyChildren(cx);
+        a.children(ax);
+        b.children(bx);
+        c.children(cx);
     } else {
         a.children(ax);
         b.children(bx);
@@ -674,8 +674,8 @@ describe("sync", () => {
 
             it("[<div>] => null", () => {
                 const f = frag();
-                render<HTMLElement>($h("div").trackByKeyChildren([$h("div")]), f);
-                const b = render<HTMLElement>($h("div").trackByKeyChildren(null), f);
+                render<HTMLElement>($h("div").children([$h("div")]), f);
+                const b = render<HTMLElement>($h("div").children(null), f);
                 expect(b.childNodes.length).to.equal(0);
             });
 
@@ -1169,12 +1169,12 @@ describe("sync", () => {
                 c = r;
             }
 
-            render<HTMLDivElement>($h("div").trackByKeyChildren([
+            render<HTMLDivElement>($h("div").children([
                 $h("h1").key(0),
                 $c(A, 0).key(1).ref(ref),
             ]), f);
             c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+            const n = render<HTMLDivElement>($h("div").children([
                 $c(A, 1).key(1).ref(ref),
                 $h("h1").key(0),
             ]), f);
@@ -1189,12 +1189,12 @@ describe("sync", () => {
                 c = r;
             }
 
-            render<HTMLDivElement>($h("div").trackByKeyChildren([
+            render<HTMLDivElement>($h("div").children([
                 $h("h1").key(0),
                 $c(B, $c(A, 0).ref(ref)).key(1),
             ]), f);
             c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+            const n = render<HTMLDivElement>($h("div").children([
                 $c(B, $c(A, 1).ref(ref)).key(1),
                 $h("h1").key(0),
             ]), f);
@@ -1210,12 +1210,12 @@ describe("sync", () => {
                 c = r;
             }
 
-            render<HTMLDivElement>($h("div").trackByKeyChildren([
+            render<HTMLDivElement>($h("div").children([
                 $c(A, 0).key(1).ref(ref),
                 $h("h1").key(0),
             ]), f);
             c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+            const n = render<HTMLDivElement>($h("div").children([
                 $h("h1").key(0),
                 $c(A, 1).key(1).ref(ref),
             ]), f);
@@ -1230,12 +1230,12 @@ describe("sync", () => {
                 c = r;
             }
 
-            render<HTMLDivElement>($h("div").trackByKeyChildren([
+            render<HTMLDivElement>($h("div").children([
                 $c(B, $c(A, 0).ref(ref)).key(1),
                 $h("h1").key(0),
             ]), f);
             c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").trackByKeyChildren([
+            const n = render<HTMLDivElement>($h("div").children([
                 $h("h1").key(0),
                 $c(B, $c(A, 1).ref(ref)).key(1),
             ]), f);

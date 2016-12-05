@@ -1391,11 +1391,7 @@ function syncChildren(
                     } else if (a.length === 1 && b.length === 1) {
                         vNodeSyncOrReplace(parent, a[0], b[0], context, owner);
                     } else {
-                        if (aParentFlags & bParentFlags & VNodeFlags.TrackByKeyChildren) {
-                            syncChildrenTrackByKeys(parent, a, b, context, owner);
-                        } else {
-                            syncChildrenNaive(parent, a, b, context, owner);
-                        }
+                        syncChildrenTrackByKeys(parent, a, b, context, owner);
                     }
                 }
             } else {
@@ -1457,122 +1453,7 @@ function syncChildren(
 }
 
 /**
- * Sync children naive way.
- *
- * Any heuristics that is used in this algorithm is an undefined behaviour, and external dependencies should not rely on
- * any knowledge about this algorithm, because it can be changed in any time.
- *
- * This naive algorithm is quite simple:
- *
- *  A: -> [a a c d e g g] <-
- *  B: -> [a a f d c g] <-
- *
- * It starts by iterating over old children list `A` and new children list `B` from both ends.
- *
- *  A: -> [a b c d e g g] <-
- *  B: -> [a b f d c g] <-
- *
- * When it find nodes that have the same key, tag and flags, it will sync them. Node "a" and "b" on the right side, and
- * node "g" on the right side will be synced.
- *
- *  A: -> [c d e g]
- *  B: -> [f d c]
- *
- * Then it start iterating over old and new children lists from the left side and check if nodes can be synced. Nodes
- * "c" and "f" can't be synced, remove node "c" and insert new node "f".
- *
- *  A: -> [d e g]
- *  B: -> [d c]
- *
- * Node "d" is synced.
- *
- *  A: -> [e g]
- *  B: -> [c]
- *
- * Node "e" removed, node "c" inserted.
- *
- *  A: -> [g]
- *  B:    []
- *
- * Length of the old list is larger than length of the new list, remove remaining nodes from the old list.
- *
- * @param parent Parent node.
- * @param a Old VNode list.
- * @param b New VNode list.
- * @param context Current context.
- * @param owner Owning component.
- */
-function syncChildrenNaive(
-    parent: Node,
-    a: VNode<any>[],
-    b: VNode<any>[],
-    context: Context,
-    owner?: Component<any>,
-): void {
-    let aStart = 0;
-    let bStart = 0;
-    let aEnd = a.length - 1;
-    let bEnd = b.length - 1;
-    let aNode: VNode<any>;
-    let bNode: VNode<any>;
-    let nextPos: number;
-    let next: Node | null;
-
-    // Sync similar nodes at the beginning.
-    while (aStart <= aEnd && bStart <= bEnd) {
-        aNode = a[aStart];
-        bNode = b[bStart];
-
-        if (!vNodeCanSync(aNode, bNode)) {
-            break;
-        }
-
-        aStart++;
-        bStart++;
-
-        vNodeSync(parent, aNode, bNode, context, owner);
-    }
-
-    // Sync similar nodes at the end.
-    while (aStart <= aEnd && bStart <= bEnd) {
-        aNode = a[aEnd];
-        bNode = b[bEnd];
-
-        if (!vNodeCanSync(aNode, bNode)) {
-            break;
-        }
-
-        aEnd--;
-        bEnd--;
-
-        vNodeSync(parent, aNode, bNode, context, owner);
-    }
-
-    // Iterate over the remaining nodes and if they have the same type, then sync, otherwise just
-    // remove the old node and insert the new one.
-    while (aStart <= aEnd && bStart <= bEnd) {
-        aNode = a[aStart++];
-        bNode = b[bStart++];
-        vNodeSyncOrReplace(parent, aNode, bNode, context, owner);
-    }
-
-    if (aStart <= aEnd) {
-        // All nodes from a are synced, remove the rest.
-        do {
-            vNodeRemoveChild(parent, a[aStart++]);
-        } while (aStart <= aEnd);
-    } else if (bStart <= bEnd) {
-        // All nodes from b are synced, insert the rest.
-        nextPos = bEnd + 1;
-        next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
-        do {
-            vNodeRenderInto(parent, next, b[bStart++], context, owner);
-        } while (bStart <= bEnd);
-    }
-}
-
-/**
- * Sync children with track by keys algorithm.
+ * Sync children.
  *
  * This algorithm finds a minimum[1] number of DOM operations. It works in several steps:
  *
@@ -1837,65 +1718,11 @@ function syncChildrenTrackByKeys(
     let bNode: VNode<any>;
     let node: VNode<any>;
 
-    // Check that items without keys at the beginning and at the end doesn't change their shape.
-    if (__IVI_DEV__) {
-        outer: while (true) {
-            while (aStartNode._key === null) {
-                if (bStartNode._key !== null) {
-                    throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
-                        "change their shape.");
-                }
-                aStart++;
-                bStart++;
-                if (aStart > aEnd || bStart > bEnd) {
-                    break outer;
-                }
-                aStartNode = a[aStart];
-                bStartNode = b[bStart];
-            }
-
-            if (bStartNode._key === null) {
-                throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
-                    "change their shape.");
-            }
-
-            while (aEndNode._key === null) {
-                if (bEndNode._key !== null) {
-                    throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
-                        "change their shape.");
-                }
-                aEnd--;
-                bEnd--;
-                if (aStart > aEnd || bStart > bEnd) {
-                    break outer;
-                }
-                aEndNode = a[aEnd];
-                bEndNode = b[bEnd];
-            }
-
-            if (bEndNode._key === null) {
-                throw new Error("Invalid children list, when trackByKey is enabled, nodes without keys shouldn't " +
-                    "change their shape.");
-            }
-
-            break;
-        }
-
-        // restore variables after checking.
-        aStart = 0;
-        bStart = 0;
-        aEnd = a.length - 1;
-        bEnd = b.length - 1;
-        aStartNode = a[aStart];
-        bStartNode = b[bStart];
-        aEndNode = a[aEnd];
-        bEndNode = b[bEnd];
-    }
-
     // Step 1
     outer: while (true) {
         // Sync nodes with the same key at the beginning.
-        while (aStartNode._key === bStartNode._key) {
+        while (aStartNode._key === bStartNode._key &&
+            (aStartNode._flags & VNodeFlags.Key) === (bStartNode._flags & VNodeFlags.Key)) {
             vNodeSyncOrReplace(parent, aStartNode, bStartNode, context, owner);
             aStart++;
             bStart++;
@@ -1907,7 +1734,8 @@ function syncChildrenTrackByKeys(
         }
 
         // Sync nodes with the same key at the end.
-        while (aEndNode._key === bEndNode._key) {
+        while (aEndNode._key === bEndNode._key &&
+            (aEndNode._flags & VNodeFlags.Key) === (bEndNode._flags & VNodeFlags.Key)) {
             vNodeSyncOrReplace(parent, aEndNode, bEndNode, context, owner);
             aEnd--;
             bEnd--;
@@ -1919,7 +1747,8 @@ function syncChildrenTrackByKeys(
         }
 
         // Move and sync nodes from right to left.
-        if (aEndNode._key === bStartNode._key) {
+        if (aEndNode._key === bStartNode._key &&
+            (aEndNode._flags & VNodeFlags.Key) === (bStartNode._flags & VNodeFlags.Key)) {
             vNodeSyncOrReplace(parent, aEndNode, bStartNode, context, owner);
             vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
             aEnd--;
@@ -1943,7 +1772,8 @@ function syncChildrenTrackByKeys(
         }
 
         // Move and sync nodes from left to right.
-        if (aStartNode._key === bEndNode._key) {
+        if (aStartNode._key === bEndNode._key &&
+            (aStartNode._flags & VNodeFlags.Key) === (bEndNode._flags & VNodeFlags.Key)) {
             vNodeSyncOrReplace(parent, aStartNode, bEndNode, context, owner);
             nextPos = bEnd + 1;
             next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
@@ -1989,7 +1819,8 @@ function syncChildrenTrackByKeys(
                 if (synced < bLength) {
                     for (j = bStart; j <= bEnd; j++) {
                         bNode = b[j];
-                        if (aNode._key === bNode._key) {
+                        if (aNode._key === bNode._key &&
+                            (aNode._flags & VNodeFlags.Key) === (bNode._flags & VNodeFlags.Key)) {
                             sources[j - bStart] = i;
 
                             if (pos > j) {
@@ -2007,17 +1838,29 @@ function syncChildrenTrackByKeys(
             }
         } else {
             const keyIndex = new Map<any, number>();
+            let artificialKeyIndex: Map<number, number> | undefined;
 
             for (i = bStart; i <= bEnd; i++) {
                 node = b[i];
-                keyIndex.set(node._key, i);
+                if (node._flags & VNodeFlags.Key) {
+                    keyIndex.set(node._key, i);
+                } else {
+                    if (artificialKeyIndex === undefined) {
+                        artificialKeyIndex = new Map<number, number>();
+                    }
+                    artificialKeyIndex.set(node._key, i);
+                }
             }
 
             for (i = aStart; i <= aEnd; i++) {
                 aNode = a[i];
 
                 if (synced < bLength) {
-                    j = keyIndex.get(aNode._key);
+                    if (aNode._flags & VNodeFlags.Key) {
+                        j = keyIndex.get(aNode._key);
+                    } else if (artificialKeyIndex !== undefined) {
+                        j = artificialKeyIndex.get(aNode._key);
+                    }
 
                     if (j !== undefined) {
                         bNode = b[j];

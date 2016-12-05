@@ -36,9 +36,9 @@ export const enum VNodeFlags {
      */
     UnsafeHTML = 1 << 7,
     /**
-     * Children reconciliation algorithm should use `key` property to find same nodes in the old children list.
+     * VNode is using a non-artificial key.
      */
-    TrackByKeyChildren = 1 << 8,
+    Key = 1 << 8,
     /**
      * VNode represents an HTMLInputElement(+textarea) element.
      */
@@ -76,7 +76,7 @@ export const enum VNodeFlags {
     /**
      * Flags that should match to be compatible for syncing.
      */
-    Syncable = Text | Element | Component | InputElement | TextAreaElement | MediaElement | SvgElement |
+    Syncable = Text | Element | Component | Key | InputElement | TextAreaElement | MediaElement | SvgElement |
     ElementDescriptor | WebComponent,
 }
 

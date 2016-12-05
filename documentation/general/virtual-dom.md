@@ -83,7 +83,6 @@ interface VNode<P> {
 ```ts
 interface VNode<P> {
     children(children: VNodeRecursiveArray | VNode<any> | string | number | boolean | null): VNode<P>;
-    trackByKeyChildren(children: VNodeRecursiveArray | null): VNode<P>;
     unsafeHTML(html: string): VNode<P>
 }
 ```
@@ -91,16 +90,6 @@ interface VNode<P> {
 Children property can be any basic object like string or number, single VNode or a recursive array of VNodes with
 basic objects and null values. It will automatically normalize recursive lists by flattening, filtering out null values
 and replacing basic objects with text nodes.
-
-`trackByKeyChildren` should be used when children shape is changing. Children shape is changing when children nodes are
-moved, inserted or removed. When this is happedning it is important to preserve internal state for all children and we
-need to correctly identify which nodes has been moved, inserted or removed. To do this we need to uniquely identify
-each children node, and the most flexible way to do this is to use key properties. Key property can be assigned for all
-virtual nodes with a `key(key: any)` method.
-
-For special use cases when parts of children list doesn't change shape at the beginning and at the end of the children
-list, we can just ignore keys. Syncing algorithm that tracks children will skip nodes without keys at the beginning and
-at the end of the children list.
 
 `unsafeHTML` is used to specify `innerHTML`, it is named unsafe because it doesn't provide any XSS protection, HTML
 string specified in `html` parameter will be directly injected into the element.

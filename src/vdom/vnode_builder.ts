@@ -119,7 +119,12 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @returns VNodeBuilder.
      */
     key(key: any): VNodeBuilder<P> {
-        this._key = key;
+        if (key === null) {
+            this._flags &= ~VNodeFlags.Key;
+        } else {
+            this._flags |= VNodeFlags.Key;
+            this._key = key;
+        }
         return this;
     }
 
@@ -273,98 +278,18 @@ export class VNodeBuilder<P> implements VNode<P> {
             this._flags |= VNodeFlags.ChildrenArray;
             this._children = normalizeVNodes(children);
         } else {
-            if (typeof children === "object") {
+            if (children === null) {
+                this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenBasic);
+            } else if (typeof children === "object") {
                 this._flags |= VNodeFlags.ChildrenVNode;
+                if (!(children._flags & VNodeFlags.Key)) {
+                    children._key = 0;
+                }
             } else {
                 this._flags |= VNodeFlags.ChildrenBasic;
             }
             this._children = children;
         }
-        return this;
-    }
-
-    /**
-     * Set children that will be tracked by `key` property.
-     *
-     * To support use cases with static nodes at the beginning and at the end of the children list, children list may
-     * contain nodes with `null` keys at the beginning of the list and at the end, children with `null` keys shouldn't
-     * move.
-     *
-     * NOTE: If you've found any other use case that can't be easily solved with the current `trackByKeyChildren`
-     * implementation, feel free to submit an issue, but most of the time it is better to help browsers with layout
-     * calculation, and it will be better to wrap nodes that aren't moved into its own container nodes and specify css
-     * containment property. Use cases with "semantic" markup probably will be ignored.
-     *
-     * @param children Recursive lists of vnodes that can contain null values. It will automatically normalize recursive
-     *   lists by flattening and filtering out null values.
-     * @returns VNodeBuilder.
-     */
-    trackByKeyChildren(children: VNodeRecursiveKeyedArray | null): VNodeBuilder<P> {
-        if (__IVI_DEV__) {
-            if (this._flags &
-                (VNodeFlags.ChildrenArray |
-                    VNodeFlags.ChildrenVNode |
-                    VNodeFlags.ChildrenBasic |
-                    VNodeFlags.UnsafeHTML)) {
-                throw new Error("Failed to set children, VNode element is already having children.");
-            }
-            if (!(this._flags & VNodeFlags.Element)) {
-                throw new Error("Failed to set children, children are available on element nodes only.");
-            }
-            if (this._flags & VNodeFlags.InputElement) {
-                throw new Error("Failed to set children, input elements can't have children.");
-            }
-            if (this._flags & VNodeFlags.MediaElement) {
-                throw new Error("Failed to set children, media elements can't have children.");
-            }
-            if (isVoidElement(this._tag as string)) {
-                throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
-            }
-        }
-        if (children) {
-            this._flags |= VNodeFlags.TrackByKeyChildren | VNodeFlags.ChildrenArray;
-            this._children = normalizeKeyedVNodes(children);
-
-            if (__IVI_DEV__) {
-                const childrenArray = this._children as VNode<any>[];
-                let child: VNode<any>;
-                let start = 0;
-                let end = childrenArray.length - 1;
-                while (start <= end) {
-                    child = childrenArray[start];
-                    if (child._key !== null) {
-                        break;
-                    }
-                    start++;
-                }
-                while (start <= end) {
-                    child = childrenArray[end];
-                    if (child._key !== null) {
-                        break;
-                    }
-                    end--;
-                }
-
-                if (start <= end) {
-                    const usedKeys = new Set<any>();
-                    while (start <= end) {
-                        child = childrenArray[start];
-                        const key = child._key;
-                        if (key === null) {
-                            throw new Error(`Failed to set children, invalid keyed children list, keyed ` +
-                                `children should have a shape like [non-keyed, keyed, non-keyed].`);
-                        }
-                        if (usedKeys.has(key)) {
-                            throw new Error(`Failed to set children, invalid children list, key: "${key}" is ` +
-                                `used multiple times.`);
-                        }
-                        usedKeys.add(key);
-                        start++;
-                    }
-                }
-            }
-        }
-
         return this;
     }
 
@@ -518,12 +443,6 @@ export type VNodeRecursiveArrayValue = VNodeRecursiveArray | VNode<any> | string
  * Recursive VNode Array.
  */
 export interface VNodeRecursiveArray extends Array<VNodeRecursiveArrayValue> { }
-
-export type VNodeRecursiveKeyedArrayValue = VNodeRecursiveArray | VNode<any>;
-/**
- * Recursive Keyed VNode Array.
- */
-export interface VNodeRecursiveKeyedArray extends Array<VNodeRecursiveKeyedArrayValue> { }
 
 /**
  * Create a VNodeBuilder representing a Text node.
@@ -938,7 +857,8 @@ export function shallowCloneVNode(node: VNode<any>): VNodeBuilder<any> {
 }
 
 /**
- * Normalizes recursive VNode array by flattening all nodes and converting strings to text nodes.
+ * Normalizes recursive VNode array by flattening all nodes, removing null values and converting basic objects to text
+ * nodes.
  *
  * @param nodes
  * @returns Normalized VNode array.
@@ -948,69 +868,46 @@ export function normalizeVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
         const n = nodes[i];
 
         if (typeof n === "object") {
-            if (n === null) {
-                nodes[i] = $t("");
-            } else if (Array.isArray(n)) {
+            if (n === null || Array.isArray(n)) {
                 const result = nodes.slice(0, i) as VNode<any>[];
-                _normalizeVNodes(nodes, result, i);
+                _normalizeVNodes(nodes, result, i, 0);
                 return result;
-            }
-        } else {
-            nodes[i] = $t(n);
-        }
-    }
-
-    return nodes as VNode<any>[];
-}
-
-function _normalizeVNodes(nodes: VNodeRecursiveArray, result: (VNode<any> | null)[], i: number): void {
-    for (; i < nodes.length; i++) {
-        const n = nodes[i];
-        if (typeof n === "object") {
-            if (n === null) {
-                result.push($t(""));
-            } else if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
             } else {
-                result.push(n as VNode<any>);
+                if (!(n._flags & VNodeFlags.Key)) {
+                    n._key = i;
+                }
             }
-        } else {
-            result.push($t(n));
-        }
-    }
-}
-
-/**
- * Normalizes recursive VNode array by flattening all nodes and converting strings to text nodes.
- *
- * @param nodes
- * @returns Normalized VNode array.
- */
-export function normalizeKeyedVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
-    for (let i = 0; i < nodes.length; i++) {
-        const n = nodes[i];
-
-        if (n === null || Array.isArray(n)) {
-            const result = nodes.slice(0, i) as VNode<any>[];
-            _normalizeKeyedVNodes(nodes, result, i);
-            return result;
+        } else { // basic object
+            const node = $t(n);
+            node._key = i;
+            nodes[i] = node;
         }
     }
 
     return nodes as VNode<any>[];
 }
 
-function _normalizeKeyedVNodes(nodes: VNodeRecursiveArray, result: VNode<any>[], i: number): void {
+function _normalizeVNodes(nodes: VNodeRecursiveArray, result: VNode<any>[], i: number, keyOffset: number): number {
+    let count = i;
+
     for (; i < nodes.length; i++) {
         const n = nodes[i];
         if (typeof n === "object") {
             if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
-            } else {
-                result.push(n as VNode<any>);
+                count += _normalizeVNodes(n, result, 0, keyOffset + count);
+            } else if (n !== null) {
+                if (!(n._flags & VNodeFlags.Key)) {
+                    n._key = keyOffset + count;
+                }
+                result.push(n);
             }
-        } else if (n !== null) {
-            result.push($t(n));
+        } else { // basic object
+            const node = $t(n);
+            node._key = keyOffset + count;
+            result.push(node);
         }
+        count++;
     }
+
+    return count;
 }

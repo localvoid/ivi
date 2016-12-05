@@ -101,8 +101,8 @@ export {
     createMediaElementDescriptor, createCustomElementDescriptor,
 } from "./vdom/element_descriptor";
 export {
-    VNodeRecursiveArrayValue, VNodeRecursiveArray, VNodeRecursiveKeyedArrayValue, VNodeRecursiveKeyedArray,
-    VNodeBuilder, cloneVNode, shallowCloneVNode, normalizeVNodes, normalizeKeyedVNodes,
+    VNodeRecursiveArrayValue, VNodeRecursiveArray,
+    VNodeBuilder, cloneVNode, shallowCloneVNode, normalizeVNodes,
     $t, $h, $s, $c, $i, $m, $e, $w,
 } from "./vdom/vnode_builder";
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
