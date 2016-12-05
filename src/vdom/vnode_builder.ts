@@ -807,11 +807,11 @@ export function cloneVNodeChildren(
                 children = children as VNode<any>[];
                 const newChildren = new Array<VNode<any>>(children.length);
                 for (let i = 0; i < 0; i++) {
-                    newChildren[i] = cloneVNode(children[i]);
+                    newChildren[i] = _cloneVNode(children[i], true);
                 }
                 return newChildren;
             } else {
-                return cloneVNode(children as VNode<any>);
+                return _cloneVNode(children as VNode<any>, true);
             }
         }
     }
@@ -819,13 +819,7 @@ export function cloneVNodeChildren(
     return children;
 }
 
-/**
- * Deep clone of VNode with instance refs erasure.
- *
- * @param node VNode to clone.
- * @returns Cloned VNode.
- */
-export function cloneVNode(node: VNode<any>): VNodeBuilder<any> {
+function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNodeBuilder<any> {
     const flags = node._flags;
 
     const newNode = new VNodeBuilder(
@@ -836,11 +830,23 @@ export function cloneVNode(node: VNode<any>): VNodeBuilder<any> {
         (flags & VNodeFlags.Component) ?
             null :
             cloneVNodeChildren(flags, node._children));
-    newNode._key = node._key;
+    if (cloneKey) {
+        newNode._key = node._key;
+    }
     newNode._events = node._events;
     newNode._style = node._style;
 
     return newNode;
+}
+
+/**
+ * Deep clone of VNode with instance refs erasure.
+ *
+ * @param node VNode to clone.
+ * @returns Cloned VNode.
+ */
+export function cloneVNode(node: VNode<any>): VNodeBuilder<any> {
+    return _cloneVNode(node, (node._flags & VNodeFlags.Key) ? true : false);
 }
 
 /**
@@ -863,7 +869,9 @@ export function shallowCloneVNode(node: VNode<any>): VNodeBuilder<any> {
         node._props,
         node._className,
         null);
-    newNode._key = node._key;
+    if (node._flags & VNodeFlags.Key) {
+        newNode._key = node._key;
+    }
     newNode._events = node._events;
     newNode._style = node._style;
 
