@@ -1169,9 +1169,25 @@ function vNodeAugment(
  * @return true if nodes can be synced.
  */
 function vNodeCanSync(a: VNode<any>, b: VNode<any>): boolean {
-    return ((a._flags & VNodeFlags.Syncable) === (b._flags & VNodeFlags.Syncable) &&
+    return (
+        (a._flags & VNodeFlags.Syncable) === (b._flags & VNodeFlags.Syncable) &&
         a._tag === b._tag &&
-        a._key === b._key);
+        a._key === b._key
+    );
+}
+
+/**
+ * Check if two nodes has equal keys.
+ *
+ * @param a VNode.
+ * @param b VNode.
+ * @returns true if nodes has equal keys.
+ */
+function vNodeEqualKeys(a: VNode<any>, b: VNode<any>): boolean {
+    return (
+        a._key === b._key &&
+        (a._flags & VNodeFlags.Key) === (b._flags & VNodeFlags.Key)
+    );
 }
 
 /**
@@ -1721,8 +1737,7 @@ function syncChildrenTrackByKeys(
     // Step 1
     outer: while (true) {
         // Sync nodes with the same key at the beginning.
-        while (aStartNode._key === bStartNode._key &&
-            (aStartNode._flags & VNodeFlags.Key) === (bStartNode._flags & VNodeFlags.Key)) {
+        while (vNodeEqualKeys(aStartNode, bStartNode)) {
             vNodeSyncOrReplace(parent, aStartNode, bStartNode, context, owner);
             aStart++;
             bStart++;
@@ -1734,8 +1749,7 @@ function syncChildrenTrackByKeys(
         }
 
         // Sync nodes with the same key at the end.
-        while (aEndNode._key === bEndNode._key &&
-            (aEndNode._flags & VNodeFlags.Key) === (bEndNode._flags & VNodeFlags.Key)) {
+        while (vNodeEqualKeys(aEndNode, bEndNode)) {
             vNodeSyncOrReplace(parent, aEndNode, bEndNode, context, owner);
             aEnd--;
             bEnd--;
@@ -1747,8 +1761,7 @@ function syncChildrenTrackByKeys(
         }
 
         // Move and sync nodes from right to left.
-        if (aEndNode._key === bStartNode._key &&
-            (aEndNode._flags & VNodeFlags.Key) === (bStartNode._flags & VNodeFlags.Key)) {
+        if (vNodeEqualKeys(aEndNode, bStartNode)) {
             vNodeSyncOrReplace(parent, aEndNode, bStartNode, context, owner);
             vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
             aEnd--;
@@ -1772,8 +1785,7 @@ function syncChildrenTrackByKeys(
         }
 
         // Move and sync nodes from left to right.
-        if (aStartNode._key === bEndNode._key &&
-            (aStartNode._flags & VNodeFlags.Key) === (bEndNode._flags & VNodeFlags.Key)) {
+        if (vNodeEqualKeys(aStartNode, bEndNode)) {
             vNodeSyncOrReplace(parent, aStartNode, bEndNode, context, owner);
             nextPos = bEnd + 1;
             next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
@@ -1819,8 +1831,7 @@ function syncChildrenTrackByKeys(
                 if (synced < bLength) {
                     for (j = bStart; j <= bEnd; j++) {
                         bNode = b[j];
-                        if (aNode._key === bNode._key &&
-                            (aNode._flags & VNodeFlags.Key) === (bNode._flags & VNodeFlags.Key)) {
+                        if (vNodeEqualKeys(aNode, bNode)) {
                             sources[j - bStart] = i;
 
                             if (pos > j) {
@@ -1859,7 +1870,7 @@ function syncChildrenTrackByKeys(
                 aNode = a[i];
 
                 if (synced < bLength) {
-                    if (keyIndex !== undefined && aNode._flags & VNodeFlags.Key) {
+                    if (keyIndex !== undefined && (aNode._flags & VNodeFlags.Key)) {
                         j = keyIndex.get(aNode._key);
                     } else if (positionKeyIndex !== undefined) {
                         j = positionKeyIndex.get(aNode._key);
