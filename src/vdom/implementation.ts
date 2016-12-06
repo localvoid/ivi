@@ -27,7 +27,7 @@ import {
     stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
     getFunctionalComponentStackTrace,
 } from "../dev_mode/stack_trace";
-import { VNodeFlags, ComponentFlags } from "./flags";
+import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ElementDescriptor } from "./element_descriptor";
 import { $t } from "./vnode_builder";
@@ -37,20 +37,6 @@ import {
 import { Context } from "./context";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
-
-/**
- * Sync Flags.
- */
-export const enum SyncFlags {
-    /**
-     * Context is dirty.
-     */
-    DirtyContext = 1,
-    /**
-     * Force update for all components.
-     */
-    ForceUpdate = 1 << 1,
-}
 
 /**
  * Begin component perf mark.

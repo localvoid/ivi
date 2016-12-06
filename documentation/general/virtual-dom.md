@@ -110,18 +110,39 @@ interface VNode<P> {
 Render Virtual DOM into container.
 
 ```ts
-function render<T extends Node>(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void;
+function render<T extends Node>(
+    node: VNode<any> | null,
+    container: Element,
+    syncFlags: SyncFlags = 0,
+    context: Context = ROOT_CONTEXT,
+): void;
 ```
 
 Render Virtual DOM into container asynchronously. This function will update DOM tree once per animation frame, even
 when it is invoked multiple times per frame.
 
 ```ts
-function renderNextFrame(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void;
+function renderNextFrame(
+    node: VNode<any> | null,
+    container: Element,
+    syncFlags: SyncFlags = 0,
+    context: Context = ROOT_CONTEXT,
+): void;
 ```
 
 Augment existing DOM tree with a Virtual DOM.
 
 ```ts
 function augment(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void;
+```
+
+### Sync Flags
+
+```ts
+const enum SyncFlags {
+    /**
+     * Force update for all components.
+     */
+    ForceUpdate = 1 << 1,
+}
 ```

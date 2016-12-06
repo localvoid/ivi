@@ -184,3 +184,17 @@ export const enum ElementDescriptorFlags {
      */
     ProtectStyle = 1 << 20,
 }
+
+/**
+ * Sync Flags.
+ */
+export const enum SyncFlags {
+    /**
+     * Context is dirty.
+     */
+    DirtyContext = 1,
+    /**
+     * Force update for all components.
+     */
+    ForceUpdate = 1 << 1,
+}

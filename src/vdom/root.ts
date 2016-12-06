@@ -2,10 +2,10 @@ import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { Context, ROOT_CONTEXT } from "./context";
-import { VNodeFlags } from "./flags";
+import { VNodeFlags, SyncFlags } from "./flags";
 import { VNode } from "./vnode";
 import { Component, getDOMInstanceFromComponent } from "./component";
-import { SyncFlags, renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
+import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
 /**
  * Root.
@@ -18,6 +18,7 @@ export interface Root {
     newContext: Context | null;
     domNode: Node | null;
     invalidated: boolean;
+    syncFlags: SyncFlags;
 }
 
 export const ROOTS = [] as Root[];
@@ -66,7 +67,9 @@ function _render(root: Root): void {
     if (newVNode) {
         let instance;
         if (currentVNode) {
-            const syncFlags = root.currentContext === newContext ? 0 : SyncFlags.DirtyContext;
+            const syncFlags = root.currentContext === newContext ?
+                root.syncFlags :
+                root.syncFlags | SyncFlags.DirtyContext;
             instance = syncVNode(root.container, currentVNode, newVNode, root.newContext!, syncFlags);
         } else {
             instance = renderVNode(root.container, null, newVNode!, root.newContext!);
@@ -88,6 +91,7 @@ function _render(root: Root): void {
     root.newVNode = null;
     root.newContext = null;
     root.invalidated = false;
+    root.syncFlags = 0;
 }
 
 /**
@@ -95,10 +99,16 @@ function _render(root: Root): void {
  *
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
+ * @param syncFlags Sync Flags.
  * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
  */
-export function render(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void {
-    renderNextFrame(node, container, context);
+export function render(
+    node: VNode<any> | null,
+    container: Element,
+    syncFlags: SyncFlags = 0,
+    context: Context = ROOT_CONTEXT,
+): void {
+    renderNextFrame(node, container, syncFlags, context);
     syncFrameUpdate();
 }
 
@@ -107,10 +117,15 @@ export function render(node: VNode<any> | null, container: Element, context: Con
  *
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
+ * @param syncFlags Sync Flags.
  * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
- * @returns rendered Node.
  */
-export function renderNextFrame(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void {
+export function renderNextFrame(
+    node: VNode<any> | null,
+    container: Element,
+    syncFlags: SyncFlags = 0,
+    context: Context = ROOT_CONTEXT,
+): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
@@ -134,7 +149,8 @@ export function renderNextFrame(node: VNode<any> | null, container: Element, con
             newContext: context,
             domNode: null,
             invalidated: false,
-        } as Root;
+            syncFlags: syncFlags,
+        };
         ROOTS.push(root);
     }
     if (!root.invalidated) {
@@ -181,6 +197,7 @@ export function augment(node: VNode<any> | null, container: Element, context: Co
             newContext: null,
             domNode: container.firstChild!,
             invalidated: false,
+            syncFlags: 0,
         });
 
         nextFrame().write(function augment() {

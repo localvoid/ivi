@@ -92,7 +92,7 @@ export {
     ComponentClass, ComponentFunction, Component, getDOMInstanceFromComponent, findComponentByDebugId,
     checkPropsIdentity, checkPropsShallowEquality, staticComponent,
 } from "./vdom/component";
-export { VNodeFlags, ElementDescriptorFlags } from "./vdom/flags";
+export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
 export {
     VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode, getComponentRef,
 } from "./vdom/vnode";
