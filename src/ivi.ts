@@ -57,8 +57,8 @@ export { FrameTasksGroup } from "./scheduler/frame_tasks_group";
 export { clock } from "./scheduler/clock";
 export { scheduleMicrotask } from "./scheduler/microtask";
 export { scheduleTask } from "./scheduler/task";
-export { DOMReader, addDOMReader } from "./scheduler/dom_reader";
-export { startComponentAnimation, stopComponentAnimation, Animation, addAnimation } from "./scheduler/animation";
+export { addDOMReader } from "./scheduler/dom_reader";
+export { startComponentAnimation, stopComponentAnimation, addAnimation } from "./scheduler/animation";
 export { frameStartTime, currentFrame, nextFrame, syncFrameUpdate } from "./scheduler/frame";
 
 /**

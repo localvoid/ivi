@@ -64,8 +64,7 @@ phase, and when component is updated we just need to register `after` task that 
 DOM reader tasks are registered with `addDOMReader` function.
 
 ```ts
-type DOMReader = () => boolean | undefined;
-function addDOMReader(reader: DOMReader): void;
+function addDOMReader(reader: () => boolean | undefined): void;
 ```
 
 `Animation` return value indicates when reader should be canceled.
@@ -92,8 +91,7 @@ Animation tasks will be executed just once per each animation frame when all "re
 before "after" tasks.
 
 ```ts
-type Animation = () => boolean | undefined;
-function addAnimation(animation: Animation): void;
+function addAnimation(animation: () => boolean | undefined): void;
 ```
 
 `Animation` return value indicates when animation should be canceled.

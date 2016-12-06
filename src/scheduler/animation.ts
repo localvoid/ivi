@@ -3,9 +3,7 @@ import { Component } from "../vdom/component";
 import { updateComponent } from "../vdom/implementation";
 import { requestNextFrame } from "./frame";
 
-export type Animation = () => boolean | undefined;
-
-const _animations: Animation[] = [];
+const _animations: (() => boolean | undefined)[] = [];
 const _animatedComponents: Component<any>[] = [];
 
 /**
@@ -69,7 +67,7 @@ export function updateAnimatedComponents(): void {
  *
  * @param animation Animation task.
  */
-export function addAnimation(animation: Animation): void {
+export function addAnimation(animation: () => boolean | undefined): void {
     if (__IVI_BROWSER__) {
         _animations.push(animation);
     }

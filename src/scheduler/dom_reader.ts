@@ -1,7 +1,5 @@
 
-export type DOMReader = () => boolean | undefined;
-
-const _readers: DOMReader[] = [];
+const _readers: (() => boolean | undefined)[] = [];
 
 /**
  * Add DOM Reader.
@@ -10,7 +8,7 @@ const _readers: DOMReader[] = [];
  *
  * @param reader Task that will be executed until it returns `false`.
  */
-export function addDOMReader(reader: DOMReader): void {
+export function addDOMReader(reader: () => boolean | undefined): void {
     if (__IVI_BROWSER__) {
         _readers.push(reader);
     }
