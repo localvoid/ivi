@@ -369,7 +369,12 @@ export function updateComponent<P>(component: Component<P>): void {
 function _updateComponent<P>(component: Component<P>, syncFlags: SyncFlags): void {
     const flags = component.flags;
 
-    if ((flags & ComponentFlags.Attached) && (flags & ComponentFlags.Dirty)) {
+    if ((flags & ComponentFlags.Attached) &&
+        (
+            (flags & ComponentFlags.Dirty) ||
+            (syncFlags & SyncFlags.ForceUpdate)
+        )
+    ) {
         componentPerfMarkBegin(component._debugId, "update");
 
         const oldRoot = component.root!;
@@ -1248,16 +1253,10 @@ function vNodeSync(
             throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
                 "`cloneVNode` function.");
         }
-    }
 
-    if (a === b && (!(syncFlags & (SyncFlags.DirtyContext | SyncFlags.ForceUpdate)))) {
-        return b._instance!;
-    }
-
-    if (__IVI_DEV__) {
         if (b._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
-                "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
+                "clone VNode with `cloneVNode` function.");
         }
     }
 
