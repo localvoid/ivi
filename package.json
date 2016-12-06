@@ -3,7 +3,7 @@
   "main": "dist/umd/ivi.js",
   "module": "dist/es6/ivi.js",
   "typings": "dist/typings/ivi.d.ts",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
   "author": {
