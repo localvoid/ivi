@@ -158,7 +158,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param style.
      * @returns VNodeBuilder.
      */
-    style(style: CSSStyleProps | null): VNodeBuilder<P> {
+    style<U extends CSSStyleProps>(style: U | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set style, style is available on element nodes only.");
@@ -212,7 +212,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param props.
      * @returns VNodeBuilder.
      */
-    props(props: P | null): VNodeBuilder<P> {
+    props<U extends P>(props: U | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (props) {
                 checkDOMAttributesForTypos(props);
@@ -410,7 +410,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param props
      * @return VNodeBuilder.
      */
-    mergeProps(props: P | null): VNodeBuilder<P> {
+    mergeProps<U extends P>(props: U | null): VNodeBuilder<P> {
         if (__IVI_DEV__) {
             if (props && typeof props !== "object") {
                 throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
@@ -431,7 +431,7 @@ export class VNodeBuilder<P> implements VNode<P> {
      * @param props
      * @return VNodeBuilder.
      */
-    mergeStyle(style: CSSStyleProps | null): VNodeBuilder<P> {
+    mergeStyle<U extends CSSStyleProps>(style: U | null): VNodeBuilder<P> {
         if (style) {
             return this.style(this._style ? Object.assign({}, this._style, style) : style);
         }
@@ -743,7 +743,7 @@ export function $m(tagName: MediaTagType, className?: string): VNodeBuilder<HTML
  * @returns VNodeBuilder object.
  */
 export function $c(c: ComponentFunction<null> | ComponentClass<null>): VNodeBuilder<null>;
-export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props: P): VNodeBuilder<P>;
+export function $c<P, U extends P>(c: ComponentFunction<P> | ComponentClass<P>, props: U): VNodeBuilder<P>;
 export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props?: P): VNodeBuilder<P> {
     return new VNodeBuilder<P>(
         (c.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction,
