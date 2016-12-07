@@ -168,7 +168,7 @@ describe("augment", () => {
         });
 
         it("<div>[<div>, true, <span>]</div>", () => {
-            augment($h("div").children([$h("div"), true, $h("span")]), `<div><div></div>true<span></span></div>`);
+            augment($h("div").children([$h("div"), true, $h("span")]), `<div><div></div><span></span></div>`);
         });
     });
 

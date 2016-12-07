@@ -902,9 +902,15 @@ export function normalizeVNodes(nodes: VNodeRecursiveArray): VNode<any>[] {
                 }
             }
         } else { // basic object
-            const node = $t(n);
-            node._key = keyOffset++;
-            nodes[i] = node;
+            if (typeof n === "string" || typeof n === "number") {
+                const node = $t(n);
+                node._key = keyOffset++;
+                nodes[i] = node;
+            } else {
+                const result = nodes.slice(0, i) as VNode<any>[];
+                _normalizeVNodes(nodes, result, i, 0, keyOffset);
+                return result;
+            }
         }
     }
 
@@ -932,9 +938,12 @@ function _normalizeVNodes(
                 result.push(n);
             }
         } else { // basic object
-            const node = $t(n);
-            node._key = keyOffset + count++;
-            result.push(node);
+            if (typeof n === "string" || typeof n === "number") {
+                const node = $t(n);
+                node._key = keyOffset + count;
+                result.push(node);
+            }
+            count++;
         }
     }
 

@@ -252,9 +252,8 @@ describe("render", () => {
 
         it("<div>[<div>, true, <span>]</div>", () => {
             const n = render<HTMLElement>($h("div").children([$h("div"), true, $h("span")]));
-            expect(n.childNodes.length).to.equal(3);
+            expect(n.childNodes.length).to.equal(2);
             expect(n.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(n.childNodes[1].nodeValue).to.equal("true");
             expect(n.children[1].tagName.toLowerCase()).to.equal("span");
         });
 
@@ -262,7 +261,7 @@ describe("render", () => {
             const n = render<HTMLElement>($h("div").unsafeHTML("<span>abc</span>"));
             expect(n.childNodes.length).to.equal(1);
             expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[0].firstChild.nodeValue).to.equal("abc");
+            expect(n.children[0].firstChild!.nodeValue).to.equal("abc");
         });
     });
 
