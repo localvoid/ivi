@@ -37,6 +37,7 @@ import {
 import { Context } from "./context";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
+import { autofocus } from "../scheduler/autofocus";
 
 /**
  * Begin component perf mark.
@@ -95,7 +96,7 @@ function componentPerfMarkEnd(
  * @param element
  * @returns Ancestor Flags.
  */
-function ancestorFlags(element: Element): AncestorFlags {
+function ancestorFlags(element: Element | null): AncestorFlags {
     if (__IVI_DEV__) {
         let result = 0;
         while (element && (element !== document.body)) {
@@ -888,6 +889,9 @@ function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: 
                 instance = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
             } else {
                 instance = document.createElement(vnode._tag as string);
+            }
+            if (flags & VNodeFlags.Autofocus) {
+                autofocus(instance as Element);
             }
 
             if (vnode._props) {

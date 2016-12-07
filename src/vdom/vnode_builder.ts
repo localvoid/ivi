@@ -450,6 +450,19 @@ export class VNodeBuilder<P> implements VNode<P> {
         }
         return this;
     }
+
+    /**
+     * Element will be automatically focused after instantiation.
+     *
+     * @param focus
+     * @return VNodeBuilder.
+     */
+    autofocus(focus: boolean): VNodeBuilder<P> {
+        if (focus) {
+            this._flags |= VNodeFlags.Autofocus;
+        }
+        return this;
+    }
 }
 
 export type VNodeRecursiveArrayValue = VNodeRecursiveArray | VNode<any> | string | number | boolean | null;

@@ -68,6 +68,10 @@ export const enum VNodeFlags {
      * prototype for building mutable trees.
      */
     Immutable = 1 << 15,
+    /**
+     * VNode element will be automatically focused after instantiation.
+     */
+    Autofocus = 1 << 16,
 
     /**
      * VNode represents a Component.

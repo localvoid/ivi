@@ -8,6 +8,7 @@ import { scheduleMicrotask } from "./microtask";
 import {
     prepareAnimatedComponents, updateAnimatedComponents, executeAnimations, shouldRequestNextFrameForAnimations,
 } from "./animation";
+import { autofocusedElement } from "./autofocus";
 
 let _pending = false;
 let _currentFrameReady = false;
@@ -150,6 +151,13 @@ function handleNextFrame(time?: number): void {
         frame._afterTasks = null;
         for (i = 0; i < tasks.length; i++) {
             tasks[i]();
+        }
+    }
+
+    if (__IVI_BROWSER__) {
+        const focus = autofocusedElement();
+        if (focus) {
+            (focus as HTMLElement).focus();
         }
     }
 
