@@ -742,6 +742,7 @@ export function $m(tagName: MediaTagType, className?: string): VNodeBuilder<HTML
  * @param props Component props.
  * @returns VNodeBuilder object.
  */
+export function $c(c: ComponentFunction<void> | ComponentClass<void>): VNodeBuilder<void>;
 export function $c(c: ComponentFunction<null> | ComponentClass<null>): VNodeBuilder<null>;
 export function $c<P, U extends P>(c: ComponentFunction<P> | ComponentClass<P>, props: U): VNodeBuilder<P>;
 export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props?: P): VNodeBuilder<P> {
