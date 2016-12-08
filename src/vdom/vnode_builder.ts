@@ -96,7 +96,7 @@ export class VNodeBuilder<P> implements VNode<P> {
     ) {
         this._flags = flags;
         this._tag = tag;
-        this._key = null;
+        this._key = 0;
         this._props = props;
         this._className = className;
         this._style = null;
