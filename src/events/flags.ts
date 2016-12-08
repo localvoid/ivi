@@ -73,4 +73,10 @@ export const enum SyntheticEventFlags {
      * Event at bubbling phase.
      */
     BubblePhase = 1 << 7,
+
+    /**
+     * The scoped property of the Event interface indicates whether the given event bubbles. If this value is true,
+     * deepPath will only contain a target node.
+     */
+    Scoped = 1 << 8,
 }

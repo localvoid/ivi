@@ -396,8 +396,8 @@ function setInnerSVG(element: SVGElement, content: string): void {
     }
     innerHTMLSVGContainer.innerHTML = `<svg>${content}</svg>`;
     const svg = innerHTMLSVGContainer.firstChild;
-    while (svg.firstChild) {
-        element.appendChild(svg.firstChild);
+    while (svg!.firstChild) {
+        element.appendChild(svg!.firstChild!);
     }
 }
 
@@ -435,7 +435,7 @@ export function firstLeaf(node: Node): Node {
  * @param node DOM Node.
  * @return Next sibling.
  */
-export function nextSibling(node: Node): Node | null {
+export function nextSibling(node: Node | null): Node | null {
     while (node) {
         if (node.nextSibling) {
             return node.nextSibling;

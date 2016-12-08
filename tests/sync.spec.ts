@@ -700,7 +700,7 @@ describe("sync", () => {
                 render<HTMLElement>($h("div"), f);
                 const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
                 expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild.nodeValue).to.equal("abc");
+                expect(b.firstChild!.nodeValue).to.equal("abc");
             });
 
             it("123 => unsafeHTML('abc')", () => {
@@ -708,7 +708,7 @@ describe("sync", () => {
                 render<HTMLElement>($h("div").children(123), f);
                 const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
                 expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild.nodeValue).to.equal("abc");
+                expect(b.firstChild!.nodeValue).to.equal("abc");
             });
 
             it("123 => [<h1><h2>]", () => {
@@ -725,7 +725,7 @@ describe("sync", () => {
                 render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
                 const b = render<HTMLElement>($h("div").children(123), f);
                 expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild.nodeValue).to.equal("123");
+                expect(b.firstChild!.nodeValue).to.equal("123");
             });
 
             it("[<h1><h2>] => unsafeHTML('abc')", () => {
@@ -733,7 +733,7 @@ describe("sync", () => {
                 render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
                 const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
                 expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild.nodeValue).to.equal("abc");
+                expect(b.firstChild!.nodeValue).to.equal("abc");
             });
 
             it("[<h1><h2>] => <div>", () => {
@@ -757,7 +757,7 @@ describe("sync", () => {
                 render<HTMLElement>($h("div").children($h("div")), f);
                 const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
                 expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild.nodeValue).to.equal("abc");
+                expect(b.firstChild!.nodeValue).to.equal("abc");
             });
 
             it("<h1> => <h2>", () => {
@@ -1179,7 +1179,7 @@ describe("sync", () => {
                 $h("h1").key(0),
             ]), f);
             expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[0].firstChild.nodeValue).to.equal("1");
+            expect(n.children[0].firstChild!.nodeValue).to.equal("1");
         });
 
         it("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
@@ -1199,7 +1199,7 @@ describe("sync", () => {
                 $h("h1").key(0),
             ]), f);
             expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[0].firstChild.nodeValue).to.equal("1");
+            expect(n.children[0].firstChild!.nodeValue).to.equal("1");
         });
 
         // same tests in the opposite direction
@@ -1220,7 +1220,7 @@ describe("sync", () => {
                 $c(A, 1).key(1).ref(ref),
             ]), f);
             expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[1].firstChild.nodeValue).to.equal("1");
+            expect(n.children[1].firstChild!.nodeValue).to.equal("1");
         });
 
         it("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
@@ -1240,7 +1240,7 @@ describe("sync", () => {
                 $c(B, $c(A, 1).ref(ref)).key(1),
             ]), f);
             expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[1].firstChild.nodeValue).to.equal("1");
+            expect(n.children[1].firstChild!.nodeValue).to.equal("1");
         });
     });
 

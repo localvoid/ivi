@@ -84,6 +84,15 @@ export class SyntheticEvent<D> implements Event {
         return 1;
     }
 
+    get scoped(): boolean {
+        return !!(this._flags & SyntheticEventFlags.Scoped);
+    }
+
+    deepPath(): EventTarget[] {
+        // TODO: Implement deepPath
+        return [];
+    }
+
     stopPropagation() {
         this._flags |= SyntheticEventFlags.StoppedPropagation;
     }

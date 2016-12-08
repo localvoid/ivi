@@ -44,7 +44,7 @@ export class Context {
      */
     get<V>(key: V): V;
     get<V>(key: string): V | undefined;
-    get<V>(key: string | V): V | undefined {
+    get<V>(key: string | V): Partial<V> | undefined {
         let n: Context | undefined = this;
         let v: any;
 
