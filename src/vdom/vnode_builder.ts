@@ -274,6 +274,7 @@ export class VNodeBuilder<P> implements VNode<P> {
                 throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
             }
         }
+
         if (Array.isArray(children)) {
             this._flags |= VNodeFlags.ChildrenArray;
             this._children = normalizeVNodes(children);
@@ -284,17 +285,17 @@ export class VNodeBuilder<P> implements VNode<P> {
                     const child = this._children[i];
                     if (child._flags & VNodeFlags.Key) {
                         if (keys.has(child._key)) {
-                            throw new Error(`Failed to set children, invalid children list, key: "${child._key}" is ` +
-                                `used multiple times.`);
+                            throw new Error(`Failed to set children, invalid children list, key: "${child._key}" ` +
+                                `is used multiple times.`);
                         }
                         keys.add(child._key);
                     }
                 }
             }
+        } else if (children === null || typeof children === "boolean") {
+            this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenBasic);
         } else {
-            if (children === null) {
-                this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenBasic);
-            } else if (typeof children === "object") {
+            if (typeof children === "object") {
                 this._flags |= VNodeFlags.ChildrenVNode;
                 if (!(children._flags & VNodeFlags.Key)) {
                     children._key = 0;

@@ -486,12 +486,18 @@ describe("sync", () => {
                 expect(b.firstChild!.nodeValue).to.equal("10");
             });
 
+            it("null => false", () => {
+                const f = frag();
+                render<HTMLElement>($h("div"), f);
+                const b = render<HTMLElement>($h("div").children(false), f);
+                expect(b.childNodes.length).to.equal(0);
+            });
+
             it("null => true", () => {
                 const f = frag();
                 render<HTMLElement>($h("div"), f);
                 const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("true");
+                expect(b.childNodes.length).to.equal(0);
             });
 
             it("'abc' => null", () => {
@@ -535,24 +541,21 @@ describe("sync", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children(true), f);
                 const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("true");
+                expect(b.childNodes.length).to.equal(0);
             });
 
             it("true => false", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children(true), f);
                 const b = render<HTMLElement>($h("div").children(false), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("false");
+                expect(b.childNodes.length).to.equal(0);
             });
 
             it("false => true", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children(false), f);
                 const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("true");
+                expect(b.childNodes.length).to.equal(0);
             });
 
             it("'abc' => 'cde'", () => {
@@ -583,8 +586,7 @@ describe("sync", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children("abc"), f);
                 const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("true");
+                expect(b.childNodes.length).to.equal(0);
             });
 
             it("10 => 'abc'", () => {
@@ -599,8 +601,7 @@ describe("sync", () => {
                 const f = frag();
                 render<HTMLElement>($h("div").children(10), f);
                 const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("true");
+                expect(b.childNodes.length).to.equal(0);
             });
 
             it("true => 'abc'", () => {

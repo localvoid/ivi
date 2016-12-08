@@ -84,8 +84,12 @@ describe("augment", () => {
         augment($h("div").children(10), `<div>10</div>`);
     });
 
+    it("<div>false</div>", () => {
+        augment($h("div").children(false), `<div></div>`);
+    });
+
     it("<div>true</div>", () => {
-        augment($h("div").children(true), `<div>true</div>`);
+        augment($h("div").children(true), `<div></div>`);
     });
 
     it("<div><span></div>", () => {

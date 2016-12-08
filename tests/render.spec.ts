@@ -111,10 +111,14 @@ describe("render", () => {
         expect(n.firstChild!.nodeValue).to.equal("10");
     });
 
+    it("<div>false</div>", () => {
+        const n = render<HTMLElement>($h("div").children(false));
+        expect(n.childNodes.length).to.equal(0);
+    });
+
     it("<div>true</div>", () => {
         const n = render<HTMLElement>($h("div").children(true));
-        expect(n.childNodes.length).to.equal(1);
-        expect(n.firstChild!.nodeValue).to.equal("true");
+        expect(n.childNodes.length).to.equal(0);
     });
 
     it("<div><span></div>", () => {
