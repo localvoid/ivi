@@ -1,4 +1,6 @@
 
+import { MaybeUndefined } from "../common/types";
+
 /**
  * Context.
  *
@@ -59,7 +61,7 @@ export class Context {
      * @param keys Key map.
      * @returns Key map with mapped values.
      */
-    map<V>(keys: Partial<V>): Partial<V> {
+    map<V>(keys: MaybeUndefined<V>): MaybeUndefined<V> {
         let n: Context | undefined = this;
         const k = Object.keys(keys) as (string | null)[];
         let l = k.length;

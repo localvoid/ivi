@@ -116,7 +116,7 @@ Context is represented as an immutable tree. Each time when context is updated, 
 interface Context {
     new(data: any, from?: Context);
     get<V>(key: string): V | undefined;
-    map<V>(keys: Partial<V>): Partial<V>;
+    map<V>(keys: MaybeUndefined<V>): MaybeUndefined<V>;
 }
 ```
 
