@@ -4,7 +4,8 @@ import { DEV_MODE, DevModeFlags, printWarn, printWarnOnce } from "./dev_mode";
 let DOMAttributeTypos: { [key: string]: string };
 if (__IVI_DEV__) {
     DOMAttributeTypos = {
-        "autoFocus": "autofocus",
+        "autoFocus": `Typo: to enable autofocus for an element, use "VNode.autofocus(focus: boolean)" method.`,
+        "autofocus": `Typo: to enable autofocus for an element, use "VNode.autofocus(focus: boolean)" method.`,
     };
 }
 
@@ -19,11 +20,10 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
             const keys = Object.keys(attrs);
             for (let i = 0; i < keys.length; i++) {
                 const attrName = keys[i];
-                const match = DOMAttributeTypos[attrName];
+                const msg = DOMAttributeTypos[attrName];
 
-                if (match) {
-                    printWarnOnce(`typo.attribute.${attrName}`,
-                        `Typo: attribute name "${attrName}" should be "${match}".`);
+                if (msg) {
+                    printWarnOnce(`typo.attribute.${attrName}`, msg);
                 }
             }
         }
