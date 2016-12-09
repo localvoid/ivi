@@ -13,7 +13,7 @@ interface ContextTestComponentProps {
 
 class ContextTestPrinter extends Component<null> {
     render() {
-        return $t(this.context.get("value"));
+        return $t(this.context.get<number>("value") !);
     }
 }
 
@@ -47,44 +47,44 @@ describe("context", () => {
         });
 
         it(`get({})`, () => {
-            expect(context.get({}))
+            expect(context.map({}))
                 .to.eql({});
         });
 
         it(`get({"a"})`, () => {
-            expect(context.get({ "a": undefined })).to.eql({ "a": 1 });
+            expect(context.map({ "a": undefined })).to.eql({ "a": 1 });
         });
 
         it(`get({"b"})`, () => {
-            expect(context.get({ "b": undefined })).to.eql({ "b": 3 });
+            expect(context.map({ "b": undefined })).to.eql({ "b": 3 });
         });
 
         it(`get({"c"})`, () => {
-            expect(context.get({ "c": undefined })).to.eql({ "c": undefined });
+            expect(context.map({ "c": undefined })).to.eql({ "c": undefined });
         });
 
         it(`get({"a", "b"})`, () => {
-            expect(context.get({ "a": undefined, "b": undefined }))
+            expect(context.map({ "a": undefined, "b": undefined }))
                 .to.eql({ "a": 1, "b": 3 });
         });
 
         it(`get({"a", "b", "c"})`, () => {
-            expect(context.get({ "a": undefined, "b": undefined, "c": undefined }))
+            expect(context.map({ "a": undefined, "b": undefined, "c": undefined }))
                 .to.eql({ "a": 1, "b": 3, "c": undefined });
         });
 
         it(`get({"a", "b"})`, () => {
-            expect(context.get({ "a": undefined, "b": undefined }))
+            expect(context.map({ "a": undefined, "b": undefined }))
                 .to.eql({ "a": 1, "b": 3 });
         });
 
         it(`get({"a", "b"})`, () => {
-            expect(context.get({ "a": undefined, "c": undefined }))
+            expect(context.map({ "a": undefined, "c": undefined }))
                 .to.eql({ "a": 1, "c": undefined });
         });
 
         it(`get({"b", "c"})`, () => {
-            expect(context.get({ "b": undefined, "c": undefined }))
+            expect(context.map({ "b": undefined, "c": undefined }))
                 .to.eql({ "b": 3, "c": undefined });
         });
     });

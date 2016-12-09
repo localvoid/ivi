@@ -115,18 +115,17 @@ Context is represented as an immutable tree. Each time when context is updated, 
 ```ts
 interface Context {
     new(data: any, from?: Context);
-    get<V>(key: V): V;
     get<V>(key: string): V | undefined;
+    map<V>(keys: Partial<V>): Partial<V>;
 }
 ```
 
-`get` method is used to retrieve values from context. It has two interfaces, one is using simple string keys, and the
-other one is a key-value mapping.
+`get` and `map` methods are used to retrieve values from context.
 
-Retrieving values with a simple key works by iterating through all parent contexts until it finds value, when nothing
+`get` retrieves value by iterating through all parent contexts until it finds value for a key, when nothing
 is found `undefined` value is returned.
 
-Retrieving values with key-value mapping works by iterating through all parent contexts and mapping all keys with
+`map` retrieves values by mapping keys with their values, it iterates through all parent contexts and maps all keys with
 values on the first occurence, this process goes on until it finds values for all keys. Missing keys will have
 `undefined` values.
 
@@ -139,7 +138,7 @@ const c = new Context({
 c.get("a");
 // => 1
 
-c.get({
+c.map({
     a: undefined,
     c: undefined,
 });

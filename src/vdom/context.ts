@@ -28,55 +28,17 @@ export class Context {
     /**
      * Find a context data.
      *
-     * Get method supports two ways to retrieve context values:
-     *  - Retrieve value with a simple key.
-     *  - Object with a key => value mapping.
+     * It retrieves value by iterating through all parent contexts until it finds value for a key, when nothing
+     * is found `undefined` value is returned.
      *
-     * Retrieving values with a simple key works by iterating through all parent contexts until it finds value,
-     * `undefined` value is returned when nothing is found.
-     *
-     * Retrieving values with key => value mapping works by iterating through all parent contexts and mapping all
-     * keys with values on the first occurence, this process goes on until it finds values for all keys.
-     *
-     * @param key Key may be a simple string, or a { [key: string]: value | undefined } object.
-     * @returns Value for the provided key if it is a simple string, or key object that was used as a key => value
-     *   mapping.
+     * @param key Key string.
+     * @returns Value for the provided key or `undefined` when nothing is found.
      */
-    get<V>(key: V): V;
-    get<V>(key: string): V | undefined;
-    get<V>(key: string | V): Partial<V> | undefined {
+    get<V>(key: string): V | undefined {
         let n: Context | undefined = this;
-        let v: any;
-
-        if (typeof key !== "string") {
-            const keys = Object.keys(key) as (string | null)[];
-            let l = keys.length;
-
-            while (l > 0 && n) {
-                if (n.data) {
-                    for (let i = 0; i < keys.length; i++) {
-                        const k = keys[i];
-                        if (k) {
-                            v = n.data[k];
-                            if (v !== undefined) {
-                                (key as any)[k] = n.data[k];
-                                keys[i] = null;
-                                l--;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                n = n.from;
-            }
-
-            return key;
-        }
-
         while (n) {
             if (n.data) {
-                v = n.data[key];
+                const v = n.data[key];
                 if (v !== undefined) {
                     return v as V;
                 }
@@ -85,6 +47,43 @@ export class Context {
         }
 
         return;
+    }
+
+    /**
+     * Find a context data by mapping keys with their values.
+     *
+     * It retrieves values by mapping keys with their values, it iterates through all parent contexts and maps all keys
+     * with values on the first occurence, this process goes on until it finds values for all keys. Missing keys will
+     * have `undefined` values.
+     *
+     * @param keys Key map.
+     * @returns Key map with mapped values.
+     */
+    map<V>(keys: Partial<V>): Partial<V> {
+        let n: Context | undefined = this;
+        const k = Object.keys(keys) as (string | null)[];
+        let l = k.length;
+
+        while (l > 0 && n) {
+            if (n.data) {
+                for (let i = 0; i < k.length; i++) {
+                    const j = k[i];
+                    if (j) {
+                        const v = n.data[j];
+                        if (v !== undefined) {
+                            (keys as any)[j] = n.data[j];
+                            k[i] = null;
+                            l--;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            n = n.from;
+        }
+
+        return keys;
     }
 }
 
