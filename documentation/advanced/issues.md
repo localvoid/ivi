@@ -65,6 +65,13 @@ class Form extends Component<null> {
 }
 ```
 
+## Web Components
+
+There are no proper support for Web Components right now, and there are no plans to add it until they will start getting
+widespread adoption.
+
+It is still possible to use Web Components, ivi just doesn't have a nice API to work with them.
+
 ## Multiple ivi instances in one document
 
 Application will work when there is only one ivi instance. Building application that depends on several different
