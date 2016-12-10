@@ -105,6 +105,16 @@ interface VNode<P> {
 }
 ```
 
+### Focusable Elements
+
+```ts
+interface VNode<P> {
+    autofocus(focus: boolean): VNode<P>;
+}
+```
+
+Autofocused elements will receive a focus when element is instantiated.
+
 ## Rendering and Augmentation
 
 Render Virtual DOM into container.
