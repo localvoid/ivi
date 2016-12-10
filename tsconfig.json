@@ -5,8 +5,11 @@
         "moduleResolution": "node",
         "rootDir": ".",
         "outDir": "build/es6",
+        "declaration": true,
         "inlineSourceMap": true,
         "inlineSources": true,
+        "importHelpers": true,
+        "noEmitHelpers": true,
         "removeComments": false,
         "typeRoots": [
             "./node_modules/@types"
@@ -33,6 +36,5 @@
     ],
     "exclude": [
         "node_modules"
-    ],
-    "compileOnSave": false
+    ]
 }

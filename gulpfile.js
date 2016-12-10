@@ -11,8 +11,7 @@
  *  - testCoverage: build tests with istanbul, run tests and build coverage report
  *
  * Shortcuts:
- *  - buildTests: compileES6 -> bundleTests -> compileTests
- *  - test: compileES6 -> bundleTests -> runTests (use this command during development)
+ *  - test: bundleTests -> runTests (use this command during development)
  *  - dist: build packages for distribution
  */
 
@@ -70,7 +69,7 @@ function compile(args) {
     return fn;
 }
 
-const compileES6 = compile("--importHelpers --noEmitHelpers --declaration");
+const compileES6 = compile();
 const compileES5 = compile("--target ES5 --outDir build/es5");
 
 function copyDeclarations() {
@@ -114,6 +113,7 @@ function bundleCDN(devMode) {
             context: "window",
             plugins: [
                 rollupSourceMaps(),
+                rollupNodeResolve(),
                 rollupReplace({
                     values: {
                         "__IVI_VERSION__": JSON.stringify(pkg["version"]),
@@ -273,8 +273,8 @@ function printIstanbulReport() {
         .pipe(gulpIstanbulReport());
 }
 
-const distNPM = series(compileES6, copyDeclarations, bundleNPM);
-const distCDN = series(compileES5, bundleCDN(false), bundleCDN(true), minifyCDN);
+const distNPM = exports.distNPM = series(compileES6, copyDeclarations, bundleNPM);
+const distCDN = exports.distCDN = series(compileES5, bundleCDN(false), bundleCDN(true), minifyCDN);
 
 exports.clean = clean;
 exports.lint = lint;
@@ -282,7 +282,6 @@ exports.compileES6 = compileES6;
 exports.compileES5 = compileES5;
 exports.bundleTests = bundleTests(false);
 exports.compileTests = compileTests;
-exports.buildTests = series(compileES6, bundleTests, compileTests);
 exports.runTests = runTests;
 exports.runTestsSauce = runTestsSauce;
 exports.testCoverage = series(
@@ -292,5 +291,5 @@ exports.testCoverage = series(
     remapCoverage,
     printIstanbulReport
 );
-exports.test = series(compileES6, bundleTests(false), runTests);
+exports.test = series(bundleTests(false), runTests);
 exports.default = exports.dist = series(clean, distNPM, distCDN);
