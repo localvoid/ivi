@@ -1013,24 +1013,6 @@ function vNodeRenderInto(
 }
 
 /**
- * Get non-comment DOM Node. This function removes all comment DOM Nodes when searching for non-comment nodes.
- *
- * #augment
- *
- * @param parent Parent DOM Node.
- * @param node DOM Node.
- * @returns Non-comment DOM Node.
- */
-function getNonCommentNode(parent: Node, node: Node | null): Node | null {
-    while (node && node.nodeType === 8) {
-        const next = node.nextSibling;
-        parent.removeChild(node);
-        node = next;
-    }
-    return node;
-}
-
-/**
  * Augment DOM Node with a Virtual DOM Node.
  *
  * #augment
@@ -1104,12 +1086,12 @@ function vNodeAugment(
 
                 if (vnode._children !== null) {
                     if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
-                        let domChild = getNonCommentNode(node, node.firstChild);
+                        let domChild = node.firstChild;
                         if (flags & VNodeFlags.ChildrenArray) {
                             const children = vnode._children as VNode<any>[];
                             for (let i = 0; i < children.length; i++) {
                                 const child = children[i];
-                                if (child._flags & VNodeFlags.Text && child._children === "") {
+                                if ((child._flags & VNodeFlags.Text) && child._children === "") {
                                     vNodeRenderInto(node, domChild, child, context, owner);
                                 } else {
                                     if (__IVI_DEV__) {
@@ -1119,11 +1101,11 @@ function vNodeAugment(
                                         }
                                     }
                                     vNodeAugment(node, domChild, children[i], context, owner);
-                                    domChild = getNonCommentNode(node, domChild!.nextSibling);
+                                    domChild = domChild!.nextSibling;
                                 }
                             }
                             if (__IVI_DEV__) {
-                                if (getNonCommentNode(node, domChild) !== null) {
+                                if (domChild !== null) {
                                     throw new Error(`Invalid children: document contains more children nodes than ` +
                                         `expected.`);
                                 }
@@ -1133,7 +1115,7 @@ function vNodeAugment(
                                 if (domChild === null) {
                                     throw new Error(`Invalid children: expected to find 1 child node.`);
                                 }
-                                if (getNonCommentNode(node, domChild.nextSibling) !== null) {
+                                if (domChild.nextSibling !== null) {
                                     throw new Error(`Invalid children: document contains more children nodes than ` +
                                         `expected.`);
                                 }
@@ -1151,16 +1133,28 @@ function vNodeAugment(
                         // setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
                     }
                 }
-            } else if (__IVI_DEV__) { // (flags & VNodeFlags.Text)
-                pushNestingState("$t");
-                checkNestingViolation();
+            } else { // (flags & VNodeFlags.Text)
+                const children = typeof vnode._children === "number" ?
+                    vnode._children.toString() :
+                    vnode._children as string;
 
-                if (node.nodeType !== 3) {
-                    throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
+                if (__IVI_DEV__) {
+                    pushNestingState("$t");
+                    checkNestingViolation();
+
+                    if (node.nodeType !== 3) {
+                        throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
+                    }
+                    if (!node.nodeValue!.startsWith(children)) {
+                        throw new Error(`Invalid text content: expected "${vnode._children}", actual ` +
+                            `"${node.nodeValue!.slice(0, children.length)}".`);
+                    }
                 }
-                if (node.nodeValue !== (vnode._children as number | boolean | string).toString()) {
-                    throw new Error(`Invalid text content: expected "${vnode._children}", actual "${node.nodeValue}".`);
+
+                if (node.nodeValue!.length > children.length) {
+                    parent.insertBefore((node as Text).splitText(children.length), node.nextSibling);
                 }
+
             }
 
             restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
