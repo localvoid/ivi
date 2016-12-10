@@ -105,8 +105,8 @@ export function nextDebugId(): number {
  */
 export function printError(message: string): void {
     if (__IVI_DEV__) {
-        printComponentStackTrace();
         console.error(message);
+        printComponentStackTrace();
         try {
             throw new Error(message);
         } catch (_) {
@@ -125,8 +125,8 @@ export function printError(message: string): void {
  */
 export function printWarn(message: string): void {
     if (__IVI_DEV__) {
-        printComponentStackTrace();
         console.warn(message);
+        printComponentStackTrace();
         try {
             throw new Error(message);
         } catch (_) {
@@ -151,8 +151,8 @@ export function printWarnOnce(key: string, message: string): void {
         }
         if (!_printedWarnings.has(key)) {
             _printedWarnings.add(key);
-            printComponentStackTrace();
             console.warn(message);
+            printComponentStackTrace();
             try {
                 throw new Error(message);
             } catch (_) {
