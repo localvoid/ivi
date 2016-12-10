@@ -31,6 +31,23 @@ export class SyntheticEvent<D> implements Event {
      */
     readonly srcElement: Element | null;
 
+    /**
+     * Experimental.
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/API/Event/deepPath
+     */
+    deepPath: () => EventTarget[];
+
+    /**
+     * Experimental.
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/API/Event/scoped
+     */
+    scoped: boolean;
+    // get scoped(): boolean {
+    //     return !!(this._flags & SyntheticEventFlags.Scoped);
+    // }
+
     readonly dispatcher: EventDispatcher;
     _flags: SyntheticEventFlags;
     _data: D;
@@ -82,15 +99,6 @@ export class SyntheticEvent<D> implements Event {
             return 3;
         }
         return 1;
-    }
-
-    get scoped(): boolean {
-        return !!(this._flags & SyntheticEventFlags.Scoped);
-    }
-
-    deepPath(): EventTarget[] {
-        // TODO: Implement deepPath
-        return [];
     }
 
     stopPropagation() {
