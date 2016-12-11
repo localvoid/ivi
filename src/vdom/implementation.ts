@@ -439,13 +439,9 @@ function _updateComponentFunction(
 
     componentPerfMarkBegin(b._debugId, "update");
 
-    if (a !== b &&
-        (
-            (syncFlags & SyncFlags.ForceUpdate) ||
-            !fn.isPropsChanged ||
-            fn.isPropsChanged(a._props, b._props)
-        )
-    ) {
+    if ((syncFlags & SyncFlags.ForceUpdate) ||
+        !fn.isPropsChanged ||
+        fn.isPropsChanged(a._props, b._props)) {
         const oldRoot = a._children as VNode<any>;
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
         instance = vNodeSyncOrReplace(parent, oldRoot, newRoot, context, syncFlags, owner);
@@ -724,7 +720,7 @@ function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
 
         component._props = newProps;
 
-        // There is no reason to call `didReceiveNewProps` when props aren't changed, even when they are reassigned
+        // There is no reason to call `newPropsReceived` when props aren't changed, even when they are reassigned
         // later to reduce memory usage.
         component.newPropsReceived(oldProps, newProps);
         if (component.flags & ComponentFlags.ContextUsingProps) {
