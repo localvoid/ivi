@@ -440,8 +440,8 @@ function _updateComponentFunction(
     componentPerfMarkBegin(b._debugId, "update");
 
     if ((syncFlags & SyncFlags.ForceUpdate) ||
-        !fn.isPropsChanged ||
-        fn.isPropsChanged(a._props, b._props)) {
+        ((a._props !== null || b._props !== null) &&
+            (!fn.isPropsChanged || fn.isPropsChanged(a._props, b._props)))) {
         const oldRoot = a._children as VNode<any>;
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
         instance = vNodeSyncOrReplace(parent, oldRoot, newRoot, context, syncFlags, owner);
@@ -1303,7 +1303,9 @@ function vNodeSync(
         if (flags & VNodeFlags.ComponentClass) {
             const component = instance as Component<any>;
             stackTracePushComponent(b._tag as ComponentClass<any>, component);
-            componentUpdateProps(component, b._props);
+            if (a._props !== null || b._props !== null) {
+                componentUpdateProps(component, b._props);
+            }
             componentUpdateParentContext(component, context);
             _updateComponent(component, syncFlags);
         } else { // (flags & VNodeFlags.ComponentFunction)
