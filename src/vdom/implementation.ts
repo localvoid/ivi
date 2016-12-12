@@ -230,7 +230,7 @@ function _syncVNode(
     context: Context,
     owner?: Component<any>,
 ): Node | Component<any> {
-    return vNodeSyncOrReplace(parent, a, b, context, 0, owner);
+    return vNodeSync(parent, a, b, context, 0, owner);
 }
 
 /**
@@ -403,7 +403,7 @@ function _updateComponent<P>(component: Component<P>, syncFlags: SyncFlags): voi
             }
             const parentNode = component._parentDOMNode;
             const newRoot = componentClassRender(component);
-            vNodeSyncOrReplace(parentNode!, oldRoot, newRoot, component._context, syncFlags, component);
+            vNodeSync(parentNode!, oldRoot, newRoot, component._context, syncFlags, component);
             component.flags &= ~(ComponentFlags.Dirty | ComponentFlags.InUpdateQueue);
         } else if (oldRoot) { // (flags & (ComponentFlags.DirtyContext | ComponentFlags.DirtyParentContext))
             vNodePropagateNewContext(component._parentDOMNode!, oldRoot, component._context, syncFlags, component);
@@ -444,7 +444,7 @@ function _updateComponentFunction(
             (!fn.isPropsChanged || fn.isPropsChanged(a._props, b._props)))) {
         const oldRoot = a._children as VNode<any>;
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
-        instance = vNodeSyncOrReplace(parent, oldRoot, newRoot, context, syncFlags, owner);
+        instance = vNodeSync(parent, oldRoot, newRoot, context, syncFlags, owner);
     } else {
         b._children = a._children;
         instance = a._instance!;
@@ -1265,92 +1265,68 @@ function vNodeSync(
         }
     }
 
-    const flags = a._flags;
-    let instance = b._instance = a._instance;
+    let instance;
+    const flags = b._flags;
+    if (vNodeCanSync(a, b)) {
+        instance = b._instance = a._instance;
 
-    if (flags & (VNodeFlags.Text | VNodeFlags.Element)) {
-        if (flags & VNodeFlags.Text) {
-            if (a._children !== b._children) {
-                (instance as Text).nodeValue = b._children as string;
-            }
-        } else { // (flags & VNodeFlags.Element)
-            if (a._props !== b._props) {
-                syncDOMProps(instance as Element, flags, a._props, b._props);
-            }
-            if (a._className !== b._className) {
-                syncClassName(instance as Element, flags, a._className, b._className);
-            }
-            if (a._style !== b._style) {
-                syncStyle(instance as HTMLElement, a._style, b._style);
-            }
-            if (a._events !== b._events) {
-                syncEvents(instance as HTMLElement, a._events, b._events);
-            }
+        if (flags & (VNodeFlags.Text | VNodeFlags.Element)) {
+            if (flags & VNodeFlags.Text) {
+                if (a._children !== b._children) {
+                    (instance as Text).nodeValue = b._children as string;
+                }
+            } else { // (flags & VNodeFlags.Element)
+                if (a._props !== b._props) {
+                    syncDOMProps(instance as Element, flags, a._props, b._props);
+                }
+                if (a._className !== b._className) {
+                    syncClassName(instance as Element, flags, a._className, b._className);
+                }
+                if (a._style !== b._style) {
+                    syncStyle(instance as HTMLElement, a._style, b._style);
+                }
+                if (a._events !== b._events) {
+                    syncEvents(instance as HTMLElement, a._events, b._events);
+                }
 
-            if (a._children !== b._children) {
-                syncChildren(
-                    instance as Element,
-                    a._flags,
-                    b._flags,
-                    a._children as VNode<any>[] | VNode<any> | string | number | boolean,
-                    b._children as VNode<any>[] | VNode<any> | string | number | boolean,
-                    context,
-                    syncFlags,
-                    owner);
+                if (a._children !== b._children) {
+                    syncChildren(
+                        instance as Element,
+                        a._flags,
+                        b._flags,
+                        a._children as VNode<any>[] | VNode<any> | string | number | boolean,
+                        b._children as VNode<any>[] | VNode<any> | string | number | boolean,
+                        context,
+                        syncFlags,
+                        owner);
+                }
             }
-        }
-    } else { // (flags & VNodeFlags.Component)
-        if (flags & VNodeFlags.ComponentClass) {
-            const component = instance as Component<any>;
-            stackTracePushComponent(b._tag as ComponentClass<any>, component);
-            if (a._props !== null || b._props !== null) {
-                componentUpdateProps(component, b._props);
+        } else { // (flags & VNodeFlags.Component)
+            if (flags & VNodeFlags.ComponentClass) {
+                const component = instance as Component<any>;
+                stackTracePushComponent(b._tag as ComponentClass<any>, component);
+                if (a._props !== null || b._props !== null) {
+                    componentUpdateProps(component, b._props);
+                }
+                componentUpdateParentContext(component, context);
+                _updateComponent(component, syncFlags);
+            } else { // (flags & VNodeFlags.ComponentFunction)
+                stackTracePushComponent(b._tag as ComponentFunction<any>);
+                instance = b._instance = _updateComponentFunction(parent, a, b, context, syncFlags, owner);
             }
-            componentUpdateParentContext(component, context);
-            _updateComponent(component, syncFlags);
-        } else { // (flags & VNodeFlags.ComponentFunction)
-            stackTracePushComponent(b._tag as ComponentFunction<any>);
-            instance = b._instance = _updateComponentFunction(parent, a, b, context, syncFlags, owner);
+            stackTracePopComponent();
         }
-        stackTracePopComponent();
+    } else {
+        instance = vNodeRender(parent, b, context, owner);
+        parent.replaceChild(
+            (b._flags & VNodeFlags.ComponentClass) ?
+                getDOMInstanceFromComponent(instance as Component<any>) :
+                instance as Element, getDOMInstanceFromVNode(a) !);
+        vNodeDetach(a);
+        vNodeAttach(b);
     }
 
     return instance!;
-}
-
-/**
- * Sync VNode with a new one or replace when they aren't compatible.
- *
- * When node `a` is synced with node `b`, `a` node should be considered as destroyed, and any access to it after sync
- * is an undefined behavior.
- *
- * @param parent Parent node.
- * @param a Old VNode.
- * @param b New VNode.
- * @param context Current context.
- * @param owner Owning component.
- * @returns Synced DOM Node. When VNodes are synced and they aren't compatible, old DOM Node will be replaced with a new
- * DOM Node.
- */
-function vNodeSyncOrReplace(
-    parent: Node,
-    a: VNode<any>,
-    b: VNode<any>,
-    context: Context,
-    syncFlags: SyncFlags,
-    owner?: Component<any>,
-): Node | Component<any> {
-    if (vNodeCanSync(a, b)) {
-        return vNodeSync(parent, a, b, context, syncFlags, owner);
-    }
-    const newInstance = vNodeRender(parent, b, context, owner);
-    parent.replaceChild(
-        (b._flags & VNodeFlags.ComponentClass) ?
-            getDOMInstanceFromComponent(newInstance as Component<any>) :
-            newInstance as Element, getDOMInstanceFromVNode(a) !);
-    vNodeDetach(a);
-    vNodeAttach(b);
-    return newInstance;
 }
 
 /**
@@ -1450,7 +1426,7 @@ function syncChildren(
                     if (b.length === 0) {
                         vNodeRemoveAllChildren(parent, a);
                     } else if (a.length === 1 && b.length === 1) {
-                        vNodeSyncOrReplace(parent, a[0], b[0], context, syncFlags, owner);
+                        vNodeSync(parent, a[0], b[0], context, syncFlags, owner);
                     } else {
                         syncChildrenTrackByKeys(parent, a, b, context, syncFlags, owner);
                     }
@@ -1458,7 +1434,7 @@ function syncChildren(
             } else {
                 b = b as VNode<any>;
                 if (a.length > 0) {
-                    vNodeSyncOrReplace(parent, a[0], b, context, syncFlags, owner);
+                    vNodeSync(parent, a[0], b, context, syncFlags, owner);
                     for (i = 1; i < a.length; i++) {
                         vNodeRemoveChild(parent, a[i]);
                     }
@@ -1478,7 +1454,7 @@ function syncChildren(
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as VNode<any>[];
                 if (b.length > 0) {
-                    vNodeSyncOrReplace(parent, a, b[0], context, syncFlags, owner);
+                    vNodeSync(parent, a, b[0], context, syncFlags, owner);
                     for (i = 1; i < b.length; i++) {
                         vNodeRenderInto(parent, null, b[i], context, owner);
                     }
@@ -1486,7 +1462,7 @@ function syncChildren(
                     vNodeRemoveChild(parent, a);
                 }
             } else {
-                vNodeSyncOrReplace(parent, a, b as VNode<any>, context, syncFlags, owner);
+                vNodeSync(parent, a, b as VNode<any>, context, syncFlags, owner);
             }
         } else { // (aParentFlags & VNodeFlags.InputElement)
             /**
@@ -1783,7 +1759,7 @@ function syncChildrenTrackByKeys(
     outer: while (true) {
         // Sync nodes with the same key at the beginning.
         while (vNodeEqualKeys(aStartNode, bStartNode)) {
-            vNodeSyncOrReplace(parent, aStartNode, bStartNode, context, syncFlags, owner);
+            vNodeSync(parent, aStartNode, bStartNode, context, syncFlags, owner);
             aStart++;
             bStart++;
             if (aStart > aEnd || bStart > bEnd) {
@@ -1795,7 +1771,7 @@ function syncChildrenTrackByKeys(
 
         // Sync nodes with the same key at the end.
         while (vNodeEqualKeys(aEndNode, bEndNode)) {
-            vNodeSyncOrReplace(parent, aEndNode, bEndNode, context, syncFlags, owner);
+            vNodeSync(parent, aEndNode, bEndNode, context, syncFlags, owner);
             aEnd--;
             bEnd--;
             if (aStart > aEnd || bStart > bEnd) {
@@ -1807,7 +1783,7 @@ function syncChildrenTrackByKeys(
 
         // Move and sync nodes from right to left.
         if (vNodeEqualKeys(aEndNode, bStartNode)) {
-            vNodeSyncOrReplace(parent, aEndNode, bStartNode, context, syncFlags, owner);
+            vNodeSync(parent, aEndNode, bStartNode, context, syncFlags, owner);
             vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
             aEnd--;
             bStart++;
@@ -1831,7 +1807,7 @@ function syncChildrenTrackByKeys(
 
         // Move and sync nodes from left to right.
         if (vNodeEqualKeys(aStartNode, bEndNode)) {
-            vNodeSyncOrReplace(parent, aStartNode, bEndNode, context, syncFlags, owner);
+            vNodeSync(parent, aStartNode, bEndNode, context, syncFlags, owner);
             nextPos = bEnd + 1;
             next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
             vNodeMoveChild(parent, bEndNode, next);
@@ -1884,7 +1860,7 @@ function syncChildrenTrackByKeys(
                             } else {
                                 pos = j;
                             }
-                            vNodeSyncOrReplace(parent, aNode, bNode, context, syncFlags, owner);
+                            vNodeSync(parent, aNode, bNode, context, syncFlags, owner);
                             synced++;
                             aNullable[i] = null;
                             break;
@@ -1931,7 +1907,7 @@ function syncChildrenTrackByKeys(
                         } else {
                             pos = j;
                         }
-                        vNodeSyncOrReplace(parent, aNode, bNode, context, syncFlags, owner);
+                        vNodeSync(parent, aNode, bNode, context, syncFlags, owner);
                         synced++;
                         aNullable[i] = null;
                     }
