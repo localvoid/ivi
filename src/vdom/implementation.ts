@@ -1249,7 +1249,16 @@ function vNodeSync(
             throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
                 "`cloneVNode` function.");
         }
+    }
 
+    if (a === b) {
+        if (syncFlags & SyncFlags.DirtyContext) {
+            vNodePropagateNewContext(parent, b, context, syncFlags, owner);
+        }
+        return b._instance!;
+    }
+
+    if (__IVI_DEV__) {
         if (b._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
                 "clone VNode with `cloneVNode` function.");
