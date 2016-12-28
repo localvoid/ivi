@@ -1,7 +1,6 @@
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
-import { Context, ROOT_CONTEXT } from "./context";
 import { VNodeFlags, SyncFlags } from "./flags";
 import { VNode } from "./vnode";
 import { Component, getDOMInstanceFromComponent } from "./component";
@@ -13,15 +12,20 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementat
 export interface Root {
     container: Element;
     currentVNode: VNode<any> | null;
-    currentContext: Context | null;
+    currentContext: { [key: string]: any } | null;
     newVNode: VNode<any> | null;
-    newContext: Context | null;
+    newContext: { [key: string]: any } | null;
     domNode: Node | null;
     invalidated: boolean;
     syncFlags: SyncFlags;
 }
 
 export const ROOTS = [] as Root[];
+
+/**
+ * Default Context object.
+ */
+const DEFAULT_CONTEXT = {};
 
 /**
  * Find Root node in container.
@@ -100,13 +104,13 @@ function _render(root: Root): void {
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
  * @param syncFlags Sync Flags.
- * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
+ * @param context root context.
  */
 export function render(
     node: VNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: Context = ROOT_CONTEXT,
+    context: { [key: string]: any } = DEFAULT_CONTEXT,
 ): void {
     renderNextFrame(node, container, syncFlags, context);
     syncFrameUpdate();
@@ -118,13 +122,13 @@ export function render(
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
  * @param syncFlags Sync Flags.
- * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
+ * @param context root context.
  */
 export function renderNextFrame(
     node: VNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: Context = ROOT_CONTEXT,
+    context: { [key: string]: any } = DEFAULT_CONTEXT,
 ): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
@@ -171,9 +175,13 @@ export function renderNextFrame(
  *
  * @param node Root VNode.
  * @param container Container DOM Node.
- * @param context root context, all root contexts should be created from the `ROOT_CONTEXT` instance.
+ * @param context root context.
  */
-export function augment(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void {
+export function augment(
+    node: VNode<any> | null,
+    container: Element,
+    context: { [key: string]: any } = DEFAULT_CONTEXT,
+): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
             throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +

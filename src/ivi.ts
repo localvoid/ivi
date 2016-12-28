@@ -87,7 +87,6 @@ export { getEventOptions } from "./events/utils";
 /**
  * Virtual DOM:
  */
-export { Context, ROOT_CONTEXT } from "./vdom/context";
 export {
     ComponentClass, ComponentFunction, Component, getDOMInstanceFromComponent, findComponentByDebugId,
     checkPropsIdentity, checkPropsShallowEquality, staticComponent,

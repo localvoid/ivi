@@ -2,12 +2,12 @@ import { setInitialNestingState } from "../src/dev_mode/html_nesting_rules";
 import { VNode, getDOMInstanceFromVNode } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { $h, $c } from "../src/vdom/vnode_builder";
-import { ROOT_CONTEXT } from "../src/vdom/context";
-import { Context } from "../src/vdom/context";
 import { Component, getDOMInstanceFromComponent, staticComponent } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
 
 const expect = chai.expect;
+
+const DEFAULT_CONTEXT = {};
 
 export function frag() {
     return document.createDocumentFragment();
@@ -63,9 +63,9 @@ export function render<T extends Node>(
     const oldRoot = (container as any).__ivi_root as VNode<any> | undefined;
     (container as any).__ivi_root = node;
     if (oldRoot) {
-        syncVNode(container, oldRoot, node, ROOT_CONTEXT, 0);
+        syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, 0);
     } else {
-        renderVNode(container, null, node, ROOT_CONTEXT);
+        renderVNode(container, null, node, DEFAULT_CONTEXT);
     }
 
     const result = getDOMInstanceFromVNode(node) as T;
@@ -89,7 +89,7 @@ export function augment(node: VNode<any>, innerHTML: string, container?: Element
 
     (container as any).__ivi_root = node;
     container.innerHTML = innerHTML;
-    augmentVNode(container, container.firstChild, node, ROOT_CONTEXT);
+    augmentVNode(container, container.firstChild, node, DEFAULT_CONTEXT);
     checkRefs(container.firstChild!, node);
 
     return container;
@@ -225,7 +225,7 @@ export interface LifecycleTestComponentProps {
 }
 
 export class LifecycleTestComponent extends Component<LifecycleTestComponentProps> {
-    constructor(props: LifecycleTestComponentProps, context: Context, owner: Component<any>) {
+    constructor(props: LifecycleTestComponentProps, context: { [key: string]: any }, owner: Component<any>) {
         super(props, context, owner);
         props.monitor.touch("construct");
     }
@@ -239,7 +239,7 @@ export class LifecycleTestComponent extends Component<LifecycleTestComponentProp
         this.props.monitor.touch("newPropsReceived");
     }
 
-    newContextReceived(oldContext: Context, newContext: Context): void {
+    newContextReceived(oldContext: { [key: string]: any }, newContext: { [key: string]: any }): void {
         this.props.monitor.touch("newContextReceived");
     }
 

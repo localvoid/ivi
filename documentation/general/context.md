@@ -23,8 +23,8 @@ interface Component<P> {
 component that updates context, new context values will be propagated to children.
 
 ```ts
-function A(props: null, context: Context) {
-    return $h("div").children(context.get("key"));
+function A(props: null, context: { key: string }) {
+    return $h("div").children(context.key);
 }
 
 class B extends Component<null> {
@@ -77,8 +77,8 @@ changed, it will propagate new context through existing Virtual DOM tree until i
 data from context.
 
 ```ts
-function A(props: null, context: Context) {
-    return $h("div").children(`Counter: ${context.get("counter")}`);
+function A(props: null, context: { counter: number }) {
+    return $h("div").children(`Counter: ${context.counter}`);
 }
 
 function B() {
@@ -106,47 +106,4 @@ class C extends Component<null> {
         return $c(ChildComponentThatUsesContextToGetCounterValue);
     }
 }
-```
-
-## API
-
-Context is represented as an immutable tree. Each time when context is updated, new `Context` node is created.
-
-```ts
-interface Context {
-    new(data: any, from?: Context);
-    get<V>(key: string): V | undefined;
-    map<V>(keys: MaybeUndefined<V>): MaybeUndefined<V>;
-}
-```
-
-`get` and `map` methods are used to retrieve values from context.
-
-`get` retrieves value by iterating through all parent contexts until it finds value for a key, when nothing
-is found `undefined` value is returned.
-
-`map` retrieves values by mapping keys with their values, it iterates through all parent contexts and maps all keys with
-values on the first occurence, this process goes on until it finds values for all keys. Missing keys will have
-`undefined` values.
-
-```ts
-const c = new Context({
-    a: 1,
-    b: 2,
-});
-
-c.get("a");
-// => 1
-
-c.map({
-    a: undefined,
-    c: undefined,
-});
-// => { a: 1, c: undefined }
-```
-
-`ROOT_CONTEXT` is a default context that will be implicitly used when rendering root nodes.
-
-```ts
-const c = new Context({ key: "value" }, ROOT_CONTEXT);
 ```

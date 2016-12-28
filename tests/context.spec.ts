@@ -1,5 +1,4 @@
 import { frag, render, StaticComponentFunctionTest, StaticComponentTest } from "./utils";
-import { Context } from "../src/vdom/context";
 import { Component } from "../src/vdom/component";
 import { VNode } from "../src/vdom/vnode";
 import { $t, $c } from "../src/vdom/vnode_builder";
@@ -13,7 +12,7 @@ interface ContextTestComponentProps {
 
 class ContextTestPrinter extends Component<null> {
     render() {
-        return $t(this.context.get<number>("value") !);
+        return $t(this.context["value"]);
     }
 }
 
@@ -30,65 +29,6 @@ class ContextTestComponent extends Component<ContextTestComponentProps> {
 }
 
 describe("context", () => {
-    describe("get values", () => {
-        const root = new Context({ "a": 1, "b": 2 });
-        const context = new Context({ "b": 3 }, root);
-
-        it(`get("a")`, () => {
-            expect(context.get("a")).to.equal(1);
-        });
-
-        it(`get("b")`, () => {
-            expect(context.get("b")).to.equal(3);
-        });
-
-        it(`get("c")`, () => {
-            expect(context.get("c")).to.undefined;
-        });
-
-        it(`get({})`, () => {
-            expect(context.map({}))
-                .to.eql({});
-        });
-
-        it(`get({"a"})`, () => {
-            expect(context.map({ "a": undefined })).to.eql({ "a": 1 });
-        });
-
-        it(`get({"b"})`, () => {
-            expect(context.map({ "b": undefined })).to.eql({ "b": 3 });
-        });
-
-        it(`get({"c"})`, () => {
-            expect(context.map({ "c": undefined })).to.eql({ "c": undefined });
-        });
-
-        it(`get({"a", "b"})`, () => {
-            expect(context.map({ "a": undefined, "b": undefined }))
-                .to.eql({ "a": 1, "b": 3 });
-        });
-
-        it(`get({"a", "b", "c"})`, () => {
-            expect(context.map({ "a": undefined, "b": undefined, "c": undefined }))
-                .to.eql({ "a": 1, "b": 3, "c": undefined });
-        });
-
-        it(`get({"a", "b"})`, () => {
-            expect(context.map({ "a": undefined, "b": undefined }))
-                .to.eql({ "a": 1, "b": 3 });
-        });
-
-        it(`get({"a", "b"})`, () => {
-            expect(context.map({ "a": undefined, "c": undefined }))
-                .to.eql({ "a": 1, "c": undefined });
-        });
-
-        it(`get({"b", "c"})`, () => {
-            expect(context.map({ "b": undefined, "c": undefined }))
-                .to.eql({ "b": 3, "c": undefined });
-        });
-    });
-
     describe("component API", () => {
         it("<C>10</C>", () => {
             const n = render<HTMLElement>($c(ContextTestComponent, {

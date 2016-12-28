@@ -34,7 +34,6 @@ import { $t } from "./vnode_builder";
 import {
     ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent, getDOMInstanceFromComponent,
 } from "./component";
-import { Context } from "./context";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
 import { autofocus } from "../scheduler/autofocus";
@@ -125,7 +124,7 @@ export function renderVNode(
     parent: Node,
     refChild: Node | null,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): Node | Component<any> {
     if (__IVI_DEV__) {
@@ -165,7 +164,7 @@ function _renderVNode(
     container: Node,
     refChild: Node | null,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): Node | Component<any> {
     return vNodeRenderInto(container, refChild, vnode, context, owner);
@@ -186,7 +185,7 @@ export function syncVNode(
     parent: Node,
     a: VNode<any>,
     b: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
 ): Node | Component<any> {
@@ -227,7 +226,7 @@ function _syncVNode(
     parent: Node,
     a: VNode<any>,
     b: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): Node | Component<any> {
     return vNodeSync(parent, a, b, context, 0, owner);
@@ -286,7 +285,7 @@ export function augmentVNode(
     parent: Node,
     node: Node | null,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): void {
     if (__IVI_DEV__) {
@@ -326,7 +325,7 @@ function _augmentVNode(
     parent: Node,
     node: Node | null,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): void {
     vNodeAugment(parent, node, vnode, context, owner);
@@ -430,7 +429,7 @@ function _updateComponentFunction(
     parent: Node,
     a: VNode<any>,
     b: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
 ): Node | Component<any> {
@@ -580,7 +579,7 @@ function vNodeDetachAll(vnodes: VNode<any>[]): void {
 function vNodePropagateNewContext(
     parent: Node,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
 ): void {
@@ -681,7 +680,7 @@ function vNodeRemoveChild(parent: Node, node: VNode<any>): void {
  * @param component Component.
  * @param newContext New Context to assign.
  */
-function componentUpdateParentContext<P>(component: Component<P>, newParentContext: Context): void {
+function componentUpdateParentContext<P>(component: Component<P>, newParentContext: { [key: string]: any }): void {
     if (component._parentContext !== newParentContext) {
         component.flags |= ComponentFlags.DirtyParentContext;
         const oldContext = component._parentContext;
@@ -701,8 +700,9 @@ function componentUpdateContext<P>(component: Component<P>): void {
     component.flags &= ~(ComponentFlags.CheckUsingProps | ComponentFlags.ContextUsingProps);
     const contextData = component.updateContext();
     component.flags |= (component.flags & ComponentFlags.CheckUsingProps) << 1;
-    const newContext = contextData ? new Context(contextData, component._parentContext) : component._parentContext;
-    component._context = newContext;
+    component._context = contextData ?
+        Object.assign({}, component._parentContext, contextData) :
+        component._parentContext;
 }
 
 /**
@@ -804,7 +804,10 @@ function componentClassRender<P>(component: Component<P>): VNode<any> {
  * @param context Context.
  * @returns Root VNode.
  */
-function componentFunctionRender<P>(component: ComponentFunction<P>, props: P, context?: Context): VNode<any> {
+function componentFunctionRender<P>(
+    component: ComponentFunction<P>, props: P,
+    context?: { [key: string]: any },
+): VNode<any> {
     return component(props, context) || $t("");
 }
 
@@ -833,7 +836,12 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
  * @param owner Owning component.
  * @returns Rendered DOM Node.
  */
-function vNodeRender(parent: Node, vnode: VNode<any>, context: Context, owner?: Component<any>): Node | Component<any> {
+function vNodeRender(
+    parent: Node,
+    vnode: VNode<any>,
+    context: { [key: string]: any },
+    owner?: Component<any>,
+): Node | Component<any> {
     if (__IVI_DEV__) {
         if (vnode._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
@@ -999,7 +1007,7 @@ function vNodeRenderInto(
     container: Node,
     refChild: Node | null,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): Node | Component<any> {
     const instance = vNodeRender(container, vnode, context, owner);
@@ -1023,7 +1031,7 @@ function vNodeAugment(
     parent: Node,
     node: Node | null,
     vnode: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     owner?: Component<any>,
 ): Node | Component<any> {
     if (__IVI_DEV__) {
@@ -1240,7 +1248,7 @@ function vNodeSync(
     parent: Node,
     a: VNode<any>,
     b: VNode<any>,
-    context: Context,
+    context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
 ): Node | Component<any> {
@@ -1346,7 +1354,7 @@ function syncChildren(
     bParentFlags: VNodeFlags,
     a: VNode<any>[] | VNode<any> | string | number | boolean,
     b: VNode<any>[] | VNode<any> | string | number | boolean,
-    context: Context,
+    context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner: Component<any> | undefined,
 ): void {
@@ -1735,7 +1743,7 @@ function syncChildrenTrackByKeys(
     parent: Node,
     a: VNode<any>[],
     b: VNode<any>[],
-    context: Context,
+    context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
 ): void {

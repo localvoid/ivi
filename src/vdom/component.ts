@@ -3,7 +3,6 @@ import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
 import { AncestorFlags } from "../dev_mode/html_nesting_rules";
 import { ComponentFlags } from "./flags";
-import { Context } from "./context";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { currentFrame } from "../scheduler/frame";
 
@@ -11,7 +10,7 @@ import { currentFrame } from "../scheduler/frame";
  * Component function constructor.
  */
 export interface ComponentFunction<P> {
-    (props: P, context?: Context): VNode<any> | undefined;
+    (props: P, context?: { [key: string]: any }): VNode<any> | undefined;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
 }
 
@@ -19,7 +18,7 @@ export interface ComponentFunction<P> {
  * Component class constructor.
  */
 export interface ComponentClass<P> {
-    new (props: P, context: Context, owner: Component<any> | undefined): Component<P>;
+    new (props: P, context: { [key: string]: any }, owner: Component<any> | undefined): Component<P>;
 }
 
 /**
@@ -57,13 +56,13 @@ export abstract class Component<P> {
     /**
      * Parent context.
      *
-     * Context that was used to create this component.
+     * Context that was used for this component.
      */
-    _parentContext: Context;
+    _parentContext: { [key: string]: any };
     /**
-     * Current context.
+     * Current context that will be passed to children.
      */
-    _context: Context;
+    _context: { [key: string]: any };
     /**
      * Owner component.
      *
@@ -104,7 +103,7 @@ export abstract class Component<P> {
      */
     _debugId: number;
 
-    constructor(props: P, context: Context, owner: Component<any> | undefined) {
+    constructor(props: P, context: { [key: string]: any }, owner: Component<any> | undefined) {
         this.flags = 0;
         this.depth = owner ? owner.depth + 1 : 0;
         this._props = props;
@@ -127,7 +126,7 @@ export abstract class Component<P> {
      *
      * @returns Current context.
      */
-    get context(): Context {
+    get context(): { [key: string]: any } {
         this.flags |= ComponentFlags.CheckUsingContext;
         return this._parentContext;
     }
@@ -176,12 +175,12 @@ export abstract class Component<P> {
     }
 
     /**
-     * Lifecycle method `didReceiveNewContext` is invoked after new context is assigned.
+     * Lifecycle method `newContextReceived` is invoked after new context is assigned.
      *
      * @param oldContext Old context.
      * @param newContext New Context.
      */
-    newContextReceived(oldContext: Context, newContext: Context): void {
+    newContextReceived(oldContext: { [key: string]: any }, newContext: { [key: string]: any }): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
     }
