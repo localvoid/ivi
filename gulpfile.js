@@ -94,12 +94,6 @@ function bundleNPM() {
             dest: pkg["module"],
             sourceMap: true,
         }),
-        bundle.write({
-            format: "umd",
-            moduleName: "ivi",
-            dest: pkg["main"],
-            sourceMap: true,
-        }),
     ]));
 }
 

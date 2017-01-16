@@ -79,7 +79,7 @@ Standalone package is built in Development Mode and should be used only for demo
 
 #### NPM
 
-Npm package `ivi` provides umd module, es6 module and TypeScript typings.
+Npm package `ivi` provides es6 module and TypeScript typings.
 
 ```sh
 $ npm install ivi
