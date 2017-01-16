@@ -73,17 +73,9 @@ The easiest way to get started with ivi is to use this this Hello World example 
 
 Just include with a `<script>` tag. `ivi` will be registered as a global variable.
 
-There are several versions of standalone packages:
+Standalone package is built in Development Mode and should be used only for demo applications.
 
-- [Dev Mode](https://unpkg.com/ivi@^0.3.0/dist/cdn/ivi.dev.js)
-- [Production](https://unpkg.com/ivi@^0.3.0/dist/cdn/ivi.js)
-- [Production (minified)](https://unpkg.com/ivi@^0.3.0/dist/cdn/ivi.min.js)
-
-Standalone packages are distributed via [unpkg](https://unpkg.com) CDN.
-
-Standalone package is quite big, it is ~50kb minified. The recommended way for building large applications with ivi
-is to use NPM packages with advanced javascript compilers that will remove unused code, ivi API and internals are
-designed specifically to make it easier for compilers to remove unused code.
+[https://unpkg.com/ivi@^0.4.0/dist/cdn/ivi.js](https://unpkg.com/ivi@^0.4.0/dist/cdn/ivi.js)
 
 #### NPM
 
