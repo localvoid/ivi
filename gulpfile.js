@@ -253,7 +253,6 @@ exports.runTests = runTests;
 exports.runTestsSauce = runTestsSauce;
 exports.testCoverage = series(
     bundleTests(true),
-    compileTests,
     runTestsWithCoverageReport,
     remapCoverage,
     printIstanbulReport
