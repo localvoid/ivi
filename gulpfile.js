@@ -2,8 +2,7 @@
  * Commands:
  *  - clean: removes build directories
  *  - lint: lint checking
- *  - compileES6: compile typescript to es6
- *  - compileES5: compile typescript to es5
+ *  - compileTS: compile typescript to es6
  *  - bundleTests: bundle tests from es6 sources into one file
  *  - compileTests: compile bundled tests to es5 and inject polyfills
  *  - runTests: run tests
@@ -69,8 +68,7 @@ function compile(args) {
     return fn;
 }
 
-const compileES6 = compile();
-const compileES5 = compile("--target ES5 --outDir build/es5");
+const compileTS = compile();
 
 function copyDeclarations() {
     return gulp.src("build/es6/src/**/*.d.ts")
@@ -105,52 +103,29 @@ function bundleNPM() {
     ]));
 }
 
-function bundleCDN(devMode) {
-    const dest = devMode ? "dist/cdn/ivi.dev.js" : "dist/cdn/ivi.js";
-    const fn = function () {
-        return rollup.rollup({
-            entry: "build/es5/src/ivi.js",
-            context: "window",
-            plugins: [
-                rollupSourceMaps(),
-                rollupNodeResolve(),
-                rollupReplace({
-                    values: {
-                        "__IVI_VERSION__": JSON.stringify(pkg["version"]),
-                        "__IVI_DEV__": devMode,
-                        "__IVI_BROWSER__": true,
-                    },
-                }),
-            ],
-        }).then((bundle) => Promise.all([
-            bundle.write({
-                format: "umd",
-                moduleName: "ivi",
-                dest: dest,
-                sourceMap: true,
+function bundleCDN() {
+    return rollup.rollup({
+        entry: "build/es6/src/ivi.js",
+        context: "window",
+        plugins: [
+            rollupSourceMaps(),
+            rollupNodeResolve(),
+            rollupReplace({
+                values: {
+                    "__IVI_VERSION__": JSON.stringify(pkg["version"]),
+                    "__IVI_DEV__": true,
+                    "__IVI_BROWSER__": true,
+                },
             }),
-        ]));
-    };
-    fn.displayName = devMode ? "bundleCDN [dev mode]" : "bundleCDN";
-    return fn;
-}
-
-function minifyCDN() {
-    return gulp.src("dist/cdn/ivi.js")
-        .pipe(gulpSourcemaps.init({ loadMaps: true }))
-        .pipe(closureCompiler({
-            js_output_file: "dist/cdn/ivi.min.js",
-            compilation_level: "SIMPLE",
-            language_in: "ECMASCRIPT5_STRICT",
-            language_out: "ECMASCRIPT5_STRICT",
-            use_types_for_optimization: true,
-            assume_function_wrapper: true,
-            summary_detail_level: 3,
-            warning_level: "QUIET",
-            rewrite_polyfills: true,
-        }))
-        .pipe(gulpSourcemaps.write("."))
-        .pipe(gulp.dest("."));
+        ],
+    }).then((bundle) => Promise.all([
+        bundle.write({
+            format: "umd",
+            moduleName: "ivi",
+            dest: "dist/cdn/ivi.js",
+            sourceMap: true,
+        }),
+    ]));
 }
 
 function bundleTests(enableCoverageReport) {
@@ -273,13 +248,11 @@ function printIstanbulReport() {
         .pipe(gulpIstanbulReport());
 }
 
-const distNPM = exports.distNPM = series(compileES6, copyDeclarations, bundleNPM);
-const distCDN = exports.distCDN = series(compileES5, bundleCDN(false), bundleCDN(true), minifyCDN);
+exports.default = exports.dist = series(compileTS, copyDeclarations, bundleNPM, bundleCDN);
 
 exports.clean = clean;
 exports.lint = lint;
-exports.compileES6 = compileES6;
-exports.compileES5 = compileES5;
+exports.compileTS = compileTS;
 exports.bundleTests = bundleTests(false);
 exports.compileTests = compileTests;
 exports.runTests = runTests;
@@ -292,4 +265,3 @@ exports.testCoverage = series(
     printIstanbulReport
 );
 exports.test = series(bundleTests(false), runTests);
-exports.default = exports.dist = series(clean, distNPM, distCDN);
