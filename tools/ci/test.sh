@@ -14,7 +14,7 @@ echo 'travis_fold:start:test.run'
 sh -e /etc/init.d/xvfb start
 
 gulp lint
-gulp compileES6
+gulp compileTS
 gulp bundleTests
 gulp compileTests
 
