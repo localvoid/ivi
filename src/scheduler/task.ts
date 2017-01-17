@@ -3,7 +3,12 @@ import { incrementClock } from "./clock";
 let _pending = false;
 let _tasks: (() => void)[] = [];
 
-const TASK_MESSAGE = __IVI_BROWSER__ ? "__ivi" + Math.random() : undefined;
+/**
+ * Message ID that will be used to trigger tasks execution.
+ *
+ * Multiple ivi instances in one document doesn't work for many reasons, so we just use the same uuid as a message ID.
+ */
+const TASK_MESSAGE = __IVI_BROWSER__ ? "06526c5c-2dcc-4a4e-a86c-86f5dea6319d" : undefined;
 
 if (__IVI_BROWSER__) {
     // Task scheduler based on postMessage
