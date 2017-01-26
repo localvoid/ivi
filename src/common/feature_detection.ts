@@ -54,7 +54,7 @@ if (__IVI_BROWSER__) {
     try {
         // Test via a getter in the options object to see if the passive property is accessed
         const opts = Object.defineProperty({}, "passive", {
-            get: function () {
+            get() {
                 FEATURES |= FeatureFlags.PassiveEvents;
             },
         });

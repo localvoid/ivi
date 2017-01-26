@@ -1242,7 +1242,6 @@ export interface HTMLHtmlElementProps extends HTMLElementProps {
     version?: string;
 }
 
-
 export interface HTMLIFrameElementProps extends HTMLElementProps {
     /**
      * Sets or retrieves how the object is aligned with adjacent text.
@@ -1910,7 +1909,6 @@ export interface HTMLParamElementProps extends HTMLElementProps {
      */
     valueType?: string;
 }
-
 
 export interface HTMLPictureElementProps extends HTMLElementProps {
 }
