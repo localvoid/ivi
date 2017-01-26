@@ -47,6 +47,7 @@
     "gulp-istanbul-report": "^0.0.1",
     "gulp-sourcemaps": "^2.4.0",
     "gulp-tslint": "^7.0.0",
+    "ivi-tslint-rules": "^0.1.0",
     "karma": "^1.4.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.0.0",
