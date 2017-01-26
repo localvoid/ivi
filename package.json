@@ -21,15 +21,15 @@
     "browser",
     "typescript"
   ],
-  "homepage": "https://github.com/localvoid/ivi",
+  "homepage": "https://github.com/ivijs/ivi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/localvoid/ivi"
+    "url": "https://github.com/ivijs/ivi"
   },
   "bugs": {
-    "url": "https://github.com/localvoid/ivi/issues"
+    "url": "https://github.com/ivijs/ivi/issues"
   },
-  "github": "https://github.com/localvoid/ivi",
+  "github": "https://github.com/ivijs/ivi",
   "files": [
     "dist",
     "README.md",
