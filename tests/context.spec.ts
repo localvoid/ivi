@@ -1,13 +1,13 @@
 import { frag, render, StaticComponentFunctionTest, StaticComponentTest } from "./utils";
 import { Component } from "../src/vdom/component";
-import { VNode } from "../src/vdom/vnode";
-import { $t, $c } from "../src/vdom/vnode_builder";
+import { IVNode } from "../src/vdom/ivnode";
+import { $t, $c } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
 interface ContextTestComponentProps {
     value: number;
-    child: VNode<any>;
+    child: IVNode<any>;
 }
 
 class ContextTestPrinter extends Component<null> {

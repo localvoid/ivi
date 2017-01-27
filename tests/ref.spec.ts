@@ -1,7 +1,7 @@
 import { frag, render, TestComponent, TestComponentFunction } from "./utils";
-import { getComponentRef } from "../src/vdom/vnode";
+import { getComponentRef } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
-import { $t, $h, $c } from "../src/vdom/vnode_builder";
+import { $t, $h, $c } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 

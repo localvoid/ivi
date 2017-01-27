@@ -1,4 +1,4 @@
-import { VNode } from "../vdom/vnode";
+import { IVNode } from "../vdom/ivnode";
 import { VNodeFlags } from "../vdom/flags";
 import { Component, ComponentFunction } from "../vdom/component";
 import { ROOTS } from "../vdom/root";
@@ -32,11 +32,11 @@ function FunctionalComponent(this: FunctionalComponent, name: string): void {
     this.name = name;
 }
 
-function componentTreeVisitElement(node: VNode<any>): DebugNode[] | null {
+function componentTreeVisitElement(node: IVNode<any>): DebugNode[] | null {
     if (node._children !== null) {
         if (node._flags & VNodeFlags.ChildrenArray) {
             let result: DebugNode[] | null = null;
-            const children = node._children as VNode<any>[];
+            const children = node._children as IVNode<any>[];
             for (let i = 0; i < children.length; i++) {
                 const child = componentTreeVisitNode(children[i]);
                 if (child) {
@@ -49,18 +49,18 @@ function componentTreeVisitElement(node: VNode<any>): DebugNode[] | null {
             }
             return result;
         } else if (node._flags & VNodeFlags.ChildrenVNode) {
-            return componentTreeVisitNode(node._children as VNode<any>);
+            return componentTreeVisitNode(node._children as IVNode<any>);
         }
     }
     return null;
 }
 
-function componentTreeVisitComponent(node: VNode<any>): DebugNode | null {
+function componentTreeVisitComponent(node: IVNode<any>): DebugNode | null {
     if (node._flags & VNodeFlags.ComponentFunction) {
         const result = new FunctionalComponent(getFunctionName(node._tag as ComponentFunction<any>));
 
         if (node._children) {
-            const children = componentTreeVisitNode(node._children as VNode<any>);
+            const children = componentTreeVisitNode(node._children as IVNode<any>);
             if (children) {
                 result.children = children;
             }
@@ -82,7 +82,7 @@ function componentTreeVisitComponent(node: VNode<any>): DebugNode | null {
     return result;
 }
 
-function componentTreeVisitNode(node: VNode<any>): DebugNode[] | null {
+function componentTreeVisitNode(node: IVNode<any>): DebugNode[] | null {
     if (node._flags & VNodeFlags.Element) {
         return componentTreeVisitElement(node);
     } else if (node._flags & VNodeFlags.Component) {
@@ -134,7 +134,7 @@ export function componentTree(component?: Component<any>): DebugNode[] | null {
 
 function _findComponentByNode(
     node: Node,
-    vnode: VNode<any>,
+    vnode: IVNode<any>,
     owner: Component<any> | null,
 ): Component<any> | null | undefined {
     if (vnode._flags & (VNodeFlags.Element | VNodeFlags.Text)) {
@@ -144,7 +144,7 @@ function _findComponentByNode(
         if (vnode._flags & VNodeFlags.Element) {
             if (vnode._children !== null) {
                 if (vnode._flags & VNodeFlags.ChildrenArray) {
-                    const children = vnode._children as VNode<any>[];
+                    const children = vnode._children as IVNode<any>[];
                     for (let i = 0; i < children.length; i++) {
                         const result = _findComponentByNode(node, children[i], owner);
                         if (result !== undefined) {
@@ -152,7 +152,7 @@ function _findComponentByNode(
                         }
                     }
                 } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
-                    const result = _findComponentByNode(node, vnode._children as VNode<any>, owner);
+                    const result = _findComponentByNode(node, vnode._children as IVNode<any>, owner);
                     if (result !== undefined) {
                         return result;
                     }
@@ -168,7 +168,7 @@ function _findComponentByNode(
             }
         }
     } else if (vnode._flags & VNodeFlags.ComponentFunction) {
-        const root = vnode._children as VNode<any> | null;
+        const root = vnode._children as IVNode<any> | null;
         if (root) {
             const result = _findComponentByNode(node, root, owner);
             if (result !== undefined) {

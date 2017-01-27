@@ -1,9 +1,9 @@
-import { VNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/vnode";
-import { $t, $h, $s, $c } from "../src/vdom/vnode_builder";
+import { IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
+import { $t, $h, $s, $c } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
-function EmptyComponent(): VNode<any> | undefined {
+function EmptyComponent(): IVNode<any> | undefined {
     return;
 }
 

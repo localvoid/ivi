@@ -1,5 +1,5 @@
 import { augment, TestComponent, TestComponentFunction } from "./utils";
-import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode_builder";
+import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 

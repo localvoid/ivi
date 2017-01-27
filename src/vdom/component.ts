@@ -3,14 +3,14 @@ import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
 import { AncestorFlags } from "../dev_mode/html_nesting_rules";
 import { ComponentFlags } from "./flags";
-import { VNode, getDOMInstanceFromVNode } from "./vnode";
+import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { currentFrame } from "../scheduler/frame";
 
 /**
  * Component function constructor.
  */
 export interface ComponentFunction<P> {
-    (props: P, context?: { [key: string]: any }): VNode<any> | undefined;
+    (props: P, context?: { [key: string]: any }): IVNode<any> | undefined;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
 }
 
@@ -72,7 +72,7 @@ export abstract class Component<P> {
     /**
      * Virtual DOM root node.
      */
-    root: VNode<any> | null;
+    root: IVNode<any> | null;
     /**
      * Parent DOM node.
      *
@@ -240,7 +240,7 @@ export abstract class Component<P> {
     /**
      * When render method returns `undefined` value, it will create an empty text node.
      */
-    render(): VNode<any> | undefined {
+    render(): IVNode<any> | undefined {
         return;
     }
 

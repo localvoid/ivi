@@ -1,4 +1,4 @@
-import { $c, $h } from "../src/vdom/vnode_builder";
+import { $c, $h } from "../src/vdom/vnode";
 import { frag, render, LifecycleCounter, LifecycleMonitor, LifecycleTestComponent, StaticComponentTest } from "./utils";
 
 const expect = chai.expect;

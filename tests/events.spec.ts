@@ -1,13 +1,13 @@
 import { EventHandler } from "../src/events/event_handler";
 import { SyntheticEvent } from "../src/events/synthetic_event";
 import { Events } from "../src/events/events";
-import { VNode } from "../src/vdom/vnode";
-import { $h } from "../src/vdom/vnode_builder";
+import { IVNode } from "../src/vdom/ivnode";
+import { $h } from "../src/vdom/vnode";
 import { render as rootRender } from "../src/vdom/root";
 
 const expect = chai.expect;
 
-function render<T extends Element>(node: VNode<any> | null, container: Element): T {
+function render<T extends Element>(node: IVNode<any> | null, container: Element): T {
     rootRender(node, container);
     return container.firstChild as T;
 }

@@ -1,6 +1,6 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "../src/common/dom";
 import { render, TestComponent, TestComponentFunction, TestComponentFunctionWrapper } from "./utils";
-import { $t, $h, $s, $c, $i, $m, cloneVNode } from "../src/vdom/vnode_builder";
+import { $t, $h, $s, $c, $i, $m, cloneVNode } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 

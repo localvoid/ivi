@@ -1,7 +1,7 @@
 import { setInitialNestingState } from "../src/dev_mode/html_nesting_rules";
-import { VNode, getDOMInstanceFromVNode } from "../src/vdom/vnode";
+import { IVNode, getDOMInstanceFromVNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { $h, $c } from "../src/vdom/vnode_builder";
+import { $h, $c } from "../src/vdom/vnode";
 import { Component, getDOMInstanceFromComponent, staticComponent } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
 
@@ -13,7 +13,7 @@ export function frag() {
     return document.createDocumentFragment();
 }
 
-export function checkRefs(n: Node, v: VNode<any>) {
+export function checkRefs(n: Node, v: IVNode<any>) {
     const flags = v._flags;
 
     expect(getDOMInstanceFromVNode(v)).to.equal(n);
@@ -28,7 +28,7 @@ export function checkRefs(n: Node, v: VNode<any>) {
                 checkRefs(n, root!);
             }
         } else {
-            const root = v._children as VNode<any>;
+            const root = v._children as IVNode<any>;
             if (root) {
                 checkRefs(n, root!);
             }
@@ -41,9 +41,9 @@ export function checkRefs(n: Node, v: VNode<any>) {
         }
         while (child) {
             if (flags & VNodeFlags.ChildrenArray) {
-                checkRefs(child, (v._children as VNode<any>[])[i++]);
+                checkRefs(child, (v._children as IVNode<any>[])[i++]);
             } else if (flags & VNodeFlags.ChildrenVNode) {
-                checkRefs(child, v._children as VNode<any>);
+                checkRefs(child, v._children as IVNode<any>);
                 expect(child.nextSibling).to.null;
             }
             child = child.nextSibling;
@@ -52,7 +52,7 @@ export function checkRefs(n: Node, v: VNode<any>) {
 }
 
 export function render<T extends Node>(
-    node: VNode<any>,
+    node: IVNode<any>,
     container?: Element | DocumentFragment,
     disableCheckRefs?: boolean,
 ): T {
@@ -60,7 +60,7 @@ export function render<T extends Node>(
         container = document.createDocumentFragment();
     }
 
-    const oldRoot = (container as any).__ivi_root as VNode<any> | undefined;
+    const oldRoot = (container as any).__ivi_root as IVNode<any> | undefined;
     (container as any).__ivi_root = node;
     if (oldRoot) {
         syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, 0);
@@ -77,7 +77,7 @@ export function render<T extends Node>(
     return result;
 }
 
-export function augment(node: VNode<any>, innerHTML: string, container?: Element): Element {
+export function augment(node: IVNode<any>, innerHTML: string, container?: Element): Element {
     if (!container) {
         container = document.createElement("div");
     }
@@ -101,7 +101,7 @@ export interface TestComponentOptions {
 }
 
 export class TestComponent extends Component<TestComponentOptions> {
-    render(): VNode<any> | undefined {
+    render(): IVNode<any> | undefined {
         const { returnUndefined, wrapDepth } = this.props;
 
         if (wrapDepth) {
@@ -118,7 +118,7 @@ export class TestComponent extends Component<TestComponentOptions> {
     }
 }
 
-export function TestComponentFunction(props: TestComponentOptions): VNode<any> | undefined {
+export function TestComponentFunction(props: TestComponentOptions): IVNode<any> | undefined {
     const { returnUndefined, wrapDepth } = props;
 
     if (wrapDepth) {
@@ -135,7 +135,7 @@ export function TestComponentFunction(props: TestComponentOptions): VNode<any> |
     return $h("div");
 }
 
-export function TestComponentFunctionWrapper(props: VNode<any>): VNode<any> {
+export function TestComponentFunctionWrapper(props: IVNode<any>): IVNode<any> {
     return props;
 }
 
@@ -220,7 +220,7 @@ export class LifecycleMonitor {
 }
 
 export interface LifecycleTestComponentProps {
-    child: VNode<any> | undefined;
+    child: IVNode<any> | undefined;
     monitor: LifecycleMonitor;
 }
 
@@ -276,11 +276,11 @@ export class LifecycleTestComponent extends Component<LifecycleTestComponentProp
 }
 
 staticComponent(StaticComponentFunctionTest);
-export function StaticComponentFunctionTest(child: VNode<any>) {
+export function StaticComponentFunctionTest(child: IVNode<any>) {
     return child;
 }
 
-export class StaticComponentTest extends Component<VNode<any>> {
+export class StaticComponentTest extends Component<IVNode<any>> {
     render() {
         return this.props;
     }

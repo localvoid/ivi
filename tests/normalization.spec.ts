@@ -1,4 +1,4 @@
-import { $t, normalizeVNodes } from "../src/vdom/vnode_builder";
+import { $t, normalizeVNodes } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 

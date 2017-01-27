@@ -93,17 +93,17 @@ export {
 } from "./vdom/component";
 export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
 export {
-    VNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode, getComponentRef,
-} from "./vdom/vnode";
+    IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode, getComponentRef,
+} from "./vdom/ivnode";
 export {
     ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
     createMediaElementDescriptor, createCustomElementDescriptor,
 } from "./vdom/element_descriptor";
 export {
     VNodeRecursiveArrayValue, VNodeRecursiveArray,
-    VNodeBuilder, cloneVNode, shallowCloneVNode, normalizeVNodes,
+    VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
     $t, $h, $s, $c, $i, $m, $e, $w,
-} from "./vdom/vnode_builder";
+} from "./vdom/vnode";
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 
 /**

@@ -1,33 +1,33 @@
 import { ComponentFlags } from "../src/vdom/flags";
-import { VNode } from "../src/vdom/vnode";
+import { IVNode } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
 import { updateComponent } from "../src/vdom/implementation";
-import { $t, $h, $c, $i, $m } from "../src/vdom/vnode_builder";
+import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
 import { frag, render, TestComponent, TestComponentFunction } from "./utils";
 
 const expect = chai.expect;
 
-function genVNodes(item: any, keys: boolean): VNode<any> | VNode<any>[] {
+function genVNodes(item: any, keys: boolean): IVNode<any> | IVNode<any>[] {
     if (typeof item === "number") {
         return keys ? $t(item.toString()).key(item.toString()) : $t(item.toString());
     } else if (Array.isArray(item)) {
-        let result: VNode<any>[] = [];
+        let result: IVNode<any>[] = [];
         for (let i = 0; i < item.length; i++) {
-            result.push(genVNodes(item[i], keys) as VNode<any>);
+            result.push(genVNodes(item[i], keys) as IVNode<any>);
         }
         return result;
     } else {
         let e = $h("div").key(item.key);
         if (keys) {
-            e.children(genVNodes(item.children, keys) as VNode<any>[]);
+            e.children(genVNodes(item.children, keys) as IVNode<any>[]);
         } else {
-            e.children(genVNodes(item.children, keys) as VNode<any>[]);
+            e.children(genVNodes(item.children, keys) as IVNode<any>[]);
         }
         return e;
     }
 }
 
-function checkInnerHtmlEquals(ax: VNode<any>[], bx: VNode<any>[], cx: VNode<any>[], keys: boolean): void {
+function checkInnerHtmlEquals(ax: IVNode<any>[], bx: IVNode<any>[], cx: IVNode<any>[], keys: boolean): void {
     const a = $h("div");
     const b = $h("div");
     const c = $h("div");
@@ -791,9 +791,9 @@ describe("sync", () => {
             TESTS.forEach((t) => {
                 const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
                 const testFn = () => {
-                    checkInnerHtmlEquals(genVNodes(t[0], true) as VNode<any>[],
-                        genVNodes(t[1], true) as VNode<any>[],
-                        genVNodes(t[1], true) as VNode<any>[],
+                    checkInnerHtmlEquals(genVNodes(t[0], true) as IVNode<any>[],
+                        genVNodes(t[1], true) as IVNode<any>[],
+                        genVNodes(t[1], true) as IVNode<any>[],
                         true);
                 };
                 it(name, testFn);
@@ -804,9 +804,9 @@ describe("sync", () => {
             TESTS.forEach((t) => {
                 const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
                 const testFn = () => {
-                    checkInnerHtmlEquals(genVNodes(t[0], false) as VNode<any>[],
-                        genVNodes(t[1], false) as VNode<any>[],
-                        genVNodes(t[1], false) as VNode<any>[],
+                    checkInnerHtmlEquals(genVNodes(t[0], false) as IVNode<any>[],
+                        genVNodes(t[1], false) as IVNode<any>[],
+                        genVNodes(t[1], false) as IVNode<any>[],
                         false);
                 };
                 it(name, testFn);
@@ -1157,7 +1157,7 @@ describe("sync", () => {
             }
         }
 
-        class B extends Component<VNode<any>> {
+        class B extends Component<IVNode<any>> {
             render() {
                 return this.props;
             }

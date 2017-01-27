@@ -2,7 +2,7 @@ import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { VNodeFlags, SyncFlags } from "./flags";
-import { VNode } from "./vnode";
+import { IVNode } from "./ivnode";
 import { Component, getDOMInstanceFromComponent } from "./component";
 import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
@@ -11,9 +11,9 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementat
  */
 export interface Root {
     container: Element;
-    currentVNode: VNode<any> | null;
+    currentVNode: IVNode<any> | null;
     currentContext: { [key: string]: any } | null;
-    newVNode: VNode<any> | null;
+    newVNode: IVNode<any> | null;
     newContext: { [key: string]: any } | null;
     domNode: Node | null;
     invalidated: boolean;
@@ -107,7 +107,7 @@ function _render(root: Root): void {
  * @param context root context.
  */
 export function render(
-    node: VNode<any> | null,
+    node: IVNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
     context: { [key: string]: any } = DEFAULT_CONTEXT,
@@ -125,7 +125,7 @@ export function render(
  * @param context root context.
  */
 export function renderNextFrame(
-    node: VNode<any> | null,
+    node: IVNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
     context: { [key: string]: any } = DEFAULT_CONTEXT,
@@ -178,7 +178,7 @@ export function renderNextFrame(
  * @param context root context.
  */
 export function augment(
-    node: VNode<any> | null,
+    node: IVNode<any> | null,
     container: Element,
     context: { [key: string]: any } = DEFAULT_CONTEXT,
 ): void {
