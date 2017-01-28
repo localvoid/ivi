@@ -12,7 +12,7 @@ if (__IVI_BROWSER__) {
     if (!(USER_AGENT & UserAgentFlags.iOSStandalone)) {
         const microtaskObserver = new MutationObserver(runMicrotasks);
         _microtaskNode = document.createTextNode("");
-        microtaskObserver.observe(_microtaskNode, { characterData: true });
+        microtaskObserver.observe(_microtaskNode, { "characterData": true });
     }
 }
 
