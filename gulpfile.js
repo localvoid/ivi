@@ -1,7 +1,6 @@
 /**
  * Commands:
  *  - clean: removes build directories
- *  - lint: lint checking
  *  - compileTS: compile typescript to es6
  *  - bundleTests: bundle tests from es6 sources into one file
  *  - compileTests: compile bundled tests to es5 and inject polyfills
@@ -17,7 +16,6 @@
 const exec = require("child_process").exec;
 const gulp = require("gulp");
 const del = require("del");
-const gulpTSLint = require("gulp-tslint");
 const gulpIstanbulReport = require("gulp-istanbul-report");
 const gulpSourcemaps = require("gulp-sourcemaps");
 const rollup = require("rollup");
@@ -36,43 +34,16 @@ function clean() {
     return del(["dist", "build", "coverage"]);
 }
 
-function lint() {
-    return gulp.src("src/**/*.ts")
-        .pipe(gulpTSLint({
-            formatter: "verbose"
-        }))
-        .pipe(gulpTSLint.report());
-}
-
-function compile(args) {
-    const fn = function (done) {
-        let cmd = "./node_modules/typescript/bin/tsc";
-        if (args) {
-            cmd += " " + args;
+function compileTS(done) {
+    exec("./node_modules/.bin/tsc", function (err, stdout, stderr) {
+        if (stdout) {
+            process.stdout.write(stdout);
         }
-        exec(cmd,
-            function (err, stdout, stderr) {
-                if (stdout) {
-                    console.log(stdout);
-                }
-                if (stderr) {
-                    console.log(stderr);
-                }
-                done(err);
-            });
-    };
-    fn.displayName = "compile typescript";
-    if (args) {
-        fn.displayName += " [" + args + "]";
-    }
-    return fn;
-}
-
-const compileTS = compile();
-
-function copyDeclarations() {
-    return gulp.src("build/es6/src/**/*.d.ts")
-        .pipe(gulp.dest("dist/typings"));
+        if (stderr) {
+            process.stderr.write(stderr);
+        }
+        done(err);
+    });
 }
 
 function bundleNPM() {
@@ -242,10 +213,9 @@ function printIstanbulReport() {
         .pipe(gulpIstanbulReport());
 }
 
-exports.default = exports.dist = series(compileTS, copyDeclarations, bundleNPM, bundleCDN);
+exports.default = exports.dist = series(compileTS, bundleNPM, bundleCDN);
 
 exports.clean = clean;
-exports.lint = lint;
 exports.compileTS = compileTS;
 exports.bundleTests = bundleTests(false);
 exports.compileTests = compileTests;

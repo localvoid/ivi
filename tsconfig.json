@@ -5,6 +5,7 @@
         "moduleResolution": "node",
         "rootDir": ".",
         "outDir": "build/es6",
+        "declarationDir": "dist/typings",
         "declaration": true,
         "inlineSourceMap": true,
         "inlineSources": true,
