@@ -13,7 +13,6 @@ export CHROME_BIN=/usr/bin/google-chrome
 echo 'travis_fold:start:test.run'
 sh -e /etc/init.d/xvfb start
 
-gulp lint
 gulp compileTS
 gulp bundleTests
 gulp compileTests
