@@ -1878,7 +1878,7 @@ function syncChildrenTrackByKeys(
             }
         } else {
             let keyIndex: Map<any, number> | undefined;
-            let positionKeyIndex: Map<number, number> | undefined;
+            let positionKeyIndex: Array<number> | undefined;
 
             for (i = bStart; i <= bEnd; i++) {
                 node = b[i];
@@ -1889,9 +1889,9 @@ function syncChildrenTrackByKeys(
                     keyIndex.set(node._key, i);
                 } else {
                     if (positionKeyIndex === undefined) {
-                        positionKeyIndex = new Map<number, number>();
+                        positionKeyIndex = [];
                     }
-                    positionKeyIndex.set(node._key, i);
+                    positionKeyIndex[node._key] = i;
                 }
             }
 
@@ -1902,7 +1902,7 @@ function syncChildrenTrackByKeys(
                     if (keyIndex !== undefined && (aNode._flags & VNodeFlags.Key)) {
                         j = keyIndex.get(aNode._key);
                     } else if (positionKeyIndex !== undefined) {
-                        j = positionKeyIndex.get(aNode._key);
+                        j = positionKeyIndex[aNode._key];
                     } else {
                         j = undefined;
                     }
