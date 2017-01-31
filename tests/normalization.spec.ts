@@ -101,18 +101,39 @@ describe("normalization", () => {
         const n = normalizeVNodes([$t(""), null, $t("")]);
         expect(n.length).to.equal(2);
         expect(n[0]._key).to.equal(0);
-        expect(n[1]._key).to.equal(2);
+        expect(n[1]._key).to.equal(1);
     });
 
     it("[$t, null, null, $t] => [$t, $t]", () => {
         const n = normalizeVNodes([$t(""), null, null, $t("")]);
         expect(n.length).to.equal(2);
         expect(n[0]._key).to.equal(0);
-        expect(n[1]._key).to.equal(3);
+        expect(n[1]._key).to.equal(1);
     });
 
     it("[$t, [null], [null], $t] => [$t, $t]", () => {
         const n = normalizeVNodes([$t(""), [null], [null], $t("")]);
+        expect(n.length).to.equal(2);
+        expect(n[0]._key).to.equal(0);
+        expect(n[1]._key).to.equal(3);
+    });
+
+    it("[$t, false, $t] => [$t, $t]", () => {
+        const n = normalizeVNodes([$t(""), false, $t("")]);
+        expect(n.length).to.equal(2);
+        expect(n[0]._key).to.equal(0);
+        expect(n[1]._key).to.equal(2);
+    });
+
+    it("[$t, null, null, $t] => [$t, $t]", () => {
+        const n = normalizeVNodes([$t(""), false, false, $t("")]);
+        expect(n.length).to.equal(2);
+        expect(n[0]._key).to.equal(0);
+        expect(n[1]._key).to.equal(3);
+    });
+
+    it("[$t, [null], [null], $t] => [$t, $t]", () => {
+        const n = normalizeVNodes([$t(""), [false], [false], $t("")]);
         expect(n.length).to.equal(2);
         expect(n[0]._key).to.equal(0);
         expect(n[1]._key).to.equal(5);

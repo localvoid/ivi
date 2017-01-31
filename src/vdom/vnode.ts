@@ -943,9 +943,7 @@ function _normalizeVNodes(
         if (typeof n === "object") {
             if (Array.isArray(n)) {
                 count += _normalizeVNodes(n, result, 0, keyOffset + count, 0) + 1;
-            } else if (n === null) {
-                count++;
-            } else {
+            } else if (n !== null) {
                 if (!(n._flags & VNodeFlags.Key)) {
                     n._key = keyOffset + count++;
                 }
