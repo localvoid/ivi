@@ -239,22 +239,6 @@ polyfills is 7.5kb, so for example size of the "Introduction" bundle without pol
 - [Pointer Events](https://ivijs.github.io/examples/playground/pointer-events/) (27kb)
   [[Source Code](https://github.com/ivijs/examples/tree/master/src/playground/pointer-events)]
 
-## Why not JSX?
-
-JSX has a great feature that it is easy to implement codemod tools, so you can perform code transformations that involve
-jsx on the large javascript code bases. The recommended way for building large applications in ivi is to use TypeScript,
-and TypeScript in general doesn't have such problems, it is quite easy to implement any code transformation tools for
-TypeScript that doesn't need any additional JSX-like syntax.
-
-JSX is also easier for newcomers who already familiar with HTML when they start playing with jsx, but it also creates
-a problem that there are still many developers who thinks thas JSX is a some kind of template, and not just a syntax
-sugar for creating javascript values, and because of it they are still don't fully understand why it is much more
-flexible than templates.
-
-It is possible to implement a JSX transformer that will create ivi `VNode` instances from jsx. The current API just
-works way much better with TypeScript type checking and autocompletion, and there are no plans for JSX support for ivi
-in the near future.
-
 ## Notes on Performance Benchmarks
 
 I've been involved in most popular web UI benchmarks in one way or another. I even created a couple of them:
