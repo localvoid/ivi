@@ -13,19 +13,13 @@
  *  - dist: build packages for distribution
  */
 
-const exec = require("child_process").exec;
+const child = require("child_process");
 const gulp = require("gulp");
 const del = require("del");
 const gulpIstanbulReport = require("gulp-istanbul-report");
 const gulpSourcemaps = require("gulp-sourcemaps");
-const rollup = require("rollup");
-const rollupSourceMaps = require("rollup-plugin-sourcemaps");
-const rollupIstanbul = require("rollup-plugin-istanbul");
-const rollupNodeResolve = require("rollup-plugin-node-resolve");
-const rollupReplace = require("rollup-plugin-replace");
 const remapIstanbul = require("remap-istanbul/lib/gulpRemapIstanbul");
 const closureCompiler = require("google-closure-compiler").gulp();
-const pkg = require("./package.json");
 
 const series = gulp.series;
 const parallel = gulp.parallel;
@@ -35,7 +29,7 @@ function clean() {
 }
 
 function compileTS(done) {
-    exec("./node_modules/.bin/tsc", function (err, stdout, stderr) {
+    child.execFile("./node_modules/.bin/tsc", function (err, stdout, stderr) {
         if (stdout) {
             process.stdout.write(stdout);
         }
@@ -46,96 +40,32 @@ function compileTS(done) {
     });
 }
 
-function bundleNPM() {
-    return rollup.rollup({
-        entry: "build/es6/src/ivi.js",
-        treeshake: false,
-        plugins: [
-            rollupSourceMaps(),
-            rollupNodeResolve(),
-            rollupReplace({
-                values: {
-                    "__IVI_VERSION__": JSON.stringify(pkg["version"]),
-                },
-            }),
-        ],
-    }).then((bundle) => Promise.all([
-        bundle.write({
-            format: "es",
-            dest: pkg["module"],
-            sourceMap: true,
-        }),
-    ]));
-}
-
-function bundleCDN() {
-    return rollup.rollup({
-        entry: "build/es6/src/ivi.js",
-        context: "window",
-        plugins: [
-            rollupSourceMaps(),
-            rollupNodeResolve(),
-            rollupReplace({
-                values: {
-                    "__IVI_VERSION__": JSON.stringify(pkg["version"]),
-                    "__IVI_DEV__": true,
-                    "__IVI_BROWSER__": true,
-                },
-            }),
-        ],
-    }).then((bundle) => Promise.all([
-        bundle.write({
-            format: "umd",
-            moduleName: "ivi",
-            dest: "dist/cdn/ivi.js",
-            sourceMap: true,
-        }),
-    ]));
-}
-
-function bundleTests(enableCoverageReport) {
-    return function bundleTests() {
-        const plugins = [];
-        plugins.push(rollupSourceMaps());
-        if (enableCoverageReport) {
-            plugins.push(rollupIstanbul({
-                exclude: [
-                    "build/es6/src/common/dev_mode.js",
-                    "build/es6/src/common/feature_detection.js",
-                    "build/es6/src/common/user_agent.js",
-                    "build/es6/src/common/screen_of_death.js",
-                    "build/es6/src/events/events.js",
-                    "build/es6/src/events/synthetic_event.js",
-                    "build/es6/src/vdom/stack_trace.js",
-                    "build/es6/tests/**/*.js",
-                    "node_modules/**/*",
-                ],
-            }));
+function rollup(config, done) {
+    child.execFile("./node_modules/.bin/rollup", ["-c", config], function (err, stdout, stderr) {
+        if (stdout) {
+            process.stdout.write(stdout);
         }
-        plugins.push(
-            rollupNodeResolve(),
-            rollupReplace({
-                values: {
-                    "__IVI_VERSION__": JSON.stringify(pkg["version"]),
-                    "__IVI_DEV__": true,
-                    "__IVI_BROWSER__": true,
-                },
-            })
-        );
+        if (stderr) {
+            process.stderr.write(stderr);
+        }
+        done();
+    });
+}
 
-        return rollup.rollup({
-            entry: "build/es6/tests/index.js",
-            context: "window",
-            plugins: plugins,
-        }).then((bundle) => Promise.all([
-            bundle.write({
-                format: "iife",
-                moduleName: "tests",
-                dest: "build/es6/tests.js",
-                sourceMap: "inline",
-            }),
-        ]));
-    };
+function bundleNPM(done) {
+    rollup("rollup.conf.npm.js", done);
+}
+
+function bundleCDN(done) {
+    rollup("rollup.conf.cdn.js", done);
+}
+
+function bundleTests(done) {
+    rollup("rollup.conf.tests.js", done);
+}
+
+function bundleTestsCoverage(done) {
+    rollup("rollup.conf.coverage.js", done);
 }
 
 function compileTests() {
@@ -217,14 +147,14 @@ exports.default = exports.dist = series(compileTS, bundleNPM, bundleCDN);
 
 exports.clean = clean;
 exports.compileTS = compileTS;
-exports.bundleTests = bundleTests(false);
+exports.bundleTests = bundleTests;
 exports.compileTests = compileTests;
 exports.runTests = runTests;
 exports.runTestsSauce = runTestsSauce;
 exports.testCoverage = series(
-    bundleTests(true),
+    bundleTestsCoverage,
     runTestsWithCoverageReport,
     remapCoverage,
     printIstanbulReport
 );
-exports.test = series(bundleTests(false), runTests);
+exports.test = series(bundleTests, runTests);
