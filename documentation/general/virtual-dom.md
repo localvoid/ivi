@@ -82,14 +82,27 @@ interface VNode<P> {
 
 ```ts
 interface VNode<P> {
-    children(children: VNodeRecursiveArray | VNode<any> | string | number | boolean | null): VNode<P>;
+    children(children: VNodeArray | VNode<any> | string | number | boolean | null): VNode<P>;
     unsafeHTML(html: string): VNode<P>
 }
 ```
 
-Children property can be any basic object like string or number, single VNode or a recursive array of VNodes with
-basic objects and null values. It will automatically normalize recursive lists by flattening, filtering out null values
-and replacing basic objects with text nodes.
+Children property can be any basic object like string or number, single VNode or an array of VNodes, basic objects, null
+values and arrays of VNodes with explicit keys. It will automatically normalize arrays by flattening nested arrays,
+removeing null values and replacing basic objects with text nodes.
+
+Children normalization process is also implicitly assigns positional keys for all nodes that doesn't have keys.
+Positional keys are used to support code patterns like this:
+
+```ts
+$h("div").children([
+    isVisible && $h(ComponentA),
+    $c(ComponentB),
+]);
+```
+
+When `ComponentA` goes from visible to invisible state and removed from the list, `ComponentB` won't be destroyed and
+reinstantiated because it has the same implicit positional key.
 
 `unsafeHTML` is used to specify `innerHTML`, it is named unsafe because it doesn't provide any XSS protection, HTML
 string specified in `html` parameter will be directly injected into the element.
