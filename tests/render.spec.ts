@@ -209,7 +209,8 @@ describe("render", () => {
 
     describe("children normalization", () => {
         it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
-            const n = render<HTMLElement>($h("div").children([$h("span"), [$h("strong"), $h("a")], $h("span")]));
+            const n = render<HTMLElement>(
+                $h("div").children([$h("span"), [$h("strong").key("strong"), $h("a").key("a")], $h("span")]));
             expect(n.childNodes.length).to.equal(4);
             expect(n.children[0].tagName.toLowerCase()).to.equal("span");
             expect(n.children[1].tagName.toLowerCase()).to.equal("strong");

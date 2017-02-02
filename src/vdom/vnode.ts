@@ -930,7 +930,15 @@ function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
         const n = nodes[i];
         if (typeof n === "object") {
             if (Array.isArray(n)) {
-                result.push.apply(result, n);
+                for (let j = 0; j < n.length; j++) {
+                    if (__IVI_DEV__) {
+                        if (!(n[j]._flags & VNodeFlags.Key)) {
+                            throw new Error("Invalid children array. All children nodes in nested array should have " +
+                                "explicit keys.");
+                        }
+                    }
+                    result.push(n[j]);
+                }
             } else if (n !== null) {
                 if (!(n._flags & VNodeFlags.Key)) {
                     n._key = i;

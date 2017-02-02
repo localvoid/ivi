@@ -147,7 +147,7 @@ describe("augment", () => {
 
     describe("children normalization", () => {
         it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
-            augment($h("div").children([$h("span"), [$h("strong"), $h("a")], $h("span")]),
+            augment($h("div").children([$h("span"), [$h("strong").key("strong"), $h("a").key("a")], $h("span")]),
                 `<div><span></span><strong></strong><a></a><span></span></div>`);
         });
 
