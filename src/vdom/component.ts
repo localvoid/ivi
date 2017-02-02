@@ -10,7 +10,7 @@ import { currentFrame } from "../scheduler/frame";
  * Component function constructor.
  */
 export interface ComponentFunction<P> {
-    (props: P, context?: { [key: string]: any }): IVNode<any> | undefined;
+    (props: P, context?: { [key: string]: any }): IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
 }
 
@@ -237,12 +237,7 @@ export abstract class Component<P> {
         /* tslint:enable:no-empty */
     }
 
-    /**
-     * When render method returns `undefined` value, it will create an empty text node.
-     */
-    render(): IVNode<any> | undefined {
-        return;
-    }
+    abstract render(): IVNode<any>;
 
     /**
      * Invalidate view.

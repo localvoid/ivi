@@ -3,8 +3,8 @@ import { $t, $h, $s, $c } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
-function EmptyComponent(): IVNode<any> | undefined {
-    return;
+function EmptyComponent(): IVNode<any> {
+    return $t("");
 }
 
 describe("VNode", () => {

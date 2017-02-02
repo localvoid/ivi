@@ -30,7 +30,6 @@ import {
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { ElementDescriptor } from "./element_descriptor";
-import { $t } from "./vnode";
 import {
     ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent, getDOMInstanceFromComponent,
 } from "./component";
@@ -789,7 +788,7 @@ function componentDetached<P>(component: Component<P>): void {
  */
 function componentClassRender<P>(component: Component<P>): IVNode<any> {
     component.flags &= ~(ComponentFlags.CheckUsingContext | ComponentFlags.UsingContext);
-    const root = component.root = component.render() || $t("");
+    const root = component.root = component.render();
     component.flags |= (component.flags & ComponentFlags.CheckUsingContext) << 1;
     return root;
 }
@@ -808,7 +807,7 @@ function componentFunctionRender<P>(
     component: ComponentFunction<P>, props: P,
     context?: { [key: string]: any },
 ): IVNode<any> {
-    return component(props, context) || $t("");
+    return component(props, context);
 }
 
 /**

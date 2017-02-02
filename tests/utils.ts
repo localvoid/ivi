@@ -1,7 +1,7 @@
 import { setInitialNestingState } from "../src/dev_mode/html_nesting_rules";
 import { IVNode, getDOMInstanceFromVNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { $h, $c } from "../src/vdom/vnode";
+import { $h, $c, $t } from "../src/vdom/vnode";
 import { Component, getDOMInstanceFromComponent, staticComponent } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
 
@@ -101,7 +101,7 @@ export interface TestComponentOptions {
 }
 
 export class TestComponent extends Component<TestComponentOptions> {
-    render(): IVNode<any> | undefined {
+    render(): IVNode<any> {
         const { returnUndefined, wrapDepth } = this.props;
 
         if (wrapDepth) {
@@ -111,14 +111,14 @@ export class TestComponent extends Component<TestComponentOptions> {
             });
         }
         if (returnUndefined) {
-            return;
+            return $t("");
         }
 
         return $h("div");
     }
 }
 
-export function TestComponentFunction(props: TestComponentOptions): IVNode<any> | undefined {
+export function TestComponentFunction(props: TestComponentOptions): IVNode<any> {
     const { returnUndefined, wrapDepth } = props;
 
     if (wrapDepth) {
@@ -129,7 +129,7 @@ export function TestComponentFunction(props: TestComponentOptions): IVNode<any> 
     }
 
     if (returnUndefined) {
-        return;
+        return $t("");
     }
 
     return $h("div");
@@ -220,7 +220,7 @@ export class LifecycleMonitor {
 }
 
 export interface LifecycleTestComponentProps {
-    child: IVNode<any> | undefined;
+    child: IVNode<any>;
     monitor: LifecycleMonitor;
 }
 
