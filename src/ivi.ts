@@ -100,7 +100,7 @@ export {
     createMediaElementDescriptor, createCustomElementDescriptor,
 } from "./vdom/element_descriptor";
 export {
-    VNodeRecursiveArrayValue, VNodeRecursiveArray,
+    VNodeArray,
     VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
     $t, $h, $s, $c, $i, $m, $e, $w,
 } from "./vdom/vnode";

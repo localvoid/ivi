@@ -155,10 +155,6 @@ describe("augment", () => {
             augment($h("div").children(["abc", []]), `<div>abc</div>`);
         });
 
-        it("<div>[[[<div>, <span>]]]</div>", () => {
-            augment($h("div").children([[[$h("div"), $h("span")]]]), `<div><div></div><span></span></div>`);
-        });
-
         it("<div>[<div>, null, <span>]</div>", () => {
             augment($h("div").children([$h("div"), null, $h("span")]), `<div><div></div><span></span></div>`);
         });

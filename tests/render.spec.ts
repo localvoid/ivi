@@ -224,13 +224,6 @@ describe("render", () => {
             expect(n.childNodes[0].nodeValue).to.equal("abc");
         });
 
-        it("<div>[[[<div>, <span>]]]</div>", () => {
-            const n = render<HTMLElement>($h("div").children([[[$h("div"), $h("span")]]]));
-            expect(n.childNodes.length).to.equal(2);
-            expect(n.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-        });
-
         it("<div>[<div>, null, <span>]</div>", () => {
             const n = render<HTMLElement>($h("div").children([$h("div"), null, $h("span")]));
             expect(n.childNodes.length).to.equal(2);

@@ -252,7 +252,7 @@ export class VNode<P> implements IVNode<P> {
      *   strings with text nodes.
      * @returns VNodeBuilder.
      */
-    children(children: VNodeRecursiveArray | IVNode<any> | string | number | boolean | null): VNode<P> {
+    children(children: VNodeArray | IVNode<any> | string | number | boolean | null): VNode<P> {
         if (__IVI_DEV__) {
             if (this._flags &
                 (VNodeFlags.ChildrenArray |
@@ -466,11 +466,10 @@ export class VNode<P> implements IVNode<P> {
     }
 }
 
-export type VNodeRecursiveArrayValue = VNodeRecursiveArray | IVNode<any> | string | number | boolean | null;
 /**
- * Recursive VNode Array.
+ * Denormalized VNode Array.
  */
-export interface VNodeRecursiveArray extends Array<VNodeRecursiveArrayValue> { }
+export type VNodeArray = Array<Array<IVNode<any>> | IVNode<any> | string | number | boolean | null>;
 
 /**
  * Create a VNodeBuilder representing a Text node.
@@ -894,36 +893,29 @@ export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
 }
 
 /**
- * Normalizes recursive VNode array by flattening all nodes, removing null values and converting basic objects to text
+ * Normalizes VNode array by flattening all nodes, removing null values and converting number and string objects to text
  * nodes.
  *
  * @param nodes
  * @returns Normalized VNode array.
  */
-export function normalizeVNodes(nodes: VNodeRecursiveArray): IVNode<any>[] {
-    let keyOffset = 0;
+export function normalizeVNodes(nodes: VNodeArray): IVNode<any>[] {
     for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
 
         if (typeof n === "object") {
             if (n === null || Array.isArray(n)) {
-                const result = nodes.slice(0, i) as IVNode<any>[];
-                _normalizeVNodes(nodes, result, i, 0, keyOffset);
-                return result;
-            } else {
-                if (!(n._flags & VNodeFlags.Key)) {
-                    n._key = keyOffset++;
-                }
+                return _normalizeVNodes(nodes, i);
+            } else if (!(n._flags & VNodeFlags.Key)) {
+                n._key = i;
             }
         } else { // basic object
             if (typeof n === "string" || typeof n === "number") {
                 const node = $t(n);
-                node._key = keyOffset++;
+                node._key = i;
                 nodes[i] = node;
             } else {
-                const result = nodes.slice(0, i) as IVNode<any>[];
-                _normalizeVNodes(nodes, result, i, 0, keyOffset);
-                return result;
+                return _normalizeVNodes(nodes, i);
             }
         }
     }
@@ -931,33 +923,28 @@ export function normalizeVNodes(nodes: VNodeRecursiveArray): IVNode<any>[] {
     return nodes as IVNode<any>[];
 }
 
-function _normalizeVNodes(
-    nodes: VNodeRecursiveArray,
-    result: IVNode<any>[],
-    i: number,
-    keyOffset: number,
-    count: number,
-): number {
+function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
+    const result = nodes.slice(0, i) as IVNode<any>[];
+
     for (; i < nodes.length; i++) {
         const n = nodes[i];
         if (typeof n === "object") {
             if (Array.isArray(n)) {
-                count += _normalizeVNodes(n, result, 0, keyOffset + count, 0) + 1;
+                result.push.apply(result, n);
             } else if (n !== null) {
                 if (!(n._flags & VNodeFlags.Key)) {
-                    n._key = keyOffset + count++;
+                    n._key = i;
                 }
                 result.push(n);
             }
         } else { // basic object
             if (typeof n === "string" || typeof n === "number") {
                 const node = $t(n);
-                node._key = keyOffset + count;
+                node._key = i;
                 result.push(node);
             }
-            count++;
         }
     }
 
-    return count;
+    return result;
 }
