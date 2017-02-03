@@ -41,13 +41,13 @@ export class EventDispatcherSubscription {
     /**
      * Type filter.
      */
-    filter: number | undefined;
+    filter: number;
 
     constructor(
         dispatcher: EventDispatcher,
         flags: EventDispatcherSubscriptionFlags,
         handler: (ev: SyntheticEvent<any>, type?: number) => void,
-        filter: number | undefined,
+        filter: number = ~0,
     ) {
         this._prev = null;
         this._next = null;
@@ -119,7 +119,7 @@ export abstract class EventDispatcher {
     dispatchEventToSubscribers(event: SyntheticEvent<any>, type?: number): void {
         let s = this._nextSubscription;
         while (s) {
-            if (type === undefined || (s.filter & (type as any as number))) {
+            if (type === undefined || (s.filter & type)) {
                 s.flags |= EventDispatcherSubscriptionFlags.Locked;
                 s.handler(event, type);
                 s.flags &= ~EventDispatcherSubscriptionFlags.Locked;

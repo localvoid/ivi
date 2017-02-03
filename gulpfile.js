@@ -40,6 +40,11 @@ function compileTS(done) {
     });
 }
 
+function copyTypings() {
+    return gulp.src("build/typings/src/**/*.ts")
+        .pipe(gulp.dest("dist/typings"));
+}
+
 function rollup(config, done) {
     child.execFile("./node_modules/.bin/rollup", ["-c", config], function (err, stdout, stderr) {
         if (stdout) {
@@ -143,7 +148,7 @@ function printIstanbulReport() {
         .pipe(gulpIstanbulReport());
 }
 
-exports.default = exports.dist = series(compileTS, bundleNPM, bundleCDN);
+exports.default = exports.dist = series(compileTS, copyTypings, bundleNPM, bundleCDN);
 
 exports.clean = clean;
 exports.compileTS = compileTS;
