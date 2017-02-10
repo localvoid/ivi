@@ -264,7 +264,7 @@ export function removeVNode(parent: Node, node: IVNode<any>): void {
  * @param node VNode element to remove.
  */
 function _removeVNode(parent: Node, node: IVNode<any>): void {
-    parent.removeChild(getDOMInstanceFromVNode(node) !);
+    parent.removeChild(getDOMInstanceFromVNode(node)!);
     vNodeDetach(node);
 }
 
@@ -640,7 +640,7 @@ function vNodePropagateNewContext(
  * @param nextRef Reference to the next node, if it is null, node will be moved to the end.
  */
 function vNodeMoveChild(parent: Node, node: IVNode<any>, nextRef: Node | null): void {
-    parent.insertBefore(getDOMInstanceFromVNode(node) !, nextRef!);
+    parent.insertBefore(getDOMInstanceFromVNode(node)!, nextRef!);
 }
 
 /**
@@ -665,7 +665,7 @@ function vNodeRemoveAllChildren(parent: Node, nodes: IVNode<any>[]): void {
  * @param node VNode element to remove.
  */
 function vNodeRemoveChild(parent: Node, node: IVNode<any>): void {
-    parent.removeChild(getDOMInstanceFromVNode(node) !);
+    parent.removeChild(getDOMInstanceFromVNode(node)!);
     vNodeDetach(node);
 }
 
@@ -1010,7 +1010,7 @@ function vNodeRenderInto(
     owner?: Component<any>,
 ): Node | Component<any> {
     const instance = vNodeRender(container, vnode, context, owner);
-    container.insertBefore(getDOMInstanceFromVNode(vnode) !, refChild);
+    container.insertBefore(getDOMInstanceFromVNode(vnode)!, refChild);
     vNodeAttach(vnode);
     return instance;
 }
@@ -1175,13 +1175,23 @@ function vNodeAugment(
 
                 component._parentDOMNode = parent;
                 componentUpdateContext(component);
-                const root = componentClassRender(component);
-                vNodeAugment(parent, node, root, component._context, component);
+                if (component.shouldAugment()) {
+                    const root = componentClassRender(component);
+                    vNodeAugment(parent, node, root, component._context, component);
+                } else {
+                    instance = vNodeRender(parent, vnode, context, owner);
+                    parent.replaceChild(getDOMInstanceFromComponent(instance as Component<any>), node);
+                }
             } else {
-                stackTracePushComponent(vnode._tag as ComponentFunction<any>);
-                const root = vnode._children =
-                    componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
-                instance = vNodeAugment(parent, node, root, context, owner);
+                const fc = vnode._tag as ComponentFunction<any>;
+                stackTracePushComponent(fc);
+                if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
+                    const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
+                    instance = vNodeAugment(parent, node, root, context, owner);
+                } else {
+                    instance = vNodeRender(parent, vnode, context, owner);
+                    parent.replaceChild(getDOMInstanceFromVNode(vnode)!, node);
+                }
             }
 
             stackTracePopComponent();
@@ -1328,7 +1338,7 @@ function vNodeSync(
         parent.replaceChild(
             (b._flags & VNodeFlags.ComponentClass) ?
                 getDOMInstanceFromComponent(instance as Component<any>) :
-                instance as Element, getDOMInstanceFromVNode(a) !);
+                instance as Element, getDOMInstanceFromVNode(a)!);
         vNodeDetach(a);
         vNodeAttach(b);
     }

@@ -12,6 +12,7 @@ import { currentFrame } from "../scheduler/frame";
 export interface ComponentFunction<P> {
     (props: P, context?: { [key: string]: any }): IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
+    shouldAugment?: (props: P, context?: { [key: string]: any }) => boolean;
 }
 
 /**
@@ -172,6 +173,15 @@ export abstract class Component<P> {
     newPropsReceived(oldProps: P, newProps: P): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
+    }
+
+    /**
+     * Lifecycle method `shouldAugment` is invoked before augmentation.
+     *
+     * @returns true when component should be augmented.
+     */
+    shouldAugment(): boolean {
+        return true;
     }
 
     /**
@@ -418,7 +428,7 @@ export function getDOMInstanceFromComponent<T extends Node>(component: Component
             throw new Error("Failed to get DOM instance from component, component is not initialized.");
         }
     }
-    return getDOMInstanceFromVNode<T>(component.root!) !;
+    return getDOMInstanceFromVNode<T>(component.root!)!;
 }
 
 /**
