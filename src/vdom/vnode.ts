@@ -293,10 +293,14 @@ export class VNode<P> implements IVNode<P> {
                 }
             }
         } else if (children === null || typeof children === "boolean") {
-            this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenBasic);
+            this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenVNode);
         } else {
             if (typeof children === "object") {
-                this._flags |= VNodeFlags.ChildrenVNode;
+                if (children.constructor === VNode) {
+                    this._flags |= VNodeFlags.ChildrenVNode;
+                } else {
+                    children = $t("").key(children._key);
+                }
                 if (!(children._flags & VNodeFlags.Key)) {
                     children._key = 0;
                 }
@@ -834,6 +838,10 @@ export function cloneVNodeChildren(
 }
 
 function _cloneVNode(node: IVNode<any>, cloneKey: boolean): VNode<any> {
+    if (node.constructor !== VNode) {
+        return $t("").key(node._key);
+    }
+
     const flags = node._flags;
 
     const newNode = new VNode(
@@ -870,6 +878,10 @@ export function cloneVNode(node: IVNode<any>): VNode<any> {
  * @returns Cloned VNode.
  */
 export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
+    if (node.constructor !== VNode) {
+        return $t("").key(node._key);
+    }
+
     const flags = node._flags;
 
     const newNode = new VNode(
@@ -901,13 +913,19 @@ export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
  */
 export function normalizeVNodes(nodes: VNodeArray): IVNode<any>[] {
     for (let i = 0; i < nodes.length; i++) {
-        const n = nodes[i];
+        let n = nodes[i];
 
         if (typeof n === "object") {
             if (n === null || Array.isArray(n)) {
                 return _normalizeVNodes(nodes, i);
-            } else if (!(n._flags & VNodeFlags.Key)) {
-                n._key = i;
+            } else {
+                if (n.constructor !== VNode) {
+                    n = $t("").key(n._key);
+                    nodes[i] = n;
+                }
+                if (!(n._flags & VNodeFlags.Key)) {
+                    n._key = i;
+                }
             }
         } else { // basic object
             if (typeof n === "string" || typeof n === "number") {
@@ -927,19 +945,24 @@ function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
     const result = nodes.slice(0, i) as IVNode<any>[];
 
     for (; i < nodes.length; i++) {
-        const n = nodes[i];
+        let n = nodes[i];
         if (typeof n === "object") {
             if (Array.isArray(n)) {
                 for (let j = 0; j < n.length; j++) {
+                    const nj = n[j];
+
                     if (__IVI_DEV__) {
-                        if (!(n[j]._flags & VNodeFlags.Key)) {
+                        if (!(nj._flags & VNodeFlags.Key)) {
                             throw new Error("Invalid children array. All children nodes in nested array should have " +
                                 "explicit keys.");
                         }
                     }
-                    result.push(n[j]);
+                    result.push(nj.constructor === VNode ? nj : $t("").key(nj._key));
                 }
             } else if (n !== null) {
+                if (n.constructor !== VNode) {
+                    n = $t("").key(n._key);
+                }
                 if (!(n._flags & VNodeFlags.Key)) {
                     n._key = i;
                 }
