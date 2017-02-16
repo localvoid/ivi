@@ -1,9 +1,10 @@
 import { setInitialNestingState } from "../src/dev_mode/html_nesting_rules";
 import { IVNode, getDOMInstanceFromVNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { $h, $c, $t } from "../src/vdom/vnode";
+import { VNode, $h, $c, $t } from "../src/vdom/vnode";
 import { Component, getDOMInstanceFromComponent, staticComponent } from "../src/vdom/component";
 import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
+export * from "./lifecycle";
 
 const expect = chai.expect;
 
@@ -49,6 +50,22 @@ export function checkRefs(n: Node, v: IVNode<any>) {
             child = child.nextSibling;
         }
     }
+}
+
+export function startRender(
+    fn: (render: (n: IVNode<any>) => Node) => void,
+    container?: Element | DocumentFragment,
+    disableCheckRefs?: boolean,
+): void {
+    function r(n: IVNode<any>): Node {
+        return render(n, container, disableCheckRefs);
+    }
+
+    if (container === undefined) {
+        container = document.createDocumentFragment();
+    }
+
+    fn(r);
 }
 
 export function render<T extends Node>(
@@ -139,142 +156,6 @@ export function TestComponentFunctionWrapper(props: IVNode<any>): IVNode<any> {
     return props;
 }
 
-export class LifecycleCounter {
-    value: number;
-
-    constructor() {
-        this.value = 0;
-    }
-}
-
-export class LifecycleMonitor {
-    counter: LifecycleCounter;
-    construct: number;
-    init: number;
-    isPropsChanged: number;
-    newPropsReceived: number;
-    newContextReceived: number;
-    updateContext: number;
-    attached: number;
-    detached: number;
-    beforeUpdate: number;
-    updated: number;
-    invalidated: number;
-    render: number;
-
-    constructor(counter: LifecycleCounter) {
-        this.counter = counter;
-        this.construct = -1;
-        this.init = -1;
-        this.isPropsChanged = -1;
-        this.newPropsReceived = -1;
-        this.newContextReceived = -1;
-        this.updateContext = -1;
-        this.attached = -1;
-        this.detached = -1;
-        this.beforeUpdate = -1;
-        this.updated = -1;
-        this.invalidated = -1;
-        this.render = -1;
-    }
-
-    touch(name: "construct" | "init" | "isPropsChanged" | "newPropsReceived" | "newContextReceived" |
-        "updateContext" | "attached" | "detached" | "beforeUpdate" | "updated" | "invalidated" | "render"): void {
-
-        switch (name) {
-            case "construct":
-                this.construct = this.counter.value++;
-                break;
-            case "isPropsChanged":
-                this.isPropsChanged = this.counter.value++;
-                break;
-            case "newPropsReceived":
-                this.newPropsReceived = this.counter.value++;
-                break;
-            case "newContextReceived":
-                this.newContextReceived = this.counter.value++;
-                break;
-            case "updateContext":
-                this.updateContext = this.counter.value++;
-                break;
-            case "attached":
-                this.attached = this.counter.value++;
-                break;
-            case "detached":
-                this.detached = this.counter.value++;
-                break;
-            case "beforeUpdate":
-                this.beforeUpdate = this.counter.value++;
-                break;
-            case "updated":
-                this.updated = this.counter.value++;
-                break;
-            case "invalidated":
-                this.invalidated = this.counter.value++;
-                break;
-            case "render":
-                this.render = this.counter.value++;
-                break;
-        }
-    }
-}
-
-export interface LifecycleTestComponentProps {
-    child: IVNode<any>;
-    monitor: LifecycleMonitor;
-}
-
-export class LifecycleTestComponent extends Component<LifecycleTestComponentProps> {
-    constructor(props: LifecycleTestComponentProps, context: { [key: string]: any }, owner: Component<any>) {
-        super(props, context, owner);
-        props.monitor.touch("construct");
-    }
-
-    isPropsChanged(oldProps: LifecycleTestComponentProps, newProps: LifecycleTestComponentProps): boolean {
-        this.props.monitor.touch("isPropsChanged");
-        return true;
-    }
-
-    newPropsReceived(oldProps: LifecycleTestComponentProps, newProps: LifecycleTestComponentProps): void {
-        this.props.monitor.touch("newPropsReceived");
-    }
-
-    newContextReceived(oldContext: { [key: string]: any }, newContext: { [key: string]: any }): void {
-        this.props.monitor.touch("newContextReceived");
-    }
-
-    updateContext<C>(): C | undefined {
-        this.props.monitor.touch("updateContext");
-        return;
-    }
-
-    attached(): void {
-        this.props.monitor.touch("attached");
-    }
-
-    detached(): void {
-        this.props.monitor.touch("detached");
-    }
-
-    beforeUpdate(): void {
-        this.props.monitor.touch("beforeUpdate");
-    }
-
-    updated(): void {
-        this.props.monitor.touch("updated");
-    }
-
-    invalidated(): void {
-        this.props.monitor.touch("invalidated");
-    }
-
-    render() {
-        const { child, monitor } = this.props;
-        monitor.touch("render");
-        return child;
-    }
-}
-
 staticComponent(StaticComponentFunctionTest);
 export function StaticComponentFunctionTest(child: IVNode<any>) {
     return child;
@@ -286,3 +167,11 @@ export class StaticComponentTest extends Component<IVNode<any>> {
     }
 }
 staticComponent(StaticComponentTest);
+
+export function $fsc(c: IVNode<any>): VNode<IVNode<any>> {
+    return $c(StaticComponentFunctionTest, c);
+}
+
+export function $sc(c: IVNode<any>): VNode<IVNode<any>> {
+    return $c(StaticComponentTest, c);
+}
