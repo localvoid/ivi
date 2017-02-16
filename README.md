@@ -23,6 +23,12 @@ long-standing issues, like completely broken
 [incorrect componentDidMount order](https://github.com/facebook/react/issues/2763), etc. Many of this issues aren't
 possible to solve efficiently without breaking changes.
 
+## Current Status
+
+This library is in alpha state, and I wouldn't recommend to use it unless you have time on experiments. I also don't
+have any plans on building community and ecosystem around it, I am primarily focused on solving my own problems with
+this library.
+
 ## Features
 
 - Declarative rendering with a Virtual DOM
