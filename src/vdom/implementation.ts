@@ -1177,22 +1177,22 @@ function vNodeAugment(
 
                 component._parentDOMNode = parent;
                 componentUpdateContext(component);
+                const root = componentClassRender(component);
                 if (component.shouldAugment()) {
-                    const root = componentClassRender(component);
                     vNodeAugment(parent, node, root, component._context, component);
                 } else {
-                    instance = vNodeRender(parent, vnode, context, owner);
-                    parent.replaceChild(getDOMInstanceFromComponent(instance as Component<any>), node);
+                    vNodeRender(parent, root, context, owner);
+                    parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
                 }
             } else {
                 const fc = vnode._tag as ComponentFunction<any>;
                 stackTracePushComponent(fc);
+                const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
                 if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
-                    const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
                     instance = vNodeAugment(parent, node, root, context, owner);
                 } else {
-                    instance = vNodeRender(parent, vnode, context, owner);
-                    parent.replaceChild(getDOMInstanceFromVNode(vnode)!, node);
+                    instance = vNodeRender(parent, root, context, owner);
+                    parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
                 }
             }
 

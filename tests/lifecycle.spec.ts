@@ -1,5 +1,5 @@
 import { $h } from "../src/vdom/vnode";
-import { startRender, checkLifecycle, $sc } from "./utils";
+import { startRender, augment, checkLifecycle, $sc } from "./utils";
 
 const expect = chai.expect;
 
@@ -64,6 +64,52 @@ describe("lifecycle", () => {
                 expect(c("1", "newPropsReceived")).to.equal(-1);
                 expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
+                expect(c("1", "beforeUpdate")).to.equal(-1);
+                expect(c("1", "updated")).to.equal(-1);
+                expect(c("1", "invalidated")).to.equal(-1);
+                expect(c("1", "shouldAugment")).to.equal(-1);
+            });
+        });
+    });
+
+    it("<div></div> => <div><C><div></C></div>", () => {
+        startRender((render) => {
+            checkLifecycle(($lc, c) => {
+                render($h("div"));
+                render($h("div").children($lc("1", $h("div"))));
+
+                expect(c("1", "constructor")).to.equal(0);
+                expect(c("1", "updateContext")).to.equal(1);
+                expect(c("1", "render")).to.equal(2);
+                expect(c("1", "attached")).to.equal(3);
+
+                expect(c("1", "isPropsChanged")).to.equal(-1);
+                expect(c("1", "newPropsReceived")).to.equal(-1);
+                expect(c("1", "newContextReceived")).to.equal(-1);
+                expect(c("1", "detached")).to.equal(-1);
+                expect(c("1", "beforeUpdate")).to.equal(-1);
+                expect(c("1", "updated")).to.equal(-1);
+                expect(c("1", "invalidated")).to.equal(-1);
+                expect(c("1", "shouldAugment")).to.equal(-1);
+            });
+        });
+    });
+
+    it("<div><C><div></C></div> => <div></div>", () => {
+        startRender((render) => {
+            checkLifecycle(($lc, c) => {
+                render($h("div").children($lc("1", $h("div"))));
+                render($h("div"));
+
+                expect(c("1", "constructor")).to.equal(0);
+                expect(c("1", "updateContext")).to.equal(1);
+                expect(c("1", "render")).to.equal(2);
+                expect(c("1", "attached")).to.equal(3);
+                expect(c("1", "detached")).to.equal(4);
+
+                expect(c("1", "isPropsChanged")).to.equal(-1);
+                expect(c("1", "newPropsReceived")).to.equal(-1);
+                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
@@ -190,6 +236,81 @@ describe("lifecycle", () => {
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
                 expect(c("1", "shouldAugment")).to.equal(-1);
+            });
+        });
+    });
+
+    describe("augment", () => {
+        it("<C><div></C>", () => {
+            checkLifecycle(($lc, c) => {
+                augment($lc("1", $h("div")), `<div></div>`);
+
+                expect(c("1", "constructor")).to.equal(0);
+                expect(c("1", "updateContext")).to.equal(1);
+                expect(c("1", "render")).to.equal(2);
+                expect(c("1", "shouldAugment")).to.equal(3);
+                expect(c("1", "attached")).to.equal(4);
+
+                expect(c("1", "isPropsChanged")).to.equal(-1);
+                expect(c("1", "newPropsReceived")).to.equal(-1);
+                expect(c("1", "newContextReceived")).to.equal(-1);
+                expect(c("1", "detached")).to.equal(-1);
+                expect(c("1", "beforeUpdate")).to.equal(-1);
+                expect(c("1", "updated")).to.equal(-1);
+                expect(c("1", "invalidated")).to.equal(-1);
+            });
+        });
+
+        it("<C shouldAugment=false><div></C>", () => {
+            checkLifecycle(($lc, c) => {
+                augment($lc("1", $h("div"), { shouldAugment: () => false }), `<div></div>`);
+
+                expect(c("1", "constructor")).to.equal(0);
+                expect(c("1", "updateContext")).to.equal(1);
+                expect(c("1", "render")).to.equal(2);
+                expect(c("1", "shouldAugment")).to.equal(3);
+                expect(c("1", "attached")).to.equal(4);
+
+                expect(c("1", "isPropsChanged")).to.equal(-1);
+                expect(c("1", "newPropsReceived")).to.equal(-1);
+                expect(c("1", "newContextReceived")).to.equal(-1);
+                expect(c("1", "detached")).to.equal(-1);
+                expect(c("1", "beforeUpdate")).to.equal(-1);
+                expect(c("1", "updated")).to.equal(-1);
+                expect(c("1", "invalidated")).to.equal(-1);
+            });
+        });
+
+        it("<C shouldAugment=false><C><div></C></C>", () => {
+            checkLifecycle(($lc, c) => {
+                augment($lc("1", $lc("2", $h("div")), { shouldAugment: () => false }), `<div></div>`);
+
+                expect(c("1", "constructor")).to.equal(0);
+                expect(c("1", "updateContext")).to.equal(1);
+                expect(c("1", "render")).to.equal(2);
+                expect(c("1", "shouldAugment")).to.equal(3);
+                expect(c("2", "constructor")).to.equal(4);
+                expect(c("2", "updateContext")).to.equal(5);
+                expect(c("2", "render")).to.equal(6);
+                expect(c("1", "attached")).to.equal(7);
+                expect(c("2", "attached")).to.equal(8);
+
+                expect(c("1", "isPropsChanged")).to.equal(-1);
+                expect(c("1", "newPropsReceived")).to.equal(-1);
+                expect(c("1", "newContextReceived")).to.equal(-1);
+                expect(c("1", "detached")).to.equal(-1);
+                expect(c("1", "beforeUpdate")).to.equal(-1);
+                expect(c("1", "updated")).to.equal(-1);
+                expect(c("1", "invalidated")).to.equal(-1);
+
+                expect(c("2", "isPropsChanged")).to.equal(-1);
+                expect(c("2", "newPropsReceived")).to.equal(-1);
+                expect(c("2", "newContextReceived")).to.equal(-1);
+                expect(c("2", "detached")).to.equal(-1);
+                expect(c("2", "beforeUpdate")).to.equal(-1);
+                expect(c("2", "updated")).to.equal(-1);
+                expect(c("2", "invalidated")).to.equal(-1);
+                expect(c("2", "shouldAugment")).to.equal(-1);
             });
         });
     });
