@@ -1,4 +1,6 @@
-import { $t, normalizeVNodes } from "../src/vdom/vnode";
+import { VNodeFlags } from "../src/vdom/flags";
+import { VNode, $t, normalizeVNodes } from "../src/vdom/vnode";
+import { $invalid } from "./utils";
 
 const expect = chai.expect;
 
@@ -98,5 +100,23 @@ describe("normalization", () => {
         expect(n[0]._key).to.equal(0);
         expect(n[1]._key).to.equal("a");
         expect(n[2]._key).to.equal(2);
+    });
+
+    describe("xss protection", () => {
+        it("[$i] => [$t]", () => {
+            const n = normalizeVNodes([$invalid()]);
+            expect(n.length).to.equal(1);
+            expect(n[0]).instanceOf(VNode);
+            expect(n[0]._flags & VNodeFlags.Text).to.equal(VNodeFlags.Text);
+            expect(n[0]._key).to.equal(0);
+        });
+
+        it("[$t, $i] => [$t, $t]", () => {
+            const n = normalizeVNodes([$t(""), $invalid()]);
+            expect(n.length).to.equal(2);
+            expect(n[1]).instanceOf(VNode);
+            expect(n[1]._flags & VNodeFlags.Text).to.equal(VNodeFlags.Text);
+            expect(n[1]._key).to.equal(1);
+        });
     });
 });

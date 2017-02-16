@@ -3,6 +3,7 @@ import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { VNodeFlags, SyncFlags } from "./flags";
 import { IVNode } from "./ivnode";
+import { VNode, $t } from "./vnode";
 import { Component, getDOMInstanceFromComponent } from "./component";
 import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
@@ -65,10 +66,13 @@ function iOSFixEventBubbling(container: Element): void {
  */
 function _render(root: Root): void {
     const currentVNode = root.currentVNode;
-    const newVNode = root.newVNode;
+    let newVNode = root.newVNode;
     const newContext = root.newContext;
 
     if (newVNode) {
+        if (newVNode.constructor !== VNode) {
+            newVNode = $t("");
+        }
         let instance;
         if (currentVNode) {
             const syncFlags = root.currentContext === newContext ?

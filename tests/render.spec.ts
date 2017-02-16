@@ -1,5 +1,5 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "../src/common/dom";
-import { render, TestComponent, TestComponentFunction, TestComponentFunctionWrapper } from "./utils";
+import { render, TestComponent, TestComponentFunction, TestComponentFunctionWrapper, $invalid } from "./utils";
 import { $t, $h, $s, $c, $i, $m, cloneVNode } from "../src/vdom/vnode";
 
 const expect = chai.expect;
@@ -395,6 +395,13 @@ describe("render", () => {
 
         it("<h1><span><h2></span></h1>", () => {
             expect(() => { render($h("h1").children($h("span").children($h("h2")))); }).to.throw(Error);
+        });
+    });
+
+    describe("XSS protection", () => {
+        it("children", () => {
+            const n = render<HTMLElement>($h("div").children($invalid()));
+            expect(n.firstChild!.nodeType).to.equal(Node.TEXT_NODE);
         });
     });
 });

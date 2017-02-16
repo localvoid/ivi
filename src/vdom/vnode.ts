@@ -957,7 +957,9 @@ function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
                                 "explicit keys.");
                         }
                     }
-                    result.push(nj.constructor === VNode ? nj : $t("").key(nj._key));
+
+                    // No need to protect against xss here, nested arrays can't have denormalized values.
+                    result.push(nj);
                 }
             } else if (n !== null) {
                 if (n.constructor !== VNode) {

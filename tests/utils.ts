@@ -169,3 +169,22 @@ export function $fsc(c: IVNode<any>): VNode<IVNode<any>> {
 export function $sc(c: IVNode<any>): VNode<IVNode<any>> {
     return $c(StaticComponentTest, c);
 }
+
+/**
+ * Invalid VNode (XSS injection).
+ */
+export function $invalid(key: any = null): IVNode<any> {
+    return {
+        _flags: VNodeFlags.Element,
+        _tag: "div",
+        _key: key,
+        _props: null,
+        _className: null,
+        _style: null,
+        _events: null,
+        _children: "abc",
+        _instance: null,
+        _ref: null,
+        _debugId: 0,
+    };
+}
