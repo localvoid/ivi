@@ -299,7 +299,7 @@ export class VNode<P = null> implements IVNode<P> {
                 if (children.constructor === VNode) {
                     this._flags |= VNodeFlags.ChildrenVNode;
                 } else {
-                    children = $t("").key(children._key);
+                    children = $t("");
                 }
                 if (!(children._flags & VNodeFlags.Key)) {
                     children._key = 0;
@@ -920,7 +920,7 @@ export function normalizeVNodes(nodes: VNodeArray): IVNode<any>[] {
                 return _normalizeVNodes(nodes, i);
             } else {
                 if (n.constructor !== VNode) {
-                    n = $t("").key(n._key);
+                    n = $t("");
                     nodes[i] = n;
                 }
                 if (!(n._flags & VNodeFlags.Key)) {
@@ -963,7 +963,7 @@ function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
                 }
             } else if (n !== null) {
                 if (n.constructor !== VNode) {
-                    n = $t("").key(n._key);
+                    n = $t("");
                 }
                 if (!(n._flags & VNodeFlags.Key)) {
                     n._key = i;

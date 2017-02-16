@@ -104,7 +104,7 @@ describe("normalization", () => {
 
     describe("xss protection", () => {
         it("[$i] => [$t]", () => {
-            const n = normalizeVNodes([$invalid()]);
+            const n = normalizeVNodes([$invalid("a")]);
             expect(n.length).to.equal(1);
             expect(n[0]).instanceOf(VNode);
             expect(n[0]._flags & VNodeFlags.Text).to.equal(VNodeFlags.Text);
@@ -112,11 +112,19 @@ describe("normalization", () => {
         });
 
         it("[$t, $i] => [$t, $t]", () => {
-            const n = normalizeVNodes([$t(""), $invalid()]);
+            const n = normalizeVNodes([$t(""), $invalid("a")]);
             expect(n.length).to.equal(2);
             expect(n[1]).instanceOf(VNode);
             expect(n[1]._flags & VNodeFlags.Text).to.equal(VNodeFlags.Text);
             expect(n[1]._key).to.equal(1);
+        });
+
+        it("[null, $i] => [$t]", () => {
+            const n = normalizeVNodes([null, $invalid("a")]);
+            expect(n.length).to.equal(1);
+            expect(n[0]).instanceOf(VNode);
+            expect(n[0]._flags & VNodeFlags.Text).to.equal(VNodeFlags.Text);
+            expect(n[0]._key).to.equal(1);
         });
     });
 });
