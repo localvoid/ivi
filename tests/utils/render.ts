@@ -1,9 +1,7 @@
-import { IVNode, getDOMInstanceFromVNode } from "../src/vdom/ivnode";
-import { VNodeFlags } from "../src/vdom/flags";
-import { VNode, $h, $c, $t } from "../src/vdom/vnode";
-import { Component, getDOMInstanceFromComponent, staticComponent } from "../src/vdom/component";
-import { renderVNode, syncVNode, augmentVNode } from "../src/vdom/implementation";
-export * from "./lifecycle";
+import { VNodeFlags } from "../../src/vdom/flags";
+import { IVNode, getDOMInstanceFromVNode } from "../../src/vdom/ivnode";
+import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
+import { Component, getDOMInstanceFromComponent } from "../../src/vdom/component";
 
 const expect = chai.expect;
 
@@ -104,87 +102,4 @@ export function augment(node: IVNode<any>, innerHTML: string, container?: Elemen
     checkRefs(container.firstChild!, node);
 
     return container;
-}
-
-export interface TestComponentOptions {
-    returnUndefined?: boolean;
-    wrapDepth?: number;
-}
-
-export class TestComponent extends Component<TestComponentOptions> {
-    render(): IVNode<any> {
-        const { returnUndefined, wrapDepth } = this.props;
-
-        if (wrapDepth) {
-            return $c(TestComponent, {
-                returnUndefined,
-                wrapDepth: wrapDepth - 1,
-            });
-        }
-        if (returnUndefined) {
-            return $t("");
-        }
-
-        return $h("div");
-    }
-}
-
-export function TestComponentFunction(props: TestComponentOptions): IVNode<any> {
-    const { returnUndefined, wrapDepth } = props;
-
-    if (wrapDepth) {
-        return $c(TestComponentFunction, {
-            returnUndefined,
-            wrapDepth: wrapDepth - 1,
-        });
-    }
-
-    if (returnUndefined) {
-        return $t("");
-    }
-
-    return $h("div");
-}
-
-export function TestComponentFunctionWrapper(props: IVNode<any>): IVNode<any> {
-    return props;
-}
-
-staticComponent(StaticComponentFunctionTest);
-export function StaticComponentFunctionTest(child: IVNode<any>) {
-    return child;
-}
-
-export class StaticComponentTest extends Component<IVNode<any>> {
-    render() {
-        return this.props;
-    }
-}
-staticComponent(StaticComponentTest);
-
-export function $fsc(c: IVNode<any>): VNode<IVNode<any>> {
-    return $c(StaticComponentFunctionTest, c);
-}
-
-export function $sc(c: IVNode<any>): VNode<IVNode<any>> {
-    return $c(StaticComponentTest, c);
-}
-
-/**
- * Invalid VNode (XSS injection).
- */
-export function $invalid(key: any = null): IVNode<any> {
-    return {
-        _flags: VNodeFlags.Element,
-        _tag: "div",
-        _key: key,
-        _props: null,
-        _className: null,
-        _style: null,
-        _events: null,
-        _children: "abc",
-        _instance: null,
-        _ref: null,
-        _debugId: 0,
-    };
 }

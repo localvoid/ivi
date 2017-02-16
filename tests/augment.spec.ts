@@ -1,5 +1,5 @@
-import { augment, TestComponent, TestComponentFunction } from "./utils";
-import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode";
+import { augment, $tc, $tcf } from "./utils";
+import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
@@ -174,35 +174,35 @@ describe("augment", () => {
 
     describe("component", () => {
         it("<C><div></C>", () => {
-            augment($c(TestComponent, {}), `<div></div>`);
+            augment($tc(), `<div></div>`);
         });
 
-        it("<C>''</C> (render => undefined)", () => {
-            augment($c(TestComponent, { returnUndefined: true }), ``);
+        it("<C>''</C>", () => {
+            augment($tc(""), ``);
         });
 
         it("<C><C><C><div></C></C></C>", () => {
-            augment($c(TestComponent, { wrapDepth: 3 }), `<div></div>`);
+            augment($tc($h("div"), 3), `<div></div>`);
         });
 
-        it("<C><C><C>''</C></C></C> (render => undefined)", () => {
-            augment($c(TestComponent, { returnUndefined: true, wrapDepth: 3 }), ``);
+        it("<C><C><C>''</C></C></C>", () => {
+            augment($tc("", 3), ``);
         });
 
         it("<F><div></F>", () => {
-            augment($c(TestComponentFunction, {}), `<div></div>`);
+            augment($tcf(), `<div></div>`);
         });
 
-        it("<F>''</F> (render => undefined)", () => {
-            augment($c(TestComponentFunction, { returnUndefined: true }), ``);
+        it("<F>''</F>", () => {
+            augment($tcf(""), ``);
         });
 
         it("<F><F><F><div></F></F></F>", () => {
-            augment($c(TestComponentFunction, { wrapDepth: 3 }), `<div></div>`);
+            augment($tcf($h("div"), 3), `<div></div>`);
         });
 
-        it("<F><F><F>''</F></F></F> (render => undefined)", () => {
-            augment($c(TestComponentFunction, { returnUndefined: true, wrapDepth: 3 }), ``);
+        it("<F><F><F>''</F></F></F>", () => {
+            augment($tcf("", 3), ``);
         });
     });
 

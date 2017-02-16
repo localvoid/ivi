@@ -1,12 +1,12 @@
 import { $h } from "../src/vdom/vnode";
-import { startRender, augment, checkLifecycle, $sc } from "./utils";
+import { startRender, augment, checkLifecycle, $lc, $sc } from "./utils";
 
 const expect = chai.expect;
 
 describe("lifecycle", () => {
     it("<C><div></C>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($lc("1", $h("div")));
 
                 expect(c("1", "constructor")).to.equal(0);
@@ -28,7 +28,7 @@ describe("lifecycle", () => {
 
     it("<C><div></C> => <div>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($lc("1", $h("div")));
                 render($h("div"));
 
@@ -51,7 +51,7 @@ describe("lifecycle", () => {
 
     it("<div> => <C><div></C>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($h("div"));
                 render($lc("1", $h("div")));
 
@@ -74,7 +74,7 @@ describe("lifecycle", () => {
 
     it("<div></div> => <div><C><div></C></div>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($h("div"));
                 render($h("div").children($lc("1", $h("div"))));
 
@@ -97,7 +97,7 @@ describe("lifecycle", () => {
 
     it("<div><C><div></C></div> => <div></div>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($h("div").children($lc("1", $h("div"))));
                 render($h("div"));
 
@@ -120,7 +120,7 @@ describe("lifecycle", () => {
 
     it("<C><C><div></C></C>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($lc("1", $lc("2", $h("div"))));
 
                 expect(c("1", "constructor")).to.equal(0);
@@ -155,7 +155,7 @@ describe("lifecycle", () => {
 
     it("<C><C><div></C></C> => <div>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($lc("1", $lc("2", $h("div"))));
                 render($h("div"));
 
@@ -191,7 +191,7 @@ describe("lifecycle", () => {
 
     it("<C><div></C> => <C><div></C>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($lc("1", $h("div")));
                 render($lc("1", $h("div")));
 
@@ -218,7 +218,7 @@ describe("lifecycle", () => {
 
     it("<S><C><div></C></S> => <S><C><div></C></S>", () => {
         startRender((render) => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 render($sc($lc("1", $h("div"))));
                 render($sc($lc("1", $h("div"))));
 
@@ -242,7 +242,7 @@ describe("lifecycle", () => {
 
     describe("augment", () => {
         it("<C><div></C>", () => {
-            checkLifecycle(($lc, c) => {
+            checkLifecycle((c) => {
                 augment($lc("1", $h("div")), `<div></div>`);
 
                 expect(c("1", "constructor")).to.equal(0);
@@ -262,8 +262,8 @@ describe("lifecycle", () => {
         });
 
         it("<C shouldAugment=false><div></C>", () => {
-            checkLifecycle(($lc, c) => {
-                augment($lc("1", $h("div"), { shouldAugment: () => false }), `<div></div>`);
+            checkLifecycle((c) => {
+                augment($lc("1", { shouldAugment: () => false }, $h("div")), `<div></div>`);
 
                 expect(c("1", "constructor")).to.equal(0);
                 expect(c("1", "updateContext")).to.equal(1);
@@ -282,8 +282,8 @@ describe("lifecycle", () => {
         });
 
         it("<C shouldAugment=false><C><div></C></C>", () => {
-            checkLifecycle(($lc, c) => {
-                augment($lc("1", $lc("2", $h("div")), { shouldAugment: () => false }), `<div></div>`);
+            checkLifecycle((c) => {
+                augment($lc("1", { shouldAugment: () => false }, $lc("2", $h("div"))), `<div></div>`);
 
                 expect(c("1", "constructor")).to.equal(0);
                 expect(c("1", "updateContext")).to.equal(1);

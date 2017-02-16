@@ -3,7 +3,7 @@ import { IVNode } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
 import { updateComponent } from "../src/vdom/implementation";
 import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
-import { frag, render, TestComponent, TestComponentFunction } from "./utils";
+import { frag, render, $tc, $tcf } from "./utils";
 
 const expect = chai.expect;
 
@@ -818,13 +818,13 @@ describe("sync", () => {
         it("<span> => <C><div></C>", () => {
             const f = frag();
             render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($c(TestComponent, {}), f);
+            const b = render<HTMLElement>($tc(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
         });
 
         it("<C><div></C> => <div>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponent, {}), f);
+            const a = render<HTMLElement>($tc(), f);
             const b = render<HTMLElement>($h("div"), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
@@ -833,44 +833,44 @@ describe("sync", () => {
         it("<div> => <C><div></C>", () => {
             const f = frag();
             const a = render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($c(TestComponent, {}), f);
+            const b = render<HTMLElement>($tc(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
         });
 
         it("<C><div></C> => <span>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponent, {}), f);
+            render<HTMLElement>($tc(), f);
             const b = render<HTMLElement>($h("span"), f);
             expect(b.tagName.toLowerCase()).to.equal("span");
         });
 
         it("<C><div></C> => <C><div></C>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponent, {}), f);
-            const b = render<HTMLElement>($c(TestComponent, {}), f);
+            const a = render<HTMLElement>($tc(), f);
+            const b = render<HTMLElement>($tc(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.equal(b);
         });
 
         it("<C><div></C> => <C>''</C>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponent, {}), f);
-            const b = render<HTMLElement>($c(TestComponent, { returnUndefined: true }), f);
+            render<HTMLElement>($tc(), f);
+            const b = render<HTMLElement>($tc(""), f);
             expect(b.nodeType).to.equal(Node.TEXT_NODE);
             expect(b.nodeValue).to.equal("");
         });
 
         it("<C>''</C> => <C><div></C>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponent, { returnUndefined: true }), f);
-            const b = render<HTMLElement>($c(TestComponent, {}), f);
+            render<HTMLElement>($tc(""), f);
+            const b = render<HTMLElement>($tc(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
         });
 
         it("<C><C><C><div></C></C></C> => <span>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }), f);
+            render<HTMLElement>($tc($h("div"), 3), f);
             const b = render<HTMLElement>($h("span"), f);
             expect(b.tagName.toLowerCase()).to.equal("span");
         });
@@ -878,14 +878,14 @@ describe("sync", () => {
         it("<span> => <C><C><C><div></C></C></C>", () => {
             const f = frag();
             render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }), f);
+            const b = render<HTMLElement>($tc($h("div"), 3), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
         });
 
         it("<C><C><C><div></C></C></C> => <C><C><C><div></C></C></C>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }), f);
-            const b = render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }), f);
+            const a = render<HTMLElement>($tc($h("div"), 3), f);
+            const b = render<HTMLElement>($tc($h("div"), 3), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.equal(b);
         });
@@ -893,13 +893,13 @@ describe("sync", () => {
         it("<span> => <F><div></F>", () => {
             const f = frag();
             render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, {}), f);
+            const b = render<HTMLElement>($tcf(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
         });
 
         it("<F><div></F> => <div>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponentFunction, {}), f);
+            const a = render<HTMLElement>($tcf(), f);
             const b = render<HTMLElement>($h("div"), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
@@ -908,44 +908,44 @@ describe("sync", () => {
         it("<div> => <F><div></F>", () => {
             const f = frag();
             const a = render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, {}), f);
+            const b = render<HTMLElement>($tcf(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
         });
 
         it("<F><div></F> => <span>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponentFunction, {}), f);
+            render<HTMLElement>($tcf(), f);
             const b = render<HTMLElement>($h("span"), f);
             expect(b.tagName.toLowerCase()).to.equal("span");
         });
 
         it("<F><div></F> => <F><div></F>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponentFunction, {}), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, {}), f);
+            const a = render<HTMLElement>($tcf(), f);
+            const b = render<HTMLElement>($tcf(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.equal(b);
         });
 
         it("<F><div></F> => <F>''</F>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponent, {}), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, { returnUndefined: true }), f);
+            render<HTMLElement>($tcf(), f);
+            const b = render<HTMLElement>($tcf(""), f);
             expect(b.nodeType).to.equal(Node.TEXT_NODE);
             expect(b.nodeValue).to.equal("");
         });
 
         it("<F>''</F> => <F><div></F>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponentFunction, { returnUndefined: true }), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, {}), f);
+            render<HTMLElement>($tcf(""), f);
+            const b = render<HTMLElement>($tcf(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
         });
 
         it("<F><F><F><div></F></F></F> => <span>", () => {
             const f = frag();
-            render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
+            render<HTMLElement>($tcf($h("div"), 3), f);
             const b = render<HTMLElement>($h("span"), f);
             expect(b.tagName.toLowerCase()).to.equal("span");
         });
@@ -953,46 +953,46 @@ describe("sync", () => {
         it("<span> => <F><F><F><div></F></F></F>", () => {
             const f = frag();
             render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
+            const b = render<HTMLElement>($tcf($h("div"), 3), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
         });
 
         it("<F><F><F><div></F></F></F> => <F><F><F><div></F></F></F>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
+            const a = render<HTMLElement>($tcf($h("div"), 3), f);
+            const b = render<HTMLElement>($tcf($h("div"), 3), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.equal(b);
         });
 
         it("<C><div></C> => <F><div></F>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponent, {}), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
+            const a = render<HTMLElement>($tc(), f);
+            const b = render<HTMLElement>($tcf(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
         });
 
         it("<F><div></F> => <C><div></C>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
-            const b = render<HTMLElement>($c(TestComponent, {}), f);
+            const a = render<HTMLElement>($tcf(), f);
+            const b = render<HTMLElement>($tc(), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
         });
 
         it("<C><C><C><div></C></C></C> => <F><F><F><div></F></F></F>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }), f);
-            const b = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
+            const a = render<HTMLElement>($tc($h("div"), 3), f);
+            const b = render<HTMLElement>($tcf($h("div"), 3), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
         });
 
         it("<F><F><F><div></F></F></F> => <C><C><C><div></C></C></C>", () => {
             const f = frag();
-            const a = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }), f);
-            const b = render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }), f);
+            const a = render<HTMLElement>($tcf($h("div"), 3), f);
+            const b = render<HTMLElement>($tc($h("div"), 3), f);
             expect(b.tagName.toLowerCase()).to.equal("div");
             expect(a).to.not.equal(b);
         });

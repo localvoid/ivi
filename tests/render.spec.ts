@@ -1,6 +1,6 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "../src/common/dom";
-import { render, TestComponent, TestComponentFunction, TestComponentFunctionWrapper, $invalid } from "./utils";
-import { $t, $h, $s, $c, $i, $m, cloneVNode } from "../src/vdom/vnode";
+import { render, $tc, $tcf, $invalid } from "./utils";
+import { $t, $h, $s, $i, $m, cloneVNode } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
@@ -265,52 +265,57 @@ describe("render", () => {
 
     describe("component", () => {
         it("<C><div></C>", () => {
-            const n = render<HTMLElement>($c(TestComponent, {}));
+            const n = render<HTMLElement>($tc());
             expect(n.tagName.toLowerCase()).to.equal("div");
         });
 
-        it("<C>''</C> (render => undefined)", () => {
-            const n = render<HTMLElement>($c(TestComponent, { returnUndefined: true }));
+        it("<C>''</C>", () => {
+            const n = render<HTMLElement>($tc(""));
             expect(n.nodeType).to.equal(Node.TEXT_NODE);
             expect(n.nodeValue).to.equal("");
         });
 
         it("<C><C><C><div></C></C></C>", () => {
-            const n = render<HTMLElement>($c(TestComponent, { wrapDepth: 3 }));
+            const n = render<HTMLElement>($tc($h("div"), 3));
             expect(n.tagName.toLowerCase()).to.equal("div");
         });
 
-        it("<C><C><C>''</C></C></C> (render => undefined)", () => {
-            const n = render<HTMLElement>($c(TestComponent, { returnUndefined: true, wrapDepth: 3 }));
+        it("<C><C><C>''</C></C></C>", () => {
+            const n = render<HTMLElement>($tc("", 3));
             expect(n.nodeType).to.equal(Node.TEXT_NODE);
             expect(n.nodeValue).to.equal("");
         });
 
         it("<F><div></F>", () => {
-            const n = render<HTMLElement>($c(TestComponentFunction, {}));
+            const n = render<HTMLElement>($tcf());
             expect(n.tagName.toLowerCase()).to.equal("div");
         });
 
-        it("<F>''</F> (render => undefined)", () => {
-            const n = render<HTMLElement>($c(TestComponentFunction, { returnUndefined: true }));
+        it("<F>''</F>", () => {
+            const n = render<HTMLElement>($tcf(""));
             expect(n.nodeType).to.equal(Node.TEXT_NODE);
             expect(n.nodeValue).to.equal("");
         });
 
         it("<F><F><F><div></F></F></F>", () => {
-            const n = render<HTMLElement>($c(TestComponentFunction, { wrapDepth: 3 }));
+            const n = render<HTMLElement>($tcf($h("div"), 3));
             expect(n.tagName.toLowerCase()).to.equal("div");
         });
 
-        it("<F><F><F>''</F></F></F> (render => undefined)", () => {
-            const n = render<HTMLElement>($c(TestComponentFunction, { returnUndefined: true, wrapDepth: 3 }));
+        it("<F><F><F>''</F></F></F>", () => {
+            const n = render<HTMLElement>($tcf("", 3));
             expect(n.nodeType).to.equal(Node.TEXT_NODE);
             expect(n.nodeValue).to.equal("");
         });
 
-        it("<F><C>''</C></F> (render => undefined)", () => {
-            const n = render<HTMLElement>($c(TestComponentFunctionWrapper,
-                $c(TestComponent, { returnUndefined: true, wrapDepth: 1 })));
+        it("<F><C>''</C></F>", () => {
+            const n = render<HTMLElement>($tcf($tc("")));
+            expect(n.nodeType).to.equal(Node.TEXT_NODE);
+            expect(n.nodeValue).to.equal("");
+        });
+
+        it("<C><F>''</F></C>", () => {
+            const n = render<HTMLElement>($tc($tcf("")));
             expect(n.nodeType).to.equal(Node.TEXT_NODE);
             expect(n.nodeValue).to.equal("");
         });

@@ -1,7 +1,7 @@
-import { frag, render, TestComponent, TestComponentFunction } from "./utils";
+import { frag, render, $tc, $tcf } from "./utils";
 import { getComponentRef } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
-import { $t, $h, $c } from "../src/vdom/vnode";
+import { $t, $h } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
@@ -21,14 +21,14 @@ describe("ref", () => {
 
         it("<C><div></C>", () => {
             let r: Component<any> | null | undefined;
-            const v = $c(TestComponent, {}).ref((ref: Component<any>) => r = ref);
+            const v = $tc().ref((ref: Component<any>) => r = ref);
             render<Text>(v);
             expect(r).to.equal(getComponentRef(v));
         });
 
         it("<F><div></F>", () => {
             let r: Node | null | undefined;
-            const n = render<HTMLDivElement>($c(TestComponentFunction, {}).ref((ref: Node) => r = ref));
+            const n = render<HTMLDivElement>($tcf().ref((ref: Node) => r = ref));
             expect(r).to.equal(n);
         });
     });
@@ -53,7 +53,7 @@ describe("ref", () => {
         it("<C><div></C>", () => {
             const f = frag();
             let r: Component<any> | null | undefined;
-            render<Text>($c(TestComponent, {}).ref((ref: Component<any>) => r = ref), f);
+            render<Text>($tc().ref((ref: Component<any>) => r = ref), f);
             render<Text>($t("abc"), f);
             expect(r).to.equal(null);
         });
@@ -61,7 +61,7 @@ describe("ref", () => {
         it("<F><div></F>", () => {
             const f = frag();
             let r: Component<any> | null | undefined;
-            render<Text>($c(TestComponentFunction, {}).ref((ref: Component<any>) => r = ref), f);
+            render<Text>($tcf().ref((ref: Component<any>) => r = ref), f);
             render<Text>($t("abc"), f);
             expect(r).to.equal(null);
         });
