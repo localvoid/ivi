@@ -45,7 +45,7 @@ import {
  *
  * @final
  */
-export class ElementDescriptor<P> {
+export class ElementDescriptor<P = void> {
     /**
      * Flags, see `ElementDescriptorFlags` for details.
      */

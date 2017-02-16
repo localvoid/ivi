@@ -7,7 +7,7 @@ import { ElementDescriptor } from "./element_descriptor";
 /**
  * VNode object is the core object in ivi Virtual DOM, it can represent any node type.
  */
-export interface IVNode<P> {
+export interface IVNode<P = null> {
     /**
      * Flags, see `VNodeFlags` for details.
      */

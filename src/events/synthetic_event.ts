@@ -427,12 +427,20 @@ export class SyntheticTouchEvent extends SyntheticUIEvent<TouchEvent> implements
         return this._data.altKey;
     }
 
+    get charCode(): number {
+        return this._data.charCode;
+    }
+
     get changedTouches(): TouchList {
         return this._data.changedTouches;
     }
 
     get ctrlKey(): boolean {
         return this._data.ctrlKey;
+    }
+
+    get keyCode(): number {
+        return this._data.keyCode;
     }
 
     get metaKey(): boolean {
@@ -449,6 +457,10 @@ export class SyntheticTouchEvent extends SyntheticUIEvent<TouchEvent> implements
 
     get touches(): TouchList {
         return this._data.touches;
+    }
+
+    get which(): number {
+        return this._data.which;
     }
 }
 
@@ -647,19 +659,6 @@ export class SyntheticFocusEvent extends SyntheticUIEvent<FocusEvent> implements
 
     get relatedTarget(): EventTarget {
         return this._data.relatedTarget;
-    }
-}
-
-export class SyntheticAriaRequestEvent extends SyntheticEvent<AriaRequestEvent> implements AriaRequestEvent {
-    get attributeName(): string {
-        return this._data.attributeName;
-    }
-
-    get attributeValue(): string | null {
-        return this._data.attributeValue;
-    }
-    set attributeValue(value: string | null) {
-        this._data.attributeValue = value;
     }
 }
 

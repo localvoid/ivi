@@ -42,7 +42,7 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
  * @param b New styles.
  */
 export function syncStyle(
-    node: HTMLElement | SVGStylable,
+    node: HTMLElement | SVGElement,
     a: CSSStyleProps | null,
     b: CSSStyleProps | null,
 ): void {

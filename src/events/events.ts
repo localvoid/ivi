@@ -11,8 +11,8 @@ import { NativeEventDispatcher } from "./native_event_dispatcher";
 import {
     SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticErrorEvent,
     SyntheticKeyboardEvent, SyntheticFocusEvent, SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent,
-    SyntheticMouseEvent, SyntheticAriaRequestEvent, SyntheticClipboardEvent, SyntheticPointerEvent,
-    SyntheticTouchEvent, SyntheticWheelEvent, SyntheticProgressEvent, SyntheticEventClass,
+    SyntheticMouseEvent, SyntheticClipboardEvent, SyntheticPointerEvent, SyntheticTouchEvent, SyntheticWheelEvent,
+    SyntheticProgressEvent, SyntheticEventClass,
 } from "./synthetic_event";
 
 /**
@@ -40,7 +40,7 @@ export function createEventHandler<E extends SyntheticEvent<any>>(
 export interface NativeEventDispatchersList {
     abort: NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
     activate: NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    ariarequest: NativeEventDispatcher<SyntheticEventClass<AriaRequestEvent, SyntheticAriaRequestEvent>>;
+    ariarequest: NativeEventDispatcher<SyntheticEventClass<Event, SyntheticUIEvent<UIEvent>>>;
     beforeactivate: NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
     beforecopy: NativeEventDispatcher<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
     beforecut: NativeEventDispatcher<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
@@ -126,7 +126,7 @@ export interface NativeEventDispatchersList {
 export const NativeEventDispatchers: NativeEventDispatchersList = {
     abort: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture, "abort", SyntheticUIEvent),
     activate: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "activate", SyntheticUIEvent),
-    ariarequest: new NativeEventDispatcher<SyntheticEventClass<AriaRequestEvent, SyntheticAriaRequestEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "ariarequest", SyntheticAriaRequestEvent),
+    ariarequest: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "ariarequest", SyntheticUIEvent),
     beforeactivate: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "beforeactivate", SyntheticUIEvent),
     beforecopy: new NativeEventDispatcher<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventDispatcherFlags.Capture, "beforecopy", SyntheticClipboardEvent),
     beforecut: new NativeEventDispatcher<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "beforecut", SyntheticClipboardEvent),
@@ -257,10 +257,10 @@ export const Events = {
         return createEventHandler<SyntheticUIEvent<UIEvent>>(NativeEventDispatchers.activate, handler, capture);
     },
     onAriaRequest: function createAriarequestEventHandler(
-        handler: (ev: SyntheticAriaRequestEvent) => void,
+        handler: (ev: SyntheticUIEvent<UIEvent>) => void,
         capture = false,
-    ): EventHandler<SyntheticAriaRequestEvent> {
-        return createEventHandler<SyntheticAriaRequestEvent>(NativeEventDispatchers.ariarequest, handler, capture);
+    ): EventHandler<SyntheticUIEvent<UIEvent>> {
+        return createEventHandler<SyntheticUIEvent<UIEvent>>(NativeEventDispatchers.ariarequest, handler, capture);
     },
     onBeforeActivate: function createBeforeactivateEventHandler(
         handler: (ev: SyntheticUIEvent<UIEvent>) => void,

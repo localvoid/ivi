@@ -74,7 +74,7 @@ import {
  *
  * @final
  */
-export class VNode<P> implements IVNode<P> {
+export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> | null;
     _key: any;

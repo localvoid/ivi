@@ -425,8 +425,8 @@ export interface GlobalEventHandlersProps {
 export interface ElementProps extends NodeProps, GlobalEventHandlersProps {
     id?: string;
     msContentZoomFactor?: number;
-    onariarequest?: (this: this, ev: AriaRequestEvent) => any;
-    oncommand?: (this: this, ev: CommandEvent) => any;
+    onariarequest?: (this: this, ev: Event) => any;
+    oncommand?: (this: this, ev: Event) => any;
     ongotpointercapture?: (this: this, ev: PointerEvent) => any;
     onlostpointercapture?: (this: this, ev: PointerEvent) => any;
     onmsgesturechange?: (this: this, ev: MSGestureEvent) => any;

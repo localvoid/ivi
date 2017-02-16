@@ -9,7 +9,7 @@ import { currentFrame } from "../scheduler/frame";
 /**
  * Component function constructor.
  */
-export interface ComponentFunction<P> {
+export interface ComponentFunction<P = void> {
     (props: P, context?: { [key: string]: any }): IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
     shouldAugment?: (props: P, context?: { [key: string]: any }) => boolean;
@@ -18,7 +18,7 @@ export interface ComponentFunction<P> {
 /**
  * Component class constructor.
  */
-export interface ComponentClass<P> {
+export interface ComponentClass<P = void> {
     new (props: P, context: { [key: string]: any }, owner: Component<any> | undefined): Component<P>;
 }
 
@@ -37,7 +37,7 @@ export interface ComponentClass<P> {
  *
  *     render($c(Hello, "world"), document.getElementById("App")!);
  */
-export abstract class Component<P> {
+export abstract class Component<P = void> {
     /**
      * Flags, see `ComponentFlags` for details.
      *
