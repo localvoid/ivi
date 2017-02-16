@@ -34,6 +34,7 @@ this library.
 - Declarative rendering with a Virtual DOM
 - Components (stateless functions and stateful ES6 classes)
 - Extensible synthetic event subsystem
+- Synchronous and deterministic syncing algorithm
 - Fast performance
 - Server side rendering
 - Advanced development mode
