@@ -328,6 +328,7 @@ function _augmentVNode(
     owner?: Component<any>,
 ): void {
     vNodeAugment(parent, node, vnode, context, owner);
+    vNodeAttach(vnode);
 }
 
 /**
@@ -1095,7 +1096,8 @@ function vNodeAugment(
                             for (let i = 0; i < children.length; i++) {
                                 const child = children[i];
                                 if ((child._flags & VNodeFlags.Text) && child._children === "") {
-                                    vNodeRenderInto(node, domChild, child, context, owner);
+                                    instance = vNodeRender(node, vnode, context, owner);
+                                    node.insertBefore(getDOMInstanceFromVNode(vnode)!, domChild);
                                 } else {
                                     if (__IVI_DEV__) {
                                         if (domChild === null) {
@@ -1197,7 +1199,8 @@ function vNodeAugment(
             stackTracePopComponent();
         }
     } else {
-        instance = vNodeRenderInto(parent, null, vnode, context, owner);
+        instance = vNodeRender(parent, vnode, context, owner);
+        parent.insertBefore(getDOMInstanceFromVNode(vnode)!, null);
     }
 
     vnode._instance = instance;

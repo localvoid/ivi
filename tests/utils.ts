@@ -1,4 +1,3 @@
-import { setInitialNestingState } from "../src/dev_mode/html_nesting_rules";
 import { IVNode, getDOMInstanceFromVNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { VNode, $h, $c, $t } from "../src/vdom/vnode";
@@ -97,11 +96,6 @@ export function render<T extends Node>(
 export function augment(node: IVNode<any>, innerHTML: string, container?: Element): Element {
     if (!container) {
         container = document.createElement("div");
-    }
-    if ((container as Element).tagName) {
-        setInitialNestingState((container as Element).tagName.toLowerCase(), 0);
-    } else {
-        setInitialNestingState("", 0);
     }
 
     (container as any).__ivi_root = node;
