@@ -463,6 +463,11 @@ export class VNode<P = null> implements IVNode<P> {
      * @return VNodeBuilder.
      */
     autofocus(focus: boolean): VNode<P> {
+        if (__IVI_DEV__) {
+            if (!(this._flags & VNodeFlags.Element)) {
+                throw new Error("Failed to set autofocus, autofocus is available on element nodes only.");
+            }
+        }
         if (focus) {
             this._flags |= VNodeFlags.Autofocus;
         }
