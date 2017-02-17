@@ -1744,6 +1744,8 @@ function syncChildren(
  * [1] Actually it is almost minimum number of dom ops, when node is removed and another one is inserted at the same
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
+ * Also, there are some rare cases like "ab" => "bc" that will use more DOM ops that is necessary because of
+ * prefix/suffix optimization.
  *
  * @param parent Parent node.
  * @param a Old VNode list.

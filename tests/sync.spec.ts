@@ -3,7 +3,7 @@ import { IVNode } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
 import { updateComponent } from "../src/vdom/implementation";
 import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
-import { frag, render, $tc, $tcf } from "./utils";
+import { render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
 
 const expect = chai.expect;
 
@@ -17,7 +17,7 @@ function genVNodes(item: any, keys: boolean): IVNode<any> | IVNode<any>[] {
         }
         return result;
     } else {
-        let e = $h("div").key(item.key);
+        let e = keys ? $h("div").key(item.key) : $h("div");
         if (keys) {
             e.children(genVNodes(item.children, keys) as IVNode<any>[]);
         } else {
@@ -27,7 +27,8 @@ function genVNodes(item: any, keys: boolean): IVNode<any> | IVNode<any>[] {
     }
 }
 
-function checkInnerHtmlEquals(ax: IVNode<any>[], bx: IVNode<any>[], cx: IVNode<any>[], keys: boolean): void {
+function checkInnerHtmlEquals(ax: IVNode<any>[], bx: IVNode<any>[], cx: IVNode<any>[], keys: boolean,
+    counter: DOMOpsCounter): void {
     const a = $h("div");
     const b = $h("div");
     const c = $h("div");
@@ -45,6 +46,8 @@ function checkInnerHtmlEquals(ax: IVNode<any>[], bx: IVNode<any>[], cx: IVNode<a
     const bDiv = document.createElement("div");
     render(a, aDiv);
     render(b, bDiv);
+
+    counter.reset();
     render(c, aDiv);
 
     expect(aDiv.innerHTML).to.equal(bDiv.innerHTML);
@@ -53,406 +56,548 @@ function checkInnerHtmlEquals(ax: IVNode<any>[], bx: IVNode<any>[], cx: IVNode<a
 describe("sync", () => {
     describe("props", () => {
         it("null => {}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            render<HTMLElement>($h("div").props({}), f);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    r($h("div").props({}));
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{} => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({}), f);
-            render<HTMLElement>($h("div"), f);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({}));
+                    r($h("div"));
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{} => {}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({}), f);
-            render<HTMLElement>($h("div").props({}), f);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({}));
+                    r($h("div").props({}));
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("null => {title: 1}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2" }), f);
-            expect(b.title).to.equal("2");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    const b = r($h("div").props({ title: "2" })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{} => {title: 1}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({}), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2" }), f);
-            expect(b.title).to.equal("2");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({}));
+                    const b = r($h("div").props({ title: "2" })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1} => {title: 2}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1" }), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2" }), f);
-            expect(b.title).to.equal("2");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1" }));
+                    const b = r($h("div").props({ title: "2" })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{} => {title: 2, tabIndex: 2}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({}), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2", tabIndex: 2 }), f);
-            expect(b.title).to.equal("2");
-            expect(b.tabIndex).to.equal(2);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({}));
+                    const b = r($h("div").props({ title: "2", tabIndex: 2 })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expect(b.tabIndex).to.equal(2);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1} => {title: 2, tabIndex: 2}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1" }), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2", tabIndex: 2 }), f);
-            expect(b.title).to.equal("2");
-            expect(b.tabIndex).to.equal(2);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1" }));
+                    const b = r($h("div").props({ title: "2", tabIndex: 2 })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expect(b.tabIndex).to.equal(2);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => {title: 2, tabIndex: 2}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2", tabIndex: 2 }), f);
-            expect(b.title).to.equal("2");
-            expect(b.tabIndex).to.equal(2);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div").props({ title: "2", tabIndex: 2 })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expect(b.tabIndex).to.equal(2);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => {title: 1, tabIndex: 1}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            expect(b.title).to.equal("1");
-            expect(b.tabIndex).to.equal(1);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div").props({ title: "1", tabIndex: 1 })) as HTMLElement;
+                    expect(b.title).to.equal("1");
+                    expect(b.tabIndex).to.equal(1);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => {title: 2}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2" }), f);
-            expect(b.title).to.equal("2");
-            expect(b.tabIndex).to.lessThan(1);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div").props({ title: "2" })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expect(b.tabIndex).to.lessThan(1);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => {title: 2, lang: en}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div").props({ title: "2", lang: "en" }), f);
-            expect(b.title).to.equal("2");
-            expect(b.tabIndex).to.lessThan(1);
-            expect(b.lang).to.equal("en");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div").props({ title: "2", lang: "en" })) as HTMLElement;
+                    expect(b.title).to.equal("2");
+                    expect(b.tabIndex).to.lessThan(1);
+                    expect(b.lang).to.equal("en");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => {lang: en}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div").props({ lang: "en" }), f);
-            expect(b.title).to.equal("");
-            expect(b.tabIndex).to.lessThan(1);
-            expect(b.lang).to.equal("en");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div").props({ lang: "en" })) as HTMLElement;
+                    expect(b.title).to.equal("");
+                    expect(b.tabIndex).to.lessThan(1);
+                    expect(b.lang).to.equal("en");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => {}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div").props({}), f);
-            expect(b.title).to.equal("");
-            expect(b.tabIndex).to.lessThan(1);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div").props({})) as HTMLElement;
+                    expect(b.title).to.equal("");
+                    expect(b.tabIndex).to.lessThan(1);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{title: 1, tabIndex: 1} => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").props({ title: "1", tabIndex: 1 }), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.title).to.equal("");
-            expect(b.tabIndex).to.lessThan(1);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").props({ title: "1", tabIndex: 1 }));
+                    const b = r($h("div")) as HTMLElement;
+                    expect(b.title).to.equal("");
+                    expect(b.tabIndex).to.lessThan(1);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
     });
 
     describe("className", () => {
         it("null => 'a'", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div", "a"), f);
-            expect(b.classList.length).to.equal(1);
-            expect(b.classList.contains("a")).to.true;
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    const b = r($h("div", "a")) as HTMLElement;
+                    expect(b.classList.length).to.equal(1);
+                    expect(b.classList.contains("a")).to.true;
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("'a' => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div", "a"), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.classList.length).to.equal(0);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div", "a"));
+                    const b = r($h("div")) as HTMLElement;
+                    expect(b.classList.length).to.equal(0);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("'a' => 'a'", () => {
-            const f = frag();
-            render<HTMLElement>($h("div", "a"), f);
-            const b = render<HTMLElement>($h("div", "a"), f);
-            expect(b.classList.length).to.equal(1);
-            expect(b.classList.contains("a")).to.true;
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div", "a"));
+                    const b = r($h("div", "a")) as HTMLElement;
+                    expect(b.classList.length).to.equal(1);
+                    expect(b.classList.contains("a")).to.true;
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("null => 'a'", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div", "a b"), f);
-            expect(b.classList.length).to.equal(2);
-            expect(b.classList.contains("a")).to.true;
-            expect(b.classList.contains("b")).to.true;
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    const b = r($h("div", "a b")) as HTMLElement;
+                    expect(b.classList.length).to.equal(2);
+                    expect(b.classList.contains("a")).to.true;
+                    expect(b.classList.contains("b")).to.true;
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
     });
 
     describe("style", () => {
         it("{} => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({}), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.style.cssText).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({}));
+                    const b = r($h("div")) as HTMLElement;
+                    expect(b.style.cssText).to.equal("");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("null => {}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div").style({}), f);
-            expect(b.style.cssText).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    const b = r($h("div").style({})) as HTMLElement;
+                    expect(b.style.cssText).to.equal("");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{} => {}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({}), f);
-            const b = render<HTMLElement>($h("div").style({}), f);
-            expect(b.style.cssText).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({}));
+                    const b = r($h("div").style({})) as HTMLElement;
+                    expect(b.style.cssText).to.equal("");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("null => {top: 10px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px" }), f);
-            expect(b.style.top).to.equal("10px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    const b = r($h("div").style({ top: "10px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{} => {top: 10px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({}), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px" }), f);
-            expect(b.style.top).to.equal("10px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({}));
+                    const b = r($h("div").style({ top: "10px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("null => {top: 10px, left: 20px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px", left: "20px" }), f);
-            expect(b.style.top).to.equal("10px");
-            expect(b.style.left).to.equal("20px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div"));
+                    const b = r($h("div").style({ top: "10px", left: "20px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expect(b.style.left).to.equal("20px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px} => {top: 10px, left: 20px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px", left: "20px" }), f);
-            expect(b.style.top).to.equal("10px");
-            expect(b.style.left).to.equal("20px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px" }));
+                    const b = r($h("div").style({ top: "10px", left: "20px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expect(b.style.left).to.equal("20px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => {top: 10px, left: 20px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px", left: "20px" }), f);
-            expect(b.style.top).to.equal("10px");
-            expect(b.style.left).to.equal("20px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div").style({ top: "10px", left: "20px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expect(b.style.left).to.equal("20px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => {top: 10px, left: 20px, right: 30px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px", left: "20px", right: "30px" }), f);
-            expect(b.style.top).to.equal("10px");
-            expect(b.style.left).to.equal("20px");
-            expect(b.style.right).to.equal("30px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div").style({ top: "10px", left: "20px", right: "30px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expect(b.style.left).to.equal("20px");
+                    expect(b.style.right).to.equal("30px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => {top: 10px, right: 30px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({ top: "10px", right: "30px" }), f);
-            expect(b.style.top).to.equal("10px");
-            expect(b.style.left).to.equal("");
-            expect(b.style.right).to.equal("30px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div").style({ top: "10px", right: "30px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("10px");
+                    expect(b.style.left).to.equal("");
+                    expect(b.style.right).to.equal("30px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => {right: 30px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({ right: "30px" }), f);
-            expect(b.style.top).to.equal("");
-            expect(b.style.left).to.equal("");
-            expect(b.style.right).to.equal("30px");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div").style({ right: "30px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("");
+                    expect(b.style.left).to.equal("");
+                    expect(b.style.right).to.equal("30px");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => {top: 1px}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({ top: "1px" }), f);
-            expect(b.style.top).to.equal("1px");
-            expect(b.style.left).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div").style({ top: "1px" })) as HTMLElement;
+                    expect(b.style.top).to.equal("1px");
+                    expect(b.style.left).to.equal("");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => {}", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div").style({}), f);
-            expect(b.style.top).to.equal("");
-            expect(b.style.left).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div").style({})) as HTMLElement;
+                    expect(b.style.top).to.equal("");
+                    expect(b.style.left).to.equal("");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("{top: 1px, left: 1px} => null", () => {
-            const f = frag();
-            render<HTMLElement>($h("div").style({ top: "1px", left: "1px" }), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.style.top).to.equal("");
-            expect(b.style.left).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").style({ top: "1px", left: "1px" }));
+                    const b = r($h("div")) as HTMLElement;
+                    expect(b.style.top).to.equal("");
+                    expect(b.style.left).to.equal("");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
     });
 
     describe("children", () => {
         const TESTS = [
-            [[0], [0]],
-            [[0, 1, 2], [0, 1, 2]],
+            [[0], [0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2], [0, 1, 2], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
 
-            [[], [1]],
-            [[], [4, 9]],
-            [[], [9, 3, 6, 1, 0]],
+            [[], [1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[], [4, 9], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[], [9, 3, 6, 1, 0], [0, 0, 5, 0, 5, 0, 0], [0, 0, 5, 0, 5, 0, 0]],
 
-            [[999], [1]],
-            [[999], [1, 999]],
-            [[999], [999, 1]],
-            [[999], [4, 9, 999]],
-            [[999], [999, 4, 9]],
-            [[999], [9, 3, 6, 1, 0, 999]],
-            [[999], [999, 9, 3, 6, 1, 0]],
-            [[999], [0, 999, 1]],
-            [[999], [0, 3, 999, 1, 4]],
-            [[999], [0, 999, 1, 4, 5]],
+            [[999], [1], [0, 0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[999], [1, 999], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[999], [999, 1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[999], [4, 9, 999], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[999], [999, 4, 9], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[999], [9, 3, 6, 1, 0, 999], [0, 0, 5, 0, 5, 0, 0], [0, 0, 5, 0, 5, 0, 0]],
+            [[999], [999, 9, 3, 6, 1, 0], [0, 0, 5, 0, 5, 0, 0], [0, 0, 5, 0, 5, 0, 0]],
+            [[999], [0, 999, 1], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[999], [0, 3, 999, 1, 4], [0, 0, 4, 0, 4, 0, 0], [0, 0, 4, 0, 4, 0, 0]],
+            [[999], [0, 999, 1, 4, 5], [0, 0, 4, 0, 4, 0, 0], [0, 0, 4, 0, 4, 0, 0]],
 
-            [[998, 999], [1, 998, 999]],
-            [[998, 999], [998, 999, 1]],
-            [[998, 999], [998, 1, 999]],
-            [[998, 999], [1, 2, 998, 999]],
-            [[998, 999], [998, 999, 1, 2]],
-            [[998, 999], [1, 998, 999, 2]],
-            [[998, 999], [1, 998, 2, 999, 3]],
-            [[998, 999], [1, 4, 998, 2, 5, 999, 3, 6]],
-            [[998, 999], [1, 998, 2, 999]],
-            [[998, 999], [998, 1, 999, 2]],
-            [[998, 999], [1, 2, 998, 3, 4, 999]],
-            [[998, 999], [998, 1, 2, 999, 3, 4]],
-            [[998, 999], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 998, 999]],
-            [[998, 999], [998, 999, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]],
-            [[998, 999], [0, 1, 2, 3, 4, 998, 999, 5, 6, 7, 8, 9]],
-            [[998, 999], [0, 1, 2, 998, 3, 4, 5, 6, 999, 7, 8, 9]],
-            [[998, 999], [0, 1, 2, 3, 4, 998, 5, 6, 7, 8, 9, 999]],
-            [[998, 999], [998, 0, 1, 2, 3, 4, 999, 5, 6, 7, 8, 9]],
+            [[998, 999], [1, 998, 999], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[998, 999], [998, 999, 1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[998, 999], [998, 1, 999], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[998, 999], [1, 2, 998, 999], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[998, 999], [998, 999, 1, 2], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[998, 999], [1, 998, 999, 2], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[998, 999], [1, 998, 2, 999, 3], [0, 0, 3, 0, 3, 0, 0], [0, 0, 3, 0, 3, 0, 0]],
+            [[998, 999], [1, 4, 998, 2, 5, 999, 3, 6], [0, 0, 6, 0, 6, 0, 0], [0, 0, 6, 0, 6, 0, 0]],
+            [[998, 999], [1, 998, 2, 999], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[998, 999], [998, 1, 999, 2], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[998, 999], [1, 2, 998, 3, 4, 999], [0, 0, 4, 0, 4, 0, 0], [0, 0, 4, 0, 4, 0, 0]],
+            [[998, 999], [998, 1, 2, 999, 3, 4], [0, 0, 4, 0, 4, 0, 0], [0, 0, 4, 0, 4, 0, 0]],
+            [[998, 999], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 998, 999], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
+            [[998, 999], [998, 999, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
+            [[998, 999], [0, 1, 2, 3, 4, 998, 999, 5, 6, 7, 8, 9], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
+            [[998, 999], [0, 1, 2, 998, 3, 4, 5, 6, 999, 7, 8, 9], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
+            [[998, 999], [0, 1, 2, 3, 4, 998, 5, 6, 7, 8, 9, 999], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
+            [[998, 999], [998, 0, 1, 2, 3, 4, 999, 5, 6, 7, 8, 9], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
 
-            [[1], []],
-            [[1, 2], [2]],
-            [[1, 2], [1]],
-            [[1, 2, 3], [2, 3]],
-            [[1, 2, 3], [1, 2]],
-            [[1, 2, 3], [1, 3]],
-            [[1, 2, 3, 4, 5], [2, 3, 4, 5]],
-            [[1, 2, 3, 4, 5], [1, 2, 3, 4]],
-            [[1, 2, 3, 4, 5], [1, 2, 4, 5]],
+            [[1], [], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[1, 2], [2], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2], [1], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2, 3], [2, 3], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2, 3], [1, 2], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2, 3], [1, 3], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2, 3, 4, 5], [2, 3, 4, 5], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2, 3, 4, 5], [1, 2, 3, 4], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[1, 2, 3, 4, 5], [1, 2, 4, 5], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
 
-            [[1, 2], []],
-            [[1, 2, 3], [3]],
-            [[1, 2, 3], [1]],
-            [[1, 2, 3, 4], [3, 4]],
-            [[1, 2, 3, 4], [1, 2]],
-            [[1, 2, 3, 4], [1, 4]],
-            [[1, 2, 3, 4, 5, 6], [2, 3, 4, 5]],
-            [[1, 2, 3, 4, 5, 6], [2, 3, 5, 6]],
-            [[1, 2, 3, 4, 5, 6], [1, 2, 3, 5]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [2, 3, 4, 5, 6, 7, 8, 9]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 5, 6, 7]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 6, 7, 8, 9]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 6, 7, 8]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 4, 6, 7, 8, 9]],
+            [[1, 2], [], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[1, 2, 3], [3], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3], [1], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3, 4], [3, 4], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3, 4], [1, 2], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3, 4], [1, 4], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3, 4, 5, 6], [2, 3, 4, 5], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3, 4, 5, 6], [2, 3, 5, 6], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[1, 2, 3, 4, 5, 6], [1, 2, 3, 5], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [2, 3, 4, 5, 6, 7, 8, 9], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 5, 6, 7], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 6, 7, 8, 9], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 6, 7, 8], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 4, 6, 7, 8, 9], [0, 0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
 
-            [[0, 1], [1, 0]],
-            [[0, 1, 2, 3], [3, 2, 1, 0]],
-            [[0, 1, 2, 3, 4], [1, 2, 3, 4, 0]],
-            [[0, 1, 2, 3, 4], [4, 0, 1, 2, 3]],
-            [[0, 1, 2, 3, 4], [1, 0, 2, 3, 4]],
-            [[0, 1, 2, 3, 4], [2, 0, 1, 3, 4]],
-            [[0, 1, 2, 3, 4], [0, 1, 4, 2, 3]],
-            [[0, 1, 2, 3, 4], [0, 1, 3, 4, 2]],
-            [[0, 1, 2, 3, 4], [0, 1, 3, 2, 4]],
-            [[0, 1, 2, 3, 4, 5, 6], [2, 1, 0, 3, 4, 5, 6]],
-            [[0, 1, 2, 3, 4, 5, 6], [0, 3, 4, 1, 2, 5, 6]],
-            [[0, 1, 2, 3, 4, 5, 6], [0, 2, 3, 5, 6, 1, 4]],
-            [[0, 1, 2, 3, 4, 5, 6], [0, 1, 5, 3, 2, 4, 6]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [8, 1, 3, 4, 5, 6, 0, 7, 2, 9]],
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [9, 5, 0, 7, 1, 2, 3, 4, 6, 8]],
+            [[0, 1], [1, 0], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3], [3, 2, 1, 0], [0, 0, 0, 0, 3, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [1, 2, 3, 4, 0], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [4, 0, 1, 2, 3], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [1, 0, 2, 3, 4], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [2, 0, 1, 3, 4], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [0, 1, 4, 2, 3], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [0, 1, 3, 4, 2], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4], [0, 1, 3, 2, 4], [0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5, 6], [2, 1, 0, 3, 4, 5, 6], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5, 6], [0, 3, 4, 1, 2, 5, 6], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5, 6], [0, 2, 3, 5, 6, 1, 4], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5, 6], [0, 1, 5, 3, 2, 4, 6], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [8, 1, 3, 4, 5, 6, 0, 7, 2, 9],
+            [0, 0, 0, 0, 3, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [9, 5, 0, 7, 1, 2, 3, 4, 6, 8],
+            [0, 0, 0, 0, 3, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
 
-            [[0, 1], [2, 1, 0]],
-            [[0, 1], [1, 0, 2]],
-            [[0, 1, 2], [3, 0, 2, 1]],
-            [[0, 1, 2], [0, 2, 1, 3]],
-            [[0, 1, 2], [0, 2, 3, 1]],
-            [[0, 1, 2], [1, 2, 3, 0]],
-            [[0, 1, 2, 3, 4], [5, 4, 3, 2, 1, 0]],
-            [[0, 1, 2, 3, 4], [5, 4, 3, 6, 2, 1, 0]],
-            [[0, 1, 2, 3, 4], [5, 4, 3, 6, 2, 1, 0, 7]],
+            [[0, 1], [2, 1, 0], [0, 0, 1, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1], [1, 0, 2], [0, 0, 1, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1, 2], [3, 0, 2, 1], [0, 0, 1, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1, 2], [0, 2, 1, 3], [0, 0, 1, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1, 2], [0, 2, 3, 1], [0, 0, 1, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1, 2], [1, 2, 3, 0], [0, 0, 1, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1, 2, 3, 4], [5, 4, 3, 2, 1, 0], [0, 0, 1, 0, 5, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 1, 2, 3, 4], [5, 4, 3, 6, 2, 1, 0], [0, 0, 2, 0, 6, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
+            [[0, 1, 2, 3, 4], [5, 4, 3, 6, 2, 1, 0, 7], [0, 0, 3, 0, 7, 0, 0], [0, 0, 3, 0, 3, 0, 0]],
 
-            [[0, 1, 2], [1, 0]],
-            [[2, 0, 1], [1, 0]],
-            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [7, 5, 4, 8, 3, 2, 1, 0]],
-            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 8, 3, 2, 1, 0, 9]],
-            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [7, 5, 4, 3, 2, 1, 0, 9]],
-            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0, 9]],
-            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0]],
+            [[0, 1, 2], [1, 0], [0, 0, 0, 0, 1, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[2, 0, 1], [1, 0], [0, 0, 0, 0, 1, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [7, 5, 4, 8, 3, 2, 1, 0], [0, 0, 0, 0, 5, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 8, 3, 2, 1, 0, 9], [0, 0, 0, 0, 5, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [7, 5, 4, 3, 2, 1, 0, 9], [0, 0, 0, 0, 5, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0, 9], [0, 0, 0, 0, 5, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
+            [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0], [0, 0, 0, 0, 5, 0, 3], [0, 0, 0, 0, 0, 0, 3]],
 
-            [[0], [1]],
-            [[0], [1, 2]],
-            [[0, 2], [1]],
-            [[0, 2], [1, 2]],
-            [[0, 2], [2, 1]],
-            [[0, 1, 2], [3, 4, 5]],
-            [[0, 1, 2], [2, 4, 5]],
-            [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]],
-            [[0, 1, 2, 3, 4, 5], [6, 1, 7, 3, 4, 8]],
-            [[0, 1, 2, 3, 4, 5], [6, 7, 3, 8]],
+            [[0], [1], [0, 0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0], [1, 2], [0, 0, 2, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 2], [1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 1]],
+            [[0, 2], [1, 2], [0, 0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 2], [2, 1], [0, 0, 1, 0, 2, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2], [3, 4, 5], [0, 0, 3, 0, 3, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2], [2, 4, 5], [0, 0, 2, 0, 3, 0, 2], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11], [0, 0, 6, 0, 6, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5], [6, 1, 7, 3, 4, 8], [0, 0, 3, 0, 3, 0, 3], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5], [6, 7, 3, 8], [0, 0, 3, 0, 3, 0, 5], [0, 0, 0, 0, 0, 0, 2]],
 
-            [[0, 1, 2], [3, 2, 1]],
-            [[0, 1, 2], [2, 1, 3]],
-            [[1, 2, 0], [2, 1, 3]],
-            [[1, 2, 0], [3, 2, 1]],
-            [[0, 1, 2, 3, 4, 5], [6, 1, 3, 2, 4, 7]],
-            [[0, 1, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4]],
-            [[0, 1, 2, 3, 4, 5], [6, 7, 3, 2, 4]],
-            [[0, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4]],
+            [[0, 1, 2], [3, 2, 1], [0, 0, 1, 0, 2, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2], [2, 1, 3], [0, 0, 1, 0, 3, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
+            [[1, 2, 0], [2, 1, 3], [0, 0, 1, 0, 2, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
+            [[1, 2, 0], [3, 2, 1], [0, 0, 1, 0, 3, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5], [6, 1, 3, 2, 4, 7], [0, 0, 2, 0, 3, 0, 2], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4], [0, 0, 2, 0, 3, 0, 2], [0, 0, 0, 0, 0, 0, 0]],
+            [[0, 1, 2, 3, 4, 5], [6, 7, 3, 2, 4], [0, 0, 2, 0, 3, 0, 3], [0, 0, 0, 0, 0, 0, 1]],
+            [[0, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4], [0, 0, 3, 0, 4, 0, 2], [0, 0, 1, 0, 1, 0, 0]],
 
             [[{ key: 0, children: [0] }],
-            [{ key: 0, children: [] }]],
+            [{ key: 0, children: [] }],
+            [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
 
             [[0, 1, { children: [0], key: 2 }],
-            [{ key: 2, children: [] }]],
+            [{ key: 2, children: [] }],
+            [0, 0, 0, 0, 0, 0, 2], [1, 0, 0, 0, 0, 1, 2]],
 
             [[{ key: 0, children: [] }],
-            [1, 2, { key: 0, children: [0] }]],
+            [1, 2, { key: 0, children: [0] }],
+            [0, 0, 3, 0, 3, 0, 0], [1, 0, 3, 0, 3, 1, 0]],
 
             [[0, { key: 1, children: [0, 1] }, 2],
-            [3, 2, { key: 1, children: [1, 0] }]],
+            [3, 2, { key: 1, children: [1, 0] }],
+            [0, 0, 1, 0, 3, 0, 1], [1, 0, 3, 0, 2, 2, 0]],
 
             [[0, { key: 1, children: [0, 1] }, 2],
-            [2, { key: 1, children: [1, 0] }, 3]],
+            [2, { key: 1, children: [1, 0] }, 3],
+            [0, 0, 1, 0, 4, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
 
             [[{ key: 1, children: [0, 1] }, { key: 2, children: [0, 1] }, 0],
-            [{ key: 2, children: [1, 0] }, { key: 1, children: [1, 0] }, 3]],
+            [{ key: 2, children: [1, 0] }, { key: 1, children: [1, 0] }, 3],
+            [0, 0, 1, 0, 4, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
 
             [[{ key: 1, children: [0, 1] }, { key: 2, children: [] }, 0],
-            [3, { key: 2, children: [1, 0] }, { key: 1, children: [] }]],
+            [3, { key: 2, children: [1, 0] }, { key: 1, children: [] }],
+            [0, 0, 3, 0, 5, 0, 1], [1, 0, 3, 0, 2, 2, 0]],
 
             [[0, { key: 1, children: [] }, 2, { key: 3, children: [1, 0] }, 4, 5],
-            [6, { key: 1, children: [0, 1] }, { key: 3, children: [] }, 2, 4, 7]],
+            [6, { key: 1, children: [0, 1] }, { key: 3, children: [] }, 2, 4, 7],
+            [0, 0, 4, 0, 5, 0, 2], [1, 0, 3, 0, 2, 2, 0]],
 
             [[0,
                 { key: 1, children: [] },
@@ -463,351 +608,513 @@ describe("sync", () => {
                 7,
             { key: 3, children: [1] },
             { key: 2, children: [1] },
-            { key: 4, children: [1] }]],
+            { key: 4, children: [1] }],
+            [2, 0, 5, 0, 8, 0, 3], [2, 0, 5, 0, 5, 2, 1]],
 
             [[0, 1, { key: 2, children: [0] }, 3, { key: 4, children: [0] }, 5],
-            [6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }]],
+            [6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }],
+            [0, 0, 2, 0, 3, 0, 3], [1, 0, 1, 0, 0, 2, 1]],
         ];
 
         describe("syncChildren", () => {
             it("null => 'abc'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("null => 10", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children(10), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("10");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children(10));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("10");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("null => false", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children(false), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children(false));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("null => true", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children(true));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("'abc' => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children("abc"), f);
-                const b = render<HTMLElement>($h("div"), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children("abc"));
+                        const b = r($h("div"));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("10 => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(10), f);
-                const b = render<HTMLElement>($h("div"), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(10));
+                        const b = r($h("div"));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("true => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(true), f);
-                const b = render<HTMLElement>($h("div"), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(true));
+                        const b = r($h("div"));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("'abc' => 'abc'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children("abc"), f);
-                const b = render<HTMLElement>($h("div").children("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children("abc"));
+                        const b = r($h("div").children("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("10 => 10", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(10), f);
-                const b = render<HTMLElement>($h("div").children(10), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("10");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(10));
+                        const b = r($h("div").children(10));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("10");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("true => true", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(true), f);
-                const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(true));
+                        const b = r($h("div").children(true));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("true => false", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(true), f);
-                const b = render<HTMLElement>($h("div").children(false), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(true));
+                        const b = r($h("div").children(false));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("false => true", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(false), f);
-                const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(false));
+                        const b = r($h("div").children(true));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("'abc' => 'cde'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children("abc"), f);
-                const b = render<HTMLElement>($h("div").children("cde"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("cde");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children("abc"));
+                        const b = r($h("div").children("cde"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("cde");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("'' => 'cde'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(""), f);
-                const b = render<HTMLElement>($h("div").children("cde"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("cde");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(""));
+                        const b = r($h("div").children("cde"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("cde");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("'abc' => 10", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children("abc"), f);
-                const b = render<HTMLElement>($h("div").children(10), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("10");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children("abc"));
+                        const b = r($h("div").children(10));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("10");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("'abc' => true", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children("abc"), f);
-                const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children("abc"));
+                        const b = r($h("div").children(true));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("10 => 'abc'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(10), f);
-                const b = render<HTMLElement>($h("div").children("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(10));
+                        const b = r($h("div").children("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("10 => true", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(10), f);
-                const b = render<HTMLElement>($h("div").children(true), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(10));
+                        const b = r($h("div").children(true));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("true => 'abc'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(true), f);
-                const b = render<HTMLElement>($h("div").children("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(true));
+                        const b = r($h("div").children("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("true => 10", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(true), f);
-                const b = render<HTMLElement>($h("div").children(10), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("10");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(true));
+                        const b = r($h("div").children(10));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("10");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("null => <div>", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children($h("div")), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children($h("div"))) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("<div> => 'cde'", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children($h("div")), f);
-                const b = render<HTMLElement>($h("div").children("cde"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("cde");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children($h("div")));
+                        const b = r($h("div").children("cde"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("cde");
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("'cde' => <div>", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children("cde"), f);
-                const b = render<HTMLElement>($h("div").children($h("div")), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children("cde"));
+                        const b = r($h("div").children($h("div"))) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("null => [<div>]", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children([$h("div")]), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children([$h("div")])) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("<div> => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children($h("div")), f);
-                const b = render<HTMLElement>($h("div"), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children($h("div")));
+                        const b = r($h("div"));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 1);
+                    });
+                });
             });
 
             it("[<div>] => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("div")]), f);
-                const b = render<HTMLElement>($h("div"), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([$h("div")]));
+                        const b = r($h("div"));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("[<div>] => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("div")]), f);
-                const b = render<HTMLElement>($h("div").children(null), f);
-                expect(b.childNodes.length).to.equal(0);
-            });
-
-            it("[<div>] => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("div")]), f);
-                const b = render<HTMLElement>($h("div").children(null), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([$h("div")]));
+                        const b = r($h("div").children(null));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("null => [<div>, <div>]", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").children([$h("div"), $h("div")]), f);
-                expect(b.childNodes.length).to.equal(2);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-                expect(b.children[1].tagName.toLowerCase()).to.equal("div");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").children([$h("div"), $h("div")])) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(2);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                        expect(b.children[1].tagName.toLowerCase()).to.equal("div");
+                        expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
+                    });
+                });
             });
 
             it("[<div>, <div>] => null", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("div"), $h("div")]), f);
-                const b = render<HTMLElement>($h("div"), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([$h("div"), $h("div")]));
+                        const b = r($h("div"));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
+                    });
+                });
             });
 
             it("null => unsafeHTML('abc')", () => {
-                const f = frag();
-                render<HTMLElement>($h("div"), f);
-                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div"));
+                        const b = r($h("div").unsafeHTML("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("123 => unsafeHTML('abc')", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(123), f);
-                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(123));
+                        const b = r($h("div").unsafeHTML("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                    });
+                });
             });
 
             it("123 => [<h1><h2>]", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children(123), f);
-                const b = render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
-                expect(b.childNodes.length).to.equal(2);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
-                expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children(123));
+                        const b = r($h("div").children([$h("h1"), $h("h2")])) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(2);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
+                        expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
+                        expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
+                    });
+                });
             });
 
             it("[<h1><h2>] => 123", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
-                const b = render<HTMLElement>($h("div").children(123), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("123");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([$h("h1"), $h("h2")]));
+                        const b = r($h("div").children(123));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("123");
+                        expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
+                    });
+                });
             });
 
             it("[<h1><h2>] => unsafeHTML('abc')", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
-                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([$h("h1"), $h("h2")]));
+                        const b = r($h("div").unsafeHTML("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
+                    });
+                });
             });
 
             it("[<h1><h2>] => <div>", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
-                const b = render<HTMLElement>($h("div").children($h("div")), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([$h("h1"), $h("h2")]));
+                        const b = r($h("div").children($h("div"))) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                        expectDOMOps(c, 4, 0, 0, 0, 3, 1, 1);
+                    });
+                });
             });
 
             it("[] => <div>", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children([]), f);
-                const b = render<HTMLElement>($h("div").children($h("div")), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children([]));
+                        const b = r($h("div").children($h("div"))) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("div");
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("<div> => unsafeHTML('abc')", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children($h("div")), f);
-                const b = render<HTMLElement>($h("div").unsafeHTML("abc"), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.firstChild!.nodeValue).to.equal("abc");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children($h("div")));
+                        const b = r($h("div").unsafeHTML("abc"));
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.firstChild!.nodeValue).to.equal("abc");
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                    });
+                });
             });
 
             it("<h1> => <h2>", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children($h("h1")), f);
-                const b = render<HTMLElement>($h("div").children($h("h2")), f);
-                expect(b.childNodes.length).to.equal(1);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("h2");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children($h("h1")));
+                        const b = r($h("div").children($h("h2"))) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(1);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("h2");
+                        expectDOMOps(c, 3, 0, 0, 0, 2, 1, 0);
+                    });
+                });
             });
 
             it("<div> => [<h1><h2>]", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children($h("div")), f);
-                const b = render<HTMLElement>($h("div").children([$h("h1"), $h("h2")]), f);
-                expect(b.childNodes.length).to.equal(2);
-                expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
-                expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children($h("div")));
+                        const b = r($h("div").children([$h("h1"), $h("h2")])) as HTMLElement;
+                        expect(b.childNodes.length).to.equal(2);
+                        expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
+                        expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
+                        expectDOMOps(c, 4, 0, 0, 0, 3, 1, 0);
+                    });
+                });
             });
 
             it("<div> => []", () => {
-                const f = frag();
-                render<HTMLElement>($h("div").children($h("div")), f);
-                const b = render<HTMLElement>($h("div").children([]), f);
-                expect(b.childNodes.length).to.equal(0);
+                startRender((r) => {
+                    checkDOMOps((c) => {
+                        r($h("div").children($h("div")));
+                        const b = r($h("div").children([]));
+                        expect(b.childNodes.length).to.equal(0);
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 1);
+                    });
+                });
             });
-
         });
 
-        describe("with trackByKey", () => {
+        describe("with keys", () => {
             TESTS.forEach((t) => {
                 const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
                 const testFn = () => {
-                    checkInnerHtmlEquals(genVNodes(t[0], true) as IVNode<any>[],
-                        genVNodes(t[1], true) as IVNode<any>[],
-                        genVNodes(t[1], true) as IVNode<any>[],
-                        true);
+                    checkDOMOps((c) => {
+                        checkInnerHtmlEquals(genVNodes(t[0], true) as IVNode<any>[],
+                            genVNodes(t[1], true) as IVNode<any>[],
+                            genVNodes(t[1], true) as IVNode<any>[],
+                            true,
+                            c);
+                        expectDOMOps.apply(undefined, [c, ...t[2]]);
+                    });
                 };
                 it(name, testFn);
             });
         });
 
-        describe("without trackByKey and without keys", () => {
+        describe("without keys", () => {
             TESTS.forEach((t) => {
                 const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
                 const testFn = () => {
-                    checkInnerHtmlEquals(genVNodes(t[0], false) as IVNode<any>[],
-                        genVNodes(t[1], false) as IVNode<any>[],
-                        genVNodes(t[1], false) as IVNode<any>[],
-                        false);
+                    checkDOMOps((c) => {
+                        checkInnerHtmlEquals(genVNodes(t[0], false) as IVNode<any>[],
+                            genVNodes(t[1], false) as IVNode<any>[],
+                            genVNodes(t[1], false) as IVNode<any>[],
+                            false,
+                            c);
+                        expectDOMOps.apply(undefined, [c, ...t[3]]);
+                    });
                 };
                 it(name, testFn);
             });
@@ -816,316 +1123,476 @@ describe("sync", () => {
 
     describe("components", () => {
         it("<span> => <C><div></C>", () => {
-            const f = frag();
-            render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($tc(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("span"));
+                    const b = r($tc()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C><div></C> => <div>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tc(), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tc());
+                    const b = r($h("div")) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<div> => <C><div></C>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($tc(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($h("div"));
+                    const b = r($tc()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C><div></C> => <span>", () => {
-            const f = frag();
-            render<HTMLElement>($tc(), f);
-            const b = render<HTMLElement>($h("span"), f);
-            expect(b.tagName.toLowerCase()).to.equal("span");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tc());
+                    const b = r($h("span")) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("span");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C><div></C> => <C><div></C>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tc(), f);
-            const b = render<HTMLElement>($tc(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tc());
+                    const b = r($tc()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.equal(b);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<C><div></C> => <C>''</C>", () => {
-            const f = frag();
-            render<HTMLElement>($tc(), f);
-            const b = render<HTMLElement>($tc(""), f);
-            expect(b.nodeType).to.equal(Node.TEXT_NODE);
-            expect(b.nodeValue).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tc());
+                    const b = r($tc(""));
+                    expect(b.nodeType).to.equal(Node.TEXT_NODE);
+                    expect(b.nodeValue).to.equal("");
+                    expectDOMOps(c, 1, 0, 1, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C>''</C> => <C><div></C>", () => {
-            const f = frag();
-            render<HTMLElement>($tc(""), f);
-            const b = render<HTMLElement>($tc(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tc(""));
+                    const b = r($tc()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expectDOMOps(c, 1, 0, 1, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C><C><C><div></C></C></C> => <span>", () => {
-            const f = frag();
-            render<HTMLElement>($tc($h("div"), 3), f);
-            const b = render<HTMLElement>($h("span"), f);
-            expect(b.tagName.toLowerCase()).to.equal("span");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tc($h("div"), 3));
+                    const b = r($h("span")) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("span");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<span> => <C><C><C><div></C></C></C>", () => {
-            const f = frag();
-            render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($tc($h("div"), 3), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("span"));
+                    const b = r($tc($h("div"), 3)) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C><C><C><div></C></C></C> => <C><C><C><div></C></C></C>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tc($h("div"), 3), f);
-            const b = render<HTMLElement>($tc($h("div"), 3), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tc($h("div"), 3));
+                    const b = r($tc($h("div"), 3)) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.equal(b);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<span> => <F><div></F>", () => {
-            const f = frag();
-            render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($tcf(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("span"));
+                    const b = r($tcf()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><div></F> => <div>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tcf(), f);
-            const b = render<HTMLElement>($h("div"), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tcf());
+                    const b = r($h("div")) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<div> => <F><div></F>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($h("div"), f);
-            const b = render<HTMLElement>($tcf(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($h("div"));
+                    const b = r($tcf()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><div></F> => <span>", () => {
-            const f = frag();
-            render<HTMLElement>($tcf(), f);
-            const b = render<HTMLElement>($h("span"), f);
-            expect(b.tagName.toLowerCase()).to.equal("span");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tcf());
+                    const b = r($h("span")) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("span");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><div></F> => <F><div></F>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tcf(), f);
-            const b = render<HTMLElement>($tcf(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tcf());
+                    const b = r($tcf()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.equal(b);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<F><div></F> => <F>''</F>", () => {
-            const f = frag();
-            render<HTMLElement>($tcf(), f);
-            const b = render<HTMLElement>($tcf(""), f);
-            expect(b.nodeType).to.equal(Node.TEXT_NODE);
-            expect(b.nodeValue).to.equal("");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tcf());
+                    const b = r($tcf("")) as HTMLElement;
+                    expect(b.nodeType).to.equal(Node.TEXT_NODE);
+                    expect(b.nodeValue).to.equal("");
+                    expectDOMOps(c, 1, 0, 1, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F>''</F> => <F><div></F>", () => {
-            const f = frag();
-            render<HTMLElement>($tcf(""), f);
-            const b = render<HTMLElement>($tcf(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tcf(""));
+                    const b = r($tcf()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expectDOMOps(c, 1, 0, 1, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><F><F><div></F></F></F> => <span>", () => {
-            const f = frag();
-            render<HTMLElement>($tcf($h("div"), 3), f);
-            const b = render<HTMLElement>($h("span"), f);
-            expect(b.tagName.toLowerCase()).to.equal("span");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($tcf($h("div"), 3));
+                    const b = r($h("span")) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("span");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<span> => <F><F><F><div></F></F></F>", () => {
-            const f = frag();
-            render<HTMLElement>($h("span"), f);
-            const b = render<HTMLElement>($tcf($h("div"), 3), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("span"));
+                    const b = r($tcf($h("div"), 3)) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><F><F><div></F></F></F> => <F><F><F><div></F></F></F>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tcf($h("div"), 3), f);
-            const b = render<HTMLElement>($tcf($h("div"), 3), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tcf($h("div"), 3));
+                    const b = r($tcf($h("div"), 3)) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.equal(b);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<C><div></C> => <F><div></F>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tc(), f);
-            const b = render<HTMLElement>($tcf(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tc());
+                    const b = r($tcf()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><div></F> => <C><div></C>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tcf(), f);
-            const b = render<HTMLElement>($tc(), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tcf());
+                    const b = r($tc()) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<C><C><C><div></C></C></C> => <F><F><F><div></F></F></F>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tc($h("div"), 3), f);
-            const b = render<HTMLElement>($tcf($h("div"), 3), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tc($h("div"), 3));
+                    const b = r($tcf($h("div"), 3)) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<F><F><F><div></F></F></F> => <C><C><C><div></C></C></C>", () => {
-            const f = frag();
-            const a = render<HTMLElement>($tcf($h("div"), 3), f);
-            const b = render<HTMLElement>($tc($h("div"), 3), f);
-            expect(b.tagName.toLowerCase()).to.equal("div");
-            expect(a).to.not.equal(b);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    const a = r($tcf($h("div"), 3));
+                    const b = r($tc($h("div"), 3)) as HTMLElement;
+                    expect(b.tagName.toLowerCase()).to.equal("div");
+                    expect(a).to.not.equal(b);
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
     });
 
     describe("special elements", () => {
         it("<input type='text'> => <input type='checkbox'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("text"), f);
-            const b = render<HTMLInputElement>($i("checkbox"), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("checkbox");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("text"));
+                    const b = r($i("checkbox")) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("checkbox");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<input type='text'> => <input type='text' value='cde'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("text"), f);
-            const b = render<HTMLInputElement>($i("text").value("cde"), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("text");
-            expect(b.value).to.equal("cde");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("text"));
+                    const b = r($i("text").value("cde")) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("text");
+                    expect(b.value).to.equal("cde");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<input type='text' value='abc'> => <input type='text' value='cde'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("text").value("abc"), f);
-            const b = render<HTMLInputElement>($i("text").value("cde"), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("text");
-            expect(b.value).to.equal("cde");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("text").value("abc"));
+                    const b = r($i("text").value("cde")) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("text");
+                    expect(b.value).to.equal("cde");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<input type='text' value='abc'> => <input type='text'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("text").value("abc"), f);
-            const b = render<HTMLInputElement>($i("text"), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("text");
-            expect(b.value).to.equal("abc");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("text").value("abc"));
+                    const b = r($i("text")) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("text");
+                    expect(b.value).to.equal("abc");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<input type='checkbox'> => <input type='checkbox checked=true'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("checkbox"), f);
-            const b = render<HTMLInputElement>($i("checkbox").checked(true), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("checkbox");
-            expect(b.checked).to.equal(true);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("checkbox"));
+                    const b = r($i("checkbox").checked(true)) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("checkbox");
+                    expect(b.checked).to.equal(true);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<input type='checkbox' checked=true> => <input type='checkbox checked=false'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("checkbox").checked(true), f);
-            const b = render<HTMLInputElement>($i("checkbox").checked(false), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("checkbox");
-            expect(b.checked).to.equal(false);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("checkbox").checked(true));
+                    const b = r($i("checkbox").checked(false)) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("checkbox");
+                    expect(b.checked).to.equal(false);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<input type='checkbox' checked=true> => <input type='checkbox'>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("checkbox").checked(true), f);
-            const b = render<HTMLInputElement>($i("checkbox"), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("checkbox");
-            expect(b.checked).to.equal(true);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("checkbox").checked(true));
+                    const b = r($i("checkbox")) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("checkbox");
+                    expect(b.checked).to.equal(true);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<input type='text'> => <textarea>", () => {
-            const f = frag();
-            render<HTMLInputElement>($i("text"), f);
-            const b = render<HTMLTextAreaElement>($i("textarea"), f);
-            expect(b.tagName.toLowerCase()).to.equal("textarea");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("text"));
+                    const b = r($i("textarea")) as HTMLTextAreaElement;
+                    expect(b.tagName.toLowerCase()).to.equal("textarea");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<textarea> => <input type='text'>", () => {
-            const f = frag();
-            render<HTMLTextAreaElement>($i("textarea"), f);
-            const b = render<HTMLInputElement>($i("text"), f);
-            expect(b.tagName.toLowerCase()).to.equal("input");
-            expect(b.type).to.equal("text");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("textarea"));
+                    const b = r($i("text")) as HTMLInputElement;
+                    expect(b.tagName.toLowerCase()).to.equal("input");
+                    expect(b.type).to.equal("text");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<textarea></textarea> => <textarea>cde</textarea>", () => {
-            const f = frag();
-            render<HTMLTextAreaElement>($i("textarea"), f);
-            const b = render<HTMLTextAreaElement>($i("textarea").value("cde"), f);
-            expect(b.tagName.toLowerCase()).to.equal("textarea");
-            expect(b.value).to.equal("cde");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("textarea"));
+                    const b = r($i("textarea").value("cde")) as HTMLTextAreaElement;
+                    expect(b.tagName.toLowerCase()).to.equal("textarea");
+                    expect(b.value).to.equal("cde");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<textarea>abc</textarea> => <textarea>cde</textarea>", () => {
-            const f = frag();
-            render<HTMLTextAreaElement>($i("textarea").value("abc"), f);
-            const b = render<HTMLTextAreaElement>($i("textarea").value("cde"), f);
-            expect(b.tagName.toLowerCase()).to.equal("textarea");
-            expect(b.value).to.equal("cde");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("textarea").value("abc"));
+                    const b = r($i("textarea").value("cde")) as HTMLTextAreaElement;
+                    expect(b.tagName.toLowerCase()).to.equal("textarea");
+                    expect(b.value).to.equal("cde");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<textarea>abc</textarea> => <textarea></textarea>", () => {
-            const f = frag();
-            render<HTMLTextAreaElement>($i("textarea").value("abc"), f);
-            const b = render<HTMLTextAreaElement>($i("textarea"), f);
-            expect(b.tagName.toLowerCase()).to.equal("textarea");
-            expect(b.value).to.equal("abc");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($i("textarea").value("abc"));
+                    const b = r($i("textarea")) as HTMLTextAreaElement;
+                    expect(b.tagName.toLowerCase()).to.equal("textarea");
+                    expect(b.value).to.equal("abc");
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<audio> => <video>", () => {
-            const f = frag();
-            render<HTMLAudioElement>($m("audio"), f);
-            const b = render<HTMLVideoElement>($m("video"), f);
-            expect(b.tagName.toLowerCase()).to.equal("video");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($m("audio"));
+                    const b = r($m("video")) as HTMLMediaElement;
+                    expect(b.tagName.toLowerCase()).to.equal("video");
+                    expectDOMOps(c, 2, 0, 0, 0, 1, 1, 0);
+                });
+            });
         });
 
         it("<audio> => <audio volume=0.5>", () => {
-            const f = frag();
-            render<HTMLAudioElement>($m("audio"), f);
-            const b = render<HTMLAudioElement>($m("audio").props({ volume: 0.5 }), f);
-            expect(b.volume).to.equal(0.5);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($m("audio"));
+                    const b = r($m("audio").props({ volume: 0.5 })) as HTMLMediaElement;
+                    expect(b.volume).to.equal(0.5);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<audio volume=0.3> => <audio volume=0.5>", () => {
-            const f = frag();
-            render<HTMLAudioElement>($m("audio").props({ volume: 0.3 }), f);
-            const b = render<HTMLAudioElement>($m("audio").props({ volume: 0.5 }), f);
-            expect(b.volume).to.equal(0.5);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($m("audio").props({ volume: 0.3 }));
+                    const b = r($m("audio").props({ volume: 0.5 })) as HTMLMediaElement;
+                    expect(b.volume).to.equal(0.5);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
 
         it("<audio volume=0.3> => <audio>", () => {
-            const f = frag();
-            render<HTMLAudioElement>($m("audio").props({ volume: 0.3 }), f);
-            const b = render<HTMLAudioElement>($m("audio"), f);
-            expect(b.volume).to.equal(0.3);
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($m("audio").props({ volume: 0.3 }));
+                    const b = r($m("audio")) as HTMLMediaElement;
+                    expect(b.volume).to.equal(0.3);
+                    expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+                });
+            });
         });
     });
 
@@ -1164,158 +1631,194 @@ describe("sync", () => {
         }
 
         it("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
-            const f = frag();
-            let c: A | null = null;
-            function ref(r: A | null) {
-                c = r;
-            }
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    let cmp: A | null = null;
+                    function ref(re: A | null) {
+                        cmp = re;
+                    }
 
-            render<HTMLDivElement>($h("div").children([
-                $h("h1").key(0),
-                $c(A, 0).key(1).ref(ref),
-            ]), f);
-            c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").children([
-                $c(A, 1).key(1).ref(ref),
-                $h("h1").key(0),
-            ]), f);
-            expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[0].firstChild!.nodeValue).to.equal("1");
+                    r($h("div").children([
+                        $h("h1").key(0),
+                        $c(A, 0).key(1).ref(ref),
+                    ]));
+                    cmp!.syncUpdate(1);
+                    const n = r($h("div").children([
+                        $c(A, 1).key(1).ref(ref),
+                        $h("h1").key(0),
+                    ])) as HTMLDivElement;
+                    expect(n.children[0].tagName.toLowerCase()).to.equal("span");
+                    expect(n.children[0].firstChild!.nodeValue).to.equal("1");
+                    expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
+                });
+            });
         });
 
         it("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
-            const f = frag();
-            let c: A | null = null;
-            function ref(r: A | null) {
-                c = r;
-            }
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    let cmp: A | null = null;
+                    function ref(re: A | null) {
+                        cmp = re;
+                    }
 
-            render<HTMLDivElement>($h("div").children([
-                $h("h1").key(0),
-                $c(B, $c(A, 0).ref(ref)).key(1),
-            ]), f);
-            c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").children([
-                $c(B, $c(A, 1).ref(ref)).key(1),
-                $h("h1").key(0),
-            ]), f);
-            expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[0].firstChild!.nodeValue).to.equal("1");
+                    r($h("div").children([
+                        $h("h1").key(0),
+                        $c(B, $c(A, 0).ref(ref)).key(1),
+                    ]));
+                    cmp!.syncUpdate(1);
+                    const n = r($h("div").children([
+                        $c(B, $c(A, 1).ref(ref)).key(1),
+                        $h("h1").key(0),
+                    ])) as HTMLDivElement;
+                    expect(n.children[0].tagName.toLowerCase()).to.equal("span");
+                    expect(n.children[0].firstChild!.nodeValue).to.equal("1");
+                    expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
+                });
+            });
         });
 
         // same tests in the opposite direction
         it("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
-            const f = frag();
-            let c: A | null = null;
-            function ref(r: A | null) {
-                c = r;
-            }
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    let cmp: A | null = null;
+                    function ref(re: A | null) {
+                        cmp = re;
+                    }
 
-            render<HTMLDivElement>($h("div").children([
-                $c(A, 0).key(1).ref(ref),
-                $h("h1").key(0),
-            ]), f);
-            c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").children([
-                $h("h1").key(0),
-                $c(A, 1).key(1).ref(ref),
-            ]), f);
-            expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[1].firstChild!.nodeValue).to.equal("1");
+                    r($h("div").children([
+                        $c(A, 0).key(1).ref(ref),
+                        $h("h1").key(0),
+                    ]));
+                    cmp!.syncUpdate(1);
+                    const n = r($h("div").children([
+                        $h("h1").key(0),
+                        $c(A, 1).key(1).ref(ref),
+                    ])) as HTMLDivElement;
+                    expect(n.children[1].tagName.toLowerCase()).to.equal("span");
+                    expect(n.children[1].firstChild!.nodeValue).to.equal("1");
+                    expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
+                });
+            });
         });
 
         it("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
-            const f = frag();
-            let c: A | null = null;
-            function ref(r: A | null) {
-                c = r;
-            }
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    let cmp: A | null = null;
+                    function ref(re: A | null) {
+                        cmp = re;
+                    }
 
-            render<HTMLDivElement>($h("div").children([
-                $c(B, $c(A, 0).ref(ref)).key(1),
-                $h("h1").key(0),
-            ]), f);
-            c!.syncUpdate(1);
-            const n = render<HTMLDivElement>($h("div").children([
-                $h("h1").key(0),
-                $c(B, $c(A, 1).ref(ref)).key(1),
-            ]), f);
-            expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-            expect(n.children[1].firstChild!.nodeValue).to.equal("1");
+                    r($h("div").children([
+                        $c(B, $c(A, 0).ref(ref)).key(1),
+                        $h("h1").key(0),
+                    ]));
+                    cmp!.syncUpdate(1);
+                    const n = r($h("div").children([
+                        $h("h1").key(0),
+                        $c(B, $c(A, 1).ref(ref)).key(1),
+                    ])) as HTMLDivElement;
+                    expect(n.children[1].tagName.toLowerCase()).to.equal("span");
+                    expect(n.children[1].firstChild!.nodeValue).to.equal("1");
+                    expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
+                });
+            });
         });
     });
 
     describe("keyed+non-keyed", () => {
         it("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
-            const f = frag();
-            render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
-            ]), f);
-            const b = render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("b").key(0), $t("c").key(1), $t("e").key(2), $t("d"),
-            ]), f);
-            expect(b.childNodes[0].nodeValue).to.equal("a");
-            expect(b.childNodes[1].nodeValue).to.equal("b");
-            expect(b.childNodes[2].nodeValue).to.equal("c");
-            expect(b.childNodes[3].nodeValue).to.equal("e");
-            expect(b.childNodes[4].nodeValue).to.equal("d");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a"), $t("b").key(0), $t("c").key(1), $t("e").key(2), $t("d"),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("b");
+                    expect(b.childNodes[2].nodeValue).to.equal("c");
+                    expect(b.childNodes[3].nodeValue).to.equal("e");
+                    expect(b.childNodes[4].nodeValue).to.equal("d");
+                    expectDOMOps(c, 1, 0, 6, 0, 7, 0, 1);
+                });
+            });
         });
 
         it("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
-            const f = frag();
-            render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
-            ]), f);
-            const b = render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("b").key(0), $t("d"),
-            ]), f);
-            expect(b.childNodes[0].nodeValue).to.equal("a");
-            expect(b.childNodes[1].nodeValue).to.equal("b");
-            expect(b.childNodes[2].nodeValue).to.equal("d");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a"), $t("b").key(0), $t("d"),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("b");
+                    expect(b.childNodes[2].nodeValue).to.equal("d");
+                    expectDOMOps(c, 1, 0, 5, 0, 6, 0, 2);
+                });
+            });
         });
 
         it("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
-            const f = frag();
-            render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
-            ]), f);
-            const b = render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("c").key(1), $t("b").key(0), $t("d"),
-            ]), f);
-            expect(b.childNodes[0].nodeValue).to.equal("a");
-            expect(b.childNodes[1].nodeValue).to.equal("c");
-            expect(b.childNodes[2].nodeValue).to.equal("b");
-            expect(b.childNodes[3].nodeValue).to.equal("d");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a"), $t("c").key(1), $t("b").key(0), $t("d"),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("c");
+                    expect(b.childNodes[2].nodeValue).to.equal("b");
+                    expect(b.childNodes[3].nodeValue).to.equal("d");
+                    expectDOMOps(c, 1, 0, 4, 0, 6, 0, 0);
+                });
+            });
         });
 
         it("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
-            const f = frag();
-            render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"),
-            ]), f);
-            const b = render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
-            ]), f);
-            expect(b.childNodes[0].nodeValue).to.equal("a");
-            expect(b.childNodes[1].nodeValue).to.equal("c");
-            expect(b.childNodes[2].nodeValue).to.equal("e");
-            expect(b.childNodes[3].nodeValue).to.equal("b");
-            expect(b.childNodes[4].nodeValue).to.equal("d");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"),
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("c");
+                    expect(b.childNodes[2].nodeValue).to.equal("e");
+                    expect(b.childNodes[3].nodeValue).to.equal("b");
+                    expect(b.childNodes[4].nodeValue).to.equal("d");
+                    expectDOMOps(c, 1, 0, 5, 0, 8, 0, 0);
+                });
+            });
         });
 
         it("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
-            const f = frag();
-            render<HTMLDivElement>($h("div").children([
-                $h("div"), $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"), $h("div"),
-            ]), f);
-            const b = render<HTMLDivElement>($h("div").children([
-                $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
-            ]), f);
-            expect(b.childNodes[0].nodeValue).to.equal("a");
-            expect(b.childNodes[1].nodeValue).to.equal("c");
-            expect(b.childNodes[2].nodeValue).to.equal("e");
-            expect(b.childNodes[3].nodeValue).to.equal("b");
-            expect(b.childNodes[4].nodeValue).to.equal("d");
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        $h("div"), $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"), $h("div"),
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("c");
+                    expect(b.childNodes[2].nodeValue).to.equal("e");
+                    expect(b.childNodes[3].nodeValue).to.equal("b");
+                    expect(b.childNodes[4].nodeValue).to.equal("d");
+                    expectDOMOps(c, 3, 0, 8, 0, 11, 1, 4);
+                });
+            });
         });
     });
 });
