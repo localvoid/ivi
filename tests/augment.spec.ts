@@ -1,111 +1,189 @@
-import { augment, $tc, $tcf } from "./utils";
+import { augment, $tc, $tcf, checkDOMOps, expectDOMOps } from "./utils";
 import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
 describe("augment", () => {
     it("'abc'", () => {
-        augment($t("abc"), "abc");
+        checkDOMOps((c) => {
+            augment($t("abc"), "abc");
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>", () => {
-        augment($h("div"), "<div></div>");
+        checkDOMOps((c) => {
+            augment($h("div"), "<div></div>");
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<span>", () => {
-        augment($h("span"), "<span></span>");
+        checkDOMOps((c) => {
+            augment($h("span"), "<span></span>");
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div> (null props)", () => {
-        augment($h("div").props(null), "<div></div>");
+        checkDOMOps((c) => {
+            augment($h("div").props(null), "<div></div>");
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div> ({} props)", () => {
-        augment($h("div").props({}), "<div></div>");
+        checkDOMOps((c) => {
+            augment($h("div").props({}), "<div></div>");
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div tabIndex='1'>", () => {
-        augment($h("div").props({ tabIndex: 1 }), `<div tabIndex="1"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").props({ tabIndex: 1 }), `<div tabIndex="1"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div tabIndex='1' title='2'>", () => {
-        augment($h("div").props({ tabIndex: 1, title: "2" }), `<div tabIndex="1" title="2"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").props({ tabIndex: 1, title: "2" }), `<div tabIndex="1" title="2"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div data-abc='a'", () => {
-        augment($h("div").props({ "data-abc": "a" }), `<div data-abc="a"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").props({ "data-abc": "a" }), `<div data-abc="a"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div aria-type='button'", () => {
-        augment($h("div").props({ "aria-type": "button" }), `<div aria-type="button"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").props({ "aria-type": "button" }), `<div aria-type="button"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div class=null>", () => {
-        augment($h("div").className(null), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").className(null), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div class=''>", () => {
-        augment($h("div", ""), `<div class=""></div>`);
+        checkDOMOps((c) => {
+            augment($h("div", ""), `<div class=""></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div class='a'>", () => {
-        augment($h("div", "a"), `<div class="a"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div", "a"), `<div class="a"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div class='a b'>", () => {
-        augment($h("div", "a b"), `<div class="a b"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div", "a b"), `<div class="a b"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div style=null>", () => {
-        augment($h("div").style(null), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").style(null), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div style={}>", () => {
-        augment($h("div").style(""), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").style(""), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div style={top: 10px}>", () => {
-        augment($h("div").style({ top: "10px" }), `<div style="top:10px"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").style({ top: "10px" }), `<div style="top:10px"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div style={top: 10px; left: 20px}>", () => {
-        augment($h("div").style({ top: "10px", left: "20px" }), `<div style="top:10px;left:20px"></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").style({ top: "10px", left: "20px" }), `<div style="top:10px;left:20px"></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div></div> (null children)", () => {
-        augment($h("div").children(null), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children(null), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>'abc'</div>", () => {
-        augment($h("div").children("abc"), `<div>abc</div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children("abc"), `<div>abc</div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>10</div>", () => {
-        augment($h("div").children(10), `<div>10</div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children(10), `<div>10</div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>false</div>", () => {
-        augment($h("div").children(false), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children(false), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>true</div>", () => {
-        augment($h("div").children(true), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children(true), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div><span></div>", () => {
-        augment($h("div").children($h("span")), `<div><span></span></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children($h("span")), `<div><span></span></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>[]</div>", () => {
-        augment($h("div").children([]), `<div></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children([]), `<div></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>[<span>]</div>", () => {
-        augment($h("div").children([$h("span")]), `<div><span></span></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children([$h("span")]), `<div><span></span></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>[<span>, <strong>]</div>", () => {
-        augment($h("div").children([$h("span"), $h("strong")]), `<div><span></span><strong></strong></div>`);
+        checkDOMOps((c) => {
+            augment($h("div").children([$h("span"), $h("strong")]), `<div><span></span><strong></strong></div>`);
+            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+        });
     });
 
     it("<div>[" +
@@ -114,133 +192,220 @@ describe("augment", () => {
         "  <div><div></div>," +
         "  <div>" +
         "]</div>", () => {
-            augment($h("div").children([
-                $h("div").children("hello"),
-                $h("div").children([$h("span").children("world"), $h("div").children($h("span"))]),
-                $h("div").children($h("div")),
-                $h("div"),
-            ]), `<div><div>hello</div><div><span>world</span><div><span></span></div></div><div><div></div></div>` +
-                `<div></div></div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children([
+                    $h("div").children("hello"),
+                    $h("div").children([$h("span").children("world"), $h("div").children($h("span"))]),
+                    $h("div").children($h("div")),
+                    $h("div"),
+                ]), `<div><div>hello</div><div><span>world</span><div><span></span></div></div><div><div></div></div>` +
+                    `<div></div></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
     describe("svg", () => {
         it("<circle>", () => {
-            augment($s("circle"), `<circle></circle>`);
+            checkDOMOps((c) => {
+                augment($s("circle"), `<circle></circle>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<circle class='a'>", () => {
-            augment($s("circle", "a"), `<circle class="a"></circle>`);
+            checkDOMOps((c) => {
+                augment($s("circle", "a"), `<circle class="a"></circle>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<circle style={top: 10px}>", () => {
-            augment($s("circle").style({ top: "10px" }), `<circle style="top:10px"></circle>`);
+            checkDOMOps((c) => {
+                augment($s("circle").style({ top: "10px" }), `<circle style="top:10px"></circle>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<circle xlink:href='a'>", () => {
-            augment($s("circle").props({ "xlink:href": "a" }), `<circle xlink:href="a"></circle>`);
+            checkDOMOps((c) => {
+                augment($s("circle").props({ "xlink:href": "a" }), `<circle xlink:href="a"></circle>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<circle xml:text='a'>", () => {
-            augment($s("circle").props({ "xml:test": "a" }), `<circle xml:text="a"></circle>`);
+            checkDOMOps((c) => {
+                augment($s("circle").props({ "xml:test": "a" }), `<circle xml:text="a"></circle>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
     });
 
     describe("children normalization", () => {
         it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
-            augment($h("div").children([$h("span"), [$h("strong").key("strong"), $h("a").key("a")], $h("span")]),
-                `<div><span></span><strong></strong><a></a><span></span></div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children([$h("span"), [$h("strong").key("strong"), $h("a").key("a")], $h("span")]),
+                    `<div><span></span><strong></strong><a></a><span></span></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<div>['abc', []]</div>", () => {
-            augment($h("div").children(["abc", []]), `<div>abc</div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children(["abc", []]), `<div>abc</div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<div>[<div>, null, <span>]</div>", () => {
-            augment($h("div").children([$h("div"), null, $h("span")]), `<div><div></div><span></span></div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children([$h("div"), null, $h("span")]), `<div><div></div><span></span></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<div>[<div>, 'abc', <span>]</div>", () => {
-            augment($h("div").children([$h("div"), "abc", $h("span")]), `<div><div></div>abc<span></span></div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children([$h("div"), "abc", $h("span")]), `<div><div></div>abc<span></span></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<div>[<div>, 123, <span>]</div>", () => {
-            augment($h("div").children([$h("div"), 123, $h("span")]), `<div><div></div>123<span></span></div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children([$h("div"), 123, $h("span")]), `<div><div></div>123<span></span></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<div>[<div>, true, <span>]</div>", () => {
-            augment($h("div").children([$h("div"), true, $h("span")]), `<div><div></div><span></span></div>`);
+            checkDOMOps((c) => {
+                augment($h("div").children([$h("div"), true, $h("span")]), `<div><div></div><span></span></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
     });
 
     describe("component", () => {
         it("<C><div></C>", () => {
-            augment($tc(), `<div></div>`);
+            checkDOMOps((c) => {
+                augment($tc(), `<div></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<C>''</C>", () => {
-            augment($tc(""), ``);
+            checkDOMOps((c) => {
+                augment($tc(""), ``);
+                expectDOMOps(c, 1, 0, 1, 0, 1, 0, 0);
+            });
         });
 
         it("<C><C><C><div></C></C></C>", () => {
-            augment($tc($h("div"), 3), `<div></div>`);
+            checkDOMOps((c) => {
+                augment($tc($h("div"), 3), `<div></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<C><C><C>''</C></C></C>", () => {
-            augment($tc("", 3), ``);
+            checkDOMOps((c) => {
+                augment($tc("", 3), ``);
+                expectDOMOps(c, 1, 0, 1, 0, 1, 0, 0);
+            });
         });
 
         it("<F><div></F>", () => {
-            augment($tcf(), `<div></div>`);
+            checkDOMOps((c) => {
+                augment($tcf(), `<div></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<F>''</F>", () => {
-            augment($tcf(""), ``);
+            checkDOMOps((c) => {
+                augment($tcf(""), ``);
+                expectDOMOps(c, 1, 0, 1, 0, 1, 0, 0);
+            });
         });
 
         it("<F><F><F><div></F></F></F>", () => {
-            augment($tcf($h("div"), 3), `<div></div>`);
+            checkDOMOps((c) => {
+                augment($tcf($h("div"), 3), `<div></div>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<F><F><F>''</F></F></F>", () => {
-            augment($tcf("", 3), ``);
+            checkDOMOps((c) => {
+                augment($tcf("", 3), ``);
+                expectDOMOps(c, 1, 0, 1, 0, 1, 0, 0);
+            });
         });
     });
 
     describe("special elements", () => {
         it("<input type='text'>", () => {
-            augment($i("text"), `<input type="text"></input>`);
+            checkDOMOps((c) => {
+                augment($i("text"), `<input type="text"></input>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<input type='text' value='abc'>", () => {
-            augment($i("text").value("abc"), `<input type="text" value="abc"></input>`);
+            checkDOMOps((c) => {
+                augment($i("text").value("abc"), `<input type="text" value="abc"></input>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<input type='checkbox'>", () => {
-            augment($i("checkbox"), `<input type="checkbox"></input>`);
+            checkDOMOps((c) => {
+                augment($i("checkbox"), `<input type="checkbox"></input>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<input type='checkbox' checked='true'>", () => {
-            augment($i("checkbox").checked(true), `<input type="checkbox" checked="true"></input>`);
+            checkDOMOps((c) => {
+                augment($i("checkbox").checked(true), `<input type="checkbox" checked="true"></input>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<textarea>", () => {
-            augment($i("textarea"), `<textarea></textarea>`);
+            checkDOMOps((c) => {
+                augment($i("textarea"), `<textarea></textarea>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<textarea>abc</textarea>", () => {
-            augment($i("textarea").value("abc"), `<textarea>abc</textarea>`);
+            checkDOMOps((c) => {
+                augment($i("textarea").value("abc"), `<textarea>abc</textarea>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<audio>", () => {
-            augment($m("audio"), `<audio></audio>`);
+            checkDOMOps((c) => {
+                augment($m("audio"), `<audio></audio>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<audio volume=0.5>", () => {
-            augment($m("audio").props({ volume: 0.5 }), `<audio volume="0.5"></audio>`);
+            checkDOMOps((c) => {
+                augment($m("audio").props({ volume: 0.5 }), `<audio volume="0.5"></audio>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
 
         it("<video volume=0.5>", () => {
-            augment($m("video").props({ volume: 0.5 }), `<video volume="0.5"></video>`);
+            checkDOMOps((c) => {
+                augment($m("video").props({ volume: 0.5 }), `<video volume="0.5"></video>`);
+                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
         });
     });
 
