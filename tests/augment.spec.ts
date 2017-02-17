@@ -1,4 +1,4 @@
-import { augment, $tc, $tcf, checkDOMOps, expectDOMOps } from "./utils";
+import { augment, $tc, $tcf, $lc, checkDOMOps, expectDOMOps } from "./utils";
 import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
 
 const expect = chai.expect;
@@ -342,6 +342,42 @@ describe("augment", () => {
                 expectDOMOps(c, 1, 0, 1, 0, 1, 0, 0);
             });
         });
+
+        it("<div><C>''</C></div>", () => {
+            checkDOMOps((c) => {
+                augment(
+                    $h("div").children($lc("1", $t(""))),
+                    `<div><!----></div>`);
+                expectDOMOps(c, 1, 0, 1, 0, 0, 1, 0);
+            });
+        });
+
+        it("<div>[<C>''</C>]</div>", () => {
+            checkDOMOps((c) => {
+                augment(
+                    $h("div").children([$lc("1", $t(""))]),
+                    `<div><!----></div>`);
+                expectDOMOps(c, 1, 0, 1, 0, 0, 1, 0);
+            });
+        });
+
+        it("<div>[<C>''</C><C>''</C>]</div>", () => {
+            checkDOMOps((c) => {
+                augment(
+                    $h("div").children([$lc("1", $t("")), $lc("2", $t(""))]),
+                    `<div><!----><!----></div>`);
+                expectDOMOps(c, 1, 0, 2, 0, 0, 2, 0);
+            });
+        });
+
+        it("<div>[<C>''</C><div><C>''</C>]</div>", () => {
+            checkDOMOps((c) => {
+                augment(
+                    $h("div").children([$lc("1", $t("")), $h("div"), $lc("2", $t(""))]),
+                    `<div><!----><div></div><!----></div>`);
+                expectDOMOps(c, 1, 0, 2, 0, 0, 2, 0);
+            });
+        });
     });
 
     describe("special elements", () => {
@@ -405,6 +441,40 @@ describe("augment", () => {
             checkDOMOps((c) => {
                 augment($m("video").props({ volume: 0.5 }), `<video volume="0.5"></video>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
+            });
+        });
+    });
+
+    describe("shouldAugment = false", () => {
+        it("<C shouldAugment=false><div></C> (empty)", () => {
+            checkDOMOps((c) => {
+                augment($lc("1", { shouldAugment: () => false }, $h("div")), ``);
+                expectDOMOps(c, 2, 0, 0, 0, 1, 0, 0);
+            });
+        });
+
+        it("<C shouldAugment=false><div></C>", () => {
+            checkDOMOps((c) => {
+                augment($lc("1", { shouldAugment: () => false }, $h("div")), `<div></div>`);
+                expectDOMOps(c, 2, 0, 0, 0, 0, 1, 0);
+            });
+        });
+
+        it("<div><C shouldAugment=false><div></C></div>", () => {
+            checkDOMOps((c) => {
+                augment(
+                    $h("div").children($lc("1", { shouldAugment: () => false }, $h("div"))),
+                    `<div><div></div></div>`);
+                expectDOMOps(c, 2, 0, 0, 0, 0, 1, 0);
+            });
+        });
+
+        it("<div><C shouldAugment=false>''</C></div>", () => {
+            checkDOMOps((c) => {
+                augment(
+                    $h("div").children($lc("1", { shouldAugment: () => false }, $t(""))),
+                    `<div><!----></div>`);
+                expectDOMOps(c, 1, 0, 1, 0, 0, 1, 0);
             });
         });
     });

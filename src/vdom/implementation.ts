@@ -1049,154 +1049,154 @@ function vNodeAugment(
     let instance: Node | Component<any>;
 
     if (node) {
-        const flags = vnode._flags;
+        if (node.nodeType !== 8) {
+            const flags = vnode._flags;
 
-        if (flags & (VNodeFlags.Element | VNodeFlags.Text)) {
-            // Push nesting state and check for nesting violation.
-            const _prevNestingStateParentTagName = nestingStateParentTagName();
-            const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
+            if (flags & (VNodeFlags.Element | VNodeFlags.Text)) {
+                // Push nesting state and check for nesting violation.
+                const _prevNestingStateParentTagName = nestingStateParentTagName();
+                const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
 
-            instance = node;
+                instance = node;
 
-            if (flags & VNodeFlags.Element) {
-                if (__IVI_DEV__) {
-                    pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
-                        (vnode._tag as ElementDescriptor<any>)._tag :
-                        vnode._tag as string);
-                    checkNestingViolation();
-                    if (node.nodeType !== 1) {
-                        throw new Error(`Invalid node type: expected "1", actual "${node.nodeType}".`);
-                    }
-                    if (vnode._className) {
-                        const className = (node as Element).getAttribute("class");
-                        if (className !== vnode._className) {
-                            throw new Error(`Invalid class name: expected "${vnode._className}", ` +
-                                `actual "${className}".`);
+                if (flags & VNodeFlags.Element) {
+                    if (__IVI_DEV__) {
+                        pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
+                            (vnode._tag as ElementDescriptor<any>)._tag :
+                            vnode._tag as string);
+                        checkNestingViolation();
+                        if (node.nodeType !== 1) {
+                            throw new Error(`Invalid node type: expected "1", actual "${node.nodeType}".`);
+                        }
+                        if (vnode._className) {
+                            const className = (node as Element).getAttribute("class");
+                            if (className !== vnode._className) {
+                                throw new Error(`Invalid class name: expected "${vnode._className}", ` +
+                                    `actual "${className}".`);
+                            }
+                        }
+                        // We can't check any style properties, because browsers ignore style names they don't
+                        // understand, like style names with browser specific prefixes.
+                        if (vnode._children === null) {
+                            if (node.hasChildNodes()) {
+                                throw new Error(`Invalid children: expected "0" children, ` +
+                                    `actual "${node.childNodes.length}".`);
+                            }
                         }
                     }
-                    // We can't check any style properties, because browsers ignore style names they don't understand,
-                    // like style names with browser specific prefixes.
-                    if (vnode._children === null) {
-                        if (node.hasChildNodes()) {
-                            throw new Error(`Invalid children: expected "0" children, ` +
-                                `actual "${node.childNodes.length}".`);
-                        }
+
+                    if (vnode._events) {
+                        syncEvents(node as Element, null, vnode._events);
                     }
-                }
 
-                if (vnode._events) {
-                    syncEvents(node as Element, null, vnode._events);
-                }
-
-                if (vnode._children !== null) {
-                    if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
-                        let domChild = node.firstChild;
-                        if (flags & VNodeFlags.ChildrenArray) {
-                            const children = vnode._children as IVNode<any>[];
-                            for (let i = 0; i < children.length; i++) {
-                                const child = children[i];
-                                if ((child._flags & VNodeFlags.Text) && child._children === "") {
-                                    instance = vNodeRender(node, vnode, context, owner);
-                                    node.insertBefore(getDOMInstanceFromVNode(vnode)!, domChild);
-                                } else {
+                    if (vnode._children !== null) {
+                        if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
+                            let domChild = node.firstChild;
+                            if (flags & VNodeFlags.ChildrenArray) {
+                                const children = vnode._children as IVNode<any>[];
+                                for (let i = 0; i < children.length; i++) {
                                     if (__IVI_DEV__) {
                                         if (domChild === null) {
                                             throw new Error(`Invalid children: expected to find ${children.length} ` +
                                                 `children nodes.`);
                                         }
                                     }
+                                    const next = domChild!.nextSibling;
                                     vNodeAugment(node, domChild, children[i], context, owner);
-                                    domChild = domChild!.nextSibling;
+                                    domChild = next;
                                 }
+                                if (__IVI_DEV__) {
+                                    if (domChild !== null) {
+                                        throw new Error(`Invalid children: document contains more children nodes ` +
+                                            `than expected.`);
+                                    }
+                                }
+                            } else {
+                                if (__IVI_DEV__) {
+                                    if (domChild === null) {
+                                        throw new Error(`Invalid children: expected to find 1 child node.`);
+                                    }
+                                    if (domChild.nextSibling !== null) {
+                                        throw new Error(`Invalid children: document contains more children nodes ` +
+                                            `than expected.`);
+                                    }
+                                }
+                                vNodeAugment(node, domChild, vnode._children as IVNode<any>, context, owner);
                             }
-                            if (__IVI_DEV__) {
-                                if (domChild !== null) {
-                                    throw new Error(`Invalid children: document contains more children nodes than ` +
-                                        `expected.`);
-                                }
-                            }
-                        } else {
-                            if (__IVI_DEV__) {
-                                if (domChild === null) {
-                                    throw new Error(`Invalid children: expected to find 1 child node.`);
-                                }
-                                if (domChild.nextSibling !== null) {
-                                    throw new Error(`Invalid children: document contains more children nodes than ` +
-                                        `expected.`);
-                                }
-                            }
-                            vNodeAugment(node, domChild, vnode._children as IVNode<any>, context, owner);
+
+                        } else if (flags & VNodeFlags.InputElement) {
+                            // Do not override input value when augmenting.
+                            //
+                            // TODO: What should be the default behavior when input element is changed before scripts
+                            // are loaded. Maybe we should fire onInput event, is synthetic event enough, or it should
+                            // be a native event?
+                            //
+                            // setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
                         }
-
-                    } else if (flags & VNodeFlags.InputElement) {
-                        // Do not override input value when augmenting.
-                        //
-                        // TODO: What should be the default behavior when input element is changed before scripts
-                        // are loaded. Maybe we should fire onInput event, is synthetic event enough, or it should be
-                        // a native event?
-                        //
-                        // setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
                     }
-                }
-            } else { // (flags & VNodeFlags.Text)
-                const children = typeof vnode._children === "number" ?
-                    vnode._children.toString() :
-                    vnode._children as string;
+                } else { // (flags & VNodeFlags.Text)
+                    const children = typeof vnode._children === "number" ?
+                        vnode._children.toString() :
+                        vnode._children as string;
 
-                if (__IVI_DEV__) {
-                    pushNestingState("$t");
-                    checkNestingViolation();
+                    if (__IVI_DEV__) {
+                        pushNestingState("$t");
+                        checkNestingViolation();
 
-                    if (node.nodeType !== 3) {
-                        throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
+                        if (node.nodeType !== 3) {
+                            throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
+                        }
+                        if (!node.nodeValue!.startsWith(children)) {
+                            throw new Error(`Invalid text content: expected "${vnode._children}", actual ` +
+                                `"${node.nodeValue!.slice(0, children.length)}".`);
+                        }
                     }
-                    if (!node.nodeValue!.startsWith(children)) {
-                        throw new Error(`Invalid text content: expected "${vnode._children}", actual ` +
-                            `"${node.nodeValue!.slice(0, children.length)}".`);
+
+                    if (node.nodeValue!.length > children.length) {
+                        parent.insertBefore((node as Text).splitText(children.length), node.nextSibling);
                     }
+
                 }
 
-                if (node.nodeValue!.length > children.length) {
-                    parent.insertBefore((node as Text).splitText(children.length), node.nextSibling);
-                }
+                restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
+            } else { // (flags & VNodeFlags.Component)
+                if (flags & VNodeFlags.ComponentClass) {
+                    const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+                    registerComponent(component);
+                    devModeOnComponentCreated(component);
+                    stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
 
-            }
+                    if (__IVI_DEV__) {
+                        component._ancestorFlags = nestingStateAncestorFlags();
+                        component._stackTrace = getFunctionalComponentStackTrace();
+                    }
 
-            restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
-        } else { // (flags & VNodeFlags.Component)
-            if (flags & VNodeFlags.ComponentClass) {
-                const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
-                registerComponent(component);
-                devModeOnComponentCreated(component);
-                stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
-
-                if (__IVI_DEV__) {
-                    component._ancestorFlags = nestingStateAncestorFlags();
-                    component._stackTrace = getFunctionalComponentStackTrace();
-                }
-
-                component._parentDOMNode = parent;
-                componentUpdateContext(component);
-                const root = componentClassRender(component);
-                if (component.shouldAugment()) {
-                    vNodeAugment(parent, node, root, component._context, component);
+                    component._parentDOMNode = parent;
+                    componentUpdateContext(component);
+                    const root = componentClassRender(component);
+                    if (component.shouldAugment()) {
+                        vNodeAugment(parent, node, root, component._context, component);
+                    } else {
+                        vNodeRender(parent, root, context, owner);
+                        parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
+                    }
                 } else {
-                    vNodeRender(parent, root, context, owner);
-                    parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
+                    const fc = vnode._tag as ComponentFunction<any>;
+                    stackTracePushComponent(fc);
+                    const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
+                    if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
+                        instance = vNodeAugment(parent, node, root, context, owner);
+                    } else {
+                        instance = vNodeRender(parent, root, context, owner);
+                        parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
+                    }
                 }
-            } else {
-                const fc = vnode._tag as ComponentFunction<any>;
-                stackTracePushComponent(fc);
-                const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
-                if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
-                    instance = vNodeAugment(parent, node, root, context, owner);
-                } else {
-                    instance = vNodeRender(parent, root, context, owner);
-                    parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
-                }
-            }
 
-            stackTracePopComponent();
+                stackTracePopComponent();
+            }
+        } else {
+            instance = vNodeRender(parent, vnode, context, owner);
+            parent.replaceChild(getDOMInstanceFromVNode(vnode)!, node);
         }
     } else {
         instance = vNodeRender(parent, vnode, context, owner);
