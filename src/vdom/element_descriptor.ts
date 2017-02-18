@@ -147,7 +147,7 @@ export class ElementDescriptor<P = void> {
             if (protect) {
                 this._flags |= ElementDescriptorFlags.ProtectStyle;
                 if (typeof protect === "object") {
-                    this._protectedProps = protect;
+                    this._protectedStyle = protect;
                 }
             }
             if (style) {

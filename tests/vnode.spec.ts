@@ -1,6 +1,6 @@
 import { IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { $t, $h, $s, $c, $i } from "../src/vdom/vnode";
+import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode";
 
 const expect = chai.expect;
 
@@ -18,7 +18,14 @@ describe("VNode", () => {
 
         it("key", () => {
             const t = $t("abc").key("k");
+            expect(t._flags & VNodeFlags.Key).to.be.equal(VNodeFlags.Key);
             expect(t._key).to.be.equal("k");
+        });
+
+        it("null key", () => {
+            const t = $t("abc").key("k").key(null);
+            expect(t._flags & VNodeFlags.Key).to.be.equal(0);
+            expect(t._key).to.be.equal(null);
         });
 
         it("className", () => {
@@ -129,11 +136,26 @@ describe("VNode", () => {
         it("children override", () => {
             const e = $h("div").children("abc");
             expect(() => e.children("123")).to.throw(Error);
+            expect(() => e.unsafeHTML("123")).to.throw(Error);
+        });
+
+        it("void elements: children", () => {
+            expect(() => $h("br").children("123")).to.throw(Error);
+            expect(() => $h("img").children("123")).to.throw(Error);
+        });
+
+        it("children: duplicate keys", () => {
+            expect(() => $h("div").children([$t("").key("a"), $t("").key("a")])).to.throw(Error);
         });
 
         it("unsafeHTML", () => {
             const e = $h("div").unsafeHTML("abc");
             expect(e._children).to.be.equal("abc");
+        });
+
+        it("void elements: unsafeHTML", () => {
+            expect(() => $h("br").unsafeHTML("123")).to.throw(Error);
+            expect(() => $h("img").unsafeHTML("123")).to.throw(Error);
         });
 
         it("value", () => {
@@ -142,6 +164,11 @@ describe("VNode", () => {
 
         it("checked", () => {
             expect(() => $h("div").checked(true)).to.throw(Error);
+        });
+
+        it("mergeProps: null", () => {
+            const e = $h("div").props({ title: "abc" }).mergeProps(null);
+            expect(e._props!.title).to.be.equal("abc");
         });
 
         it("mergeProps", () => {
@@ -155,6 +182,16 @@ describe("VNode", () => {
             expect(e._props!.title).to.be.equal("100");
         });
 
+        it("mergeProps: invalid objects", () => {
+            expect(() => $h("div").props("abc" as any).mergeProps({})).to.throw(Error);
+            expect(() => $h("div").props({}).mergeProps("abc" as any)).to.throw(Error);
+        });
+
+        it("mergeStyle: null", () => {
+            const e = $h("div").style({ top: "10px" }).mergeStyle(null);
+            expect(e._style!.top).to.be.equal("10px");
+        });
+
         it("mergeStyle", () => {
             const e = $h("div").style({ top: "10px" }).mergeStyle({ left: "20px" });
             expect(e._style!.top).to.be.equal("10px");
@@ -164,6 +201,11 @@ describe("VNode", () => {
         it("mergeStyle override", () => {
             const e = $h("div").style({ top: "10px" }).mergeStyle({ top: "20px" });
             expect(e._style!.top).to.be.equal("20px");
+        });
+
+        it("mergeEvents: null", () => {
+            const e = $h("div").events({ click: "clk" } as any).mergeEvents(null);
+            expect(e._events!.click).to.be.equal("clk");
         });
 
         it("mergeEvents", () => {
@@ -317,6 +359,16 @@ describe("VNode", () => {
 
         it("isComponentNode($i)", () => {
             expect(isComponentNode($i("text"))).to.false;
+        });
+    });
+
+    describe("$m", () => {
+        it("children", () => {
+            expect(() => $m("audio").children("123")).to.throw(Error);
+        });
+
+        it("unsafeHTML", () => {
+            expect(() => $c(EmptyComponent).unsafeHTML("123")).to.throw(Error);
         });
     });
 });

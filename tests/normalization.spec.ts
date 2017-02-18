@@ -94,12 +94,24 @@ describe("normalization", () => {
         expect(n[1]._key).to.equal(3);
     });
 
+    it("[null, 'abc', 123,] => [$t, $t]", () => {
+        const n = normalizeVNodes([null, "abc", 123]);
+        expect(n.length).to.equal(2);
+        expect(n[0]._key).to.equal(1);
+        expect(n[1]._key).to.equal(2);
+    });
+
     it("[$t, $t.key, $t] => [$t, $t.key, $t]", () => {
         const n = normalizeVNodes([$t(""), $t("").key("a"), $t("")]);
         expect(n.length).to.equal(3);
         expect(n[0]._key).to.equal(0);
         expect(n[1]._key).to.equal("a");
         expect(n[2]._key).to.equal(2);
+    });
+
+    it("invalid nested array", () => {
+        expect(() => { normalizeVNodes([[$t("")]]); }).to.throw(Error);
+        expect(() => { normalizeVNodes([[$t("").key("a"), $t("")]]); }).to.throw(Error);
     });
 
     describe("xss protection", () => {

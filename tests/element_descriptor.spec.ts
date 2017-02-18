@@ -99,15 +99,16 @@ describe("ElementDescriptor", () => {
             .props({ "id": "div" }, true);
 
         it("<div class=override></div>", () => {
-            expect(() => { $e(DivClassName, "override"); }).to.throw;
+            expect(() => { $e(DivClassName, "override"); }).to.throw(Error);
+            expect(() => { $e(DivClassName).className("override"); }).to.throw(Error);
         });
 
         it("<div style=override></div>", () => {
-            expect(() => { $e(DivStyle).style({ "top": "20px" }); }).to.throw;
+            expect(() => { $e(DivStyle).style({ "top": "20px" }); }).to.throw(Error);
         });
 
         it("<div props=override></div>", () => {
-            expect(() => { $e(DivProps).props({ "id": "override" }); }).to.throw;
+            expect(() => { $e(DivProps).props({ "id": "override" }); }).to.throw(Error);
         });
     });
 
@@ -118,19 +119,19 @@ describe("ElementDescriptor", () => {
             .props({ "id": "div", "tabIndex": 1 }, { "id": true });
 
         it("Error: <div style=override></div>", () => {
-            expect(() => { $e(DivStyle).style({ "top": "20px" }); }).to.throw;
+            expect(() => { $e(DivStyle).style({ "top": "20px" }); }).to.throw(Error);
         });
 
         it("Ok: <div style=override></div>", () => {
-            expect(() => { $e(DivStyle).style({ "left": "20px" }); }).not.to.throw;
+            expect(() => { $e(DivStyle).style({ "left": "20px" }); }).not.to.throw();
         });
 
         it("Error: <div props=override></div>", () => {
-            expect(() => { $e(DivProps).props({ "id": "override" }); }).to.throw;
+            expect(() => { $e(DivProps).props({ "id": "override" }); }).to.throw(Error);
         });
 
         it("Ok: <div props=override></div>", () => {
-            expect(() => { $e(DivProps).props({ "tabIndex": 2 }); }).not.to.throw;
+            expect(() => { $e(DivProps).props({ "tabIndex": 2 }); }).not.to.throw();
         });
     });
 });

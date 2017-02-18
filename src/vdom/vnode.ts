@@ -123,8 +123,8 @@ export class VNode<P = null> implements IVNode<P> {
             this._flags &= ~VNodeFlags.Key;
         } else {
             this._flags |= VNodeFlags.Key;
-            this._key = key;
         }
+        this._key = key;
         return this;
     }
 
@@ -784,6 +784,13 @@ export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props?: P): V
  * @returns VNodeBuilder object.
  */
 export function $e<P>(d: ElementDescriptor<P>, className?: string): VNode<P> {
+    if (__IVI_DEV__) {
+        if (className !== undefined) {
+            if (d._flags & ElementDescriptorFlags.ProtectClassName) {
+                throw new Error("Failed to set className, className is protected by an ElementDescriptor.");
+            }
+        }
+    }
     return new VNode<P>(
         d._flags & ElementDescriptorFlags.CopyFlags,
         d,
