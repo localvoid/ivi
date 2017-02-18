@@ -1802,6 +1802,68 @@ describe("sync", () => {
             });
         });
 
+        it("<div>#0.1.2#1</div> => <div>.1.2</div>", () => {
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        $t("a").key(0), $t("b"), $t("c"), $t("d").key(1),
+                    ]));
+                    const b = r($h("div").children([
+                        null, $t("b"), $t("c"), null,
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("b");
+                    expect(b.childNodes[1].nodeValue).to.equal("c");
+                    expectDOMOps(c, 1, 0, 4, 0, 5, 0, 2);
+                });
+            });
+        });
+
+        it("<div>.1.2</div> => <div>#0.1.2#1</div>", () => {
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        null, $t("b"), $t("c"), null,
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a").key(0), $t("b"), $t("c"), $t("d").key(1),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("b");
+                    expect(b.childNodes[2].nodeValue).to.equal("c");
+                    expect(b.childNodes[3].nodeValue).to.equal("d");
+                    expectDOMOps(c, 1, 0, 4, 0, 5, 0, 0);
+                });
+            });
+        });
+
+        it("<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>", () => {
+            startRender((r) => {
+                checkDOMOps((c) => {
+                    r($h("div").children([
+                        null, $t("b"), $t("c"), null,
+                    ]));
+                    const b = r($h("div").children([
+                        $t("a").key(0), $t("b"), $t("c"),
+                        $t("d").key(1), $t("e").key(2), $t("f").key(3), $t("g").key(4), $t("h").key(5), $t("i").key(6),
+                        $t("j").key(7), $t("k").key(8), $t("l").key(9),
+                    ]));
+                    expect(b.childNodes[0].nodeValue).to.equal("a");
+                    expect(b.childNodes[1].nodeValue).to.equal("b");
+                    expect(b.childNodes[2].nodeValue).to.equal("c");
+                    expect(b.childNodes[3].nodeValue).to.equal("d");
+                    expect(b.childNodes[4].nodeValue).to.equal("e");
+                    expect(b.childNodes[5].nodeValue).to.equal("f");
+                    expect(b.childNodes[6].nodeValue).to.equal("g");
+                    expect(b.childNodes[7].nodeValue).to.equal("h");
+                    expect(b.childNodes[8].nodeValue).to.equal("i");
+                    expect(b.childNodes[9].nodeValue).to.equal("j");
+                    expect(b.childNodes[10].nodeValue).to.equal("k");
+                    expect(b.childNodes[11].nodeValue).to.equal("l");
+                    expectDOMOps(c, 1, 0, 12, 0, 13, 0, 0);
+                });
+            });
+        });
+
         it("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
