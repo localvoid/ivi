@@ -1913,12 +1913,10 @@ function syncChildrenTrackByKeys(
                 aNode = a[i];
 
                 if (synced < bLength) {
-                    if (keyIndex !== undefined && (aNode._flags & VNodeFlags.Key)) {
-                        j = keyIndex.get(aNode._key);
-                    } else if (positionKeyIndex !== undefined) {
-                        j = positionKeyIndex[aNode._key];
+                    if (aNode._flags & VNodeFlags.Key) {
+                        j = keyIndex ? keyIndex.get(aNode._key) : undefined;
                     } else {
-                        j = undefined;
+                        j = positionKeyIndex ? positionKeyIndex[aNode._key] : undefined;
                     }
 
                     if (j !== undefined) {
