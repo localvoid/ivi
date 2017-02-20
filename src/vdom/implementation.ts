@@ -1313,7 +1313,7 @@ function vNodeSync(
                     syncChildren(
                         instance as Element,
                         a._flags,
-                        b._flags,
+                        flags,
                         a._children as IVNode<any>[] | IVNode<any> | string | number | boolean,
                         b._children as IVNode<any>[] | IVNode<any> | string | number | boolean,
                         context,
@@ -1339,7 +1339,7 @@ function vNodeSync(
     } else {
         instance = vNodeRender(parent, b, context, owner);
         parent.replaceChild(
-            (b._flags & VNodeFlags.ComponentClass) ?
+            (flags & VNodeFlags.ComponentClass) ?
                 getDOMInstanceFromComponent(instance as Component<any>) :
                 instance as Element, getDOMInstanceFromVNode(a)!);
         vNodeDetach(a);
@@ -1454,9 +1454,22 @@ function syncChildren(
             } else {
                 b = b as IVNode<any>;
                 if (a.length > 0) {
-                    vNodeSync(parent, a[0], b, context, syncFlags, owner);
-                    for (i = 1; i < a.length; i++) {
-                        vNodeRemoveChild(parent, a[i]);
+                    i = 0;
+                    while (i < a.length) {
+                        const node = a[i++];
+                        if (vNodeEqualKeys(node, b)) {
+                            vNodeSync(parent, node, b, context, syncFlags, owner);
+                            break;
+                        } else {
+                            vNodeRemoveChild(parent, node);
+                        }
+                    }
+                    if (i < a.length) {
+                        while (i < a.length) {
+                            vNodeRemoveChild(parent, a[i++]);
+                        }
+                    } else {
+                        vNodeRenderInto(parent, null, b, context, owner);
                     }
                 } else {
                     vNodeRenderInto(parent, null, b, context, owner);
@@ -1474,9 +1487,23 @@ function syncChildren(
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as IVNode<any>[];
                 if (b.length > 0) {
-                    vNodeSync(parent, a, b[0], context, syncFlags, owner);
-                    for (i = 1; i < b.length; i++) {
-                        vNodeRenderInto(parent, null, b[i], context, owner);
+                    i = 0;
+                    const next = getDOMInstanceFromVNode(a);
+                    while (i < b.length) {
+                        const node = b[i++];
+                        if (vNodeEqualKeys(a, node)) {
+                            vNodeSync(parent, a, node, context, syncFlags, owner);
+                            break;
+                        } else {
+                            vNodeRenderInto(parent, next, b[i], context, owner);
+                        }
+                    }
+                    if (i < b.length) {
+                        while (i < b.length) {
+                            vNodeRenderInto(parent, null, b[i++], context, owner);
+                        }
+                    } else {
+                        vNodeRemoveChild(parent, a);
                     }
                 } else {
                     vNodeRemoveChild(parent, a);
