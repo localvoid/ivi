@@ -4,6 +4,7 @@
 
 - Preserving internal state when switching between pages/tabs/etc.
 - Improving performance by reusing DOM subtrees with similar shape (recycling).
+- Moving nodes between different parents.
 
 ## API
 
@@ -29,12 +30,12 @@ vnode to reuse.
 
 ```ts
 class ShowHide extends Component<{ show: boolean }> {
-    keepAliveChild: VNode<any> = null;
+    keepAliveChild: VNode<any> | null = null;
 
     render() {
         return $h("div").children(
             this.props.show ?
-                $keepAlive((props, removed) => {
+                $keepAlive((removed) => {
                     if (removed) {
                         this.keepAliveChild = removed;
                         return true;
@@ -51,7 +52,7 @@ class ShowHide extends Component<{ show: boolean }> {
 
 ```ts
 class PageManager extends Component<{ pageID: string }> {
-    keepAliveLRUCache = new LRUCache({ maxItems: 5 });
+    keepAliveLRUCache = new LRUCache<VNode<any>>({ maxItems: 5 });
 
     render() {
         return $h("div").children(
@@ -73,7 +74,7 @@ class PageManager extends Component<{ pageID: string }> {
 
 ```ts
 class ItemList extends Component<{ items: string[] }> {
-    keepAlivePool = new ObjectPool({ maxItems: 10 });
+    keepAlivePool = new ObjectPool<VNode<any>>({ maxItems: 10 });
 
     render() {
         return $h("div").children(
@@ -86,6 +87,29 @@ class ItemList extends Component<{ items: string[] }> {
                     return this.keepAlivePool.pop(props.id);
                 }, (props) => $h("div").children(props.content)).key(i))
         );
+    }
+}
+```
+
+### Move Child
+
+```ts
+class MoveChild extends Component<{ toggle: boolean }> {
+    keepAliveChild: VNode<any> | null = null;
+
+    render() {
+        const child = $keepAlive((removed) => {
+            if (removed) {
+                this.keepAliveChild = removed;
+                return true;
+            }
+            return this.keepAliveChild;
+        }, () => $h("div").children("Hide Me!"));
+
+        return $h("div").children([
+            $h("div").children(this.props.toggle ? child : null),
+            $h("div").children(!this.props.toggle ? child : null),
+        ]);
     }
 }
 ```
