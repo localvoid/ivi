@@ -1908,7 +1908,7 @@ function syncChildrenTrackByKeys(
                     if (positionKeyIndex === undefined) {
                         positionKeyIndex = [];
                     }
-                    positionKeyIndex[node._key] = i;
+                    positionKeyIndex[node._key - aStart] = i;
                 }
             }
 
@@ -1919,7 +1919,7 @@ function syncChildrenTrackByKeys(
                     if (aNode._flags & VNodeFlags.Key) {
                         j = keyIndex ? keyIndex.get(aNode._key) : undefined;
                     } else {
-                        j = positionKeyIndex ? positionKeyIndex[aNode._key] : undefined;
+                        j = positionKeyIndex ? positionKeyIndex[aNode._key - aStart] : undefined;
                     }
 
                     if (j !== undefined) {
