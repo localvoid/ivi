@@ -31,7 +31,7 @@ import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { ElementDescriptor } from "./element_descriptor";
 import {
-    ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent, getDOMInstanceFromComponent,
+    ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent
 } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
@@ -125,7 +125,7 @@ export function renderVNode(
     vnode: IVNode<any>,
     context: { [key: string]: any },
     owner?: Component<any>,
-): Node | Component<any> {
+): Node {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
             setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
@@ -165,7 +165,7 @@ function _renderVNode(
     vnode: IVNode<any>,
     context: { [key: string]: any },
     owner?: Component<any>,
-): Node | Component<any> {
+): Node {
     return vNodeRenderInto(container, refChild, vnode, context, owner);
 }
 
@@ -187,7 +187,7 @@ export function syncVNode(
     context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
-): Node | Component<any> {
+): void {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
             setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
@@ -196,7 +196,8 @@ export function syncVNode(
         }
 
         try {
-            return _syncVNode(parent, a, b, context, owner);
+            _syncVNode(parent, a, b, context, owner);
+            return;
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
@@ -205,7 +206,7 @@ export function syncVNode(
             throw e;
         }
     }
-    return _syncVNode(parent, a, b, context, owner);
+    _syncVNode(parent, a, b, context, owner);
 }
 
 /**
@@ -227,8 +228,8 @@ function _syncVNode(
     b: IVNode<any>,
     context: { [key: string]: any },
     owner?: Component<any>,
-): Node | Component<any> {
-    return vNodeSync(parent, a, b, context, 0, owner);
+): void {
+    vNodeSync(parent, a, b, context, 0, owner);
 }
 
 /**
@@ -432,8 +433,7 @@ function _updateComponentFunction(
     context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
-): Node | Component<any> {
-    let instance: Node | Component<any>;
+): void {
     const fn = b._tag as ComponentFunction<any>;
 
     componentPerfMarkBegin(b._debugId, "update");
@@ -443,19 +443,15 @@ function _updateComponentFunction(
             (!fn.isPropsChanged || fn.isPropsChanged(a._props, b._props)))) {
         const oldRoot = a._children as IVNode<any>;
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
-        instance = vNodeSync(parent, oldRoot, newRoot, context, syncFlags, owner);
+        vNodeSync(parent, oldRoot, newRoot, context, syncFlags, owner);
     } else {
         b._children = a._children;
-        instance = a._instance!;
         if (syncFlags & SyncFlags.DirtyContext) {
             vNodePropagateNewContext(parent, b._children as IVNode<any>, context, syncFlags, owner);
         }
     }
 
     componentPerfMarkEnd(b._debugId, "update", false, fn);
-
-    b._instance = instance;
-    return instance;
 }
 
 /**
@@ -841,7 +837,7 @@ function vNodeRender(
     vnode: IVNode<any>,
     context: { [key: string]: any },
     owner?: Component<any>,
-): Node | Component<any> {
+): Node {
     if (__IVI_DEV__) {
         if (vnode._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
@@ -855,8 +851,9 @@ function vNodeRender(
     }
 
     const flags = vnode._flags;
-    let instance: Node | Component<any>;
-    let childInstance: Node | Component<any>;
+    let instance: Node | Component<any> | null = null;
+    let node: Node;
+    let childNode: Node;
     let i: number;
     let child: IVNode<any>;
 
@@ -868,75 +865,66 @@ function vNodeRender(
         if (flags & VNodeFlags.Text) {
             pushNestingState("$t");
             checkNestingViolation();
-            instance = document.createTextNode(vnode._children as string);
+            node = document.createTextNode(vnode._children as string);
         } else { // (flags & VNodeFlags.Element)
             pushNestingState((flags & VNodeFlags.ElementDescriptor) ?
                 (vnode._tag as ElementDescriptor<any>)._tag :
                 vnode._tag as string);
             checkNestingViolation();
             if (flags & VNodeFlags.ElementDescriptor) {
-                instance = (vnode._tag as ElementDescriptor<any>).createElement();
+                node = (vnode._tag as ElementDescriptor<any>).createElement();
             } else if (flags & VNodeFlags.InputElement) {
                 if (flags & VNodeFlags.TextAreaElement) {
-                    instance = document.createElement("textarea");
+                    node = document.createElement("textarea");
                 } else {
-                    instance = document.createElement("input");
+                    node = document.createElement("input");
                     /**
                      * #quirks
                      *
                      * It is important that we assign `type` before any other properties. IE11 will remove assigned
                      * `value` when `type` is assigned.
                      */
-                    (instance as HTMLInputElement).type = vnode._tag as string;
+                    (node as HTMLInputElement).type = vnode._tag as string;
                 }
             } else if (flags & VNodeFlags.SvgElement) {
-                instance = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
+                node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
             } else {
-                instance = document.createElement(vnode._tag as string);
+                node = document.createElement(vnode._tag as string);
             }
             if (flags & VNodeFlags.Autofocus) {
-                autofocus(instance as Element);
+                autofocus(node as Element);
             }
 
             if (vnode._props) {
-                syncDOMProps(instance as Element, flags, null, vnode._props);
+                syncDOMProps(node as Element, flags, null, vnode._props);
             }
             if (vnode._className !== null) {
-                syncClassName(instance as Element, flags, null, vnode._className);
+                syncClassName(node as Element, flags, null, vnode._className);
             }
             if (vnode._style !== null) {
-                syncStyle(instance as HTMLElement, null, vnode._style);
+                syncStyle(node as HTMLElement, null, vnode._style);
             }
             if (vnode._events) {
-                syncEvents(instance as Element, null, vnode._events);
+                syncEvents(node as Element, null, vnode._events);
             }
 
             let children = vnode._children;
             if (children !== null) {
                 if (flags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) {
                     if (flags & VNodeFlags.ChildrenBasic) {
-                        instance.textContent = children as string;
+                        node.textContent = children as string;
                     } else {
                         children = children as IVNode<any>[];
                         for (i = 0; i < children.length; i++) {
                             child = children[i];
-                            childInstance = vNodeRender(instance, child, context, owner);
-
-                            instance.insertBefore(
-                                (child._flags & VNodeFlags.ComponentClass) ?
-                                    getDOMInstanceFromComponent(childInstance as Component<any>) :
-                                    childInstance as Node,
-                                null);
+                            childNode = vNodeRender(node, child, context, owner);
+                            node.insertBefore(childNode, null);
                         }
                     }
                 } else if (flags & VNodeFlags.ChildrenVNode) {
                     child = children as IVNode<any>;
-                    childInstance = vNodeRender(instance, child, context, owner);
-                    instance.insertBefore(
-                        (child._flags & VNodeFlags.ComponentClass) ?
-                            getDOMInstanceFromComponent(childInstance as Component<any>) :
-                            childInstance as Node,
-                        null);
+                    childNode = vNodeRender(node, child, context, owner);
+                    node.insertBefore(childNode, null);
                 } else if (flags & VNodeFlags.InputElement) {
                     /**
                      * #quirks
@@ -944,15 +932,16 @@ function vNodeRender(
                      * It is important that input value is assigned after all properties. It prevents some issues with
                      * rounding, etc. `value` should be assigned after `step`, `min` and `max` properties.
                      */
-                    setHTMLInputValue(instance as HTMLInputElement, children as string | boolean);
+                    setHTMLInputValue(node as HTMLInputElement, children as string | boolean);
                 } else { // (flags & VNodeFlags.UnsafeHTML)
                     if (children) {
-                        setInnerHTML((instance as Element), children as string, !!(flags & VNodeFlags.SvgElement));
+                        setInnerHTML((node as Element), children as string, !!(flags & VNodeFlags.SvgElement));
                     }
                 }
             }
         }
 
+        instance = node;
         restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
     } else { // (flags & VNodeFlags.Component)
         if (flags & VNodeFlags.ComponentClass) {
@@ -967,15 +956,14 @@ function vNodeRender(
             }
             component._parentDOMNode = parent;
             componentUpdateContext(component);
-            const root = componentClassRender(component);
-            vNodeRender(parent, root, component._context, component);
+            node = vNodeRender(parent, componentClassRender(component), component._context, component);
             componentPerfMarkEnd(component._debugId, "create", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "create");
             const root = vnode._children =
                 componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
-            instance = vNodeRender(parent, root, context, owner);
+            node = vNodeRender(parent, root, context, owner);
             componentPerfMarkEnd(vnode._debugId, "create", false, vnode._tag as ComponentFunction<any>);
         }
         stackTracePopComponent();
@@ -986,7 +974,7 @@ function vNodeRender(
         vnode._ref(instance);
     }
 
-    return instance;
+    return node;
 }
 
 /**
@@ -1009,11 +997,11 @@ function vNodeRenderInto(
     vnode: IVNode<any>,
     context: { [key: string]: any },
     owner?: Component<any>,
-): Node | Component<any> {
-    const instance = vNodeRender(container, vnode, context, owner);
-    container.insertBefore(getDOMInstanceFromVNode(vnode)!, refChild);
+): Node {
+    const node = vNodeRender(container, vnode, context, owner);
+    container.insertBefore(node, refChild);
     vNodeAttach(vnode);
-    return instance;
+    return node;
 }
 
 /**
@@ -1033,7 +1021,7 @@ function vNodeAugment(
     vnode: IVNode<any>,
     context: { [key: string]: any },
     owner?: Component<any>,
-): Node | Component<any> {
+): void {
     if (__IVI_DEV__) {
         if (vnode._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
@@ -1046,7 +1034,7 @@ function vNodeAugment(
         }
     }
 
-    let instance: Node | Component<any>;
+    let instance: Node | Component<any> | null = null;
 
     if (node) {
         if (node.nodeType !== 8) {
@@ -1177,38 +1165,32 @@ function vNodeAugment(
                     if (component.shouldAugment()) {
                         vNodeAugment(parent, node, root, component._context, component);
                     } else {
-                        vNodeRender(parent, root, context, owner);
-                        parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
+                        parent.replaceChild(vNodeRender(parent, root, context, owner), node);
                     }
                 } else {
                     const fc = vnode._tag as ComponentFunction<any>;
                     stackTracePushComponent(fc);
                     const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
                     if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
-                        instance = vNodeAugment(parent, node, root, context, owner);
+                        vNodeAugment(parent, node, root, context, owner);
                     } else {
-                        instance = vNodeRender(parent, root, context, owner);
-                        parent.replaceChild(getDOMInstanceFromVNode(root)!, node);
+                        parent.replaceChild(vNodeRender(parent, root, context, owner), node);
                     }
                 }
 
                 stackTracePopComponent();
             }
+
+            vnode._instance = instance;
+            if (vnode._ref) {
+                vnode._ref(instance);
+            }
         } else {
-            instance = vNodeRender(parent, vnode, context, owner);
-            parent.replaceChild(getDOMInstanceFromVNode(vnode)!, node);
+            parent.replaceChild(vNodeRender(parent, vnode, context, owner), node);
         }
     } else {
-        instance = vNodeRender(parent, vnode, context, owner);
-        parent.insertBefore(getDOMInstanceFromVNode(vnode)!, null);
+        parent.insertBefore(vNodeRender(parent, vnode, context, owner), null);
     }
-
-    vnode._instance = instance;
-    if (vnode._ref) {
-        vnode._ref(instance);
-    }
-
-    return instance;
 }
 
 /**
@@ -1263,7 +1245,7 @@ function vNodeSync(
     context: { [key: string]: any },
     syncFlags: SyncFlags,
     owner?: Component<any>,
-): Node | Component<any> {
+): void {
     if (__IVI_DEV__) {
         if (b._flags & VNodeFlags.Immutable) {
             throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
@@ -1275,7 +1257,6 @@ function vNodeSync(
         if (syncFlags & SyncFlags.DirtyContext) {
             vNodePropagateNewContext(parent, b, context, syncFlags, owner);
         }
-        return b._instance!;
     }
 
     if (__IVI_DEV__) {
@@ -1332,21 +1313,16 @@ function vNodeSync(
                 _updateComponent(component, syncFlags);
             } else { // (flags & VNodeFlags.ComponentFunction)
                 stackTracePushComponent(b._tag as ComponentFunction<any>);
-                instance = b._instance = _updateComponentFunction(parent, a, b, context, syncFlags, owner);
+                _updateComponentFunction(parent, a, b, context, syncFlags, owner);
             }
             stackTracePopComponent();
         }
     } else {
         instance = vNodeRender(parent, b, context, owner);
-        parent.replaceChild(
-            (flags & VNodeFlags.ComponentClass) ?
-                getDOMInstanceFromComponent(instance as Component<any>) :
-                instance as Element, getDOMInstanceFromVNode(a)!);
+        parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
         vNodeDetach(a);
         vNodeAttach(b);
     }
-
-    return instance!;
 }
 
 /**

@@ -391,6 +391,11 @@ export class VNode<P = null> implements IVNode<P> {
     ref(ref: (ref: Node | null) => void): VNode<P>;
     ref(ref: (ref: Component<any> | null) => void): VNode<P>;
     ref(ref: ((ref: Node | null) => void) | ((ref: Component<any> | null) => void)): VNode<P> {
+        if (__IVI_DEV__) {
+            if (this._flags & VNodeFlags.ComponentFunction) {
+                throw new Error("Failed to set ref, component functions doesn't have instances.");
+            }
+        }
         this._ref = ref;
         return this;
     }

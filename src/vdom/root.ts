@@ -1,10 +1,9 @@
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
-import { VNodeFlags, SyncFlags } from "./flags";
-import { IVNode } from "./ivnode";
+import { SyncFlags } from "./flags";
+import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { VNode, $t } from "./vnode";
-import { Component, getDOMInstanceFromComponent } from "./component";
 import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
 
 /**
@@ -73,21 +72,18 @@ function _render(root: Root): void {
         if (newVNode.constructor !== VNode) {
             newVNode = $t("");
         }
-        let instance;
         if (currentVNode) {
             const syncFlags = root.currentContext === newContext ?
                 root.syncFlags :
                 root.syncFlags | SyncFlags.DirtyContext;
-            instance = syncVNode(root.container, currentVNode, newVNode, root.newContext!, syncFlags);
+            syncVNode(root.container, currentVNode, newVNode, root.newContext!, syncFlags);
         } else {
-            instance = renderVNode(root.container, null, newVNode!, root.newContext!);
+            renderVNode(root.container, null, newVNode!, root.newContext!);
             iOSFixEventBubbling(root.container);
         }
         root.currentVNode = newVNode;
         root.currentContext = newContext;
-        root.domNode = (newVNode._flags & VNodeFlags.ComponentClass) ?
-            getDOMInstanceFromComponent(instance as Component<any>) :
-            instance as Node;
+        root.domNode = getDOMInstanceFromVNode(newVNode);
     } else if (currentVNode) {
         removeVNode(root.container, currentVNode);
         const last = ROOTS.pop();

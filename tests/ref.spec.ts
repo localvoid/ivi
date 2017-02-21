@@ -25,12 +25,6 @@ describe("ref", () => {
             render<Text>(v);
             expect(r).to.equal(getComponentRef(v));
         });
-
-        it("<F><div></F>", () => {
-            let r: Node | null | undefined;
-            const n = render<HTMLDivElement>($tcf().ref((ref: Node) => r = ref));
-            expect(r).to.equal(n);
-        });
     });
 
     describe("detach", () => {
@@ -57,13 +51,9 @@ describe("ref", () => {
             render<Text>($t("abc"), f);
             expect(r).to.equal(null);
         });
+    });
 
-        it("<F><div></F>", () => {
-            const f = frag();
-            let r: Component<any> | null | undefined;
-            render<Text>($tcf().ref((ref: Component<any>) => r = ref), f);
-            render<Text>($t("abc"), f);
-            expect(r).to.equal(null);
-        });
+    it("<F></F>", () => {
+        expect(() => { $tcf().ref((ref: Component<any>) => null); }).to.throw(Error);
     });
 });
