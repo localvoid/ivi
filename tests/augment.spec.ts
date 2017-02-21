@@ -144,20 +144,6 @@ describe("augment", () => {
         });
     });
 
-    it("<div>false</div>", () => {
-        checkDOMOps((c) => {
-            augment($h("div").children(false), `<div></div>`);
-            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
-        });
-    });
-
-    it("<div>true</div>", () => {
-        checkDOMOps((c) => {
-            augment($h("div").children(true), `<div></div>`);
-            expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
-        });
-    });
-
     it("<div><span></div>", () => {
         checkDOMOps((c) => {
             augment($h("div").children($h("span")), `<div><span></span></div>`);
@@ -274,13 +260,6 @@ describe("augment", () => {
         it("<div>[<div>, 123, <span>]</div>", () => {
             checkDOMOps((c) => {
                 augment($h("div").children([$h("div"), 123, $h("span")]), `<div><div></div>123<span></span></div>`);
-                expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
-            });
-        });
-
-        it("<div>[<div>, true, <span>]</div>", () => {
-            checkDOMOps((c) => {
-                augment($h("div").children([$h("div"), true, $h("span")]), `<div><div></div><span></span></div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });

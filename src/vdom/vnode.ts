@@ -252,7 +252,7 @@ export class VNode<P = null> implements IVNode<P> {
      *   strings with text nodes.
      * @returns VNodeBuilder.
      */
-    children(children: VNodeArray | IVNode<any> | string | number | boolean | null): VNode<P> {
+    children(children: VNodeArray | IVNode<any> | string | number | null): VNode<P> {
         if (__IVI_DEV__) {
             if (this._flags &
                 (VNodeFlags.ChildrenArray |
@@ -275,40 +275,26 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
 
-        if (Array.isArray(children)) {
-            this._flags |= VNodeFlags.ChildrenArray;
-            this._children = normalizeVNodes(children);
-
-            if (__IVI_DEV__) {
-                const keys = new Set<any>();
-                for (let i = 0; i < this._children.length; i++) {
-                    const child = this._children[i];
-                    if (child._flags & VNodeFlags.Key) {
-                        if (keys.has(child._key)) {
-                            throw new Error(`Failed to set children, invalid children list, key: "${child._key}" ` +
-                                `is used multiple times.`);
-                        }
-                        keys.add(child._key);
-                    }
-                }
-            }
-        } else if (children === null || typeof children === "boolean") {
-            this._flags &= ~(VNodeFlags.ChildrenArray | VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenVNode);
-        } else {
-            if (typeof children === "object") {
-                if (children.constructor === VNode) {
+        if (typeof children === "object") {
+            if (children !== null) {
+                if (children.constructor === Array) {
+                    this._flags |= VNodeFlags.ChildrenArray;
+                    children = normalizeVNodes(children as VNodeArray);
+                    checkUniqueKeys(children as IVNode<any>[]);
+                } else if (isValidVNode(children)) {
                     this._flags |= VNodeFlags.ChildrenVNode;
+                    if (!(children._flags & VNodeFlags.Key)) {
+                        children._key = 0;
+                    }
                 } else {
-                    children = $t("");
+                    this._flags |= VNodeFlags.ChildrenBasic;
+                    children = "";
                 }
-                if (!(children._flags & VNodeFlags.Key)) {
-                    children._key = 0;
-                }
-            } else {
-                this._flags |= VNodeFlags.ChildrenBasic;
             }
-            this._children = children;
+        } else {
+            this._flags |= VNodeFlags.ChildrenBasic;
         }
+        this._children = children as IVNode<any>[] | IVNode<any> | string | number | null;
         return this;
     }
 
@@ -483,7 +469,7 @@ export class VNode<P = null> implements IVNode<P> {
 /**
  * Denormalized VNode Array.
  */
-export type VNodeArray = Array<Array<IVNode<any>> | IVNode<any> | string | number | boolean | null>;
+export type VNodeArray = Array<Array<IVNode<any>> | IVNode<any> | string | number | null>;
 
 /**
  * Create a VNodeBuilder representing a Text node.
@@ -921,6 +907,14 @@ export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
     return newNode;
 }
 
+function isVNodeKeyedChildrenArray(v: any): v is IVNode<any>[] {
+    return v.constructor === Array;
+}
+
+function isValidVNode(v: any): v is IVNode<any> {
+    return v.constructor === VNode;
+}
+
 /**
  * Normalizes VNode array by flattening all nodes, removing null values and converting number and string objects to text
  * nodes.
@@ -933,10 +927,10 @@ export function normalizeVNodes(nodes: VNodeArray): IVNode<any>[] {
         let n = nodes[i];
 
         if (typeof n === "object") {
-            if (n === null || Array.isArray(n)) {
+            if (n === null || isVNodeKeyedChildrenArray(n)) {
                 return _normalizeVNodes(nodes, i);
             } else {
-                if (n.constructor !== VNode) {
+                if (!isValidVNode(n)) {
                     n = $t("");
                     nodes[i] = n;
                 }
@@ -964,37 +958,55 @@ function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
     for (; i < nodes.length; i++) {
         let n = nodes[i];
         if (typeof n === "object") {
-            if (Array.isArray(n)) {
-                for (let j = 0; j < n.length; j++) {
-                    const nj = n[j];
+            if (n !== null) {
+                if (isVNodeKeyedChildrenArray(n)) {
+                    for (let j = 0; j < n.length; j++) {
+                        const nj = n[j];
 
-                    if (__IVI_DEV__) {
-                        if (!(nj._flags & VNodeFlags.Key)) {
-                            throw new Error("Invalid children array. All children nodes in nested array should have " +
-                                "explicit keys.");
+                        if (__IVI_DEV__) {
+                            if (!(nj._flags & VNodeFlags.Key)) {
+                                throw new Error("Invalid children array. All children nodes in nested array should " +
+                                    "have explicit keys.");
+                            }
                         }
-                    }
 
-                    // No need to protect against xss here, nested arrays can't have denormalized values.
-                    result.push(nj);
+                        // No need to protect against xss here, nested arrays can't have denormalized values.
+                        result.push(nj);
+                    }
+                } else {
+                    if (!isValidVNode(n)) {
+                        n = $t("");
+                    }
+                    if (!(n._flags & VNodeFlags.Key)) {
+                        n._key = i;
+                    }
+                    result.push(n);
                 }
-            } else if (n !== null) {
-                if (n.constructor !== VNode) {
-                    n = $t("");
-                }
-                if (!(n._flags & VNodeFlags.Key)) {
-                    n._key = i;
-                }
-                result.push(n);
             }
         } else { // basic object
-            if (typeof n === "string" || typeof n === "number") {
-                const node = $t(n);
-                node._key = i;
-                result.push(node);
-            }
+            const node = $t(n);
+            node._key = i;
+            result.push(node);
         }
     }
 
     return result;
+}
+
+function checkUniqueKeys(children: IVNode<any>[]): void {
+    if (__IVI_DEV__) {
+        let keys: Set<any> | undefined;
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            if (child._flags & VNodeFlags.Key) {
+                if (keys === undefined) {
+                    keys = new Set<any>();
+                } else if (keys.has(child._key)) {
+                    throw new Error(`Failed to set children, invalid children list, key: "${child._key}" ` +
+                        `is used multiple times.`);
+                }
+                keys.add(child._key);
+            }
+        }
+    }
 }

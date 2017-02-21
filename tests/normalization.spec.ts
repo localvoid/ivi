@@ -80,20 +80,6 @@ describe("normalization", () => {
         expect(n[3]._key).to.equal(3);
     });
 
-    it("[$t, false, $t] => [$t, $t]", () => {
-        const n = normalizeVNodes([$t(""), false, $t("")]);
-        expect(n.length).to.equal(2);
-        expect(n[0]._key).to.equal(0);
-        expect(n[1]._key).to.equal(2);
-    });
-
-    it("[$t, false, false, $t] => [$t, $t]", () => {
-        const n = normalizeVNodes([$t(""), false, false, $t("")]);
-        expect(n.length).to.equal(2);
-        expect(n[0]._key).to.equal(0);
-        expect(n[1]._key).to.equal(3);
-    });
-
     it("[null, 'abc', 123,] => [$t, $t]", () => {
         const n = normalizeVNodes([null, "abc", 123]);
         expect(n.length).to.equal(2);

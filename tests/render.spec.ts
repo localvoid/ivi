@@ -171,22 +171,6 @@ describe("render", () => {
         });
     });
 
-    it("<div>false</div>", () => {
-        checkDOMOps((c) => {
-            const n = render<HTMLElement>($h("div").children(false));
-            expect(n.childNodes.length).to.equal(0);
-            expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
-        });
-    });
-
-    it("<div>true</div>", () => {
-        checkDOMOps((c) => {
-            const n = render<HTMLElement>($h("div").children(true));
-            expect(n.childNodes.length).to.equal(0);
-            expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
-        });
-    });
-
     it("<div><span></div>", () => {
         checkDOMOps((c) => {
             const n = render<HTMLElement>($h("div").children($h("span")));
@@ -357,16 +341,6 @@ describe("render", () => {
                 expect(n.childNodes[1].nodeValue).to.equal("123");
                 expect(n.children[1].tagName.toLowerCase()).to.equal("span");
                 expectDOMOps(c, 3, 0, 1, 0, 4, 0, 0);
-            });
-        });
-
-        it("<div>[<div>, true, <span>]</div>", () => {
-            checkDOMOps((c) => {
-                const n = render<HTMLElement>($h("div").children([$h("div"), true, $h("span")]));
-                expect(n.childNodes.length).to.equal(2);
-                expect(n.children[0].tagName.toLowerCase()).to.equal("div");
-                expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-                expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
             });
         });
 
@@ -582,11 +556,19 @@ describe("render", () => {
     });
 
     describe("XSS protection", () => {
-        it("children", () => {
+        it("single vnode", () => {
             checkDOMOps((c) => {
                 const n = render<HTMLElement>($h("div").children($invalid()));
-                expect(n.firstChild!.nodeType).to.equal(Node.TEXT_NODE);
+                expect(n.firstChild).to.equal(null);
                 expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
+            });
+        });
+
+        it("children array", () => {
+            checkDOMOps((c) => {
+                const n = render<HTMLElement>($h("div").children([$invalid()]));
+                expect(n.firstChild!.nodeType).to.equal(Node.TEXT_NODE);
+                expectDOMOps(c, 1, 0, 1, 0, 2, 0, 0);
             });
         });
     });
