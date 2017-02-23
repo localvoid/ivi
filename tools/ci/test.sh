@@ -22,7 +22,7 @@ else
 fi
 
 if [[ -z $CI_PULL_REQUEST ]]; then
-  ./node_modules/.bin/karma start karma.coverage.conf.js
+  ./node_modules/.bin/karma start karma.coverage.conf.js --single-run
   ./node_modules/.bin/codecov
 fi
 echo 'travis_fold:end:test.run'
