@@ -93,11 +93,8 @@ specify all configuration variables.
 
 Basic boilerplate configured with:
 
-- [TypeScript 2.1](https://www.typescriptlang.org)
-- [gulp 4](http://gulpjs.com/)
-- [rollup](http://rollupjs.org/)
-- [Google Closure Compiler](https://github.com/google/closure-compiler)
-- [Browsersync](https://www.browsersync.io/)
+- [TypeScript 2.3](https://www.typescriptlang.org)
+- [Webpack](https://webpack.js.org)
 
 ```sh
 $ git clone https://github.com/ivijs/boilerplate
