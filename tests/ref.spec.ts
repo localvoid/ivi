@@ -2,8 +2,7 @@ import { frag, render, $tc, $tcf } from "./utils";
 import { getComponentRef } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
 import { $t, $h } from "../src/vdom/vnode";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("ref", () => {
     describe("attach", () => {

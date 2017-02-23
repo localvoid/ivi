@@ -1,3 +1,5 @@
+import "core-js";
+
 import { DevModeFlags, setDevModeFlags } from "../src/dev_mode/dev_mode";
 
 setDevModeFlags(DevModeFlags.DisableScreenOfDeath);

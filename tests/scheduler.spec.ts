@@ -2,8 +2,7 @@ import { clock } from "../src/scheduler/clock";
 import { scheduleMicrotask } from "../src/scheduler/microtask";
 import { scheduleTask } from "../src/scheduler/task";
 import { currentFrame, nextFrame } from "../src/scheduler/frame";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("scheduler", () => {
     describe("execution order", () => {

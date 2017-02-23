@@ -1,5 +1,4 @@
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 export class DOMOpsCounter {
     createElement = 0;

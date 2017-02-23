@@ -2,8 +2,7 @@ import { VNodeFlags } from "../../src/vdom/flags";
 import { IVNode, getDOMInstanceFromVNode } from "../../src/vdom/ivnode";
 import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
 import { Component, getDOMInstanceFromComponent } from "../../src/vdom/component";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 const DEFAULT_CONTEXT = {};
 

@@ -2,8 +2,7 @@ import { frag, render, $sc, $fsc } from "./utils";
 import { Component } from "../src/vdom/component";
 import { IVNode } from "../src/vdom/ivnode";
 import { $t, $c } from "../src/vdom/vnode";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 interface ContextTestComponentProps {
     value: number;

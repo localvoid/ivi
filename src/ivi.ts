@@ -8,12 +8,6 @@
 declare global {
     /* tslint:disable:no-unused-variable */
     /**
-     * Global variable with a version string.
-     *
-     * @define {string}
-     */
-    const __IVI_VERSION__: string;
-    /**
      * Global variable that enables Development Mode.
      *
      * @define {boolean}

@@ -1,6 +1,5 @@
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../src/common/equality";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("equality", () => {
     describe("isPropsNotIdentical", () => {

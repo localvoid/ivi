@@ -4,8 +4,7 @@ import {
 } from "../src/vdom/element_descriptor";
 import { render } from "./utils";
 import { $e } from "../src/vdom/vnode";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("ElementDescriptor", () => {
     describe("render", () => {

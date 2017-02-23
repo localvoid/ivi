@@ -4,8 +4,7 @@ import { Component } from "../src/vdom/component";
 import { updateComponent } from "../src/vdom/implementation";
 import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
 import { render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 function genVNodes(item: any, keys: boolean): IVNode<any> | IVNode<any>[] {
     if (typeof item === "number") {

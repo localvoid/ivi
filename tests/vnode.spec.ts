@@ -1,8 +1,7 @@
 import { IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 function EmptyComponent(): IVNode<any> {
     return $t("");

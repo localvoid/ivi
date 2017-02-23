@@ -1,7 +1,6 @@
 import { augment, $tc, $tcf, $lc, checkDOMOps, expectDOMOps } from "./utils";
 import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("augment", () => {
     it("'abc'", () => {

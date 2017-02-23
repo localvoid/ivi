@@ -1,41 +1,12 @@
 {
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "target": "es6",
-        "module": "es6",
-        "moduleResolution": "node",
-        "rootDir": ".",
-        "outDir": "build/es6",
-        "declarationDir": "build/typings",
+        "outDir": "dist/js",
+        "declarationDir": "dist/typings",
         "declaration": true,
-        "inlineSourceMap": true,
-        "inlineSources": true,
-        "importHelpers": true,
-        "noEmitHelpers": true,
-        "removeComments": false,
-        "typeRoots": [
-            "./node_modules/@types"
-        ],
-        "types": [
-            "chai",
-            "mocha",
-            "node"
-        ],
-        "lib": [
-            "es6",
-            "dom"
-        ],
-        "forceConsistentCasingInFileNames": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noUnusedLocals": true,
-        "strictNullChecks": true
+        "sourceMap": true
     },
     "include": [
-        "src/**/*.ts",
-        "tests/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
+        "src/**/*.ts"
     ]
 }

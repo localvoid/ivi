@@ -1,8 +1,7 @@
 import { $h } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
 import { startRender, $lc, $ctx, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("component state", () => {
     describe("stateless", () => {

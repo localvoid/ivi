@@ -13,19 +13,17 @@ export CHROME_BIN=/usr/bin/google-chrome
 echo 'travis_fold:start:test.run'
 sh -e /etc/init.d/xvfb start
 
-gulp compileTS
-gulp bundleTests
-gulp compileTests
+npm run lint
 
 if [[ $TRAVIS_BRANCH = master ]]; then
-  gulp runTestsSauce
+  ./node_modules/.bin/karma start karma.sauce.conf.js --single-run
 else
-  gulp runTests
+  ./node_modules/.bin/karma start karma.conf.js --single-run
 fi
 
 if [[ -z $CI_PULL_REQUEST ]]; then
-  gulp testCoverage
-  bash <(curl -s https://codecov.io/bash)
+  ./node_modules/.bin/karma start karma.coverage.conf.js
+  ./node_modules/.bin/codecov
 fi
 echo 'travis_fold:end:test.run'
 

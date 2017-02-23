@@ -69,20 +69,7 @@ exclusively for bug reports and feature requests.
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/extensions/dev-mode.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/extensions/synthetic-events.md)
 
-## Getting Started
-
-The easiest way to get started with ivi is to use this this Hello World example on:
-[CodePen](http://codepen.io/localvoid/pen/LbZmMX) or [JSFiddle](https://jsfiddle.net/localvoid/zmxnn0eq/).
-
 ### Installation
-
-#### Standalone
-
-Just include with a `<script>` tag. `ivi` will be registered as a global variable.
-
-Standalone package is built in Development Mode and should be used only for demo applications.
-
-[https://unpkg.com/ivi@^0.4.0/dist/cdn/ivi.js](https://unpkg.com/ivi@^0.4.0/dist/cdn/ivi.js)
 
 #### NPM
 

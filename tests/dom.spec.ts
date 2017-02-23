@@ -1,6 +1,5 @@
 import { nodeDepth } from "../src/common/dom";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("DOM", () => {
     describe("nodeDepth", () => {

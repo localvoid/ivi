@@ -20,7 +20,7 @@ import { printComponentStackTrace } from "./stack_trace";
 /**
  * Version number in string format.
  */
-export const VERSION = __IVI_VERSION__;
+export const VERSION = "0.5.0";
 
 /**
  * Dev Mode Flags.

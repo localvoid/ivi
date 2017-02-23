@@ -1,8 +1,7 @@
 import { VNodeFlags } from "../src/vdom/flags";
 import { VNode, $t, normalizeVNodes } from "../src/vdom/vnode";
 import { $invalid } from "./utils";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("normalization", () => {
     it("[] => []", () => {

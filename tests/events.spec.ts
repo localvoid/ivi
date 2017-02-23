@@ -4,8 +4,7 @@ import { Events } from "../src/events/events";
 import { IVNode } from "../src/vdom/ivnode";
 import { $h } from "../src/vdom/vnode";
 import { render as rootRender } from "../src/vdom/root";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 function render<T extends Element>(node: IVNode<any> | null, container: Element): T {
     rootRender(node, container);

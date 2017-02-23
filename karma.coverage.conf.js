@@ -1,0 +1,43 @@
+const path = require("path");
+const webpack = require("webpack");
+const merge = require("webpack-merge");
+const baseConfig = require("./karma.conf");
+
+module.exports = function (config) {
+    baseConfig(config);
+
+    config.set({
+        webpack: merge.smart(config.webpack, {
+            module: {
+                rules: [{
+                    test: /\.ts$/,
+                    include: path.resolve("src/"),
+                    exclude: [
+                        /node_modules/,
+                        path.resolve("src/common/feature_detection.ts"),
+                        path.resolve("src/common/user_agent.ts"),
+                        path.resolve("src/dev_mode/dev_mode.ts"),
+                        path.resolve("src/dev_mode/screen_of_death.ts"),
+                        path.resolve("src/dev_mode/stack_trace.ts"),
+                        path.resolve("src/events/events.ts"),
+                        path.resolve("src/events/synthetic_event.ts"),
+                    ],
+                    loader: "istanbul-instrumenter-loader",
+                    enforce: "post",
+                }],
+            },
+        }),
+
+        reporters: ["coverage-istanbul"],
+
+        coverageIstanbulReporter: {
+            reports: ["lcov", "text"],
+            dir: "./coverage",
+            fixWebpackSourcePath: true,
+        },
+    });
+
+    if (process.env.TRAVIS) {
+        config.coverageIstanbulReporter.reports = ["lcov"];
+    }
+};

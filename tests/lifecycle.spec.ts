@@ -1,7 +1,6 @@
 import { $h } from "../src/vdom/vnode";
 import { startRender, augment, checkLifecycle, $lc, $sc } from "./utils";
-
-const expect = chai.expect;
+import { expect } from "chai";
 
 describe("lifecycle", () => {
     it("<C><div></C>", () => {
