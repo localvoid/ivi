@@ -87,7 +87,8 @@ export {
 } from "./vdom/component";
 export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
 export {
-    IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode,
+    IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode,
+    getComponentInstanceFromVNode,
 } from "./vdom/ivnode";
 export {
     ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
