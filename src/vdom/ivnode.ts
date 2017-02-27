@@ -121,11 +121,11 @@ export function getDOMInstanceFromVNode<T extends Node>(node: IVNode<any>): T | 
  * @param node VNode which contains reference to a Component instance.
  * @returns null if VNode doesn't have a reference to a Component instance.
  */
-export function getComponentRef<P>(node: IVNode<P>): Component<P> | null {
+export function getComponentInstanceFromVNode<T extends Component<any>>(node: IVNode<any>): T | null {
     if (__IVI_DEV__) {
         if (!(node._flags & VNodeFlags.Component)) {
-            throw new Error("Failed to get component reference: VNode should represent a Component.");
+            throw new Error("Failed to get component instance: VNode should represent a Component.");
         }
     }
-    return node._instance as Component<P> | null;
+    return node._instance as T | null;
 }
