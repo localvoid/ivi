@@ -53,10 +53,6 @@ export interface IVNode<P = null> {
      */
     _instance: Node | Component<any> | null;
     /**
-     * Ref callback.
-     */
-    _ref: ((ref: Node | Component<any> | null) => void) | null;
-    /**
      * Unique ID thas is available in Dev Mode.
      */
     _debugId: number;

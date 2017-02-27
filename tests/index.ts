@@ -11,7 +11,6 @@ import "./normalization.spec";
 import "./render.spec";
 import "./sync.spec";
 import "./lifecycle.spec";
-import "./ref.spec";
 import "./context.spec";
 import "./component.spec";
 import "./element_descriptor.spec";

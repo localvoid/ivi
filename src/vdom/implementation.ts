@@ -544,10 +544,6 @@ function vNodeDetach(vnode: IVNode<any>): void {
             removeEvents(vnode._events);
         }
     }
-
-    if (vnode._ref) {
-        vnode._ref(null);
-    }
 }
 
 /**
@@ -965,9 +961,6 @@ function vNodeRender(
     }
 
     vnode._instance = instance;
-    if (vnode._ref) {
-        vnode._ref(instance);
-    }
 
     return node;
 }
@@ -1177,9 +1170,6 @@ function vNodeAugment(
             }
 
             vnode._instance = instance;
-            if (vnode._ref) {
-                vnode._ref(instance);
-            }
         } else {
             parent.replaceChild(vNodeRender(parent, vnode, context, owner), node);
         }

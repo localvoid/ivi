@@ -84,7 +84,6 @@ export class VNode<P = null> implements IVNode<P> {
     _events: EventHandlerList | null;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
     _instance: Node | Component<any> | null;
-    _ref: ((ref: Node | Component<any> | null) => void) | null;
     _debugId: number;
 
     constructor(
@@ -103,7 +102,6 @@ export class VNode<P = null> implements IVNode<P> {
         this._events = null;
         this._children = children;
         this._instance = null;
-        this._ref = null;
         if (__IVI_DEV__) {
             this._debugId = nextDebugId();
         }
@@ -360,29 +358,6 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
         this._children = checked;
-        return this;
-    }
-
-    /**
-     * Set ref callback.
-     *
-     * When VNode is instantiated ref callback will be invoked with a Node value for DOM Elements or Component
-     * instance for components.
-     *
-     * When VNode is detached, ref callback will be invoked with a `null` value.
-     *
-     * @param ref callback.
-     * @returns VNodeBuilder.
-     */
-    ref(ref: (ref: Node | null) => void): VNode<P>;
-    ref(ref: (ref: Component<any> | null) => void): VNode<P>;
-    ref(ref: ((ref: Node | null) => void) | ((ref: Component<any> | null) => void)): VNode<P> {
-        if (__IVI_DEV__) {
-            if (this._flags & VNodeFlags.ComponentFunction) {
-                throw new Error("Failed to set ref, component functions doesn't have instances.");
-            }
-        }
-        this._ref = ref;
         return this;
     }
 

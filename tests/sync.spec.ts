@@ -1,5 +1,5 @@
 import { ComponentFlags } from "../src/vdom/flags";
-import { IVNode } from "../src/vdom/ivnode";
+import { IVNode, getComponentRef } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
 import { updateComponent } from "../src/vdom/implementation";
 import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
@@ -1520,18 +1520,14 @@ describe("sync", () => {
         it("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    let cmp: A | null = null;
-                    function ref(re: A | null) {
-                        cmp = re;
-                    }
-
+                    const a = $c(A, 0).key(1);
                     r($h("div").children([
                         $h("h1").key(0),
-                        $c(A, 0).key(1).ref(ref),
+                        a,
                     ]));
-                    cmp!.syncUpdate(1);
+                    (getComponentRef(a)! as A).syncUpdate(1);
                     const n = r($h("div").children([
-                        $c(A, 1).key(1).ref(ref),
+                        $c(A, 1).key(1),
                         $h("h1").key(0),
                     ])) as HTMLDivElement;
                     expect(n.children[0].tagName.toLowerCase()).to.equal("span");
@@ -1544,18 +1540,14 @@ describe("sync", () => {
         it("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    let cmp: A | null = null;
-                    function ref(re: A | null) {
-                        cmp = re;
-                    }
-
+                    const a = $c(A, 0);
                     r($h("div").children([
                         $h("h1").key(0),
-                        $c(B, $c(A, 0).ref(ref)).key(1),
+                        $c(B, a).key(1),
                     ]));
-                    cmp!.syncUpdate(1);
+                    (getComponentRef(a)! as A).syncUpdate(1);
                     const n = r($h("div").children([
-                        $c(B, $c(A, 1).ref(ref)).key(1),
+                        $c(B, $c(A, 1)).key(1),
                         $h("h1").key(0),
                     ])) as HTMLDivElement;
                     expect(n.children[0].tagName.toLowerCase()).to.equal("span");
@@ -1569,19 +1561,15 @@ describe("sync", () => {
         it("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    let cmp: A | null = null;
-                    function ref(re: A | null) {
-                        cmp = re;
-                    }
-
+                    const a = $c(A, 0).key(1);
                     r($h("div").children([
-                        $c(A, 0).key(1).ref(ref),
+                        a,
                         $h("h1").key(0),
                     ]));
-                    cmp!.syncUpdate(1);
+                    (getComponentRef(a)! as A).syncUpdate(1);
                     const n = r($h("div").children([
                         $h("h1").key(0),
-                        $c(A, 1).key(1).ref(ref),
+                        $c(A, 1).key(1),
                     ])) as HTMLDivElement;
                     expect(n.children[1].tagName.toLowerCase()).to.equal("span");
                     expect(n.children[1].firstChild!.nodeValue).to.equal("1");
@@ -1593,19 +1581,15 @@ describe("sync", () => {
         it("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    let cmp: A | null = null;
-                    function ref(re: A | null) {
-                        cmp = re;
-                    }
-
+                    const a = $c(A, 0);
                     r($h("div").children([
-                        $c(B, $c(A, 0).ref(ref)).key(1),
+                        $c(B, a).key(1),
                         $h("h1").key(0),
                     ]));
-                    cmp!.syncUpdate(1);
+                    (getComponentRef(a)! as A).syncUpdate(1);
                     const n = r($h("div").children([
                         $h("h1").key(0),
-                        $c(B, $c(A, 1).ref(ref)).key(1),
+                        $c(B, $c(A, 1)).key(1),
                     ])) as HTMLDivElement;
                     expect(n.children[1].tagName.toLowerCase()).to.equal("span");
                     expect(n.children[1].firstChild!.nodeValue).to.equal("1");
