@@ -24,7 +24,7 @@ import {
     nestingStateParentTagName, AncestorFlags, AncestorFlagsByTagName,
 } from "../dev_mode/html_nesting_rules";
 import {
-    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment
+    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
 } from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
@@ -565,8 +565,8 @@ function vNodeUpdateComponents(
             componentPerfMarkBegin(vnode._debugId, "propagateUpdate");
             _updateComponentFunction(
                 parent,
-                vnode._children as IVNode<any>,
-                vnode._children as IVNode<any>,
+                vnode,
+                vnode,
                 context,
                 syncFlags,
             );
