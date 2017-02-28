@@ -37,14 +37,10 @@ function componentTreeVisitElement(node: IVNode<any>): DebugNode[] | null {
         if (node._flags & VNodeFlags.ChildrenArray) {
             let result: DebugNode[] | null = null;
             const children = node._children as IVNode<any>[];
-            for (let i = 0; i < children.length; i++) {
-                const child = componentTreeVisitNode(children[i]);
+            for (const c of children) {
+                const child = componentTreeVisitNode(c);
                 if (child) {
-                    if (!result) {
-                        result = child;
-                    } else {
-                        result = result.concat(child);
-                    }
+                    result = result ? result.concat(child) : child;
                 }
             }
             return result;
@@ -115,14 +111,10 @@ export function componentTree(component?: Component<any>): DebugNode[] | null {
             return [result];
         } else {
             let result: DebugNode[] | null = null;
-            for (let i = 0; i < ROOTS.length; i++) {
-                const child = componentTreeVisitNode(ROOTS[i].currentVNode!);
+            for (const root of ROOTS) {
+                const child = componentTreeVisitNode(root.currentVNode!);
                 if (child) {
-                    if (!result) {
-                        result = child;
-                    } else {
-                        result = result.concat(child);
-                    }
+                    result = result ? result.concat(child) : child;
                 }
             }
             return result;
@@ -145,35 +137,23 @@ function _findComponentByNode(
             if (vnode._children !== null) {
                 if (vnode._flags & VNodeFlags.ChildrenArray) {
                     const children = vnode._children as IVNode<any>[];
-                    for (let i = 0; i < children.length; i++) {
-                        const result = _findComponentByNode(node, children[i], owner);
-                        if (result !== undefined) {
-                            return result;
-                        }
+                    for (const c of children) {
+                        return _findComponentByNode(node, c, owner);
                     }
                 } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
-                    const result = _findComponentByNode(node, vnode._children as IVNode<any>, owner);
-                    if (result !== undefined) {
-                        return result;
-                    }
+                    return _findComponentByNode(node, vnode._children as IVNode<any>, owner);
                 }
             }
         }
     } else if (vnode._flags & VNodeFlags.ComponentClass) {
         const component = vnode._instance as Component<any>;
         if (component.root) {
-            const result = _findComponentByNode(node, component.root, component);
-            if (result !== undefined) {
-                return result;
-            }
+            return _findComponentByNode(node, component.root, component);
         }
     } else if (vnode._flags & VNodeFlags.ComponentFunction) {
         const root = vnode._children as IVNode<any> | null;
         if (root) {
-            const result = _findComponentByNode(node, root, owner);
-            if (result !== undefined) {
-                return result;
-            }
+            return _findComponentByNode(node, root, owner);
         }
     }
 
@@ -188,8 +168,8 @@ function _findComponentByNode(
  */
 export function findComponentByNode(node: Node): Component<any> | null {
     if (__IVI_DEV__) {
-        for (let i = 0; i < ROOTS.length; i++) {
-            const result = _findComponentByNode(node, ROOTS[i].currentVNode!, null);
+        for (const root of ROOTS) {
+            const result = _findComponentByNode(node, root.currentVNode!, null);
             if (result !== undefined) {
                 return result;
             }

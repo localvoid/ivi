@@ -38,8 +38,8 @@ if (__IVI_DEV__) {
 export function devModeOnError(e: Error): void {
     if (__IVI_DEV__) {
         if (DEV_HOOKS.onError) {
-            for (let i = 0; i < DEV_HOOKS.onError.length; i++) {
-                DEV_HOOKS.onError[i](e);
+            for (const hook of DEV_HOOKS.onError) {
+                hook(e);
             }
         }
     }
@@ -48,8 +48,8 @@ export function devModeOnError(e: Error): void {
 export function devModeOnComponentCreated(instance: Component<any>): void {
     if (__IVI_DEV__) {
         if (DEV_HOOKS.onComponentCreated) {
-            for (let i = 0; i < DEV_HOOKS.onComponentCreated.length; i++) {
-                DEV_HOOKS.onComponentCreated[i](instance);
+            for (const hook of DEV_HOOKS.onComponentCreated) {
+                hook(instance);
             }
         }
     }
@@ -58,8 +58,8 @@ export function devModeOnComponentCreated(instance: Component<any>): void {
 export function devModeOnComponentDisposed(instance: Component<any>): void {
     if (__IVI_DEV__) {
         if (DEV_HOOKS.onComponentDisposed) {
-            for (let i = 0; i < DEV_HOOKS.onComponentDisposed.length; i++) {
-                DEV_HOOKS.onComponentDisposed[i](instance);
+            for (const hook of DEV_HOOKS.onComponentDisposed) {
+                hook(instance);
             }
         }
     }

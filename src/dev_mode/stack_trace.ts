@@ -223,8 +223,7 @@ function stackTraceToString(): string {
 
     if (components) {
         for (const component of components) {
-            result += "\n";
-            result += "  ";
+            result += "\n  ";
             if (component.type === "F") {
                 result += `[F]${component.name}`;
             } else {

@@ -213,15 +213,15 @@ export function perfMarkEnd(measureName: string, markName: string): void {
  * @returns object with key-value
  */
 function parseQueryString(query: string): { [key: string]: string } {
-    const a = query.substr(1).split("&");
+    const params = query.substr(1).split("&");
 
-    if (a.length === 0) {
+    if (params.length === 0) {
         return {};
     }
 
     const b: { [key: string]: string } = {};
-    for (let i = 0; i < a.length; ++i) {
-        const p = a[i].split("=", 2);
+    for (let kv of params) {
+        const p = kv.split("=", 2);
         if (p.length === 1) {
             b[p[0]] = "";
         } else {

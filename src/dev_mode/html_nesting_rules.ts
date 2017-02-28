@@ -284,15 +284,15 @@ export function checkNestingViolation(): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
             if (_parentTagName) {
-                const validChild = validChildList[_parentTagName];
-                if (validChild) {
-                    for (let i = 0; i < validChild.length; i++) {
-                        if (_childTagName === validChild[i]) {
+                const validChildren = validChildList[_parentTagName];
+                if (validChildren) {
+                    for (const child of validChildren) {
+                        if (_childTagName === child) {
                             return;
                         }
                     }
                     throw Error(`HTML child nesting rule violation: <${_parentTagName}> element can contain ` +
-                        `[${validChild.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
+                        `[${validChildren.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
                 }
 
                 if (_childTagName && _childTagName !== "$t") {

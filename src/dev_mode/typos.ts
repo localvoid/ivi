@@ -17,9 +17,7 @@ if (__IVI_DEV__) {
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
-            const keys = Object.keys(attrs);
-            for (let i = 0; i < keys.length; i++) {
-                const attrName = keys[i];
+            for (const attrName of Object.keys(attrs)) {
                 const msg = DOMAttributeTypos[attrName];
 
                 if (msg) {
@@ -45,11 +43,8 @@ if (__IVI_DEV__) {
 export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
-            const keys = Object.keys(styles);
-            for (let i = 0; i < keys.length; i++) {
-                const styleName = keys[i];
-                const styleValue = (styles as any)[styleName];
-
+            for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
+                const styleValue = styles[styleName];
                 const match = DOMStyleTypos[styleName];
                 if (match) {
                     printWarnOnce(`typo.style.${styleName}`,
