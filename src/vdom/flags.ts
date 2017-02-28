@@ -133,22 +133,14 @@ export const enum ComponentFlags {
      */
     Animated = 1 << 9,
     /**
-     * Component in the animation queue.
-     */
-    InAnimationQueue = 1 << 10,
-    /**
      * Component in the update queue.
      */
-    InUpdateQueue = 1 << 11,
-    /**
-     * Component function is using local context.
-     */
-    ComponentFunctionContext = 1 << 12,
+    InUpdateQueue = 1 << 10,
 
     /**
      * Component is dirty and should be updated.
      */
-    Dirty = DirtyProps | DirtyState | DirtyContext | DirtyParentContext,
+    Dirty = DirtyProps | DirtyState | DirtyContext | DirtyParentContext | Animated,
 }
 
 /**

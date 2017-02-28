@@ -337,7 +337,7 @@ function _updateComponent(parent: Node, component: Component<any>, syncFlags: Sy
         }
 
         if (
-            (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState)) ||
+            (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState | ComponentFlags.Animated)) ||
             ((flags & (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ===
                 (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ||
             (syncFlags & SyncFlags.ForceUpdate)

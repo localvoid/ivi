@@ -5,7 +5,7 @@ import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
 import { executeDOMReaders } from "./dom_reader";
 import { incrementClock } from "./clock";
 import { scheduleMicrotask } from "./microtask";
-import { prepareAnimatedComponents, executeAnimations, shouldRequestNextFrameForAnimations } from "./animation";
+import { executeAnimations, shouldRequestNextFrameForAnimations } from "./animation";
 import { autofocusedElement } from "./autofocus";
 
 let _pending = false;
@@ -73,12 +73,6 @@ function handleNextFrame(time?: number): void {
 
     _currentFrame._rwUnlock();
     _nextFrame._rwUnlock();
-
-    // Mark all animated components as dirty. But don't update them until all write tasks are finished. It is possible
-    // that we won't need to update component if it is removed, or it is already updated.
-    if (isVisible()) {
-        prepareAnimatedComponents();
-    }
 
     executeDOMReaders();
 

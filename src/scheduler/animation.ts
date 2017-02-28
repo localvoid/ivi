@@ -3,7 +3,7 @@ import { Component } from "../vdom/component";
 import { requestNextFrame } from "./frame";
 
 const _animations: (() => boolean | undefined)[] = [];
-const _animatedComponents: Component<any>[] = [];
+let _animatedComponents = 0;
 
 /**
  * Add component to the animated list.
@@ -12,9 +12,11 @@ const _animatedComponents: Component<any>[] = [];
  */
 export function startComponentAnimation(component: Component<any>): void {
     if (__IVI_BROWSER__) {
-        requestNextFrame();
-        component.flags |= ComponentFlags.Animated | ComponentFlags.InAnimationQueue;
-        _animatedComponents.push(component);
+        if (!_animatedComponents) {
+            requestNextFrame();
+        }
+        component.flags |= ComponentFlags.Animated;
+        _animatedComponents++;
     }
 }
 
@@ -25,18 +27,8 @@ export function startComponentAnimation(component: Component<any>): void {
  */
 export function stopComponentAnimation(component: Component<any>): void {
     if (__IVI_BROWSER__) {
-        component.flags |= ComponentFlags.Animated;
-    }
-}
-
-/**
- * Prepare animated components by marking them dirty.
- */
-export function prepareAnimatedComponents(): void {
-    if (__IVI_BROWSER__) {
-        for (let i = 0; i < _animatedComponents.length; i++) {
-            _animatedComponents[i].flags |= ComponentFlags.DirtyState;
-        }
+        component.flags &= ~ComponentFlags.Animated;
+        _animatedComponents--;
     }
 }
 
@@ -72,7 +64,7 @@ export function executeAnimations(): void {
 export function shouldRequestNextFrameForAnimations(): boolean {
     if (__IVI_BROWSER__) {
         return (
-            (_animatedComponents.length > 0) ||
+            (_animatedComponents > 0) ||
             (_animations.length > 0)
         );
     }
