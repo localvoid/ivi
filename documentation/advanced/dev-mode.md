@@ -61,14 +61,11 @@ Error message
     default stack trace...
 
 Components stack trace:
-    [C]BrokenComponent #2
-    [F]FunctionalComponentB
-    [F]FunctionalComponentA
- => [C]Application #1
+  [C]BrokenComponent #2
+  [F]FunctionalComponentB
+  [F]FunctionalComponentA
+  [C]Application #1
 ```
-
-`=>` symbol indicates an entry point. Entry point is where synchronization process is started, most of the time it will
-be a root component.
 
 `[C]` and `[F]` symbols are showing a type of components, F is a functional component and C is an ES6 class component.
 

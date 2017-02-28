@@ -1,6 +1,5 @@
 import { ComponentFlags } from "../vdom/flags";
 import { Component } from "../vdom/component";
-import { updateComponent } from "../vdom/implementation";
 import { requestNextFrame } from "./frame";
 
 const _animations: (() => boolean | undefined)[] = [];
@@ -42,27 +41,6 @@ export function prepareAnimatedComponents(): void {
 }
 
 /**
- * Update animated components.
- */
-export function updateAnimatedComponents(): void {
-    if (__IVI_BROWSER__) {
-        for (let i = 0; i < _animatedComponents.length; i++) {
-            const component = _animatedComponents[i];
-            if (component.flags & ComponentFlags.Animated) {
-                updateComponent(component);
-            } else {
-                component.flags &= ~ComponentFlags.InAnimationQueue;
-                if (i === _animatedComponents.length) {
-                    _animatedComponents.pop();
-                } else {
-                    _animatedComponents[i--] = _animatedComponents.pop() !;
-                }
-            }
-        }
-    }
-}
-
-/**
  * Add animation.
  *
  * @param animation Animation task.
@@ -84,7 +62,7 @@ export function executeAnimations(): void {
                 if (i === _animations.length) {
                     _animations.pop();
                 } else {
-                    _animations[i--] = _animations.pop() !;
+                    _animations[i--] = _animations.pop()!;
                 }
             }
         }

@@ -18,7 +18,6 @@ export function checkRefs(n: Node, v: IVNode<any>) {
     if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             const component = (v._instance as Component<any>);
-            expect(component._parentDOMNode).to.equal(n.parentNode);
             expect(getDOMInstanceFromComponent(component)).to.equal(n);
             const root = component.root;
             if (root) {

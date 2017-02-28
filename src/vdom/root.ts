@@ -4,7 +4,7 @@ import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { VNode, $t } from "./vnode";
-import { renderVNode, syncVNode, removeVNode, augmentVNode } from "./implementation";
+import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
 
 /**
  * Root.
@@ -214,5 +214,12 @@ export function augment(
         });
 
         syncFrameUpdate();
+    }
+}
+
+export function update() {
+    for (let i = 0; i < ROOTS.length; i++) {
+        const root = ROOTS[i];
+        updateComponents(root.container, root.currentVNode!, DEFAULT_CONTEXT);
     }
 }

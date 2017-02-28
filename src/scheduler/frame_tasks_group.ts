@@ -1,5 +1,3 @@
-import { ComponentFlags } from "../vdom/flags";
-import { Component } from "../vdom/component";
 
 /**
  * Frame Tasks Group flags.
@@ -45,10 +43,6 @@ export class FrameTasksGroup {
      */
     _flags: number;
     /**
-     * Array of component arrays indexed by their depth.
-     */
-    _componentTasks: Array<Component<any>[] | null>;
-    /**
      * Write DOM task queue.
      */
     _writeTasks: (() => void)[] | null;
@@ -63,7 +57,6 @@ export class FrameTasksGroup {
 
     constructor() {
         this._flags = 0;
-        this._componentTasks = [];
         this._writeTasks = null;
         this._readTasks = null;
         this._afterTasks = null;
@@ -74,7 +67,7 @@ export class FrameTasksGroup {
      *
      * @param component
      */
-    updateComponent(component: Component<any>): void {
+    updateComponent(): void {
         if (__IVI_BROWSER__) {
             if (__IVI_DEV__) {
                 if ((this._flags & FrameTasksGroupFlags.RWLock)) {
@@ -83,22 +76,7 @@ export class FrameTasksGroup {
                 }
             }
 
-            if (!(component.flags & ComponentFlags.InUpdateQueue)) {
-                component.flags |= ComponentFlags.InUpdateQueue;
-                const priority = component.depth;
-
-                this._flags |= FrameTasksGroupFlags.Component;
-                while (priority >= this._componentTasks.length) {
-                    this._componentTasks.push(null);
-                }
-
-                const group = this._componentTasks[priority];
-                if (group === null) {
-                    this._componentTasks[priority] = [component];
-                } else {
-                    group.push(component);
-                }
-            }
+            this._flags |= FrameTasksGroupFlags.Component;
         }
     }
 

@@ -18,7 +18,7 @@ is looking like this:
 1. Execute `DOMReader` tasks once per frame.
 2. Execute `read` tasks until read task queue is empty.
 3. Execute `write` tasks until write task queue is empty.
-4. Update components in lowest depth first order until all components are updated.
+4. Update dirty components.
 5. Check that `write` tasks queue is empty, otherwise go to step 3.
 6. Check that `read` tasks queue is empty, otherwise go to step 2.
 7. Execute `after` tasks until after task queue is empty.
@@ -36,7 +36,7 @@ executed when all other tasks are finished:
 
 ```ts
 interface FrameTasksGroup {
-    updateComponent(c: Component<any>): void;
+    updateComponent(): void;
     read(task: () => void): void;
     write(task: () => void): void;
     after(task: () => void): void;

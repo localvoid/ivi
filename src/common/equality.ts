@@ -33,9 +33,9 @@ export function isPropsNotShallowEqual<P>(oldProps: P, newProps: P): boolean {
     }
 
     for (let i = 0; i < aKeys.length; i++) {
-        const key = aKeys[i];
-        const aValue = (oldProps as { [key: string]: any })[key];
-        const bValue = (newProps as { [key: string]: any })[key];
+        const key = aKeys[i] as keyof P;
+        const aValue = oldProps[key];
+        const bValue = newProps[key];
         if (aValue !== bValue) {
             return true;
         }

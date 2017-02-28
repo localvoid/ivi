@@ -24,8 +24,7 @@ import {
     nestingStateParentTagName, AncestorFlags, AncestorFlagsByTagName,
 } from "../dev_mode/html_nesting_rules";
 import {
-    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
-    getFunctionalComponentStackTrace,
+    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment
 } from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
@@ -114,7 +113,6 @@ function ancestorFlags(element: Element | null): AncestorFlags {
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
- * @param owner Owning component.
  * @returns Rendered instance.
  */
 export function renderVNode(
@@ -122,7 +120,6 @@ export function renderVNode(
     refChild: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): Node {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
@@ -132,7 +129,7 @@ export function renderVNode(
         }
 
         try {
-            return _renderVNode(parent, refChild, vnode, context, owner);
+            return _renderVNode(parent, refChild, vnode, context);
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
@@ -141,7 +138,7 @@ export function renderVNode(
             throw e;
         }
     }
-    return _renderVNode(parent, refChild, vnode, context, owner);
+    return _renderVNode(parent, refChild, vnode, context);
 }
 
 /**
@@ -154,7 +151,6 @@ export function renderVNode(
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
- * @param owner Owning component.
  * @returns Rendered DOM Node.
  */
 function _renderVNode(
@@ -162,9 +158,8 @@ function _renderVNode(
     refChild: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): Node {
-    return vNodeRenderIntoAndAttach(container, refChild, vnode, context, owner);
+    return vNodeRenderIntoAndAttach(container, refChild, vnode, context);
 }
 
 /**
@@ -174,9 +169,6 @@ function _renderVNode(
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current context.
- * @param owner Owning component.
- * @returns Synced DOM Node. When VNodes are synced and they aren't compatible, old DOM Node will be replaced with a new
- * DOM Node.
  */
 export function syncVNode(
     parent: Node,
@@ -184,7 +176,6 @@ export function syncVNode(
     b: IVNode<any>,
     context: { [key: string]: any },
     syncFlags: SyncFlags,
-    owner?: Component<any>,
 ): void {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
@@ -194,7 +185,7 @@ export function syncVNode(
         }
 
         try {
-            _syncVNode(parent, a, b, context, owner);
+            _syncVNode(parent, a, b, context);
             return;
         } catch (e) {
             stackTraceAugment(e);
@@ -204,7 +195,7 @@ export function syncVNode(
             throw e;
         }
     }
-    _syncVNode(parent, a, b, context, owner);
+    _syncVNode(parent, a, b, context);
 }
 
 /**
@@ -216,18 +207,14 @@ export function syncVNode(
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current context.
- * @param owner Owning component.
- * @returns Synced DOM Node. When VNodes are synced and they aren't compatible, old DOM Node will be replaced with a new
- * DOM Node.
  */
 function _syncVNode(
     parent: Node,
     a: IVNode<any>,
     b: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): void {
-    vNodeSync(parent, a, b, context, 0, owner);
+    vNodeSync(parent, a, b, context, 0);
 }
 
 /**
@@ -277,14 +264,12 @@ function _removeVNode(parent: Node, node: IVNode<any>): void {
  * @param node DOM Node.
  * @param vnode Virtual DOM Node.
  * @param context Context.
- * @param owner Owner.
  */
 export function augmentVNode(
     parent: Node,
     node: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): void {
     if (__IVI_DEV__) {
         if ((parent as Element).tagName) {
@@ -294,7 +279,7 @@ export function augmentVNode(
         }
 
         try {
-            _augmentVNode(parent, node, vnode, context, owner);
+            _augmentVNode(parent, node, vnode, context);
             return;
         } catch (e) {
             stackTraceAugment(e);
@@ -304,7 +289,7 @@ export function augmentVNode(
             throw e;
         }
     }
-    _augmentVNode(parent, node, vnode, context, owner);
+    _augmentVNode(parent, node, vnode, context);
 }
 
 /**
@@ -317,34 +302,41 @@ export function augmentVNode(
  * @param node DOM Node.
  * @param vnode Virtual DOM Node.
  * @param context Context.
- * @param owner Owner.
  */
 function _augmentVNode(
     parent: Node,
     node: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): void {
-    vNodeAugment(parent, node, vnode, context, owner);
+    vNodeAugment(parent, node, vnode, context);
     vNodeAttach(vnode);
 }
 
 /**
- * Update Component entry point tryCatch wrapper.
+ * Update Components entry point.
  *
  * #entry
  * #component
  *
- * @param component Component to update.
- * @returns DOM Node.
+ * @param parent Parent DOM Node.
+ * @param vnode Virtual DOM Node.
+ * @param context Context.
  */
-export function updateComponent<P>(component: Component<P>): void {
+export function updateComponents(
+    parent: Node,
+    vnode: IVNode<any>,
+    context: { [key: string]: any },
+): void {
     if (__IVI_DEV__) {
+        if ((parent as Element).tagName) {
+            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
+        } else {
+            setInitialNestingState("", 0);
+        }
+
         try {
-            stackTracePushComponent((component as Object).constructor as ComponentClass<any>, component);
-            _updateComponent(component, 0);
-            stackTracePopComponent();
+            vNodeUpdateComponents(parent, vnode, context, SyncFlags.DirtyComponent);
             return;
         } catch (e) {
             stackTraceAugment(e);
@@ -354,30 +346,21 @@ export function updateComponent<P>(component: Component<P>): void {
             throw e;
         }
     }
-    _updateComponent(component, 0);
+    vNodeUpdateComponents(parent, vnode, context, SyncFlags.DirtyComponent);
 }
 
 /**
  * Update Component.
  *
- * #entry
- *
  * @param component Component to update.
  * @returns DOM Node.
  */
-function _updateComponent<P>(component: Component<P>, syncFlags: SyncFlags): void {
+function _updateComponent(parent: Node, component: Component<any>, syncFlags: SyncFlags): void {
     const flags = component.flags;
+    const oldRoot = component.root!;
 
-    if ((flags & ComponentFlags.Attached) &&
-        (
-            (flags & ComponentFlags.Dirty) ||
-            (syncFlags & SyncFlags.ForceUpdate)
-        )
-    ) {
-        componentPerfMarkBegin(component._debugId, "update");
-
-        const oldRoot = component.root!;
-
+    componentPerfMarkBegin(component._debugId, "update");
+    if ((flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
         componentWillUpdate(component);
 
         if (flags & (ComponentFlags.DirtyParentContext | ComponentFlags.DirtyContext)) {
@@ -391,25 +374,18 @@ function _updateComponent<P>(component: Component<P>, syncFlags: SyncFlags): voi
                 (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ||
             (syncFlags & SyncFlags.ForceUpdate)
         ) {
-            if (__IVI_DEV__) {
-                if ((component._parentDOMNode as Element).tagName) {
-                    setInitialNestingState((component._parentDOMNode as Element).tagName.toLowerCase(),
-                        component._ancestorFlags);
-                } else {
-                    setInitialNestingState("", component._ancestorFlags);
-                }
-            }
-            const parentNode = component._parentDOMNode;
             const newRoot = componentClassRender(component);
-            vNodeSync(parentNode!, oldRoot, newRoot, component._context, syncFlags, component);
+            vNodeSync(parent, oldRoot, newRoot, component._context, syncFlags);
             component.flags &= ~(ComponentFlags.Dirty | ComponentFlags.InUpdateQueue);
-        } else if (oldRoot) { // (flags & (ComponentFlags.DirtyContext | ComponentFlags.DirtyParentContext))
-            vNodePropagateNewContext(component._parentDOMNode!, oldRoot, component._context, syncFlags, component);
+        } else { // (flags & (ComponentFlags.DirtyContext | ComponentFlags.DirtyParentContext))
+            vNodeUpdateComponents(parent, oldRoot, component._context, syncFlags);
         }
 
         componentDidUpdate(component);
-        componentPerfMarkEnd(component._debugId, "update", true, component);
+    } else {
+        vNodeUpdateComponents(parent, oldRoot, component._context, syncFlags);
     }
+    componentPerfMarkEnd(component._debugId, "update", true, component);
 }
 
 /**
@@ -421,7 +397,6 @@ function _updateComponent<P>(component: Component<P>, syncFlags: SyncFlags): voi
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current Context.
- * @param owner Owner.
  * @returns DOM Node.
  */
 function _updateComponentFunction(
@@ -430,23 +405,21 @@ function _updateComponentFunction(
     b: IVNode<any>,
     context: { [key: string]: any },
     syncFlags: SyncFlags,
-    owner?: Component<any>,
 ): void {
     const fn = b._tag as ComponentFunction<any>;
-
     componentPerfMarkBegin(b._debugId, "update");
 
     if ((syncFlags & SyncFlags.ForceUpdate) ||
-        ((a._props !== null || b._props !== null) &&
-            (!fn.isPropsChanged || fn.isPropsChanged(a._props, b._props)))) {
+        ((a !== b) &&
+            (a._props !== null || b._props !== null) &&
+            (!fn.isPropsChanged || fn.isPropsChanged(a._props, b._props))) ||
+        ((syncFlags & SyncFlags.DirtyContext) && (fn.length > 1))) {
         const oldRoot = a._children as IVNode<any>;
         const newRoot = b._children = componentFunctionRender(fn, b._props, context);
-        vNodeSync(parent, oldRoot, newRoot, context, syncFlags, owner);
+        vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
     } else {
         b._children = a._children;
-        if (syncFlags & SyncFlags.DirtyContext) {
-            vNodePropagateNewContext(parent, b._children as IVNode<any>, context, syncFlags, owner);
-        }
+        vNodeUpdateComponents(parent, b._children as IVNode<any>, context, syncFlags);
     }
 
     componentPerfMarkEnd(b._debugId, "update", false, fn);
@@ -460,7 +433,17 @@ function _updateComponentFunction(
 function vNodeAttach(vnode: IVNode<any>): void {
     const flags = vnode._flags;
 
-    if (flags & VNodeFlags.Component) {
+    if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+        let children = vnode._children;
+        if (flags & VNodeFlags.ChildrenArray) {
+            children = children as IVNode<any>[];
+            for (let i = 0; i < children.length; i++) {
+                vNodeAttach(children[i]);
+            }
+        } else {
+            vNodeAttach(children as IVNode<any>);
+        }
+    } else if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
@@ -483,18 +466,6 @@ function vNodeAttach(vnode: IVNode<any>): void {
             componentPerfMarkEnd(vnode._debugId, "attach", false, vnode._tag as ComponentFunction<any>);
         }
         stackTracePopComponent();
-    } else if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
-        let children = vnode._children;
-        if (children !== null && (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray))) {
-            if (flags & VNodeFlags.ChildrenArray) {
-                children = children as IVNode<any>[];
-                for (let i = 0; i < children.length; i++) {
-                    vNodeAttach(children[i]);
-                }
-            } else {
-                vNodeAttach(children as IVNode<any>);
-            }
-        }
     }
 }
 
@@ -505,7 +476,20 @@ function vNodeAttach(vnode: IVNode<any>): void {
  */
 function vNodeDetach(vnode: IVNode<any>): void {
     const flags = vnode._flags;
-    if (flags & VNodeFlags.Component) {
+
+    if (flags & VNodeFlags.Element) {
+        if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+            const children = vnode._children;
+            if (flags & VNodeFlags.ChildrenArray) {
+                vNodeDetachAll(children as IVNode<any>[]);
+            } else {
+                vNodeDetach(children as IVNode<any>);
+            }
+        }
+        if (vnode._events) {
+            removeEvents(vnode._events);
+        }
+    } else if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
@@ -529,20 +513,6 @@ function vNodeDetach(vnode: IVNode<any>): void {
             componentPerfMarkEnd(vnode._debugId, "detach", false, vnode._tag as ComponentFunction<any>);
         }
         stackTracePopComponent();
-    } else if (flags & VNodeFlags.Element) {
-        if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
-            let children = vnode._children;
-            if (children !== null && (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray))) {
-                if (flags & VNodeFlags.ChildrenArray) {
-                    vNodeDetachAll(children as IVNode<any>[]);
-                } else {
-                    vNodeDetach(children as IVNode<any>);
-                }
-            }
-        }
-        if (vnode._events) {
-            removeEvents(vnode._events);
-        }
     }
 }
 
@@ -558,65 +528,51 @@ function vNodeDetachAll(vnodes: IVNode<any>[]): void {
 }
 
 /**
- * Recursively propagate new context.
+ * Recursively update all dirty components.
  *
  * @param vnode VNode.
  * @param context New context.
  */
-function vNodePropagateNewContext(
+function vNodeUpdateComponents(
     parent: Node,
     vnode: IVNode<any>,
     context: { [key: string]: any },
     syncFlags: SyncFlags,
-    owner?: Component<any>,
 ): void {
     const flags = vnode._flags;
-    if (flags & VNodeFlags.Component) {
+    if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+        const p = vnode._instance as Node;
+        let children = vnode._children;
+        if (flags & VNodeFlags.ChildrenArray) {
+            children = children as IVNode<any>[];
+            for (let i = 0; i < children.length; i++) {
+                vNodeUpdateComponents(p, children[i], context, syncFlags);
+            }
+        } else {
+            vNodeUpdateComponents(p, children as IVNode<any>, context, syncFlags);
+        }
+    } else if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
-            componentPerfMarkBegin(component._debugId, "propagateContext");
+            componentPerfMarkBegin(component._debugId, "propagateUpdate");
             componentUpdateParentContext(component, context);
-            _updateComponent(component, syncFlags);
-            componentPerfMarkEnd(component._debugId, "propagateContext", true, component);
+            _updateComponent(parent, component, syncFlags);
+            componentPerfMarkEnd(component._debugId, "propagateUpdate", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             const fn = vnode._tag as ComponentFunction<any>;
-            stackTracePushComponent(vnode._tag as ComponentFunction<any>);
-            componentPerfMarkBegin(vnode._debugId, "propagateContext");
-            // Optimization that checks if function is using context parameter. When function doesn't use context, it
-            // means that we can ignore re-renders when context is changed, and just propagate a new context through
-            // existing subtree.
-            if (fn.length < 2) {
-                vNodePropagateNewContext(
-                    parent,
-                    vnode._children as IVNode<any>,
-                    context,
-                    syncFlags,
-                    owner);
-            } else {
-                _updateComponentFunction(
-                    parent,
-                    vnode._children as IVNode<any>,
-                    vnode._children as IVNode<any>,
-                    context,
-                    syncFlags,
-                    owner);
-            }
-            componentPerfMarkEnd(vnode._debugId, "propagateContext", false, fn);
+            stackTracePushComponent(fn);
+            componentPerfMarkBegin(vnode._debugId, "propagateUpdate");
+            _updateComponentFunction(
+                parent,
+                vnode._children as IVNode<any>,
+                vnode._children as IVNode<any>,
+                context,
+                syncFlags,
+            );
+            componentPerfMarkEnd(vnode._debugId, "propagateUpdate", false, fn);
         }
         stackTracePopComponent();
-    } else if (!(flags & (VNodeFlags.InputElement | VNodeFlags.MediaElement))) {
-        let children = vnode._children;
-        if (children !== null && (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray))) {
-            if (flags & VNodeFlags.ChildrenArray) {
-                children = children as IVNode<any>[];
-                for (let i = 0; i < children.length; i++) {
-                    vNodePropagateNewContext(parent, children[i], context, syncFlags, owner);
-                }
-            } else {
-                vNodePropagateNewContext(parent, children as IVNode<any>, context, syncFlags, owner);
-            }
-        }
     }
 }
 
@@ -820,14 +776,12 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
  * @param parent Parent DOM Node.
  * @param vnode VNode to render.
  * @param context Current context.
- * @param owner Owning component.
  * @returns Rendered DOM Node.
  */
 function vNodeRender(
     parent: Node,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): Node {
     if (__IVI_DEV__) {
         if (vnode._instance) {
@@ -908,13 +862,13 @@ function vNodeRender(
                         children = children as IVNode<any>[];
                         for (i = 0; i < children.length; i++) {
                             child = children[i];
-                            childNode = vNodeRender(node, child, context, owner);
+                            childNode = vNodeRender(node, child, context);
                             node.insertBefore(childNode, null);
                         }
                     }
                 } else if (flags & VNodeFlags.ChildrenVNode) {
                     child = children as IVNode<any>;
-                    childNode = vNodeRender(node, child, context, owner);
+                    childNode = vNodeRender(node, child, context);
                     node.insertBefore(childNode, null);
                 } else if (flags & VNodeFlags.InputElement) {
                     /**
@@ -936,25 +890,20 @@ function vNodeRender(
         restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
     } else { // (flags & VNodeFlags.Component)
         if (flags & VNodeFlags.ComponentClass) {
-            const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+            const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context);
             registerComponent(component);
             devModeOnComponentCreated(component);
             stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin(component._debugId, "create");
-            if (__IVI_DEV__) {
-                component._ancestorFlags = nestingStateAncestorFlags();
-                component._stackTrace = getFunctionalComponentStackTrace();
-            }
-            component._parentDOMNode = parent;
             componentUpdateContext(component);
-            node = vNodeRender(parent, componentClassRender(component), component._context, component);
+            node = vNodeRender(parent, componentClassRender(component), component._context);
             componentPerfMarkEnd(component._debugId, "create", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode._tag as ComponentFunction<any>);
             componentPerfMarkBegin(vnode._debugId, "create");
             const root = vnode._children =
                 componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
-            node = vNodeRender(parent, root, context, owner);
+            node = vNodeRender(parent, root, context);
             componentPerfMarkEnd(vnode._debugId, "create", false, vnode._tag as ComponentFunction<any>);
         }
         stackTracePopComponent();
@@ -976,7 +925,6 @@ function vNodeRender(
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
- * @param owner Owning component.
  * @returns Rendered DOM Node.
  */
 function vNodeRenderIntoAndAttach(
@@ -984,9 +932,8 @@ function vNodeRenderIntoAndAttach(
     refChild: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): Node {
-    const node = vNodeRender(container, vnode, context, owner);
+    const node = vNodeRender(container, vnode, context);
     container.insertBefore(node, refChild);
     vNodeAttach(vnode);
     return node;
@@ -1001,14 +948,12 @@ function vNodeRenderIntoAndAttach(
  * @param node DOM Node.
  * @param vnode Virtual DOM Node.
  * @param context Context.
- * @param owner Owner.
  */
 function vNodeAugment(
     parent: Node,
     node: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
-    owner?: Component<any>,
 ): void {
     if (__IVI_DEV__) {
         if (vnode._instance) {
@@ -1065,49 +1010,38 @@ function vNodeAugment(
                         syncEvents(node as Element, null, vnode._events);
                     }
 
-                    if (vnode._children !== null) {
-                        if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
-                            let domChild = node.firstChild;
-                            if (flags & VNodeFlags.ChildrenArray) {
-                                const children = vnode._children as IVNode<any>[];
-                                for (let i = 0; i < children.length; i++) {
-                                    if (__IVI_DEV__) {
-                                        if (domChild === null) {
-                                            throw new Error(`Invalid children: expected to find ${children.length} ` +
-                                                `children nodes.`);
-                                        }
-                                    }
-                                    const next = domChild!.nextSibling;
-                                    vNodeAugment(node, domChild, children[i], context, owner);
-                                    domChild = next;
-                                }
-                                if (__IVI_DEV__) {
-                                    if (domChild !== null) {
-                                        throw new Error(`Invalid children: document contains more children nodes ` +
-                                            `than expected.`);
-                                    }
-                                }
-                            } else {
+                    if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
+                        let domChild = node.firstChild;
+                        if (flags & VNodeFlags.ChildrenArray) {
+                            const children = vnode._children as IVNode<any>[];
+                            for (let i = 0; i < children.length; i++) {
                                 if (__IVI_DEV__) {
                                     if (domChild === null) {
-                                        throw new Error(`Invalid children: expected to find 1 child node.`);
-                                    }
-                                    if (domChild.nextSibling !== null) {
-                                        throw new Error(`Invalid children: document contains more children nodes ` +
-                                            `than expected.`);
+                                        throw new Error(`Invalid children: expected to find ${children.length} ` +
+                                            `children nodes.`);
                                     }
                                 }
-                                vNodeAugment(node, domChild, vnode._children as IVNode<any>, context, owner);
+                                const next = domChild!.nextSibling;
+                                vNodeAugment(node, domChild, children[i], context);
+                                domChild = next;
                             }
-
-                        } else if (flags & VNodeFlags.InputElement) {
-                            // Do not override input value when augmenting.
-                            //
-                            // TODO: What should be the default behavior when input element is changed before scripts
-                            // are loaded. Maybe we should fire onInput event, is synthetic event enough, or it should
-                            // be a native event?
-                            //
-                            // setHTMLInputValue(node as HTMLInputElement, vnode._children as string | boolean);
+                            if (__IVI_DEV__) {
+                                if (domChild !== null) {
+                                    throw new Error(`Invalid children: document contains more children nodes ` +
+                                        `than expected.`);
+                                }
+                            }
+                        } else {
+                            if (__IVI_DEV__) {
+                                if (domChild === null) {
+                                    throw new Error(`Invalid children: expected to find 1 child node.`);
+                                }
+                                if (domChild.nextSibling !== null) {
+                                    throw new Error(`Invalid children: document contains more children nodes ` +
+                                        `than expected.`);
+                                }
+                            }
+                            vNodeAugment(node, domChild, vnode._children as IVNode<any>, context);
                         }
                     }
                 } else { // (flags & VNodeFlags.Text)
@@ -1137,32 +1071,25 @@ function vNodeAugment(
                 restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
             } else { // (flags & VNodeFlags.Component)
                 if (flags & VNodeFlags.ComponentClass) {
-                    const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context, owner);
+                    const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context);
                     registerComponent(component);
                     devModeOnComponentCreated(component);
                     stackTracePushComponent(vnode._tag as ComponentClass<any>, component);
-
-                    if (__IVI_DEV__) {
-                        component._ancestorFlags = nestingStateAncestorFlags();
-                        component._stackTrace = getFunctionalComponentStackTrace();
-                    }
-
-                    component._parentDOMNode = parent;
                     componentUpdateContext(component);
                     const root = componentClassRender(component);
                     if (component.shouldAugment()) {
-                        vNodeAugment(parent, node, root, component._context, component);
+                        vNodeAugment(parent, node, root, component._context);
                     } else {
-                        parent.replaceChild(vNodeRender(parent, root, context, owner), node);
+                        parent.replaceChild(vNodeRender(parent, root, context), node);
                     }
                 } else {
                     const fc = vnode._tag as ComponentFunction<any>;
                     stackTracePushComponent(fc);
                     const root = vnode._children = componentFunctionRender(fc, vnode._props, context);
                     if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
-                        vNodeAugment(parent, node, root, context, owner);
+                        vNodeAugment(parent, node, root, context);
                     } else {
-                        parent.replaceChild(vNodeRender(parent, root, context, owner), node);
+                        parent.replaceChild(vNodeRender(parent, root, context), node);
                     }
                 }
 
@@ -1171,10 +1098,10 @@ function vNodeAugment(
 
             vnode._instance = instance;
         } else {
-            parent.replaceChild(vNodeRender(parent, vnode, context, owner), node);
+            parent.replaceChild(vNodeRender(parent, vnode, context), node);
         }
     } else {
-        parent.insertBefore(vNodeRender(parent, vnode, context, owner), null);
+        parent.insertBefore(vNodeRender(parent, vnode, context), null);
     }
 }
 
@@ -1219,7 +1146,6 @@ function vNodeEqualKeys(a: IVNode<any>, b: IVNode<any>): boolean {
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current context.
- * @param owner Owning component.
  * @returns Synced DOM Node. When VNodes are synced and they aren't compatible, old DOM Node will be replaced with a new
  * DOM Node.
  */
@@ -1229,7 +1155,6 @@ function vNodeSync(
     b: IVNode<any>,
     context: { [key: string]: any },
     syncFlags: SyncFlags,
-    owner?: Component<any>,
 ): void {
     if (__IVI_DEV__) {
         if (b._flags & VNodeFlags.Immutable) {
@@ -1239,9 +1164,7 @@ function vNodeSync(
     }
 
     if (a === b) {
-        if (syncFlags & SyncFlags.DirtyContext) {
-            vNodePropagateNewContext(parent, b, context, syncFlags, owner);
-        }
+        vNodeUpdateComponents(parent, b, context, syncFlags);
     }
 
     if (__IVI_DEV__) {
@@ -1284,7 +1207,7 @@ function vNodeSync(
                         b._children as IVNode<any>[] | IVNode<any> | string | number | boolean,
                         context,
                         syncFlags,
-                        owner);
+                    );
                 }
             }
         } else { // (flags & VNodeFlags.Component)
@@ -1295,15 +1218,15 @@ function vNodeSync(
                     componentUpdateProps(component, b._props);
                 }
                 componentUpdateParentContext(component, context);
-                _updateComponent(component, syncFlags);
+                _updateComponent(parent, component, syncFlags);
             } else { // (flags & VNodeFlags.ComponentFunction)
                 stackTracePushComponent(b._tag as ComponentFunction<any>);
-                _updateComponentFunction(parent, a, b, context, syncFlags, owner);
+                _updateComponentFunction(parent, a, b, context, syncFlags);
             }
             stackTracePopComponent();
         }
     } else {
-        instance = vNodeRender(parent, b, context, owner);
+        instance = vNodeRender(parent, b, context);
         parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
         vNodeDetach(a);
         vNodeAttach(b);
@@ -1319,7 +1242,6 @@ function vNodeSync(
  * @param a Old VNode list.
  * @param b New VNode list.
  * @param context Current context.
- * @param owner Owning component.
  */
 function syncChildren(
     parent: Node,
@@ -1329,7 +1251,6 @@ function syncChildren(
     b: IVNode<any>[] | IVNode<any> | string | number | boolean,
     context: { [key: string]: any },
     syncFlags: SyncFlags,
-    owner: Component<any> | undefined,
 ): void {
     let i = 0;
 
@@ -1340,11 +1261,11 @@ function syncChildren(
             } else {
                 b = b as IVNode<any>[];
                 for (i = 0; i < b.length; i++) {
-                    vNodeRenderIntoAndAttach(parent, null, b[i], context, owner);
+                    vNodeRenderIntoAndAttach(parent, null, b[i], context);
                 }
             }
         } else if (bParentFlags & VNodeFlags.ChildrenVNode) {
-            vNodeRenderIntoAndAttach(parent, null, b as IVNode<any>, context, owner);
+            vNodeRenderIntoAndAttach(parent, null, b as IVNode<any>, context);
         } else if (bParentFlags & VNodeFlags.InputElement) {
             setHTMLInputValue(parent as HTMLInputElement, b as string | boolean);
         } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
@@ -1382,10 +1303,10 @@ function syncChildren(
                 if (bParentFlags & VNodeFlags.ChildrenArray) {
                     b = b as IVNode<any>[];
                     for (i = 0; i < b.length; i++) {
-                        vNodeRenderIntoAndAttach(parent, null, b[i], context, owner);
+                        vNodeRenderIntoAndAttach(parent, null, b[i], context);
                     }
                 } else {
-                    vNodeRenderIntoAndAttach(parent, null, b as IVNode<any>, context, owner);
+                    vNodeRenderIntoAndAttach(parent, null, b as IVNode<any>, context);
                 }
             }
         } else if (aParentFlags & VNodeFlags.ChildrenArray) {
@@ -1401,15 +1322,15 @@ function syncChildren(
                 b = b as IVNode<any>[];
                 if (a.length === 0) {
                     for (i = 0; i < b.length; i++) {
-                        vNodeRenderIntoAndAttach(parent, null, b[i], context, owner);
+                        vNodeRenderIntoAndAttach(parent, null, b[i], context);
                     }
                 } else {
                     if (b.length === 0) {
                         vNodeRemoveAllChildren(parent, a);
                     } else if (a.length === 1 && b.length === 1) {
-                        vNodeSync(parent, a[0], b[0], context, syncFlags, owner);
+                        vNodeSync(parent, a[0], b[0], context, syncFlags);
                     } else {
-                        syncChildrenTrackByKeys(parent, a, b, context, syncFlags, owner);
+                        syncChildrenTrackByKeys(parent, a, b, context, syncFlags);
                     }
                 }
             } else {
@@ -1419,7 +1340,7 @@ function syncChildren(
                     while (i < a.length) {
                         const node = a[i++];
                         if (vNodeEqualKeys(node, b)) {
-                            vNodeSync(parent, node, b, context, syncFlags, owner);
+                            vNodeSync(parent, node, b, context, syncFlags);
                             break;
                         } else {
                             vNodeRemoveChild(parent, node);
@@ -1430,10 +1351,10 @@ function syncChildren(
                             vNodeRemoveChild(parent, a[i++]);
                         }
                     } else {
-                        vNodeRenderIntoAndAttach(parent, null, b, context, owner);
+                        vNodeRenderIntoAndAttach(parent, null, b, context);
                     }
                 } else {
-                    vNodeRenderIntoAndAttach(parent, null, b, context, owner);
+                    vNodeRenderIntoAndAttach(parent, null, b, context);
                 }
             }
         } else if (aParentFlags & VNodeFlags.ChildrenVNode) {
@@ -1453,15 +1374,15 @@ function syncChildren(
                     while (i < b.length) {
                         const node = b[i++];
                         if (vNodeEqualKeys(a, node)) {
-                            vNodeSync(parent, a, node, context, syncFlags, owner);
+                            vNodeSync(parent, a, node, context, syncFlags);
                             break;
                         } else {
-                            vNodeRenderIntoAndAttach(parent, next, b[i], context, owner);
+                            vNodeRenderIntoAndAttach(parent, next, b[i], context);
                         }
                     }
                     if (i < b.length) {
                         while (i < b.length) {
-                            vNodeRenderIntoAndAttach(parent, null, b[i++], context, owner);
+                            vNodeRenderIntoAndAttach(parent, null, b[i++], context);
                         }
                     } else {
                         vNodeRemoveChild(parent, a);
@@ -1470,7 +1391,7 @@ function syncChildren(
                     vNodeRemoveChild(parent, a);
                 }
             } else {
-                vNodeSync(parent, a, b as IVNode<any>, context, syncFlags, owner);
+                vNodeSync(parent, a, b as IVNode<any>, context, syncFlags);
             }
         } else { // (aParentFlags & VNodeFlags.InputElement)
             /**
@@ -1739,7 +1660,6 @@ function syncChildren(
  * @param a Old VNode list.
  * @param b New VNode list.
  * @param context Current context.
- * @param owner Owning component.
  */
 function syncChildrenTrackByKeys(
     parent: Node,
@@ -1747,7 +1667,6 @@ function syncChildrenTrackByKeys(
     b: IVNode<any>[],
     context: { [key: string]: any },
     syncFlags: SyncFlags,
-    owner?: Component<any>,
 ): void {
     let aStart = 0;
     let bStart = 0;
@@ -1769,7 +1688,7 @@ function syncChildrenTrackByKeys(
     outer: while (true) {
         // Sync nodes with the same key at the beginning.
         while (vNodeEqualKeys(aStartNode, bStartNode)) {
-            vNodeSync(parent, aStartNode, bStartNode, context, syncFlags, owner);
+            vNodeSync(parent, aStartNode, bStartNode, context, syncFlags);
             aStart++;
             bStart++;
             if (aStart > aEnd || bStart > bEnd) {
@@ -1781,7 +1700,7 @@ function syncChildrenTrackByKeys(
 
         // Sync nodes with the same key at the end.
         while (vNodeEqualKeys(aEndNode, bEndNode)) {
-            vNodeSync(parent, aEndNode, bEndNode, context, syncFlags, owner);
+            vNodeSync(parent, aEndNode, bEndNode, context, syncFlags);
             aEnd--;
             bEnd--;
             if (aStart > aEnd || bStart > bEnd) {
@@ -1793,7 +1712,7 @@ function syncChildrenTrackByKeys(
 
         // Move and sync nodes from right to left.
         if (vNodeEqualKeys(aEndNode, bStartNode)) {
-            vNodeSync(parent, aEndNode, bStartNode, context, syncFlags, owner);
+            vNodeSync(parent, aEndNode, bStartNode, context, syncFlags);
             vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
             aEnd--;
             bStart++;
@@ -1817,7 +1736,7 @@ function syncChildrenTrackByKeys(
 
         // Move and sync nodes from left to right.
         if (vNodeEqualKeys(aStartNode, bEndNode)) {
-            vNodeSync(parent, aStartNode, bEndNode, context, syncFlags, owner);
+            vNodeSync(parent, aStartNode, bEndNode, context, syncFlags);
             nextPos = bEnd + 1;
             next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
             vNodeMoveChild(parent, bEndNode, next);
@@ -1836,7 +1755,7 @@ function syncChildrenTrackByKeys(
         nextPos = bEnd + 1;
         next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
         while (bStart <= bEnd) {
-            vNodeRenderIntoAndAttach(parent, next, b[bStart++], context, owner);
+            vNodeRenderIntoAndAttach(parent, next, b[bStart++], context);
         }
     } else if (bStart > bEnd) {
         // All nodes from b are synced, remove the rest from a.
@@ -1870,7 +1789,7 @@ function syncChildrenTrackByKeys(
                             } else {
                                 pos = j;
                             }
-                            vNodeSync(parent, aNode, bNode, context, syncFlags, owner);
+                            vNodeSync(parent, aNode, bNode, context, syncFlags);
                             synced++;
                             aNullable[i] = null;
                             break;
@@ -1915,7 +1834,7 @@ function syncChildrenTrackByKeys(
                         } else {
                             pos = j;
                         }
-                        vNodeSync(parent, aNode, bNode, context, syncFlags, owner);
+                        vNodeSync(parent, aNode, bNode, context, syncFlags);
                         synced++;
                         aNullable[i] = null;
                     }
@@ -1927,7 +1846,7 @@ function syncChildrenTrackByKeys(
             // Noone is synced, remove all children with one dom op.
             vNodeRemoveAllChildren(parent, a);
             while (bStart < bLength) {
-                vNodeRenderIntoAndAttach(parent, null, b[bStart++], context, owner);
+                vNodeRenderIntoAndAttach(parent, null, b[bStart++], context);
             }
         } else {
             i = aLength - synced;
@@ -1949,7 +1868,7 @@ function syncChildrenTrackByKeys(
                         node = b[pos];
                         nextPos = pos + 1;
                         next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
-                        vNodeRenderIntoAndAttach(parent, next, node, context, owner);
+                        vNodeRenderIntoAndAttach(parent, next, node, context);
                     } else {
                         if (j < 0 || i !== seq[j]) {
                             pos = i + bStart;
@@ -1969,7 +1888,7 @@ function syncChildrenTrackByKeys(
                         node = b[pos];
                         nextPos = pos + 1;
                         next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
-                        vNodeRenderIntoAndAttach(parent, next, node, context, owner);
+                        vNodeRenderIntoAndAttach(parent, next, node, context);
                     }
                 }
             }

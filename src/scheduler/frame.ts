@@ -1,13 +1,11 @@
 
 import { isVisible, addVisibilityObserver } from "../common/visibility";
-import { updateComponent } from "../vdom/implementation";
+import { update } from "../vdom/root";
 import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
 import { executeDOMReaders } from "./dom_reader";
 import { incrementClock } from "./clock";
 import { scheduleMicrotask } from "./microtask";
-import {
-    prepareAnimatedComponents, updateAnimatedComponents, executeAnimations, shouldRequestNextFrameForAnimations,
-} from "./animation";
+import { prepareAnimatedComponents, executeAnimations, shouldRequestNextFrameForAnimations } from "./animation";
 import { autofocusedElement } from "./autofocus";
 
 let _pending = false;
@@ -110,23 +108,9 @@ function handleNextFrame(time?: number): void {
             if (__IVI_BROWSER__) {
                 if (frame._flags & FrameTasksGroupFlags.Component) {
                     frame._flags &= ~FrameTasksGroupFlags.Component;
-                    const componentGroups = frame._componentTasks;
-
-                    for (i = 0; i < componentGroups.length; i++) {
-                        const componentGroup = componentGroups[i];
-                        if (componentGroup !== null) {
-                            componentGroups[i] = null;
-                            for (let j = 0; j < componentGroup.length; j++) {
-                                updateComponent(componentGroup[j]);
-                            }
-                        }
-                    }
+                    update();
                 }
             }
-        }
-
-        if (isVisible()) {
-            updateAnimatedComponents();
         }
     } while (frame._flags & (
         FrameTasksGroupFlags.Component |

@@ -234,21 +234,5 @@ describe("component state", () => {
             });
 
         });
-
-        describe("child", () => {
-            it("construct", () => {
-                startRender((r) => {
-                    r($lc("1", $lc("2", {
-                        construct: (
-                            props: TestLifecycleComponentProps,
-                            context: { [key: string]: any },
-                            owner: Component<any> | undefined,
-                        ) => {
-                            expect((owner as Component<TestLifecycleComponentProps>).props.id).to.be.equal("1");
-                        },
-                    }, $h("div"))));
-                });
-            });
-        });
     });
 });

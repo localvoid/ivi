@@ -1,7 +1,6 @@
 import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
-import { AncestorFlags } from "../dev_mode/html_nesting_rules";
 import { ComponentFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { currentFrame } from "../scheduler/frame";
@@ -19,7 +18,7 @@ export interface ComponentFunction<P = void> {
  * Component class constructor.
  */
 export interface ComponentClass<P = void> {
-    new (props: P, context: { [key: string]: any }, owner: Component<any> | undefined): Component<P>;
+    new (props: P, context: { [key: string]: any }): Component<P>;
 }
 
 /**
@@ -45,12 +44,6 @@ export abstract class Component<P = void> {
      */
     flags: ComponentFlags;
     /**
-     * Depth in the components tree.
-     *
-     * Depth property is used by scheduler to determine component priority when updating components.
-     */
-    readonly depth: number;
-    /**
      * Component properties.
      */
     _props: P;
@@ -65,36 +58,9 @@ export abstract class Component<P = void> {
      */
     _context: { [key: string]: any };
     /**
-     * Owner component.
-     *
-     * Parent component. When owner is an undefined, it means that this component is a root component.
-     */
-    readonly owner: Component<any> | undefined;
-    /**
      * Virtual DOM root node.
      */
     root: IVNode<any> | null;
-    /**
-     * Parent DOM node.
-     *
-     * It is used because when root node is changed we will need to replace old DOM node with a new one, and right now
-     * browsers doesn't provide a nice API that doesn't require to know parent nodes.
-     */
-    _parentDOMNode: Node | null;
-    /**
-     * Ancestor Flags are used to check child nesting violations.
-     *
-     * Dev Mode.
-     */
-    _ancestorFlags: AncestorFlags;
-    /**
-     * Component function stack trace.
-     *
-     * Component functions doesn't have any instances, so we need to store them separately.
-     *
-     * Dev Mode.
-     */
-    _stackTrace: ComponentFunction<any>[] | null;
     /**
      * Unique ID.
      *
@@ -104,20 +70,13 @@ export abstract class Component<P = void> {
      */
     _debugId: number;
 
-    constructor(props: P, context: { [key: string]: any }, owner: Component<any> | undefined) {
+    constructor(props: P, context: { [key: string]: any }) {
         this.flags = 0;
-        this.depth = owner ? owner.depth + 1 : 0;
         this._props = props;
         this._parentContext = context;
         this._context = context;
-        this.owner = owner;
         this.root = null;
-        if (__IVI_BROWSER__) {
-            this._parentDOMNode = null;
-        }
         if (__IVI_DEV__) {
-            this._ancestorFlags = 0;
-            this._stackTrace = null;
             this._debugId = nextDebugId();
         }
     }
@@ -276,11 +235,11 @@ export abstract class Component<P = void> {
  */
 export function invalidateComponent<P>(component: Component<P>, dirtyFlags: number): void {
     if (__IVI_BROWSER__) {
+        component.flags |= dirtyFlags;
+        component.invalidated();
         if (component.flags & ComponentFlags.Attached) {
-            component.flags |= dirtyFlags;
-            component.invalidated();
             if (!(component.flags & ComponentFlags.InUpdateQueue)) {
-                currentFrame().updateComponent(component);
+                currentFrame().updateComponent();
             }
         }
     }

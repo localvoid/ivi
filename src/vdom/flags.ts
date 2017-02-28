@@ -194,11 +194,15 @@ export const enum ElementDescriptorFlags {
  */
 export const enum SyncFlags {
     /**
+     * Update dirty components.
+     */
+    DirtyComponent = 1,
+    /**
      * Context is dirty.
      */
-    DirtyContext = 1,
+    DirtyContext = 1 << 1,
     /**
      * Force update for all components.
      */
-    ForceUpdate = 1 << 1,
+    ForceUpdate = 1 << 2,
 }

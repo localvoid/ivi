@@ -42,11 +42,11 @@ export interface TestLifecycleComponentProps {
 }
 
 export class TestLifecycleComponent extends Component<TestLifecycleComponentProps> {
-    constructor(props: TestLifecycleComponentProps, context: { [key: string]: any }, owner: Component<any>) {
-        super(props, context, owner);
+    constructor(props: TestLifecycleComponentProps, context: { [key: string]: any }) {
+        super(props, context);
         lifecycleTouch(props.id, "constructor");
         if (props.hooks.construct) {
-            props.hooks.construct.call(this, props, context, owner);
+            props.hooks.construct.call(this, props, context);
         }
     }
 

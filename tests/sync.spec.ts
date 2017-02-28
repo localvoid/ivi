@@ -1,7 +1,6 @@
 import { ComponentFlags } from "../src/vdom/flags";
 import { IVNode, getComponentInstanceFromVNode } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
-import { updateComponent } from "../src/vdom/implementation";
 import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
 import { render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
 import { expect } from "chai";
@@ -1504,10 +1503,9 @@ describe("sync", () => {
                 return $h("div").children(0);
             }
 
-            syncUpdate(state: number) {
+            updateState(state: number) {
                 this.state = state;
                 this.flags |= ComponentFlags.DirtyState;
-                updateComponent(this);
             }
         }
 
@@ -1525,7 +1523,7 @@ describe("sync", () => {
                         $h("h1").key(0),
                         a,
                     ]));
-                    getComponentInstanceFromVNode<A>(a)!.syncUpdate(1);
+                    getComponentInstanceFromVNode<A>(a)!.updateState(1);
                     const n = r($h("div").children([
                         $c(A, 1).key(1),
                         $h("h1").key(0),
@@ -1545,7 +1543,7 @@ describe("sync", () => {
                         $h("h1").key(0),
                         $c(B, a).key(1),
                     ]));
-                    getComponentInstanceFromVNode<A>(a)!.syncUpdate(1);
+                    getComponentInstanceFromVNode<A>(a)!.updateState(1);
                     const n = r($h("div").children([
                         $c(B, $c(A, 1)).key(1),
                         $h("h1").key(0),
@@ -1566,7 +1564,7 @@ describe("sync", () => {
                         a,
                         $h("h1").key(0),
                     ]));
-                    getComponentInstanceFromVNode<A>(a)!.syncUpdate(1);
+                    getComponentInstanceFromVNode<A>(a)!.updateState(1);
                     const n = r($h("div").children([
                         $h("h1").key(0),
                         $c(A, 1).key(1),
@@ -1586,7 +1584,7 @@ describe("sync", () => {
                         $c(B, a).key(1),
                         $h("h1").key(0),
                     ]));
-                    getComponentInstanceFromVNode<A>(a)!.syncUpdate(1);
+                    getComponentInstanceFromVNode<A>(a)!.updateState(1);
                     const n = r($h("div").children([
                         $h("h1").key(0),
                         $c(B, $c(A, 1)).key(1),
