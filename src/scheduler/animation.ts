@@ -33,8 +33,6 @@ export function stopComponentAnimation(component: Component<any>): void {
     }
 }
 
-
-
 /**
  * Add animation.
  *
