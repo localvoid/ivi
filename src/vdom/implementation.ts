@@ -53,6 +53,7 @@ function componentPerfMarkBegin(debugId: number, method: string): void {
  *
  * @param debugId
  * @param method
+ * @param instance
  * @param component
  */
 function componentPerfMarkEnd(
@@ -90,11 +91,11 @@ function componentPerfMarkEnd(
  *
  * #entry
  *
- * @param container Container Node.
+ * @param parent Parent DOM Node.
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
- * @returns Rendered instance.
+ * @returns Rendered DOM Node.
  */
 export function renderVNode(
     parent: Node,
@@ -124,28 +125,29 @@ export function renderVNode(
  *
  * #entry
  *
- * @param container Container Node.
+ * @param parent Parent DOM Node.
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
  * @returns Rendered DOM Node.
  */
 function _renderVNode(
-    container: Node,
+    parent: Node,
     refChild: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
 ): Node {
-    return vNodeRenderIntoAndAttach(container, refChild, vnode, context);
+    return vNodeRenderIntoAndAttach(parent, refChild, vnode, context);
 }
 
 /**
  * Sync VNode entry point tryCatch wrapper.
  *
- * @param parent Parent node.
+ * @param parent Parent DOM node.
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current context.
+ * @param syncFlags Sync flags.
  */
 export function syncVNode(
     parent: Node,
@@ -158,7 +160,7 @@ export function syncVNode(
         setInitialNestingState(parent as Element);
 
         try {
-            _syncVNode(parent, a, b, context);
+            _syncVNode(parent, a, b, context, syncFlags);
             return;
         } catch (e) {
             stackTraceAugment(e);
@@ -168,7 +170,7 @@ export function syncVNode(
             throw e;
         }
     }
-    _syncVNode(parent, a, b, context);
+    _syncVNode(parent, a, b, context, syncFlags);
 }
 
 /**
@@ -180,14 +182,16 @@ export function syncVNode(
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current context.
+ * @param syncFlags Sync flags.
  */
 function _syncVNode(
     parent: Node,
     a: IVNode<any>,
     b: IVNode<any>,
     context: { [key: string]: any },
+    syncFlags: SyncFlags,
 ): void {
-    vNodeSync(parent, a, b, context, 0);
+    vNodeSync(parent, a, b, context, syncFlags);
 }
 
 /**
@@ -322,7 +326,6 @@ export function updateComponents(
  * @param parent Parent DOM Node.
  * @param component Component to update.
  * @param syncFlags Sync flags.
- * @returns DOM Node.
  */
 function _updateComponent(parent: Node, component: Component<any>, syncFlags: SyncFlags): void {
     const flags = component.flags;
@@ -365,7 +368,7 @@ function _updateComponent(parent: Node, component: Component<any>, syncFlags: Sy
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current Context.
- * @returns DOM Node.
+ * @param syncFlags Sync flags.
  */
 function _updateComponentFunction(
     parent: Node,
@@ -469,7 +472,7 @@ function vNodeDetach(vnode: IVNode<any>): void {
                 }
             }
             vNodeDetach(component.root!);
-            component.flags &= ~(ComponentFlags.Attached | ComponentFlags.Animated);
+            component.flags &= ~ComponentFlags.Attached;
             componentDetached(component);
             componentPerfMarkEnd(component._debugId, "detach", true, component);
             unregisterComponent(component);
@@ -498,8 +501,10 @@ function vNodeDetachAll(vnodes: IVNode<any>[]): void {
 /**
  * Recursively update all dirty components.
  *
+ * @param parent Parent DOM Node.
  * @param vnode VNode.
  * @param context New context.
+ * @param syncFlags Sync flags.
  */
 function vNodeUpdateComponents(
     parent: Node,
@@ -716,7 +721,8 @@ function componentClassRender<P>(component: Component<P>): IVNode<any> {
  * @returns Root VNode.
  */
 function componentFunctionRender<P>(
-    component: ComponentFunction<P>, props: P,
+    component: ComponentFunction<P>,
+    props: P,
     context?: { [key: string]: any },
 ): IVNode<any> {
     return component(props, context);
@@ -889,20 +895,20 @@ function vNodeRender(
  * goes twice through the entire vnode tree, first time when everything is rendered and the second time when `attached`
  * methods are invoked.
  *
- * @param container Container Node.
+ * @param parent Parent DOM Node.
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
  * @returns Rendered DOM Node.
  */
 function vNodeRenderIntoAndAttach(
-    container: Node,
+    parent: Node,
     refChild: Node | null,
     vnode: IVNode<any>,
     context: { [key: string]: any },
 ): Node {
-    const node = vNodeRender(container, vnode, context);
-    container.insertBefore(node, refChild);
+    const node = vNodeRender(parent, vnode, context);
+    parent.insertBefore(node, refChild);
     vNodeAttach(vnode);
     return node;
 }
@@ -1080,7 +1086,7 @@ function vNodeAugment(
  *
  * @param a Old VNode.
  * @param b New VNode.
- * @return true if nodes can be synced.
+ * @returns true if nodes can be synced.
  */
 function vNodeCanSync(a: IVNode<any>, b: IVNode<any>): boolean {
     return (
@@ -1114,8 +1120,7 @@ function vNodeEqualKeys(a: IVNode<any>, b: IVNode<any>): boolean {
  * @param a Old VNode.
  * @param b New VNode.
  * @param context Current context.
- * @returns Synced DOM Node. When VNodes are synced and they aren't compatible, old DOM Node will be replaced with a new
- * DOM Node.
+ * @param syncFlags Sync flags.
  */
 function vNodeSync(
     parent: Node,
@@ -1210,6 +1215,7 @@ function vNodeSync(
  * @param a Old VNode list.
  * @param b New VNode list.
  * @param context Current context.
+ * @param syncFlags Sync flags.
  */
 function syncChildren(
     parent: Node,
@@ -1628,6 +1634,7 @@ function syncChildren(
  * @param a Old VNode list.
  * @param b New VNode list.
  * @param context Current context.
+ * @param syncFlags Sync flags.
  */
 function syncChildrenTrackByKeys(
     parent: Node,
