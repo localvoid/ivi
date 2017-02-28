@@ -1,5 +1,6 @@
+import { RepeatableTaskList } from "../common/repeatable_task_list";
 
-const _readers: (() => boolean | undefined)[] = [];
+const _readers = new RepeatableTaskList();
 
 /**
  * Add DOM Reader.
@@ -10,7 +11,7 @@ const _readers: (() => boolean | undefined)[] = [];
  */
 export function addDOMReader(reader: () => boolean | undefined): void {
     if (__IVI_BROWSER__) {
-        _readers.push(reader);
+        _readers.add(reader);
     }
 }
 
@@ -19,15 +20,6 @@ export function addDOMReader(reader: () => boolean | undefined): void {
  */
 export function executeDOMReaders(): void {
     if (__IVI_BROWSER__) {
-        for (let i = 0; i < _readers.length; i++) {
-            const reader = _readers[i];
-            if (reader()) {
-                if (i === _readers.length) {
-                    _readers.pop();
-                } else {
-                    _readers[i--] = _readers.pop() !;
-                }
-            }
-        }
+        _readers.run();
     }
 }

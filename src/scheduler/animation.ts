@@ -1,8 +1,9 @@
+import { RepeatableTaskList } from "../common/repeatable_task_list";
 import { ComponentFlags } from "../vdom/flags";
 import { Component } from "../vdom/component";
 import { requestNextFrame } from "./frame";
 
-const _animations: (() => boolean | undefined)[] = [];
+const _animations = new RepeatableTaskList();
 let _animatedComponents = 0;
 
 /**
@@ -32,6 +33,8 @@ export function stopComponentAnimation(component: Component<any>): void {
     }
 }
 
+
+
 /**
  * Add animation.
  *
@@ -39,7 +42,7 @@ export function stopComponentAnimation(component: Component<any>): void {
  */
 export function addAnimation(animation: () => boolean | undefined): void {
     if (__IVI_BROWSER__) {
-        _animations.push(animation);
+        _animations.add(animation);
     }
 }
 
@@ -48,16 +51,7 @@ export function addAnimation(animation: () => boolean | undefined): void {
  */
 export function executeAnimations(): void {
     if (__IVI_BROWSER__) {
-        for (let i = 0; i < _animations.length; i++) {
-            const animation = _animations[i];
-            if (animation()) {
-                if (i === _animations.length) {
-                    _animations.pop();
-                } else {
-                    _animations[i--] = _animations.pop()!;
-                }
-            }
-        }
+        _animations.run();
     }
 }
 
@@ -65,7 +59,7 @@ export function shouldRequestNextFrameForAnimations(): boolean {
     if (__IVI_BROWSER__) {
         return (
             (_animatedComponents > 0) ||
-            (_animations.length > 0)
+            (_animations.tasks.length > 0)
         );
     }
     return false;
