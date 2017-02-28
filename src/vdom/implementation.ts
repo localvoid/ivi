@@ -21,7 +21,7 @@ import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed }
 import { injectScreenOfDeath } from "../dev_mode/screen_of_death";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
-    nestingStateParentTagName, AncestorFlags, AncestorFlagsByTagName,
+    nestingStateParentTagName,
 } from "../dev_mode/html_nesting_rules";
 import {
     stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
@@ -86,25 +86,6 @@ function componentPerfMarkEnd(
 }
 
 /**
- * Traverses tree to the body and calculates `AncestorFlags`.
- *
- * @param element
- * @returns Ancestor Flags.
- */
-function ancestorFlags(element: Element | null): AncestorFlags {
-    if (__IVI_DEV__) {
-        let result = 0;
-        while (element && (element !== document.body)) {
-            result |= AncestorFlagsByTagName[element.tagName.toLowerCase()];
-            element = element.parentElement;
-        }
-        return result;
-    }
-
-    return 0;
-}
-
-/**
  * Render VNode entry point tryCatch wrapper.
  *
  * #entry
@@ -122,11 +103,7 @@ export function renderVNode(
     context: { [key: string]: any },
 ): Node {
     if (__IVI_DEV__) {
-        if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
-        } else {
-            setInitialNestingState("", 0);
-        }
+        setInitialNestingState(parent as Element);
 
         try {
             return _renderVNode(parent, refChild, vnode, context);
@@ -178,11 +155,7 @@ export function syncVNode(
     syncFlags: SyncFlags,
 ): void {
     if (__IVI_DEV__) {
-        if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
-        } else {
-            setInitialNestingState("", 0);
-        }
+        setInitialNestingState(parent as Element);
 
         try {
             _syncVNode(parent, a, b, context);
@@ -272,11 +245,7 @@ export function augmentVNode(
     context: { [key: string]: any },
 ): void {
     if (__IVI_DEV__) {
-        if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
-        } else {
-            setInitialNestingState("", 0);
-        }
+        setInitialNestingState(parent as Element);
 
         try {
             _augmentVNode(parent, node, vnode, context);
@@ -329,11 +298,7 @@ export function updateComponents(
     context: { [key: string]: any },
 ): void {
     if (__IVI_DEV__) {
-        if ((parent as Element).tagName) {
-            setInitialNestingState((parent as Element).tagName.toLowerCase(), ancestorFlags(parent as Element));
-        } else {
-            setInitialNestingState("", 0);
-        }
+        setInitialNestingState(parent as Element);
 
         try {
             vNodeUpdateComponents(parent, vnode, context, SyncFlags.DirtyComponent);
@@ -352,7 +317,11 @@ export function updateComponents(
 /**
  * Update Component.
  *
+ * #component
+ *
+ * @param parent Parent DOM Node.
  * @param component Component to update.
+ * @param syncFlags Sync flags.
  * @returns DOM Node.
  */
 function _updateComponent(parent: Node, component: Component<any>, syncFlags: SyncFlags): void {
@@ -360,9 +329,8 @@ function _updateComponent(parent: Node, component: Component<any>, syncFlags: Sy
     const oldRoot = component.root!;
 
     componentPerfMarkBegin(component._debugId, "update");
+    componentbeforeUpdate(component);
     if ((flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
-        componentWillUpdate(component);
-
         if (flags & (ComponentFlags.DirtyParentContext | ComponentFlags.DirtyContext)) {
             componentUpdateContext(component);
             syncFlags |= SyncFlags.DirtyContext;
@@ -381,10 +349,10 @@ function _updateComponent(parent: Node, component: Component<any>, syncFlags: Sy
             vNodeUpdateComponents(parent, oldRoot, component._context, syncFlags);
         }
 
-        componentDidUpdate(component);
     } else {
         vNodeUpdateComponents(parent, oldRoot, component._context, syncFlags);
     }
+    componentUpdated(component);
     componentPerfMarkEnd(component._debugId, "update", true, component);
 }
 
@@ -679,24 +647,24 @@ function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
 }
 
 /**
- * Invoke `component.willUpdate` method.
+ * Invoke `component.beforeUpdate` method.
  *
  * #component
  *
  * @param component
  */
-function componentWillUpdate<P>(component: Component<P>): void {
+function componentbeforeUpdate<P>(component: Component<P>): void {
     component.beforeUpdate();
 }
 
 /**
- * Invoke `component.didUpdate` method.
+ * Invoke `component.updated` method.
  *
  * #component
  *
  * @param component
  */
-function componentDidUpdate<P>(component: Component<P>): void {
+function componentUpdated<P>(component: Component<P>): void {
     component.updated();
 }
 

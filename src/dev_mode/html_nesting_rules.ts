@@ -109,6 +109,25 @@ function ancestorFlagsToTagNames(ancestorFlags: AncestorFlags): string[] {
 }
 
 /**
+ * Traverses tree to the body and calculates `AncestorFlags`.
+ *
+ * @param element
+ * @returns Ancestor Flags.
+ */
+function ancestorFlags(element: Element | null): AncestorFlags {
+    if (__IVI_DEV__) {
+        let result = 0;
+        while (element && (element !== document.body)) {
+            result |= AncestorFlagsByTagName[element.tagName.toLowerCase()];
+            element = element.parentElement;
+        }
+        return result;
+    }
+
+    return 0;
+}
+
+/**
  * List of child elements that allowed in `parent` elements.
  */
 const validChildList: { [parent: string]: string[] } = {
@@ -184,11 +203,16 @@ let _childTagName: string | undefined;
  * @param parentTagName
  * @param ancestorFlags
  */
-export function setInitialNestingState(parentTagName: string, ancestorFlags: AncestorFlags): void {
+export function setInitialNestingState(parent: Element): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableNestingValidation)) {
-            _parentTagName = parentTagName;
-            _ancestorFlags = ancestorFlags;
+            if ((parent as Element).tagName) {
+                _parentTagName = (parent as Element).tagName.toLowerCase();
+                _ancestorFlags = ancestorFlags(parent as Element);
+            } else {
+                _parentTagName = "";
+                _ancestorFlags = 0;
+            }
         }
     }
 }
