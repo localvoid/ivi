@@ -9,10 +9,8 @@ ivi syncing algorithm doesn't have such problems, it is using a different way to
 
 ## Context API for Components
 
-The natural way to update context is to use context API for stateful components.
-
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     updateContext<C>(): C | undefined;
     invalidateContext(): void;
     // ...
@@ -27,7 +25,7 @@ function A(props: null, context: { key: string }) {
     return $h("div").children(context.key);
 }
 
-class B extends Component<null> {
+class B extends Component {
     updateContext() {
         return {
             key: "value",
@@ -42,12 +40,8 @@ class B extends Component<null> {
 
 `invalidateContext` should be invoked when internal state changes should trigger an update of the current context.
 
-When component is using just `this.props` to modify current context, there is no need to call `invalidateContext`
-method, syncing algorithm can automatically detect that context is using `props` object and each time it is modified,
-it will trigger context update.
-
 ```ts
-class StatefulComponent extends Component<null> {
+class StatefulComponent extends Component {
     private counter = 0;
 
     attached() {
@@ -84,9 +78,9 @@ function A(props: null, context: { counter: number }) {
 function B() {
     return $c(A);
 }
-B.isPropsChanged = () => false;
+B.isPropsChanged = function () { return false; };
 
-class C extends Component<null> {
+class C extends Component {
     private counter = 0;
 
     attached() {
@@ -103,7 +97,7 @@ class C extends Component<null> {
     }
 
     render() {
-        return $c(ChildComponentThatUsesContextToGetCounterValue);
+        return $c(B);
     }
 }
 ```

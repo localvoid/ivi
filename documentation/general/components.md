@@ -58,7 +58,7 @@ class StatefulComponent extends Component<string> {
 ### Properties
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     get context(): Context;
     get props(): P;
 }
@@ -70,17 +70,16 @@ interface Component<P> {
 
 ### Methods
 
-Invalidate current view and add component to the update queue. This method should be invoked when internal state changes
-should trigger an update of the current view.
+Invalidate view. This method should be invoked when internal state changes should trigger an update of the current view.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     invalidate(): void;
 }
 ```
 
 ```ts
-class StatefulComponent extends Component<null> {
+class StatefulComponent extends Component {
     private counter = 0;
 
     attached() {
@@ -96,17 +95,17 @@ class StatefulComponent extends Component<null> {
 }
 ```
 
-Invalidate current context and add component to the update queue. This method should be invoked when internal state
-changes should trigger an update of the current context.
+Invalidate context. This method should be invoked when internal state changes should trigger an update of the current
+context.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     invalidateContext(): void;
 }
 ```
 
 ```ts
-class StatefulComponent extends Component<null> {
+class StatefulComponent extends Component {
     private counter = 0;
 
     attached() {
@@ -133,7 +132,7 @@ class StatefulComponent extends Component<null> {
 Render component representation with a Virtual DOM.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     render(): VNode<any> | undefined;
 }
 ```
@@ -149,7 +148,7 @@ class StatefulComponent extends Component<string> {
 Component received a new props.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     newPropsReceived(oldProps: P, newProps: P): void;
 }
 ```
@@ -171,13 +170,13 @@ class StatefulComponent extends Component<string> {
 Component received a new context.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     newContextReceived(oldContext: Context, newContext: Context): void;
 }
 ```
 
 ```ts
-class StatefulComponent extends Component<null> {
+class StatefulComponent extends Component {
     private internalState = this.context.get("key") + "!!";
 
     newContextReceived(oldContext: Context, newContext: Context) {
@@ -193,7 +192,7 @@ class StatefulComponent extends Component<null> {
 Update current context.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     updateContext<C>(): C | undefined;
 }
 ```
@@ -215,7 +214,7 @@ class StatefulComponent extends Component<string> {
 Component is attached to the document. Attached methods are invoked in top to bottom order.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     attached(): void;
 }
 ```
@@ -223,7 +222,7 @@ interface Component<P> {
 Component is detached from the document. Detached methods are invoked in bottom to top order.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     detached(): void;
 }
 ```
@@ -231,7 +230,7 @@ interface Component<P> {
 Component will be updated.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     beforeUpdate(): void;
 }
 ```
@@ -239,15 +238,15 @@ interface Component<P> {
 Component updated.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     updated(): void;
 }
 ```
 
-Component nvalidated.
+Component invalidated.
 
 ```ts
-interface Component<P> {
+interface Component<P = void> {
     invalidated(): void;
 }
 ```

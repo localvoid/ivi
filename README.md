@@ -69,6 +69,10 @@ exclusively for bug reports and feature requests.
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/extensions/dev-mode.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/extensions/synthetic-events.md)
 
+### Future Ideas
+
+- [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/future/keep-alive.md)
+
 ### Installation
 
 #### NPM
