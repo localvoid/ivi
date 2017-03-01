@@ -16,6 +16,10 @@ class ContextTestPrinter extends Component<null> {
 }
 
 class ContextTestComponent extends Component<ContextTestComponentProps> {
+    newPropsReceived() {
+        this.invalidateContext();
+    }
+
     updateContext() {
         return {
             value: this.props.value,

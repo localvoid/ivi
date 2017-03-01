@@ -119,23 +119,13 @@ export const enum ComponentFlags {
      */
     UsingContext = 1 << 6,
     /**
-     * Check that component is using props in `updateContext` method.
-     */
-    CheckUsingProps = 1 << 7,
-    /**
-     * Component is using props in `updateContext` method.
-     *
-     * NOTE: UsingProps value should be equal to (CheckUsingProps << 1)
-     */
-    ContextUsingProps = 1 << 8,
-    /**
      * Component is animated.
      */
-    Animated = 1 << 9,
+    Animated = 1 << 7,
     /**
      * Component in the update queue.
      */
-    InUpdateQueue = 1 << 10,
+    InUpdateQueue = 1 << 8,
 
     /**
      * Component is dirty and should be updated.

@@ -613,9 +613,7 @@ function componentUpdateParentContext<P>(component: Component<P>, newParentConte
  * @param component Component.
  */
 function componentUpdateContext<P>(component: Component<P>): void {
-    component.flags &= ~(ComponentFlags.CheckUsingProps | ComponentFlags.ContextUsingProps);
     const contextData = component.updateContext();
-    component.flags |= (component.flags & ComponentFlags.CheckUsingProps) << 1;
     component._context = contextData ?
         Object.assign({}, component._parentContext, contextData) :
         component._parentContext;
@@ -630,24 +628,21 @@ function componentUpdateContext<P>(component: Component<P>): void {
  * @param newProps New props to assign.
  */
 function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
-    const oldProps = component._props;
+    const oldProps = component.props;
     if (component.isPropsChanged(oldProps, newProps)) {
         component.flags |= ComponentFlags.DirtyProps;
 
-        component._props = newProps;
+        component.props = newProps;
 
         // There is no reason to call `newPropsReceived` when props aren't changed, even when they are reassigned
         // later to reduce memory usage.
         component.newPropsReceived(oldProps, newProps);
-        if (component.flags & ComponentFlags.ContextUsingProps) {
-            component.flags |= ComponentFlags.DirtyContext;
-        }
     } else {
         // Reassign props even when they aren't changed to reduce overall memory usage.
         //
         // New value always stays alive because it is referenced from virtual dom tree, so instead of keeping in memory
         // two values even when they are the same, we just always reassign it to the new value.
-        component._props = newProps;
+        component.props = newProps;
     }
 }
 

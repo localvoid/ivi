@@ -195,16 +195,15 @@ describe("lifecycle", () => {
                 render($lc("1", $h("div")));
 
                 expect(c("1", "constructor")).to.equal(0);
-                // updateContext is executed twice because LifecycleTestComponent is accessing `props` in updateContext.
+                expect(c("1", "updateContext")).to.equal(1);
                 expect(c("1", "attached")).to.equal(3);
                 expect(c("1", "isPropsChanged")).to.equal(4);
                 expect(c("1", "newPropsReceived")).to.equal(5);
                 expect(c("1", "beforeUpdate")).to.equal(6);
-                expect(c("1", "updateContext")).to.equal(7); // 1
-                expect(c("1", "render")).to.equal(8); // 2
-                expect(c("1", "updated")).to.equal(9);
+                expect(c("1", "render")).to.equal(7); // 2
+                expect(c("1", "updated")).to.equal(8);
 
-                expect(c("1", "updateContext", false)).to.equal(1);
+                expect(c("1", "updateContext", false)).to.equal(0);
                 expect(c("1", "render", false)).to.equal(1);
 
                 expect(c("1", "newContextReceived")).to.equal(-1);

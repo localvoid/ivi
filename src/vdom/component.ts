@@ -46,7 +46,7 @@ export abstract class Component<P = void> {
     /**
      * Component properties.
      */
-    _props: P;
+    props: P;
     /**
      * Parent context.
      *
@@ -72,7 +72,7 @@ export abstract class Component<P = void> {
 
     constructor(props: P, context: { [key: string]: any }) {
         this.flags = 0;
-        this._props = props;
+        this.props = props;
         this._parentContext = context;
         this._context = context;
         this.root = null;
@@ -89,16 +89,6 @@ export abstract class Component<P = void> {
     get context(): { [key: string]: any } {
         this.flags |= ComponentFlags.CheckUsingContext;
         return this._parentContext;
-    }
-
-    /**
-     * Get props.
-     *
-     * @returns Current props.
-     */
-    get props(): P {
-        this.flags |= ComponentFlags.CheckUsingProps;
-        return this._props;
     }
 
     /**
