@@ -95,38 +95,6 @@ class StatefulComponent extends Component {
 }
 ```
 
-Invalidate context. This method should be invoked when internal state changes should trigger an update of the current
-context.
-
-```ts
-interface Component<P = void> {
-    invalidateContext(): void;
-}
-```
-
-```ts
-class StatefulComponent extends Component {
-    private counter = 0;
-
-    attached() {
-        setInterval(() => {
-            this.counter++;
-            this.invalidateContext();
-        }, 1000);
-    }
-
-    updateContext() {
-        return {
-            counter: this.counter,
-        };
-    }
-
-    render() {
-        return $c(ChildComponentThatUsesContextToGetCounterValue);
-    }
-}
-```
-
 ### Lifecycle methods
 
 Render component representation with a Virtual DOM.

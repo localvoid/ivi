@@ -203,33 +203,12 @@ export abstract class Component<P = void> {
      */
     invalidate(): void {
         if (__IVI_BROWSER__) {
-            invalidateComponent(this, ComponentFlags.DirtyState);
-        }
-    }
-
-    /**
-     * Invalidate context.
-     */
-    invalidateContext(): void {
-        if (__IVI_BROWSER__) {
-            invalidateComponent(this, ComponentFlags.DirtyContext);
-        }
-    }
-}
-
-/**
- * Invalidate Component.
- *
- * @param component
- * @param dirtyFlags
- */
-export function invalidateComponent<P>(component: Component<P>, dirtyFlags: number): void {
-    if (__IVI_BROWSER__) {
-        component.flags |= dirtyFlags;
-        component.invalidated();
-        if (component.flags & ComponentFlags.Attached) {
-            if (!(component.flags & ComponentFlags.InUpdateQueue)) {
-                currentFrame().updateComponent();
+            this.flags |= ComponentFlags.DirtyState;
+            this.invalidated();
+            if (this.flags & ComponentFlags.Attached) {
+                if (!(this.flags & ComponentFlags.InUpdateQueue)) {
+                    currentFrame().updateComponent();
+                }
             }
         }
     }

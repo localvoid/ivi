@@ -103,40 +103,36 @@ export const enum ComponentFlags {
      */
     DirtyState = 1 << 1,
     /**
-     * Component is dirty (context) and should be updated.
-     */
-    DirtyContext = 1 << 2,
-    /**
      * Component is dirty (parent context) and should be updated.
      */
-    DirtyParentContext = 1 << 3,
+    DirtyParentContext = 1 << 2,
     /**
      * Component is attached to the document.
      */
-    Attached = 1 << 4,
+    Attached = 1 << 3,
     /**
      * Check that component is using context in `render` method.
      */
-    CheckUsingContext = 1 << 5,
+    CheckUsingContext = 1 << 4,
     /**
      * Component is using context in `render` method.
      *
      * NOTE: UsingContext value should be equal to (CheckUsingContext << 1)
      */
-    UsingContext = 1 << 6,
+    UsingContext = 1 << 5,
     /**
      * Component is animated.
      */
-    Animated = 1 << 7,
+    Animated = 1 << 6,
     /**
      * Component in the update queue.
      */
-    InUpdateQueue = 1 << 8,
+    InUpdateQueue = 1 << 7,
 
     /**
      * Component is dirty and should be updated.
      */
-    Dirty = DirtyProps | DirtyState | DirtyContext | DirtyParentContext | Animated,
+    Dirty = DirtyProps | DirtyState | DirtyParentContext | Animated,
 }
 
 /**

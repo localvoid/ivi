@@ -349,7 +349,7 @@ function _updateComponent(
             const newRoot = componentClassRender(component);
             vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
             component.flags &= ~(ComponentFlags.Dirty | ComponentFlags.InUpdateQueue);
-        } else { // (flags & (ComponentFlags.DirtyContext | ComponentFlags.DirtyParentContext))
+        } else { // (flags & ComponentFlags.DirtyParentContext))
             vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
         }
 
