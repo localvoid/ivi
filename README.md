@@ -73,6 +73,7 @@ exclusively for bug reports and feature requests.
 
 - [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/future/keep-alive.md)
 - [Connect](https://github.com/ivijs/ivi/blob/master/documentation/future/connect.md)
+- [New Context API](https://github.com/ivijs/ivi/blob/master/documentation/future/context.md)
 
 ### Installation
 
