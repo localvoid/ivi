@@ -5,7 +5,6 @@ export interface LifecycleCounters {
     isPropsChanged: number;
     newPropsReceived: number;
     newContextReceived: number;
-    updateContext: number;
     attached: number;
     detached: number;
     beforeUpdate: number;
@@ -21,7 +20,6 @@ const LIFECYCLE_COUNTERS: LifecycleCounters = {
     isPropsChanged: 0,
     newPropsReceived: 0,
     newContextReceived: 0,
-    updateContext: 0,
     attached: 0,
     detached: 0,
     beforeUpdate: 0,
@@ -64,7 +62,6 @@ export function checkLifecycle(
     LIFECYCLE_COUNTERS.isPropsChanged = 0;
     LIFECYCLE_COUNTERS.newPropsReceived = 0;
     LIFECYCLE_COUNTERS.newContextReceived = 0;
-    LIFECYCLE_COUNTERS.updateContext = 0;
     LIFECYCLE_COUNTERS.attached = 0;
     LIFECYCLE_COUNTERS.detached = 0;
     LIFECYCLE_COUNTERS.beforeUpdate = 0;

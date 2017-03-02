@@ -1,6 +1,6 @@
-import { $h } from "../src/vdom/vnode";
+import { $h, $ctx } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
-import { startRender, $lc, $ctx, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";
+import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";
 import { expect } from "chai";
 
 describe("component state", () => {
@@ -39,7 +39,7 @@ describe("component state", () => {
         describe("context", () => {
             it("render", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $tfc("1", {
+                    r($ctx({ ctx: 123 }, $tfc("1", {
                         render: (
                             props: TestFunctionalComponentProps,
                             context: { [key: string]: any },
@@ -101,17 +101,6 @@ describe("component state", () => {
             });
         });
 
-        it("updateContext", () => {
-            startRender((r) => {
-                r($lc("1", {
-                    updateContext: function () {
-                        expect(this.props.id).to.be.equal("1");
-                        return undefined;
-                    },
-                }, $h("div")));
-            });
-        });
-
         it("attached", () => {
             startRender((r) => {
                 r($lc("1", {
@@ -155,7 +144,7 @@ describe("component state", () => {
         describe("context", () => {
             it("construct", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", {
+                    r($ctx({ ctx: 123 }, $lc("1", {
                         construct: (
                             props: TestLifecycleComponentProps,
                             context: { [key: string]: any },
@@ -169,8 +158,8 @@ describe("component state", () => {
 
             it("newContextReceived", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", $h("div"))));
-                    r($ctx(() => ({ ctx: 456 }), $lc("2", {
+                    r($ctx({ ctx: 123 }, $lc("1", $h("div"))));
+                    r($ctx({ ctx: 456 }, $lc("2", {
                         newContextReceived: (
                             oldContext: { [key: string]: any },
                             newContext: { [key: string]: any },
@@ -182,20 +171,9 @@ describe("component state", () => {
                 });
             });
 
-            it("updateContext", () => {
-                startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", {
-                        updateContext: function () {
-                            expect(this.context.ctx).to.be.equal(123);
-                            return undefined;
-                        },
-                    }, $h("div"))));
-                });
-            });
-
             it("attached", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", {
+                    r($ctx({ ctx: 123 }, $lc("1", {
                         attached: function () {
                             expect(this.context.ctx).to.be.equal(123);
                         },
@@ -205,7 +183,7 @@ describe("component state", () => {
 
             it("detached", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", {
+                    r($ctx({ ctx: 123 }, $lc("1", {
                         detached: function () {
                             expect(this.context.ctx).to.be.equal(123);
                         },
@@ -215,7 +193,7 @@ describe("component state", () => {
 
             it("beforeUpdate", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", {
+                    r($ctx({ ctx: 123 }, $lc("1", {
                         beforeUpdate: function () {
                             expect(this.context.ctx).to.be.equal(123);
                         },
@@ -225,7 +203,7 @@ describe("component state", () => {
 
             it("updated", () => {
                 startRender((r) => {
-                    r($ctx(() => ({ ctx: 123 }), $lc("1", {
+                    r($ctx({ ctx: 123 }, $lc("1", {
                         updated: function () {
                             expect(this.context.ctx).to.be.equal(123);
                         },

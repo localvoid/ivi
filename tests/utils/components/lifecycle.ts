@@ -25,7 +25,6 @@ export interface ComponentHooks<P> {
         oldContext: { [key: string]: any },
         newContext: { [key: string]: any },
     ) => void;
-    updateContext?: (this: Component<P>) => { [key: string]: any } | undefined;
     attached?: (this: Component<P>) => void;
     detached?: (this: Component<P>) => void;
     beforeUpdate?: (this: Component<P>) => void;
@@ -70,14 +69,6 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
         if (this.props.hooks.newContextReceived) {
             this.props.hooks.newContextReceived.call(this, oldContext, newContext);
         }
-    }
-
-    updateContext<C>(): C | undefined {
-        lifecycleTouch(this.props.id, "updateContext");
-        if (this.props.hooks.updateContext) {
-            return this.props.hooks.updateContext.call(this) as C;
-        }
-        return;
     }
 
     attached(): void {

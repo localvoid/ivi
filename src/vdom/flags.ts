@@ -13,6 +13,8 @@ export const enum VNodeFlags {
     Element = 1 << 1,
     /**
      * VNode represents a simple "function" component.
+     *
+     * It can also represent specialized components like "UpdateContext" component.
      */
     ComponentFunction = 1 << 2,
     /**
@@ -64,14 +66,18 @@ export const enum VNodeFlags {
      */
     WebComponent = 1 << 14,
     /**
+     * Specialized VNode with an update context functionality.
+     */
+    UpdateContext = 1 << 15,
+    /**
      * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
      * prototype for building mutable trees.
      */
-    Immutable = 1 << 15,
+    Immutable = 1 << 16,
     /**
      * VNode element will be automatically focused after instantiation.
      */
-    Autofocus = 1 << 16,
+    Autofocus = 1 << 17,
 
     /**
      * VNode represents a Component.

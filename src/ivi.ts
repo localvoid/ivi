@@ -97,7 +97,7 @@ export {
 export {
     VNodeArray,
     VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
-    $t, $h, $s, $c, $i, $m, $e, $w,
+    $t, $h, $s, $c, $i, $m, $e, $w, $ctx,
 } from "./vdom/vnode";
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 

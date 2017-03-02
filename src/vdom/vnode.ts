@@ -787,6 +787,32 @@ export function $w(tagName: string, className?: string): VNode<{ [key: string]: 
 }
 
 /**
+ * Placeholder function for Update Context components.
+ *
+ * It is used only in Dev Mode for stack traces.
+ */
+function UpdateContext() {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+}
+
+/**
+ * Create an update context VNode.
+ *
+ * @param context Context.
+ * @param child Child VNode.
+ * @returns VNodeBuilder object.
+ */
+export function $ctx(context: { [key: string]: any }, child: IVNode<any>): VNode<{ [key: string]: any }> {
+    return new VNode<{ [key: string]: any }>(
+        VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
+        __IVI_DEV__ ? UpdateContext as () => IVNode<any> : null,
+        context,
+        null,
+        child);
+}
+
+/**
  * Deep clone of VNode children with instance refs erasure.
  *
  * @param flags Parent VNode flags.

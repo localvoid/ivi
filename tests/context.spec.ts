@@ -1,7 +1,7 @@
 import { frag, render, $sc, $fsc } from "./utils";
 import { Component } from "../src/vdom/component";
 import { IVNode } from "../src/vdom/ivnode";
-import { $t, $c } from "../src/vdom/vnode";
+import { $t, $c, $ctx } from "../src/vdom/vnode";
 import { expect } from "chai";
 
 interface ContextTestComponentProps {
@@ -15,68 +15,31 @@ class ContextTestPrinter extends Component<null> {
     }
 }
 
-class ContextTestComponent extends Component<ContextTestComponentProps> {
-    newPropsReceived() {
-        this.invalidateContext();
-    }
-
-    updateContext() {
-        return {
-            value: this.props.value,
-        };
-    }
-
-    render() {
-        return this.props.child;
-    }
-}
-
 describe("context", () => {
     describe("component API", () => {
         it("<C>10</C>", () => {
-            const n = render<HTMLElement>($c(ContextTestComponent, {
-                value: 10,
-                child: $c(ContextTestPrinter),
-            }));
+            const n = render<HTMLElement>($ctx({ value: 10 }, $c(ContextTestPrinter)));
             expect(n.nodeValue).to.equal("10");
         });
 
         it("<C>10</C> => <C>20</C>", () => {
             const f = frag();
-            render<HTMLElement>($c(ContextTestComponent, {
-                value: 10,
-                child: $c(ContextTestPrinter),
-            }), f);
-            const b = render<HTMLElement>($c(ContextTestComponent, {
-                value: 20,
-                child: $c(ContextTestPrinter),
-            }), f);
+            render<HTMLElement>($ctx({ value: 10 }, $c(ContextTestPrinter)), f);
+            const b = render<HTMLElement>($ctx({ value: 20 }, $c(ContextTestPrinter)), f);
             expect(b.nodeValue).to.equal("20");
         });
 
         it("<C><S>10</S></C> => <C><S>20</S></C>", () => {
             const f = frag();
-            render<HTMLElement>($c(ContextTestComponent, {
-                value: 10,
-                child: $sc($c(ContextTestPrinter)),
-            }), f);
-            const b = render<HTMLElement>($c(ContextTestComponent, {
-                value: 20,
-                child: $sc($c(ContextTestPrinter)),
-            }), f);
+            render<HTMLElement>($ctx({ value: 10 }, $sc($c(ContextTestPrinter))), f);
+            const b = render<HTMLElement>($ctx({ value: 20 }, $sc($c(ContextTestPrinter))), f);
             expect(b.nodeValue).to.equal("20");
         });
 
         it("<C><SF>10</SF></C> => <C><SF>20</SF></C>", () => {
             const f = frag();
-            render<HTMLElement>($c(ContextTestComponent, {
-                value: 10,
-                child: $fsc($c(ContextTestPrinter)),
-            }), f);
-            const b = render<HTMLElement>($c(ContextTestComponent, {
-                value: 20,
-                child: $fsc($c(ContextTestPrinter)),
-            }), f);
+            render<HTMLElement>($ctx({ value: 10 }, $fsc($c(ContextTestPrinter))), f);
+            const b = render<HTMLElement>($ctx({ value: 20 }, $fsc($c(ContextTestPrinter))), f);
             expect(b.nodeValue).to.equal("20");
         });
     });

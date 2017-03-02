@@ -9,9 +9,8 @@ describe("lifecycle", () => {
                 render($lc("1", $h("div")));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "attached")).to.equal(3);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "attached")).to.equal(2);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -32,10 +31,9 @@ describe("lifecycle", () => {
                 render($h("div"));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "attached")).to.equal(3);
-                expect(c("1", "detached")).to.equal(4);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "attached")).to.equal(2);
+                expect(c("1", "detached")).to.equal(3);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -55,9 +53,8 @@ describe("lifecycle", () => {
                 render($lc("1", $h("div")));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "attached")).to.equal(3);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "attached")).to.equal(2);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -78,9 +75,8 @@ describe("lifecycle", () => {
                 render($h("div").children($lc("1", $h("div"))));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "attached")).to.equal(3);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "attached")).to.equal(2);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -101,10 +97,9 @@ describe("lifecycle", () => {
                 render($h("div"));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "attached")).to.equal(3);
-                expect(c("1", "detached")).to.equal(4);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "attached")).to.equal(2);
+                expect(c("1", "detached")).to.equal(3);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -123,13 +118,11 @@ describe("lifecycle", () => {
                 render($lc("1", $lc("2", $h("div"))));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("2", "constructor")).to.equal(3);
-                expect(c("2", "updateContext")).to.equal(4);
-                expect(c("2", "render")).to.equal(5);
-                expect(c("1", "attached")).to.equal(6);
-                expect(c("2", "attached")).to.equal(7);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("2", "constructor")).to.equal(2);
+                expect(c("2", "render")).to.equal(3);
+                expect(c("1", "attached")).to.equal(4);
+                expect(c("2", "attached")).to.equal(5);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -159,15 +152,13 @@ describe("lifecycle", () => {
                 render($h("div"));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("2", "constructor")).to.equal(3);
-                expect(c("2", "updateContext")).to.equal(4);
-                expect(c("2", "render")).to.equal(5);
-                expect(c("1", "attached")).to.equal(6);
-                expect(c("2", "attached")).to.equal(7);
-                expect(c("2", "detached")).to.equal(8);
-                expect(c("1", "detached")).to.equal(9);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("2", "constructor")).to.equal(2);
+                expect(c("2", "render")).to.equal(3);
+                expect(c("1", "attached")).to.equal(4);
+                expect(c("2", "attached")).to.equal(5);
+                expect(c("2", "detached")).to.equal(6);
+                expect(c("1", "detached")).to.equal(7);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -195,15 +186,13 @@ describe("lifecycle", () => {
                 render($lc("1", $h("div")));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "attached")).to.equal(3);
-                expect(c("1", "isPropsChanged")).to.equal(4);
-                expect(c("1", "newPropsReceived")).to.equal(5);
-                expect(c("1", "beforeUpdate")).to.equal(6);
-                expect(c("1", "render")).to.equal(7); // 2
-                expect(c("1", "updated")).to.equal(8);
+                expect(c("1", "attached")).to.equal(2);
+                expect(c("1", "isPropsChanged")).to.equal(3);
+                expect(c("1", "newPropsReceived")).to.equal(4);
+                expect(c("1", "beforeUpdate")).to.equal(5);
+                expect(c("1", "render")).to.equal(6); // 1
+                expect(c("1", "updated")).to.equal(7);
 
-                expect(c("1", "updateContext", false)).to.equal(0);
                 expect(c("1", "render", false)).to.equal(1);
 
                 expect(c("1", "newContextReceived")).to.equal(-1);
@@ -221,11 +210,10 @@ describe("lifecycle", () => {
                 render($sc($lc("1", $h("div"))));
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "attached")).to.equal(3);
-                expect(c("1", "beforeUpdate")).to.equal(4);
-                expect(c("1", "updated")).to.equal(5);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "attached")).to.equal(2);
+                expect(c("1", "beforeUpdate")).to.equal(3);
+                expect(c("1", "updated")).to.equal(4);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -244,10 +232,9 @@ describe("lifecycle", () => {
                 augment($lc("1", $h("div")), `<div></div>`);
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "shouldAugment")).to.equal(3);
-                expect(c("1", "attached")).to.equal(4);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "shouldAugment")).to.equal(2);
+                expect(c("1", "attached")).to.equal(3);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -264,10 +251,9 @@ describe("lifecycle", () => {
                 augment($lc("1", { shouldAugment: () => false }, $h("div")), `<div></div>`);
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "shouldAugment")).to.equal(3);
-                expect(c("1", "attached")).to.equal(4);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "shouldAugment")).to.equal(2);
+                expect(c("1", "attached")).to.equal(3);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
@@ -284,14 +270,12 @@ describe("lifecycle", () => {
                 augment($lc("1", { shouldAugment: () => false }, $lc("2", $h("div"))), `<div></div>`);
 
                 expect(c("1", "constructor")).to.equal(0);
-                expect(c("1", "updateContext")).to.equal(1);
-                expect(c("1", "render")).to.equal(2);
-                expect(c("1", "shouldAugment")).to.equal(3);
-                expect(c("2", "constructor")).to.equal(4);
-                expect(c("2", "updateContext")).to.equal(5);
-                expect(c("2", "render")).to.equal(6);
-                expect(c("1", "attached")).to.equal(7);
-                expect(c("2", "attached")).to.equal(8);
+                expect(c("1", "render")).to.equal(1);
+                expect(c("1", "shouldAugment")).to.equal(2);
+                expect(c("2", "constructor")).to.equal(3);
+                expect(c("2", "render")).to.equal(4);
+                expect(c("1", "attached")).to.equal(5);
+                expect(c("2", "attached")).to.equal(6);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);

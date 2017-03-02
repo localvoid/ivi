@@ -1,5 +1,4 @@
 export * from "./components/functional";
-export * from "./components/context";
 export * from "./components/lifecycle";
 export * from "./components/static";
 export * from "./components/invalid";
