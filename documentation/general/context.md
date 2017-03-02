@@ -22,19 +22,19 @@ that context object has a new identity to update context.
 
 ```ts
 class StatefulComponent extends Component {
-    private context = {
+    private _ctx = {
         counter: 0,
     }
 
     attached() {
         setInterval(() => {
-            this.context = { counter: this.context.counter + 1 };
+            this._ctx = { counter: this._ctx.counter + 1 };
             this.invalidate();
         }, 1000);
     }
 
     render() {
-        return $ctx(this.context, $c(ChildComponentThatUsesContextToGetCounterValue));
+        return $ctx(this._ctx, $c(ChildComponentThatUsesContextToGetCounterValue));
     }
 }
 ```

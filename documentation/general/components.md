@@ -157,28 +157,6 @@ class StatefulComponent extends Component {
 }
 ```
 
-Update current context.
-
-```ts
-interface Component<P = void> {
-    updateContext<C>(): C | undefined;
-}
-```
-
-```ts
-class StatefulComponent extends Component<string> {
-    updateContext() {
-        return {
-            content: this.props,
-        };
-    }
-
-    render() {
-        return $c(ChildComponentThatUsesContextToGetCounterValue);
-    }
-}
-```
-
 Component is attached to the document. Attached methods are invoked in top to bottom order.
 
 ```ts
