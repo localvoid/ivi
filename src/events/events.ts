@@ -28,13 +28,12 @@ import {
 export function createEventHandler<E extends SyntheticEvent<any>>(
     dispatcher: EventDispatcher,
     fn: (ev: E) => void,
-    capture?: boolean): EventHandler<E> {
-
-    return {
-        dispatcher: dispatcher,
-        flags: capture ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble,
-        fn: fn,
-    } as EventHandler<E>;
+    capture?: boolean,
+): EventHandler<E> {
+    const handler = fn as EventHandler<E>;
+    handler.dispatcher = dispatcher;
+    handler.flags = capture ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble;
+    return handler;
 }
 
 export interface NativeEventDispatchersList {

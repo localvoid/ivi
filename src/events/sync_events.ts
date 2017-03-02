@@ -7,7 +7,7 @@ import { setEventHandlerListToDOMNode } from "./utils";
  * @param handler Event Handler.
  */
 function registerEventHandler(handler: EventHandler<any>): void {
-    handler.dispatcher.registerHandler(handler.fn);
+    handler.dispatcher.registerHandler(handler);
 }
 
 /**
@@ -16,7 +16,7 @@ function registerEventHandler(handler: EventHandler<any>): void {
  * @param handler Event Handler.
  */
 function unregisterEventHandler(handler: EventHandler<any>): void {
-    handler.dispatcher.unregisterHandler(handler.fn);
+    handler.dispatcher.unregisterHandler(handler);
 }
 
 /**

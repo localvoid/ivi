@@ -7,6 +7,10 @@ import { SyntheticEvent } from "./synthetic_event";
  */
 export interface EventHandler<E extends SyntheticEvent<any>> {
     /**
+     * Event Handler function call interface.
+     */
+    (ev: E): void;
+    /**
      * Event Dispatcher instance.
      */
     dispatcher: EventDispatcher;
@@ -14,10 +18,6 @@ export interface EventHandler<E extends SyntheticEvent<any>> {
      * See `EventHandlerFlags` for details.
      */
     flags: EventHandlerFlags;
-    /**
-     * Event Handler function.
-     */
-    fn: (ev: E) => void;
     /**
      * Event Handler options.
      */

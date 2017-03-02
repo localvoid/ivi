@@ -20,7 +20,7 @@ function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
     for (let j = 0; j < dispatchTarget.handlers.length; j++) {
         const handler = dispatchTarget.handlers[j];
         if (handler.flags & matchFlags) {
-            handler.fn(event);
+            handler(event);
             if (event._flags & SyntheticEventFlags.StoppedImmediatePropagation) {
                 return;
             }
