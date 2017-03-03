@@ -95,10 +95,11 @@ export {
     ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
     createMediaElementDescriptor, createCustomElementDescriptor,
 } from "./vdom/element_descriptor";
+export { ConnectDescriptor, SelectData } from "./vdom/connect_descriptor";
 export {
     VNodeArray,
     VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
-    $t, $h, $s, $c, $i, $m, $e, $w, $ctx,
+    $t, $h, $s, $c, $i, $m, $e, $w, $connect, $ctx,
 } from "./vdom/vnode";
 export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
 

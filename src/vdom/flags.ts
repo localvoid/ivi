@@ -66,18 +66,22 @@ export const enum VNodeFlags {
      */
     WebComponent = 1 << 14,
     /**
+     * Specialized VNode with connect functionality.
+     */
+    Connect = 1 << 15,
+    /**
      * Specialized VNode with an update context functionality.
      */
-    UpdateContext = 1 << 15,
+    UpdateContext = 1 << 16,
     /**
      * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
      * prototype for building mutable trees.
      */
-    Immutable = 1 << 16,
+    Immutable = 1 << 17,
     /**
      * VNode element will be automatically focused after instantiation.
      */
-    Autofocus = 1 << 17,
+    Autofocus = 1 << 18,
 
     /**
      * VNode represents a Component.

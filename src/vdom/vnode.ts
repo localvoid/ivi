@@ -7,6 +7,7 @@ import { IVNode } from "./ivnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
+import { SelectData, ConnectDescriptor } from "./connect_descriptor";
 import { EventHandlerList } from "../events/event_handler";
 import {
     HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
@@ -77,19 +78,21 @@ import {
  */
 export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> | null;
+    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
+    ConnectDescriptor<any, any> | null;
     _key: any;
     _props: P | null;
     _className: string | null;
     _style: CSSStyleProps | null;
     _events: EventHandlerList | null;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
-    _instance: Node | Component<any> | null;
+    _instance: Node | Component<any> | SelectData | null;
     _debugId: number;
 
     constructor(
         flags: number,
-        tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> | null,
+        tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> |
+            ConnectDescriptor<any, any> | null,
         props: P | null,
         className: string | null,
         children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
@@ -785,6 +788,23 @@ export function $w(tagName: string, className?: string): VNode<{ [key: string]: 
         null,
         className === undefined ? null : className,
         null);
+}
+
+export function $connect<T, U>(
+    select: (prev: SelectData<{}, U> | null | boolean, props: T, context: Context) => U,
+    render: (props: U, context: Context) => VNode<U>,
+    props: T,
+): VNode<T> {
+    return new VNode<T>(
+        VNodeFlags.ComponentFunction | VNodeFlags.Connect,
+        {
+            select: select,
+            render: render,
+        },
+        props,
+        null,
+        null,
+    );
 }
 
 /**

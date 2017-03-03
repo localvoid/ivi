@@ -3,6 +3,7 @@ import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
+import { ConnectDescriptor, SelectData } from "./connect_descriptor";
 
 /**
  * VNode object is the core object in ivi Virtual DOM, it can represent any node type.
@@ -18,7 +19,8 @@ export interface IVNode<P = null> {
      * When VNode represents a Component, tag property should contain reference to a `ComponentClass` if it is a
      * stateful component or `ComponentFunction` for stateless components.
      */
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> | null;
+    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
+    ConnectDescriptor<any, any> | null;
     /**
      * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.
@@ -51,7 +53,7 @@ export interface IVNode<P = null> {
      * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
      * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
-    _instance: Node | Component<any> | null;
+    _instance: Node | Component<any> | SelectData | null;
     /**
      * Unique ID thas is available in Dev Mode.
      */
