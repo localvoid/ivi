@@ -1,3 +1,4 @@
+import { Context } from "../../../src/common/types";
 import { IVNode } from "../../../src/vdom/ivnode";
 import { Component } from "../../../src/vdom/component";
 import { VNode, $c, $t } from "../../../src/vdom/vnode";
@@ -7,7 +8,7 @@ export interface ComponentHooks<P> {
     construct?: (
         this: Component<P>,
         props: P,
-        context: { [key: string]: any },
+        context: Context,
         owner: Component<P> | undefined,
     ) => void;
     isPropsChanged?: (
@@ -22,8 +23,8 @@ export interface ComponentHooks<P> {
     ) => void;
     newContextReceived?: (
         this: Component<P>,
-        oldContext: { [key: string]: any },
-        newContext: { [key: string]: any },
+        oldContext: Context,
+        newContext: Context,
     ) => void;
     attached?: (this: Component<P>) => void;
     detached?: (this: Component<P>) => void;
@@ -41,7 +42,7 @@ export interface TestLifecycleComponentProps {
 }
 
 export class TestLifecycleComponent extends Component<TestLifecycleComponentProps> {
-    constructor(props: TestLifecycleComponentProps, context: { [key: string]: any }) {
+    constructor(props: TestLifecycleComponentProps, context: Context) {
         super(props, context);
         lifecycleTouch(props.id, "constructor");
         if (props.hooks.construct) {
@@ -64,7 +65,7 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
         }
     }
 
-    newContextReceived(oldContext: { [key: string]: any }, newContext: { [key: string]: any }): void {
+    newContextReceived(oldContext: Context, newContext: Context): void {
         lifecycleTouch(this.props.id, "newContextReceived");
         if (this.props.hooks.newContextReceived) {
             this.props.hooks.newContextReceived.call(this, oldContext, newContext);

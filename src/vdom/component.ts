@@ -1,3 +1,4 @@
+import { Context } from "../common/types";
 import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
@@ -9,16 +10,16 @@ import { currentFrame } from "../scheduler/frame";
  * Component function constructor.
  */
 export interface ComponentFunction<P = void> {
-    (props: P, context?: { [key: string]: any }): IVNode<any>;
+    (props: P, context?: Context): IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-    shouldAugment?: (props: P, context?: { [key: string]: any }) => boolean;
+    shouldAugment?: (props: P, context?: Context) => boolean;
 }
 
 /**
  * Component class constructor.
  */
 export interface ComponentClass<P = void> {
-    new (props: P, context: { [key: string]: any }): Component<P>;
+    new (props: P, context: Context): Component<P>;
 }
 
 /**
@@ -52,11 +53,11 @@ export abstract class Component<P = void> {
      *
      * Context that was used for this component.
      */
-    _parentContext: { [key: string]: any };
+    _parentContext: Context;
     /**
      * Current context that will be passed to children.
      */
-    _context: { [key: string]: any };
+    _context: Context;
     /**
      * Virtual DOM root node.
      */
@@ -70,7 +71,7 @@ export abstract class Component<P = void> {
      */
     _debugId: number;
 
-    constructor(props: P, context: { [key: string]: any }) {
+    constructor(props: P, context: Context) {
         this.flags = 0;
         this.props = props;
         this._parentContext = context;
@@ -86,9 +87,9 @@ export abstract class Component<P = void> {
      *
      * @returns Current context.
      */
-    get context(): { [key: string]: any } {
+    getContext<T = {}>(): Context<T> {
         this.flags |= ComponentFlags.CheckUsingContext;
-        return this._parentContext;
+        return this._parentContext as Context<T>;
     }
 
     /**
@@ -96,7 +97,7 @@ export abstract class Component<P = void> {
      *
      * @returns `true` when Component is attached.
      */
-    get isAttached(): boolean {
+    isAttached(): boolean {
         return !!(this.flags & ComponentFlags.Attached);
     }
 
@@ -139,21 +140,9 @@ export abstract class Component<P = void> {
      * @param oldContext Old context.
      * @param newContext New Context.
      */
-    newContextReceived(oldContext: { [key: string]: any }, newContext: { [key: string]: any }): void {
+    newContextReceived(oldContext: Context, newContext: Context): void {
         /* tslint:disable:no-empty */
         /* tslint:enable:no-empty */
-    }
-
-    /**
-     * Lifecycle method `updateContext` is used to modify current context.
-     *
-     * It will be invoked when component is created, each time when parent context is changed, each time when props are
-     * changed, and when component is updated with invalidated context.
-     *
-     * @returns Context data.
-     */
-    updateContext<C>(): C | undefined {
-        return;
     }
 
     /**

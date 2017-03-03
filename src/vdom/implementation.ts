@@ -15,6 +15,7 @@
  * #component - Component related functions.
  */
 
+import { Context } from "../common/types";
 import { SVG_NAMESPACE, setInnerHTML } from "../common/dom";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
 import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed } from "../dev_mode/hooks";
@@ -101,7 +102,7 @@ export function renderVNode(
     parent: Node,
     refChild: Node | null,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): Node {
     if (__IVI_DEV__) {
         setInitialNestingState(parent as Element);
@@ -135,7 +136,7 @@ function _renderVNode(
     parent: Node,
     refChild: Node | null,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): Node {
     return vNodeRenderIntoAndAttach(parent, refChild, vnode, context);
 }
@@ -153,7 +154,7 @@ export function syncVNode(
     parent: Node,
     a: IVNode<any>,
     b: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     if (__IVI_DEV__) {
@@ -188,7 +189,7 @@ function _syncVNode(
     parent: Node,
     a: IVNode<any>,
     b: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     vNodeSync(parent, a, b, context, syncFlags);
@@ -246,7 +247,7 @@ export function augmentVNode(
     parent: Node,
     node: Node | null,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): void {
     if (__IVI_DEV__) {
         setInitialNestingState(parent as Element);
@@ -280,7 +281,7 @@ function _augmentVNode(
     parent: Node,
     node: Node | null,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): void {
     vNodeAugment(parent, node, vnode, context);
     vNodeAttach(vnode);
@@ -299,7 +300,7 @@ function _augmentVNode(
 export function updateComponents(
     parent: Node,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): void {
     if (__IVI_DEV__) {
         setInitialNestingState(parent as Element);
@@ -331,7 +332,7 @@ export function updateComponents(
 function _updateComponent(
     parent: Node,
     component: Component<any>,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     const flags = component.flags;
@@ -375,7 +376,7 @@ function _updateComponentFunction(
     parent: Node,
     a: IVNode<any>,
     b: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     const flags = b._flags;
@@ -523,7 +524,7 @@ function vNodeDetachAll(vnodes: IVNode<any>[]): void {
 function vNodeUpdateComponents(
     parent: Node,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     const flags = vnode._flags;
@@ -610,7 +611,7 @@ function vNodeRemoveChild(parent: Node, node: IVNode<any>): void {
  * @param component Component.
  * @param newContext New Context to assign.
  */
-function componentUpdateParentContext<P>(component: Component<P>, newParentContext: { [key: string]: any }): void {
+function componentUpdateParentContext<P>(component: Component<P>, newParentContext: Context): void {
     if (component._parentContext !== newParentContext) {
         component.flags |= ComponentFlags.DirtyParentContext;
         const oldContext = component._parentContext;
@@ -718,7 +719,7 @@ function componentClassRender<P>(component: Component<P>): IVNode<any> {
 function componentFunctionRender<P>(
     component: ComponentFunction<P>,
     props: P,
-    context?: { [key: string]: any },
+    context?: Context,
 ): IVNode<any> {
     return component(props, context);
 }
@@ -750,7 +751,7 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
 function vNodeRender(
     parent: Node,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): Node {
     if (__IVI_DEV__) {
         if (vnode._instance) {
@@ -902,7 +903,7 @@ function vNodeRenderIntoAndAttach(
     parent: Node,
     refChild: Node | null,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): Node {
     const node = vNodeRender(parent, vnode, context);
     parent.insertBefore(node, refChild);
@@ -924,7 +925,7 @@ function vNodeAugment(
     parent: Node,
     node: Node | null,
     vnode: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
 ): void {
     if (__IVI_DEV__) {
         if (vnode._instance) {
@@ -1126,7 +1127,7 @@ function vNodeSync(
     parent: Node,
     a: IVNode<any>,
     b: IVNode<any>,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     if (__IVI_DEV__) {
@@ -1223,7 +1224,7 @@ function syncChildren(
     bParentFlags: VNodeFlags,
     a: IVNode<any>[] | IVNode<any> | string | number | boolean,
     b: IVNode<any>[] | IVNode<any> | string | number | boolean,
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     let i = 0;
@@ -1640,7 +1641,7 @@ function syncChildrenTrackByKeys(
     parent: Node,
     a: IVNode<any>[],
     b: IVNode<any>[],
-    context: { [key: string]: any },
+    context: Context,
     syncFlags: SyncFlags,
 ): void {
     let aStart = 0;

@@ -26,6 +26,7 @@ declare global {
  * Common:
  */
 export { DevModeFlags, DEV_MODE, setDevModeFlags, printError, printWarn } from "./dev_mode/dev_mode";
+export { Context } from "./common/types";
 export { FeatureFlags, FEATURES } from "./common/feature_detection";
 export { UserAgentFlags, USER_AGENT } from "./common/user_agent";
 export {

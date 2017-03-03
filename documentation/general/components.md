@@ -59,14 +59,10 @@ class StatefulComponent extends Component<string> {
 
 ```ts
 interface Component<P = void> {
-    get context(): Context;
-    get props(): P;
+    props: P;
+    getContext<T>(): Context<T>;
 }
 ```
-
-`context` getter returns current context.
-
-`props` getter returns current props.
 
 ### Methods
 

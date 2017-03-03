@@ -1,3 +1,4 @@
+import { Context } from "../common/types";
 import { nextDebugId } from "../dev_mode/dev_mode";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isVoidElement, isValidTag, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
@@ -803,8 +804,8 @@ function UpdateContext() {
  * @param child Child VNode.
  * @returns VNodeBuilder object.
  */
-export function $ctx(context: { [key: string]: any }, child: IVNode<any>): VNode<{ [key: string]: any }> {
-    return new VNode<{ [key: string]: any }>(
+export function $ctx<T = {}>(context: Context<T>, child: IVNode<any>): VNode<Context<T>> {
+    return new VNode<Context<T>>(
         VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
         __IVI_DEV__ ? UpdateContext as () => IVNode<any> : null,
         context,

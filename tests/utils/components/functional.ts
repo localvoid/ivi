@@ -1,11 +1,12 @@
+import { Context } from "../../../src/common/types";
 import { IVNode } from "../../../src/vdom/ivnode";
 import { ComponentFunction } from "../../../src/vdom/component";
 import { VNode, $c, $t } from "../../../src/vdom/vnode";
 
 export interface TestFunctionalComponentHooks<P> {
-    render?: (props: P, context: { [key: string]: any }) => IVNode<any>;
+    render?: (props: P, context: Context) => IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-    shouldAugment?: (props: P, context: { [key: string]: any }) => boolean;
+    shouldAugment?: (props: P, context: Context) => boolean;
 }
 
 export interface TestFunctionalComponentProps {
@@ -14,7 +15,7 @@ export interface TestFunctionalComponentProps {
     hooks: TestFunctionalComponentHooks<TestFunctionalComponentProps>;
 }
 
-export function TestFunctionalComponent(props: TestFunctionalComponentProps, context: { [key: string]: any }) {
+export function TestFunctionalComponent(props: TestFunctionalComponentProps, context: Context) {
     if (props.hooks.render) {
         return props.hooks.render(props, context);
     }
@@ -34,7 +35,7 @@ export function TestFunctionalComponent(props: TestFunctionalComponentProps, con
 
 (TestFunctionalComponent as ComponentFunction<TestFunctionalComponentProps>).shouldAugment = function (
     props: TestFunctionalComponentProps,
-    context: { [key: string]: any },
+    context: Context,
 ) {
     if (props.hooks.shouldAugment) {
         return props.hooks.shouldAugment(props, context);

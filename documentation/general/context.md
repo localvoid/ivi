@@ -12,7 +12,7 @@ ivi syncing algorithm doesn't have such problems, it is using a different way to
 Context is updated via special virtual nodes created with a `$ctx` function.
 
 ```ts
-function $ctx(context: { [key: string]: any }, child: VNode<any>): VNode<{ [key: string]: any }>;
+function $ctx<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
 ```
 
 Syncing algorithm is comparing context by object identity to detect that context has been changed, so it is required

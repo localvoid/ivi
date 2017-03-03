@@ -11,7 +11,7 @@ interface ContextTestComponentProps {
 
 class ContextTestPrinter extends Component<null> {
     render() {
-        return $t(this.context["value"]);
+        return $t(this.getContext<{ value: string }>().value);
     }
 }
 

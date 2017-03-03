@@ -1,3 +1,4 @@
+import { Context } from "../common/types";
 import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
@@ -12,9 +13,9 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } f
 export interface Root {
     container: Element;
     currentVNode: IVNode<any> | null;
-    currentContext: { [key: string]: any } | null;
+    currentContext: Context | null;
     newVNode: IVNode<any> | null;
-    newContext: { [key: string]: any } | null;
+    newContext: Context | null;
     domNode: Node | null;
     invalidated: boolean;
     syncFlags: SyncFlags;
@@ -25,7 +26,7 @@ export const ROOTS = [] as Root[];
 /**
  * Default Context object.
  */
-const DEFAULT_CONTEXT = {};
+const DEFAULT_CONTEXT: Context = {};
 
 /**
  * Find Root node in container.
@@ -110,7 +111,7 @@ export function render(
     node: IVNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: { [key: string]: any } = DEFAULT_CONTEXT,
+    context: Context = DEFAULT_CONTEXT,
 ): void {
     renderNextFrame(node, container, syncFlags, context);
     syncFrameUpdate();
@@ -128,7 +129,7 @@ export function renderNextFrame(
     node: IVNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: { [key: string]: any } = DEFAULT_CONTEXT,
+    context: Context = DEFAULT_CONTEXT,
 ): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
@@ -180,7 +181,7 @@ export function renderNextFrame(
 export function augment(
     node: IVNode<any> | null,
     container: Element,
-    context: { [key: string]: any } = DEFAULT_CONTEXT,
+    context: Context = DEFAULT_CONTEXT,
 ): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
