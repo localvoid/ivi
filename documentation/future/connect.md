@@ -7,22 +7,56 @@ ivi sync algorithm is working in a slightly different way than React, and it is 
 a much more efficient way that doesn't require adding/removing any update callbacks or creating stateful component
 instances, so we won't need to pay the perf price during slow insert/remove operations.
 
-## Solutions
+## connect VNode
 
-### shouldUpdate method
+Specialized virtual dom node with connect behavior.
 
 ```ts
-interface Component<P> {
-    shouldUpdate(): undefined | boolean;
+interface SelectData<T = {}, U = {}> {
+    in: T,
+    out: U,
 }
+
+function updateConnectComponent<T, U>(
+    vnode: VNode<T>,
+    select: (prev: SelectData<{}, U>, props: T, context: Context) => U,
+    render: (props: U, context: Context) => VNode<U>,
+    prev: any,
+    props: T,
+    context: Context,
+): VNode<T> {
+    const next = select(prev, props, context);
+    if (prev === next) {
+        return vnode;
+    }
+    return render(next.out, context);
+}
+
+function connect<T, U>(
+    select: (prev: SelectData<{}, U>, props: T, context: Context) => U,
+    render: (props: U, context: Context) => VNode<U>,
+): (props: T) => VNode<T> {
+    return function(props: T) {
+        return $connect({
+            select: select,
+            render: render,
+        }, props);
+    };
+}
+
+const $connectedComponent = connect(
+    function (prev: SelectData<number, number>, props: number, context: Context) {
+        const item = select(prev ? prev.in.item : null);
+        if (prev && prev.in.item === item) {
+            return prev;
+        }
+
+        return {
+            in: item,
+            out: item,
+        };
+    },
+    function (props: number, context: Context) {
+        return $h("div").children(props);
+    }
 ```
-
-This method has nothing in common with React `shouldComponentUpdate` method, it will be invoked when component isn't in
-a dirty state. By default it will return `undefined` value, it means that this method shouldn't have any effect on the
-decision to update component, otherwise it will add additional custom logic to check if component should be updated.
-
-### $connect VNode
-
-Create a specialized virtual dom node as a specialized version of stateless component with additional lifecycle hooks.
-It may have interface similar to `redux-connect`, it is a much easier solution that doesn't require too much thinking
-about APIs.
