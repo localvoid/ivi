@@ -20,7 +20,7 @@ export interface IVNode<P = null> {
      * stateful component or `ComponentFunction` for stateless components.
      */
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
-    ConnectDescriptor<any, any> | null;
+    ConnectDescriptor<any, any, any> | null;
     /**
      * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.

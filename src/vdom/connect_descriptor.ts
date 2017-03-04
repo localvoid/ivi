@@ -6,7 +6,7 @@ export interface SelectData<T = {}, U = {}> {
     out: U;
 }
 
-export interface ConnectDescriptor<T, U> {
-    select: (prev: SelectData<{}, U> | null | boolean, props: T, context: Context) => U;
-    render: (props: U, context: Context) => IVNode<U>;
+export interface ConnectDescriptor<T, U, K> {
+    select: (prev: SelectData<K, U> | null | boolean, props: T, context: Context) => SelectData<K, U>;
+    render: (props: U, context: Context) => IVNode<any>;
 }

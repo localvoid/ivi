@@ -75,7 +75,7 @@ function componentPerfMarkEnd(
     method: string,
     type: ComponentStackFrameType.Connect,
     debugId: number,
-    tag: ConnectDescriptor<any, any>,
+    tag: ConnectDescriptor<any, any, any>,
 ): void;
 function componentPerfMarkEnd(
     method: string,
@@ -88,7 +88,7 @@ function componentPerfMarkEnd(
     method: string,
     type: ComponentStackFrameType,
     debugId: number,
-    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any> | undefined,
+    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | undefined,
     instance?: Component<any> | Context,
 ): void {
     if (__IVI_DEV__) {
@@ -103,7 +103,7 @@ function componentPerfMarkEnd(
                     perfMarkEnd(`[F]${getFunctionName(fn)}::${method}`, `${debugId}::${method}`);
                     break;
                 case ComponentStackFrameType.Connect:
-                    const d = tag as ConnectDescriptor<any, any>;
+                    const d = tag as ConnectDescriptor<any, any, any>;
                     perfMarkEnd(`[*]${getFunctionName(d.select)}::${method}`, `${debugId}::${method}`);
                     break;
                 case ComponentStackFrameType.UpdateContext:
@@ -133,7 +133,7 @@ function componentPerfMarkEndHelper(method: string, stateful: boolean, data: IVN
                         method,
                         ComponentStackFrameType.Connect,
                         vnode._debugId,
-                        vnode._tag as ConnectDescriptor<any, any>,
+                        vnode._tag as ConnectDescriptor<any, any, any>,
                     );
                 } else {
                     componentPerfMarkEnd(
@@ -163,7 +163,7 @@ function stackTracePushComponentFunction(vnode: IVNode<any>): void {
             if (flags & VNodeFlags.Connect) {
                 stackTracePushComponent(
                     ComponentStackFrameType.Connect,
-                    vnode._tag as ConnectDescriptor<any, any>,
+                    vnode._tag as ConnectDescriptor<any, any, any>,
                 );
             } else {
                 stackTracePushComponent(
@@ -479,7 +479,7 @@ function _updateComponentFunction(
 
     if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
         if (flags & VNodeFlags.Connect) {
-            const connect = b._tag as ConnectDescriptor<any, any>;
+            const connect = b._tag as ConnectDescriptor<any, any, any>;
             const prevSelectData = a._instance as SelectData;
             const selectData = connect.select(prevSelectData, b._props, context);
             // save prevChildren because it is possible that a === b
@@ -972,7 +972,7 @@ function vNodeRender(
             componentPerfMarkBegin("create", vnode._debugId);
             if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
                 if (flags & VNodeFlags.Connect) {
-                    const connect = (vnode._tag as ConnectDescriptor<any, any>);
+                    const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
                     const selectData = vnode._instance = connect.select(null, vnode._props, context);
                     vnode._children = connect.render(selectData.out, context);
                 } else {
@@ -1167,7 +1167,7 @@ function vNodeAugment(
                     stackTracePushComponentFunction(vnode);
                     if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
                         if (flags & VNodeFlags.Connect) {
-                            const connect = (vnode._tag as ConnectDescriptor<any, any>);
+                            const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
                             const selectData = vnode._instance = connect.select(null, vnode._props, context);
                             vnode._children = connect.render(selectData.out, context);
                         } else {

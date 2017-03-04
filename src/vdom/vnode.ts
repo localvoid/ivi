@@ -79,7 +79,7 @@ import {
 export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
-    ConnectDescriptor<any, any> | null;
+    ConnectDescriptor<any, any, any> | null;
     _key: any;
     _props: P | null;
     _className: string | null;
@@ -92,7 +92,7 @@ export class VNode<P = null> implements IVNode<P> {
     constructor(
         flags: number,
         tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> |
-            ConnectDescriptor<any, any> | null,
+            ConnectDescriptor<any, any, any> | null,
         props: P | null,
         className: string | null,
         children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
@@ -791,29 +791,12 @@ export function $w(tagName: string, className?: string): VNode<{ [key: string]: 
 }
 
 export function $connect<T, U, K>(
-    select: (prev: SelectData<K, U> | null | boolean, props: T, context: Context) => SelectData<K, U>,
-    render: (props: U, context: Context) => VNode<any>,
+    connectDescriptor: ConnectDescriptor<T, U, K>,
     props: T,
 ): VNode<T> {
-    if (__IVI_DEV__) {
-        return new VNode<T>(
-            VNodeFlags.ComponentFunction | VNodeFlags.Connect,
-            {
-                select: select,
-                render: render,
-                name: "Connect",
-            },
-            props,
-            null,
-            null,
-        );
-    }
     return new VNode<T>(
         VNodeFlags.ComponentFunction | VNodeFlags.Connect,
-        {
-            select: select,
-            render: render,
-        },
+        connectDescriptor,
         props,
         null,
         null,

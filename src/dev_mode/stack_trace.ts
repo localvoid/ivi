@@ -117,7 +117,7 @@ export const enum ComponentStackFrameType {
 
 export interface ComponentStackTraceFrame {
     type: ComponentStackFrameType;
-    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any> | undefined;
+    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | undefined;
     instance: Component<any> | Context | undefined;
 }
 
@@ -148,7 +148,7 @@ export function stackTracePushComponent(
 ): void;
 export function stackTracePushComponent(
     type: ComponentStackFrameType.Connect,
-    tag: ConnectDescriptor<any, any>,
+    tag: ConnectDescriptor<any, any, any>,
 ): void;
 export function stackTracePushComponent(
     type: ComponentStackFrameType.UpdateContext,
@@ -157,7 +157,7 @@ export function stackTracePushComponent(
 ): void;
 export function stackTracePushComponent(
     type: ComponentStackFrameType,
-    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any> | undefined,
+    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | undefined,
     instance?: Component<any> | Context,
 ): void {
     if (__IVI_DEV__) {
@@ -231,7 +231,7 @@ function stackTraceToString(): string {
                     result += `[F]${getFunctionName(fn)}`;
                     break;
                 case ComponentStackFrameType.Connect:
-                    const d = frame.tag as ConnectDescriptor<any, any>;
+                    const d = frame.tag as ConnectDescriptor<any, any, any>;
                     result += `[*]${getFunctionName(d.select)}`;
                     break;
                 case ComponentStackFrameType.UpdateContext:
@@ -284,7 +284,7 @@ export function printComponentStackTrace(): void {
                             console.log(`[F]${getFunctionName(fn)}`);
                             break;
                         case ComponentStackFrameType.Connect:
-                            const d = frame.tag as ConnectDescriptor<any, any>;
+                            const d = frame.tag as ConnectDescriptor<any, any, any>;
                             console.log(`[*]${getFunctionName(d.select)}`);
                             break;
                         case ComponentStackFrameType.UpdateContext:
