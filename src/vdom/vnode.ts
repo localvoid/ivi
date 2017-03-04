@@ -790,11 +790,24 @@ export function $w(tagName: string, className?: string): VNode<{ [key: string]: 
         null);
 }
 
-export function $connect<T, U>(
-    select: (prev: SelectData<{}, U> | null | boolean, props: T, context: Context) => U,
-    render: (props: U, context: Context) => VNode<U>,
+export function $connect<T, U, K>(
+    select: (prev: SelectData<K, U> | null | boolean, props: T, context: Context) => SelectData<K, U>,
+    render: (props: U, context: Context) => VNode<any>,
     props: T,
 ): VNode<T> {
+    if (__IVI_DEV__) {
+        return new VNode<T>(
+            VNodeFlags.ComponentFunction | VNodeFlags.Connect,
+            {
+                select: select,
+                render: render,
+                name: "Connect",
+            },
+            props,
+            null,
+            null,
+        );
+    }
     return new VNode<T>(
         VNodeFlags.ComponentFunction | VNodeFlags.Connect,
         {

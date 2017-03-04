@@ -4,7 +4,9 @@
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
 import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
+import { Context } from "../common/types";
 import { ComponentClass, ComponentFunction, Component } from "../vdom/component";
+import { ConnectDescriptor } from "../vdom/connect_descriptor";
 
 declare global {
     /**
@@ -106,38 +108,73 @@ export function callSites(): CallSite[] | undefined {
     return;
 }
 
+export const enum ComponentStackFrameType {
+    Component = 0,
+    ComponentFunction = 1,
+    Connect = 2,
+    UpdateContext = 3,
+}
+
+export interface ComponentStackTraceFrame {
+    type: ComponentStackFrameType;
+    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any> | undefined;
+    instance: Component<any> | Context | undefined;
+}
+
 /**
  * Components stack trace from an entry point.
  */
-export let STACK_TRACE: Array<ComponentClass<any> | ComponentFunction<any>> | undefined;
-/**
- * Component instances stack trace.
- */
-export let STACK_TRACE_INSTANCES: Array<Component<any>> | undefined;
+export let STACK_TRACE: Array<ComponentStackTraceFrame>;
+let STACK_TRACE_DEPTH: number;
+
+if (__IVI_DEV__) {
+    STACK_TRACE = [];
+    STACK_TRACE_DEPTH = 0;
+}
 
 /**
  * Push component into stack trace.
  *
  * @param component Component.
  */
-export function stackTracePushComponent(component: ComponentClass<any>, instance: Component<any>): void;
-export function stackTracePushComponent(component: ComponentFunction<any>): void;
 export function stackTracePushComponent(
-    component: ComponentClass<any> | ComponentFunction<any>,
-    instance?: Component<any>,
+    type: ComponentStackFrameType.Component,
+    tag: ComponentClass<any>,
+    instance: Component<any>,
+): void;
+export function stackTracePushComponent(
+    type: ComponentStackFrameType.ComponentFunction,
+    tag: ComponentFunction<any>,
+): void;
+export function stackTracePushComponent(
+    type: ComponentStackFrameType.Connect,
+    tag: ConnectDescriptor<any, any>,
+): void;
+export function stackTracePushComponent(
+    type: ComponentStackFrameType.UpdateContext,
+    tag: undefined,
+    context: Context,
+): void;
+export function stackTracePushComponent(
+    type: ComponentStackFrameType,
+    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any> | undefined,
+    instance?: Component<any> | Context,
 ): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-            if (!STACK_TRACE) {
-                STACK_TRACE = [];
+            if (STACK_TRACE_DEPTH >= STACK_TRACE.length) {
+                STACK_TRACE.push({
+                    type: type,
+                    tag: tag,
+                    instance: instance,
+                });
+            } else {
+                const frame = STACK_TRACE[STACK_TRACE_DEPTH];
+                frame.type = type;
+                frame.tag = tag;
+                frame.instance = instance;
             }
-            STACK_TRACE.push(component);
-            if (instance) {
-                if (!STACK_TRACE_INSTANCES) {
-                    STACK_TRACE_INSTANCES = [];
-                }
-                STACK_TRACE_INSTANCES.push(instance);
-            }
+            STACK_TRACE_DEPTH++;
         }
     }
 }
@@ -148,10 +185,9 @@ export function stackTracePushComponent(
 export function stackTracePopComponent(): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-            const c = STACK_TRACE!.pop();
-            if ((c as ComponentClass<any>).prototype.render) {
-                STACK_TRACE_INSTANCES!.pop();
-            }
+            const frame = STACK_TRACE[--STACK_TRACE_DEPTH];
+            frame.tag = undefined;
+            frame.instance = undefined;
         }
     }
 }
@@ -162,54 +198,14 @@ export function stackTracePopComponent(): void {
 export function stackTraceReset(): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-            STACK_TRACE = undefined;
-            STACK_TRACE_INSTANCES = undefined;
-        }
-    }
-}
-
-export interface ComponentStackTraceFrame {
-    type: "F" | "C";
-    name: string;
-    debugId: number | null;
-    instance: Component<any> | null;
-}
-
-/**
- * Build current stack trace.
- *
- * @returns Current component stack.
- */
-export function componentStackTrace(): ComponentStackTraceFrame[] | null {
-    if (__IVI_DEV__) {
-        if (STACK_TRACE && (STACK_TRACE.length > 0)) {
-            const result: ComponentStackTraceFrame[] = [];
-
-            let j = STACK_TRACE_INSTANCES ? STACK_TRACE_INSTANCES.length - 1 : 0;
-            for (let i = STACK_TRACE.length - 1; i >= 0; i--) {
-                const c = STACK_TRACE[i];
-                if (c.prototype.render) {
-                    result.push({
-                        type: "F",
-                        name: getFunctionName(c),
-                        debugId: null,
-                        instance: null,
-                    });
-                } else {
-                    const instance = STACK_TRACE_INSTANCES![j--];
-                    result.push({
-                        type: "C",
-                        name: getFunctionName(c),
-                        debugId: instance._debugId,
-                        instance: instance,
-                    });
-                }
+            for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
+                const frame = STACK_TRACE[i];
+                frame.tag = undefined;
+                frame.instance = undefined;
             }
-            return result;
+            STACK_TRACE_DEPTH = 0;
         }
     }
-
-    return null;
 }
 
 /**
@@ -219,15 +215,29 @@ export function componentStackTrace(): ComponentStackTraceFrame[] | null {
  */
 function stackTraceToString(): string {
     let result = "";
-    const components = componentStackTrace();
 
-    if (components) {
-        for (const component of components) {
+    if (STACK_TRACE_DEPTH) {
+        for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
+            const frame = STACK_TRACE[i];
             result += "\n  ";
-            if (component.type === "F") {
-                result += `[F]${component.name}`;
-            } else {
-                result += `[C]${component.name} #${component.debugId}`;
+            switch (frame.type) {
+                case ComponentStackFrameType.Component:
+                    const cls = frame.tag as ComponentClass<any>;
+                    const instance = frame.instance as Component<any>;
+                    result += `[C]${getFunctionName(cls)} #${instance._debugId}`;
+                    break;
+                case ComponentStackFrameType.ComponentFunction:
+                    const fn = frame.tag as ComponentFunction<any>;
+                    result += `[F]${getFunctionName(fn)}`;
+                    break;
+                case ComponentStackFrameType.Connect:
+                    const d = frame.tag as ConnectDescriptor<any, any>;
+                    result += `[*]${getFunctionName(d.select)}`;
+                    break;
+                case ComponentStackFrameType.UpdateContext:
+                    const context = frame.instance as Context;
+                    result += `[+]${Object.keys(context)}`;
+                    break;
             }
         }
     }
@@ -254,18 +264,35 @@ export function stackTraceAugment(e: Error): void {
  * Prints current component stack trace to the console.
  */
 export function printComponentStackTrace(): void {
+
     if (__IVI_DEV__) {
         if (__IVI_BROWSER__) {
-            const components = componentStackTrace();
-            if (components) {
+            if (STACK_TRACE_DEPTH) {
                 console.groupCollapsed("Component Stack Trace:");
-                for (const component of components) {
-                    if (component.type === "F") {
-                        console.log(`  [F]${component.name}`);
-                    } else {
-                        console.groupCollapsed(`  [C]${component.name} #${component.debugId}`);
-                        console.log(component.instance);
-                        console.groupEnd();
+                for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
+                    const frame = STACK_TRACE[i];
+                    switch (frame.type) {
+                        case ComponentStackFrameType.Component:
+                            const cls = frame.tag as ComponentClass<any>;
+                            const instance = frame.instance as Component<any>;
+                            console.groupCollapsed(`[C]${getFunctionName(cls)} #${instance._debugId}`);
+                            console.log(instance);
+                            console.groupEnd();
+                            break;
+                        case ComponentStackFrameType.ComponentFunction:
+                            const fn = frame.tag as ComponentFunction<any>;
+                            console.log(`[F]${getFunctionName(fn)}`);
+                            break;
+                        case ComponentStackFrameType.Connect:
+                            const d = frame.tag as ConnectDescriptor<any, any>;
+                            console.log(`[*]${getFunctionName(d.select)}`);
+                            break;
+                        case ComponentStackFrameType.UpdateContext:
+                            const context = frame.instance as Context;
+                            console.groupCollapsed(`[+]${Object.keys(context)}`);
+                            console.log(context);
+                            console.groupEnd();
+                            break;
                     }
                 }
                 console.groupEnd();

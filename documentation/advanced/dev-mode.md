@@ -67,7 +67,12 @@ Components stack trace:
   [C]Application #1
 ```
 
-`[C]` and `[F]` symbols are showing a type of components, F is a functional component and C is an ES6 class component.
+Symbol definitions:
+
+- `[C]` - Stateful Component
+- `[F]` - Stateless Component
+- `[*]` - Connect
+- `[+]` - Update Context
 
 `#1` shows a unique id for component instance. When Development Mode is enabled, it is easy to find component
 instances by their unique ids with a simple function from the console `ivi.$(id)`.
