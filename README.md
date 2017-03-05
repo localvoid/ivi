@@ -59,6 +59,7 @@ exclusively for bug reports and feature requests.
 
 - [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
 - [Partially Static Elements](https://github.com/ivijs/ivi/blob/master/documentation/advanced/partially-static-elements.md)
+- [Connect Nodes](https://github.com/ivijs/ivi/blob/master/documentation/advanced/connect.md)
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/advanced/dev-mode.md)
 - [TypeScript Enums](https://github.com/ivijs/ivi/blob/master/documentation/advanced/typescript-enums.md)
 - [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
@@ -72,7 +73,6 @@ exclusively for bug reports and feature requests.
 ### Future Ideas
 
 - [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/future/keep-alive.md)
-- [Connect](https://github.com/ivijs/ivi/blob/master/documentation/future/connect.md)
 
 ### Installation
 
