@@ -854,7 +854,7 @@ function vNodeRender(
     context: Context,
 ): Node {
     if (__IVI_DEV__) {
-        if (vnode._instance) {
+        if (!(vnode._flags & VNodeFlags.ComponentFunction) && vnode._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
@@ -1034,7 +1034,7 @@ function vNodeAugment(
     context: Context,
 ): void {
     if (__IVI_DEV__) {
-        if (vnode._instance) {
+        if (!(vnode._flags & VNodeFlags.ComponentFunction) && vnode._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
@@ -1256,10 +1256,11 @@ function vNodeSync(
 
     if (a === b) {
         vNodeUpdateComponents(parent, b, context, syncFlags);
+        return;
     }
 
     if (__IVI_DEV__) {
-        if (b._instance) {
+        if (!(b._flags & VNodeFlags.ComponentFunction) && b._instance) {
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
                 "clone VNode with `cloneVNode` function.");
         }
