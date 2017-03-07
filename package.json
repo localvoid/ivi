@@ -56,7 +56,7 @@
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-cli": "^1.0.1",
-    "karma-coverage-istanbul-reporter": "^0.2.3",
+    "karma-coverage-istanbul-reporter": "^0.3.0",
     "karma-mocha": "^1.2.0",
     "karma-mocha-reporter": "^2.2.2",
     "karma-sauce-launcher": "^1.0.0",
@@ -65,8 +65,8 @@
     "mocha": "^3.2.0",
     "ts-loader": "^2.0.1",
     "tslib": "^1.6.0",
-    "tslint": "^4.4.2",
-    "typescript": "^2.3.0-dev.20170222",
+    "tslint": "^4.5.1",
+    "typescript": "^2.3.0-dev.20170306",
     "webpack": "^2.2.1",
     "webpack-merge": "^3.0.0"
   }
