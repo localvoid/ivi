@@ -91,7 +91,7 @@ Positional keys are used to support code patterns like this:
 
 ```ts
 $h("div").children([
-    isVisible && $h(ComponentA),
+    isVisible ? $h(ComponentA) : null,
     $c(ComponentB),
 ]);
 ```
@@ -132,7 +132,6 @@ function render<T extends Node>(
     node: VNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: Context = ROOT_CONTEXT,
 ): void;
 ```
 
@@ -144,14 +143,16 @@ function renderNextFrame(
     node: VNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: Context = ROOT_CONTEXT,
 ): void;
 ```
 
 Augment existing DOM tree with a Virtual DOM.
 
 ```ts
-function augment(node: VNode<any> | null, container: Element, context: Context = ROOT_CONTEXT): void;
+function augment(
+    node: VNode<any> | null,
+    container: Element,
+): void;
 ```
 
 ### Sync Flags
