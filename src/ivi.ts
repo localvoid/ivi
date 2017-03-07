@@ -101,7 +101,7 @@ export {
     VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
     $t, $h, $s, $c, $i, $m, $e, $w, $connect, $ctx,
 } from "./vdom/vnode";
-export { Root, findRoot, render, renderNextFrame, augment } from "./vdom/root";
+export { Root, findRoot, render, renderNextFrame, augment, update } from "./vdom/root";
 
 /**
  * Dev Mode exported functions:
