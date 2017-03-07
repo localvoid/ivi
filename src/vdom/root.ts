@@ -13,9 +13,7 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } f
 export interface Root {
     container: Element;
     currentVNode: IVNode<any> | null;
-    currentContext: Context | null;
     newVNode: IVNode<any> | null;
-    newContext: Context | null;
     domNode: Node | null;
     invalidated: boolean;
     syncFlags: SyncFlags;
@@ -24,9 +22,9 @@ export interface Root {
 export const ROOTS = [] as Root[];
 
 /**
- * Default Context object.
+ * Empty Context object.
  */
-const DEFAULT_CONTEXT: Context = {};
+const EMPTY_CONTEXT: Context = {};
 
 /**
  * Find Root node in container.
@@ -67,23 +65,19 @@ function iOSFixEventBubbling(container: Element): void {
 function _render(root: Root): void {
     const currentVNode = root.currentVNode;
     let newVNode = root.newVNode;
-    const newContext = root.newContext;
 
     if (newVNode) {
         if (newVNode.constructor !== VNode) {
             newVNode = $t("");
         }
         if (currentVNode) {
-            const syncFlags = root.currentContext === newContext ?
-                root.syncFlags :
-                root.syncFlags | SyncFlags.DirtyContext;
-            syncVNode(root.container, currentVNode, newVNode, root.newContext!, syncFlags);
+            const syncFlags = root.syncFlags;
+            syncVNode(root.container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
         } else {
-            renderVNode(root.container, null, newVNode!, root.newContext!);
+            renderVNode(root.container, null, newVNode!, EMPTY_CONTEXT);
             iOSFixEventBubbling(root.container);
         }
         root.currentVNode = newVNode;
-        root.currentContext = newContext;
         root.domNode = getDOMInstanceFromVNode(newVNode);
     } else if (currentVNode) {
         removeVNode(root.container, currentVNode);
@@ -94,7 +88,6 @@ function _render(root: Root): void {
     }
 
     root.newVNode = null;
-    root.newContext = null;
     root.invalidated = false;
     root.syncFlags = 0;
 }
@@ -105,15 +98,13 @@ function _render(root: Root): void {
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
  * @param syncFlags Sync Flags.
- * @param context root context.
  */
 export function render(
     node: IVNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: Context = DEFAULT_CONTEXT,
 ): void {
-    renderNextFrame(node, container, syncFlags, context);
+    renderNextFrame(node, container, syncFlags);
     syncFrameUpdate();
 }
 
@@ -123,13 +114,11 @@ export function render(
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
  * @param syncFlags Sync Flags.
- * @param context root context.
  */
 export function renderNextFrame(
     node: IVNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
-    context: Context = DEFAULT_CONTEXT,
 ): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
@@ -144,14 +133,11 @@ export function renderNextFrame(
     let root = findRoot(container);
     if (root) {
         root.newVNode = node;
-        root.newContext = context;
     } else {
         root = {
             container: container,
             currentVNode: null,
-            currentContext: null,
             newVNode: node,
-            newContext: context,
             domNode: null,
             invalidated: false,
             syncFlags: syncFlags,
@@ -176,12 +162,10 @@ export function renderNextFrame(
  *
  * @param node Root VNode.
  * @param container Container DOM Node.
- * @param context root context.
  */
 export function augment(
     node: IVNode<any> | null,
     container: Element,
-    context: Context = DEFAULT_CONTEXT,
 ): void {
     if (__IVI_DEV__) {
         if (container === document.body) {
@@ -201,16 +185,14 @@ export function augment(
         ROOTS.push({
             container: container,
             currentVNode: node,
-            currentContext: context,
             newVNode: null,
-            newContext: null,
             domNode: container.firstChild!,
             invalidated: false,
             syncFlags: 0,
         });
 
         nextFrame().write(function augment() {
-            augmentVNode(container, container.firstChild!, node, context);
+            augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
             iOSFixEventBubbling(container);
         });
 
@@ -221,6 +203,6 @@ export function augment(
 export function update() {
     for (let i = 0; i < ROOTS.length; i++) {
         const root = ROOTS[i];
-        updateComponents(root.container, root.currentVNode!, DEFAULT_CONTEXT);
+        updateComponents(root.container, root.currentVNode!, EMPTY_CONTEXT);
     }
 }
