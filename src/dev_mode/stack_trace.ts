@@ -232,7 +232,7 @@ function stackTraceToString(): string {
                     break;
                 case ComponentStackFrameType.Connect:
                     const d = frame.tag as ConnectDescriptor<any, any, any>;
-                    result += `[*]${getFunctionName(d.select)}`;
+                    result += `[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`;
                     break;
                 case ComponentStackFrameType.UpdateContext:
                     const context = frame.instance as Context;
@@ -285,7 +285,7 @@ export function printComponentStackTrace(): void {
                             break;
                         case ComponentStackFrameType.Connect:
                             const d = frame.tag as ConnectDescriptor<any, any, any>;
-                            console.log(`[*]${getFunctionName(d.select)}`);
+                            console.log(`[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
                             break;
                         case ComponentStackFrameType.UpdateContext:
                             const context = frame.instance as Context;
