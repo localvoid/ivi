@@ -435,7 +435,6 @@ function _updateComponent(
     const oldRoot = component.root!;
 
     componentPerfMarkBegin("update", component._debugId);
-    componentbeforeUpdate(component);
     if ((flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
         if (
             (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState | ComponentFlags.Animated)) ||
@@ -443,17 +442,17 @@ function _updateComponent(
                 (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ||
             (syncFlags & SyncFlags.ForceUpdate)
         ) {
+            componentbeforeUpdate(component);
             const newRoot = componentClassRender(component);
             vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
             component.flags &= ~(ComponentFlags.Dirty | ComponentFlags.InUpdateQueue);
+            componentUpdated(component);
         } else { // (flags & ComponentFlags.DirtyParentContext))
             vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
         }
-
     } else {
         vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
     }
-    componentUpdated(component);
     componentPerfMarkEndHelper("update", true, component);
 }
 
