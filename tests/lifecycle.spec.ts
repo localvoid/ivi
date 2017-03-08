@@ -212,8 +212,9 @@ describe("lifecycle", () => {
                 expect(c("1", "constructor")).to.equal(0);
                 expect(c("1", "render")).to.equal(1);
                 expect(c("1", "attached")).to.equal(2);
-                expect(c("1", "beforeUpdate")).to.equal(3);
-                expect(c("1", "updated")).to.equal(4);
+
+                expect(c("1", "beforeUpdate")).to.equal(-1);
+                expect(c("1", "updated")).to.equal(-1);
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
