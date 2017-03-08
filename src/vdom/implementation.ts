@@ -390,17 +390,19 @@ function _augmentVNode(
  * @param parent Parent DOM Node.
  * @param vnode Virtual DOM Node.
  * @param context Context.
+ * @param syncFlags Sync Flags.
  */
 export function updateComponents(
     parent: Node,
     vnode: IVNode<any>,
     context: Context,
+    syncFlags: SyncFlags,
 ): void {
     if (__IVI_DEV__) {
         setInitialNestingState(parent as Element);
 
         try {
-            vNodeUpdateComponents(parent, vnode, context, SyncFlags.DirtyComponent);
+            vNodeUpdateComponents(parent, vnode, context, syncFlags | SyncFlags.DirtyComponent);
             return;
         } catch (e) {
             stackTraceAugment(e);
@@ -410,7 +412,7 @@ export function updateComponents(
             throw e;
         }
     }
-    vNodeUpdateComponents(parent, vnode, context, SyncFlags.DirtyComponent);
+    vNodeUpdateComponents(parent, vnode, context, syncFlags | SyncFlags.DirtyComponent);
 }
 
 /**

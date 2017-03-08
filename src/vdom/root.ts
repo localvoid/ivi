@@ -3,7 +3,7 @@ import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { SyncFlags } from "./flags";
-import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
+import { IVNode } from "./ivnode";
 import { VNode, $t } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
 
@@ -14,11 +14,13 @@ export interface Root {
     container: Element;
     currentVNode: IVNode<any> | null;
     newVNode: IVNode<any> | null;
-    domNode: Node | null;
     invalidated: boolean;
     syncFlags: SyncFlags;
 }
 
+/**
+ * Array of registered root nodes.
+ */
 export const ROOTS = [] as Root[];
 
 /**
@@ -56,40 +58,51 @@ function iOSFixEventBubbling(container: Element): void {
     }
 }
 
-/**
- * Render VNode into container.
- *
- * @param root Root data.
- * @returns rendered Node.
- */
-function _render(root: Root): void {
-    const currentVNode = root.currentVNode;
-    let newVNode = root.newVNode;
+let _pendingUpdate = false;
+let _globalSyncFlags: SyncFlags = 0;
 
-    if (newVNode) {
-        if (newVNode.constructor !== VNode) {
-            newVNode = $t("");
-        }
-        if (currentVNode) {
-            const syncFlags = root.syncFlags;
-            syncVNode(root.container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
-        } else {
-            renderVNode(root.container, null, newVNode!, EMPTY_CONTEXT);
-            iOSFixEventBubbling(root.container);
-        }
-        root.currentVNode = newVNode;
-        root.domNode = getDOMInstanceFromVNode(newVNode);
-    } else if (currentVNode) {
-        removeVNode(root.container, currentVNode);
-        const last = ROOTS.pop();
-        if (last !== root && ROOTS.length) {
-            ROOTS[ROOTS.indexOf(root)] = last!;
+/**
+ * Update root nodes.
+ */
+function _update() {
+    if (_pendingUpdate) {
+        _pendingUpdate = false;
+        for (let i = 0; i < ROOTS.length; i++) {
+            const root = ROOTS[i];
+            const container = root.container;
+            const currentVNode = root.currentVNode;
+            const syncFlags = _globalSyncFlags | root.syncFlags;
+
+            if (root.invalidated) {
+                let newVNode = root.newVNode;
+
+                if (newVNode) {
+                    if (newVNode.constructor !== VNode) {
+                        newVNode = $t("");
+                    }
+                    if (currentVNode) {
+                        syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
+                    } else {
+                        renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
+                        iOSFixEventBubbling(container);
+                    }
+                    root.currentVNode = newVNode;
+                } else if (currentVNode) {
+                    removeVNode(container, currentVNode);
+                    const last = ROOTS.pop();
+                    if (last !== root && ROOTS.length) {
+                        ROOTS[ROOTS.indexOf(root)] = last!;
+                    }
+                }
+
+                root.newVNode = null;
+                root.invalidated = false;
+            } else if (currentVNode) {
+                updateComponents(container, currentVNode, EMPTY_CONTEXT, syncFlags);
+            }
+            root.syncFlags = 0;
         }
     }
-
-    root.newVNode = null;
-    root.invalidated = false;
-    root.syncFlags = 0;
 }
 
 /**
@@ -133,24 +146,42 @@ export function renderNextFrame(
     let root = findRoot(container);
     if (root) {
         root.newVNode = node;
+        root.invalidated = true;
+        root.syncFlags = syncFlags;
     } else {
         root = {
             container: container,
             currentVNode: null,
             newVNode: node,
-            domNode: null,
-            invalidated: false,
+            invalidated: true,
             syncFlags: syncFlags,
         };
         ROOTS.push(root);
     }
-    if (!root.invalidated) {
-        root.invalidated = true;
-        nextFrame().write(function () {
-            if (root!.invalidated) {
-                _render(root!);
-            }
-        });
+
+    updateNextFrame();
+}
+
+/**
+ * Update dirty components.
+ *
+ * @param syncFlags Sync Flags.
+ */
+export function update(syncFlags?: SyncFlags) {
+    updateNextFrame(syncFlags);
+    syncFrameUpdate();
+}
+
+/**
+ * Update dirty components on the next frame.
+ *
+ * @param syncFlags Sync Flags.
+ */
+export function updateNextFrame(syncFlags: SyncFlags = 0) {
+    _globalSyncFlags = syncFlags;
+    if (!_pendingUpdate) {
+        _pendingUpdate = true;
+        nextFrame().write(_update);
     }
 }
 
@@ -186,7 +217,6 @@ export function augment(
             container: container,
             currentVNode: node,
             newVNode: null,
-            domNode: container.firstChild!,
             invalidated: false,
             syncFlags: 0,
         });
@@ -197,12 +227,5 @@ export function augment(
         });
 
         syncFrameUpdate();
-    }
-}
-
-export function update() {
-    for (let i = 0; i < ROOTS.length; i++) {
-        const root = ROOTS[i];
-        updateComponents(root.container, root.currentVNode!, EMPTY_CONTEXT);
     }
 }
