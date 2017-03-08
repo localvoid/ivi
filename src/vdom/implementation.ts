@@ -445,7 +445,7 @@ function _updateComponent(
             componentbeforeUpdate(component);
             const newRoot = componentClassRender(component);
             vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
-            component.flags &= ~(ComponentFlags.Dirty | ComponentFlags.InUpdateQueue);
+            component.flags &= ~ComponentFlags.Dirty;
             componentUpdated(component);
         } else { // (flags & ComponentFlags.DirtyParentContext))
             vNodeUpdateComponents(parent, oldRoot, context, syncFlags);

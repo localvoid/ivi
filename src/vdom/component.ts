@@ -195,9 +195,7 @@ export abstract class Component<P = void> {
             this.flags |= ComponentFlags.DirtyState;
             this.invalidated();
             if (this.flags & ComponentFlags.Attached) {
-                if (!(this.flags & ComponentFlags.InUpdateQueue)) {
-                    currentFrame().updateComponent();
-                }
+                currentFrame().updateComponent();
             }
         }
     }

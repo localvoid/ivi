@@ -128,10 +128,6 @@ export const enum ComponentFlags {
      * Component is animated.
      */
     Animated = 1 << 6,
-    /**
-     * Component in the update queue.
-     */
-    InUpdateQueue = 1 << 7,
 
     /**
      * Component is dirty and should be updated.
