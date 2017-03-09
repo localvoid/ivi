@@ -32,6 +32,7 @@
   "github": "https://github.com/ivijs/ivi",
   "files": [
     "dist",
+    "src",
     "README.md",
     "LICENSE"
   ],
