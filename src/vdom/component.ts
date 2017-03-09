@@ -49,13 +49,7 @@ export abstract class Component<P = void> {
      */
     props: P;
     /**
-     * Parent context.
-     *
-     * Context that was used for this component.
-     */
-    _parentContext: Context;
-    /**
-     * Current context that will be passed to children.
+     * Current context.
      */
     _context: Context;
     /**
@@ -74,7 +68,6 @@ export abstract class Component<P = void> {
     constructor(props: P, context: Context) {
         this.flags = 0;
         this.props = props;
-        this._parentContext = context;
         this._context = context;
         this.root = null;
         if (__IVI_DEV__) {
@@ -89,7 +82,7 @@ export abstract class Component<P = void> {
      */
     getContext<T = {}>(): Context<T> {
         this.flags |= ComponentFlags.CheckUsingContext;
-        return this._parentContext as Context<T>;
+        return this._context as Context<T>;
     }
 
     /**

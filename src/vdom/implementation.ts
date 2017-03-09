@@ -713,10 +713,10 @@ function vNodeRemoveChild(parent: Node, node: IVNode<any>): void {
  * @param newContext New Context to assign.
  */
 function componentUpdateParentContext<P>(component: Component<P>, newParentContext: Context): void {
-    if (component._parentContext !== newParentContext) {
+    if (component._context !== newParentContext) {
         component.flags |= ComponentFlags.DirtyParentContext;
-        const oldContext = component._parentContext;
-        component._parentContext = newParentContext;
+        const oldContext = component._context;
+        component._context = newParentContext;
         component.newContextReceived(oldContext, newParentContext);
     }
 }
