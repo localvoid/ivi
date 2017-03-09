@@ -11,8 +11,8 @@ cheap even with huge virtual dom trees.
 
 When sync algorithms traverses through virtual dom trees and finds components, it will update them only when they are
 dirty. Component becomes dirty when props are changed `isPropsChanged`, context is updated and component is using
-context in `render` method or component is invalidated with `invalidate()` method. By default, `isPropsChanged` method
-is always returns `true`, so whenever props are passed to component, it becomes dirty and will be updated.
+context in `render` method or component is invalidated with `invalidate()` method. By default, all props are checked for
+changes by their identity.
 
 ## isPropsChanged
 
@@ -46,26 +46,23 @@ StatelessComponent.isPropsChanged = function(oldProps: string, newProps: string)
 
 ### Helper functions
 
-Two functions for the most common cases with props checking are included in ivi. One function is checking props for
-identity `a === b`, and another one performs shallow equality check. This functions can be applied to component classes,
-or component functions.
-
 ```ts
-checkPropsIdentity<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P;
 checkPropsShallowEquality<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P;
 ```
 
+This function sets `isPropsChanged` lifecyle method to check props with a shallow equality method.
+
 ```ts
-checkPropsIdentity(StatelessComponent);
-function StatelessComponent(text: string) {
+checkPropsShallowEquality(StatelessComponent);
+function StatelessComponent({ text: string }) {
     return $h("div").children(text);
 }
 ```
 ```ts
-checkPropsIdentity(StatefulComponent);
-class StatefulComponent extends Component<string> {
+checkPropsShallowEquality(StatefulComponent);
+class StatefulComponent extends Component<{ text: string }> {
     render() {
-        return $h("div").children(this.props);
+        return $h("div").children(this.props.text);
     }
 }
 ```

@@ -3,17 +3,6 @@
  */
 
 /**
- * Check if props are not identical.
- *
- * @param oldProps
- * @param newProps
- * @returns `true` when props are not identical.
- */
-export function isPropsNotIdentical<P>(oldProps: P, newProps: P): boolean {
-    return oldProps !== newProps;
-}
-
-/**
  * Check if props are not shallow equal.
  *
  * @param oldProps

@@ -34,7 +34,7 @@ export {
     nextSibling, setInnerHTML, MouseButtons, KeyCode, KeyName, KeyLocation,
 } from "./common/dom";
 export { NOOP } from "./common/noop";
-export { isPropsNotIdentical, isPropsNotShallowEqual } from "./common/equality";
+export { isPropsNotShallowEqual } from "./common/equality";
 export { isVisible, addVisibilityObserver, removeVisibilityObserver } from "./common/visibility";
 
 /**
@@ -84,7 +84,7 @@ export { getEventOptions } from "./events/utils";
  */
 export {
     ComponentClass, ComponentFunction, Component, getDOMInstanceFromComponent, findComponentByDebugId,
-    checkPropsIdentity, checkPropsShallowEquality, staticComponent,
+    checkPropsShallowEquality, staticComponent,
 } from "./vdom/component";
 export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
 export {

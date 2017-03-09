@@ -1,7 +1,7 @@
 import { Context } from "../common/types";
 import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
-import { isPropsNotIdentical, isPropsNotShallowEqual } from "../common/equality";
+import { isPropsNotShallowEqual } from "../common/equality";
 import { ComponentFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { currentFrame } from "../scheduler/frame";
@@ -97,14 +97,14 @@ export abstract class Component<P = void> {
     /**
      * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
      *
-     * By default all props changes returns `true`.
+     * By default props checked by their identity.
      *
      * @param oldProps Old props.
      * @param newProps New props.
      * @returns `true` when props should be updated.
      */
     isPropsChanged(oldProps: P, newProps: P): boolean {
-        return true;
+        return oldProps !== newProps;
     }
 
     /**
@@ -235,35 +235,6 @@ export function findComponentByDebugId(debugId: number): Component<any> | undefi
         return COMPONENT_REGISTRY.get(debugId);
     }
     return;
-}
-
-/**
- * Checks props for identity.
- *
- * This function can be used as a wrapper for function expression, or as a class decorator.
- *
- *     checkPropsIdentity(MyComponent);
- *     function MyComponent(text: string) {
- *         return $h("div").children(text);
- *     });
- *
- *     @checkPropsIdentity
- *     class MyClassComponent extends Component<string> {
- *         render() {
- *             return $h("div").children(this.props);
- *         }
- *     }
- *
- * @param target Component constructor.
- * @returns Component constructor with identity check.
- */
-export function checkPropsIdentity<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P {
-    if (target.prototype.render) {
-        target.prototype.isPropsChanged = isPropsNotIdentical;
-    } else {
-        (target as ComponentFunction<any>).isPropsChanged = isPropsNotIdentical;
-    }
-    return target;
 }
 
 /**
