@@ -18,7 +18,10 @@
 import { Context } from "../common/types";
 import { SVG_NAMESPACE, setInnerHTML } from "../common/dom";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
-import { devModeOnError, devModeOnComponentCreated, devModeOnComponentDisposed } from "../dev_mode/hooks";
+import {
+    devModeOnError, devModeOnElementBeforeCreate, devModeOnElementCreated, devModeOnComponentCreated,
+    devModeOnComponentDisposed,
+} from "../dev_mode/hooks";
 import { injectScreenOfDeath } from "../dev_mode/screen_of_death";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
@@ -887,6 +890,8 @@ function vNodeRender(
                 (vnode._tag as ElementDescriptor<any>)._tag :
                 vnode._tag as string);
             checkNestingViolation();
+
+            devModeOnElementBeforeCreate(vnode);
             if (flags & VNodeFlags.ElementDescriptor) {
                 node = (vnode._tag as ElementDescriptor<any>).createElement();
             } else if (flags & VNodeFlags.InputElement) {
@@ -907,6 +912,8 @@ function vNodeRender(
             } else {
                 node = document.createElement(vnode._tag as string);
             }
+            devModeOnElementCreated(vnode, node as Element);
+
             if (flags & VNodeFlags.Autofocus) {
                 autofocus(node as Element);
             }

@@ -6,12 +6,18 @@ additional functionality.
 ```ts
 type OnErrorHook = (error: Error) => void;
 
+type OnElementBeforeCreateHook = (vnode: IVNode<any>) => void;
+
+type OnElementCreatedHook = (vnode: IVNode<any>, element: Element) => void;
+
 type OnComponentCreatedHook = (instance: Component<any>) => void;
 
 type OnComponentDisposedHook = (instance: Component<any>) => void;
 
 interface DevModeHooks {
     onError: OnErrorHook[] | null;
+    onElementBeforeCreate: OnElementBeforeCreateHook[] | null;
+    onElementCreated: OnElementCreatedHook[] | null;
     onComponentCreated: OnComponentCreatedHook[] | null;
     onComponentDisposed: OnComponentDisposedHook[] | null;
 }
