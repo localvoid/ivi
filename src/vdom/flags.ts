@@ -99,40 +99,26 @@ export const enum VNodeFlags {
  */
 export const enum ComponentFlags {
     /**
+     * Component is attached to the document.
+     */
+    Attached = 1,
+    /**
      * Component is dirty (props) and should be updated.
      */
-    DirtyProps = 1,
+    DirtyProps = 1 << 1,
     /**
      * Component is dirty (state) and should be updated.
      */
-    DirtyState = 1 << 1,
-    /**
-     * Component is dirty (parent context) and should be updated.
-     */
-    DirtyParentContext = 1 << 2,
-    /**
-     * Component is attached to the document.
-     */
-    Attached = 1 << 3,
-    /**
-     * Check that component is using context in `render` method.
-     */
-    CheckUsingContext = 1 << 4,
-    /**
-     * Component is using context in `render` method.
-     *
-     * NOTE: UsingContext value should be equal to (CheckUsingContext << 1)
-     */
-    UsingContext = 1 << 5,
+    DirtyState = 1 << 2,
     /**
      * Component is animated.
      */
-    Animated = 1 << 6,
+    Animated = 1 << 3,
 
     /**
      * Component is dirty and should be updated.
      */
-    Dirty = DirtyProps | DirtyState | DirtyParentContext | Animated,
+    Dirty = DirtyProps | DirtyState | Animated,
 }
 
 /**
@@ -182,11 +168,7 @@ export const enum SyncFlags {
      */
     DirtyComponent = 1,
     /**
-     * Context is dirty.
-     */
-    DirtyContext = 1 << 1,
-    /**
      * Force update for all components.
      */
-    ForceUpdate = 1 << 2,
+    ForceUpdate = 1 << 1,
 }

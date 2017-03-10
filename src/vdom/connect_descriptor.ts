@@ -8,5 +8,5 @@ export interface SelectData<T = {}, U = {}> {
 
 export interface ConnectDescriptor<T, U, K> {
     select: (prev: SelectData<K, U> | null, props: T, context: Context) => SelectData<K, U>;
-    render: (props: U, context: Context) => IVNode<any>;
+    render: (props: U) => IVNode<any>;
 }

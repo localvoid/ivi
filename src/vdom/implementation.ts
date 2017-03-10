@@ -439,20 +439,11 @@ function _updateComponent(
 
     componentPerfMarkBegin("update", component._debugId);
     if ((flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
-        if (
-            (flags & (ComponentFlags.DirtyProps | ComponentFlags.DirtyState | ComponentFlags.Animated)) ||
-            ((flags & (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ===
-                (ComponentFlags.DirtyParentContext | ComponentFlags.UsingContext)) ||
-            (syncFlags & SyncFlags.ForceUpdate)
-        ) {
-            componentbeforeUpdate(component);
-            const newRoot = componentClassRender(component);
-            vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
-            component.flags &= ~ComponentFlags.Dirty;
-            componentUpdated(component);
-        } else { // (flags & ComponentFlags.DirtyParentContext))
-            vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
-        }
+        componentbeforeUpdate(component);
+        const newRoot = componentClassRender(component);
+        vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+        component.flags &= ~ComponentFlags.Dirty;
+        componentUpdated(component);
     } else {
         vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
     }
@@ -488,24 +479,31 @@ function _updateComponentFunction(
             const selectData = connect.select(prevSelectData, b._props, context);
             // save prevChildren because it is possible that a === b
             const prevChildren = a._children;
-            b._children = (prevSelectData === selectData) ? a._children : connect.render(selectData.out, context);
+            b._children = (prevSelectData === selectData) ? a._children : connect.render(selectData.out);
             b._instance = selectData;
-            vNodeSync(parent, prevChildren as IVNode<any>, b._children as IVNode<any>, context, syncFlags);
+            vNodeSync(
+                parent,
+                prevChildren as IVNode<any>,
+                b._children as IVNode<any>,
+                context,
+                syncFlags,
+            );
         } else {
-            context = Object.assign({}, context, b._props);
-            if (a._props !== b._props) {
-                syncFlags |= SyncFlags.DirtyContext;
-            }
-            vNodeSync(parent, a._children as IVNode<any>, b._children as IVNode<any>, context, syncFlags);
+            vNodeSync(
+                parent,
+                a._children as IVNode<any>,
+                b._children as IVNode<any>,
+                Object.assign({}, context, b._props),
+                syncFlags,
+            );
         }
     } else {
         if ((syncFlags & SyncFlags.ForceUpdate) ||
             ((a !== b) &&
                 ((!fn.isPropsChanged && a._props !== b._props) ||
-                    (fn.isPropsChanged && fn.isPropsChanged(a._props, b._props)))) ||
-            ((syncFlags & SyncFlags.DirtyContext) && (fn.length > 1))) {
+                    (fn.isPropsChanged && fn.isPropsChanged(a._props, b._props))))) {
             const oldRoot = a._children as IVNode<any>;
-            const newRoot = b._children = componentFunctionRender(fn, b._props, context);
+            const newRoot = b._children = componentFunctionRender(fn, b._props);
             vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
         } else {
             b._children = a._children;
@@ -649,8 +647,12 @@ function vNodeUpdateComponents(
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin("propagateUpdate", component._debugId);
-            componentUpdateParentContext(component, context);
-            _updateComponent(parent, component, context, syncFlags);
+            _updateComponent(
+                parent,
+                component,
+                context,
+                syncFlags,
+            );
             componentPerfMarkEndHelper("propagateUpdate", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponentFunction(vnode);
@@ -703,25 +705,6 @@ function vNodeRemoveAllChildren(parent: Node, nodes: IVNode<any>[]): void {
 function vNodeRemoveChild(parent: Node, node: IVNode<any>): void {
     parent.removeChild(getDOMInstanceFromVNode(node)!);
     vNodeDetach(node);
-}
-
-/**
- * Assign a new parent context to a component.
- *
- * Reference equality is used to check if context is changed, all context objects should be immutable.
- *
- * #component
- *
- * @param component Component.
- * @param newContext New Context to assign.
- */
-function componentUpdateParentContext<P>(component: Component<P>, newParentContext: Context): void {
-    if (component._context !== newParentContext) {
-        component.flags |= ComponentFlags.DirtyParentContext;
-        const oldContext = component._context;
-        component._context = newParentContext;
-        component.newContextReceived(oldContext, newParentContext);
-    }
 }
 
 /**
@@ -804,10 +787,7 @@ function componentDetached<P>(component: Component<P>): void {
  * @returns Root VNode.
  */
 function componentClassRender<P>(component: Component<P>): IVNode<any> {
-    component.flags &= ~(ComponentFlags.CheckUsingContext | ComponentFlags.UsingContext);
-    const root = component.root = component.render();
-    component.flags |= (component.flags & ComponentFlags.CheckUsingContext) << 1;
-    return root;
+    return component.root = component.render();
 }
 
 /**
@@ -823,9 +803,8 @@ function componentClassRender<P>(component: Component<P>): IVNode<any> {
 function componentFunctionRender<P>(
     component: ComponentFunction<P>,
     props: P,
-    context?: Context,
 ): IVNode<any> {
-    return component(props, context);
+    return component(props);
 }
 
 /**
@@ -968,12 +947,12 @@ function vNodeRender(
         restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
     } else { // (flags & VNodeFlags.Component)
         if (flags & VNodeFlags.ComponentClass) {
-            const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context);
+            const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
             registerComponent(component);
             devModeOnComponentCreated(component);
             stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin("create", component._debugId);
-            node = vNodeRender(parent, componentClassRender(component), component._context);
+            node = vNodeRender(parent, componentClassRender(component), context);
             componentPerfMarkEndHelper("create", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponentFunction(vnode);
@@ -982,12 +961,12 @@ function vNodeRender(
                 if (flags & VNodeFlags.Connect) {
                     const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
                     const selectData = vnode._instance = connect.select(null, vnode._props, context);
-                    vnode._children = connect.render(selectData.out, context);
+                    vnode._children = connect.render(selectData.out);
                 } else {
                     context = Object.assign({}, context, vnode._props);
                 }
             } else {
-                vnode._children = componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props, context);
+                vnode._children = componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props);
             }
             node = vNodeRender(parent, vnode._children as IVNode<any>, context);
             componentPerfMarkEndHelper("create", false, vnode);
@@ -1157,7 +1136,7 @@ function vNodeAugment(
                 restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
             } else { // (flags & VNodeFlags.Component)
                 if (flags & VNodeFlags.ComponentClass) {
-                    const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props, context);
+                    const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
                     registerComponent(component);
                     devModeOnComponentCreated(component);
                     stackTracePushComponent(
@@ -1167,7 +1146,7 @@ function vNodeAugment(
                     );
                     const root = componentClassRender(component);
                     if (component.shouldAugment()) {
-                        vNodeAugment(parent, node, root, component._context);
+                        vNodeAugment(parent, node, root, context);
                     } else {
                         parent.replaceChild(vNodeRender(parent, root, context), node);
                     }
@@ -1177,15 +1156,15 @@ function vNodeAugment(
                         if (flags & VNodeFlags.Connect) {
                             const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
                             const selectData = vnode._instance = connect.select(null, vnode._props, context);
-                            vnode._children = connect.render(selectData.out, context);
+                            vnode._children = connect.render(selectData.out);
                         } else {
                             context = Object.assign({}, context, vnode._props);
                         }
                         vNodeAugment(parent, node, vnode._children as IVNode<any>, context);
                     } else {
                         const fc = vnode._tag as ComponentFunction<any>;
-                        vnode._children = componentFunctionRender(fc, vnode._props, context);
-                        if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props, context)) {
+                        vnode._children = componentFunctionRender(fc, vnode._props);
+                        if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props)) {
                             vNodeAugment(parent, node, vnode._children as IVNode<any>, context);
                         } else {
                             parent.replaceChild(vNodeRender(parent, vnode._children as IVNode<any>, context), node);
@@ -1317,7 +1296,6 @@ function vNodeSync(
                 if (a._props !== null || b._props !== null) {
                     componentUpdateProps(component, b._props);
                 }
-                componentUpdateParentContext(component, context);
                 _updateComponent(parent, component, context, syncFlags);
             } else { // (flags & VNodeFlags.ComponentFunction)
                 stackTracePushComponentFunction(b);

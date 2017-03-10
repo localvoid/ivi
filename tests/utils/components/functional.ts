@@ -4,9 +4,9 @@ import { ComponentFunction } from "../../../src/vdom/component";
 import { VNode, $c, $t } from "../../../src/vdom/vnode";
 
 export interface TestFunctionalComponentHooks<P> {
-    render?: (props: P, context: Context) => IVNode<any>;
+    render?: (props: P) => IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-    shouldAugment?: (props: P, context: Context) => boolean;
+    shouldAugment?: (props: P) => boolean;
 }
 
 export interface TestFunctionalComponentProps {
@@ -15,9 +15,9 @@ export interface TestFunctionalComponentProps {
     hooks: TestFunctionalComponentHooks<TestFunctionalComponentProps>;
 }
 
-export function TestFunctionalComponent(props: TestFunctionalComponentProps, context: Context) {
+export function TestFunctionalComponent(props: TestFunctionalComponentProps) {
     if (props.hooks.render) {
-        return props.hooks.render(props, context);
+        return props.hooks.render(props);
     }
 
     return props.child;
@@ -35,10 +35,9 @@ export function TestFunctionalComponent(props: TestFunctionalComponentProps, con
 
 (TestFunctionalComponent as ComponentFunction<TestFunctionalComponentProps>).shouldAugment = function (
     props: TestFunctionalComponentProps,
-    context: Context,
 ) {
     if (props.hooks.shouldAugment) {
-        return props.hooks.shouldAugment(props, context);
+        return props.hooks.shouldAugment(props);
     }
     return true;
 };

@@ -2,8 +2,7 @@
 
 ## Stateless Component
 
-Stateless components are implemented with simple functions. Component functions has two parameters: `props` parameter
-for component properties and optional parameter `context` with current context.
+Stateless components are implemented with simple functions.
 
 ```ts
 function StatelessComponent(props: string) {
@@ -60,7 +59,6 @@ class StatefulComponent extends Component<string> {
 ```ts
 interface Component<P = void> {
     props: P;
-    getContext<T>(): Context<T>;
 }
 ```
 
@@ -123,28 +121,6 @@ class StatefulComponent extends Component<string> {
 
     newPropsReceived(oldProps: string, newProps: string) {
         this.internalState = newProps + "!!";
-    }
-
-    render() {
-        return $h("div").children(`Hello ${this.internalState}`);
-    }
-}
-```
-
-Component received a new context.
-
-```ts
-interface Component<P = void> {
-    newContextReceived(oldContext: Context, newContext: Context): void;
-}
-```
-
-```ts
-class StatefulComponent extends Component {
-    private internalState = this.context.get("key") + "!!";
-
-    newContextReceived(oldContext: Context, newContext: Context) {
-        this.internalState = newContext.get("key") + "!!";
     }
 
     render() {

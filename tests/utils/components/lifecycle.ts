@@ -8,8 +8,6 @@ export interface ComponentHooks<P> {
     construct?: (
         this: Component<P>,
         props: P,
-        context: Context,
-        owner: Component<P> | undefined,
     ) => void;
     isPropsChanged?: (
         this: Component<P>,
@@ -20,11 +18,6 @@ export interface ComponentHooks<P> {
         this: Component<P>,
         oldProps: P,
         newProps: P,
-    ) => void;
-    newContextReceived?: (
-        this: Component<P>,
-        oldContext: Context,
-        newContext: Context,
     ) => void;
     attached?: (this: Component<P>) => void;
     detached?: (this: Component<P>) => void;
@@ -42,8 +35,8 @@ export interface TestLifecycleComponentProps {
 }
 
 export class TestLifecycleComponent extends Component<TestLifecycleComponentProps> {
-    constructor(props: TestLifecycleComponentProps, context: Context) {
-        super(props, context);
+    constructor(props: TestLifecycleComponentProps) {
+        super(props);
         lifecycleTouch(props.id, "constructor");
         if (props.hooks.construct) {
             props.hooks.construct.call(this, props, context);
@@ -62,13 +55,6 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
         lifecycleTouch(newProps.id, "newPropsReceived");
         if (newProps.hooks.newPropsReceived) {
             newProps.hooks.newPropsReceived.call(this, oldProps, newProps);
-        }
-    }
-
-    newContextReceived(oldContext: Context, newContext: Context): void {
-        lifecycleTouch(this.props.id, "newContextReceived");
-        if (this.props.hooks.newContextReceived) {
-            this.props.hooks.newContextReceived.call(this, oldContext, newContext);
         }
     }
 

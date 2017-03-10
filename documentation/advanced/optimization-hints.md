@@ -10,9 +10,8 @@ methods like `shouldComponentUpdate` from React library. Traversing through virt
 cheap even with huge virtual dom trees.
 
 When sync algorithms traverses through virtual dom trees and finds components, it will update them only when they are
-dirty. Component becomes dirty when props are changed `isPropsChanged`, context is updated and component is using
-context in `render` method or component is invalidated with `invalidate()` method. By default, all props are checked for
-changes by their identity.
+dirty. Component becomes dirty when props are changed `isPropsChanged` or component is invalidated with `invalidate()`
+method. By default, all props are checked for changes by their identity.
 
 ## isPropsChanged
 
@@ -66,11 +65,6 @@ class StatefulComponent extends Component<{ text: string }> {
     }
 }
 ```
-
-## Context hints
-
-Accessing context when rendering view gives a hint to the syncing algorithm that view depends on the context, and each
-time context is changed, syncing algorithm will trigger an update for component.
 
 ## Best practices
 

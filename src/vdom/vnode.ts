@@ -453,7 +453,7 @@ export type VNodeArray = Array<Array<IVNode<any>> | IVNode<any> | string | numbe
 /**
  * Create a VNodeBuilder representing a Text node.
  *
- * @param context Text content.
+ * @param content Text content.
  * @returns VNodeBuilder object.
  */
 export function $t(content: string | number | boolean | null): VNode<null> {

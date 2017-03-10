@@ -11,10 +11,8 @@ describe("component state", () => {
                 r($tfc("1", {
                     render: (
                         props: TestFunctionalComponentProps,
-                        context: Context,
                     ) => {
                         expect(props.id).to.be.equal("1");
-                        expect(Object.keys(context).length).to.be.equal(0);
                         return $h("div");
                     },
                 }));
@@ -36,22 +34,6 @@ describe("component state", () => {
                 }, $h("div")));
             });
         });
-
-        describe("context", () => {
-            it("render", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $tfc("1", {
-                        render: (
-                            props: TestFunctionalComponentProps,
-                            context: Context<{ ctx: number }>,
-                        ) => {
-                            expect(context.ctx).to.be.equal(123);
-                            return $h("div");
-                        },
-                    })));
-                });
-            });
-        });
     });
 
     describe("stateful", () => {
@@ -60,12 +42,8 @@ describe("component state", () => {
                 r($lc("1", {
                     construct: (
                         props: TestLifecycleComponentProps,
-                        context: Context<{ ctx: number }>,
-                        owner: Component<any> | undefined,
                     ) => {
                         expect(props.id).to.be.equal("1");
-                        expect(Object.keys(context).length).to.be.equal(0);
-                        expect(owner).to.be.undefined;
                     },
                 }, $h("div")));
             });
@@ -140,78 +118,6 @@ describe("component state", () => {
                     },
                 }, $h("div")));
             });
-        });
-
-        describe("context", () => {
-            it("construct", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $lc("1", {
-                        construct: (
-                            props: TestLifecycleComponentProps,
-                            context: Context<{ ctx: number }>,
-                            owner: Component<any> | undefined,
-                        ) => {
-                            expect(context.ctx).to.be.equal(123);
-                        },
-                    }, $h("div"))));
-                });
-            });
-
-            it("newContextReceived", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $lc("1", $h("div"))));
-                    r($ctx({ ctx: 456 }, $lc("2", {
-                        newContextReceived: (
-                            oldContext: Context<{ ctx: number }>,
-                            newContext: Context<{ ctx: number }>,
-                        ) => {
-                            expect(oldContext.ctx).to.be.equal(123);
-                            expect(newContext.ctx).to.be.equal(456);
-                        },
-                    }, $h("div"))));
-                });
-            });
-
-            it("attached", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $lc("1", {
-                        attached: function () {
-                            expect(this.getContext<{ ctx: number }>().ctx).to.be.equal(123);
-                        },
-                    }, $h("div"))));
-                });
-            });
-
-            it("detached", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $lc("1", {
-                        detached: function () {
-                            expect(this.getContext<{ ctx: number }>().ctx).to.be.equal(123);
-                        },
-                    }, $h("div"))));
-                });
-            });
-
-            it("beforeUpdate", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $lc("1", {
-                        beforeUpdate: function () {
-                            expect(this.getContext<{ ctx: number }>().ctx).to.be.equal(123);
-                        },
-                    }, $h("div"))));
-                });
-            });
-
-            it("updated", () => {
-                startRender((r) => {
-                    r($ctx({ ctx: 123 }, $lc("1", {
-                        updated: function () {
-                            expect(this.getContext<{ ctx: number }>().ctx).to.be.equal(123);
-                        },
-                    }, $h("div"))));
-                });
-            });
-
         });
     });
 });

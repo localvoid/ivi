@@ -14,7 +14,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -37,7 +36,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
@@ -58,7 +56,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -80,7 +77,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -103,7 +99,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
@@ -126,7 +121,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -135,7 +129,6 @@ describe("lifecycle", () => {
 
                 expect(c("2", "isPropsChanged")).to.equal(-1);
                 expect(c("2", "newPropsReceived")).to.equal(-1);
-                expect(c("2", "newContextReceived")).to.equal(-1);
                 expect(c("2", "detached")).to.equal(-1);
                 expect(c("2", "beforeUpdate")).to.equal(-1);
                 expect(c("2", "updated")).to.equal(-1);
@@ -162,7 +155,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
@@ -170,7 +162,6 @@ describe("lifecycle", () => {
 
                 expect(c("2", "isPropsChanged")).to.equal(-1);
                 expect(c("2", "newPropsReceived")).to.equal(-1);
-                expect(c("2", "newContextReceived")).to.equal(-1);
                 expect(c("2", "beforeUpdate")).to.equal(-1);
                 expect(c("2", "updated")).to.equal(-1);
                 expect(c("2", "invalidated")).to.equal(-1);
@@ -195,7 +186,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "render", false)).to.equal(1);
 
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
                 expect(c("1", "shouldAugment")).to.equal(-1);
@@ -219,7 +209,6 @@ describe("lifecycle", () => {
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
 
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "invalidated")).to.equal(-1);
                 expect(c("1", "shouldAugment")).to.equal(-1);
@@ -239,7 +228,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -258,7 +246,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -280,7 +267,6 @@ describe("lifecycle", () => {
 
                 expect(c("1", "isPropsChanged")).to.equal(-1);
                 expect(c("1", "newPropsReceived")).to.equal(-1);
-                expect(c("1", "newContextReceived")).to.equal(-1);
                 expect(c("1", "detached")).to.equal(-1);
                 expect(c("1", "beforeUpdate")).to.equal(-1);
                 expect(c("1", "updated")).to.equal(-1);
@@ -288,7 +274,6 @@ describe("lifecycle", () => {
 
                 expect(c("2", "isPropsChanged")).to.equal(-1);
                 expect(c("2", "newPropsReceived")).to.equal(-1);
-                expect(c("2", "newContextReceived")).to.equal(-1);
                 expect(c("2", "detached")).to.equal(-1);
                 expect(c("2", "beforeUpdate")).to.equal(-1);
                 expect(c("2", "updated")).to.equal(-1);

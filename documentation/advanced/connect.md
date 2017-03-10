@@ -16,7 +16,7 @@ interface SelectData<T = {}, U = {}> {
 
 interface ConnectDescriptor<T, U, K> {
     select: (prev: SelectData<K, U> | null | boolean, props: T, context: Context) => SelectData<K, U>;
-    render: (props: U, context: Context) => IVNode<any>;
+    render: (props: U) => IVNode<any>;
 }
 
 function $connect<T, U, K>(

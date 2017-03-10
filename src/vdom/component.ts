@@ -1,4 +1,3 @@
-import { Context } from "../common/types";
 import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotShallowEqual } from "../common/equality";
@@ -10,16 +9,16 @@ import { currentFrame } from "../scheduler/frame";
  * Component function constructor.
  */
 export interface ComponentFunction<P = void> {
-    (props: P, context?: Context): IVNode<any>;
+    (props: P): IVNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-    shouldAugment?: (props: P, context?: Context) => boolean;
+    shouldAugment?: (props: P) => boolean;
 }
 
 /**
  * Component class constructor.
  */
 export interface ComponentClass<P = void> {
-    new (props: P, context: Context): Component<P>;
+    new (props: P): Component<P>;
 }
 
 /**
@@ -49,10 +48,6 @@ export abstract class Component<P = void> {
      */
     props: P;
     /**
-     * Current context.
-     */
-    _context: Context;
-    /**
      * Virtual DOM root node.
      */
     root: IVNode<any> | null;
@@ -65,24 +60,13 @@ export abstract class Component<P = void> {
      */
     _debugId: number;
 
-    constructor(props: P, context: Context) {
+    constructor(props: P) {
         this.flags = 0;
         this.props = props;
-        this._context = context;
         this.root = null;
         if (__IVI_DEV__) {
             this._debugId = nextDebugId();
         }
-    }
-
-    /**
-     * Get current context.
-     *
-     * @returns Current context.
-     */
-    getContext<T = {}>(): Context<T> {
-        this.flags |= ComponentFlags.CheckUsingContext;
-        return this._context as Context<T>;
     }
 
     /**
@@ -125,17 +109,6 @@ export abstract class Component<P = void> {
      */
     shouldAugment(): boolean {
         return true;
-    }
-
-    /**
-     * Lifecycle method `newContextReceived` is invoked after new context is assigned.
-     *
-     * @param oldContext Old context.
-     * @param newContext New Context.
-     */
-    newContextReceived(oldContext: Context, newContext: Context): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
     }
 
     /**
