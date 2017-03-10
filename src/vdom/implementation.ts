@@ -498,8 +498,8 @@ function _updateComponentFunction(
     } else {
         if ((syncFlags & SyncFlags.ForceUpdate) ||
             ((a !== b) &&
-                ((fn.isPropsChanged && fn.isPropsChanged(a._props, b._props)) ||
-                    (a._props !== b._props))) ||
+                ((!fn.isPropsChanged && a._props !== b._props) ||
+                    (fn.isPropsChanged && fn.isPropsChanged(a._props, b._props)))) ||
             ((syncFlags & SyncFlags.DirtyContext) && (fn.length > 1))) {
             const oldRoot = a._children as IVNode<any>;
             const newRoot = b._children = componentFunctionRender(fn, b._props, context);

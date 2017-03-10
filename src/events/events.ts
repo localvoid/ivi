@@ -166,13 +166,13 @@ export const NativeEventDispatchers: NativeEventDispatchersList = {
     loadedmetadata: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "loadedmetadata", SyntheticEvent),
     loadstart: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "loadstart", SyntheticEvent),
     lostpointercapture: new NativeEventDispatcher<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventDispatcherFlags.Capture, "lostpointercapture", SyntheticPointerEvent),
-    mousedown: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "mousedown", SyntheticMouseEvent),
-    mouseenter: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Passive, "mouseenter", SyntheticMouseEvent),
-    mouseleave: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Passive, "mouseleave", SyntheticMouseEvent),
-    mousemove: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "mousemove", SyntheticMouseEvent),
-    mouseout: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "mouseout", SyntheticMouseEvent),
-    mouseover: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "mouseover", SyntheticMouseEvent),
-    mouseup: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "mouseup", SyntheticMouseEvent),
+    mousedown: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mousedown", SyntheticMouseEvent),
+    mouseenter: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture, "mouseenter", SyntheticMouseEvent),
+    mouseleave: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture, "mouseleave", SyntheticMouseEvent),
+    mousemove: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mousemove", SyntheticMouseEvent),
+    mouseout: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mouseout", SyntheticMouseEvent),
+    mouseover: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mouseover", SyntheticMouseEvent),
+    mouseup: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mouseup", SyntheticMouseEvent),
     paste: new NativeEventDispatcher<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "paste", SyntheticClipboardEvent),
     pause: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "pause", SyntheticEvent),
     play: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "play", SyntheticEvent),
@@ -188,7 +188,7 @@ export const NativeEventDispatchers: NativeEventDispatchersList = {
     progress: new NativeEventDispatcher<SyntheticEventClass<ProgressEvent, SyntheticProgressEvent>>(NativeEventDispatcherFlags.Capture, "progress", SyntheticProgressEvent),
     ratechange: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "ratechange", SyntheticEvent),
     reset: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "reset", SyntheticEvent),
-    scroll: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Passive, "scroll", SyntheticUIEvent),
+    scroll: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture, "scroll", SyntheticUIEvent),
     seeked: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "seeked", SyntheticEvent),
     seeking: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "seeking", SyntheticEvent),
     select: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "select", SyntheticUIEvent),
@@ -197,7 +197,7 @@ export const NativeEventDispatchers: NativeEventDispatchersList = {
     submit: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "submit", SyntheticEvent),
     suspend: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "suspend", SyntheticEvent),
     timeupdate: new NativeEventDispatcher<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventDispatcherFlags.Capture, "timeupdate", SyntheticEvent),
-    touchcancel: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "touchcancel", SyntheticTouchEvent),
+    touchcancel: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "touchcancel", SyntheticTouchEvent),
     touchend: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "touchend", SyntheticTouchEvent),
     touchmove: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "touchmove", SyntheticTouchEvent),
     touchstart: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles | NativeEventDispatcherFlags.Passive, "touchstart", SyntheticTouchEvent),
@@ -224,15 +224,6 @@ export interface NativeActiveEventDispatchersList {
 }
 
 export const NativeActiveEventDispatchers = {
-    mousedown: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mousedown", SyntheticMouseEvent),
-    mouseenter: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture, "mouseenter", SyntheticMouseEvent),
-    mouseleave: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture, "mouseleave", SyntheticMouseEvent),
-    mousemove: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mousemove", SyntheticMouseEvent),
-    mouseout: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mouseout", SyntheticMouseEvent),
-    mouseover: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mouseover", SyntheticMouseEvent),
-    mouseup: new NativeEventDispatcher<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "mouseup", SyntheticMouseEvent),
-    scroll: new NativeEventDispatcher<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventDispatcherFlags.Capture, "scroll", SyntheticUIEvent),
-    touchcancel: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "touchcancel", SyntheticTouchEvent),
     touchend: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "touchend", SyntheticTouchEvent),
     touchmove: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "touchmove", SyntheticTouchEvent),
     touchstart: new NativeEventDispatcher<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventDispatcherFlags.Capture | NativeEventDispatcherFlags.Bubbles, "touchstart", SyntheticTouchEvent),
@@ -741,60 +732,6 @@ export const Events = {
  * List of Events with disabled passive flag.
  */
 export const ActiveEvents = {
-    onScroll: function createScrollEventHandler(
-        handler: (ev: SyntheticUIEvent<UIEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticUIEvent<UIEvent>> {
-        return createEventHandler<SyntheticUIEvent<UIEvent>>(NativeActiveEventDispatchers.scroll, handler, capture);
-    },
-    onMouseDown: function createMousedownEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mousedown, handler, capture);
-    },
-    onMouseEnter: function createMouseenterEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mouseenter, handler, capture);
-    },
-    onMouseLeave: function createMouseleaveEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mouseleave, handler, capture);
-    },
-    onMouseMove: function createMousemoveEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mousemove, handler, capture);
-    },
-    onMouseOut: function createMouseoutEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mouseout, handler, capture);
-    },
-    onMouseOver: function createMouseoverEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mouseover, handler, capture);
-    },
-    onMouseUp: function createMouseupEventHandler(
-        handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
-        capture = false,
-    ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
-        return createEventHandler<SyntheticMouseEvent<MouseEvent>>(NativeActiveEventDispatchers.mouseup, handler, capture);
-    },
-    onTouchCancel: function createTouchcancelEventHandler(
-        handler: (ev: SyntheticTouchEvent) => void,
-        capture = false,
-    ): EventHandler<SyntheticTouchEvent> {
-        return createEventHandler<SyntheticTouchEvent>(NativeActiveEventDispatchers.touchcancel, handler, capture);
-    },
     onTouchEnd: function createTouchendEventHandler(
         handler: (ev: SyntheticTouchEvent) => void,
         capture = false,
