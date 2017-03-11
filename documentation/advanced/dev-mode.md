@@ -15,11 +15,9 @@ assign this flags.
 const enum DevModeFlags {
     DisableNestingValidation = 1,
     DisableStackTraceAugmentation = 1 << 1,
-    DisableScreenOfDeath = 1 << 2,
-    DisableScreenOfDeathGlobalErrorHandling = 1 << 3,
-    DisableCheckingForTypos = 1 << 4,
-    DisableWarningsForUnsupportedFeatures = 1 << 5,
-    EnableComponentPerformanceProfiling = 1 << 6,
+    DisableCheckingForTypos = 1 << 2,
+    DisableWarningsForUnsupportedFeatures = 1 << 3,
+    EnableComponentPerformanceProfiling = 1 << 4,
 }
 
 function setDevModeFlags(flags: DevModeFlags): void;
@@ -35,8 +33,6 @@ Full list of query parameters:
 ```
 _nv=false   Disable Nesting Validation.
 _st=false   Disable Stack Trace Augmentation.
-_sod=false  Disable Screen of Death.
-_geh=false  Disable Screen of Death Global Event Handler.
 _typo=false Disable Checking for Typos.
 _perf=true  Enable Component Performance Profiling.
 ```
@@ -76,15 +72,6 @@ Symbol definitions:
 
 `#1` shows a unique id for component instance. When Development Mode is enabled, it is easy to find component
 instances by their unique ids with a simple function from the console `ivi.$(id)`.
-
-## Screen Of Death
-
-Screen of Death will be displayed when unhandled exception is thrown. It shows an error message and the current stack
-trace for an exception.
-
-By default, Screen of Death will be displayed for all unhandled exceptions. `DisableScreenOfDeathGlobalErrorHandling`
-flag disables global error handler. When this flag is enabled, Screen of Death will be displayed only when exception is
-thrown inside the boundaries of a syncing algorithm.
 
 ## Typo Checking
 

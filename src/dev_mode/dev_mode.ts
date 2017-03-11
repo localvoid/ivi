@@ -6,10 +6,8 @@
  * Development Mode can be configured via query parameters:
  *   _nv=false   Disable Nesting Validation.
  *   _st=false   Disable Stack Trace Augmentation.
- *   _sod=false  Disable Screen of Death.
- *   _geh=false  Disable Screen of Death Global Event Handler.
- *   _perf=true  Enable Component Performance Profiling.
  *   _typos=true Enable Checking for Typos.
+ *   _perf=true  Enable Component Performance Profiling.
  *
  * Development Mode global export variable can be changed via query parameter:
  *   _export=<name>
@@ -37,29 +35,21 @@ export const enum DevModeFlags {
      */
     DisableStackTraceAugmentation = 1 << 1,
     /**
-     * Disable Screen of Death.
-     */
-    DisableScreenOfDeath = 1 << 2,
-    /**
-     * Disable global `window.addEventListener("error", ...)` error handler.
-     */
-    DisableScreenOfDeathGlobalErrorHandling = 1 << 3,
-    /**
      * Disable Checking for Typos.
      */
-    DisableCheckingForTypos = 1 << 4,
+    DisableCheckingForTypos = 1 << 2,
     /**
      * Disable Warnings for Unsupported Features.
      */
-    DisableWarningsForUnsupportedFeatures = 1 << 5,
+    DisableWarningsForUnsupportedFeatures = 1 << 3,
     /**
      * Enable Component Performance Profiling.
      */
-    EnableComponentPerformanceProfiling = 1 << 6,
+    EnableComponentPerformanceProfiling = 1 << 4,
     /**
      * Stack Trace capture API is available.
      */
-    CaptureStackTraceSupported = 1 << 7,
+    CaptureStackTraceSupported = 1 << 5,
 }
 
 /**
@@ -245,12 +235,6 @@ if (__IVI_DEV__ && __IVI_BROWSER__) {
     }
     if (query["_st"] === "false") {
         DEV_MODE |= DevModeFlags.DisableStackTraceAugmentation;
-    }
-    if (query["_sod"] === "false") {
-        DEV_MODE |= DevModeFlags.DisableScreenOfDeath;
-    }
-    if (query["_geh"] === "false") {
-        DEV_MODE |= DevModeFlags.DisableScreenOfDeathGlobalErrorHandling;
     }
     if (query["_typos"] === "false") {
         DEV_MODE |= DevModeFlags.DisableCheckingForTypos;

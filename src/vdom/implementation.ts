@@ -22,7 +22,6 @@ import {
     devModeOnError, devModeOnElementBeforeCreate, devModeOnElementCreated, devModeOnComponentCreated,
     devModeOnComponentDisposed,
 } from "../dev_mode/hooks";
-import { injectScreenOfDeath } from "../dev_mode/screen_of_death";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
     nestingStateParentTagName,
@@ -209,7 +208,6 @@ export function renderVNode(
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
-            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
             stackTraceReset();
             throw e;
         }
@@ -263,7 +261,6 @@ export function syncVNode(
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
-            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
             stackTraceReset();
             throw e;
         }
@@ -308,7 +305,6 @@ export function removeVNode(parent: Node, node: IVNode<any>): void {
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
-            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
             stackTraceReset();
             throw e;
         }
@@ -355,7 +351,6 @@ export function augmentVNode(
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
-            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
             stackTraceReset();
             throw e;
         }
@@ -410,7 +405,6 @@ export function updateComponents(
         } catch (e) {
             stackTraceAugment(e);
             devModeOnError(e);
-            injectScreenOfDeath(`ivi Error: ${e.message}`, e.stack);
             stackTraceReset();
             throw e;
         }
