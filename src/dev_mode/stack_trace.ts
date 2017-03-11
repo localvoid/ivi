@@ -139,13 +139,15 @@ if (__IVI_DEV__) {
  *
  * @param vnode VNode.
  */
-export function stackTracePushComponent(vnode: IVNode<any>): void {
+export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component<any> | Context): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
             const flags = vnode._flags;
             let type;
             let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any>;
-            let instance = vnode._instance as Component<any> | Context;
+            if (!instance) {
+                instance = vnode._instance as Component<any> | Context;
+            }
 
             if (flags & VNodeFlags.ComponentClass) {
                 type = ComponentStackFrameType.Component;

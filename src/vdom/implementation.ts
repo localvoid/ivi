@@ -804,10 +804,7 @@ function vNodeRender(
         if (flags & VNodeFlags.ComponentClass) {
             const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
             devModeOnComponentCreated(component);
-            if (__IVI_DEV__) {
-                vnode._instance = instance; // TODO: temp fix.
-                stackTracePushComponent(vnode);
-            }
+            stackTracePushComponent(vnode, instance);
             componentPerfMarkBegin("create", vnode);
             const root = vnode._children = component.render();
             node = vNodeRender(parent, root, context);
@@ -996,10 +993,7 @@ function vNodeAugment(
                 if (flags & VNodeFlags.ComponentClass) {
                     const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
                     devModeOnComponentCreated(component);
-                    if (__IVI_DEV__) {
-                        vnode._instance = instance; // TODO: temp fix.
-                        stackTracePushComponent(vnode);
-                    }
+                    stackTracePushComponent(vnode, instance);
                     const root = vnode._children = component.render();
                     if (component.shouldAugment()) {
                         vNodeAugment(parent, node, root, context);
