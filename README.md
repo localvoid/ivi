@@ -51,6 +51,7 @@ exclusively for bug reports and feature requests.
 - [Virtual DOM](https://github.com/ivijs/ivi/blob/master/documentation/general/virtual-dom.md)
 - [Components](https://github.com/ivijs/ivi/blob/master/documentation/general/components.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/general/synthetic-events.md)
+- [External State](https://github.com/ivijs/ivi/blob/master/documentation/general/external-state.md)
 - [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
 - [Scheduler](https://github.com/ivijs/ivi/blob/master/documentation/general/scheduler.md)
 - [Build Configuration](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md)
@@ -59,7 +60,6 @@ exclusively for bug reports and feature requests.
 
 - [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
 - [Partially Static Elements](https://github.com/ivijs/ivi/blob/master/documentation/advanced/partially-static-elements.md)
-- [Connect Nodes](https://github.com/ivijs/ivi/blob/master/documentation/advanced/connect.md)
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/advanced/dev-mode.md)
 - [TypeScript Enums](https://github.com/ivijs/ivi/blob/master/documentation/advanced/typescript-enums.md)
 - [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
