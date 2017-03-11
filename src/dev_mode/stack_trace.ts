@@ -6,6 +6,8 @@
 import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
 import { Context } from "../common/types";
 import { ComponentClass, ComponentFunction, Component } from "../vdom/component";
+import { IVNode } from "../vdom/ivnode";
+import { VNodeFlags } from "../vdom/flags";
 import { ConnectDescriptor } from "../vdom/connect_descriptor";
 
 declare global {
@@ -135,33 +137,30 @@ if (__IVI_DEV__) {
 /**
  * Push component into stack trace.
  *
- * @param component Component.
+ * @param vnode VNode.
  */
-export function stackTracePushComponent(
-    type: ComponentStackFrameType.Component,
-    tag: ComponentClass<any>,
-    instance: Component<any>,
-): void;
-export function stackTracePushComponent(
-    type: ComponentStackFrameType.ComponentFunction,
-    tag: ComponentFunction<any>,
-): void;
-export function stackTracePushComponent(
-    type: ComponentStackFrameType.Connect,
-    tag: ConnectDescriptor<any, any, any>,
-): void;
-export function stackTracePushComponent(
-    type: ComponentStackFrameType.UpdateContext,
-    tag: undefined,
-    context: Context,
-): void;
-export function stackTracePushComponent(
-    type: ComponentStackFrameType,
-    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | undefined,
-    instance?: Component<any> | Context,
-): void {
+export function stackTracePushComponent(vnode: IVNode<any>): void {
     if (__IVI_DEV__) {
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+            const flags = vnode._flags;
+            let type;
+            let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any>;
+            let instance = vnode._instance as Component<any> | Context;
+
+            if (flags & VNodeFlags.ComponentClass) {
+                type = ComponentStackFrameType.Component;
+            } else {
+                if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) {
+                    if (flags & VNodeFlags.Connect) {
+                        type = ComponentStackFrameType.Connect;
+                    } else {
+                        type = ComponentStackFrameType.UpdateContext;
+                    }
+                } else {
+                    type = ComponentStackFrameType.ComponentFunction;
+                }
+            }
+
             if (STACK_TRACE_DEPTH >= STACK_TRACE.length) {
                 STACK_TRACE.push({
                     type: type,
@@ -264,7 +263,6 @@ export function stackTraceAugment(e: Error): void {
  * Prints current component stack trace to the console.
  */
 export function printComponentStackTrace(): void {
-
     if (__IVI_DEV__) {
         if (__IVI_BROWSER__) {
             if (STACK_TRACE_DEPTH) {

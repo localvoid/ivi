@@ -27,7 +27,7 @@ import {
     nestingStateParentTagName,
 } from "../dev_mode/html_nesting_rules";
 import {
-    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment, ComponentStackFrameType,
+    stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
 } from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
@@ -82,31 +82,6 @@ function componentPerfMarkEnd(
                     perfMarkEnd(`[F]${getFunctionName(fn)}::${method}`, `${debugId}::${method}`);
                 }
             }
-        }
-    }
-}
-
-function stackTracePushComponentFunction(vnode: IVNode<any>): void {
-    if (__IVI_DEV__) {
-        const flags = vnode._flags;
-        if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) {
-            if (flags & VNodeFlags.Connect) {
-                stackTracePushComponent(
-                    ComponentStackFrameType.Connect,
-                    vnode._tag as ConnectDescriptor<any, any, any>,
-                );
-            } else {
-                stackTracePushComponent(
-                    ComponentStackFrameType.UpdateContext,
-                    undefined,
-                    vnode._props as Context,
-                );
-            }
-        } else {
-            stackTracePushComponent(
-                ComponentStackFrameType.ComponentFunction,
-                vnode._tag as ComponentFunction<any>,
-            );
         }
     }
 }
@@ -429,10 +404,10 @@ function vNodeAttach(vnode: IVNode<any>): void {
             vNodeAttach(children as IVNode<any>);
         }
     } else if (flags & VNodeFlags.Component) {
+        stackTracePushComponent(vnode);
         componentPerfMarkBegin("attach", vnode);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
-            stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
 
             if (__IVI_DEV__) {
                 if (component.flags & ComponentFlags.Attached) {
@@ -442,13 +417,10 @@ function vNodeAttach(vnode: IVNode<any>): void {
 
             component.flags |= ComponentFlags.Attached;
             componentAttached(component);
-            vNodeAttach(vnode._children as IVNode<any>);
-        } else { // (flags & VNodeFlags.ComponentFunction)
-            stackTracePushComponentFunction(vnode);
-            vNodeAttach(vnode._children as IVNode<any>);
         }
-        stackTracePopComponent();
+        vNodeAttach(vnode._children as IVNode<any>);
         componentPerfMarkEnd("attach", vnode);
+        stackTracePopComponent();
     }
 }
 
@@ -473,27 +445,24 @@ function vNodeDetach(vnode: IVNode<any>): void {
             removeEvents(vnode._events);
         }
     } else if (flags & VNodeFlags.Component) {
+        stackTracePushComponent(vnode);
         componentPerfMarkBegin("detach", vnode);
+        vNodeDetach(vnode._children as IVNode<any>);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
-            stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
 
             if (__IVI_DEV__) {
                 if (!(component.flags & ComponentFlags.Attached)) {
                     throw new Error("Failed to detach Component: component is already detached.");
                 }
             }
-            vNodeDetach(vnode._children as IVNode<any>);
             component.flags &= ~ComponentFlags.Attached;
             componentDetached(component);
             unregisterComponent(component);
             devModeOnComponentDisposed(component);
-        } else { // (flags & VNodeFlags.ComponentFunction)
-            stackTracePushComponentFunction(vnode);
-            vNodeDetach(vnode._children as IVNode<any>);
         }
-        stackTracePopComponent();
         componentPerfMarkEnd("detach", vnode);
+        stackTracePopComponent();
     }
 }
 
@@ -535,9 +504,9 @@ function vNodeUpdateComponents(
             vNodeUpdateComponents(p, children as IVNode<any>, context, syncFlags);
         }
     } else if (flags & VNodeFlags.Component) {
+        stackTracePushComponent(vnode);
         if (flags & VNodeFlags.ComponentClass) {
             const component = vnode._instance as Component<any>;
-            stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
 
             const cflags = component.flags;
             const oldRoot = vnode._children as IVNode<any>;
@@ -555,8 +524,6 @@ function vNodeUpdateComponents(
             }
 
         } else { // (flags & VNodeFlags.ComponentFunction)
-            stackTracePushComponentFunction(vnode);
-
             if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
                 if (flags & VNodeFlags.Connect) {
                     const connect = vnode._tag as ConnectDescriptor<any, any, any>;
@@ -839,13 +806,16 @@ function vNodeRender(
             const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
             registerComponent(component);
             devModeOnComponentCreated(component);
-            stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
+            if (__IVI_DEV__) {
+                vnode._instance = instance; // TODO: temp fix.
+                stackTracePushComponent(vnode);
+            }
             componentPerfMarkBegin("create", vnode);
             const root = vnode._children = component.render();
             node = vNodeRender(parent, root, context);
             componentPerfMarkEnd("create", vnode);
         } else { // (flags & VNodeFlags.ComponentFunction)
-            stackTracePushComponentFunction(vnode);
+            stackTracePushComponent(vnode);
             componentPerfMarkBegin("create", vnode);
             if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
                 if (flags & VNodeFlags.Connect) {
@@ -1029,11 +999,10 @@ function vNodeAugment(
                     const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
                     registerComponent(component);
                     devModeOnComponentCreated(component);
-                    stackTracePushComponent(
-                        ComponentStackFrameType.Component,
-                        vnode._tag as ComponentClass<any>,
-                        component,
-                    );
+                    if (__IVI_DEV__) {
+                        vnode._instance = instance; // TODO: temp fix.
+                        stackTracePushComponent(vnode);
+                    }
                     const root = vnode._children = component.render();
                     if (component.shouldAugment()) {
                         vNodeAugment(parent, node, root, context);
@@ -1041,7 +1010,7 @@ function vNodeAugment(
                         parent.replaceChild(vNodeRender(parent, root, context), node);
                     }
                 } else {
-                    stackTracePushComponentFunction(vnode);
+                    stackTracePushComponent(vnode);
                     if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
                         if (flags & VNodeFlags.Connect) {
                             const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
@@ -1180,10 +1149,9 @@ function vNodeSync(
                 }
             }
         } else { // (flags & VNodeFlags.Component)
+            stackTracePushComponent(b);
             if (flags & VNodeFlags.ComponentClass) {
                 const component = instance as Component<any>;
-                stackTracePushComponent(ComponentStackFrameType.Component, b._tag as ComponentClass<any>, component);
-
                 // Update component props
                 const oldProps = a._props;
                 const newProps = b._props;
@@ -1214,7 +1182,6 @@ function vNodeSync(
                     vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
                 }
             } else { // (flags & VNodeFlags.ComponentFunction)
-                stackTracePushComponentFunction(b);
                 _updateComponentFunction(parent, a, b, context, syncFlags);
             }
             stackTracePopComponent();
