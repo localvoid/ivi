@@ -1324,9 +1324,7 @@ function vNodeSync(
             if (flags & VNodeFlags.ComponentClass) {
                 const component = instance as Component<any>;
                 stackTracePushComponent(ComponentStackFrameType.Component, b._tag as ComponentClass<any>, component);
-                if (a._props !== null || b._props !== null) {
-                    componentUpdateProps(component, b._props);
-                }
+                componentUpdateProps(component, b._props);
                 _updateComponent(parent, component, context, syncFlags);
             } else { // (flags & VNodeFlags.ComponentFunction)
                 stackTracePushComponentFunction(b);
