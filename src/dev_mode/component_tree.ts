@@ -68,11 +68,9 @@ function componentTreeVisitComponent(node: IVNode<any>): DebugNode | null {
     const component = node._instance as Component<any>;
     const result = new ComponentInstance(getFunctionName(component.constructor), component);
 
-    if (component.root) {
-        const children = componentTreeVisitNode(component.root);
-        if (children) {
-            result.children = children;
-        }
+    const children = componentTreeVisitNode(node._children as IVNode<any>);
+    if (children) {
+        result.children = children;
     }
 
     return result;
@@ -99,26 +97,14 @@ function componentTreeVisitNode(node: IVNode<any>): DebugNode[] | null {
  */
 export function componentTree(component?: Component<any>): DebugNode[] | null {
     if (__IVI_DEV__) {
-        if (component) {
-            const result = new ComponentInstance(getFunctionName(component.constructor), component);
-            if (component.root) {
-                const children = componentTreeVisitNode(component.root);
-                if (children) {
-                    result.children = children;
-                }
+        let result: DebugNode[] | null = null;
+        for (const root of ROOTS) {
+            const child = componentTreeVisitNode(root.currentVNode!);
+            if (child) {
+                result = result ? result.concat(child) : child;
             }
-
-            return [result];
-        } else {
-            let result: DebugNode[] | null = null;
-            for (const root of ROOTS) {
-                const child = componentTreeVisitNode(root.currentVNode!);
-                if (child) {
-                    result = result ? result.concat(child) : child;
-                }
-            }
-            return result;
         }
+        return result;
     }
 
     return null;
@@ -147,9 +133,7 @@ function _findComponentByNode(
         }
     } else if (vnode._flags & VNodeFlags.ComponentClass) {
         const component = vnode._instance as Component<any>;
-        if (component.root) {
-            return _findComponentByNode(node, component.root, component);
-        }
+        return _findComponentByNode(node, vnode._children as IVNode<any>, component);
     } else if (vnode._flags & VNodeFlags.ComponentFunction) {
         const root = vnode._children as IVNode<any> | null;
         if (root) {

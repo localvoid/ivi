@@ -1,7 +1,7 @@
 import { VNodeFlags } from "../../src/vdom/flags";
 import { IVNode, getDOMInstanceFromVNode } from "../../src/vdom/ivnode";
 import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
-import { Component, getDOMInstanceFromComponent } from "../../src/vdom/component";
+import { Component } from "../../src/vdom/component";
 import { expect } from "chai";
 
 const DEFAULT_CONTEXT = {};
@@ -17,16 +17,15 @@ export function checkRefs(n: Node, v: IVNode<any>) {
 
     if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
-            const component = (v._instance as Component<any>);
-            expect(getDOMInstanceFromComponent(component)).to.equal(n);
-            const root = component.root;
+            expect(getDOMInstanceFromVNode(v)).to.equal(n);
+            const root = v._children as IVNode<any>;
             if (root) {
-                checkRefs(n, root!);
+                checkRefs(n, root);
             }
         } else {
             const root = v._children as IVNode<any>;
             if (root) {
-                checkRefs(n, root!);
+                checkRefs(n, root);
             }
         }
     } else {

@@ -413,38 +413,6 @@ export function updateComponents(
 }
 
 /**
- * Update Component.
- *
- * #component
- *
- * @param parent Parent DOM Node.
- * @param component Component to update.
- * @param context Current context.
- * @param syncFlags Sync flags.
- */
-function _updateComponent(
-    parent: Node,
-    component: Component<any>,
-    context: Context,
-    syncFlags: SyncFlags,
-): void {
-    const flags = component.flags;
-    const oldRoot = component.root!;
-
-    componentPerfMarkBegin("update", component._debugId);
-    if ((flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
-        componentbeforeUpdate(component);
-        const newRoot = componentClassRender(component);
-        vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
-        component.flags &= ~ComponentFlags.Dirty;
-        componentUpdated(component);
-    } else {
-        vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
-    }
-    componentPerfMarkEndHelper("update", true, component);
-}
-
-/**
  * Update a component function.
  *
  * #component
@@ -546,7 +514,7 @@ function vNodeAttach(vnode: IVNode<any>): void {
 
             component.flags |= ComponentFlags.Attached;
             componentAttached(component);
-            vNodeAttach(component.root!);
+            vNodeAttach(vnode._children as IVNode<any>);
             componentPerfMarkEndHelper("attach", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponentFunction(vnode);
@@ -589,7 +557,7 @@ function vNodeDetach(vnode: IVNode<any>): void {
                     throw new Error("Failed to detach Component: component is already detached.");
                 }
             }
-            vNodeDetach(component.root!);
+            vNodeDetach(vnode._children as IVNode<any>);
             component.flags &= ~ComponentFlags.Attached;
             componentDetached(component);
             componentPerfMarkEndHelper("detach", true, component);
@@ -647,12 +615,22 @@ function vNodeUpdateComponents(
             const component = vnode._instance as Component<any>;
             stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin("propagateUpdate", component._debugId);
-            _updateComponent(
-                parent,
-                component,
-                context,
-                syncFlags,
-            );
+
+            const cflags = component.flags;
+            const oldRoot = vnode._children as IVNode<any>;
+
+            if ((cflags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
+                componentPerfMarkBegin("update", component._debugId);
+                componentbeforeUpdate(component);
+                const newRoot = vnode._children = component.render();
+                vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+                component.flags &= ~ComponentFlags.Dirty;
+                componentUpdated(component);
+                componentPerfMarkEndHelper("update", true, component);
+            } else {
+                vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
+            }
+
             componentPerfMarkEndHelper("propagateUpdate", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponentFunction(vnode);
@@ -780,18 +758,6 @@ function componentAttached<P>(component: Component<P>): void {
  */
 function componentDetached<P>(component: Component<P>): void {
     component.detached();
-}
-
-/**
- * Render a component class instance and return root VNode.
- *
- * #component
- *
- * @param component Component.
- * @returns Root VNode.
- */
-function componentClassRender<P>(component: Component<P>): IVNode<any> {
-    return component.root = component.render();
 }
 
 /**
@@ -956,7 +922,8 @@ function vNodeRender(
             devModeOnComponentCreated(component);
             stackTracePushComponent(ComponentStackFrameType.Component, vnode._tag as ComponentClass<any>, component);
             componentPerfMarkBegin("create", component._debugId);
-            node = vNodeRender(parent, componentClassRender(component), context);
+            const root = vnode._children = component.render();
+            node = vNodeRender(parent, root, context);
             componentPerfMarkEndHelper("create", true, component);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponentFunction(vnode);
@@ -1148,7 +1115,7 @@ function vNodeAugment(
                         vnode._tag as ComponentClass<any>,
                         component,
                     );
-                    const root = componentClassRender(component);
+                    const root = vnode._children = component.render();
                     if (component.shouldAugment()) {
                         vNodeAugment(parent, node, root, context);
                     } else {
@@ -1301,8 +1268,9 @@ function vNodeSync(
                 // Update component props
                 const oldProps = a._props;
                 const newProps = b._props;
+                let propsChanged = false;
                 if (component.isPropsChanged(oldProps, newProps)) {
-                    component.flags |= ComponentFlags.DirtyProps;
+                    propsChanged = true;
                     // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
                     // reassigned later to reduce memory usage.
                     component.newPropsReceived(oldProps, newProps);
@@ -1313,7 +1281,19 @@ function vNodeSync(
                 // in memory two values even when they are the same, we just always reassign it to the new value.
                 component.props = newProps;
 
-                _updateComponent(parent, component, context, syncFlags);
+                const oldRoot = a._children as IVNode<any>;
+                if (propsChanged || (component.flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
+                    componentPerfMarkBegin("update", component._debugId);
+                    componentbeforeUpdate(component);
+                    const newRoot = b._children = component.render();
+                    vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+                    component.flags &= ~ComponentFlags.Dirty;
+                    componentUpdated(component);
+                    componentPerfMarkEndHelper("update", true, component);
+                } else {
+                    b._children = a._children;
+                    vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
+                }
             } else { // (flags & VNodeFlags.ComponentFunction)
                 stackTracePushComponentFunction(b);
                 _updateComponentFunction(parent, a, b, context, syncFlags);

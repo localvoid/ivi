@@ -103,22 +103,18 @@ export const enum ComponentFlags {
      */
     Attached = 1,
     /**
-     * Component is dirty (props) and should be updated.
-     */
-    DirtyProps = 1 << 1,
-    /**
      * Component is dirty (state) and should be updated.
      */
-    DirtyState = 1 << 2,
+    DirtyState = 1 << 1,
     /**
      * Component is animated.
      */
-    Animated = 1 << 3,
+    Animated = 1 << 2,
 
     /**
      * Component is dirty and should be updated.
      */
-    Dirty = DirtyProps | DirtyState | Animated,
+    Dirty = DirtyState | Animated,
 }
 
 /**

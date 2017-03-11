@@ -2,7 +2,7 @@ import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotShallowEqual } from "../common/equality";
 import { ComponentFlags } from "./flags";
-import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
+import { IVNode } from "./ivnode";
 import { currentFrame } from "../scheduler/frame";
 
 /**
@@ -48,10 +48,6 @@ export abstract class Component<P = void> {
      */
     props: P;
     /**
-     * Virtual DOM root node.
-     */
-    root: IVNode<any> | null;
-    /**
      * Unique ID.
      *
      * ID generator is using `dev_mode.uniqueId()` function, so it will be unique across all Dev Mode ids.
@@ -63,7 +59,6 @@ export abstract class Component<P = void> {
     constructor(props: P) {
         this.flags = 0;
         this.props = props;
-        this.root = null;
         if (__IVI_DEV__) {
             this._debugId = nextDebugId();
         }
@@ -266,21 +261,6 @@ export function staticComponent<P extends ComponentClass<any> | ComponentFunctio
         (target as ComponentFunction<any>).isPropsChanged = NOOP_FALSE;
     }
     return target;
-}
-
-/**
- * Get reference to a DOM node from a Component instance.
- *
- * @param component Component instance.
- * @returns DOM node.
- */
-export function getDOMInstanceFromComponent<T extends Node>(component: Component<any>): T {
-    if (__IVI_DEV__) {
-        if (!component.root) {
-            throw new Error("Failed to get DOM instance from component, component is not initialized.");
-        }
-    }
-    return getDOMInstanceFromVNode<T>(component.root!)!;
 }
 
 /**

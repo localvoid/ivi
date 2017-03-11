@@ -109,11 +109,7 @@ export function isComponentNode(node: IVNode<any>): boolean {
  */
 export function getDOMInstanceFromVNode<T extends Node>(node: IVNode<any>): T | null {
     if (node._flags & VNodeFlags.Component) {
-        if (node._flags & VNodeFlags.ComponentClass) {
-            return getDOMInstanceFromVNode<T>((node._instance as Component<any>).root!);
-        } else {
-            return getDOMInstanceFromVNode<T>(node._children as IVNode<any>);
-        }
+        return getDOMInstanceFromVNode<T>(node._children as IVNode<any>);
     }
     return node._instance as T;
 }
