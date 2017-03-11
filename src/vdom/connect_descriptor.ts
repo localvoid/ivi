@@ -1,7 +1,7 @@
 import { Context } from "../common/types";
 import { IVNode } from "./ivnode";
 
-export interface SelectorData<T = {}, U = {}> {
+export interface SelectorData<T = {}, U = T> {
     in: T;
     out: U;
 }
