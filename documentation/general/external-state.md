@@ -47,7 +47,7 @@ function createStore<T, U>(
 ): Store<T, U>;
 ```
 
-### Selectors
+## Selectors
 
 Helper functions to write selectors.
 
@@ -67,7 +67,7 @@ function memoizeSelectorGlobally<T, U extends SelectData>(
 ): (prev: U | null, props: T, context: Context) => U;
 ```
 
-### Mutable Data
+## Mutable Data
 
 To make it easier to work with mutable data, ivi library provides a simple function that wraps mutable object into an
 immutable reference object. When mutable object is modified, we will create a new `Mutable` wrapper to change its
