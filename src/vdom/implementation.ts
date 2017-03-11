@@ -739,33 +739,6 @@ function vNodeRemoveChild(parent: Node, node: IVNode<any>): void {
 }
 
 /**
- * Assign a new props to a component.
- *
- * #component
- *
- * @param component Component.
- * @param newProps New props to assign.
- */
-function componentUpdateProps<P>(component: Component<P>, newProps: P): void {
-    const oldProps = component.props;
-    if (component.isPropsChanged(oldProps, newProps)) {
-        component.flags |= ComponentFlags.DirtyProps;
-
-        component.props = newProps;
-
-        // There is no reason to call `newPropsReceived` when props aren't changed, even when they are reassigned
-        // later to reduce memory usage.
-        component.newPropsReceived(oldProps, newProps);
-    } else {
-        // Reassign props even when they aren't changed to reduce overall memory usage.
-        //
-        // New value always stays alive because it is referenced from virtual dom tree, so instead of keeping in memory
-        // two values even when they are the same, we just always reassign it to the new value.
-        component.props = newProps;
-    }
-}
-
-/**
  * Invoke `component.beforeUpdate` method.
  *
  * #component
@@ -1324,7 +1297,22 @@ function vNodeSync(
             if (flags & VNodeFlags.ComponentClass) {
                 const component = instance as Component<any>;
                 stackTracePushComponent(ComponentStackFrameType.Component, b._tag as ComponentClass<any>, component);
-                componentUpdateProps(component, b._props);
+
+                // Update component props
+                const oldProps = a._props;
+                const newProps = b._props;
+                if (component.isPropsChanged(oldProps, newProps)) {
+                    component.flags |= ComponentFlags.DirtyProps;
+                    // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
+                    // reassigned later to reduce memory usage.
+                    component.newPropsReceived(oldProps, newProps);
+                }
+                // Reassign props even when they aren't changed to reduce overall memory usage.
+                //
+                // New value always stays alive because it is referenced from virtual dom tree, so instead of keeping
+                // in memory two values even when they are the same, we just always reassign it to the new value.
+                component.props = newProps;
+
                 _updateComponent(parent, component, context, syncFlags);
             } else { // (flags & VNodeFlags.ComponentFunction)
                 stackTracePushComponentFunction(b);
