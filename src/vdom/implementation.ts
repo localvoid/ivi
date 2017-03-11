@@ -33,7 +33,7 @@ import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { ElementDescriptor } from "./element_descriptor";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
-import { ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent } from "./component";
+import { ComponentClass, ComponentFunction, Component } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
 import { autofocus } from "../scheduler/autofocus";
@@ -458,7 +458,6 @@ function vNodeDetach(vnode: IVNode<any>): void {
             }
             component.flags &= ~ComponentFlags.Attached;
             componentDetached(component);
-            unregisterComponent(component);
             devModeOnComponentDisposed(component);
         }
         componentPerfMarkEnd("detach", vnode);
@@ -804,7 +803,6 @@ function vNodeRender(
     } else { // (flags & VNodeFlags.Component)
         if (flags & VNodeFlags.ComponentClass) {
             const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
-            registerComponent(component);
             devModeOnComponentCreated(component);
             if (__IVI_DEV__) {
                 vnode._instance = instance; // TODO: temp fix.
@@ -997,7 +995,6 @@ function vNodeAugment(
             } else { // (flags & VNodeFlags.Component)
                 if (flags & VNodeFlags.ComponentClass) {
                     const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
-                    registerComponent(component);
                     devModeOnComponentCreated(component);
                     if (__IVI_DEV__) {
                         vnode._instance = instance; // TODO: temp fix.

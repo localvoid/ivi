@@ -83,7 +83,7 @@ export { getEventOptions } from "./events/utils";
  * Virtual DOM:
  */
 export {
-    ComponentClass, ComponentFunction, Component, findComponentByDebugId, checkPropsShallowEquality, staticComponent,
+    ComponentClass, ComponentFunction, Component, checkPropsShallowEquality, staticComponent,
 } from "./vdom/component";
 export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
 export {
@@ -113,32 +113,40 @@ export { Store, createStore } from "./state/store";
 /**
  * Dev Mode exported functions:
  */
-import { VERSION, GLOBAL_EXPORT, printError } from "./dev_mode/dev_mode";
-import { DebugNode, componentTree, findComponentByNode } from "./dev_mode/component_tree";
+import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/dev_mode";
+import {
+    componentTree, findComponentByNode, findComponentByDebugId, findVNodeByComponentDebugId, findVNodeByNode,
+    visitComponents,
+} from "./dev_mode/component_tree";
 import { printComponentStackTrace } from "./dev_mode/stack_trace";
-import { Component, findComponentByDebugId } from "./vdom/component";
+import { Context } from "./common/types";
+import { Component, ComponentClass, ComponentFunction } from "./vdom/component";
+import { ConnectDescriptor } from "./vdom/connect_descriptor";
+import { IVNode } from "./vdom/ivnode";
+import { VNodeFlags } from "./vdom/flags";
 
-function _printComponentTreeVisitNode(node: DebugNode): void {
-    if (node.instance) {
-        console.groupCollapsed(`[C]${node.name} #${node.instance._debugId}`);
-        console.log(node.instance);
+function _printComponentTreeVisitor(vnode: IVNode<any>) {
+    if (vnode._flags & VNodeFlags.ComponentClass) {
+        const cls = vnode._tag as ComponentClass<any>;
+        const instance = vnode._instance as Component<any>;
+        console.groupCollapsed(`[C]${getFunctionName(cls.constructor)} #${instance._debugId}`);
+        console.log(instance);
     } else {
-        console.groupCollapsed(`[F]${node.name}`);
-    }
-    if (node.children) {
-        _printComponentTreeVisitChildren(node.children);
+        if (vnode._flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) {
+            if (vnode._flags & VNodeFlags.Connect) {
+                const d = vnode._tag as ConnectDescriptor<any, any, any>;
+                console.groupCollapsed(`[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
+            } else {
+                const context = vnode._instance as Context;
+                console.groupCollapsed(`[+]${Object.keys(context)}`);
+                console.log(context);
+
+            }
+        } else {
+            console.groupCollapsed(`[F]${getFunctionName(vnode._tag as ComponentFunction)}`);
+        }
     }
     console.groupEnd();
-}
-
-function _printComponentTreeVisitChildren(nodes: DebugNode[]): void {
-    for (let i = 0; i < nodes.length; i++) {
-        _printComponentTreeVisitNode(nodes[i]);
-    }
-}
-
-function printComponentTree(nodes: DebugNode[]): void {
-    _printComponentTreeVisitChildren(nodes);
 }
 
 if (__IVI_DEV__) {
@@ -180,27 +188,21 @@ if (__IVI_DEV__) {
             "findComponentByDebugId": findComponentByDebugId,
             "findComponentByNode": findComponentByNode,
             "stackTrace": printComponentStackTrace,
-            "$": function (v?: number | Node | Component<any>) {
-                let result;
+            "$": function (v?: number | Node) {
                 if (v === undefined) {
-                    result = componentTree();
+                    visitComponents(_printComponentTreeVisitor);
                 } else if (typeof v === "number") {
-                    const c = findComponentByDebugId(v);
+                    const c = findVNodeByComponentDebugId(v);
                     if (c) {
-                        result = componentTree(c);
+                        visitComponents(_printComponentTreeVisitor, c);
                     }
                 } else if (v instanceof Node) {
-                    const c = findComponentByNode(v);
+                    const c = findVNodeByNode(v);
                     if (c) {
-                        result = componentTree(c);
+                        visitComponents(_printComponentTreeVisitor, c);
                     }
-                } else if (v instanceof Component) {
-                    result = componentTree(v as Component<any>);
                 } else {
                     throw new Error("Invalid value");
-                }
-                if (result) {
-                    printComponentTree(result);
                 }
             },
         };
