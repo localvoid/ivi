@@ -10,6 +10,28 @@ const node = $h("div")
     .props({ id: "unique-id" });
 ```
 
+## Why Method Chaining?
+
+Method chaining API allows to create efficient and flexible APIs.
+
+For example, instead of wrapping everything into components, it is perfectly fine to create factory functions that
+return virtual dom nodes:
+
+```ts
+function $Link(title: string, href: string) {
+    return $h("a", "link").props({ href, title }).children(title);
+}
+
+render(
+    $Link("example", "http://example.com")
+        .key("unique-key")
+        .mergeProps({
+            target: "_blank",
+        }),
+    document.getElementById("container")!,
+);
+```
+
 ## Creating Virtual Nodes
 
 ```ts
@@ -17,8 +39,8 @@ function $h(tagName: string, className?: string): VNode<P>;
 function $c<P>(component: ComponentFunction<P> | ComponentClass<P>, props: P): VNode<P>;
 ```
 
-This is the two most common factory function that will be used, one creates nodes for HTML element another one creates
-nodes for components.
+This is the two most common factory functions, one creates nodes for HTML elements and another one creates nodes for
+components.
 
 `$h` function creates nodes for HTML elements. `tagName` parameter specifies HTML tag name, and optional `className`
 parameter specifies a class name.
@@ -61,30 +83,27 @@ find how to rearrange nodes when they are moved, removed or inserted.
 
 ```ts
 interface VNode<P> {
+    props(props: P): VNode<P>;
     style(style: CSSStyleProps | null): VNode<P>;
     events(events: EventHandlerList | null): VNode<P>;
-    props(props: P): VNode<P>;
+    mergeProps<U extends P>(props: P): VNode<P>;
+    mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P>;
+    mergeEvents(events: EventHandlerList | null): VNode<P>;
 }
 ```
-
-`style` is a an object with styles.
-
-`events` is an object with event handlers.
-
-`props` is an object with DOM attributes.
 
 ### HTML and SVG elements (nodes that can contain children nodes)
 
 ```ts
 interface VNode<P> {
-    children(children: VNodeArray | VNode<any> | string | number | boolean | null): VNode<P>;
+    children(children: VNodeArray | VNode<any> | string | number | null): VNode<P>;
     unsafeHTML(html: string): VNode<P>
 }
 ```
 
 Children property can be any basic object like string or number, single VNode or an array of VNodes, basic objects, null
 values and arrays of VNodes with explicit keys. It will automatically normalize arrays by flattening nested arrays,
-removeing null values and replacing basic objects with text nodes.
+removing null values and replacing basic objects with text nodes.
 
 Children normalization process is also implicitly assigns positional keys for all nodes that doesn't have keys.
 Positional keys are used to support code patterns like this:
@@ -144,6 +163,13 @@ function renderNextFrame(
     container: Element,
     syncFlags: SyncFlags = 0,
 ): void;
+```
+
+Update dirty components.
+
+```ts
+function update(syncFlags: SyncFlags = 0);
+function updateNextFrame(syncFlags: SyncFlags = 0);
 ```
 
 Augment existing DOM tree with a Virtual DOM.

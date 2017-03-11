@@ -25,14 +25,12 @@ class StatefulComponent extends Component<string> {
 
 ### Constructor
 
-When overriding constructor, all parameters should be passed to the base constructor.
-
 ```ts
 class StatefulComponent extends Component<string> {
     private internalState: string;
 
-    constructor() {
-        super(...arguments);
+    constructor(props: string) {
+        super(props);
         this.internalState = this.props;
     }
 

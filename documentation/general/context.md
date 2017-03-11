@@ -1,7 +1,6 @@
 # Context
 
-Context is an important part to build encapsulated and reusable components. Context implicitly propagates data through
-component trees.
+Context implicitly propagates data through component trees.
 
 ## Context API
 

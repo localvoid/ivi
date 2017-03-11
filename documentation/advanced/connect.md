@@ -10,7 +10,7 @@ in a much more efficient way.
 
 ```ts
 function connect<T, U, K>(
-    select: (prev: SelectData<K, U> | null, props: null | T, context: Context) => SelectData<K, U>,
+    select: (prev: SelectorData<K, U> | null, props: null | T, context: Context) => SelectorData<K, U>,
     render: ComponentClass<U> | (props: U) => IVNode<any>,
 ): (props: null | T) => VNode<T>;
 ```
@@ -18,13 +18,13 @@ function connect<T, U, K>(
 ## Low Level API
 
 ```ts
-interface SelectData<T = {}, U = {}> {
+interface SelectorData<T = {}, U = T> {
     in: T,
     out: U,
 }
 
 interface ConnectDescriptor<T, U, K> {
-    select: (prev: SelectData<K, U> | null | boolean, props: T, context: Context) => SelectData<K, U>;
+    select: (prev: SelectorData<K, U> | null | boolean, props: T, context: Context) => SelectorData<K, U>;
     render: (props: U) => IVNode<any>;
 }
 

@@ -69,28 +69,6 @@ class Form extends Component<null> {
 
 There is no support for fragments, components can return just one node.
 
-One of the solutions that will work with many use cases that require returning multiple nodes is to wrap several
-elements into an array.
-
-```ts
-function row() {
-    return [
-        $e("tr"),
-        $e("tr"),
-    ];
-}
-
-$e("table").children([
-    $e("tbody").children([
-        row(),
-        row(),
-    ])
-]);
-```
-
-Yes, it is an ugly solution. But fragments will make entire internal codebase way much uglier and slower. It isn't so
-important use case, so right now we don't want to make this trade-off.
-
 ## Web Components
 
 There are no proper support for Web Components right now, and there are no plans to add it until they will start getting

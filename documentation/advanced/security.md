@@ -13,10 +13,15 @@
 [Wikipedia article on Cross-site scripting](https://en.wikipedia.org/wiki/Cross-site_scripting)
 
 Almost all modern web UI libraries doesn't rely on string concatenation to render views, they modify DOM structure with
-DOM APIs. DOM modification with DOM API significantly reduce number of possible XSS attack vectors, but it doesn't give
+DOM APIs. DOM modification with DOM API significantly reduces number of possible XSS attack vectors, but it doesn't give
 you complete protection from XSS.
 
 It is important that you understand many different XSS attack vectors when building an application:
 
 - [XSS Filter Evasion Cheat Sheet](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet)
 - [HTML5 Security Cheatsheet](http://heideri.ch/jso/)
+
+### XSS via Spoofed Element
+
+ivi virtual dom implementation is protected against
+[XSS via spoofed elements](http://danlec.com/blog/xss-via-a-spoofed-react-element).
