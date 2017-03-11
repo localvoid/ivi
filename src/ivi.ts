@@ -114,11 +114,7 @@ export { Store, createStore } from "./state/store";
  * Dev Mode exported functions:
  */
 import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/dev_mode";
-import {
-    componentTree, findComponentByNode, findComponentByDebugId, findVNodeByComponentDebugId, findVNodeByNode,
-    visitComponents,
-} from "./dev_mode/component_tree";
-import { printComponentStackTrace } from "./dev_mode/stack_trace";
+import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode/component_tree";
 import { Context } from "./common/types";
 import { Component, ComponentClass, ComponentFunction } from "./vdom/component";
 import { ConnectDescriptor } from "./vdom/connect_descriptor";
@@ -184,15 +180,13 @@ if (__IVI_DEV__) {
 
         const devModeExport = {
             "VERSION": VERSION,
-            "componentTree": componentTree,
-            "findComponentByDebugId": findComponentByDebugId,
-            "findComponentByNode": findComponentByNode,
-            "stackTrace": printComponentStackTrace,
+            "findVNodeByDebugId": findVNodeByDebugId,
+            "findVNodeByNode": findVNodeByNode,
             "$": function (v?: number | Node) {
                 if (v === undefined) {
                     visitComponents(_printComponentTreeVisitor);
                 } else if (typeof v === "number") {
-                    const c = findVNodeByComponentDebugId(v);
+                    const c = findVNodeByDebugId(v);
                     if (c) {
                         visitComponents(_printComponentTreeVisitor, c);
                     }

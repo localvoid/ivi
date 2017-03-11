@@ -102,27 +102,23 @@ very useful because you can look at a relative performance of your components.
 In Development Mode, parts of the ivi API will be available globally. By default, Dev Mode API is available in global
 variable `ivi`.
 
-### Exploring Component Trees
+### Exploring Virtual DOM Trees
 
-Dev Mode API has several functions to explore component trees:
+Dev Mode API has several functions to explore virtual dom trees:
 
 ```ts
-function componentTree(component?: Component<any>): DebugComponentNode[] | null;
-function findComponentByDebugId(debugId: number): Component<any>;
-function findComponentByNode(node: Node): Component<any> | null;
-function $(v?: number | Node | Component<any>): DebugComponentNode[] | null;
+function findVNodeByDebugId(debugId: number): VNode<any> | null;
+function findVNodeByNode(node: Node): VNode<any> | null;
+function $(v?: number | Node): void;
 ```
 
-`componentTree` function will returns an object with component tree that is easy to explore in the console. When
-optional parameter `component` isn't specified, it will return component trees for all root nodes.
+`findVNodeByDebugId` finds VNode instance by vnode debug id or component debug id. Component debug ids are displayed in
+components stack trace for all stateful instances.
 
-`findComponentByDebugId` finds component instance by their debug ids. Debug ids are displayed in components
-stack trace for all instances.
+`findVNodeByNode` finds VNode instance that owns DOM node.
 
-`findComponentByNode` finds component instance that owns DOM node.
-
-`$` is a shortcut that depending on the value type will either find component by debug id, find component by DOM node.
-And when it finds component, it will display component tree in the console.
+`$` is a shortcut that depending on the value type will either find vnode by debug id, find vnode by DOM node.
+And when it finds vnode, it will display component tree starting from this vnode to the console.
 
 <p align="center">
   <img width="793" height="405" src="https://ivijs.github.io/ivi/dev-mode-component-tree.png">
