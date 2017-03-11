@@ -790,11 +790,11 @@ export function $w(tagName: string, className?: string): VNode<{ [key: string]: 
         null);
 }
 
-export function $connect<T, U, K>(
-    connectDescriptor: ConnectDescriptor<T, U, K>,
-    props: T,
-): VNode<T> {
-    return new VNode<T>(
+export function $connect<I, O, P>(
+    connectDescriptor: ConnectDescriptor<I, O, P>,
+    props: P,
+): VNode<P> {
+    return new VNode<P>(
         VNodeFlags.ComponentFunction | VNodeFlags.Connect,
         connectDescriptor,
         props,

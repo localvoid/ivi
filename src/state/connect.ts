@@ -4,24 +4,44 @@ import { SelectorData } from "../vdom/connect_descriptor";
 import { ComponentClass, isComponentClass } from "../vdom/component";
 import { VNode, $c, $connect } from "../vdom/vnode";
 
-export function connect<U, K>(
-    select: (prev: SelectorData<K, U> | null) => SelectorData<K, U>,
-    render: ComponentClass<U> | ((props: U) => IVNode<any>),
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,
+    render: ComponentClass<O>,
+): () => VNode<P>;
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,
+    render: (props: O) => IVNode<any>,
+): () => VNode<P>;
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
+    render: ComponentClass<O>,
+): (props: P) => VNode<P>;
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
+    render: (props: O) => IVNode<any>,
+): (props: P) => VNode<P>;
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: null | void) => SelectorData<I, O>,
+    render: ComponentClass<O>,
 ): () => VNode<null>;
-export function connect<U, K>(
-    select: (prev: SelectorData<K, U> | null, props: null, context: Context) => SelectorData<K, U>,
-    render: ComponentClass<U> | ((props: U) => IVNode<any>),
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: null | void) => SelectorData<I, O>,
+    render: (props: O) => IVNode<any>,
 ): () => VNode<null>;
-export function connect<T, U, K>(
-    select: (prev: SelectorData<K, U> | null, props: null, context: Context) => SelectorData<K, U>,
-    render: ComponentClass<U> | ((props: U) => IVNode<any>),
-): (props: null) => VNode<T>;
-export function connect<T, U, K>(
-    select: (prev: SelectorData<K, U> | null, props: null | T, context: Context) => SelectorData<K, U>,
-    render: ComponentClass<U> | ((props: U) => IVNode<any>),
-): (props: null | T) => VNode<T> {
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
+    render: ComponentClass<O>,
+): () => VNode<null>;
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
+    render: (props: O) => IVNode<any>,
+): () => VNode<null>;
+export function connect<I, O, P>(
+    select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
+    render: ComponentClass<O> | ((props: O) => IVNode<any>),
+): (props: P) => VNode<P> {
     if (isComponentClass(render)) {
-        render = function (props: U): IVNode<U> {
+        render = function (props: O): IVNode<O> {
             return $c(render, props);
         };
     }
@@ -29,7 +49,7 @@ export function connect<T, U, K>(
         select,
         render,
     };
-    return function (props: T): VNode<T> {
+    return function (props: P): VNode<P> {
         return $connect(descriptor, props);
     };
 }

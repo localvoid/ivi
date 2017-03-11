@@ -1,12 +1,12 @@
 import { Context } from "../common/types";
 import { IVNode } from "./ivnode";
 
-export interface SelectorData<T = {}, U = T> {
-    in: T;
-    out: U;
+export interface SelectorData<I = {}, O = I> {
+    in: I;
+    out: O;
 }
 
-export interface ConnectDescriptor<T, U, K> {
-    select: (prev: SelectorData<K, U> | null, props: T, context: Context) => SelectorData<K, U>;
-    render: (props: U) => IVNode<any>;
+export interface ConnectDescriptor<I, O, P> {
+    select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>;
+    render: (props: O) => IVNode<any>;
 }

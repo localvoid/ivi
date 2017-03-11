@@ -1,12 +1,12 @@
 import { Context } from "../common/types";
 import { SelectorData } from "../vdom/connect_descriptor";
 
-export function selectorData<T>(i: T): SelectorData<T, T>;
-export function selectorData<T, U>(i: T, o: U): SelectorData<T, U>;
-export function selectorData<T, U>(i: T, o?: U): SelectorData<T, U> {
+export function selectorData<I>(i: I): SelectorData<I, I>;
+export function selectorData<I, O>(i: I, o: O): SelectorData<I, O>;
+export function selectorData<I, O>(i: I, o?: O): SelectorData<I, O> {
     return {
         in: i,
-        out: (o === undefined ? i : o) as U,
+        out: (o === undefined ? i : o) as O,
     };
 }
 
