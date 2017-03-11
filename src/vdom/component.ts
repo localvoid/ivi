@@ -296,3 +296,7 @@ export function getComponentName(component: Component<any> | ComponentFunction<a
             component as ComponentFunction<any>,
     );
 }
+
+export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
+    return componentClass.prototype.render;
+}

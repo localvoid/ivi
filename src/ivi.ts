@@ -95,13 +95,21 @@ export {
     ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
     createMediaElementDescriptor, createCustomElementDescriptor,
 } from "./vdom/element_descriptor";
-export { ConnectDescriptor, SelectData } from "./vdom/connect_descriptor";
+export { ConnectDescriptor, SelectorData } from "./vdom/connect_descriptor";
 export {
     VNodeArray,
     VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
     $t, $h, $s, $c, $i, $m, $e, $w, $connect, $ctx,
 } from "./vdom/vnode";
 export { Root, findRoot, render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
+
+/**
+ * State:
+ */
+export { Mutable, mut } from "./state/mutable";
+export { selectorData, memoizeSelector, memoizeSelectorGlobally } from "./state/selector";
+export { connect } from "./state/connect";
+export { Store, createStore } from "./state/store";
 
 /**
  * Dev Mode exported functions:

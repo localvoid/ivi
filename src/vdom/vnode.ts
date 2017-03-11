@@ -7,7 +7,7 @@ import { IVNode } from "./ivnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
-import { SelectData, ConnectDescriptor } from "./connect_descriptor";
+import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
 import { EventHandlerList } from "../events/event_handler";
 import {
     HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
@@ -86,7 +86,7 @@ export class VNode<P = null> implements IVNode<P> {
     _style: CSSStyleProps | null;
     _events: EventHandlerList | null;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
-    _instance: Node | Component<any> | SelectData | Context | null;
+    _instance: Node | Component<any> | SelectorData | Context | null;
     _debugId: number;
 
     constructor(

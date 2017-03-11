@@ -33,7 +33,7 @@ import {
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { ElementDescriptor } from "./element_descriptor";
-import { ConnectDescriptor, SelectData } from "./connect_descriptor";
+import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 import { ComponentClass, ComponentFunction, Component, registerComponent, unregisterComponent } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
@@ -475,7 +475,7 @@ function _updateComponentFunction(
     if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
         if (flags & VNodeFlags.Connect) {
             const connect = b._tag as ConnectDescriptor<any, any, any>;
-            const prevSelectData = a._instance as SelectData;
+            const prevSelectData = a._instance as SelectorData;
             const selectData = connect.select(prevSelectData, b._props, context);
             // save prevChildren because it is possible that a === b
             const prevChildren = a._children;

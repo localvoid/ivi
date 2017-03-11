@@ -4,7 +4,7 @@ import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
-import { ConnectDescriptor, SelectData } from "./connect_descriptor";
+import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 
 /**
  * VNode object is the core object in ivi Virtual DOM, it can represent any node type.
@@ -54,7 +54,7 @@ export interface IVNode<P = null> {
      * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
      * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
-    _instance: Node | Component<any> | SelectData | Context | null;
+    _instance: Node | Component<any> | SelectorData | Context | null;
     /**
      * Unique ID thas is available in Dev Mode.
      */
