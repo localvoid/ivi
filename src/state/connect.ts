@@ -40,14 +40,13 @@ export function connect<I, O, P>(
     select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
     render: ComponentClass<O> | ((props: O) => IVNode<any>),
 ): (props: P) => VNode<P> {
-    if (isComponentClass(render)) {
-        render = function (props: O): IVNode<O> {
-            return $c(render, props);
-        };
-    }
     const descriptor = {
         select,
-        render,
+        render: (isComponentClass(render)) ?
+            function (props: O): IVNode<O> {
+                return $c(render, props);
+            } :
+            render,
     };
     return function (props: P): VNode<P> {
         return $connect(descriptor, props);
