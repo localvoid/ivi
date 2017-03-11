@@ -86,7 +86,7 @@ export class VNode<P = null> implements IVNode<P> {
     _style: CSSStyleProps | null;
     _events: EventHandlerList | null;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
-    _instance: Node | Component<any> | SelectData | null;
+    _instance: Node | Component<any> | SelectData | Context | null;
     _debugId: number;
 
     constructor(

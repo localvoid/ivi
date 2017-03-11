@@ -167,5 +167,9 @@ const enum SyncFlags {
      * Force update for all components.
      */
     ForceUpdate = 1 << 1,
+    /**
+     * Context is dirty.
+     */
+    DirtyContext = 1 << 2,
 }
 ```

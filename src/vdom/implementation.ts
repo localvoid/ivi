@@ -489,11 +489,17 @@ function _updateComponentFunction(
                 syncFlags,
             );
         } else {
+            if ((syncFlags & SyncFlags.DirtyContext) || (a._props !== b._props)) {
+                syncFlags |= SyncFlags.DirtyContext;
+                context = b._instance = Object.assign({}, context, b._props);
+            } else {
+                context = b._instance = a._instance as Context;
+            }
             vNodeSync(
                 parent,
                 a._children as IVNode<any>,
                 b._children as IVNode<any>,
-                Object.assign({}, context, b._props),
+                context,
                 syncFlags,
             );
         }
@@ -963,7 +969,7 @@ function vNodeRender(
                     const selectData = vnode._instance = connect.select(null, vnode._props, context);
                     vnode._children = connect.render(selectData.out);
                 } else {
-                    context = Object.assign({}, context, vnode._props);
+                    context = vnode._instance = Object.assign({}, context, vnode._props);
                 }
             } else {
                 vnode._children = componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props);
@@ -1158,7 +1164,7 @@ function vNodeAugment(
                             const selectData = vnode._instance = connect.select(null, vnode._props, context);
                             vnode._children = connect.render(selectData.out);
                         } else {
-                            context = Object.assign({}, context, vnode._props);
+                            context = vnode._instance = Object.assign({}, context, vnode._props);
                         }
                         vNodeAugment(parent, node, vnode._children as IVNode<any>, context);
                     } else {

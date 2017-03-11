@@ -1,4 +1,5 @@
 import { EventHandlerList } from "../events/event_handler";
+import { Context } from "../common/types";
 import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
@@ -53,7 +54,7 @@ export interface IVNode<P = null> {
      * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
      * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
-    _instance: Node | Component<any> | SelectData | null;
+    _instance: Node | Component<any> | SelectData | Context | null;
     /**
      * Unique ID thas is available in Dev Mode.
      */
