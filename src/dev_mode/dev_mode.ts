@@ -164,7 +164,7 @@ export function printWarnOnce(key: string, message: string): void {
  * @returns Function name.
  */
 export function getFunctionName(fn: Function): string {
-    return fn.name || "(anonymous function)";
+    return fn.displayName || fn.name || "(anonymous function)";
 }
 
 /**
