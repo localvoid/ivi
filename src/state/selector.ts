@@ -22,6 +22,15 @@ export function memoizeSelector<T, U extends SelectorData>(
     select: (prev: U | null, props: T, context: Context) => U,
     ref: (v?: U | null) => U | null,
 ): (prev: U | null, props: T, context: Context) => U {
+    if (__IVI_DEV__) {
+        const fn = function (prev: U | null, props: T, context: Context) {
+            const state = select(ref(), props, context);
+            ref(state);
+            return state;
+        };
+        fn.displayName = select.name;
+        return fn;
+    }
     return function (prev: U | null, props: T, context: Context) {
         const state = select(ref(), props, context);
         ref(state);
@@ -39,6 +48,13 @@ export function memoizeSelectorGlobally<T, U extends SelectorData>(
     select: (prev: U | null, props: T, context: Context) => U,
 ): (prev: U | null, props: T, context: Context) => U {
     let g: U | null = null;
+    if (__IVI_DEV__) {
+        const fn = function (prev: U | null, props: T, context: Context) {
+            return g = select(g, props, context);
+        };
+        fn.displayName = select.name;
+        return fn;
+    }
     return function (prev: U | null, props: T, context: Context) {
         return g = select(g, props, context);
     };
