@@ -145,18 +145,21 @@ export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component
             const flags = vnode._flags;
             let type;
             let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any>;
-            if (!instance) {
-                instance = vnode._instance as Component<any> | Context;
-            }
 
             if (flags & VNodeFlags.ComponentClass) {
                 type = ComponentStackFrameType.Component;
+                if (!instance) {
+                    instance = vnode._instance as Component<any> | Context;
+                }
             } else {
                 if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) {
                     if (flags & VNodeFlags.Connect) {
                         type = ComponentStackFrameType.Connect;
                     } else {
                         type = ComponentStackFrameType.UpdateContext;
+                        if (!instance) {
+                            instance = vnode._props as Context;
+                        }
                     }
                 } else {
                     type = ComponentStackFrameType.ComponentFunction;
