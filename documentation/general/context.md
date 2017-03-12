@@ -10,6 +10,8 @@ Context is updated with a special virtual nodes created with a `$ctx` function.
 function $ctx<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
 ```
 
+Context data can be accessed with a [connect](external-state.md) selectors.
+
 ## Example
 
 ```ts
@@ -26,7 +28,27 @@ class StatefulComponent extends Component {
     }
 
     render() {
-        return $ctx(this._ctx, $c(ChildComponentThatUsesContextToGetCounterValue));
+        return $ctx(this._ctx, $Child());
     }
 }
+
+function Child(counter: number) {
+    return $h("div").children(counter);
+}
+
+interface ChildSelectorData {
+    in: number,
+    out: number,
+}
+
+const $Child = connect(
+    function(prev: ChildSelectorData, props: null, context: Context<{ counter: number }>) {
+        const counter = context.counter;
+        if (prev && prev.in.counter === counter) {
+            return prev;
+        }
+        return selectorData(counter);
+    },
+    Child,
+);
 ```
