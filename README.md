@@ -17,18 +17,6 @@
 
 [ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces.
 
-It is based on the ideas from the [React](https://facebook.github.io/react/) library, but tries to solve some
-long-standing issues, like completely broken
-[Contexts](https://facebook.github.io/react/docs/context.html#updating-context),
-[incorrect componentDidMount order](https://github.com/facebook/react/issues/2763), etc. Many of this issues aren't
-possible to solve efficiently without breaking changes.
-
-## Current Status
-
-This library is in alpha state, and I wouldn't recommend to use it unless you have time on experiments. I also don't
-have any plans on building community and ecosystem around it, I am primarily focused on solving my own problems with
-this library.
-
 ## Features
 
 - Declarative rendering with a Virtual DOM
@@ -195,75 +183,27 @@ render(
 
 ### Examples and demo applications
 
-Bundles for all examples are including polyfills for ES6 features like Map, WeakMap, Promise, etc. Minified size of the
-polyfills is 7.5kb, so for example size of the "Introduction" bundle without polyfills will be just 12kb.
-
 #### Basic
 
-- [Introduction](https://ivijs.github.io/examples/01_introduction/) (19kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/01_introduction)]
-- [Stateful Component](https://ivijs.github.io/examples/02_stateful_component/) (20kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/02_stateful_component)]
-- [Events](https://ivijs.github.io/examples/03_events/) (26kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/03_events)]
-- [Forms](https://ivijs.github.io/examples/04_forms/) (24kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/04_forms)]
-- [Collapsable](https://ivijs.github.io/examples/05_collapsable/) (26kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/05_collapsable)]
+- [Introduction](https://github.com/ivijs/examples/tree/master/src/01_introduction/)
+- [Stateful Component](https://github.com/ivijs/examples/tree/master/src/02_stateful_component/)
+- [Events](https://github.com/ivijs/examples/tree/master/src/03_events/)
+- [Forms](https://github.com/ivijs/examples/tree/master/src/04_forms/)
+- [Collapsable](https://github.com/ivijs/examples/tree/master/src/05_collapsable/)
 
 #### Apps
 
-- [TodoMVC](https://ivijs.github.io/examples/todomvc/) (34kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/todomvc)]
+- [TodoMVC](https://github.com/ivijs/todomvc/)
 
 #### Games
 
-- [Snake](https://ivijs.github.io/examples/games/snake/) (28kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/games/snake)]
+- [Snake](https://github.com/ivijs/examples/tree/master/src/games/snake/)
 
 #### Benchmarks
 
-- [UIBench](https://ivijs.github.io/examples/benchmarks/uibench/) (28kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/uibench)]
-- [DBMon](https://ivijs.github.io/examples/benchmarks/dbmon/) (26kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/dbmon)]
-- [10k Components](https://ivijs.github.io/examples/benchmarks/10k/) (25kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/benchmarks/10k)]
-
-#### Test Playground
-
-- [Pointer Events](https://ivijs.github.io/examples/playground/pointer-events/) (27kb)
-  [[Source Code](https://github.com/ivijs/examples/tree/master/src/playground/pointer-events)]
-
-## Notes on Performance Benchmarks
-
-I've been involved in most popular web UI benchmarks in one way or another. I even created a couple of them:
-[vdom-benchmark](https://vdom-benchmark.github.io/vdom-benchmark/) and [uibench](https://localvoid.github.io/uibench)
-and the truth about this benchmark games is that to stay on top of them you need to build a library with many
-"optimizations" that aren't useful in real applications and create benchmark implementations with a ridiculous code that
-nobody would ever write in production. Long time ago I've created a [kivi](http://github.com/localvoid/kivi) library,
-it is a great example of a library that was created to push performance as much as possible just to win benchmarks,
-it has a ridiculous API, and every decision about its API was about how to push performance even further. It is pretty
-hard to beat its performance in benchmarks without obvious "cheating".
-
-ivi just took the best parts of the kivi library. Its syncing algorithm is significantly simpler, and it is still one of
-the fastest web UI libraries without any weird "optimizations".
-
-Even without any benchmark specific optimizations, simple and idiomatic ivi
-[uibench](https://localvoid.github.io/uibench) implementation is still one of the fastest, in some use cases it is even
-faster than kivi.
-
-You can read more about that in the article I wrote on
-[How to win in Web Framework Benchmarks](https://medium.com/@localvoid/how-to-win-in-web-framework-benchmarks-8bc31af76ce7).
-
-## Inspired by Other Libraries
-
-- [React](https://facebook.github.io/react/) - key ideas, dev experience, synthetic events, browser quirks.
-- [Bobril](https://github.com/Bobris/Bobril) - single pass reconciliation, prefix/suffix optimization.
-- [Vidom](https://github.com/dfilatov/vidom) - method chaining API for Virtual DOM construction.
-- [Vue](https://github.com/vuejs/vue) - browser quirks.
-- [Polymer](https://www.polymer-project.org/2.0/) - gesture events.
-- [AMP](https://www.ampproject.org/) - animations, browser quirks.
+- [UIBench](https://github.com/ivijs/examples/tree/master/src/benchmarks/uibench/)
+- [DBMon](https://github.com/ivijs/examples/tree/master/src/benchmarks/dbmon/)
+- [10k Components](https://github.com/ivijs/examples/tree/master/src/benchmarks/10k/)
 
 ## License
 
