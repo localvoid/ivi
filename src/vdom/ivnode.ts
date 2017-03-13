@@ -1,4 +1,4 @@
-import { EventHandlerList } from "../events/event_handler";
+import { EventHandlerList, EventHandler } from "../events/event_handler";
 import { Context } from "../common/types";
 import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
@@ -42,7 +42,7 @@ export interface IVNode<P = null> {
     /**
      * Events.
      */
-    _events: EventHandlerList | null;
+    _events: EventHandlerList | EventHandler | null;
     /**
      * Children property can contain flat array of children virtual nodes, or text if it contains a single text node
      * child.

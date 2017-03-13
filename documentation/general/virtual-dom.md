@@ -85,10 +85,9 @@ find how to rearrange nodes when they are moved, removed or inserted.
 interface VNode<P> {
     props(props: P): VNode<P>;
     style(style: CSSStyleProps | null): VNode<P>;
-    events(events: EventHandlerList | null): VNode<P>;
+    events(events: EventHandlerList | EventHandler | null): VNode<P>;
     mergeProps<U extends P>(props: P): VNode<P>;
     mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P>;
-    mergeEvents(events: EventHandlerList | null): VNode<P>;
 }
 ```
 

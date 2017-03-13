@@ -30,15 +30,21 @@ export function accumulateDispatchTargetsFromElement(
 ): void {
     const events = getEventHandlerListFromDOMNode(target);
     if (events) {
-        let matches: EventHandler<any>[] | undefined;
-        const keys = Object.keys(events);
-        for (let i = 0; i < keys.length; i++) {
-            const ev = events[keys[i]];
-            if (ev.dispatcher === dispatcher) {
-                if (!matches) {
-                    matches = [ev];
-                } else {
-                    matches.push(ev);
+        let matches: EventHandler[] | undefined;
+        if (typeof events === "function") {
+            if (events.dispatcher === dispatcher) {
+                matches = [events];
+            }
+        } else {
+            const keys = Object.keys(events);
+            for (let i = 0; i < keys.length; i++) {
+                const ev = events[keys[i]];
+                if (ev.dispatcher === dispatcher) {
+                    if (!matches) {
+                        matches = [ev];
+                    } else {
+                        matches.push(ev);
+                    }
                 }
             }
         }

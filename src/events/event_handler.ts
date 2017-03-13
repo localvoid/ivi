@@ -5,7 +5,7 @@ import { SyntheticEvent } from "./synthetic_event";
 /**
  * Event Handler.
  */
-export interface EventHandler<E extends SyntheticEvent<any>> {
+export interface EventHandler<E extends SyntheticEvent<any> = SyntheticEvent<any>> {
     /**
      * Event Handler function call interface.
      */

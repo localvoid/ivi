@@ -33,8 +33,8 @@ function unregisterEventHandler(handler: EventHandler<any>): void {
  */
 export function syncEvents(
     node: Element,
-    a: EventHandlerList | null,
-    b: EventHandlerList | null,
+    a: EventHandlerList | EventHandler | null,
+    b: EventHandlerList | EventHandler | null,
 ): void {
     let i: number;
     let keys: string[];
@@ -43,50 +43,74 @@ export function syncEvents(
     if (a === null) {
         if (b !== null) {
             // a is empty, register all events from b.
-            keys = Object.keys(b);
-            for (i = 0; i < keys.length; i++) {
-                registerEventHandler(b[keys[i]]);
+            if (typeof b === "function") {
+                registerEventHandler(b);
+            } else {
+                keys = Object.keys(b);
+                for (i = 0; i < keys.length; i++) {
+                    registerEventHandler(b[keys[i]]);
+                }
             }
         }
     } else if (b === null) {
         // b is empty, remove all events from a.
-        keys = Object.keys(a);
-        for (i = 0; i < keys.length; i++) {
-            unregisterEventHandler(a[keys[i]]);
-        }
-    } else {
-        let matchCount = 0;
-
-        // Remove and update events.
-        keys = Object.keys(a);
-        for (i = 0; i < keys.length; i++) {
-            key = keys[i];
-            const aHandler = a[key];
-            const bHandler = b[key];
-            if (bHandler !== undefined) {
-                if (aHandler !== bHandler) {
-                    registerEventHandler(bHandler);
-                    unregisterEventHandler(aHandler);
-                }
-                matchCount++;
-            } else {
-                unregisterEventHandler(aHandler);
+        if (typeof a === "function") {
+            unregisterEventHandler(a);
+        } else {
+            keys = Object.keys(a);
+            for (i = 0; i < keys.length; i++) {
+                unregisterEventHandler(a[keys[i]]);
             }
         }
+    } else {
+        if (typeof a === "function") {
+            if (typeof b === "function") {
+                registerEventHandler(b);
+                unregisterEventHandler(a);
+            }
+        } else {
+            if (typeof b === "function") {
+                registerEventHandler(b);
 
-        // Insert new events.
-        keys = Object.keys(b);
-        i = 0;
-        while (matchCount < keys.length && i < keys.length) {
-            key = keys[i++];
-            if (!a.hasOwnProperty(key)) {
-                registerEventHandler(b[key]);
-                matchCount++;
+                keys = Object.keys(a);
+                for (i = 0; i < keys.length; i++) {
+                    unregisterEventHandler(a[keys[i]]);
+                }
+            } else {
+                let matchCount = 0;
+
+                // Remove and update events.
+                keys = Object.keys(a);
+                for (i = 0; i < keys.length; i++) {
+                    key = keys[i];
+                    const aHandler = a[key];
+                    const bHandler = b[key];
+                    if (bHandler !== undefined) {
+                        if (aHandler !== bHandler) {
+                            registerEventHandler(bHandler);
+                            unregisterEventHandler(aHandler);
+                        }
+                        matchCount++;
+                    } else {
+                        unregisterEventHandler(aHandler);
+                    }
+                }
+
+                // Insert new events.
+                keys = Object.keys(b);
+                i = 0;
+                while (matchCount < keys.length && i < keys.length) {
+                    key = keys[i++];
+                    if (!a.hasOwnProperty(key)) {
+                        registerEventHandler(b[key]);
+                        matchCount++;
+                    }
+                }
             }
         }
     }
 
-    setEventHandlerListToDOMNode(node, b === null ? undefined : b);
+    setEventHandlerListToDOMNode(node, b);
 }
 
 /**
@@ -96,9 +120,13 @@ export function syncEvents(
  * @param a Old events.
  * @param b New events.
  */
-export function removeEvents(events: EventHandlerList): void {
-    const keys = Object.keys(events);
-    for (let i = 0; i < keys.length; i++) {
-        unregisterEventHandler(events[keys[i]]);
+export function removeEvents(events: EventHandlerList | EventHandler): void {
+    if (typeof events === "function") {
+        unregisterEventHandler(events);
+    } else {
+        const keys = Object.keys(events);
+        for (let i = 0; i < keys.length; i++) {
+            unregisterEventHandler(events[keys[i]]);
+        }
     }
 }

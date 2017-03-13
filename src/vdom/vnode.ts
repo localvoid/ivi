@@ -8,7 +8,7 @@ import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
 import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
-import { EventHandlerList } from "../events/event_handler";
+import { EventHandlerList, EventHandler } from "../events/event_handler";
 import {
     HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
     HTMLBaseElementProps, HTMLBaseFontElementProps, HTMLBodyElementProps, HTMLBRElementProps, HTMLButtonElementProps,
@@ -84,7 +84,7 @@ export class VNode<P = null> implements IVNode<P> {
     _props: P | null;
     _className: string | null;
     _style: CSSStyleProps | null;
-    _events: EventHandlerList | null;
+    _events: EventHandlerList | EventHandler | null;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
     _instance: Node | Component<any> | SelectorData | Context | null;
     _debugId: number;
@@ -198,7 +198,7 @@ export class VNode<P = null> implements IVNode<P> {
      * @param events.
      * @returns VNodeBuilder.
      */
-    events(events: EventHandlerList | null): VNode<P> {
+    events(events: EventHandlerList | EventHandler | null): VNode<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set events, events are available on element nodes only.");
@@ -409,19 +409,6 @@ export class VNode<P = null> implements IVNode<P> {
     mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P> {
         if (style) {
             return this.style(this._style ? Object.assign({}, this._style, style) : style);
-        }
-        return this;
-    }
-
-    /**
-     * Merge events with existing events.
-     *
-     * @param props
-     * @return VNodeBuilder.
-     */
-    mergeEvents(events: EventHandlerList | null): VNode<P> {
-        if (events) {
-            return this.events(this._events ? Object.assign({}, this._events, events) : events);
         }
         return this;
     }

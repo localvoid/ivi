@@ -1,6 +1,6 @@
 import { FEATURES, FeatureFlags } from "../common/feature_detection";
 import { NativeEventDispatcherFlags } from "./flags";
-import { EventHandlerList } from "./event_handler";
+import { EventHandlerList, EventHandler } from "./event_handler";
 
 /**
  * `{ capture: true, passive: true }` object that should be used as a third parameter in `addEventListener`.
@@ -50,7 +50,7 @@ export const DOM_NODE_EVENTS_PROPERTY = "_ev";
  * @param node DOM Node.
  * @param events Event Handler List.
  */
-export function setEventHandlerListToDOMNode(node: Node, events: EventHandlerList | undefined): void {
+export function setEventHandlerListToDOMNode(node: Node, events: EventHandlerList | EventHandler | null): void {
     (node as any)[DOM_NODE_EVENTS_PROPERTY] = events;
 }
 
@@ -60,6 +60,6 @@ export function setEventHandlerListToDOMNode(node: Node, events: EventHandlerLis
  * @param node DOM Node.
  * @returns EventHandlerList or undefined if DOM Node doesn't listen for any events.
  */
-export function getEventHandlerListFromDOMNode(node: Node): EventHandlerList | undefined {
+export function getEventHandlerListFromDOMNode(node: Node): EventHandlerList | EventHandler | undefined | null {
     return (node as any)[DOM_NODE_EVENTS_PROPERTY];
 }

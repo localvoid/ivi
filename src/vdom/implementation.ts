@@ -1149,7 +1149,7 @@ function vNodeSync(
                     syncStyle(instance as HTMLElement, a._style, b._style);
                 }
                 if (a._events !== b._events) {
-                    syncEvents(instance as HTMLElement, a._events, b._events);
+                    syncEvents(instance as Element, a._events, b._events);
                 }
 
                 if (a._children !== b._children) {
