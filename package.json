@@ -3,7 +3,7 @@
   "main": "dist/js/ivi.js",
   "module": "dist/js/ivi.js",
   "typings": "dist/typings/ivi.d.ts",
-  "version": "0.5.0-rc.1",
+  "version": "0.5.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
   "author": {
@@ -46,8 +46,8 @@
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "^3.4.35",
-    "@types/mocha": "^2.2.39",
-    "@types/node": "^7.0.5",
+    "@types/mocha": "^2.2.40",
+    "@types/node": "^7.0.8",
     "chai": "^3.4.1",
     "codecov": "^1.0.1",
     "core-js": "^2.4.1",
@@ -67,8 +67,8 @@
     "ts-loader": "^2.0.1",
     "tslib": "^1.6.0",
     "tslint": "^4.5.1",
-    "typescript": "^2.3.0-dev.20170306",
+    "typescript": "^2.3.0-dev.20170313",
     "webpack": "^2.2.1",
-    "webpack-merge": "^3.0.0"
+    "webpack-merge": "^4.0.0"
   }
 }

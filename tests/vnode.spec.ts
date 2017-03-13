@@ -59,10 +59,6 @@ describe("VNode", () => {
             expect(() => $t("abc").mergeStyle({})).to.throw(Error);
         });
 
-        it("mergeEvents", () => {
-            expect(() => $t("abc").mergeEvents({})).to.throw(Error);
-        });
-
         it("autofocus", () => {
             expect(() => $t("abc").autofocus(true)).to.throw(Error);
         });
@@ -202,22 +198,6 @@ describe("VNode", () => {
             expect(e._style!.top).to.be.equal("20px");
         });
 
-        it("mergeEvents: null", () => {
-            const e = $h("div").events({ click: "clk" } as any).mergeEvents(null);
-            expect(e._events!.click).to.be.equal("clk");
-        });
-
-        it("mergeEvents", () => {
-            const e = $h("div").events({ click: "clk" } as any).mergeEvents({ touch: "tch" } as any);
-            expect(e._events!.click).to.be.equal("clk");
-            expect(e._events!.touch).to.be.equal("tch");
-        });
-
-        it("mergeEvents override", () => {
-            const e = $h("div").events({ click: "clk" } as any).mergeEvents({ click: "clk2" } as any);
-            expect(e._events!.click).to.be.equal("clk2");
-        });
-
         it("autofocus", () => {
             const e = $h("div").autofocus(true);
             expect(e._flags & VNodeFlags.Autofocus).to.be.equal(VNodeFlags.Autofocus);
@@ -277,10 +257,6 @@ describe("VNode", () => {
 
         it("mergeStyle", () => {
             expect(() => $c(EmptyComponent).mergeStyle({})).to.throw(Error);
-        });
-
-        it("mergeEvents", () => {
-            expect(() => $c(EmptyComponent).mergeEvents({})).to.throw(Error);
         });
 
         it("autofocus", () => {
