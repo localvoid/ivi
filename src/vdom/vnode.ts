@@ -1,5 +1,4 @@
 import { Context } from "../common/types";
-import { nextDebugId } from "../dev_mode/dev_mode";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isVoidElement, isValidTag, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
@@ -87,7 +86,6 @@ export class VNode<P = null> implements IVNode<P> {
     _events: EventHandlerList | EventHandler | null;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
     _instance: Node | Component<any> | SelectorData | Context | null;
-    _debugId: number;
 
     constructor(
         flags: number,
@@ -106,9 +104,6 @@ export class VNode<P = null> implements IVNode<P> {
         this._events = null;
         this._children = children;
         this._instance = null;
-        if (__IVI_DEV__) {
-            this._debugId = nextDebugId();
-        }
     }
 
     /**

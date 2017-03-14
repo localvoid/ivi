@@ -72,9 +72,6 @@ export function findVNodeByNode(node: Node): IVNode<any> | null {
 export function findVNodeByDebugId(id: number): IVNode<any> | null {
     if (__IVI_DEV__) {
         function match(vnode: IVNode) {
-            if (id === vnode._debugId) {
-                return true;
-            }
             if (vnode._flags & VNodeFlags.ComponentClass) {
                 return id === (vnode._instance as Component<any>)._debugId;
             }

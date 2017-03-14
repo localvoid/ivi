@@ -15,15 +15,15 @@ export interface IVNode<P = null> {
      */
     _flags: VNodeFlags;
     /**
-     * Tag name of the element.
+     * Tag property contains details about the type of the element.
      *
-     * When VNode represents a Component, tag property should contain reference to a `ComponentClass` if it is a
-     * stateful component or `ComponentFunction` for stateless components.
+     * Simple elements has a string type values, components can be a simple functions, constructor, or special
+     * descriptors for nodes that change syncing algorithm behavior.
      */
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
     ConnectDescriptor<any, any, any> | null;
     /**
-     * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
+     * Children syncing algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.
      */
     _key: any;
@@ -55,10 +55,6 @@ export interface IVNode<P = null> {
      * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
     _instance: Node | Component<any> | SelectorData | Context | null;
-    /**
-     * Unique ID thas is available in Dev Mode.
-     */
-    _debugId: number;
 }
 
 /**
