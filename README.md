@@ -61,6 +61,7 @@ exclusively for bug reports and feature requests.
 ### Future Ideas
 
 - [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/future/keep-alive.md)
+- [Error Boundaries](https://github.com/ivijs/ivi/blob/master/documentation/future/error-boundaries.md)
 
 ### Installation
 
