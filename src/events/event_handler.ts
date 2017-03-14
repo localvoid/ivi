@@ -25,8 +25,6 @@ export interface EventHandler<E extends SyntheticEvent<any> = SyntheticEvent<any
 }
 
 /**
- * Event List.
+ * Event Handler List.
  */
-export interface EventHandlerList {
-    [key: string]: EventHandler<SyntheticEvent<any>>;
-};
+export type EventHandlerList = Array<EventHandler | null>;

@@ -36,14 +36,13 @@ export function accumulateDispatchTargetsFromElement(
                 matches = [events];
             }
         } else {
-            const keys = Object.keys(events);
-            for (let i = 0; i < keys.length; i++) {
-                const ev = events[keys[i]];
-                if (ev.dispatcher === dispatcher) {
+            for (let i = 0; i < events.length; i++) {
+                const h = events[i];
+                if (h && h.dispatcher === dispatcher) {
                     if (!matches) {
-                        matches = [ev];
+                        matches = [h];
                     } else {
-                        matches.push(ev);
+                        matches.push(h);
                     }
                 }
             }

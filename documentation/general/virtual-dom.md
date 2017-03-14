@@ -6,7 +6,7 @@ For example, to assign an event and id attribute on a div element:
 
 ```ts
 const node = $h("div")
-    .events({ click: onClick })
+    .events(Events.onClick((ev) => { console.log("click"); }))
     .props({ id: "unique-id" });
 ```
 

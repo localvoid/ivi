@@ -36,7 +36,7 @@ describe("VNode", () => {
         });
 
         it("events", () => {
-            expect(() => $t("abc").events({})).to.throw(Error);
+            expect(() => $t("abc").events([])).to.throw(Error);
         });
 
         it("children", () => {
@@ -112,7 +112,7 @@ describe("VNode", () => {
         });
 
         it("events", () => {
-            const s = {};
+            const s = [];
             const e = $h("div").events(s);
             expect(e._events).to.be.equal(s);
         });
@@ -236,7 +236,7 @@ describe("VNode", () => {
         });
 
         it("events", () => {
-            expect(() => $c(EmptyComponent).events({})).to.throw(Error);
+            expect(() => $c(EmptyComponent).events([])).to.throw(Error);
         });
 
         it("children", () => {

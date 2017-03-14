@@ -22,11 +22,6 @@ function unregisterEventHandler(handler: EventHandler<any>): void {
 /**
  * Sync DOM events.
  *
- * Implementation detail: Syncing algorithm has an optimization with an early detection of object shape changes.
- * Objects with static shape will make syncing algorithm slightly faster because it doesn't need to check which
- * properties didn't existed before, so it is possible to just use the static object shapes, and use `undefined` values
- * when you want to remove property and have the same object shape.
- *
  * @param node HTML or SVG Element.
  * @param a Old events.
  * @param b New events.
@@ -37,8 +32,8 @@ export function syncEvents(
     b: EventHandlerList | EventHandler | null,
 ): void {
     let i: number;
-    let keys: string[];
-    let key: string;
+    let h1: EventHandler | null;
+    let h2: EventHandler | null;
 
     if (a === null) {
         if (b !== null) {
@@ -46,9 +41,11 @@ export function syncEvents(
             if (typeof b === "function") {
                 registerEventHandler(b);
             } else {
-                keys = Object.keys(b);
-                for (i = 0; i < keys.length; i++) {
-                    registerEventHandler(b[keys[i]]);
+                for (i = 0; i < b.length; i++) {
+                    h1 = b[i];
+                    if (h1) {
+                        registerEventHandler(h1);
+                    }
                 }
             }
         }
@@ -57,53 +54,60 @@ export function syncEvents(
         if (typeof a === "function") {
             unregisterEventHandler(a);
         } else {
-            keys = Object.keys(a);
-            for (i = 0; i < keys.length; i++) {
-                unregisterEventHandler(a[keys[i]]);
+            for (i = 0; i < a.length; i++) {
+                h1 = a[i];
+                if (h1) {
+                    unregisterEventHandler(h1);
+                }
             }
         }
     } else {
         if (typeof a === "function") {
             if (typeof b === "function") {
                 registerEventHandler(b);
-                unregisterEventHandler(a);
+            } else {
+                for (i = 0; i < b.length; i++) {
+                    h1 = b[i];
+                    if (h1) {
+                        registerEventHandler(h1);
+                    }
+                }
             }
+            unregisterEventHandler(a);
         } else {
             if (typeof b === "function") {
                 registerEventHandler(b);
 
-                keys = Object.keys(a);
-                for (i = 0; i < keys.length; i++) {
-                    unregisterEventHandler(a[keys[i]]);
-                }
-            } else {
-                let matchCount = 0;
-
-                // Remove and update events.
-                keys = Object.keys(a);
-                for (i = 0; i < keys.length; i++) {
-                    key = keys[i];
-                    const aHandler = a[key];
-                    const bHandler = b[key];
-                    if (bHandler !== undefined) {
-                        if (aHandler !== bHandler) {
-                            registerEventHandler(bHandler);
-                            unregisterEventHandler(aHandler);
-                        }
-                        matchCount++;
-                    } else {
-                        unregisterEventHandler(aHandler);
+                for (i = 0; i < a.length; i++) {
+                    h1 = a[i];
+                    if (h1) {
+                        unregisterEventHandler(h1);
                     }
                 }
-
-                // Insert new events.
-                keys = Object.keys(b);
+            } else {
                 i = 0;
-                while (matchCount < keys.length && i < keys.length) {
-                    key = keys[i++];
-                    if (!a.hasOwnProperty(key)) {
-                        registerEventHandler(b[key]);
-                        matchCount++;
+                while (i < a.length && i < b.length) {
+                    h1 = a[i];
+                    h2 = b[i++];
+                    if (h1 !== h2) {
+                        if (h2) {
+                            registerEventHandler(h2);
+                        }
+                        if (h1) {
+                            unregisterEventHandler(h1);
+                        }
+                    }
+                }
+                while (i < b.length) {
+                    h1 = a[i++];
+                    if (h1) {
+                        registerEventHandler(h1);
+                    }
+                }
+                while (i < a.length) {
+                    h1 = a[i++];
+                    if (h1) {
+                        unregisterEventHandler(h1);
                     }
                 }
             }
@@ -116,17 +120,17 @@ export function syncEvents(
 /**
  * Remove DOM events.
  *
- * @param node HTML or SVG Element.
- * @param a Old events.
- * @param b New events.
+ * @param events Events.
  */
 export function removeEvents(events: EventHandlerList | EventHandler): void {
     if (typeof events === "function") {
         unregisterEventHandler(events);
     } else {
-        const keys = Object.keys(events);
-        for (let i = 0; i < keys.length; i++) {
-            unregisterEventHandler(events[keys[i]]);
+        for (let i = 0; i < events.length; i++) {
+            const h = events[i];
+            if (h) {
+                unregisterEventHandler(h);
+            }
         }
     }
 }
