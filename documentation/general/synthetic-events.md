@@ -28,16 +28,15 @@ const keyDown = Events.onKeyDown((ev) => {
 Event Handlers are declaratively registered with a Virtual DOM API. Virtual DOM nodes that represent HTML and SVG
 elements can have an `EventHandlerList` assigned with `events` method.
 
-`EventHandlerList` is a simple inline object that describe which events should be attached to the DOM node at this point
-in time. Keys in this objects are used to uniquely identify event handlers, and doesn't have any other meaning, all
-information about event type, etc is already inside an `EventHandler` object.
+`EventHandlerList` is an array of `EventHandler` objects that describe which events should be attached to the DOM node
+at this point in time.
 
 There are no restrictions in number of attached event handlers with the same type, it is possible to attach multiple
-`onClick` event handlers, just assign them with different keys.
+`onClick` event handlers.
 
 ```ts
 interface VNode {
-    events(events: EventHandlerList | null): VNode<P>;
+    events(events: EventHandlerList | EventHandler | null): VNode<P>;
     // ...
 }
 ```
@@ -55,9 +54,10 @@ class StatefulComponent extends Component<null> {
 
     render() {
         return $h("div")
-            .events({
-                click: this.onClick,
-            })
+            .events([
+                this.onClick,
+                this.onClick,
+            ])
             .children(`Clicks: ${this.counter}`);
     }
 }
