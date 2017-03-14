@@ -99,7 +99,7 @@ export function syncEvents(
                     }
                 }
                 while (i < b.length) {
-                    h1 = a[i++];
+                    h1 = b[i++];
                     if (h1) {
                         registerEventHandler(h1);
                     }
