@@ -33,6 +33,7 @@ import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
 import { ElementDescriptor } from "./element_descriptor";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
+import { KeepAliveHandler } from "./keep_alive";
 import { ComponentClass, ComponentFunction, Component } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { syncEvents, removeEvents } from "../events/sync_events";
@@ -246,7 +247,7 @@ export function removeVNode(parent: Node, node: IVNode<any>): void {
  */
 function _removeVNode(parent: Node, node: IVNode<any>): void {
     parent.removeChild(getDOMInstanceFromVNode(node)!);
-    vNodeDetach(node);
+    vNodeDispose(node);
 }
 
 /**
@@ -416,15 +417,20 @@ function _updateComponentFunction(
 function vNodeAttach(vnode: IVNode<any>): void {
     const flags = vnode._flags;
 
-    if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
-        let children = vnode._children;
-        if (flags & VNodeFlags.ChildrenArray) {
-            children = children as IVNode<any>[];
-            for (let i = 0; i < children.length; i++) {
-                vNodeAttach(children[i]);
+    if (flags & VNodeFlags.Element) {
+        if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+            let children = vnode._children;
+            if (flags & VNodeFlags.ChildrenArray) {
+                children = children as IVNode<any>[];
+                for (let i = 0; i < children.length; i++) {
+                    vNodeAttach(children[i]);
+                }
+            } else {
+                vNodeAttach(children as IVNode<any>);
             }
-        } else {
-            vNodeAttach(children as IVNode<any>);
+        }
+        if (vnode._events) {
+            syncEvents(vnode._instance as Element, null, vnode._events);
         }
     } else if (flags & VNodeFlags.Component) {
         stackTracePushComponent(vnode);
@@ -442,6 +448,61 @@ function vNodeAttach(vnode: IVNode<any>): void {
         }
         vNodeAttach(vnode._children as IVNode<any>);
         stackTracePopComponent();
+    }
+}
+
+/**
+ * Recursively dispose all nodes.
+ *
+ * @param vnode VNode.
+ */
+function vNodeDispose(vnode: IVNode<any>): void {
+    const flags = vnode._flags;
+
+    if (flags & VNodeFlags.Element) {
+        if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+            const children = vnode._children;
+            if (flags & VNodeFlags.ChildrenArray) {
+                vNodeDisposeAll(children as IVNode<any>[]);
+            } else {
+                vNodeDispose(children as IVNode<any>);
+            }
+        }
+        if (vnode._events) {
+            removeEvents(vnode._events);
+        }
+    } else if (flags & VNodeFlags.Component) {
+        stackTracePushComponent(vnode);
+        if ((flags & VNodeFlags.KeepAlive) &&
+            ((vnode._tag as KeepAliveHandler)(vnode._children as IVNode<any>, vnode._props))) {
+            vNodeDetach(vnode._children as IVNode<any>);
+        } else {
+            vNodeDispose(vnode._children as IVNode<any>);
+            if (flags & VNodeFlags.ComponentClass) {
+                const component = vnode._instance as Component<any>;
+
+                if (__IVI_DEV__) {
+                    if (!(component.flags & ComponentFlags.Attached)) {
+                        throw new Error("Failed to detach Component: component is already detached.");
+                    }
+                }
+                component.flags &= ~ComponentFlags.Attached;
+                componentDetached(component);
+                devModeOnComponentDisposed(component);
+            }
+        }
+        stackTracePopComponent();
+    }
+}
+
+/**
+ * Dispose all nodes and its subtrees.
+ *
+ * @param vnodes Array of VNodes.
+ */
+function vNodeDisposeAll(vnodes: IVNode<any>[]): void {
+    for (let i = 0; i < vnodes.length; i++) {
+        vNodeDispose(vnodes[i]);
     }
 }
 
@@ -606,7 +667,7 @@ function vNodeMoveChild(parent: Node, node: IVNode<any>, nextRef: Node | null): 
  */
 function vNodeRemoveAllChildren(parent: Node, nodes: IVNode<any>[]): void {
     parent.textContent = "";
-    vNodeDetachAll(nodes);
+    vNodeDisposeAll(nodes);
 }
 
 /**
@@ -619,7 +680,7 @@ function vNodeRemoveAllChildren(parent: Node, nodes: IVNode<any>[]): void {
  */
 function vNodeRemoveChild(parent: Node, node: IVNode<any>): void {
     parent.removeChild(getDOMInstanceFromVNode(node)!);
-    vNodeDetach(node);
+    vNodeDispose(node);
 }
 
 /**
@@ -782,9 +843,6 @@ function vNodeRender(
             if (vnode._style !== null) {
                 syncStyle(node as HTMLElement, null, vnode._style);
             }
-            if (vnode._events) {
-                syncEvents(node as Element, null, vnode._events);
-            }
 
             let children = vnode._children;
             if (children !== null) {
@@ -832,22 +890,47 @@ function vNodeRender(
             componentPerfMarkEnd("create", vnode);
         } else { // (flags & VNodeFlags.ComponentFunction)
             stackTracePushComponent(vnode);
-            if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
-                if (flags & VNodeFlags.Connect) {
-                    const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
-                    const selectData = vnode._instance = connect.select(null, vnode._props, context);
-                    vnode._children = connect.render(selectData.out);
+            if (flags & VNodeFlags.KeepAlive) {
+                const keepAlive = vnode._tag as KeepAliveHandler;
+                const prev = keepAlive(undefined, vnode._props);
+                if (prev) {
+                    vNodeSync(
+                        parent,
+                        prev as IVNode<any>,
+                        vnode._children as IVNode<any>,
+                        context,
+                        SyncFlags.DirtyContext | SyncFlags.Detached,
+                    );
+                    node = getDOMInstanceFromVNode(vnode)!;
                 } else {
-                    context = instance = Object.assign({}, context, vnode._props);
+                    node = vNodeRender(
+                        parent,
+                        vnode._children as IVNode<any>,
+                        context,
+                    );
                 }
             } else {
-                componentPerfMarkBegin("create", vnode);
-                vnode._children = componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props);
-            }
-            node = vNodeRender(parent, vnode._children as IVNode<any>, context);
-            if (__IVI_DEV__) {
-                if (!(flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect))) {
-                    componentPerfMarkEnd("create", vnode);
+                if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
+                    if (flags & VNodeFlags.Connect) {
+                        const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
+                        const selectData = vnode._instance = connect.select(null, vnode._props, context);
+                        vnode._children = connect.render(selectData.out);
+                    } else {
+                        context = instance = Object.assign({}, context, vnode._props);
+                    }
+                } else {
+                    componentPerfMarkBegin("create", vnode);
+                    vnode._children = componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props);
+                }
+                node = vNodeRender(
+                    parent,
+                    vnode._children as IVNode<any>,
+                    context,
+                );
+                if (__IVI_DEV__) {
+                    if (!(flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect))) {
+                        componentPerfMarkEnd("create", vnode);
+                    }
                 }
             }
         }
@@ -949,10 +1032,6 @@ function vNodeAugment(
                                     `actual "${node.childNodes.length}".`);
                             }
                         }
-                    }
-
-                    if (vnode._events) {
-                        syncEvents(node as Element, null, vnode._events);
                     }
 
                     if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
@@ -1148,8 +1227,10 @@ function vNodeSync(
                 if (a._style !== b._style) {
                     syncStyle(instance as HTMLElement, a._style, b._style);
                 }
-                if (a._events !== b._events) {
-                    syncEvents(instance as Element, a._events, b._events);
+                if (!(syncFlags & SyncFlags.Detached)) {
+                    if (a._events !== b._events) {
+                        syncEvents(instance as Element, a._events, b._events);
+                    }
                 }
 
                 if (a._children !== b._children) {
@@ -1205,7 +1286,7 @@ function vNodeSync(
     } else {
         instance = vNodeRender(parent, b, context);
         parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
-        vNodeDetach(a);
+        vNodeDispose(a);
         vNodeAttach(b);
     }
 }
@@ -1295,7 +1376,7 @@ function syncChildren(
                 } else {
                     setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
-                vNodeDetachAll(a);
+                vNodeDisposeAll(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as IVNode<any>[];
                 if (a.length === 0) {
@@ -1343,7 +1424,7 @@ function syncChildren(
                 } else {
                     setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
-                vNodeDetach(a);
+                vNodeDispose(a);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as IVNode<any>[];
                 if (b.length > 0) {

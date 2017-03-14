@@ -7,6 +7,7 @@ import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
 import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
+import { KeepAliveHandler } from "./keep_alive";
 import { EventHandlerList, EventHandler } from "../events/event_handler";
 import {
     HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
@@ -78,7 +79,7 @@ import {
 export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
-    ConnectDescriptor<any, any, any> | null;
+    ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
     _key: any;
     _props: P | null;
     _className: string | null;
@@ -90,7 +91,7 @@ export class VNode<P = null> implements IVNode<P> {
     constructor(
         flags: number,
         tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> |
-            ConnectDescriptor<any, any, any> | null,
+            ConnectDescriptor<any, any, any> | KeepAliveHandler | null,
         props: P | null,
         className: string | null,
         children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
@@ -807,6 +808,27 @@ export function $ctx<T = {}>(context: Context<T>, child: IVNode<any>): VNode<Con
         VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
         __IVI_DEV__ ? UpdateContext as () => IVNode<any> : null,
         context,
+        null,
+        child);
+}
+
+/**
+ * Create ak keep alive VNode.
+ *
+ * @param handler Keep Alive Handler.
+ * @param child Child VNode.
+ * @param props Props.
+ * @returns VNodeBuilder object.
+ */
+export function $keepAlive<P = null>(
+    handler: KeepAliveHandler,
+    child: VNode<any>,
+    props?: P,
+): VNode<P> {
+    return new VNode<P>(
+        VNodeFlags.ComponentFunction | VNodeFlags.KeepAlive,
+        handler,
+        props === undefined ? null : props,
         null,
         child);
 }

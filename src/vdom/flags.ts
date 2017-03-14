@@ -74,14 +74,18 @@ export const enum VNodeFlags {
      */
     UpdateContext = 1 << 16,
     /**
-     * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
-     * prototype for building mutable trees.
+     * Specialized VNode with keep alive functionality.
      */
-    Immutable = 1 << 17,
+    KeepAlive = 1 << 17,
     /**
      * VNode element will be automatically focused after instantiation.
      */
     Autofocus = 1 << 18,
+    /**
+     * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
+     * prototype for building mutable trees.
+     */
+    Immutable = 1 << 19,
 
     /**
      * VNode represents a Component.
@@ -171,4 +175,8 @@ export const enum SyncFlags {
      * Context is dirty.
      */
     DirtyContext = 1 << 2,
+    /**
+     * Tree is detached from the document.
+     */
+    Detached = 1 << 3,
 }

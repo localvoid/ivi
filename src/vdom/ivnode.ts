@@ -5,6 +5,7 @@ import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
+import { KeepAliveHandler } from "./keep_alive";
 
 /**
  * VNode object is the core object in ivi Virtual DOM, it can represent any node type.
@@ -21,7 +22,7 @@ export interface IVNode<P = null> {
      * descriptors for nodes that change syncing algorithm behavior.
      */
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
-    ConnectDescriptor<any, any, any> | null;
+    ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
     /**
      * Children syncing algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.
