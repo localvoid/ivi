@@ -62,6 +62,7 @@ exclusively for bug reports and feature requests.
 
 - [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/future/keep-alive.md)
 - [Error Boundaries](https://github.com/ivijs/ivi/blob/master/documentation/future/error-boundaries.md)
+- [Custom Renderers](https://github.com/ivijs/ivi/blob/master/documentation/future/custom-renderers.md)
 
 ### Installation
 
@@ -132,8 +133,7 @@ Components are the basic building blocks for your applications, they will help y
 
 #### Stateless Components
 
-Stateless components are implemented with simple functions. Component functions has two parameters: `props` parameter
-for component properties and optional parameter `context` with current Context.
+Stateless components are implemented with simple functions.
 
 ```ts
 import { $h, $c, render } from "ivi";

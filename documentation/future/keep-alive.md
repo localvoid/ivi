@@ -1,6 +1,6 @@
 # Keep Alive
 
-## Potential Use Cases
+## Use Cases
 
 - Preserving internal state when switching between pages/tabs/etc.
 - Improving performance by reusing DOM subtrees with similar shape (recycling).
