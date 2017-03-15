@@ -20,7 +20,7 @@ import { SVG_NAMESPACE, setInnerHTML } from "../common/dom";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
 import {
     devModeOnError, devModeOnElementBeforeCreate, devModeOnElementCreated, devModeOnComponentCreated,
-    devModeOnComponentDisposed,
+    devModeOnComponentAttached, devModeOnComponentDetached,
 } from "../dev_mode/hooks";
 import {
     setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
@@ -376,6 +376,7 @@ function vNodeAttach(vnode: IVNode<any>): void {
 
             component.flags |= ComponentFlags.Attached;
             component.attached();
+            devModeOnComponentAttached(component);
         }
         vNodeAttach(vnode._children as IVNode<any>);
         stackTracePopComponent();
@@ -422,7 +423,7 @@ function vNodeDetach(vnode: IVNode<any>, syncFlags: SyncFlags): void {
                 }
                 component.flags &= ~ComponentFlags.Attached;
                 component.detached();
-                devModeOnComponentDisposed(component);
+                devModeOnComponentDetached(component);
             }
         }
         stackTracePopComponent();

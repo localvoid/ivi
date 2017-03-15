@@ -13,7 +13,9 @@ export type OnElementCreatedHook = (vnode: IVNode<any>, element: Element) => voi
 
 export type OnComponentCreatedHook = (instance: Component<any>) => void;
 
-export type OnComponentDisposedHook = (instance: Component<any>) => void;
+export type OnComponentAttachedHook = (instance: Component<any>) => void;
+
+export type OnComponentDetachedHook = (instance: Component<any>) => void;
 
 export interface DevModeHooks {
     /**
@@ -33,9 +35,13 @@ export interface DevModeHooks {
      */
     onComponentCreated: OnComponentCreatedHook[] | null;
     /**
-     * onComponentDisposed is invoked when stateful component is disposed.
+     * onComponentAttached is invoked when stateful component is attached.
      */
-    onComponentDisposed: OnComponentDisposedHook[] | null;
+    onComponentAttached: OnComponentAttachedHook[] | null;
+    /**
+     * onComponentDetached is invoked when stateful component is detached.
+     */
+    onComponentDetached: OnComponentDetachedHook[] | null;
 }
 
 export let DEV_HOOKS: DevModeHooks;
@@ -46,7 +52,8 @@ if (__IVI_DEV__) {
         onElementBeforeCreate: null,
         onElementCreated: null,
         onComponentCreated: null,
-        onComponentDisposed: null,
+        onComponentAttached: null,
+        onComponentDetached: null,
     };
 }
 
@@ -90,10 +97,20 @@ export function devModeOnComponentCreated(instance: Component<any>): void {
     }
 }
 
-export function devModeOnComponentDisposed(instance: Component<any>): void {
+export function devModeOnComponentAttached(instance: Component<any>): void {
     if (__IVI_DEV__) {
-        if (DEV_HOOKS.onComponentDisposed) {
-            for (const hook of DEV_HOOKS.onComponentDisposed) {
+        if (DEV_HOOKS.onComponentAttached) {
+            for (const hook of DEV_HOOKS.onComponentAttached) {
+                hook(instance);
+            }
+        }
+    }
+}
+
+export function devModeOnComponentDetached(instance: Component<any>): void {
+    if (__IVI_DEV__) {
+        if (DEV_HOOKS.onComponentDetached) {
+            for (const hook of DEV_HOOKS.onComponentDetached) {
                 hook(instance);
             }
         }
