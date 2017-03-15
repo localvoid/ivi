@@ -505,8 +505,9 @@ function vNodeUpdateComponents(
             } else {
                 if (flags & VNodeFlags.UpdateContext) {
                     if (syncFlags & SyncFlags.DirtyContext) {
-                        context = vnode._instance = Object.assign({}, context, vnode._props);
+                        vnode._instance = Object.assign({}, context, vnode._props);
                     }
+                    context = vnode._instance as Context;
                 }
                 vNodeUpdateComponents(
                     parent,
