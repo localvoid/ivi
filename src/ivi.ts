@@ -119,6 +119,7 @@ import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode
 import { Context } from "./common/types";
 import { Component, ComponentClass, ComponentFunction } from "./vdom/component";
 import { ConnectDescriptor } from "./vdom/connect_descriptor";
+import { KeepAliveHandler } from "./vdom/keep_alive";
 import { IVNode } from "./vdom/ivnode";
 import { VNodeFlags } from "./vdom/flags";
 
@@ -129,15 +130,17 @@ function _printComponentTreeVisitor(vnode: IVNode<any>) {
         console.groupCollapsed(`[C]${getFunctionName(cls.constructor)} #${instance._debugId}`);
         console.log(instance);
     } else {
-        if (vnode._flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) {
+        if (vnode._flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) {
             if (vnode._flags & VNodeFlags.Connect) {
                 const d = vnode._tag as ConnectDescriptor<any, any, any>;
                 console.groupCollapsed(`[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
-            } else {
+            } else if (vnode._flags & VNodeFlags.UpdateContext) {
                 const context = vnode._instance as Context;
                 console.groupCollapsed(`[+]${Object.keys(context)}`);
                 console.log(context);
-
+            } else {
+                const handler = vnode._tag as KeepAliveHandler;
+                console.groupCollapsed(`[K]${getFunctionName(handler)}`);
             }
         } else {
             console.groupCollapsed(`[F]${getFunctionName(vnode._tag as ComponentFunction)}`);

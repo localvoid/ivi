@@ -69,6 +69,7 @@ Symbol definitions:
 - `[F]` - Stateless Component
 - `[*]` - Connect
 - `[+]` - Update Context
+- `[K]` - Keep Alive
 
 `#1` shows a unique id for component instance. When Development Mode is enabled, it is easy to find component
 instances by their unique ids with a simple function from the console `ivi.$(id)`.

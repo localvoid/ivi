@@ -9,6 +9,7 @@ import { ComponentClass, ComponentFunction, Component } from "../vdom/component"
 import { IVNode } from "../vdom/ivnode";
 import { VNodeFlags } from "../vdom/flags";
 import { ConnectDescriptor } from "../vdom/connect_descriptor";
+import { KeepAliveHandler } from "../vdom/keep_alive";
 
 declare global {
     /**
@@ -115,11 +116,12 @@ export const enum ComponentStackFrameType {
     ComponentFunction = 1,
     Connect = 2,
     UpdateContext = 3,
+    KeepAlive = 4,
 }
 
 export interface ComponentStackTraceFrame {
     type: ComponentStackFrameType;
-    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | undefined;
+    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | KeepAliveHandler | undefined;
     instance: Component<any> | Context | undefined;
 }
 
@@ -144,7 +146,8 @@ export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component
         if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
             const flags = vnode._flags;
             let type;
-            let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any>;
+            let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
+                KeepAliveHandler;
 
             if (flags & VNodeFlags.ComponentClass) {
                 type = ComponentStackFrameType.Component;
@@ -152,14 +155,16 @@ export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component
                     instance = vnode._instance as Component<any> | Context;
                 }
             } else {
-                if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) {
+                if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) {
                     if (flags & VNodeFlags.Connect) {
                         type = ComponentStackFrameType.Connect;
-                    } else {
+                    } else if (flags & VNodeFlags.UpdateContext) {
                         type = ComponentStackFrameType.UpdateContext;
                         if (!instance) {
                             instance = vnode._props as Context;
                         }
+                    } else {
+                        type = ComponentStackFrameType.KeepAlive;
                     }
                 } else {
                     type = ComponentStackFrameType.ComponentFunction;
@@ -241,6 +246,10 @@ function stackTraceToString(): string {
                 case ComponentStackFrameType.UpdateContext:
                     const context = frame.instance as Context;
                     result += `[+]${Object.keys(context)}`;
+                    break;
+                case ComponentStackFrameType.KeepAlive:
+                    const handler = frame.tag as KeepAliveHandler;
+                    result += `[K]${getFunctionName(handler)}`;
                     break;
             }
         }
