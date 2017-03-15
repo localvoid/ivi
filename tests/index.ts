@@ -14,4 +14,5 @@ import "./component.spec";
 import "./element_descriptor.spec";
 import "./events.spec";
 import "./augment.spec";
+import "./keep-alive.spec";
 import "./scheduler.spec";

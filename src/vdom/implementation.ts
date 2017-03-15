@@ -1166,7 +1166,7 @@ function vNodeSync(
         instance = vNodeRender(parent, b, context);
         parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
         if (syncFlags & SyncFlags.Attached) {
-            vNodeDetach(a, syncFlags);
+            vNodeDetach(a, syncFlags | SyncFlags.Dispose);
             vNodeAttach(b);
         }
     }
