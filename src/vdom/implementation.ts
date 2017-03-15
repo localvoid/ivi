@@ -36,7 +36,8 @@ import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { ComponentClass, ComponentFunction, Component } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
-import { syncEvents, removeEvents } from "../events/sync_events";
+import { setEventHandlersToDOMNode } from "../events/utils";
+import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { autofocus } from "../scheduler/autofocus";
 
 /**
@@ -358,7 +359,7 @@ function vNodeAttach(vnode: IVNode<any>): void {
             }
         }
         if (vnode._events) {
-            syncEvents(vnode._instance as Element, null, vnode._events);
+            attachEvents(vnode._events);
         }
     } else if (flags & VNodeFlags.Component) {
         stackTracePushComponent(vnode);
@@ -397,7 +398,7 @@ function vNodeDetach(vnode: IVNode<any>, syncFlags: SyncFlags): void {
             }
         }
         if (vnode._events) {
-            removeEvents(vnode._events);
+            detachEvents(vnode._events);
         }
     } else if (flags & VNodeFlags.Component) {
         stackTracePushComponent(vnode);
@@ -657,6 +658,9 @@ function vNodeRender(
             if (vnode._style !== null) {
                 syncStyle(node as HTMLElement, null, vnode._style);
             }
+            if (vnode._events) {
+                setEventHandlersToDOMNode(node as Element, vnode._events);
+            }
 
             let children = vnode._children;
             if (children !== null) {
@@ -849,6 +853,10 @@ function vNodeAugment(
                                     `actual "${node.childNodes.length}".`);
                             }
                         }
+                    }
+
+                    if (vnode._events) {
+                        setEventHandlersToDOMNode(node as Element, vnode._events);
                     }
 
                     if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
@@ -1044,10 +1052,11 @@ function vNodeSync(
                 if (a._style !== b._style) {
                     syncStyle(instance as HTMLElement, a._style, b._style);
                 }
-                if (syncFlags & SyncFlags.Attached) {
-                    if (a._events !== b._events) {
+                if (a._events !== b._events) {
+                    if (syncFlags & SyncFlags.Attached) {
                         syncEvents(instance as Element, a._events, b._events);
                     }
+                    setEventHandlersToDOMNode(instance as Element, b._events);
                 }
 
                 if (a._children !== b._children) {

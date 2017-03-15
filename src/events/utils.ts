@@ -45,21 +45,21 @@ export function getEventOptions(flags: NativeEventDispatcherFlags): boolean | { 
 export const DOM_NODE_EVENTS_PROPERTY = "_ev";
 
 /**
- * Set Event Handler list to DOM Node.
+ * Set Event Handlers to DOM Node.
  *
  * @param node DOM Node.
- * @param events Event Handler List.
+ * @param events Event Handlers.
  */
-export function setEventHandlerListToDOMNode(node: Node, events: EventHandlerList | EventHandler | null): void {
+export function setEventHandlersToDOMNode(node: Node, events: EventHandlerList | EventHandler | null): void {
     (node as any)[DOM_NODE_EVENTS_PROPERTY] = events;
 }
 
 /**
- * Get Event Handler list from DOM Node.
+ * Get Event Handlers from DOM Node.
  *
  * @param node DOM Node.
- * @returns EventHandlerList or undefined if DOM Node doesn't listen for any events.
+ * @returns Event Handlers.
  */
-export function getEventHandlerListFromDOMNode(node: Node): EventHandlerList | EventHandler | undefined | null {
+export function getEventHandlersFromDOMNode(node: Node): EventHandlerList | EventHandler | undefined | null {
     return (node as any)[DOM_NODE_EVENTS_PROPERTY];
 }

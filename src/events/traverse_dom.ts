@@ -1,6 +1,6 @@
 import { EventDispatcher } from "./event_dispatcher";
 import { EventHandler } from "./event_handler";
-import { getEventHandlerListFromDOMNode } from "./utils";
+import { getEventHandlersFromDOMNode } from "./utils";
 
 /**
  * Dispatch Target.
@@ -28,7 +28,7 @@ export function accumulateDispatchTargetsFromElement(
     target: Element,
     dispatcher: EventDispatcher,
 ): void {
-    const events = getEventHandlerListFromDOMNode(target);
+    const events = getEventHandlersFromDOMNode(target);
     if (events) {
         let matches: EventHandler[] | undefined;
         if (typeof events === "function") {

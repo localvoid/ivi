@@ -1,5 +1,4 @@
 import { EventHandler, EventHandlerList } from "./event_handler";
-import { setEventHandlerListToDOMNode } from "./utils";
 
 /**
  * Shortcut for Event Handler registration.
@@ -113,16 +112,32 @@ export function syncEvents(
             }
         }
     }
-
-    setEventHandlerListToDOMNode(node, b);
 }
 
 /**
- * Remove DOM events.
+ * Attach Events.
  *
  * @param events Events.
  */
-export function removeEvents(events: EventHandlerList | EventHandler): void {
+export function attachEvents(events: EventHandlerList | EventHandler): void {
+    if (typeof events === "function") {
+        registerEventHandler(events);
+    } else {
+        for (let i = 0; i < events.length; i++) {
+            const h = events[i];
+            if (h) {
+                registerEventHandler(h);
+            }
+        }
+    }
+}
+
+/**
+ * Detach Events.
+ *
+ * @param events Events.
+ */
+export function detachEvents(events: EventHandlerList | EventHandler): void {
     if (typeof events === "function") {
         unregisterEventHandler(events);
     } else {
