@@ -934,12 +934,12 @@ function vNodeAugment(
                     }
                 } else {
                     stackTracePushComponent(vnode);
-                    if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) {
+                    if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) {
                         if (flags & VNodeFlags.Connect) {
                             const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
                             const selectData = vnode._instance = connect.select(null, vnode._props, context);
                             vnode._children = connect.render(selectData.out);
-                        } else {
+                        } else if (VNodeFlags.UpdateContext) {
                             context = instance = Object.assign({}, context, vnode._props);
                         }
                         vNodeAugment(parent, node, vnode._children as IVNode<any>, context);
