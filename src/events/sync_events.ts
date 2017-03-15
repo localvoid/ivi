@@ -36,42 +36,13 @@ export function syncEvents(
 
     if (a === null) {
         if (b !== null) {
-            // a is empty, register all events from b.
-            if (typeof b === "function") {
-                registerEventHandler(b);
-            } else {
-                for (i = 0; i < b.length; i++) {
-                    h1 = b[i];
-                    if (h1) {
-                        registerEventHandler(h1);
-                    }
-                }
-            }
+            attachEvents(b);
         }
     } else if (b === null) {
-        // b is empty, remove all events from a.
-        if (typeof a === "function") {
-            unregisterEventHandler(a);
-        } else {
-            for (i = 0; i < a.length; i++) {
-                h1 = a[i];
-                if (h1) {
-                    unregisterEventHandler(h1);
-                }
-            }
-        }
+        detachEvents(a);
     } else {
         if (typeof a === "function") {
-            if (typeof b === "function") {
-                registerEventHandler(b);
-            } else {
-                for (i = 0; i < b.length; i++) {
-                    h1 = b[i];
-                    if (h1) {
-                        registerEventHandler(h1);
-                    }
-                }
-            }
+            attachEvents(b);
             unregisterEventHandler(a);
         } else {
             if (typeof b === "function") {
