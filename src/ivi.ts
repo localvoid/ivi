@@ -133,10 +133,10 @@ function _printComponentTreeVisitor(vnode: IVNode<any>) {
         if (vnode._flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) {
             if (vnode._flags & VNodeFlags.Connect) {
                 const d = vnode._tag as ConnectDescriptor<any, any, any>;
-                console.groupCollapsed(`[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
+                console.groupCollapsed(`[+]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
             } else if (vnode._flags & VNodeFlags.UpdateContext) {
                 const context = vnode._instance as Context;
-                console.groupCollapsed(`[+]${Object.keys(context)}`);
+                console.groupCollapsed(`[^]${Object.keys(context)}`);
                 console.log(context);
             } else {
                 const handler = vnode._tag as KeepAliveHandler;

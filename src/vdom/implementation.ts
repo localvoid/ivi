@@ -96,9 +96,9 @@ function componentPerfMarkEnd(
                 if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) {
                     if (flags & VNodeFlags.Connect) {
                         const d = vnode._tag as ConnectDescriptor<any, any, any>;
-                        perfMarkEnd(`${method} [*]${getFunctionName(d.select)}`, id);
+                        perfMarkEnd(`${method} [+]${getFunctionName(d.select)}`, id);
                     } else if (flags & VNodeFlags.UpdateContext) {
-                        perfMarkEnd(`${method} [+]`, id);
+                        perfMarkEnd(`${method} [^]`, id);
                     } else {
                         perfMarkEnd(`${method} [K]`, id);
                     }

@@ -241,11 +241,11 @@ function stackTraceToString(): string {
                     break;
                 case ComponentStackFrameType.Connect:
                     const d = frame.tag as ConnectDescriptor<any, any, any>;
-                    result += `[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`;
+                    result += `[+]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`;
                     break;
                 case ComponentStackFrameType.UpdateContext:
                     const context = frame.instance as Context;
-                    result += `[+]${Object.keys(context)}`;
+                    result += `[^]${Object.keys(context)}`;
                     break;
                 case ComponentStackFrameType.KeepAlive:
                     const handler = frame.tag as KeepAliveHandler;

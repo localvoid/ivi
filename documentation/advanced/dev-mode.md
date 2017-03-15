@@ -67,8 +67,8 @@ Symbol definitions:
 
 - `[C]` - Stateful Component
 - `[F]` - Stateless Component
-- `[*]` - Connect
-- `[+]` - Update Context
+- `[+]` - Connect
+- `[^]` - Update Context
 - `[K]` - Keep Alive
 
 `#1` shows a unique id for component instance. When Development Mode is enabled, it is easy to find component
