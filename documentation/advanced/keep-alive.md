@@ -12,19 +12,23 @@ Experimental
 ## API
 
 ```ts
-function $keepAlive<P = null>(
-    handler: (removed: VNode<any> | undefined, props?: P) => boolean | VNode<any> | null,
+function $keepAlive<P>(
+    handler: (disposed: IVNode<any> | null, props: P) => IVNode<any> | null,
     child: VNode<any>,
-    props?: P,
+    props: P,
 ): VNode<P>;
+function $keepAlive(
+    handler: (disposed: IVNode<any> | null) => IVNode<any> | null,
+    child: VNode<any>,
+): VNode<null>;
 ```
 
 `$keepAlive` function creates a virtual node with a special keep alive behavior that is controlled by a
 `handler` function.
 
-When `handler` function receives `removed` vnode, it means that component is destroyed and removed vnode can be
-saved, so it can be reused later. When vnode is saved, `handler` function should return `true` value, otherwise vnode
-will be destroyed. When `removed` parameter is `undefined`, it means that keepAlive component tries to retrieve existing
+When `handler` function receives `disposed` vnode, it means that vnode is disposed and it can be saved, so it can be
+reused later. When vnode is saved, `handler` function should return `disposed` value, otherwise vnode
+will be disposed. When `disposed` parameter is `null`, it means that keepAlive component tries to retrieve existing
 vnode to reuse.
 
 ## Examples
@@ -34,19 +38,18 @@ vnode to reuse.
 ```ts
 class ShowHide extends Component<{ show: boolean }> {
     keepAliveChild: VNode<any> | null = null;
+    keepAlive = (disposed) => {
+        if (disposed) {
+            return this.keepAliveChild = disposed;
+        }
+        return this.keepAliveChild;
+    };
 
     render() {
         return $h("div").children(
             this.props.show ?
-                $keepAlive(
-                    (removed) => {
-                        if (removed) {
-                            return this.keepAliveChild = removed;
-                        }
-                        return this.keepAliveChild;
-                    },
-                    $h("div").children("Hide Me!"),
-                ) : null,
+                $keepAlive(this.keepAlive, $h("div").children("Hide Me!")) :
+                null,
         );
     }
 }
@@ -57,21 +60,19 @@ class ShowHide extends Component<{ show: boolean }> {
 ```ts
 class PageManager extends Component<{ pageID: string }> {
     keepAliveLRUCache = new LRUCache<VNode<any>>({ maxItems: 5 });
+    keepAlive = (removed, id) => {
+        if (removed) {
+            return this.keepAliveLRUCache.push(removed, id);
+        }
+        return this.keepAliveLRUCache.pop(id);
+    }
 
     render() {
         const pageID = this.props.pageID;
 
         return $h("div").children(
-            $keepAlive(
-                (removed, id) => {
-                    if (removed) {
-                        return this.keepAliveLRUCache.push(removed, id);
-                    }
-                    return this.keepAliveLRUCache.pop(id);
-                },
-                $h("div").children(pageID),
-                pageId,
-            ).key(pageID),
+            $keepAlive(this.keepAlive, $h("div").children(pageID), pageId)
+                .key(pageID),
         );
     }
 }
@@ -82,19 +83,16 @@ class PageManager extends Component<{ pageID: string }> {
 ```ts
 class ItemList extends Component<{ items: string[] }> {
     keepAlivePool = new ObjectPool<VNode<any>>({ maxItems: 10 });
+    keepAlive = (removed, id) => {
+        if (removed) {
+            return this.keepAlivePool.push(removed);
+        }
+        return this.keepAlivePool.pop();
+    }
 
     render() {
         return $h("div").children(
-            this.props.items.map((i) => $keepAlive(
-                (removed, id) => {
-                    if (removed) {
-                        return this.keepAlivePool.push(removed);
-                    }
-                    return this.keepAlivePool.pop();
-                },
-                $h("div").children(i),
-                i,
-            ).key(i)),
+            this.props.items.map((i) => $keepAlive(this.keepAlive, $h("div").children(i), i).key(i)),
         );
     }
 }

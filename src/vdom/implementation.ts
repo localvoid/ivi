@@ -712,7 +712,7 @@ function vNodeRender(
             stackTracePushComponent(vnode);
             if (flags & VNodeFlags.KeepAlive) {
                 const keepAlive = vnode._tag as KeepAliveHandler;
-                const prev = keepAlive(undefined, vnode._props);
+                const prev = keepAlive(null, vnode._props);
                 if (prev) {
                     vNodeSync(
                         parent,

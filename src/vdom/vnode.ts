@@ -813,14 +813,23 @@ export function $ctx<T = {}>(context: Context<T>, child: IVNode<any>): VNode<Con
 }
 
 /**
- * Create ak keep alive VNode.
+ * Create Keep Alive VNode.
  *
  * @param handler Keep Alive Handler.
  * @param child Child VNode.
  * @param props Props.
  * @returns VNodeBuilder object.
  */
-export function $keepAlive<P = null>(
+export function $keepAlive<P>(
+    handler: (disposed: IVNode<any> | null, props: P) => IVNode<any> | null,
+    child: VNode<any>,
+    props: P,
+): VNode<P>;
+export function $keepAlive(
+    handler: (disposed: IVNode<any> | null) => IVNode<any> | null,
+    child: VNode<any>,
+): VNode<null>;
+export function $keepAlive<P>(
     handler: KeepAliveHandler,
     child: VNode<any>,
     props?: P,
