@@ -83,7 +83,7 @@ export { getEventOptions } from "./events/utils";
  * Virtual DOM:
  */
 export {
-    ComponentClass, ComponentFunction, Component, checkPropsShallowEquality, staticComponent,
+    ComponentClass, ComponentFunction, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
 export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
 export {

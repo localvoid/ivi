@@ -65,15 +65,6 @@ export abstract class Component<P = void> {
     }
 
     /**
-     * Is component attached.
-     *
-     * @returns `true` when Component is attached.
-     */
-    isAttached(): boolean {
-        return !!(this.flags & ComponentFlags.Attached);
-    }
-
-    /**
      * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
      *
      * By default props checked by their identity.
@@ -236,4 +227,13 @@ export function getComponentName(component: Component<any> | ComponentFunction<a
 
 export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
     return componentClass.prototype.render;
+}
+
+/**
+ * Is component attached.
+ *
+ * @returns `true` when Component is attached.
+ */
+export function isComponentAttached(component: Component<any>): boolean {
+    return !!(component.flags & ComponentFlags.Attached);
 }
