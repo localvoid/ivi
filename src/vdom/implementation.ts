@@ -338,80 +338,6 @@ export function updateComponents(
 }
 
 /**
- * Update a component function.
- *
- * #component
- *
- * @param parent Parent DOM Node.
- * @param a Old VNode.
- * @param b New VNode.
- * @param context Current Context.
- * @param syncFlags Sync flags.
- */
-function _updateComponentFunction(
-    parent: Node,
-    a: IVNode<any>,
-    b: IVNode<any>,
-    context: Context,
-    syncFlags: SyncFlags,
-): void {
-    const flags = b._flags;
-    const fn = b._tag as ComponentFunction<any>;
-
-    if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) {
-        if (flags & VNodeFlags.Connect) {
-            const connect = b._tag as ConnectDescriptor<any, any, any>;
-            const prevSelectData = a._instance as SelectorData;
-            componentPerfMarkBegin("update", b);
-            const selectData = connect.select(prevSelectData, b._props, context);
-            b._children = (prevSelectData === selectData) ?
-                a._children :
-                connect.render(selectData.out);
-            b._instance = selectData;
-            vNodeSync(
-                parent,
-                a._children as IVNode<any>,
-                b._children as IVNode<any>,
-                context,
-                syncFlags,
-            );
-            componentPerfMarkEnd("update", b);
-        } else {
-            if (flags & VNodeFlags.UpdateContext) {
-                if ((syncFlags & SyncFlags.DirtyContext) || (a._props !== b._props)) {
-                    syncFlags |= SyncFlags.DirtyContext;
-                    context = b._instance = Object.assign({}, context, b._props);
-                } else {
-                    context = b._instance = a._instance as Context;
-                }
-            }
-            vNodeSync(
-                parent,
-                a._children as IVNode<any>,
-                b._children as IVNode<any>,
-                context,
-                syncFlags,
-            );
-        }
-    } else {
-        if ((syncFlags & SyncFlags.ForceUpdate) ||
-            ((a !== b) &&
-                ((!fn.isPropsChanged && a._props !== b._props) ||
-                    (fn.isPropsChanged && fn.isPropsChanged(a._props, b._props))))) {
-            componentPerfMarkBegin("update", b);
-            const oldRoot = a._children as IVNode<any>;
-            const newRoot = b._children = componentFunctionRender(fn, b._props);
-            vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
-            componentPerfMarkEnd("update", b);
-        } else {
-            b._children = a._children;
-            vNodeUpdateComponents(parent, b._children as IVNode<any>, context, syncFlags);
-        }
-    }
-
-}
-
-/**
  * Recursively attach all nodes.
  *
  * @param vnode VNode.
@@ -446,7 +372,7 @@ function vNodeAttach(vnode: IVNode<any>): void {
             }
 
             component.flags |= ComponentFlags.Attached;
-            componentAttached(component);
+            component.attached();
         }
         vNodeAttach(vnode._children as IVNode<any>);
         stackTracePopComponent();
@@ -490,7 +416,7 @@ function vNodeDetach(vnode: IVNode<any>, dispose: boolean): void {
                     }
                 }
                 component.flags &= ~ComponentFlags.Attached;
-                componentDetached(component);
+                component.detached();
                 devModeOnComponentDisposed(component);
             }
         }
@@ -545,11 +471,11 @@ function vNodeUpdateComponents(
 
             if ((cflags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
                 componentPerfMarkBegin("update", vnode);
-                componentbeforeUpdate(component);
+                component.beforeUpdate();
                 const newRoot = vnode._children = component.render();
                 vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
                 component.flags &= ~ComponentFlags.Dirty;
-                componentUpdated(component);
+                component.updated();
                 componentPerfMarkEnd("update", vnode);
             } else {
                 vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
@@ -631,67 +557,6 @@ function vNodeRemoveChild(parent: Node, node: IVNode<any>, syncFlags: SyncFlags)
     if (!(syncFlags & SyncFlags.Detached)) {
         vNodeDetach(node, true);
     }
-}
-
-/**
- * Invoke `component.beforeUpdate` method.
- *
- * #component
- *
- * @param component
- */
-function componentbeforeUpdate<P>(component: Component<P>): void {
-    component.beforeUpdate();
-}
-
-/**
- * Invoke `component.updated` method.
- *
- * #component
- *
- * @param component
- */
-function componentUpdated<P>(component: Component<P>): void {
-    component.updated();
-}
-
-/**
- * Invoke `component.attached` method.
- *
- * #component
- *
- * @param component
- */
-function componentAttached<P>(component: Component<P>): void {
-    component.attached();
-}
-
-/**
- * Invoke `component.detached` method.
- *
- * #component
- *
- * @param component
- */
-function componentDetached<P>(component: Component<P>): void {
-    component.detached();
-}
-
-/**
- * Render a component function instance and return root VNode.
- *
- * #component
- *
- * @param component Component function.
- * @param props Props.
- * @param context Context.
- * @returns Root VNode.
- */
-function componentFunctionRender<P>(
-    component: ComponentFunction<P>,
-    props: P,
-): IVNode<any> {
-    return component(props);
 }
 
 /**
@@ -870,7 +735,7 @@ function vNodeRender(
                     }
                 } else {
                     componentPerfMarkBegin("create", vnode);
-                    vnode._children = componentFunctionRender(vnode._tag as ComponentFunction<any>, vnode._props);
+                    vnode._children = (vnode._tag as ComponentFunction<any>)(vnode._props);
                 }
                 node = vNodeRender(
                     parent,
@@ -1070,7 +935,7 @@ function vNodeAugment(
                         vNodeAugment(parent, node, vnode._children as IVNode<any>, context);
                     } else {
                         const fc = vnode._tag as ComponentFunction<any>;
-                        vnode._children = componentFunctionRender(fc, vnode._props);
+                        vnode._children = fc(vnode._props);
                         if (fc.shouldAugment === undefined || fc.shouldAugment(vnode._props)) {
                             vNodeAugment(parent, node, vnode._children as IVNode<any>, context);
                         } else {
@@ -1221,18 +1086,69 @@ function vNodeSync(
                 const oldRoot = a._children as IVNode<any>;
                 if (propsChanged || (component.flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
                     componentPerfMarkBegin("update", a);
-                    componentbeforeUpdate(component);
+                    component.beforeUpdate();
                     const newRoot = b._children = component.render();
                     vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
                     component.flags &= ~ComponentFlags.Dirty;
-                    componentUpdated(component);
+                    component.updated();
                     componentPerfMarkEnd("update", a);
                 } else {
                     b._children = a._children;
                     vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
                 }
             } else { // (flags & VNodeFlags.ComponentFunction)
-                _updateComponentFunction(parent, a, b, context, syncFlags);
+                const fn = b._tag as ComponentFunction<any>;
+
+                if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) {
+                    if (flags & VNodeFlags.Connect) {
+                        const connect = b._tag as ConnectDescriptor<any, any, any>;
+                        const prevSelectData = a._instance as SelectorData;
+                        componentPerfMarkBegin("update", b);
+                        const selectData = connect.select(prevSelectData, b._props, context);
+                        b._children = (prevSelectData === selectData) ?
+                            a._children :
+                            connect.render(selectData.out);
+                        b._instance = selectData;
+                        vNodeSync(
+                            parent,
+                            a._children as IVNode<any>,
+                            b._children as IVNode<any>,
+                            context,
+                            syncFlags,
+                        );
+                        componentPerfMarkEnd("update", b);
+                    } else {
+                        if (flags & VNodeFlags.UpdateContext) {
+                            if ((syncFlags & SyncFlags.DirtyContext) || (a._props !== b._props)) {
+                                syncFlags |= SyncFlags.DirtyContext;
+                                context = b._instance = Object.assign({}, context, b._props);
+                            } else {
+                                context = b._instance = a._instance as Context;
+                            }
+                        }
+                        vNodeSync(
+                            parent,
+                            a._children as IVNode<any>,
+                            b._children as IVNode<any>,
+                            context,
+                            syncFlags,
+                        );
+                    }
+                } else {
+                    if ((syncFlags & SyncFlags.ForceUpdate) ||
+                        ((a !== b) &&
+                            ((!fn.isPropsChanged && a._props !== b._props) ||
+                                (fn.isPropsChanged && fn.isPropsChanged(a._props, b._props))))) {
+                        componentPerfMarkBegin("update", b);
+                        const oldRoot = a._children as IVNode<any>;
+                        const newRoot = b._children = fn(b._props);
+                        vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+                        componentPerfMarkEnd("update", b);
+                    } else {
+                        b._children = a._children;
+                        vNodeUpdateComponents(parent, b._children as IVNode<any>, context, syncFlags);
+                    }
+                }
             }
             stackTracePopComponent();
         }
