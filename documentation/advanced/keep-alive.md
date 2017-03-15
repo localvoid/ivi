@@ -19,7 +19,8 @@ function $keepAlive<P = null>(
 ): VNode<P>;
 ```
 
-`$keepAlive` function creates a virtual node with a special behavior that is controlled by a `ctrl` function.
+`$keepAlive` function creates a virtual node with a special keep alive behavior that is controlled by a
+`handler` function.
 
 When `handler` function receives `removed` vnode, it means that component is destroyed and removed vnode can be
 saved, so it can be reused later. When vnode is saved, `handler` function should return `true` value, otherwise vnode
@@ -40,8 +41,7 @@ class ShowHide extends Component<{ show: boolean }> {
                 $keepAlive(
                     (removed) => {
                         if (removed) {
-                            this.keepAliveChild = removed;
-                            return true;
+                            return this.keepAliveChild = removed;
                         }
                         return this.keepAliveChild;
                     },
@@ -65,8 +65,7 @@ class PageManager extends Component<{ pageID: string }> {
             $keepAlive(
                 (removed, id) => {
                     if (removed) {
-                        this.keepAliveLRUCache.push(removed, id);
-                        return true;
+                        return this.keepAliveLRUCache.push(removed, id);
                     }
                     return this.keepAliveLRUCache.pop(id);
                 },
