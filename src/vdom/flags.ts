@@ -164,19 +164,25 @@ export const enum ElementDescriptorFlags {
  */
 export const enum SyncFlags {
     /**
+     * Tree is attached to the document.
+     */
+    Attached = 1,
+    /**
+     * Tree should be disposed.
+     *
+     * When tree is disposed, keep alive components can capture disposed subtrees.
+     */
+    Dispose = 1 << 2,
+    /**
      * Update dirty components.
      */
-    DirtyComponent = 1,
+    DirtyComponent = 1 << 3,
     /**
      * Force update for all components.
      */
-    ForceUpdate = 1 << 1,
+    ForceUpdate = 1 << 4,
     /**
      * Context is dirty.
      */
-    DirtyContext = 1 << 2,
-    /**
-     * Tree is detached from the document.
-     */
-    Detached = 1 << 3,
+    DirtyContext = 1 << 5,
 }

@@ -158,7 +158,7 @@ function _renderVNode(
     vnode: IVNode<any>,
     context: Context,
 ): Node {
-    return vNodeRenderIntoAndAttach(parent, refChild, vnode, context, 0);
+    return vNodeRenderIntoAndAttach(parent, refChild, vnode, context, SyncFlags.Attached);
 }
 
 /**
@@ -247,7 +247,7 @@ export function removeVNode(parent: Node, node: IVNode<any>): void {
  */
 function _removeVNode(parent: Node, node: IVNode<any>): void {
     parent.removeChild(getDOMInstanceFromVNode(node)!);
-    vNodeDetach(node, true);
+    vNodeDetach(node, SyncFlags.Dispose | SyncFlags.Attached);
 }
 
 /**
@@ -384,16 +384,16 @@ function vNodeAttach(vnode: IVNode<any>): void {
  *
  * @param vnode VNode.
  */
-function vNodeDetach(vnode: IVNode<any>, dispose: boolean): void {
+function vNodeDetach(vnode: IVNode<any>, syncFlags: SyncFlags): void {
     const flags = vnode._flags;
 
     if (flags & VNodeFlags.Element) {
         if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
             const children = vnode._children;
             if (flags & VNodeFlags.ChildrenArray) {
-                vNodeDetachAll(children as IVNode<any>[], dispose);
+                vNodeDetachAll(children as IVNode<any>[], syncFlags);
             } else {
-                vNodeDetach(children as IVNode<any>, dispose);
+                vNodeDetach(children as IVNode<any>, syncFlags);
             }
         }
         if (vnode._events) {
@@ -402,12 +402,14 @@ function vNodeDetach(vnode: IVNode<any>, dispose: boolean): void {
     } else if (flags & VNodeFlags.Component) {
         stackTracePushComponent(vnode);
         if ((flags & VNodeFlags.KeepAlive) &&
-            dispose &&
+            (syncFlags & SyncFlags.Dispose) &&
             ((vnode._tag as KeepAliveHandler)(vnode._children as IVNode<any>, vnode._props))) {
-            vNodeDetach(vnode._children as IVNode<any>, false);
+            if (syncFlags & SyncFlags.Attached) {
+                vNodeDetach(vnode._children as IVNode<any>, syncFlags & ~SyncFlags.Dispose);
+            }
         } else {
-            vNodeDetach(vnode._children as IVNode<any>, dispose);
-            if (flags & VNodeFlags.ComponentClass) {
+            vNodeDetach(vnode._children as IVNode<any>, syncFlags);
+            if ((flags & VNodeFlags.ComponentClass) && (syncFlags & SyncFlags.Attached)) {
                 const component = vnode._instance as Component<any>;
 
                 if (__IVI_DEV__) {
@@ -429,9 +431,9 @@ function vNodeDetach(vnode: IVNode<any>, dispose: boolean): void {
  *
  * @param vnodes Array of VNodes.
  */
-function vNodeDetachAll(vnodes: IVNode<any>[], dispose: boolean): void {
+function vNodeDetachAll(vnodes: IVNode<any>[], syncFlags: SyncFlags): void {
     for (let i = 0; i < vnodes.length; i++) {
-        vNodeDetach(vnodes[i], dispose);
+        vNodeDetach(vnodes[i], syncFlags);
     }
 }
 
@@ -539,9 +541,7 @@ function vNodeMoveChild(parent: Node, node: IVNode<any>, nextRef: Node | null): 
  */
 function vNodeRemoveAllChildren(parent: Node, nodes: IVNode<any>[], syncFlags: SyncFlags): void {
     parent.textContent = "";
-    if (!(syncFlags & SyncFlags.Detached)) {
-        vNodeDetachAll(nodes, true);
-    }
+    vNodeDetachAll(nodes, syncFlags | SyncFlags.Dispose);
 }
 
 /**
@@ -554,9 +554,7 @@ function vNodeRemoveAllChildren(parent: Node, nodes: IVNode<any>[], syncFlags: S
  */
 function vNodeRemoveChild(parent: Node, node: IVNode<any>, syncFlags: SyncFlags): void {
     parent.removeChild(getDOMInstanceFromVNode(node)!);
-    if (!(syncFlags & SyncFlags.Detached)) {
-        vNodeDetach(node, true);
-    }
+    vNodeDetach(node, syncFlags | SyncFlags.Dispose);
 }
 
 /**
@@ -714,7 +712,7 @@ function vNodeRender(
                         prev as IVNode<any>,
                         vnode._children as IVNode<any>,
                         context,
-                        SyncFlags.DirtyContext | SyncFlags.Detached,
+                        SyncFlags.DirtyContext,
                     );
                     node = getDOMInstanceFromVNode(vnode._children as IVNode<any>)!;
                 } else {
@@ -779,7 +777,7 @@ function vNodeRenderIntoAndAttach(
 ): Node {
     const node = vNodeRender(parent, vnode, context);
     parent.insertBefore(node, refChild);
-    if (!(syncFlags & SyncFlags.Detached)) {
+    if (syncFlags & SyncFlags.Attached) {
         vNodeAttach(vnode);
     }
     return node;
@@ -1045,7 +1043,7 @@ function vNodeSync(
                 if (a._style !== b._style) {
                     syncStyle(instance as HTMLElement, a._style, b._style);
                 }
-                if (!(syncFlags & SyncFlags.Detached)) {
+                if (syncFlags & SyncFlags.Attached) {
                     if (a._events !== b._events) {
                         syncEvents(instance as Element, a._events, b._events);
                     }
@@ -1155,8 +1153,8 @@ function vNodeSync(
     } else {
         instance = vNodeRender(parent, b, context);
         parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
-        if (!(syncFlags & SyncFlags.Detached)) {
-            vNodeDetach(a, true);
+        if (syncFlags & SyncFlags.Attached) {
+            vNodeDetach(a, syncFlags);
             vNodeAttach(b);
         }
     }
@@ -1247,9 +1245,7 @@ function syncChildren(
                 } else {
                     setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
-                if (!(syncFlags & SyncFlags.Detached)) {
-                    vNodeDetachAll(a, true);
-                }
+                vNodeDetachAll(a, syncFlags | SyncFlags.Dispose);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as IVNode<any>[];
                 if (a.length === 0) {
@@ -1297,9 +1293,7 @@ function syncChildren(
                 } else {
                     setInnerHTML(parent as Element, b as string, !!(bParentFlags & VNodeFlags.SvgElement));
                 }
-                if (!(syncFlags & SyncFlags.Detached)) {
-                    vNodeDetach(a, true);
-                }
+                vNodeDetach(a, syncFlags | SyncFlags.Dispose);
             } else if (bParentFlags & VNodeFlags.ChildrenArray) {
                 b = b as IVNode<any>[];
                 if (b.length > 0) {

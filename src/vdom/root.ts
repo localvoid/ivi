@@ -71,7 +71,7 @@ function _update() {
             const root = ROOTS[i];
             const container = root.container;
             const currentVNode = root.currentVNode;
-            const syncFlags = _globalSyncFlags | root.syncFlags;
+            const syncFlags = _globalSyncFlags | root.syncFlags | SyncFlags.Attached;
 
             if (root.invalidated) {
                 let newVNode = root.newVNode;
