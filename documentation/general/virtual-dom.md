@@ -149,7 +149,7 @@ Render Virtual DOM into container.
 function render<T extends Node>(
     node: VNode<any> | null,
     container: Element,
-    syncFlags: SyncFlags = 0,
+    syncFlags?: SyncFlags,
 ): void;
 ```
 
@@ -160,15 +160,15 @@ when it is invoked multiple times per frame.
 function renderNextFrame(
     node: VNode<any> | null,
     container: Element,
-    syncFlags: SyncFlags = 0,
+    syncFlags?: SyncFlags,
 ): void;
 ```
 
 Update dirty components.
 
 ```ts
-function update(syncFlags: SyncFlags = 0);
-function updateNextFrame(syncFlags: SyncFlags = 0);
+function update(syncFlags?: SyncFlags);
+function updateNextFrame(syncFlags?: SyncFlags);
 ```
 
 Augment existing DOM tree with a Virtual DOM.
@@ -178,23 +178,4 @@ function augment(
     node: VNode<any> | null,
     container: Element,
 ): void;
-```
-
-### Sync Flags
-
-```ts
-const enum SyncFlags {
-    /**
-     * Update dirty components.
-     */
-    DirtyComponent = 1,
-    /**
-     * Force update for all components.
-     */
-    ForceUpdate = 1 << 1,
-    /**
-     * Context is dirty.
-     */
-    DirtyContext = 1 << 2,
-}
 ```
