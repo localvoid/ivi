@@ -16,3 +16,4 @@ import "./events.spec";
 import "./augment.spec";
 import "./keep-alive.spec";
 import "./scheduler.spec";
+import "./state.spec";
