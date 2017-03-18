@@ -1514,19 +1514,24 @@ function syncChildrenTrackByKeys(
     context: Context,
     syncFlags: SyncFlags,
 ): void {
-    const aLastNode = aFirstNode._prev!;
-    const bLastNode = bFirstNode._prev!;
     let aStartNode: IVNode<any> | null = aFirstNode;
     let bStartNode: IVNode<any> | null = bFirstNode;
-    let aEndNode: IVNode<any> | null = aLastNode;
-    let bEndNode: IVNode<any> | null = bLastNode;
+    let aEndNode: IVNode<any> | null = aFirstNode._prev;
+    let bEndNode: IVNode<any> | null = bFirstNode._prev;
     let i: number;
     let j: number | undefined;
-    let aNode: IVNode<any> | null;
-    let bNode: IVNode<any> | null;
-    let next: Node | null;
+    let vNode: IVNode<any> | null;
+    let sentinel: IVNode<any> | null;
     let synced = 0;
-    let finished = 0;
+    /**
+     * Step 1:
+     * 1 - list "a" is fully synced.
+     * 2 - list "b" is fully synced.
+     *
+     * Step 2/3:
+     * 1 - node is in wrong position and should be moved.
+     */
+    let flags = 0;
 
     // Step 1
     outer: while (true) {
@@ -1535,16 +1540,16 @@ function syncChildrenTrackByKeys(
             vNodeSync(parent, aStartNode!, bStartNode!, context, syncFlags);
             synced++;
             if (aStartNode === aEndNode) {
-                finished |= 1;
+                flags |= 1;
             } else {
                 aStartNode = aStartNode!._next;
             }
             if (bStartNode === bEndNode) {
-                finished |= 2;
+                flags |= 2;
             } else {
                 bStartNode = bStartNode!._next;
             }
-            if (finished) {
+            if (flags) {
                 break outer;
             }
         }
@@ -1554,16 +1559,16 @@ function syncChildrenTrackByKeys(
             vNodeSync(parent, aEndNode!, bEndNode!, context, syncFlags);
             synced++;
             if (aStartNode === aEndNode) {
-                finished |= 1;
+                flags |= 1;
             } else {
                 aEndNode = aEndNode!._prev;
             }
             if (bStartNode === bEndNode) {
-                finished |= 2;
+                flags |= 2;
             } else {
                 bEndNode = bEndNode!._prev;
             }
-            if (finished) {
+            if (flags) {
                 break outer;
             }
         }
@@ -1593,8 +1598,7 @@ function syncChildrenTrackByKeys(
         // Move and sync nodes from left to right.
         if (vNodeEqualKeys(aStartNode!, bEndNode!)) {
             vNodeSync(parent, aStartNode!, bEndNode!, context, syncFlags);
-            next = bEndNode!._next === null ? null : getDOMInstanceFromVNode(bEndNode!._next!);
-            vNodeMoveChild(parent, bEndNode!, next);
+            vNodeMoveChild(parent, bEndNode!, findNextDOMNode(bEndNode!));
             synced++;
             aStartNode = aStartNode!._next;
             bEndNode = bEndNode!._prev;
@@ -1604,11 +1608,11 @@ function syncChildrenTrackByKeys(
         break;
     }
 
-    if (finished) {
-        if (finished !== 3) {
-            if (finished === 1) {
+    if (flags) {
+        if (flags !== 3) {
+            if (flags === 1) {
                 // All nodes from a are synced, insert the rest from b.
-                next = bEndNode!._next === null ? null : getDOMInstanceFromVNode(bEndNode!._next!);
+                const next = findNextDOMNode(bEndNode!);
                 do {
                     vNodeRenderIntoAndAttach(parent, next, bStartNode!, context, syncFlags);
                     bStartNode = bStartNode!._next;
@@ -1625,76 +1629,77 @@ function syncChildrenTrackByKeys(
         // Optimization for common use case when there is only one node left in old list and new list.
         vNodeSync(parent, aStartNode!, bStartNode!, context, syncFlags);
     } else { // Step 2
-
         // Inner length after prefix/suffix optimization.
         let aInnerLength = 0;
         let bInnerLength = 0;
 
-        // Flag indicating that some node should be moved.
-        let moved = false;
+        // Reset flags.
+        flags = 0;
 
         // Reverse indexes for keys.
         let keyIndex: Map<any, number> | undefined;
         let positionKeyIndex: Map<number, number> | undefined;
 
-        bNode = bStartNode;
+        sentinel = bEndNode!._next;
+        vNode = bStartNode;
         do {
-            if (bNode!._flags & VNodeFlags.Key) {
+            if (vNode!._flags & VNodeFlags.Key) {
                 if (keyIndex === undefined) {
                     keyIndex = new Map<any, number>();
                 }
-                keyIndex.set(bNode!._key, bInnerLength);
+                keyIndex.set(vNode!._key, bInnerLength);
             } else {
                 if (positionKeyIndex === undefined) {
                     positionKeyIndex = new Map<number, number>();
                 }
-                positionKeyIndex.set(bNode!._key, bInnerLength);
+                positionKeyIndex.set(vNode!._key, bInnerLength);
             }
             bInnerLength++;
-            bNode = bNode!._next;
-        } while (bNode !== bEndNode!._next);
+            vNode = vNode!._next;
+        } while (vNode !== sentinel);
 
         // Mark all nodes as inserted.
         const bArray = new Array<IVNode<any>>(bInnerLength);
         const sources = new Array<number>(bInnerLength).fill(-1);
 
-        bNode = bStartNode;
+        vNode = bStartNode;
         for (i = 0; i < bInnerLength; i++) {
-            bArray[i] = bNode!;
-            bNode = bNode!._next;
+            bArray[i] = vNode!;
+            vNode = vNode!._next;
         }
 
         let innerSynced = 0;
         i = 0;
-        aNode = aStartNode;
+        sentinel = aEndNode!._next;
+        vNode = aStartNode;
         do {
-            if (aNode!._flags & VNodeFlags.Key) {
-                j = keyIndex ? keyIndex.get(aNode!._key) : undefined;
+            if (vNode!._flags & VNodeFlags.Key) {
+                j = keyIndex ? keyIndex.get(vNode!._key) : undefined;
             } else {
-                j = positionKeyIndex ? positionKeyIndex.get(aNode!._key) : undefined;
+                j = positionKeyIndex ? positionKeyIndex.get(vNode!._key) : undefined;
             }
 
             if (j === undefined) {
-                aNode!._key = null;
+                vNode!._key = null;
             } else {
                 sources[j] = aInnerLength;
                 if (i > j) {
-                    moved = true;
+                    flags = 1;
                 } else {
                     i = j;
                 }
-                bNode = bArray[j];
-                vNodeSync(parent, aNode!, bNode!, context, syncFlags);
+                vNodeSync(parent, vNode!, bArray[j], context, syncFlags);
                 innerSynced++;
             }
             aInnerLength++;
-            aNode = aNode!._next;
-        } while (aNode !== aEndNode!._next);
+            vNode = vNode!._next;
+        } while (vNode !== sentinel);
 
         if (!synced && !innerSynced) {
             // Noone is synced, remove all children with one dom op.
             vNodeRemoveAllChildren(parent, aFirstNode, syncFlags);
-            while (bStartNode !== bEndNode!._next) {
+            sentinel = bEndNode!._next;
+            while (bStartNode !== sentinel) {
                 vNodeRenderIntoAndAttach(parent, null, bStartNode!, context, syncFlags);
                 bStartNode = bStartNode!._next;
             }
@@ -1709,48 +1714,45 @@ function syncChildrenTrackByKeys(
             }
 
             // Step 3
-            if (moved) {
+            if (flags) {
                 const seq = lis(sources);
                 j = seq.length - 1;
-                bNode = bEndNode;
+                vNode = bEndNode;
                 for (i = bInnerLength - 1; i >= 0; i--) {
                     if (sources[i] === -1) {
-                        next = bNode!._next === null ? null : getDOMInstanceFromVNode(bNode!._next!);
                         vNodeRenderIntoAndAttach(
                             parent,
-                            next,
-                            bNode!,
+                            findNextDOMNode(vNode!),
+                            vNode!,
                             context,
                             syncFlags,
                         );
                     } else {
                         if (j < 0 || i !== seq[j]) {
-                            next = bNode!._next === null ? null : getDOMInstanceFromVNode(bNode!._next!);
                             vNodeMoveChild(
                                 parent,
-                                bNode!,
-                                next,
+                                vNode!,
+                                findNextDOMNode(vNode!),
                             );
                         } else {
                             j--;
                         }
                     }
-                    bNode = bNode!._prev;
+                    vNode = vNode!._prev;
                 }
             } else if (innerSynced !== bInnerLength) {
-                bNode = bEndNode;
+                vNode = bEndNode;
                 for (i = bInnerLength - 1; i >= 0; i--) {
                     if (sources[i] === -1) {
-                        next = bNode!._next === null ? null : getDOMInstanceFromVNode(bNode!._next!);
                         vNodeRenderIntoAndAttach(
                             parent,
-                            next,
-                            bNode!,
+                            findNextDOMNode(vNode!),
+                            vNode!,
                             context,
                             syncFlags,
                         );
                     }
-                    bNode = bNode!._prev;
+                    vNode = vNode!._prev;
                 }
             }
         }
@@ -1758,7 +1760,18 @@ function syncChildrenTrackByKeys(
 }
 
 /**
- * Slightly modified Longest Increased Subsequence algorithm, it ignores items that have `undefined` value, they're
+ * Find next DOM node for the vnode.
+ *
+ * @param vnode VNode.
+ */
+function findNextDOMNode(vnode: IVNode<any>): Node | null {
+    return vnode._next === null ?
+        null :
+        getDOMInstanceFromVNode(vnode._next);
+}
+
+/**
+ * Slightly modified Longest Increased Subsequence algorithm, it ignores items that have `-1` value, they're
  * representing new items.
  *
  * http://en.wikipedia.org/wiki/Longest_increasing_subsequence
@@ -1777,7 +1790,7 @@ function lis(a: Array<number>): number[] {
         const ai = a[i];
         if (ai !== -1) {
             let j = result[result.length - 1];
-            if (a[j]! < ai) {
+            if (a[j] < ai) {
                 p[i] = j;
                 result.push(i);
                 continue;
@@ -1788,14 +1801,14 @@ function lis(a: Array<number>): number[] {
 
             while (u < v) {
                 let c = ((u + v) / 2) | 0;
-                if (a[result[c]]! < ai) {
+                if (a[result[c]] < ai) {
                     u = c + 1;
                 } else {
                     v = c;
                 }
             }
 
-            if (ai < a[result[u]]!) {
+            if (ai < a[result[u]]) {
                 if (u > 0) {
                     p[i] = result[u - 1];
                 }
@@ -1809,7 +1822,7 @@ function lis(a: Array<number>): number[] {
 
     while (u-- > 0) {
         result[u] = v;
-        v = p[v]!;
+        v = p[v];
     }
 
     return result;
