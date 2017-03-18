@@ -1621,7 +1621,11 @@ function syncChildrenTrackByKeys(
                 } while (aStartNode !== aEndNode!._next);
             }
         }
+    } else if (aStartNode === aEndNode && bStartNode === bEndNode) {
+        // Optimization for common use case when there is only one node left in old list and new list.
+        vNodeSync(parent, aStartNode!, bStartNode!, context, syncFlags);
     } else { // Step 2
+
         // Inner length after prefix/suffix optimization.
         let aInnerLength = 0;
         let bInnerLength = 0;
