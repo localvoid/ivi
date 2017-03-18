@@ -2,12 +2,13 @@ import "core-js";
 
 import { DevModeFlags, setDevModeFlags } from "../src/dev_mode/dev_mode";
 
+import "./sync.spec";
 import "./equality.spec";
 import "./dom.spec";
 import "./vnode.spec";
 import "./normalization.spec";
 import "./render.spec";
-import "./sync.spec";
+// import "./sync.spec";
 import "./lifecycle.spec";
 import "./context.spec";
 import "./component.spec";

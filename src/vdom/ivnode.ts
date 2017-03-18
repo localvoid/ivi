@@ -15,6 +15,15 @@ export interface IVNode<P = null> {
      * Flags, see `VNodeFlags` for details.
      */
     _flags: VNodeFlags;
+    _prev: IVNode<any> | null;
+    _next: IVNode<any> | null;
+    /**
+     * Children property can contain flat list of children virtual nodes, or text if it contains a single text node
+     * child.
+     *
+     * When virtual node represents an input field, children property will contain input value.
+     */
+    _children: IVNode<any> | string | number | boolean | null | undefined;
     /**
      * Tag property contains details about the type of the element.
      *
@@ -33,6 +42,11 @@ export interface IVNode<P = null> {
      */
     _props: P | null;
     /**
+     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
+     * time VNode is synced, reference will be transferred from the old VNode to the new one.
+     */
+    _instance: Node | Component<any> | SelectorData | Context | null;
+    /**
      * Class name.
      */
     _className: string | null;
@@ -44,18 +58,6 @@ export interface IVNode<P = null> {
      * Events.
      */
     _events: EventHandlerList | EventHandler | null;
-    /**
-     * Children property can contain flat array of children virtual nodes, or text if it contains a single text node
-     * child.
-     *
-     * When virtual node represents an input field, children property will contain input value.
-     */
-    _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
-    /**
-     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
-     * time VNode is synced, reference will be transferred from the old VNode to the new one.
-     */
-    _instance: Node | Component<any> | SelectorData | Context | null;
 }
 
 /**

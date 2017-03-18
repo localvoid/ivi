@@ -1,7 +1,6 @@
 export * from "./components/functional";
 export * from "./components/lifecycle";
 export * from "./components/static";
-export * from "./components/invalid";
 
 import { IVNode } from "../../src/vdom/ivnode";
 import { VNode, $c, $h, $t } from "../../src/vdom/vnode";

@@ -30,62 +30,58 @@ export const enum VNodeFlags {
      */
     ChildrenVNode = 1 << 5,
     /**
-     * Children property contains an Array type.
-     */
-    ChildrenArray = 1 << 6,
-    /**
      * Children property contains unsafe HTML.
      */
-    UnsafeHTML = 1 << 7,
+    UnsafeHTML = 1 << 6,
     /**
      * VNode is using a non-artificial key.
      */
-    Key = 1 << 8,
+    Key = 1 << 7,
     /**
      * VNode represents an HTMLInputElement(+textarea) element.
      */
-    InputElement = 1 << 9,
+    InputElement = 1 << 8,
     /**
      * VNode represents a HTMLTextAreaElement.
      */
-    TextAreaElement = 1 << 10,
+    TextAreaElement = 1 << 9,
     /**
      * VNode represents a HTMLMediaElement.
      */
-    MediaElement = 1 << 11,
+    MediaElement = 1 << 10,
     /**
      * VNode is an SVGElement.
      */
-    SvgElement = 1 << 12,
+    SvgElement = 1 << 11,
     /**
      * VNode is an Element Descriptor.
      */
-    ElementDescriptor = 1 << 13,
+    ElementDescriptor = 1 << 12,
     /**
      * VNode is a Custom Element.
      */
-    WebComponent = 1 << 14,
+    WebComponent = 1 << 13,
     /**
      * Specialized VNode with connect functionality.
      */
-    Connect = 1 << 15,
+    Connect = 1 << 14,
     /**
      * Specialized VNode with an update context functionality.
      */
-    UpdateContext = 1 << 16,
+    UpdateContext = 1 << 15,
     /**
      * Specialized VNode with keep alive functionality.
      */
-    KeepAlive = 1 << 17,
+    KeepAlive = 1 << 16,
     /**
      * VNode element will be automatically focused after instantiation.
      */
-    Autofocus = 1 << 18,
+    Autofocus = 1 << 17,
     /**
      * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
      * prototype for building mutable trees.
      */
-    Immutable = 1 << 19,
+    Immutable = 1 << 18,
 
     /**
      * VNode represents a Component.

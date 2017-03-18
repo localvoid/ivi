@@ -140,7 +140,7 @@ describe("VNode", () => {
         });
 
         it("children: duplicate keys", () => {
-            expect(() => $h("div").children([$t("").key("a"), $t("").key("a")])).to.throw(Error);
+            expect(() => $h("div").children($t("").key("a"), $t("").key("a"))).to.throw(Error);
         });
 
         it("unsafeHTML", () => {
