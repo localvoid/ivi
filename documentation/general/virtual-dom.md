@@ -126,6 +126,9 @@ There are several functions that helps with building nested children lists in a 
 think about possibilities that you can optimize your code even further by preallocating arrays, etc (old ivi versions
 had support for nested arrays).
 
+Because one of the most common mistakes when working with dynamic children lists is that developers forgetting to add
+keys, all nodes in the nested lists should have explicit keys.
+
 ```ts
 function $list(...children: Array<VNode<any> | null>): VNode<any> | null;
 function $map<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any>): VNode<T> | null;
@@ -144,7 +147,7 @@ const data = [
 render(
     $h("div").children(
         "One",
-        $map(data, (item) => $h("span").children(item)),
+        $map(data, (item) => $h("span").key(item).children(item)),
         "Four",
     ),
 );
