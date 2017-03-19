@@ -45,7 +45,7 @@ import { CSSStyleProps } from "../common/dom_props";
  */
 export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
-    _prev: IVNode<any> | null;
+    _prev: IVNode<any>;
     _next: IVNode<any> | null;
     _children: IVNode<any> | string | number | boolean | null | undefined;
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |

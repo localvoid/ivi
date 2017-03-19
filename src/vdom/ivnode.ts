@@ -15,13 +15,22 @@ export interface IVNode<P = null> {
      * Flags, see `VNodeFlags` for details.
      */
     _flags: VNodeFlags;
-    _prev: IVNode<any> | null;
+    /**
+     * Previous node in a linked list. When node is the first in a list, its previous node is always pointing to the
+     * last node, creating some sort of a circular linked list. By implementing linked lists this way we don't need to
+     * store two pointers on the parent nodes.
+     *
+     * Also, it allows to easily insert nested arrays in the same way as inserting just one vnode.
+     */
+    _prev: IVNode<any>;
+    /**
+     * Next node in a linked list. Last node is always pointing to a `null` value.
+     */
     _next: IVNode<any> | null;
     /**
-     * Children property can contain flat list of children virtual nodes, or text if it contains a single text node
-     * child.
+     * Children nodes in a normalized linked list form.
      *
-     * When virtual node represents an input field, children property will contain input value.
+     * Also, depending on the type of the node, it can contain boolean values for input elements.
      */
     _children: IVNode<any> | string | number | boolean | null | undefined;
     /**

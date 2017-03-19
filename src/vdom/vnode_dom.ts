@@ -339,7 +339,7 @@ export function $e<P>(d: ElementDescriptor<P>, className?: string): VNode<P> {
 /**
  * Create a VNodeBuilder representing a Custom Element (WebComponent).
  *
- * @param d Element Descriptor.
+ * @param tagName Custom Element tag name.
  * @param className Class name.
  * @returns VNodeBuilder object.
  */

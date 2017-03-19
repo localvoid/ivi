@@ -2,6 +2,14 @@ import { VNodeFlags } from "./flags";
 import { VNode, isValidVNode } from "./vnode";
 import { $t } from "./vnode_dom";
 
+/**
+ * The `$map()` function creates a new virtual node linked list with the results of calling a provided function on every
+ * element in the array.
+ *
+ * @param array Array.
+ * @param fn Function.
+ * @returns First VNode in a linked list or `null` when it is empty.
+ */
 export function $map<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any>): VNode<T> | null {
     if (array.length) {
         const first = fn(array[0], 0);
@@ -18,6 +26,14 @@ export function $map<T>(array: Array<T>, fn: (item: T, index: number) => VNode<a
     return null;
 }
 
+/**
+ * The `$filter()` function creates a new virtual node linked list with all virtual nodes returned by the provided
+ * function.
+ *
+ * @param array Array.
+ * @param fn Function.
+ * @returns First VNode in a linked list or `null` when it is empty.
+ */
 export function $filter<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any> | null): VNode<T> | null {
     if (array.length) {
         let first: VNode<any> | null = null;
@@ -47,6 +63,14 @@ export function $filter<T>(array: Array<T>, fn: (item: T, index: number) => VNod
     return null;
 }
 
+/**
+ * The `$range()` function creates a new virtual node linked list with all virtual nodes returned by the provided
+ * function.
+ *
+ * @param n Range number.
+ * @param fn Function.
+ * @returns First VNode in a linked list or `null` when it is empty.
+ */
 export function $range<T>(n: number, fn: (index: number) => VNode<any>): VNode<T> | null {
     if (n) {
         const first = fn(0);
@@ -63,6 +87,12 @@ export function $range<T>(n: number, fn: (index: number) => VNode<any>): VNode<T
     return null;
 }
 
+/**
+ * The `$list()` is a variadic function that converts variable number of children virtual nodes into a linked list form.
+ *
+ * @param children Variable number of children virtual nodes.
+ * @returns First VNode in a linked list or `null` when it is empty.
+ */
 export function $list(...children: Array<VNode<any> | null>): VNode<any> | null;
 export function $list(): VNode<any> | null {
     let first: VNode<any> | null = null;
