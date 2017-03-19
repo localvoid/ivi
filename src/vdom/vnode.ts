@@ -978,145 +978,27 @@ export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
     return newNode;
 }
 
-function isVNodeKeyedChildrenArray(v: any): v is IVNode<any>[] {
-    return v.constructor === Array;
-}
-
-function isValidVNode(v: any): v is IVNode<any> {
+export function isValidVNode(v: any): v is IVNode<any> {
     return v.constructor === VNode;
 }
 
-/**
- * Normalizes VNode array by flattening all nodes, removing null values and converting number and string objects to text
- * nodes.
- *
- * @param nodes
- * @returns Normalized VNode array.
- */
-export function normalizeVNodes(nodes: VNodeArray): IVNode<any> | null {
-    let first: IVNode<any> | null = null;
-    let prev: IVNode<any> | null = null;
-    let last: IVNode<any> | null = null;
-    for (let i = 0; i < nodes.length; i++) {
-        let n = nodes[i];
-
-        if (typeof n === "object") {
-            if (n === null) {
-                continue;
-            } else {
-                if (isVNodeKeyedChildrenArray(n)) {
-                    n = normalizeVNodes(n);
-                    if (n === null) {
-                        continue;
-                    }
-                    last = n._prev!;
-                } else {
-                    if (!isValidVNode(n)) {
-                        n = $t("");
-                    }
-                    last = n;
-                    if (!(n._flags & VNodeFlags.Key)) {
-                        n._key = i;
-                    }
-                }
-            }
-        } else { // basic object
-            last = n = $t(n);
-            n._key = i;
-        }
-
-        if (first === null) {
-            first = n;
-            prev = last;
-        } else {
-            n._prev = prev;
-            prev!._next = n;
-            prev = last;
-        }
-    }
-    if (first !== null) {
-        first._prev = last;
-    }
-
-    return first;
-}
-
-export function checkUniqueKeys(children: IVNode<any>): void {
+export function checkUniqueKeys(children: IVNode<any> | null): void {
     if (__IVI_DEV__) {
-        let keys: Set<any> | undefined;
-        let node: IVNode<any> | null = children;
-        while (node !== null) {
-            if (node._flags & VNodeFlags.Key) {
-                if (keys === undefined) {
-                    keys = new Set<any>();
-                } else if (keys.has(node._key)) {
-                    throw new Error(`Failed to set children, invalid children list, key: "${node._key}" ` +
-                        `is used multiple times.`);
+        if (children !== null) {
+            let keys: Set<any> | undefined;
+            let node: IVNode<any> | null = children;
+            while (node !== null) {
+                if (node._flags & VNodeFlags.Key) {
+                    if (keys === undefined) {
+                        keys = new Set<any>();
+                    } else if (keys.has(node._key)) {
+                        throw new Error(`Failed to set children, invalid children list, key: "${node._key}" ` +
+                            `is used multiple times.`);
+                    }
+                    keys.add(node._key);
                 }
-                keys.add(node._key);
-            }
-            node = node._next;
-        }
-    }
-}
-
-export function $map<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any>): VNode<T> | null {
-    if (array.length) {
-        const first = fn(array[0], 0);
-        let prev = first;
-        for (let i = 1; i < array.length; i++) {
-            const vnode = fn(array[i], i);
-            vnode._prev = prev;
-            prev._next = vnode;
-            prev = vnode;
-        }
-        first._prev = prev;
-        return first;
-    }
-    return null;
-}
-
-export function $filter<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any> | null): VNode<T> | null {
-    if (array.length) {
-        let first: VNode<any> | null = null;
-        let vnode: VNode<any> | null;
-        let i = 0;
-        for (; i < array.length; i++) {
-            vnode = fn(array[i], i);
-            if (vnode !== null) {
-                first = vnode;
-                break;
+                node = node._next;
             }
         }
-        if (first !== null) {
-            let prev = first;
-            for (; i < array.length; i++) {
-                vnode = fn(array[i], i);
-                if (vnode !== null) {
-                    vnode._prev = prev;
-                    prev._next = vnode;
-                    prev = vnode;
-                }
-            }
-            first._prev = prev;
-            return first;
-        }
     }
-    return null;
-}
-
-export function $range<T>(n: number, fn: (index: number) => VNode<any>): VNode<T> | null {
-    if (n) {
-        const first = fn(0);
-        let prev = first;
-        for (let i = 1; i < n; i++) {
-            const vnode = fn(i);
-            vnode._prev = prev;
-            prev._next = vnode;
-            prev = vnode;
-        }
-        first._prev = prev;
-        return first;
-    }
-    return null;
 }

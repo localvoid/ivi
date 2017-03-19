@@ -1,5 +1,6 @@
 import { augment, $tc, $tcf, $lc, checkDOMOps, expectDOMOps } from "./utils";
-import { $t, $h, $s, $i, $m, $map } from "../src/vdom/vnode";
+import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
+import { $map } from "../src/vdom/vnode_lists";
 import { expect } from "chai";
 
 describe("augment", () => {

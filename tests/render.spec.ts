@@ -1,6 +1,7 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "../src/common/dom";
 import { render, checkDOMOps, expectDOMOps, $tc, $tcf } from "./utils";
-import { $t, $h, $s, $i, $m, $map, cloneVNode } from "../src/vdom/vnode";
+import { $t, $h, $s, $i, $m, cloneVNode } from "../src/vdom/vnode";
+import { $map } from "../src/vdom/vnode_lists";
 import { expect } from "chai";
 
 describe("render", () => {
