@@ -1207,7 +1207,7 @@ function syncChildren(
     } else {
         if (aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
             if (bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
-                if ((bParentFlags & VNodeFlags.ChildrenBasic) || !b) {
+                if (bParentFlags & VNodeFlags.ChildrenBasic) {
                     const c = parent.firstChild;
                     if (c) {
                         c.nodeValue = b as string;
@@ -1215,7 +1215,11 @@ function syncChildren(
                         parent.textContent = b as string;
                     }
                 } else {
-                    setInnerHTML((parent as Element), b as string, !!(bParentFlags & VNodeFlags.SvgElement));
+                    if (!b) {
+                        parent.textContent = "";
+                    } else {
+                        setInnerHTML((parent as Element), b as string, !!(bParentFlags & VNodeFlags.SvgElement));
+                    }
                 }
             } else {
                 parent.textContent = "";
