@@ -1,5 +1,6 @@
 import { VNodeFlags } from "./flags";
-import { VNode, isValidVNode, $t } from "./vnode";
+import { VNode, isValidVNode } from "./vnode";
+import { $t } from "./vnode_dom";
 
 export function $map<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any>): VNode<T> | null {
     if (array.length) {
@@ -61,7 +62,6 @@ export function $range<T>(n: number, fn: (index: number) => VNode<any>): VNode<T
     }
     return null;
 }
-
 
 export function $list(...children: Array<VNode<any> | null>): VNode<any> | null;
 export function $list(): VNode<any> | null {

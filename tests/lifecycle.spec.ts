@@ -1,4 +1,4 @@
-import { $h } from "../src/vdom/vnode";
+import { $h } from "../src/vdom/vnode_dom";
 import { startRender, augment, checkLifecycle, $lc, $sc } from "./utils";
 import { expect } from "chai";
 

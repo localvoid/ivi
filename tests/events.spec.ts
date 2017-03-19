@@ -2,7 +2,7 @@ import { EventHandler } from "../src/events/event_handler";
 import { SyntheticEvent } from "../src/events/synthetic_event";
 import { Events } from "../src/events/events";
 import { IVNode } from "../src/vdom/ivnode";
-import { $h } from "../src/vdom/vnode";
+import { $h } from "../src/vdom/vnode_dom";
 import { render as rootRender } from "../src/vdom/root";
 import { expect } from "chai";
 

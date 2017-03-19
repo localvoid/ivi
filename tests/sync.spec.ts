@@ -1,7 +1,8 @@
 import { ComponentFlags } from "../src/vdom/flags";
 import { IVNode, getComponentInstanceFromVNode } from "../src/vdom/ivnode";
 import { Component } from "../src/vdom/component";
-import { $t, $h, $c, $i, $m } from "../src/vdom/vnode";
+import { $t, $h, $i, $m } from "../src/vdom/vnode_dom";
+import { $c } from "../src/vdom/vnode_components";
 import { render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
 import { expect } from "chai";
 

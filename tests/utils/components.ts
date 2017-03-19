@@ -3,7 +3,9 @@ export * from "./components/lifecycle";
 export * from "./components/static";
 
 import { IVNode } from "../../src/vdom/ivnode";
-import { VNode, $c, $h, $t } from "../../src/vdom/vnode";
+import { VNode } from "../../src/vdom/vnode";
+import { $h, $t } from "../../src/vdom/vnode_dom";
+import { $c } from "../../src/vdom/vnode_components";
 import { Component } from "../../src/vdom/component";
 
 export interface TestComponentProps {

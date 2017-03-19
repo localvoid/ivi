@@ -1,7 +1,9 @@
 import { Context } from "../../../src/common/types";
 import { IVNode } from "../../../src/vdom/ivnode";
 import { ComponentFunction } from "../../../src/vdom/component";
-import { VNode, $c, $t } from "../../../src/vdom/vnode";
+import { VNode } from "../../../src/vdom/vnode";
+import { $t } from "../../../src/vdom/vnode_dom";
+import { $c } from "../../../src/vdom/vnode_components";
 
 export interface TestFunctionalComponentHooks<P> {
     render?: (props: P) => IVNode<any>;
