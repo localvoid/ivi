@@ -95,27 +95,62 @@ interface VNode<P> {
 
 ```ts
 interface VNode<P> {
-    children(children: VNodeArray | VNode<any> | string | number | null): VNode<P>;
+    children(...children: Array<VNode<any> | string | number | null>): VNode<P>;
     unsafeHTML(html: string): VNode<P>
 }
 ```
 
-Children property can be any basic object like string or number, single VNode or an array of VNodes, basic objects, null
-values and arrays of VNodes with explicit keys. It will automatically normalize arrays by flattening nested arrays,
-removing null values and replacing basic objects with text nodes.
+#### Children
 
-Children normalization process is also implicitly assigns positional keys for all nodes that doesn't have keys.
-Positional keys are used to support code patterns like this:
+Children method is a variadic function that accepts variable number of children. Children objects can be any basic
+objects like string or number, VNode or VNode lists and null values. When children are assigned, they will be
+automatically normalized into a circular linked list form. All null values will be ignored, and basic objects will be
+converted into VNodes.
+
+Children normalization process also implicitly assigns positional keys for all nodes that doesn't have keys.
+Positional keys are necessary to support code patterns like this:
 
 ```ts
-$h("div").children([
+$h("div").children(
     isVisible ? $h(ComponentA) : null,
     $c(ComponentB),
-]);
+);
 ```
 
-When `ComponentA` goes from visible to invisible state and removed from the list, `ComponentB` won't be destroyed and
-reinstantiated because it has the same implicit positional key.
+When `ComponentA` goes from visible to invisible state and removed from the list, `ComponentB` won't be reinstantiated
+because it has the same implicit positional key.
+
+##### Nested Children lists
+
+There are several functions that helps with building nested children lists in a normalized form, so you don't need to
+think about possibilities that you can optimize your code even further by preallocating arrays, etc (old ivi versions
+had support for nested arrays).
+
+```ts
+function $list(...children: Array<VNode<any> | null>): VNode<any> | null;
+function $map<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any>): VNode<T> | null;
+function $filter<T>(array: Array<T>, fn: (item: T, index: number) => VNode<any> | null): VNode<T> | null;
+function $range<T>(n: number, fn: (index: number) => VNode<any>): VNode<T> | null {
+```
+
+Example:
+
+```ts
+const data = [
+    "Two",
+    "Three",
+];
+
+render(
+    $h("div").children(
+        "One",
+        $map(data, (item) => $h("span").children(item)),
+        "Four",
+    ),
+);
+```
+
+#### UnsafeHTML
 
 `unsafeHTML` is used to specify `innerHTML`, it is named unsafe because it doesn't provide any XSS protection, HTML
 string specified in `html` parameter will be directly injected into the element.
