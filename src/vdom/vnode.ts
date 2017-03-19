@@ -259,6 +259,8 @@ export class VNode<P = null> implements IVNode<P> {
                 } else {
                     if (!isValidVNode(first)) {
                         first = new VNode<null>(VNodeFlags.Text, null, null, null, first);
+                    }
+                    if (!(first._flags & VNodeFlags.Key)) {
                         first._key = firstPosition;
                     }
                     break;
