@@ -1104,3 +1104,19 @@ export function $filter<T>(array: Array<T>, fn: (item: T, index: number) => VNod
     }
     return null;
 }
+
+export function $range<T>(n: number, fn: (index: number) => VNode<any>): VNode<T> | null {
+    if (n) {
+        const first = fn(0);
+        let prev = first;
+        for (let i = 1; i < n; i++) {
+            const vnode = fn(i);
+            vnode._prev = prev;
+            prev._next = vnode;
+            prev = vnode;
+        }
+        first._prev = prev;
+        return first;
+    }
+    return null;
+}

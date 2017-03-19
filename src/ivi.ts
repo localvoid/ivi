@@ -99,7 +99,7 @@ export { KeepAliveHandler } from "./vdom/keep_alive";
 export {
     VNodeArray,
     VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
-    $t, $h, $s, $c, $i, $m, $e, $w, $connect, $ctx, $keepAlive, $map, $filter,
+    $t, $h, $s, $c, $i, $m, $e, $w, $connect, $ctx, $keepAlive, $map, $filter, $range,
 } from "./vdom/vnode";
 export { Root, findRoot, render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
 
