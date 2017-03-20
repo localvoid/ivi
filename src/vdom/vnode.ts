@@ -2,7 +2,7 @@ import { Context } from "../common/types";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isVoidElement, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { InputType } from "../common/dom";
-import { IVNode } from "./ivnode";
+import { IVNode, ElementProps } from "./ivnode";
 import { VNodeFlags, ElementDescriptorFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
@@ -49,17 +49,15 @@ export class VNode<P = null> implements IVNode<P> {
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
     ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
     _key: any;
-    _props: P | null;
+    _props: ElementProps<P> | P | null;
     _className: string | null;
     _instance: Node | Component<any> | SelectorData | Context | null;
-    _style: CSSStyleProps | null;
-    _events: EventHandlerList | EventHandler | null;
 
     constructor(
         flags: number,
         tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> |
             ConnectDescriptor<any, any, any> | KeepAliveHandler | null,
-        props: P | null,
+        props: ElementProps<P> | P | null,
         className: string | null,
         children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
     ) {
@@ -70,8 +68,6 @@ export class VNode<P = null> implements IVNode<P> {
         this._props = props;
         this._className = className;
         this._instance = null;
-        this._style = null;
-        this._events = null;
     }
 
     /**
@@ -147,7 +143,15 @@ export class VNode<P = null> implements IVNode<P> {
                 }
             }
         }
-        this._style = style;
+        if (this._props === null) {
+            this._props = {
+                attrs: null,
+                style,
+                events: null,
+            };
+        } else {
+            (this._props as ElementProps<P>).style = style;
+        }
         return this;
     }
 
@@ -163,7 +167,15 @@ export class VNode<P = null> implements IVNode<P> {
                 throw new Error("Failed to set events, events are available on element nodes only.");
             }
         }
-        this._events = events;
+        if (this._props === null) {
+            this._props = {
+                attrs: null,
+                style: null,
+                events,
+            };
+        } else {
+            (this._props as ElementProps<P>).events = events;
+        }
         return this;
     }
 
@@ -201,7 +213,15 @@ export class VNode<P = null> implements IVNode<P> {
                 }
             }
         }
-        this._props = props;
+        if (this._props === null) {
+            this._props = {
+                attrs: props,
+                style: null,
+                events: null,
+            };
+        } else {
+            (this._props as ElementProps<P>).attrs = props;
+        }
         return this;
     }
 
@@ -349,12 +369,16 @@ export class VNode<P = null> implements IVNode<P> {
             if (props && typeof props !== "object") {
                 throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
             }
-            if (this._props && typeof this._props !== "object") {
+            if (this._props &&
+                (this._props as ElementProps<P>).attrs &&
+                typeof (this._props as ElementProps<P>).attrs !== "object") {
                 throw new Error(`Failed to merge props, props object has type "${typeof this._props}".`);
             }
         }
         if (props) {
-            return this.props(this._props ? Object.assign({}, this._props, props) : props);
+            return this.props(this._props && (this._props as ElementProps<P>).attrs ?
+                Object.assign({}, (this._props as ElementProps<P>).attrs, props) :
+                props);
         }
         return this;
     }
@@ -367,7 +391,9 @@ export class VNode<P = null> implements IVNode<P> {
      */
     mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P> {
         if (style) {
-            return this.style(this._style ? Object.assign({}, this._style, style) : style);
+            return this.style(this._props && (this._props as ElementProps<P>).style ?
+                Object.assign({}, (this._props as ElementProps<P>).style, style) :
+                style);
         }
         return this;
     }

@@ -30,7 +30,7 @@ import {
     stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
 } from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
-import { IVNode, getDOMInstanceFromVNode } from "./ivnode";
+import { IVNode, ElementProps, getDOMInstanceFromVNode } from "./ivnode";
 import { ElementDescriptor } from "./element_descriptor";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
@@ -360,8 +360,8 @@ function vNodeAttach(vnode: IVNode<any>): void {
                 vNodeAttach(children as IVNode<any>);
             }
         }
-        if (vnode._events) {
-            attachEvents(vnode._events);
+        if (vnode._props && (vnode._props as ElementProps<any>).events) {
+            attachEvents((vnode._props as ElementProps<any>).events!);
         }
     } else if (flags & VNodeFlags.Component) {
         stackTracePushComponent(vnode);
@@ -400,8 +400,8 @@ function vNodeDetach(vnode: IVNode<any>, syncFlags: SyncFlags): void {
                 vNodeDetach(children as IVNode<any>, syncFlags);
             }
         }
-        if (vnode._events) {
-            detachEvents(vnode._events);
+        if (vnode._props && (vnode._props as ElementProps<any>).events) {
+            detachEvents((vnode._props as ElementProps<any>).events!);
         }
     } else if (flags & VNodeFlags.Component) {
         stackTracePushComponent(vnode);
@@ -662,17 +662,21 @@ function vNodeRender(
                 autofocus(node as Element);
             }
 
-            if (vnode._props) {
-                syncDOMProps(node as Element, flags, null, vnode._props);
-            }
             if (vnode._className !== null) {
                 syncClassName(node as Element, flags, null, vnode._className);
             }
-            if (vnode._style !== null) {
-                syncStyle(node as HTMLElement, null, vnode._style);
-            }
-            if (vnode._events) {
-                setEventHandlersToDOMNode(node as Element, vnode._events);
+
+            const props = (vnode._props as ElementProps<any>);
+            if (props !== null) {
+                if (props.attrs !== null) {
+                    syncDOMProps(node as Element, flags, null, props.attrs);
+                }
+                if (props.style !== null) {
+                    syncStyle(node as HTMLElement, null, props.style);
+                }
+                if (props.events !== null) {
+                    setEventHandlersToDOMNode(node as Element, props.events);
+                }
             }
 
             let children = vnode._children;
@@ -868,8 +872,11 @@ function vNodeAugment(
                         }
                     }
 
-                    if (vnode._events) {
-                        setEventHandlersToDOMNode(node as Element, vnode._events);
+                    const props = (vnode._props as ElementProps<any>);
+                    if (props !== null) {
+                        if (props.events !== null) {
+                            setEventHandlersToDOMNode(node as Element, props.events);
+                        }
                     }
 
                     if (flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) {
@@ -1056,20 +1063,40 @@ function vNodeSync(
                     (instance as Text).nodeValue = b._children as string;
                 }
             } else { // (flags & VNodeFlags.Element)
-                if (a._props !== b._props) {
-                    syncDOMProps(instance as Element, flags, a._props, b._props);
-                }
                 if (a._className !== b._className) {
                     syncClassName(instance as Element, flags, a._className, b._className);
                 }
-                if (a._style !== b._style) {
-                    syncStyle(instance as HTMLElement, a._style, b._style);
+                const aProps = (a._props as ElementProps<any>);
+                const bProps = (a._props as ElementProps<any>);
+                let aAttrs = null;
+                let bAttrs = null;
+                let aStyle = null;
+                let bStyle = null;
+                let aEvents = null;
+                let bEvents = null;
+                if (aProps !== null) {
+                    aAttrs = aProps.attrs;
+                    aStyle = aProps.style;
+                    aEvents = aProps.events;
                 }
-                if (a._events !== b._events) {
-                    if (syncFlags & SyncFlags.Attached) {
-                        syncEvents(instance as Element, a._events, b._events);
+                if (bProps !== null) {
+                    bAttrs = bProps.attrs;
+                    bStyle = bProps.style;
+                    bEvents = bProps.events;
+                }
+                if (aProps !== null || bProps !== null) {
+                    if (aProps !== bProps) {
+                        syncDOMProps(instance as Element, flags, aProps, bProps);
                     }
-                    setEventHandlersToDOMNode(instance as Element, b._events);
+                    if (aStyle !== bStyle) {
+                        syncStyle(instance as HTMLElement, aStyle, bStyle);
+                    }
+                    if (aEvents !== bEvents) {
+                        if (syncFlags & SyncFlags.Attached) {
+                            syncEvents(instance as Element, aEvents, bEvents);
+                        }
+                        setEventHandlersToDOMNode(instance as Element, bEvents);
+                    }
                 }
 
                 if (a._children !== b._children) {

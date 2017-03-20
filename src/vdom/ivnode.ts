@@ -38,7 +38,7 @@ export interface IVNode<P = null> {
     /**
      * Properties.
      */
-    _props: P | null;
+    _props: ElementProps<P> | P | null;
     /**
      * Class name.
      */
@@ -48,14 +48,21 @@ export interface IVNode<P = null> {
      * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
     _instance: Node | Component<any> | SelectorData | Context | null;
+}
+
+export interface ElementProps<P> {
+    /**
+     * Attributes.
+     */
+    attrs: P | null;
     /**
      * Style.
      */
-    _style: CSSStyleProps | null;
+    style: CSSStyleProps | null;
     /**
      * Events.
      */
-    _events: EventHandlerList | EventHandler | null;
+    events: EventHandlerList | EventHandler | null;
 }
 
 /**
