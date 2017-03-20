@@ -21,12 +21,6 @@ describe("VNode", () => {
             expect(t._key).to.be.equal("k");
         });
 
-        it("null key", () => {
-            const t = $t("abc").key("k").key(null);
-            expect(t._flags & VNodeFlags.Key).to.be.equal(0);
-            expect(t._key).to.be.equal(null);
-        });
-
         it("className", () => {
             expect(() => $t("abc").className("cls")).to.throw(Error);
         });

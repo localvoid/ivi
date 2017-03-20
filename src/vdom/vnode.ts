@@ -78,15 +78,15 @@ import {
  */
 export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
+    _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
     ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
     _key: any;
     _props: P | null;
     _className: string | null;
+    _instance: Node | Component<any> | SelectorData | Context | null;
     _style: CSSStyleProps | null;
     _events: EventHandlerList | EventHandler | null;
-    _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
-    _instance: Node | Component<any> | SelectorData | Context | null;
 
     constructor(
         flags: number,
@@ -97,14 +97,14 @@ export class VNode<P = null> implements IVNode<P> {
         children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
     ) {
         this._flags = flags;
+        this._children = children;
         this._tag = tag;
         this._key = 0;
         this._props = props;
         this._className = className;
+        this._instance = null;
         this._style = null;
         this._events = null;
-        this._children = children;
-        this._instance = null;
     }
 
     /**
@@ -117,11 +117,7 @@ export class VNode<P = null> implements IVNode<P> {
      * @returns VNodeBuilder.
      */
     key(key: any): VNode<P> {
-        if (key === null) {
-            this._flags &= ~VNodeFlags.Key;
-        } else {
-            this._flags |= VNodeFlags.Key;
-        }
+        this._flags |= VNodeFlags.Key;
         this._key = key;
         return this;
     }

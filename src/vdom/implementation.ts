@@ -456,72 +456,80 @@ function vNodeUpdateComponents(
     syncFlags: SyncFlags,
 ): void {
     const flags = vnode._flags;
-    if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
-        const p = vnode._instance as Node;
-        let children = vnode._children;
-        if (flags & VNodeFlags.ChildrenArray) {
-            children = children as IVNode<any>[];
-            for (let i = 0; i < children.length; i++) {
-                vNodeUpdateComponents(p, children[i], context, syncFlags);
+    if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray | VNodeFlags.Component)) {
+        if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
+            const p = vnode._instance as Node;
+            let children = vnode._children;
+            if (flags & VNodeFlags.ChildrenArray) {
+                children = children as IVNode<any>[];
+                for (let i = 0; i < children.length; i++) {
+                    vNodeUpdateComponents(p, children[i], context, syncFlags);
+                }
+            } else {
+                vNodeUpdateComponents(p, children as IVNode<any>, context, syncFlags);
             }
         } else {
-            vNodeUpdateComponents(p, children as IVNode<any>, context, syncFlags);
-        }
-    } else if (flags & VNodeFlags.Component) {
-        stackTracePushComponent(vnode);
-        if (flags & VNodeFlags.ComponentClass) {
-            const component = vnode._instance as Component<any>;
+            stackTracePushComponent(vnode);
+            if (flags & VNodeFlags.ComponentClass) {
+                const component = vnode._instance as Component<any>;
 
-            const cflags = component.flags;
-            const oldRoot = vnode._children as IVNode<any>;
+                const cflags = component.flags;
+                const oldRoot = vnode._children as IVNode<any>;
 
-            if ((cflags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
-                componentPerfMarkBegin("update", vnode);
-                component.beforeUpdate();
-                const newRoot = vnode._children = component.render();
-                vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
-                component.flags &= ~ComponentFlags.Dirty;
-                component.updated();
-                componentPerfMarkEnd("update", vnode);
-            } else {
-                vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
-            }
-
-        } else { // (flags & VNodeFlags.ComponentFunction)
-            if (flags & VNodeFlags.Connect) {
-                const connect = vnode._tag as ConnectDescriptor<any, any, any>;
-                const prevSelectData = vnode._instance as SelectorData;
-                componentPerfMarkBegin("update", vnode);
-                const selectData = connect.select(prevSelectData, vnode._props, context);
-                const prevChildren = vnode._children;
-                vnode._children = (prevSelectData === selectData) ?
-                    vnode._children :
-                    connect.render(selectData.out);
-                vnode._instance = selectData;
-                vNodeSync(
-                    parent,
-                    prevChildren as IVNode<any>,
-                    vnode._children as IVNode<any>,
-                    context,
-                    syncFlags,
-                );
-                componentPerfMarkEnd("update", vnode);
-            } else {
-                if (flags & VNodeFlags.UpdateContext) {
-                    if (syncFlags & SyncFlags.DirtyContext) {
-                        vnode._instance = Object.assign({}, context, vnode._props);
-                    }
-                    context = vnode._instance as Context;
+                if ((cflags & ComponentFlags.Dirty) | (syncFlags & SyncFlags.ForceUpdate)) {
+                    componentPerfMarkBegin("update", vnode);
+                    component.beforeUpdate();
+                    const newRoot = vnode._children = component.render();
+                    vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+                    component.flags &= ~ComponentFlags.Dirty;
+                    component.updated();
+                    componentPerfMarkEnd("update", vnode);
+                } else {
+                    vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
                 }
-                vNodeUpdateComponents(
-                    parent,
-                    vnode._children as IVNode<any>,
-                    context,
-                    syncFlags,
-                );
+            } else { // (flags & VNodeFlags.ComponentFunction)
+                if (flags & VNodeFlags.Connect) {
+                    const connect = vnode._tag as ConnectDescriptor<any, any, any>;
+                    const prevSelectData = vnode._instance as SelectorData;
+                    componentPerfMarkBegin("update", vnode);
+                    const selectData = connect.select(prevSelectData, vnode._props, context);
+                    const prevChildren = vnode._children;
+                    if (prevSelectData === selectData) {
+                        vNodeUpdateComponents(
+                            parent,
+                            prevChildren as IVNode<any>,
+                            context,
+                            syncFlags,
+                        );
+                    } else {
+                        vnode._children = connect.render(selectData.out);
+                        vnode._instance = selectData;
+                        vNodeSync(
+                            parent,
+                            prevChildren as IVNode<any>,
+                            vnode._children as IVNode<any>,
+                            context,
+                            syncFlags,
+                        );
+                    }
+                    componentPerfMarkEnd("update", vnode);
+                } else {
+                    if (flags & VNodeFlags.UpdateContext) {
+                        if (syncFlags & SyncFlags.DirtyContext) {
+                            vnode._instance = Object.assign({}, context, vnode._props);
+                        }
+                        context = vnode._instance as Context;
+                    }
+                    vNodeUpdateComponents(
+                        parent,
+                        vnode._children as IVNode<any>,
+                        context,
+                        syncFlags,
+                    );
+                }
             }
+            stackTracePopComponent();
         }
-        stackTracePopComponent();
     }
 }
 
@@ -626,23 +634,25 @@ function vNodeRender(
             checkNestingViolation();
 
             devModeOnElementBeforeCreate(vnode);
-            if (flags & VNodeFlags.ElementDescriptor) {
-                node = (vnode._tag as ElementDescriptor<any>).createElement();
-            } else if (flags & VNodeFlags.InputElement) {
-                if (flags & VNodeFlags.TextAreaElement) {
-                    node = document.createElement("textarea");
+            if (flags & (VNodeFlags.ElementDescriptor | VNodeFlags.InputElement | VNodeFlags.SvgElement)) {
+                if (flags & VNodeFlags.ElementDescriptor) {
+                    node = (vnode._tag as ElementDescriptor<any>).createElement();
+                } else if (flags & VNodeFlags.SvgElement) {
+                    node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
                 } else {
-                    node = document.createElement("input");
-                    /**
-                     * #quirks
-                     *
-                     * It is important that we assign `type` before any other properties. IE11 will remove assigned
-                     * `value` when `type` is assigned.
-                     */
-                    (node as HTMLInputElement).type = vnode._tag as string;
+                    if (flags & VNodeFlags.TextAreaElement) {
+                        node = document.createElement("textarea");
+                    } else {
+                        node = document.createElement("input");
+                        /**
+                         * #quirks
+                         *
+                         * It is important that we assign `type` before any other properties. IE11 will remove assigned
+                         * `value` when `type` is assigned.
+                         */
+                        (node as HTMLInputElement).type = vnode._tag as string;
+                    }
                 }
-            } else if (flags & VNodeFlags.SvgElement) {
-                node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
             } else {
                 node = document.createElement(vnode._tag as string);
             }
@@ -992,8 +1002,8 @@ function vNodeCanSync(a: IVNode<any>, b: IVNode<any>): boolean {
  */
 function vNodeEqualKeys(a: IVNode<any>, b: IVNode<any>): boolean {
     return (
-        a._key === b._key &&
-        (a._flags & VNodeFlags.Key) === (b._flags & VNodeFlags.Key)
+        (a._key === b._key) &&
+        !((a._flags ^ b._flags) & VNodeFlags.Key)
     );
 }
 
@@ -1081,9 +1091,9 @@ function vNodeSync(
                 // Update component props
                 const oldProps = a._props;
                 const newProps = b._props;
-                let propsChanged = false;
+                let propsChanged = 0;
                 if (component.isPropsChanged(oldProps, newProps)) {
-                    propsChanged = true;
+                    propsChanged = 1;
                     // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
                     // reassigned later to reduce memory usage.
                     component.newPropsReceived(oldProps, newProps);
@@ -1095,7 +1105,7 @@ function vNodeSync(
                 component.props = newProps;
 
                 const oldRoot = a._children as IVNode<any>;
-                if (propsChanged || (component.flags & ComponentFlags.Dirty) || (syncFlags & SyncFlags.ForceUpdate)) {
+                if (propsChanged | (component.flags & ComponentFlags.Dirty) | (syncFlags & SyncFlags.ForceUpdate)) {
                     componentPerfMarkBegin("update", a);
                     component.beforeUpdate();
                     const newRoot = b._children = component.render();
@@ -1116,17 +1126,25 @@ function vNodeSync(
                         const prevSelectData = a._instance as SelectorData;
                         componentPerfMarkBegin("update", b);
                         const selectData = connect.select(prevSelectData, b._props, context);
-                        b._children = (prevSelectData === selectData) ?
-                            a._children :
-                            connect.render(selectData.out);
                         b._instance = selectData;
-                        vNodeSync(
-                            parent,
-                            a._children as IVNode<any>,
-                            b._children as IVNode<any>,
-                            context,
-                            syncFlags,
-                        );
+                        if (prevSelectData === selectData) {
+                            b._children = a._children;
+                            vNodeUpdateComponents(
+                                parent,
+                                b,
+                                context,
+                                syncFlags,
+                            );
+                        } else {
+                            b._children = connect.render(selectData.out);
+                            vNodeSync(
+                                parent,
+                                a._children as IVNode<any>,
+                                b._children as IVNode<any>,
+                                context,
+                                syncFlags,
+                            );
+                        }
                         componentPerfMarkEnd("update", b);
                     } else {
                         if (flags & VNodeFlags.UpdateContext) {
@@ -1229,7 +1247,7 @@ function syncChildren(
     } else {
         if (aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
             if (bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) {
-                if ((bParentFlags & VNodeFlags.ChildrenBasic) || !b) {
+                if (bParentFlags & VNodeFlags.ChildrenBasic) {
                     const c = parent.firstChild;
                     if (c) {
                         c.nodeValue = b as string;
@@ -1237,7 +1255,11 @@ function syncChildren(
                         parent.textContent = b as string;
                     }
                 } else {
-                    setInnerHTML((parent as Element), b as string, !!(bParentFlags & VNodeFlags.SvgElement));
+                    if (b) {
+                        setInnerHTML((parent as Element), b as string, !!(bParentFlags & VNodeFlags.SvgElement));
+                    } else {
+                        parent.textContent = "";
+                    }
                 }
             } else {
                 parent.textContent = "";
@@ -1694,20 +1716,33 @@ function syncChildrenTrackByKeys(
 
     if (aStart > aEnd) {
         // All nodes from a are synced, insert the rest from b.
-        nextPos = bEnd + 1;
-        next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
-        while (bStart <= bEnd) {
-            vNodeRenderIntoAndAttach(parent, next, b[bStart++], context, syncFlags);
+        if (bStart <= bEnd) {
+            nextPos = bEnd + 1;
+            next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
+            do {
+                vNodeRenderIntoAndAttach(parent, next, b[bStart++], context, syncFlags);
+            } while (bStart <= bEnd);
         }
     } else if (bStart > bEnd) {
         // All nodes from b are synced, remove the rest from a.
-        while (aStart <= aEnd) {
+        do {
             vNodeRemoveChild(parent, a[aStart++], syncFlags);
-        }
+        } while (aStart <= aEnd);
         // Step 2
     } else {
         let aLength = aEnd - aStart + 1;
         let bLength = bEnd - bStart + 1;
+        // Optimization for use cases when there is just one node left after prefix/suffix step.
+        // TODO: Is it worth enabling it?
+        //
+        // if ((aLength | bLength) === 1) {
+        //     next = vNodeRender(parent, bStartNode, context);
+        //     parent.replaceChild(next, getDOMInstanceFromVNode(aStartNode)!);
+        //     if (syncFlags & SyncFlags.Attached) {
+        //         vNodeDetach(aStartNode, syncFlags | SyncFlags.Dispose);
+        //         vNodeAttach(bStartNode);
+        //     }
+        // }
         const aNullable = a as Array<IVNode<any> | null>; // will be removed by js optimizing compilers.
         // Mark all nodes as inserted.
         const sources = new Array<number>(bLength).fill(-1);
@@ -1717,6 +1752,7 @@ function syncChildrenTrackByKeys(
         let synced = 0;
 
         // When children lists are small, we are using naive O(N) algorithm to find if child is removed.
+        // TODO: In the future, Map implementations will use similar optimization.
         if ((bLength <= 4) || ((aLength * bLength) <= 16)) {
             for (i = aStart; i <= aEnd; i++) {
                 aNode = a[i];
@@ -1741,7 +1777,7 @@ function syncChildrenTrackByKeys(
             }
         } else {
             let keyIndex: Map<any, number> | undefined;
-            let positionKeyIndex: Array<number> | undefined;
+            let positionKeyIndex: Map<number, number> | undefined;
 
             for (i = bStart; i <= bEnd; i++) {
                 node = b[i];
@@ -1752,9 +1788,9 @@ function syncChildrenTrackByKeys(
                     keyIndex.set(node._key, i);
                 } else {
                     if (positionKeyIndex === undefined) {
-                        positionKeyIndex = [];
+                        positionKeyIndex = new Map<number, number>();
                     }
-                    positionKeyIndex[node._key - aStart] = i;
+                    positionKeyIndex.set(node._key - aStart, i);
                 }
             }
 
@@ -1765,7 +1801,7 @@ function syncChildrenTrackByKeys(
                     if (aNode._flags & VNodeFlags.Key) {
                         j = keyIndex ? keyIndex.get(aNode._key) : undefined;
                     } else {
-                        j = positionKeyIndex ? positionKeyIndex[aNode._key - aStart] : undefined;
+                        j = positionKeyIndex ? positionKeyIndex.get(aNode._key - aStart) : undefined;
                     }
 
                     if (j !== undefined) {
