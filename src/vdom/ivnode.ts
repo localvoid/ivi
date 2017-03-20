@@ -40,14 +40,14 @@ export interface IVNode<P = null> {
      */
     _props: ElementProps<P> | P | null;
     /**
-     * Class name.
-     */
-    _className: string | null;
-    /**
      * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
      * time VNode is synced, reference will be transferred from the old VNode to the new one.
      */
     _instance: Node | Component<any> | SelectorData | Context | null;
+    /**
+     * Class name.
+     */
+    _className: string | null;
 }
 
 export interface ElementProps<P> {

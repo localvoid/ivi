@@ -50,8 +50,8 @@ export class VNode<P = null> implements IVNode<P> {
     ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
     _key: any;
     _props: ElementProps<P> | P | null;
-    _className: string | null;
     _instance: Node | Component<any> | SelectorData | Context | null;
+    _className: string | null;
 
     constructor(
         flags: number,
@@ -66,8 +66,8 @@ export class VNode<P = null> implements IVNode<P> {
         this._tag = tag;
         this._key = 0;
         this._props = props;
-        this._className = className;
         this._instance = null;
+        this._className = className;
     }
 
     /**
