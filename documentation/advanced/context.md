@@ -7,7 +7,7 @@ Context implicitly propagates data through component trees.
 Context is updated with a special virtual nodes created with a `$ctx` function.
 
 ```ts
-function $ctx<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
+function $context<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
 ```
 
 Context data can be accessed with a [connect](external-state.md) selectors.
@@ -28,7 +28,7 @@ class StatefulComponent extends Component {
     }
 
     render() {
-        return $ctx(this._ctx, $Child());
+        return $context(this._ctx, $Child());
     }
 }
 

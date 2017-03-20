@@ -55,7 +55,7 @@ function UpdateContext() {
  * @param child Child VNode.
  * @returns VNodeBuilder object.
  */
-export function $ctx<T = {}>(context: Context<T>, child: IVNode<any>): VNode<Context<T>> {
+export function $context<T = {}>(context: Context<T>, child: IVNode<any>): VNode<Context<T>> {
     return new VNode<Context<T>>(
         VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
         __IVI_DEV__ ? UpdateContext as () => IVNode<any> : null,
