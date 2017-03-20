@@ -1053,40 +1053,45 @@ function vNodeSync(
     }
 
     let instance;
-    const flags = b._flags;
+    const bFlags = b._flags;
     if (vNodeCanSync(a, b)) {
         instance = b._instance = a._instance;
 
-        if (flags & (VNodeFlags.Text | VNodeFlags.Element)) {
-            if (flags & VNodeFlags.Text) {
+        if (bFlags & (VNodeFlags.Text | VNodeFlags.Element)) {
+            if (bFlags & VNodeFlags.Text) {
                 if (a._children !== b._children) {
                     (instance as Text).nodeValue = b._children as string;
                 }
             } else { // (flags & VNodeFlags.Element)
                 if (a._className !== b._className) {
-                    syncClassName(instance as Element, flags, a._className, b._className);
+                    syncClassName(instance as Element, bFlags, a._className, b._className);
                 }
-                const aProps = (a._props as ElementProps<any>);
-                const bProps = (b._props as ElementProps<any>);
-                let aAttrs = null;
-                let bAttrs = null;
-                let aStyle = null;
-                let bStyle = null;
-                let aEvents = null;
-                let bEvents = null;
-                if (aProps !== null) {
-                    aAttrs = aProps.attrs;
-                    aStyle = aProps.style;
-                    aEvents = aProps.events;
-                }
-                if (bProps !== null) {
-                    bAttrs = bProps.attrs;
-                    bStyle = bProps.style;
-                    bEvents = bProps.events;
-                }
-                if (aProps !== null || bProps !== null) {
+
+                const aFlags = a._flags;
+                if ((aFlags | bFlags) & VNodeFlags.ElementProps) {
+                    let props;
+                    let aAttrs = null;
+                    let bAttrs = null;
+                    let aStyle = null;
+                    let bStyle = null;
+                    let aEvents = null;
+                    let bEvents = null;
+
+                    if (aFlags & VNodeFlags.ElementProps) {
+                        props = (a._props as ElementProps<any>);
+                        aAttrs = props.attrs;
+                        aStyle = props.style;
+                        aEvents = props.events;
+                    }
+                    if (bFlags & VNodeFlags.ElementProps) {
+                        props = (b._props as ElementProps<any>);
+                        bAttrs = props.attrs;
+                        bStyle = props.style;
+                        bEvents = props.events;
+                    }
+
                     if (aAttrs !== bAttrs) {
-                        syncDOMProps(instance as Element, flags, aAttrs, bAttrs);
+                        syncDOMProps(instance as Element, bFlags, aAttrs, bAttrs);
                     }
                     if (aStyle !== bStyle) {
                         syncStyle(instance as HTMLElement, aStyle, bStyle);
@@ -1102,8 +1107,8 @@ function vNodeSync(
                 if (a._children !== b._children) {
                     syncChildren(
                         instance as Element,
-                        a._flags,
-                        flags,
+                        aFlags,
+                        bFlags,
                         a._children as IVNode<any>[] | IVNode<any> | string | number | boolean,
                         b._children as IVNode<any>[] | IVNode<any> | string | number | boolean,
                         context,
@@ -1113,7 +1118,7 @@ function vNodeSync(
             }
         } else { // (flags & VNodeFlags.Component)
             stackTracePushComponent(b);
-            if (flags & VNodeFlags.ComponentClass) {
+            if (bFlags & VNodeFlags.ComponentClass) {
                 const component = instance as Component<any>;
                 // Update component props
                 const oldProps = a._props;
@@ -1147,8 +1152,8 @@ function vNodeSync(
             } else { // (flags & VNodeFlags.ComponentFunction)
                 const fn = b._tag as ComponentFunction<any>;
 
-                if (flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) {
-                    if (flags & VNodeFlags.Connect) {
+                if (bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) {
+                    if (bFlags & VNodeFlags.Connect) {
                         const connect = b._tag as ConnectDescriptor<any, any, any>;
                         const prevSelectData = a._instance as SelectorData;
                         componentPerfMarkBegin("update", b);
@@ -1174,7 +1179,7 @@ function vNodeSync(
                         }
                         componentPerfMarkEnd("update", b);
                     } else {
-                        if (flags & VNodeFlags.UpdateContext) {
+                        if (bFlags & VNodeFlags.UpdateContext) {
                             if ((syncFlags & SyncFlags.DirtyContext) || (a._props !== b._props)) {
                                 syncFlags |= SyncFlags.DirtyContext;
                                 context = b._instance = Object.assign({}, context, b._props);

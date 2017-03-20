@@ -144,6 +144,7 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
         if (this._props === null) {
+            this._flags |= VNodeFlags.ElementProps;
             this._props = {
                 attrs: null,
                 style,
@@ -168,6 +169,7 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
         if (this._props === null) {
+            this._flags |= VNodeFlags.ElementProps;
             this._props = {
                 attrs: null,
                 style: null,
@@ -214,6 +216,7 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
         if (this._props === null) {
+            this._flags |= VNodeFlags.ElementProps;
             this._props = {
                 attrs: props,
                 style: null,
