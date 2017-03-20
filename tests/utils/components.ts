@@ -4,7 +4,8 @@ export * from "./components/static";
 export * from "./components/invalid";
 
 import { IVNode } from "../../src/vdom/ivnode";
-import { VNode, $c, $h, $t } from "../../src/vdom/vnode";
+import { VNode, $h, $t } from "../../src/vdom/vnode";
+import { $c } from "../../src/vdom/vnode_components";
 import { Component } from "../../src/vdom/component";
 
 export interface TestComponentProps {

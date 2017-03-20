@@ -1,4 +1,5 @@
-import { VNode, $h, $keepAlive } from "../src/vdom/vnode";
+import { VNode, $h } from "../src/vdom/vnode";
+import { $keepAlive } from "../src/vdom/vnode_components";
 import { startRender, augment, checkLifecycle, $lc, $sc } from "./utils";
 import { expect } from "chai";
 

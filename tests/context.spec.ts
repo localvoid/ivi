@@ -2,7 +2,8 @@ import { frag, render, $sc, $fsc } from "./utils";
 import { Context } from "../src/common/types";
 import { Component } from "../src/vdom/component";
 import { IVNode } from "../src/vdom/ivnode";
-import { $t, $c, $ctx, $connect } from "../src/vdom/vnode";
+import { $t } from "../src/vdom/vnode";
+import { $c, $ctx, $connect } from "../src/vdom/vnode_components";
 import { expect } from "chai";
 
 interface ContextTestComponentProps {

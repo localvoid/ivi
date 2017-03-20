@@ -1,6 +1,7 @@
 import { IVNode } from "../../../src/vdom/ivnode";
 import { Component, staticComponent } from "../../../src/vdom/component";
-import { VNode, $c } from "../../../src/vdom/vnode";
+import { VNode } from "../../../src/vdom/vnode";
+import { $c } from "../../../src/vdom/vnode_components";
 
 staticComponent(StaticComponentFunctionTest);
 export function StaticComponentFunctionTest(child: IVNode<any>) {

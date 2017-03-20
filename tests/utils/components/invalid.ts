@@ -15,6 +15,5 @@ export function $invalid(key: any = null): IVNode<any> {
         _events: null,
         _children: "abc",
         _instance: null,
-        _debugId: 0,
     };
 }
