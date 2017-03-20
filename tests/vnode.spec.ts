@@ -1,4 +1,4 @@
-import { IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
+import { IVNode, ElementProps, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { $t, $h, $s, $i, $m } from "../src/vdom/vnode_dom";
 import { $c } from "../src/vdom/vnode_components";
@@ -103,19 +103,19 @@ describe("VNode", () => {
         it("style", () => {
             const s = { top: "10px" };
             const e = $h("div").style(s);
-            expect(e._style).to.be.equal(s);
+            expect((e._props as ElementProps<any>).style).to.be.equal(s);
         });
 
         it("events", () => {
             const s = [];
             const e = $h("div").events(s);
-            expect(e._events).to.be.equal(s);
+            expect((e._props as ElementProps<any>).events).to.be.equal(s);
         });
 
         it("props", () => {
             const s = {};
             const e = $h("div").props(s);
-            expect(e._props).to.be.equal(s);
+            expect((e._props as ElementProps<any>).attrs).to.be.equal(s);
         });
 
         it("children", () => {
@@ -158,18 +158,18 @@ describe("VNode", () => {
 
         it("mergeProps: null", () => {
             const e = $h("div").props({ title: "abc" }).mergeProps(null);
-            expect(e._props!.title).to.be.equal("abc");
+            expect((e._props as ElementProps<any>).attrs!.title).to.be.equal("abc");
         });
 
         it("mergeProps", () => {
             const e = $h("div").props({ title: "abc" }).mergeProps({ width: "100" });
-            expect(e._props!.title).to.be.equal("abc");
-            expect(e._props!.width).to.be.equal("100");
+            expect((e._props as ElementProps<any>).attrs!.title).to.be.equal("abc");
+            expect((e._props as ElementProps<any>).attrs!.width).to.be.equal("100");
         });
 
         it("mergeProps override", () => {
             const e = $h("div").props({ title: "abc" }).mergeProps({ title: "100" });
-            expect(e._props!.title).to.be.equal("100");
+            expect((e._props as ElementProps<any>).attrs!.title).to.be.equal("100");
         });
 
         it("mergeProps: invalid objects", () => {
@@ -179,18 +179,18 @@ describe("VNode", () => {
 
         it("mergeStyle: null", () => {
             const e = $h("div").style({ top: "10px" }).mergeStyle(null);
-            expect(e._style!.top).to.be.equal("10px");
+            expect((e._props as ElementProps<any>).style!.top).to.be.equal("10px");
         });
 
         it("mergeStyle", () => {
             const e = $h("div").style({ top: "10px" }).mergeStyle({ left: "20px" });
-            expect(e._style!.top).to.be.equal("10px");
-            expect(e._style!.left).to.be.equal("20px");
+            expect((e._props as ElementProps<any>).style!.top).to.be.equal("10px");
+            expect((e._props as ElementProps<any>).style!.left).to.be.equal("20px");
         });
 
         it("mergeStyle override", () => {
             const e = $h("div").style({ top: "10px" }).mergeStyle({ top: "20px" });
-            expect(e._style!.top).to.be.equal("20px");
+            expect((e._props as ElementProps<any>).style!.top).to.be.equal("20px");
         });
 
         it("autofocus", () => {

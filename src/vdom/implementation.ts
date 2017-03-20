@@ -1067,7 +1067,7 @@ function vNodeSync(
                     syncClassName(instance as Element, flags, a._className, b._className);
                 }
                 const aProps = (a._props as ElementProps<any>);
-                const bProps = (a._props as ElementProps<any>);
+                const bProps = (b._props as ElementProps<any>);
                 let aAttrs = null;
                 let bAttrs = null;
                 let aStyle = null;
@@ -1085,8 +1085,8 @@ function vNodeSync(
                     bEvents = bProps.events;
                 }
                 if (aProps !== null || bProps !== null) {
-                    if (aProps !== bProps) {
-                        syncDOMProps(instance as Element, flags, aProps, bProps);
+                    if (aAttrs !== bAttrs) {
+                        syncDOMProps(instance as Element, flags, aAttrs, bAttrs);
                     }
                     if (aStyle !== bStyle) {
                         syncStyle(instance as HTMLElement, aStyle, bStyle);

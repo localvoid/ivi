@@ -88,8 +88,8 @@ describe("sync", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
                     r($h("div"));
-                    const b = r($h("div").props({ title: "2" })) as HTMLElement;
-                    expect(b.title).to.equal("2");
+                    const b = r($h("div").props({ title: "1" })) as HTMLElement;
+                    expect(b.title).to.equal("1");
                     expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
                 });
             });
@@ -99,8 +99,8 @@ describe("sync", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
                     r($h("div").props({}));
-                    const b = r($h("div").props({ title: "2" })) as HTMLElement;
-                    expect(b.title).to.equal("2");
+                    const b = r($h("div").props({ title: "1" })) as HTMLElement;
+                    expect(b.title).to.equal("1");
                     expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
                 });
             });
