@@ -267,9 +267,6 @@ export class VNode<P = null> implements IVNode<P> {
                     checkUniqueKeys(children as IVNode<any>[]);
                 } else if (isValidVNode(children)) {
                     this._flags |= VNodeFlags.ChildrenVNode;
-                    if (!(children._flags & VNodeFlags.Key)) {
-                        children._key = 0;
-                    }
                 } else {
                     this._flags |= VNodeFlags.ChildrenBasic;
                     children = "";
