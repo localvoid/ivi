@@ -994,7 +994,7 @@ function vNodeAugment(
  */
 function vNodeCanSync(a: IVNode<any>, b: IVNode<any>): boolean {
     return (
-        (a._flags & VNodeFlags.Syncable) === (b._flags & VNodeFlags.Syncable) &&
+        (((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0) &&
         a._tag === b._tag &&
         a._key === b._key
     );
