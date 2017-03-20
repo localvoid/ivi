@@ -11,8 +11,6 @@ export function $invalid(key: any = null): IVNode<any> {
         _key: key,
         _props: null,
         _className: null,
-        _style: null,
-        _events: null,
         _children: "abc",
         _instance: null,
     };
