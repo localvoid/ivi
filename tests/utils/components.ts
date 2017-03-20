@@ -1,11 +1,10 @@
 export * from "./components/functional";
 export * from "./components/lifecycle";
 export * from "./components/static";
+export * from "./components/invalid";
 
 import { IVNode } from "../../src/vdom/ivnode";
-import { VNode } from "../../src/vdom/vnode";
-import { $h, $t } from "../../src/vdom/vnode_dom";
-import { $c } from "../../src/vdom/vnode_components";
+import { VNode, $c, $h, $t } from "../../src/vdom/vnode";
 import { Component } from "../../src/vdom/component";
 
 export interface TestComponentProps {

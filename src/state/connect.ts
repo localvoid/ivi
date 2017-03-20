@@ -2,8 +2,7 @@ import { Context } from "../common/types";
 import { IVNode } from "../vdom/ivnode";
 import { ConnectDescriptor, SelectorData } from "../vdom/connect_descriptor";
 import { ComponentClass, isComponentClass } from "../vdom/component";
-import { VNode } from "../vdom/vnode";
-import { $c, $connect } from "../vdom/vnode_components";
+import { VNode, $c, $connect } from "../vdom/vnode";
 
 export function connect<I, O, P>(
     select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,

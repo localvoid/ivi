@@ -3,7 +3,7 @@ import {
     createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor, createMediaElementDescriptor,
 } from "../src/vdom/element_descriptor";
 import { render } from "./utils";
-import { $e } from "../src/vdom/vnode_dom";
+import { $e } from "../src/vdom/vnode";
 import { expect } from "chai";
 
 describe("ElementDescriptor", () => {

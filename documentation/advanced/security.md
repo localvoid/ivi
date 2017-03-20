@@ -20,3 +20,8 @@ It is important that you understand many different XSS attack vectors when build
 
 - [XSS Filter Evasion Cheat Sheet](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet)
 - [HTML5 Security Cheatsheet](http://heideri.ch/jso/)
+
+### XSS via Spoofed Element
+
+ivi virtual dom implementation is protected against
+[XSS via spoofed elements](http://danlec.com/blog/xss-via-a-spoofed-react-element).

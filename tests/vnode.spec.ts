@@ -1,7 +1,6 @@
 import { IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { $t, $h, $s, $i, $m } from "../src/vdom/vnode_dom";
-import { $c } from "../src/vdom/vnode_components";
+import { $t, $h, $s, $c, $i, $m } from "../src/vdom/vnode";
 import { expect } from "chai";
 
 function EmptyComponent(): IVNode<any> {
@@ -141,7 +140,7 @@ describe("VNode", () => {
         });
 
         it("children: duplicate keys", () => {
-            expect(() => $h("div").children($t("").key("a"), $t("").key("a"))).to.throw(Error);
+            expect(() => $h("div").children([$t("").key("a"), $t("").key("a")])).to.throw(Error);
         });
 
         it("unsafeHTML", () => {

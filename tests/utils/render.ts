@@ -34,13 +34,14 @@ export function checkRefs(n: Node, v: IVNode<any>) {
         if (child) {
             expect(!!(flags & VNodeFlags.Element)).to.true;
         }
-        if (flags & VNodeFlags.ChildrenVNode) {
-            let vchild = v._children as IVNode<any> | null;
-            do {
-                checkRefs(child, vchild!);
-                child = child.nextSibling!;
-                vchild = vchild!._next;
-            } while (vchild !== null);
+        while (child) {
+            if (flags & VNodeFlags.ChildrenArray) {
+                checkRefs(child, (v._children as IVNode<any>[])[i++]);
+            } else if (flags & VNodeFlags.ChildrenVNode) {
+                checkRefs(child, v._children as IVNode<any>);
+                expect(child.nextSibling).to.null;
+            }
+            child = child.nextSibling;
         }
     }
 }

@@ -1,6 +1,5 @@
 import { Context } from "../src/common/types";
-import { $h } from "../src/vdom/vnode_dom";
-import { $ctx } from "../src/vdom/vnode_components";
+import { $h, $ctx } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
 import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";
 import { expect } from "chai";

@@ -96,11 +96,11 @@ export {
 } from "./vdom/element_descriptor";
 export { ConnectDescriptor, SelectorData } from "./vdom/connect_descriptor";
 export { KeepAliveHandler } from "./vdom/keep_alive";
-export { VNode } from "./vdom/vnode";
-export { $t, $h, $s, $i, $m, $e, $w } from "./vdom/vnode_dom";
-export { $c, $connect, $ctx, $keepAlive } from "./vdom/vnode_components";
-export { $list, $map, $filter, $range } from "./vdom/vnode_lists";
-export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
+export {
+    VNodeArray,
+    VNode, cloneVNode, shallowCloneVNode, normalizeVNodes,
+    $t, $h, $s, $c, $i, $m, $e, $w, $connect, $ctx, $keepAlive,
+} from "./vdom/vnode";
 export { Root, findRoot, render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
 
 /**

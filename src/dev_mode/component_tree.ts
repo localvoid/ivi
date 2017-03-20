@@ -12,15 +12,15 @@ function _findVNode(
     }
     if (vnode._flags & (VNodeFlags.Element | VNodeFlags.Text)) {
         if (vnode._flags & VNodeFlags.Element) {
-            if (vnode._flags & VNodeFlags.ChildrenVNode) {
-                let child = vnode._children as IVNode<any> | null;
-                do {
-                    const result = _findVNode(match, child!);
-                    if (result !== null) {
-                        return result;
+            if (vnode._children !== null) {
+                if (vnode._flags & VNodeFlags.ChildrenArray) {
+                    const children = vnode._children as IVNode<any>[];
+                    for (const c of children) {
+                        return _findVNode(match, c);
                     }
-                    child = child!._next;
-                } while (child !== null);
+                } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
+                    return _findVNode(match, vnode._children as IVNode<any>);
+                }
             }
         }
     } else if (vnode._flags & VNodeFlags.Component) {
@@ -89,12 +89,14 @@ export function visitComponents(visitor: (vnode: IVNode<any>) => void, vnode?: I
         }
     } else {
         if (vnode._flags & VNodeFlags.Element) {
-            if (vnode._flags & VNodeFlags.ChildrenVNode) {
-                let child = vnode._children as IVNode<any> | null;
-                do {
-                    visitComponents(visitor, child!);
-                    child = child!._next;
-                } while (child !== null);
+            if (vnode._children !== null) {
+                if (vnode._flags & VNodeFlags.ChildrenArray) {
+                    for (const c of vnode._children as IVNode<any>[]) {
+                        visitComponents(visitor, c);
+                    }
+                } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
+                    return visitComponents(visitor, vnode._children as IVNode<any>);
+                }
             }
         } else if (vnode._flags & VNodeFlags.Component) {
             visitor(vnode);

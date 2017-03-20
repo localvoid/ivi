@@ -16,24 +16,6 @@ export interface IVNode<P = null> {
      */
     _flags: VNodeFlags;
     /**
-     * Previous node in a linked list. When node is the first in a list, its previous node is always pointing to the
-     * last node, creating some sort of a circular linked list. By implementing linked lists this way we don't need to
-     * store two pointers on the parent nodes.
-     *
-     * Also, it allows to easily insert nested arrays in the same way as inserting just one vnode.
-     */
-    _prev: IVNode<any>;
-    /**
-     * Next node in a linked list. Last node is always pointing to a `null` value.
-     */
-    _next: IVNode<any> | null;
-    /**
-     * Children nodes in a normalized linked list form.
-     *
-     * Also, depending on the type of the node, it can contain boolean values for input elements.
-     */
-    _children: IVNode<any> | string | number | boolean | null | undefined;
-    /**
      * Tag property contains details about the type of the element.
      *
      * Simple elements has a string type values, components can be a simple functions, constructor, or special
@@ -51,11 +33,6 @@ export interface IVNode<P = null> {
      */
     _props: P | null;
     /**
-     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
-     * time VNode is synced, reference will be transferred from the old VNode to the new one.
-     */
-    _instance: Node | Component<any> | SelectorData | Context | null;
-    /**
      * Class name.
      */
     _className: string | null;
@@ -67,6 +44,18 @@ export interface IVNode<P = null> {
      * Events.
      */
     _events: EventHandlerList | EventHandler | null;
+    /**
+     * Children property can contain flat array of children virtual nodes, or text if it contains a single text node
+     * child.
+     *
+     * When virtual node represents an input field, children property will contain input value.
+     */
+    _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
+    /**
+     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
+     * time VNode is synced, reference will be transferred from the old VNode to the new one.
+     */
+    _instance: Node | Component<any> | SelectorData | Context | null;
 }
 
 /**
