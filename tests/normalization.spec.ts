@@ -1,5 +1,6 @@
 import { VNodeFlags } from "../src/vdom/flags";
-import { VNode, $t, normalizeVNodes } from "../src/vdom/vnode";
+import { VNode, normalizeVNodes } from "../src/vdom/vnode";
+import { $t } from "../src/vdom/vnode_dom";
 import { $invalid } from "./utils";
 import { expect } from "chai";
 

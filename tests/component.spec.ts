@@ -1,5 +1,5 @@
 import { Context } from "../src/common/types";
-import { $h } from "../src/vdom/vnode";
+import { $h } from "../src/vdom/vnode_dom";
 import { $ctx } from "../src/vdom/vnode_components";
 import { Component } from "../src/vdom/component";
 import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";

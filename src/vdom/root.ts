@@ -4,7 +4,8 @@ import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { SyncFlags } from "./flags";
 import { IVNode } from "./ivnode";
-import { VNode, $t } from "./vnode";
+import { VNode } from "./vnode";
+import { $t } from "./vnode_dom";
 import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
 
 /**

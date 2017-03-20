@@ -1,5 +1,5 @@
 import { augment, $tc, $tcf, $lc, checkDOMOps, expectDOMOps } from "./utils";
-import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
+import { $t, $h, $s, $i, $m } from "../src/vdom/vnode_dom";
 import { expect } from "chai";
 
 describe("augment", () => {

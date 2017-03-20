@@ -1,6 +1,6 @@
 import { IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { $t, $h, $s, $i, $m } from "../src/vdom/vnode";
+import { $t, $h, $s, $i, $m } from "../src/vdom/vnode_dom";
 import { $c } from "../src/vdom/vnode_components";
 import { expect } from "chai";
 
