@@ -454,13 +454,9 @@ export function normalizeVNodes(nodes: VNodeArray): IVNode<any>[] {
                 }
             }
         } else { // basic object
-            if (typeof n === "string" || typeof n === "number") {
-                const node = new VNode<null>(VNodeFlags.Text, null, null, null, n);
-                node._key = i;
-                nodes[i] = node;
-            } else {
-                return _normalizeVNodes(nodes, i);
-            }
+            const node = new VNode<null>(VNodeFlags.Text, null, null, null, n);
+            node._key = i;
+            nodes[i] = node;
         }
     }
 
