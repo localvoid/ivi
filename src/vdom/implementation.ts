@@ -360,7 +360,7 @@ function vNodeAttach(vnode: IVNode<any>): void {
                 vNodeAttach(children as IVNode<any>);
             }
         }
-        if (vnode._props && (vnode._props as ElementProps<any>).events) {
+        if ((flags & VNodeFlags.ElementProps) && (vnode._props as ElementProps<any>).events) {
             attachEvents((vnode._props as ElementProps<any>).events!);
         }
     } else if (flags & VNodeFlags.Component) {
@@ -400,7 +400,7 @@ function vNodeDetach(vnode: IVNode<any>, syncFlags: SyncFlags): void {
                 vNodeDetach(children as IVNode<any>, syncFlags);
             }
         }
-        if (vnode._props && (vnode._props as ElementProps<any>).events) {
+        if ((flags & VNodeFlags.ElementProps) && (vnode._props as ElementProps<any>).events) {
             detachEvents((vnode._props as ElementProps<any>).events!);
         }
     } else if (flags & VNodeFlags.Component) {
@@ -666,8 +666,8 @@ function vNodeRender(
                 syncClassName(node as Element, flags, null, vnode._className);
             }
 
-            const props = (vnode._props as ElementProps<any>);
-            if (props !== null) {
+            if (flags & VNodeFlags.ElementProps) {
+                const props = (vnode._props as ElementProps<any>);
                 if (props.attrs !== null) {
                     syncDOMProps(node as Element, flags, null, props.attrs);
                 }
@@ -872,8 +872,8 @@ function vNodeAugment(
                         }
                     }
 
-                    const props = (vnode._props as ElementProps<any>);
-                    if (props !== null) {
+                    if (flags & VNodeFlags.ElementProps) {
+                        const props = (vnode._props as ElementProps<any>);
                         if (props.events !== null) {
                             setEventHandlersToDOMNode(node as Element, props.events);
                         }
