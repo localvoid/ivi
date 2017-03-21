@@ -13,10 +13,9 @@ export class RepeatableTaskList {
         for (let i = 0; i < this.tasks.length; i++) {
             const task = this.tasks[i];
             if (task()) {
-                if (i === this.tasks.length) {
-                    this.tasks.pop();
-                } else {
-                    this.tasks[i--] = this.tasks.pop()!;
+                const last = this.tasks.pop();
+                if (last) {
+                    this.tasks[i--] = last!;
                 }
             }
         }
