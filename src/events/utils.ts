@@ -2,6 +2,12 @@ import { FEATURES, FeatureFlags } from "../common/feature_detection";
 import { NativeEventDispatcherFlags } from "./flags";
 import { EventHandlerList, EventHandler } from "./event_handler";
 
+declare global {
+    interface Element {
+        _ev: EventHandlerList | EventHandler | null | undefined;
+    }
+}
+
 /**
  * `{ capture: true, passive: true }` object that should be used as a third parameter in `addEventListener`.
  */
@@ -50,8 +56,8 @@ export const DOM_NODE_EVENTS_PROPERTY = "_ev";
  * @param node DOM Node.
  * @param events Event Handlers.
  */
-export function setEventHandlersToDOMNode(node: Node, events: EventHandlerList | EventHandler | null): void {
-    (node as any)[DOM_NODE_EVENTS_PROPERTY] = events;
+export function setEventHandlersToDOMNode(node: Element, events: EventHandlerList | EventHandler | null): void {
+    node._ev = events;
 }
 
 /**
@@ -60,6 +66,6 @@ export function setEventHandlersToDOMNode(node: Node, events: EventHandlerList |
  * @param node DOM Node.
  * @returns Event Handlers.
  */
-export function getEventHandlersFromDOMNode(node: Node): EventHandlerList | EventHandler | undefined | null {
-    return (node as any)[DOM_NODE_EVENTS_PROPERTY];
+export function getEventHandlersFromDOMNode(node: Element): EventHandlerList | EventHandler | undefined | null {
+    return node._ev;
 }

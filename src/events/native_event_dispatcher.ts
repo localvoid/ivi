@@ -80,8 +80,9 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
             super.activate();
             document.addEventListener(
                 this.name,
-                this._dispatch as any as (ev: Event) => void,
-                getEventOptions(this.flags) as boolean);
+                this._dispatch,
+                getEventOptions(this.flags) as boolean,
+            );
         }
     }
 
@@ -92,8 +93,9 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
                 if (this._deactivating) {
                     document.removeEventListener(
                         this.name,
-                        this._dispatch as any as (ev: Event) => void,
-                        getEventOptions(this.flags) as boolean);
+                        this._dispatch,
+                        getEventOptions(this.flags) as boolean,
+                    );
                     super.deactivate();
                     this._deactivating = false;
                 }

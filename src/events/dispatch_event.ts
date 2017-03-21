@@ -61,8 +61,11 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
     dispatchTarget = dispatchTargets[0];
     if (dispatchTarget.target === event.target) {
         event._flags |= SyntheticEventFlags.AtTargetPhase;
-        dispatchEventToLocalEventHandlers(dispatchTarget, event,
-            EventHandlerFlags.Capture | EventHandlerFlags.Bubble);
+        dispatchEventToLocalEventHandlers(
+            dispatchTarget,
+            event,
+            EventHandlerFlags.Capture | EventHandlerFlags.Bubble,
+        );
         if (event._flags & SyntheticEventFlags.StoppedPropagation) {
             return;
         }
