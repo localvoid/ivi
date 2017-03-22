@@ -799,7 +799,7 @@ describe("sync", () => {
                         r($h("div").children([$h("div")]));
                         const b = r($h("div"));
                         expect(b.childNodes.length).to.equal(0);
-                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 1);
                     });
                 });
             });

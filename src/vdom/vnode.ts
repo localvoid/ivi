@@ -268,7 +268,12 @@ export class VNode<P = null> implements IVNode<P> {
                 if (c !== null) {
                     if (c.constructor === Array) {
                         if (c.length > 0) {
-                            this._flags |= VNodeFlags.ChildrenArray;
+                            if (c.length > 1) {
+                                this._flags |= VNodeFlags.ChildrenArray;
+                            } else {
+                                this._flags |= VNodeFlags.ChildrenVNode;
+                                c = c[0];
+                            }
                         } else {
                             c = null;
                         }
