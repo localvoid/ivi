@@ -18,7 +18,7 @@ import { CSSStyleProps } from "../common/dom_props";
  *
  *     const vnode = $h("div", "div-class-name")
  *         .props({ id: "div-id" })
- *         .events({ click: Events.onClick((e) => console.log("click event", e)) })
+ *         .events(Events.onClick((e) => console.log("click event", e)))
  *         .children("Hello");
  *
  * There are several factory functions that create VNode Builder objects:
@@ -236,7 +236,8 @@ export class VNode<P = null> implements IVNode<P> {
      *   strings with text nodes.
      * @returns VNodeBuilder.
      */
-    children(children: VNodeArray | IVNode<any> | string | number | null): VNode<P> {
+    children(...children: Array<IVNode<any>[] | IVNode<any> | string | number | null>): VNode<P>;
+    children(): VNode<P> {
         if (__IVI_DEV__) {
             if (this._flags &
                 (VNodeFlags.ChildrenArray |
@@ -259,23 +260,103 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
 
-        if (typeof children === "object") {
-            if (children !== null) {
-                if (children.constructor === Array) {
-                    this._flags |= VNodeFlags.ChildrenArray;
-                    children = normalizeVNodes(children as VNodeArray);
-                    checkUniqueKeys(children as IVNode<any>[]);
-                } else if (isValidVNode(children)) {
-                    this._flags |= VNodeFlags.ChildrenVNode;
-                } else {
-                    this._flags |= VNodeFlags.ChildrenBasic;
-                    children = "";
+        const children = arguments;
+        let c;
+        if (children.length === 1) {
+            c = children[0];
+            if (typeof c === "object") {
+                if (c !== null) {
+                    if (c.constructor === Array) {
+                        if (c.length > 0) {
+                            this._flags |= VNodeFlags.ChildrenArray;
+                        } else {
+                            c = null;
+                        }
+                    } else if (isValidVNode(c)) {
+                        this._flags |= VNodeFlags.ChildrenVNode;
+                    } else {
+                        c = null;
+                    }
+                }
+            } else {
+                this._flags |= VNodeFlags.ChildrenBasic;
+            }
+            this._children = c as IVNode<any>[] | IVNode<any> | string | number | null;
+        } else {
+
+            let topCount = 0;
+            let count = 0;
+            let i;
+            let last;
+            for (i = 0; i < children.length; i++) {
+                c = children[i];
+                if (c !== null) {
+                    if (c.constructor === Array) {
+                        if (c.length > 0) {
+                            count += c.length;
+                            topCount++;
+                            last = c;
+                        }
+                    } else {
+                        count++;
+                        topCount++;
+                        last = c;
+                    }
                 }
             }
-        } else {
-            this._flags |= VNodeFlags.ChildrenBasic;
+            if (topCount > 0) {
+                if (topCount === 1) {
+                    this._children = last;
+                    if (typeof last === "object") {
+                        if (last.constructor === Array) {
+                            this._flags |= VNodeFlags.ChildrenArray;
+                        } else if (isValidVNode(last)) {
+                            this._flags |= VNodeFlags.ChildrenVNode;
+                        } else {
+                            this._children = null;
+                        }
+                    } else {
+                        this._flags |= VNodeFlags.ChildrenBasic;
+                    }
+                } else {
+                    this._flags |= VNodeFlags.ChildrenArray;
+                    const array = this._children = new Array(count);
+                    let k = 0;
+                    for (i = 0; i < children.length; i++) {
+                        c = children[i];
+                        if (typeof c === "object") {
+                            if (c !== null) {
+                                if (c.constructor === Array) {
+                                    for (let j = 0; j < c.length; j++) {
+                                        if (__IVI_DEV__) {
+                                            if (!(c[j]._flags & VNodeFlags.Key)) {
+                                                throw new Error("Invalid children array. All children nodes in nested" +
+                                                    " array should have explicit keys.");
+                                            }
+                                        }
+                                        array[k++] = c[j] as IVNode<any>;
+                                    }
+                                } else {
+                                    if (isValidVNode(c)) {
+                                        array[k++] = c as IVNode<any>;
+                                    } else {
+                                        array[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, "");
+                                    }
+                                    if (!(c._flags & VNodeFlags.Key)) {
+                                        c._key = i;
+                                    }
+                                }
+                            }
+                        } else {
+                            c = array[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
+                            c._key = i;
+                        }
+                    }
+                    checkUniqueKeys(array);
+                }
+            }
         }
-        this._children = children as IVNode<any>[] | IVNode<any> | string | number | null;
+
         return this;
     }
 
@@ -417,94 +498,11 @@ export class VNode<P = null> implements IVNode<P> {
     }
 }
 
-/**
- * Denormalized VNode Array.
- */
-export type VNodeArray = Array<Array<IVNode<any>> | IVNode<any> | string | number | null>;
-
-function isVNodeKeyedChildrenArray(v: any): v is IVNode<any>[] {
-    return v.constructor === Array;
-}
-
 function isValidVNode(v: any): v is IVNode<any> {
     return v.constructor === VNode;
 }
 
-/**
- * Normalizes VNode array by flattening all nodes, removing null values and converting number and string objects to text
- * nodes.
- *
- * @param nodes
- * @returns Normalized VNode array.
- */
-export function normalizeVNodes(nodes: VNodeArray): IVNode<any>[] {
-    for (let i = 0; i < nodes.length; i++) {
-        let n = nodes[i];
-
-        if (typeof n === "object") {
-            if (n === null || isVNodeKeyedChildrenArray(n)) {
-                return _normalizeVNodes(nodes, i);
-            } else {
-                if (!isValidVNode(n)) {
-                    n = new VNode<null>(VNodeFlags.Text, null, null, null, "");
-                    nodes[i] = n;
-                }
-                if (!(n._flags & VNodeFlags.Key)) {
-                    n._key = i;
-                }
-            }
-        } else { // basic object
-            const node = new VNode<null>(VNodeFlags.Text, null, null, null, n);
-            node._key = i;
-            nodes[i] = node;
-        }
-    }
-
-    return nodes as IVNode<any>[];
-}
-
-function _normalizeVNodes(nodes: VNodeArray, i: number): IVNode<any>[] {
-    const result = nodes.slice(0, i) as IVNode<any>[];
-
-    for (; i < nodes.length; i++) {
-        let n = nodes[i];
-        if (typeof n === "object") {
-            if (n !== null) {
-                if (isVNodeKeyedChildrenArray(n)) {
-                    for (let j = 0; j < n.length; j++) {
-                        const nj = n[j];
-
-                        if (__IVI_DEV__) {
-                            if (!(nj._flags & VNodeFlags.Key)) {
-                                throw new Error("Invalid children array. All children nodes in nested array should " +
-                                    "have explicit keys.");
-                            }
-                        }
-
-                        // No need to protect against xss here, nested arrays can't have denormalized values.
-                        result.push(nj);
-                    }
-                } else {
-                    if (!isValidVNode(n)) {
-                        n = new VNode<null>(VNodeFlags.Text, null, null, null, "");
-                    }
-                    if (!(n._flags & VNodeFlags.Key)) {
-                        n._key = i;
-                    }
-                    result.push(n);
-                }
-            }
-        } else { // basic object
-            const node = new VNode<null>(VNodeFlags.Text, null, null, null, n);
-            node._key = i;
-            result.push(node);
-        }
-    }
-
-    return result;
-}
-
-function checkUniqueKeys(children: IVNode<any>[]): void {
+export function checkUniqueKeys(children: IVNode<any>[]): void {
     if (__IVI_DEV__) {
         let keys: Set<any> | undefined;
         for (let i = 0; i < children.length; i++) {

@@ -18,9 +18,9 @@ function genVNodes(item: any, keys: boolean): IVNode<any> | IVNode<any>[] {
     } else {
         let e = keys ? $h("div").key(item.key) : $h("div");
         if (keys) {
-            e.children(genVNodes(item.children, keys) as IVNode<any>[]);
+            e.children.apply(e, genVNodes(item.children, keys) as IVNode<any>[]);
         } else {
-            e.children(genVNodes(item.children, keys) as IVNode<any>[]);
+            e.children.apply(e, genVNodes(item.children, keys) as IVNode<any>[]);
         }
         return e;
     }
@@ -32,13 +32,13 @@ function checkInnerHtmlEquals(ax: IVNode<any>[], bx: IVNode<any>[], cx: IVNode<a
     const b = $h("div");
     const c = $h("div");
     if (keys) {
-        a.children(ax);
-        b.children(bx);
-        c.children(cx);
+        a.children.apply(a, ax);
+        b.children.apply(b, bx);
+        c.children.apply(c, cx);
     } else {
-        a.children(ax);
-        b.children(bx);
-        c.children(cx);
+        a.children.apply(a, ax);
+        b.children.apply(b, bx);
+        c.children.apply(c, cx);
     }
 
     const aDiv = document.createElement("div");
@@ -485,7 +485,7 @@ describe("sync", () => {
             [[998, 999], [0, 1, 2, 3, 4, 998, 5, 6, 7, 8, 9, 999], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
             [[998, 999], [998, 0, 1, 2, 3, 4, 999, 5, 6, 7, 8, 9], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
 
-            [[1], [], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [[1], [], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
             [[1, 2], [2], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
             [[1, 2], [1], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
             [[1, 2, 3], [2, 3], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
@@ -547,8 +547,8 @@ describe("sync", () => {
             [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0], [0, 0, 0, 0, 5, 0, 3], [0, 0, 0, 0, 0, 0, 3]],
 
             [[0], [1], [0, 0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 0, 0]],
-            [[0], [1, 2], [0, 0, 2, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
-            [[0, 2], [1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 1]],
+            [[0], [1, 2], [0, 0, 2, 0, 2, 0, 1], [0, 0, 1, 0, 1, 0, 0]],
+            [[0, 2], [1], [0, 0, 1, 0, 1, 0, 2], [0, 0, 0, 0, 0, 0, 1]],
             [[0, 2], [1, 2], [0, 0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
             [[0, 2], [2, 1], [0, 0, 1, 0, 2, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
             [[0, 1, 2], [3, 4, 5], [0, 0, 3, 0, 3, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
@@ -568,11 +568,11 @@ describe("sync", () => {
 
             [[{ key: 0, children: [0] }],
             [{ key: 0, children: [] }],
-            [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+            [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
 
             [[0, 1, { children: [0], key: 2 }],
             [{ key: 2, children: [] }],
-            [0, 0, 0, 0, 0, 0, 2], [1, 0, 0, 0, 0, 1, 2]],
+            [0, 0, 0, 0, 0, 0, 3], [1, 0, 0, 0, 0, 1, 2]],
 
             [[{ key: 0, children: [] }],
             [1, 2, { key: 0, children: [0] }],
@@ -612,7 +612,7 @@ describe("sync", () => {
 
             [[0, 1, { key: 2, children: [0] }, 3, { key: 4, children: [0] }, 5],
             [6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }],
-            [0, 0, 2, 0, 3, 0, 3], [1, 0, 1, 0, 0, 2, 1]],
+            [0, 0, 2, 0, 3, 0, 5], [1, 0, 1, 0, 0, 2, 2]],
         ];
 
         describe("syncChildren", () => {
@@ -774,7 +774,7 @@ describe("sync", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
                         r($h("div"));
-                        const b = r($h("div").children([$h("div")])) as HTMLElement;
+                        const b = r($h("div").children($h("div"))) as HTMLElement;
                         expect(b.childNodes.length).to.equal(1);
                         expect(b.children[0].tagName.toLowerCase()).to.equal("div");
                         expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
@@ -807,10 +807,10 @@ describe("sync", () => {
             it("[<div>] => null", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
-                        r($h("div").children([$h("div")]));
+                        r($h("div").children($h("div")));
                         const b = r($h("div").children(null));
                         expect(b.childNodes.length).to.equal(0);
-                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 0);
+                        expectDOMOps(c, 2, 0, 0, 0, 2, 0, 1);
                     });
                 });
             });
@@ -819,7 +819,7 @@ describe("sync", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
                         r($h("div"));
-                        const b = r($h("div").children([$h("div"), $h("div")])) as HTMLElement;
+                        const b = r($h("div").children($h("div"), $h("div"))) as HTMLElement;
                         expect(b.childNodes.length).to.equal(2);
                         expect(b.children[0].tagName.toLowerCase()).to.equal("div");
                         expect(b.children[1].tagName.toLowerCase()).to.equal("div");
@@ -831,7 +831,7 @@ describe("sync", () => {
             it("[<div>, <div>] => null", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
-                        r($h("div").children([$h("div"), $h("div")]));
+                        r($h("div").children($h("div"), $h("div")));
                         const b = r($h("div"));
                         expect(b.childNodes.length).to.equal(0);
                         expectDOMOps(c, 3, 0, 0, 0, 3, 0, 0);
@@ -867,7 +867,7 @@ describe("sync", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
                         r($h("div").children(123));
-                        const b = r($h("div").children([$h("h1"), $h("h2")])) as HTMLElement;
+                        const b = r($h("div").children($h("h1"), $h("h2"))) as HTMLElement;
                         expect(b.childNodes.length).to.equal(2);
                         expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
                         expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
@@ -879,7 +879,7 @@ describe("sync", () => {
             it("[<h1><h2>] => 123", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
-                        r($h("div").children([$h("h1"), $h("h2")]));
+                        r($h("div").children($h("h1"), $h("h2")));
                         const b = r($h("div").children(123));
                         expect(b.childNodes.length).to.equal(1);
                         expect(b.firstChild!.nodeValue).to.equal("123");
@@ -891,7 +891,7 @@ describe("sync", () => {
             it("[<h1><h2>] => unsafeHTML('abc')", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
-                        r($h("div").children([$h("h1"), $h("h2")]));
+                        r($h("div").children($h("h1"), $h("h2")));
                         const b = r($h("div").unsafeHTML("abc"));
                         expect(b.childNodes.length).to.equal(1);
                         expect(b.firstChild!.nodeValue).to.equal("abc");
@@ -903,7 +903,7 @@ describe("sync", () => {
             it("[<h1><h2>] => <div>", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
-                        r($h("div").children([$h("h1"), $h("h2")]));
+                        r($h("div").children($h("h1"), $h("h2")));
                         const b = r($h("div").children($h("div"))) as HTMLElement;
                         expect(b.childNodes.length).to.equal(1);
                         expect(b.children[0].tagName.toLowerCase()).to.equal("div");
@@ -952,7 +952,7 @@ describe("sync", () => {
                 startRender((r) => {
                     checkDOMOps((c) => {
                         r($h("div").children($h("div")));
-                        const b = r($h("div").children([$h("h1"), $h("h2")])) as HTMLElement;
+                        const b = r($h("div").children($h("h1"), $h("h2"))) as HTMLElement;
                         expect(b.childNodes.length).to.equal(2);
                         expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
                         expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
@@ -1520,15 +1520,15 @@ describe("sync", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
                     const a = $c(A, 0).key(1);
-                    r($h("div").children([
+                    r($h("div").children(
                         $h("h1").key(0),
                         a,
-                    ]));
+                    ));
                     getComponentInstanceFromVNode<A>(a)!.updateState(1);
-                    const n = r($h("div").children([
+                    const n = r($h("div").children(
                         $c(A, 1).key(1),
                         $h("h1").key(0),
-                    ])) as HTMLDivElement;
+                    )) as HTMLDivElement;
                     expect(n.children[0].tagName.toLowerCase()).to.equal("span");
                     expect(n.children[0].firstChild!.nodeValue).to.equal("1");
                     expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
@@ -1540,15 +1540,15 @@ describe("sync", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
                     const a = $c(A, 0);
-                    r($h("div").children([
+                    r($h("div").children(
                         $h("h1").key(0),
                         $c(B, a).key(1),
-                    ]));
+                    ));
                     getComponentInstanceFromVNode<A>(a)!.updateState(1);
-                    const n = r($h("div").children([
+                    const n = r($h("div").children(
                         $c(B, $c(A, 1)).key(1),
                         $h("h1").key(0),
-                    ])) as HTMLDivElement;
+                    )) as HTMLDivElement;
                     expect(n.children[0].tagName.toLowerCase()).to.equal("span");
                     expect(n.children[0].firstChild!.nodeValue).to.equal("1");
                     expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
@@ -1561,15 +1561,15 @@ describe("sync", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
                     const a = $c(A, 0).key(1);
-                    r($h("div").children([
+                    r($h("div").children(
                         a,
                         $h("h1").key(0),
-                    ]));
+                    ));
                     getComponentInstanceFromVNode<A>(a)!.updateState(1);
-                    const n = r($h("div").children([
+                    const n = r($h("div").children(
                         $h("h1").key(0),
                         $c(A, 1).key(1),
-                    ])) as HTMLDivElement;
+                    )) as HTMLDivElement;
                     expect(n.children[1].tagName.toLowerCase()).to.equal("span");
                     expect(n.children[1].firstChild!.nodeValue).to.equal("1");
                     expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
@@ -1581,15 +1581,15 @@ describe("sync", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
                     const a = $c(A, 0);
-                    r($h("div").children([
+                    r($h("div").children(
                         $c(B, a).key(1),
                         $h("h1").key(0),
-                    ]));
+                    ));
                     getComponentInstanceFromVNode<A>(a)!.updateState(1);
-                    const n = r($h("div").children([
+                    const n = r($h("div").children(
                         $h("h1").key(0),
                         $c(B, $c(A, 1)).key(1),
-                    ])) as HTMLDivElement;
+                    )) as HTMLDivElement;
                     expect(n.children[1].tagName.toLowerCase()).to.equal("span");
                     expect(n.children[1].firstChild!.nodeValue).to.equal("1");
                     expectDOMOps(c, 4, 0, 0, 0, 4, 1, 0);
@@ -1602,12 +1602,12 @@ describe("sync", () => {
         it("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a"), $t("b").key(0), $t("c").key(1), $t("e").key(2), $t("d"),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("b");
                     expect(b.childNodes[2].nodeValue).to.equal("c");
@@ -1621,12 +1621,12 @@ describe("sync", () => {
         it("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a"), $t("b").key(0), $t("d"),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("b");
                     expect(b.childNodes[2].nodeValue).to.equal("d");
@@ -1638,12 +1638,12 @@ describe("sync", () => {
         it("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         $t("a"), $t("b").key(0), $t("c").key(1), $t("d"),
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a"), $t("c").key(1), $t("b").key(0), $t("d"),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("c");
                     expect(b.childNodes[2].nodeValue).to.equal("b");
@@ -1656,12 +1656,12 @@ describe("sync", () => {
         it("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"),
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("c");
                     expect(b.childNodes[2].nodeValue).to.equal("e");
@@ -1675,12 +1675,12 @@ describe("sync", () => {
         it("<div>#0.1.2#1</div> => <div>.1.2</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         $t("a").key(0), $t("b"), $t("c"), $t("d").key(1),
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         null, $t("b"), $t("c"), null,
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("b");
                     expect(b.childNodes[1].nodeValue).to.equal("c");
                     expectDOMOps(c, 1, 0, 4, 0, 5, 0, 2);
@@ -1691,12 +1691,12 @@ describe("sync", () => {
         it("<div>.1.2</div> => <div>#0.1.2#1</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         null, $t("b"), $t("c"), null,
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a").key(0), $t("b"), $t("c"), $t("d").key(1),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("b");
                     expect(b.childNodes[2].nodeValue).to.equal("c");
@@ -1709,14 +1709,14 @@ describe("sync", () => {
         it("<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         null, $t("b"), $t("c"), null,
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a").key(0), $t("b"), $t("c"),
                         $t("d").key(1), $t("e").key(2), $t("f").key(3), $t("g").key(4), $t("h").key(5), $t("i").key(6),
                         $t("j").key(7), $t("k").key(8), $t("l").key(9),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("b");
                     expect(b.childNodes[2].nodeValue).to.equal("c");
@@ -1737,12 +1737,12 @@ describe("sync", () => {
         it("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
             startRender((r) => {
                 checkDOMOps((c) => {
-                    r($h("div").children([
+                    r($h("div").children(
                         $h("div"), $t("a"), $t("b").key(0), $t("e"), $t("c").key(1), $t("d"), $h("div"),
-                    ]));
-                    const b = r($h("div").children([
+                    ));
+                    const b = r($h("div").children(
                         $t("a"), $t("c").key(1), $t("e"), $t("b").key(0), $t("d"),
-                    ]));
+                    ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");
                     expect(b.childNodes[1].nodeValue).to.equal("c");
                     expect(b.childNodes[2].nodeValue).to.equal("e");

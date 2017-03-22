@@ -159,14 +159,14 @@ describe("augment", () => {
 
     it("<div>[<span>]</div>", () => {
         checkDOMOps((c) => {
-            augment($h("div").children([$h("span")]), `<div><span></span></div>`);
+            augment($h("div").children($h("span")), `<div><span></span></div>`);
             expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
         });
     });
 
     it("<div>[<span>, <strong>]</div>", () => {
         checkDOMOps((c) => {
-            augment($h("div").children([$h("span"), $h("strong")]), `<div><span></span><strong></strong></div>`);
+            augment($h("div").children($h("span"), $h("strong")), `<div><span></span><strong></strong></div>`);
             expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
         });
     });
@@ -178,12 +178,12 @@ describe("augment", () => {
         "  <div>" +
         "]</div>", () => {
             checkDOMOps((c) => {
-                augment($h("div").children([
+                augment($h("div").children(
                     $h("div").children("hello"),
-                    $h("div").children([$h("span").children("world"), $h("div").children($h("span"))]),
+                    $h("div").children($h("span").children("world"), $h("div").children($h("span"))),
                     $h("div").children($h("div")),
                     $h("div"),
-                ]), `<div><div>hello</div><div><span>world</span><div><span></span></div></div><div><div></div></div>` +
+                ), `<div><div>hello</div><div><span>world</span><div><span></span></div></div><div><div></div></div>` +
                     `<div></div></div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
@@ -229,7 +229,7 @@ describe("augment", () => {
     describe("children normalization", () => {
         it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
             checkDOMOps((c) => {
-                augment($h("div").children([$h("span"), [$h("strong").key("strong"), $h("a").key("a")], $h("span")]),
+                augment($h("div").children($h("span"), [$h("strong").key("strong"), $h("a").key("a")], $h("span")),
                     `<div><span></span><strong></strong><a></a><span></span></div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
@@ -237,28 +237,28 @@ describe("augment", () => {
 
         it("<div>['abc', []]</div>", () => {
             checkDOMOps((c) => {
-                augment($h("div").children(["abc", []]), `<div>abc</div>`);
+                augment($h("div").children("abc", []), `<div>abc</div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });
 
         it("<div>[<div>, null, <span>]</div>", () => {
             checkDOMOps((c) => {
-                augment($h("div").children([$h("div"), null, $h("span")]), `<div><div></div><span></span></div>`);
+                augment($h("div").children($h("div"), null, $h("span")), `<div><div></div><span></span></div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });
 
         it("<div>[<div>, 'abc', <span>]</div>", () => {
             checkDOMOps((c) => {
-                augment($h("div").children([$h("div"), "abc", $h("span")]), `<div><div></div>abc<span></span></div>`);
+                augment($h("div").children($h("div"), "abc", $h("span")), `<div><div></div>abc<span></span></div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });
 
         it("<div>[<div>, 123, <span>]</div>", () => {
             checkDOMOps((c) => {
-                augment($h("div").children([$h("div"), 123, $h("span")]), `<div><div></div>123<span></span></div>`);
+                augment($h("div").children($h("div"), 123, $h("span")), `<div><div></div>123<span></span></div>`);
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });
@@ -333,7 +333,7 @@ describe("augment", () => {
         it("<div>[<C>''</C>]</div>", () => {
             checkDOMOps((c) => {
                 augment(
-                    $h("div").children([$lc("1", $t(""))]),
+                    $h("div").children($lc("1", $t(""))),
                     `<div><!----></div>`);
                 expectDOMOps(c, 1, 0, 1, 0, 0, 1, 0);
             });
@@ -342,7 +342,7 @@ describe("augment", () => {
         it("<div>[<C>''</C><C>''</C>]</div>", () => {
             checkDOMOps((c) => {
                 augment(
-                    $h("div").children([$lc("1", $t("")), $lc("2", $t(""))]),
+                    $h("div").children($lc("1", $t("")), $lc("2", $t(""))),
                     `<div><!----><!----></div>`);
                 expectDOMOps(c, 1, 0, 2, 0, 0, 2, 0);
             });
@@ -351,7 +351,7 @@ describe("augment", () => {
         it("<div>[<C>''</C><div><C>''</C>]</div>", () => {
             checkDOMOps((c) => {
                 augment(
-                    $h("div").children([$lc("1", $t("")), $h("div"), $lc("2", $t(""))]),
+                    $h("div").children($lc("1", $t("")), $h("div"), $lc("2", $t(""))),
                     `<div><!----><div></div><!----></div>`);
                 expectDOMOps(c, 1, 0, 2, 0, 0, 2, 0);
             });

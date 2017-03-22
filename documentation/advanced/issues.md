@@ -52,11 +52,11 @@ class Form extends Component<null> {
     });
 
     render() {
-        return $h("form").children([
+        return $h("form").children(
             $i("text")
                 .events({ input: this.onInput })
                 .value(this.value);
-        ]);
+        );
     }
 
     updated() {
