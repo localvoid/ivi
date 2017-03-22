@@ -272,10 +272,8 @@ export class VNode<P = null> implements IVNode<P> {
                         } else {
                             c = null;
                         }
-                    } else if (isValidVNode(c)) {
-                        this._flags |= VNodeFlags.ChildrenVNode;
                     } else {
-                        c = null;
+                        this._flags |= VNodeFlags.ChildrenVNode;
                     }
                 }
             } else {
@@ -305,15 +303,18 @@ export class VNode<P = null> implements IVNode<P> {
                 }
             }
             if (topCount > 0) {
-                if (topCount === 1) {
+                if ((topCount | count) === 1) {
                     this._children = last;
                     if (typeof last === "object") {
                         if (last.constructor === Array) {
-                            this._flags |= VNodeFlags.ChildrenArray;
-                        } else if (isValidVNode(last)) {
-                            this._flags |= VNodeFlags.ChildrenVNode;
+                            if (count > 1) {
+                                this._flags |= VNodeFlags.ChildrenArray;
+                            } else {
+                                this._children = last[0];
+                                this._flags |= VNodeFlags.ChildrenVNode;
+                            }
                         } else {
-                            this._children = null;
+                            this._flags |= VNodeFlags.ChildrenVNode;
                         }
                     } else {
                         this._flags |= VNodeFlags.ChildrenBasic;
@@ -337,11 +338,7 @@ export class VNode<P = null> implements IVNode<P> {
                                         array[k++] = c[j] as IVNode<any>;
                                     }
                                 } else {
-                                    if (isValidVNode(c)) {
-                                        array[k++] = c as IVNode<any>;
-                                    } else {
-                                        array[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, "");
-                                    }
+                                    array[k++] = c as IVNode<any>;
                                     if (!(c._flags & VNodeFlags.Key)) {
                                         c._key = i;
                                     }
@@ -496,10 +493,6 @@ export class VNode<P = null> implements IVNode<P> {
         }
         return this;
     }
-}
-
-function isValidVNode(v: any): v is IVNode<any> {
-    return v.constructor === VNode;
 }
 
 export function checkUniqueKeys(children: IVNode<any>[]): void {

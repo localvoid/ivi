@@ -554,22 +554,4 @@ describe("render", () => {
             expect(() => { render($h("h1").children($h("span").children($h("h2")))); }).to.throw(Error);
         });
     });
-
-    describe("XSS protection", () => {
-        it("single vnode", () => {
-            checkDOMOps((c) => {
-                const n = render<HTMLElement>($h("div").children($invalid()));
-                expect(n.firstChild).to.equal(null);
-                expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
-            });
-        });
-
-        it("children array", () => {
-            checkDOMOps((c) => {
-                const n = render<HTMLElement>($h("div").children($invalid(), $invalid()));
-                expect(n.firstChild!.nodeType).to.equal(Node.TEXT_NODE);
-                expectDOMOps(c, 1, 0, 2, 0, 3, 0, 0);
-            });
-        });
-    });
 });
