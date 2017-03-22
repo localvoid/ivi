@@ -1,10 +1,10 @@
 import { FEATURES, FeatureFlags } from "../common/feature_detection";
 import { NativeEventDispatcherFlags } from "./flags";
-import { EventHandlerList, EventHandler } from "./event_handler";
+import { EventHandler } from "./event_handler";
 
 declare global {
     interface Element {
-        _ev: EventHandlerList | EventHandler | null | undefined;
+        _ev: Array<EventHandler | null> | EventHandler | null | undefined;
     }
 }
 
@@ -56,7 +56,10 @@ export const DOM_NODE_EVENTS_PROPERTY = "_ev";
  * @param node DOM Node.
  * @param events Event Handlers.
  */
-export function setEventHandlersToDOMNode(node: Element, events: EventHandlerList | EventHandler | null): void {
+export function setEventHandlersToDOMNode(
+    node: Element,
+    events: Array<EventHandler | null> | EventHandler | null,
+): void {
     node._ev = events;
 }
 
@@ -66,6 +69,8 @@ export function setEventHandlersToDOMNode(node: Element, events: EventHandlerLis
  * @param node DOM Node.
  * @returns Event Handlers.
  */
-export function getEventHandlersFromDOMNode(node: Element): EventHandlerList | EventHandler | undefined | null {
+export function getEventHandlersFromDOMNode(
+    node: Element,
+): Array<EventHandler | null> | EventHandler | undefined | null {
     return node._ev;
 }

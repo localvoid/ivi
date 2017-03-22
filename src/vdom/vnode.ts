@@ -8,7 +8,7 @@ import { ComponentFunction, ComponentClass, Component } from "./component";
 import { ElementDescriptor } from "./element_descriptor";
 import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
-import { EventHandlerList, EventHandler } from "../events/event_handler";
+import { EventHandler } from "../events/event_handler";
 import { CSSStyleProps } from "../common/dom_props";
 
 /**
@@ -162,7 +162,7 @@ export class VNode<P = null> implements IVNode<P> {
      * @param events.
      * @returns VNodeBuilder.
      */
-    events(events: EventHandlerList | EventHandler | null): VNode<P> {
+    events(events: Array<EventHandler | null> | EventHandler | null): VNode<P> {
         if (__IVI_DEV__) {
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set events, events are available on element nodes only.");

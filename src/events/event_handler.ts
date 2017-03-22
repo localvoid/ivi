@@ -23,8 +23,3 @@ export interface EventHandler<E extends SyntheticEvent<any> = SyntheticEvent<any
      */
     options?: any;
 }
-
-/**
- * Event Handler List.
- */
-export type EventHandlerList = Array<EventHandler | null>;

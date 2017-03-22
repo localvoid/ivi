@@ -64,7 +64,7 @@ export {
     EventDispatcher, EventDispatcherSubscriptionFlags, EventDispatcherSubscription,
 } from "./events/event_dispatcher";
 export { NativeEventDispatcher } from "./events/native_event_dispatcher";
-export { EventHandler, EventHandlerList } from "./events/event_handler";
+export { EventHandler } from "./events/event_handler";
 export {
     NativeEventDispatchersList, NativeActiveEventDispatchersList, NativeEventDispatchers, NativeActiveEventDispatchers,
     Events, ActiveEvents, createEventHandler,

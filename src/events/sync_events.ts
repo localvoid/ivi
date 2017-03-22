@@ -1,4 +1,4 @@
-import { EventHandler, EventHandlerList } from "./event_handler";
+import { EventHandler } from "./event_handler";
 
 /**
  * Shortcut for Event Handler registration.
@@ -27,8 +27,8 @@ function unregisterEventHandler(handler: EventHandler<any>): void {
  */
 export function syncEvents(
     node: Element,
-    a: EventHandlerList | EventHandler | null,
-    b: EventHandlerList | EventHandler | null,
+    a: Array<EventHandler | null> | EventHandler | null,
+    b: Array<EventHandler | null> | EventHandler | null,
 ): void {
     let i: number;
     let h1: EventHandler | null;
@@ -90,7 +90,7 @@ export function syncEvents(
  *
  * @param events Events.
  */
-export function attachEvents(events: EventHandlerList | EventHandler): void {
+export function attachEvents(events: Array<EventHandler | null> | EventHandler): void {
     if (typeof events === "function") {
         registerEventHandler(events);
     } else {
@@ -108,7 +108,7 @@ export function attachEvents(events: EventHandlerList | EventHandler): void {
  *
  * @param events Events.
  */
-export function detachEvents(events: EventHandlerList | EventHandler): void {
+export function detachEvents(events: Array<EventHandler | null> | EventHandler): void {
     if (typeof events === "function") {
         unregisterEventHandler(events);
     } else {

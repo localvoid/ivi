@@ -1,4 +1,4 @@
-import { EventHandlerList, EventHandler } from "../events/event_handler";
+import { EventHandler } from "../events/event_handler";
 import { Context } from "../common/types";
 import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
@@ -62,7 +62,7 @@ export interface ElementProps<P> {
     /**
      * Events.
      */
-    events: EventHandlerList | EventHandler | null;
+    events: Array<EventHandler | null> | EventHandler | null;
 }
 
 /**
