@@ -261,104 +261,102 @@ export class VNode<P = null> implements IVNode<P> {
         }
 
         const children = arguments;
-        let c;
+        let f = 0;
+        let r = null;
         if (children.length === 1) {
-            c = children[0];
-            if (typeof c === "object") {
-                if (c !== null) {
-                    if (c.constructor === Array) {
-                        if (c.length > 0) {
-                            if (c.length > 1) {
-                                this._flags |= VNodeFlags.ChildrenArray;
-                            } else {
-                                this._flags |= VNodeFlags.ChildrenVNode;
-                                c = c[0];
-                            }
+            r = children[0] as IVNode<any>[] | IVNode<any> | string | number | null;
+            if (typeof r === "object") {
+                if (r !== null) {
+                    if (r.constructor === Array) {
+                        r = r as IVNode<any>[];
+                        if (r.length > 1) {
+                            f = VNodeFlags.ChildrenArray;
+                        } else if (r.length === 1) {
+                            f = VNodeFlags.ChildrenVNode;
+                            r = r[0];
                         } else {
-                            c = null;
+                            r = null;
                         }
                     } else {
-                        this._flags |= VNodeFlags.ChildrenVNode;
+                        f = VNodeFlags.ChildrenVNode;
                     }
                 }
             } else {
-                this._flags |= VNodeFlags.ChildrenBasic;
+                f = VNodeFlags.ChildrenBasic;
             }
-            this._children = c as IVNode<any>[] | IVNode<any> | string | number | null;
         } else {
-
-            let topCount = 0;
-            let count = 0;
             let i;
-            let last;
+            let j = 0;
+            let k = 0;
+            let c;
             for (i = 0; i < children.length; i++) {
                 c = children[i];
                 if (c !== null) {
                     if (c.constructor === Array) {
                         if (c.length > 0) {
-                            count += c.length;
-                            topCount++;
-                            last = c;
+                            k += c.length;
+                            j++;
+                            r = c;
                         }
                     } else {
-                        count++;
-                        topCount++;
-                        last = c;
+                        k++;
+                        j++;
+                        r = c;
                     }
                 }
             }
-            if (topCount > 0) {
-                if ((topCount | count) === 1) {
-                    this._children = last;
-                    if (typeof last === "object") {
-                        if (last.constructor === Array) {
-                            if (count > 1) {
-                                this._flags |= VNodeFlags.ChildrenArray;
+            if (j > 0) {
+                if ((j | k) === 1) {
+                    if (typeof r === "object") {
+                        if (r.constructor === Array) {
+                            if (k > 1) {
+                                f = VNodeFlags.ChildrenArray;
                             } else {
-                                this._children = last[0];
-                                this._flags |= VNodeFlags.ChildrenVNode;
+                                f = VNodeFlags.ChildrenVNode;
+                                r = r[0];
                             }
                         } else {
-                            this._flags |= VNodeFlags.ChildrenVNode;
+                            f = VNodeFlags.ChildrenVNode;
                         }
                     } else {
-                        this._flags |= VNodeFlags.ChildrenBasic;
+                        f = VNodeFlags.ChildrenBasic;
                     }
                 } else {
-                    this._flags |= VNodeFlags.ChildrenArray;
-                    const array = this._children = new Array(count);
-                    let k = 0;
+                    f = VNodeFlags.ChildrenArray;
+                    r = new Array(k);
+                    k = 0;
                     for (i = 0; i < children.length; i++) {
                         c = children[i];
                         if (typeof c === "object") {
                             if (c !== null) {
                                 if (c.constructor === Array) {
-                                    for (let j = 0; j < c.length; j++) {
+                                    for (j = 0; j < c.length; j++) {
                                         if (__IVI_DEV__) {
                                             if (!(c[j]._flags & VNodeFlags.Key)) {
                                                 throw new Error("Invalid children array. All children nodes in nested" +
                                                     " array should have explicit keys.");
                                             }
                                         }
-                                        array[k++] = c[j] as IVNode<any>;
+                                        r[k++] = c[j] as IVNode<any>;
                                     }
                                 } else {
-                                    array[k++] = c as IVNode<any>;
+                                    r[k++] = c as IVNode<any>;
                                     if (!(c._flags & VNodeFlags.Key)) {
                                         c._key = i;
                                     }
                                 }
                             }
                         } else {
-                            c = array[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
+                            c = r[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
                             c._key = i;
                         }
                     }
-                    checkUniqueKeys(array);
+                    checkUniqueKeys(r);
                 }
             }
         }
-
+        this._flags |= f;
+        this._children = r;
         return this;
     }
 
