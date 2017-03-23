@@ -47,9 +47,9 @@
   "devDependencies": {
     "@types/chai": "^3.4.35",
     "@types/mocha": "^2.2.40",
-    "@types/node": "^7.0.8",
+    "@types/node": "^7.0.10",
     "chai": "^3.4.1",
-    "codecov": "^1.0.1",
+    "codecov": "^2.1.0",
     "core-js": "^2.4.1",
     "istanbul-instrumenter-loader": "^2.0.0",
     "ivi-tslint-rules": "^0.1.0",
@@ -57,18 +57,18 @@
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-cli": "^1.0.1",
-    "karma-coverage-istanbul-reporter": "^0.3.0",
+    "karma-coverage-istanbul-reporter": "^1.0.0",
     "karma-mocha": "^1.2.0",
-    "karma-mocha-reporter": "^2.2.2",
+    "karma-mocha-reporter": "^2.2.3",
     "karma-sauce-launcher": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^2.0.2",
+    "karma-webpack": "^2.0.3",
     "mocha": "^3.2.0",
-    "ts-loader": "^2.0.1",
+    "ts-loader": "^2.0.3",
     "tslib": "^1.6.0",
     "tslint": "^4.5.1",
-    "typescript": "^2.3.0-dev.20170313",
-    "webpack": "^2.2.1",
-    "webpack-merge": "^4.0.0"
+    "typescript": "^2.3.0-dev.20170322",
+    "webpack": "^2.3.1",
+    "webpack-merge": "^4.1.0"
   }
 }
