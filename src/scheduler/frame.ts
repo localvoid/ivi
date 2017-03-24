@@ -34,7 +34,7 @@ export function frameStartTime(): number {
 _updateFrameStartTime();
 
 function _requestNextFrame(): void {
-    if (_pending) {
+    if (_pending === true) {
         if (__IVI_BROWSER__) {
             requestAnimationFrame(handleNextFrame);
         } else {
@@ -47,7 +47,7 @@ function _requestNextFrame(): void {
  * Trigger next frame tasks execution.
  */
 export function requestNextFrame(): void {
-    if (!_pending) {
+    if (_pending === false) {
         _pending = true;
         scheduleMicrotask(_requestNextFrame);
     }
@@ -134,7 +134,7 @@ function handleNextFrame(time?: number): void {
 
     if (__IVI_BROWSER__) {
         const focus = autofocusedElement();
-        if (focus) {
+        if (focus !== null) {
             (focus as HTMLElement).focus();
         }
     }
@@ -162,7 +162,7 @@ export function nextFrame(): FrameTasksGroup {
  * @returns Frame tasks group.
  */
 export function currentFrame(): FrameTasksGroup {
-    if (_currentFrameReady) {
+    if (_currentFrameReady === true) {
         return _currentFrame;
     }
     return nextFrame();

@@ -1869,7 +1869,7 @@ function syncChildrenTrackByKeys(
             }
 
             // Step 3
-            if (moved) {
+            if (moved === true) {
                 const seq = lis(sources);
                 j = seq.length - 1;
                 for (i = bLength - 1; i >= 0; i--) {

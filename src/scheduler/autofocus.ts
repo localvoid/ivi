@@ -1,4 +1,4 @@
-let _autofocusedElement: Element | null;
+let _autofocusedElement: Element | null = null;
 
 export function autofocus(element: Element): void {
     _autofocusedElement = element;

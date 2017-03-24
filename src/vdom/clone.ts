@@ -80,7 +80,7 @@ export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
         node._props,
         node._className,
         null);
-    if ((node._flags & VNodeFlags.Key) !== 0) {
+    if ((flags & VNodeFlags.Key) !== 0) {
         newNode._key = node._key;
     }
 

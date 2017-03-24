@@ -13,7 +13,7 @@ let _animatedComponents = 0;
  */
 export function startComponentAnimation(component: Component<any>): void {
     if (__IVI_BROWSER__) {
-        if (!_animatedComponents) {
+        if (_animatedComponents === 0) {
             requestNextFrame();
         }
         component.flags |= ComponentFlags.Animated;
