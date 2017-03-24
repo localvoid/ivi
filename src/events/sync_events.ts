@@ -50,7 +50,7 @@ export function syncEvents(
 
                 for (i = 0; i < a.length; i++) {
                     h1 = a[i];
-                    if (h1) {
+                    if (h1 !== null) {
                         unregisterEventHandler(h1);
                     }
                 }
@@ -60,23 +60,23 @@ export function syncEvents(
                     h1 = a[i];
                     h2 = b[i++];
                     if (h1 !== h2) {
-                        if (h2) {
+                        if (h2 !== null) {
                             registerEventHandler(h2);
                         }
-                        if (h1) {
+                        if (h1 !== null) {
                             unregisterEventHandler(h1);
                         }
                     }
                 }
                 while (i < b.length) {
                     h1 = b[i++];
-                    if (h1) {
+                    if (h1 !== null) {
                         registerEventHandler(h1);
                     }
                 }
                 while (i < a.length) {
                     h1 = a[i++];
-                    if (h1) {
+                    if (h1 !== null) {
                         unregisterEventHandler(h1);
                     }
                 }
@@ -96,7 +96,7 @@ export function attachEvents(events: Array<EventHandler | null> | EventHandler):
     } else {
         for (let i = 0; i < events.length; i++) {
             const h = events[i];
-            if (h) {
+            if (h !== null) {
                 registerEventHandler(h);
             }
         }
@@ -114,7 +114,7 @@ export function detachEvents(events: Array<EventHandler | null> | EventHandler):
     } else {
         for (let i = 0; i < events.length; i++) {
             const h = events[i];
-            if (h) {
+            if (h !== null) {
                 unregisterEventHandler(h);
             }
         }

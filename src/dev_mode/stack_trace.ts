@@ -99,7 +99,7 @@ function _extractCallSitesFromStackTrace(e: any, callSites: CallSite[]): CallSit
  */
 export function callSites(): CallSite[] | undefined {
     if (__IVI_DEV__) {
-        if (DEV_MODE & DevModeFlags.CaptureStackTraceSupported) {
+        if ((DEV_MODE & DevModeFlags.CaptureStackTraceSupported) !== 0) {
             const e = {} as { stack: CallSite[] };
             const prepare = Error.prepareStackTrace;
             Error.prepareStackTrace = _extractCallSitesFromStackTrace;
@@ -143,24 +143,24 @@ if (__IVI_DEV__) {
  */
 export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component<any> | Context): void {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
+        if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
             const flags = vnode._flags;
             let type;
             let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
                 KeepAliveHandler;
 
-            if (flags & VNodeFlags.ComponentClass) {
+            if ((flags & VNodeFlags.ComponentClass) !== 0) {
                 type = ComponentStackFrameType.Component;
-                if (!instance) {
+                if (instance === undefined) {
                     instance = vnode._instance as Component<any> | Context;
                 }
             } else {
-                if (flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) {
-                    if (flags & VNodeFlags.Connect) {
+                if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
+                    if ((flags & VNodeFlags.Connect) !== 0) {
                         type = ComponentStackFrameType.Connect;
-                    } else if (flags & VNodeFlags.UpdateContext) {
+                    } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
                         type = ComponentStackFrameType.UpdateContext;
-                        if (!instance) {
+                        if (instance === undefined) {
                             instance = vnode._props as Context;
                         }
                     } else {

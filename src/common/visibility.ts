@@ -31,7 +31,7 @@ export function removeVisibilityObserver(observer: (visible: boolean) => void): 
                 if (index === _visibilityObservers!.length) {
                     _visibilityObservers!.pop();
                 } else {
-                    _visibilityObservers![index] = _visibilityObservers!.pop() !;
+                    _visibilityObservers![index] = _visibilityObservers!.pop()!;
                 }
             }
         }

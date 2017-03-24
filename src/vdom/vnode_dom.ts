@@ -323,7 +323,7 @@ export function $m(tagName: MediaTagType, className?: string): VNode<HTMLMediaEl
 export function $e<P>(d: ElementDescriptor<P>, className?: string): VNode<P> {
     if (__IVI_DEV__) {
         if (className !== undefined) {
-            if (d._flags & ElementDescriptorFlags.ProtectClassName) {
+            if ((d._flags & ElementDescriptorFlags.ProtectClassName) !== 0) {
                 throw new Error("Failed to set className, className is protected by an ElementDescriptor.");
             }
         }

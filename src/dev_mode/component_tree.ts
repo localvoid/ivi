@@ -7,23 +7,23 @@ function _findVNode(
     match: (vnode: IVNode<any>) => boolean,
     vnode: IVNode<any>,
 ): IVNode<any> | null {
-    if (match(vnode)) {
+    if (match(vnode) === true) {
         return vnode;
     }
-    if (vnode._flags & (VNodeFlags.Element | VNodeFlags.Text)) {
-        if (vnode._flags & VNodeFlags.Element) {
+    if ((vnode._flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
+        if ((vnode._flags & VNodeFlags.Element) !== 0) {
             if (vnode._children !== null) {
-                if (vnode._flags & VNodeFlags.ChildrenArray) {
+                if ((vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
                     const children = vnode._children as IVNode<any>[];
                     for (const c of children) {
                         return _findVNode(match, c);
                     }
-                } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
+                } else if ((vnode._flags & VNodeFlags.ChildrenVNode) !== 0) {
                     return _findVNode(match, vnode._children as IVNode<any>);
                 }
             }
         }
-    } else if (vnode._flags & VNodeFlags.Component) {
+    } else if ((vnode._flags & VNodeFlags.Component) !== 0) {
         return _findVNode(match, vnode._children as IVNode<any>);
     }
 
@@ -36,7 +36,7 @@ function findVNode(
     if (__IVI_DEV__) {
         for (const root of ROOTS) {
             const result = _findVNode(match, root.currentVNode!);
-            if (result) {
+            if (result !== null) {
                 return result;
             }
         }
@@ -53,7 +53,7 @@ function findVNode(
 export function findVNodeByNode(node: Node): IVNode<any> | null {
     if (__IVI_DEV__) {
         function match(vnode: IVNode) {
-            if (vnode._flags & VNodeFlags.ComponentClass) {
+            if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
                 return node === getDOMInstanceFromVNode(vnode._children as IVNode<any>);
             }
             return false;
@@ -72,7 +72,7 @@ export function findVNodeByNode(node: Node): IVNode<any> | null {
 export function findVNodeByDebugId(id: number): IVNode<any> | null {
     if (__IVI_DEV__) {
         function match(vnode: IVNode) {
-            if (vnode._flags & VNodeFlags.ComponentClass) {
+            if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
                 return id === (vnode._instance as Component<any>)._debugId;
             }
             return false;
@@ -88,17 +88,17 @@ export function visitComponents(visitor: (vnode: IVNode<any>) => void, vnode?: I
             visitComponents(visitor, root.currentVNode!);
         }
     } else {
-        if (vnode._flags & VNodeFlags.Element) {
+        if ((vnode._flags & VNodeFlags.Element) !== 0) {
             if (vnode._children !== null) {
-                if (vnode._flags & VNodeFlags.ChildrenArray) {
+                if ((vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
                     for (const c of vnode._children as IVNode<any>[]) {
                         visitComponents(visitor, c);
                     }
-                } else if (vnode._flags & VNodeFlags.ChildrenVNode) {
+                } else if ((vnode._flags & VNodeFlags.ChildrenVNode) !== 0) {
                     return visitComponents(visitor, vnode._children as IVNode<any>);
                 }
             }
-        } else if (vnode._flags & VNodeFlags.Component) {
+        } else if ((vnode._flags & VNodeFlags.Component) !== 0) {
             visitor(vnode);
         }
     }

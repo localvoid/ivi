@@ -97,9 +97,9 @@ export class VNode<P = null> implements IVNode<P> {
                 throw new Error("Failed to set className, className is available on element nodes only.");
             }
             if (className !== null) {
-                if (this._flags & VNodeFlags.ElementDescriptor) {
+                if ((this._flags & VNodeFlags.ElementDescriptor) !== 0) {
                     const d = this._tag as ElementDescriptor<P>;
-                    if (d._flags & ElementDescriptorFlags.ProtectClassName) {
+                    if ((d._flags & ElementDescriptorFlags.ProtectClassName) !== 0) {
                         throw new Error("Failed to set className, className is protected by an ElementDescriptor.");
                     }
                 }
@@ -121,10 +121,10 @@ export class VNode<P = null> implements IVNode<P> {
                 throw new Error("Failed to set style, style is available on element nodes only.");
             }
 
-            if (style) {
+            if (style !== null) {
                 checkDOMStylesForTypos(style);
 
-                if (this._flags & VNodeFlags.ElementDescriptor) {
+                if ((this._flags & VNodeFlags.ElementDescriptor) !== 0) {
                     const d = this._tag as ElementDescriptor<P>;
                     if (d._flags & ElementDescriptorFlags.ProtectStyle) {
                         if (d._protectedStyle) {
@@ -341,7 +341,7 @@ export class VNode<P = null> implements IVNode<P> {
                                     }
                                 } else {
                                     r[k++] = c as IVNode<any>;
-                                    if (!(c._flags & VNodeFlags.Key)) {
+                                    if ((c._flags & VNodeFlags.Key) === 0) {
                                         c._key = i;
                                     }
                                 }
@@ -456,8 +456,8 @@ export class VNode<P = null> implements IVNode<P> {
                 throw new Error(`Failed to merge props, props object has type "${typeof this._props}".`);
             }
         }
-        if (props) {
-            return this.props(this._props && (this._props as ElementProps<P>).attrs ?
+        if (props !== null) {
+            return this.props(this._props !== null && (this._props as ElementProps<P>).attrs !== null ?
                 Object.assign({}, (this._props as ElementProps<P>).attrs, props) :
                 props);
         }
@@ -471,8 +471,8 @@ export class VNode<P = null> implements IVNode<P> {
      * @return VNodeBuilder.
      */
     mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P> {
-        if (style) {
-            return this.style(this._props && (this._props as ElementProps<P>).style ?
+        if (style !== null) {
+            return this.style(this._props !== null && (this._props as ElementProps<P>).style !== null ?
                 Object.assign({}, (this._props as ElementProps<P>).style, style) :
                 style);
         }
@@ -491,7 +491,7 @@ export class VNode<P = null> implements IVNode<P> {
                 throw new Error("Failed to set autofocus, autofocus is available on element nodes only.");
             }
         }
-        if (focus) {
+        if (focus === true) {
             this._flags |= VNodeFlags.Autofocus;
         }
         return this;
@@ -503,10 +503,10 @@ export function checkUniqueKeys(children: IVNode<any>[]): void {
         let keys: Set<any> | undefined;
         for (let i = 0; i < children.length; i++) {
             const child = children[i];
-            if (child._flags & VNodeFlags.Key) {
+            if ((child._flags & VNodeFlags.Key) !== 0) {
                 if (keys === undefined) {
                     keys = new Set<any>();
-                } else if (keys.has(child._key)) {
+                } else if (keys.has(child._key) === true) {
                     throw new Error(`Failed to set children, invalid children list, key: "${child._key}" ` +
                         `is used multiple times.`);
                 }

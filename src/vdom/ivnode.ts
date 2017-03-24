@@ -72,7 +72,7 @@ export interface ElementProps<P> {
  * @returns true when VNode is representing a Text node.
  */
 export function isTextNode(node: IVNode<any>): boolean {
-    return !!(node._flags & VNodeFlags.Text);
+    return (node._flags & VNodeFlags.Text) !== 0;
 }
 
 /**
@@ -82,7 +82,7 @@ export function isTextNode(node: IVNode<any>): boolean {
  * @returns true when VNode is representing an element node.
  */
 export function isElementNode(node: IVNode<any>): boolean {
-    return !!(node._flags & VNodeFlags.Element);
+    return (node._flags & VNodeFlags.Element) !== 0;
 }
 
 /**
@@ -92,7 +92,7 @@ export function isElementNode(node: IVNode<any>): boolean {
  * @returns true when VNode is representing a text node.
  */
 export function isSVGNode(node: IVNode<any>): boolean {
-    return !!(node._flags & VNodeFlags.SvgElement);
+    return (node._flags & VNodeFlags.SvgElement) !== 0;
 }
 
 /**
@@ -102,7 +102,7 @@ export function isSVGNode(node: IVNode<any>): boolean {
  * @returns true when VNode is representing a Component.
  */
 export function isComponentNode(node: IVNode<any>): boolean {
-    return !!(node._flags & VNodeFlags.Component);
+    return (node._flags & VNodeFlags.Component) !== 0;
 }
 
 /**
@@ -112,7 +112,7 @@ export function isComponentNode(node: IVNode<any>): boolean {
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
 export function getDOMInstanceFromVNode<T extends Node>(node: IVNode<any>): T | null {
-    if (node._flags & VNodeFlags.Component) {
+    if ((node._flags & VNodeFlags.Component) !== 0) {
         return getDOMInstanceFromVNode<T>(node._children as IVNode<any>);
     }
     return node._instance as T;
@@ -126,7 +126,7 @@ export function getDOMInstanceFromVNode<T extends Node>(node: IVNode<any>): T | 
  */
 export function getComponentInstanceFromVNode<T extends Component<any>>(node: IVNode<any>): T | null {
     if (__IVI_DEV__) {
-        if (!(node._flags & VNodeFlags.Component)) {
+        if ((node._flags & VNodeFlags.Component) === 0) {
             throw new Error("Failed to get component instance: VNode should represent a Component.");
         }
     }

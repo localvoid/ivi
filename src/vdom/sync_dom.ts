@@ -11,13 +11,13 @@ import { CSSStyleProps } from "../common/dom_props";
  * @param b New className.
  */
 export function syncClassName(node: Element, flags: VNodeFlags, a: string | null, b: string | null): void {
-    if (!b) {
+    if (b === null) {
         b = "";
     }
-    if (flags & VNodeFlags.SvgElement) {
-        node.setAttribute("class", b);
-    } else {
+    if ((flags & VNodeFlags.SvgElement) === 0) {
         node.className = b;
+    } else {
+        node.setAttribute("class", b);
     }
 }
 
@@ -97,7 +97,7 @@ export function syncStyle(
         i = 0;
         while (matchCount < keys.length && i < keys.length) {
             key = keys[i++];
-            if (!a.hasOwnProperty(key)) {
+            if (a.hasOwnProperty(key) === false) {
                 (style as any)[key] = (b as any)[key];
                 matchCount++;
             }
@@ -118,7 +118,7 @@ function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: a
         /**
          * Edge cases when property name doesn't match attribute name.
          */
-        if (!(flags & VNodeFlags.SvgElement)) {
+        if ((flags & VNodeFlags.SvgElement) === 0) {
             if (key.length > 6) {
                 switch (key) {
                     case "acceptCharset":
@@ -138,7 +138,7 @@ function setDOMProperty(node: Element, flags: VNodeFlags, key: string, value?: a
          */
         node.removeAttribute(key);
     } else {
-        if (flags & VNodeFlags.SvgElement) {
+        if ((flags & VNodeFlags.SvgElement) !== 0) {
             if (key.length > 5) {
                 if (key.charCodeAt(0) === 120 &&
                     (key.charCodeAt(3) === 58 || key.charCodeAt(5) === 58)) { // 58 === ":" "xml:", "xlink:"
@@ -245,7 +245,7 @@ export function syncDOMProps(
         i = 0;
         while (matchCount < keys.length && i < keys.length) {
             key = keys[i++];
-            if (!a.hasOwnProperty(key)) {
+            if (a.hasOwnProperty(key) === false) {
                 setDOMProperty(node, flags, key, b[key]);
                 matchCount++;
             }

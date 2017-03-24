@@ -1,7 +1,6 @@
 import { VNodeFlags } from "./flags";
 import { IVNode } from "./ivnode";
 import { VNode } from "./vnode";
-import { $t } from "./vnode_dom";
 
 /**
  * Deep clone of VNode children with instance refs erasure.
@@ -15,8 +14,8 @@ export function cloneVNodeChildren(
     children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
 ): IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined {
     if (children !== null) {
-        if (flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) {
-            if (flags & VNodeFlags.ChildrenArray) {
+        if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
+            if ((flags & VNodeFlags.ChildrenArray) !== 0) {
                 children = children as IVNode<any>[];
                 const newChildren = new Array<IVNode<any>>(children.length);
                 for (let i = 0; i < 0; i++) {
@@ -33,10 +32,6 @@ export function cloneVNodeChildren(
 }
 
 function _cloneVNode(node: IVNode<any>, cloneKey: boolean): VNode<any> {
-    if (node.constructor !== VNode) {
-        return $t("").key(node._key);
-    }
-
     const flags = node._flags;
 
     const newNode = new VNode(
@@ -44,10 +39,11 @@ function _cloneVNode(node: IVNode<any>, cloneKey: boolean): VNode<any> {
         node._tag,
         node._props,
         node._className,
-        (flags & VNodeFlags.Component) ?
-            null :
-            cloneVNodeChildren(flags, node._children));
-    if (cloneKey) {
+        (flags & VNodeFlags.Component) === 0 ?
+            cloneVNodeChildren(flags, node._children) :
+            null);
+
+    if (cloneKey === true) {
         newNode._key = node._key;
     }
 
@@ -61,7 +57,7 @@ function _cloneVNode(node: IVNode<any>, cloneKey: boolean): VNode<any> {
  * @returns Cloned VNode.
  */
 export function cloneVNode(node: IVNode<any>): VNode<any> {
-    return _cloneVNode(node, (node._flags & VNodeFlags.Key) ? true : false);
+    return _cloneVNode(node, (node._flags & VNodeFlags.Key) !== 0);
 }
 
 /**
@@ -71,10 +67,6 @@ export function cloneVNode(node: IVNode<any>): VNode<any> {
  * @returns Cloned VNode.
  */
 export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
-    if (node.constructor !== VNode) {
-        return $t("").key(node._key);
-    }
-
     const flags = node._flags;
 
     const newNode = new VNode(
@@ -88,7 +80,7 @@ export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
         node._props,
         node._className,
         null);
-    if (node._flags & VNodeFlags.Key) {
+    if ((node._flags & VNodeFlags.Key) !== 0) {
         newNode._key = node._key;
     }
 

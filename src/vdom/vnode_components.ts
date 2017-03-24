@@ -18,7 +18,7 @@ export function $c(c: ComponentFunction<null> | ComponentClass<null>): VNode<nul
 export function $c<P, U extends P>(c: ComponentFunction<P> | ComponentClass<P>, props: U): VNode<P>;
 export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props?: P): VNode<P> {
     return new VNode<P>(
-        (c.prototype.render) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction,
+        (c.prototype.render === undefined) ? VNodeFlags.ComponentFunction : VNodeFlags.ComponentClass,
         c,
         props!,
         null,

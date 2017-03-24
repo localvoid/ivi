@@ -61,9 +61,9 @@ export class EventDispatcherSubscription {
      * Cancel Event Subscription.
      */
     cancel(): void {
-        if (!(this.flags & EventDispatcherSubscriptionFlags.Canceled)) {
+        if ((this.flags & EventDispatcherSubscriptionFlags.Canceled) === 0) {
             this.flags |= EventDispatcherSubscriptionFlags.Canceled;
-            if (!(this.flags & EventDispatcherSubscriptionFlags.Locked)) {
+            if ((this.flags & EventDispatcherSubscriptionFlags.Locked) === 0) {
                 unsubscribe(this);
             }
         }
@@ -76,12 +76,12 @@ export class EventDispatcherSubscription {
  * @param sub Event dispatcher subscription.
  */
 function unsubscribe(sub: EventDispatcherSubscription): void {
-    if (sub._prev) {
+    if (sub._prev !== null) {
         sub._prev._next = sub._next;
     } else {
         sub.dispatcher._nextSubscription = sub._next;
     }
-    if (sub._next) {
+    if (sub._next !== null) {
         sub._next._prev = sub._prev;
     }
 
@@ -118,13 +118,13 @@ export abstract class EventDispatcher {
      */
     dispatchEventToSubscribers(event: SyntheticEvent<any>, type?: number): void {
         let s = this._nextSubscription;
-        while (s) {
-            if (type === undefined || (s.filter & type)) {
+        while (s !== null) {
+            if (type === undefined || ((s.filter & type) !== 0)) {
                 s.flags |= EventDispatcherSubscriptionFlags.Locked;
                 s.handler(event, type);
                 s.flags &= ~EventDispatcherSubscriptionFlags.Locked;
             }
-            if (s.flags & EventDispatcherSubscriptionFlags.Canceled) {
+            if ((s.flags & EventDispatcherSubscriptionFlags.Canceled) !== 0) {
                 const tmp = s;
                 s = s._next;
                 unsubscribe(tmp);
@@ -164,7 +164,7 @@ export abstract class EventDispatcher {
         flags: EventDispatcherSubscriptionFlags = 0,
     ): EventDispatcherSubscription {
         const s = new EventDispatcherSubscription(this, flags, handler, filter);
-        if (this._nextSubscription) {
+        if (this._nextSubscription !== null) {
             this._nextSubscription._prev = s;
             s._next = this._nextSubscription;
         }

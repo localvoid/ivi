@@ -19,9 +19,9 @@ function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
 
     for (let j = 0; j < dispatchTarget.handlers.length; j++) {
         const handler = dispatchTarget.handlers[j];
-        if (handler.flags & matchFlags) {
+        if ((handler.flags & matchFlags) !== 0) {
             handler(event);
-            if (event._flags & SyntheticEventFlags.StoppedImmediatePropagation) {
+            if ((event._flags & SyntheticEventFlags.StoppedImmediatePropagation) !== 0) {
                 return;
             }
         }
@@ -49,7 +49,7 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
         dispatchTarget = dispatchTargets[i];
         if (dispatchTarget.target !== event.target) {
             dispatchEventToLocalEventHandlers(dispatchTargets[i--], event, EventHandlerFlags.Capture);
-            if (event._flags & SyntheticEventFlags.StoppedPropagation) {
+            if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }
         } else {
@@ -66,7 +66,7 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
             event,
             EventHandlerFlags.Capture | EventHandlerFlags.Bubble,
         );
-        if (event._flags & SyntheticEventFlags.StoppedPropagation) {
+        if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
             return;
         }
         event._flags &= ~SyntheticEventFlags.AtTargetPhase;
@@ -76,11 +76,11 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
     }
 
     // bubble phase
-    if (bubble) {
+    if (bubble === true) {
         event._flags |= SyntheticEventFlags.BubblePhase;
         while (i < dispatchTargets.length) {
             dispatchEventToLocalEventHandlers(dispatchTargets[i++], event, EventHandlerFlags.Bubble);
-            if (event._flags & SyntheticEventFlags.StoppedPropagation) {
+            if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }
         }

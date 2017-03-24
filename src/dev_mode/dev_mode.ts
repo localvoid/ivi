@@ -174,7 +174,7 @@ export function getFunctionName(fn: Function): string {
  */
 export function perfMarkBegin(markName: string): void {
     if (__IVI_DEV__) {
-        if (FEATURES & FeatureFlags.DevModePerfMarks) {
+        if ((FEATURES & FeatureFlags.DevModePerfMarks) !== 0) {
             performance.mark(markName);
         }
     }
@@ -188,7 +188,7 @@ export function perfMarkBegin(markName: string): void {
  */
 export function perfMarkEnd(measureName: string, markName: string): void {
     if (__IVI_DEV__) {
-        if (FEATURES & FeatureFlags.DevModePerfMarks) {
+        if ((FEATURES & FeatureFlags.DevModePerfMarks) !== 0) {
             performance.measure(measureName, markName);
             performance.clearMarks(markName);
             performance.clearMeasures(measureName);

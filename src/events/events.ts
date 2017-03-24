@@ -32,7 +32,7 @@ export function createEventHandler<E extends SyntheticEvent<any>>(
 ): EventHandler<E> {
     const handler = fn as EventHandler<E>;
     handler.dispatcher = dispatcher;
-    handler.flags = capture ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble;
+    handler.flags = capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble;
     return handler;
 }
 

@@ -77,25 +77,25 @@ export class SyntheticEvent<D> implements Event {
     }
 
     get defaultPrevented(): boolean {
-        return !!(this._flags & SyntheticEventFlags.PreventedDefault);
+        return (this._flags & SyntheticEventFlags.PreventedDefault) !== 0;
     }
 
     get bubbles(): boolean {
-        return !!(this._flags & SyntheticEventFlags.Bubbles);
+        return (this._flags & SyntheticEventFlags.Bubbles) !== 0;
     }
 
     get cancelable(): boolean {
-        return !!(this._flags & SyntheticEventFlags.Cancelable);
+        return (this._flags & SyntheticEventFlags.Cancelable) !== 0;
     }
 
     get isTrusted(): boolean {
-        return !!(this._flags & SyntheticEventFlags.IsTrusted);
+        return (this._flags & SyntheticEventFlags.IsTrusted) !== 0;
     }
 
     get eventPhase(): number {
-        if (this._flags & SyntheticEventFlags.AtTargetPhase) {
+        if ((this._flags & SyntheticEventFlags.AtTargetPhase) !== 0) {
             return 2;
-        } else if (this._flags & SyntheticEventFlags.BubblePhase) {
+        } else if ((this._flags & SyntheticEventFlags.BubblePhase) !== 0) {
             return 3;
         }
         return 1;
@@ -248,7 +248,7 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
          * #quirks
          */
         if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
+            if ((DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures) === 0) {
                 printWarnOnce("events.KeyboardEvent.code",
                     "KeyboardEvent 'code' property doesn't work in many major browsers, and there is no easy " +
                     "way to polyfill this property on browsers that doesn't support it.");
@@ -323,7 +323,7 @@ export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<
          * Doesn't work in Safari.
          */
         if (__IVI_DEV__) {
-            if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
+            if ((DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures) === 0) {
                 printWarnOnce("events.MouseEvent.buttons",
                     "MouseEvent 'buttons' property doesn't work on Safari, and there is no easy way to " +
                     "polyfill this property on browsers that doesn't support it. Almost all use cases should be " +

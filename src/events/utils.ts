@@ -12,7 +12,7 @@ declare global {
  * `{ capture: true, passive: true }` object that should be used as a third parameter in `addEventListener`.
  */
 export const EVENT_CAPTURE_PASSIVE_OPTIONS =
-    (FEATURES & FeatureFlags.PassiveEvents) ?
+    ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
         { "capture": true, "passive": true } :
         true;
 
@@ -20,7 +20,7 @@ export const EVENT_CAPTURE_PASSIVE_OPTIONS =
  * `{ passive: true }` object that should be used as a third parameter in `addEventListener`.
  */
 export const EVENT_PASSIVE_OPTIONS =
-    (FEATURES & FeatureFlags.PassiveEvents) ?
+    ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
         { "passive": true } :
         false;
 
@@ -33,13 +33,13 @@ export const EVENT_PASSIVE_OPTIONS =
  * @returns Option object that can be used as a 3rd parameter in `addEventListener` call.
  */
 export function getEventOptions(flags: NativeEventDispatcherFlags): boolean | { capture?: boolean, passive?: boolean } {
-    if (flags & NativeEventDispatcherFlags.Passive) {
-        if (flags & NativeEventDispatcherFlags.Capture) {
+    if ((flags & NativeEventDispatcherFlags.Passive) !== 0) {
+        if ((flags & NativeEventDispatcherFlags.Capture) !== 0) {
             return EVENT_CAPTURE_PASSIVE_OPTIONS;
         }
         return EVENT_PASSIVE_OPTIONS;
     }
-    if (flags & NativeEventDispatcherFlags.Capture) {
+    if ((flags & NativeEventDispatcherFlags.Capture) !== 0) {
         return true;
     }
     return false;

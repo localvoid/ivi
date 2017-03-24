@@ -249,7 +249,7 @@ export function getEventTarget(ev: Event): EventTarget {
      *
      * https://www.w3.org/TR/SVG2/changes.html#structure
      */
-    if ((target as any).correspondingUseElement) {
+    if ((target as any).correspondingUseElement !== undefined) {
         target = (target as any).correspondingUseElement;
     }
 
@@ -368,7 +368,7 @@ export function setInnerHTML(element: Element, content: string, isSVG: boolean):
     // All details here: https://msdn.microsoft.com/en-us/library/windows/apps/hh767331.aspx
 
     // Doesn't work on SVG Elements in IE. Latest Edge versions are working fine.
-    if (!isSVG || FEATURES & FeatureFlags.SVGInnerHTML) {
+    if (!isSVG || ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0)) {
         element.innerHTML = content;
     } else {
         setInnerSVG(element as SVGElement, content);
@@ -391,13 +391,15 @@ let innerHTMLSVGContainer: HTMLDivElement | undefined;
  * @param content Inner HTML content.
  */
 function setInnerSVG(element: SVGElement, content: string): void {
-    if (!innerHTMLSVGContainer) {
+    if (innerHTMLSVGContainer === undefined) {
         innerHTMLSVGContainer = document.createElement("div");
     }
     innerHTMLSVGContainer.innerHTML = `<svg>${content}</svg>`;
     const svg = innerHTMLSVGContainer.firstChild;
-    while (svg!.firstChild) {
-        element.appendChild(svg!.firstChild!);
+    let c = svg!.firstChild;
+    while (c !== null) {
+        element.appendChild(c);
+        c = svg!.firstChild;
     }
 }
 
@@ -409,7 +411,7 @@ function setInnerSVG(element: SVGElement, content: string): void {
  */
 export function nodeDepth(node: Node | null): number {
     let depth = 0;
-    while (node) {
+    while (node !== null) {
         depth++;
         node = node.parentNode;
     }
@@ -423,8 +425,13 @@ export function nodeDepth(node: Node | null): number {
  * @return A leaf node.
  */
 export function firstLeaf(node: Node): Node {
-    while (node && node.firstChild) {
-        node = node.firstChild;
+    while (node !== null) {
+        let next = node.firstChild;
+        if (next === null) {
+            break;
+        } else {
+            node = next;
+        }
     }
     return node;
 }
@@ -436,8 +443,8 @@ export function firstLeaf(node: Node): Node {
  * @return Next sibling.
  */
 export function nextSibling(node: Node | null): Node | null {
-    while (node) {
-        if (node.nextSibling) {
+    while (node !== null) {
+        if (node.nextSibling !== null) {
             return node.nextSibling;
         }
         node = node.parentNode;

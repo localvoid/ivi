@@ -165,9 +165,7 @@ export class ElementDescriptor<P = void> {
         let ref = this._ref;
 
         if (ref === null) {
-            if (this._flags & ElementDescriptorFlags.SvgElement) {
-                ref = document.createElementNS(SVG_NAMESPACE, this._tag);
-            } else {
+            if ((this._flags & ElementDescriptorFlags.SvgElement) === 0) {
                 if (this._flags & ElementDescriptorFlags.InputElement) {
                     if (this._flags & ElementDescriptorFlags.TextAreaElement) {
                         ref = document.createElement("textarea");
@@ -178,9 +176,11 @@ export class ElementDescriptor<P = void> {
                 } else {
                     ref = document.createElement(this._tag);
                 }
+            } else {
+                ref = document.createElementNS(SVG_NAMESPACE, this._tag);
             }
 
-            if (this._props) {
+            if (this._props !== null) {
                 syncDOMProps(ref as Element, this._flags, null, this._props);
             }
             if (this._className !== null) {
@@ -328,7 +328,7 @@ export function createElementDescriptor(tagName: "xmp", clone?: boolean): Elemen
 export function createElementDescriptor(tagName: HTMLTagType, clone = false): ElementDescriptor<HTMLElementProps | null> {
     return new ElementDescriptor<HTMLElementProps | null>(
         tagName,
-        clone ?
+        clone === true ?
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
                 ElementDescriptorFlags.EnabledCloning) :
             ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor,
@@ -398,7 +398,7 @@ export function createSVGElementDescriptor(tagName: "view", clone?: boolean): El
 export function createSVGElementDescriptor(tagName: SVGTagType, clone = false): ElementDescriptor<SVGElementProps | null> {
     return new ElementDescriptor<SVGElementProps | null>(
         tagName,
-        clone ?
+        clone === true ?
             (ElementDescriptorFlags.EnabledCloning | ElementDescriptorFlags.Element |
                 ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.SvgElement) :
             ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.SvgElement,
@@ -440,7 +440,7 @@ export function createInputElementDescriptor(type: InputType, clone?: boolean): 
     if (type === "textarea") {
         return new ElementDescriptor<HTMLInputElementProps | null>(
             type,
-            clone ?
+            clone === true ?
                 (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
                     ElementDescriptorFlags.InputElement | ElementDescriptorFlags.TextAreaElement |
                     ElementDescriptorFlags.EnabledCloning) :
@@ -450,7 +450,7 @@ export function createInputElementDescriptor(type: InputType, clone?: boolean): 
     }
     return new ElementDescriptor<HTMLInputElementProps | null>(
         type,
-        clone ?
+        clone === true ?
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
                 ElementDescriptorFlags.InputElement | ElementDescriptorFlags.EnabledCloning) :
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
@@ -470,7 +470,7 @@ export function createMediaElementDescriptor(tagName: "video", clone?: boolean):
 export function createMediaElementDescriptor(tagName: MediaTagType, clone?: boolean): ElementDescriptor<HTMLMediaElementProps | null> {
     return new ElementDescriptor<HTMLInputElementProps | null>(
         tagName,
-        clone ?
+        clone === true ?
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
                 ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.EnabledCloning) :
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
@@ -494,7 +494,7 @@ export function createCustomElementDescriptor(tagName: string, clone = false): E
 
     return new ElementDescriptor<HTMLElementProps | null>(
         tagName,
-        clone ?
+        clone === true ?
             (ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |
                 ElementDescriptorFlags.WebComponent | ElementDescriptorFlags.EnabledCloning) :
             ElementDescriptorFlags.Element | ElementDescriptorFlags.ElementDescriptor |

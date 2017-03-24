@@ -12,10 +12,11 @@ export class RepeatableTaskList {
     run(): void {
         for (let i = 0; i < this.tasks.length; i++) {
             const task = this.tasks[i];
-            if (task()) {
-                const last = this.tasks.pop();
-                if (last) {
-                    this.tasks[i--] = last!;
+            if (task() === true) {
+                if (i === this.tasks.length) {
+                    this.tasks.pop();
+                } else {
+                    this.tasks[i--] = this.tasks.pop()!;
                 }
             }
         }

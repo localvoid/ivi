@@ -146,7 +146,7 @@ export abstract class Component<P = void> {
         if (__IVI_BROWSER__) {
             this.flags |= ComponentFlags.DirtyState;
             this.invalidated();
-            if (this.flags & ComponentFlags.Attached) {
+            if ((this.flags & ComponentFlags.Attached) !== 0) {
                 currentFrame().updateComponent();
             }
         }
@@ -174,10 +174,10 @@ export abstract class Component<P = void> {
  * @returns Component constructor with identity check.
  */
 export function checkPropsShallowEquality<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P {
-    if (target.prototype.render) {
-        target.prototype.isPropsChanged = isPropsNotShallowEqual;
-    } else {
+    if (target.prototype.render === undefined) {
         (target as ComponentFunction<any>).isPropsChanged = isPropsNotShallowEqual;
+    } else {
+        target.prototype.isPropsChanged = isPropsNotShallowEqual;
     }
     return target;
 }
@@ -203,10 +203,10 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Compon
  * @returns Component constructor with static property.
  */
 export function staticComponent<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P {
-    if (target.prototype.render) {
-        target.prototype.isPropsChanged = NOOP_FALSE;
-    } else {
+    if (target.prototype.render === undefined) {
         (target as ComponentFunction<any>).isPropsChanged = NOOP_FALSE;
+    } else {
+        target.prototype.isPropsChanged = NOOP_FALSE;
     }
     return target;
 }
@@ -219,14 +219,14 @@ export function staticComponent<P extends ComponentClass<any> | ComponentFunctio
  */
 export function getComponentName(component: Component<any> | ComponentFunction<any>): string {
     return getFunctionName(
-        (component as Function).prototype.render ?
-            (component as Object).constructor :
-            component as ComponentFunction<any>,
+        (component as Function).prototype.render === undefined ?
+            component as ComponentFunction<any> :
+            (component as Object).constructor,
     );
 }
 
 export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
-    return componentClass.prototype.render;
+    return componentClass.prototype.render !== undefined;
 }
 
 /**
@@ -235,5 +235,5 @@ export function isComponentClass(componentClass: any): componentClass is Compone
  * @returns `true` when Component is attached.
  */
 export function isComponentAttached(component: Component<any>): boolean {
-    return !!(component.flags & ComponentFlags.Attached);
+    return (component.flags & ComponentFlags.Attached) !== 0;
 }

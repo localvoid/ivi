@@ -50,31 +50,32 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
         const subs = this._nextSubscription;
 
         let s: SyntheticEvent<any> | undefined;
-        if (subs) {
+        if (subs !== null) {
             s = new this.eventType(this, 0, ev, getEventTarget(ev), ev.timeStamp, ev.type);
             this.dispatchEventToSubscribers(s);
         }
 
-        if (s &&
-            (s._flags & (SyntheticEventFlags.StoppedImmediatePropagation | SyntheticEventFlags.StoppedPropagation))) {
+        if (s !== undefined &&
+            (s._flags &
+                (SyntheticEventFlags.StoppedImmediatePropagation | SyntheticEventFlags.StoppedPropagation)) !== 0) {
             return;
         }
         const handlers = accumulateDispatchTargets(getEventTarget(ev) as Element, this);
 
         if (handlers.length > 0) {
-            if (!s) {
+            if (s === undefined) {
                 s = new this.eventType(this, 0, ev, getEventTarget(ev), ev.timeStamp, ev.type);
             }
-            dispatchEvent(handlers, s!, !!(this.flags & NativeEventDispatcherFlags.Bubbles));
+            dispatchEvent(handlers, s!, (this.flags & NativeEventDispatcherFlags.Bubbles) !== 0);
         }
 
-        if (s && s._flags & SyntheticEventFlags.PreventedDefault) {
+        if (s !== undefined && (s._flags & SyntheticEventFlags.PreventedDefault) !== 0) {
             ev.preventDefault();
         }
     }
 
     activate(): void {
-        if (this._deactivating) {
+        if (this._deactivating === true) {
             this._deactivating = false;
         } else {
             super.activate();
@@ -87,10 +88,10 @@ export class NativeEventDispatcher<E extends SyntheticEventClass<Event, Syntheti
     }
 
     deactivate(): void {
-        if (!this._deactivating) {
+        if (this._deactivating === false) {
             this._deactivating = true;
             scheduleTask(() => {
-                if (this._deactivating) {
+                if (this._deactivating === true) {
                     document.removeEventListener(
                         this.name,
                         this._dispatch,

@@ -29,7 +29,7 @@ export function accumulateDispatchTargetsFromElement(
     dispatcher: EventDispatcher,
 ): void {
     const events = getEventHandlersFromDOMNode(target);
-    if (events) {
+    if (events !== null && events !== undefined) {
         let matches: EventHandler[] | undefined;
         if (typeof events === "function") {
             if (events.dispatcher === dispatcher) {
@@ -38,8 +38,8 @@ export function accumulateDispatchTargetsFromElement(
         } else {
             for (let i = 0; i < events.length; i++) {
                 const h = events[i];
-                if (h && h.dispatcher === dispatcher) {
-                    if (!matches) {
+                if (h !== null && h.dispatcher === dispatcher) {
+                    if (matches === undefined) {
                         matches = [h];
                     } else {
                         matches.push(h);
@@ -47,7 +47,7 @@ export function accumulateDispatchTargetsFromElement(
                 }
             }
         }
-        if (matches) {
+        if (matches !== undefined) {
             result.push({
                 target: target,
                 handlers: matches,
@@ -70,7 +70,7 @@ export function accumulateDispatchTargets(
 ): DispatchTarget[] {
     const result: DispatchTarget[] = [];
 
-    while (target) {
+    while (target !== null) {
         accumulateDispatchTargetsFromElement(result, target, dispatcher);
         target = target.parentElement;
     }

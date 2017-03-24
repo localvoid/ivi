@@ -16,11 +16,11 @@ if (__IVI_DEV__) {
  */
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
+        if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
             for (const attrName of Object.keys(attrs)) {
                 const msg = DOMAttributeTypos[attrName];
 
-                if (msg) {
+                if (msg !== undefined) {
                     printWarnOnce(`typo.attribute.${attrName}`, msg);
                 }
             }
@@ -42,11 +42,11 @@ if (__IVI_DEV__) {
  */
 export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
     if (__IVI_DEV__) {
-        if (!(DEV_MODE & DevModeFlags.DisableCheckingForTypos)) {
+        if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
             for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
                 const styleValue = styles[styleName];
                 const match = DOMStyleTypos[styleName];
-                if (match) {
+                if (match !== undefined) {
                     printWarnOnce(`typo.style.${styleName}`,
                         `Typo: style name "${styleName}" should be "${match}".`);
                 } else if (styleName.indexOf("-") > -1) {

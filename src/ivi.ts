@@ -123,17 +123,17 @@ import { IVNode } from "./vdom/ivnode";
 import { VNodeFlags } from "./vdom/flags";
 
 function _printComponentTreeVisitor(vnode: IVNode<any>) {
-    if (vnode._flags & VNodeFlags.ComponentClass) {
+    if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
         const cls = vnode._tag as ComponentClass<any>;
         const instance = vnode._instance as Component<any>;
         console.groupCollapsed(`[C]${getFunctionName(cls.constructor)} #${instance._debugId}`);
         console.log(instance);
     } else {
-        if (vnode._flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) {
-            if (vnode._flags & VNodeFlags.Connect) {
+        if ((vnode._flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
+            if ((vnode._flags & VNodeFlags.Connect) !== 0) {
                 const d = vnode._tag as ConnectDescriptor<any, any, any>;
                 console.groupCollapsed(`[+]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
-            } else if (vnode._flags & VNodeFlags.UpdateContext) {
+            } else if ((vnode._flags & VNodeFlags.UpdateContext) !== 0) {
                 const context = vnode._instance as Context;
                 console.groupCollapsed(`[^]${Object.keys(context)}`);
                 console.log(context);
