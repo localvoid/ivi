@@ -1,39 +1,15 @@
 import { Vec2 } from "../../common/geometry";
 import { LeastSquaresSolver } from "./lsq_solver";
 
-export class Velocity {
-    pixelsPerSecond: Vec2;
-
-    constructor(pixelsPerSecond: Vec2) {
-        this.pixelsPerSecond = pixelsPerSecond;
+export function velocityClampMagnitude(velocity: Vec2, minValue: number, maxValue: number): Vec2 {
+    const valueSquared = velocity.distanceSquared();
+    if (valueSquared > maxValue * maxValue) {
+        return velocity.div(velocity.distance()).mul(maxValue);
     }
-
-    negate(): Velocity {
-        return new Velocity(this.pixelsPerSecond.negate());
+    if (valueSquared < minValue * minValue) {
+        return velocity.div(velocity.distance()).mul(minValue);
     }
-
-    add(rhs: Velocity): Velocity {
-        return new Velocity(this.pixelsPerSecond.add(rhs.pixelsPerSecond));
-    }
-
-    sub(rhs: Velocity): Velocity {
-        return new Velocity(this.pixelsPerSecond.sub(rhs.pixelsPerSecond));
-    }
-
-    eq(rhs: Velocity): boolean {
-        return this.pixelsPerSecond.eq(rhs.pixelsPerSecond);
-    }
-
-    clampMagnitude(minValue: number, maxValue: number): Velocity {
-        const valueSquared = this.pixelsPerSecond.distanceSquared();
-        if (valueSquared > maxValue * maxValue) {
-            return new Velocity(this.pixelsPerSecond.div(this.pixelsPerSecond.distance()).mul(maxValue));
-        }
-        if (valueSquared < minValue * minValue) {
-            return new Velocity(this.pixelsPerSecond.div(this.pixelsPerSecond.distance()).mul(minValue));
-        }
-        return this;
-    }
+    return velocity;
 }
 
 export class VelocityEstimate {
@@ -147,11 +123,11 @@ export class VelocityTracker {
         );
     }
 
-    getVelocity(): Velocity | null {
+    getVelocity(): Vec2 | null {
         const estimate = this.getVelocityEstimate();
         if (estimate === null || estimate.pixelsPerSecond.eq(Vec2.Zero)) {
             return null;
         }
-        return new Velocity(estimate.pixelsPerSecond);
+        return estimate.pixelsPerSecond;
     }
 }
