@@ -59,25 +59,24 @@ export { frameStartTime, currentFrame, nextFrame, syncFrameUpdate } from "./sche
 /**
  * Events:
  */
-export { NativeEventDispatcherFlags, EventHandlerFlags, SyntheticEventFlags } from "./events/flags";
-export {
-    EventDispatcher, EventDispatcherSubscriptionFlags, EventDispatcherSubscription,
-} from "./events/event_dispatcher";
-export { NativeEventDispatcher } from "./events/native_event_dispatcher";
+export { NativeEventSourceFlags, EventHandlerFlags, SyntheticEventFlags } from "./events/flags";
+export { EventSource } from "./events/event_source";
+export { DispatchTarget } from "./events/dispatch_target";
 export { EventHandler } from "./events/event_handler";
-export {
-    NativeEventDispatchersList, NativeActiveEventDispatchersList, NativeEventDispatchers, NativeActiveEventDispatchers,
-    Events, ActiveEvents, createEventHandler,
-} from "./events/events";
+export { getEventOptions } from "./events/utils";
+export { accumulateDispatchTargetsFromElement, accumulateDispatchTargets } from "./events/traverse_dom";
+export { dispatchEvent } from "./events/dispatch_event";
 export {
     SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
     SyntheticErrorEvent, SyntheticEventClass, SyntheticFocusEvent, SyntheticKeyboardEvent,
     SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent, SyntheticMouseEvent, SyntheticPointerEvent,
     SyntheticProgressEvent, SyntheticTouchEvent, SyntheticWheelEvent,
 } from "./events/synthetic_event";
-export { DispatchTarget, accumulateDispatchTargetsFromElement, accumulateDispatchTargets } from "./events/traverse_dom";
-export { dispatchEvent } from "./events/dispatch_event";
-export { getEventOptions } from "./events/utils";
+export { NativeEventSource } from "./events/native_event_source";
+export {
+    NativeEventSourceList, NativeActiveEventSourcesList, NativeEventSources, NativeActiveEventSources,
+    Events, ActiveEvents, createEventHandler,
+} from "./events/events";
 
 /**
  * Virtual DOM:

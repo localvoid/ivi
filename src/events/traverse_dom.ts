@@ -1,49 +1,40 @@
-import { EventDispatcher } from "./event_dispatcher";
 import { EventHandler } from "./event_handler";
+import { EventSource } from "./event_source";
+import { DispatchTarget } from "./dispatch_target";
 import { getEventHandlersFromDOMNode } from "./utils";
 
 /**
- * Dispatch Target.
- */
-export interface DispatchTarget {
-    /**
-     * Target Element.
-     */
-    target: Element;
-    /**
-     * Matched Event Handlers.
-     */
-    handlers: EventHandler<any>[];
-}
-
-/**
- * Accumulate Event Handlers that has a matching Event Dispatcher.
+ * Accumulate Event Handlers that has a matching Event Source.
  *
  * @param result Result array.
  * @param target Target Element.
- * @param dispatcher Event Dispatcher.
+ * @param source Event Source.
  */
 export function accumulateDispatchTargetsFromElement(
     result: DispatchTarget[],
     target: Element,
-    dispatcher: EventDispatcher,
+    source: EventSource,
 ): void {
     const events = getEventHandlersFromDOMNode(target);
     if (events !== null && events !== undefined) {
-        let matches: EventHandler[] | undefined;
+        let matches: EventHandler[] | EventHandler | undefined;
         if (typeof events === "function") {
-            if (events.dispatcher === dispatcher) {
-                matches = [events];
+            if (events.source === source) {
+                matches = events;
             }
         } else {
+            let count = 0;
             for (let i = 0; i < events.length; i++) {
                 const h = events[i];
-                if (h !== null && h.dispatcher === dispatcher) {
-                    if (matches === undefined) {
-                        matches = [h];
+                if (h !== null && h.source === source) {
+                    if (count === 0) {
+                        matches = h;
+                    } else if (count === 1) {
+                        matches = [matches as EventHandler, h];
                     } else {
-                        matches.push(h);
+                        (matches as EventHandler[]).push(h);
                     }
+                    count++;
                 }
             }
         }
@@ -58,22 +49,19 @@ export function accumulateDispatchTargetsFromElement(
 
 /**
  * Traverses the DOM tree from the target Element to the document top and accumulates Dispatch Targets that has matching
- * Event Dispatcher.
+ * Event Source.
  *
+ * @param result Result array.
  * @param target DOM Element.
- * @param dispatcher Event Dispatcher instance.
- * @returns An array of Dispatch Targets.
+ * @param source Event Source.
  */
 export function accumulateDispatchTargets(
+    result: DispatchTarget[],
     target: Element | null,
-    dispatcher: EventDispatcher,
-): DispatchTarget[] {
-    const result: DispatchTarget[] = [];
-
+    source: EventSource,
+): void {
     while (target !== null) {
-        accumulateDispatchTargetsFromElement(result, target, dispatcher);
+        accumulateDispatchTargetsFromElement(result, target, source);
         target = target.parentElement;
     }
-
-    return result;
 }

@@ -6,7 +6,7 @@ import { EventHandler } from "./event_handler";
  * @param handler Event Handler.
  */
 function registerEventHandler(handler: EventHandler<any>): void {
-    handler.dispatcher.registerHandler(handler);
+    handler.source.addListener(handler);
 }
 
 /**
@@ -15,18 +15,18 @@ function registerEventHandler(handler: EventHandler<any>): void {
  * @param handler Event Handler.
  */
 function unregisterEventHandler(handler: EventHandler<any>): void {
-    handler.dispatcher.unregisterHandler(handler);
+    handler.source.removeListener(handler);
 }
 
 /**
  * Sync DOM events.
  *
- * @param node HTML or SVG Element.
+ * @param element HTML or SVG Element.
  * @param a Old events.
  * @param b New events.
  */
 export function syncEvents(
-    node: Element,
+    element: Element,
     a: Array<EventHandler | null> | EventHandler | null,
     b: Array<EventHandler | null> | EventHandler | null,
 ): void {

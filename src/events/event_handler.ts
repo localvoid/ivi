@@ -1,6 +1,6 @@
 import { EventHandlerFlags } from "./flags";
-import { EventDispatcher } from "./event_dispatcher";
 import { SyntheticEvent } from "./synthetic_event";
+import { EventSource } from "./event_source";
 
 /**
  * Event Handler.
@@ -11,9 +11,9 @@ export interface EventHandler<E extends SyntheticEvent<any> = SyntheticEvent<any
      */
     (ev: E): void;
     /**
-     * Event Dispatcher instance.
+     * Event Source.
      */
-    dispatcher: EventDispatcher;
+    source: EventSource;
     /**
      * See `EventHandlerFlags` for details.
      */

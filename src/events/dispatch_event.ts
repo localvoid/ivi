@@ -1,6 +1,6 @@
 import { EventHandlerFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticEvent } from "./synthetic_event";
-import { DispatchTarget } from "./traverse_dom";
+import { DispatchTarget } from "./dispatch_target";
 
 /**
  * Dispatch event to local(on the same DOM Node) Event Handlers.
@@ -16,13 +16,20 @@ function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
     matchFlags: EventHandlerFlags,
 ): void {
     event.currentTarget = dispatchTarget.target;
+    const handlers = dispatchTarget.handlers;
 
-    for (let j = 0; j < dispatchTarget.handlers.length; j++) {
-        const handler = dispatchTarget.handlers[j];
-        if ((handler.flags & matchFlags) !== 0) {
-            handler(event);
-            if ((event._flags & SyntheticEventFlags.StoppedImmediatePropagation) !== 0) {
-                return;
+    if (typeof handlers === "function") {
+        if ((handlers.flags & matchFlags) !== 0) {
+            handlers(event);
+        }
+    } else {
+        for (let j = 0; j < handlers.length; j++) {
+            const handler = handlers[j];
+            if ((handler.flags & matchFlags) !== 0) {
+                handler(event);
+                if ((event._flags & SyntheticEventFlags.StoppedImmediatePropagation) !== 0) {
+                    return;
+                }
             }
         }
     }
@@ -37,18 +44,18 @@ function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
  * @param event Event to dispatch.
  */
 export function dispatchEvent<E extends SyntheticEvent<any>>(
-    dispatchTargets: DispatchTarget[],
+    targets: DispatchTarget[],
     event: E,
     bubble: boolean,
 ): void {
-    let i = dispatchTargets.length - 1;
-    let dispatchTarget;
+    let i = targets.length - 1;
+    let target;
 
     // capture phase
     while (i >= 0) {
-        dispatchTarget = dispatchTargets[i];
-        if (dispatchTarget.target !== event.target) {
-            dispatchEventToLocalEventHandlers(dispatchTargets[i--], event, EventHandlerFlags.Capture);
+        target = targets[i];
+        if (target.target !== event.target) {
+            dispatchEventToLocalEventHandlers(targets[i--], event, EventHandlerFlags.Capture);
             if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }
@@ -58,11 +65,11 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
     }
 
     // target phase
-    dispatchTarget = dispatchTargets[0];
-    if (dispatchTarget.target === event.target) {
+    target = targets[0];
+    if (target.target === event.target) {
         event._flags |= SyntheticEventFlags.AtTargetPhase;
         dispatchEventToLocalEventHandlers(
-            dispatchTarget,
+            target,
             event,
             EventHandlerFlags.Capture | EventHandlerFlags.Bubble,
         );
@@ -78,8 +85,8 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
     // bubble phase
     if (bubble === true) {
         event._flags |= SyntheticEventFlags.BubblePhase;
-        while (i < dispatchTargets.length) {
-            dispatchEventToLocalEventHandlers(dispatchTargets[i++], event, EventHandlerFlags.Bubble);
+        while (i < targets.length) {
+            dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble);
             if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }

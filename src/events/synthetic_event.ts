@@ -1,7 +1,7 @@
 import { getEventCharCode, getEventKey } from "../common/dom";
 import { DEV_MODE, DevModeFlags, printWarnOnce } from "../dev_mode/dev_mode";
 import { SyntheticEventFlags } from "./flags";
-import { EventDispatcher } from "./event_dispatcher";
+import { EventSource } from "./event_source";
 
 /**
  * Synthetic Event.
@@ -48,7 +48,7 @@ export class SyntheticEvent<D> implements Event {
     //     return !!(this._flags & SyntheticEventFlags.Scoped);
     // }
 
-    readonly dispatcher: EventDispatcher;
+    readonly eventSource: EventSource;
     _flags: SyntheticEventFlags;
     _data: D;
     readonly target: EventTarget;
@@ -60,14 +60,14 @@ export class SyntheticEvent<D> implements Event {
     BUBBLING_PHASE: number;
 
     constructor(
-        dispatcher: EventDispatcher,
+        dispatcher: EventSource,
         flags: SyntheticEventFlags,
         data: D,
         target: EventTarget,
         timeStamp: number,
         type: any,
     ) {
-        this.dispatcher = dispatcher;
+        this.eventSource = dispatcher;
         this._flags = flags;
         this._data = data;
         this.target = target;
@@ -120,7 +120,7 @@ SyntheticEvent.prototype.BUBBLING_PHASE = 3;
 
 export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
     new (
-        dispatcher: EventDispatcher,
+        dispatcher: EventSource,
         flags: SyntheticEventFlags,
         data: D,
         target: EventTarget,

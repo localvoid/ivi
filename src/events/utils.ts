@@ -1,5 +1,5 @@
 import { FEATURES, FeatureFlags } from "../common/feature_detection";
-import { NativeEventDispatcherFlags } from "./flags";
+import { NativeEventSourceFlags } from "./flags";
 import { EventHandler } from "./event_handler";
 
 declare global {
@@ -32,14 +32,14 @@ export const EVENT_PASSIVE_OPTIONS =
  * @param flags See `EventDispatcherFlags` for details.
  * @returns Option object that can be used as a 3rd parameter in `addEventListener` call.
  */
-export function getEventOptions(flags: NativeEventDispatcherFlags): boolean | { capture?: boolean, passive?: boolean } {
-    if ((flags & NativeEventDispatcherFlags.Passive) !== 0) {
-        if ((flags & NativeEventDispatcherFlags.Capture) !== 0) {
+export function getEventOptions(flags: NativeEventSourceFlags): boolean | { capture?: boolean, passive?: boolean } {
+    if ((flags & NativeEventSourceFlags.Passive) !== 0) {
+        if ((flags & NativeEventSourceFlags.Capture) !== 0) {
             return EVENT_CAPTURE_PASSIVE_OPTIONS;
         }
         return EVENT_PASSIVE_OPTIONS;
     }
-    if ((flags & NativeEventDispatcherFlags.Capture) !== 0) {
+    if ((flags & NativeEventSourceFlags.Capture) !== 0) {
         return true;
     }
     return false;
