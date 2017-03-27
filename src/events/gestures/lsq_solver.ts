@@ -15,7 +15,7 @@ export class LeastSquaresSolver {
     y: number[];
     w: number[];
 
-    LeastSquaresSolver(x: number[], y: number[], w: number[]) {
+    constructor(x: number[], y: number[], w: number[]) {
         this.x = x;
         this.y = y;
         this.w = w;
