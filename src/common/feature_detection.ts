@@ -58,6 +58,10 @@ export const enum FeatureFlags {
      * `navigator.maxTouchPoints > 1`
      */
     PointerEventsMultiTouch = 1 << 8,
+    /**
+     * InputDeviceCapabilities.
+     */
+    InputDeviceCapabilities = 1 << 9,
 }
 
 /**
@@ -132,5 +136,9 @@ if (__IVI_BROWSER__) {
         }
     } else if ("ontouchstart" in window) {
         FEATURES |= FeatureFlags.TouchEvents;
+    }
+
+    if ("sourceCapabilities" in UIEvent.prototype) {
+        FEATURES |= FeatureFlags.InputDeviceCapabilities;
     }
 }
