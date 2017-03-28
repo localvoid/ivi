@@ -18,7 +18,7 @@ export const enum FeatureFlags {
      */
     PassiveEvents = 1,
     /**
-     * The `performancemark()` method creates a timestamp in the browser's performance entry buffer with the given
+     * The `performance.mark()` method creates a timestamp in the browser's performance entry buffer with the given
      * name.
      *
      * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
@@ -38,6 +38,26 @@ export const enum FeatureFlags {
      * IE11 and Android 4.4 doesn't support native promises.
      */
     // NativePromise = 1 << 4,
+    /**
+     * Pointer Events support.
+     */
+    PointerEvents = 1 << 5,
+    /**
+     * Touch Events support.
+     */
+    TouchEvents = 1 << 6,
+    /**
+     * Device with a touchscreen.
+     *
+     * `navigator.maxTouchPoints > 0`
+     */
+    PointerEventsTouch = 1 << 7,
+    /**
+     * Multitouch-capable device.
+     *
+     * `navigator.maxTouchPoints > 1`
+     */
+    PointerEventsMultiTouch = 1 << 8,
 }
 
 /**
@@ -93,4 +113,24 @@ if (__IVI_BROWSER__) {
     // if (typeof Promise !== "undefined" && Promise.toString().indexOf("native code") > -1) {
     //     FEATURES |= FeatureFlags.NativePromise;
     // }
+
+    /**
+     * Check PointerEvents and TouchEvents support.
+     *
+     * Prefer PointerEvents over TouchEvents when both are available.
+     */
+    if ("PointerEvent" in window) {
+        FEATURES |= FeatureFlags.PointerEvents;
+        /**
+         * Touch/Multitouch detection.
+         */
+        if (navigator.maxTouchPoints > 0) {
+            FEATURES |= FeatureFlags.PointerEventsTouch;
+            if (navigator.maxTouchPoints > 1) {
+                FEATURES |= FeatureFlags.PointerEventsMultiTouch;
+            }
+        }
+    } else if ("ontouchstart" in window) {
+        FEATURES |= FeatureFlags.TouchEvents;
+    }
 }
