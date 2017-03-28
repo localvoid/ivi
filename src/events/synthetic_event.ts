@@ -6,48 +6,7 @@ import { EventSource } from "./event_source";
 /**
  * Synthetic Event.
  */
-export class SyntheticEvent<D> implements Event {
-    /**
-     * @deprecated
-     */
-    initEvent: (eventTypeArg: string, canBubbleArg: boolean, cancelableArg: boolean) => void;
-
-    /**
-     * Old IE Property.
-     *
-     * @deprecated
-     */
-    cancelBubble: boolean;
-    /**
-     * Old IE Property.
-     *
-     * @deprecated
-     */
-    returnValue: boolean;
-    /**
-     * Old IE Property.
-     *
-     * @deprecated
-     */
-    readonly srcElement: Element | null;
-
-    /**
-     * Experimental.
-     *
-     * https://developer.mozilla.org/en-US/docs/Web/API/Event/deepPath
-     */
-    deepPath: () => EventTarget[];
-
-    /**
-     * Experimental.
-     *
-     * https://developer.mozilla.org/en-US/docs/Web/API/Event/scoped
-     */
-    scoped: boolean;
-    // get scoped(): boolean {
-    //     return !!(this._flags & SyntheticEventFlags.Scoped);
-    // }
-
+export class SyntheticEvent<D> {
     readonly eventSource: EventSource;
     _flags: SyntheticEventFlags;
     _data: D;
@@ -55,9 +14,6 @@ export class SyntheticEvent<D> implements Event {
     currentTarget: EventTarget;
     timeStamp: number;
     type: any;
-    CAPTURING_PHASE: number;
-    AT_TARGET: number;
-    BUBBLING_PHASE: number;
 
     constructor(
         dispatcher: EventSource,
@@ -114,10 +70,6 @@ export class SyntheticEvent<D> implements Event {
     }
 }
 
-SyntheticEvent.prototype.CAPTURING_PHASE = 1;
-SyntheticEvent.prototype.AT_TARGET = 2;
-SyntheticEvent.prototype.BUBBLING_PHASE = 3;
-
 export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
     new (
         dispatcher: EventSource,
@@ -129,18 +81,7 @@ export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
     ): E;
 }
 
-export class SyntheticUIEvent<T extends UIEvent> extends SyntheticEvent<T> implements UIEvent {
-    /**
-     * @deprecated
-     */
-    initUIEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window,
-        detailArg: number,
-    ) => void;
-
+export class SyntheticUIEvent<T extends UIEvent> extends SyntheticEvent<T> {
     get detail() {
         return this._data.detail;
     }
@@ -150,22 +91,7 @@ export class SyntheticUIEvent<T extends UIEvent> extends SyntheticEvent<T> imple
     }
 }
 
-export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> implements KeyboardEvent {
-    /**
-     * @deprecated
-     */
-    initKeyboardEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window,
-        keyArg: string,
-        locationArg: number,
-        modifiersListArg: string,
-        repeat: boolean,
-        locale: string,
-    ) => void;
-
+export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> {
     get altKey(): boolean {
         return this._data.altKey;
     }
@@ -257,57 +183,12 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> impl
         return this._data.code;
     }
 
-    get DOM_KEY_LOCATION_JOYSTICK(): number {
-        return this._data.DOM_KEY_LOCATION_JOYSTICK;
-    }
-
-    get DOM_KEY_LOCATION_LEFT(): number {
-        return this._data.DOM_KEY_LOCATION_LEFT;
-    }
-
-    get DOM_KEY_LOCATION_MOBILE(): number {
-        return this._data.DOM_KEY_LOCATION_MOBILE;
-    }
-
-    get DOM_KEY_LOCATION_NUMPAD(): number {
-        return this._data.DOM_KEY_LOCATION_NUMPAD;
-    }
-
-    get DOM_KEY_LOCATION_RIGHT(): number {
-        return this._data.DOM_KEY_LOCATION_RIGHT;
-    }
-
-    get DOM_KEY_LOCATION_STANDARD(): number {
-        return this._data.DOM_KEY_LOCATION_STANDARD;
-    }
-
     getModifierState(keyArg: string): boolean {
         return this._data.getModifierState(keyArg);
     }
 }
 
-export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<T> implements MouseEvent {
-    /**
-     * @deprecated
-     */
-    initMouseEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window,
-        detailArg: number,
-        screenXArg: number,
-        screenYArg: number,
-        clientXArg: number,
-        clientYArg: number,
-        ctrlKeyArg: boolean,
-        altKeyArg: boolean,
-        shiftKeyArg: boolean,
-        metaKeyArg: boolean,
-        buttonArg: number,
-        relatedTargetArg: EventTarget | null,
-    ) => void;
-
+export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<T> {
     get altKey(): boolean {
         return this._data.altKey;
     }
@@ -422,7 +303,7 @@ export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<
     }
 }
 
-export class SyntheticTouchEvent extends SyntheticUIEvent<TouchEvent> implements TouchEvent {
+export class SyntheticTouchEvent extends SyntheticUIEvent<TouchEvent> {
     get altKey(): boolean {
         return this._data.altKey;
     }
@@ -464,40 +345,7 @@ export class SyntheticTouchEvent extends SyntheticUIEvent<TouchEvent> implements
     }
 }
 
-export class SyntheticPointerEvent extends SyntheticMouseEvent<PointerEvent> implements PointerEvent {
-    /**
-     * @deprecated
-     */
-    initPointerEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window,
-        detailArg: number,
-        screenXArg: number,
-        screenYArg: number,
-        clientXArg: number,
-        clientYArg: number,
-        ctrlKeyArg: boolean,
-        altKeyArg: boolean,
-        shiftKeyArg: boolean,
-        metaKeyArg: boolean,
-        buttonArg: number,
-        relatedTargetArg: EventTarget,
-        offsetXArg: number,
-        offsetYArg: number,
-        widthArg: number,
-        heightArg: number,
-        pressure: number,
-        rotation: number,
-        tiltX: number,
-        tiltY: number,
-        pointerIdArg: number,
-        pointerType: any,
-        hwTimestampArg: number,
-        isPrimary: boolean,
-    ) => void;
-
+export class SyntheticPointerEvent extends SyntheticMouseEvent<PointerEvent> {
     get currentPoint(): any {
         return this._data.currentPoint;
     }
@@ -555,62 +403,13 @@ export class SyntheticPointerEvent extends SyntheticMouseEvent<PointerEvent> imp
     }
 }
 
-export class SyntheticDragEvent extends SyntheticMouseEvent<DragEvent> implements DragEvent {
-    /**
-     * @deprecated
-     */
-    initDragEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window,
-        detailArg: number,
-        screenXArg: number,
-        screenYArg: number,
-        clientXArg: number,
-        clientYArg: number,
-        ctrlKeyArg: boolean,
-        altKeyArg: boolean,
-        shiftKeyArg: boolean,
-        metaKeyArg: boolean,
-        buttonArg: number,
-        relatedTargetArg: EventTarget,
-        dataTransferArg: DataTransfer,
-    ) => void;
-
-    msConvertURL: (
-        file: File,
-        targetType: string,
-        targetURL?: string,
-    ) => void;
-
+export class SyntheticDragEvent extends SyntheticMouseEvent<DragEvent> {
     get dataTransfer(): DataTransfer {
         return this._data.dataTransfer;
     }
 }
 
-export class SyntheticWheelEvent extends SyntheticMouseEvent<WheelEvent> implements WheelEvent {
-    /**
-     * @deprecated
-     */
-    initWheelEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window, detailArg:
-            number, screenXArg: number,
-        screenYArg: number,
-        clientXArg: number,
-        clientYArg: number,
-        buttonArg: number,
-        relatedTargetArg: EventTarget,
-        modifiersListArg: string,
-        deltaXArg: number,
-        deltaYArg: number,
-        deltaZArg: number,
-        deltaMode: number,
-    ) => void;
-
+export class SyntheticWheelEvent extends SyntheticMouseEvent<WheelEvent> {
     getCurrentPoint: (element: Element) => void;
 
     readonly wheelDelta: number;
@@ -632,55 +431,21 @@ export class SyntheticWheelEvent extends SyntheticMouseEvent<WheelEvent> impleme
     get deltaZ(): number {
         return this._data.deltaZ;
     }
-
-    get DOM_DELTA_LINE(): number {
-        return this._data.DOM_DELTA_LINE;
-    }
-    get DOM_DELTA_PAGE(): number {
-        return this._data.DOM_DELTA_PAGE;
-    }
-    get DOM_DELTA_PIXEL(): number {
-        return this._data.DOM_DELTA_PIXEL;
-    }
 }
 
-export class SyntheticFocusEvent extends SyntheticUIEvent<FocusEvent> implements FocusEvent {
-    /**
-     * @deprecated
-     */
-    initFocusEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        viewArg: Window,
-        detailArg: number,
-        relatedTargetArg: EventTarget,
-    ) => void;
-
+export class SyntheticFocusEvent extends SyntheticUIEvent<FocusEvent> {
     get relatedTarget(): EventTarget {
         return this._data.relatedTarget;
     }
 }
 
-export class SyntheticClipboardEvent extends SyntheticEvent<ClipboardEvent> implements ClipboardEvent {
+export class SyntheticClipboardEvent extends SyntheticEvent<ClipboardEvent> {
     get clipboardData(): DataTransfer {
         return this._data.clipboardData;
     }
 }
 
-export class SyntheticErrorEvent extends SyntheticEvent<ErrorEvent> implements ErrorEvent {
-    /**
-     * @deprecated
-     */
-    initErrorEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        messageArg: string,
-        filenameArg: string,
-        linenoArg: number,
-    ) => void;
-
+export class SyntheticErrorEvent extends SyntheticEvent<ErrorEvent> {
     get colno(): number {
         return this._data.colno;
     }
@@ -702,9 +467,7 @@ export class SyntheticErrorEvent extends SyntheticEvent<ErrorEvent> implements E
     }
 }
 
-export class SyntheticMediaEncryptedEvent extends SyntheticEvent<MediaEncryptedEvent>
-    implements MediaEncryptedEvent {
-
+export class SyntheticMediaEncryptedEvent extends SyntheticEvent<MediaEncryptedEvent> {
     get initData(): ArrayBuffer | null {
         return this._data.initData;
     }
@@ -714,27 +477,13 @@ export class SyntheticMediaEncryptedEvent extends SyntheticEvent<MediaEncryptedE
     }
 }
 
-export class SyntheticMediaStreamErrorEvent extends SyntheticEvent<MediaStreamErrorEvent>
-    implements MediaStreamErrorEvent {
-
+export class SyntheticMediaStreamErrorEvent extends SyntheticEvent<MediaStreamErrorEvent> {
     get error(): MediaStreamError | null {
         return this._data.error;
     }
 }
 
-export class SyntheticProgressEvent extends SyntheticEvent<ProgressEvent> implements ProgressEvent {
-    /**
-     * @deprecated
-     */
-    initProgressEvent: (
-        typeArg: string,
-        canBubbleArg: boolean,
-        cancelableArg: boolean,
-        lengthComputableArg: boolean,
-        loadedArg: number,
-        totalArg: number,
-    ) => void;
-
+export class SyntheticProgressEvent extends SyntheticEvent<ProgressEvent> {
     get lengthComputable(): boolean {
         return this._data.lengthComputable;
     }
