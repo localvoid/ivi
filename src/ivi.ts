@@ -115,6 +115,7 @@ export { Store, createStore } from "./state/store";
  */
 import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/dev_mode";
 import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode/component_tree";
+import { FEATURES, FeatureFlags } from "./common/feature_detection";
 import { Context } from "./common/types";
 import { Component, ComponentClass, ComponentFunction } from "./vdom/component";
 import { ConnectDescriptor } from "./vdom/connect_descriptor";
@@ -180,6 +181,31 @@ if (__IVI_DEV__) {
         if (document) {
             document.title += " [DEV MODE]";
         }
+
+        function printFeatureGroup(name: string, flag: number) {
+            console.groupCollapsed(`${((FEATURES & flag) ? "✔" : "✖")} ${name}`);
+        }
+        function printFeature(name: string, flag: number) {
+            console.log(`${((FEATURES & flag) ? "✔" : "✖")} ${name}`);
+        }
+
+        console.groupCollapsed("Detected browser features");
+        printFeature("Passive Events", FeatureFlags.PassiveEvents);
+        printFeature("Timeline Performance Marks", FeatureFlags.DevModePerfMarks);
+        printFeature("SVG innerHTML property", FeatureFlags.SVGInnerHTML);
+        printFeature("KeyboardEvent key property", FeatureFlags.KeyboardEventKey);
+        if (FEATURES & FeatureFlags.PointerEvents) {
+            printFeatureGroup("Pointer Events", FeatureFlags.PointerEvents);
+            printFeature("Touch Screen", FeatureFlags.PointerEventsTouch);
+            printFeature("Multitouch Screen", FeatureFlags.PointerEventsMultiTouch);
+            console.groupEnd();
+        } else {
+            printFeature("Pointer Events", FeatureFlags.PointerEvents);
+        }
+        printFeature("Touch Events", FeatureFlags.TouchEvents);
+        printFeature("InputDeviceCapabilities", FeatureFlags.InputDeviceCapabilities);
+        printFeature("MouseEvent buttons property", FeatureFlags.MouseEventButtons);
+        console.groupEnd();
 
         const devModeExport = {
             "VERSION": VERSION,
