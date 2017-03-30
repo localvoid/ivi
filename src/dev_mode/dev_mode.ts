@@ -18,7 +18,7 @@ import { printComponentStackTrace } from "./stack_trace";
 /**
  * Version number in string format.
  */
-export const VERSION = "0.5.0";
+export const VERSION = "0.7.0";
 
 /**
  * Dev Mode Flags.
