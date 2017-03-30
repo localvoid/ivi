@@ -1,17 +1,17 @@
 import { getEventTarget } from "../common/dom";
+import { scheduleTask } from "../scheduler/task";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
-import { SyntheticEvent, SyntheticEventClass } from "./synthetic_event";
+import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";
 import { DispatchTarget } from "./dispatch_target";
 import { EventSource } from "./event_source";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
 import { getEventOptions } from "./utils";
-import { scheduleTask } from "../scheduler/task";
 
 /**
  * Native Event Dispatcher.
  */
-export class NativeEventSource<E extends SyntheticEventClass<Event, SyntheticEvent<any>>> {
+export class NativeEventSource<E extends SyntheticNativeEventClass<Event, SyntheticNativeEvent<any>>> {
     readonly eventSource: EventSource;
     private dependencies: number;
     /**
@@ -29,7 +29,7 @@ export class NativeEventSource<E extends SyntheticEventClass<Event, SyntheticEve
     /**
      * Flag indicating that Event Dispatcher will be deactivated in the task.
      */
-    private _deactivating: boolean;
+    private deactivating: boolean;
 
     constructor(
         flags: NativeEventSourceFlags,
@@ -39,8 +39,8 @@ export class NativeEventSource<E extends SyntheticEventClass<Event, SyntheticEve
         this.eventSource = {
             addListener: () => {
                 if (this.dependencies++ === 0) {
-                    if (this._deactivating === true) {
-                        this._deactivating = false;
+                    if (this.deactivating === true) {
+                        this.deactivating = false;
                     } else {
                         document.addEventListener(
                             this.name,
@@ -52,16 +52,16 @@ export class NativeEventSource<E extends SyntheticEventClass<Event, SyntheticEve
             },
             removeListener: () => {
                 if (--this.dependencies === 0) {
-                    if (this._deactivating === false) {
-                        this._deactivating = true;
+                    if (this.deactivating === false) {
+                        this.deactivating = true;
                         scheduleTask(() => {
-                            if (this._deactivating === true) {
+                            if (this.deactivating === true) {
                                 document.removeEventListener(
                                     this.name,
                                     this.dispatch,
                                     getEventOptions(this.flags) as boolean,
                                 );
-                                this._deactivating = false;
+                                this.deactivating = false;
                             }
                         });
                     }
@@ -72,7 +72,7 @@ export class NativeEventSource<E extends SyntheticEventClass<Event, SyntheticEve
         this.flags = flags;
         this.name = name;
         this.eventType = eventType;
-        this._deactivating = false;
+        this.deactivating = false;
     }
 
     private dispatch = (ev: Event): void => {
@@ -80,17 +80,15 @@ export class NativeEventSource<E extends SyntheticEventClass<Event, SyntheticEve
         accumulateDispatchTargets(targets, getEventTarget(ev) as Element, this.eventSource);
 
         if (targets.length > 0) {
-            const s: SyntheticEvent<any> = new this.eventType(
+            const s = new this.eventType(
                 this.eventSource,
                 0,
-                ev,
                 getEventTarget(ev),
                 ev.timeStamp,
-                ev.type,
+                ev,
             );
-            console.log(s);
-            dispatchEvent(targets, s!, (this.flags & NativeEventSourceFlags.Bubbles) !== 0);
-            if ((s._flags & SyntheticEventFlags.PreventedDefault) !== 0) {
+            dispatchEvent(targets, s, (this.flags & NativeEventSourceFlags.Bubbles) !== 0);
+            if ((s.flags & SyntheticEventFlags.PreventedDefault) !== 0) {
                 ev.preventDefault();
             }
         }

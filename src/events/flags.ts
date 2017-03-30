@@ -44,39 +44,25 @@ export const enum SyntheticEventFlags {
      */
     StoppedPropagation = 1,
     /**
-     * Immediate propagation is stopped.
-     */
-    StoppedImmediatePropagation = 1 << 1,
-    /**
      * Default behaviour should be prevented.
      */
-    PreventedDefault = 1 << 2,
+    PreventedDefault = 1 << 1,
 
     /**
      * Event can bubble up through the DOM.
      */
-    Bubbles = 1 << 3,
+    Bubbles = 1 << 2,
     /**
      * Event is cancelable.
      */
-    Cancelable = 1 << 4,
+    Cancelable = 1 << 3,
     /**
      * Event was initiated by the browser.
      */
-    IsTrusted = 1 << 5,
+    IsTrusted = 1 << 4,
 
-    /**
-     * Event at target phase.
-     */
-    AtTargetPhase = 1 << 6,
     /**
      * Event at bubbling phase.
      */
-    BubblePhase = 1 << 7,
-
-    /**
-     * The scoped property of the Event interface indicates whether the given event bubbles. If this value is true,
-     * deepPath will only contain a target node.
-     */
-    Scoped = 1 << 8,
+    BubblePhase = 1 << 5,
 }

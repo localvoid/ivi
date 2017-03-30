@@ -6,164 +6,141 @@ import { EventSource } from "./event_source";
 /**
  * Synthetic Event.
  */
-export class SyntheticEvent<D> {
-    readonly eventSource: EventSource;
-    _flags: SyntheticEventFlags;
-    _data: D;
-    readonly target: EventTarget;
-    currentTarget: EventTarget;
-    timeStamp: number;
-    type: any;
+export class SyntheticEvent {
+    readonly source: EventSource;
+    flags: SyntheticEventFlags;
+    readonly target: any;
+    readonly timestamp: number;
 
     constructor(
-        dispatcher: EventSource,
+        source: EventSource,
         flags: SyntheticEventFlags,
-        data: D,
-        target: EventTarget,
-        timeStamp: number,
-        type: any,
+        target: any,
+        timestamp: number,
     ) {
-        this.eventSource = dispatcher;
-        this._flags = flags;
-        this._data = data;
+        this.source = source;
+        this.flags = flags;
         this.target = target;
-        this.currentTarget = target;
-        this.timeStamp = timeStamp;
-        this.type = type;
-    }
-
-    get defaultPrevented(): boolean {
-        return (this._flags & SyntheticEventFlags.PreventedDefault) !== 0;
-    }
-
-    get bubbles(): boolean {
-        return (this._flags & SyntheticEventFlags.Bubbles) !== 0;
-    }
-
-    get cancelable(): boolean {
-        return (this._flags & SyntheticEventFlags.Cancelable) !== 0;
-    }
-
-    get isTrusted(): boolean {
-        return (this._flags & SyntheticEventFlags.IsTrusted) !== 0;
-    }
-
-    get eventPhase(): number {
-        if ((this._flags & SyntheticEventFlags.AtTargetPhase) !== 0) {
-            return 2;
-        } else if ((this._flags & SyntheticEventFlags.BubblePhase) !== 0) {
-            return 3;
-        }
-        return 1;
+        this.timestamp = timestamp;
     }
 
     stopPropagation() {
-        this._flags |= SyntheticEventFlags.StoppedPropagation;
-    }
-
-    stopImmediatePropagation() {
-        this._flags |= SyntheticEventFlags.StoppedPropagation | SyntheticEventFlags.StoppedImmediatePropagation;
+        this.flags |= SyntheticEventFlags.StoppedPropagation;
     }
 
     preventDefault() {
-        this._flags |= SyntheticEventFlags.PreventedDefault;
+        this.flags |= SyntheticEventFlags.PreventedDefault;
     }
 }
 
-export interface SyntheticEventClass<D, E extends SyntheticEvent<any>> {
-    new (
-        dispatcher: EventSource,
+export class SyntheticNativeEvent<D extends Event> extends SyntheticEvent {
+    native: D;
+
+    constructor(
+        source: EventSource,
         flags: SyntheticEventFlags,
-        data: D,
         target: EventTarget,
-        timeStamp: number,
-        type: any,
+        timestamp: number,
+        native: D,
+    ) {
+        super(source, flags, target, timestamp);
+        this.native = native;
+    }
+}
+
+export interface SyntheticNativeEventClass<D, E extends SyntheticNativeEvent<any>> {
+    new (
+        source: EventSource,
+        flags: SyntheticEventFlags,
+        target: EventTarget,
+        timestamp: number,
+        native: D,
     ): E;
 }
 
-export class SyntheticUIEvent<T extends UIEvent> extends SyntheticEvent<T> {
+export class SyntheticUIEvent<T extends UIEvent> extends SyntheticNativeEvent<T> {
     get detail() {
-        return this._data.detail;
+        return this.native.detail;
     }
 
     get view() {
-        return this._data.view;
+        return this.native.view;
     }
 }
 
 export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> {
     get altKey(): boolean {
-        return this._data.altKey;
+        return this.native.altKey;
     }
 
     get char(): string | null {
-        return this._data.char;
+        return this.native.char;
     }
 
     get charCode(): number {
         /**
          * #quirks
          */
-        if (this._data.type === "keypress") {
-            return getEventCharCode(this._data);
+        if (this.native.type === "keypress") {
+            return getEventCharCode(this.native);
         }
         return 0;
     }
 
     get ctrlKey(): boolean {
-        return this._data.ctrlKey;
+        return this.native.ctrlKey;
     }
 
     get key(): string {
         /**
          * #quirks
          */
-        return getEventKey(this._data);
+        return getEventKey(this.native);
     }
 
     get keyCode(): number {
         /**
          * #quirks
          */
-        switch (this._data.type) {
+        switch (this.native.type) {
             case "keydown":
             case "keyup":
-                return this._data.keyCode;
+                return this.native.keyCode;
         }
 
         return 0;
     }
 
     get locale(): string {
-        return this._data.locale;
+        return this.native.locale;
     }
 
     get location(): number {
-        return this._data.location;
+        return this.native.location;
     }
 
     get metaKey(): boolean {
-        return this._data.metaKey;
+        return this.native.metaKey;
     }
 
     get repeat(): boolean {
-        return this._data.repeat;
+        return this.native.repeat;
     }
 
     get shiftKey(): boolean {
-        return this._data.shiftKey;
+        return this.native.shiftKey;
     }
 
     get which(): number {
         /**
          * #quirks
          */
-        switch (this._data.type) {
+        switch (this.native.type) {
             case "keypress":
-                return getEventCharCode(this._data);
+                return getEventCharCode(this.native);
             case "keydown":
             case "keyup":
-                return this._data.keyCode;
+                return this.native.keyCode;
         }
 
         return 0;
@@ -180,21 +157,21 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> {
                     "way to polyfill this property on browsers that doesn't support it.");
             }
         }
-        return this._data.code;
+        return this.native.code;
     }
 
     getModifierState(keyArg: string): boolean {
-        return this._data.getModifierState(keyArg);
+        return this.native.getModifierState(keyArg);
     }
 }
 
 export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<T> {
     get altKey(): boolean {
-        return this._data.altKey;
+        return this.native.altKey;
     }
 
     get button(): number {
-        return this._data.button;
+        return this.native.button;
     }
 
     get buttons(): number {
@@ -211,288 +188,282 @@ export class SyntheticMouseEvent<T extends MouseEvent> extends SyntheticUIEvent<
                     "solved with a 'button' property.");
             }
         }
-        return this._data.buttons;
+        return this.native.buttons;
     }
 
     get clientX(): number {
-        return this._data.clientX;
+        return this.native.clientX;
     }
 
     get clientY(): number {
-        return this._data.clientY;
+        return this.native.clientY;
     }
 
     get ctrlKey(): boolean {
-        return this._data.ctrlKey;
+        return this.native.ctrlKey;
     }
 
     get fromElement(): Element {
-        return this._data.fromElement;
+        return this.native.fromElement;
     }
 
     get layerX(): number {
-        return this._data.layerX;
+        return this.native.layerX;
     }
 
     get layerY(): number {
-        return this._data.layerY;
+        return this.native.layerY;
     }
 
     get metaKey(): boolean {
-        return this._data.metaKey;
+        return this.native.metaKey;
     }
 
     get movementX(): number {
-        return this._data.movementX;
+        return this.native.movementX;
     }
 
     get movementY(): number {
-        return this._data.movementY;
+        return this.native.movementY;
     }
 
     get offsetX(): number {
-        return this._data.offsetX;
+        return this.native.offsetX;
     }
 
     get offsetY(): number {
-        return this._data.offsetY;
+        return this.native.offsetY;
     }
 
     get pageX(): number {
-        return this._data.pageX;
+        return this.native.pageX;
     }
 
     get pageY(): number {
-        return this._data.pageY;
+        return this.native.pageY;
     }
 
     get relatedTarget(): EventTarget {
-        return this._data.relatedTarget;
+        return this.native.relatedTarget;
     }
 
     get screenX(): number {
-        return this._data.screenX;
+        return this.native.screenX;
     }
 
     get screenY(): number {
-        return this._data.screenY;
+        return this.native.screenY;
     }
 
     get shiftKey(): boolean {
-        return this._data.shiftKey;
+        return this.native.shiftKey;
     }
 
     get toElement(): Element {
-        return this._data.toElement;
+        return this.native.toElement;
     }
 
     get which(): number {
-        return this._data.which;
+        return this.native.which;
     }
 
     get x(): number {
-        return this._data.x;
+        return this.native.x;
     }
 
     get y(): number {
-        return this._data.y;
+        return this.native.y;
     }
 
     getModifierState(keyArg: string): boolean {
-        return this._data.getModifierState(keyArg);
+        return this.native.getModifierState(keyArg);
     }
 }
 
 export class SyntheticTouchEvent extends SyntheticUIEvent<TouchEvent> {
     get altKey(): boolean {
-        return this._data.altKey;
+        return this.native.altKey;
     }
 
     get charCode(): number {
-        return this._data.charCode;
+        return this.native.charCode;
     }
 
     get changedTouches(): TouchList {
-        return this._data.changedTouches;
+        return this.native.changedTouches;
     }
 
     get ctrlKey(): boolean {
-        return this._data.ctrlKey;
+        return this.native.ctrlKey;
     }
 
     get keyCode(): number {
-        return this._data.keyCode;
+        return this.native.keyCode;
     }
 
     get metaKey(): boolean {
-        return this._data.metaKey;
+        return this.native.metaKey;
     }
 
     get shiftKey(): boolean {
-        return this._data.shiftKey;
+        return this.native.shiftKey;
     }
 
     get targetTouches(): TouchList {
-        return this._data.targetTouches;
+        return this.native.targetTouches;
     }
 
     get touches(): TouchList {
-        return this._data.touches;
+        return this.native.touches;
     }
 
     get which(): number {
-        return this._data.which;
+        return this.native.which;
     }
 }
 
 export class SyntheticPointerEvent extends SyntheticMouseEvent<PointerEvent> {
     get currentPoint(): any {
-        return this._data.currentPoint;
+        return this.native.currentPoint;
     }
 
     get height(): number {
-        return this._data.height;
+        return this.native.height;
     }
 
     get hwTimestamp(): number {
-        return this._data.hwTimestamp;
+        return this.native.hwTimestamp;
     }
 
     get intermediatePoints(): any {
-        return this._data.intermediatePoints;
+        return this.native.intermediatePoints;
     }
 
     get isPrimary(): boolean {
-        return this._data.isPrimary;
+        return this.native.isPrimary;
     }
 
     get pointerId(): number {
-        return this._data.pointerId;
+        return this.native.pointerId;
     }
 
     get pointerType(): any {
-        return this._data.pointerType;
+        return this.native.pointerType;
     }
 
     get pressure(): number {
-        return this._data.pressure;
+        return this.native.pressure;
     }
 
     get rotation(): number {
-        return this._data.rotation;
+        return this.native.rotation;
     }
 
     get tiltX(): number {
-        return this._data.tiltX;
+        return this.native.tiltX;
     }
 
     get tiltY(): number {
-        return this._data.tiltY;
+        return this.native.tiltY;
     }
 
     get width(): number {
-        return this._data.width;
+        return this.native.width;
     }
 
     getCurrentPoint(element: Element): void {
-        return this._data.getCurrentPoint(element);
+        return this.native.getCurrentPoint(element);
     }
 
     getIntermediatePoints(element: Element): void {
-        return this._data.getIntermediatePoints(element);
+        return this.native.getIntermediatePoints(element);
     }
 }
 
 export class SyntheticDragEvent extends SyntheticMouseEvent<DragEvent> {
     get dataTransfer(): DataTransfer {
-        return this._data.dataTransfer;
+        return this.native.dataTransfer;
     }
 }
 
 export class SyntheticWheelEvent extends SyntheticMouseEvent<WheelEvent> {
-    getCurrentPoint: (element: Element) => void;
-
-    readonly wheelDelta: number;
-    readonly wheelDeltaX: number;
-    readonly wheelDeltaY: number;
-
     get deltaMode(): number {
-        return this._data.deltaMode;
+        return this.native.deltaMode;
     }
 
     get deltaX(): number {
-        return this._data.deltaX;
+        return this.native.deltaX;
     }
 
     get deltaY(): number {
-        return this._data.deltaY;
+        return this.native.deltaY;
     }
 
     get deltaZ(): number {
-        return this._data.deltaZ;
+        return this.native.deltaZ;
     }
 }
 
 export class SyntheticFocusEvent extends SyntheticUIEvent<FocusEvent> {
     get relatedTarget(): EventTarget {
-        return this._data.relatedTarget;
+        return this.native.relatedTarget;
     }
 }
 
-export class SyntheticClipboardEvent extends SyntheticEvent<ClipboardEvent> {
+export class SyntheticClipboardEvent extends SyntheticNativeEvent<ClipboardEvent> {
     get clipboardData(): DataTransfer {
-        return this._data.clipboardData;
+        return this.native.clipboardData;
     }
 }
 
-export class SyntheticErrorEvent extends SyntheticEvent<ErrorEvent> {
+export class SyntheticErrorEvent extends SyntheticNativeEvent<ErrorEvent> {
     get colno(): number {
-        return this._data.colno;
+        return this.native.colno;
     }
 
     get error(): any {
-        return this._data.error;
+        return this.native.error;
     }
 
     get filename(): string {
-        return this._data.filename;
+        return this.native.filename;
     }
 
     get lineno(): number {
-        return this._data.lineno;
+        return this.native.lineno;
     }
 
     get message(): string {
-        return this._data.message;
+        return this.native.message;
     }
 }
 
-export class SyntheticMediaEncryptedEvent extends SyntheticEvent<MediaEncryptedEvent> {
+export class SyntheticMediaEncryptedEvent extends SyntheticNativeEvent<MediaEncryptedEvent> {
     get initData(): ArrayBuffer | null {
-        return this._data.initData;
+        return this.native.initData;
     }
 
     get initDataType(): string {
-        return this._data.initDataType;
+        return this.native.initDataType;
     }
 }
 
-export class SyntheticMediaStreamErrorEvent extends SyntheticEvent<MediaStreamErrorEvent> {
+export class SyntheticMediaStreamErrorEvent extends SyntheticNativeEvent<MediaStreamErrorEvent> {
     get error(): MediaStreamError | null {
-        return this._data.error;
+        return this.native.error;
     }
 }
 
-export class SyntheticProgressEvent extends SyntheticEvent<ProgressEvent> {
+export class SyntheticProgressEvent extends SyntheticNativeEvent<ProgressEvent> {
     get lengthComputable(): boolean {
-        return this._data.lengthComputable;
+        return this.native.lengthComputable;
     }
 
     get loaded(): number {
-        return this._data.loaded;
+        return this.native.loaded;
     }
 
     get total(): number {
-        return this._data.total;
+        return this.native.total;
     }
 }

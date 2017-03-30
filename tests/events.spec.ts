@@ -26,7 +26,7 @@ export interface EventCounter {
 }
 
 export function eventCounter(handlerFactory: (
-    handler: (ev: SyntheticEvent<any>) => void,
+    handler: (ev: SyntheticEvent) => void,
     capture?: boolean) => EventHandler<any>,
 ): EventCounter {
     const c = {

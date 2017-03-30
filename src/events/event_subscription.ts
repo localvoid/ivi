@@ -4,7 +4,7 @@ export class EventSubscriptionList {
     private subscriptions: EventSubscription[];
 
     add(
-        handler: (ev: SyntheticEvent<any>, type?: number) => void,
+        handler: (ev: SyntheticEvent, type?: number) => void,
         filter?: number,
     ): EventSubscription {
         const sub = new EventSubscription(this, handler, filter);
@@ -28,7 +28,7 @@ export class EventSubscription {
     /**
      * Subscription Handler function.
      */
-    handler: (ev: SyntheticEvent<any>, type?: number) => void;
+    handler: (ev: SyntheticEvent, type?: number) => void;
     /**
      * Type filter.
      */
@@ -36,7 +36,7 @@ export class EventSubscription {
 
     constructor(
         list: EventSubscriptionList,
-        handler: (ev: SyntheticEvent<any>, type?: number) => void,
+        handler: (ev: SyntheticEvent, type?: number) => void,
         filter: number = ~0,
     ) {
         this.list = list;

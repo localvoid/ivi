@@ -68,7 +68,7 @@ export { accumulateDispatchTargetsFromElement, accumulateDispatchTargets } from 
 export { dispatchEvent } from "./events/dispatch_event";
 export {
     SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
-    SyntheticErrorEvent, SyntheticEventClass, SyntheticFocusEvent, SyntheticKeyboardEvent,
+    SyntheticErrorEvent, SyntheticNativeEventClass, SyntheticFocusEvent, SyntheticKeyboardEvent,
     SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent, SyntheticMouseEvent, SyntheticPointerEvent,
     SyntheticProgressEvent, SyntheticTouchEvent, SyntheticWheelEvent,
 } from "./events/synthetic_event";
@@ -77,6 +77,7 @@ export {
     NativeEventSourceList, NativeActiveEventSourcesList, NativeEventSources, NativeActiveEventSources,
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
+export { GestureEvents } from "./events/gestures/events";
 
 /**
  * Virtual DOM:

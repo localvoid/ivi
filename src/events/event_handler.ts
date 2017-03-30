@@ -4,8 +4,14 @@ import { EventSource } from "./event_source";
 
 /**
  * Event Handler.
+ *
+ * Note for Event Extensions Developers: Event Handler objects should always have exactly the same shape as described in
+ * this interface. It is necessary for performance, because event handler objects will be accessed quite often during
+ * virtual dom synchronization.
+ *
+ * @final
  */
-export interface EventHandler<E extends SyntheticEvent<any> = SyntheticEvent<any>> {
+export interface EventHandler<E extends SyntheticEvent = SyntheticEvent> {
     /**
      * Event Handler function call interface.
      */

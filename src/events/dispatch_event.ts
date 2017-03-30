@@ -5,18 +5,16 @@ import { DispatchTarget } from "./dispatch_target";
 /**
  * Dispatch event to local(on the same DOM Node) Event Handlers.
  *
- * It will stop dispatching when event has `StopImmediatePropagation` flag.
- *
- * @param localHandlers Local Event Handlers.
+ * @param target Dispatch Target.
  * @param event Synthetic Event.
+ * @param matchFlags Flags that should match to deliver event.
  */
-function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
-    dispatchTarget: DispatchTarget,
-    event: E,
+function dispatchEventToLocalEventHandlers(
+    target: DispatchTarget,
+    event: SyntheticEvent,
     matchFlags: EventHandlerFlags,
 ): void {
-    event.currentTarget = dispatchTarget.target;
-    const handlers = dispatchTarget.handlers;
+    const handlers = target.handlers;
 
     if (typeof handlers === "function") {
         if ((handlers.flags & matchFlags) !== 0) {
@@ -27,9 +25,6 @@ function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
             const handler = handlers[j];
             if ((handler.flags & matchFlags) !== 0) {
                 handler(event);
-                if ((event._flags & SyntheticEventFlags.StoppedImmediatePropagation) !== 0) {
-                    return;
-                }
             }
         }
     }
@@ -38,14 +33,18 @@ function dispatchEventToLocalEventHandlers<E extends SyntheticEvent<any>>(
 /**
  * Dispatch event to Dispatch Targets.
  *
+ * Simplified version of w3 Events flow algorithm. This algorithm doesn't include target phase, only capture and
+ * bubbling phases. We don't care too much about w3 events compatibility, and there aren't any use cases that require
+ * target phase.
+ *
  * https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
  *
- * @param dispatchTarget Dispatch Targets.
+ * @param targets Dispatch Targets.
  * @param event Event to dispatch.
  */
-export function dispatchEvent<E extends SyntheticEvent<any>>(
+export function dispatchEvent(
     targets: DispatchTarget[],
-    event: E,
+    event: SyntheticEvent,
     bubble: boolean,
 ): void {
     let i = targets.length - 1;
@@ -53,41 +52,20 @@ export function dispatchEvent<E extends SyntheticEvent<any>>(
 
     // capture phase
     while (i >= 0) {
-        target = targets[i];
-        if (target.target !== event.target) {
-            dispatchEventToLocalEventHandlers(targets[i--], event, EventHandlerFlags.Capture);
-            if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
-                return;
-            }
-        } else {
-            break;
-        }
-    }
-
-    // target phase
-    target = targets[0];
-    if (target.target === event.target) {
-        event._flags |= SyntheticEventFlags.AtTargetPhase;
-        dispatchEventToLocalEventHandlers(
-            target,
-            event,
-            EventHandlerFlags.Capture | EventHandlerFlags.Bubble,
-        );
-        if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
+        target = targets[i--];
+        dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture);
+        if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
             return;
         }
-        event._flags &= ~SyntheticEventFlags.AtTargetPhase;
-        i = 1;
-    } else {
-        i = 0;
     }
 
     // bubble phase
     if (bubble === true) {
-        event._flags |= SyntheticEventFlags.BubblePhase;
+        i = 0;
+        event.flags |= SyntheticEventFlags.BubblePhase;
         while (i < targets.length) {
             dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble);
-            if ((event._flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
+            if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }
         }

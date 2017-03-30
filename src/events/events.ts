@@ -9,10 +9,10 @@ import { EventHandler } from "./event_handler";
 import { EventSource } from "./event_source";
 import { NativeEventSource } from "./native_event_source";
 import {
-    SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticErrorEvent,
+    SyntheticNativeEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticErrorEvent,
     SyntheticKeyboardEvent, SyntheticFocusEvent, SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent,
     SyntheticMouseEvent, SyntheticClipboardEvent, SyntheticPointerEvent, SyntheticTouchEvent, SyntheticWheelEvent,
-    SyntheticProgressEvent, SyntheticEventClass,
+    SyntheticProgressEvent, SyntheticNativeEventClass,
 } from "./synthetic_event";
 
 /**
@@ -25,7 +25,7 @@ import {
  *   DOM tree.
  * @returns EventHandler object.
  */
-export function createEventHandler<E extends SyntheticEvent<any>>(
+export function createEventHandler<E extends SyntheticNativeEvent<any>>(
     source: EventSource,
     fn: (ev: E) => void,
     capture?: boolean,
@@ -37,197 +37,197 @@ export function createEventHandler<E extends SyntheticEvent<any>>(
 }
 
 export interface NativeEventSourceList {
-    abort: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    activate: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    ariarequest: NativeEventSource<SyntheticEventClass<Event, SyntheticUIEvent<UIEvent>>>;
-    beforeactivate: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    beforecopy: NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
-    beforecut: NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
-    beforedeactivate: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    beforepaste: NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
-    blur: NativeEventSource<SyntheticEventClass<FocusEvent, SyntheticFocusEvent>>;
-    canplay: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    canplaythrough: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    change: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    click: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    contextmenu: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    copy: NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
-    cuechange: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    cut: NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
-    dblclick: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    deactivate: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    drag: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    dragend: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    dragenter: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    dragleave: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    dragover: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    dragstart: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    drop: NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>;
-    durationchange: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    emptied: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    encrypted: NativeEventSource<SyntheticEventClass<MediaEncryptedEvent, SyntheticMediaEncryptedEvent>>;
-    ended: NativeEventSource<SyntheticEventClass<MediaStreamErrorEvent, SyntheticMediaStreamErrorEvent>>;
-    error: NativeEventSource<SyntheticEventClass<ErrorEvent, SyntheticErrorEvent>>;
-    focus: NativeEventSource<SyntheticEventClass<FocusEvent, SyntheticFocusEvent>>;
-    gotpointercapture: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    input: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    invalid: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    keydown: NativeEventSource<SyntheticEventClass<KeyboardEvent, SyntheticKeyboardEvent>>;
-    keypress: NativeEventSource<SyntheticEventClass<KeyboardEvent, SyntheticKeyboardEvent>>;
-    keyup: NativeEventSource<SyntheticEventClass<KeyboardEvent, SyntheticKeyboardEvent>>;
-    load: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    loadeddata: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    loadedmetadata: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    loadstart: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    lostpointercapture: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    mousedown: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseenter: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseleave: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mousemove: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseout: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseover: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseup: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    paste: NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
-    pause: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    play: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    playing: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    pointercancel: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointerdown: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointerenter: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointerleave: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointermove: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointerout: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointerover: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    pointerup: NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>;
-    progress: NativeEventSource<SyntheticEventClass<ProgressEvent, SyntheticProgressEvent>>;
-    ratechange: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    reset: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    scroll: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    seeked: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    seeking: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    select: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    selectstart: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    stalled: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    submit: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    suspend: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    timeupdate: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    touchcancel: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    touchend: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    touchmove: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    touchstart: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    unload: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    volumechange: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    waiting: NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>;
-    wheel: NativeEventSource<SyntheticEventClass<WheelEvent, SyntheticWheelEvent>>;
+    abort: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    activate: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    ariarequest: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticUIEvent<UIEvent>>>;
+    beforeactivate: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    beforecopy: NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
+    beforecut: NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
+    beforedeactivate: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    beforepaste: NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
+    blur: NativeEventSource<SyntheticNativeEventClass<FocusEvent, SyntheticFocusEvent>>;
+    canplay: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    canplaythrough: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    change: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    click: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    contextmenu: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    copy: NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
+    cuechange: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    cut: NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
+    dblclick: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    deactivate: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    drag: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    dragend: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    dragenter: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    dragleave: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    dragover: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    dragstart: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    drop: NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>;
+    durationchange: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    emptied: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    encrypted: NativeEventSource<SyntheticNativeEventClass<MediaEncryptedEvent, SyntheticMediaEncryptedEvent>>;
+    ended: NativeEventSource<SyntheticNativeEventClass<MediaStreamErrorEvent, SyntheticMediaStreamErrorEvent>>;
+    error: NativeEventSource<SyntheticNativeEventClass<ErrorEvent, SyntheticErrorEvent>>;
+    focus: NativeEventSource<SyntheticNativeEventClass<FocusEvent, SyntheticFocusEvent>>;
+    gotpointercapture: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    input: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    invalid: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    keydown: NativeEventSource<SyntheticNativeEventClass<KeyboardEvent, SyntheticKeyboardEvent>>;
+    keypress: NativeEventSource<SyntheticNativeEventClass<KeyboardEvent, SyntheticKeyboardEvent>>;
+    keyup: NativeEventSource<SyntheticNativeEventClass<KeyboardEvent, SyntheticKeyboardEvent>>;
+    load: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    loadeddata: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    loadedmetadata: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    loadstart: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    lostpointercapture: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    mousedown: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseenter: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseleave: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mousemove: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseout: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseover: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseup: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    paste: NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>;
+    pause: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    play: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    playing: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    pointercancel: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointerdown: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointerenter: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointerleave: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointermove: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointerout: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointerover: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    pointerup: NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>;
+    progress: NativeEventSource<SyntheticNativeEventClass<ProgressEvent, SyntheticProgressEvent>>;
+    ratechange: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    reset: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    scroll: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    seeked: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    seeking: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    select: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    selectstart: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    stalled: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    submit: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    suspend: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    timeupdate: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    touchcancel: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    touchend: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    touchmove: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    touchstart: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    unload: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    volumechange: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    waiting: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
+    wheel: NativeEventSource<SyntheticNativeEventClass<WheelEvent, SyntheticWheelEvent>>;
 };
 
 /* tslint:disable:max-line-length */
 export const NativeEventSources: NativeEventSourceList = {
-    abort: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture, "abort", SyntheticUIEvent),
-    activate: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "activate", SyntheticUIEvent),
-    ariarequest: new NativeEventSource<SyntheticEventClass<Event, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "ariarequest", SyntheticUIEvent),
-    beforeactivate: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforeactivate", SyntheticUIEvent),
-    beforecopy: new NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture, "beforecopy", SyntheticClipboardEvent),
-    beforecut: new NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforecut", SyntheticClipboardEvent),
-    beforedeactivate: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforedeactivate", SyntheticUIEvent),
-    beforepaste: new NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforepaste", SyntheticClipboardEvent),
-    blur: new NativeEventSource<SyntheticEventClass<FocusEvent, SyntheticFocusEvent>>(NativeEventSourceFlags.Capture, "blur", SyntheticFocusEvent),
-    canplay: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "canplay", SyntheticEvent),
-    canplaythrough: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "canplaythrough", SyntheticEvent),
-    change: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "change", SyntheticEvent),
-    click: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "click", SyntheticMouseEvent),
-    contextmenu: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "contextmenu", SyntheticPointerEvent),
-    copy: new NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "copy", SyntheticClipboardEvent),
-    cuechange: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "cuechange", SyntheticEvent),
-    cut: new NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "cut", SyntheticClipboardEvent),
-    dblclick: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dblclick", SyntheticMouseEvent),
-    deactivate: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "deactivate", SyntheticUIEvent),
-    drag: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "drag", SyntheticDragEvent),
-    dragend: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragend", SyntheticDragEvent),
-    dragenter: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragenter", SyntheticDragEvent),
-    dragleave: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragleave", SyntheticDragEvent),
-    dragover: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragover", SyntheticDragEvent),
-    dragstart: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragstart", SyntheticDragEvent),
-    drop: new NativeEventSource<SyntheticEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "drop", SyntheticDragEvent),
-    durationchange: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "durationchange", SyntheticEvent),
-    emptied: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "emptied", SyntheticEvent),
-    encrypted: new NativeEventSource<SyntheticEventClass<MediaEncryptedEvent, SyntheticMediaEncryptedEvent>>(NativeEventSourceFlags.Capture, "encrypted", SyntheticMediaEncryptedEvent),
-    ended: new NativeEventSource<SyntheticEventClass<MediaStreamErrorEvent, SyntheticMediaStreamErrorEvent>>(NativeEventSourceFlags.Capture, "ended", SyntheticMediaStreamErrorEvent),
-    error: new NativeEventSource<SyntheticEventClass<ErrorEvent, SyntheticErrorEvent>>(NativeEventSourceFlags.Capture, "error", SyntheticErrorEvent),
-    focus: new NativeEventSource<SyntheticEventClass<FocusEvent, SyntheticFocusEvent>>(NativeEventSourceFlags.Capture, "focus", SyntheticFocusEvent),
-    gotpointercapture: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "gotpointercapture", SyntheticPointerEvent),
-    input: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "input", SyntheticEvent),
-    invalid: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "invalid", SyntheticEvent),
-    keydown: new NativeEventSource<SyntheticEventClass<KeyboardEvent, SyntheticKeyboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keydown", SyntheticKeyboardEvent),
-    keypress: new NativeEventSource<SyntheticEventClass<KeyboardEvent, SyntheticKeyboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keypress", SyntheticKeyboardEvent),
-    keyup: new NativeEventSource<SyntheticEventClass<KeyboardEvent, SyntheticKeyboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keyup", SyntheticKeyboardEvent),
-    load: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "load", SyntheticEvent),
-    loadeddata: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "loadeddata", SyntheticEvent),
-    loadedmetadata: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "loadedmetadata", SyntheticEvent),
-    loadstart: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "loadstart", SyntheticEvent),
-    lostpointercapture: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "lostpointercapture", SyntheticPointerEvent),
-    mousedown: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mousedown", SyntheticMouseEvent),
-    mouseenter: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture, "mouseenter", SyntheticMouseEvent),
-    mouseleave: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture, "mouseleave", SyntheticMouseEvent),
-    mousemove: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mousemove", SyntheticMouseEvent),
-    mouseout: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseout", SyntheticMouseEvent),
-    mouseover: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseover", SyntheticMouseEvent),
-    mouseup: new NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseup", SyntheticMouseEvent),
-    paste: new NativeEventSource<SyntheticEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "paste", SyntheticClipboardEvent),
-    pause: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "pause", SyntheticEvent),
-    play: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "play", SyntheticEvent),
-    playing: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "playing", SyntheticEvent),
-    pointercancel: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointercancel", SyntheticPointerEvent),
-    pointerdown: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerdown", SyntheticPointerEvent),
-    pointerenter: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "pointerenter", SyntheticPointerEvent),
-    pointerleave: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "pointerleave", SyntheticPointerEvent),
-    pointermove: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointermove", SyntheticPointerEvent),
-    pointerout: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerout", SyntheticPointerEvent),
-    pointerover: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerover", SyntheticPointerEvent),
-    pointerup: new NativeEventSource<SyntheticEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerup", SyntheticPointerEvent),
-    progress: new NativeEventSource<SyntheticEventClass<ProgressEvent, SyntheticProgressEvent>>(NativeEventSourceFlags.Capture, "progress", SyntheticProgressEvent),
-    ratechange: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "ratechange", SyntheticEvent),
-    reset: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "reset", SyntheticEvent),
-    scroll: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture, "scroll", SyntheticUIEvent),
-    seeked: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "seeked", SyntheticEvent),
-    seeking: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "seeking", SyntheticEvent),
-    select: new NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "select", SyntheticUIEvent),
-    selectstart: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "selectstart", SyntheticEvent),
-    stalled: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "stalled", SyntheticEvent),
-    submit: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "submit", SyntheticEvent),
-    suspend: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "suspend", SyntheticEvent),
-    timeupdate: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "timeupdate", SyntheticEvent),
-    touchcancel: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchcancel", SyntheticTouchEvent),
-    touchend: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchend", SyntheticTouchEvent),
-    touchmove: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchmove", SyntheticTouchEvent),
-    touchstart: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchstart", SyntheticTouchEvent),
-    unload: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "unload", SyntheticEvent),
-    volumechange: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "volumechange", SyntheticEvent),
-    waiting: new NativeEventSource<SyntheticEventClass<Event, SyntheticEvent<Event>>>(NativeEventSourceFlags.Capture, "waiting", SyntheticEvent),
-    wheel: new NativeEventSource<SyntheticEventClass<WheelEvent, SyntheticWheelEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "wheel", SyntheticWheelEvent),
+    abort: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture, "abort", SyntheticUIEvent),
+    activate: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "activate", SyntheticUIEvent),
+    ariarequest: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "ariarequest", SyntheticUIEvent),
+    beforeactivate: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforeactivate", SyntheticUIEvent),
+    beforecopy: new NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture, "beforecopy", SyntheticClipboardEvent),
+    beforecut: new NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforecut", SyntheticClipboardEvent),
+    beforedeactivate: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforedeactivate", SyntheticUIEvent),
+    beforepaste: new NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforepaste", SyntheticClipboardEvent),
+    blur: new NativeEventSource<SyntheticNativeEventClass<FocusEvent, SyntheticFocusEvent>>(NativeEventSourceFlags.Capture, "blur", SyntheticFocusEvent),
+    canplay: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "canplay", SyntheticNativeEvent),
+    canplaythrough: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "canplaythrough", SyntheticNativeEvent),
+    change: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "change", SyntheticNativeEvent),
+    click: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "click", SyntheticMouseEvent),
+    contextmenu: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "contextmenu", SyntheticPointerEvent),
+    copy: new NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "copy", SyntheticClipboardEvent),
+    cuechange: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "cuechange", SyntheticNativeEvent),
+    cut: new NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "cut", SyntheticClipboardEvent),
+    dblclick: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dblclick", SyntheticMouseEvent),
+    deactivate: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "deactivate", SyntheticUIEvent),
+    drag: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "drag", SyntheticDragEvent),
+    dragend: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragend", SyntheticDragEvent),
+    dragenter: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragenter", SyntheticDragEvent),
+    dragleave: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragleave", SyntheticDragEvent),
+    dragover: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragover", SyntheticDragEvent),
+    dragstart: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "dragstart", SyntheticDragEvent),
+    drop: new NativeEventSource<SyntheticNativeEventClass<DragEvent, SyntheticDragEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "drop", SyntheticDragEvent),
+    durationchange: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "durationchange", SyntheticNativeEvent),
+    emptied: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "emptied", SyntheticNativeEvent),
+    encrypted: new NativeEventSource<SyntheticNativeEventClass<MediaEncryptedEvent, SyntheticMediaEncryptedEvent>>(NativeEventSourceFlags.Capture, "encrypted", SyntheticMediaEncryptedEvent),
+    ended: new NativeEventSource<SyntheticNativeEventClass<MediaStreamErrorEvent, SyntheticMediaStreamErrorEvent>>(NativeEventSourceFlags.Capture, "ended", SyntheticMediaStreamErrorEvent),
+    error: new NativeEventSource<SyntheticNativeEventClass<ErrorEvent, SyntheticErrorEvent>>(NativeEventSourceFlags.Capture, "error", SyntheticErrorEvent),
+    focus: new NativeEventSource<SyntheticNativeEventClass<FocusEvent, SyntheticFocusEvent>>(NativeEventSourceFlags.Capture, "focus", SyntheticFocusEvent),
+    gotpointercapture: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "gotpointercapture", SyntheticPointerEvent),
+    input: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "input", SyntheticNativeEvent),
+    invalid: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "invalid", SyntheticNativeEvent),
+    keydown: new NativeEventSource<SyntheticNativeEventClass<KeyboardEvent, SyntheticKeyboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keydown", SyntheticKeyboardEvent),
+    keypress: new NativeEventSource<SyntheticNativeEventClass<KeyboardEvent, SyntheticKeyboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keypress", SyntheticKeyboardEvent),
+    keyup: new NativeEventSource<SyntheticNativeEventClass<KeyboardEvent, SyntheticKeyboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keyup", SyntheticKeyboardEvent),
+    load: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "load", SyntheticNativeEvent),
+    loadeddata: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "loadeddata", SyntheticNativeEvent),
+    loadedmetadata: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "loadedmetadata", SyntheticNativeEvent),
+    loadstart: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "loadstart", SyntheticNativeEvent),
+    lostpointercapture: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "lostpointercapture", SyntheticPointerEvent),
+    mousedown: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mousedown", SyntheticMouseEvent),
+    mouseenter: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture, "mouseenter", SyntheticMouseEvent),
+    mouseleave: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture, "mouseleave", SyntheticMouseEvent),
+    mousemove: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mousemove", SyntheticMouseEvent),
+    mouseout: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseout", SyntheticMouseEvent),
+    mouseover: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseover", SyntheticMouseEvent),
+    mouseup: new NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseup", SyntheticMouseEvent),
+    paste: new NativeEventSource<SyntheticNativeEventClass<ClipboardEvent, SyntheticClipboardEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "paste", SyntheticClipboardEvent),
+    pause: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "pause", SyntheticNativeEvent),
+    play: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "play", SyntheticNativeEvent),
+    playing: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "playing", SyntheticNativeEvent),
+    pointercancel: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointercancel", SyntheticPointerEvent),
+    pointerdown: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerdown", SyntheticPointerEvent),
+    pointerenter: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "pointerenter", SyntheticPointerEvent),
+    pointerleave: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture, "pointerleave", SyntheticPointerEvent),
+    pointermove: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointermove", SyntheticPointerEvent),
+    pointerout: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerout", SyntheticPointerEvent),
+    pointerover: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerover", SyntheticPointerEvent),
+    pointerup: new NativeEventSource<SyntheticNativeEventClass<PointerEvent, SyntheticPointerEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerup", SyntheticPointerEvent),
+    progress: new NativeEventSource<SyntheticNativeEventClass<ProgressEvent, SyntheticProgressEvent>>(NativeEventSourceFlags.Capture, "progress", SyntheticProgressEvent),
+    ratechange: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "ratechange", SyntheticNativeEvent),
+    reset: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "reset", SyntheticNativeEvent),
+    scroll: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture, "scroll", SyntheticUIEvent),
+    seeked: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "seeked", SyntheticNativeEvent),
+    seeking: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "seeking", SyntheticNativeEvent),
+    select: new NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "select", SyntheticUIEvent),
+    selectstart: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "selectstart", SyntheticNativeEvent),
+    stalled: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "stalled", SyntheticNativeEvent),
+    submit: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "submit", SyntheticNativeEvent),
+    suspend: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "suspend", SyntheticNativeEvent),
+    timeupdate: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "timeupdate", SyntheticNativeEvent),
+    touchcancel: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchcancel", SyntheticTouchEvent),
+    touchend: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchend", SyntheticTouchEvent),
+    touchmove: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchmove", SyntheticTouchEvent),
+    touchstart: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchstart", SyntheticTouchEvent),
+    unload: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "unload", SyntheticNativeEvent),
+    volumechange: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "volumechange", SyntheticNativeEvent),
+    waiting: new NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>(NativeEventSourceFlags.Capture, "waiting", SyntheticNativeEvent),
+    wheel: new NativeEventSource<SyntheticNativeEventClass<WheelEvent, SyntheticWheelEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "wheel", SyntheticWheelEvent),
 };
 
 export interface NativeActiveEventSourcesList {
-    mousedown: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseenter: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseleave: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mousemove: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseout: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseover: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    mouseup: NativeEventSource<SyntheticEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
-    scroll: NativeEventSource<SyntheticEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
-    touchcancel: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    touchend: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    touchmove: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    touchstart: NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>;
-    wheel: NativeEventSource<SyntheticEventClass<WheelEvent, SyntheticWheelEvent>>;
+    mousedown: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseenter: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseleave: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mousemove: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseout: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseover: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    mouseup: NativeEventSource<SyntheticNativeEventClass<MouseEvent, SyntheticMouseEvent<MouseEvent>>>;
+    scroll: NativeEventSource<SyntheticNativeEventClass<UIEvent, SyntheticUIEvent<UIEvent>>>;
+    touchcancel: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    touchend: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    touchmove: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    touchstart: NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>;
+    wheel: NativeEventSource<SyntheticNativeEventClass<WheelEvent, SyntheticWheelEvent>>;
 }
 
 export const NativeActiveEventSources = {
-    touchend: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchend", SyntheticTouchEvent),
-    touchmove: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchmove", SyntheticTouchEvent),
-    touchstart: new NativeEventSource<SyntheticEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchstart", SyntheticTouchEvent),
-    wheel: new NativeEventSource<SyntheticEventClass<WheelEvent, SyntheticWheelEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "wheel", SyntheticWheelEvent),
+    touchend: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchend", SyntheticTouchEvent),
+    touchmove: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchmove", SyntheticTouchEvent),
+    touchstart: new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchstart", SyntheticTouchEvent),
+    wheel: new NativeEventSource<SyntheticNativeEventClass<WheelEvent, SyntheticWheelEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "wheel", SyntheticWheelEvent),
 };
 
 /**
@@ -289,22 +289,22 @@ export const Events = {
         return createEventHandler<SyntheticFocusEvent>(NativeEventSources.blur.eventSource, handler, capture);
     },
     onCanPlay: function createCanplayEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.canplay.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.canplay.eventSource, handler, capture);
     },
     onCanPlaythrough: function createCanplaythroughEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.canplaythrough.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.canplaythrough.eventSource, handler, capture);
     },
     onChange: function createChangeEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.change.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.change.eventSource, handler, capture);
     },
     onClick: function createClickEventHandler(
         handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
@@ -325,10 +325,10 @@ export const Events = {
         return createEventHandler<SyntheticClipboardEvent>(NativeEventSources.copy.eventSource, handler, capture);
     },
     onCueChange: function createCuechangeEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.cuechange.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.cuechange.eventSource, handler, capture);
     },
     onCut: function createCutEventHandler(
         handler: (ev: SyntheticClipboardEvent) => void,
@@ -391,16 +391,16 @@ export const Events = {
         return createEventHandler<SyntheticDragEvent>(NativeEventSources.drop.eventSource, handler, capture);
     },
     onDurationChange: function createDurationchangeEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.durationchange.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.durationchange.eventSource, handler, capture);
     },
     onEmptied: function createEmptiedEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.emptied.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.emptied.eventSource, handler, capture);
     },
     onEncrypted: function createEncryptedEventHandler(
         handler: (ev: SyntheticMediaEncryptedEvent) => void,
@@ -433,16 +433,16 @@ export const Events = {
         return createEventHandler<SyntheticPointerEvent>(NativeEventSources.gotpointercapture.eventSource, handler, capture);
     },
     onInput: function createInputEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.input.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.input.eventSource, handler, capture);
     },
     onInvalid: function createInvalidEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.invalid.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.invalid.eventSource, handler, capture);
     },
     onKeyDown: function createKeydownEventHandler(
         handler: (ev: SyntheticKeyboardEvent) => void,
@@ -463,28 +463,28 @@ export const Events = {
         return createEventHandler<SyntheticKeyboardEvent>(NativeEventSources.keyup.eventSource, handler, capture);
     },
     onLoad: function createLoadEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.load.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.load.eventSource, handler, capture);
     },
     onLoadedData: function createLoadeddataEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.loadeddata.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.loadeddata.eventSource, handler, capture);
     },
     onLoadedMetadata: function createLoadedmetadataEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.loadedmetadata.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.loadedmetadata.eventSource, handler, capture);
     },
     onLoadStart: function createLoadstartEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.loadstart.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.loadstart.eventSource, handler, capture);
     },
     onLostPointerCapture: function createLostpointercaptureEventHandler(
         handler: (ev: SyntheticPointerEvent) => void,
@@ -541,22 +541,22 @@ export const Events = {
         return createEventHandler<SyntheticClipboardEvent>(NativeEventSources.paste.eventSource, handler, capture);
     },
     onPause: function createPauseEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.pause.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.pause.eventSource, handler, capture);
     },
     onPlay: function createPlayEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.play.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.play.eventSource, handler, capture);
     },
     onPlaying: function createPlayingEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.playing.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.playing.eventSource, handler, capture);
     },
     onPointerCancel: function createPointercancelEventHandler(
         handler: (ev: SyntheticPointerEvent) => void,
@@ -613,16 +613,16 @@ export const Events = {
         return createEventHandler<SyntheticProgressEvent>(NativeEventSources.progress.eventSource, handler, capture);
     },
     onRateChange: function createRatechangeEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.ratechange.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.ratechange.eventSource, handler, capture);
     },
     onReset: function createResetEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.reset.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.reset.eventSource, handler, capture);
     },
     onScroll: function createScrollEventHandler(
         handler: (ev: SyntheticUIEvent<UIEvent>) => void,
@@ -631,16 +631,16 @@ export const Events = {
         return createEventHandler<SyntheticUIEvent<UIEvent>>(NativeEventSources.scroll.eventSource, handler, capture);
     },
     onSeeked: function createSeekedEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.seeked.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.seeked.eventSource, handler, capture);
     },
     onSeeking: function createSeekingEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.seeking.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.seeking.eventSource, handler, capture);
     },
     onSelect: function createSelectEventHandler(
         handler: (ev: SyntheticUIEvent<UIEvent>) => void,
@@ -649,34 +649,34 @@ export const Events = {
         return createEventHandler<SyntheticUIEvent<UIEvent>>(NativeEventSources.select.eventSource, handler, capture);
     },
     onSelectStart: function createSelectstartEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.selectstart.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.selectstart.eventSource, handler, capture);
     },
     onStalled: function createStalledEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.stalled.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.stalled.eventSource, handler, capture);
     },
     onSubmit: function createSubmitEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.submit.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.submit.eventSource, handler, capture);
     },
     onSuspend: function createSuspendEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.suspend.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.suspend.eventSource, handler, capture);
     },
     onTimeUpdate: function createTimeupdateEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.timeupdate.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.timeupdate.eventSource, handler, capture);
     },
     onTouchCancel: function createTouchcancelEventHandler(
         handler: (ev: SyntheticTouchEvent) => void,
@@ -703,22 +703,22 @@ export const Events = {
         return createEventHandler<SyntheticTouchEvent>(NativeEventSources.touchstart.eventSource, handler, capture);
     },
     onUnload: function createUnloadEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.unload.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.unload.eventSource, handler, capture);
     },
     onVolumeChange: function createVolumechangeEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.volumechange.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.volumechange.eventSource, handler, capture);
     },
     onWaiting: function createWaitingEventHandler(
-        handler: (ev: SyntheticEvent<Event>) => void,
+        handler: (ev: SyntheticNativeEvent<Event>) => void,
         capture = false,
-    ): EventHandler<SyntheticEvent<Event>> {
-        return createEventHandler<SyntheticEvent<Event>>(NativeEventSources.waiting.eventSource, handler, capture);
+    ): EventHandler<SyntheticNativeEvent<Event>> {
+        return createEventHandler<SyntheticNativeEvent<Event>>(NativeEventSources.waiting.eventSource, handler, capture);
     },
     onWheel: function createWheelEventHandler(
         handler: (ev: SyntheticWheelEvent) => void,

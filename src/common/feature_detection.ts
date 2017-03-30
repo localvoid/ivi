@@ -62,6 +62,10 @@ export const enum FeatureFlags {
      * InputDeviceCapabilities.
      */
     InputDeviceCapabilities = 1 << 9,
+    /**
+     * MouseEvent.buttons property.
+     */
+    MouseEventButtons = 1 << 10,
 }
 
 /**
@@ -140,5 +144,9 @@ if (__IVI_BROWSER__) {
 
     if ("sourceCapabilities" in UIEvent.prototype) {
         FEATURES |= FeatureFlags.InputDeviceCapabilities;
+    }
+
+    if ("buttons" in MouseEvent.prototype) {
+        FEATURES |= FeatureFlags.MouseEventButtons;
     }
 }
