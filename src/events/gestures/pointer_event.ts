@@ -7,6 +7,13 @@ import { SyntheticEvent } from "../synthetic_event";
 import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 
+export const enum GesturePointerType {
+    Unknown = 1,
+    Mouse = 1 << 1,
+    Touch = 1 << 2,
+    Pen = 1 << 3,
+}
+
 export const enum GesturePointerAction {
     Down = 1,
     Move = 1 << 1,
@@ -27,7 +34,7 @@ export class GesturePointerEvent extends SyntheticEvent {
     pressure: number;
     tiltX: number;
     tiltY: number;
-    type: string;
+    type: GesturePointerType;
     isPrimary: boolean;
 
     constructor(
@@ -48,7 +55,7 @@ export class GesturePointerEvent extends SyntheticEvent {
         pressure: number,
         tiltX: number,
         tiltY: number,
-        type: string,
+        type: GesturePointerType,
         isPrimary: boolean,
     ) {
         super(source, flags, target, timestamp);

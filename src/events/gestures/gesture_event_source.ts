@@ -12,7 +12,7 @@ import { accumulateDispatchTargets } from "../traverse_dom";
 import { DispatchTarget } from "../dispatch_target";
 import { EventSource } from "../event_source";
 import { dispatchEvent } from "../dispatch_event";
-import { GesturePointerEvent } from "./pointer_event";
+import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
 import { createPointerEventListener } from "./pointer_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
@@ -20,6 +20,8 @@ import { createTouchEventListener } from "./touch_event_listener";
 export interface GestureNativeEventSource {
     activate(): void;
     deactivate(): void;
+    capture(ev: GesturePointerEvent): void;
+    release(ev: GesturePointerEvent): void;
 }
 
 export class GestureEventSource {
@@ -27,14 +29,14 @@ export class GestureEventSource {
     private dependencies: number;
     private pointers: Map<number, GesturePointerEvent>;
     private listener: GestureNativeEventSource;
-    private _deactivating: boolean;
+    private deactivating: boolean;
 
     constructor() {
         this.eventSource = {
             addListener: () => {
                 if (this.dependencies++ === 0) {
-                    if (this._deactivating === true) {
-                        this._deactivating = false;
+                    if (this.deactivating === true) {
+                        this.deactivating = false;
                     } else {
                         this.listener.activate();
                     }
@@ -42,12 +44,12 @@ export class GestureEventSource {
             },
             removeListener: () => {
                 if (--this.dependencies === 0) {
-                    if (this._deactivating === false) {
-                        this._deactivating = true;
+                    if (this.deactivating === false) {
+                        this.deactivating = true;
                         scheduleTask(() => {
-                            if (this._deactivating === true) {
+                            if (this.deactivating === true) {
                                 this.listener.deactivate();
-                                this._deactivating = false;
+                                this.deactivating = false;
                             }
                         });
                     }
@@ -63,25 +65,38 @@ export class GestureEventSource {
                 this.dispatch,
             );
         } else {
-            this.listener = createMouseEventListener(
-                this.eventSource,
-                this.pointers,
-                this.dispatch,
-            );
             if (FEATURES & FeatureFlags.TouchEvents) {
                 this.listener = createTouchEventListener(
                     this.eventSource,
                     this.pointers,
                     this.dispatch,
                 );
+            } else {
+                this.listener = createMouseEventListener(
+                    this.eventSource,
+                    this.pointers,
+                    this.dispatch,
+                );
             }
         }
-        this._deactivating = false;
+        this.deactivating = false;
     }
 
     private dispatch = (ev: GesturePointerEvent) => {
         const targets: DispatchTarget[] = [];
         accumulateDispatchTargets(targets, ev.target, this.eventSource);
+
+        if (ev.action === GesturePointerAction.Down) {
+            if (targets.length > 0) {
+                this.listener.capture(ev);
+                this.pointers.set(ev.id, ev);
+            }
+        } else if ((ev.action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
+            this.listener.release(ev);
+            this.pointers.delete(ev.id);
+        } else {
+            this.pointers.set(ev.id, ev);
+        }
 
         if (targets.length > 0) {
             dispatchEvent(targets, ev, true);

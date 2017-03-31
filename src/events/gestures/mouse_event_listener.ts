@@ -2,7 +2,7 @@ import { FEATURES, FeatureFlags } from "../../common/feature_detection";
 import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
-import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+import { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./pointer_event";
 
 declare global {
     interface InputDeviceCapabilities {
@@ -47,13 +47,13 @@ function createGesturePointerEventFromMouseEvent(
         ev.pageX,
         ev.pageY,
         buttons,
-        0,
-        0,
+        1,
+        1,
         // pointers without specified pressure use 0.5 for down state and 0 for up state.
         buttons === 0 ? 0 : 0.5,
         0,
         0,
-        "mouse",
+        GesturePointerType.Mouse,
         true,
     );
 }
@@ -62,36 +62,47 @@ export function createMouseEventListener(
     source: EventSource,
     pointers: Map<number, GesturePointerEvent>,
     dispatch: any,
+    primaryPointers: GesturePointerEvent[] | null = null,
 ): GestureNativeEventSource {
     let activePointer: GesturePointerEvent | null = null;
 
-    function addEventListeners() {
+    function activate() {
+        document.addEventListener("mousedown", onDown);
+    }
+
+    function deactivate() {
+        document.removeEventListener("mousedown", onDown);
+    }
+
+    function capture(ev: GesturePointerEvent) {
+        activePointer = ev;
         document.addEventListener("mousemove", onMove);
         document.addEventListener("mouseup", onUp);
     }
 
-    function removeEventListeners() {
+    function release(ev: GesturePointerEvent) {
+        activePointer = null;
         document.removeEventListener("mousemove", onMove);
         document.removeEventListener("mouseup", onUp);
     }
 
     function isEventSimulatedFromTouch(ev: MouseEvent): boolean {
-        if ((FEATURES & FeatureFlags.TouchEvents) === 0) {
-            return false;
-        }
-        if ((FEATURES & FeatureFlags.InputDeviceCapabilities) !== 0) {
-            return ev.sourceCapabilities.firesTouchEvents;
-        }
+        if ((FEATURES & FeatureFlags.TouchEvents) !== 0) {
+            if ((FEATURES & FeatureFlags.InputDeviceCapabilities) !== 0) {
+                return ev.sourceCapabilities.firesTouchEvents;
+            }
 
-        const primaryPointers = [] as GesturePointerEvent[];
-        const x = ev.clientX;
-        const y = ev.clientY;
-        for (let i = 0; i < primaryPointers.length; i++) {
-            const pointer = primaryPointers[i];
-            const dx = Math.abs(x - pointer.x);
-            const dy = Math.abs(y - pointer.y);
-            if (dx <= 25 && dy <= 25) {
-                return true;
+            if (primaryPointers !== null) {
+                const x = ev.clientX;
+                const y = ev.clientY;
+                for (let i = 0; i < primaryPointers.length; i++) {
+                    const pointer = primaryPointers[i];
+                    const dx = Math.abs(x - pointer.x);
+                    const dy = Math.abs(y - pointer.y);
+                    if (dx <= 25 && dy <= 25) {
+                        return true;
+                    }
+                }
             }
         }
 
@@ -103,8 +114,6 @@ export function createMouseEventListener(
             const buttons = getMouseButtons(ev);
             let pointer;
             if (activePointer === null) {
-                addEventListeners();
-
                 pointer = createGesturePointerEventFromMouseEvent(
                     ev,
                     source,
@@ -121,7 +130,6 @@ export function createMouseEventListener(
                     buttons | activePointer.buttons,
                 );
             }
-            activePointer = pointer;
             dispatch(pointer);
         }
     }
@@ -129,13 +137,24 @@ export function createMouseEventListener(
     function onMove(ev: MouseEvent) {
         if (isEventSimulatedFromTouch(ev) === false) {
             if (activePointer !== null) {
-                const pointer = createGesturePointerEventFromMouseEvent(
-                    ev,
-                    source,
-                    activePointer.target,
-                    GesturePointerAction.Move,
-                    activePointer.buttons,
-                );
+                let pointer;
+                if (ev.which === 0) {
+                    pointer = createGesturePointerEventFromMouseEvent(
+                        ev,
+                        source,
+                        activePointer.target,
+                        GesturePointerAction.Up,
+                        activePointer.buttons,
+                    );
+                } else {
+                    pointer = createGesturePointerEventFromMouseEvent(
+                        ev,
+                        source,
+                        activePointer.target,
+                        GesturePointerAction.Move,
+                        activePointer.buttons,
+                    );
+                }
                 dispatch(pointer);
             }
         }
@@ -144,29 +163,37 @@ export function createMouseEventListener(
     function onUp(ev: MouseEvent) {
         if (isEventSimulatedFromTouch(ev) === false) {
             if (activePointer !== null) {
-                const buttons = activePointer.buttons & ~getMouseButtons(ev);
+                let buttons = getMouseButtons(ev);
+                if ((FEATURES & FeatureFlags.MouseEventButtons) === 0) {
+                    buttons = activePointer.buttons & ~buttons;
+                }
+                let pointer;
                 if (buttons === 0) {
-                    const pointer = createGesturePointerEventFromMouseEvent(
+                    pointer = createGesturePointerEventFromMouseEvent(
                         ev,
                         source,
                         activePointer.target,
                         GesturePointerAction.Up,
                         buttons,
                     );
-                    removeEventListeners();
-                    activePointer = null;
-                    dispatch(pointer);
+                } else {
+                    pointer = createGesturePointerEventFromMouseEvent(
+                        ev,
+                        source,
+                        activePointer.target,
+                        GesturePointerAction.Move,
+                        buttons,
+                    );
                 }
+                dispatch(pointer);
             }
         }
     }
 
     return {
-        activate: function () {
-            document.addEventListener("mousedown", onDown);
-        },
-        deactivate: function () {
-            document.removeEventListener("mousedown", onDown);
-        },
+        activate,
+        deactivate,
+        capture,
+        release,
     };
 }

@@ -77,6 +77,7 @@ export {
     NativeEventSourceList, NativeActiveEventSourcesList, NativeEventSources, NativeActiveEventSources,
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
+export { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./events/gestures/pointer_event";
 export { GestureEvents } from "./events/gestures/events";
 
 /**

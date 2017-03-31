@@ -11,10 +11,10 @@ export const GestureEvents = {
     onPointer: function (
         fn: (ev: GesturePointerEvent) => void,
         capture?: boolean,
-    ) {
+    ): EventHandler<GesturePointerEvent> {
         const handler = fn as EventHandler<GesturePointerEvent>;
         handler.source = GestureEventSources.Pointer.eventSource;
         handler.flags = capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble;
-        return fn;
+        return fn as EventHandler<GesturePointerEvent>;
     },
 };
