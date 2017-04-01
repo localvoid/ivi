@@ -130,7 +130,7 @@ describe("render", () => {
 
     it("<div style={float: 'left'}>", () => {
         checkDOMOps((c) => {
-            const n = render<HTMLElement>($h("div").style({ cssFloat: "left" }));
+            const n = render<HTMLElement>($h("div").style({ float: "left" }));
             expect(n.style.cssFloat).to.equal("left");
             expectDOMOps(c, 1, 0, 0, 0, 1, 0, 0);
         });
