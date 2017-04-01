@@ -61,7 +61,7 @@ function createGesturePointerEventFromMouseEvent(
 
 export function createMouseEventListener(
     source: EventSource,
-    pointers: Map<number, GesturePointerEvent>,
+    pointers: GesturePointerEvent[],
     dispatch: any,
     primaryPointers: GesturePointerEvent[] | null = null,
 ): GestureNativeEventSource {

@@ -2,6 +2,7 @@ import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+import { pointerListGet } from "./pointer_list";
 import { GestureEventFlags } from "./events";
 
 function convertPointerType(type: string) {
@@ -46,7 +47,7 @@ function pointerEventToGesturePointerEvent(
 
 export function createPointerEventListener(
     source: EventSource,
-    pointers: Map<number, GesturePointerEvent>,
+    pointers: GesturePointerEvent[],
     dispatch: any,
 ): GestureNativeEventSource {
     let captured = 0;
@@ -87,7 +88,7 @@ export function createPointerEventListener(
     }
 
     function onMove(ev: PointerEvent) {
-        if (pointers.has(ev.pointerId) === true) {
+        if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
                 source,
@@ -97,7 +98,7 @@ export function createPointerEventListener(
     }
 
     function onUp(ev: PointerEvent) {
-        if (pointers.has(ev.pointerId) === true) {
+        if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
                 source,
@@ -107,7 +108,7 @@ export function createPointerEventListener(
     }
 
     function onCancel(ev: PointerEvent) {
-        if (pointers.has(ev.pointerId) === true) {
+        if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
                 source,
@@ -117,7 +118,7 @@ export function createPointerEventListener(
     }
 
     function onLostCapture(ev: PointerEvent) {
-        if (pointers.has(ev.pointerId) === true) {
+        if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
                 source,

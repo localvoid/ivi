@@ -3,6 +3,7 @@ import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+import { pointerListGet } from "./pointer_list";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { GestureEventFlags } from "./events";
 
@@ -114,7 +115,7 @@ function cancelGesturePointerEvent(
 
 export function createTouchEventListener(
     source: EventSource,
-    pointers: Map<number, GesturePointerEvent>,
+    pointers: GesturePointerEvent[],
     dispatch: any,
 ): GestureNativeEventSource {
     const primaryPointers: GesturePointerEvent[] | null = (FEATURES & FeatureFlags.InputDeviceCapabilities) === 0 ?
@@ -133,7 +134,7 @@ export function createTouchEventListener(
     }
 
     function setPrimary(touch: Touch): boolean {
-        if (pointers.size === 0 || (pointers.size === 1 && pointers.has(1))) {
+        if (pointers.length === 0 || (pointers.length === 1 && pointers[0].id === 1)) {
             firstTouch = touch;
             return true;
         }
@@ -151,7 +152,7 @@ export function createTouchEventListener(
 
     function vacuum(ev: TouchEvent) {
         const touches = ev.touches;
-        if (pointers.size >= touches.length) {
+        if (pointers.length >= touches.length) {
             const toCancel: GesturePointerEvent[] = [];
             pointers.forEach(function (value, key) {
                 if (key !== 1) {
@@ -288,7 +289,7 @@ export function createTouchEventListener(
                 ev.preventDefault();
                 for (let i = 0; i < touches.length; i++) {
                     const touch = touches[i];
-                    if (pointers.has(touch.identifier + 2)) {
+                    if (pointerListGet(pointers, touch.identifier + 2) !== undefined) {
                         dispatch(touchToGesturePointerEvent(
                             ev,
                             source,
@@ -306,7 +307,7 @@ export function createTouchEventListener(
         const touches = ev.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
-            if (pointers.has(touch.identifier + 2)) {
+            if (pointerListGet(pointers, touch.identifier + 2) !== undefined) {
                 const p = touchToGesturePointerEvent(
                     ev,
                     source,
@@ -324,7 +325,7 @@ export function createTouchEventListener(
         const touches = ev.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
-            if (pointers.has(touch.identifier + 2)) {
+            if (pointerListGet(pointers, touch.identifier + 2) !== undefined) {
                 dispatch(touchToGesturePointerEvent(
                     ev,
                     source,

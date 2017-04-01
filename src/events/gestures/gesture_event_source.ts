@@ -13,6 +13,7 @@ import { DispatchTarget } from "../dispatch_target";
 import { EventSource } from "../event_source";
 import { dispatchEvent } from "../dispatch_event";
 import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
+import { pointerListSet, pointerListDelete } from "./pointer_list";
 import { createPointerEventListener } from "./pointer_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
@@ -28,7 +29,7 @@ export interface GestureNativeEventSource {
 export class GestureEventSource {
     readonly eventSource: EventSource;
     private dependencies: number;
-    private pointers: Map<number, GesturePointerEvent>;
+    private pointers: GesturePointerEvent[];
     private listener: GestureNativeEventSource;
     private deactivating: boolean;
 
@@ -58,7 +59,7 @@ export class GestureEventSource {
             },
         };
         this.dependencies = 0;
-        this.pointers = new Map<number, GesturePointerEvent>();
+        this.pointers = [];
         if (FEATURES & FeatureFlags.PointerEvents) {
             this.listener = createPointerEventListener(
                 this.eventSource,
@@ -90,13 +91,13 @@ export class GestureEventSource {
         if (ev.action === GesturePointerAction.Down) {
             if (targets.length > 0) {
                 this.listener.capture(ev, accumulateTouchActionFlags(targets));
-                this.pointers.set(ev.id, ev);
+                pointerListSet(this.pointers, ev);
             }
         } else if ((ev.action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
             this.listener.release(ev);
-            this.pointers.delete(ev.id);
+            pointerListDelete(this.pointers, ev.id);
         } else {
-            this.pointers.set(ev.id, ev);
+            pointerListSet(this.pointers, ev);
         }
 
         if (targets.length > 0) {
