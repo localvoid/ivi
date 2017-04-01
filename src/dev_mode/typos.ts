@@ -31,7 +31,6 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
 let DOMStyleTypos: { [key: string]: string };
 if (__IVI_DEV__) {
     DOMStyleTypos = {
-        "float": "cssFloat",
     };
 }
 
