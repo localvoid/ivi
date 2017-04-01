@@ -78,7 +78,7 @@ export {
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
 export { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./events/gestures/pointer_event";
-export { GestureEvents } from "./events/gestures/events";
+export { GestureEventFlags, GestureEvents } from "./events/gestures/events";
 
 /**
  * Virtual DOM:

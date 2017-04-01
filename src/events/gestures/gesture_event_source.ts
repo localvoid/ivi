@@ -16,11 +16,12 @@ import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
 import { createPointerEventListener } from "./pointer_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
+import { GestureEventFlags } from "./events";
 
 export interface GestureNativeEventSource {
     activate(): void;
     deactivate(): void;
-    capture(ev: GesturePointerEvent): void;
+    capture(ev: GesturePointerEvent, flags: GestureEventFlags): void;
     release(ev: GesturePointerEvent): void;
 }
 
@@ -88,7 +89,7 @@ export class GestureEventSource {
 
         if (ev.action === GesturePointerAction.Down) {
             if (targets.length > 0) {
-                this.listener.capture(ev);
+                this.listener.capture(ev, accumulateTouchActionFlags(targets));
                 this.pointers.set(ev.id, ev);
             }
         } else if ((ev.action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
@@ -102,4 +103,20 @@ export class GestureEventSource {
             dispatchEvent(targets, ev, true);
         }
     }
+}
+
+function accumulateTouchActionFlags(targets: DispatchTarget[]): GestureEventFlags {
+    let flags = 0;
+    for (let i = 0; i < targets.length; i++) {
+        const h = targets[i].handlers;
+        if (typeof h === "function") {
+            flags |= h.flags & GestureEventFlags.TouchActions;
+        } else {
+            for (let j = 0; j < h.length; j++) {
+                flags |= h[j].flags & GestureEventFlags.TouchActions;
+            }
+        }
+    }
+
+    return flags;
 }

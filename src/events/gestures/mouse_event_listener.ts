@@ -3,6 +3,7 @@ import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+import { GestureEventFlags } from "./events";
 
 declare global {
     interface InputDeviceCapabilities {
@@ -74,7 +75,7 @@ export function createMouseEventListener(
         document.removeEventListener("mousedown", onDown);
     }
 
-    function capture(ev: GesturePointerEvent) {
+    function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
         activePointer = ev;
         document.addEventListener("mousemove", onMove);
         document.addEventListener("mouseup", onUp);

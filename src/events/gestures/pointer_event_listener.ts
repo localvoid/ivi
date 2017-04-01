@@ -2,6 +2,7 @@ import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+import { GestureEventFlags } from "./events";
 
 function convertPointerType(type: string) {
     if (type === "mouse") {
@@ -25,7 +26,7 @@ function pointerEventToGesturePointerEvent(
         source,
         SyntheticEventFlags.BubblePhase,
         ev.target,
-        ev.hwTimestamp,
+        ev.timeStamp,
         ev.pointerId,
         action,
         ev.clientX,
@@ -58,7 +59,7 @@ export function createPointerEventListener(
         document.removeEventListener("pointerdown", onDown);
     }
 
-    function capture(ev: GesturePointerEvent) {
+    function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
         ev.target.setPointerCapture(ev.id);
         if (captured++ === 0) {
             document.addEventListener("pointermove", onMove);

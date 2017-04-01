@@ -4,6 +4,7 @@ import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./pointer_event";
 import { createMouseEventListener } from "./mouse_event_listener";
+import { GestureEventFlags } from "./events";
 
 declare global {
     interface Touch {
@@ -66,7 +67,7 @@ function touchToGesturePointerEvent(
     return new GesturePointerEvent(
         source,
         SyntheticEventFlags.Bubbles,
-        ev.target,
+        touch.target,
         ev.timeStamp,
         // pointerId 1 is reserved for mouse, touch identifiers can start from 0.
         touch.identifier + 2,
@@ -121,25 +122,22 @@ export function createTouchEventListener(
         null;
     const mouseListener = createMouseEventListener(source, pointers, dispatch, primaryPointers);
 
-    let firstTouch: number | null = null;
+    let firstTouch: Touch | null = null;
     let captured = 0;
+    let eventTimeOffset = 0;
+    let nativeTouchActions: GestureEventFlags = 0;
+    let nativeGesture = false;
 
     function isPrimary(touch: Touch): boolean {
-        return firstTouch === touch.identifier;
+        return firstTouch === touch;
     }
 
     function setPrimary(touch: Touch): boolean {
         if (pointers.size === 0 || (pointers.size === 1 && pointers.has(1))) {
-            firstTouch = touch.identifier;
+            firstTouch = touch;
             return true;
         }
         return false;
-    }
-
-    function removePrimaryPointer(pointer: GesturePointerEvent): void {
-        if (pointer.isPrimary === true) {
-            firstTouch = null;
-        }
     }
 
     function findTouch(touches: TouchList, id: number): boolean {
@@ -164,7 +162,6 @@ export function createTouchEventListener(
             });
             for (let i = 0; i < toCancel.length; i++) {
                 const p = toCancel[i];
-                removePrimaryPointer(p);
                 dispatch(cancelGesturePointerEvent(p));
             }
         }
@@ -177,13 +174,16 @@ export function createTouchEventListener(
 
     function deactivate() {
         document.removeEventListener("touchstart", onStart);
-        mouseListener.activate();
+        mouseListener.deactivate();
     }
 
-    function capture(ev: GesturePointerEvent) {
+    function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
         if (ev.id === 1) {
-            mouseListener.capture(ev);
+            mouseListener.capture(ev, flags);
         } else {
+            if (ev.isPrimary === true) {
+                nativeTouchActions = flags;
+            }
             if (captured++ === 0) {
                 document.addEventListener("touchmove", onMove);
                 document.addEventListener("touchend", onEnd);
@@ -196,6 +196,10 @@ export function createTouchEventListener(
         if (ev.id === 1) {
             mouseListener.release(ev);
         } else {
+            if (ev.isPrimary === true) {
+                firstTouch = null;
+                nativeTouchActions = 0;
+            }
             if (--captured === 0) {
                 document.removeEventListener("touchmove", onMove);
                 document.removeEventListener("touchend", onEnd);
@@ -204,48 +208,96 @@ export function createTouchEventListener(
         }
     }
 
-    function dedupSynthMouse(p: GesturePointerEvent) {
-        if ((FEATURES & FeatureFlags.InputDeviceCapabilities) === 0 && p.isPrimary === true) {
-            primaryPointers!.push(p);
-            setTimeout(function () {
-                const idx = primaryPointers!.indexOf(p);
-                if (idx !== -1) {
-                    primaryPointers!.splice(idx, 1);
-                }
-            }, 2500);
+    function cleanPrimaryPointersForSyntheticMouseEvents() {
+        const now = Date.now();
+        let i = 0;
+        for (; i < primaryPointers!.length; i++) {
+            const p = primaryPointers![i];
+            if (now < (p.timestamp + eventTimeOffset)) {
+                break;
+            }
         }
+        if (i > 0) {
+            primaryPointers!.splice(0, i);
+        }
+        if (primaryPointers!.length > 0) {
+            setTimeout(
+                cleanPrimaryPointersForSyntheticMouseEvents,
+                eventTimeOffset + primaryPointers![0].timestamp - now,
+            );
+        }
+    }
+
+    function dedupSyntheticMouseEvents(p: GesturePointerEvent) {
+        if ((FEATURES & FeatureFlags.InputDeviceCapabilities) === 0 && p.isPrimary === true) {
+            if (primaryPointers!.length === 0) {
+                eventTimeOffset = Date.now() - p.timestamp + 2500;
+                setTimeout(cleanPrimaryPointersForSyntheticMouseEvents, 2500);
+            }
+            primaryPointers!.push(p);
+        }
+    }
+
+    function isNativeGesture(ev: TouchEvent): boolean {
+        if (firstTouch !== null && nativeTouchActions !== 0) {
+            if ((nativeTouchActions & GestureEventFlags.TouchActionNone) !== 0) {
+                return false;
+            }
+            if ((nativeTouchActions & (GestureEventFlags.TouchActionPanX | GestureEventFlags.TouchActionPanY)) ===
+                (GestureEventFlags.TouchActionPanX | GestureEventFlags.TouchActionPanY)) {
+                return true;
+            }
+            const touch = ev.changedTouches[0];
+            const dx = Math.abs(touch.clientX - firstTouch.clientX);
+            const dy = Math.abs(touch.clientY - firstTouch.clientY);
+            if ((nativeTouchActions & GestureEventFlags.TouchActionPanX) !== 0) {
+                return dx >= dy;
+            }
+            return dy >= dx;
+        }
+        return false;
     }
 
     function onStart(ev: TouchEvent) {
         vacuum(ev);
         const touches = ev.changedTouches;
         setPrimary(touches[0]);
-        for (let i = 0; i < touches.length; i++) {
-            const touch = touches[i];
-            const p = touchToGesturePointerEvent(
-                ev,
-                source,
-                GesturePointerAction.Down,
-                touch,
-                isPrimary(touch),
-            );
-            dedupSynthMouse(p);
-            dispatch(p);
+        if (nativeGesture === false) {
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                const p = touchToGesturePointerEvent(
+                    ev,
+                    source,
+                    GesturePointerAction.Down,
+                    touch,
+                    isPrimary(touch),
+                );
+                dedupSyntheticMouseEvents(p);
+                dispatch(p);
+            }
         }
     }
 
     function onMove(ev: TouchEvent) {
         const touches = ev.changedTouches;
-        for (let i = 0; i < touches.length; i++) {
-            const touch = touches[i];
-            if (pointers.has(touch.identifier)) {
-                dispatch(touchToGesturePointerEvent(
-                    ev,
-                    source,
-                    GesturePointerAction.Move,
-                    touch,
-                    isPrimary(touch),
-                ));
+        if (nativeGesture === false) {
+            if (isNativeGesture(ev)) {
+                nativeGesture = true;
+                onCancel(ev);
+            } else {
+                ev.preventDefault();
+                for (let i = 0; i < touches.length; i++) {
+                    const touch = touches[i];
+                    if (pointers.has(touch.identifier + 2)) {
+                        dispatch(touchToGesturePointerEvent(
+                            ev,
+                            source,
+                            GesturePointerAction.Move,
+                            touch,
+                            isPrimary(touch),
+                        ));
+                    }
+                }
             }
         }
     }
@@ -254,7 +306,7 @@ export function createTouchEventListener(
         const touches = ev.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
-            if (pointers.has(touch.identifier)) {
+            if (pointers.has(touch.identifier + 2)) {
                 const p = touchToGesturePointerEvent(
                     ev,
                     source,
@@ -262,8 +314,8 @@ export function createTouchEventListener(
                     touch,
                     isPrimary(touch),
                 );
-                dedupSynthMouse(p);
-                dispatch();
+                dedupSyntheticMouseEvents(p);
+                dispatch(p);
             }
         }
     }
@@ -272,7 +324,7 @@ export function createTouchEventListener(
         const touches = ev.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
-            if (pointers.has(touch.identifier)) {
+            if (pointers.has(touch.identifier + 2)) {
                 dispatch(touchToGesturePointerEvent(
                     ev,
                     source,
