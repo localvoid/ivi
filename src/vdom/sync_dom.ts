@@ -24,14 +24,6 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
 /**
  * Sync DOM styles.
  *
- * When styles are synced, and style from the old list is missing in the new one, its value will be reassigned with a
- * `null` value.
- *
- *    a: { backgroundColor: "#333", color: "#fff" }
- *    b: { backgroundColor: "#333" }
- *
- * In this example `color` style will receive a `""` value.
- *
  * Implementation detail: Syncing algorithm has an optimization with an early detection of object shape changes.
  * Objects with static shape will make syncing algorithm slightly faster because it doesn't need to check which
  * properties didn't existed before, so it is possible to just use the static object shapes, and use `undefined` values
@@ -58,7 +50,7 @@ export function syncStyle(
             keys = Object.keys(b);
             for (i = 0; i < keys.length; i++) {
                 key = keys[i];
-                (style as any)[key] = (b as any)[key];
+                style.setProperty(key, (b as { [key: string]: string })[key]);
             }
         }
     } else if (b === null) {
@@ -66,12 +58,7 @@ export function syncStyle(
         style = node.style;
         keys = Object.keys(a);
         for (i = 0; i < keys.length; i++) {
-            /**
-             * #quirks
-             *
-             * Should work with `null` values in all modern browsers. IE9 had problems with `null` values.
-             */
-            (style as any)[keys[i]] = "";
+            style.removeProperty(keys[i]);
         }
     } else {
         style = node.style;
@@ -80,16 +67,16 @@ export function syncStyle(
         keys = Object.keys(a);
         for (i = 0; i < keys.length; i++) {
             key = keys[i];
-            const bValue = (b as any)[key];
+            const bValue = (b as { [key: string]: string })[key];
 
             if (bValue !== undefined) {
-                const aValue = (a as any)[key];
+                const aValue = (a as { [key: string]: string })[key];
                 if (aValue !== bValue) {
-                    (style as any)[key] = bValue;
+                    style.setProperty(key, bValue);
                 }
                 matchCount++;
             } else {
-                (style as any)[key] = "";
+                style.removeProperty(key);
             }
         }
 
@@ -98,7 +85,7 @@ export function syncStyle(
         while (matchCount < keys.length && i < keys.length) {
             key = keys[i++];
             if (a.hasOwnProperty(key) === false) {
-                (style as any)[key] = (b as any)[key];
+                style.setProperty(key, (b as { [key: string]: string })[key]);
                 matchCount++;
             }
         }
