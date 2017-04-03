@@ -103,6 +103,8 @@ export class GestureEventSource {
         h.source === this.gestureEventSource
     );
 
+    private matchPointerEventSource = (h: EventHandler) => h.source === this.pointerEventSource;
+
     private dispatch = (ev: GesturePointerEvent) => {
         const targets: DispatchTarget[] = [];
         accumulateDispatchTargets(targets, ev.target, this.matchEventSource);
@@ -120,7 +122,7 @@ export class GestureEventSource {
         }
 
         if (targets.length > 0) {
-            dispatchEvent(targets, ev, true);
+            dispatchEvent(targets, ev, true, this.matchPointerEventSource);
         }
     }
 }
