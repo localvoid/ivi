@@ -1,3 +1,5 @@
+import { unorderedArrayDelete } from "./utils";
+
 export class RepeatableTaskList {
     tasks: Array<() => boolean | undefined>;
 
@@ -13,11 +15,7 @@ export class RepeatableTaskList {
         for (let i = 0; i < this.tasks.length; i++) {
             const task = this.tasks[i];
             if (task() === true) {
-                if (i === this.tasks.length) {
-                    this.tasks.pop();
-                } else {
-                    this.tasks[i--] = this.tasks.pop()!;
-                }
+                unorderedArrayDelete(this.tasks, i);
             }
         }
     }

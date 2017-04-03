@@ -1,3 +1,5 @@
+import { unorderedArrayDelete } from "../../common/utils";
+
 export interface PointerMapEntry<T> {
     id: number;
     value: T;
@@ -31,11 +33,7 @@ export function pointerMapDelete<T>(map: PointerMap<T>, id: number): void {
     for (let i = 0; i < map.length; i++) {
         const item = map[i];
         if (item.id === id) {
-            if (i === map.length - 1) {
-                map.pop()!;
-            } else {
-                map[i] = map.pop()!;
-            }
+            unorderedArrayDelete(map, i);
             return;
         }
     }
@@ -61,20 +59,13 @@ export function pointerMapListDelete<T>(map: PointerMapList<T>, id: number, valu
         if (item.id === id) {
             const values = item.value;
             if (values.length === 1) {
-                if (i === map.length - 1) {
-                    map.pop()!;
-                } else {
-                    map[i] = map.pop()!;
-                }
+                unorderedArrayDelete(map, i);
             } else {
                 for (let j = 0; j < values.length; j++) {
                     const v = values[j];
                     if (v === value) {
-                        if (j === values.length - 1) {
-                            values.pop()!;
-                        } else {
-                            values[j] = values.pop()!;
-                        }
+                        unorderedArrayDelete(values, j);
+                        return;
                     }
                 }
             }

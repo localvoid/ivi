@@ -1,3 +1,4 @@
+import { unorderedArrayDelete } from "../../common/utils";
 import { GesturePointerEvent } from "./pointer_event";
 
 export function pointerListSet(pointers: GesturePointerEvent[], pointer: GesturePointerEvent) {
@@ -25,11 +26,7 @@ export function pointerListDelete(pointers: GesturePointerEvent[], id: number): 
     for (let i = 0; i < pointers.length; i++) {
         const item = pointers[i];
         if (item.id === id) {
-            if (i === pointers.length - 1) {
-                pointers.pop()!;
-            } else {
-                pointers[i] = pointers.pop()!;
-            }
+            unorderedArrayDelete(pointers, i);
             return;
         }
     }
