@@ -1,5 +1,4 @@
 import { EventHandler } from "./event_handler";
-import { EventSource } from "./event_source";
 import { DispatchTarget } from "./dispatch_target";
 import { getEventHandlersFromDOMNode } from "./utils";
 
