@@ -11,6 +11,7 @@ import { scheduleTask } from "../../scheduler/task";
 import { accumulateDispatchTargets } from "../traverse_dom";
 import { DispatchTarget } from "../dispatch_target";
 import { EventSource } from "../event_source";
+import { EventHandler } from "../event_handler";
 import { dispatchEvent } from "../dispatch_event";
 import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
 import { pointerListSet, pointerListDelete } from "./pointer_list";
@@ -84,9 +85,11 @@ export class GestureEventSource {
         this.deactivating = false;
     }
 
+    private matchEventSource = (h: EventHandler) => h.source === this.eventSource;
+
     private dispatch = (ev: GesturePointerEvent) => {
         const targets: DispatchTarget[] = [];
-        accumulateDispatchTargets(targets, ev.target, this.eventSource);
+        accumulateDispatchTargets(targets, ev.target, this.matchEventSource);
 
         if (ev.action === GesturePointerAction.Down) {
             if (targets.length > 0) {

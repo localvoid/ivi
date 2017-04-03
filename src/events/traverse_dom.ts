@@ -4,29 +4,29 @@ import { DispatchTarget } from "./dispatch_target";
 import { getEventHandlersFromDOMNode } from "./utils";
 
 /**
- * Accumulate Event Handlers that has a matching Event Source.
+ * Accumulate Event Handlers.
  *
  * @param result Result array.
  * @param target Target Element.
- * @param source Event Source.
+ * @param match Matching function.
  */
 export function accumulateDispatchTargetsFromElement(
     result: DispatchTarget[],
     target: Element,
-    source: EventSource,
+    match: (h: EventHandler) => boolean,
 ): void {
     const events = getEventHandlersFromDOMNode(target);
     if (events !== null && events !== undefined) {
         let matches: EventHandler[] | EventHandler | undefined;
         if (typeof events === "function") {
-            if (events.source === source) {
+            if (match(events) === true) {
                 matches = events;
             }
         } else {
             let count = 0;
             for (let i = 0; i < events.length; i++) {
                 const h = events[i];
-                if (h !== null && h.source === source) {
+                if (h !== null && match(h) === true) {
                     if (count === 0) {
                         matches = h;
                     } else if (count === 1) {
@@ -48,20 +48,19 @@ export function accumulateDispatchTargetsFromElement(
 }
 
 /**
- * Traverses the DOM tree from the target Element to the document top and accumulates Dispatch Targets that has matching
- * Event Source.
+ * Traverses the DOM tree from the target Element to the document top and accumulates Dispatch Targets.
  *
  * @param result Result array.
  * @param target DOM Element.
- * @param source Event Source.
+ * @param match Matching function.
  */
 export function accumulateDispatchTargets(
     result: DispatchTarget[],
     target: Element | null,
-    source: EventSource,
+    match: (h: EventHandler) => boolean,
 ): void {
     while (target !== null) {
-        accumulateDispatchTargetsFromElement(result, target, source);
+        accumulateDispatchTargetsFromElement(result, target, match);
         target = target.parentElement;
     }
 }

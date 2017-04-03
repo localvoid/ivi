@@ -4,6 +4,7 @@ import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";
 import { DispatchTarget } from "./dispatch_target";
 import { EventSource } from "./event_source";
+import { EventHandler } from "./event_handler";
 import { accumulateDispatchTargets } from "./traverse_dom";
 import { dispatchEvent } from "./dispatch_event";
 import { getEventOptions } from "./utils";
@@ -75,9 +76,11 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
         this.deactivating = false;
     }
 
+    private matchEventSource = (h: EventHandler) => h.source === this.eventSource;
+
     private dispatch = (ev: Event): void => {
         const targets: DispatchTarget[] = [];
-        accumulateDispatchTargets(targets, getEventTarget(ev) as Element, this.eventSource);
+        accumulateDispatchTargets(targets, getEventTarget(ev) as Element, this.matchEventSource);
 
         if (targets.length > 0) {
             const s = new this.eventType(
