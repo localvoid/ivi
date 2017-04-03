@@ -22,7 +22,7 @@ export const GestureEvents = {
         capture?: boolean,
     ): EventHandler<GesturePointerEvent> {
         const handler = fn as EventHandler<GesturePointerEvent>;
-        handler.source = GestureEventSources.Pointer.eventSource;
+        handler.source = GestureEventSources.Pointer.pointerEventSource;
         handler.flags = (flags === undefined ? 0 : flags) |
             (capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble);
         return fn as EventHandler<GesturePointerEvent>;

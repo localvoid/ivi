@@ -1,4 +1,5 @@
 import { EventHandlerFlags, SyntheticEventFlags } from "./flags";
+import { EventHandler } from "./event_handler";
 import { SyntheticEvent } from "./synthetic_event";
 import { DispatchTarget } from "./dispatch_target";
 
@@ -13,17 +14,18 @@ function dispatchEventToLocalEventHandlers(
     target: DispatchTarget,
     event: SyntheticEvent,
     matchFlags: EventHandlerFlags,
+    match: ((h: EventHandler) => boolean) | undefined,
 ): void {
     const handlers = target.handlers;
 
     if (typeof handlers === "function") {
-        if ((handlers.flags & matchFlags) !== 0) {
+        if ((handlers.flags & matchFlags) !== 0 && (match === undefined || match(handlers) === true)) {
             handlers(event);
         }
     } else {
         for (let j = 0; j < handlers.length; j++) {
             const handler = handlers[j];
-            if ((handler.flags & matchFlags) !== 0) {
+            if ((handler.flags & matchFlags) !== 0 && (match === undefined || match(handler) === true)) {
                 handler(event);
             }
         }
@@ -46,6 +48,7 @@ export function dispatchEvent(
     targets: DispatchTarget[],
     event: SyntheticEvent,
     bubble: boolean,
+    match?: (h: EventHandler) => boolean,
 ): void {
     let i = targets.length - 1;
     let target;
@@ -53,7 +56,7 @@ export function dispatchEvent(
     // capture phase
     while (i >= 0) {
         target = targets[i--];
-        dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture);
+        dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture, match);
         if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
             return;
         }
@@ -64,7 +67,7 @@ export function dispatchEvent(
         i = 0;
         event.flags |= SyntheticEventFlags.BubblePhase;
         while (i < targets.length) {
-            dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble);
+            dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble, match);
             if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }

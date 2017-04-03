@@ -28,55 +28,40 @@ export interface GestureNativeEventSource {
 }
 
 export class GestureEventSource {
-    readonly eventSource: EventSource;
+    readonly pointerEventSource: EventSource;
+    readonly gestureEventSource: EventSource;
     private dependencies: number;
     private pointers: GesturePointerEvent[];
     private listener: GestureNativeEventSource;
     private deactivating: boolean;
 
     constructor() {
-        this.eventSource = {
-            addListener: () => {
-                if (this.dependencies++ === 0) {
-                    if (this.deactivating === true) {
-                        this.deactivating = false;
-                    } else {
-                        this.listener.activate();
-                    }
-                }
-            },
-            removeListener: () => {
-                if (--this.dependencies === 0) {
-                    if (this.deactivating === false) {
-                        this.deactivating = true;
-                        scheduleTask(() => {
-                            if (this.deactivating === true) {
-                                this.listener.deactivate();
-                                this.deactivating = false;
-                            }
-                        });
-                    }
-                }
-            },
+        this.pointerEventSource = {
+            addListener: this.addPointerListener,
+            removeListener: this.removePointerListener,
+        };
+        this.gestureEventSource = {
+            addListener: this.addPointerListener,
+            removeListener: this.removeGestureListener,
         };
         this.dependencies = 0;
         this.pointers = [];
         if (FEATURES & FeatureFlags.PointerEvents) {
             this.listener = createPointerEventListener(
-                this.eventSource,
+                this.pointerEventSource,
                 this.pointers,
                 this.dispatch,
             );
         } else {
             if (FEATURES & FeatureFlags.TouchEvents) {
                 this.listener = createTouchEventListener(
-                    this.eventSource,
+                    this.pointerEventSource,
                     this.pointers,
                     this.dispatch,
                 );
             } else {
                 this.listener = createMouseEventListener(
-                    this.eventSource,
+                    this.pointerEventSource,
                     this.pointers,
                     this.dispatch,
                 );
@@ -85,7 +70,38 @@ export class GestureEventSource {
         this.deactivating = false;
     }
 
-    private matchEventSource = (h: EventHandler) => h.source === this.eventSource;
+    private addPointerListener = () => {
+        if (this.dependencies++ === 0) {
+            if (this.deactivating === true) {
+                this.deactivating = false;
+            } else {
+                this.listener.activate();
+            }
+        }
+    }
+
+    private removePointerListener = () => {
+        if (--this.dependencies === 0) {
+            if (this.deactivating === false) {
+                this.deactivating = true;
+                scheduleTask(() => {
+                    if (this.deactivating === true) {
+                        this.listener.deactivate();
+                        this.deactivating = false;
+                    }
+                });
+            }
+        }
+    }
+
+    private removeGestureListener = (h: EventHandler) => {
+        this.removePointerListener();
+    }
+
+    private matchEventSource = (h: EventHandler) => (
+        h.source === this.pointerEventSource ||
+        h.source === this.gestureEventSource
+    );
 
     private dispatch = (ev: GesturePointerEvent) => {
         const targets: DispatchTarget[] = [];
