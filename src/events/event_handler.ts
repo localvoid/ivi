@@ -25,7 +25,13 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent> {
      */
     flags: EventHandlerFlags;
     /**
-     * Event Handler options.
+     * Event Handler props.
      */
-    options?: any;
+    props?: any;
+    /**
+     * Event Handler state.
+     *
+     * Internal state that can be used to store gesture recognizers state.
+     */
+    state?: any;
 }

@@ -14,19 +14,27 @@ function dispatchEventToLocalEventHandlers(
     target: DispatchTarget,
     event: SyntheticEvent,
     matchFlags: EventHandlerFlags,
-    match: ((h: EventHandler) => boolean) | undefined,
+    dispatch: ((h: EventHandler, ev: SyntheticEvent) => void) | undefined,
 ): void {
     const handlers = target.handlers;
 
     if (typeof handlers === "function") {
-        if ((handlers.flags & matchFlags) !== 0 && (match === undefined || match(handlers) === true)) {
-            handlers(event);
+        if ((handlers.flags & matchFlags) !== 0) {
+            if (dispatch === undefined) {
+                handlers(event);
+            } else {
+                dispatch(handlers, event);
+            }
         }
     } else {
         for (let j = 0; j < handlers.length; j++) {
             const handler = handlers[j];
-            if ((handler.flags & matchFlags) !== 0 && (match === undefined || match(handler) === true)) {
-                handler(event);
+            if ((handler.flags & matchFlags) !== 0) {
+                if (dispatch === undefined) {
+                    handler(event);
+                } else {
+                    dispatch(handler, event);
+                }
             }
         }
     }
@@ -48,7 +56,7 @@ export function dispatchEvent(
     targets: DispatchTarget[],
     event: SyntheticEvent,
     bubble: boolean,
-    match?: (h: EventHandler) => boolean,
+    dispatch?: (h: EventHandler, ev: SyntheticEvent) => void,
 ): void {
     let i = targets.length - 1;
     let target;
@@ -56,7 +64,7 @@ export function dispatchEvent(
     // capture phase
     while (i >= 0) {
         target = targets[i--];
-        dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture, match);
+        dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture, dispatch);
         if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
             return;
         }
@@ -67,7 +75,7 @@ export function dispatchEvent(
         i = 0;
         event.flags |= SyntheticEventFlags.BubblePhase;
         while (i < targets.length) {
-            dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble, match);
+            dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble, dispatch);
             if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
                 return;
             }

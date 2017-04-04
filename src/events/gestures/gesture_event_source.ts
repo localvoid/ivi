@@ -10,6 +10,7 @@ import { FEATURES, FeatureFlags } from "../../common/feature_detection";
 import { scheduleTask } from "../../scheduler/task";
 import { accumulateDispatchTargets } from "../traverse_dom";
 import { DispatchTarget } from "../dispatch_target";
+import { SyntheticEvent } from "../synthetic_event";
 import { EventSource } from "../event_source";
 import { EventHandler } from "../event_handler";
 import { dispatchEvent } from "../dispatch_event";
@@ -103,8 +104,6 @@ export class GestureEventSource {
         h.source === this.gestureEventSource
     );
 
-    private matchPointerEventSource = (h: EventHandler) => h.source === this.pointerEventSource;
-
     private dispatch = (ev: GesturePointerEvent) => {
         const targets: DispatchTarget[] = [];
         accumulateDispatchTargets(targets, ev.target, this.matchEventSource);
@@ -122,7 +121,11 @@ export class GestureEventSource {
         }
 
         if (targets.length > 0) {
-            dispatchEvent(targets, ev, true, this.matchPointerEventSource);
+            dispatchEvent(targets, ev, true, (h: EventHandler, e: SyntheticEvent) => {
+                if (h.source === this.pointerEventSource) {
+                    h(e);
+                }
+            });
         }
     }
 }
