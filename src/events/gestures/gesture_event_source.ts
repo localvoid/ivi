@@ -20,6 +20,9 @@ import { createPointerEventListener } from "./pointer_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
 import { GestureEventFlags } from "./events";
+import {
+    PointerMapList, pointerMapListPush, pointerMapListDelete, pointerMapGet, pointerMapDelete,
+} from "./pointer_map";
 
 export interface GestureNativeEventSource {
     activate(): void;
@@ -28,12 +31,15 @@ export interface GestureNativeEventSource {
     release(ev: GesturePointerEvent): void;
 }
 
+export type PointerRoute = (ev: GesturePointerEvent) => void;
+
 export class GestureEventSource {
     readonly pointerEventSource: EventSource;
     readonly gestureEventSource: EventSource;
     private dependencies: number;
     private pointers: GesturePointerEvent[];
     private listener: GestureNativeEventSource;
+    private routes: PointerMapList<PointerRoute>;
     private deactivating: boolean;
 
     constructor() {
@@ -68,7 +74,16 @@ export class GestureEventSource {
                 );
             }
         }
+        this.routes = [];
         this.deactivating = false;
+    }
+
+    addRoute(pointerId: number, route: PointerRoute): void {
+        pointerMapListPush(this.routes, pointerId, route);
+    }
+
+    removeRoute(pointerId: number, route: PointerRoute): void {
+        pointerMapListDelete(this.routes, pointerId, route);
     }
 
     private addPointerListener = () => {
@@ -112,21 +127,29 @@ export class GestureEventSource {
             if (targets.length > 0) {
                 this.listener.capture(ev, accumulateTouchActionFlags(targets));
                 pointerListSet(this.pointers, ev);
+                dispatchEvent(targets, ev, true, (h: EventHandler, e: SyntheticEvent) => {
+                    if (h.source === this.pointerEventSource) {
+                        pointerMapListPush(this.routes, ev.id, h);
+                        h(e);
+                    }
+                });
             }
-        } else if ((ev.action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
-            this.listener.release(ev);
-            pointerListDelete(this.pointers, ev.id);
         } else {
-            pointerListSet(this.pointers, ev);
+            const routes = pointerMapGet(this.routes, ev.id);
+            if ((ev.action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
+                this.listener.release(ev);
+                pointerListDelete(this.pointers, ev.id);
+                pointerMapDelete(this.routes, ev.id);
+            } else {
+                pointerListSet(this.pointers, ev);
+            }
+            if (routes !== undefined) {
+                for (let i = 0; i < routes.length; i++) {
+                    routes[i](ev);
+                }
+            }
         }
 
-        if (targets.length > 0) {
-            dispatchEvent(targets, ev, true, (h: EventHandler, e: SyntheticEvent) => {
-                if (h.source === this.pointerEventSource) {
-                    h(e);
-                }
-            });
-        }
     }
 }
 
