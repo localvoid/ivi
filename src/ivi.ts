@@ -40,6 +40,7 @@ export { isVisible, addVisibilityObserver, removeVisibilityObserver } from "./co
 /**
  * Dev Mode:
  */
+export { TraceLog, TraceLogEntry, getTraceLog, trace } from "./dev_mode/trace";
 export {
     setInitialNestingState, pushNestingState, restoreNestingState, nestingStateAncestorFlags, nestingStateParentTagName,
     checkNestingViolation, AncestorFlags,
@@ -78,6 +79,8 @@ export {
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
 export { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./events/gestures/pointer_event";
+export { GestureEvent } from "./events/gestures/gesture_event";
+export { GestureRecognizer } from "./events/gestures/recognizer";
 export { GestureEventFlags, GestureEvents } from "./events/gestures/events";
 
 /**
