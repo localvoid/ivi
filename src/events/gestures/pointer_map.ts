@@ -8,6 +8,10 @@ export interface PointerMapEntry<T> {
 export type PointerMap<T> = PointerMapEntry<T>[];
 export type PointerMapList<T> = PointerMap<T[]>;
 
+export function pointerMapPush<T>(map: PointerMap<T>, id: number, value: T) {
+    map.push({ id, value });
+}
+
 export function pointerMapSet<T>(map: PointerMap<T>, id: number, value: T) {
     for (let i = 0; i < map.length; i++) {
         const item = map[i];

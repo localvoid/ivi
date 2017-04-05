@@ -16,6 +16,7 @@ import { EventHandler } from "../event_handler";
 import { dispatchEvent } from "../dispatch_event";
 import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
 import { pointerListSet, pointerListDelete } from "./pointer_list";
+import { GestureArenaManager } from "./arena";
 import { createPointerEventListener } from "./pointer_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
@@ -40,6 +41,7 @@ export class GestureEventSource {
     private pointers: GesturePointerEvent[];
     private listener: GestureNativeEventSource;
     private routes: PointerMapList<PointerRoute>;
+    readonly arena: GestureArenaManager;
     private deactivating: boolean;
 
     constructor() {
@@ -48,7 +50,7 @@ export class GestureEventSource {
             removeListener: this.removePointerListener,
         };
         this.gestureEventSource = {
-            addListener: this.addPointerListener,
+            addListener: this.addGestureListener,
             removeListener: this.removeGestureListener,
         };
         this.dependencies = 0;
@@ -75,6 +77,7 @@ export class GestureEventSource {
             }
         }
         this.routes = [];
+        this.arena = new GestureArenaManager();
         this.deactivating = false;
     }
 
@@ -110,8 +113,19 @@ export class GestureEventSource {
         }
     }
 
+    private addGestureListener = (h: EventHandler) => {
+        this.addPointerListener();
+        h.listeners++;
+    }
+
     private removeGestureListener = (h: EventHandler) => {
         this.removePointerListener();
+        if (--h.listeners === 0) {
+            if (h.state !== null) {
+                h.state.dispose();
+                h.state = null;
+            }
+        }
     }
 
     private matchEventSource = (h: EventHandler) => (
@@ -125,14 +139,28 @@ export class GestureEventSource {
 
         if (ev.action === GesturePointerAction.Down) {
             if (targets.length > 0) {
-                this.listener.capture(ev, accumulateTouchActionFlags(targets));
-                pointerListSet(this.pointers, ev);
+                let capture = false;
+                let captureFlags = 0;
                 dispatchEvent(targets, ev, true, (h: EventHandler, e: SyntheticEvent) => {
                     if (h.source === this.pointerEventSource) {
                         pointerMapListPush(this.routes, ev.id, h);
                         h(e);
+                        captureFlags |= h.flags & GestureEventFlags.TouchActions;
+                        capture = true;
+                    } else if (h.source === this.gestureEventSource) {
+                        if (h.state === null) {
+                            h.state = h.props();
+                        }
+                        if (h.state.handlePointerEvent(e) === true) {
+                            capture = true;
+                            captureFlags |= h.flags & GestureEventFlags.TouchActions;
+                        }
                     }
                 });
+                if (capture) {
+                    this.listener.capture(ev, captureFlags);
+                    pointerListSet(this.pointers, ev);
+                }
             }
         } else {
             const routes = pointerMapGet(this.routes, ev.id);
@@ -149,22 +177,5 @@ export class GestureEventSource {
                 }
             }
         }
-
     }
-}
-
-function accumulateTouchActionFlags(targets: DispatchTarget[]): GestureEventFlags {
-    let flags = 0;
-    for (let i = 0; i < targets.length; i++) {
-        const h = targets[i].handlers;
-        if (typeof h === "function") {
-            flags |= h.flags & GestureEventFlags.TouchActions;
-        } else {
-            for (let j = 0; j < h.length; j++) {
-                flags |= h[j].flags & GestureEventFlags.TouchActions;
-            }
-        }
-    }
-
-    return flags;
 }

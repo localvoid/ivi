@@ -33,6 +33,9 @@ export function createEventHandler<E extends SyntheticNativeEvent<any>>(
     const handler = fn as EventHandler<E>;
     handler.source = source;
     handler.flags = capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble;
+    handler.listeners = 0;
+    handler.props = null;
+    handler.state = null;
     return handler;
 }
 

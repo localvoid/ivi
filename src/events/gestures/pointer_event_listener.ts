@@ -1,3 +1,4 @@
+import { trace } from "../../dev_mode/trace";
 import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
@@ -53,14 +54,17 @@ export function createPointerEventListener(
     let captured = 0;
 
     function activate() {
+        trace("pointerevent:activate");
         document.addEventListener("pointerdown", onDown);
     }
 
     function deactivate() {
+        trace("pointerevent:deactivate");
         document.removeEventListener("pointerdown", onDown);
     }
 
     function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
+        trace("pointerevent:capture");
         ev.target.setPointerCapture(ev.id);
         if (captured++ === 0) {
             document.addEventListener("pointermove", onMove);
@@ -71,6 +75,7 @@ export function createPointerEventListener(
     }
 
     function release(ev: GesturePointerEvent) {
+        trace("pointerevent:release");
         if (--captured === 0) {
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerup", onUp);
@@ -80,6 +85,7 @@ export function createPointerEventListener(
     }
 
     function onDown(ev: PointerEvent) {
+        trace("pointerevent:down");
         dispatch(pointerEventToGesturePointerEvent(
             ev,
             source,
@@ -88,6 +94,7 @@ export function createPointerEventListener(
     }
 
     function onMove(ev: PointerEvent) {
+        trace("pointerevent:move");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
@@ -98,6 +105,7 @@ export function createPointerEventListener(
     }
 
     function onUp(ev: PointerEvent) {
+        trace("pointerevent:up");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
@@ -108,6 +116,7 @@ export function createPointerEventListener(
     }
 
     function onCancel(ev: PointerEvent) {
+        trace("pointerevent:cancel");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
@@ -118,6 +127,7 @@ export function createPointerEventListener(
     }
 
     function onLostCapture(ev: PointerEvent) {
+        trace("pointerevent:lostcapture");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
