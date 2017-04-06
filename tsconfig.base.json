@@ -6,11 +6,6 @@
         "importHelpers": true,
         "noEmitHelpers": true,
         "removeComments": false,
-        "types": [
-            "chai",
-            "mocha",
-            "node"
-        ],
         "lib": [
             "es2016",
             "es2015",

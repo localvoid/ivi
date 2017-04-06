@@ -5,7 +5,6 @@
 
 import { SyntheticEvent } from "../synthetic_event";
 import { SyntheticEventFlags } from "../flags";
-import { EventSource } from "../event_source";
 
 export const enum GesturePointerType {
     Unknown = 1,
@@ -38,9 +37,7 @@ export class GesturePointerEvent extends SyntheticEvent {
     isPrimary: boolean;
 
     constructor(
-        source: EventSource,
         flags: SyntheticEventFlags,
-        target: any,
         timestamp: number,
 
         id: number,
@@ -58,7 +55,7 @@ export class GesturePointerEvent extends SyntheticEvent {
         type: GesturePointerType,
         isPrimary: boolean,
     ) {
-        super(source, flags, target, timestamp);
+        super(flags, timestamp);
         this.id = id;
         this.action = action;
         this.x = x;

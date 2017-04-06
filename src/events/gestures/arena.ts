@@ -52,6 +52,7 @@ export class GestureArenaManager {
             state = new GestureArena();
             this.arenas.set(pointerId, state);
         }
+        state.add(member);
         return new GestureArenaEntry(this, pointerId, member);
     }
 

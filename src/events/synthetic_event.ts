@@ -1,26 +1,19 @@
 import { getEventCharCode, getEventKey } from "../common/dom";
 import { DEV_MODE, DevModeFlags, printWarnOnce } from "../dev_mode/dev_mode";
 import { SyntheticEventFlags } from "./flags";
-import { EventSource } from "./event_source";
 
 /**
  * Synthetic Event.
  */
 export class SyntheticEvent {
-    readonly source: EventSource;
     flags: SyntheticEventFlags;
-    readonly target: any;
     readonly timestamp: number;
 
     constructor(
-        source: EventSource,
         flags: SyntheticEventFlags,
-        target: any,
         timestamp: number,
     ) {
-        this.source = source;
         this.flags = flags;
-        this.target = target;
         this.timestamp = timestamp;
     }
 
@@ -34,23 +27,23 @@ export class SyntheticEvent {
 }
 
 export class SyntheticNativeEvent<D extends Event> extends SyntheticEvent {
+    readonly target: any;
     native: D;
 
     constructor(
-        source: EventSource,
         flags: SyntheticEventFlags,
         target: EventTarget,
         timestamp: number,
         native: D,
     ) {
-        super(source, flags, target, timestamp);
+        super(flags, timestamp);
+        this.target = target;
         this.native = native;
     }
 }
 
 export interface SyntheticNativeEventClass<D, E extends SyntheticNativeEvent<any>> {
     new (
-        source: EventSource,
         flags: SyntheticEventFlags,
         target: EventTarget,
         timestamp: number,

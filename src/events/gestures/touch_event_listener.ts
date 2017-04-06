@@ -60,15 +60,12 @@ if ((FEATURES & FeatureFlags.TouchEvents) && "radiusX" in Touch.prototype) {
 
 function touchToGesturePointerEvent(
     ev: TouchEvent,
-    source: EventSource,
     action: GesturePointerAction,
     touch: Touch,
     isPrimary: boolean,
 ) {
     return new GesturePointerEvent(
-        source,
         SyntheticEventFlags.Bubbles,
-        touch.target,
         ev.timeStamp,
         // pointerId 1 is reserved for mouse, touch identifiers can start from 0.
         touch.identifier + 2,
@@ -92,9 +89,7 @@ function cancelGesturePointerEvent(
     ev: GesturePointerEvent,
 ) {
     return new GesturePointerEvent(
-        ev.source,
         ev.flags,
-        ev.target,
         ev.timestamp,
         ev.id,
         GesturePointerAction.Cancel,
@@ -116,7 +111,7 @@ function cancelGesturePointerEvent(
 export function createTouchEventListener(
     source: EventSource,
     pointers: GesturePointerEvent[],
-    dispatch: any,
+    dispatch: (ev: GesturePointerEvent, target?: Element) => void,
 ): GestureNativeEventSource {
     const primaryPointers: GesturePointerEvent[] | null = (FEATURES & FeatureFlags.InputDeviceCapabilities) === 0 ?
         [] :
@@ -178,9 +173,9 @@ export function createTouchEventListener(
         mouseListener.deactivate();
     }
 
-    function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
+    function capture(ev: GesturePointerEvent, target: Element, flags: GestureEventFlags) {
         if (ev.id === 1) {
-            mouseListener.capture(ev, flags);
+            mouseListener.capture(ev, target, flags);
         } else {
             if (ev.isPrimary === true) {
                 nativeTouchActions = flags;
@@ -268,13 +263,12 @@ export function createTouchEventListener(
                 const touch = touches[i];
                 const p = touchToGesturePointerEvent(
                     ev,
-                    source,
                     GesturePointerAction.Down,
                     touch,
                     isPrimary(touch),
                 );
                 dedupSyntheticMouseEvents(p);
-                dispatch(p);
+                dispatch(p, touch.target as Element);
             }
         }
     }
@@ -292,7 +286,6 @@ export function createTouchEventListener(
                     if (pointerListGet(pointers, touch.identifier + 2) !== undefined) {
                         dispatch(touchToGesturePointerEvent(
                             ev,
-                            source,
                             GesturePointerAction.Move,
                             touch,
                             isPrimary(touch),
@@ -310,7 +303,6 @@ export function createTouchEventListener(
             if (pointerListGet(pointers, touch.identifier + 2) !== undefined) {
                 const p = touchToGesturePointerEvent(
                     ev,
-                    source,
                     GesturePointerAction.Up,
                     touch,
                     isPrimary(touch),
@@ -328,7 +320,6 @@ export function createTouchEventListener(
             if (pointerListGet(pointers, touch.identifier + 2) !== undefined) {
                 dispatch(touchToGesturePointerEvent(
                     ev,
-                    source,
                     GesturePointerAction.Cancel,
                     touch,
                     isPrimary(touch),

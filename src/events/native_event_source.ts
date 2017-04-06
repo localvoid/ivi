@@ -84,7 +84,6 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
 
         if (targets.length > 0) {
             const s = new this.eventType(
-                this.eventSource,
                 0,
                 getEventTarget(ev),
                 ev.timeStamp,

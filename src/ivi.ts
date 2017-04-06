@@ -79,9 +79,13 @@ export {
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
 export { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./events/gestures/pointer_event";
-export { GestureEvent } from "./events/gestures/gesture_event";
+export {
+    GestureEvent, GestureTapEvent, GestureTapAction, GestureLongPressEvent,
+} from "./events/gestures/gesture_event";
 export { GestureRecognizer } from "./events/gestures/recognizer";
 export { GestureEventFlags, GestureEvents } from "./events/gestures/events";
+export { GestureTapRecognizer } from "./events/gestures/tap_recognizer";
+export { GestureLongPressRecognizer } from "./events/gestures/long_press_recognizer";
 
 /**
  * Virtual DOM:

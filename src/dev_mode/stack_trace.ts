@@ -84,6 +84,7 @@ declare global {
     }
 
     interface ErrorConstructor {
+        captureStackTrace(e: any, constructorOpt: any): any;
         prepareStackTrace(e: any, callSites: CallSite[]): any;
     }
 }

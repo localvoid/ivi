@@ -3,6 +3,13 @@ import { NOOP } from "../common/noop";
 import { incrementClock } from "./clock";
 import { scheduleTask } from "./task";
 
+declare global {
+    interface Process {
+        nextTick(fn: () => void): void;
+    }
+    const process: Process;
+}
+
 let _pending = false;
 let _microtasks: (() => void)[] = [];
 let _microtaskNode: Text;

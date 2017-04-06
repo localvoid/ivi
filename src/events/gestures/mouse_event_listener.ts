@@ -30,15 +30,11 @@ function getMouseButtons(ev: MouseEvent): number {
 
 function createGesturePointerEventFromMouseEvent(
     ev: MouseEvent,
-    source: EventSource,
-    target: EventTarget,
     action: GesturePointerAction,
     buttons: number,
 ) {
     return new GesturePointerEvent(
-        source,
         SyntheticEventFlags.Bubbles,
-        target,
         ev.timeStamp,
         // the mouse always has a pointerId of 1
         1,
@@ -62,7 +58,7 @@ function createGesturePointerEventFromMouseEvent(
 export function createMouseEventListener(
     source: EventSource,
     pointers: GesturePointerEvent[],
-    dispatch: any,
+    dispatch: (ev: GesturePointerEvent, target?: Element) => void,
     primaryPointers: GesturePointerEvent[] | null = null,
 ): GestureNativeEventSource {
     let activePointer: GesturePointerEvent | null = null;
@@ -75,7 +71,7 @@ export function createMouseEventListener(
         document.removeEventListener("mousedown", onDown);
     }
 
-    function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
+    function capture(ev: GesturePointerEvent, target: Element, flags: GestureEventFlags) {
         activePointer = ev;
         document.addEventListener("mousemove", onMove);
         document.addEventListener("mouseup", onUp);
@@ -117,21 +113,17 @@ export function createMouseEventListener(
             if (activePointer === null) {
                 pointer = createGesturePointerEventFromMouseEvent(
                     ev,
-                    source,
-                    ev.target,
                     GesturePointerAction.Down,
                     buttons,
                 );
             } else {
                 pointer = createGesturePointerEventFromMouseEvent(
                     ev,
-                    source,
-                    activePointer.target,
                     GesturePointerAction.Move,
                     buttons | activePointer.buttons,
                 );
             }
-            dispatch(pointer);
+            dispatch(pointer, ev.target as Element);
         }
     }
 
@@ -142,16 +134,12 @@ export function createMouseEventListener(
                 if (ev.which === 0) {
                     pointer = createGesturePointerEventFromMouseEvent(
                         ev,
-                        source,
-                        activePointer.target,
                         GesturePointerAction.Up,
                         activePointer.buttons,
                     );
                 } else {
                     pointer = createGesturePointerEventFromMouseEvent(
                         ev,
-                        source,
-                        activePointer.target,
                         GesturePointerAction.Move,
                         activePointer.buttons,
                     );
@@ -172,16 +160,12 @@ export function createMouseEventListener(
                 if (buttons === 0) {
                     pointer = createGesturePointerEventFromMouseEvent(
                         ev,
-                        source,
-                        activePointer.target,
                         GesturePointerAction.Up,
                         buttons,
                     );
                 } else {
                     pointer = createGesturePointerEventFromMouseEvent(
                         ev,
-                        source,
-                        activePointer.target,
                         GesturePointerAction.Move,
                         buttons,
                     );

@@ -6,7 +6,12 @@
         "declaration": false,
         "sourceMap": false,
         "inlineSourceMap": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "types": [
+            "chai",
+            "mocha",
+            "node"
+        ]
     },
     "include": [
         "src/**/*.ts",

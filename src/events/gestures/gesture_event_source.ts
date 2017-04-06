@@ -6,6 +6,55 @@
  *   https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU
  */
 
+/**
+ * Arenas:
+ *
+ * ArenaMember
+ *   acceptGesture(Pointer ID)
+ *   rejectGesture(Pointer ID)
+ *
+ * Arena
+ *   ArenaMembers[]
+ *
+ * ArenaManager
+ *   Pointer ID => Arena
+ *
+ *   Add Member
+ *     Create a new Arena if it doesn't exist
+ *     Add member to Arena
+ *
+ *   Close (Prevents new members from entering Arena)
+ *   Sweep (Forces resolution of the Arena, first member wins)
+ *   Hold (Prevents the Arena from being swept)
+ *   Release (Releases the Arena, allowing Arena to be swept)
+ *
+ */
+
+/**
+ * Event Flow:
+ *
+ * PointerDown
+ *   Add to Pointers list
+ *   Hit-Target test
+ *   Two-Phase dispatch
+ *     Add PointerEvent handlers Router
+ *     Initialize Gesture Recognizers
+ *       When Pointer is captured
+ *         Add to Router
+ *         Add to Arena
+ *   Close Arena
+ *
+ * PointerMove | PointerUp | PointerCancel
+ *   Router dispatch
+ *
+ * PointerUp
+ *   Sweep Arena
+ *
+ * PointerUp | PointerCancel
+ *   Remove From Pointers list
+ *
+ */
+
 import { FEATURES, FeatureFlags } from "../../common/feature_detection";
 import { scheduleTask } from "../../scheduler/task";
 import { accumulateDispatchTargets } from "../traverse_dom";
@@ -28,7 +77,7 @@ import {
 export interface GestureNativeEventSource {
     activate(): void;
     deactivate(): void;
-    capture(ev: GesturePointerEvent, flags: GestureEventFlags): void;
+    capture(ev: GesturePointerEvent, target: Element, flags: GestureEventFlags): void;
     release(ev: GesturePointerEvent): void;
 }
 
@@ -133,11 +182,11 @@ export class GestureEventSource {
         h.source === this.gestureEventSource
     );
 
-    private dispatch = (ev: GesturePointerEvent) => {
-        const targets: DispatchTarget[] = [];
-        accumulateDispatchTargets(targets, ev.target, this.matchEventSource);
-
+    private dispatch = (ev: GesturePointerEvent, target?: Element) => {
         if (ev.action === GesturePointerAction.Down) {
+            const targets: DispatchTarget[] = [];
+            accumulateDispatchTargets(targets, target!, this.matchEventSource);
+
             if (targets.length > 0) {
                 let capture = false;
                 let captureFlags = 0;
@@ -149,7 +198,7 @@ export class GestureEventSource {
                         capture = true;
                     } else if (h.source === this.gestureEventSource) {
                         if (h.state === null) {
-                            h.state = h.props();
+                            h.state = h.props(h);
                         }
                         if (h.state.handlePointerEvent(e) === true) {
                             capture = true;
@@ -158,8 +207,9 @@ export class GestureEventSource {
                     }
                 });
                 if (capture) {
-                    this.listener.capture(ev, captureFlags);
+                    this.listener.capture(ev, target!, captureFlags);
                     pointerListSet(this.pointers, ev);
+                    this.arena.close(ev.id);
                 }
             }
         } else {
@@ -175,6 +225,9 @@ export class GestureEventSource {
                 for (let i = 0; i < routes.length; i++) {
                     routes[i](ev);
                 }
+            }
+            if ((ev.action & GesturePointerAction.Up) !== 0) {
+                this.arena.sweep(ev.id);
             }
         }
     }

@@ -4,7 +4,8 @@
         "outDir": "dist/js",
         "declarationDir": "dist/typings",
         "declaration": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "types": []
     },
     "include": [
         "src/**/*.ts"

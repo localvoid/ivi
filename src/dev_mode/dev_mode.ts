@@ -226,7 +226,7 @@ function parseQueryString(query: string): { [key: string]: string } {
 }
 
 if (__IVI_DEV__) {
-    if (typeof Error.captureStackTrace === "function") {
+    if ("captureStackTrace" in Error.prototype) {
         DEV_MODE |= DevModeFlags.CaptureStackTraceSupported;
     }
 }

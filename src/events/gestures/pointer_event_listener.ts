@@ -1,4 +1,3 @@
-import { trace } from "../../dev_mode/trace";
 import { SyntheticEventFlags } from "../flags";
 import { EventSource } from "../event_source";
 import { GestureNativeEventSource } from "./gesture_event_source";
@@ -21,13 +20,10 @@ function convertPointerType(type: string) {
 
 function pointerEventToGesturePointerEvent(
     ev: PointerEvent,
-    source: EventSource,
     action: GesturePointerAction,
 ) {
     return new GesturePointerEvent(
-        source,
         SyntheticEventFlags.BubblePhase,
-        ev.target,
         ev.timeStamp,
         ev.pointerId,
         action,
@@ -49,23 +45,20 @@ function pointerEventToGesturePointerEvent(
 export function createPointerEventListener(
     source: EventSource,
     pointers: GesturePointerEvent[],
-    dispatch: any,
+    dispatch: (ev: GesturePointerEvent, target?: Element) => void,
 ): GestureNativeEventSource {
     let captured = 0;
 
     function activate() {
-        trace("pointerevent:activate");
         document.addEventListener("pointerdown", onDown);
     }
 
     function deactivate() {
-        trace("pointerevent:deactivate");
         document.removeEventListener("pointerdown", onDown);
     }
 
-    function capture(ev: GesturePointerEvent, flags: GestureEventFlags) {
-        trace("pointerevent:capture");
-        ev.target.setPointerCapture(ev.id);
+    function capture(ev: GesturePointerEvent, target: Element, flags: GestureEventFlags) {
+        target.setPointerCapture(ev.id);
         if (captured++ === 0) {
             document.addEventListener("pointermove", onMove);
             document.addEventListener("pointerup", onUp);
@@ -75,7 +68,6 @@ export function createPointerEventListener(
     }
 
     function release(ev: GesturePointerEvent) {
-        trace("pointerevent:release");
         if (--captured === 0) {
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerup", onUp);
@@ -85,53 +77,46 @@ export function createPointerEventListener(
     }
 
     function onDown(ev: PointerEvent) {
-        trace("pointerevent:down");
-        dispatch(pointerEventToGesturePointerEvent(
-            ev,
-            source,
-            GesturePointerAction.Down,
-        ));
+        dispatch(
+            pointerEventToGesturePointerEvent(
+                ev,
+                GesturePointerAction.Down,
+            ),
+            ev.target as Element,
+        );
     }
 
     function onMove(ev: PointerEvent) {
-        trace("pointerevent:move");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
-                source,
                 GesturePointerAction.Move,
             ));
         }
     }
 
     function onUp(ev: PointerEvent) {
-        trace("pointerevent:up");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
-                source,
                 GesturePointerAction.Up,
             ));
         }
     }
 
     function onCancel(ev: PointerEvent) {
-        trace("pointerevent:cancel");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
-                source,
                 GesturePointerAction.Cancel,
             ));
         }
     }
 
     function onLostCapture(ev: PointerEvent) {
-        trace("pointerevent:lostcapture");
         if (pointerListGet(pointers, ev.pointerId) !== undefined) {
             dispatch(pointerEventToGesturePointerEvent(
                 ev,
-                source,
                 GesturePointerAction.Cancel,
             ));
         }

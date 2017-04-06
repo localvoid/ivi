@@ -19,7 +19,21 @@ export const GestureEventSources = {
     Pointer: new GestureEventSource(),
 };
 
-export const GestureEvents = {
+export interface GestureEventsList {
+    onPointer: (
+        fn: (ev: GesturePointerEvent) => void,
+        flags?: GestureEventFlags,
+        capture?: boolean,
+    ) => EventHandler<GesturePointerEvent>;
+    onGesture: (
+        fn: (ev: GestureEvent) => void,
+        createRecognizer: (handler: EventHandler) => GestureRecognizer,
+        flags?: GestureEventFlags,
+        capture?: boolean,
+    ) => EventHandler<GestureEvent>;
+}
+
+export const GestureEvents: GestureEventsList = {
     onPointer: function (
         fn: (ev: GesturePointerEvent) => void,
         flags?: GestureEventFlags,
@@ -37,7 +51,7 @@ export const GestureEvents = {
 
     onGesture: function (
         fn: (ev: GestureEvent) => void,
-        createRecognizer: () => GestureRecognizer,
+        createRecognizer: (handler: EventHandler) => GestureRecognizer,
         flags?: GestureEventFlags,
         capture?: boolean,
     ): EventHandler<GestureEvent> {
