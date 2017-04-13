@@ -6,56 +6,8 @@
  *   https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU
  */
 
-/**
- * Arenas:
- *
- * ArenaMember
- *   acceptGesture(Pointer ID)
- *   rejectGesture(Pointer ID)
- *
- * Arena
- *   ArenaMembers[]
- *
- * ArenaManager
- *   Pointer ID => Arena
- *
- *   Add Member
- *     Create a new Arena if it doesn't exist
- *     Add member to Arena
- *
- *   Close (Prevents new members from entering Arena)
- *   Sweep (Forces resolution of the Arena, first member wins)
- *   Hold (Prevents the Arena from being swept)
- *   Release (Releases the Arena, allowing Arena to be swept)
- *
- */
-
-/**
- * Event Flow:
- *
- * PointerDown
- *   Add to Pointers list
- *   Hit-Target test
- *   Two-Phase dispatch
- *     Add PointerEvent handlers Router
- *     Initialize Gesture Recognizers
- *       When Pointer is captured
- *         Add to Router
- *         Add to Arena
- *   Close Arena
- *
- * PointerMove | PointerUp | PointerCancel
- *   Router dispatch
- *
- * PointerUp
- *   Sweep Arena
- *
- * PointerUp | PointerCancel
- *   Remove From Pointers list
- *
- */
-
 import { FEATURES, FeatureFlags } from "../../common/feature_detection";
+import { unorderedArrayDelete } from "../../common/utils";
 import { scheduleTask } from "../../scheduler/task";
 import { accumulateDispatchTargets } from "../traverse_dom";
 import { DispatchTarget } from "../dispatch_target";
@@ -65,7 +17,10 @@ import { EventHandler } from "../event_handler";
 import { dispatchEvent } from "../dispatch_event";
 import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
 import { pointerListSet, pointerListDelete } from "./pointer_list";
-import { GestureArenaManager } from "./arena";
+import {
+    GestureArena, createArena, findArenaByPointerId, addRecognizerToArena, closeArena, sweepArena, cancelArena,
+    dispatchMoveEventToRecognizers, dispatchReleaseEventToRecognizers,
+} from "./arena";
 import { createPointerEventListener } from "./pointer_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
@@ -87,10 +42,10 @@ export class GestureEventSource {
     readonly pointerEventSource: EventSource;
     readonly gestureEventSource: EventSource;
     private dependencies: number;
-    private pointers: GesturePointerEvent[];
-    private listener: GestureNativeEventSource;
-    private routes: PointerMapList<PointerRoute>;
-    readonly arena: GestureArenaManager;
+    private readonly pointers: GesturePointerEvent[];
+    private readonly listener: GestureNativeEventSource;
+    private readonly routes: PointerMapList<PointerRoute>;
+    private readonly arenas: GestureArena[];
     private deactivating: boolean;
 
     constructor() {
@@ -126,7 +81,7 @@ export class GestureEventSource {
             }
         }
         this.routes = [];
-        this.arena = new GestureArenaManager();
+        this.arenas = [];
         this.deactivating = false;
     }
 
@@ -183,7 +138,10 @@ export class GestureEventSource {
     );
 
     private dispatch = (ev: GesturePointerEvent, target?: Element) => {
-        if (ev.action === GesturePointerAction.Down) {
+        const action = ev.action;
+        let arena: GestureArena | undefined;
+
+        if (action === GesturePointerAction.Down) {
             const targets: DispatchTarget[] = [];
             accumulateDispatchTargets(targets, target!, this.matchEventSource);
 
@@ -200,7 +158,11 @@ export class GestureEventSource {
                         if (h.state === null) {
                             h.state = h.props(h);
                         }
-                        if (h.state.handlePointerEvent(e) === true) {
+                        if (arena === undefined) {
+                            arena = createArena(ev);
+                        }
+                        if (h.state.addPointer(arena, e) === true) {
+                            addRecognizerToArena(arena, h.state);
                             capture = true;
                             captureFlags |= h.flags & GestureEventFlags.TouchActions;
                         }
@@ -209,25 +171,57 @@ export class GestureEventSource {
                 if (capture) {
                     this.listener.capture(ev, target!, captureFlags);
                     pointerListSet(this.pointers, ev);
-                    this.arena.close(ev.id);
+                    if (arena) {
+                        this.arenas.push(arena);
+                        closeArena(arena);
+                    }
                 }
             }
         } else {
             const routes = pointerMapGet(this.routes, ev.id);
-            if ((ev.action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
+            arena = findArenaByPointerId(this.arenas, ev.id);
+
+            if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
                 this.listener.release(ev);
                 pointerListDelete(this.pointers, ev.id);
-                pointerMapDelete(this.routes, ev.id);
+                if (routes !== undefined) {
+                    pointerMapDelete(this.routes, ev.id);
+                }
             } else {
                 pointerListSet(this.pointers, ev);
             }
+
+            // Dispatch event to Pointer handlers.
             if (routes !== undefined) {
                 for (let i = 0; i < routes.length; i++) {
                     routes[i](ev);
                 }
             }
-            if ((ev.action & GesturePointerAction.Up) !== 0) {
-                this.arena.sweep(ev.id);
+
+            // Dispatch event to Gesture Recognizers.
+            if (arena !== undefined) {
+                if (arena.activeRecognizers > 0) {
+                    arena.pointer = ev;
+                    if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
+                        if ((action & GesturePointerAction.Up) !== 0) {
+                            dispatchReleaseEventToRecognizers(arena, ev);
+                            sweepArena(arena, ev);
+                        } else {
+                            cancelArena(arena);
+                        }
+                        unorderedArrayDelete(this.arenas, this.arenas.indexOf(arena));
+                    } else {
+                        dispatchMoveEventToRecognizers(arena, ev);
+                    }
+                } else {
+                    unorderedArrayDelete(this.arenas, this.arenas.indexOf(arena));
+                    if (routes === undefined) {
+                        if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) === 0) {
+                            this.listener.release(ev);
+                            pointerListDelete(this.pointers, ev.id);
+                        }
+                    }
+                }
             }
         }
     }

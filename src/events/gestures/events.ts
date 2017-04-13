@@ -3,7 +3,7 @@ import { EventHandler } from "../event_handler";
 import { GesturePointerEvent } from "./pointer_event";
 import { GestureEvent } from "./gesture_event";
 import { GestureEventSource } from "./gesture_event_source";
-import { GestureRecognizer } from "./recognizer";
+import { GestureRecognizer } from "./arena";
 
 export const enum GestureEventFlags {
     TouchActionNone = 1 << 15,

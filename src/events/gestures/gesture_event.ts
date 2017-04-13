@@ -61,3 +61,38 @@ export class GestureScaleEvent extends GestureEvent {
         this.velocity = velocity;
     }
 }
+
+export const enum GestureDragAction {
+    DragDown = 1,
+    DragStart = 1 << 1,
+    DragUpdate = 1 << 2,
+    DragEnd = 1 << 3,
+    DragCancel = 1 << 4,
+}
+
+export class GestureDragEvent extends GestureEvent {
+    readonly action: GestureDragAction;
+    readonly x: number;
+    readonly y: number;
+    readonly dx: number;
+    readonly dy: number;
+    readonly velocity: Vec2 | null;
+
+    constructor(
+        flags: SyntheticEventFlags,
+        action: GestureDragAction,
+        x: number,
+        y: number,
+        dx: number,
+        dy: number,
+        velocity: Vec2 | null,
+    ) {
+        super(flags);
+        this.action = action;
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.velocity = velocity;
+    }
+}
