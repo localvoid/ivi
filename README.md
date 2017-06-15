@@ -61,7 +61,6 @@ exclusively for bug reports and feature requests.
 
 ### Future Ideas
 
-- [Error Boundaries](https://github.com/ivijs/ivi/blob/master/documentation/future/error-boundaries.md)
 - [Custom Renderers](https://github.com/ivijs/ivi/blob/master/documentation/future/custom-renderers.md)
 
 ### Installation
