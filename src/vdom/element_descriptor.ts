@@ -197,7 +197,7 @@ export class ElementDescriptor<P = void> {
     }
 }
 
-/* tslint:disable:max-line-length */
+/* tslint:disable:max-line-length unified-signatures */
 /**
  * Create an ElementDescriptor.
  *
@@ -501,4 +501,4 @@ export function createCustomElementDescriptor(tagName: string, clone = false): E
             ElementDescriptorFlags.WebComponent,
     );
 }
-/* tslint:enable:max-line-length */
+/* tslint:enable:max-line-length unified-signatures*/

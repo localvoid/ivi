@@ -1762,8 +1762,8 @@ function syncChildrenTrackByKeys(
         } while (aStart <= aEnd);
         // Step 2
     } else {
-        let aLength = aEnd - aStart + 1;
-        let bLength = bEnd - bStart + 1;
+        const aLength = aEnd - aStart + 1;
+        const bLength = bEnd - bStart + 1;
         // Optimization for use cases when there is just one node left after prefix/suffix step.
         // TODO: Is it worth enabling it?
         //
@@ -1927,7 +1927,7 @@ function lis(a: number[]): number[] {
             continue;
         }
 
-        let j = result[result.length - 1];
+        const j = result[result.length - 1];
         if (a[j] < a[i]) {
             p[i] = j;
             result.push(i);
@@ -1938,7 +1938,7 @@ function lis(a: number[]): number[] {
         v = result.length - 1;
 
         while (u < v) {
-            let c = ((u + v) / 2) | 0;
+            const c = ((u + v) / 2) | 0;
             if (a[result[c]] < a[i]) {
                 u = c + 1;
             } else {

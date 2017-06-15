@@ -3,7 +3,7 @@ import { scheduleMicrotask } from "../scheduler/microtask";
 
 let _visible = true;
 let _isHidden: () => boolean;
-let _visibilityObservers: ((visible: boolean) => void)[] | undefined = (__IVI_BROWSER__) ? [] : undefined;
+const _visibilityObservers: ((visible: boolean) => void)[] | undefined = (__IVI_BROWSER__) ? [] : undefined;
 let _lock = false;
 
 export function isVisible(): boolean {

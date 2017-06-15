@@ -1,3 +1,4 @@
+/* tslint:disable:max-line-length no-empty-interface */
 
 export interface CSSStyleProps {
     "align-content"?: "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "stretch" | null;
@@ -2561,3 +2562,5 @@ export interface SVGViewElementProps extends SVGElementProps {
 
 export interface SVGUseElementProps extends SVGElementProps, SVGLangSpaceProps {
 }
+
+/* tslint:disable:max-line-length no-empty-interface */

@@ -22,7 +22,7 @@ export const enum UserAgentFlags {
      * Android browser.
      */
     Android = 1 << 2,
-};
+}
 
 /**
  * User Agent, see `UserAgentFlags` for details.

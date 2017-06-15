@@ -31,6 +31,7 @@ declare global {
          * this, if available, otherwise the object's [[Class]] internal property.
          */
         getTypeName(): string;
+        /* tslint:disable:ban-types */
         /**
          * Returns the current function.
          *
@@ -39,6 +40,7 @@ declare global {
          * getFunction() and getThis() will return undefined.
          */
         getFunction(): Function | undefined;
+        /* tslint:enable:ban-types */
         /**
          * Returns the name of the current function, typically its name property. If a name property is not available an
          * attempt will be made to try to infer a name from the function's context.
@@ -147,7 +149,7 @@ export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component
         if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
             const flags = vnode._flags;
             let type;
-            let tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
+            const tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
                 KeepAliveHandler;
 
             if ((flags & VNodeFlags.ComponentClass) !== 0) {

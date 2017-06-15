@@ -161,6 +161,7 @@ export function printWarnOnce(key: string, message: string): void {
     }
 }
 
+/* tslint:disable:ban-types */
 /**
  * Get function name.
  *
@@ -170,6 +171,7 @@ export function printWarnOnce(key: string, message: string): void {
 export function getFunctionName(fn: Function): string {
     return fn.displayName || fn.name || "(anonymous function)";
 }
+/* tslint:enable:ban-types */
 
 /**
  * Begin mark perf.
@@ -214,7 +216,7 @@ function parseQueryString(query: string): { [key: string]: string } {
     }
 
     const b: { [key: string]: string } = {};
-    for (let kv of params) {
+    for (const kv of params) {
         const p = kv.split("=", 2);
         if (p.length === 1) {
             b[p[0]] = "";

@@ -68,7 +68,7 @@ export const AncestorFlagsByTagName: { [tagName: string]: AncestorFlags } = {
  * @returns list of tagNames.
  */
 function ancestorFlagsToTagNames(ancestorFlags: AncestorFlags): string[] {
-    let result = [] as string[];
+    const result = [] as string[];
     if ((ancestorFlags & AncestorFlags.Select) !== 0) {
         result.push("select");
     }

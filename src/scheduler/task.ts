@@ -29,7 +29,7 @@ function handleWindowMessage(ev: MessageEvent): void {
 function runTasks(): void {
     _pending = false;
 
-    let tasks = _tasks;
+    const tasks = _tasks;
     _tasks = [];
     for (let i = 0; i < tasks.length; i++) {
         tasks[i]();

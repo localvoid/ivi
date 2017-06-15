@@ -78,15 +78,6 @@ export {
     NativeEventSourceList, NativeActiveEventSourcesList, NativeEventSources, NativeActiveEventSources,
     Events, ActiveEvents, createEventHandler,
 } from "./events/events";
-export { GesturePointerType, GesturePointerAction, GesturePointerEvent } from "./events/gestures/pointer_event";
-export {
-    GestureEvent, GestureTapEvent, GestureTapAction, GestureLongPressEvent, GestureScaleEvent, GestureScaleAction,
-} from "./events/gestures/gesture_event";
-export { GestureEventFlags, GestureEvents } from "./events/gestures/events";
-export { GestureRecognizer, GestureArena, GestureArenaFlags } from "./events/gestures/arena";
-export { TapGestureRecognizer } from "./events/gestures/tap_recognizer";
-export { LongPressGestureRecognizer } from "./events/gestures/long_press_recognizer";
-// export { ScaleGestureRecognizer } from "./events/gestures/scale_recognizer";
 
 /**
  * Virtual DOM:

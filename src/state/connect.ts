@@ -5,6 +5,7 @@ import { ComponentClass, isComponentClass } from "../vdom/component";
 import { VNode } from "../vdom/vnode";
 import { $c, $connect } from "../vdom/vnode_components";
 
+/* tslint:disable:unified-signatures */
 export function connect<I, O, P>(
     select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,
     render: ComponentClass<O>,
@@ -72,3 +73,4 @@ export function connect<I, O, P>(
         return $connect(descriptor, props);
     };
 }
+/* tslint:enable:unified-signatures */

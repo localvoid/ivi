@@ -219,9 +219,9 @@ export function staticComponent<P extends ComponentClass<any> | ComponentFunctio
  */
 export function getComponentName(component: Component<any> | ComponentFunction<any>): string {
     return getFunctionName(
-        (component as Function).prototype.render === undefined ?
+        (component as ComponentFunction<any>).prototype.render === undefined ?
             component as ComponentFunction<any> :
-            (component as Object).constructor,
+            (component as ComponentFunction<any>).constructor,
     );
 }
 

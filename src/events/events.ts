@@ -122,7 +122,7 @@ export interface NativeEventSourceList {
     volumechange: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
     waiting: NativeEventSource<SyntheticNativeEventClass<Event, SyntheticNativeEvent<Event>>>;
     wheel: NativeEventSource<SyntheticNativeEventClass<WheelEvent, SyntheticWheelEvent>>;
-};
+}
 
 /* tslint:disable:max-line-length */
 export const NativeEventSources: NativeEventSourceList = {

@@ -46,7 +46,7 @@ export function $t(content: string | number | boolean | null): VNode<null> {
     return new VNode<null>(VNodeFlags.Text, null, null, null, content);
 }
 
-/* tslint:disable:max-line-length */
+/* tslint:disable:max-line-length unified-signatures */
 /**
  * Create a VNodeBuilder representing an Element node.
  *
@@ -311,7 +311,7 @@ export function $m(tagName: MediaTagType, className?: string): VNode<HTMLMediaEl
         className === undefined ? null : className,
         null);
 }
-/* tslint:enable:max-line-length */
+/* tslint:enable:max-line-length unified-signatures */
 
 /**
  * Create a VNodeBuilder representing an ElementDescriptor.

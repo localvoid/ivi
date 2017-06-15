@@ -426,7 +426,7 @@ export function nodeDepth(node: Node | null): number {
  */
 export function firstLeaf(node: Node): Node {
     while (node !== null) {
-        let next = node.firstChild;
+        const next = node.firstChild;
         if (next === null) {
             break;
         } else {
