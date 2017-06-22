@@ -394,6 +394,7 @@ function setInnerSVG(element: SVGElement, content: string): void {
     if (innerHTMLSVGContainer === undefined) {
         innerHTMLSVGContainer = document.createElement("div");
     }
+    element.textContent = "";
     innerHTMLSVGContainer.innerHTML = `<svg>${content}</svg>`;
     const svg = innerHTMLSVGContainer.firstChild;
     let c = svg!.firstChild;
