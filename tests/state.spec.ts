@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { mut } from "../src/state/mutable";
 import { createStore } from "../src/state/store";
-import { selectorData, memoizeSelector, memoizeSelectorGlobally } from "../src/state/selector";
+import { selectorData, memoizeSelector } from "../src/state/selector";
 
 describe("state", function () {
     describe("mutable data", function () {
@@ -120,35 +120,6 @@ describe("state", function () {
                         },
                         function (ref) {
                             return ref ? r = ref : r;
-                        },
-                    );
-                    sel(1, 2);
-                    sel(1, 3);
-                    expect(p).to.be.not.null;
-                    expect(p.in).to.be.equal(2);
-                    expect(p.out).to.be.equal(2);
-                });
-            });
-
-            describe("globally", function () {
-                it("should initially pass a null value as a prev state", function () {
-                    let p;
-                    const sel = memoizeSelectorGlobally(
-                        function (prev: any, props: any) {
-                            p = prev;
-                            return selectorData(props);
-                        },
-                    );
-                    sel(1, 2);
-                    expect(p).to.be.null;
-                });
-
-                it("should pass memoized value as a prev state", function () {
-                    let p;
-                    const sel = memoizeSelectorGlobally(
-                        function (prev: any, props: any) {
-                            p = prev;
-                            return selectorData(props);
                         },
                     );
                     sel(1, 2);
