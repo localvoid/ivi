@@ -106,7 +106,7 @@ export { Root, findRoot, render, renderNextFrame, augment, update, updateNextFra
  * State:
  */
 export { Mutable, mut } from "./state/mutable";
-export { selectorData, memoizeSelector, memoizeSelectorGlobally } from "./state/selector";
+export { selectorData, memoizeSelector } from "./state/selector";
 export { connect } from "./state/connect";
 export { Store, createStore } from "./state/store";
 
