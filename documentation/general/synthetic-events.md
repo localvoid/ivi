@@ -44,7 +44,7 @@ interface VNode {
 ```ts
 import { Component, Events, $h, $c, render } from "ivi";
 
-class StatefulComponent extends Component<null> {
+class StatefulComponent extends Component {
     private counter = 0;
 
     private onClick = Events.onClick((ev) => {

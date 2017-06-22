@@ -5,12 +5,12 @@
 - [Virtual DOM](general/virtual-dom.md)
 - [Components](general/components.md)
 - [Synthetic Events](general/synthetic-events.md)
+- [External State](general/external-state.md)
+- [Context](general/context.md)
 - [Build Configuration](general/build-configuration.md)
 
 ## Advanced
 
-- [External State](advanced/external-state.md)
-- [Context](advanced/context.md)
 - [Optimization Hints](advanced/optimization-hints.md)
 - [Partially Static Elements](advanced/partially-static-elements.md)
 - [Keep Alive](advanced/kee-alive.md)

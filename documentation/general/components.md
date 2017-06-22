@@ -65,7 +65,7 @@ interface Component<P = void> {
 Invalidate view. This method should be invoked when internal state changes should trigger an update of the current view.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     invalidate(): void;
 }
 ```
@@ -92,7 +92,7 @@ class StatefulComponent extends Component {
 Render component representation with a Virtual DOM.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     render(): VNode<any> | undefined;
 }
 ```
@@ -108,7 +108,7 @@ class StatefulComponent extends Component<string> {
 Component received a new props.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     newPropsReceived(oldProps: P, newProps: P): void;
 }
 ```
@@ -130,7 +130,7 @@ class StatefulComponent extends Component<string> {
 Component is attached to the document. Attached methods are invoked in top to bottom order.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     attached(): void;
 }
 ```
@@ -138,7 +138,7 @@ interface Component<P = void> {
 Component is detached from the document. Detached methods are invoked in bottom to top order.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     detached(): void;
 }
 ```
@@ -146,7 +146,7 @@ interface Component<P = void> {
 Component will be updated.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     beforeUpdate(): void;
 }
 ```
@@ -154,7 +154,7 @@ interface Component<P = void> {
 Component updated.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     updated(): void;
 }
 ```
@@ -162,7 +162,7 @@ interface Component<P = void> {
 Component invalidated.
 
 ```ts
-interface Component<P = void> {
+interface Component {
     invalidated(): void;
 }
 ```

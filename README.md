@@ -39,12 +39,12 @@ exclusively for bug reports and feature requests.
 - [Virtual DOM](https://github.com/ivijs/ivi/blob/master/documentation/general/virtual-dom.md)
 - [Components](https://github.com/ivijs/ivi/blob/master/documentation/general/components.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/general/synthetic-events.md)
+- [External State](https://github.com/ivijs/ivi/blob/master/documentation/general/external-state.md)
+- [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
 - [Build Configuration](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md)
 
 ### Advanced
 
-- [External State](https://github.com/ivijs/ivi/blob/master/documentation/advanced/external-state.md)
-- [Context](https://github.com/ivijs/ivi/blob/master/documentation/advanced/context.md)
 - [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
 - [Partially Static Elements](https://github.com/ivijs/ivi/blob/master/documentation/advanced/partially-static-elements.md)
 - [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/advanced/keep-alive.md)
@@ -155,7 +155,7 @@ Stateful components are implemented with ES6 classes and should be extended from
 ```ts
 import { Component, $h, $c, render } from "ivi";
 
-class StatefulComponent extends Component<null> {
+class StatefulComponent extends Component {
     private time = 0;
     private timeoutId = 0;
 
