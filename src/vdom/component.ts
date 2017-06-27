@@ -8,7 +8,7 @@ import { currentFrame } from "../scheduler/frame";
 /**
  * Component function constructor.
  */
-export interface ComponentFunction<P = void> {
+export interface StatelessComponent<P = void> {
     (props: P): VNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
     shouldAugment?: (props: P) => boolean;
@@ -173,9 +173,9 @@ export abstract class Component<P = void> {
  * @param target Component constructor.
  * @returns Component constructor with identity check.
  */
-export function checkPropsShallowEquality<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P {
+export function checkPropsShallowEquality<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
     if (target.prototype.render === undefined) {
-        (target as ComponentFunction<any>).isPropsChanged = isPropsNotShallowEqual;
+        (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
     } else {
         target.prototype.isPropsChanged = isPropsNotShallowEqual;
     }
@@ -202,9 +202,9 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Compon
  * @param target Component constructor.
  * @returns Component constructor with static property.
  */
-export function staticComponent<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P {
+export function staticComponent<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
     if (target.prototype.render === undefined) {
-        (target as ComponentFunction<any>).isPropsChanged = NOOP_FALSE;
+        (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
     } else {
         target.prototype.isPropsChanged = NOOP_FALSE;
     }
@@ -217,11 +217,11 @@ export function staticComponent<P extends ComponentClass<any> | ComponentFunctio
  * @param component Component.
  * @return Component name.
  */
-export function getComponentName(component: Component<any> | ComponentFunction<any>): string {
+export function getComponentName(component: Component<any> | StatelessComponent<any>): string {
     return getFunctionName(
-        (component as ComponentFunction<any>).prototype.render === undefined ?
-            component as ComponentFunction<any> :
-            (component as ComponentFunction<any>).constructor,
+        (component as StatelessComponent<any>).prototype.render === undefined ?
+            component as StatelessComponent<any> :
+            (component as StatelessComponent<any>).constructor,
     );
 }
 

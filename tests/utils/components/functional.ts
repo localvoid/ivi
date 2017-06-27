@@ -1,5 +1,5 @@
 import { Context } from "../../../src/common/types";
-import { ComponentFunction } from "../../../src/vdom/component";
+import { StatelessComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
 import { $t } from "../../../src/vdom/vnode_dom";
 import { $c } from "../../../src/vdom/vnode_components";
@@ -24,7 +24,7 @@ export function TestFunctionalComponent(props: TestFunctionalComponentProps) {
     return props.child;
 }
 
-(TestFunctionalComponent as ComponentFunction<TestFunctionalComponentProps>).isPropsChanged = function (
+(TestFunctionalComponent as StatelessComponent<TestFunctionalComponentProps>).isPropsChanged = function (
     oldProps: TestFunctionalComponentProps,
     newProps: TestFunctionalComponentProps,
 ) {
@@ -34,7 +34,7 @@ export function TestFunctionalComponent(props: TestFunctionalComponentProps) {
     return true;
 };
 
-(TestFunctionalComponent as ComponentFunction<TestFunctionalComponentProps>).shouldAugment = function (
+(TestFunctionalComponent as StatelessComponent<TestFunctionalComponentProps>).shouldAugment = function (
     props: TestFunctionalComponentProps,
 ) {
     if (props.hooks.shouldAugment) {

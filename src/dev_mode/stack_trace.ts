@@ -5,7 +5,7 @@
  */
 import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
 import { Context } from "../common/types";
-import { ComponentClass, ComponentFunction, Component } from "../vdom/component";
+import { ComponentClass, StatelessComponent, Component } from "../vdom/component";
 import { VNode } from "../vdom/vnode";
 import { VNodeFlags } from "../vdom/flags";
 import { ConnectDescriptor } from "../vdom/connect_descriptor";
@@ -124,7 +124,7 @@ export const enum ComponentStackFrameType {
 
 export interface ComponentStackTraceFrame {
     type: ComponentStackFrameType;
-    tag: ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> | KeepAliveHandler | undefined;
+    tag: ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | KeepAliveHandler | undefined;
     instance: Component<any> | Context | undefined;
 }
 
@@ -149,7 +149,7 @@ export function stackTracePushComponent(vnode: VNode<any>, instance?: Component<
         if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
             const flags = vnode._flags;
             let type;
-            const tag = vnode._tag as ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
+            const tag = vnode._tag as ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
                 KeepAliveHandler;
 
             if ((flags & VNodeFlags.ComponentClass) !== 0) {
@@ -239,7 +239,7 @@ function stackTraceToString(): string {
                     result += `[C]${getFunctionName(cls)} #${instance._debugId}`;
                     break;
                 case ComponentStackFrameType.ComponentFunction:
-                    const fn = frame.tag as ComponentFunction<any>;
+                    const fn = frame.tag as StatelessComponent<any>;
                     result += `[F]${getFunctionName(fn)}`;
                     break;
                 case ComponentStackFrameType.Connect:
@@ -295,7 +295,7 @@ export function printComponentStackTrace(): void {
                             console.groupEnd();
                             break;
                         case ComponentStackFrameType.ComponentFunction:
-                            const fn = frame.tag as ComponentFunction<any>;
+                            const fn = frame.tag as StatelessComponent<any>;
                             console.log(`[F]${getFunctionName(fn)}`);
                             break;
                         case ComponentStackFrameType.Connect:

@@ -83,7 +83,7 @@ export {
  * Virtual DOM:
  */
 export {
-    ComponentClass, ComponentFunction, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
+    ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
 export { VNodeFlags, SyncFlags } from "./vdom/flags";
 export { ConnectDescriptor, SelectorData } from "./vdom/connect_descriptor";
@@ -109,7 +109,7 @@ import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/
 import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode/component_tree";
 import { FEATURES, FeatureFlags } from "./common/feature_detection";
 import { Context } from "./common/types";
-import { Component, ComponentClass, ComponentFunction } from "./vdom/component";
+import { Component, ComponentClass, StatelessComponent } from "./vdom/component";
 import { ConnectDescriptor } from "./vdom/connect_descriptor";
 import { KeepAliveHandler } from "./vdom/keep_alive";
 import { IVNode } from "./vdom/ivnode";
@@ -135,7 +135,7 @@ function _printComponentTreeVisitor(vnode: IVNode<any>) {
                 console.groupCollapsed(`[K]${getFunctionName(handler)}`);
             }
         } else {
-            console.groupCollapsed(`[F]${getFunctionName(vnode._tag as ComponentFunction)}`);
+            console.groupCollapsed(`[F]${getFunctionName(vnode._tag as StatelessComponent)}`);
         }
     }
     console.groupEnd();

@@ -33,7 +33,7 @@ import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { VNode, ElementProps, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
-import { ComponentClass, ComponentFunction, Component } from "./component";
+import { ComponentClass, StatelessComponent, Component } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 import { setEventHandlersToDOMNode } from "../events/utils";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
@@ -102,7 +102,7 @@ function componentPerfMarkEnd(
                         perfMarkEnd(`${method} [K]`, id);
                     }
                 } else {
-                    const fn = vnode._tag as ComponentFunction<any>;
+                    const fn = vnode._tag as StatelessComponent<any>;
                     perfMarkEnd(`${method} [F]${getFunctionName(fn)}`, id);
                 }
             }
@@ -748,7 +748,7 @@ function vNodeRender(
                     }
                 } else {
                     componentPerfMarkBegin("create", vnode);
-                    vnode._children = (vnode._tag as ComponentFunction<any>)(vnode._props);
+                    vnode._children = (vnode._tag as StatelessComponent<any>)(vnode._props);
                 }
                 node = vNodeRender(
                     parent,
@@ -947,7 +947,7 @@ function vNodeAugment(
                         }
                         vNodeAugment(parent, node, vnode._children as VNode<any>, context);
                     } else {
-                        const fc = vnode._tag as ComponentFunction<any>;
+                        const fc = vnode._tag as StatelessComponent<any>;
                         vnode._children = fc(vnode._props);
                         if (fc.shouldAugment === undefined ||
                             fc.shouldAugment(vnode._props) === true) {
@@ -1132,7 +1132,7 @@ function vNodeSync(
                     vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
                 }
             } else { // (flags & VNodeFlags.ComponentFunction)
-                const fn = b._tag as ComponentFunction<any>;
+                const fn = b._tag as StatelessComponent<any>;
 
                 if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
                     if ((bFlags & VNodeFlags.Connect) !== 0) {

@@ -2,7 +2,7 @@ import { Context } from "../common/types";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
-import { ComponentFunction, ComponentClass } from "./component";
+import { StatelessComponent, ComponentClass } from "./component";
 import { VNode } from "./vnode";
 
 /**
@@ -12,10 +12,10 @@ import { VNode } from "./vnode";
  * @param props Component props.
  * @returns VNodeBuilder object.
  */
-export function $c(c: ComponentFunction<void> | ComponentClass<void>): VNode<void>;
-export function $c(c: ComponentFunction<null> | ComponentClass<null>): VNode<null>;
-export function $c<P, U extends P>(c: ComponentFunction<P> | ComponentClass<P>, props: U): VNode<P>;
-export function $c<P>(c: ComponentFunction<P> | ComponentClass<P>, props?: P): VNode<P> {
+export function $c(c: StatelessComponent<void> | ComponentClass<void>): VNode<void>;
+export function $c(c: StatelessComponent<null> | ComponentClass<null>): VNode<null>;
+export function $c<P, U extends P>(c: StatelessComponent<P> | ComponentClass<P>, props: U): VNode<P>;
+export function $c<P>(c: StatelessComponent<P> | ComponentClass<P>, props?: P): VNode<P> {
     return new VNode<P>(
         (c.prototype.render === undefined) ? VNodeFlags.ComponentFunction : VNodeFlags.ComponentClass,
         c,

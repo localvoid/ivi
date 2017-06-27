@@ -3,7 +3,7 @@ import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMS
 import { isVoidElement, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { InputType } from "../common/dom";
 import { VNodeFlags } from "./flags";
-import { ComponentFunction, ComponentClass, Component } from "./component";
+import { StatelessComponent, ComponentClass, Component } from "./component";
 import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { EventHandler } from "../events/event_handler";
@@ -77,7 +77,7 @@ export class VNode<P = null> {
      * Simple elements has a string type values, components can be a simple functions, constructor, or special
      * descriptors for nodes that change syncing algorithm behavior.
      */
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
+    _tag: string | ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
     KeepAliveHandler | null;
     /**
      * Children syncing algorithm is using key property to find the same node in the previous children array. Key
@@ -100,7 +100,7 @@ export class VNode<P = null> {
 
     constructor(
         flags: number,
-        tag: string | ComponentFunction<P> | ComponentClass<P> | ConnectDescriptor<any, any, any> |
+        tag: string | StatelessComponent<P> | ComponentClass<P> | ConnectDescriptor<any, any, any> |
             KeepAliveHandler | null,
         props: ElementProps<P> | P | null,
         className: string | null,
