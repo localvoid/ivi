@@ -62,34 +62,21 @@ export const enum VNodeFlags {
      */
     SvgElement = 1 << 13,
     /**
-     * VNode is an Element Descriptor.
-     */
-    ElementDescriptor = 1 << 14,
-    /**
-     * VNode is a Custom Element.
-     */
-    WebComponent = 1 << 15,
-    /**
      * Specialized VNode with connect functionality.
      */
-    Connect = 1 << 16,
+    Connect = 1 << 14,
     /**
      * Specialized VNode with an update context functionality.
      */
-    UpdateContext = 1 << 17,
+    UpdateContext = 1 << 15,
     /**
      * Specialized VNode with keep alive functionality.
      */
-    KeepAlive = 1 << 18,
+    KeepAlive = 1 << 16,
     /**
      * VNode element will be automatically focused after instantiation.
      */
-    Autofocus = 1 << 19,
-    /**
-     * VNode is deeply immutable. Deeply immutable VNodes can't have references to instances, they are used as a
-     * prototype for building mutable trees.
-     */
-    Immutable = 1 << 20,
+    Autofocus = 1 << 17,
 
     /**
      * VNode represents a Component.
@@ -99,7 +86,7 @@ export const enum VNodeFlags {
      * Flags that should match to be compatible for syncing.
      */
     Syncable = Text | Element | Component | Key | InputElement | TextAreaElement | MediaElement | SvgElement |
-    ElementDescriptor | WebComponent | Connect | UpdateContext | KeepAlive,
+    Connect | UpdateContext | KeepAlive,
 }
 
 /**
@@ -123,44 +110,6 @@ export const enum ComponentFlags {
      * Component is dirty and should be updated.
      */
     Dirty = DirtyState | Animated,
-}
-
-/**
- * Element Descriptor flags.
- */
-export const enum ElementDescriptorFlags {
-    // it is important that flags below match `VNodeFlags`, because they will be copied to VNode.
-    Element = VNodeFlags.Element,
-    InputElement = VNodeFlags.InputElement,
-    TextAreaElement = VNodeFlags.TextAreaElement,
-    MediaElement = VNodeFlags.MediaElement,
-    SvgElement = VNodeFlags.SvgElement,
-    ElementDescriptor = VNodeFlags.ElementDescriptor,
-    WebComponent = VNodeFlags.WebComponent,
-
-    /**
-     * Copy flags to VNode.
-     */
-    CopyFlags = ElementDescriptorFlags.Element | ElementDescriptorFlags.InputElement |
-    ElementDescriptorFlags.TextAreaElement | ElementDescriptorFlags.MediaElement | ElementDescriptorFlags.SvgElement |
-    ElementDescriptorFlags.ElementDescriptor | ElementDescriptorFlags.WebComponent,
-
-    /**
-     * Clone nodes from a base node with `Node.cloneNode(false)` method.
-     */
-    EnabledCloning = 1 << 17,
-    /**
-     * Protect class name from overriding.
-     */
-    ProtectClassName = 1 << 18,
-    /**
-     * Protect props from overriding.
-     */
-    ProtectProps = 1 << 19,
-    /**
-     * Protect style from overriding.
-     */
-    ProtectStyle = 1 << 20,
 }
 
 /**

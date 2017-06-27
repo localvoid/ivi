@@ -12,7 +12,6 @@
 ## Advanced
 
 - [Optimization Hints](advanced/optimization-hints.md)
-- [Partially Static Elements](advanced/partially-static-elements.md)
 - [Keep Alive](advanced/kee-alive.md)
 - [Scheduler](advanced/scheduler.md)
 - [Development Mode](advanced/dev-mode.md)

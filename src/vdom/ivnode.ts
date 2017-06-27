@@ -3,7 +3,6 @@ import { Context } from "../common/types";
 import { CSSStyleProps } from "../common/dom_props";
 import { VNodeFlags } from "./flags";
 import { ComponentClass, ComponentFunction, Component } from "./component";
-import { ElementDescriptor } from "./element_descriptor";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 
@@ -28,8 +27,8 @@ export interface IVNode<P = null> {
      * Simple elements has a string type values, components can be a simple functions, constructor, or special
      * descriptors for nodes that change syncing algorithm behavior.
      */
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
-    ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
+    _tag: string | ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
+    KeepAliveHandler | null;
     /**
      * Children syncing algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.

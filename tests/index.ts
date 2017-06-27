@@ -10,7 +10,6 @@ import "./sync.spec";
 import "./lifecycle.spec";
 import "./context.spec";
 import "./component.spec";
-import "./element_descriptor.spec";
 import "./events.spec";
 import "./augment.spec";
 import "./keep-alive.spec";

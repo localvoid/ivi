@@ -1,4 +1,3 @@
-import { isValidTag } from "../dev_mode/dom";
 import { HTMLTagType, SVGTagType, MediaTagType, InputType } from "../common/dom";
 import {
     HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
@@ -32,9 +31,8 @@ import {
     SVGSVGElementProps, SVGSwitchElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
     SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "../common/dom_props";
-import { VNodeFlags, ElementDescriptorFlags } from "./flags";
+import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
-import { ElementDescriptor } from "./element_descriptor";
 
 /**
  * Create a VNodeBuilder representing a Text node.
@@ -312,47 +310,3 @@ export function $m(tagName: MediaTagType, className?: string): VNode<HTMLMediaEl
         null);
 }
 /* tslint:enable:max-line-length unified-signatures */
-
-/**
- * Create a VNodeBuilder representing an ElementDescriptor.
- *
- * @param d Element Descriptor.
- * @param className Class name.
- * @returns VNodeBuilder object.
- */
-export function $e<P>(d: ElementDescriptor<P>, className?: string): VNode<P> {
-    if (__IVI_DEV__) {
-        if (className !== undefined) {
-            if ((d._flags & ElementDescriptorFlags.ProtectClassName) !== 0) {
-                throw new Error("Failed to set className, className is protected by an ElementDescriptor.");
-            }
-        }
-    }
-    return new VNode<P>(
-        d._flags & ElementDescriptorFlags.CopyFlags,
-        d,
-        null,
-        className === undefined ? null : className,
-        null);
-}
-
-/**
- * Create a VNodeBuilder representing a Custom Element (WebComponent).
- *
- * @param d Element Descriptor.
- * @param className Class name.
- * @returns VNodeBuilder object.
- */
-export function $w(tagName: string, className?: string): VNode<{ [key: string]: any } | null> {
-    if (__IVI_DEV__) {
-        if (!isValidTag(tagName)) {
-            throw new Error(`Invalid tag: ${tagName}`);
-        }
-    }
-    return new VNode<HTMLElementProps | null>(
-        VNodeFlags.Element | VNodeFlags.WebComponent,
-        tagName,
-        null,
-        className === undefined ? null : className,
-        null);
-}

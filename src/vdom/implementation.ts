@@ -31,7 +31,6 @@ import {
 } from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { IVNode, ElementProps, getDOMInstanceFromVNode } from "./ivnode";
-import { ElementDescriptor } from "./element_descriptor";
 import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { ComponentClass, ComponentFunction, Component } from "./component";
@@ -607,11 +606,6 @@ function vNodeRender(
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
-
-        if (vnode._flags & VNodeFlags.Immutable) {
-            throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
-                "`cloneVNode` function.");
-        }
     }
 
     const flags = vnode._flags;
@@ -631,16 +625,12 @@ function vNodeRender(
             checkNestingViolation();
             node = document.createTextNode(vnode._children as string);
         } else { // (flags & VNodeFlags.Element)
-            pushNestingState((flags & VNodeFlags.ElementDescriptor) !== 0 ?
-                (vnode._tag as ElementDescriptor<any>)._tag :
-                vnode._tag as string);
+            pushNestingState(vnode._tag as string);
             checkNestingViolation();
 
             devModeOnElementBeforeCreate(vnode);
-            if ((flags & (VNodeFlags.ElementDescriptor | VNodeFlags.InputElement | VNodeFlags.SvgElement)) !== 0) {
-                if ((flags & VNodeFlags.ElementDescriptor) !== 0) {
-                    node = (vnode._tag as ElementDescriptor<any>).createElement();
-                } else if ((flags & VNodeFlags.SvgElement) !== 0) {
+            if ((flags & (VNodeFlags.InputElement | VNodeFlags.SvgElement)) !== 0) {
+                if ((flags & VNodeFlags.SvgElement) !== 0) {
                     node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
                 } else {
                     if ((flags & VNodeFlags.TextAreaElement) !== 0) {
@@ -829,11 +819,6 @@ function vNodeAugment(
             throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
                 "clone VNode with `cloneVNode`, or use immutable vnodes `vnode.immutable()` for hoisted trees.");
         }
-
-        if (vnode._flags & VNodeFlags.Immutable) {
-            throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
-                "`cloneVNode` function.");
-        }
     }
 
     let instance: Node | Component<any> | null = null;
@@ -851,9 +836,7 @@ function vNodeAugment(
 
                 if ((flags & VNodeFlags.Element) !== 0) {
                     if (__IVI_DEV__) {
-                        pushNestingState((flags & VNodeFlags.ElementDescriptor) !== 0 ?
-                            (vnode._tag as ElementDescriptor<any>)._tag :
-                            vnode._tag as string);
+                        pushNestingState(vnode._tag as string);
                         checkNestingViolation();
                         if (node.nodeType !== 1) {
                             throw new Error(`Invalid node type: expected "1", actual "${node.nodeType}".`);
@@ -1037,13 +1020,6 @@ function vNodeSync(
     context: Context,
     syncFlags: SyncFlags,
 ): void {
-    if (__IVI_DEV__) {
-        if (b._flags & VNodeFlags.Immutable) {
-            throw new Error("Immutable VNodes can't be used to render trees, clone an immutable tree with a " +
-                "`cloneVNode` function.");
-        }
-    }
-
     if (a === b) {
         vNodeUpdateComponents(parent, b, context, syncFlags);
         return;

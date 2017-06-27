@@ -3,9 +3,8 @@ import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMS
 import { isVoidElement, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { InputType } from "../common/dom";
 import { IVNode, ElementProps } from "./ivnode";
-import { VNodeFlags, ElementDescriptorFlags } from "./flags";
+import { VNodeFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
-import { ElementDescriptor } from "./element_descriptor";
 import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { EventHandler } from "../events/event_handler";
@@ -46,8 +45,8 @@ import { CSSStyleProps } from "../common/dom_props";
 export class VNode<P = null> implements IVNode<P> {
     _flags: VNodeFlags;
     _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
-    _tag: string | ComponentClass<any> | ComponentFunction<any> | ElementDescriptor<any> |
-    ConnectDescriptor<any, any, any> | KeepAliveHandler | null;
+    _tag: string | ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
+    KeepAliveHandler | null;
     _key: any;
     _props: ElementProps<P> | P | null;
     _instance: Node | Component<any> | SelectorData | Context | null;
@@ -55,8 +54,8 @@ export class VNode<P = null> implements IVNode<P> {
 
     constructor(
         flags: number,
-        tag: string | ComponentFunction<P> | ComponentClass<P> | ElementDescriptor<any> |
-            ConnectDescriptor<any, any, any> | KeepAliveHandler | null,
+        tag: string | ComponentFunction<P> | ComponentClass<P> | ConnectDescriptor<any, any, any> |
+            KeepAliveHandler | null,
         props: ElementProps<P> | P | null,
         className: string | null,
         children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
@@ -96,14 +95,6 @@ export class VNode<P = null> implements IVNode<P> {
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set className, className is available on element nodes only.");
             }
-            if (className !== null) {
-                if ((this._flags & VNodeFlags.ElementDescriptor) !== 0) {
-                    const d = this._tag as ElementDescriptor<P>;
-                    if ((d._flags & ElementDescriptorFlags.ProtectClassName) !== 0) {
-                        throw new Error("Failed to set className, className is protected by an ElementDescriptor.");
-                    }
-                }
-            }
         }
         this._className = className;
         return this;
@@ -123,24 +114,6 @@ export class VNode<P = null> implements IVNode<P> {
 
             if (style !== null) {
                 checkDOMStylesForTypos(style);
-
-                if ((this._flags & VNodeFlags.ElementDescriptor) !== 0) {
-                    const d = this._tag as ElementDescriptor<P>;
-                    if (d._flags & ElementDescriptorFlags.ProtectStyle) {
-                        if (d._protectedStyle) {
-                            const keys = Object.keys(d._protectedStyle);
-                            for (let i = 0; i < keys.length; i++) {
-                                const key = keys[i];
-                                if (style.hasOwnProperty(key)) {
-                                    throw new Error(`Failed to set style, "${key}" style is protected by an ` +
-                                        `ElementDescriptor.`);
-                                }
-                            }
-                        } else {
-                            throw new Error("Failed to set style, style is protected by an ElementDescriptor.");
-                        }
-                    }
-                }
             }
         }
         if (this._props === null) {
@@ -194,24 +167,6 @@ export class VNode<P = null> implements IVNode<P> {
 
                 if (this._flags & VNodeFlags.SvgElement) {
                     checkDeprecatedDOMSVGAttributes(this._tag as string, props);
-                }
-
-                if (this._flags & VNodeFlags.ElementDescriptor) {
-                    const d = this._tag as ElementDescriptor<P>;
-                    if (d._flags & ElementDescriptorFlags.ProtectProps) {
-                        if (d._protectedProps) {
-                            const keys = Object.keys(d._protectedProps);
-                            for (let i = 0; i < keys.length; i++) {
-                                const key = keys[i];
-                                if (props.hasOwnProperty(key)) {
-                                    throw new Error(`Failed to set props, "${key}" property is protected by an ` +
-                                        `ElementDescriptor.`);
-                                }
-                            }
-                        } else {
-                            throw new Error("Failed to set props, props are protected by an ElementDescriptor.");
-                        }
-                    }
                 }
             }
         }
@@ -422,20 +377,6 @@ export class VNode<P = null> implements IVNode<P> {
             }
         }
         this._children = checked;
-        return this;
-    }
-
-    /**
-     * Marks VNode as an immutable.
-     *
-     * Immutable VNodes can't be used directly when rendering trees, they should be cloned with a `cloneVNode` function.
-     *
-     * @returns VNodeBuilder.
-     */
-    immutable(): VNode<P> {
-        if (__IVI_DEV__) {
-            this._flags |= VNodeFlags.Immutable;
-        }
         return this;
     }
 

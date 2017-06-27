@@ -85,19 +85,15 @@ export {
 export {
     ComponentClass, ComponentFunction, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
-export { VNodeFlags, ElementDescriptorFlags, SyncFlags } from "./vdom/flags";
+export { VNodeFlags, SyncFlags } from "./vdom/flags";
 export {
     IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode,
     getComponentInstanceFromVNode,
 } from "./vdom/ivnode";
-export {
-    ElementDescriptor, createElementDescriptor, createSVGElementDescriptor, createInputElementDescriptor,
-    createMediaElementDescriptor, createCustomElementDescriptor,
-} from "./vdom/element_descriptor";
 export { ConnectDescriptor, SelectorData } from "./vdom/connect_descriptor";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { VNode } from "./vdom/vnode";
-export { $t, $h, $s, $i, $m, $e, $w } from "./vdom/vnode_dom";
+export { $t, $h, $s, $i, $m } from "./vdom/vnode_dom";
 export { $c, $connect, $context, $keepAlive } from "./vdom/vnode_components";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 export { Root, findRoot, render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
