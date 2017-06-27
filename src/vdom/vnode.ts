@@ -2,7 +2,6 @@ import { Context } from "../common/types";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isVoidElement, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { InputType } from "../common/dom";
-import { IVNode, ElementProps } from "./ivnode";
 import { VNodeFlags } from "./flags";
 import { ComponentFunction, ComponentClass, Component } from "./component";
 import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
@@ -10,17 +9,32 @@ import { KeepAliveHandler } from "./keep_alive";
 import { EventHandler } from "../events/event_handler";
 import { CSSStyleProps } from "../common/dom_props";
 
+export interface ElementProps<P> {
+    /**
+     * Attributes.
+     */
+    attrs: P | null;
+    /**
+     * Style.
+     */
+    style: CSSStyleProps | null;
+    /**
+     * Events.
+     */
+    events: Array<EventHandler | null> | EventHandler | null;
+}
+
 /**
- * VNode Builder provides a chain-method API to build VNodes.
+ * Virtual DOM Node.
  *
- * VNodeBuilder class has a parametric type `P` to specify `props` type.
+ * VNode class has a parametric type `P` to specify `props` type.
  *
  *     const vnode = $h("div", "div-class-name")
  *         .props({ id: "div-id" })
  *         .events(Events.onClick((e) => console.log("click event", e)))
  *         .children("Hello");
  *
- * There are several factory functions that create VNode Builder objects:
+ * There are several factory functions that create VNode instances:
  *
  *     // Basic HTML Elements
  *     $h(tagName: string, className?: string): VNodeBuilder<HTMLElementProps | null>;
@@ -42,14 +56,46 @@ import { CSSStyleProps } from "../common/dom_props";
  *
  * @final
  */
-export class VNode<P = null> implements IVNode<P> {
+export class VNode<P = null> {
+    /**
+     * Flags, see `VNodeFlags` for details.
+     */
     _flags: VNodeFlags;
-    _children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined;
+    /**
+     * Children property has a dynamic type that depends on the node kind.
+     *
+     * Element Nodes should contain children virtual nodes in a flat array, singular virtual node or simple text.
+     *
+     * Input Element Nodes should contain input value (value or checked).
+     *
+     * Stateless Components should contain virtual root nodes.
+     */
+    _children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined;
+    /**
+     * Tag property contains details about the type of the element.
+     *
+     * Simple elements has a string type values, components can be a simple functions, constructor, or special
+     * descriptors for nodes that change syncing algorithm behavior.
+     */
     _tag: string | ComponentClass<any> | ComponentFunction<any> | ConnectDescriptor<any, any, any> |
     KeepAliveHandler | null;
+    /**
+     * Children syncing algorithm is using key property to find the same node in the previous children array. Key
+     * should be unique among its siblings.
+     */
     _key: any;
+    /**
+     * Properties.
+     */
     _props: ElementProps<P> | P | null;
+    /**
+     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
+     * time VNode is synced, reference will be transferred from the old VNode to the new one.
+     */
     _instance: Node | Component<any> | SelectorData | Context | null;
+    /**
+     * Class name.
+     */
     _className: string | null;
 
     constructor(
@@ -58,7 +104,7 @@ export class VNode<P = null> implements IVNode<P> {
             KeepAliveHandler | null,
         props: ElementProps<P> | P | null,
         className: string | null,
-        children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
+        children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
     ) {
         this._flags = flags;
         this._children = children;
@@ -191,7 +237,7 @@ export class VNode<P = null> implements IVNode<P> {
      *   strings with text nodes.
      * @returns VNodeBuilder.
      */
-    children(...children: Array<IVNode<any>[] | IVNode<any> | string | number | null>): VNode<P>;
+    children(...children: Array<VNode<any>[] | VNode<any> | string | number | null>): VNode<P>;
     children(): VNode<P> {
         if (__IVI_DEV__) {
             if (this._flags &
@@ -219,11 +265,11 @@ export class VNode<P = null> implements IVNode<P> {
         let f = 0;
         let r = null;
         if (children.length === 1) {
-            r = children[0] as IVNode<any>[] | IVNode<any> | string | number | null;
+            r = children[0] as VNode<any>[] | VNode<any> | string | number | null;
             if (typeof r === "object") {
                 if (r !== null) {
                     if (r.constructor === Array) {
-                        r = r as IVNode<any>[];
+                        r = r as VNode<any>[];
                         if (r.length > 1) {
                             f = VNodeFlags.ChildrenArray;
                         } else if (r.length === 1) {
@@ -292,10 +338,10 @@ export class VNode<P = null> implements IVNode<P> {
                                                     " array should have explicit keys.");
                                             }
                                         }
-                                        r[k++] = c[j] as IVNode<any>;
+                                        r[k++] = c[j] as VNode<any>;
                                     }
                                 } else {
-                                    r[k++] = c as IVNode<any>;
+                                    r[k++] = c as VNode<any>;
                                     if ((c._flags & VNodeFlags.Key) === 0) {
                                         c._key = i;
                                     }
@@ -439,7 +485,35 @@ export class VNode<P = null> implements IVNode<P> {
     }
 }
 
-export function checkUniqueKeys(children: IVNode<any>[]): void {
+/**
+ * Get reference to a DOM node from a VNode object.
+ *
+ * @param node VNode which contains reference to a DOM node.
+ * @returns null if VNode doesn't have a reference to a DOM node.
+ */
+export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | null {
+    if ((node._flags & VNodeFlags.Component) !== 0) {
+        return getDOMInstanceFromVNode<T>(node._children as VNode<any>);
+    }
+    return node._instance as T;
+}
+
+/**
+ * Get reference to a Component instance from a VNode object.
+ *
+ * @param node VNode which contains reference to a Component instance.
+ * @returns null if VNode doesn't have a reference to a Component instance.
+ */
+export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode<any>): T | null {
+    if (__IVI_DEV__) {
+        if ((node._flags & VNodeFlags.Component) === 0) {
+            throw new Error("Failed to get component instance: VNode should represent a Component.");
+        }
+    }
+    return node._instance as T | null;
+}
+
+export function checkUniqueKeys(children: VNode<any>[]): void {
     if (__IVI_DEV__) {
         let keys: Set<any> | undefined;
         for (let i = 0; i < children.length; i++) {

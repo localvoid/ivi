@@ -3,7 +3,6 @@ import { USER_AGENT, UserAgentFlags } from "../common/user_agent";
 import { NOOP } from "../common/noop";
 import { nextFrame, syncFrameUpdate } from "../scheduler/frame";
 import { SyncFlags } from "./flags";
-import { IVNode } from "./ivnode";
 import { VNode } from "./vnode";
 import { $t } from "./vnode_dom";
 import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
@@ -13,8 +12,8 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } f
  */
 export interface Root {
     container: Element;
-    currentVNode: IVNode<any> | null;
-    newVNode: IVNode<any> | null;
+    currentVNode: VNode<any> | null;
+    newVNode: VNode<any> | null;
     invalidated: boolean;
     syncFlags: SyncFlags;
 }
@@ -114,7 +113,7 @@ function _update() {
  * @param syncFlags Sync Flags.
  */
 export function render(
-    node: IVNode<any> | null,
+    node: VNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
 ): void {
@@ -130,7 +129,7 @@ export function render(
  * @param syncFlags Sync Flags.
  */
 export function renderNextFrame(
-    node: IVNode<any> | null,
+    node: VNode<any> | null,
     container: Element,
     syncFlags: SyncFlags = 0,
 ): void {
@@ -196,7 +195,7 @@ export function updateNextFrame(syncFlags: SyncFlags = 0) {
  * @param container Container DOM Node.
  */
 export function augment(
-    node: IVNode<any> | null,
+    node: VNode<any> | null,
     container: Element,
 ): void {
     if (__IVI_DEV__) {

@@ -1,5 +1,4 @@
 import { VNodeFlags } from "./flags";
-import { IVNode } from "./ivnode";
 import { VNode } from "./vnode";
 
 /**
@@ -11,19 +10,19 @@ import { VNode } from "./vnode";
  */
 export function cloneVNodeChildren(
     flags: VNodeFlags,
-    children: IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined,
-): IVNode<any>[] | IVNode<any> | string | number | boolean | null | undefined {
+    children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
+): VNode<any>[] | VNode<any> | string | number | boolean | null | undefined {
     if (children !== null) {
         if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-                children = children as IVNode<any>[];
-                const newChildren = new Array<IVNode<any>>(children.length);
+                children = children as VNode<any>[];
+                const newChildren = new Array<VNode<any>>(children.length);
                 for (let i = 0; i < 0; i++) {
                     newChildren[i] = _cloneVNode(children[i], true);
                 }
                 return newChildren;
             } else {
-                return _cloneVNode(children as IVNode<any>, true);
+                return _cloneVNode(children as VNode<any>, true);
             }
         }
     }
@@ -31,7 +30,7 @@ export function cloneVNodeChildren(
     return children;
 }
 
-function _cloneVNode(node: IVNode<any>, cloneKey: boolean): VNode<any> {
+function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
     const flags = node._flags;
 
     const newNode = new VNode(
@@ -56,7 +55,7 @@ function _cloneVNode(node: IVNode<any>, cloneKey: boolean): VNode<any> {
  * @param node VNode to clone.
  * @returns Cloned VNode.
  */
-export function cloneVNode(node: IVNode<any>): VNode<any> {
+export function cloneVNode(node: VNode<any>): VNode<any> {
     return _cloneVNode(node, (node._flags & VNodeFlags.Key) !== 0);
 }
 
@@ -66,7 +65,7 @@ export function cloneVNode(node: IVNode<any>): VNode<any> {
  * @param node VNode to clone.
  * @returns Cloned VNode.
  */
-export function shallowCloneVNode(node: IVNode<any>): VNode<any> {
+export function shallowCloneVNode(node: VNode<any>): VNode<any> {
     const flags = node._flags;
 
     const newNode = new VNode(

@@ -3,7 +3,6 @@ import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
 import { ComponentFunction, ComponentClass } from "./component";
-import { IVNode } from "./ivnode";
 import { VNode } from "./vnode";
 
 /**
@@ -55,10 +54,10 @@ function UpdateContext() {
  * @param child Child VNode.
  * @returns VNodeBuilder object.
  */
-export function $context<T = {}>(context: Context<T>, child: IVNode<any>): VNode<Context<T>> {
+export function $context<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>> {
     return new VNode<Context<T>>(
         VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
-        __IVI_DEV__ ? UpdateContext as () => IVNode<any> : null,
+        __IVI_DEV__ ? UpdateContext as () => VNode<any> : null,
         context,
         null,
         child);
@@ -73,12 +72,12 @@ export function $context<T = {}>(context: Context<T>, child: IVNode<any>): VNode
  * @returns VNodeBuilder object.
  */
 export function $keepAlive<P>(
-    handler: (disposed: IVNode<any> | null, props: P) => IVNode<any> | null,
+    handler: (disposed: VNode<any> | null, props: P) => VNode<any> | null,
     child: VNode<any>,
     props: P,
 ): VNode<P>;
 export function $keepAlive(
-    handler: (disposed: IVNode<any> | null) => IVNode<any> | null,
+    handler: (disposed: VNode<any> | null) => VNode<any> | null,
     child: VNode<any>,
 ): VNode<null>;
 export function $keepAlive<P>(

@@ -1,5 +1,5 @@
 import { VNodeFlags, SyncFlags } from "../../src/vdom/flags";
-import { IVNode, getDOMInstanceFromVNode } from "../../src/vdom/ivnode";
+import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
 import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
 import { Component } from "../../src/vdom/component";
 import { expect } from "chai";
@@ -10,7 +10,7 @@ export function frag() {
     return document.createDocumentFragment();
 }
 
-export function checkRefs(n: Node, v: IVNode<any>) {
+export function checkRefs(n: Node, v: VNode<any>) {
     const flags = v._flags;
 
     expect(getDOMInstanceFromVNode(v)).to.equal(n);
@@ -18,12 +18,12 @@ export function checkRefs(n: Node, v: IVNode<any>) {
     if (flags & VNodeFlags.Component) {
         if (flags & VNodeFlags.ComponentClass) {
             expect(getDOMInstanceFromVNode(v)).to.equal(n);
-            const root = v._children as IVNode<any>;
+            const root = v._children as VNode<any>;
             if (root) {
                 checkRefs(n, root);
             }
         } else {
-            const root = v._children as IVNode<any>;
+            const root = v._children as VNode<any>;
             if (root) {
                 checkRefs(n, root);
             }
@@ -36,9 +36,9 @@ export function checkRefs(n: Node, v: IVNode<any>) {
         }
         while (child) {
             if (flags & VNodeFlags.ChildrenArray) {
-                checkRefs(child, (v._children as IVNode<any>[])[i++]);
+                checkRefs(child, (v._children as VNode<any>[])[i++]);
             } else if (flags & VNodeFlags.ChildrenVNode) {
-                checkRefs(child, v._children as IVNode<any>);
+                checkRefs(child, v._children as VNode<any>);
                 expect(child.nextSibling).to.null;
             }
             child = child.nextSibling;
@@ -47,11 +47,11 @@ export function checkRefs(n: Node, v: IVNode<any>) {
 }
 
 export function startRender(
-    fn: (render: (n: IVNode<any>) => Node) => void,
+    fn: (render: (n: VNode<any>) => Node) => void,
     container?: Element | DocumentFragment,
     disableCheckRefs?: boolean,
 ): void {
-    function r(n: IVNode<any>): Node {
+    function r(n: VNode<any>): Node {
         return render(n, container, disableCheckRefs);
     }
 
@@ -63,7 +63,7 @@ export function startRender(
 }
 
 export function render<T extends Node>(
-    node: IVNode<any>,
+    node: VNode<any>,
     container?: Element | DocumentFragment,
     disableCheckRefs?: boolean,
 ): T {
@@ -71,7 +71,7 @@ export function render<T extends Node>(
         container = document.createDocumentFragment();
     }
 
-    const oldRoot = (container as any).__ivi_root as IVNode<any> | undefined;
+    const oldRoot = (container as any).__ivi_root as VNode<any> | undefined;
     (container as any).__ivi_root = node;
     if (oldRoot) {
         syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, SyncFlags.Attached);
@@ -88,7 +88,7 @@ export function render<T extends Node>(
     return result;
 }
 
-export function augment(node: IVNode<any>, innerHTML: string, container?: Element): Element {
+export function augment(node: VNode<any>, innerHTML: string, container?: Element): Element {
     if (!container) {
         container = document.createElement("div");
     }

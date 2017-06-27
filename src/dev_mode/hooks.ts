@@ -3,13 +3,13 @@
  */
 
 import { Component } from "../vdom/component";
-import { IVNode } from "../vdom/ivnode";
+import { VNode } from "../vdom/vnode";
 
 export type OnErrorHook = (error: Error) => void;
 
-export type OnElementBeforeCreateHook = (vnode: IVNode<any>) => void;
+export type OnElementBeforeCreateHook = (vnode: VNode<any>) => void;
 
-export type OnElementCreatedHook = (vnode: IVNode<any>, element: Element) => void;
+export type OnElementCreatedHook = (vnode: VNode<any>, element: Element) => void;
 
 export type OnComponentCreatedHook = (instance: Component<any>) => void;
 
@@ -67,7 +67,7 @@ export function devModeOnError(e: Error): void {
     }
 }
 
-export function devModeOnElementBeforeCreate(vnode: IVNode<any>): void {
+export function devModeOnElementBeforeCreate(vnode: VNode<any>): void {
     if (__IVI_DEV__) {
         if (DEV_HOOKS.onElementBeforeCreate) {
             for (const hook of DEV_HOOKS.onElementBeforeCreate) {
@@ -77,7 +77,7 @@ export function devModeOnElementBeforeCreate(vnode: IVNode<any>): void {
     }
 }
 
-export function devModeOnElementCreated(vnode: IVNode<any>, element: Element): void {
+export function devModeOnElementCreated(vnode: VNode<any>, element: Element): void {
     if (__IVI_DEV__) {
         if (DEV_HOOKS.onElementCreated) {
             for (const hook of DEV_HOOKS.onElementCreated) {

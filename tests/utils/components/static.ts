@@ -1,24 +1,23 @@
-import { IVNode } from "../../../src/vdom/ivnode";
 import { Component, staticComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
 import { $c } from "../../../src/vdom/vnode_components";
 
 staticComponent(StaticComponentFunctionTest);
-export function StaticComponentFunctionTest(child: IVNode<any>) {
+export function StaticComponentFunctionTest(child: VNode<any>) {
     return child;
 }
 
-export class StaticComponentTest extends Component<IVNode<any>> {
+export class StaticComponentTest extends Component<VNode<any>> {
     render() {
         return this.props;
     }
 }
 staticComponent(StaticComponentTest);
 
-export function $sc(c: IVNode<any>): VNode<IVNode<any>> {
+export function $sc(c: VNode<any>): VNode<VNode<any>> {
     return $c(StaticComponentTest, c);
 }
 
-export function $fsc(c: IVNode<any>): VNode<IVNode<any>> {
+export function $fsc(c: VNode<any>): VNode<VNode<any>> {
     return $c(StaticComponentFunctionTest, c);
 }

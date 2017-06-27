@@ -1,5 +1,4 @@
 import { Context } from "../../../src/common/types";
-import { IVNode } from "../../../src/vdom/ivnode";
 import { Component } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
 import { $t } from "../../../src/vdom/vnode_dom";
@@ -26,13 +25,13 @@ export interface ComponentHooks<P> {
     beforeUpdate?: (this: Component<P>) => void;
     updated?: (this: Component<P>) => void;
     invalidated?: (this: Component<P>) => void;
-    render?: (this: Component<P>) => IVNode<any>;
+    render?: (this: Component<P>) => VNode<any>;
     shouldAugment?: (this: Component<P>) => boolean;
 }
 
 export interface TestLifecycleComponentProps {
     id: string;
-    child: IVNode<any>;
+    child: VNode<any>;
     hooks: ComponentHooks<TestLifecycleComponentProps>;
 }
 
@@ -118,29 +117,29 @@ export function $lc(
 ): VNode<TestLifecycleComponentProps>;
 export function $lc(
     id: string,
-    child?: IVNode<any>,
+    child?: VNode<any>,
 ): VNode<TestLifecycleComponentProps>;
 export function $lc(
     id: string,
     hooks: ComponentHooks<TestLifecycleComponentProps>,
-    child?: IVNode<any>,
+    child?: VNode<any>,
 ): VNode<TestLifecycleComponentProps>;
 export function $lc(
     id: string,
-    p1?: ComponentHooks<TestLifecycleComponentProps> | IVNode<any>,
-    p2?: IVNode<any>,
+    p1?: ComponentHooks<TestLifecycleComponentProps> | VNode<any>,
+    p2?: VNode<any>,
 ): VNode<TestLifecycleComponentProps> {
     if (arguments.length === 3) {
         return $c(TestLifecycleComponent, {
             id: id,
-            child: p2 as IVNode<any>,
+            child: p2 as VNode<any>,
             hooks: p1 as ComponentHooks<TestLifecycleComponentProps>,
         });
     } else if (arguments.length === 2) {
         if (p1!.constructor === VNode) {
             return $c(TestLifecycleComponent, {
                 id: id,
-                child: p1 as IVNode<any>,
+                child: p1 as VNode<any>,
                 hooks: {},
             });
         }

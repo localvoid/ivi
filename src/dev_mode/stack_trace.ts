@@ -6,7 +6,7 @@
 import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
 import { Context } from "../common/types";
 import { ComponentClass, ComponentFunction, Component } from "../vdom/component";
-import { IVNode } from "../vdom/ivnode";
+import { VNode } from "../vdom/vnode";
 import { VNodeFlags } from "../vdom/flags";
 import { ConnectDescriptor } from "../vdom/connect_descriptor";
 import { KeepAliveHandler } from "../vdom/keep_alive";
@@ -144,7 +144,7 @@ if (__IVI_DEV__) {
  *
  * @param vnode VNode.
  */
-export function stackTracePushComponent(vnode: IVNode<any>, instance?: Component<any> | Context): void {
+export function stackTracePushComponent(vnode: VNode<any>, instance?: Component<any> | Context): void {
     if (__IVI_DEV__) {
         if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
             const flags = vnode._flags;

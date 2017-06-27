@@ -1,10 +1,10 @@
-import { IVNode, ElementProps, isTextNode, isElementNode, isSVGNode, isComponentNode } from "../src/vdom/ivnode";
+import { VNode, ElementProps } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { $t, $h, $s, $i, $m } from "../src/vdom/vnode_dom";
 import { $c } from "../src/vdom/vnode_components";
 import { expect } from "chai";
 
-function EmptyComponent(): IVNode<any> {
+function EmptyComponent(): VNode<any> {
     return $t("");
 }
 
@@ -56,18 +56,6 @@ describe("VNode", () => {
 
         it("autofocus", () => {
             expect(() => $t("abc").autofocus(true)).to.throw(Error);
-        });
-
-        it("isTextNode($t)", () => {
-            expect(isTextNode($t("a"))).to.true;
-        });
-
-        it("isElementNode($t)", () => {
-            expect(isElementNode($t("a"))).to.false;
-        });
-
-        it("isComponentNode($t)", () => {
-            expect(isComponentNode($t("a"))).to.false;
         });
     });
 
@@ -197,28 +185,6 @@ describe("VNode", () => {
             const e = $h("div").autofocus(true);
             expect(e._flags & VNodeFlags.Autofocus).to.be.equal(VNodeFlags.Autofocus);
         });
-
-        it("isElementNode($h)", () => {
-            expect(isElementNode($h("div"))).to.true;
-        });
-
-        it("isSVGNode($h)", () => {
-            expect(isSVGNode($h("div"))).to.false;
-        });
-
-        it("isTextNode($h)", () => {
-            expect(isTextNode($h("div"))).to.false;
-        });
-
-        it("isComponentNode($h)", () => {
-            expect(isComponentNode($h("div"))).to.false;
-        });
-    });
-
-    describe("$s", () => {
-        it("isSVGNode($s)", () => {
-            expect(isSVGNode($s("circle"))).to.true;
-        });
     });
 
     describe("$c", () => {
@@ -256,22 +222,6 @@ describe("VNode", () => {
 
         it("autofocus", () => {
             expect(() => $c(EmptyComponent).autofocus(true)).to.throw(Error);
-        });
-
-        it("isElementNode($c)", () => {
-            expect(isElementNode($c(EmptyComponent))).to.false;
-        });
-
-        it("isSVGNode($c)", () => {
-            expect(isSVGNode($c(EmptyComponent))).to.false;
-        });
-
-        it("isTextNode($c)", () => {
-            expect(isTextNode($c(EmptyComponent))).to.false;
-        });
-
-        it("isComponentNode($c)", () => {
-            expect(isComponentNode($c(EmptyComponent))).to.true;
         });
     });
 
@@ -313,22 +263,6 @@ describe("VNode", () => {
         it("checkbox: checked", () => {
             const e = $i("checkbox").checked(true);
             expect(e._children).to.be.equal(true);
-        });
-
-        it("isElementNode($i)", () => {
-            expect(isElementNode($i("text"))).to.true;
-        });
-
-        it("isSVGNode($i)", () => {
-            expect(isSVGNode($i("text"))).to.false;
-        });
-
-        it("isTextNode($i)", () => {
-            expect(isTextNode($i("text"))).to.false;
-        });
-
-        it("isComponentNode($i)", () => {
-            expect(isComponentNode($i("text"))).to.false;
         });
     });
 

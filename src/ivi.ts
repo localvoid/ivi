@@ -86,13 +86,9 @@ export {
     ComponentClass, ComponentFunction, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
 export { VNodeFlags, SyncFlags } from "./vdom/flags";
-export {
-    IVNode, isTextNode, isElementNode, isSVGNode, isComponentNode, getDOMInstanceFromVNode,
-    getComponentInstanceFromVNode,
-} from "./vdom/ivnode";
 export { ConnectDescriptor, SelectorData } from "./vdom/connect_descriptor";
 export { KeepAliveHandler } from "./vdom/keep_alive";
-export { VNode } from "./vdom/vnode";
+export { VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode } from "./vdom/vnode";
 export { $t, $h, $s, $i, $m } from "./vdom/vnode_dom";
 export { $c, $connect, $context, $keepAlive } from "./vdom/vnode_components";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";

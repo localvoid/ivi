@@ -2,14 +2,14 @@ import { NOOP_FALSE } from "../common/noop";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { isPropsNotShallowEqual } from "../common/equality";
 import { ComponentFlags } from "./flags";
-import { IVNode } from "./ivnode";
+import { VNode } from "./vnode";
 import { currentFrame } from "../scheduler/frame";
 
 /**
  * Component function constructor.
  */
 export interface ComponentFunction<P = void> {
-    (props: P): IVNode<any>;
+    (props: P): VNode<any>;
     isPropsChanged?: (oldProps: P, newProps: P) => boolean;
     shouldAugment?: (props: P) => boolean;
 }
@@ -137,7 +137,7 @@ export abstract class Component<P = void> {
         /* tslint:enable:no-empty */
     }
 
-    abstract render(): IVNode<any>;
+    abstract render(): VNode<any>;
 
     /**
      * Invalidate view.

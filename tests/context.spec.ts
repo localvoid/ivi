@@ -1,14 +1,14 @@
 import { frag, render, $sc, $fsc } from "./utils";
 import { Context } from "../src/common/types";
 import { Component } from "../src/vdom/component";
-import { IVNode } from "../src/vdom/ivnode";
+import { VNode } from "../src/vdom/vnode";
 import { $t } from "../src/vdom/vnode_dom";
 import { $c, $context, $connect } from "../src/vdom/vnode_components";
 import { expect } from "chai";
 
 interface ContextTestComponentProps {
     value: number;
-    child: IVNode<any>;
+    child: VNode<any>;
 }
 
 function ContextTestPrinter(value: string) {

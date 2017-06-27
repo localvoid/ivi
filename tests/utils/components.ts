@@ -1,20 +1,18 @@
 export * from "./components/functional";
 export * from "./components/lifecycle";
 export * from "./components/static";
-export * from "./components/invalid";
 
-import { IVNode } from "../../src/vdom/ivnode";
 import { VNode } from "../../src/vdom/vnode";
 import { $h, $t } from "../../src/vdom/vnode_dom";
 import { $c } from "../../src/vdom/vnode_components";
 import { Component } from "../../src/vdom/component";
 
 export interface TestComponentProps {
-    child: IVNode<any>;
+    child: VNode<any>;
     wrapDepth?: number;
 }
 
-export function TestComponentFunction(props: TestComponentProps): IVNode<any> {
+export function TestComponentFunction(props: TestComponentProps): VNode<any> {
     if (props.wrapDepth) {
         return $c(TestComponentFunction, {
             child: props.child,
@@ -26,7 +24,7 @@ export function TestComponentFunction(props: TestComponentProps): IVNode<any> {
 }
 
 export class TestComponent extends Component<TestComponentProps> {
-    render(): IVNode<any> {
+    render(): VNode<any> {
         if (this.props.wrapDepth) {
             return $c(TestComponent, {
                 child: this.props.child,
@@ -39,7 +37,7 @@ export class TestComponent extends Component<TestComponentProps> {
 }
 
 export function $tcf(
-    child: IVNode<any> | string = $h("div"),
+    child: VNode<any> | string = $h("div"),
     wrapDepth = 0,
 ): VNode<TestComponentProps> {
     return $c(TestComponentFunction, {
@@ -49,7 +47,7 @@ export function $tcf(
 }
 
 export function $tc(
-    child: IVNode<any> | string = $h("div"),
+    child: VNode<any> | string = $h("div"),
     wrapDepth = 0,
 ): VNode<TestComponentProps> {
     return $c(TestComponent, {
