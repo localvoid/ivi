@@ -30,8 +30,7 @@ export { Context } from "./common/types";
 export { FeatureFlags, FEATURES } from "./common/feature_detection";
 export { UserAgentFlags, USER_AGENT } from "./common/user_agent";
 export {
-    nodeDepth, SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, getEventTarget, getEventCharCode, getEventKey, firstLeaf,
-    nextSibling, setInnerHTML, MouseButtons, KeyCode, KeyName, KeyLocation,
+    SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, MouseButtons, KeyCode, KeyName, KeyLocation,
 } from "./common/dom";
 export { NOOP } from "./common/noop";
 export { isPropsNotShallowEqual } from "./common/equality";
@@ -64,9 +63,6 @@ export { NativeEventSourceFlags, EventHandlerFlags, SyntheticEventFlags } from "
 export { EventSource } from "./events/event_source";
 export { DispatchTarget } from "./events/dispatch_target";
 export { EventHandler } from "./events/event_handler";
-export { getEventOptions } from "./events/utils";
-export { accumulateDispatchTargetsFromElement, accumulateDispatchTargets } from "./events/traverse_dom";
-export { dispatchEvent } from "./events/dispatch_event";
 export {
     SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
     SyntheticErrorEvent, SyntheticNativeEventClass, SyntheticFocusEvent, SyntheticKeyboardEvent,
@@ -85,14 +81,14 @@ export {
 export {
     ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
-export { VNodeFlags, SyncFlags } from "./vdom/flags";
+export { VNodeFlags } from "./vdom/flags";
 export { ConnectDescriptor, SelectorData } from "./vdom/connect_descriptor";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode } from "./vdom/vnode";
 export { $t, $h, $s, $i, $m } from "./vdom/vnode_dom";
 export { $c, $connect, $context, $keepAlive } from "./vdom/vnode_components";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
-export { Root, findRoot, render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
+export { render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
 
 /**
  * State:
@@ -112,10 +108,10 @@ import { Context } from "./common/types";
 import { Component, ComponentClass, StatelessComponent } from "./vdom/component";
 import { ConnectDescriptor } from "./vdom/connect_descriptor";
 import { KeepAliveHandler } from "./vdom/keep_alive";
-import { IVNode } from "./vdom/ivnode";
 import { VNodeFlags } from "./vdom/flags";
+import { VNode } from "./vdom/vnode";
 
-function _printComponentTreeVisitor(vnode: IVNode<any>) {
+function _printComponentTreeVisitor(vnode: VNode<any>) {
     if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
         const cls = vnode._tag as ComponentClass<any>;
         const instance = vnode._instance as Component<any>;
