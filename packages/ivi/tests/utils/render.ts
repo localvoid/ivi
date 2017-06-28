@@ -3,7 +3,6 @@
 import { VNodeFlags, SyncFlags } from "../../src/vdom/flags";
 import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
 import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
-import { Component } from "../../src/vdom/component";
 import { expect } from "chai";
 
 const DEFAULT_CONTEXT = {};

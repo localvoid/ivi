@@ -1,7 +1,4 @@
-import { Context } from "ivi-core";
-import { $h } from "../src/vdom/vnode_dom";
-import { $context } from "../src/vdom/vnode_components";
-import { Component } from "../src/vdom/component";
+import { html } from "../src/vdom/vnode_dom";
 import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";
 import { expect } from "chai";
 
@@ -14,7 +11,7 @@ describe("component state", () => {
                         props: TestFunctionalComponentProps,
                     ) => {
                         expect(props.id).to.be.equal("1");
-                        return $h("div");
+                        return html("div");
                     },
                 }));
             });
@@ -22,7 +19,7 @@ describe("component state", () => {
 
         it("isPropsChanged", () => {
             startRender((r) => {
-                r($tfc("1", $h("div")));
+                r($tfc("1", html("div")));
                 r($tfc("2", {
                     isPropsChanged: (
                         oldProps: TestFunctionalComponentProps,
@@ -32,7 +29,7 @@ describe("component state", () => {
                         expect(newProps.id).to.be.equal("2");
                         return true;
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
     });
@@ -46,13 +43,13 @@ describe("component state", () => {
                     ) => {
                         expect(props.id).to.be.equal("1");
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
 
         it("isPropsChanged", () => {
             startRender((r) => {
-                r($lc("1", $h("div")));
+                r($lc("1", html("div")));
                 r($lc("2", {
                     isPropsChanged: (
                         oldProps: TestLifecycleComponentProps,
@@ -62,13 +59,13 @@ describe("component state", () => {
                         expect(newProps.id).to.be.equal("2");
                         return true;
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
 
         it("newPropsReceived", () => {
             startRender((r) => {
-                r($lc("1", $h("div")));
+                r($lc("1", html("div")));
                 r($lc("2", {
                     newPropsReceived: (
                         oldProps: TestLifecycleComponentProps,
@@ -77,7 +74,7 @@ describe("component state", () => {
                         expect(oldProps.id).to.be.equal("1");
                         expect(newProps.id).to.be.equal("2");
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
 
@@ -87,7 +84,7 @@ describe("component state", () => {
                     attached: function () {
                         expect(this.props.id).to.be.equal("1");
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
 
@@ -97,7 +94,7 @@ describe("component state", () => {
                     detached: function () {
                         expect(this.props.id).to.be.equal("1");
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
 
@@ -107,7 +104,7 @@ describe("component state", () => {
                     beforeUpdate: function () {
                         expect(this.props.id).to.be.equal("1");
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
 
@@ -117,7 +114,7 @@ describe("component state", () => {
                     updated: function () {
                         expect(this.props.id).to.be.equal("1");
                     },
-                }, $h("div")));
+                }, html("div")));
             });
         });
     });

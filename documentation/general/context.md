@@ -4,10 +4,10 @@ Context implicitly propagates data through component trees.
 
 ## Context API
 
-Context is updated with a special virtual nodes created with a `$ctx` function.
+Context is updated with a special virtual nodes created with a `context()` function.
 
 ```ts
-function $context<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
+function context<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
 ```
 
 Context data can be accessed with a [connect](external-state.md) selectors.
@@ -28,7 +28,7 @@ class StatefulComponent extends Component {
     }
 
     render() {
-        return $context(this._ctx, $Child());
+        return context(this._ctx, child());
     }
 }
 
@@ -41,7 +41,7 @@ interface ChildSelectorData {
     out: number,
 }
 
-const $Child = connect(
+const child = connect(
     function(prev: ChildSelectorData, props: null, context: Context<{ counter: number }>) {
         const counter = context.counter;
         if (prev && prev.in.counter === counter) {

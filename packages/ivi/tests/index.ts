@@ -1,7 +1,5 @@
 import "core-js";
 
-import { DevModeFlags, setDevModeFlags } from "../src/dev_mode/dev_mode";
-
 import "./vnode.spec";
 import "./render.spec";
 import "./sync.spec";

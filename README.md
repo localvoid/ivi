@@ -41,10 +41,6 @@ exclusively for bug reports and feature requests.
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/extensions/dev-mode.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/extensions/synthetic-events.md)
 
-### Future Ideas
-
-- [Custom Renderers](https://github.com/ivijs/ivi/blob/master/documentation/future/custom-renderers.md)
-
 ### Installation
 
 #### NPM
@@ -119,15 +115,16 @@ Components are the basic building blocks for your applications, they will help y
 Stateless components are implemented with simple functions.
 
 ```ts
-import { $c, render } from "ivi";
+import { statelessComponentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
 function StatelessComponent(text: string) {
     return h.div().children(text);
 }
+const statelessComponent = statelessComponentFactory(StatelessComponent);
 
 render(
-    $c(StatelessComponent, "Hello Stateless Component!"),
+    statelessComponent("Hello Stateless Component!"),
     document.getElementById("app")!,
 );
 ```
@@ -138,7 +135,7 @@ Stateful components are implemented with ES6 classes and should be extended from
 `Component<P>`. Base class has a parametric type `P` that specifies props type.
 
 ```ts
-import { Component, $c, render } from "ivi";
+import { Component, componentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
 class StatefulComponent extends Component {
@@ -160,9 +157,10 @@ class StatefulComponent extends Component {
         return h.div().children(`Time: ${this.time}`);
     }
 }
+const statefulComponent = componentFactory(StatefulComponent);
 
 render(
-    $c(StatefulComponent),
+    statefulComponent(),
     document.getElementById("app")!,
 );
 ```

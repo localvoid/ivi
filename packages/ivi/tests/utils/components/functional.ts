@@ -1,8 +1,7 @@
-import { Context } from "ivi-core";
 import { StatelessComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { $t } from "../../../src/vdom/vnode_dom";
-import { $c } from "../../../src/vdom/vnode_components";
+import { text } from "../../../src/vdom/vnode_dom";
+import { component } from "../../../src/vdom/vnode_components";
 
 export interface TestFunctionalComponentHooks<P> {
     render?: (props: P) => VNode<any>;
@@ -62,28 +61,28 @@ export function $tfc(
     p2?: VNode<any>,
 ): VNode<TestFunctionalComponentProps> {
     if (arguments.length === 3) {
-        return $c(TestFunctionalComponent, {
+        return component(TestFunctionalComponent, {
             id: id,
             child: p2 as VNode<any>,
             hooks: p1 as TestFunctionalComponentHooks<TestFunctionalComponentProps>,
         });
     } else if (arguments.length === 2) {
         if (p1!.constructor === VNode) {
-            return $c(TestFunctionalComponent, {
+            return component(TestFunctionalComponent, {
                 id: id,
                 child: p1 as VNode<any>,
                 hooks: {},
             });
         }
-        return $c(TestFunctionalComponent, {
+        return component(TestFunctionalComponent, {
             id: id,
-            child: $t(""),
+            child: text(""),
             hooks: p1 as TestFunctionalComponentHooks<TestFunctionalComponentProps>,
         });
     }
-    return $c(TestFunctionalComponent, {
+    return component(TestFunctionalComponent, {
         id: id,
-        child: $t(""),
+        child: text(""),
         hooks: {},
     });
 }

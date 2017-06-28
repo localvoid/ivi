@@ -3,8 +3,8 @@ export * from "./components/lifecycle";
 export * from "./components/static";
 
 import { VNode } from "../../src/vdom/vnode";
-import { $h, $t } from "../../src/vdom/vnode_dom";
-import { $c } from "../../src/vdom/vnode_components";
+import { html, text } from "../../src/vdom/vnode_dom";
+import { component } from "../../src/vdom/vnode_components";
 import { Component } from "../../src/vdom/component";
 
 export interface TestComponentProps {
@@ -14,7 +14,7 @@ export interface TestComponentProps {
 
 export function TestComponentFunction(props: TestComponentProps): VNode<any> {
     if (props.wrapDepth) {
-        return $c(TestComponentFunction, {
+        return component(TestComponentFunction, {
             child: props.child,
             wrapDepth: props.wrapDepth - 1,
         });
@@ -26,7 +26,7 @@ export function TestComponentFunction(props: TestComponentProps): VNode<any> {
 export class TestComponent extends Component<TestComponentProps> {
     render(): VNode<any> {
         if (this.props.wrapDepth) {
-            return $c(TestComponent, {
+            return component(TestComponent, {
                 child: this.props.child,
                 wrapDepth: this.props.wrapDepth - 1,
             });
@@ -37,21 +37,21 @@ export class TestComponent extends Component<TestComponentProps> {
 }
 
 export function $tcf(
-    child: VNode<any> | string = $h("div"),
+    child: VNode<any> | string = html("div"),
     wrapDepth = 0,
 ): VNode<TestComponentProps> {
-    return $c(TestComponentFunction, {
-        child: typeof child === "string" ? $t(child) : child,
+    return component(TestComponentFunction, {
+        child: typeof child === "string" ? text(child) : child,
         wrapDepth: wrapDepth,
     });
 }
 
 export function $tc(
-    child: VNode<any> | string = $h("div"),
+    child: VNode<any> | string = html("div"),
     wrapDepth = 0,
 ): VNode<TestComponentProps> {
-    return $c(TestComponent, {
-        child: typeof child === "string" ? $t(child) : child,
+    return component(TestComponent, {
+        child: typeof child === "string" ? text(child) : child,
         wrapDepth: wrapDepth,
     });
 }

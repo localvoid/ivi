@@ -43,7 +43,7 @@ function Article(content: string) {
     return h.div().children(content);
 }
 
-const $Article = connect(
+const article = connect(
     function(
         prev: SelectorData<string, string> | null,
         id: number,
@@ -62,7 +62,7 @@ const articles = new Map<number, string>();
 articles.set(1, "Hello World");
 
 render(
-    $context({ articles }, $Article(1)),
+    context({ articles }, article(1)),
     document.getElementById("app")!,
 );
 ```

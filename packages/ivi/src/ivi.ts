@@ -4,13 +4,13 @@
 export {
     ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
-export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode } from "./vdom/vnode";
-export { $t, $h, $s, $i, $m } from "./vdom/vnode_dom";
-export { $c, $connect, $context, $keepAlive } from "./vdom/vnode_components";
+export { text } from "./vdom/vnode_dom";
+export {
+    componentFactory, statelessComponentFactory, component, statelessComponent, context, connect, keepAlive,
+} from "./vdom/vnode_components";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
-export { connect } from "./vdom/connect";
 
 /**
  * API available only in browser environment.

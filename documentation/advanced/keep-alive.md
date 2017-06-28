@@ -12,18 +12,18 @@ Experimental
 ## API
 
 ```ts
-function $keepAlive<P>(
+function keepAlive<P>(
     handler: (disposed: IVNode<any> | null, props: P) => IVNode<any> | null,
     child: VNode<any>,
     props: P,
 ): VNode<P>;
-function $keepAlive(
+function keepAlive(
     handler: (disposed: IVNode<any> | null) => IVNode<any> | null,
     child: VNode<any>,
 ): VNode<null>;
 ```
 
-`$keepAlive` function creates a virtual node with a special keep alive behavior that is controlled by a
+`keepAlive` function creates a virtual node with a special keep alive behavior that is controlled by a
 `handler` function.
 
 When `handler` function receives `disposed` vnode, it means that vnode is disposed and it can be saved, so it can be
@@ -48,7 +48,7 @@ class ShowHide extends Component<{ show: boolean }> {
     render() {
         return h.div().children(
             this.props.show ?
-                $keepAlive(this.keepAlive, h.div().children("Hide Me!")) :
+                keepAlive(this.keepAlive, h.div().children("Hide Me!")) :
                 null,
         );
     }
@@ -71,7 +71,7 @@ class PageManager extends Component<{ pageID: string }> {
         const pageID = this.props.pageID;
 
         return h.div().children(
-            $keepAlive(this.keepAlive, h.div().children(pageID), pageId)
+            keepAlive(this.keepAlive, h.div().children(pageID), pageId)
                 .key(pageID),
         );
     }
@@ -92,7 +92,7 @@ class ItemList extends Component<{ items: string[] }> {
 
     render() {
         return h.div().children(
-            this.props.items.map((i) => $keepAlive(this.keepAlive, h.div().children(i), i).key(i)),
+            this.props.items.map((i) => keepAlive(this.keepAlive, h.div().children(i), i).key(i)),
         );
     }
 }

@@ -42,7 +42,7 @@ interface VNode {
 ```
 
 ```ts
-import { Component, Events, $c, render } from "ivi";
+import { Component, Events, render } from "ivi";
 import * as h from "ivi-html";
 
 class StatefulComponent extends Component {
@@ -62,9 +62,4 @@ class StatefulComponent extends Component {
             .children(`Clicks: ${this.counter}`);
     }
 }
-
-render(
-    $c(StatefulComponent),
-    document.getElementById("app")!,
-)
 ```

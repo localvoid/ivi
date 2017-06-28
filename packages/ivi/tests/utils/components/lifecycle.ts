@@ -1,8 +1,7 @@
-import { Context } from "ivi-core";
 import { Component } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { $t } from "../../../src/vdom/vnode_dom";
-import { $c } from "../../../src/vdom/vnode_components";
+import { text } from "../../../src/vdom/vnode_dom";
+import { component } from "../../../src/vdom/vnode_components";
 import { lifecycleTouch } from "../lifecycle";
 
 export interface ComponentHooks<P> {
@@ -130,28 +129,28 @@ export function $lc(
     p2?: VNode<any>,
 ): VNode<TestLifecycleComponentProps> {
     if (arguments.length === 3) {
-        return $c(TestLifecycleComponent, {
+        return component(TestLifecycleComponent, {
             id: id,
             child: p2 as VNode<any>,
             hooks: p1 as ComponentHooks<TestLifecycleComponentProps>,
         });
     } else if (arguments.length === 2) {
         if (p1!.constructor === VNode) {
-            return $c(TestLifecycleComponent, {
+            return component(TestLifecycleComponent, {
                 id: id,
                 child: p1 as VNode<any>,
                 hooks: {},
             });
         }
-        return $c(TestLifecycleComponent, {
+        return component(TestLifecycleComponent, {
             id: id,
-            child: $t(""),
+            child: text(""),
             hooks: p1 as ComponentHooks<TestLifecycleComponentProps>,
         });
     }
-    return $c(TestLifecycleComponent, {
+    return component(TestLifecycleComponent, {
         id: id,
-        child: $t(""),
+        child: text(""),
         hooks: {},
     });
 }

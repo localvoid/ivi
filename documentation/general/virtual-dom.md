@@ -54,8 +54,8 @@ used to support code patterns like this:
 
 ```ts
 h.div().children(
-    isVisible ? $c(ComponentA) : null,
-    $c(ComponentB),
+    isVisible ? componentA() : null,
+    componentB(),
 );
 ```
 
