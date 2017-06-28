@@ -1,8 +1,6 @@
 import { Context } from "ivi-core";
-import { frag, render, $sc, $fsc } from "./utils";
-import { VNode } from "../src/vdom/vnode";
-import { text } from "../src/vdom/vnode_dom";
-import { context, $connect } from "../src/vdom/vnode_components";
+import { frag, render, $sc, $fsc, text } from "./utils";
+import { context, connect } from "../src/vdom/vnode_factories";
 import { expect } from "chai";
 
 function ContextTestPrinter(value: string) {
@@ -14,8 +12,8 @@ interface ContextTestPrinterSelect {
     out: string;
 }
 
-const ContextTestPrinterDescriptor = {
-    select: function (
+const $ContextTestPrinter = connect(
+    function (
         prev: ContextTestPrinterSelect,
         props: null,
         context: Context<{ value: string }>,
@@ -25,12 +23,8 @@ const ContextTestPrinterDescriptor = {
             out: context.value,
         };
     },
-    render: ContextTestPrinter,
-};
-
-function $ContextTestPrinter() {
-    return $connect(ContextTestPrinterDescriptor, null);
-}
+    ContextTestPrinter,
+);
 
 describe("context", () => {
     describe("component API", () => {

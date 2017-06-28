@@ -1,5 +1,4 @@
-import { html } from "../src/vdom/vnode_dom";
-import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps } from "./utils";
+import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps, html } from "./utils";
 import { expect } from "chai";
 
 describe("component state", () => {

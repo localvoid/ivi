@@ -5,6 +5,16 @@ import { VNodeFlags } from "./flags";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
 import { VNode } from "./vnode";
 
+/**
+ * Create a VNode representing a Text node.
+ *
+ * @param content Text content.
+ * @returns VNodeBuilder object.
+ */
+export function text(content: string | number | boolean | null): VNode<null> {
+    return new VNode<null>(VNodeFlags.Text, null, null, null, content);
+}
+
 export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
@@ -69,19 +79,6 @@ export function statelessComponent<P>(c: StatelessComponent<P>, props?: P): VNod
         props!,
         null,
         null);
-}
-
-export function $connect<I, O, P>(
-    connectDescriptor: ConnectDescriptor<I, O, P>,
-    props: P,
-): VNode<P> {
-    return new VNode<P>(
-        VNodeFlags.ComponentFunction | VNodeFlags.Connect,
-        connectDescriptor,
-        props,
-        null,
-        null,
-    );
 }
 
 /**

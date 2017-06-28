@@ -3,9 +3,10 @@
 import { ComponentFlags } from "../src/vdom/flags";
 import { VNode, getComponentInstanceFromVNode } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
-import { text, html, input, media } from "../src/vdom/vnode_dom";
-import { component } from "../src/vdom/vnode_components";
-import { render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
+import { component } from "../src/vdom/vnode_factories";
+import {
+    render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf, text, html, input, media,
+} from "./utils";
 import { expect } from "chai";
 
 function genVNodes(item: any, keys: boolean): VNode<any> | VNode<any>[] {
@@ -1716,7 +1717,8 @@ describe("sync", () => {
                     ));
                     const b = r(html("div").children(
                         text("a").key(0), text("b"), text("c"),
-                        text("d").key(1), text("e").key(2), text("f").key(3), text("g").key(4), text("h").key(5), text("i").key(6),
+                        text("d").key(1), text("e").key(2), text("f").key(3), text("g").key(4), text("h").key(5),
+                        text("i").key(6),
                         text("j").key(7), text("k").key(8), text("l").key(9),
                     ));
                     expect(b.childNodes[0].nodeValue).to.equal("a");

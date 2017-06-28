@@ -3,9 +3,9 @@ export * from "./components/lifecycle";
 export * from "./components/static";
 
 import { VNode } from "../../src/vdom/vnode";
-import { html, text } from "../../src/vdom/vnode_dom";
-import { component } from "../../src/vdom/vnode_components";
+import { component, statelessComponent } from "../../src/vdom/vnode_factories";
 import { Component } from "../../src/vdom/component";
+import { html, text } from "./vdom";
 
 export interface TestComponentProps {
     child: VNode<any>;
@@ -14,7 +14,7 @@ export interface TestComponentProps {
 
 export function TestComponentFunction(props: TestComponentProps): VNode<any> {
     if (props.wrapDepth) {
-        return component(TestComponentFunction, {
+        return statelessComponent(TestComponentFunction, {
             child: props.child,
             wrapDepth: props.wrapDepth - 1,
         });
@@ -40,7 +40,7 @@ export function $tcf(
     child: VNode<any> | string = html("div"),
     wrapDepth = 0,
 ): VNode<TestComponentProps> {
-    return component(TestComponentFunction, {
+    return statelessComponent(TestComponentFunction, {
         child: typeof child === "string" ? text(child) : child,
         wrapDepth: wrapDepth,
     });

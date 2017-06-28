@@ -1,8 +1,7 @@
 /* tslint:disable:no-unused-expression */
 
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "ivi-core";
-import { render, checkDOMOps, expectDOMOps, $tc, $tcf } from "./utils";
-import { text, html, svg, input, media } from "../src/vdom/vnode_dom";
+import { render, checkDOMOps, expectDOMOps, $tc, $tcf, text, html, svg, input, media } from "./utils";
 import { cloneVNode } from "../src/vdom/clone";
 import { expect } from "chai";
 
@@ -294,7 +293,11 @@ describe("render", () => {
         it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
             checkDOMOps((c) => {
                 const n = render<HTMLElement>(
-                    html("div").children(html("span"), [html("strong").key("strong"), html("a").key("a")], html("span")));
+                    html("div").children(
+                        html("span"),
+                        [html("strong").key("strong"), html("a").key("a")], html("span"),
+                    ),
+                );
                 expect(n.childNodes.length).to.equal(4);
                 expect(n.children[0].tagName.toLowerCase()).to.equal("span");
                 expect(n.children[1].tagName.toLowerCase()).to.equal("strong");

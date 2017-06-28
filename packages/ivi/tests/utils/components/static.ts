@@ -1,6 +1,6 @@
 import { Component, staticComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { component } from "../../../src/vdom/vnode_components";
+import { component, statelessComponent } from "../../../src/vdom/vnode_factories";
 
 staticComponent(StaticComponentFunctionTest);
 export function StaticComponentFunctionTest(child: VNode<any>) {
@@ -19,5 +19,5 @@ export function $sc(c: VNode<any>): VNode<VNode<any>> {
 }
 
 export function $fsc(c: VNode<any>): VNode<VNode<any>> {
-    return component(StaticComponentFunctionTest, c);
+    return statelessComponent(StaticComponentFunctionTest, c);
 }

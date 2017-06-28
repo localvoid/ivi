@@ -1,7 +1,7 @@
 import { StatelessComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { text } from "../../../src/vdom/vnode_dom";
-import { component } from "../../../src/vdom/vnode_components";
+import { statelessComponent } from "../../../src/vdom/vnode_factories";
+import { text } from "../vdom";
 
 export interface TestFunctionalComponentHooks<P> {
     render?: (props: P) => VNode<any>;
@@ -61,26 +61,26 @@ export function $tfc(
     p2?: VNode<any>,
 ): VNode<TestFunctionalComponentProps> {
     if (arguments.length === 3) {
-        return component(TestFunctionalComponent, {
+        return statelessComponent(TestFunctionalComponent, {
             id: id,
             child: p2 as VNode<any>,
             hooks: p1 as TestFunctionalComponentHooks<TestFunctionalComponentProps>,
         });
     } else if (arguments.length === 2) {
         if (p1!.constructor === VNode) {
-            return component(TestFunctionalComponent, {
+            return statelessComponent(TestFunctionalComponent, {
                 id: id,
                 child: p1 as VNode<any>,
                 hooks: {},
             });
         }
-        return component(TestFunctionalComponent, {
+        return statelessComponent(TestFunctionalComponent, {
             id: id,
             child: text(""),
             hooks: p1 as TestFunctionalComponentHooks<TestFunctionalComponentProps>,
         });
     }
-    return component(TestFunctionalComponent, {
+    return statelessComponent(TestFunctionalComponent, {
         id: id,
         child: text(""),
         hooks: {},

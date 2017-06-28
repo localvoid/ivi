@@ -1,7 +1,7 @@
 import { EventHandler, SyntheticEvent, Events } from "ivi-dom";
 import { VNode } from "../src/vdom/vnode";
-import { html } from "../src/vdom/vnode_dom";
 import { render as rootRender } from "../src/vdom/root";
+import { html } from "./utils";
 import { expect } from "chai";
 
 function render<T extends Element>(node: VNode<any> | null, container: Element): T {

@@ -1,8 +1,8 @@
 import { EventHandler } from "ivi-dom";
 import { VNode, ElementProps } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { text, html, input, media } from "../src/vdom/vnode_dom";
-import { component } from "../src/vdom/vnode_components";
+import { statelessComponent } from "../src/vdom/vnode_factories";
+import { text, html, input, media } from "./utils";
 import { expect } from "chai";
 
 function EmptyComponent(): VNode<any> {
@@ -118,11 +118,6 @@ describe("VNode", () => {
             expect(() => e.unsafeHTML("123")).to.throw(Error);
         });
 
-        it("void elements: children", () => {
-            expect(() => html("br").children("123")).to.throw(Error);
-            expect(() => html("img").children("123")).to.throw(Error);
-        });
-
         it("children: duplicate keys", () => {
             expect(() => html("div").children(text("").key("a"), text("").key("a"))).to.throw(Error);
         });
@@ -130,11 +125,6 @@ describe("VNode", () => {
         it("unsafeHTML", () => {
             const e = html("div").unsafeHTML("abc");
             expect(e._children).to.be.equal("abc");
-        });
-
-        it("void elements: unsafeHTML", () => {
-            expect(() => html("br").unsafeHTML("123")).to.throw(Error);
-            expect(() => html("img").unsafeHTML("123")).to.throw(Error);
         });
 
         it("value", () => {
@@ -190,39 +180,39 @@ describe("VNode", () => {
 
     describe("$c", () => {
         it("className", () => {
-            expect(() => component(EmptyComponent).className("cls")).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).className("cls")).to.throw(Error);
         });
 
         it("style", () => {
-            expect(() => component(EmptyComponent).style({})).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).style({})).to.throw(Error);
         });
 
         it("events", () => {
-            expect(() => component(EmptyComponent).events([])).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).events([])).to.throw(Error);
         });
 
         it("children", () => {
-            expect(() => component(EmptyComponent).children("123")).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).children("123")).to.throw(Error);
         });
 
         it("unsafeHTML", () => {
-            expect(() => component(EmptyComponent).unsafeHTML("123")).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).unsafeHTML("123")).to.throw(Error);
         });
 
         it("value", () => {
-            expect(() => component(EmptyComponent).value("123")).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).value("123")).to.throw(Error);
         });
 
         it("checked", () => {
-            expect(() => component(EmptyComponent).checked(true)).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).checked(true)).to.throw(Error);
         });
 
         it("mergeStyle", () => {
-            expect(() => component(EmptyComponent).mergeStyle({})).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).mergeStyle({})).to.throw(Error);
         });
 
         it("autofocus", () => {
-            expect(() => component(EmptyComponent).autofocus(true)).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).autofocus(true)).to.throw(Error);
         });
     });
 
@@ -273,7 +263,7 @@ describe("VNode", () => {
         });
 
         it("unsafeHTML", () => {
-            expect(() => component(EmptyComponent).unsafeHTML("123")).to.throw(Error);
+            expect(() => statelessComponent(EmptyComponent).unsafeHTML("123")).to.throw(Error);
         });
     });
 });

@@ -1,5 +1,4 @@
-import { augment, $tc, $tcf, $lc, checkDOMOps, expectDOMOps } from "./utils";
-import { text, html, svg, input, media } from "../src/vdom/vnode_dom";
+import { augment, $tc, $tcf, $lc, checkDOMOps, expectDOMOps, text, html, svg, input, media } from "./utils";
 import { expect } from "chai";
 
 describe("augment", () => {
@@ -229,8 +228,13 @@ describe("augment", () => {
     describe("children normalization", () => {
         it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
             checkDOMOps((c) => {
-                augment(html("div").children(html("span"), [html("strong").key("strong"), html("a").key("a")], html("span")),
-                    `<div><span></span><strong></strong><a></a><span></span></div>`);
+                augment(
+                    html("div").children(
+                        html("span"),
+                        [html("strong").key("strong"), html("a").key("a")], html("span"),
+                    ),
+                    `<div><span></span><strong></strong><a></a><span></span></div>`,
+                );
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });
@@ -251,7 +255,12 @@ describe("augment", () => {
 
         it("<div>[<div>, 'abc', <span>]</div>", () => {
             checkDOMOps((c) => {
-                augment(html("div").children(html("div"), "abc", html("span")), `<div><div></div>abc<span></span></div>`);
+                augment(
+                    html("div").children(
+                        html("div"), "abc", html("span"),
+                    ),
+                    `<div><div></div>abc<span></span></div>`,
+                );
                 expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
             });
         });

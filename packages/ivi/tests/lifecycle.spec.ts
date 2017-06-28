@@ -1,5 +1,4 @@
-import { html } from "../src/vdom/vnode_dom";
-import { startRender, augment, checkLifecycle, $lc, $sc } from "./utils";
+import { startRender, augment, checkLifecycle, $lc, $sc, html } from "./utils";
 import { expect } from "chai";
 
 describe("lifecycle", () => {

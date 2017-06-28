@@ -1,7 +1,6 @@
 import { VNode } from "../src/vdom/vnode";
-import { html } from "../src/vdom/vnode_dom";
-import { keepAlive } from "../src/vdom/vnode_components";
-import { startRender, checkLifecycle, $lc } from "./utils";
+import { keepAlive } from "../src/vdom/vnode_factories";
+import { startRender, checkLifecycle, $lc, html } from "./utils";
 import { expect } from "chai";
 
 function pooledKeepAlive(maxItems = 1) {

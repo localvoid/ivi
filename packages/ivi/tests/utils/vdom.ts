@@ -32,8 +32,8 @@ import {
     SVGSVGElementProps, SVGSwitchElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
     SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "ivi-core";
-import { VNodeFlags } from "./flags";
-import { VNode } from "./vnode";
+import { VNodeFlags } from "../../src/vdom/flags";
+import { VNode } from "../../src/vdom/vnode";
 
 /**
  * Create a VNode representing a Text node.
