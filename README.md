@@ -1,20 +1,3 @@
-<p align="center">
-  <a href="https://github.com/ivijs/ivi" title="ivi - javascript (TypeScript) web UI library"><img width="200" height="200" src="https://ivijs.github.io/ivi/logo.png"></a>
-</p>
-
-<p align="center">
-  <a href="https://travis-ci.org/ivijs/ivi"><img src="https://img.shields.io/travis/ivijs/ivi.svg?style=flat-square" alt="Build Status"></a>
-  <a href="https://codecov.io/github/ivijs/ivi?branch=master"><img src="https://img.shields.io/codecov/c/github/ivijs/ivi/master.svg?style=flat-square" alt="Coverage Status"></a>
-  <a href="https://www.npmjs.com/package/ivi"><img src="https://img.shields.io/npm/dt/ivi.svg?style=flat-square" alt="Downloads"></a>
-  <a href="https://www.npmjs.com/package/ivi"><img src="https://img.shields.io/npm/v/ivi.svg?style=flat-square" alt="Version"></a>
-  <a href="https://www.npmjs.com/package/ivi"><img src="https://img.shields.io/npm/l/ivi.svg?style=flat-square" alt="License"></a>
-  <a href="https://gitter.im/ivijs/ivi"><img src="https://img.shields.io/gitter/room/ivijs/ivi.svg?style=flat-square" alt="Gitter Chat"></a>
-</p>
-
-<p align="center">
-  <a href="https://saucelabs.com/u/ivijs"><img src="https://saucelabs.com/browser-matrix/ivijs.svg" alt="Sauce Test Status"></a>
-</p>
-
 [ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces.
 
 ## Features

@@ -121,10 +121,6 @@ components stack trace for all stateful instances.
 `$` is a shortcut that depending on the value type will either find vnode by debug id, find vnode by DOM node.
 And when it finds vnode, it will display component tree starting from this vnode to the console.
 
-<p align="center">
-  <img width="793" height="405" src="https://ivijs.github.io/ivi/dev-mode-component-tree.png">
-</p>
-
 ### Changing global variable
 
 Global variable can be dynamically changed via query parameter `_export=<name>`.

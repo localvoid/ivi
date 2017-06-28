@@ -1,0 +1,53 @@
+import { FeatureFlags, FEATURES } from "ivi-core";
+
+/**
+ * Set inner HTML.
+ *
+ * #quirks
+ *
+ * @param element DOM Element.
+ * @param content Inner HTML content.
+ * @param isSVG Element is SVG.
+ */
+export function setInnerHTML(element: Element, content: string, isSVG: boolean): void {
+    // #msapp
+    //
+    // innerHTML should be invoked inside an unsafe context `MSApp.execUnsafeLocalFunction`
+    // All details here: https://msdn.microsoft.com/en-us/library/windows/apps/hh767331.aspx
+
+    // Doesn't work on SVG Elements in IE. Latest Edge versions are working fine.
+    if ((isSVG === false) || ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0)) {
+        element.innerHTML = content;
+    } else {
+        setInnerSVG(element as SVGElement, content);
+    }
+}
+
+/**
+ * Container for SVG Elements.
+ *
+ * #quirks
+ */
+let innerHTMLSVGContainer: HTMLDivElement | undefined;
+
+/**
+ * Set innerHTML on SVG elements in browsers that doesn't support innerHTML on SVG elements.
+ *
+ * #quirks
+ *
+ * @param element SVG element.
+ * @param content Inner HTML content.
+ */
+function setInnerSVG(element: SVGElement, content: string): void {
+    if (innerHTMLSVGContainer === undefined) {
+        innerHTMLSVGContainer = document.createElement("div");
+    }
+    element.textContent = "";
+    innerHTMLSVGContainer.innerHTML = `<svg>${content}</svg>`;
+    const svg = innerHTMLSVGContainer.firstChild;
+    let c = svg!.firstChild;
+    while (c !== null) {
+        element.appendChild(c);
+        c = svg!.firstChild;
+    }
+}

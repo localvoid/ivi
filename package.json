@@ -1,8 +1,6 @@
 {
   "name": "ivi",
-  "main": "dist/js/ivi.js",
-  "module": "dist/js/ivi.js",
-  "typings": "dist/typings/ivi.d.ts",
+  "private": true,
   "version": "0.8.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
@@ -30,26 +28,13 @@
     "url": "https://github.com/ivijs/ivi/issues"
   },
   "github": "https://github.com/ivijs/ivi",
-  "files": [
-    "dist",
-    "src",
-    "README.md",
-    "LICENSE"
-  ],
-  "scripts": {
-    "test": "karma start --single-run",
-    "test:watch": "karma start",
-    "dist": "tsc",
-    "watch": "tsc --watch",
-    "lint": "tslint --project ./tsconfig.json"
-  },
+  "files": [],
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.3",
     "chai": "^4.0.2",
-    "codecov": "^2.2.0",
     "core-js": "^2.4.1",
     "istanbul-instrumenter-loader": "^2.0.0",
     "ivi-tslint-rules": "^0.1.1",
@@ -65,6 +50,7 @@
     "karma-webpack": "^2.0.3",
     "mocha": "^3.4.2",
     "ts-loader": "^2.2.0",
+    "ts-node": "^3.1.0",
     "tslib": "^1.7.1",
     "tslint": "^5.4.3",
     "typescript": "^2.3.4",
