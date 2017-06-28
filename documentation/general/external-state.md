@@ -40,7 +40,7 @@ Input values are required so that we can use it for memoization.
 
 ```ts
 function Article(content: string) {
-    return $h("div").children(content);
+    return h.div().children(content);
 }
 
 const $Article = connect(

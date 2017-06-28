@@ -42,7 +42,8 @@ interface VNode {
 ```
 
 ```ts
-import { Component, Events, $h, $c, render } from "ivi";
+import { Component, Events, $c, render } from "ivi";
+import * as h from "ivi-html";
 
 class StatefulComponent extends Component {
     private counter = 0;
@@ -53,7 +54,7 @@ class StatefulComponent extends Component {
     });
 
     render() {
-        return $h("div")
+        return h.div()
             .events([
                 this.onClick,
                 this.onClick,

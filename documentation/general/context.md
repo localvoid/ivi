@@ -33,7 +33,7 @@ class StatefulComponent extends Component {
 }
 
 function Child(counter: number) {
-    return $h("div").children(counter);
+    return h.div().children(counter);
 }
 
 interface ChildSelectorData {

@@ -35,7 +35,7 @@ For example, this is how functional component can declare an optimization hint:
 
 ```ts
 function StatelessComponent(props: string) {
-    return $h("div").children(`Hello ${props}`);
+    return h.div().children(`Hello ${props}`);
 }
 
 StatelessComponent.isPropsChanged = function(oldProps: string, newProps: string): boolean {
@@ -54,14 +54,14 @@ This function sets `isPropsChanged` lifecyle method to check props with a shallo
 ```ts
 checkPropsShallowEquality(StatelessComponent);
 function StatelessComponent({ text: string }) {
-    return $h("div").children(text);
+    return h.div().children(text);
 }
 ```
 ```ts
 checkPropsShallowEquality(StatefulComponent);
 class StatefulComponent extends Component<{ text: string }> {
     render() {
-        return $h("div").children(this.props.text);
+        return h.div().children(this.props.text);
     }
 }
 ```

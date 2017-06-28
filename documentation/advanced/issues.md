@@ -52,8 +52,8 @@ class Form extends Component<null> {
     });
 
     render() {
-        return $h("form").children(
-            $i("text")
+        return h.form().children(
+            h.inputText()
                 .events({ input: this.onInput })
                 .value(this.value);
         );

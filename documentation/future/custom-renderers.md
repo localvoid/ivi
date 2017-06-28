@@ -30,7 +30,7 @@ function $canvas(child: VNode) {
 }
 
 render(
-    $h("div").children(
+    h.div().children(
         $canvas(
             $collisionBox()
                 .events(CanvasEvents.onClick(() => console.log("click")))

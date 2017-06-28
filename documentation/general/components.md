@@ -6,7 +6,7 @@ Stateless components are implemented with simple functions.
 
 ```ts
 function StatelessComponent(props: string) {
-    return $h("div").children(`Hello ${props}`);
+    return h.div().children(`Hello ${props}`);
 }
 ```
 
@@ -18,7 +18,7 @@ Stateful components are implemented with ES6 classes and should be extended from
 ```ts
 class StatefulComponent extends Component<string> {
     render() {
-        return $h("div").children(`Hello ${this.props}`);
+        return h.div().children(`Hello ${this.props}`);
     }
 }
 ```
@@ -35,7 +35,7 @@ class StatefulComponent extends Component<string> {
     }
 
     render() {
-        return $h("div").children(`Hello ${this.internalState}`);
+        return h.div().children(`Hello ${this.internalState}`);
     }
 }
 ```
@@ -47,7 +47,7 @@ class StatefulComponent extends Component<string> {
     private internalState = this.props;
 
     render() {
-        return $h("div").children(`Hello ${this.internalState}`);
+        return h.div().children(`Hello ${this.internalState}`);
     }
 }
 ```
@@ -82,7 +82,7 @@ class StatefulComponent extends Component {
     }
 
     render() {
-        return $h("div").children(`Counter: ${this.counter}`);
+        return h.div().children(`Counter: ${this.counter}`);
     }
 }
 ```
@@ -100,7 +100,7 @@ interface Component {
 ```ts
 class StatefulComponent extends Component<string> {
     render() {
-        return $h("div").children(`Hello ${this.props}`);
+        return h.div().children(`Hello ${this.props}`);
     }
 }
 ```
@@ -122,7 +122,7 @@ class StatefulComponent extends Component<string> {
     }
 
     render() {
-        return $h("div").children(`Hello ${this.internalState}`);
+        return h.div().children(`Hello ${this.internalState}`);
     }
 }
 ```

@@ -5,66 +5,10 @@ Virtual DOM API is using method chaining to set properties.
 For example, to assign an event and id attribute on a div element:
 
 ```ts
-const node = $h("div")
+const node = h.div()
     .events(Events.onClick((ev) => { console.log("click"); }))
     .props({ id: "unique-id" });
 ```
-
-## Why Method Chaining?
-
-Method chaining API allows to create efficient and flexible APIs.
-
-For example, instead of wrapping everything into components, it is perfectly fine to create factory functions that
-return virtual dom nodes:
-
-```ts
-function $Link(title: string, href: string) {
-    return $h("a", "link").props({ href, title }).children(title);
-}
-
-render(
-    $Link("example", "http://example.com")
-        .key("unique-key")
-        .mergeProps({
-            target: "_blank",
-        }),
-    document.getElementById("container")!,
-);
-```
-
-## Creating Virtual Nodes
-
-```ts
-function $h(tagName: string, className?: string): VNode<P>;
-function $c<P>(component: ComponentFunction<P> | ComponentClass<P>, props: P): VNode<P>;
-```
-
-This is the two most common factory functions, one creates nodes for HTML elements and another one creates nodes for
-components.
-
-`$h` function creates nodes for HTML elements. `tagName` parameter specifies HTML tag name, and optional `className`
-parameter specifies a class name.
-
-`$c` function creates nodes for Components. `component` parameter specifies a component, it can be a simple function,
-or a component class. `props` parameter is an object with component properties.
-
-### Other Virtual Node types
-
-```ts
-function $s(tagName: string, className?: string): VNode<P>;
-function $i(type: string, className?: string): VNode<P>;
-function $m(tagName: string, className?: string): VNode<P>;
-function $t(content: string): VNode<P>;
-```
-
-`$s` function creates nodes for SVG elements.
-
-`$i` function creates nodes for HTML input elements. `type` parameter specifies an input type attribute, with an
-exception for `textarea` type, input element with `textarea` type will be created as a `<textarea>` element.
-
-`$m` function creates nodes for HTML media elements: `<audio>` and `<video>`.
-
-`$t` function creates nodes for Text nodes. `content` parameter specifies text node contents.
 
 ## Chained Methods
 
@@ -109,8 +53,8 @@ Each non-nested child that doesn't have assigned explicit key will be assigned w
 used to support code patterns like this:
 
 ```ts
-$h("div").children(
-    isVisible ? $h(ComponentA) : null,
+h.div().children(
+    isVisible ? $c(ComponentA) : null,
     $c(ComponentB),
 );
 ```

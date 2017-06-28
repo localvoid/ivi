@@ -133,7 +133,7 @@ class StatefulComponent extends Component<Data> {
     }
 
     render() {
-        return $h("div").children(this.props.value);
+        return h.div().children(this.props.value);
     }
 }
 ```

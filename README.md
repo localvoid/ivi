@@ -82,10 +82,11 @@ Declarative rendering in ivi is based on the Virtual DOM. Each time you want to 
 DOM tree and syncing algorithm will efficiently update DOM tree.
 
 ```ts
-import { $h, render } from "ivi";
+import { render } from "ivi";
+import * as h from "ivi-html";
 
 render(
-    $h("div").children("Hello world!"),
+    h.div().children("Hello world!"),
     document.getElementById("app")!,
 );
 ```
@@ -93,13 +94,14 @@ render(
 Now lets make it alive:
 
 ```ts
-import { $h, render } from "ivi";
+import { render } from "ivi";
+import * as h from "ivi-html";
 
 let counter = 0;
 
 function update() {
     render(
-        $h("div").children(`Counter: ${counter}`),
+        h.div().children(`Counter: ${counter}`),
         document.getElementById("app")!,
     );
 
@@ -117,10 +119,11 @@ Components are the basic building blocks for your applications, they will help y
 Stateless components are implemented with simple functions.
 
 ```ts
-import { $h, $c, render } from "ivi";
+import { $c, render } from "ivi";
+import * as h from "ivi-html";
 
 function StatelessComponent(text: string) {
-    return $h("div").children(text);
+    return h.div().children(text);
 }
 
 render(
@@ -135,7 +138,8 @@ Stateful components are implemented with ES6 classes and should be extended from
 `Component<P>`. Base class has a parametric type `P` that specifies props type.
 
 ```ts
-import { Component, $h, $c, render } from "ivi";
+import { Component, $c, render } from "ivi";
+import * as h from "ivi-html";
 
 class StatefulComponent extends Component {
     private time = 0;
@@ -153,7 +157,7 @@ class StatefulComponent extends Component {
     }
 
     render() {
-        return $h("div").children(`Time: ${this.time}`);
+        return h.div().children(`Time: ${this.time}`);
     }
 }
 

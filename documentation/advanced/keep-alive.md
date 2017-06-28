@@ -46,9 +46,9 @@ class ShowHide extends Component<{ show: boolean }> {
     };
 
     render() {
-        return $h("div").children(
+        return h.div().children(
             this.props.show ?
-                $keepAlive(this.keepAlive, $h("div").children("Hide Me!")) :
+                $keepAlive(this.keepAlive, h.div().children("Hide Me!")) :
                 null,
         );
     }
@@ -70,8 +70,8 @@ class PageManager extends Component<{ pageID: string }> {
     render() {
         const pageID = this.props.pageID;
 
-        return $h("div").children(
-            $keepAlive(this.keepAlive, $h("div").children(pageID), pageId)
+        return h.div().children(
+            $keepAlive(this.keepAlive, h.div().children(pageID), pageId)
                 .key(pageID),
         );
     }
@@ -91,8 +91,8 @@ class ItemList extends Component<{ items: string[] }> {
     }
 
     render() {
-        return $h("div").children(
-            this.props.items.map((i) => $keepAlive(this.keepAlive, $h("div").children(i), i).key(i)),
+        return h.div().children(
+            this.props.items.map((i) => $keepAlive(this.keepAlive, h.div().children(i), i).key(i)),
         );
     }
 }
