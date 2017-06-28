@@ -1,10 +1,10 @@
-import { Context, CSSStyleProps, InputType } from "ivi-core";
+import { Context, CSSStyleProps, InputType, SelectorData } from "ivi-core";
 import { EventHandler } from "ivi-dom";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
-import { isVoidElement, isInputTypeHasCheckedProperty } from "../dev_mode/dom";
+import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent, ComponentClass, Component } from "./component";
-import { SelectorData, ConnectDescriptor } from "./connect_descriptor";
+import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 
 export interface ElementProps<P> {
@@ -254,7 +254,7 @@ export class VNode<P = null> {
             if (this._flags & VNodeFlags.MediaElement) {
                 throw new Error("Failed to set children, media elements can't have children.");
             }
-            if (isVoidElement(this._tag as string)) {
+            if (this._flags & VNodeFlags.VoidElement) {
                 throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
             }
         }
@@ -379,7 +379,7 @@ export class VNode<P = null> {
             if (this._flags & VNodeFlags.MediaElement) {
                 throw new Error("Failed to set unsafeHTML, media elements can't have children.");
             }
-            if (isVoidElement(this._tag as string)) {
+            if (this._flags & VNodeFlags.VoidElement) {
                 throw new Error(`Failed to set unsafeHTML, ${this._tag} elements can't have children.`);
             }
         }

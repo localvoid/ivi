@@ -1,5 +1,5 @@
-import { Context } from "ivi-core";
-import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
+import { Context, SelectorData } from "ivi-core";
+import { ConnectDescriptor } from "./connect_descriptor";
 import { ComponentClass, isComponentClass } from "./component";
 import { VNode } from "./vnode";
 import { $c, $connect } from "./vnode_components";

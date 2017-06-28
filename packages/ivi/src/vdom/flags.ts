@@ -77,6 +77,10 @@ export const enum VNodeFlags {
      * VNode element will be automatically focused after instantiation.
      */
     Autofocus = 1 << 17,
+    /**
+     * VNode element cannot contain any children.
+     */
+    VoidElement = 1 << 18,
 
     /**
      * VNode represents a Component.

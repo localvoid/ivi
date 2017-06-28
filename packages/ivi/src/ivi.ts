@@ -4,7 +4,6 @@
 export {
     ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
-export { VNodeFlags } from "./vdom/flags";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode } from "./vdom/vnode";
@@ -16,6 +15,7 @@ export { connect } from "./vdom/connect";
 /**
  * API available only in browser environment.
  */
+export { VNodeFlags } from "./vdom/flags";
 export { TraceLog, TraceLogEntry, getTraceLog, trace } from "./dev_mode/trace";
 export { render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
 

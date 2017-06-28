@@ -15,7 +15,7 @@
  * #component - Component related functions.
  */
 
-import { Context, SVG_NAMESPACE } from "ivi-core";
+import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
 import { setInnerHTML, setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents, autofocus } from "ivi-dom";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
 import {
@@ -31,7 +31,7 @@ import {
 } from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { VNode, ElementProps, getDOMInstanceFromVNode } from "./vnode";
-import { ConnectDescriptor, SelectorData } from "./connect_descriptor";
+import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { ComponentClass, StatelessComponent, Component } from "./component";
 import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";

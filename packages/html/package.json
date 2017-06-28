@@ -1,0 +1,50 @@
+{
+    "name": "ivi-html",
+    "main": "dist/js/index.js",
+    "module": "dist/js/index.js",
+    "typings": "dist/typings/index.d.ts",
+    "version": "0.1.0",
+    "description": "Javascript (TypeScript) library for building web user interfaces.",
+    "license": "MIT",
+    "author": {
+        "name": "Boris Kaul",
+        "email": "localvoid@gmail.com",
+        "url": "https://github.com/localvoid"
+    },
+    "keywords": [
+        "ui",
+        "virtual",
+        "dom",
+        "virtualdom",
+        "vdom",
+        "diff",
+        "browser",
+        "typescript"
+    ],
+    "homepage": "https://github.com/ivijs/ivi",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ivijs/ivi"
+    },
+    "bugs": {
+        "url": "https://github.com/ivijs/ivi/issues"
+    },
+    "github": "https://github.com/ivijs/ivi",
+    "files": [
+        "dist",
+        "src",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "dist": "tsc --project ./tsconfig.build.json",
+        "watch": "tsc --watch --project ./tsconfig.build.json",
+        "lint": "tslint --project ./tsconfig.json"
+    },
+    "dependencies": {},
+    "peerDependencies": {
+        "ivi-core": "^0.1.0",
+        "ivi": "^0.8.0"
+    },
+    "devDependencies": {}
+}
