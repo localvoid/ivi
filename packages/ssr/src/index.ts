@@ -26,6 +26,28 @@ export {
     use, video, view, wbr, xmp, xMSWebview,
 } from "./html";
 
+export {
+    EventSource, EventHandler,
+
+    SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
+    SyntheticErrorEvent, SyntheticFocusEvent, SyntheticKeyboardEvent,
+    SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent, SyntheticMouseEvent, SyntheticPointerEvent,
+    SyntheticProgressEvent, SyntheticTouchEvent, SyntheticWheelEvent,
+
+    createEventHandler,
+
+    onAbort, onActivate, onAriaRequest, onBeforeActivate, onBeforeCopy, onBeforeCut, onBeforeDeactivate, onBeforePaste,
+    onBlur, onCanPlay, onCanPlaythrough, onChange, onClick, onContextMenu, onCopy, onCueChange, onCut, onDoubleClick,
+    onDeactivate, onDrag, onDragEnd, onDragEnter, onDragLeave, onDragOver, onDragStart, onDrop, onDurationChange,
+    onEmptied, onEncrypted, onEnded, onError, onFocus, onGotPointerCapture, onInput, onInvalid, onKeyDown, onKeyPress,
+    onKeyUp, onLoad, onLoadedData, onLoadedMetadata, onLoadStart, onLostPointerCapture, onMouseDown, onMouseEnter,
+    onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onMouseUp, onPaste, onPause, onPlay, onPlaying, onPointerCancel,
+    onPointerDown, onPointerEnter, onPointerLeave, onPointerMove, onPointerOut, onPointerOver, onPointerUp, onProgress,
+    onRateChange, onReset, onScroll, onSeeked, onSeeking, onSelect, onSelectStart, onStalled, onSubmit, onSuspend,
+    onTimeUpdate, onTouchCancel, onTouchEnd, onTouchMove, onTouchStart, onUnload, onVolumeChange, onWaiting, onWheel,
+    onActiveTouchEnd, onActiveTouchMove, onActiveTouchStart, onActiveWheel,
+} from "./events";
+
 export { createBlueprint } from "./blueprint";
 export { renderToString } from "./render";
 export { serializeState } from "./serialize";
