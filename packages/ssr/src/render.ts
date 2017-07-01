@@ -237,7 +237,7 @@ function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const aVNode = a.vnode;
     if (aVNode !== b) {
         const bFlags = b._flags;
-        if (vNodeCanSync(aVNode, b)) {
+        if (vNodeCanSync(aVNode, b) === true) {
             if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
                 if ((bFlags & VNodeFlags.Text) !== 0) {
                     return (a.children === b._children) ?

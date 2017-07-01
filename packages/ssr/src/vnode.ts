@@ -100,7 +100,7 @@ export const enum VNodeFlags {
     Syncable = Text
     | Element
     | Component
-    | Key
+    // | Key
     | InputElement
     | TextAreaElement
     | MediaElement
@@ -555,8 +555,8 @@ export function vNodeCanSync(a: VNode, b: VNode): boolean {
     return (
         ((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0 &&
         a._tag === b._tag &&
-        a._key === b._key
-    );
+        (((b._flags & VNodeFlags.LinkedBlueprint) !== 0) ||
+            ((a._flags ^ b._flags) & VNodeFlags.Key) === 0 && a._key === b._key));
 }
 
 export function vNodeEqualKeys(a: VNode, b: VNode): boolean {
