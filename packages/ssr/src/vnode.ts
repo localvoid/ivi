@@ -1,25 +1,112 @@
-import { Context, CSSStyleProps, InputType, SelectorData } from "ivi-core";
+import { CSSStyleProps } from "ivi-core";
 import { EventHandler } from "ivi-dom";
-import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
-import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
-import { VNodeFlags } from "./flags";
+import { BlueprintNode } from "./blueprint";
 import { StatelessComponent, ComponentClass, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
-import { KeepAliveHandler } from "./keep_alive";
 
-export interface ElementProps<P> {
+/**
+ * VNode flags.
+ */
+export const enum VNodeFlags {
     /**
-     * Attributes.
+     * VNode represents a Text node.
      */
-    attrs: P | null;
+    Text = 1,
     /**
-     * Style.
+     * VNode represents an Element node.
      */
-    style: CSSStyleProps | null;
+    Element = 1 << 1,
     /**
-     * Events.
+     * VNode represents a simple "function" component.
+     *
+     * It can also represent specialized components like "UpdateContext" component.
      */
-    events: Array<EventHandler | null> | EventHandler | null;
+    ComponentFunction = 1 << 2,
+    /**
+     * VNode represents a component.
+     */
+    ComponentClass = 1 << 3,
+    /**
+     * Children property contains a child with a basic type (number/string/boolean).
+     */
+    ChildrenBasic = 1 << 4,
+    /**
+     * Children property contains a child VNode.
+     */
+    ChildrenVNode = 1 << 5,
+    /**
+     * Children property contains an Array type.
+     */
+    ChildrenArray = 1 << 6,
+    /**
+     * Children property contains unsafe HTML.
+     */
+    UnsafeHTML = 1 << 7,
+    /**
+     * VNode is using a non-artificial key.
+     */
+    Key = 1 << 8,
+    /**
+     * VNode represents an HTMLInputElement(+textarea) element.
+     */
+    InputElement = 1 << 9,
+    /**
+     * VNode represents a HTMLTextAreaElement.
+     */
+    TextAreaElement = 1 << 10,
+    /**
+     * VNode represents a HTMLMediaElement.
+     */
+    MediaElement = 1 << 11,
+    /**
+     * VNode is an SVGElement.
+     */
+    SvgElement = 1 << 12,
+    /**
+     * Specialized VNode with connect functionality.
+     */
+    Connect = 1 << 13,
+    /**
+     * Specialized VNode with an update context functionality.
+     */
+    UpdateContext = 1 << 14,
+    /**
+     * VNode element cannot contain any children.
+     */
+    VoidElement = 1 << 15,
+    /**
+     * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
+     * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
+     */
+    NewLineEatingElement = 1 << 16,
+    /**
+     * Component VNode has a linked blueprint.
+     */
+    LinkedBlueprint = 1 << 17,
+
+    // Blueprint specific flags:
+    /**
+     * Blueprint Node contains connect node.
+     */
+    DeepConnect = 1 << 18,
+
+    /**
+     * VNode represents a Component.
+     */
+    Component = ComponentFunction | ComponentClass,
+    /**
+     * Flags that should match to be compatible for syncing.
+     */
+    Syncable = Text
+    | Element
+    | Component
+    | Key
+    | InputElement
+    | TextAreaElement
+    | MediaElement
+    | SvgElement
+    | Connect
+    | UpdateContext,
 }
 
 /**
@@ -46,27 +133,14 @@ export class VNode<P = null> {
      *
      * Stateless Components should contain virtual root nodes.
      */
-    _children:
-    | VNode<any>[]
-    | VNode<any>
-    | string
-    | number
-    | boolean
-    | null
-    | undefined;
+    _children: | VNode<any>[] | VNode<any> | string | number | boolean | null;
     /**
      * Tag property contains details about the type of the element.
      *
      * Simple elements has a string type values, components can be a simple functions, constructor, or special
      * descriptors for nodes that change syncing algorithm behavior.
      */
-    _tag:
-    | string
-    | ComponentClass<any>
-    | StatelessComponent<any>
-    | ConnectDescriptor<any, any, any>
-    | KeepAliveHandler
-    | null;
+    _tag: | string | ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | null;
     /**
      * Children syncing algorithm is using key property to find the same node in the previous children array. Key
      * should be unique among its siblings.
@@ -75,44 +149,36 @@ export class VNode<P = null> {
     /**
      * Properties.
      */
-    _props: ElementProps<P> | P | null;
+    _props: P | null;
     /**
-     * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
-     * time VNode is synced, reference will be transferred from the old VNode to the new one.
+     * Style.
      */
-    _instance: Node | Component<any> | SelectorData | Context | null;
+    _style: CSSStyleProps | BlueprintNode | null;
     /**
      * Class name.
      */
     _className: string | null;
+    /**
+     * Close element string.
+     */
+    _close: string | null;
 
     constructor(
         flags: number,
-        tag:
-            | string
-            | StatelessComponent<P>
-            | ComponentClass<P>
-            | ConnectDescriptor<any, any, any>
-            | KeepAliveHandler
-            | null,
-        props: ElementProps<P> | P | null,
+        tag: | string | StatelessComponent<P> | ComponentClass<P> | ConnectDescriptor<any, any, any> | null,
+        props: P | null,
         className: string | null,
-        children:
-            | VNode<any>[]
-            | VNode<any>
-            | string
-            | number
-            | boolean
-            | null
-            | undefined,
+        children: VNode<any>[] | VNode<any> | string | number | boolean | null,
+        close: string | null,
     ) {
         this._flags = flags;
         this._children = children;
         this._tag = tag;
         this._key = 0;
         this._props = props;
-        this._instance = null;
+        this._style = null;
         this._className = className;
+        this._close = close;
     }
 
     /**
@@ -157,21 +223,8 @@ export class VNode<P = null> {
             if (!(this._flags & VNodeFlags.Element)) {
                 throw new Error("Failed to set style, style is available on element nodes only.");
             }
-
-            if (style !== null) {
-                checkDOMStylesForTypos(style);
-            }
         }
-        if (this._props === null) {
-            this._flags |= VNodeFlags.ElementProps;
-            this._props = {
-                attrs: null,
-                style,
-                events: null,
-            };
-        } else {
-            (this._props as ElementProps<P>).style = style;
-        }
+        this._style = style;
         return this;
     }
 
@@ -187,16 +240,6 @@ export class VNode<P = null> {
                 throw new Error("Failed to set events, events are available on element nodes only.");
             }
         }
-        if (this._props === null) {
-            this._flags |= VNodeFlags.ElementProps;
-            this._props = {
-                attrs: null,
-                style: null,
-                events,
-            };
-        } else {
-            (this._props as ElementProps<P>).events = events;
-        }
         return this;
     }
 
@@ -207,25 +250,7 @@ export class VNode<P = null> {
      * @returns VNodeBuilder.
      */
     props<U extends P>(props: U | null): VNode<P> {
-        if (__IVI_DEV__) {
-            if (props) {
-                checkDOMAttributesForTypos(props);
-
-                if (this._flags & VNodeFlags.SvgElement) {
-                    checkDeprecatedDOMSVGAttributes(this._tag as string, props);
-                }
-            }
-        }
-        if (this._props === null) {
-            this._flags |= VNodeFlags.ElementProps;
-            this._props = {
-                attrs: props,
-                style: null,
-                events: null,
-            };
-        } else {
-            (this._props as ElementProps<P>).attrs = props;
-        }
+        this._props = props;
         return this;
     }
 
@@ -348,7 +373,7 @@ export class VNode<P = null> {
                                 }
                             }
                         } else {
-                            c = r[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
+                            c = r[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number, null);
                             c._key = i;
                         }
                     }
@@ -417,10 +442,6 @@ export class VNode<P = null> {
             if (!(this._flags & VNodeFlags.InputElement)) {
                 throw new Error("Failed to set checked, checked is available on input elements only.");
             }
-            if (!isInputTypeHasCheckedProperty(this._tag as InputType)) {
-                throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
-                    + `checked value.`);
-            }
         }
         this._children = checked;
         return this;
@@ -437,16 +458,14 @@ export class VNode<P = null> {
             if (props && typeof props !== "object") {
                 throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
             }
-            if (this._props &&
-                (this._props as ElementProps<P>).attrs &&
-                typeof (this._props as ElementProps<P>).attrs !== "object") {
+            if (this._props && typeof this._props !== "object") {
                 throw new Error(`Failed to merge props, props object has type "${typeof this._props}".`);
             }
         }
         if (props !== null) {
             return this.props(
-                this._props !== null && (this._props as ElementProps<P>).attrs !== null ?
-                    Object.assign({}, (this._props as ElementProps<P>).attrs, props) :
+                this._props !== null ?
+                    Object.assign({}, this._props, props) :
                     props,
             );
         }
@@ -462,8 +481,8 @@ export class VNode<P = null> {
     mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P> {
         if (style !== null) {
             return this.style(
-                this._props !== null && (this._props as ElementProps<P>).style !== null ?
-                    Object.assign({}, (this._props as ElementProps<P>).style, style) :
+                this._style !== null ?
+                    Object.assign({}, this._style, style) :
                     style,
             );
         }
@@ -482,9 +501,6 @@ export class VNode<P = null> {
                 throw new Error("Failed to set autofocus, autofocus is available on element nodes only.");
             }
         }
-        if (focus === true) {
-            this._flags |= VNodeFlags.Autofocus;
-        }
         return this;
     }
 }
@@ -499,7 +515,7 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | n
     if ((node._flags & VNodeFlags.Component) !== 0) {
         return getDOMInstanceFromVNode<T>(node._children as VNode<any>);
     }
-    return node._instance as T;
+    return null;
 }
 
 /**
@@ -514,7 +530,7 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
             throw new Error("Failed to get component instance: VNode should represent a Component.");
         }
     }
-    return node._instance as T | null;
+    return null;
 }
 
 export function checkUniqueKeys(children: VNode<any>[]): void {
@@ -533,4 +549,16 @@ export function checkUniqueKeys(children: VNode<any>[]): void {
             }
         }
     }
+}
+
+export function vNodeCanSync(a: VNode, b: VNode): boolean {
+    return (
+        ((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0 &&
+        a._tag === b._tag &&
+        a._key === b._key
+    );
+}
+
+export function vNodeEqualKeys(a: VNode, b: VNode): boolean {
+    return a._key === b._key && ((a._flags ^ b._flags) & VNodeFlags.Key) === 0;
 }

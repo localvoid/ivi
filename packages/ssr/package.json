@@ -1,8 +1,8 @@
 {
-    "name": "ivi-state",
-    "main": "dist/js/ivi-state.js",
-    "module": "dist/js/ivi-state.js",
-    "typings": "dist/typings/ivi-state.d.ts",
+    "name": "ivi-ssr",
+    "main": "dist/js/index.js",
+    "module": "dist/js/index.js",
+    "typings": "dist/typings/index.d.ts",
     "version": "0.1.0",
     "description": "Javascript (TypeScript) library for building web user interfaces.",
     "license": "MIT",
@@ -41,9 +41,6 @@
         "watch": "tsc --watch --project ./tsconfig.build.json",
         "lint": "tslint --project ./tsconfig.json",
         "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' mocha -r ts-node/register tests/*.ts"
-    },
-    "peerDependencies": {
-        "ivi-core": "^0.1.0"
     },
     "dependencies": {},
     "devDependencies": {}

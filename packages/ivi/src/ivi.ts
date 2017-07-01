@@ -7,7 +7,7 @@ export {
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode } from "./vdom/vnode";
 export {
-    text, componentFactory, statelessComponentFactory, component, statelessComponent, context, connect, keepAlive,
+    componentFactory, statelessComponentFactory, component, statelessComponent, context, connect, keepAlive,
 } from "./vdom/vnode_factories";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 

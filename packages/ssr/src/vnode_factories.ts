@@ -1,9 +1,8 @@
 import { Context, SelectorData } from "ivi-core";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
-import { VNodeFlags } from "./flags";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
-import { VNode } from "./vnode";
+import { VNodeFlags, VNode } from "./vnode";
 
 export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
@@ -14,6 +13,7 @@ export function componentFactory<P>(c: ComponentClass<P>): (props?: P) => VNode<
             VNodeFlags.ComponentClass,
             c,
             props!,
+            null,
             null,
             null,
         );
@@ -29,6 +29,7 @@ export function statelessComponentFactory<P>(c: StatelessComponent<P>): (props?:
             VNodeFlags.ComponentFunction,
             c,
             props!,
+            null,
             null,
             null,
         );
@@ -51,6 +52,7 @@ export function component<P>(c: ComponentClass<P>, props?: P): VNode<P> {
         props!,
         null,
         null,
+        null,
     );
 }
 
@@ -68,6 +70,7 @@ export function statelessComponent<P>(c: StatelessComponent<P>, props?: P): VNod
         VNodeFlags.ComponentFunction,
         c,
         props!,
+        null,
         null,
         null,
     );
@@ -97,6 +100,7 @@ export function context<T = {}>(context: Context<T>, child: VNode<any>): VNode<C
         context,
         null,
         child,
+        null,
     );
 }
 
@@ -147,6 +151,7 @@ export function connect<I, O, P>(
                     props!,
                     null,
                     null,
+                    null,
                 );
             };
             fn.displayName = render.constructor.name;
@@ -171,6 +176,7 @@ export function connect<I, O, P>(
                         props!,
                         null,
                         null,
+                        null,
                     );
                 } :
                 render,
@@ -181,6 +187,7 @@ export function connect<I, O, P>(
             VNodeFlags.ComponentFunction | VNodeFlags.Connect,
             descriptor,
             props,
+            null,
             null,
             null,
         );
@@ -210,11 +217,6 @@ export function keepAlive<P>(
     child: VNode<any>,
     props?: P,
 ): VNode<P> {
-    return new VNode<P>(
-        VNodeFlags.ComponentFunction | VNodeFlags.KeepAlive,
-        handler,
-        props === undefined ? null : props,
-        null,
-        child,
-    );
+    // SSR implementation should just ignore keepAlive and return `child`.
+    return child;
 }
