@@ -1,5 +1,5 @@
 import { Context, CSSStyleProps, InputType, SelectorData } from "ivi-core";
-import { EventHandler } from "ivi-dom";
+import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { VNodeFlags } from "./flags";

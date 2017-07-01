@@ -1,4 +1,4 @@
-import { scheduleTask } from "../scheduler/task";
+import { scheduleTask } from "ivi-dom";
 import { getEventTarget, getEventOptions } from "./utils";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";

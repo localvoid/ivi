@@ -1,8 +1,7 @@
 import { Context, USER_AGENT, UserAgentFlags, NOOP } from "ivi-core";
 import { nextFrame, syncFrameUpdate } from "ivi-dom";
-import { SyncFlags } from "./flags";
+import { SyncFlags, VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
-import { text } from "./vnode_factories";
 import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
 
 /**
@@ -76,7 +75,7 @@ function _update() {
 
                 if (newVNode) {
                     if (newVNode.constructor !== VNode) {
-                        newVNode = text("");
+                        newVNode = new VNode(VNodeFlags.Text, null, null, null, "");
                     }
                     if (currentVNode) {
                         syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
