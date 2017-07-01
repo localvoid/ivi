@@ -567,3 +567,7 @@ export function createBlueprint(node: VNode<any>, context: Context = {}, bluepri
     prerenderBlueprint(result);
     return result;
 }
+
+export function linkBlueprint<P>(factory: (props?: P) => VNode<P>, blueprint: BlueprintNode): void {
+    (factory as any).linkBlueprint(blueprint);
+}

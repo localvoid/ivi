@@ -1,5 +1,5 @@
 import { CSSStyleProps } from "ivi-core";
-import { EventHandler } from "ivi-dom";
+import { EventHandler } from "./events";
 import { BlueprintNode } from "./blueprint";
 import { StatelessComponent, ComponentClass, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";

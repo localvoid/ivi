@@ -3,37 +3,74 @@ import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
 import { VNodeFlags, VNode } from "./vnode";
+import { BlueprintNode } from "./blueprint";
 
 export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: ComponentClass<P>): (props?: P) => VNode<P> {
-    return function (props: P): VNode<P> {
-        return new VNode<P>(
-            VNodeFlags.ComponentClass,
+    let linkedBlueprint: BlueprintNode | null = null;
+    function linkBlueprint(blueprint: BlueprintNode): void {
+        linkedBlueprint = blueprint;
+    }
+    const r = function (props: P): VNode<P> {
+        if (linkedBlueprint === null) {
+            return new VNode<P>(
+                VNodeFlags.ComponentClass,
+                c,
+                props!,
+                null,
+                null,
+                null,
+            );
+        }
+        const v = new VNode<P>(
+            VNodeFlags.ComponentClass | VNodeFlags.LinkedBlueprint,
             c,
             props!,
             null,
             null,
             null,
         );
+        v._style = linkedBlueprint;
+        return v;
     };
+    (r as any).linkBlueprint = linkBlueprint;
+    return r;
 }
 
 export function statelessComponentFactory(c: StatelessComponent<void>): () => VNode<null>;
 export function statelessComponentFactory(c: StatelessComponent<null>): () => VNode<null>;
 export function statelessComponentFactory<P, U extends P>(c: StatelessComponent<P>): (props: U) => VNode<P>;
 export function statelessComponentFactory<P>(c: StatelessComponent<P>): (props?: P) => VNode<P> {
-    return function (props: P): VNode<P> {
-        return new VNode<P>(
-            VNodeFlags.ComponentFunction,
+    let linkedBlueprint: BlueprintNode | null = null;
+    function linkBlueprint(blueprint: BlueprintNode): void {
+        linkedBlueprint = blueprint;
+    }
+    const r = function (props: P): VNode<P> {
+        if (linkedBlueprint === null) {
+            return new VNode<P>(
+                VNodeFlags.ComponentFunction,
+                c,
+                props!,
+                null,
+                null,
+                null,
+            );
+        }
+        const v = new VNode<P>(
+            VNodeFlags.ComponentFunction | VNodeFlags.LinkedBlueprint,
             c,
             props!,
             null,
             null,
             null,
         );
+        v._style = linkedBlueprint;
+        return v;
     };
+    (r as any).linkBlueprint = linkBlueprint;
+    return r;
 }
 
 /**

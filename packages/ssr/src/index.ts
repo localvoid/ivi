@@ -48,6 +48,6 @@ export {
     onActiveTouchEnd, onActiveTouchMove, onActiveTouchStart, onActiveWheel,
 } from "./events";
 
-export { createBlueprint } from "./blueprint";
+export { createBlueprint, linkBlueprint } from "./blueprint";
 export { renderToString } from "./render";
 export { serializeState } from "./serialize";

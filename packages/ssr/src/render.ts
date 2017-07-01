@@ -98,38 +98,39 @@ export function renderOpenElement(node: VNode): string {
     return result;
 }
 
-function renderVNode(state: RenderState<any>, node: VNode<any>, context: Context): void {
+function renderVNode(node: VNode<any>, context: Context): string {
     const flags = node._flags;
     if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
         if ((flags & VNodeFlags.Element) !== 0) {
-            state.result += renderOpenElement(node);
+            let result = renderOpenElement(node);
             if ((flags & VNodeFlags.VoidElement) === 0) {
                 if (node._children !== null) {
                     if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
                         if ((flags & VNodeFlags.ChildrenArray) !== 0) {
                             const children = node._children as VNode<any>[];
                             for (let i = 0; i < children.length; i++) {
-                                renderVNode(state, children[i], context);
+                                result += renderVNode(children[i], context);
                             }
                         } else {
-                            renderVNode(state, node._children as VNode<any>, context);
+                            result += renderVNode(node._children as VNode<any>, context);
                         }
                     } else { // ((flags & VNodeFlags.ChildrenBasic) !== 0)
-                        state.result += escapeText(node._children as string);
+                        result += escapeText(node._children as string);
                     }
                 }
-                state.result += node._close;
+                result += node._close;
             } else {
-                state.result += " />";
+                result += " />";
             }
+            return result;
         } else { // ((flags & VNodeFlags.Text) !== 0)
-            state.result += escapeText(node._children as string);
+            return escapeText(node._children as string);
         }
     } else { // ((flags & VNodeFlags.Component) !== 0)
         if ((flags & VNodeFlags.LinkedBlueprint) === 0) {
             if ((flags & VNodeFlags.ComponentClass) !== 0) {
                 const component = new (node._tag as ComponentClass)(node._props);
-                renderVNode(state, component.render(), context);
+                return renderVNode(component.render(), context);
             } else { // ((node._flags & VNodeFlags.ComponentFunction) !== 0)
                 let root;
                 if ((flags & VNodeFlags.Connect) !== 0) {
@@ -144,55 +145,53 @@ function renderVNode(state: RenderState<any>, node: VNode<any>, context: Context
                         root = (node._tag as StatelessComponent)(node._props);
                     }
                 }
-                renderVNode(state, root, context);
+                return renderVNode(root, context);
             }
         } else {
-            patchVNode(state, node._style as BlueprintNode, node, context);
+            return patchVNode(node._style as BlueprintNode, node, context);
         }
     }
 }
 
 function patchCheckDeepChanges(
-    state: RenderState<any>,
     bp: BlueprintNode,
     context: Context,
-): void {
+): string {
     const flags = bp.flags;
     if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
-        state.result += bp.string;
+        let result = bp.string;
         if ((flags & VNodeFlags.Element) !== 0) {
-            if (bp.children !== null) {
-                if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
-                    let children = bp.children;
-                    if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-                        children = children as BlueprintNode[];
-                        for (let i = 0; i < children.length; i++) {
-                            patchCheckDeepChanges(
-                                state,
-                                children[i],
+            if ((flags & VNodeFlags.VoidElement) === 0) {
+                if (bp.children !== null) {
+                    if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
+                        const children = bp.children;
+                        if ((flags & VNodeFlags.ChildrenArray) !== 0) {
+                            for (let i = 0; i < (children as BlueprintNode[]).length; i++) {
+                                result += patchCheckDeepChanges(
+                                    (children as BlueprintNode[])[i],
+                                    context,
+                                );
+                            }
+                        } else {
+                            result += patchCheckDeepChanges(
+                                children as BlueprintNode,
                                 context,
                             );
                         }
                     } else {
-                        patchCheckDeepChanges(
-                            state,
-                            children as BlueprintNode,
-                            context,
-                        );
+                        result += bp.children as string;
                     }
-                } else {
-                    state.result += bp.children as string;
                 }
+                result += bp.vnode._close;
             }
-            state.result += bp.vnode._close;
         }
+        return result;
     } else {
         if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) === 0) {
             if ((flags & VNodeFlags.DeepConnect) === 0) {
-                state.result += bp.string;
+                return bp.string;
             } else {
-                patchCheckDeepChanges(
-                    state,
+                return patchCheckDeepChanges(
                     bp.children as BlueprintNode,
                     context,
                 );
@@ -209,17 +208,15 @@ function patchCheckDeepChanges(
                 const prevChildren = bp.children as BlueprintNode;
                 if (prevSelectData === selectData) {
                     if ((flags & VNodeFlags.DeepConnect) === 0) {
-                        state.result += bp.string;
+                        return bp.string;
                     } else {
-                        patchCheckDeepChanges(
-                            state,
+                        return patchCheckDeepChanges(
                             prevChildren,
                             context,
                         );
                     }
                 } else {
-                    patchVNode(
-                        state,
+                    return patchVNode(
                         prevChildren,
                         connect.render(selectData.out),
                         context,
@@ -227,8 +224,7 @@ function patchCheckDeepChanges(
                 }
             } else {
                 context = Object.assign({}, context, bp.vnode._props);
-                patchCheckDeepChanges(
-                    state,
+                return patchCheckDeepChanges(
                     bp.children as BlueprintNode,
                     context,
                 );
@@ -237,217 +233,209 @@ function patchCheckDeepChanges(
     }
 }
 
-function patchVNode(state: RenderState<any>, a: BlueprintNode, b: VNode<any>, context: Context): void {
-    if (a.vnode === b) {
-        patchCheckDeepChanges(state, a, context);
-    }
-
-    const bFlags = b._flags;
-    if (vNodeCanSync(a.vnode, b)) {
-        if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
-            if ((bFlags & VNodeFlags.Text) !== 0) {
-                state.result += (a.children === b._children)
-                    ? a.string :
-                    escapeText(b._children as string);
-            } else { // ((flags & VNodeFlags.Element) !== 0)
-                if (
-                    a.vnode._props !== b._props ||
-                    a.vnode._style !== b._style ||
-                    a.vnode._className !== b._className
-                ) {
-                    state.result += renderOpenElement(b);
-                } else {
-                    state.result += a.string;
-                }
-
-                if ((bFlags & VNodeFlags.VoidElement) === 0) {
-                    if (a.vnode._children !== b._children) {
-                        patchChildren(
-                            state,
-                            a,
-                            a.flags,
-                            bFlags,
-                            a.children as | BlueprintNode[] | BlueprintNode | string | number | boolean,
-                            b._children as | VNode[] | VNode | string | number | boolean,
-                            context,
-                        );
-                    }
-
-                    state.result += a.vnode._close;
-                }
-            }
-        } else { // ((flags & VNodeFlags.Component) !== 0)
-            if ((bFlags & VNodeFlags.ComponentClass) !== 0) {
-                const component = a.data as Component;
-                // Update component props
-                const oldProps = a.vnode._props;
-                const newProps = b._props;
-                const oldRoot = a.children as BlueprintNode;
-                if (component.isPropsChanged(oldProps, newProps) === true) {
-                    const newComponent = new (b._tag as ComponentClass)(newProps);
-                    const newRoot = newComponent.render();
-                    patchVNode(state, oldRoot, newRoot, context);
-                } else {
-                    if ((a.flags & VNodeFlags.DeepConnect) === 0) {
-                        state.result += a.string;
-                    } else {
-                        patchCheckDeepChanges(state, oldRoot, context);
-                    }
-                }
-            } else { // (flags & VNodeFlags.ComponentFunction)
-                const fn = b._tag as StatelessComponent;
-
-                if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
-                    if ((bFlags & VNodeFlags.Connect) !== 0) {
-                        const connect = b._tag as ConnectDescriptor<any, any, any>;
-                        const prevSelectData = a.data as SelectorData;
-                        const selectData = connect.select(
-                            prevSelectData,
-                            b._props,
-                            context,
-                        );
-                        if (prevSelectData === selectData) {
-                            patchCheckDeepChanges(
-                                state,
-                                a.children as BlueprintNode,
-                                context,
-                            );
-                        } else {
-                            patchVNode(
-                                state,
-                                a.children as BlueprintNode,
-                                connect.render(selectData.out),
-                                context,
-                            );
-                        }
-                    } else {
-                        if ((bFlags & VNodeFlags.UpdateContext) !== 0) {
-                            context = Object.assign({}, context, b._props);
-                        }
-                        patchVNode(
-                            state,
-                            a.children as BlueprintNode,
-                            b._children as VNode<any>,
-                            context,
-                        );
-                    }
-                } else {
+function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
+    const aVNode = a.vnode;
+    if (aVNode !== b) {
+        const bFlags = b._flags;
+        if (vNodeCanSync(aVNode, b)) {
+            if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
+                if ((bFlags & VNodeFlags.Text) !== 0) {
+                    return (a.children === b._children) ?
+                        a.string :
+                        escapeText(b._children as string);
+                } else { // ((flags & VNodeFlags.Element) !== 0)
+                    let result;
                     if (
-                        (fn.isPropsChanged === undefined && a.vnode._props !== b._props) ||
-                        (fn.isPropsChanged !== undefined && fn.isPropsChanged(a.vnode._props, b._props) === true)
+                        aVNode._props !== b._props ||
+                        aVNode._style !== b._style ||
+                        aVNode._className !== b._className
                     ) {
-                        patchVNode(
-                            state,
-                            a.children as BlueprintNode,
-                            fn(b._props),
-                            context,
-                        );
+                        result = renderOpenElement(b);
+                    } else {
+                        result = a.string;
+                    }
+
+                    if ((bFlags & VNodeFlags.VoidElement) === 0) {
+                        if (aVNode._children !== b._children) {
+                            result += patchChildren(
+                                a,
+                                a.flags,
+                                bFlags,
+                                a.children as | BlueprintNode[] | BlueprintNode | string | number | boolean,
+                                b._children as | VNode[] | VNode | string | number | boolean,
+                                context,
+                            );
+                        }
+
+                        result += aVNode._close;
+                    }
+                    return result;
+                }
+            } else { // ((flags & VNodeFlags.Component) !== 0)
+                if ((bFlags & VNodeFlags.ComponentClass) !== 0) {
+                    const component = a.data as Component;
+                    // Update component props
+                    const oldProps = aVNode._props;
+                    const newProps = b._props;
+                    const oldRoot = a.children as BlueprintNode;
+                    if (component.isPropsChanged(oldProps, newProps) === true) {
+                        const newComponent = new (b._tag as ComponentClass)(newProps);
+                        const newRoot = newComponent.render();
+                        return patchVNode(oldRoot, newRoot, context);
                     } else {
                         if ((a.flags & VNodeFlags.DeepConnect) === 0) {
-                            state.result += a.string;
+                            return a.string;
                         } else {
-                            patchCheckDeepChanges(
-                                state,
-                                a.children as BlueprintNode,
+                            return patchCheckDeepChanges(oldRoot, context);
+                        }
+                    }
+                } else { // (flags & VNodeFlags.ComponentFunction)
+                    const fn = b._tag as StatelessComponent;
+
+                    if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
+                        if ((bFlags & VNodeFlags.Connect) !== 0) {
+                            const connect = b._tag as ConnectDescriptor<any, any, any>;
+                            const prevSelectData = a.data as SelectorData;
+                            const selectData = connect.select(
+                                prevSelectData,
+                                b._props,
                                 context,
                             );
+                            if (prevSelectData === selectData) {
+                                return patchCheckDeepChanges(
+                                    a.children as BlueprintNode,
+                                    context,
+                                );
+                            } else {
+                                return patchVNode(
+                                    a.children as BlueprintNode,
+                                    connect.render(selectData.out),
+                                    context,
+                                );
+                            }
+                        } else {
+                            if ((bFlags & VNodeFlags.UpdateContext) !== 0) {
+                                context = Object.assign({}, context, b._props);
+                            }
+                            return patchVNode(
+                                a.children as BlueprintNode,
+                                b._children as VNode<any>,
+                                context,
+                            );
+                        }
+                    } else {
+                        if (
+                            (fn.isPropsChanged === undefined && aVNode._props !== b._props) ||
+                            (fn.isPropsChanged !== undefined && fn.isPropsChanged(aVNode._props, b._props) === true)
+                        ) {
+                            return patchVNode(
+                                a.children as BlueprintNode,
+                                fn(b._props),
+                                context,
+                            );
+                        } else {
+                            if ((a.flags & VNodeFlags.DeepConnect) === 0) {
+                                return a.string;
+                            } else {
+                                return patchCheckDeepChanges(
+                                    a.children as BlueprintNode,
+                                    context,
+                                );
+                            }
                         }
                     }
                 }
             }
+        } else {
+            return renderVNode(b, context);
         }
     } else {
-        renderVNode(state, b, context);
+        return patchCheckDeepChanges(a, context);
     }
 }
 
 function patchChildren(
-    state: RenderState<any>,
     aParent: BlueprintNode,
     aParentFlags: VNodeFlags,
     bParentFlags: VNodeFlags,
     a: BlueprintNode[] | BlueprintNode | string | number | boolean,
     b: VNode[] | VNode | string | number | boolean,
     context: Context,
-): void {
-    let i = 0;
-    let synced;
-    let node;
-
+): string {
     if ((aParentFlags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) === 0) {
-        if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) !== 0) {
-            if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-                state.result += escapeText(b as string);
-            } else {
+        if ((bParentFlags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
+            if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
+                let result = "";
                 b = b as VNode<any>[];
-                do {
-                    renderVNode(state, b[i++], context);
-                } while (i < b.length);
+                for (let i = 0; i < b.length; i++) {
+                    result += renderVNode(b[i], context);
+                }
+                return result;
+            } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
+                return renderVNode(b as VNode<any>, context);
             }
-        } else if ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-            renderVNode(state, b as VNode<any>, context);
+        } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
+            return escapeText(b as string);
         }
     } else {
+        let node;
         if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
             a = a as BlueprintNode[];
-            if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-                state.result += escapeText(b as string);
-            } else if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-                patchChildrenTrackByKeys(
-                    state,
-                    aParent.childrenKeyIndex,
-                    aParent.childrenPosIndex,
-                    a,
-                    b as VNode<any>[],
-                    context,
-                );
-            } else {
-                b = b as VNode<any>;
-                synced = false;
-                i = 0;
-                do {
-                    node = a[i];
-                    if (vNodeEqualKeys(node.vnode, b)) {
-                        patchVNode(state, node, b, context);
-                        synced = true;
-                        break;
+            if ((bParentFlags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
+                if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
+                    return patchChildrenTrackByKeys(
+                        aParent.childrenKeyIndex,
+                        aParent.childrenPosIndex,
+                        a,
+                        b as VNode<any>[],
+                        context,
+                    );
+                } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
+                    b = b as VNode<any>;
+                    for (let i = 0; i < a.length; i++) {
+                        node = a[i];
+                        if (vNodeEqualKeys(node.vnode, b) === true) {
+                            return patchVNode(node, b, context);
+                        }
                     }
-                    i++;
-                } while (i < a.length);
 
-                if (!synced) {
-                    renderVNode(state, b, context);
+                    return renderVNode(b, context);
                 }
+            } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
+                return escapeText(b as string);
             }
         } else { // ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
             a = a as BlueprintNode;
-            if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-                state.result += escapeText(b as string);
-            } else if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-                b = b as VNode[];
-                for (i = 0; i < b.length; i++) {
-                    node = b[i];
-                    if (vNodeEqualKeys(a.vnode, node)) {
-                        patchVNode(state, a, node, context);
-                    } else {
-                        renderVNode(state, b[i], context);
+            if ((bParentFlags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
+                if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
+                    b = b as VNode[];
+                    let result = "";
+                    for (let i = 0; i < b.length; i++) {
+                        node = b[i];
+                        if (vNodeEqualKeys(a.vnode, node) === true) {
+                            result += patchVNode(a, node, context);
+                        } else {
+                            result += renderVNode(b[i], context);
+                        }
                     }
+                    return result;
+                } else {
+                    return patchVNode(a, b as VNode, context);
                 }
-            } else {
-                patchVNode(state, a, b as VNode, context);
+            } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
+                return escapeText(b as string);
             }
         }
     }
 }
 
 function patchChildrenTrackByKeys(
-    state: RenderState<any>,
     keyIndex: Map<any, BlueprintNode> | null,
     posIndex: Map<any, BlueprintNode> | null,
     a: BlueprintNode[],
     b: VNode[],
     context: Context,
-): void {
+): string {
     let aStart = 0;
     let bStart = 0;
     const aEnd = a.length - 1;
@@ -456,9 +444,10 @@ function patchChildrenTrackByKeys(
     let bStartNode = b[bStart];
     let aNode;
     let bNode;
+    let result = "";
 
-    while (vNodeEqualKeys(aStartNode.vnode, bStartNode)) {
-        patchVNode(state, aStartNode, bStartNode, context);
+    while (vNodeEqualKeys(aStartNode.vnode, bStartNode) === true) {
+        result += patchVNode(aStartNode, bStartNode, context);
         aStart++;
         bStart++;
         if (aStart > aEnd || bStart > bEnd) {
@@ -481,22 +470,23 @@ function patchChildrenTrackByKeys(
             }
         }
         if (aNode === undefined) {
-            renderVNode(state, bNode, context);
+            result += renderVNode(bNode, context);
         } else {
-            patchVNode(state, aNode, bNode, context);
+            result += patchVNode(aNode, bNode, context);
         }
     }
+
+    return result;
 }
 
-export function renderToString<T>(
-    state: RenderState<T>,
+export function renderToString(
     node: VNode<any>,
     context: Context = {},
     blueprint?: BlueprintNode,
-): void {
+): string {
     if (blueprint === undefined) {
-        renderVNode(state, node, context);
+        return renderVNode(node, context);
     } else {
-        patchVNode(state, blueprint, node, context);
+        return patchVNode(blueprint, node, context);
     }
 }
