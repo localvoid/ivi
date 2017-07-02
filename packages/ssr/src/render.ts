@@ -26,11 +26,13 @@ function renderElementProps(props: any): string {
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const value = props[key];
-        if (value !== null) {
-            if (typeof value === "boolean" && value === true) {
-                result += ` ${key}`;
-            } else {
+        if (typeof value !== "boolean") {
+            if (value !== null) {
                 result += ` ${attributeName(key)}="${escapeAttributeValue(value)}"`;
+            }
+        } else {
+            if (value === true) {
+                result += ` ${key}`;
             }
         }
     }
@@ -63,7 +65,6 @@ function renderElementStyle(style: { [key: string]: any }): string {
 export function renderOpenElement(node: VNode): string {
     const flags = node._flags;
     let result;
-    let close = ">";
     if ((flags & VNodeFlags.InputElement) === 0) {
         result = node._tag as string;
     } else {
@@ -78,7 +79,6 @@ export function renderOpenElement(node: VNode): string {
                     result += ` checked`;
                 }
             }
-            close = ` />`;
         } else {
             result = `<textarea`;
         }
@@ -88,12 +88,12 @@ export function renderOpenElement(node: VNode): string {
         result += ` class="${node._className}"`;
     }
     if (node._props !== null) {
-        result += `${renderElementProps(node._props)}`;
+        result += renderElementProps(node._props);
     }
     if (node._style !== null) {
-        result += `${renderElementStyle(node._style)}`;
+        result += renderElementStyle(node._style);
     }
-    result += close;
+    result += ">";
 
     return result;
 }
@@ -120,7 +120,7 @@ function renderVNode(node: VNode<any>, context: Context): string {
                 }
                 result += node._close;
             } else {
-                result += " />";
+                result += ">";
             }
             return result;
         } else { // ((flags & VNodeFlags.Text) !== 0)

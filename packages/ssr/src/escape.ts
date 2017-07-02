@@ -1,10 +1,10 @@
 export function escapeText(text: string | number): string {
     if (typeof text === "string") {
         let result = text;
-        let escape;
         let start = 0;
         let i = 0;
         for (; i < text.length; i++) {
+            let escape;
             switch (text.charCodeAt(i)) {
                 case 38: // &
                     escape = "&amp;";
@@ -36,13 +36,13 @@ export function escapeText(text: string | number): string {
     return text.toString();
 }
 
-export function escapeAttributeValue(text: string | boolean | number): string {
+export function escapeAttributeValue(text: string | number): string {
     if (typeof text === "string") {
         let result = text;
-        let escape;
         let start = 0;
         let i = 0;
         for (; i < text.length; i++) {
+            let escape;
             switch (text.charCodeAt(i)) {
                 case 34: // "
                     escape = "&quot;";
