@@ -233,6 +233,81 @@ function patchCheckDeepChanges(
     }
 }
 
+function patchComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
+    const component = a.data as Component;
+    // Update component props
+    const oldProps = a.vnode._props;
+    const newProps = b._props;
+    const oldRoot = a.children as BlueprintNode;
+    if (component.isPropsChanged(oldProps, newProps) === true) {
+        const newComponent = new (b._tag as ComponentClass)(newProps);
+        const newRoot = newComponent.render();
+        return patchVNode(oldRoot, newRoot, context);
+    } else {
+        if ((a.flags & VNodeFlags.DeepConnect) === 0) {
+            return a.string;
+        } else {
+            return patchCheckDeepChanges(oldRoot, context);
+        }
+    }
+}
+
+function patchStatelessComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
+    const fn = b._tag as StatelessComponent;
+    if (
+        (fn.isPropsChanged === undefined && a.vnode._props !== b._props) ||
+        (fn.isPropsChanged !== undefined && fn.isPropsChanged(a.vnode._props, b._props) === true)
+    ) {
+        return patchVNode(
+            a.children as BlueprintNode,
+            fn(b._props),
+            context,
+        );
+    } else {
+        if ((a.flags & VNodeFlags.DeepConnect) === 0) {
+            return a.string;
+        } else {
+            return patchCheckDeepChanges(
+                a.children as BlueprintNode,
+                context,
+            );
+        }
+    }
+}
+
+function patchConnectVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
+    const connect = b._tag as ConnectDescriptor<any, any, any>;
+    const prevSelectData = a.data as SelectorData;
+    const selectData = connect.select(
+        prevSelectData,
+        b._props,
+        context,
+    );
+    if (prevSelectData === selectData) {
+        return patchCheckDeepChanges(
+            a.children as BlueprintNode,
+            context,
+        );
+    } else {
+        return patchVNode(
+            a.children as BlueprintNode,
+            connect.render(selectData.out),
+            context,
+        );
+    }
+}
+
+function patchUpdateContextVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
+    if ((b._flags & VNodeFlags.UpdateContext) !== 0) {
+        context = Object.assign({}, context, b._props);
+    }
+    return patchVNode(
+        a.children as BlueprintNode,
+        b._children as VNode<any>,
+        context,
+    );
+}
+
 function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const aVNode = a.vnode;
     if (aVNode !== b) {
@@ -273,76 +348,16 @@ function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
                 }
             } else { // ((flags & VNodeFlags.Component) !== 0)
                 if ((bFlags & VNodeFlags.ComponentClass) !== 0) {
-                    const component = a.data as Component;
-                    // Update component props
-                    const oldProps = aVNode._props;
-                    const newProps = b._props;
-                    const oldRoot = a.children as BlueprintNode;
-                    if (component.isPropsChanged(oldProps, newProps) === true) {
-                        const newComponent = new (b._tag as ComponentClass)(newProps);
-                        const newRoot = newComponent.render();
-                        return patchVNode(oldRoot, newRoot, context);
-                    } else {
-                        if ((a.flags & VNodeFlags.DeepConnect) === 0) {
-                            return a.string;
-                        } else {
-                            return patchCheckDeepChanges(oldRoot, context);
-                        }
-                    }
+                    return patchComponentVNode(a, b, context);
                 } else { // (flags & VNodeFlags.ComponentFunction)
-                    const fn = b._tag as StatelessComponent;
-
                     if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
                         if ((bFlags & VNodeFlags.Connect) !== 0) {
-                            const connect = b._tag as ConnectDescriptor<any, any, any>;
-                            const prevSelectData = a.data as SelectorData;
-                            const selectData = connect.select(
-                                prevSelectData,
-                                b._props,
-                                context,
-                            );
-                            if (prevSelectData === selectData) {
-                                return patchCheckDeepChanges(
-                                    a.children as BlueprintNode,
-                                    context,
-                                );
-                            } else {
-                                return patchVNode(
-                                    a.children as BlueprintNode,
-                                    connect.render(selectData.out),
-                                    context,
-                                );
-                            }
+                            return patchConnectVNode(a, b, context);
                         } else {
-                            if ((bFlags & VNodeFlags.UpdateContext) !== 0) {
-                                context = Object.assign({}, context, b._props);
-                            }
-                            return patchVNode(
-                                a.children as BlueprintNode,
-                                b._children as VNode<any>,
-                                context,
-                            );
+                            return patchUpdateContextVNode(a, b, context);
                         }
                     } else {
-                        if (
-                            (fn.isPropsChanged === undefined && aVNode._props !== b._props) ||
-                            (fn.isPropsChanged !== undefined && fn.isPropsChanged(aVNode._props, b._props) === true)
-                        ) {
-                            return patchVNode(
-                                a.children as BlueprintNode,
-                                fn(b._props),
-                                context,
-                            );
-                        } else {
-                            if ((a.flags & VNodeFlags.DeepConnect) === 0) {
-                                return a.string;
-                            } else {
-                                return patchCheckDeepChanges(
-                                    a.children as BlueprintNode,
-                                    context,
-                                );
-                            }
-                        }
+                        return patchStatelessComponentVNode(a, b, context);
                     }
                 }
             }
@@ -366,9 +381,8 @@ function patchChildren(
         if ((bParentFlags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
             if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
                 let result = "";
-                b = b as VNode<any>[];
-                for (let i = 0; i < b.length; i++) {
-                    result += renderVNode(b[i], context);
+                for (let i = 0; i < (b as VNode<any>[]).length; i++) {
+                    result += renderVNode((b as VNode<any>[])[i], context);
                 }
                 return result;
             } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
@@ -380,47 +394,43 @@ function patchChildren(
     } else {
         let node;
         if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-            a = a as BlueprintNode[];
             if ((bParentFlags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
                 if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
                     return patchChildrenTrackByKeys(
                         aParent.childrenKeyIndex,
                         aParent.childrenPosIndex,
-                        a,
+                        a as BlueprintNode[],
                         b as VNode<any>[],
                         context,
                     );
                 } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
-                    b = b as VNode<any>;
-                    for (let i = 0; i < a.length; i++) {
-                        node = a[i];
-                        if (vNodeEqualKeys(node.vnode, b) === true) {
-                            return patchVNode(node, b, context);
+                    for (let i = 0; i < (a as BlueprintNode[]).length; i++) {
+                        node = (a as BlueprintNode[])[i];
+                        if (vNodeEqualKeys(node.vnode, b as VNode<any>) === true) {
+                            return patchVNode(node, b as VNode<any>, context);
                         }
                     }
 
-                    return renderVNode(b, context);
+                    return renderVNode(b as VNode<any>, context);
                 }
             } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
                 return escapeText(b as string);
             }
         } else { // ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-            a = a as BlueprintNode;
             if ((bParentFlags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
                 if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-                    b = b as VNode[];
                     let result = "";
-                    for (let i = 0; i < b.length; i++) {
-                        node = b[i];
-                        if (vNodeEqualKeys(a.vnode, node) === true) {
-                            result += patchVNode(a, node, context);
+                    for (let i = 0; i < (b as VNode<any>[]).length; i++) {
+                        node = (b as VNode<any>[])[i];
+                        if (vNodeEqualKeys((a as BlueprintNode).vnode, node) === true) {
+                            result += patchVNode(a as BlueprintNode, node, context);
                         } else {
-                            result += renderVNode(b[i], context);
+                            result += renderVNode((b as VNode<any>[])[i], context);
                         }
                     }
                     return result;
                 } else {
-                    return patchVNode(a, b as VNode, context);
+                    return patchVNode(a as BlueprintNode, b as VNode, context);
                 }
             } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
                 return escapeText(b as string);

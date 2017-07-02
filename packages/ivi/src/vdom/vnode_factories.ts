@@ -5,34 +5,32 @@ import { VNodeFlags } from "./flags";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
 import { VNode } from "./vnode";
 
+export function componentFactory(c: StatelessComponent<void>): () => VNode<null>;
+export function componentFactory(c: StatelessComponent<null>): () => VNode<null>;
+export function componentFactory<P, U extends P>(c: StatelessComponent<P>): (props: U) => VNode<P>;
 export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
-export function componentFactory<P>(c: ComponentClass<P>): (props?: P) => VNode<P> {
-    return function (props: P): VNode<P> {
-        return new VNode<P>(
-            VNodeFlags.ComponentClass,
-            c,
-            props!,
-            null,
-            null,
-        );
-    };
-}
-
-export function statelessComponentFactory(c: StatelessComponent<void>): () => VNode<null>;
-export function statelessComponentFactory(c: StatelessComponent<null>): () => VNode<null>;
-export function statelessComponentFactory<P, U extends P>(c: StatelessComponent<P>): (props: U) => VNode<P>;
-export function statelessComponentFactory<P>(c: StatelessComponent<P>): (props?: P) => VNode<P> {
-    return function (props: P): VNode<P> {
-        return new VNode<P>(
-            VNodeFlags.ComponentFunction,
-            c,
-            props!,
-            null,
-            null,
-        );
-    };
+export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props?: P) => VNode<P> {
+    return c.prototype.render === undefined ?
+        function (props: P): VNode<P> {
+            return new VNode<P>(
+                VNodeFlags.ComponentFunction,
+                c,
+                props!,
+                null,
+                null,
+            );
+        } :
+        function (props: P): VNode<P> {
+            return new VNode<P>(
+                VNodeFlags.ComponentClass,
+                c,
+                props!,
+                null,
+                null,
+            );
+        };
 }
 
 /**

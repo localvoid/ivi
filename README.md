@@ -115,13 +115,13 @@ Components are the basic building blocks for your applications, they will help y
 Stateless components are implemented with simple functions.
 
 ```ts
-import { statelessComponentFactory, render } from "ivi";
+import { componentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
 function StatelessComponent(text: string) {
     return h.div().children(text);
 }
-const statelessComponent = statelessComponentFactory(StatelessComponent);
+const statelessComponent = componentFactory(StatelessComponent);
 
 render(
     statelessComponent("Hello Stateless Component!"),
