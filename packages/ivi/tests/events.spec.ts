@@ -1,4 +1,4 @@
-import { EventHandler, SyntheticEvent, Events } from "ivi-dom";
+import * as Events from "ivi-events";
 import { VNode } from "../src/vdom/vnode";
 import { render as rootRender } from "../src/vdom/root";
 import { html } from "./utils";
@@ -20,16 +20,16 @@ function createMouseEvent(type: string): MouseEvent {
 
 export interface EventCounter {
     value: number;
-    event: EventHandler<any>;
+    event: Events.EventHandler<any>;
 }
 
 export function eventCounter(handlerFactory: (
-    handler: (ev: SyntheticEvent) => void,
-    capture?: boolean) => EventHandler<any>,
+    handler: (ev: Events.SyntheticEvent) => void,
+    capture?: boolean) => Events.EventHandler<any>,
 ): EventCounter {
     const c = {
         value: 0,
-        event: null as EventHandler<any> | null,
+        event: null as Events.EventHandler<any> | null,
     };
     c.event = handlerFactory(() => {
         c.value++;
