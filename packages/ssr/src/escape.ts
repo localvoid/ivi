@@ -1,3 +1,10 @@
+
+/**
+ * escapeText escapes HTML text.
+ *
+ * @param text Text.
+ * @returns Escaped text.
+ */
 export function escapeText(text: string | number): string {
     if (typeof text === "string") {
         let result = text;
@@ -36,6 +43,12 @@ export function escapeText(text: string | number): string {
     return text.toString();
 }
 
+/**
+ * escapeAttributeValue escapes HTML attribute values.
+ *
+ * @param text Attribute value.
+ * @returns Escaped attribute value
+ */
 export function escapeAttributeValue(text: string | number): string {
     if (typeof text === "string") {
         let result = text;
@@ -72,10 +85,10 @@ export function escapeAttributeValue(text: string | number): string {
 }
 
 /**
- * Escape javascript.
+ * escapeJavascript escapes javascript code.
  *
  * @param text Text.
- * @returns Escaped value.
+ * @returns Escaped text.
  */
 export function escapeJavascript(text: string): string {
     let result = text;

@@ -5,6 +5,12 @@ import { StatelessComponent, ComponentClass, isComponentClass } from "./componen
 import { VNodeFlags, VNode } from "./vnode";
 import { BlueprintNode } from "./blueprint";
 
+/**
+ * componentFactory creates a component factory for stateful and stateless components.
+ *
+ * @param c Stateful or stateless component.
+ * @returns ComponentFactory.
+ */
 export function componentFactory(c: StatelessComponent<void>): () => VNode<null>;
 export function componentFactory(c: StatelessComponent<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: StatelessComponent<P>): (props: U) => VNode<P>;

@@ -2,7 +2,7 @@ import { NOOP_FALSE, isPropsNotShallowEqual } from "ivi-core";
 import { VNode } from "./vnode";
 
 /**
- * Component function constructor.
+ * Stateless Component function.
  */
 export interface StatelessComponent<P = void> {
     (props: P): VNode<any>;
@@ -11,7 +11,7 @@ export interface StatelessComponent<P = void> {
 }
 
 /**
- * Component class constructor.
+ * Component class type.
  */
 export interface ComponentClass<P = void> {
     new (props: P): Component<P>;
@@ -26,11 +26,12 @@ export interface ComponentClass<P = void> {
  *
  *     class Hello extends Component<string> {
  *         render() {
- *             return $t(`Hello ${this.props}`);
+ *             return h.t(`Hello ${this.props}`);
  *         }
  *     }
+ *     const hello = componentFactory(Hello);
  *
- *     render($c(Hello, "world"), document.getElementById("App")!);
+ *     render(hello("world"), document.getElementById("App")!);
  */
 export abstract class Component<P = void> {
     /**
@@ -61,8 +62,9 @@ export abstract class Component<P = void> {
      * Invalidate view.
      */
     invalidate(): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
+        /**
+         * Server-side components can't be invalidated.
+         */
     }
 }
 
@@ -73,13 +75,13 @@ export abstract class Component<P = void> {
  *
  *     checkPropsShallowEquality(MyComponent);
  *     function MyComponent(props: { text: string }) {
- *         return $h("div").children(props.text);
+ *         return h.div().children(props.text);
  *     });
  *
  *     @checkPropsShallowEquality
  *     class MyClassComponent extends Component<{ text: string }> {
  *         render() {
- *             return $h("div").children(this.props.text);
+ *             return h.div().children(this.props.text);
  *         }
  *     }
  *
@@ -102,13 +104,13 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Statel
  *
  *     staticComponent(MyComponent);
  *     function MyComponent(props: { text: string }) {
- *         return $h("div").children(props.text);
+ *         return h.div().children(props.text);
  *     });
  *
  *     @staticComponent
  *     class MyClassComponent extends Component<{ text: string }> {
  *         render() {
- *             return $h("div").children(this.props.text);
+ *             return h.div().children(this.props.text);
  *         }
  *     }
  *

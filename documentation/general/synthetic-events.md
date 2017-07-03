@@ -10,10 +10,12 @@ visits the page, because it significantly improves rendering performance.
 Event Handler is an object that contains information about `EventDispatcher` that will be used for an event handler
 and function that will be executed when dispatcher fires an event for a target that registered an event handler.
 
-`Events` object provides a collection of event handler factories for all native events. Event handler function factories
-are using camel case for their names, and all names are starting with "on" prefix.
+`ivi-events` module provides a collection of event handler factories for all native events. Event handler function
+factories are using camel case for their names, and all names are starting with "on" prefix.
 
 ```ts
+import * as Events from "ivi-events";
+
 const click = Events.onClick((ev) => {
     console.log("clicked");
 });
@@ -42,7 +44,8 @@ interface VNode {
 ```
 
 ```ts
-import { Component, Events, render } from "ivi";
+import { Component, render } from "ivi";
+import * as Events from "ivi-events";
 import * as h from "ivi-html";
 
 class StatefulComponent extends Component {

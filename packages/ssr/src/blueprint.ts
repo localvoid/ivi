@@ -5,13 +5,39 @@ import { VNodeFlags, VNode, vNodeEqualKeys, vNodeCanSync } from "./vnode";
 import { renderOpenElement } from "./render";
 import { escapeText } from "./escape";
 
+/**
+ * Blueprint Node.
+ */
 export class BlueprintNode {
+    /**
+     * Virtual DOM node that were used to create this node.
+     */
     vnode: VNode<any>;
+    /**
+     * See `VNodeFlags` for details.
+     */
     flags: VNodeFlags;
+    /**
+     * Prerendered string.
+     */
     string: string;
+    /**
+     * Children nodes.
+     */
     children: | BlueprintNode[] | BlueprintNode | string | number | boolean | null;
+    /**
+     * Additional data.
+     *
+     * Component instances for component nodes, and Selector data for connectors.
+     */
     data: Component | SelectorData | null;
+    /**
+     * Children index for explicit keys.
+     */
     childrenKeyIndex: Map<any, BlueprintNode> | null;
+    /**
+     * Children index for positional keys.
+     */
     childrenPosIndex: Map<any, BlueprintNode> | null;
 
     constructor(
@@ -50,6 +76,13 @@ export class BlueprintNode {
     }
 }
 
+/**
+ * createBlueprintFromVNode creates a blueprint from Virtual DOM.
+ *
+ * @param vnode Virtual DOM node.
+ * @param context Current context.
+ * @returns Blueprint node.
+ */
 function createBlueprintFromVNode(vnode: VNode<any>, context: Context): BlueprintNode {
     const flags = vnode._flags;
 
@@ -117,6 +150,14 @@ function createBlueprintFromVNode(vnode: VNode<any>, context: Context): Blueprin
     }
 }
 
+/**
+ * cloneChangedBlueprintNode checks deep changes that can occur because of context changes, and if nothing is changed
+ * it will reuse existing blueprint node.
+ *
+ * @param bp Blueprint node.
+ * @param context Current context.
+ * @returns Blueprint node.
+ */
 function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): BlueprintNode {
     const flags = bp.flags;
 
@@ -231,6 +272,15 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
     return bp;
 }
 
+/**
+ * diffBlueprintNode performs a diff with blueprint node and when nothing is changed it will try to reuse existing
+ * blueprint node instead of creating a new one.
+ *
+ * @param bp Blueprint node.
+ * @param node Virtual DOM node.
+ * @param context Current context.
+ * @returns Blueprint node.
+ */
 function diffBlueprintNode(bp: BlueprintNode, node: VNode<any>, context: Context): BlueprintNode {
     const flags = bp.flags;
 
@@ -388,6 +438,17 @@ function diffBlueprintNode(bp: BlueprintNode, node: VNode<any>, context: Context
     return createBlueprintFromVNode(node, context);
 }
 
+/**
+ * diffBlueprintChildren performs a diff on children and tries to find matching children.
+ *
+ * @param aParent Blueprint parent node.
+ * @param aParentFlags Blueprint parent node flags.
+ * @param bParentFlags Virtual DOM parent node flags.
+ * @param a Blueprint children.
+ * @param b Virtual DOM children.
+ * @param context Current context.
+ * @returns Blueprint children.
+ */
 function diffBlueprintChildren(
     aParent: BlueprintNode,
     aParentFlags: VNodeFlags,
@@ -418,7 +479,7 @@ function diffBlueprintChildren(
             if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
                 a = a as BlueprintNode[];
                 if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-                    return diffChildrenTrackByKeys(
+                    return diffBlueprintChildrenTrackByKeys(
                         aParent.childrenKeyIndex,
                         aParent.childrenPosIndex,
                         a,
@@ -457,7 +518,18 @@ function diffBlueprintChildren(
     }
 }
 
-function diffChildrenTrackByKeys(
+/**
+ * diffBlueprintChildrenTrackByKeys performs a diff on children lists and tries to find similar nodes with matching
+ * keys.
+ *
+ * @param keyIndex Children index for explicit keys.
+ * @param posIndex Children index for positional keys.
+ * @param a Blueprint nodes.
+ * @param b Virtual DOM nodes.
+ * @param context Current context.
+ * @returns Blueprint children.
+ */
+function diffBlueprintChildrenTrackByKeys(
     keyIndex: Map<any, BlueprintNode> | null,
     posIndex: Map<any, BlueprintNode> | null,
     a: BlueprintNode[],
@@ -500,6 +572,12 @@ function diffChildrenTrackByKeys(
     return newChildren;
 }
 
+/**
+ * Prerender blueprint nodes.
+ *
+ * @param node Blueprint node.
+ * @param componentNode Current component node.
+ */
 function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode): void {
     const flags = node.flags;
     if ((flags & (VNodeFlags.Element | VNodeFlags.Component)) !== 0) {
@@ -559,6 +637,14 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
     }
 }
 
+/**
+ * createBlueprint creates a blueprint that can be used to optimize rendering to string.
+ *
+ * @param node Virtual DOM node.
+ * @param context Context.
+ * @param blueprint Blueprint that will be reused to reduce memory usage.
+ * @returns Blueprint.
+ */
 export function createBlueprint(node: VNode<any>, context: Context = {}, blueprint?: BlueprintNode): BlueprintNode {
     const result = (blueprint === undefined) ?
         createBlueprintFromVNode(node, context) :
@@ -568,6 +654,14 @@ export function createBlueprint(node: VNode<any>, context: Context = {}, bluepri
     return result;
 }
 
-export function linkBlueprint<P>(factory: (props?: P) => VNode<P>, blueprint: BlueprintNode): void {
-    (factory as any).linkBlueprint(blueprint);
+/**
+ * linkBlueprint links blueprint to a component factory.
+ *
+ * Linked blueprint will be automatically for rendering components produced from this factory.
+ *
+ * @param componentFactory Component factory.
+ * @param blueprint Blueprint node.
+ */
+export function linkBlueprint<P>(componentFactory: (props?: P) => VNode<P>, blueprint: BlueprintNode): void {
+    (componentFactory as any).linkBlueprint(blueprint);
 }

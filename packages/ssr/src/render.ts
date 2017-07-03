@@ -5,10 +5,12 @@ import { ComponentClass, StatelessComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { escapeAttributeValue, escapeText } from "./escape";
 
-export interface RenderState<T> {
-    result: T;
-}
-
+/**
+ * attributeName converts property names to attribute names.
+ *
+ * @param name Property name.
+ * @returns Attribute name.
+ */
 function attributeName(name: string): string {
     switch (name) {
         case "acceptCharset":
@@ -19,7 +21,13 @@ function attributeName(name: string): string {
     return name;
 }
 
-function renderElementProps(props: any): string {
+/**
+ * renderElementProps renders element properties to string.
+ *
+ * @param props Element properties.
+ * @returns Element properties in string format.
+ */
+function renderElementProps(props: { [key: string]: string }): string {
     let result = "";
 
     const keys = Object.keys(props);
@@ -40,6 +48,12 @@ function renderElementProps(props: any): string {
     return result;
 }
 
+/**
+ * renderElementStyle renders element styles to string.
+ *
+ * @param style Element styles.
+ * @returns Element styles in string format.
+ */
 function renderElementStyle(style: { [key: string]: any }): string {
     const keys = Object.keys(style);
     if (keys.length === 0) {
@@ -62,7 +76,13 @@ function renderElementStyle(style: { [key: string]: any }): string {
     return `${result}"`;
 }
 
-export function renderOpenElement(node: VNode): string {
+/**
+ * renderOpenElement renders open tag for an element.
+ *
+ * @param node Virtual DOM node.
+ * @returns Open tag in a string format.
+ */
+export function renderOpenElement(node: VNode<any>): string {
     const flags = node._flags;
     let result;
     if ((flags & VNodeFlags.InputElement) === 0) {
@@ -98,6 +118,13 @@ export function renderOpenElement(node: VNode): string {
     return result;
 }
 
+/**
+ * renderVNode renders Virtual DOM node to string format.
+ *
+ * @param node Virtual DOM node.
+ * @param context Current context.
+ * @returns Virtual DOM node in string format.
+ */
 function renderVNode(node: VNode<any>, context: Context): string {
     const flags = node._flags;
     if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
@@ -153,6 +180,14 @@ function renderVNode(node: VNode<any>, context: Context): string {
     }
 }
 
+/**
+ * patchCheckDeepChanges checks deep changes that can occur because of context changes, and if nothing is changed
+ * it will use prerendered string.
+ *
+ * @param bp Blueprint node.
+ * @param context Current context.
+ * @returns Blueprint node in a string format.
+ */
 function patchCheckDeepChanges(
     bp: BlueprintNode,
     context: Context,
@@ -233,6 +268,14 @@ function patchCheckDeepChanges(
     }
 }
 
+/**
+ * patchComponentVNode performs a diff/patch on blueprint component node.
+ *
+ * @param a Blueprint node.
+ * @param b Virtual DOM node.
+ * @param context Current context.
+ * @returns Virtual DOM node in string format.
+ */
 function patchComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const component = a.data as Component;
     // Update component props
@@ -252,6 +295,14 @@ function patchComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context):
     }
 }
 
+/**
+ * patchStatelessComponentVNode performs a diff/patch on blueprint stateless component node.
+ *
+ * @param a Blueprint node.
+ * @param b Virtual DOM node.
+ * @param context Current context.
+ * @returns Virtual DOM node in string format.
+ */
 function patchStatelessComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const fn = b._tag as StatelessComponent;
     if (
@@ -275,6 +326,14 @@ function patchStatelessComponentVNode(a: BlueprintNode, b: VNode<any>, context: 
     }
 }
 
+/**
+ * patchConnectVNode performs a diff/patch on blueprint connect node.
+ *
+ * @param a Blueprint node.
+ * @param b Virtual DOM node.
+ * @param context Current context.
+ * @returns Virtual DOM node in string format.
+ */
 function patchConnectVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const connect = b._tag as ConnectDescriptor<any, any, any>;
     const prevSelectData = a.data as SelectorData;
@@ -297,6 +356,14 @@ function patchConnectVNode(a: BlueprintNode, b: VNode<any>, context: Context): s
     }
 }
 
+/**
+ * patchUpdateContextVNode performs a diff/patch on blueprint update context node.
+ *
+ * @param a Blueprint node.
+ * @param b Virtual DOM node.
+ * @param context Current context.
+ * @returns Virtual DOM node in string format.
+ */
 function patchUpdateContextVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     if ((b._flags & VNodeFlags.UpdateContext) !== 0) {
         context = Object.assign({}, context, b._props);
@@ -308,6 +375,14 @@ function patchUpdateContextVNode(a: BlueprintNode, b: VNode<any>, context: Conte
     );
 }
 
+/**
+ * patchVNode performs a diff/patch on blueprint node.
+ *
+ * @param a Blueprint node.
+ * @param b Virtual DOM node.
+ * @param context Current context.
+ * @returns Virtual DOM node in string format.
+ */
 function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const aVNode = a.vnode;
     if (aVNode !== b) {
@@ -369,6 +444,17 @@ function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     }
 }
 
+/**
+ * patchChildren performs a diff on children and tries to find matching children.
+ *
+ * @param aParent Blueprint parent node.
+ * @param aParentFlags Blueprint parent node flags.
+ * @param bParentFlags Virtual DOM parent node flags.
+ * @param a Blueprint children.
+ * @param b Virtual DOM children.
+ * @param context Current context.
+ * @returns Children in string format.
+ */
 function patchChildren(
     aParent: BlueprintNode,
     aParentFlags: VNodeFlags,
@@ -439,6 +525,17 @@ function patchChildren(
     }
 }
 
+/**
+ * patchChildrenTrackByKeys performs a diff on children lists and tries to find similar nodes with matching
+ * keys.
+ *
+ * @param keyIndex Children index for explicit keys.
+ * @param posIndex Children index for positional keys.
+ * @param a Blueprint children.
+ * @param b Virtual DOM children.
+ * @param context Current context.
+ * @returns Children nodes in string format.
+ */
 function patchChildrenTrackByKeys(
     keyIndex: Map<any, BlueprintNode> | null,
     posIndex: Map<any, BlueprintNode> | null,
@@ -489,6 +586,14 @@ function patchChildrenTrackByKeys(
     return result;
 }
 
+/**
+ * renderToString renders Virtual DOM to string.
+ *
+ * @param node Virtual DOM.
+ * @param context Current context.
+ * @param blueprint When blueprint is specified, it will perform diff/patch on blueprint.
+ * @returns Virtual DOM in string format.
+ */
 export function renderToString(
     node: VNode<any>,
     context: Context = {},

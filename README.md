@@ -2,7 +2,7 @@
 
 ## Features
 
-- Declarative rendering with a Virtual DOM
+- Declarative rendering with Virtual DOM
 - Components (stateless functions and stateful ES6 classes)
 - Extensible synthetic event subsystem
 - Synchronous and deterministic syncing algorithm
@@ -48,13 +48,7 @@ exclusively for bug reports and feature requests.
 Npm package `ivi` provides es6 module and TypeScript typings.
 
 ```sh
-$ npm install ivi
-```
-
-or with [Yarn](https://github.com/yarnpkg/yarn)
-
-```sh
-$ yarn add ivi
+$ npm install ivi-core ivi-dom ivi-events ivi
 ```
 
 When building an application with an NPM module, make sure that you properly
