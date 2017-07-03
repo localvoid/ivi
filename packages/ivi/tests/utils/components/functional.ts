@@ -1,7 +1,6 @@
 import { StatelessComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { statelessComponent } from "../../../src/vdom/vnode_factories";
-import { text } from "../vdom";
+import { statelessComponent, text } from "../vdom";
 
 export interface TestFunctionalComponentHooks<P> {
     render?: (props: P) => VNode<any>;

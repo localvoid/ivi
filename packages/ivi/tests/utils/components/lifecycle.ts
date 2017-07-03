@@ -1,8 +1,7 @@
 import { Component } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { component } from "../../../src/vdom/vnode_factories";
 import { lifecycleTouch } from "../lifecycle";
-import { text } from "../vdom";
+import { component, text } from "../vdom";
 
 export interface ComponentHooks<P> {
     construct?: (

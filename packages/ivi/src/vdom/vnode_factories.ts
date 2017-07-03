@@ -44,44 +44,6 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
 }
 
 /**
- * Create a VNode representing a Component node.
- *
- * @param c Component Class.
- * @returns VNode object.
- */
-export function component(c: ComponentClass<void>): VNode<null>;
-export function component(c: ComponentClass<null>): VNode<null>;
-export function component<P, U extends P>(c: ComponentClass<P>, props: U): VNode<P>;
-export function component<P>(c: ComponentClass<P>, props?: P): VNode<P> {
-    return new VNode<P>(
-        (c.prototype.render === undefined) ? VNodeFlags.ComponentFunction : VNodeFlags.ComponentClass,
-        c,
-        props!,
-        null,
-        null,
-    );
-}
-
-/**
- * Create a VNode representing a Stateless Component node.
- *
- * @param c Component Class.
- * @returns VNode object.
- */
-export function statelessComponent(c: StatelessComponent<void>): VNode<null>;
-export function statelessComponent(c: StatelessComponent<null>): VNode<null>;
-export function statelessComponent<P, U extends P>(c: StatelessComponent<P>, props: U): VNode<P>;
-export function statelessComponent<P>(c: StatelessComponent<P>, props?: P): VNode<P> {
-    return new VNode<P>(
-        VNodeFlags.ComponentFunction,
-        c,
-        props!,
-        null,
-        null,
-    );
-}
-
-/**
  * Placeholder function for Update Context components.
  *
  * It is used only in Dev Mode for stack traces.

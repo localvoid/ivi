@@ -1,6 +1,6 @@
 import { Component, staticComponent } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { component, statelessComponent } from "../../../src/vdom/vnode_factories";
+import { component, statelessComponent } from "../vdom";
 
 staticComponent(StaticComponentFunctionTest);
 export function StaticComponentFunctionTest(child: VNode<any>) {

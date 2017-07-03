@@ -3,9 +3,8 @@ export * from "./components/lifecycle";
 export * from "./components/static";
 
 import { VNode } from "../../src/vdom/vnode";
-import { component, statelessComponent } from "../../src/vdom/vnode_factories";
 import { Component } from "../../src/vdom/component";
-import { html, text } from "./vdom";
+import { component, statelessComponent, html, text } from "./vdom";
 
 export interface TestComponentProps {
     child: VNode<any>;

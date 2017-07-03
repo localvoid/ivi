@@ -32,8 +32,49 @@ import {
     SVGSVGElementProps, SVGSwitchElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
     SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "ivi-core";
+import { ComponentClass, StatelessComponent } from "../../src/vdom/component";
 import { VNodeFlags } from "../../src/vdom/flags";
 import { VNode } from "../../src/vdom/vnode";
+
+/**
+ * Create a VNode representing a Component node.
+ *
+ * @param c Component Class.
+ * @returns VNode object.
+ */
+export function component(c: ComponentClass<void>): VNode<null>;
+export function component(c: ComponentClass<null>): VNode<null>;
+export function component<P, U extends P>(c: ComponentClass<P>, props: U): VNode<P>;
+export function component<P>(c: ComponentClass<P>, props?: P): VNode<P> {
+    return new VNode<P>(
+        (c.prototype.render === undefined) ? VNodeFlags.ComponentFunction : VNodeFlags.ComponentClass,
+        c,
+        props!,
+        null,
+        null,
+    );
+}
+
+/**
+ * Create a VNode representing a Stateless Component node.
+ *
+ * @param c Component Class.
+ * @returns VNode object.
+ */
+export function statelessComponent(c: StatelessComponent<void>): VNode<null>;
+export function statelessComponent(c: StatelessComponent<null>): VNode<null>;
+export function statelessComponent<P, U extends P>(c: StatelessComponent<P>, props: U): VNode<P>;
+export function statelessComponent<P>(c: StatelessComponent<P>, props?: P): VNode<P> {
+    return new VNode<P>(
+        c.isPropsChanged === undefined ?
+            VNodeFlags.ComponentFunction :
+            VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
+        c,
+        props!,
+        null,
+        null,
+    );
+}
 
 /**
  * Create a VNode representing a Text node.

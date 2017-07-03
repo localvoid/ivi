@@ -3,9 +3,8 @@
 import { ComponentFlags } from "../src/vdom/flags";
 import { VNode, getComponentInstanceFromVNode } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
-import { component } from "../src/vdom/vnode_factories";
 import {
-    render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf, text, html, input, media,
+    render, startRender, checkDOMOps, expectDOMOps, DOMOpsCounter, $tc, $tcf, text, html, input, media, component,
 } from "./utils";
 import { expect } from "chai";
 

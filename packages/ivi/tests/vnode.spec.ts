@@ -1,8 +1,7 @@
-import { EventHandler } from "ivi-dom";
+import { EventHandler } from "ivi-events";
 import { VNode, ElementProps } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { statelessComponent } from "../src/vdom/vnode_factories";
-import { text, html, input, media } from "./utils";
+import { statelessComponent, text, html, input, media } from "./utils";
 import { expect } from "chai";
 
 function EmptyComponent(): VNode<any> {
