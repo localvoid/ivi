@@ -555,14 +555,6 @@ export function checkUniqueKeys(children: VNode<any>[]): void {
     }
 }
 
-export function vNodeCanSync(a: VNode, b: VNode): boolean {
-    return (
-        ((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0 &&
-        a._tag === b._tag &&
-        (((b._flags & VNodeFlags.LinkedBlueprint) !== 0) ||
-            ((a._flags ^ b._flags) & VNodeFlags.Key) === 0 && a._key === b._key));
-}
-
 export function vNodeEqualKeys(a: VNode, b: VNode): boolean {
     return a._key === b._key && ((a._flags ^ b._flags) & VNodeFlags.Key) === 0;
 }

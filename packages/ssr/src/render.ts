@@ -1,5 +1,5 @@
 import { Context, SelectorData } from "ivi-core";
-import { VNodeFlags, VNode, vNodeEqualKeys, vNodeCanSync } from "./vnode";
+import { VNodeFlags, VNode, vNodeEqualKeys } from "./vnode";
 import { BlueprintNode } from "./blueprint";
 import { ComponentClass, StatelessComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -386,8 +386,16 @@ function patchUpdateContextVNode(a: BlueprintNode, b: VNode<any>, context: Conte
 function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const aVNode = a.vnode;
     if (aVNode !== b) {
+        const aFlags = a.flags;
         const bFlags = b._flags;
-        if (vNodeCanSync(aVNode, b) === true) {
+        if (
+            ((aFlags ^ bFlags) & VNodeFlags.Syncable) === 0 &&
+            aVNode._tag === b._tag &&
+            (
+                ((bFlags & VNodeFlags.LinkedBlueprint) !== 0) ||
+                (((aFlags ^ bFlags) & VNodeFlags.Key) === 0 && aVNode._key === b._key)
+            )
+        ) {
             if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
                 if ((bFlags & VNodeFlags.Text) !== 0) {
                     return (a.children === b._children) ?
