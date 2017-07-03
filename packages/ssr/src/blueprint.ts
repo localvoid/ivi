@@ -358,10 +358,10 @@ function diffBlueprintNode(bp: BlueprintNode, node: VNode<any>, context: Context
                     const component = (node._tag as StatelessComponent);
                     let n;
                     if (
-                        (component.isPropsChanged === undefined &&
+                        ((flags & VNodeFlags.CheckChangedProps) === 0 &&
                             bp.vnode._props !== node._props) ||
-                        (component.isPropsChanged !== undefined &&
-                            component.isPropsChanged(bp.vnode._props, node._props) === true)
+                        ((flags & VNodeFlags.CheckChangedProps) !== 0 &&
+                            component.isPropsChanged!(bp.vnode._props, node._props) === true)
                     ) {
                         n = diffBlueprintNode(
                             bp.children as BlueprintNode,

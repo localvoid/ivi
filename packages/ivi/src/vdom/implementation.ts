@@ -1032,7 +1032,7 @@ function vNodeSync(
 
     let instance;
     const bFlags = b._flags;
-    if (vNodeCanSync(a, b)) {
+    if (vNodeCanSync(a, b) === true) {
         instance = b._instance = a._instance;
 
         if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
@@ -1178,9 +1178,12 @@ function vNodeSync(
                     }
                 } else {
                     if (((syncFlags & SyncFlags.ForceUpdate) !== 0) ||
-                        ((a !== b) &&
-                            ((fn.isPropsChanged === undefined && a._props !== b._props) ||
-                                (fn.isPropsChanged !== undefined && fn.isPropsChanged(a._props, b._props) === true)))) {
+                        (
+                            ((bFlags & VNodeFlags.CheckChangedProps) === 0 &&
+                                a._props !== b._props) ||
+                            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 &&
+                                fn.isPropsChanged!(a._props, b._props) === true)
+                        )) {
                         componentPerfMarkBegin("update", b);
                         const oldRoot = a._children as VNode<any>;
                         const newRoot = b._children = fn(b._props);

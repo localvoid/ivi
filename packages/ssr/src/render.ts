@@ -255,8 +255,8 @@ function patchComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context):
 function patchStatelessComponentVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
     const fn = b._tag as StatelessComponent;
     if (
-        (fn.isPropsChanged === undefined && a.vnode._props !== b._props) ||
-        (fn.isPropsChanged !== undefined && fn.isPropsChanged(a.vnode._props, b._props) === true)
+        ((a.flags & VNodeFlags.CheckChangedProps) === 0 && a.vnode._props !== b._props) ||
+        ((a.flags & VNodeFlags.CheckChangedProps) !== 0 && fn.isPropsChanged!(a.vnode._props, b._props) === true)
     ) {
         return patchVNode(
             a.children as BlueprintNode,

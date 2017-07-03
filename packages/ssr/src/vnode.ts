@@ -83,12 +83,16 @@ export const enum VNodeFlags {
      * Component VNode has a linked blueprint.
      */
     LinkedBlueprint = 1 << 17,
+    /**
+     * Stateless component is using `isPropsChanged` hook.
+     */
+    CheckChangedProps = 1 << 18,
 
     // Blueprint specific flags:
     /**
      * Blueprint Node contains connect node.
      */
-    DeepConnect = 1 << 18,
+    DeepConnect = 1 << 19,
 
     /**
      * VNode represents a Component.

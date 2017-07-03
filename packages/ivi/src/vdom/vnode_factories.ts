@@ -13,15 +13,25 @@ export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props?: P) => VNode<P> {
     return c.prototype.render === undefined ?
-        function (props: P): VNode<P> {
-            return new VNode<P>(
-                VNodeFlags.ComponentFunction,
-                c,
-                props!,
-                null,
-                null,
-            );
-        } :
+        (c as StatelessComponent<P>).isPropsChanged === undefined ?
+            function (props: P): VNode<P> {
+                return new VNode<P>(
+                    VNodeFlags.ComponentFunction,
+                    c,
+                    props!,
+                    null,
+                    null,
+                );
+            } :
+            function (props: P): VNode<P> {
+                return new VNode<P>(
+                    VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
+                    c,
+                    props!,
+                    null,
+                    null,
+                );
+            } :
         function (props: P): VNode<P> {
             return new VNode<P>(
                 VNodeFlags.ComponentClass,

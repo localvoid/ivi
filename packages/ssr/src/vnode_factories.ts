@@ -17,28 +17,51 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
         linkedBlueprint = blueprint;
     }
     const r = c.prototype.render === undefined ?
-        function (props: P): VNode<P> {
-            if (linkedBlueprint === null) {
-                return new VNode<P>(
-                    VNodeFlags.ComponentFunction,
+        (c as StatelessComponent<P>).isPropsChanged === undefined ?
+            function (props: P): VNode<P> {
+                if (linkedBlueprint === null) {
+                    return new VNode<P>(
+                        VNodeFlags.ComponentFunction,
+                        c,
+                        props!,
+                        null,
+                        null,
+                        null,
+                    );
+                }
+                const v = new VNode<P>(
+                    VNodeFlags.ComponentFunction | VNodeFlags.LinkedBlueprint,
                     c,
                     props!,
                     null,
                     null,
                     null,
                 );
-            }
-            const v = new VNode<P>(
-                VNodeFlags.ComponentFunction | VNodeFlags.LinkedBlueprint,
-                c,
-                props!,
-                null,
-                null,
-                null,
-            );
-            v._style = linkedBlueprint;
-            return v;
-        } :
+                v._style = linkedBlueprint;
+                return v;
+            } :
+            function (props: P): VNode<P> {
+                if (linkedBlueprint === null) {
+                    return new VNode<P>(
+                        VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
+                        c,
+                        props!,
+                        null,
+                        null,
+                        null,
+                    );
+                }
+                const v = new VNode<P>(
+                    VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps | VNodeFlags.LinkedBlueprint,
+                    c,
+                    props!,
+                    null,
+                    null,
+                    null,
+                );
+                v._style = linkedBlueprint;
+                return v;
+            } :
         function (props: P): VNode<P> {
             if (linkedBlueprint === null) {
                 return new VNode<P>(

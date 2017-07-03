@@ -74,13 +74,17 @@ export const enum VNodeFlags {
      */
     KeepAlive = 1 << 16,
     /**
+     * Stateless component is using `isPropsChanged` hook.
+     */
+    CheckChangedProps = 1 << 17,
+    /**
      * VNode element will be automatically focused after instantiation.
      */
-    Autofocus = 1 << 17,
+    Autofocus = 1 << 18,
     /**
      * VNode element cannot contain any children.
      */
-    VoidElement = 1 << 18,
+    VoidElement = 1 << 19,
 
     /**
      * VNode represents a Component.
