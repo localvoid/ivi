@@ -17,6 +17,11 @@ export { TraceLog, TraceLogEntry, getTraceLog, trace } from "./dev_mode/trace";
 export { render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
 
 /**
+ * SSR API.
+ */
+export { BlueprintNode, createBlueprint, linkBlueprint, renderToString, serializeState } from "./vdom/ssr";
+
+/**
  * Entry.
  */
 import { FEATURES, FeatureFlags, Context } from "ivi-core";
