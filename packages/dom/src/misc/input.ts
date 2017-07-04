@@ -42,12 +42,12 @@ const KEY_CODE_TO_KEY: { [key: number]: string } = {
 };
 
 /**
- * Gets a `charCode` from a KeyboardEvent.
+ * getEventCharCode retrieves a normalized `charCode` from a KeyboardEvent.
  *
  * #quirks
  *
  * @param ev Keyboard Event
- * @returns A char code.
+ * @returns Normalized KeyboardEvent `charCode` value.
  */
 export function getEventCharCode(ev: KeyboardEvent): number {
     const keyCode = ev.keyCode;
@@ -65,14 +65,14 @@ export function getEventCharCode(ev: KeyboardEvent): number {
 }
 
 /**
- * Gets a `key` from a KeybordEvent.
+ * getEventKey retrieves a `key` from a KeybordEvent with a fallback for browsers that doesn't support `key` property.
  *
  * #quirks
  *
  * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
  *
  * @param ev Keyboard Event.
- * @returns A `key` property.
+ * @returns KeyboardEvent `key` value.
  */
 export function getEventKey(ev: KeyboardEvent): string {
     if (ev.type === "keypress") {
@@ -92,11 +92,12 @@ export function getEventKey(ev: KeyboardEvent): string {
 }
 
 /**
- * MouseEvent buttons workaround for Safari.
+ * getMouseButtons retrieves a `buttons` property from a MouseEvent with a fallback implementation for Safari.
  *
  * #quirks
  *
  * @param ev
+ * @returns MouseEvent `buttons` value.
  */
 export const getMouseButtons = (FEATURES & FeatureFlags.MouseEventButtons) ?
     function (ev: MouseEvent): number {

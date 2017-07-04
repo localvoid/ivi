@@ -2,7 +2,7 @@
 let _clock = 0;
 
 /**
- * Monotonically increasing clock.
+ * clock returns monotonically increasing clock value.
  *
  * @returns current clock value.
  */
@@ -11,7 +11,7 @@ export function clock(): number {
 }
 
 /**
- * Increment clock value.
+ * incrementClock increments clock value.
  */
 export function incrementClock(): void {
     _clock++;

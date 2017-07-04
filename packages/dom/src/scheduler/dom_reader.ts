@@ -3,7 +3,7 @@ import { RepeatableTaskList } from "ivi-core";
 const _readers = new RepeatableTaskList();
 
 /**
- * Add DOM Reader.
+ * addDOMReader adds DOM Reader to the RepeatableTaskList.
  *
  * DOM Reader will be be invoked on each frame in the read phase.
  *
@@ -16,7 +16,7 @@ export function addDOMReader(reader: () => boolean | undefined): void {
 }
 
 /**
- * Execute DOM Reader tasks.
+ * executeDOMReaders executes DOM Reader tasks.
  */
 export function executeDOMReaders(): void {
     if (__IVI_BROWSER__) {

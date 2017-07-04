@@ -1,7 +1,9 @@
 import { FeatureFlags, FEATURES } from "ivi-core";
 
 /**
- * Set inner HTML.
+ * setInnerHTML sets inner HTML for HTML and SVG elements.
+ *
+ * IE doesn't support native `innerHTML` on SVG elements.
  *
  * #quirks
  *
@@ -9,19 +11,23 @@ import { FeatureFlags, FEATURES } from "ivi-core";
  * @param content Inner HTML content.
  * @param isSVG Element is SVG.
  */
-export function setInnerHTML(element: Element, content: string, isSVG: boolean): void {
-    // #msapp
-    //
-    // innerHTML should be invoked inside an unsafe context `MSApp.execUnsafeLocalFunction`
-    // All details here: https://msdn.microsoft.com/en-us/library/windows/apps/hh767331.aspx
-
-    // Doesn't work on SVG Elements in IE. Latest Edge versions are working fine.
-    if ((isSVG === false) || ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0)) {
+export const setInnerHTML = ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0) ?
+    function (element: Element, content: string, isSVG: boolean): void {
         element.innerHTML = content;
-    } else {
-        setInnerSVG(element as SVGElement, content);
-    }
-}
+    } :
+    function (element: Element, content: string, isSVG: boolean): void {
+        // #msapp
+        //
+        // innerHTML should be invoked inside an unsafe context `MSApp.execUnsafeLocalFunction`
+        // All details here: https://msdn.microsoft.com/en-us/library/windows/apps/hh767331.aspx
+
+        // Doesn't work on SVG Elements in IE. Latest Edge versions are working fine.
+        if (isSVG === false) {
+            element.innerHTML = content;
+        } else {
+            setInnerSVG(element as SVGElement, content);
+        }
+    };
 
 /**
  * Container for SVG Elements.
@@ -31,7 +37,7 @@ export function setInnerHTML(element: Element, content: string, isSVG: boolean):
 let innerHTMLSVGContainer: HTMLDivElement | undefined;
 
 /**
- * Set innerHTML on SVG elements in browsers that doesn't support innerHTML on SVG elements.
+ * setInnerSVG sets innerHTML on SVG elements in browsers that doesn't support innerHTML on SVG elements.
  *
  * #quirks
  *

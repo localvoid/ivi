@@ -4,7 +4,7 @@ import { requestNextFrame } from "./frame";
 const _animations = new RepeatableTaskList();
 
 /**
- * Add animation.
+ * addAnimation adds animation to the RepeatableTaskList.
  *
  * @param animation Animation task.
  */
@@ -16,7 +16,7 @@ export function addAnimation(animation: () => boolean | undefined): void {
 }
 
 /**
- * Execute animations.
+ * executeAnimations execute animations.
  */
 export function executeAnimations(): void {
     if (__IVI_BROWSER__) {

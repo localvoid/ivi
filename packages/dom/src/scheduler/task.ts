@@ -39,7 +39,7 @@ function runTasks(): void {
 }
 
 /**
- * Trigger tasks execution.
+ * requestTaskExecution triggers tasks execution.
  */
 function requestTaskExecution(): void {
     if (_pending === false) {
@@ -49,9 +49,9 @@ function requestTaskExecution(): void {
 }
 
 /**
- * Add task to the task queue.
+ * scheduleTask adds task to the task queue.
  *
- * @param task
+ * @param task Task.
  */
 export function scheduleTask(task: () => void): void {
     if (__IVI_BROWSER__) {

@@ -1,8 +1,8 @@
 {
     "name": "ivi-dom",
-    "main": "dist/js/ivi-dom.js",
-    "module": "dist/js/ivi-dom.js",
-    "typings": "dist/typings/ivi-dom.d.ts",
+    "main": "dist/js/index.js",
+    "module": "dist/js/index.js",
+    "typings": "dist/typings/index.d.ts",
     "version": "0.1.0",
     "description": "Javascript (TypeScript) library for building web user interfaces.",
     "license": "MIT",

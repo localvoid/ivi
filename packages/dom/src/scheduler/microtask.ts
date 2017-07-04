@@ -28,7 +28,7 @@ function runMicrotasks(): void {
 }
 
 /**
- * Trigger microtasks execution.
+ * requestMicrotaskExecution triggers microtasks execution.
  */
 function requestMicrotaskExecution(): void {
     if (_pending === false) {
@@ -39,9 +39,9 @@ function requestMicrotaskExecution(): void {
 }
 
 /**
- * Add task to the microtask queue.
+ * scheduleMicrotask adds task to the microtask queue.
  *
- * @param task
+ * @param task Microtask.
  */
 export function scheduleMicrotask(task: () => void): void {
     if (__IVI_BROWSER__) {

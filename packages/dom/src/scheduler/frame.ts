@@ -31,6 +31,8 @@ export function setUpdateFunction(update: () => void): void {
 }
 
 /**
+ * frameStartTime returns current frame start time.
+ *
  * @returns current frame start time.
  */
 export function frameStartTime(): number {
@@ -48,7 +50,7 @@ function _requestNextFrame(): void {
 }
 
 /**
- * Trigger next frame tasks execution.
+ * requestNextFrame triggers next frame tasks execution.
  */
 export function requestNextFrame(): void {
     if (__IVI_BROWSER__) {
@@ -149,7 +151,7 @@ function handleNextFrame(time?: number): void {
 }
 
 /**
- * Get task list for the next frame.
+ * nextFrame returns task list for the next frame.
  *
  * @returns Frame tasks group.
  */
@@ -159,7 +161,7 @@ export function nextFrame(): FrameTasksGroup {
 }
 
 /**
- * Get task list for the current frame.
+ * currentFrame returns task list for the current frame.
  *
  * @returns Frame tasks group.
  */
@@ -171,7 +173,7 @@ export function currentFrame(): FrameTasksGroup {
 }
 
 /**
- * Perform a synchronous frame update.
+ * syncFrameUpdate performs a synchronous frame update.
  */
 export function syncFrameUpdate(): void {
     handleNextFrame();
