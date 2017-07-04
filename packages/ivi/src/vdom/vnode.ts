@@ -1,4 +1,4 @@
-import { Context, CSSStyleProps, InputType, SelectorData } from "ivi-core";
+import { Context, CSSStyleProps, SelectorData } from "ivi-core";
 import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
@@ -417,7 +417,7 @@ export class VNode<P = null> {
             if (!(this._flags & VNodeFlags.InputElement)) {
                 throw new Error("Failed to set checked, checked is available on input elements only.");
             }
-            if (!isInputTypeHasCheckedProperty(this._tag as InputType)) {
+            if (!isInputTypeHasCheckedProperty(this._tag as string)) {
                 throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
                     + `checked value.`);
             }

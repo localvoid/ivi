@@ -1,5 +1,3 @@
-import { InputType } from "ivi-core";
-
 /**
  * Is tag valid.
  *
@@ -19,7 +17,7 @@ export function isValidTag(tag: string): boolean {
  * @param type Input type.
  * @returns `true` if Input type has `checked` property.
  */
-export function isInputTypeHasCheckedProperty(type: InputType): boolean {
+export function isInputTypeHasCheckedProperty(type: string): boolean {
     if (type === "checkbox" || type === "radio") {
         return true;
     }
