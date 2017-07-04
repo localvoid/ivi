@@ -2,6 +2,9 @@ import { FEATURES, FeatureFlags } from "ivi-core";
 import { NativeEventSourceFlags } from "./flags";
 import { EventHandler } from "./event_handler";
 
+/**
+ * Extends Element interface with a special property that is used to assign synthetic event handlers list.
+ */
 declare global {
     interface Element {
         _ev: Array<EventHandler | null> | EventHandler | null | undefined;
@@ -9,9 +12,9 @@ declare global {
 }
 
 /**
- * Gets target element from an Event.
+ * getEventTarget retrieves target element from an event.
  *
- * There are still some differences in modern browsers, so we need to get event targets with this function.
+ * There are still some differences in modern browsers, so we need to use this function to retrieve event targets.
  *
  * #quirks
  *
@@ -52,7 +55,7 @@ export function getEventTarget(ev: Event): EventTarget {
 }
 
 /**
- * `{ capture: true, passive: true }` object that should be used as a third parameter in `addEventListener`.
+ * `{ capture: true, passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
 export const EVENT_CAPTURE_PASSIVE_OPTIONS =
     ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
@@ -60,7 +63,7 @@ export const EVENT_CAPTURE_PASSIVE_OPTIONS =
         true;
 
 /**
- * `{ passive: true }` object that should be used as a third parameter in `addEventListener`.
+ * `{ passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
 export const EVENT_PASSIVE_OPTIONS =
     ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
@@ -68,14 +71,17 @@ export const EVENT_PASSIVE_OPTIONS =
         false;
 
 /**
- * Get Event options that should be used when adding Event Listener.
+ * getNativeEventOptions converts `NativeEventSourceFlags` to event options that can be used as a 3rd parameter
+ * for `addEventListener` method.
  *
  * #quirks
  *
- * @param flags See `EventDispatcherFlags` for details.
- * @returns Option object that can be used as a 3rd parameter in `addEventListener` call.
+ * @param flags See `NativeEventSourceFlags` for details.
+ * @returns Option object that can be used as a 3rd parameter for `addEventListener` method.
  */
-export function getEventOptions(flags: NativeEventSourceFlags): boolean | { capture?: boolean, passive?: boolean } {
+export function getNativeEventOptions(
+    flags: NativeEventSourceFlags,
+): boolean | { capture?: boolean, passive?: boolean } {
     if ((flags & NativeEventSourceFlags.Passive) !== 0) {
         if ((flags & NativeEventSourceFlags.Capture) !== 0) {
             return EVENT_CAPTURE_PASSIVE_OPTIONS;
@@ -89,12 +95,7 @@ export function getEventOptions(flags: NativeEventSourceFlags): boolean | { capt
 }
 
 /**
- * Property that is used on DOM Nodes to store EventProps object.
- */
-export const DOM_NODE_EVENTS_PROPERTY = "_ev";
-
-/**
- * Set Event Handlers to DOM Node.
+ * setEventHandlersToDOMNode assigns a event handlers to the DOM node.
  *
  * @param node DOM Node.
  * @param events Event Handlers.
@@ -107,7 +108,7 @@ export function setEventHandlersToDOMNode(
 }
 
 /**
- * Get Event Handlers from DOM Node.
+ * getEventHandlersFromDOMNode retrieves event handlers from the DOM node.
  *
  * @param node DOM Node.
  * @returns Event Handlers.

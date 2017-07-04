@@ -1,29 +1,39 @@
 import { scheduleTask } from "ivi-dom";
-import { getEventTarget, getEventOptions } from "./utils";
+import { getEventTarget, getNativeEventOptions } from "./utils";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";
-import { DispatchTarget } from "./dispatch_target";
 import { EventSource } from "./event_source";
 import { EventHandler } from "./event_handler";
 import { accumulateDispatchTargets } from "./traverse_dom";
-import { dispatchEvent } from "./dispatch_event";
+import { DispatchTarget, dispatchEvent } from "./dispatch";
 
 /**
- * Native Event Dispatcher.
+ * NativeEventSource dispatches native events.
+ *
+ * It is using two-phase dispatching algorithm similar to native DOM events flow.
  */
 export class NativeEventSource<E extends SyntheticNativeEventClass<Event, SyntheticNativeEvent<any>>> {
+    /**
+     * Public EventSource interface.
+     */
     readonly eventSource: EventSource;
+    /**
+     * Number of active dependencies.
+     *
+     * When there are active dependencies, event source will be activated by attaching native event listeners to the
+     * document. When it goes to zero it will be deactivated, and all event listeners will be removed.
+     */
     private dependencies: number;
     /**
-     * See `EventDispatcherFlags` for details.
+     * See `NativeEventSourceFlags` for details.
      */
     readonly flags: NativeEventSourceFlags;
     /**
-     * Event name.
+     * DOM event name.
      */
     readonly name: string;
     /**
-     * Synthetic Event Constructor.
+     * Synthetic Event constructor.
      */
     readonly eventType: E;
     /**
@@ -45,7 +55,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
                         document.addEventListener(
                             this.name,
                             this.dispatch,
-                            getEventOptions(this.flags) as boolean,
+                            getNativeEventOptions(this.flags) as boolean,
                         );
                     }
                 }
@@ -59,7 +69,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
                                 document.removeEventListener(
                                     this.name,
                                     this.dispatch,
-                                    getEventOptions(this.flags) as boolean,
+                                    getNativeEventOptions(this.flags) as boolean,
                                 );
                                 this.deactivating = false;
                             }
@@ -94,5 +104,4 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
             }
         }
     }
-
 }

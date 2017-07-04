@@ -1,7 +1,7 @@
 import { EventHandler } from "./event_handler";
 
 /**
- * Shortcut for Event Handler registration.
+ * registerEventHandler is a shortcut for Event Handler registration.
  *
  * @param handler Event Handler.
  */
@@ -10,7 +10,7 @@ function registerEventHandler(handler: EventHandler<any>): void {
 }
 
 /**
- * Shortcut for Event Handler unregistration.
+ * unregisterEventHandler is a shortcut for Event Handler unregistration.
  *
  * @param handler Event Handler.
  */
@@ -19,11 +19,10 @@ function unregisterEventHandler(handler: EventHandler<any>): void {
 }
 
 /**
- * Sync DOM events.
+ * syncEvents syncs event handlers and invokes EventSource callbacks when event handler is attached or detached.
  *
- * @param element HTML or SVG Element.
- * @param a Old events.
- * @param b New events.
+ * @param a Old event handlers.
+ * @param b New event handlers.
  */
 export function syncEvents(
     a: Array<EventHandler | null> | EventHandler | null,
@@ -85,9 +84,9 @@ export function syncEvents(
 }
 
 /**
- * Attach Events.
+ * attachEvents attaches event handlers and invokes EventSource callbacks.
  *
- * @param events Events.
+ * @param events Event handlers.
  */
 export function attachEvents(events: Array<EventHandler | null> | EventHandler): void {
     if (typeof events === "function") {
@@ -103,9 +102,9 @@ export function attachEvents(events: Array<EventHandler | null> | EventHandler):
 }
 
 /**
- * Detach Events.
+ * detachEvents detaches events handles and invokes EventSource callbacks.
  *
- * @param events Events.
+ * @param events Event handlers.
  */
 export function detachEvents(events: Array<EventHandler | null> | EventHandler): void {
     if (typeof events === "function") {

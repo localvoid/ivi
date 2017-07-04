@@ -2,10 +2,16 @@ import { getEventCharCode, getEventKey, getMouseButtons } from "ivi-dom";
 import { SyntheticEventFlags } from "./flags";
 
 /**
- * Synthetic Event.
+ * SyntheticEvent is a base class for all synthetic events.
  */
 export class SyntheticEvent {
+    /**
+     * See `SyntheticEventFlags` for details.
+     */
     flags: SyntheticEventFlags;
+    /**
+     * Timestamp when event was created.
+     */
     readonly timestamp: number;
 
     constructor(
@@ -16,10 +22,16 @@ export class SyntheticEvent {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Stops event propagation.
+     */
     stopPropagation() {
         this.flags |= SyntheticEventFlags.StoppedPropagation;
     }
 
+    /**
+     * Prevents default behaviour for an event.
+     */
     preventDefault() {
         this.flags |= SyntheticEventFlags.PreventedDefault;
     }

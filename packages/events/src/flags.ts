@@ -1,6 +1,6 @@
 
 /**
- * Native Event Dispatcher Flags.
+ * NativeEventSourceFlags.
  */
 export const enum NativeEventSourceFlags {
     /**
@@ -20,7 +20,7 @@ export const enum NativeEventSourceFlags {
 }
 
 /**
- * Event Handler flags.
+ * EventHandlerFlags.
  */
 export const enum EventHandlerFlags {
     /**
@@ -36,7 +36,7 @@ export const enum EventHandlerFlags {
 }
 
 /**
- * Synthetic Event Flags.
+ * SyntheticEventFlags.
  */
 export const enum SyntheticEventFlags {
     /**

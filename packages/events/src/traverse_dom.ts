@@ -1,11 +1,11 @@
 import { EventHandler } from "./event_handler";
-import { DispatchTarget } from "./dispatch_target";
+import { DispatchTarget } from "./dispatch";
 import { getEventHandlersFromDOMNode } from "./utils";
 
 /**
- * Accumulate Event Handlers.
+ * accumulateDispatchTargetsFromElement accumulates matching Event Handlers in `result` array from the `target` Element.
  *
- * @param result Result array.
+ * @param result Accumulated Dispatch Targets.
  * @param target Target Element.
  * @param match Matching function.
  */
@@ -47,10 +47,11 @@ export function accumulateDispatchTargetsFromElement(
 }
 
 /**
- * Traverses the DOM tree from the target Element to the document top and accumulates Dispatch Targets.
+ * accumulateDispatchTargets traverses the DOM tree from the `target` Element to the document top and accumulates
+ * matching Event Handlers in `result` array.
  *
- * @param result Result array.
- * @param target DOM Element.
+ * @param result Accumulated Dispatch Targets.
+ * @param target Target DOM Element.
  * @param match Matching function.
  */
 export function accumulateDispatchTargets(

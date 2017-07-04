@@ -39,7 +39,7 @@ For example, native event sources are using two-phase dispatching, that is almos
 
 - Simulating capture target behavior for mouse events, so it can behave in the same way as touch events.
 - Use disambiguation algorithm when several gesture handlers are detected on the events path.
-- Dispatched "click outside" events to event handlers that aren't on the current events path.
+- Dispatch "click outside" events to event handlers that aren't on the current events path.
 
 ## API
 

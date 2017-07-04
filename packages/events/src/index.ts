@@ -1,10 +1,10 @@
 export {
-    getEventTarget, getEventOptions, EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_PASSIVE_OPTIONS,
+    getEventTarget, getNativeEventOptions, EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_PASSIVE_OPTIONS,
     getEventHandlersFromDOMNode, setEventHandlersToDOMNode,
 } from "./utils";
 export { NativeEventSourceFlags, EventHandlerFlags, SyntheticEventFlags } from "./flags";
 export { EventSource } from "./event_source";
-export { DispatchTarget } from "./dispatch_target";
+export { DispatchTarget, dispatchEvent } from "./dispatch";
 export { EventHandler } from "./event_handler";
 export {
     SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,

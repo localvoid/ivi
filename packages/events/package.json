@@ -19,7 +19,9 @@
         "vdom",
         "diff",
         "browser",
-        "typescript"
+        "typescript",
+        "synthetic",
+        "events"
     ],
     "homepage": "https://github.com/ivijs/ivi",
     "repository": {
@@ -37,8 +39,6 @@
         "LICENSE"
     ],
     "scripts": {
-        "test": "karma start --single-run",
-        "test:watch": "karma start",
         "dist": "tsc --project ./tsconfig.build.json",
         "watch": "tsc --watch --project ./tsconfig.build.json",
         "lint": "tslint --project ./tsconfig.json"
