@@ -1,26 +1,53 @@
 /* tslint:disable:max-line-length no-empty-interface */
 
 export declare interface CSSStyleProps {
-    "align-content"?: "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "stretch" | null;
-    "align-items"?: "flex-start" | "flex-end" | "center" | "baseline" | "stretch" | null;
-    "align-self"?: "auto" | "flex-start" | "flex-end" | "center" | "baseline" | "stretch" | null;
+    /**
+     * "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "stretch"
+     */
+    "align-content"?: string | null;
+    /**
+     * "flex-start" | "flex-end" | "center" | "baseline" | "stretch"
+     */
+    "align-items"?: string | null;
+    /**
+     * "auto" | "flex-start" | "flex-end" | "center" | "baseline" | "stretch"
+     */
+    "align-self"?: string | null;
     "alignment-baseline"?: string | null;
     "animation"?: string | null;
     "animation-delay"?: string | null;
-    "animation-direction"?: "normal" | "reverse" | "alternate" | "alternate-reverse" | string | null;
+    /**
+     * "normal" | "reverse" | "alternate" | "alternate-reverse"
+     */
+    "animation-direction"?: string | null;
     "animation-duration"?: string | null;
-    "animation-fill-mode"?: "none" | "forwards" | "backwards" | "both" | string | null;
+    /**
+     * "none" | "forwards" | "backwards" | "both"
+     */
+    "animation-fill-mode"?: string | null;
     "animation-iteration-count"?: string | number | null;
     "animation-name"?: string | null;
-    "animation-play-state"?: "running" | "paused" | string | null;
+    /**
+     * "running" | "paused"
+     */
+    "animation-play-state"?: string | null;
     "animation-timing-function"?: string | null;
-    "backface-visibility"?: "visible" | "hidden" | null;
+    /**
+     * "visible" | "hidden"
+     */
+    "backface-visibility"?: null;
     "background"?: string | null;
     "background-attachment"?: string | null;
-    "background-clip"?: "border-box" | "padding-box" | "content-box" | string | null;
+    /**
+     * "border-box" | "padding-box" | "content-box"
+     */
+    "background-clip"?: string | null;
     "background-color"?: string | null;
     "background-image"?: string | null;
-    "background-origin"?: "border-box" | "padding-box" | "content-box" | string | null;
+    /**
+     * "border-box" | "padding-box" | "content-box"
+     */
+    "background-origin"?: string | null;
     "background-position"?: string | null;
     "background-position-x"?: string | null;
     "background-position-y"?: string | null;
@@ -34,7 +61,10 @@ export declare interface CSSStyleProps {
     "border-bottom-right-radius"?: number | string | null;
     "border-bottom-style"?: string | null;
     "border-bottom-width"?: number | string | null;
-    "border-collapse"?: "collapse" | "separate" | null;
+    /**
+     * "collapse" | "separate"
+     */
+    "border-collapse"?: string | null;
     "border-color"?: string | null;
     "border-image"?: string | null;
     "border-image-outset"?: string | null;
@@ -61,14 +91,23 @@ export declare interface CSSStyleProps {
     "border-top-width"?: number | string | null;
     "border-width"?: number | string | null;
     "bottom"?: string | null;
-    "box-decoration-break"?: "slice" | "clone" | null;
+    /**
+     * "slice" | "clone"
+     */
+    "box-decoration-break"?: string | null;
     "box-shadow"?: string | null;
-    "box-sizing"?: "content-box" | "border-box" | null;
+    /**
+     * "content-box" | "border-box"
+     */
+    "box-sizing"?: string | null;
     "break-after"?: string | null;
     "break-before"?: string | null;
     "break-inside"?: string | null;
     "caption-side"?: string | null;
-    "clear"?: "none" | "left" | "right" | "both" | "inline-start" | "inline-end" | null;
+    /**
+     * "none" | "left" | "right" | "both" | "inline-start" | "inline-end"
+     */
+    "clear"?: string | null;
     "clip"?: string | null;
     "clip-path"?: string | null;
     "clip-rule"?: string | null;
@@ -88,11 +127,17 @@ export declare interface CSSStyleProps {
     "counter-increment"?: string | null;
     "counter-reset"?: string | null;
     "cursor"?: string | null;
-    "direction"?: "ltr" | "rtl" | null;
-    "display"?: "none" | "inline" | "block" | "list-item" | "inline-list-item" | "inline-block" | "inline-table" |
-    "table" | "table-cell" | "table-column" | "table-column-group" | "table-footer-group" | "table-header-group" |
-    "table-row" | "table-row-group" | "flex" | "inline-flex" | "grid" | "inline-grid" | "run-in" | "ruby" |
-    "ruby-base" | "ruby-text" | "ruby-base-container" | "ruby-text-container" | "contents" | null;
+    /**
+     * "ltr" | "rtl"
+     */
+    "direction"?: string | null;
+    /**
+     * "none" | "inline" | "block" | "list-item" | "inline-list-item" | "inline-block" | "inline-table" |
+     * "table" | "table-cell" | "table-column" | "table-column-group" | "table-footer-group" | "table-header-group" |
+     * "table-row" | "table-row-group" | "flex" | "inline-flex" | "grid" | "inline-grid" | "run-in" | "ruby" |
+     * "ruby-base" | "ruby-text" | "ruby-base-container" | "ruby-text-container" | "contents"
+     */
+    "display"?: string | null;
     "dominant-baseline"?: string | null;
     "empty-cells"?: string | null;
     "enable-background"?: string | null;
@@ -102,12 +147,21 @@ export declare interface CSSStyleProps {
     "filter"?: string | null;
     "flex"?: string | null;
     "flex-basis"?: string | null;
-    "flex-direction"?: "row" | "row-reverse" | "column" | "column-reverse" | null;
+    /**
+     * "row" | "row-reverse" | "column" | "column-reverse"
+     */
+    "flex-direction"?: string | null;
     "flex-flow"?: string | null;
     "flex-grow"?: number | string | null;
     "flex-shrink"?: number | string | null;
-    "flex-wrap"?: "nowrap" | "wrap" | "wrap-reverse" | null;
-    "float"?: "left" | "right" | "none" | "inline-start" | "inline-end" | null;
+    /**
+     * "nowrap" | "wrap" | "wrap-reverse"
+     */
+    "flex-wrap"?: string | null;
+    /**
+     * "left" | "right" | "none" | "inline-start" | "inline-end"
+     */
+    "float"?: string | null;
     "flood-color"?: string | null;
     "flood-opacity"?: number | string | null;
     "font"?: string | null;
@@ -115,22 +169,37 @@ export declare interface CSSStyleProps {
     "font-feature-settings"?: string | null;
     "font-size"?: number | string | null;
     "font-size-adjust"?: string | null;
-    "font-stretch"?: "normal" | "ultra-condensed" | "extra-condensed" | "condensed" | "semi-condensed" |
-    "semi-expanded" | "expanded" | "extra-expanded" | "ultra-expanded" | null;
+    /**
+     * "normal" | "ultra-condensed" | "extra-condensed" | "condensed" | "semi-condensed" |
+     * "semi-expanded" | "expanded" | "extra-expanded" | "ultra-expanded"
+     */
+    "font-stretch"?: string | null;
     "font-style"?: string | null;
     "font-variant"?: string | null;
     "font-weight"?: number | string | null;
     "glyph-orientation-horizontal"?: string | null;
     "glyph-orientation-vertical"?: string | null;
     "height"?: number | string | null;
-    "ime-mode"?: "auto" | "normal" | "active" | "inactive" | "disabled" | null;
-    "isolation"?: "auto" | "isolate" | null;
-    "justify-content"?: "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | null;
+    /**
+     * "auto" | "normal" | "active" | "inactive" | "disabled"
+     */
+    "ime-mode"?: string | null;
+    /**
+     * "auto" | "isolate"
+     */
+    "isolation"?: string | null;
+    /**
+     * "flex-start" | "flex-end" | "center" | "space-between" | "space-around"
+     */
+    "justify-content"?: string | null;
     "kerning"?: string | null;
     "left"?: number | string | null;
     "letter-spacing"?: number | string | null;
     "lighting-color"?: string | null;
-    "line-break"?: "auto" | "loose" | "normal" | "strict" | null;
+    /**
+     * "auto" | "loose" | "normal" | "strict"
+     */
+    "line-break"?: string | null;
     "line-geight"?: number | string | null;
     "list-style"?: string | null;
     "list-style-image"?: string | null;
@@ -193,23 +262,44 @@ export declare interface CSSStyleProps {
     "-ms-text-size-adjust"?: any;
     "-ms-touch-action"?: string | null;
     "-ms-touch-select"?: string | null;
-    "-ms-user-select"?: "none" | "auto" | "text" | "all" | null;
+    /**
+     * "none" | "auto" | "text" | "all"
+     */
+    "-ms-user-select"?: string | null;
     "-ms-wrap-flow"?: string;
     "-ms-wrap-margin"?: any;
     "-ms-wrap-through"?: string;
-    "object-fit"?: "fill" | "contain" | "cover" | "none" | "scale-down" | null;
+    /**
+     * "fill" | "contain" | "cover" | "none" | "scale-down"
+     */
+    "object-fit"?: string | null;
     "opacity"?: number | string | null;
     "order"?: number | string | null;
-    "orientation"?: "auto" | "portrait" | "landscape" | null;
+    /**
+     * "auto" | "portrait" | "landscape"
+     */
+    "orientation"?: string | null;
     "orphans"?: string | null;
     "outline"?: string | null;
     "outline-color"?: string | null;
     "outline-style"?: string | null;
     "outline-width"?: number | string | null;
-    "overflow"?: "visible" | "hidden" | "scroll" | "auto" | null;
-    "overflow-wrap"?: "normal" | "break-word" | null;
-    "overflow-x"?: "visible" | "hidden" | "scroll" | "auto" | null;
-    "overflow-y"?: "visible" | "hidden" | "scroll" | "auto" | null;
+    /**
+     * "visible" | "hidden" | "scroll" | "auto"
+     */
+    "overflow"?: string | null;
+    /**
+     * "normal" | "break-word"
+     */
+    "overflow-wrap"?: string | null;
+    /**
+     * "visible" | "hidden" | "scroll" | "auto"
+     */
+    "overflow-x"?: string | null;
+    /**
+     * "visible" | "hidden" | "scroll" | "auto"
+     */
+    "overflow-y"?: string | null;
     "padding"?: number | string | null;
     "padding-bottom"?: number | string | null;
     "padding-left"?: number | string | null;
@@ -220,11 +310,20 @@ export declare interface CSSStyleProps {
     "page-break-inside"?: string | null;
     "perspective"?: number | string | null;
     "perspective-origin"?: string | null;
-    "pointer-events"?: "auto" | "none" | "visiblePainted" | "visibleFill" | "visibleStroke" | "visible" | "painted" |
-    "fill" | "stroke" | "all" | "inherit" | null;
-    "position"?: "static" | "relative" | "absolute" | "sticky" | "fixed" | null;
+    /**
+     * "auto" | "none" | "visiblePainted" | "visibleFill" | "visibleStroke" | "visible" | "painted" |
+     * "fill" | "stroke" | "all" | "inherit"
+     */
+    "pointer-events"?: string | null;
+    /**
+     * "static" | "relative" | "absolute" | "sticky" | "fixed"
+     */
+    "position"?: string | null;
     "quotes"?: string | null;
-    "resize"?: "none" | "both" | "horizontal" | "vertical" | null;
+    /**
+     * "none" | "both" | "horizontal" | "vertical"
+     */
+    "resize"?: string | null;
     "right"?: number | string | null;
     "ruby-align"?: string | null;
     "ruby-overhang"?: string | null;
@@ -240,17 +339,32 @@ export declare interface CSSStyleProps {
     "stroke-opacity"?: number | string | null;
     "stroke-width"?: number | string | null;
     "tab-size"?: number | string | null;
-    "table-layout"?: "auto" | "fixed" | null;
-    "text-align"?: "start" | "end" | "left" | "right" | "center" | "justify" | "match-parent" | null;
-    "text-align-last"?: "auto" | "start" | "end" | "left" | "right" | "center" | "justify" | null;
+    /**
+     * "auto" | "fixed"
+     */
+    "table-layout"?: string | null;
+    /**
+     * "start" | "end" | "left" | "right" | "center" | "justify" | "match-parent"
+     */
+    "text-align"?: string | null;
+    /**
+     * "auto" | "start" | "end" | "left" | "right" | "center" | "justify"
+     */
+    "text-align-last"?: string | null;
     "text-anchor"?: string | null;
     "text-decoration"?: string | null;
-    "text-decoration-style"?: "solid" | "double" | "dotted" | "dashed" | "wavy" | null;
+    /**
+     * "solid" | "double" | "dotted" | "dashed" | "wavy"
+     */
+    "text-decoration-style"?: string | null;
     "text-indent"?: number | string | null;
     "text-justify"?: string | null;
     "text-kashida"?: string | null;
     "text-kashida-space"?: string | null;
-    "text-orientation"?: "mixed" | "upright" | "sideways" | null;
+    /**
+     * "mixed" | "upright" | "sideways"
+     */
+    "text-orientation"?: string | null;
     "text-overflow"?: string | null;
     "text-shadow"?: string | null;
     "text-transform"?: string | null;
@@ -258,7 +372,10 @@ export declare interface CSSStyleProps {
     "top"?: number | string | null;
     "touch-action"?: string | null;
     "transform"?: string | null;
-    "transform-box"?: "mixed" | "upright" | "sideways" | null;
+    /**
+     * "mixed" | "upright" | "sideways"
+     */
+    "transform-box"?: string | null;
     "transform-origin"?: string | null;
     "transform-style"?: string | null;
     "transition"?: string | null;
@@ -267,9 +384,15 @@ export declare interface CSSStyleProps {
     "transition-property"?: string | null;
     "transition-timing-function"?: string | null;
     "unicode-bidi"?: string | null;
-    "user-select"?: "none" | "auto" | "text" | "all" | null;
+    /**
+     * "none" | "auto" | "text" | "all"
+     */
+    "user-select"?: string | null;
     "vertical-align"?: string | null;
-    "visibility"?: "visible" | "hidden" | "collapse" | null;
+    /**
+     * "visible" | "hidden" | "collapse"
+     */
+    "visibility"?: string | null;
     "-webkit-align-content"?: string | null;
     "-webkit-align-items"?: string | null;
     "-webkit-align-self"?: string | null;
@@ -336,14 +459,26 @@ export declare interface CSSStyleProps {
     "-webkit-transition-property"?: string | null;
     "-webkit-transition-timing-function"?: string | null;
     "-webkit-user-modify"?: string | null;
-    "-webkit-user-select"?: "none" | "auto" | "text" | "all" | null;
+    /**
+     * "none" | "auto" | "text" | "all"
+     */
+    "-webkit-user-select"?: string | null;
     "-webkit-writing-mode"?: string | null;
-    "white-space"?: "normal" | "pre" | "nowrap" | "pre-wrap" | "pre-line" | null;
+    /**
+     * "normal" | "pre" | "nowrap" | "pre-wrap" | "pre-line"
+     */
+    "white-space"?: string | null;
     "widows"?: number | string | null;
     "width"?: number | string | null;
-    "word-break"?: "normal" | "break-all" | "keep-all" | null;
+    /**
+     * "normal" | "break-all" | "keep-all"
+     */
+    "word-break"?: string | null;
     "word-spacing"?: number | string | null;
-    "word-wrap"?: "normal" | "break-word" | null;
+    /**
+     * "normal" | "break-word"
+     */
+    "word-wrap"?: string | null;
     "writing-mode"?: string | null;
     "z-index"?: number | string | null;
     "zoom"?: string | null;
