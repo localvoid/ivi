@@ -414,13 +414,13 @@ function patchVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
                     }
 
                     if ((bFlags & VNodeFlags.VoidElement) === 0) {
-                        if (aVNode._children !== b._children) {
+                        if (b._children !== null) {
                             result += patchChildren(
                                 a,
                                 a.flags,
                                 bFlags,
-                                a.children as | BlueprintNode[] | BlueprintNode | string | number | boolean,
-                                b._children as | VNode[] | VNode | string | number | boolean,
+                                a.children,
+                                b._children,
                                 context,
                             );
                         }
@@ -467,7 +467,7 @@ function patchChildren(
     aParent: BlueprintNode,
     aParentFlags: VNodeFlags,
     bParentFlags: VNodeFlags,
-    a: BlueprintNode[] | BlueprintNode | string | number | boolean,
+    a: BlueprintNode[] | BlueprintNode | string | number | boolean | null,
     b: VNode[] | VNode | string | number | boolean,
     context: Context,
 ): string {
@@ -483,6 +483,9 @@ function patchChildren(
                 return renderVNode(b as VNode<any>, context);
             }
         } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
+            if (a !== null && aParent.vnode._children === b) {
+                return a as string;
+            }
             return escapeText(b as string);
         }
     } else {
