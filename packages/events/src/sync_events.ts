@@ -26,7 +26,6 @@ function unregisterEventHandler(handler: EventHandler<any>): void {
  * @param b New events.
  */
 export function syncEvents(
-    element: Element,
     a: Array<EventHandler | null> | EventHandler | null,
     b: Array<EventHandler | null> | EventHandler | null,
 ): void {

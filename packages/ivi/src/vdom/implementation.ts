@@ -1076,7 +1076,7 @@ function vNodeSync(
                     }
                     if (aEvents !== bEvents) {
                         if ((syncFlags & SyncFlags.Attached) !== 0) {
-                            syncEvents(instance as Element, aEvents, bEvents);
+                            syncEvents(aEvents, bEvents);
                         }
                         setEventHandlersToDOMNode(instance as Element, bEvents);
                     }
