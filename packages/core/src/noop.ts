@@ -1,14 +1,13 @@
-
 /**
  * NOOP function.
  */
-export function NOOP() {
+export function NOOP(): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
 }
 
 /**
- * NOOP function that always returns `false` value.
+ * NOOP_FALSE function always returns `false` value.
  *
  * @returns `false` value.
  */

@@ -1,10 +1,7 @@
-
 /**
- * Remove element from an array with O(1) complexity.
+ * unorderedArrayDelete deletes element from an array with O(1) complexity.
  *
- * Swaps element at `index` position with the last element and removes the last one.
- *
- * Elements order will be changed after element removal.
+ * It swaps element at `index` position with the last element and removes the last one.
  *
  * @param array Array
  * @param index Index of an element to remove

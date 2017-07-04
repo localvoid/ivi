@@ -3,7 +3,8 @@
     "compilerOptions": {
         "types": [
             "chai",
-            "mocha"
+            "mocha",
+            "node"
         ]
     },
     "include": [

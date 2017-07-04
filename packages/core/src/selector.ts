@@ -1,5 +1,26 @@
-import { Context, SelectorData } from "ivi-core";
+import { Context } from "./types";
 
+/**
+ * SelectorData.
+ */
+export interface SelectorData<I = {}, O = I> {
+    /**
+     * Input data.
+     */
+    in: I;
+    /**
+     * Output data.
+     */
+    out: O;
+}
+
+/**
+ * selectorData creates SelectorData instances.
+ *
+ * @param i Input data.
+ * @param o Output data. When output data isn't specified, input data will be used as an output data.
+ * @returns SelectorData instance.
+ */
 export function selectorData<I>(i: I): SelectorData<I, I>;
 export function selectorData<I, O>(i: I, o: O): SelectorData<I, O>;
 export function selectorData<I, O>(i: I, o?: O): SelectorData<I, O> {
@@ -9,6 +30,13 @@ export function selectorData<I, O>(i: I, o?: O): SelectorData<I, O> {
     };
 }
 
+/**
+ * memoizeSelector creates memoized selector.
+ *
+ * @param select Selector function.
+ * @param ref Ref callback that retrieves and assigns memoized value.
+ * @returns Memoized selector.
+ */
 export function memoizeSelector<T, U extends SelectorData>(
     select: (prev: U | null) => U,
     ref: (v?: U | null) => U | null,

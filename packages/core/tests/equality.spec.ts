@@ -1,6 +1,5 @@
 /* tslint:disable:no-unused-expression */
-
-import { isPropsNotShallowEqual } from "../src/props";
+import { isPropsNotShallowEqual } from "../src/index";
 import { expect } from "chai";
 
 describe("equality", () => {

@@ -2,7 +2,7 @@
  * Feature Detection is used to implement polyfills or just disable some features when browser doesn't support them.
  * For example, when browser doesn't support passive events, we can just ignore it and always use active events.
  *
- * NOTE: Do not implement feature detection for features that aren't used in `ivi` library.
+ * NOTE: Do not implement feature detection for features that aren't used in `ivi` libraries.
  */
 
 /**
@@ -123,9 +123,7 @@ if (__IVI_BROWSER__) {
     // }
 
     /**
-     * Check PointerEvents and TouchEvents support.
-     *
-     * Prefer PointerEvents over TouchEvents when both are available.
+     * Check pointer events.
      */
     if ("PointerEvent" in window) {
         FEATURES |= FeatureFlags.PointerEvents;
@@ -138,7 +136,12 @@ if (__IVI_BROWSER__) {
                 FEATURES |= FeatureFlags.PointerEventsMultiTouch;
             }
         }
-    } else if ("ontouchstart" in window) {
+    }
+
+    /**
+     * Check touch events.
+     */
+    if ("ontouchstart" in window) {
         FEATURES |= FeatureFlags.TouchEvents;
     }
 

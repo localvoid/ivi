@@ -18,12 +18,10 @@ declare global {
     /* tslint:enable:no-unused-variable */
 }
 
-export { Context, MaybeUndefined, SelectorData } from "./types";
+export { Context, MaybeUndefined } from "./types";
+export { SelectorData, selectorData, memoizeSelector } from "./selector";
 
-export {
-    HTMLTagType, InputType, KeyCode, KeyLocation, KeyName, MediaTagType, MouseButtons, SVGTagType, SVG_NAMESPACE,
-    XLINK_NAMESPACE, XML_NAMESPACE,
-} from "./const";
+export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";
 export {
     CSSStyleProps,
 

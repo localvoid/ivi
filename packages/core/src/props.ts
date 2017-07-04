@@ -1,5 +1,5 @@
 /**
- * Check if props are not shallow equal.
+ * isPropsNotShallowEqual returns `true` when props aren't shallow equal.
  *
  * @param oldProps
  * @param newProps
