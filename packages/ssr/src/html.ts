@@ -1203,7 +1203,7 @@ export function wbr(className?: string): VNode<HTMLElementProps | null> {
         null,
     );
 }
-export function xMSWebview(className?: string): VNode<MSHTMLWebViewElementProps | null> {
+export function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | null> {
     return new VNode(
         VNodeFlags.Element,
         "<x-ms-webview",

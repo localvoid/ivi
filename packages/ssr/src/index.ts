@@ -26,7 +26,7 @@ export {
     optgroup, option, p, param, path, pattern, picture, plaintext, polygon, polyline, pre, progress, q, radialgradient,
     rect, rt, ruby, s, samp, script, section, select, small, source, span, stop, strike, strong, style, sub, sup, svg,
     symbol, table, tbody, td, template, textarea, textpath, tfoot, th, thead, title, tr, track, tspan, tt, u, ul,
-    use, video, view, wbr, xmp, xMSWebview,
+    use, video, view, wbr, xmp, x_ms_webview,
 } from "./html";
 
 export {
