@@ -132,22 +132,28 @@ function renderVNode(node: VNode<any>, context: Context): string {
             let result = renderOpenElement(node);
             if ((flags & VNodeFlags.VoidElement) === 0) {
                 if (node._children !== null) {
+                    let childrenString;
                     if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
+                        childrenString = "";
                         if ((flags & VNodeFlags.ChildrenArray) !== 0) {
                             const children = node._children as VNode<any>[];
                             for (let i = 0; i < children.length; i++) {
-                                result += renderVNode(children[i], context);
+                                childrenString += renderVNode(children[i], context);
                             }
                         } else {
-                            result += renderVNode(node._children as VNode<any>, context);
+                            childrenString = renderVNode(node._children as VNode<any>, context);
                         }
                     } else { // ((flags & VNodeFlags.ChildrenBasic) !== 0)
-                        result += escapeText(node._children as string);
+                        childrenString = escapeText(node._children as string);
                     }
+                    if ((flags & VNodeFlags.NewLineEatingElement) !== 0) {
+                        if (childrenString.length > 0 && childrenString.charCodeAt(0) === 10) { // "\n"
+                            result += "\n";
+                        }
+                    }
+                    result += childrenString;
                 }
                 result += node._close;
-            } else {
-                result += ">";
             }
             return result;
         } else { // ((flags & VNodeFlags.Text) !== 0)
