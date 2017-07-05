@@ -36,11 +36,6 @@ exclusively for bug reports and feature requests.
 - [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
 - [Known Issues](https://github.com/ivijs/ivi/blob/master/documentation/advanced/issues.md)
 
-### Extensions
-
-- [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/extensions/dev-mode.md)
-- [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/extensions/synthetic-events.md)
-
 ### Installation
 
 #### NPM

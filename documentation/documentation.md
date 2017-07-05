@@ -18,8 +18,3 @@
 - [TypeScript Enums](advanced/typescript-enums.md)
 - [Security](advanced/security.md)
 - [Known Issues](advanced/issues.md)
-
-## Extensions
-
-- [Development Mode](extensions/dev-mode.md)
-- [Synthetic Events](extensions/events.md)
