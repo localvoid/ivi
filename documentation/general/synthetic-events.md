@@ -17,11 +17,11 @@ factories are using camel case for their names, and all names are starting with 
 import * as Events from "ivi-events";
 
 const click = Events.onClick((ev) => {
-    console.log("clicked");
+  console.log("clicked");
 });
 
 const keyDown = Events.onKeyDown((ev) => {
-    console.log("Key Down");
+  console.log("Key Down");
 });
 ```
 
@@ -38,8 +38,8 @@ There are no restrictions in number of attached event handlers with the same typ
 
 ```ts
 interface VNode {
-    events(events: EventHandlerList | EventHandler | null): VNode<P>;
-    // ...
+  events(events: EventHandlerList | EventHandler | null): VNode<P>;
+  // ...
 }
 ```
 
@@ -49,20 +49,20 @@ import * as Events from "ivi-events";
 import * as h from "ivi-html";
 
 class StatefulComponent extends Component {
-    private counter = 0;
+  private counter = 0;
 
-    private onClick = Events.onClick((ev) => {
-        this.counter++;
-        this.invalidate();
-    });
+  private onClick = Events.onClick((ev) => {
+    this.counter++;
+    this.invalidate();
+  });
 
-    render() {
-        return h.div()
-            .events([
-                this.onClick,
-                this.onClick,
-            ])
-            .children(`Clicks: ${this.counter}`);
-    }
+  render() {
+    return h.div()
+      .events([
+        this.onClick,
+        this.onClick,
+      ])
+      .children(`Clicks: ${this.counter}`);
+  }
 }
 ```

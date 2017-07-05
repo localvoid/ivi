@@ -15,11 +15,11 @@ type OnComponentCreatedHook = (instance: Component<any>) => void;
 type OnComponentDisposedHook = (instance: Component<any>) => void;
 
 interface DevModeHooks {
-    onError: OnErrorHook[] | null;
-    onElementBeforeCreate: OnElementBeforeCreateHook[] | null;
-    onElementCreated: OnElementCreatedHook[] | null;
-    onComponentCreated: OnComponentCreatedHook[] | null;
-    onComponentDisposed: OnComponentDisposedHook[] | null;
+  onError: OnErrorHook[] | null;
+  onElementBeforeCreate: OnElementBeforeCreateHook[] | null;
+  onElementCreated: OnElementCreatedHook[] | null;
+  onComponentCreated: OnComponentCreatedHook[] | null;
+  onComponentDisposed: OnComponentDisposedHook[] | null;
 }
 ```
 

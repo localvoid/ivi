@@ -32,36 +32,36 @@ In the future, it will be possible to solve this issue with new [input events](h
 
 ```ts
 class Form extends Component<null> {
-    private lock = false;
-    private value = "";
+  private lock = false;
+  private value = "";
 
-    private onInput = Event.onInput((ev) => {
-        if (!this.lock) {
-            this.value = (ev.target as HTMLInputElement).value;
-        }
-    });
-
-    private onSubmit = Events.onSubmit((ev) => {
-        ev.preventDefault();
-
-        if (this.value) {
-            this.value = "";
-            this.lock = true;
-            this.invalidate();
-        }
-    });
-
-    render() {
-        return h.form().children(
-            h.inputText()
-                .events({ input: this.onInput })
-                .value(this.value);
-        );
+  private onInput = Event.onInput((ev) => {
+    if (!this.lock) {
+      this.value = (ev.target as HTMLInputElement).value;
     }
+  });
 
-    updated() {
-        this.lock = false;
+  private onSubmit = Events.onSubmit((ev) => {
+    ev.preventDefault();
+
+    if (this.value) {
+      this.value = "";
+      this.lock = true;
+      this.invalidate();
     }
+  });
+
+  render() {
+    return h.form().children(
+      h.inputText()
+        .events({ input: this.onInput })
+        .value(this.value);
+      );
+  }
+
+  updated() {
+    this.lock = false;
+  }
 }
 ```
 

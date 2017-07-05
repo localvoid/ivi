@@ -6,8 +6,8 @@ For example, to assign an event and id attribute on a div element:
 
 ```ts
 const node = h.div()
-    .events(Events.onClick((ev) => { console.log("click"); }))
-    .props({ id: "unique-id" });
+  .events(Events.onClick((ev) => { console.log("click"); }))
+  .props({ id: "unique-id" });
 ```
 
 ## Chained Methods
@@ -16,7 +16,7 @@ const node = h.div()
 
 ```ts
 interface VNode<P> {
-    key(key: any): VNode<P>;
+  key(key: any): VNode<P>;
 }
 ```
 
@@ -27,11 +27,11 @@ find how to rearrange nodes when they are moved, removed or inserted.
 
 ```ts
 interface VNode<P> {
-    props(props: P): VNode<P>;
-    style(style: CSSStyleProps | null): VNode<P>;
-    events(events: Array<EventHandler | null> | EventHandler | null): VNode<P>;
-    mergeProps<U extends P>(props: P): VNode<P>;
-    mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P>;
+  props(props: P): VNode<P>;
+  style(style: CSSStyleProps | null): VNode<P>;
+  events(events: Array<EventHandler | null> | EventHandler | null): VNode<P>;
+  mergeProps<U extends P>(props: P): VNode<P>;
+  mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P>;
 }
 ```
 
@@ -39,8 +39,8 @@ interface VNode<P> {
 
 ```ts
 interface VNode<P> {
-    children(...children: Array<IVNode<any>[] | IVNode<any> | string | number | null>): VNode<P>;
-    unsafeHTML(html: string): VNode<P>
+  children(...children: Array<IVNode<any>[] | IVNode<any> | string | number | null>): VNode<P>;
+  unsafeHTML(html: string): VNode<P>
 }
 ```
 
@@ -54,8 +54,8 @@ used to support code patterns like this:
 
 ```ts
 h.div().children(
-    isVisible ? componentA() : null,
-    componentB(),
+  isVisible ? componentA() : null,
+  componentB(),
 );
 ```
 
@@ -73,8 +73,8 @@ Input Value and Checked properties.
 
 ```ts
 interface VNode<P> {
-    value(value: string | null): VNode<P>;
-    checked(checked: boolean | null): VNode<P>;
+  value(value: string | null): VNode<P>;
+  checked(checked: boolean | null): VNode<P>;
 }
 ```
 
@@ -82,7 +82,7 @@ interface VNode<P> {
 
 ```ts
 interface VNode<P> {
-    autofocus(focus: boolean): VNode<P>;
+  autofocus(focus: boolean): VNode<P>;
 }
 ```
 
@@ -94,9 +94,9 @@ Render Virtual DOM into container.
 
 ```ts
 function render<T extends Node>(
-    node: VNode<any> | null,
-    container: Element,
-    syncFlags?: SyncFlags,
+  node: VNode<any> | null,
+  container: Element,
+  syncFlags?: SyncFlags,
 ): void;
 ```
 
@@ -105,9 +105,9 @@ when it is invoked multiple times per frame.
 
 ```ts
 function renderNextFrame(
-    node: VNode<any> | null,
-    container: Element,
-    syncFlags?: SyncFlags,
+  node: VNode<any> | null,
+  container: Element,
+  syncFlags?: SyncFlags,
 ): void;
 ```
 
@@ -122,7 +122,7 @@ Augment existing DOM tree with a Virtual DOM.
 
 ```ts
 function augment(
-    node: VNode<any> | null,
-    container: Element,
+  node: VNode<any> | null,
+  container: Element,
 ): void;
 ```

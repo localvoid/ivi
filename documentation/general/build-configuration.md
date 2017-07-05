@@ -5,8 +5,8 @@ variables:
 
 ```ts
 declare global {
-    const __IVI_DEV__: boolean;
-    const __IVI_BROWSER__: boolean;
+  const __IVI_DEV__: boolean;
+  const __IVI_BROWSER__: boolean;
 }
 ```
 
@@ -21,8 +21,8 @@ Assign global variables with [DefinePlugin](https://github.com/webpack/docs/wiki
 
 ```js
 new webpack.DefinePlugin({
-    __IVI_DEV__: true,
-    __IVI_BROWSER__: true,
+  __IVI_DEV__: true,
+  __IVI_BROWSER__: true,
 })
 ```
 
@@ -41,12 +41,12 @@ import { rollup } from "rollup";
 import replace from "rollup-plugin-replace";
 
 rollup({
-    entry: "main.js",
-    plugins: [
-        replace({
-            __IVI_DEV__: true,
-            __IVI_BROWSER__: true,
-        }),
-    ],
-}).then(...)
+  entry: "main.js",
+  plugins: [
+    replace({
+      __IVI_DEV__: true,
+      __IVI_BROWSER__: true,
+    }),
+  ],
+}).then(...);
 ```

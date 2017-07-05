@@ -20,7 +20,7 @@ or function with the same name on functional components. When this function retu
 algorithm that props arent't changed.
 
 ```ts
-interface ComponentFunction<P> {
+interface StatelessComponent<P> {
   isPropsChanged(oldProps: P, newProps: P): boolean;
   // ...
 }
@@ -35,34 +35,11 @@ For example, this is how functional component can declare an optimization hint:
 
 ```ts
 function StatelessComponent(props: string) {
-    return h.div().children(`Hello ${props}`);
+  return h.div().children(`Hello ${props}`);
 }
 
 StatelessComponent.isPropsChanged = function(oldProps: string, newProps: string): boolean {
-    return oldProps !== newProps;
-}
-```
-
-### Helper functions
-
-```ts
-checkPropsShallowEquality<P extends ComponentClass<any> | ComponentFunction<any>>(target: P): P;
-```
-
-This function sets `isPropsChanged` lifecyle method to check props with a shallow equality method.
-
-```ts
-checkPropsShallowEquality(StatelessComponent);
-function StatelessComponent({ text: string }) {
-    return h.div().children(text);
-}
-```
-```ts
-checkPropsShallowEquality(StatefulComponent);
-class StatefulComponent extends Component<{ text: string }> {
-    render() {
-        return h.div().children(this.props.text);
-    }
+  return oldProps !== newProps;
 }
 ```
 

@@ -36,7 +36,6 @@ executed when all other tasks are finished:
 
 ```ts
 interface FrameTasksGroup {
-    updateComponent(): void;
     read(task: () => void): void;
     write(task: () => void): void;
     after(task: () => void): void;
@@ -71,20 +70,6 @@ function addDOMReader(reader: () => boolean | undefined): void;
 
 ## Animations
 
-There are several special task queues for animations. The biggest difference between animation tasks and other tasks is
-that animation tasks won't be executed when window isn't visible.
-
-### Animated Components
-
-```ts
-function startComponentAnimation(component: Component<any>): void;
-function stopComponentAnimation(component: Component<any>): void;
-```
-
-When component is added to the animated component list with `startComponentAnimation` function, it will be updated on
-each animation frame. When component is detached from the document it will be automatically removed from the animated
-component list, so there is no need to call `stopComponentAnimation`.
-
 ### Animation Tasks
 
 Animation tasks will be executed just once per each animation frame when all "read" and "write" tasks are finished, but
@@ -95,45 +80,3 @@ function addAnimation(animation: () => boolean | undefined): void;
 ```
 
 `Animation` return value indicates when animation should be canceled.
-
-## Monotonically increasing clock
-
-Each time scheduler finishes executing tasks from one of the groups, it increments internal clock.
-
-```ts
-function clock(): number;
-```
-
-This clock can be used to detect when property has been changed since the last update.
-
-```ts
-class Data {
-  value: number;
-  mtime = clock();
-
-  constructor(public value: number) { }
-
-  setValue(newValue: number) {
-    if (this.value !== newValue) {
-      this.value = newValue;
-      this.mtime = clock();
-    }
-  }
-}
-
-class StatefulComponent extends Component<Data> {
-    mtime = clock();
-
-    isPropsChanged(oldProps: Data, newProps: Data): boolean {
-        return this.mtime < newProps.mtime;
-    }
-
-    updated() {
-        this.mtime = clock();
-    }
-
-    render() {
-        return h.div().children(this.props.value);
-    }
-}
-```

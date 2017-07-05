@@ -13,11 +13,11 @@ assign this flags.
 
 ```ts
 const enum DevModeFlags {
-    DisableNestingValidation = 1,
-    DisableStackTraceAugmentation = 1 << 1,
-    DisableCheckingForTypos = 1 << 2,
-    DisableWarningsForUnsupportedFeatures = 1 << 3,
-    EnableComponentPerformanceProfiling = 1 << 4,
+  DisableNestingValidation = 1,
+  DisableStackTraceAugmentation = 1 << 1,
+  DisableCheckingForTypos = 1 << 2,
+  DisableWarningsForUnsupportedFeatures = 1 << 3,
+  EnableComponentPerformanceProfiling = 1 << 4,
 }
 
 function setDevModeFlags(flags: DevModeFlags): void;

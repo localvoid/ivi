@@ -71,8 +71,8 @@ import { render } from "ivi";
 import * as h from "ivi-html";
 
 render(
-    h.div().children("Hello world!"),
-    document.getElementById("app")!,
+  h.div().children("Hello world!"),
+  document.getElementById("app")!,
 );
 ```
 
@@ -85,12 +85,12 @@ import * as h from "ivi-html";
 let counter = 0;
 
 function update() {
-    render(
-        h.div().children(`Counter: ${counter}`),
-        document.getElementById("app")!,
-    );
+  render(
+    h.div().children(`Counter: ${counter}`),
+    document.getElementById("app")!,
+  );
 
-    setTimeout(update, 100);
+  setTimeout(update, 100);
 }
 update();
 ```
@@ -108,13 +108,13 @@ import { componentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
 function StatelessComponent(text: string) {
-    return h.div().children(text);
+  return h.div().children(text);
 }
 const statelessComponent = componentFactory(StatelessComponent);
 
 render(
-    statelessComponent("Hello Stateless Component!"),
-    document.getElementById("app")!,
+  statelessComponent("Hello Stateless Component!"),
+  document.getElementById("app")!,
 );
 ```
 
@@ -128,29 +128,29 @@ import { Component, componentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
 class StatefulComponent extends Component {
-    private time = 0;
-    private timeoutId = 0;
+  private time = 0;
+  private timeoutId = 0;
 
-    attached() {
-        this.timeoutId = setInterval(() => {
-            this.time++;
-            this.invalidate();
-        }, 1000);
-    }
+  attached() {
+    this.timeoutId = setInterval(() => {
+      this.time++;
+      this.invalidate();
+    }, 1000);
+  }
 
-    detached() {
-        clearInterval(this.timeoutId);
-    }
+  detached() {
+    clearInterval(this.timeoutId);
+  }
 
-    render() {
-        return h.div().children(`Time: ${this.time}`);
-    }
+  render() {
+    return h.div().children(`Time: ${this.time}`);
+  }
 }
 const statefulComponent = componentFactory(StatefulComponent);
 
 render(
-    statefulComponent(),
-    document.getElementById("app")!,
+  statefulComponent(),
+  document.getElementById("app")!,
 );
 ```
 

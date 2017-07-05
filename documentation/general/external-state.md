@@ -17,15 +17,15 @@ and reuse previous values.
 
 ```ts
 interface SelectorData<T = {}, U = T> {
-    in: T,
-    out: U,
+  in: T,
+  out: U,
 }
 
 type Selector<K, U> = (prev: SelectorData<K, U> | null, props: null | T, context: Context) => SelectorData<K, U>;
 
 function connect<T, U, K>(
-    select: Selector<K, U>,
-    render: ComponentClass<U> | (props: U) => IVNode<any>,
+  select: Selector<K, U>,
+  render: ComponentClass<U> | (props: U) => IVNode<any>,
 ): (props: null | T) => VNode<T>;
 ```
 
@@ -40,30 +40,30 @@ Input values are required so that we can use it for memoization.
 
 ```ts
 function Article(content: string) {
-    return h.div().children(content);
+  return h.div().children(content);
 }
 
 const article = connect(
-    function(
-        prev: SelectorData<string, string> | null,
-        id: number,
-        context: Context<{articles: Map<number, string>}>,
-    ) {
-        const content = context.articles.get(id);
-        if (prev && prev.in === content) {
-            return prev;
-        }
-        return selectorData(content);
-    },
-    Article,
+  function(
+    prev: SelectorData<string, string> | null,
+    id: number,
+    context: Context<{articles: Map<number, string>}>,
+  ) {
+    const content = context.articles.get(id);
+    if (prev && prev.in === content) {
+      return prev;
+    }
+    return selectorData(content);
+  },
+  Article,
 );
 
 const articles = new Map<number, string>();
 articles.set(1, "Hello World");
 
 render(
-    context({ articles }, article(1)),
-    document.getElementById("app")!,
+  context({ articles }, article(1)),
+  document.getElementById("app")!,
 );
 ```
 
@@ -78,8 +78,8 @@ It is a simple helper function that instantiates `SelectorData` objects. When `o
 
 ```ts
 function memoizeSelector<T, U extends SelectorData>(
-    select: (prev: U | null, props: T, context: Context) => U,
-    ref: (v?: U | null) => U | null,
+  select: (prev: U | null, props: T, context: Context) => U,
+  ref: (v?: U | null) => U | null,
 ): (prev: U | null, props: T, context: Context) => U;
 ```
 
