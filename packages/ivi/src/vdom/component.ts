@@ -1,5 +1,5 @@
 import { NOOP_FALSE, isPropsNotShallowEqual } from "ivi-core";
-import { currentFrame } from "ivi-dom";
+import { currentFrame } from "ivi-scheduler";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";

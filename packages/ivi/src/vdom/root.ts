@@ -1,5 +1,5 @@
 import { Context, USER_AGENT, UserAgentFlags, NOOP } from "ivi-core";
-import { nextFrame, syncFrameUpdate } from "ivi-dom";
+import { nextFrame, syncFrameUpdate } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";

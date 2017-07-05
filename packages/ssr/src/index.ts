@@ -30,6 +30,11 @@ export {
 } from "./html";
 
 export {
+    FrameTasksGroup, clock, scheduleMicrotask, scheduleTask, addDOMReader, addAnimation, addVisibilityObserver,
+    removeVisibilityObserver, isVisible, autofocus, frameStartTime, nextFrame, currentFrame,
+} from "./scheduler";
+
+export {
     EventSource, EventHandler,
 
     SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,

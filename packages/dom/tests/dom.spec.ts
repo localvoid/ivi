@@ -1,4 +1,4 @@
-import { nodeDepth } from "../src/misc/traverse";
+import { nodeDepth } from "../src/traverse";
 import { expect } from "chai";
 
 describe("DOM", () => {

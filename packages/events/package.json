@@ -46,7 +46,8 @@
     "dependencies": {},
     "peerDependencies": {
         "ivi-core": "^0.1.0",
-        "ivi-dom": "^0.1.0"
+        "ivi-dom": "^0.1.0",
+        "ivi-scheduler": "^0.1.0"
     },
     "devDependencies": {}
 }

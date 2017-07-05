@@ -29,5 +29,3 @@ function getEventKey(ev: KeyboardEvent): string;
 function getMouseButtons(ev: MouseEvent): number;
 ```
 `getMouseButtons()` retrieves a `buttons` property from a MouseEvent with a fallback implementation for Safari.
-
-## Scheduler

@@ -30,7 +30,7 @@ export { BlueprintNode, createBlueprint, linkBlueprint, renderToString, serializ
  * Entry.
  */
 import { FEATURES, FeatureFlags, Context } from "ivi-core";
-import { setUpdateFunction } from "ivi-dom";
+import { setUpdateFunction } from "ivi-scheduler";
 import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/dev_mode";
 import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode/component_tree";
 import { Component, ComponentClass, StatelessComponent } from "./vdom/component";

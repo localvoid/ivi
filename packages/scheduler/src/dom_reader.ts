@@ -10,16 +10,12 @@ const _readers = new RepeatableTaskList();
  * @param reader Task that will be executed until it returns `false`.
  */
 export function addDOMReader(reader: () => boolean | undefined): void {
-    if (__IVI_BROWSER__) {
-        _readers.add(reader);
-    }
+  _readers.add(reader);
 }
 
 /**
  * executeDOMReaders executes DOM Reader tasks.
  */
 export function executeDOMReaders(): void {
-    if (__IVI_BROWSER__) {
-        _readers.run();
-    }
+  _readers.run();
 }

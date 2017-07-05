@@ -1,4 +1,3 @@
-
 let _clock = 0;
 
 /**
@@ -7,12 +6,12 @@ let _clock = 0;
  * @returns current clock value.
  */
 export function clock(): number {
-    return _clock;
+  return _clock;
 }
 
 /**
  * incrementClock increments clock value.
  */
 export function incrementClock(): void {
-    _clock++;
+  _clock++;
 }

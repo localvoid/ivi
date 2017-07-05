@@ -42,9 +42,6 @@
         "lint": "tslint --project ./tsconfig.json",
         "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' mocha -r ts-node/register tests/*.ts"
     },
-    "peerDependencies": {
-        "ivi-core": "^0.1.0"
-    },
     "dependencies": {},
     "devDependencies": {}
 }

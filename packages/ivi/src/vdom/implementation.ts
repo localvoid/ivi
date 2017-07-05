@@ -16,7 +16,8 @@
  */
 
 import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
-import { setInnerHTML, autofocus } from "ivi-dom";
+import { setInnerHTML } from "ivi-dom";
+import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
 import {
