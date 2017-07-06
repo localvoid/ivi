@@ -145,7 +145,7 @@ export abstract class Component<P = void> {
         this.flags |= ComponentFlags.DirtyState;
         this.invalidated();
         if ((this.flags & ComponentFlags.Attached) !== 0) {
-            currentFrame().updateComponent();
+            currentFrame().update();
         }
     }
 }

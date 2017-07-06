@@ -1,3 +1,5 @@
+import { NOOP } from "ivi-core";
+
 /**
  * clock returns monotonically increasing clock value.
  *
@@ -21,6 +23,12 @@ export function clock() {
  * @final
  */
 export interface FrameTasksGroup {
+  /**
+   * update marks frame for update.
+   *
+   * @param component
+   */
+  update(): void;
   /**
    * write adds new task to the write DOM task queue.
    *
@@ -65,6 +73,7 @@ export function isVisible(): boolean {
 }
 
 const frame: FrameTasksGroup = {
+  update: NOOP,
   write: NOOP_TASK,
   read: NOOP_TASK,
   after: NOOP_TASK,

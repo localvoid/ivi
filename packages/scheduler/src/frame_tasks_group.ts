@@ -3,9 +3,9 @@
  */
 export const enum FrameTasksGroupFlags {
   /**
-   * Group contains component update tasks.
+   * Group contains update task.
    */
-  Component = 1,
+  Update = 1,
   /**
    * Group contains "write" tasks.
    */
@@ -44,94 +44,91 @@ export class FrameTasksGroup {
   /**
    * Write DOM task queue.
    */
-  _writeTasks: (() => void)[] | null;
+  _write: (() => void)[] | null;
   /**
    * Read DOM task queue.
    */
-  _readTasks: (() => void)[] | null;
+  _read: (() => void)[] | null;
   /**
-   * Tasks that should be executed when all other tasks are finished.
+   * Tasks that should be executed when all other frame tasks are finished.
    */
-  _afterTasks: (() => void)[] | null;
+  _after: (() => void)[] | null;
 
   constructor() {
     this._flags = 0;
-    this._writeTasks = null;
-    this._readTasks = null;
-    this._afterTasks = null;
+    this._write = null;
+    this._read = null;
+    this._after = null;
   }
 
   /**
-   * Add Component to the components queue.
+   * update marks frame for update.
    *
    * @param component
    */
-  updateComponent(): void {
+  update(): void {
     if (__IVI_DEV__) {
       if ((this._flags & FrameTasksGroupFlags.RWLock)) {
-        throw new Error("Failed to add update component task to the current frame, current frame is " +
-          "locked for read and write tasks.");
+        throw new Error("Failed to mark frame for update, current frame is locked.");
       }
     }
 
-    this._flags |= FrameTasksGroupFlags.Component;
+    this._flags |= FrameTasksGroupFlags.Update;
   }
 
   /**
-   * Add new task to the write DOM task queue.
+   * write adds new task to the write DOM task queue.
    *
    * @param task
    */
   write(task: () => void): void {
     if (__IVI_DEV__) {
       if ((this._flags & FrameTasksGroupFlags.RWLock)) {
-        throw new Error("Failed to add update component task to the current frame, current frame is locked " +
-          "for read and write tasks.");
+        throw new Error("Failed to add write DOM task, current frame is locked.");
       }
     }
 
     this._flags |= FrameTasksGroupFlags.Write;
-    if (this._writeTasks === null) {
-      this._writeTasks = [];
+    if (this._write === null) {
+      this._write = [];
     }
-    this._writeTasks.push(task);
+    this._write.push(task);
   }
 
   /**
-   * Add new task to the read DOM task queue.
+   * read adds new task to the read DOM task queue.
    *
    * @param task
    */
   read(task: () => void): void {
     if (__IVI_DEV__) {
       if ((this._flags & FrameTasksGroupFlags.RWLock)) {
-        throw new Error("Failed to add update component task to the current frame, current frame is locked " +
-          "for read and write tasks.");
+        throw new Error("Failed to add read DOM task, current frame is locked.");
       }
     }
 
     this._flags |= FrameTasksGroupFlags.Read;
-    if (this._readTasks === null) {
-      this._readTasks = [];
+    if (this._read === null) {
+      this._read = [];
     }
-    this._readTasks.push(task);
+    this._read.push(task);
   }
 
   /**
-   * Add new task to the task queue that will execute tasks when all DOM tasks are finished.
+   * after adds new task to the task queue that will execute tasks when all DOM tasks are finished.
    *
    * @param task
    */
   after(task: () => void): void {
     this._flags |= FrameTasksGroupFlags.After;
-    if (this._afterTasks === null) {
-      this._afterTasks = [];
+    if (this._after === null) {
+      this._after = [];
     }
-    this._afterTasks.push(task);
+    this._after.push(task);
   }
 
   /**
-   * Lock read and write task queues.
+   * _rwLock locks read and write task queues.
    *
    * Works in DEBUG mode only.
    */
@@ -142,7 +139,7 @@ export class FrameTasksGroup {
   }
 
   /**
-   * Unlock read and write task queue.
+   * _rwUnlock unlocks read and write task queue.
    *
    * Works in DEBUG mode only.
    */

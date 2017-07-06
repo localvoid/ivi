@@ -83,31 +83,31 @@ function handleNextFrame(time?: number): void {
   do {
     while (frame._flags & FrameTasksGroupFlags.Read) {
       frame._flags &= ~FrameTasksGroupFlags.Read;
-      tasks = frame._readTasks!;
-      frame._readTasks = null;
+      tasks = frame._read!;
+      frame._read = null;
 
       for (i = 0; i < tasks.length; i++) {
         tasks[i]();
       }
     }
 
-    while (frame._flags & (FrameTasksGroupFlags.Component | FrameTasksGroupFlags.Write)) {
+    while (frame._flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
       if (frame._flags & FrameTasksGroupFlags.Write) {
         frame._flags &= ~FrameTasksGroupFlags.Write;
-        tasks = frame._writeTasks!;
-        frame._writeTasks = null;
+        tasks = frame._write!;
+        frame._write = null;
         for (i = 0; i < tasks.length; i++) {
           tasks[i]();
         }
       }
 
-      if (frame._flags & FrameTasksGroupFlags.Component) {
-        frame._flags &= ~FrameTasksGroupFlags.Component;
+      if (frame._flags & FrameTasksGroupFlags.Update) {
+        frame._flags &= ~FrameTasksGroupFlags.Update;
         _update();
       }
     }
   } while (frame._flags & (
-    FrameTasksGroupFlags.Component |
+    FrameTasksGroupFlags.Update |
     FrameTasksGroupFlags.Write |
     FrameTasksGroupFlags.Read
   ));
@@ -125,8 +125,8 @@ function handleNextFrame(time?: number): void {
   while ((frame._flags & FrameTasksGroupFlags.After) !== 0) {
     frame._flags &= ~FrameTasksGroupFlags.After;
 
-    tasks = frame._afterTasks!;
-    frame._afterTasks = null;
+    tasks = frame._after!;
+    frame._after = null;
     for (i = 0; i < tasks.length; i++) {
       tasks[i]();
     }
