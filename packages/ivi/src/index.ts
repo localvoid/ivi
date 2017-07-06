@@ -1,7 +1,10 @@
 /**
  * Common types and functions re-exported from ivi-core.
  */
-export { Context, SelectorData, selectorData, memoizeSelector, KeyCode } from "ivi-core";
+export {
+    Context, SelectorData, selectorData, memoizeSelector,
+    KeyCode, KeyLocation, MouseButtons,
+} from "ivi-core";
 
 /**
  * Virtual DOM:
