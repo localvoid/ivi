@@ -4,6 +4,7 @@
  *
  * NOTE: Do not implement feature detection for features that aren't used in `ivi` libraries.
  */
+import { SVG_NAMESPACE } from "./const";
 
 /**
  * Feature Flags.
@@ -82,7 +83,7 @@ if (__IVI_BROWSER__) {
   /**
    * Check `innerHTML` property in `SVGElement`.
    */
-  if ("innerHTML" in SVGElement.prototype) {
+  if (document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined) {
     FEATURES |= FeatureFlags.SVGInnerHTML;
   }
 
