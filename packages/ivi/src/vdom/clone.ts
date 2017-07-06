@@ -9,44 +9,44 @@ import { VNode } from "./vnode";
  * @returns Cloned children.
  */
 export function cloneVNodeChildren(
-    flags: VNodeFlags,
-    children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
+  flags: VNodeFlags,
+  children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
 ): VNode<any>[] | VNode<any> | string | number | boolean | null | undefined {
-    if (children !== null) {
-        if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
-            if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-                children = children as VNode<any>[];
-                const newChildren = new Array<VNode<any>>(children.length);
-                for (let i = 0; i < 0; i++) {
-                    newChildren[i] = _cloneVNode(children[i], true);
-                }
-                return newChildren;
-            } else {
-                return _cloneVNode(children as VNode<any>, true);
-            }
+  if (children !== null) {
+    if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
+      if ((flags & VNodeFlags.ChildrenArray) !== 0) {
+        children = children as VNode<any>[];
+        const newChildren = new Array<VNode<any>>(children.length);
+        for (let i = 0; i < 0; i++) {
+          newChildren[i] = _cloneVNode(children[i], true);
         }
+        return newChildren;
+      } else {
+        return _cloneVNode(children as VNode<any>, true);
+      }
     }
+  }
 
-    return children;
+  return children;
 }
 
 function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
-    const flags = node._flags;
+  const flags = node._flags;
 
-    const newNode = new VNode(
-        flags,
-        node._tag,
-        node._props,
-        node._className,
-        (flags & VNodeFlags.Component) === 0 ?
-            cloneVNodeChildren(flags, node._children) :
-            null);
+  const newNode = new VNode(
+    flags,
+    node._tag,
+    node._props,
+    node._className,
+    (flags & VNodeFlags.Component) === 0 ?
+      cloneVNodeChildren(flags, node._children) :
+      null);
 
-    if (cloneKey === true) {
-        newNode._key = node._key;
-    }
+  if (cloneKey === true) {
+    newNode._key = node._key;
+  }
 
-    return newNode;
+  return newNode;
 }
 
 /**
@@ -56,7 +56,7 @@ function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
  * @returns Cloned VNode.
  */
 export function cloneVNode(node: VNode<any>): VNode<any> {
-    return _cloneVNode(node, (node._flags & VNodeFlags.Key) !== 0);
+  return _cloneVNode(node, (node._flags & VNodeFlags.Key) !== 0);
 }
 
 /**
@@ -66,22 +66,22 @@ export function cloneVNode(node: VNode<any>): VNode<any> {
  * @returns Cloned VNode.
  */
 export function shallowCloneVNode(node: VNode<any>): VNode<any> {
-    const flags = node._flags;
+  const flags = node._flags;
 
-    const newNode = new VNode(
-        flags & ~(
-            VNodeFlags.ChildrenArray |
-            VNodeFlags.ChildrenBasic |
-            VNodeFlags.ChildrenVNode |
-            VNodeFlags.UnsafeHTML
-        ),
-        node._tag,
-        node._props,
-        node._className,
-        null);
-    if ((flags & VNodeFlags.Key) !== 0) {
-        newNode._key = node._key;
-    }
+  const newNode = new VNode(
+    flags & ~(
+      VNodeFlags.ChildrenArray |
+      VNodeFlags.ChildrenBasic |
+      VNodeFlags.ChildrenVNode |
+      VNodeFlags.UnsafeHTML
+    ),
+    node._tag,
+    node._props,
+    node._className,
+    null);
+  if ((flags & VNodeFlags.Key) !== 0) {
+    newNode._key = node._key;
+  }
 
-    return newNode;
+  return newNode;
 }

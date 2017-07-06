@@ -10,40 +10,40 @@ import { getEventHandlersFromDOMNode } from "./utils";
  * @param match Matching function.
  */
 export function accumulateDispatchTargetsFromElement(
-    result: DispatchTarget[],
-    target: Element,
-    match: (h: EventHandler) => boolean,
+  result: DispatchTarget[],
+  target: Element,
+  match: (h: EventHandler) => boolean,
 ): void {
-    const events = getEventHandlersFromDOMNode(target);
-    if (events !== null && events !== undefined) {
-        let matches: EventHandler[] | EventHandler | undefined;
-        if (typeof events === "function") {
-            if (match(events) === true) {
-                matches = events;
-            }
-        } else {
-            let count = 0;
-            for (let i = 0; i < events.length; i++) {
-                const h = events[i];
-                if (h !== null && match(h) === true) {
-                    if (count === 0) {
-                        matches = h;
-                    } else if (count === 1) {
-                        matches = [matches as EventHandler, h];
-                    } else {
-                        (matches as EventHandler[]).push(h);
-                    }
-                    count++;
-                }
-            }
+  const events = getEventHandlersFromDOMNode(target);
+  if (events !== null && events !== undefined) {
+    let matches: EventHandler[] | EventHandler | undefined;
+    if (typeof events === "function") {
+      if (match(events) === true) {
+        matches = events;
+      }
+    } else {
+      let count = 0;
+      for (let i = 0; i < events.length; i++) {
+        const h = events[i];
+        if (h !== null && match(h) === true) {
+          if (count === 0) {
+            matches = h;
+          } else if (count === 1) {
+            matches = [matches as EventHandler, h];
+          } else {
+            (matches as EventHandler[]).push(h);
+          }
+          count++;
         }
-        if (matches !== undefined) {
-            result.push({
-                target: target,
-                handlers: matches,
-            });
-        }
+      }
     }
+    if (matches !== undefined) {
+      result.push({
+        target: target,
+        handlers: matches,
+      });
+    }
+  }
 }
 
 /**
@@ -55,12 +55,12 @@ export function accumulateDispatchTargetsFromElement(
  * @param match Matching function.
  */
 export function accumulateDispatchTargets(
-    result: DispatchTarget[],
-    target: Element | null,
-    match: (h: EventHandler) => boolean,
+  result: DispatchTarget[],
+  target: Element | null,
+  match: (h: EventHandler) => boolean,
 ): void {
-    while (target !== null) {
-        accumulateDispatchTargetsFromElement(result, target, match);
-        target = target.parentElement;
-    }
+  while (target !== null) {
+    accumulateDispatchTargetsFromElement(result, target, match);
+    target = target.parentElement;
+  }
 }

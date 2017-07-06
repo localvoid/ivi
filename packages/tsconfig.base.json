@@ -1,17 +1,17 @@
 {
-    "compilerOptions": {
-        "target": "es2016",
-        "module": "es2015",
-        "moduleResolution": "node",
-        "removeComments": false,
-        "lib": [
-            "es2016",
-            "es2015",
-            "dom"
-        ],
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true
-    }
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "removeComments": false,
+    "lib": [
+      "es2016",
+      "es2015",
+      "dom"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true
+  }
 }

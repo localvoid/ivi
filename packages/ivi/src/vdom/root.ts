@@ -8,11 +8,11 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } f
  * Root.
  */
 export interface Root {
-    container: Element;
-    currentVNode: VNode<any> | null;
-    newVNode: VNode<any> | null;
-    invalidated: boolean;
-    syncFlags: SyncFlags;
+  container: Element;
+  currentVNode: VNode<any> | null;
+  newVNode: VNode<any> | null;
+  invalidated: boolean;
+  syncFlags: SyncFlags;
 }
 
 /**
@@ -32,14 +32,14 @@ const EMPTY_CONTEXT: Context = {};
  * @returns root node or undefined when root node doesn't exist.
  */
 export function findRoot(container: Element): Root | undefined {
-    for (let i = 0; i < ROOTS.length; i++) {
-        const r = ROOTS[i];
-        if (r.container === container) {
-            return r;
-        }
+  for (let i = 0; i < ROOTS.length; i++) {
+    const r = ROOTS[i];
+    if (r.container === container) {
+      return r;
     }
+  }
 
-    return;
+  return;
 }
 
 /**
@@ -50,9 +50,9 @@ export function findRoot(container: Element): Root | undefined {
  * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
  */
 function iOSFixEventBubbling(container: Element): void {
-    if (USER_AGENT & UserAgentFlags.iOS) {
-        (container as HTMLElement).onclick = NOOP;
-    }
+  if (USER_AGENT & UserAgentFlags.iOS) {
+    (container as HTMLElement).onclick = NOOP;
+  }
 }
 
 let _pendingUpdate = false;
@@ -62,44 +62,44 @@ let _globalSyncFlags: SyncFlags = 0;
  * Update root nodes.
  */
 function _update() {
-    if (_pendingUpdate) {
-        _pendingUpdate = false;
-        for (let i = 0; i < ROOTS.length; i++) {
-            const root = ROOTS[i];
-            const container = root.container;
-            const currentVNode = root.currentVNode;
-            const syncFlags = _globalSyncFlags | root.syncFlags | SyncFlags.Attached;
+  if (_pendingUpdate) {
+    _pendingUpdate = false;
+    for (let i = 0; i < ROOTS.length; i++) {
+      const root = ROOTS[i];
+      const container = root.container;
+      const currentVNode = root.currentVNode;
+      const syncFlags = _globalSyncFlags | root.syncFlags | SyncFlags.Attached;
 
-            if (root.invalidated) {
-                let newVNode = root.newVNode;
+      if (root.invalidated) {
+        let newVNode = root.newVNode;
 
-                if (newVNode) {
-                    if (newVNode.constructor !== VNode) {
-                        newVNode = new VNode(VNodeFlags.Text, null, null, null, "");
-                    }
-                    if (currentVNode) {
-                        syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
-                    } else {
-                        renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
-                        iOSFixEventBubbling(container);
-                    }
-                    root.currentVNode = newVNode;
-                } else if (currentVNode) {
-                    removeVNode(container, currentVNode);
-                    const last = ROOTS.pop();
-                    if (last !== root && ROOTS.length) {
-                        ROOTS[ROOTS.indexOf(root)] = last!;
-                    }
-                }
-
-                root.newVNode = null;
-                root.invalidated = false;
-            } else if (currentVNode) {
-                updateComponents(container, currentVNode, EMPTY_CONTEXT, syncFlags);
-            }
-            root.syncFlags = 0;
+        if (newVNode) {
+          if (newVNode.constructor !== VNode) {
+            newVNode = new VNode(VNodeFlags.Text, null, null, null, "");
+          }
+          if (currentVNode) {
+            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
+          } else {
+            renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
+            iOSFixEventBubbling(container);
+          }
+          root.currentVNode = newVNode;
+        } else if (currentVNode) {
+          removeVNode(container, currentVNode);
+          const last = ROOTS.pop();
+          if (last !== root && ROOTS.length) {
+            ROOTS[ROOTS.indexOf(root)] = last!;
+          }
         }
+
+        root.newVNode = null;
+        root.invalidated = false;
+      } else if (currentVNode) {
+        updateComponents(container, currentVNode, EMPTY_CONTEXT, syncFlags);
+      }
+      root.syncFlags = 0;
     }
+  }
 }
 
 /**
@@ -110,12 +110,12 @@ function _update() {
  * @param syncFlags Sync Flags.
  */
 export function render(
-    node: VNode<any> | null,
-    container: Element,
-    syncFlags: SyncFlags = 0,
+  node: VNode<any> | null,
+  container: Element,
+  syncFlags: SyncFlags = 0,
 ): void {
-    renderNextFrame(node, container, syncFlags);
-    syncFrameUpdate();
+  renderNextFrame(node, container, syncFlags);
+  syncFrameUpdate();
 }
 
 /**
@@ -126,37 +126,37 @@ export function render(
  * @param syncFlags Sync Flags.
  */
 export function renderNextFrame(
-    node: VNode<any> | null,
-    container: Element,
-    syncFlags: SyncFlags = 0,
+  node: VNode<any> | null,
+  container: Element,
+  syncFlags: SyncFlags = 0,
 ): void {
-    if (__IVI_DEV__) {
-        if (container === document.body) {
-            throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
-                "your application.");
-        }
-        if (!document.body.contains(container)) {
-            throw new Error("Container element should be attached to the document.");
-        }
+  if (__IVI_DEV__) {
+    if (container === document.body) {
+      throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
+        "your application.");
     }
-
-    let root = findRoot(container);
-    if (root) {
-        root.newVNode = node;
-        root.invalidated = true;
-        root.syncFlags = syncFlags;
-    } else {
-        root = {
-            container: container,
-            currentVNode: null,
-            newVNode: node,
-            invalidated: true,
-            syncFlags: syncFlags,
-        };
-        ROOTS.push(root);
+    if (!document.body.contains(container)) {
+      throw new Error("Container element should be attached to the document.");
     }
+  }
 
-    updateNextFrame();
+  let root = findRoot(container);
+  if (root) {
+    root.newVNode = node;
+    root.invalidated = true;
+    root.syncFlags = syncFlags;
+  } else {
+    root = {
+      container: container,
+      currentVNode: null,
+      newVNode: node,
+      invalidated: true,
+      syncFlags: syncFlags,
+    };
+    ROOTS.push(root);
+  }
+
+  updateNextFrame();
 }
 
 /**
@@ -165,8 +165,8 @@ export function renderNextFrame(
  * @param syncFlags Sync Flags.
  */
 export function update(syncFlags?: SyncFlags) {
-    updateNextFrame(syncFlags);
-    syncFrameUpdate();
+  updateNextFrame(syncFlags);
+  syncFrameUpdate();
 }
 
 /**
@@ -175,11 +175,11 @@ export function update(syncFlags?: SyncFlags) {
  * @param syncFlags Sync Flags.
  */
 export function updateNextFrame(syncFlags: SyncFlags = 0) {
-    _globalSyncFlags = syncFlags;
-    if (!_pendingUpdate) {
-        _pendingUpdate = true;
-        nextFrame().write(_update);
-    }
+  _globalSyncFlags = syncFlags;
+  if (!_pendingUpdate) {
+    _pendingUpdate = true;
+    nextFrame().write(_update);
+  }
 }
 
 /**
@@ -192,37 +192,37 @@ export function updateNextFrame(syncFlags: SyncFlags = 0) {
  * @param container Container DOM Node.
  */
 export function augment(
-    node: VNode<any> | null,
-    container: Element,
+  node: VNode<any> | null,
+  container: Element,
 ): void {
-    if (__IVI_DEV__) {
-        if (container === document.body) {
-            throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
-                "your application.");
-        }
-        if (!document.body.contains(container)) {
-            throw new Error("Container element should be attached to the document.");
-        }
-
-        if (findRoot(container)) {
-            throw new Error("Failed to augment, container is associated with a Virtual DOM.");
-        }
+  if (__IVI_DEV__) {
+    if (container === document.body) {
+      throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
+        "your application.");
+    }
+    if (!document.body.contains(container)) {
+      throw new Error("Container element should be attached to the document.");
     }
 
-    if (node) {
-        ROOTS.push({
-            container: container,
-            currentVNode: node,
-            newVNode: null,
-            invalidated: false,
-            syncFlags: 0,
-        });
-
-        nextFrame().write(function augment() {
-            augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
-            iOSFixEventBubbling(container);
-        });
-
-        syncFrameUpdate();
+    if (findRoot(container)) {
+      throw new Error("Failed to augment, container is associated with a Virtual DOM.");
     }
+  }
+
+  if (node) {
+    ROOTS.push({
+      container: container,
+      currentVNode: node,
+      newVNode: null,
+      invalidated: false,
+      syncFlags: 0,
+    });
+
+    nextFrame().write(function augment() {
+      augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
+      iOSFixEventBubbling(container);
+    });
+
+    syncFrameUpdate();
+  }
 }

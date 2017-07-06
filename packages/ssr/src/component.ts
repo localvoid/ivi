@@ -5,16 +5,16 @@ import { VNode } from "./vnode";
  * Stateless Component function.
  */
 export interface StatelessComponent<P = void> {
-    (props: P): VNode<any>;
-    isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-    shouldAugment?: (props: P) => boolean;
+  (props: P): VNode<any>;
+  isPropsChanged?: (oldProps: P, newProps: P) => boolean;
+  shouldAugment?: (props: P) => boolean;
 }
 
 /**
  * Component class type.
  */
 export interface ComponentClass<P = void> {
-    new (props: P): Component<P>;
+  new (props: P): Component<P>;
 }
 
 /**
@@ -34,38 +34,38 @@ export interface ComponentClass<P = void> {
  *     render(hello("world"), document.getElementById("App")!);
  */
 export abstract class Component<P = void> {
+  /**
+   * Component properties.
+   */
+  props: P;
+
+  constructor(props: P) {
+    this.props = props;
+  }
+
+  /**
+   * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
+   *
+   * By default props checked by their identity.
+   *
+   * @param oldProps Old props.
+   * @param newProps New props.
+   * @returns `true` when props should be updated.
+   */
+  isPropsChanged(oldProps: P, newProps: P): boolean {
+    return oldProps !== newProps;
+  }
+
+  abstract render(): VNode<any>;
+
+  /**
+   * Invalidate view.
+   */
+  invalidate(): void {
     /**
-     * Component properties.
+     * Server-side components can't be invalidated.
      */
-    props: P;
-
-    constructor(props: P) {
-        this.props = props;
-    }
-
-    /**
-     * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
-     *
-     * By default props checked by their identity.
-     *
-     * @param oldProps Old props.
-     * @param newProps New props.
-     * @returns `true` when props should be updated.
-     */
-    isPropsChanged(oldProps: P, newProps: P): boolean {
-        return oldProps !== newProps;
-    }
-
-    abstract render(): VNode<any>;
-
-    /**
-     * Invalidate view.
-     */
-    invalidate(): void {
-        /**
-         * Server-side components can't be invalidated.
-         */
-    }
+  }
 }
 
 /**
@@ -89,12 +89,12 @@ export abstract class Component<P = void> {
  * @returns Component constructor with identity check.
  */
 export function checkPropsShallowEquality<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-    if (target.prototype.render === undefined) {
-        (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
-    } else {
-        target.prototype.isPropsChanged = isPropsNotShallowEqual;
-    }
-    return target;
+  if (target.prototype.render === undefined) {
+    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
+  } else {
+    target.prototype.isPropsChanged = isPropsNotShallowEqual;
+  }
+  return target;
 }
 
 /**
@@ -118,16 +118,16 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Statel
  * @returns Component constructor with static property.
  */
 export function staticComponent<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-    if (target.prototype.render === undefined) {
-        (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
-    } else {
-        target.prototype.isPropsChanged = NOOP_FALSE;
-    }
-    return target;
+  if (target.prototype.render === undefined) {
+    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
+  } else {
+    target.prototype.isPropsChanged = NOOP_FALSE;
+  }
+  return target;
 }
 
 export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
-    return componentClass.prototype.render !== undefined;
+  return componentClass.prototype.render !== undefined;
 }
 
 /**
@@ -136,5 +136,5 @@ export function isComponentClass(componentClass: any): componentClass is Compone
  * @returns `true` when Component is attached.
  */
 export function isComponentAttached(component: Component<any>): boolean {
-    return false;
+  return false;
 }

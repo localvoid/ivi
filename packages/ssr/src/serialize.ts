@@ -7,5 +7,5 @@ import { escapeJavascript } from "./escape";
  * @returns Serialized state.
  */
 export function serializeState(data: any): string {
-    return escapeJavascript(JSON.stringify(data));
+  return escapeJavascript(JSON.stringify(data));
 }

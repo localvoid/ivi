@@ -1,36 +1,34 @@
 import {
-    HTMLTagType, SVGTagType, MediaTagType, InputType,
+  HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
+  HTMLBaseElementProps, HTMLBaseFontElementProps, HTMLBodyElementProps, HTMLBRElementProps, HTMLButtonElementProps,
+  HTMLCanvasElementProps, HTMLQuoteElementProps, HTMLTableCaptionElementProps, HTMLTableColElementProps,
+  HTMLDataListElementProps, HTMLModElementProps, HTMLDirectoryElementProps, HTMLDivElementProps,
+  HTMLDListElementProps, HTMLEmbedElementProps, HTMLFieldSetElementProps, HTMLFontElementProps, HTMLFormElementProps,
+  HTMLFrameElementProps, HTMLFrameSetElementProps, HTMLHeadElementProps, HTMLHeadingElementProps, HTMLHRElementProps,
+  HTMLHtmlElementProps, HTMLIFrameElementProps, HTMLImageElementProps, HTMLInputElementProps, HTMLLabelElementProps,
+  HTMLLegendElementProps, HTMLLIElementProps, HTMLLinkElementProps, HTMLMapElementProps,
+  HTMLMenuElementProps, HTMLMetaElementProps, HTMLMeterElementProps, HTMLObjectElementProps, HTMLOListElementProps,
+  HTMLOptGroupElementProps, HTMLOptionElementProps, HTMLParagraphElementProps, HTMLParamElementProps,
+  HTMLPictureElementProps, HTMLPreElementProps, HTMLProgressElementProps, HTMLScriptElementProps,
+  HTMLSelectElementProps, HTMLSourceElementProps, HTMLSpanElementProps, HTMLStyleElementProps,
+  HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
+  HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
+  HTMLTrackElementProps, HTMLUListElementProps, HTMLUnknownElementProps, HTMLVideoElementProps, HTMLMediaElementProps,
+  MSHTMLWebViewElementProps,
 
-    HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
-    HTMLBaseElementProps, HTMLBaseFontElementProps, HTMLBodyElementProps, HTMLBRElementProps, HTMLButtonElementProps,
-    HTMLCanvasElementProps, HTMLQuoteElementProps, HTMLTableCaptionElementProps, HTMLTableColElementProps,
-    HTMLDataListElementProps, HTMLModElementProps, HTMLDirectoryElementProps, HTMLDivElementProps,
-    HTMLDListElementProps, HTMLEmbedElementProps, HTMLFieldSetElementProps, HTMLFontElementProps, HTMLFormElementProps,
-    HTMLFrameElementProps, HTMLFrameSetElementProps, HTMLHeadElementProps, HTMLHeadingElementProps, HTMLHRElementProps,
-    HTMLHtmlElementProps, HTMLIFrameElementProps, HTMLImageElementProps, HTMLInputElementProps, HTMLLabelElementProps,
-    HTMLLegendElementProps, HTMLLIElementProps, HTMLLinkElementProps, HTMLMapElementProps,
-    HTMLMenuElementProps, HTMLMetaElementProps, HTMLMeterElementProps, HTMLObjectElementProps, HTMLOListElementProps,
-    HTMLOptGroupElementProps, HTMLOptionElementProps, HTMLParagraphElementProps, HTMLParamElementProps,
-    HTMLPictureElementProps, HTMLPreElementProps, HTMLProgressElementProps, HTMLScriptElementProps,
-    HTMLSelectElementProps, HTMLSourceElementProps, HTMLSpanElementProps, HTMLStyleElementProps,
-    HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
-    HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
-    HTMLTrackElementProps, HTMLUListElementProps, HTMLUnknownElementProps, HTMLVideoElementProps, HTMLMediaElementProps,
-    MSHTMLWebViewElementProps,
-
-    SVGCircleElementProps, SVGClipPathElementProps, SVGDefsElementProps, SVGDescElementProps, SVGEllipseElementProps,
-    SVGFEBlendElementProps, SVGFEColorMatrixElementProps, SVGFEComponentTransferElementProps,
-    SVGFECompositeElementProps, SVGFEConvolveMatrixElementProps, SVGFEDiffuseLightingElementProps,
-    SVGFEDisplacementMapElementProps, SVGFEDistantLightElementProps, SVGFEFloodElementProps, SVGFEFuncAElementProps,
-    SVGFEFuncBElementProps, SVGFEFuncGElementProps, SVGFEFuncRElementProps, SVGFEGaussianBlurElementProps,
-    SVGFEImageElementProps, SVGFEMergeElementProps, SVGFEMergeNodeElementProps, SVGFEMorphologyElementProps,
-    SVGFEOffsetElementProps, SVGFEPointLightElementProps, SVGFESpecularLightingElementProps, SVGFESpotLightElementProps,
-    SVGFETileElementProps, SVGFETurbulenceElementProps, SVGFilterElementProps, SVGForeignObjectElementProps,
-    SVGGElementProps, SVGImageElementProps, SVGLinearGradientElementProps, SVGLineElementProps, SVGMarkerElementProps,
-    SVGMaskElementProps, SVGMetadataElementProps, SVGPathElementProps, SVGPatternElementProps, SVGPolygonElementProps,
-    SVGPolylineElementProps, SVGRadialGradientElementProps, SVGRectElementProps, SVGStopElementProps,
-    SVGSVGElementProps, SVGSwitchElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
-    SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
+  SVGCircleElementProps, SVGClipPathElementProps, SVGDefsElementProps, SVGDescElementProps, SVGEllipseElementProps,
+  SVGFEBlendElementProps, SVGFEColorMatrixElementProps, SVGFEComponentTransferElementProps,
+  SVGFECompositeElementProps, SVGFEConvolveMatrixElementProps, SVGFEDiffuseLightingElementProps,
+  SVGFEDisplacementMapElementProps, SVGFEDistantLightElementProps, SVGFEFloodElementProps, SVGFEFuncAElementProps,
+  SVGFEFuncBElementProps, SVGFEFuncGElementProps, SVGFEFuncRElementProps, SVGFEGaussianBlurElementProps,
+  SVGFEImageElementProps, SVGFEMergeElementProps, SVGFEMergeNodeElementProps, SVGFEMorphologyElementProps,
+  SVGFEOffsetElementProps, SVGFEPointLightElementProps, SVGFESpecularLightingElementProps, SVGFESpotLightElementProps,
+  SVGFETileElementProps, SVGFETurbulenceElementProps, SVGFilterElementProps, SVGForeignObjectElementProps,
+  SVGGElementProps, SVGImageElementProps, SVGLinearGradientElementProps, SVGLineElementProps, SVGMarkerElementProps,
+  SVGMaskElementProps, SVGMetadataElementProps, SVGPathElementProps, SVGPatternElementProps, SVGPolygonElementProps,
+  SVGPolylineElementProps, SVGRadialGradientElementProps, SVGRectElementProps, SVGStopElementProps,
+  SVGSVGElementProps, SVGSwitchElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
+  SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "ivi-core";
 import { ComponentClass, StatelessComponent } from "../../src/vdom/component";
 import { VNodeFlags } from "../../src/vdom/flags";
@@ -46,13 +44,13 @@ export function component(c: ComponentClass<void>): VNode<null>;
 export function component(c: ComponentClass<null>): VNode<null>;
 export function component<P, U extends P>(c: ComponentClass<P>, props: U): VNode<P>;
 export function component<P>(c: ComponentClass<P>, props?: P): VNode<P> {
-    return new VNode<P>(
-        (c.prototype.render === undefined) ? VNodeFlags.ComponentFunction : VNodeFlags.ComponentClass,
-        c,
-        props!,
-        null,
-        null,
-    );
+  return new VNode<P>(
+    (c.prototype.render === undefined) ? VNodeFlags.ComponentFunction : VNodeFlags.ComponentClass,
+    c,
+    props!,
+    null,
+    null,
+  );
 }
 
 /**
@@ -65,15 +63,15 @@ export function statelessComponent(c: StatelessComponent<void>): VNode<null>;
 export function statelessComponent(c: StatelessComponent<null>): VNode<null>;
 export function statelessComponent<P, U extends P>(c: StatelessComponent<P>, props: U): VNode<P>;
 export function statelessComponent<P>(c: StatelessComponent<P>, props?: P): VNode<P> {
-    return new VNode<P>(
-        c.isPropsChanged === undefined ?
-            VNodeFlags.ComponentFunction :
-            VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
-        c,
-        props!,
-        null,
-        null,
-    );
+  return new VNode<P>(
+    c.isPropsChanged === undefined ?
+      VNodeFlags.ComponentFunction :
+      VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
+    c,
+    props!,
+    null,
+    null,
+  );
 }
 
 /**
@@ -83,7 +81,7 @@ export function statelessComponent<P>(c: StatelessComponent<P>, props?: P): VNod
  * @returns VNodeBuilder object.
  */
 export function text(content: string | number | boolean | null): VNode<null> {
-    return new VNode<null>(VNodeFlags.Text, null, null, null, content);
+  return new VNode<null>(VNodeFlags.Text, null, null, null, content);
 }
 
 /* tslint:disable:max-line-length unified-signatures */
@@ -213,13 +211,13 @@ export function html(tagName: "var", className?: string): VNode<HTMLElementProps
 export function html(tagName: "wbr", className?: string): VNode<HTMLElementProps | null>;
 export function html(tagName: "x-ms-webview", className?: string): VNode<MSHTMLWebViewElementProps | null>;
 export function html(tagName: "xmp", className?: string): VNode<HTMLPreElementProps | null>;
-export function html(tagName: HTMLTagType, className?: string): VNode<HTMLElementProps | null> {
-    return new VNode<HTMLElementProps | null>(
-        VNodeFlags.Element,
-        tagName,
-        null,
-        className === undefined ? null : className,
-        null);
+export function html(tagName: string, className?: string): VNode<HTMLElementProps | null> {
+  return new VNode<HTMLElementProps | null>(
+    VNodeFlags.Element,
+    tagName,
+    null,
+    className === undefined ? null : className,
+    null);
 }
 
 /**
@@ -282,13 +280,13 @@ export function svg(tagName: "textpath", className?: string): VNode<SVGTextPathE
 export function svg(tagName: "tspan", className?: string): VNode<SVGTSpanElementProps | null>;
 export function svg(tagName: "use", className?: string): VNode<SVGUseElementProps | null>;
 export function svg(tagName: "view", className?: string): VNode<SVGViewElementProps | null>;
-export function svg(tagName: SVGTagType, className?: string): VNode<SVGElementProps | null> {
-    return new VNode<SVGElementProps | null>(
-        VNodeFlags.Element | VNodeFlags.SvgElement,
-        tagName,
-        null,
-        className === undefined ? null : className,
-        null);
+export function svg(tagName: string, className?: string): VNode<SVGElementProps | null> {
+  return new VNode<SVGElementProps | null>(
+    VNodeFlags.Element | VNodeFlags.SvgElement,
+    tagName,
+    null,
+    className === undefined ? null : className,
+    null);
 }
 
 /**
@@ -322,15 +320,15 @@ export function input(type: "text", className?: string): VNode<HTMLInputElementP
 export function input(type: "time", className?: string): VNode<HTMLInputElementProps | null>;
 export function input(type: "url", className?: string): VNode<HTMLInputElementProps | null>;
 export function input(type: "week", className?: string): VNode<HTMLInputElementProps | null>;
-export function input(type: InputType, className?: string): VNode<HTMLInputElementProps | null> {
-    return new VNode<HTMLInputElementProps | null>(
-        type === "textarea" ?
-            VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.TextAreaElement :
-            VNodeFlags.Element | VNodeFlags.InputElement,
-        type,
-        null,
-        className === undefined ? null : className,
-        null);
+export function input(type: string, className?: string): VNode<HTMLInputElementProps | null> {
+  return new VNode<HTMLInputElementProps | null>(
+    type === "textarea" ?
+      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.TextAreaElement :
+      VNodeFlags.Element | VNodeFlags.InputElement,
+    type,
+    null,
+    className === undefined ? null : className,
+    null);
 }
 
 /**
@@ -342,12 +340,12 @@ export function input(type: InputType, className?: string): VNode<HTMLInputEleme
  */
 export function media(tagName: "audio", className?: string): VNode<HTMLAudioElementProps | null>;
 export function media(tagName: "video", className?: string): VNode<HTMLVideoElementProps | null>;
-export function media(tagName: MediaTagType, className?: string): VNode<HTMLMediaElementProps | null> {
-    return new VNode<HTMLMediaElementProps | null>(
-        VNodeFlags.Element | VNodeFlags.MediaElement,
-        tagName,
-        null,
-        className === undefined ? null : className,
-        null);
+export function media(tagName: string, className?: string): VNode<HTMLMediaElementProps | null> {
+  return new VNode<HTMLMediaElementProps | null>(
+    VNodeFlags.Element | VNodeFlags.MediaElement,
+    tagName,
+    null,
+    className === undefined ? null : className,
+    null);
 }
 /* tslint:enable:max-line-length unified-signatures */

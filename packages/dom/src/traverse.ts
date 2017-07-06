@@ -5,12 +5,12 @@
  * @returns DOM Node depth.
  */
 export function nodeDepth(node: Node | null): number {
-    let depth = 0;
-    while (node !== null) {
-        depth++;
-        node = node.parentNode;
-    }
-    return depth;
+  let depth = 0;
+  while (node !== null) {
+    depth++;
+    node = node.parentNode;
+  }
+  return depth;
 }
 
 /**
@@ -20,15 +20,15 @@ export function nodeDepth(node: Node | null): number {
  * @return A leaf node.
  */
 export function firstLeaf(node: Node): Node {
-    while (node !== null) {
-        const next = node.firstChild;
-        if (next === null) {
-            break;
-        } else {
-            node = next;
-        }
+  while (node !== null) {
+    const next = node.firstChild;
+    if (next === null) {
+      break;
+    } else {
+      node = next;
     }
-    return node;
+  }
+  return node;
 }
 
 /**
@@ -38,11 +38,11 @@ export function firstLeaf(node: Node): Node {
  * @return Next sibling.
  */
 export function nextSibling(node: Node | null): Node | null {
-    while (node !== null) {
-        if (node.nextSibling !== null) {
-            return node.nextSibling;
-        }
-        node = node.parentNode;
+  while (node !== null) {
+    if (node.nextSibling !== null) {
+      return node.nextSibling;
     }
-    return null;
+    node = node.parentNode;
+  }
+  return null;
 }

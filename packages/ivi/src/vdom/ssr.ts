@@ -5,7 +5,7 @@ import { VNode } from "./vnode";
  * Blueprint Node.
  */
 export interface BlueprintNode {
-    __brand: "ivi-blueprint-node";
+  __brand: "ivi-blueprint-node";
 }
 
 /**
@@ -17,7 +17,7 @@ export interface BlueprintNode {
  * @returns Blueprint.
  */
 export function createBlueprint(node: VNode<any>, context: Context = {}, blueprint?: BlueprintNode): BlueprintNode {
-    throw new Error("createBlueprint() function isn't available in browser environment.");
+  throw new Error("createBlueprint() function isn't available in browser environment.");
 }
 
 /**
@@ -29,7 +29,7 @@ export function createBlueprint(node: VNode<any>, context: Context = {}, bluepri
  * @param blueprint Blueprint node.
  */
 export function linkBlueprint<P>(componentFactory: (props?: P) => VNode<P>, blueprint: BlueprintNode): void {
-    throw new Error("linkBlueprint() function isn't available in browser environment.");
+  throw new Error("linkBlueprint() function isn't available in browser environment.");
 }
 
 /**
@@ -41,11 +41,11 @@ export function linkBlueprint<P>(componentFactory: (props?: P) => VNode<P>, blue
  * @returns Virtual DOM in string format.
  */
 export function renderToString(
-    node: VNode<any>,
-    context: Context = {},
-    blueprint?: BlueprintNode,
+  node: VNode<any>,
+  context: Context = {},
+  blueprint?: BlueprintNode,
 ): string {
-    throw new Error("renderToString() function isn't available in browser environment.");
+  throw new Error("renderToString() function isn't available in browser environment.");
 }
 
 /**
@@ -55,5 +55,5 @@ export function renderToString(
  * @returns Serialized state.
  */
 export function serializeState(data: any): string {
-    throw new Error("serializeState() function isn't available in browser environment.");
+  throw new Error("serializeState() function isn't available in browser environment.");
 }

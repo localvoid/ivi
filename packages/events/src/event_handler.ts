@@ -11,30 +11,30 @@ import { EventSource } from "./event_source";
  * @final
  */
 export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = any> {
-    /**
-     * Event Handler function call interface.
-     */
-    (ev: E): void;
-    /**
-     * Reference to the event source that will dispatch events for this event handler.
-     */
-    source: EventSource;
-    /**
-     * See `EventHandlerFlags` for details.
-     */
-    flags: EventHandlerFlags;
-    /**
-     * Number of active listeners.
-     */
-    listeners: number;
-    /**
-     * Event Handler props.
-     */
-    props: P;
-    /**
-     * Event Handler state.
-     *
-     * Internal state that can be used to store gesture recognizers state.
-     */
-    state: S | null;
+  /**
+   * Event Handler function call interface.
+   */
+  (ev: E): void;
+  /**
+   * Reference to the event source that will dispatch events for this event handler.
+   */
+  source: EventSource;
+  /**
+   * See `EventHandlerFlags` for details.
+   */
+  flags: EventHandlerFlags;
+  /**
+   * Number of active listeners.
+   */
+  listeners: number;
+  /**
+   * Event Handler props.
+   */
+  props: P;
+  /**
+   * Event Handler state.
+   *
+   * Internal state that can be used to store gesture recognizers state.
+   */
+  state: S | null;
 }

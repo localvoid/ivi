@@ -5,7 +5,7 @@
  * @final
  */
 export interface Mutable<T> {
-    ref: T;
+  ref: T;
 }
 
 /**
@@ -15,5 +15,5 @@ export interface Mutable<T> {
  * @returns a new mutable wrapper instance.
  */
 export function mut<T>(ref: T): Mutable<T> {
-    return { ref };
+  return { ref };
 }

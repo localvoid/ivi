@@ -6,14 +6,14 @@ import { SyntheticEvent } from "./synthetic_event";
  * DispatchTarget.
  */
 export interface DispatchTarget {
-    /**
-     * Target.
-     */
-    target: any;
-    /**
-     * Matched Event Handlers.
-     */
-    handlers: EventHandler | EventHandler<any>[];
+  /**
+   * Target.
+   */
+  target: any;
+  /**
+   * Matched Event Handlers.
+   */
+  handlers: EventHandler | EventHandler<any>[];
 }
 
 /**
@@ -25,33 +25,33 @@ export interface DispatchTarget {
  * @param dispatch Dispatch callback.
  */
 function dispatchEventToLocalEventHandlers(
-    target: DispatchTarget,
-    event: SyntheticEvent,
-    matchFlags: EventHandlerFlags,
-    dispatch: ((h: EventHandler, ev: SyntheticEvent) => void) | undefined,
+  target: DispatchTarget,
+  event: SyntheticEvent,
+  matchFlags: EventHandlerFlags,
+  dispatch: ((h: EventHandler, ev: SyntheticEvent) => void) | undefined,
 ): void {
-    const handlers = target.handlers;
+  const handlers = target.handlers;
 
-    if (typeof handlers === "function") {
-        if ((handlers.flags & matchFlags) !== 0) {
-            if (dispatch === undefined) {
-                handlers(event);
-            } else {
-                dispatch(handlers, event);
-            }
-        }
-    } else {
-        for (let j = 0; j < handlers.length; j++) {
-            const handler = handlers[j];
-            if ((handler.flags & matchFlags) !== 0) {
-                if (dispatch === undefined) {
-                    handler(event);
-                } else {
-                    dispatch(handler, event);
-                }
-            }
-        }
+  if (typeof handlers === "function") {
+    if ((handlers.flags & matchFlags) !== 0) {
+      if (dispatch === undefined) {
+        handlers(event);
+      } else {
+        dispatch(handlers, event);
+      }
     }
+  } else {
+    for (let j = 0; j < handlers.length; j++) {
+      const handler = handlers[j];
+      if ((handler.flags & matchFlags) !== 0) {
+        if (dispatch === undefined) {
+          handler(event);
+        } else {
+          dispatch(handler, event);
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -69,32 +69,32 @@ function dispatchEventToLocalEventHandlers(
  * @param dispatch Dispatch callback.
  */
 export function dispatchEvent(
-    targets: DispatchTarget[],
-    event: SyntheticEvent,
-    bubble: boolean,
-    dispatch?: (h: EventHandler, ev: SyntheticEvent) => void,
+  targets: DispatchTarget[],
+  event: SyntheticEvent,
+  bubble: boolean,
+  dispatch?: (h: EventHandler, ev: SyntheticEvent) => void,
 ): void {
-    let i = targets.length - 1;
-    let target;
+  let i = targets.length - 1;
+  let target;
 
-    // capture phase
-    while (i >= 0) {
-        target = targets[i--];
-        dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture, dispatch);
-        if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
-            return;
-        }
+  // capture phase
+  while (i >= 0) {
+    target = targets[i--];
+    dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture, dispatch);
+    if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
+      return;
     }
+  }
 
-    // bubble phase
-    if (bubble === true) {
-        i = 0;
-        event.flags |= SyntheticEventFlags.BubblePhase;
-        while (i < targets.length) {
-            dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble, dispatch);
-            if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
-                return;
-            }
-        }
+  // bubble phase
+  if (bubble === true) {
+    i = 0;
+    event.flags |= SyntheticEventFlags.BubblePhase;
+    while (i < targets.length) {
+      dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble, dispatch);
+      if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
+        return;
+      }
     }
+  }
 }

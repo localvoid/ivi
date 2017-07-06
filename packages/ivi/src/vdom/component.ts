@@ -8,16 +8,16 @@ import { VNode } from "./vnode";
  * Component function constructor.
  */
 export interface StatelessComponent<P = void> {
-    (props: P): VNode<any>;
-    isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-    shouldAugment?: (props: P) => boolean;
+  (props: P): VNode<any>;
+  isPropsChanged?: (oldProps: P, newProps: P) => boolean;
+  shouldAugment?: (props: P) => boolean;
 }
 
 /**
  * Component class constructor.
  */
 export interface ComponentClass<P = void> {
-    new (props: P): Component<P>;
+  new (props: P): Component<P>;
 }
 
 /**
@@ -36,118 +36,118 @@ export interface ComponentClass<P = void> {
  *     render($c(Hello, "world"), document.getElementById("App")!);
  */
 export abstract class Component<P = void> {
-    /**
-     * Flags, see `ComponentFlags` for details.
-     *
-     * Lowest 16 bits are reserved for ivi flags, other bits can be used for user flags.
-     */
-    flags: ComponentFlags;
-    /**
-     * Component properties.
-     */
-    props: P;
-    /**
-     * Unique ID.
-     *
-     * ID generator is using `dev_mode.uniqueId()` function, so it will be unique across all Dev Mode ids.
-     *
-     * Dev Mode.
-     */
-    _debugId: number;
+  /**
+   * Flags, see `ComponentFlags` for details.
+   *
+   * Lowest 16 bits are reserved for ivi flags, other bits can be used for user flags.
+   */
+  flags: ComponentFlags;
+  /**
+   * Component properties.
+   */
+  props: P;
+  /**
+   * Unique ID.
+   *
+   * ID generator is using `dev_mode.uniqueId()` function, so it will be unique across all Dev Mode ids.
+   *
+   * Dev Mode.
+   */
+  _debugId: number;
 
-    constructor(props: P) {
-        this.flags = 0;
-        this.props = props;
-        if (__IVI_DEV__) {
-            this._debugId = nextDebugId();
-        }
+  constructor(props: P) {
+    this.flags = 0;
+    this.props = props;
+    if (__IVI_DEV__) {
+      this._debugId = nextDebugId();
     }
+  }
 
-    /**
-     * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
-     *
-     * By default props checked by their identity.
-     *
-     * @param oldProps Old props.
-     * @param newProps New props.
-     * @returns `true` when props should be updated.
-     */
-    isPropsChanged(oldProps: P, newProps: P): boolean {
-        return oldProps !== newProps;
+  /**
+   * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
+   *
+   * By default props checked by their identity.
+   *
+   * @param oldProps Old props.
+   * @param newProps New props.
+   * @returns `true` when props should be updated.
+   */
+  isPropsChanged(oldProps: P, newProps: P): boolean {
+    return oldProps !== newProps;
+  }
+
+  /**
+   * Lifecycle method `newPropsReceived` is invoked after new props are assigned.
+   *
+   * @param oldProps Old props.
+   * @param newProps New props.
+   */
+  newPropsReceived(oldProps: P, newProps: P): void {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+
+  /**
+   * Lifecycle method `shouldAugment` is invoked before augmentation.
+   *
+   * @returns true when component should be augmented.
+   */
+  shouldAugment(): boolean {
+    return true;
+  }
+
+  /**
+   * Lifecycle method `attached` is invoked when component is attached to the document.
+   */
+  attached(): void {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+
+  /**
+   * Lifecycle method `detached` is invoked when component is detached from the document.
+   */
+  detached(): void {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+
+  /**
+   * Lifecycle method `beforeUpdate` is invoked before update.
+   */
+  beforeUpdate(): void {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+
+  /**
+   * Lifecycle method `updated` is invoked after update.
+   */
+  updated(): void {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+
+  /**
+   * Lifecycle method `invalidated` is invoked after `invalidate` method is invoked.
+   */
+  invalidated(): void {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+
+  abstract render(): VNode<any>;
+
+  /**
+   * Invalidate view.
+   */
+  invalidate(): void {
+    this.flags |= ComponentFlags.DirtyState;
+    this.invalidated();
+    if ((this.flags & ComponentFlags.Attached) !== 0) {
+      currentFrame().update();
     }
-
-    /**
-     * Lifecycle method `newPropsReceived` is invoked after new props are assigned.
-     *
-     * @param oldProps Old props.
-     * @param newProps New props.
-     */
-    newPropsReceived(oldProps: P, newProps: P): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
-    }
-
-    /**
-     * Lifecycle method `shouldAugment` is invoked before augmentation.
-     *
-     * @returns true when component should be augmented.
-     */
-    shouldAugment(): boolean {
-        return true;
-    }
-
-    /**
-     * Lifecycle method `attached` is invoked when component is attached to the document.
-     */
-    attached(): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
-    }
-
-    /**
-     * Lifecycle method `detached` is invoked when component is detached from the document.
-     */
-    detached(): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
-    }
-
-    /**
-     * Lifecycle method `beforeUpdate` is invoked before update.
-     */
-    beforeUpdate(): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
-    }
-
-    /**
-     * Lifecycle method `updated` is invoked after update.
-     */
-    updated(): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
-    }
-
-    /**
-     * Lifecycle method `invalidated` is invoked after `invalidate` method is invoked.
-     */
-    invalidated(): void {
-        /* tslint:disable:no-empty */
-        /* tslint:enable:no-empty */
-    }
-
-    abstract render(): VNode<any>;
-
-    /**
-     * Invalidate view.
-     */
-    invalidate(): void {
-        this.flags |= ComponentFlags.DirtyState;
-        this.invalidated();
-        if ((this.flags & ComponentFlags.Attached) !== 0) {
-            currentFrame().update();
-        }
-    }
+  }
 }
 
 /**
@@ -171,12 +171,12 @@ export abstract class Component<P = void> {
  * @returns Component constructor with identity check.
  */
 export function checkPropsShallowEquality<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-    if (target.prototype.render === undefined) {
-        (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
-    } else {
-        target.prototype.isPropsChanged = isPropsNotShallowEqual;
-    }
-    return target;
+  if (target.prototype.render === undefined) {
+    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
+  } else {
+    target.prototype.isPropsChanged = isPropsNotShallowEqual;
+  }
+  return target;
 }
 
 /**
@@ -200,12 +200,12 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Statel
  * @returns Component constructor with static property.
  */
 export function staticComponent<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-    if (target.prototype.render === undefined) {
-        (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
-    } else {
-        target.prototype.isPropsChanged = NOOP_FALSE;
-    }
-    return target;
+  if (target.prototype.render === undefined) {
+    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
+  } else {
+    target.prototype.isPropsChanged = NOOP_FALSE;
+  }
+  return target;
 }
 
 /**
@@ -215,15 +215,15 @@ export function staticComponent<P extends ComponentClass<any> | StatelessCompone
  * @return Component name.
  */
 export function getComponentName(component: Component<any> | StatelessComponent<any>): string {
-    return getFunctionName(
-        (component as StatelessComponent<any>).prototype.render === undefined ?
-            component as StatelessComponent<any> :
-            (component as StatelessComponent<any>).constructor,
-    );
+  return getFunctionName(
+    (component as StatelessComponent<any>).prototype.render === undefined ?
+      component as StatelessComponent<any> :
+      (component as StatelessComponent<any>).constructor,
+  );
 }
 
 export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
-    return componentClass.prototype.render !== undefined;
+  return componentClass.prototype.render !== undefined;
 }
 
 /**
@@ -232,5 +232,5 @@ export function isComponentClass(componentClass: any): componentClass is Compone
  * @returns `true` when Component is attached.
  */
 export function isComponentAttached(component: Component<any>): boolean {
-    return (component.flags & ComponentFlags.Attached) !== 0;
+  return (component.flags & ComponentFlags.Attached) !== 0;
 }
