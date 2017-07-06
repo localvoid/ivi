@@ -7,9 +7,9 @@
  * @param index Index of an element to remove
  */
 export function unorderedArrayDelete<T>(array: T[], index: number): void {
-    const length = array.length - 1;
-    const last = array.pop();
-    if (index !== length) {
-        array[index] = last!;
-    }
+  const length = array.length - 1;
+  const last = array.pop();
+  if (index !== length) {
+    array[index] = last!;
+  }
 }

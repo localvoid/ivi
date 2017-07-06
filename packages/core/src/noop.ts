@@ -2,8 +2,8 @@
  * NOOP function.
  */
 export function NOOP(): void {
-    /* tslint:disable:no-empty */
-    /* tslint:enable:no-empty */
+  /* tslint:disable:no-empty */
+  /* tslint:enable:no-empty */
 }
 
 /**
@@ -12,5 +12,5 @@ export function NOOP(): void {
  * @returns `false` value.
  */
 export function NOOP_FALSE(): boolean {
-    return false;
+  return false;
 }

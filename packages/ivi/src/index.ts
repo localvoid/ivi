@@ -112,9 +112,10 @@ if (__IVI_DEV__) {
 
     console.groupCollapsed("Detected browser features");
     printFeature("Passive Events", FeatureFlags.PassiveEvents);
-    printFeature("Timeline Performance Marks", FeatureFlags.DevModePerfMarks);
     printFeature("SVG innerHTML property", FeatureFlags.SVGInnerHTML);
     printFeature("KeyboardEvent key property", FeatureFlags.KeyboardEventKey);
+    printFeature("MouseEvent buttons property", FeatureFlags.MouseEventButtons);
+    printFeature("Touch Events", FeatureFlags.TouchEvents);
     if (FEATURES & FeatureFlags.PointerEvents) {
         printFeatureGroup("Pointer Events", FeatureFlags.PointerEvents);
         printFeature("Touch Screen", FeatureFlags.PointerEventsTouch);
@@ -123,9 +124,7 @@ if (__IVI_DEV__) {
     } else {
         printFeature("Pointer Events", FeatureFlags.PointerEvents);
     }
-    printFeature("Touch Events", FeatureFlags.TouchEvents);
     printFeature("InputDeviceCapabilities", FeatureFlags.InputDeviceCapabilities);
-    printFeature("MouseEvent buttons property", FeatureFlags.MouseEventButtons);
     console.groupEnd();
 
     const devModeExport = {

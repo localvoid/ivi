@@ -1,14 +1,14 @@
 {
-    "extends": "../tsconfig.base.json",
-    "compilerOptions": {
-        "types": [
-            "chai",
-            "mocha",
-            "node"
-        ]
-    },
-    "include": [
-        "src/**/*.ts",
-        "tests/**/*.ts"
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "chai",
+      "mocha",
+      "node"
     ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts"
+  ]
 }

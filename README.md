@@ -40,10 +40,10 @@ exclusively for bug reports and feature requests.
 
 #### NPM
 
-Npm package `ivi` provides es6 module and TypeScript typings.
+ivi npm packages provide es6 modules and TypeScript typings.
 
 ```sh
-$ npm install ivi-core ivi-dom ivi-events ivi
+$ npm install ivi-core ivi-dom ivi-scheduler ivi-events ivi-html ivi
 ```
 
 When building an application with an NPM module, make sure that you properly
