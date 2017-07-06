@@ -29,6 +29,22 @@ export function map<I, O>(items: I[], fn: (item: I, idx: number) => O): O[] {
 }
 
 /**
+ * mapRange creates a new array with the results of calling a provided function on every number in the provided range.
+ *
+ * @param start Range start.
+ * @param end Range end.
+ * @param fn Function that produces an element for the new Array.
+ */
+export function mapRange<O>(start: number, end: number, fn: (idx: number) => O): O[] {
+  const length = end - start;
+  const result = new Array(length);
+  for (let i = 0; i < length; i++) {
+    result[i] = fn(i + start);
+  }
+  return result;
+}
+
+/**
  * map creates a new array with the results of calling a provided function on every element in the calling array and
  * filters `undefined` values.
  *
