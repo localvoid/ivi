@@ -65,7 +65,7 @@ export {
   SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "./dom_props";
 
-export { unorderedArrayDelete } from "./array";
+export { unorderedArrayDelete, map, mapFilterUndefined } from "./array";
 export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList } from "./repeatable_task_list";
 export { isPropsNotShallowEqual } from "./props";

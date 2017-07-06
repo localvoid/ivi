@@ -2,6 +2,7 @@
  * Common types and functions re-exported from ivi-core.
  */
 export {
+  map, mapFilterUndefined,
   Context, SelectorData, selectorData, memoizeSelector,
   KeyCode, KeyLocation, MouseButtons,
 } from "ivi-core";

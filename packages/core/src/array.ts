@@ -13,3 +13,35 @@ export function unorderedArrayDelete<T>(array: T[], index: number): void {
     array[index] = last!;
   }
 }
+
+/**
+ * map creates a new array with the results of calling a provided function on every element in the calling array.
+ *
+ * @param items Array.
+ * @param fn Function that produces an element of the new Array.
+ */
+export function map<I, O>(items: I[], fn: (item: I, idx: number) => O): O[] {
+  const result = new Array(items.length);
+  for (let i = 0; i < items.length; i++) {
+    result[i] = fn(items[i], i);
+  }
+  return result;
+}
+
+/**
+ * map creates a new array with the results of calling a provided function on every element in the calling array and
+ * filters `undefined` values.
+ *
+ * @param items Array.
+ * @param fn Function that produces an element of the new Array.
+ */
+export function mapFilterUndefined<I, O>(items: I[], fn: (item: I, idx: number) => O | undefined): O[] {
+  const result = [];
+  for (let i = 0; i < items.length; i++) {
+    const r = fn(items[i], i);
+    if (r !== undefined) {
+      result.push(r);
+    }
+  }
+  return result;
+}

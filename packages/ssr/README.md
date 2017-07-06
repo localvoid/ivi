@@ -13,16 +13,14 @@ Efficient Virtual DOM rendering is built on two key ideas:
 
 ## Configuring Webpack
 
-`ivi-ssr` package reimplements public APIs from `ivi-html`, `ivi-events` and `ivi` packages. To build code for server
-environment, we need to configure module aliasing.
-
 ```js
 {
     target: "node",
     resolve: {
         alias: {
-            "ivi-html": "ivi-ssr",
+            "ivi-html": "ivi-ssr-html",
             "ivi-events": "ivi-ssr",
+            "ivi-scheduler": "ivi-ssr",
             "ivi": "ivi-ssr"
         }
     }

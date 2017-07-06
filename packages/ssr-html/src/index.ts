@@ -30,7 +30,7 @@ import {
   SVGSVGElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
   SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps,
 } from "ivi-core";
-import { VNode, VNodeFlags } from "./vnode";
+import { VNode, VNodeFlags } from "ivi-ssr";
 
 /**
  * Create a VNode representing a Text node.
