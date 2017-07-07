@@ -1,4 +1,4 @@
-import { Context, SelectorData } from "ivi-core";
+import { Context, SelectorData, isPropsNotShallowEqual } from "ivi-core";
 import { Component, ComponentClass, StatelessComponent } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { VNodeFlags, VNode, vNodeEqualKeys } from "./vnode";
@@ -335,13 +335,13 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
             n = null;
           }
         } else {
-          n = cloneChangedBlueprintNode(a, context);
+          n = cloneChangedBlueprintNode(a, context).children;
         }
 
         if (
-          a.vnode._props === b._props &&
-          a.vnode._style === b._style &&
           a.vnode._className === b._className &&
+          !isPropsNotShallowEqual(a.vnode._props, b._props) &&
+          !isPropsNotShallowEqual(a.vnode._style, b._style) &&
           a.children === n
         ) {
           return a;
@@ -599,7 +599,7 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
         componentNode.string += node.string;
       }
       if ((flags & VNodeFlags.VoidElement) === 0) {
-        if (node.children !== null) {
+        if (node.vnode._children !== null) {
           if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
               const children = node.children as BlueprintNode[];
