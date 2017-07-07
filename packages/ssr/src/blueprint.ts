@@ -321,19 +321,21 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
         }
       } else { // ((flags & VNodeFlags.Element) !== 0)
         n = a.children;
-        if (b._children !== null) {
-          if (a.vnode._children !== b._children) {
+        if (a.vnode._children !== b._children) {
+          if (b._children !== null) {
             n = diffBlueprintChildren(
               a,
               aFlags,
               b._flags,
-              n as | BlueprintNode[] | BlueprintNode | string | number | boolean | null,
-              b._children as | VNode[] | VNode | string | number | boolean,
+              n as | BlueprintNode[] | BlueprintNode | string | number | null,
+              b._children as | VNode[] | VNode | string | number,
               context,
             );
           } else {
-            n = cloneChangedBlueprintNode(a, context);
+            n = null;
           }
+        } else {
+          n = cloneChangedBlueprintNode(a, context);
         }
 
         if (
@@ -462,15 +464,16 @@ function diffBlueprintChildren(
   aParent: BlueprintNode,
   aParentFlags: VNodeFlags,
   bParentFlags: VNodeFlags,
-  a: BlueprintNode[] | BlueprintNode | string | number | boolean | null,
-  b: VNode[] | VNode | string | number | boolean,
+  a: BlueprintNode[] | BlueprintNode | string | number | null,
+  b: VNode[] | VNode | string | number,
   context: Context,
-): BlueprintNode[] | BlueprintNode | string | number | boolean {
+): BlueprintNode[] | BlueprintNode | string | number | null {
   let i = 0;
   let node;
 
   if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-    return b as string;
+    // children property will contain escaped text.
+    return null;
   } else {
     if ((aParentFlags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) === 0) {
       if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
@@ -512,11 +515,9 @@ function diffBlueprintChildren(
           const nodes = new Array(b.length);
           for (i = 0; i < b.length; i++) {
             node = b[i];
-            if (vNodeEqualKeys(a.vnode, node)) {
-              nodes[i] = diffBlueprintNode(a, node, context);
-            } else {
-              nodes[i] = createBlueprintFromVNode(node, context);
-            }
+            nodes[i] = vNodeEqualKeys(a.vnode, node) ?
+              diffBlueprintNode(a, node, context) :
+              createBlueprintFromVNode(node, context);
           }
           return nodes;
         } else {
@@ -591,7 +592,9 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
   const flags = node.flags;
   if ((flags & (VNodeFlags.Element | VNodeFlags.Component)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
-      node.string = renderOpenElement(node.vnode);
+      if ((flags & VNodeFlags.Frozen) === 0) {
+        node.string = renderOpenElement(node.vnode);
+      }
       if (componentNode !== undefined) {
         componentNode.string += node.string;
       }
@@ -611,7 +614,9 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
               node.flags |= c.flags & VNodeFlags.DeepConnect;
             }
           } else {
-            node.children = escapeText(node.children as string | number);
+            if ((flags & VNodeFlags.Frozen) === 0) {
+              node.children = escapeText(node.vnode._children as string | number);
+            }
             if (componentNode !== undefined) {
               componentNode.string += node.children;
             }
@@ -624,25 +629,35 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
     } else { // ((flags & VNodeFlags.Component) !== 0)
       const c = node.children as BlueprintNode;
       if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) === 0) {
-        prerenderBlueprint(c, node);
-        node.flags |= c.flags & VNodeFlags.DeepConnect;
+        if ((flags & VNodeFlags.Frozen) === 0) {
+          prerenderBlueprint(c, node);
+          node.flags |= c.flags & VNodeFlags.DeepConnect;
+        }
         if (componentNode !== undefined) {
           componentNode.string += node.string;
         }
       } else {
         prerenderBlueprint(c, componentNode);
-        if ((flags & VNodeFlags.Connect) === 0) {
-          node.flags |= c.flags & VNodeFlags.DeepConnect;
-        } else {
-          node.flags |= VNodeFlags.DeepConnect;
+        if ((flags & VNodeFlags.Frozen) === 0) {
+          if ((flags & VNodeFlags.Connect) === 0) {
+            node.flags |= c.flags & VNodeFlags.DeepConnect;
+          } else {
+            node.flags |= VNodeFlags.DeepConnect;
+          }
         }
       }
     }
   } else { // (((flags & VNodeFlags.Text) !== 0)
     if (componentNode !== undefined) {
-      node.string = escapeText(node.children as string | number);
+      if ((flags & VNodeFlags.Frozen) === 0) {
+        node.string = escapeText(node.children as string | number);
+      }
       componentNode.string += node.string;
     }
+  }
+
+  if ((flags & VNodeFlags.Frozen) === 0) {
+    node.flags |= VNodeFlags.Frozen;
   }
 }
 
