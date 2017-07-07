@@ -90,7 +90,7 @@ export function applet(className?: string): VNode<HTMLAppletElementProps | null>
 }
 export function area(className?: string): VNode<HTMLAreaElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "area",
     null,
     className === undefined ? null : className,
@@ -126,7 +126,7 @@ export function b(className?: string): VNode<HTMLElementProps | null> {
 }
 export function base(className?: string): VNode<HTMLBaseElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "base",
     null,
     className === undefined ? null : className,
@@ -180,7 +180,7 @@ export function body(className?: string): VNode<HTMLBodyElementProps | null> {
 }
 export function br(className?: string): VNode<HTMLBRElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "br",
     null,
     className === undefined ? null : className,
@@ -243,7 +243,7 @@ export function code(className?: string): VNode<HTMLElementProps | null> {
 }
 export function col(className?: string): VNode<HTMLTableColElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "col",
     null,
     className === undefined ? null : className,
@@ -342,7 +342,7 @@ export function em(className?: string): VNode<HTMLElementProps | null> {
 }
 export function embed(className?: string): VNode<HTMLEmbedElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "embed",
     null,
     className === undefined ? null : className,
@@ -504,7 +504,7 @@ export function hgroup(className?: string): VNode<HTMLElementProps | null> {
 }
 export function hr(className?: string): VNode<HTMLHRElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "hr",
     null,
     className === undefined ? null : className,
@@ -540,7 +540,7 @@ export function iframe(className?: string): VNode<HTMLIFrameElementProps | null>
 }
 export function img(className?: string): VNode<HTMLImageElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "img",
     null,
     className === undefined ? null : className,
@@ -576,7 +576,7 @@ export function kbd(className?: string): VNode<HTMLElementProps | null> {
 }
 export function keygen(className?: string): VNode<HTMLElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "keygen",
     null,
     className === undefined ? null : className,
@@ -612,7 +612,7 @@ export function li(className?: string): VNode<HTMLLIElementProps | null> {
 }
 export function link(className?: string): VNode<HTMLLinkElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "link",
     null,
     className === undefined ? null : className,
@@ -666,7 +666,7 @@ export function menu(className?: string): VNode<HTMLMenuElementProps | null> {
 }
 export function meta(className?: string): VNode<HTMLMetaElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "meta",
     null,
     className === undefined ? null : className,
@@ -774,7 +774,7 @@ export function p(className?: string): VNode<HTMLParagraphElementProps | null> {
 }
 export function param(className?: string): VNode<HTMLParamElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "param",
     null,
     className === undefined ? null : className,
@@ -900,7 +900,7 @@ export function small(className?: string): VNode<HTMLElementProps | null> {
 }
 export function source(className?: string): VNode<HTMLSourceElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "source",
     null,
     className === undefined ? null : className,
@@ -1044,7 +1044,7 @@ export function tr(className?: string): VNode<HTMLTableRowElementProps | null> {
 }
 export function track(className?: string): VNode<HTMLTrackElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "track",
     null,
     className === undefined ? null : className,
@@ -1080,7 +1080,7 @@ export function ul(className?: string): VNode<HTMLUListElementProps | null> {
 }
 export function wbr(className?: string): VNode<HTMLElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ? VNodeFlags.Element | VNodeFlags.VoidElement : VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.VoidElement,
     "wbr",
     null,
     className === undefined ? null : className,
@@ -1588,9 +1588,7 @@ export function textarea(className?: string): VNode<HTMLTextAreaElementProps | n
 }
 export function inputButton(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "button",
     null,
     className === undefined ? null : className,
@@ -1599,9 +1597,7 @@ export function inputButton(className?: string): VNode<HTMLInputElementProps | n
 }
 export function inputCheckbox(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "checkbox",
     null,
     className === undefined ? null : className,
@@ -1610,9 +1606,7 @@ export function inputCheckbox(className?: string): VNode<HTMLInputElementProps |
 }
 export function inputColor(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "color",
     null,
     className === undefined ? null : className,
@@ -1621,9 +1615,7 @@ export function inputColor(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputDate(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "date",
     null,
     className === undefined ? null : className,
@@ -1632,9 +1624,7 @@ export function inputDate(className?: string): VNode<HTMLInputElementProps | nul
 }
 export function inputDatetime(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "datetime",
     null,
     className === undefined ? null : className,
@@ -1643,9 +1633,7 @@ export function inputDatetime(className?: string): VNode<HTMLInputElementProps |
 }
 export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "datetime-local",
     null,
     className === undefined ? null : className,
@@ -1654,9 +1642,7 @@ export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementPr
 }
 export function inputEmail(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "email",
     null,
     className === undefined ? null : className,
@@ -1665,9 +1651,7 @@ export function inputEmail(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputFile(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "file",
     null,
     className === undefined ? null : className,
@@ -1676,9 +1660,7 @@ export function inputFile(className?: string): VNode<HTMLInputElementProps | nul
 }
 export function inputHidden(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "hidden",
     null,
     className === undefined ? null : className,
@@ -1687,9 +1669,7 @@ export function inputHidden(className?: string): VNode<HTMLInputElementProps | n
 }
 export function inputImage(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "image",
     null,
     className === undefined ? null : className,
@@ -1698,9 +1678,7 @@ export function inputImage(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputMonth(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "month",
     null,
     className === undefined ? null : className,
@@ -1709,9 +1687,7 @@ export function inputMonth(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputNumber(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "number",
     null,
     className === undefined ? null : className,
@@ -1720,9 +1696,7 @@ export function inputNumber(className?: string): VNode<HTMLInputElementProps | n
 }
 export function inputPassword(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "password",
     null,
     className === undefined ? null : className,
@@ -1731,9 +1705,7 @@ export function inputPassword(className?: string): VNode<HTMLInputElementProps |
 }
 export function inputRadio(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "radio",
     null,
     className === undefined ? null : className,
@@ -1742,9 +1714,7 @@ export function inputRadio(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputRange(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "range",
     null,
     className === undefined ? null : className,
@@ -1753,9 +1723,7 @@ export function inputRange(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputReset(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "reset",
     null,
     className === undefined ? null : className,
@@ -1764,9 +1732,7 @@ export function inputReset(className?: string): VNode<HTMLInputElementProps | nu
 }
 export function inputSearch(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "search",
     null,
     className === undefined ? null : className,
@@ -1775,9 +1741,7 @@ export function inputSearch(className?: string): VNode<HTMLInputElementProps | n
 }
 export function inputSubmit(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "submit",
     null,
     className === undefined ? null : className,
@@ -1786,9 +1750,7 @@ export function inputSubmit(className?: string): VNode<HTMLInputElementProps | n
 }
 export function inputTel(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "tel",
     null,
     className === undefined ? null : className,
@@ -1797,9 +1759,7 @@ export function inputTel(className?: string): VNode<HTMLInputElementProps | null
 }
 export function inputText(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "text",
     null,
     className === undefined ? null : className,
@@ -1808,9 +1768,7 @@ export function inputText(className?: string): VNode<HTMLInputElementProps | nul
 }
 export function inputTime(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "time",
     null,
     className === undefined ? null : className,
@@ -1819,9 +1777,7 @@ export function inputTime(className?: string): VNode<HTMLInputElementProps | nul
 }
 export function inputUrl(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "url",
     null,
     className === undefined ? null : className,
@@ -1830,9 +1786,7 @@ export function inputUrl(className?: string): VNode<HTMLInputElementProps | null
 }
 export function inputWeek(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
-    __IVI_DEV__ ?
-      VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement :
-      VNodeFlags.Element | VNodeFlags.InputElement,
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "week",
     null,
     className === undefined ? null : className,
