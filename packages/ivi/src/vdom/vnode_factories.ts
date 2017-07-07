@@ -56,15 +56,15 @@ function UpdateContext() {
 /**
  * Create an update context VNode.
  *
- * @param context Context.
+ * @param ctx Context.
  * @param child Child VNode.
  * @returns VNodeBuilder object.
  */
-export function context<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>> {
+export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Context<T>> {
   return new VNode<Context<T>>(
     VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
     __IVI_DEV__ ? UpdateContext as () => VNode<any> : null,
-    context,
+    ctx,
     null,
     child,
   );

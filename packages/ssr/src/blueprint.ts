@@ -160,6 +160,7 @@ function createBlueprintFromVNode(vnode: VNode<any>, context: Context): Blueprin
  */
 function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): BlueprintNode {
   const flags = bp.flags;
+  let n;
 
   if ((flags & VNodeFlags.DeepConnect) !== 0) {
     if ((flags & VNodeFlags.Text | VNodeFlags.Element) !== 0) {
@@ -171,7 +172,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
             let dirty = false;
             for (let i = 0; i < children.length; i++) {
               const c = children[i];
-              const n = cloneChangedBlueprintNode(c, context);
+              n = cloneChangedBlueprintNode(c, context);
               if (c !== n) {
                 dirty = true;
               }
@@ -186,7 +187,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
             }
           } else { // ((flags & VNodeFlags.ChildrenVNode) !== 0)
             const child = bp.children as BlueprintNode;
-            const n = cloneChangedBlueprintNode(child, context);
+            n = cloneChangedBlueprintNode(child, context);
             if (child !== n) {
               return new BlueprintNode(
                 bp.vnode,
@@ -200,7 +201,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
       return bp;
     } else { // ((flags & VNodeFlags.Component) !== 0)
       if ((flags & VNodeFlags.ComponentClass) !== 0) {
-        const n = cloneChangedBlueprintNode(bp.children as BlueprintNode, context);
+        n = cloneChangedBlueprintNode(bp.children as BlueprintNode, context);
         if (bp.children === n) {
           return bp;
         }
@@ -220,7 +221,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
               context,
             );
             if (prevSelectData !== selectData) {
-              const n = diffBlueprintNode(
+              n = diffBlueprintNode(
                 bp.children as BlueprintNode,
                 connect.render(selectData.out),
                 context,
@@ -231,7 +232,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
                 selectData,
               );
             }
-            const n = cloneChangedBlueprintNode(bp.children as BlueprintNode, context);
+            n = cloneChangedBlueprintNode(bp.children as BlueprintNode, context);
             if (bp.children === n) {
               return bp;
             }
@@ -241,7 +242,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
               selectData,
             );
           } else { // ((flags & VNodeFlags.UpdateContext) !== 0)
-            const n = cloneChangedBlueprintNode(
+            n = cloneChangedBlueprintNode(
               bp.children as BlueprintNode,
               Object.assign({}, context, bp.vnode._props),
             );
@@ -255,7 +256,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
             );
           }
         } else {
-          const n = cloneChangedBlueprintNode(bp.children as BlueprintNode, context);
+          n = cloneChangedBlueprintNode(bp.children as BlueprintNode, context);
           if (bp.children === n) {
             return bp;
           }
@@ -285,9 +286,10 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
   const aVNode = a.vnode;
   const aFlags = a.flags;
   const bFlags = b._flags;
+  let n;
 
   if (aVNode === b) {
-    const n = cloneChangedBlueprintNode(a, context);
+    n = cloneChangedBlueprintNode(a, context);
     if (a === n) {
       return a;
     }
@@ -318,7 +320,7 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
           );
         }
       } else { // ((flags & VNodeFlags.Element) !== 0)
-        let n = a.children;
+        n = a.children;
         if (b._children !== null) {
           if (a.vnode._children !== b._children) {
             n = diffBlueprintChildren(
@@ -352,7 +354,6 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
     } else { // ((flags & VNodeFlags.Component) !== 0)
       if ((aFlags & VNodeFlags.ComponentClass) !== 0) {
         let component = (a.data as Component);
-        let n;
         if (component.isPropsChanged(a.vnode._props, b._props) === true) {
           component = new (b._tag as ComponentClass)(b._props);
           n = diffBlueprintNode(a.children as BlueprintNode, component.render(), context);
@@ -378,7 +379,7 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
               context,
             );
             if (prevSelectData !== selectData) {
-              const n = diffBlueprintNode(
+              n = diffBlueprintNode(
                 a.children as BlueprintNode,
                 connect.render(selectData.out),
                 context,
@@ -389,7 +390,7 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
                 selectData,
               );
             }
-            const n = cloneChangedBlueprintNode(a.children as BlueprintNode, context);
+            n = cloneChangedBlueprintNode(a.children as BlueprintNode, context);
             if (a.children === n) {
               return a;
             }
@@ -399,7 +400,7 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
               selectData,
             );
           } else { // ((flags & VNodeFlags.UpdateContext) !== 0)
-            const n = diffBlueprintNode(
+            n = diffBlueprintNode(
               a.children as BlueprintNode,
               b._children as VNode<any>,
               Object.assign({}, context, a.vnode._props),
@@ -415,7 +416,6 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
           }
         } else {
           const component = (b._tag as StatelessComponent);
-          let n;
           if (
             ((aFlags & VNodeFlags.CheckChangedProps) === 0 &&
               a.vnode._props !== b._props) ||
