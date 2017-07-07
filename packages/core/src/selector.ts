@@ -39,28 +39,28 @@ export function selectorData<I, O>(i: I, o?: O): SelectorData<I, O> {
  */
 export function memoizeSelector<T, U extends SelectorData>(
   select: (prev: U | null) => U,
-  ref: (v?: U | null) => U | null,
+  ref: (v?: U | null, context?: Context) => U | null,
 ): (prev: U | null) => U;
 export function memoizeSelector<T, U extends SelectorData>(
   select: (prev: U | null, props: T) => U,
-  ref: (v?: U | null) => U | null,
+  ref: (v?: U | null, context?: Context) => U | null,
 ): (prev: U | null, props: T) => U;
 export function memoizeSelector<T, U extends SelectorData>(
   select: (prev: U | null, props: T, context: Context) => U,
-  ref: (v?: U | null) => U | null,
+  ref: (v?: U | null, context?: Context) => U | null,
 ): (prev: U | null, props: T, context: Context) => U {
   if (__IVI_DEV__) {
     const fn = function (prev: U | null, props: T, context: Context) {
-      const state = select(ref(), props, context);
-      ref(state);
+      const state = select(ref(undefined, context), props, context);
+      ref(state, context);
       return state;
     };
     fn.displayName = select.name;
     return fn;
   }
   return function (prev: U | null, props: T, context: Context) {
-    const state = select(ref(), props, context);
-    ref(state);
+    const state = select(ref(undefined, context), props, context);
+    ref(state, context);
     return state;
   };
 }
