@@ -93,6 +93,10 @@ export const enum VNodeFlags {
    * Blueprint Node contains connect node.
    */
   DeepConnect = 1 << 19,
+  /**
+   * Blueprint Node is frozen and shouldn't be changed.
+   */
+  Frozen = 1 << 20,
 
   /**
    * VNode represents a Component.
@@ -101,16 +105,18 @@ export const enum VNodeFlags {
   /**
    * Flags that should match to be compatible for syncing.
    */
-  Syncable = Text
+  Syncable = 0
+  | Text
   | Element
   | Component
-  // | Key
+  // | Key (Keys shouldn't be checked for blueprint nodes)
   | InputElement
   | TextAreaElement
   | MediaElement
   | SvgElement
   | Connect
-  | UpdateContext,
+  | UpdateContext
+  | VoidElement,
 }
 
 /**

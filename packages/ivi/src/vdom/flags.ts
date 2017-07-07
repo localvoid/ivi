@@ -93,8 +93,19 @@ export const enum VNodeFlags {
   /**
    * Flags that should match to be compatible for syncing.
    */
-  Syncable = Text | Element | Component | Key | InputElement | TextAreaElement | MediaElement | SvgElement |
-  Connect | UpdateContext | KeepAlive,
+  Syncable = 0
+  | Text
+  | Element
+  | Component
+  | Key
+  | InputElement
+  | TextAreaElement
+  | MediaElement
+  | SvgElement
+  | Connect
+  | UpdateContext
+  | KeepAlive
+  | VoidElement,
 }
 
 /**
