@@ -4,8 +4,10 @@
 
 import { BlueprintNode, createBlueprint } from "../src/blueprint";
 import { VNodeFlags } from "../src/vnode";
-import { Component, StatelessComponent } from "../src/component";
+import { context } from "../src/vnode_factories";
+import { ComponentClass, StatelessComponent } from "../src/component";
 import * as h from "./utils/html";
+import * as c from "./utils/components";
 import { expect } from "chai";
 
 class BlueprintObserver {
@@ -20,12 +22,12 @@ class BlueprintObserver {
   }
 
   firstChild() {
-    const flags = this.node.flags;
-    if ((flags & VNodeFlags.ChildrenArray) !== null) {
-      return new BlueprintObserver((this.node.children as BlueprintNode[])[0], this.node, 0);
-    }
-    if ((flags & VNodeFlags.ChildrenVNode) !== null) {
-      return new BlueprintObserver(this.node.children as BlueprintNode, this.node);
+    if (this.node.children !== null) {
+      if (Array.isArray(this.node.children)) {
+        return new BlueprintObserver(this.node.children[0], this.node, 0);
+      } else if (typeof this.node.children !== "string") {
+        return new BlueprintObserver(this.node.children as BlueprintNode, this.node);
+      }
     }
 
     throw Error("Blueprint doesn't have any children.");
@@ -76,7 +78,7 @@ class BlueprintObserver {
     return this;
   }
 
-  expectComponent(cls: Component<any>) {
+  expectComponent(cls: ComponentClass<any>) {
     expect((this.node.flags & VNodeFlags.ComponentClass) !== 0).to.be.true;
     expect(this.node.vnode._tag).to.be.equal(cls);
     return this;
@@ -107,8 +109,8 @@ function _createBlueprintIndex(index: Set<BlueprintNode>, node: BlueprintNode) {
   index.add(node);
   if (node.children !== null) {
     if (Array.isArray(node.children)) {
-      for (const c of node.children) {
-        _createBlueprintIndex(index, c);
+      for (const child of node.children) {
+        _createBlueprintIndex(index, child);
       }
     } else if (typeof node.children !== "string") {
       _createBlueprintIndex(index, node.children as BlueprintNode);
@@ -127,14 +129,12 @@ describe("blueprint", () => {
     it(`abc`, () => {
       observeBlueprint(createBlueprint(h.t("abc")))
         .expectText("abc")
-        .expectNoDeepConnect()
         .expectString(`abc`);
     });
 
     it(`<div>`, () => {
       observeBlueprint(createBlueprint(h.div()))
         .expectElement("div")
-        .expectNoDeepConnect()
         .expectString(`<div>`);
     });
 
@@ -212,6 +212,92 @@ describe("blueprint", () => {
       })))
         .expectElement("div")
         .expectString(`<div class="abc" id="123" style="color:green">`);
+    });
+
+    it(`<C><div><C>`, () => {
+      observeBlueprint(createBlueprint(c.rc(h.div())))
+        .expectComponent(c.RenderChild)
+        .expectString(`<div></div>`);
+    });
+
+    it(`<C><C><div></C><C>`, () => {
+      const a = observeBlueprint(createBlueprint(c.rc(c.rc(h.div()))))
+        .expectComponent(c.RenderChild)
+        .expectString(`<div></div>`);
+
+      a.firstChild()
+        .expectString(`<div></div>`);
+    });
+
+    it(`<C><div><C><span></C></div><C>`, () => {
+      const a = observeBlueprint(createBlueprint(c.rc(h.div().children(c.rc(h.span())))))
+        .expectComponent(c.RenderChild)
+        .expectString(`<div><span></span></div>`);
+
+      a.firstChild()
+        .firstChild()
+        .expectString(`<span></span>`);
+    });
+
+    it(`<SC><div><SC>`, () => {
+      observeBlueprint(createBlueprint(c.src(h.div())))
+        .expectStatelessComponent(c.StatelessRenderChild)
+        .expectString(`<div></div>`);
+    });
+
+    it(`<SC><SC><div></SC><SC>`, () => {
+      const a = observeBlueprint(createBlueprint(c.src(c.src(h.div()))))
+        .expectStatelessComponent(c.StatelessRenderChild)
+        .expectString(`<div></div>`);
+
+      a.firstChild()
+        .expectString(`<div></div>`);
+    });
+
+    it(`<SC><div><SC><span></SC></div><SC>`, () => {
+      const a = observeBlueprint(createBlueprint(c.src(h.div().children(c.src(h.span())))))
+        .expectStatelessComponent(c.StatelessRenderChild)
+        .expectString(`<div><span></span></div>`);
+
+      a.firstChild()
+        .firstChild()
+        .expectString(`<span></span>`);
+    });
+
+    it(`<ctx><div></ctx>`, () => {
+      observeBlueprint(createBlueprint(context({}, h.div())))
+        .firstChild()
+        .expectString(`<div>`);
+    });
+
+    it(`<span><cc></span>`, () => {
+      const ctx = { child: h.strong() };
+      const a = observeBlueprint(createBlueprint(h.div().children(
+        context(ctx, h.span().children(c.cc())),
+      )))
+        .expectString(`<div>`);
+
+      a
+        .firstChild() // context
+        .firstChild() // span
+        .expectString(`<span>`)
+        .firstChild() // connect
+        .firstChild() // strong
+        .expectString(`<strong>`);
+    });
+
+    it(`<span><ccp></span>`, () => {
+      const a = observeBlueprint(createBlueprint(h.div().children(
+        h.span().children(c.ccp(h.strong())),
+      )))
+        .expectString(`<div>`);
+
+      a
+        .firstChild() // span
+        .expectString(`<span>`)
+        .firstChild() // connect
+        .firstChild() // strong
+        .expectString(`<strong>`);
     });
   });
 
@@ -335,6 +421,80 @@ describe("blueprint", () => {
         expect(index.has(c2.node)).to.be.false;
         expect(index.has(c3.node)).to.be.true;
       });
+
+      it(`children keys`, () => {
+        const a = createBlueprint(h.div().children(h.span().key("a"), h.div().key("b"), h.span().key("c")));
+        const b = createBlueprint(
+          h.div().children(h.span().key("c"), h.span().key("a"), h.div().key("b")),
+          undefined,
+          a,
+        );
+        const index = createBlueprintIndex(a);
+        const o = observeBlueprint(b);
+        const c1 = o.firstChild();
+        const c2 = c1.nextSibling();
+        const c3 = c2.nextSibling();
+
+        expect(index.has(c1.node)).to.be.true;
+        expect(index.has(c2.node)).to.be.true;
+        expect(index.has(c3.node)).to.be.true;
+      });
+    });
+  });
+
+  describe("deep connect", () => {
+    it(`abc`, () => {
+      observeBlueprint(createBlueprint(h.t("abc")))
+        .expectNoDeepConnect();
+    });
+
+    it(`<div>`, () => {
+      observeBlueprint(createBlueprint(h.div()))
+        .expectNoDeepConnect();
+    });
+
+    it(`<C><div></C>`, () => {
+      observeBlueprint(createBlueprint(c.rc(h.div())))
+        .expectNoDeepConnect();
+    });
+
+    it(`<SC><div></SC>`, () => {
+      observeBlueprint(createBlueprint(c.src(h.div())))
+        .expectNoDeepConnect();
+    });
+
+    it(`<ctx><div></ctx>`, () => {
+      const a = observeBlueprint(createBlueprint(context({}, h.div())))
+        .expectNoDeepConnect();
+
+      a.firstChild()
+        .expectNoDeepConnect();
+    });
+
+    it(`<div><cc></div>`, () => {
+      const ctx = { child: h.div() };
+      const a = observeBlueprint(createBlueprint(h.div().children(
+        context(ctx, h.div().children(c.cc())),
+      )))
+        .expectDeepConnect();
+
+      a
+        .firstChild() // context
+        .expectDeepConnect()
+        .firstChild() // div
+        .expectDeepConnect()
+        .firstChild() // connect
+        .expectDeepConnect()
+        .firstChild() // div
+        .expectNoDeepConnect();
+    });
+
+    it(`<div><div></div><cc></div>`, () => {
+      const ctx = { child: h.div() };
+      observeBlueprint(createBlueprint(h.div().children(
+        context(ctx, h.div().children(h.div(), c.cc())),
+      )))
+        .expectDeepConnect();
     });
   });
 });
