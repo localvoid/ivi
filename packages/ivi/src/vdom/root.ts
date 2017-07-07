@@ -218,7 +218,7 @@ export function augment(
       syncFlags: 0,
     });
 
-    nextFrame().write(function augment() {
+    nextFrame().write(function augmentNextFrame() {
       augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
       iOSFixEventBubbling(container);
     });
