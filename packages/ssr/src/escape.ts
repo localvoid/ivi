@@ -2,6 +2,9 @@
 /**
  * escapeText escapes HTML text.
  *
+ * https://www.w3.org/TR/html5/syntax.html#data-state
+ * https://www.w3.org/TR/html5/syntax.html#rcdata-state
+ *
  * @param text Text.
  * @returns Escaped text.
  */
@@ -18,9 +21,6 @@ export function escapeText(text: string | number): string {
           break;
         case 60: // <
           escape = "&lt;";
-          break;
-        case 62: // >
-          escape = "&gt;";
           break;
         default:
           continue;
@@ -45,6 +45,8 @@ export function escapeText(text: string | number): string {
 
 /**
  * escapeAttributeValue escapes HTML attribute values.
+ *
+ * https://www.w3.org/TR/html5/syntax.html#attribute-value-(double-quoted)-state
  *
  * @param text Attribute value.
  * @returns Escaped attribute value
