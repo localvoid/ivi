@@ -648,10 +648,10 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
       }
     }
   } else { // (((flags & VNodeFlags.Text) !== 0)
+    if ((flags & VNodeFlags.Frozen) === 0) {
+      node.string = escapeText(node.children as string | number);
+    }
     if (componentNode !== undefined) {
-      if ((flags & VNodeFlags.Frozen) === 0) {
-        node.string = escapeText(node.children as string | number);
-      }
       componentNode.string += node.string;
     }
   }

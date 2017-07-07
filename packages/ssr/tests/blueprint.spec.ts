@@ -44,6 +44,11 @@ class BlueprintObserver {
     throw new Error("Blueprint node doesn't have next sibling.");
   }
 
+  expectNoDeepConnect() {
+    expect((this.node.flags & VNodeFlags.DeepConnect) !== 0).to.be.false;
+    return this;
+  }
+
   expectDeepConnect() {
     expect((this.node.flags & VNodeFlags.DeepConnect) !== 0).to.be.true;
     return this;
@@ -98,30 +103,38 @@ function observeBlueprint(node: BlueprintNode) {
   return new BlueprintObserver(node);
 }
 
-// function _createBlueprintIndex(index: Set<BlueprintNode>, node: BlueprintNode) {
-//   index.add(node);
-//   if (node.children !== null) {
-//     if (Array.isArray(node.children)) {
-//       for (const c of node.children) {
-//         _createBlueprintIndex(index, c);
-//       }
-//     } else if (typeof node.children !== "string") {
-//       _createBlueprintIndex(index, node.children as BlueprintNode);
-//     }
-//   }
-// }
+function _createBlueprintIndex(index: Set<BlueprintNode>, node: BlueprintNode) {
+  index.add(node);
+  if (node.children !== null) {
+    if (Array.isArray(node.children)) {
+      for (const c of node.children) {
+        _createBlueprintIndex(index, c);
+      }
+    } else if (typeof node.children !== "string") {
+      _createBlueprintIndex(index, node.children as BlueprintNode);
+    }
+  }
+}
 
-// function createBlueprintIndex(node: BlueprintNode) {
-//   const index = new Set<BlueprintNode>();
-//   _createBlueprintIndex(index, node);
-//   return index;
-// }
+function createBlueprintIndex(node: BlueprintNode) {
+  const index = new Set<BlueprintNode>();
+  _createBlueprintIndex(index, node);
+  return index;
+}
 
 describe("blueprint", () => {
   describe("create", () => {
+    it(`abc`, () => {
+      observeBlueprint(createBlueprint(h.t("abc")))
+        .expectText("abc")
+        .expectNoDeepConnect()
+        .expectString(`abc`);
+    });
+
     it(`<div>`, () => {
       observeBlueprint(createBlueprint(h.div()))
         .expectElement("div")
+        .expectNoDeepConnect()
         .expectString(`<div>`);
     });
 
@@ -209,11 +222,15 @@ describe("blueprint", () => {
         const a = createBlueprint(n);
         const b = createBlueprint(n, undefined, a);
         expect(a).to.be.equal(b);
+        observeBlueprint(b)
+          .expectNoDeepConnect();
       });
 
       it(`div`, () => {
         const a = createBlueprint(h.div());
         const b = createBlueprint(h.div(), undefined, a);
+        observeBlueprint(b)
+          .expectNoDeepConnect();
         expect(a).to.be.equal(b);
       });
 
@@ -275,24 +292,48 @@ describe("blueprint", () => {
         const a = createBlueprint(h.div().children(h.span()));
         const b = createBlueprint(h.div().children(h.span()), undefined, a);
         expect(a).to.be.equal(b);
+        observeBlueprint(b)
+          .expectNoDeepConnect();
       });
 
       it(`same multiple children`, () => {
         const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
         const b = createBlueprint(h.div().children(h.span(), h.div(), h.span()), undefined, a);
         expect(a).to.be.equal(b);
+        observeBlueprint(b)
+          .expectNoDeepConnect();
       });
 
       it(`diff children`, () => {
         const a = createBlueprint(h.div().children(h.span()));
         const b = createBlueprint(h.div().children(h.div()), undefined, a);
         expect(a).not.to.be.equal(b);
+        observeBlueprint(b)
+          .expectNoDeepConnect();
       });
 
       it(`diff multiple children`, () => {
         const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
         const b = createBlueprint(h.div().children(h.span(), h.span(), h.span()), undefined, a);
         expect(a).not.to.be.equal(b);
+        observeBlueprint(b)
+          .expectNoDeepConnect();
+      });
+    });
+
+    describe("deep reuse", () => {
+      it(`1`, () => {
+        const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
+        const b = createBlueprint(h.div().children(h.span(), h.span(), h.span()), undefined, a);
+        const index = createBlueprintIndex(a);
+        const o = observeBlueprint(b);
+        const c1 = o.firstChild();
+        const c2 = c1.nextSibling();
+        const c3 = c2.nextSibling();
+
+        expect(index.has(c1.node)).to.be.true;
+        expect(index.has(c2.node)).to.be.false;
+        expect(index.has(c3.node)).to.be.true;
       });
     });
   });
