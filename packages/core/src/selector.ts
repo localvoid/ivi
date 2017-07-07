@@ -15,6 +15,22 @@ export interface SelectorData<I = {}, O = I> {
 }
 
 /**
+ * SelectorDataRef.
+ */
+export interface SelectorDataRef<T extends SelectorData> {
+  ref: T | null;
+}
+
+/**
+ * selectorDataRef creates SelectorDataRef.
+ *
+ * @param ref SelectorData reference.
+ */
+export function selectorDataRef<T extends SelectorData>(ref: T | null = null): SelectorDataRef<T> {
+  return { ref };
+}
+
+/**
  * selectorData creates SelectorData instances.
  *
  * @param i Input data.
