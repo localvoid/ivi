@@ -1,4 +1,7 @@
-import { HTMLDivElementProps, HTMLSpanElementProps, HTMLElementProps, SVGCircleElementProps } from "ivi-core";
+import {
+  HTMLDivElementProps, HTMLSpanElementProps, HTMLElementProps, HTMLInputElementProps, HTMLTextAreaElementProps,
+  SVGCircleElementProps,
+} from "ivi-core";
 import { VNode, VNodeFlags } from "../../src";
 
 export function t(content: string | number | null): VNode<null> {
@@ -35,6 +38,39 @@ export function strong(className?: string): VNode<HTMLElementProps | null> {
     className === undefined ? null : className,
     null,
     "</strong>",
+  );
+}
+
+export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.TextAreaElement | VNodeFlags.NewLineEatingElement,
+    "<textarea",
+    null,
+    className === undefined ? null : className,
+    null,
+    "</textarea>",
+  );
+}
+
+export function inputCheckbox(className?: string): VNode<HTMLInputElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
+    `<input type="checkbox"`,
+    null,
+    className === undefined ? null : className,
+    null,
+    null,
+  );
+}
+
+export function inputText(className?: string): VNode<HTMLInputElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
+    `<input type="text"`,
+    null,
+    className === undefined ? null : className,
+    null,
+    null,
   );
 }
 
