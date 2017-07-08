@@ -47,7 +47,7 @@ export const enum VNodeFlags {
    */
   Key = 1 << 8,
   /**
-   * VNode represents an HTMLInputElement(+textarea) element.
+   * VNode represents an HTMLInputElement element.
    */
   InputElement = 1 << 9,
   /**

@@ -84,29 +84,23 @@ function renderElementStyle(style: { [key: string]: any }): string {
  */
 export function renderOpenElement(node: VNode<any>): string {
   const flags = node._flags;
-  let result;
-  if ((flags & VNodeFlags.InputElement) === 0) {
-    result = node._tag as string;
-  } else {
-    if ((flags & VNodeFlags.TextAreaElement) === 0) {
-      result = `<input type="${node._tag}"`;
-
-      const value = node._children;
-      if (value !== null) {
-        if (typeof value === "string") {
-          result += ` value="${escapeAttributeValue(value)}"`;
-        } else if (value === true) {
-          result += ` checked`;
-        }
-      }
-    } else {
-      result = `<textarea`;
-    }
-  }
+  let result = node._tag as string;
 
   if (node._className !== null) {
     result += ` class="${node._className}"`;
   }
+
+  if ((flags & VNodeFlags.InputElement) !== 0) {
+    const value = node._children;
+    if (value !== null) {
+      if (typeof value === "string") {
+        result += ` value="${escapeAttributeValue(value)}"`;
+      } else if (value === true) {
+        result += ` checked`;
+      }
+    }
+  }
+
   if (node._props !== null) {
     result += renderElementProps(node._props);
   }

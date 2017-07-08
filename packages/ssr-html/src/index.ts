@@ -1749,7 +1749,7 @@ export function view(className?: string): VNode<SVGViewElementProps | null> {
 // Textarea / Input Elements:
 export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.TextAreaElement | VNodeFlags.NewLineEatingElement,
+    VNodeFlags.Element | VNodeFlags.TextAreaElement | VNodeFlags.NewLineEatingElement,
     "<textarea",
     null,
     className === undefined ? null : className,
@@ -1760,7 +1760,7 @@ export function textarea(className?: string): VNode<HTMLTextAreaElementProps | n
 export function inputButton(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "button",
+    `<input type="button"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1770,7 +1770,7 @@ export function inputButton(className?: string): VNode<HTMLInputElementProps | n
 export function inputCheckbox(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "checkbox",
+    `<input type="checkbox"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1780,7 +1780,7 @@ export function inputCheckbox(className?: string): VNode<HTMLInputElementProps |
 export function inputColor(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "color",
+    `<input type="color"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1790,7 +1790,7 @@ export function inputColor(className?: string): VNode<HTMLInputElementProps | nu
 export function inputDate(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "date",
+    `<input type="date"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1800,7 +1800,7 @@ export function inputDate(className?: string): VNode<HTMLInputElementProps | nul
 export function inputDatetime(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "datetime",
+    `<input type="datetime"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1810,7 +1810,7 @@ export function inputDatetime(className?: string): VNode<HTMLInputElementProps |
 export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "datetime-local",
+    `<input type="datetime-local"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1820,7 +1820,7 @@ export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementPr
 export function inputEmail(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "email",
+    `<input type="email"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1830,7 +1830,7 @@ export function inputEmail(className?: string): VNode<HTMLInputElementProps | nu
 export function inputFile(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "file",
+    `<input type="file"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1840,7 +1840,7 @@ export function inputFile(className?: string): VNode<HTMLInputElementProps | nul
 export function inputHidden(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "hidden",
+    `<input type="hidden"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1850,7 +1850,7 @@ export function inputHidden(className?: string): VNode<HTMLInputElementProps | n
 export function inputImage(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "image",
+    `<input type="image"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1860,7 +1860,7 @@ export function inputImage(className?: string): VNode<HTMLInputElementProps | nu
 export function inputMonth(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "month",
+    `<input type="month"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1870,7 +1870,7 @@ export function inputMonth(className?: string): VNode<HTMLInputElementProps | nu
 export function inputNumber(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "number",
+    `<input type="number"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1880,7 +1880,7 @@ export function inputNumber(className?: string): VNode<HTMLInputElementProps | n
 export function inputPassword(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "password",
+    `<input type="password"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1890,7 +1890,7 @@ export function inputPassword(className?: string): VNode<HTMLInputElementProps |
 export function inputRadio(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "radio",
+    `<input type="radio"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1900,7 +1900,7 @@ export function inputRadio(className?: string): VNode<HTMLInputElementProps | nu
 export function inputRange(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "range",
+    `<input type="range"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1910,7 +1910,7 @@ export function inputRange(className?: string): VNode<HTMLInputElementProps | nu
 export function inputReset(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "reset",
+    `<input type="reset"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1920,7 +1920,7 @@ export function inputReset(className?: string): VNode<HTMLInputElementProps | nu
 export function inputSearch(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "search",
+    `<input type="search"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1930,7 +1930,7 @@ export function inputSearch(className?: string): VNode<HTMLInputElementProps | n
 export function inputSubmit(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "submit",
+    `<input type="submit"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1940,7 +1940,7 @@ export function inputSubmit(className?: string): VNode<HTMLInputElementProps | n
 export function inputTel(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "tel",
+    `<input type="tel"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1950,7 +1950,7 @@ export function inputTel(className?: string): VNode<HTMLInputElementProps | null
 export function inputText(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "text",
+    `<input type="text"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1960,7 +1960,7 @@ export function inputText(className?: string): VNode<HTMLInputElementProps | nul
 export function inputTime(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "time",
+    `<input type="time"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1970,7 +1970,7 @@ export function inputTime(className?: string): VNode<HTMLInputElementProps | nul
 export function inputUrl(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "url",
+    `<input type="url"`,
     null,
     className === undefined ? null : className,
     null,
@@ -1980,7 +1980,7 @@ export function inputUrl(className?: string): VNode<HTMLInputElementProps | null
 export function inputWeek(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "week",
+    `<input type="week"`,
     null,
     className === undefined ? null : className,
     null,
