@@ -1,7 +1,7 @@
 (global as any).__IVI_BROWSER__ = false;
 (global as any).__IVI_DEV__ = true;
 
-import { VNode, Component, componentFactory, renderToString } from "../src";
+import { VNode, Component, componentFactory, renderToString, createBlueprint } from "../src";
 import * as h from "./utils/html";
 import { expect } from "chai";
 
@@ -334,6 +334,372 @@ describe("renderToString", () => {
 
     it("text node content", () => {
       expect(renderToString(h.t(`<&`))).to.equal(`&lt;&amp;`);
+    });
+  });
+
+  describe("diff with blueprint", () => {
+    describe("class", () => {
+      it(`null => "a"`, () => {
+        const bp = createBlueprint(h.div());
+        expect(renderToString(h.div("a"), undefined, bp)).to
+          .equal(`<div class="a"></div>`);
+      });
+
+      it(`"a" => "a"`, () => {
+        const bp = createBlueprint(h.div("a"));
+        expect(renderToString(h.div("a"), undefined, bp)).to
+          .equal(`<div class="a"></div>`);
+      });
+
+      it(`"b" => "a"`, () => {
+        const bp = createBlueprint(h.div("b"));
+        expect(renderToString(h.div("a"), undefined, bp)).to
+          .equal(`<div class="a"></div>`);
+      });
+    });
+
+    describe("props", () => {
+      it(`null => {}`, () => {
+        const bp = createBlueprint(h.div());
+        expect(renderToString(h.div().props({}), undefined, bp)).to
+          .equal(`<div></div>`);
+      });
+
+      it(`{} => null`, () => {
+        const bp = createBlueprint(h.div().props({}));
+        expect(renderToString(h.div(), undefined, bp)).to
+          .equal(`<div></div>`);
+      });
+
+      it(`{} => {}`, () => {
+        const bp = createBlueprint(h.div().props({}));
+        expect(renderToString(h.div().props({}), undefined, bp)).to
+          .equal(`<div></div>`);
+      });
+
+      it(`null => { title: "abc" }`, () => {
+        const bp = createBlueprint(h.div());
+        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).to
+          .equal(`<div title="abc"></div>`);
+      });
+
+      it(`{} => { title: "abc" }`, () => {
+        const bp = createBlueprint(h.div().props({}));
+        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).to
+          .equal(`<div title="abc"></div>`);
+      });
+
+      it(`{ title: "abc" } => { title: "abc" }`, () => {
+        const bp = createBlueprint(h.div().props({ title: "abc" }));
+        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).to
+          .equal(`<div title="abc"></div>`);
+      });
+
+      it(`{ title: "a" } => { title: "abc" }`, () => {
+        const bp = createBlueprint(h.div().props({ title: "a" }));
+        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).to
+          .equal(`<div title="abc"></div>`);
+      });
+    });
+
+    describe("style", () => {
+      it(`null => {}`, () => {
+        const bp = createBlueprint(h.div());
+        expect(renderToString(h.div().style({}), undefined, bp)).to
+          .equal(`<div></div>`);
+      });
+
+      it(`{} => null`, () => {
+        const bp = createBlueprint(h.div().style({}));
+        expect(renderToString(h.div(), undefined, bp)).to
+          .equal(`<div></div>`);
+      });
+
+      it(`{} => {}`, () => {
+        const bp = createBlueprint(h.div().style({}));
+        expect(renderToString(h.div().style({}), undefined, bp)).to
+          .equal(`<div></div>`);
+      });
+
+      it(`null => { color: "green" }`, () => {
+        const bp = createBlueprint(h.div());
+        expect(renderToString(h.div().style({ color: "green" }), undefined, bp)).to
+          .equal(`<div style="color:green"></div>`);
+      });
+
+      it(`{} => { color: "green" }`, () => {
+        const bp = createBlueprint(h.div().style({}));
+        expect(renderToString(h.div().style({ color: "green" }), undefined, bp)).to
+          .equal(`<div style="color:green"></div>`);
+      });
+
+      it(`{ color: "green" } => { color: "green" }`, () => {
+        const bp = createBlueprint(h.div().style({ color: "green" }));
+        expect(renderToString(h.div().style({ color: "green" }), undefined, bp)).to
+          .equal(`<div style="color:green"></div>`);
+      });
+
+      it(`{color: "red" } => { color: "green" }`, () => {
+        const bp = createBlueprint(h.div().style({ color: "red" }));
+        expect(renderToString(h.div().style({ color: "green" }), undefined, bp)).to
+          .equal(`<div style="color:green"></div>`);
+      });
+    });
+
+    describe("children", () => {
+      describe("empty blueprint", () => {
+        const bp = createBlueprint(h.div());
+        it("basic text", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+          ), undefined, bp)).to
+            .equal(`<div>abc</div>`);
+        });
+
+        it("basic number", () => {
+          expect(renderToString(h.div().children(
+            123,
+          ), undefined, bp)).to
+            .equal(`<div>123</div>`);
+        });
+
+        it("adjacent text nodes", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+            "def",
+          ), undefined, bp)).to
+            .equal(`<div>abcdef</div>`);
+        });
+
+        it("element", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span></div>`);
+        });
+
+        it("elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span><strong></strong></div>`);
+        });
+
+        it("mixed elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            "a",
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span>a<strong></strong></div>`);
+        });
+      });
+
+      describe("blueprint with basic text", () => {
+        const bp = createBlueprint(h.div().children("a"));
+        it("basic text", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+          ), undefined, bp)).to
+            .equal(`<div>abc</div>`);
+        });
+
+        it("basic number", () => {
+          expect(renderToString(h.div().children(
+            123,
+          ), undefined, bp)).to
+            .equal(`<div>123</div>`);
+        });
+
+        it("adjacent text nodes", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+            "def",
+          ), undefined, bp)).to
+            .equal(`<div>abcdef</div>`);
+        });
+
+        it("element", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span></div>`);
+        });
+
+        it("elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span><strong></strong></div>`);
+        });
+
+        it("mixed elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            "a",
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span>a<strong></strong></div>`);
+        });
+      });
+
+      describe("blueprint with children element", () => {
+        const bp = createBlueprint(h.div().children(h.span()));
+        it("basic text", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+          ), undefined, bp)).to
+            .equal(`<div>abc</div>`);
+        });
+
+        it("basic number", () => {
+          expect(renderToString(h.div().children(
+            123,
+          ), undefined, bp)).to
+            .equal(`<div>123</div>`);
+        });
+
+        it("adjacent text nodes", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+            "def",
+          ), undefined, bp)).to
+            .equal(`<div>abcdef</div>`);
+        });
+
+        it("element", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span></div>`);
+        });
+
+        it("elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span><strong></strong></div>`);
+        });
+
+        it("mixed elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            "a",
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span>a<strong></strong></div>`);
+        });
+      });
+
+      describe("blueprint with multiple children elements", () => {
+        const bp = createBlueprint(h.div().children(h.span(), h.strong()));
+        it("basic text", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+          ), undefined, bp)).to
+            .equal(`<div>abc</div>`);
+        });
+
+        it("basic number", () => {
+          expect(renderToString(h.div().children(
+            123,
+          ), undefined, bp)).to
+            .equal(`<div>123</div>`);
+        });
+
+        it("adjacent text nodes", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+            "def",
+          ), undefined, bp)).to
+            .equal(`<div>abcdef</div>`);
+        });
+
+        it("element", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span></div>`);
+        });
+
+        it("elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span><strong></strong></div>`);
+        });
+
+        it("mixed elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            "a",
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span>a<strong></strong></div>`);
+        });
+      });
+
+      describe("blueprint with multiple keyed/non-keyed children elements", () => {
+        const bp = createBlueprint(h.div().children(h.span().key(0), "a", h.strong().key(1)));
+        it("basic text", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+          ), undefined, bp)).to
+            .equal(`<div>abc</div>`);
+        });
+
+        it("basic number", () => {
+          expect(renderToString(h.div().children(
+            123,
+          ), undefined, bp)).to
+            .equal(`<div>123</div>`);
+        });
+
+        it("adjacent text nodes", () => {
+          expect(renderToString(h.div().children(
+            "abc",
+            "def",
+          ), undefined, bp)).to
+            .equal(`<div>abcdef</div>`);
+        });
+
+        it("element", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span></div>`);
+        });
+
+        it("elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span><strong></strong></div>`);
+        });
+
+        it("mixed elements", () => {
+          expect(renderToString(h.div().children(
+            h.span(),
+            "a",
+            h.strong(),
+          ), undefined, bp)).to
+            .equal(`<div><span></span>a<strong></strong></div>`);
+        });
+
+        it("reorder elements 1", () => {
+          expect(renderToString(h.div().children(
+            h.strong().key(1),
+            "a",
+            h.span().key(0),
+          ), undefined, bp)).to
+            .equal(`<div><strong></strong>a<span></span></div>`);
+        });
+      });
     });
   });
 });
