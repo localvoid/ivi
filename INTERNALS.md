@@ -76,7 +76,7 @@ modules, we will try to match their conventions.
 Install all development dependencies at the root of the repository
 
 ```sh
-$ node install
+$ npm install
 ```
 
 Select a package that you want to change, and enter into its directory.

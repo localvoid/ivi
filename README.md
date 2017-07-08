@@ -54,8 +54,8 @@ specify all configuration variables.
 
 Basic boilerplate configured with:
 
-- [TypeScript 2.3](https://www.typescriptlang.org)
-- [Webpack](https://webpack.js.org)
+- [TypeScript 2.4](https://www.typescriptlang.org)
+- [Webpack 3.1](https://webpack.js.org)
 
 ```sh
 $ git clone https://github.com/ivijs/boilerplate
