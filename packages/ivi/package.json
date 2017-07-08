@@ -1,6 +1,6 @@
 {
   "name": "ivi",
-  "main": "dist/js/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.8.0",
@@ -40,6 +40,7 @@
     "test": "karma start --single-run",
     "test:watch": "karma start",
     "dist": "tsc --project ./tsconfig.build.json",
+    "dist:cjs": "tsc --project ./tsconfig.build.cjs.json",
     "watch": "tsc --watch --project ./tsconfig.build.json",
     "lint": "tslint --project ./tsconfig.json"
   },

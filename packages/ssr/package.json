@@ -1,6 +1,6 @@
 {
   "name": "ivi-ssr",
-  "main": "dist/js/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.1.0",
@@ -38,6 +38,7 @@
   ],
   "scripts": {
     "dist": "tsc --project ./tsconfig.build.json",
+    "dist:cjs": "tsc --project ./tsconfig.build.cjs.json",
     "watch": "tsc --watch --project ./tsconfig.build.json",
     "lint": "tslint --project ./tsconfig.json",
     "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' mocha -r ts-node/register tests/*.ts"
