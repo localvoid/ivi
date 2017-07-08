@@ -3,6 +3,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
+  "unpkg": "dist/unpkg/index.js",
   "version": "0.8.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
@@ -41,6 +42,7 @@
     "test:watch": "karma start",
     "dist": "tsc --project ./tsconfig.build.json",
     "dist:cjs": "tsc --project ./tsconfig.build.cjs.json",
+    "dist:unpkg": "rollup -c ./rollup.conf.unpkg.js",
     "watch": "tsc --watch --project ./tsconfig.build.json",
     "lint": "tslint --project ./tsconfig.json"
   },
