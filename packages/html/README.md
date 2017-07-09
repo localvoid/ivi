@@ -1,4 +1,4 @@
-`VNode` factories for HTML and SVG elements.
+# VNode factories for HTML and SVG elements
 
 ## HTML
 
@@ -11,6 +11,7 @@ function applet(className?: string): VNode<HTMLAppletElementProps | null>;
 function area(className?: string): VNode<HTMLAreaElementProps | null>;
 function article(className?: string): VNode<HTMLElementProps | null>;
 function aside(className?: string): VNode<HTMLElementProps | null>;
+function audio(className?: string): VNode<HTMLAudioElementProps | null>;
 function b(className?: string): VNode<HTMLElementProps | null>;
 function base(className?: string): VNode<HTMLBaseElementProps | null>;
 function basefont(className?: string): VNode<HTMLBaseFontElementProps | null>;
@@ -108,6 +109,7 @@ function table(className?: string): VNode<HTMLTableElementProps | null>;
 function tbody(className?: string): VNode<HTMLTableSectionElementProps | null>;
 function td(className?: string): VNode<HTMLTableDataCellElementProps | null>;
 function template(className?: string): VNode<HTMLTemplateElementProps | null>;
+function textarea(className?: string): VNode<HTMLTextAreaElementProps | null>;
 function tfoot(className?: string): VNode<HTMLTableSectionElementProps | null>;
 function th(className?: string): VNode<HTMLTableHeaderCellElementProps | null>;
 function thead(className?: string): VNode<HTMLTableSectionElementProps | null>;
@@ -117,8 +119,9 @@ function track(className?: string): VNode<HTMLTrackElementProps | null>;
 function tt(className?: string): VNode<HTMLElementProps | null>;
 function u(className?: string): VNode<HTMLElementProps | null>;
 function ul(className?: string): VNode<HTMLUListElementProps | null>;
+function video(className?: string): VNode<HTMLVideoElementProps | null>;
 function wbr(className?: string): VNode<HTMLElementProps | null>;
-function xMSWebview(className?: string): VNode<MSHTMLWebViewElementProps | null>;
+function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | null>;
 function xmp(className?: string): VNode<HTMLPreElementProps | null>;
 ```
 
@@ -159,9 +162,6 @@ function defs(className?: string): VNode<SVGDefsElementProps | null>;
 function desc(className?: string): VNode<SVGDescElementProps | null>;
 function ellipse(className?: string): VNode<SVGEllipseElementProps | null>;
 function feblend(className?: string): VNode<SVGFEBlendElementProps | null>
-function textarea(className?: string): VNode<HTMLTextAreaElementProps | null>;
-function audio(className?: string): VNode<HTMLAudioElementProps | null>;
-function video(className?: string): VNode<HTMLVideoElementProps | null>;
 function fecolormatrix(className?: string): VNode<SVGFEColorMatrixElementProps | null>;
 function fecomponenttransfer(className?: string): VNode<SVGFEComponentTransferElementProps | null>;
 function fecomposite(className?: string): VNode<SVGFECompositeElementProps | null>;
