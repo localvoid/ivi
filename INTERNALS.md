@@ -79,7 +79,19 @@ Install all development dependencies at the root of the repository
 $ npm install
 ```
 
-Select a package that you want to change, and enter into its directory.
+Create links for all packages
+
+```sh
+$ npm run link
+```
+
+Build all packages
+
+```sh
+$ npm run dist
+```
+
+Select a package that you want to change and enter into its directory.
 
 Build ES6 module with
 
@@ -91,16 +103,4 @@ Build commonjs module with
 
 ```sh
 $ npm run dist:cjs
-```
-
-Create a link with
-
-```sh
-$ npm link
-```
-
-Install linked package at the root of the repository. For example, to link `ivi-core` package:
-
-```sh
-$ npm link ivi-core
 ```
