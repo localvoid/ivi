@@ -1,4 +1,4 @@
-import { NOOP_FALSE, isPropsNotShallowEqual } from "ivi-core";
+import { NOOP_FALSE, shallowEqual } from "ivi-core";
 import { VNode } from "./vnode";
 
 /**
@@ -14,7 +14,7 @@ export interface StatelessComponent<P = void> {
  * Component class type.
  */
 export interface ComponentClass<P = void> {
-  new (props: P): Component<P>;
+  new(props: P): Component<P>;
 }
 
 /**
@@ -66,6 +66,10 @@ export abstract class Component<P = void> {
      * Server-side components can't be invalidated.
      */
   }
+}
+
+function isPropsNotShallowEqual(a: any, b: any): boolean {
+  return !shallowEqual(a, b);
 }
 
 /**

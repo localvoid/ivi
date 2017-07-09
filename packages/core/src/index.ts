@@ -68,7 +68,7 @@ export {
 export { unorderedArrayDelete, map, mapRange, mapFilterUndefined } from "./array";
 export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList } from "./repeatable_task_list";
-export { isPropsNotShallowEqual } from "./props";
+export { shallowEqual } from "./equal";
 
 export { USER_AGENT, UserAgentFlags } from "./user_agent";
 export { FEATURES, FeatureFlags } from "./feature_detection";

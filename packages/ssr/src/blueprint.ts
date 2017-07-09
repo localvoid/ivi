@@ -1,4 +1,4 @@
-import { Context, SelectorData, isPropsNotShallowEqual } from "ivi-core";
+import { Context, SelectorData, shallowEqual } from "ivi-core";
 import { Component, ComponentClass, StatelessComponent } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { VNodeFlags, VNode, vNodeEqualKeys } from "./vnode";
@@ -340,8 +340,8 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
 
         if (
           a.vnode._className === b._className &&
-          !isPropsNotShallowEqual(a.vnode._props, b._props) &&
-          !isPropsNotShallowEqual(a.vnode._style, b._style) &&
+          shallowEqual(a.vnode._props, b._props) === true &&
+          shallowEqual(a.vnode._style, b._style) === true &&
           a.children === n
         ) {
           return a;

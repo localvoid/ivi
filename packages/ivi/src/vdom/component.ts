@@ -1,4 +1,4 @@
-import { NOOP_FALSE, isPropsNotShallowEqual } from "ivi-core";
+import { NOOP_FALSE, shallowEqual } from "ivi-core";
 import { currentFrame } from "ivi-scheduler";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { ComponentFlags } from "./flags";
@@ -17,7 +17,7 @@ export interface StatelessComponent<P = void> {
  * Component class constructor.
  */
 export interface ComponentClass<P = void> {
-  new (props: P): Component<P>;
+  new(props: P): Component<P>;
 }
 
 /**
@@ -148,6 +148,10 @@ export abstract class Component<P = void> {
       currentFrame().update();
     }
   }
+}
+
+function isPropsNotShallowEqual(a: any, b: any): boolean {
+  return !shallowEqual(a, b);
 }
 
 /**
