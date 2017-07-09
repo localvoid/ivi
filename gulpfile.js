@@ -109,13 +109,14 @@ gulp.task("link", [
   "link:core",
   "link:dom",
   "link:events",
+  "link:html",
   "link:scheduler",
   "link:ivi",
   "link:ssr",
   "link:ssr-html",
   "link:state",
 ], function (done) {
-  exec(`npm link ivi-core ivi-dom ivi-events ivi-scheduler ivi ivi-ssr ivi-ssr-html ivi-state`,
+  exec(`npm link ivi-core ivi-dom ivi-events ivi-html ivi-scheduler ivi ivi-ssr ivi-ssr-html ivi-state`,
     function (err, stdout, stderr) {
       if (stdout) {
         console.log(stdout);
@@ -169,6 +170,7 @@ gulp.task("build:es6", [
   "build:es6:core",
   "build:es6:dom",
   "build:es6:events",
+  "build:es6:html",
   "build:es6:scheduler",
   "build:es6:ivi",
   "build:es6:ssr",
@@ -216,6 +218,7 @@ gulp.task("build:cjs", [
   "build:cjs:core",
   "build:cjs:dom",
   "build:cjs:events",
+  "build:cjs:html",
   "build:cjs:scheduler",
   "build:cjs:ivi",
   "build:cjs:ssr",
@@ -223,4 +226,22 @@ gulp.task("build:cjs", [
   "build:cjs:state",
 ]);
 
-gulp.task("build", ["build:es6", "build:cjs"]);
+gulp.task("build:ssr:core", ["build:es6"], function (done) {
+  compileTypeScript("./packages/core/tsconfig.build.ssr.json", done);
+});
+
+gulp.task("build:ssr:ssr", ["build:es6", "build:ssr:core"], function (done) {
+  compileTypeScript("./packages/ssr/tsconfig.build.ssr.json", done);
+});
+
+gulp.task("build:ssr:ssr-html", ["build:es6", "build:ssr:ssr"], function (done) {
+  compileTypeScript("./packages/ssr-html/tsconfig.build.ssr.json", done);
+});
+
+gulp.task("build:ssr", [
+  "build:ssr:core",
+  "build:ssr:ssr",
+  "build:ssr:ssr-html",
+]);
+
+gulp.task("build", ["build:es6", "build:cjs", "build:ssr"]);

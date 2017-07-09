@@ -2,6 +2,7 @@
   "name": "ivi-core",
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
+  "serverModule": "dist/ssr/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.1.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
@@ -39,6 +40,7 @@
   "scripts": {
     "dist": "tsc --project ./tsconfig.build.json",
     "dist:cjs": "tsc --project ./tsconfig.build.cjs.json",
+    "dist:ssr": "tsc --project ./tsconfig.build.ssr.json",
     "watch": "tsc --watch --project ./tsconfig.build.json",
     "lint": "tslint --project ./tsconfig.json",
     "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' mocha -r ts-node/register tests/index.ts"
