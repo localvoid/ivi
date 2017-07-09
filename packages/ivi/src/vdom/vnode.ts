@@ -517,7 +517,7 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
   return node._instance as T | null;
 }
 
-export function checkUniqueKeys(children: VNode<any>[]): void {
+function checkUniqueKeys(children: VNode<any>[]): void {
   if (__IVI_DEV__) {
     let keys: Set<any> | undefined;
     for (let i = 0; i < children.length; i++) {

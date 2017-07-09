@@ -40,7 +40,8 @@ function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
     node._className,
     (flags & VNodeFlags.Component) === 0 ?
       cloneVNodeChildren(flags, node._children) :
-      null);
+      null,
+  );
 
   if (cloneKey === true) {
     newNode._key = node._key;
@@ -78,7 +79,9 @@ export function shallowCloneVNode(node: VNode<any>): VNode<any> {
     node._tag,
     node._props,
     node._className,
-    null);
+    null,
+  );
+
   if ((flags & VNodeFlags.Key) !== 0) {
     newNode._key = node._key;
   }

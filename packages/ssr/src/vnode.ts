@@ -143,14 +143,14 @@ export class VNode<P = null> {
    *
    * Stateless Components should contain virtual root nodes.
    */
-  _children: | VNode<any>[] | VNode<any> | string | number | boolean | null;
+  _children: VNode<any>[] | VNode<any> | string | number | boolean | null;
   /**
    * Tag property contains details about the type of the element.
    *
    * Simple elements has a string type values, components can be a simple functions, constructor, or special
    * descriptors for nodes that change syncing algorithm behavior.
    */
-  _tag: | string | ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | null;
+  _tag: string | ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | null;
   /**
    * Children syncing algorithm is using key property to find the same node in the previous children array. Key
    * should be unique among its siblings.
@@ -563,4 +563,93 @@ export function checkUniqueKeys(children: VNode<any>[]): void {
 
 export function vNodeEqualKeys(a: VNode, b: VNode): boolean {
   return a._key === b._key && ((a._flags ^ b._flags) & VNodeFlags.Key) === 0;
+}
+
+/**
+ * Deep clone of VNode children.
+ *
+ * @param flags Parent VNode flags.
+ * @param children Children.
+ * @returns Cloned children.
+ */
+export function cloneVNodeChildren(
+  flags: VNodeFlags,
+  children: VNode<any>[] | VNode<any> | string | number | boolean | null,
+): VNode<any>[] | VNode<any> | string | number | boolean | null {
+  if (children !== null) {
+    if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
+      if ((flags & VNodeFlags.ChildrenArray) !== 0) {
+        children = children as VNode<any>[];
+        const newChildren = new Array<VNode<any>>(children.length);
+        for (let i = 0; i < 0; i++) {
+          newChildren[i] = _cloneVNode(children[i], true);
+        }
+        return newChildren;
+      } else {
+        return _cloneVNode(children as VNode<any>, true);
+      }
+    }
+  }
+
+  return children;
+}
+
+function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
+  const flags = node._flags;
+
+  const newNode = new VNode(
+    flags,
+    node._tag,
+    node._props,
+    node._className,
+    cloneVNodeChildren(flags, node._children),
+    node._close,
+  );
+  newNode._style = node._style;
+
+  if (cloneKey === true) {
+    newNode._key = node._key;
+  }
+
+  return newNode;
+}
+
+/**
+ * Deep clone of VNode.
+ *
+ * @param node VNode to clone.
+ * @returns Cloned VNode.
+ */
+export function cloneVNode(node: VNode<any>): VNode<any> {
+  return _cloneVNode(node, (node._flags & VNodeFlags.Key) !== 0);
+}
+
+/**
+ * Shallow clone of VNode.
+ *
+ * @param node VNode to clone.
+ * @returns Cloned VNode.
+ */
+export function shallowCloneVNode(node: VNode<any>): VNode<any> {
+  const flags = node._flags;
+
+  const newNode = new VNode(
+    flags & ~(
+      VNodeFlags.ChildrenArray |
+      VNodeFlags.ChildrenBasic |
+      VNodeFlags.ChildrenVNode |
+      VNodeFlags.UnsafeHTML
+    ),
+    node._tag,
+    node._props,
+    node._className,
+    null,
+    node._close,
+  );
+  newNode._style = node._style;
+  if ((flags & VNodeFlags.Key) !== 0) {
+    newNode._key = node._key;
+  }
+
+  return newNode;
 }
