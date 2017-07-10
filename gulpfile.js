@@ -138,7 +138,7 @@ gulp.task("build:es6:dom", ["build:es6:core"], function (done) {
   compileTypeScript("./packages/dom/tsconfig.build.json", done);
 });
 
-gulp.task("build:es6:events", ["build:es6:core", "build:es6:dom"], function (done) {
+gulp.task("build:es6:events", ["build:es6:core", "build:es6:dom", "build:es6:scheduler"], function (done) {
   compileTypeScript("./packages/events/tsconfig.build.json", done);
 });
 
@@ -150,7 +150,7 @@ gulp.task("build:es6:ivi", ["build:es6:core", "build:es6:dom", "build:es6:events
   compileTypeScript("./packages/ivi/tsconfig.build.json", done);
 });
 
-gulp.task("build:es6:scheduler", function (done) {
+gulp.task("build:es6:scheduler", ["build:es6:core"], function (done) {
   compileTypeScript("./packages/scheduler/tsconfig.build.json", done);
 });
 
@@ -182,19 +182,19 @@ gulp.task("build:cjs:core", ["build:es6"], function (done) {
   compileTypeScript("./packages/core/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:dom", ["build:es6", "build:cjs:core"], function (done) {
+gulp.task("build:cjs:dom", ["build:es6"], function (done) {
   compileTypeScript("./packages/dom/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:events", ["build:es6", "build:cjs:core", "build:cjs:dom"], function (done) {
+gulp.task("build:cjs:events", ["build:es6"], function (done) {
   compileTypeScript("./packages/events/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:html", ["build:es6", "build:cjs:ivi"], function (done) {
+gulp.task("build:cjs:html", ["build:es6"], function (done) {
   compileTypeScript("./packages/html/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:ivi", ["build:es6", "build:cjs:core", "build:cjs:dom", "build:cjs:events"], function (done) {
+gulp.task("build:cjs:ivi", ["build:es6"], function (done) {
   compileTypeScript("./packages/ivi/tsconfig.build.cjs.json", done);
 });
 
@@ -202,15 +202,15 @@ gulp.task("build:cjs:scheduler", ["build:es6"], function (done) {
   compileTypeScript("./packages/scheduler/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:ssr", ["build:es6", "build:cjs:core"], function (done) {
+gulp.task("build:cjs:ssr", ["build:es6"], function (done) {
   compileTypeScript("./packages/ssr/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:ssr-html", ["build:es6", "build:cjs:ssr"], function (done) {
+gulp.task("build:cjs:ssr-html", ["build:es6"], function (done) {
   compileTypeScript("./packages/ssr-html/tsconfig.build.cjs.json", done);
 });
 
-gulp.task("build:cjs:state", ["build:es6", "build:cjs:core"], function (done) {
+gulp.task("build:cjs:state", ["build:es6"], function (done) {
   compileTypeScript("./packages/state/tsconfig.build.cjs.json", done);
 });
 
@@ -230,11 +230,11 @@ gulp.task("build:ssr:core", ["build:es6"], function (done) {
   compileTypeScript("./packages/core/tsconfig.build.ssr.json", done);
 });
 
-gulp.task("build:ssr:ssr", ["build:es6", "build:ssr:core"], function (done) {
+gulp.task("build:ssr:ssr", ["build:es6"], function (done) {
   compileTypeScript("./packages/ssr/tsconfig.build.ssr.json", done);
 });
 
-gulp.task("build:ssr:ssr-html", ["build:es6", "build:ssr:ssr"], function (done) {
+gulp.task("build:ssr:ssr-html", ["build:es6"], function (done) {
   compileTypeScript("./packages/ssr-html/tsconfig.build.ssr.json", done);
 });
 
