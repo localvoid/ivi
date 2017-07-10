@@ -2,8 +2,8 @@ import resolve from "rollup-plugin-node-resolve";
 import replace from "rollup-plugin-replace";
 
 export default {
-  entry: "unpkg/entry.js",
-  dest: "dist/unpkg/index.js",
+  entry: __dirname + "/unpkg/entry.js",
+  dest: __dirname + "/dist/unpkg/index.js",
   format: "umd",
   moduleName: "ivi",
   plugins: [

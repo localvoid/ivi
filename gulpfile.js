@@ -244,4 +244,17 @@ gulp.task("build:ssr", [
   "build:ssr:ssr-html",
 ]);
 
-gulp.task("build", ["build:es6", "build:cjs", "build:ssr"]);
+gulp.task("build:unpkg", ["build:es6"], function (done) {
+  exec(`./node_modules/.bin/rollup -c ./packages/ivi/rollup.conf.unpkg.js`,
+    function (err, stdout, stderr) {
+      if (stdout) {
+        console.log(stdout);
+      }
+      if (stderr) {
+        console.log(stderr);
+      }
+      done(err);
+    });
+});
+
+gulp.task("build", ["build:es6", "build:cjs", "build:ssr", "build:unpkg"]);
