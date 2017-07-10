@@ -22,3 +22,4 @@
 ## Misc
 
 - [Performance Tips](misc/perf-tips.md)
+- [Unsupported React Features](misc/unsupported-react-features.md)
