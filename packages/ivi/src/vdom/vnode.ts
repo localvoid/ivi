@@ -122,7 +122,7 @@ export class VNode<P = null> {
    * should be unique among its siblings.
    *
    * @param key Any object that should be unique among its siblings.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   key(key: any): VNode<P> {
     this._flags |= VNodeFlags.Key;
@@ -134,7 +134,7 @@ export class VNode<P = null> {
    * Set className.
    *
    * @param className.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   className(className: string | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -150,7 +150,7 @@ export class VNode<P = null> {
    * Set style.
    *
    * @param style.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   style<U extends CSSStyleProps>(style: U | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -179,7 +179,7 @@ export class VNode<P = null> {
    * Set events.
    *
    * @param events.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   events(events: Array<EventHandler | null> | EventHandler | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -204,7 +204,7 @@ export class VNode<P = null> {
    * Set props.
    *
    * @param props.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   props<U extends P>(props: U | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -235,7 +235,7 @@ export class VNode<P = null> {
    * @param children Children can be a simple string, single VNode or recursive list of VNodes with strings and null
    *   values. It will automatically normalize recursive lists by flattening, filtering out null values and replacing
    *   strings with text nodes.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   children(...children: Array<VNode<any>[] | VNode<any> | string | number | null>): VNode<P>;
   children(): VNode<P> {
@@ -362,10 +362,23 @@ export class VNode<P = null> {
   }
 
   /**
+   * applyChildren calls `children` method with arguments provided as an array.
+   *
+   * @param children Children can be a simple string, single VNode or recursive list of VNodes with strings and null
+   *   values. It will automatically normalize recursive lists by flattening, filtering out null values and replacing
+   *   strings with text nodes
+   * @returns VNode
+   */
+  applyChildren(children: Array<VNode<any>[] | VNode<any> | string | number | null>): VNode<P> {
+    this.children.apply(this, children);
+    return this;
+  }
+
+  /**
    * Set children as an innerHTML string. It is potentially vulnerable to XSS attacks.
    *
    * @param html innerHTML in a string format.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   unsafeHTML(html: string | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -394,7 +407,7 @@ export class VNode<P = null> {
    * Set HTMLInputElement/HTMLTextAreaElement value property.
    *
    * @param text Text value.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   value(value: string | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -410,7 +423,7 @@ export class VNode<P = null> {
    * Set HTMLInputElement checked property.
    *
    * @param text Text value.
-   * @returns VNodeBuilder.
+   * @returns VNode
    */
   checked(checked: boolean | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -430,7 +443,7 @@ export class VNode<P = null> {
    * Merge props with existing props.
    *
    * @param props
-   * @return VNodeBuilder.
+   * @return VNode
    */
   mergeProps<U extends P>(props: U | null): VNode<P> {
     if (__IVI_DEV__) {
@@ -457,7 +470,7 @@ export class VNode<P = null> {
    * Merge style with existing style.
    *
    * @param props
-   * @return VNodeBuilder.
+   * @return VNode
    */
   mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P> {
     if (style !== null) {
@@ -474,7 +487,7 @@ export class VNode<P = null> {
    * Element will be automatically focused after instantiation.
    *
    * @param focus
-   * @return VNodeBuilder.
+   * @return VNode
    */
   autofocus(focus: boolean): VNode<P> {
     if (__IVI_DEV__) {
