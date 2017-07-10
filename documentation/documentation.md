@@ -18,3 +18,7 @@
 - [TypeScript Enums](advanced/typescript-enums.md)
 - [Security](advanced/security.md)
 - [Known Issues](advanced/issues.md)
+
+## Misc
+
+- [Performance Tips](misc/perf-tips.md)

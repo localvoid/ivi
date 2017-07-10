@@ -36,6 +36,10 @@ exclusively for bug reports and feature requests.
 - [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
 - [Known Issues](https://github.com/ivijs/ivi/blob/master/documentation/advanced/issues.md)
 
+### Misc
+
+- [Performance Tips](https://github.com/ivijs/ivi/blob/master/documentation/misc/perf-tips.md)
+
 ### Installation
 
 #### NPM
