@@ -29,7 +29,7 @@ export class RepeatableTaskList {
     for (let i = 0; i < this.tasks.length; i++) {
       const task = this.tasks[i];
       if (task() === true) {
-        unorderedArrayDelete(this.tasks, i);
+        unorderedArrayDelete(this.tasks, i--);
       }
     }
   }
