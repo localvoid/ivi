@@ -666,3 +666,73 @@ export function shallowCloneVNode(node: VNode<any>): VNode<any> {
 
   return newNode;
 }
+
+/**
+ * isTextVNode returns `true` when VNode is a Text node.
+ *
+ * @param node VNode.
+ * @returns `true` when VNode is a Text node.
+ */
+export function isTextVNode(node: VNode<any>): boolean {
+  return (node._flags & VNodeFlags.Text) !== 0;
+}
+
+/**
+ * isElementVNode returns `true` when VNode is an Element node.
+ *
+ * @param node VNode.
+ * @returns `true` when VNode is an Element node.
+ */
+export function isElementVNode(node: VNode<any>): boolean {
+  return (node._flags & VNodeFlags.Element) !== 0;
+}
+
+/**
+ * isComponentVNode returns `true` when VNode is a Component node.
+ *
+ * @param node VNode.
+ * @returns `true` when VNode is a Component node.
+ */
+export function isComponentVNode(node: VNode<any>): boolean {
+  return (node._flags & VNodeFlags.Component) !== 0;
+}
+
+/**
+ * getKeyFromVNode retrieves `key` from VNode.
+ *
+ * @param node VNode.
+ * @returns `key` property.
+ */
+export function getKeyFromVNode<T = any>(node: VNode<any>): T {
+  return node._key;
+}
+
+/**
+ * getElementClassNameFromVNode retrieves `className` from VNode.
+ *
+ * @param node VNode.
+ * @returns `className` property.
+ */
+export function getElementClassNameFromVNode(node: VNode<any>): string | null {
+  return node._className;
+}
+
+/**
+ * getElementPropsFromVNode retrieves element properties from VNode.
+ *
+ * @param node VNode.
+ * @returns element properties.
+ */
+export function getElementPropsFromVNode<P>(node: VNode<P>): P | null {
+  return node._props as P | null;
+}
+
+/**
+ * getElementStyleFromVNode retrieves `style` from VNode.
+ *
+ * @param node VNode.
+ * @returns `style` property.
+ */
+export function getElementStyleFromVNode(node: VNode<any>): CSSStyleProps | null {
+  return node._style as CSSStyleProps | null;
+}
