@@ -335,6 +335,10 @@ describe("renderToString", () => {
     it("text node content", () => {
       expect(renderToString(h.t(`<&`))).to.equal(`&lt;&amp;`);
     });
+
+    it("unsafeHTML", () => {
+      expect(renderToString(h.div().unsafeHTML(`<&`))).to.equal(`<div><&</div>`);
+    });
   });
 
   describe("diff with blueprint", () => {
@@ -591,6 +595,11 @@ describe("renderToString", () => {
             h.strong(),
           ), undefined, bp)).to
             .equal(`<div><span></span>a<strong></strong></div>`);
+        });
+
+        it("unsafeHTML", () => {
+          expect(renderToString(h.div().unsafeHTML("<&"), undefined, bp)).to
+            .equal(`<div><&</div>`);
         });
       });
 

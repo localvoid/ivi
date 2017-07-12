@@ -61,6 +61,11 @@ class BlueprintObserver {
     return this;
   }
 
+  expectChildren(children: BlueprintNode[] | BlueprintNode | string | number | boolean | null) {
+    expect(this.node.children).to.be.equal(children);
+    return this;
+  }
+
   expectString(s: string) {
     expect(this.node.string).to.be.equal(s);
     return this;
@@ -298,6 +303,11 @@ describe("blueprint", () => {
         .firstChild() // connect
         .firstChild() // strong
         .expectString(`<strong>`);
+    });
+
+    it(`unsafeHTML shouldn't be escaped`, () => {
+      observeBlueprint(createBlueprint(h.div().unsafeHTML("<&")))
+        .expectChildren("<&");
     });
   });
 

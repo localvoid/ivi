@@ -615,7 +615,11 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
             }
           } else {
             if ((flags & VNodeFlags.Frozen) === 0) {
-              node.children = escapeText(node.vnode._children as string | number);
+              if ((flags & VNodeFlags.UnsafeHTML) === 0) {
+                node.children = escapeText(node.vnode._children as string | number);
+              } else {
+                node.children = node.vnode._children as string;
+              }
             }
             if (componentNode !== undefined) {
               componentNode.string += node.children;

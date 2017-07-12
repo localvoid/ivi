@@ -137,8 +137,12 @@ function renderVNode(node: VNode<any>, context: Context): string {
             } else {
               childrenString = renderVNode(node._children as VNode<any>, context);
             }
-          } else { // ((flags & VNodeFlags.ChildrenBasic) !== 0)
-            childrenString = escapeText(node._children as string);
+          } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
+            if ((flags & VNodeFlags.UnsafeHTML) === 0) {
+              childrenString = escapeText(node._children as string | number);
+            } else {
+              childrenString = node._children as string;
+            }
           }
           if ((flags & VNodeFlags.NewLineEatingElement) !== 0) {
             if (childrenString.length > 0 && childrenString.charCodeAt(0) === 10) { // "\n"
@@ -482,11 +486,14 @@ function patchChildren(
       } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
         return renderVNode(b as VNode<any>, context);
       }
-    } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
-      if (a !== null && aParent.vnode._children === b) {
-        return a as string;
+    } else { // ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
+      if ((bParentFlags & VNodeFlags.UnsafeHTML) === 0) {
+        if (a !== null && aParent.vnode._children === b) {
+          return a as string;
+        }
+        return escapeText(b as string | number);
       }
-      return escapeText(b as string);
+      return b as string;
     }
   } else {
     let node;
@@ -510,8 +517,11 @@ function patchChildren(
 
           return renderVNode(b as VNode<any>, context);
         }
-      } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
-        return escapeText(b as string);
+      } else { // ((bParentFlags & VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
+        if ((bParentFlags & VNodeFlags.UnsafeHTML) === 0) {
+          return escapeText(b as string | number);
+        }
+        return b as string;
       }
     } else { // ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
       if ((bParentFlags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
@@ -529,8 +539,11 @@ function patchChildren(
         } else {
           return patchVNode(a as BlueprintNode, b as VNode, context);
         }
-      } else { // ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0)
-        return escapeText(b as string);
+      } else { // ((bParentFlags & VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
+        if ((bParentFlags & VNodeFlags.UnsafeHTML) === 0) {
+          return escapeText(b as string | number);
+        }
+        return b as string;
       }
     }
   }
