@@ -37,12 +37,12 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "karma start --single-run",
-    "test:watch": "karma start",
-    "dist": "tsc --project ./tsconfig.build.json",
-    "dist:cjs": "tsc --project ./tsconfig.build.cjs.json",
-    "watch": "tsc --watch --project ./tsconfig.build.json",
-    "lint": "tslint --project ./tsconfig.json"
+    "test": "../../node_modules/.bin/karma start --single-run",
+    "test:watch": "../../node_modules/.bin/karma start",
+    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
+    "watch": "../../node_modules/.bin/tsc --watch --project ./tsconfig.build.json",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
   "dependencies": {},
   "peerDependencies": {
