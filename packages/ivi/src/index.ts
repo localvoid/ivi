@@ -14,6 +14,7 @@ export {
   ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
 } from "./vdom/component";
 export { KeepAliveHandler } from "./vdom/keep_alive";
+export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
