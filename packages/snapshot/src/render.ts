@@ -20,6 +20,15 @@ export interface SnapshotNode {
   root?: SnapshotNode;
 }
 
+const InputTypeRegExp = /type="([a-z]+)"/;
+function extractInputType(tag: string): string {
+  const match = tag.match(InputTypeRegExp);
+  if (match !== null) {
+    return match[1];
+  }
+  return "text";
+}
+
 export function render(vnode: VNode<any>, context: Context): SnapshotNode {
   const flags = vnode._flags;
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
@@ -38,19 +47,17 @@ export function render(vnode: VNode<any>, context: Context): SnapshotNode {
 
       let props = vnode._props;
       if ((flags & VNodeFlags.InputElement) !== 0) {
+        const type = extractInputType(vnode._tag as string);
+        if (props !== null) {
+          props = { ...props, type };
+        } else {
+          props = { type };
+        }
         if (vnode._children !== null) {
           if (typeof vnode._children === "string") {
-            if (props !== null) {
-              props = { ...props, value: vnode._children };
-            } else {
-              props = { value: vnode._children };
-            }
+            props = { ...props, value: vnode._children };
           } else {
-            if (props !== null) {
-              props = { ...props, checked: vnode._children };
-            } else {
-              props = { checked: vnode._children };
-            }
+            props = { ...props, checked: vnode._children };
           }
         }
       }
