@@ -20,41 +20,70 @@ export interface SnapshotNode {
   root?: SnapshotNode;
 }
 
-export function render(vnode: VNode, context: Context): SnapshotNode {
+export function render(vnode: VNode<any>, context: Context): SnapshotNode {
   const flags = vnode._flags;
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
       const snode: SnapshotNode = { type: "element" };
+      let tag = vnode._tag as string;
+      if ((flags & VNodeFlags.InputElement) !== 0) {
+        tag = "input";
+      } else {
+        tag = tag.slice(1); // Remove "<"
+      }
+
       if (vnode._className !== null) {
         snode.class = vnode._className;
       }
-      if (vnode._props !== null) {
+
+      let props = vnode._props;
+      if ((flags & VNodeFlags.InputElement) !== 0) {
+        if (vnode._children !== null) {
+          if (typeof vnode._children === "string") {
+            if (props !== null) {
+              props = { ...props, value: vnode._children };
+            } else {
+              props = { value: vnode._children };
+            }
+          } else {
+            if (props !== null) {
+              props = { ...props, checked: vnode._children };
+            } else {
+              props = { checked: vnode._children };
+            }
+          }
+        }
+      }
+      if (props !== null) {
         snode.props = vnode._props;
       }
+
       if (vnode._style !== null) {
         snode.style = vnode._style;
       }
 
-      if (vnode._children !== null) {
-        if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
-          if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-            const children = vnode._children as VNode<any>[];
-            const schildren = new Array(children.length);
-            for (let i = 0; i < children.length; i++) {
-              schildren[i] = render(children[i], context);
-            }
-            snode.children = schildren;
-          } else {
-            snode.children = [render(vnode._children as VNode<any>, context)];
-          }
-        } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
-          if ((flags & VNodeFlags.UnsafeHTML) === 0) {
-            snode.unsafeHTML = vnode._children as string;
-          } else {
-            if (typeof vnode._children === "string") {
-              snode.children = [{ type: "text", content: vnode._children }];
+      if ((flags & VNodeFlags.VoidElement) === 0) {
+        if (vnode._children !== null) {
+          if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
+            if ((flags & VNodeFlags.ChildrenArray) !== 0) {
+              const children = vnode._children as VNode<any>[];
+              const schildren = new Array(children.length);
+              for (let i = 0; i < children.length; i++) {
+                schildren[i] = render(children[i], context);
+              }
+              snode.children = schildren;
             } else {
-              snode.children = [{ type: "text", content: (vnode._children as number).toString() }];
+              snode.children = [render(vnode._children as VNode<any>, context)];
+            }
+          } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
+            if ((flags & VNodeFlags.UnsafeHTML) !== 0) {
+              snode.unsafeHTML = vnode._children as string;
+            } else {
+              if (typeof vnode._children === "string") {
+                snode.children = [{ type: "text", content: vnode._children }];
+              } else {
+                snode.children = [{ type: "text", content: (vnode._children as number).toString() }];
+              }
             }
           }
         }
