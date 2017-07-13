@@ -1,0 +1,54 @@
+{
+  "name": "ivi-snapshot",
+  "main": "dist/cjs/index.js",
+  "module": "dist/js/index.js",
+  "serverModule": "dist/ssr/index.js",
+  "typings": "dist/typings/index.d.ts",
+  "version": "0.1.0",
+  "description": "Snapshot renderer for ivi library.",
+  "license": "MIT",
+  "author": {
+    "name": "Boris Kaul",
+    "email": "localvoid@gmail.com",
+    "url": "https://github.com/localvoid"
+  },
+  "keywords": [
+    "ivi",
+    "snapshot",
+    "test",
+    "jest",
+    "virtual",
+    "dom",
+    "virtualdom",
+    "vdom"
+  ],
+  "homepage": "https://github.com/ivijs/ivi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivijs/ivi"
+  },
+  "bugs": {
+    "url": "https://github.com/ivijs/ivi/issues"
+  },
+  "github": "https://github.com/ivijs/ivi",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
+    "dist:ssr": "../../node_modules/.bin/tsc --project ./tsconfig.build.ssr.json",
+    "watch": "../../node_modules/.bin/tsc --watch --project ./tsconfig.build.json",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
+    "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ../../node_modules/.bin/mocha -r ../../node_modules/ts-node/register tests/*.ts"
+  },
+  "peerDependencies": {
+    "ivi-core": "^0.1.0",
+    "ivi-ssr": "^0.1.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
