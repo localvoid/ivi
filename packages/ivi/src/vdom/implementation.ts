@@ -455,8 +455,9 @@ function vNodeUpdateComponents(
   vnode: VNode<any>,
   context: Context,
   syncFlags: SyncFlags,
-): void {
+): number {
   const flags = vnode._flags;
+  let deepUpdate = 0;
   if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray | VNodeFlags.Component)) !== 0) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       const p = vnode._instance as Node;
@@ -464,10 +465,10 @@ function vNodeUpdateComponents(
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
         for (let i = 0; i < children.length; i++) {
-          vNodeUpdateComponents(p, children[i], context, syncFlags);
+          deepUpdate |= vNodeUpdateComponents(p, children[i], context, syncFlags);
         }
       } else {
-        vNodeUpdateComponents(p, children as VNode<any>, context, syncFlags);
+        deepUpdate = vNodeUpdateComponents(p, children as VNode<any>, context, syncFlags);
       }
     } else {
       stackTracePushComponent(vnode);
@@ -476,7 +477,6 @@ function vNodeUpdateComponents(
 
         const cflags = component.flags;
         const oldRoot = vnode._children as VNode<any>;
-
         if (((cflags & ComponentFlags.Dirty) | (syncFlags & SyncFlags.ForceUpdate)) !== 0) {
           componentPerfMarkBegin("update", vnode);
           component.beforeUpdate();
@@ -484,9 +484,13 @@ function vNodeUpdateComponents(
           vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
           component.flags &= ~ComponentFlags.Dirty;
           component.updated();
+          deepUpdate = 1;
           componentPerfMarkEnd("update", vnode);
         } else {
-          vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
+          deepUpdate = vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
+          if (deepUpdate !== 0) {
+            component.updated();
+          }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
         if ((flags & VNodeFlags.Connect) !== 0) {
@@ -496,13 +500,14 @@ function vNodeUpdateComponents(
           const selectData = connect.select(prevSelectData, vnode._props, context);
           const prevChildren = vnode._children;
           if (prevSelectData === selectData) {
-            vNodeUpdateComponents(
+            deepUpdate = vNodeUpdateComponents(
               parent,
               prevChildren as VNode<any>,
               context,
               syncFlags,
             );
           } else {
+            deepUpdate = 1;
             vnode._children = connect.render(selectData.out);
             vnode._instance = selectData;
             vNodeSync(
@@ -521,7 +526,7 @@ function vNodeUpdateComponents(
             }
             context = vnode._instance as Context;
           }
-          vNodeUpdateComponents(
+          deepUpdate = vNodeUpdateComponents(
             parent,
             vnode._children as VNode<any>,
             context,
@@ -532,6 +537,7 @@ function vNodeUpdateComponents(
       stackTracePopComponent();
     }
   }
+  return deepUpdate;
 }
 
 /**
@@ -1128,7 +1134,9 @@ function vNodeSync(
           componentPerfMarkEnd("update", a);
         } else {
           b._children = a._children;
-          vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
+          if (vNodeUpdateComponents(parent, oldRoot, context, syncFlags) !== 0) {
+            component.updated();
+          }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
         const fn = b._tag as StatelessComponent<any>;
