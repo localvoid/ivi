@@ -12,7 +12,16 @@ export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props?: P) => VNode<P> {
-  return c.prototype.render === undefined ?
+  return isComponentClass(c) ?
+    function (props: P): VNode<P> {
+      return new VNode<P>(
+        VNodeFlags.ComponentClass,
+        c,
+        props!,
+        null,
+        null,
+      );
+    } :
     (c as StatelessComponent<P>).isPropsChanged === undefined ?
       function (props: P): VNode<P> {
         return new VNode<P>(
@@ -31,16 +40,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
           null,
           null,
         );
-      } :
-    function (props: P): VNode<P> {
-      return new VNode<P>(
-        VNodeFlags.ComponentClass,
-        c,
-        props!,
-        null,
-        null,
-      );
-    };
+      };
 }
 
 /**
@@ -133,7 +133,7 @@ export function connect<I, O, P>(
   } else {
     descriptor = {
       select,
-      render: (isComponentClass(render)) ?
+      render: isComponentClass(render) ?
         function (props: O): VNode<O> {
           return new VNode<O>(
             VNodeFlags.ComponentClass,

@@ -178,10 +178,10 @@ function isPropsNotShallowEqual(a: any, b: any): boolean {
  * @returns Component constructor with identity check.
  */
 export function checkPropsShallowEquality<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-  if (target.prototype.render === undefined) {
-    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
-  } else {
+  if (isComponentClass(target)) {
     target.prototype.isPropsChanged = isPropsNotShallowEqual;
+  } else {
+    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
   }
   return target;
 }
@@ -207,10 +207,10 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Statel
  * @returns Component constructor with static property.
  */
 export function staticComponent<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-  if (target.prototype.render === undefined) {
-    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
-  } else {
+  if (isComponentClass(target)) {
     target.prototype.isPropsChanged = NOOP_FALSE;
+  } else {
+    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
   }
   return target;
 }
@@ -223,10 +223,9 @@ export function staticComponent<P extends ComponentClass<any> | StatelessCompone
  */
 export function getComponentName(component: Component<any> | StatelessComponent<any>): string {
   return getFunctionName(
-    (component as StatelessComponent<any>).prototype === undefined ||
-      (component as StatelessComponent<any>).prototype.render === undefined ?
-      component as StatelessComponent<any> :
-      (component as StatelessComponent<any>).constructor,
+    isComponentClass(component) ?
+      component.constructor :
+      component as StatelessComponent<any>,
   );
 }
 
@@ -241,9 +240,9 @@ export function isComponentClass(o: any): o is ComponentClass<any> {
 }
 
 /**
- * Is component attached.
+ * isComponentAttached returns `true` when component is attached.
  *
- * @returns `true` when Component is attached.
+ * @returns `true` when component is attached.
  */
 export function isComponentAttached(component: Component<any>): boolean {
   return (component.flags & ComponentFlags.Attached) !== 0;

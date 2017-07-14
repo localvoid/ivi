@@ -93,10 +93,10 @@ function isPropsNotShallowEqual(a: any, b: any): boolean {
  * @returns Component constructor with identity check.
  */
 export function checkPropsShallowEquality<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-  if (target.prototype.render === undefined) {
-    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
-  } else {
+  if (isComponentClass(target)) {
     target.prototype.isPropsChanged = isPropsNotShallowEqual;
+  } else {
+    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
   }
   return target;
 }
@@ -122,22 +122,28 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Statel
  * @returns Component constructor with static property.
  */
 export function staticComponent<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-  if (target.prototype.render === undefined) {
-    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
-  } else {
+  if (isComponentClass(target)) {
     target.prototype.isPropsChanged = NOOP_FALSE;
+  } else {
+    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
   }
   return target;
 }
 
-export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
-  return componentClass.prototype.render !== undefined;
+/**
+ * isComponentClass returns `true` when object looks like a Component class.
+ *
+ * @param o Object.
+ * @returns `true` when object looks like a Component class.
+ */
+export function isComponentClass(o: any): o is ComponentClass<any> {
+  return o.prototype !== undefined && o.prototype.render !== undefined;
 }
 
 /**
- * Is component attached.
+ * isComponentAttached returns `true` when component is attached.
  *
- * @returns `true` when Component is attached.
+ * @returns `true` when component is attached.
  */
 export function isComponentAttached(component: Component<any>): boolean {
   return false;

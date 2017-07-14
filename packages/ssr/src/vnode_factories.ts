@@ -22,7 +22,29 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
   function linkBlueprint(blueprint: BlueprintNode): void {
     linkedBlueprint = blueprint;
   }
-  const r = c.prototype.render === undefined ?
+  const r = isComponentClass(c) ?
+    function (props: P): VNode<P> {
+      if (linkedBlueprint === null) {
+        return new VNode<P>(
+          VNodeFlags.ComponentClass,
+          c,
+          props!,
+          null,
+          null,
+          null,
+        );
+      }
+      const v = new VNode<P>(
+        VNodeFlags.ComponentClass | VNodeFlags.LinkedBlueprint,
+        c,
+        props!,
+        null,
+        null,
+        null,
+      );
+      v._style = linkedBlueprint;
+      return v;
+    } :
     (c as StatelessComponent<P>).isPropsChanged === undefined ?
       function (props: P): VNode<P> {
         if (linkedBlueprint === null) {
@@ -67,29 +89,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
         );
         v._style = linkedBlueprint;
         return v;
-      } :
-    function (props: P): VNode<P> {
-      if (linkedBlueprint === null) {
-        return new VNode<P>(
-          VNodeFlags.ComponentClass,
-          c,
-          props!,
-          null,
-          null,
-          null,
-        );
-      }
-      const v = new VNode<P>(
-        VNodeFlags.ComponentClass | VNodeFlags.LinkedBlueprint,
-        c,
-        props!,
-        null,
-        null,
-        null,
-      );
-      v._style = linkedBlueprint;
-      return v;
-    };
+      };
   (r as any).linkBlueprint = linkBlueprint;
   return r;
 }
