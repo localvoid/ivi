@@ -143,7 +143,7 @@ Component updated.
 
 ```ts
 interface Component {
-  updated(): void;
+  updated(localUpdates: boolean): void;
 }
 ```
 

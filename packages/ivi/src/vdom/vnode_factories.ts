@@ -44,7 +44,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
 }
 
 /**
- * Placeholder function for Update Context components.
+ * UpdateContext is a placeholder function for update context components.
  *
  * It is used only in Dev Mode for stack traces.
  */
@@ -54,7 +54,7 @@ function UpdateContext() {
 }
 
 /**
- * Create an update context VNode.
+ * context creates an update context VNode.
  *
  * @param ctx Context.
  * @param child Child VNode.
@@ -159,7 +159,7 @@ export function connect<I, O, P>(
 /* tslint:enable:unified-signatures */
 
 /**
- * Create Keep Alive VNode.
+ * keepAlive creates keep alive VNode.
  *
  * @param handler Keep Alive Handler.
  * @param child Child VNode.

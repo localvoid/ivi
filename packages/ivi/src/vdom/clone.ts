@@ -10,8 +10,8 @@ import { VNode } from "./vnode";
  */
 export function cloneVNodeChildren(
   flags: VNodeFlags,
-  children: VNode<any>[] | VNode<any> | string | number | boolean | null | undefined,
-): VNode<any>[] | VNode<any> | string | number | boolean | null | undefined {
+  children: VNode<any>[] | VNode<any> | string | number | boolean | null,
+): VNode<any>[] | VNode<any> | string | number | boolean | null {
   if (children !== null) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {

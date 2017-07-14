@@ -105,8 +105,7 @@ export const enum VNodeFlags {
   /**
    * Flags that should match to be compatible for syncing.
    */
-  Syncable = 0
-  | Text
+  Syncable = Text
   | Element
   | Component
   // | Key (Keys shouldn't be checked for blueprint nodes)
@@ -137,11 +136,11 @@ export class VNode<P = null> {
   /**
    * Children property has a dynamic type that depends on the node kind.
    *
-   * Element Nodes should contain children virtual nodes in a flat array, singular virtual node or simple text.
+   * Element Nodes should contain children virtual nodes in a flat array, singular virtual node or a simple text.
    *
    * Input Element Nodes should contain input value (value or checked).
    *
-   * Stateless Components should contain virtual root nodes.
+   * Components should contain virtual root nodes.
    */
   _children: VNode<any>[] | VNode<any> | string | number | boolean | null;
   /**
@@ -192,7 +191,7 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set key.
+   * key assigns a key.
    *
    * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
    * should be unique among its siblings.
@@ -207,9 +206,9 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set className.
+   * className assigns className for an Element node.
    *
-   * @param className.
+   * @param className CSS Class name.
    * @returns VNode
    */
   className(className: string | null): VNode<P> {
@@ -223,9 +222,9 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set style.
+   * style assigns style for an Element node.
    *
-   * @param style.
+   * @param style Style.
    * @returns VNode
    */
   style<U extends CSSStyleProps>(style: U | null): VNode<P> {
@@ -239,9 +238,9 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set events.
+   * events assign events for an Element node.
    *
-   * @param events.
+   * @param events Events.
    * @returns VNode
    */
   events(events: Array<EventHandler | null> | EventHandler | null): VNode<P> {
@@ -254,18 +253,24 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set props.
+   * props assigns props for an Element node.
    *
-   * @param props.
+   * @param props Props.
    * @returns VNode
    */
   props<U extends P>(props: U | null): VNode<P> {
+    if (__IVI_DEV__) {
+      if (!(this._flags & VNodeFlags.Element)) {
+        throw new Error("Failed to set props, props are available on element nodes only.");
+      }
+    }
+
     this._props = props;
     return this;
   }
 
   /**
-   * Set children.
+   * children assigns children for an Element node.
    *
    * @param children Children can be a simple string, single VNode or recursive list of VNodes with strings and null
    *   values. It will automatically normalize recursive lists by flattening, filtering out null values and replacing
@@ -410,7 +415,7 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set children as an innerHTML string. It is potentially vulnerable to XSS attacks.
+   * unsafeHTML assigns children as an innerHTML string. It is potentially vulnerable to XSS attacks.
    *
    * @param html innerHTML in a string format.
    * @returns VNode
@@ -439,7 +444,7 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set HTMLInputElement/HTMLTextAreaElement value property.
+   * value assigns value property for HTMLInputElement and HTMLTextAreaElement elements.
    *
    * @param text Text value.
    * @returns VNode
@@ -455,9 +460,9 @@ export class VNode<P = null> {
   }
 
   /**
-   * Set HTMLInputElement checked property.
+   * checked assigns checked property for HTMLInputElement.
    *
-   * @param text Text value.
+   * @param checked Checked value.
    * @returns VNode
    */
   checked(checked: boolean | null): VNode<P> {
@@ -471,7 +476,7 @@ export class VNode<P = null> {
   }
 
   /**
-   * Merge props with existing props.
+   * mergeProps merges props with existing props for an Element node.
    *
    * @param props
    * @return VNode
@@ -496,7 +501,7 @@ export class VNode<P = null> {
   }
 
   /**
-   * Merge style with existing style.
+   * mergeStyle merges style with existing style for an Element node.
    *
    * @param props
    * @return VNode
@@ -513,7 +518,7 @@ export class VNode<P = null> {
   }
 
   /**
-   * Element will be automatically focused after instantiation.
+   * autofocus makes an Element autofocused on instantiation.
    *
    * @param focus
    * @return VNode
@@ -529,7 +534,7 @@ export class VNode<P = null> {
 }
 
 /**
- * Get reference to a DOM node from a VNode object.
+ * getDOMInstanceFromVNode retrieves a reference to a DOM node from a VNode object.
  *
  * @param node VNode which contains reference to a DOM node.
  * @returns null if VNode doesn't have a reference to a DOM node.
@@ -542,7 +547,7 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | n
 }
 
 /**
- * Get reference to a Component instance from a VNode object.
+ * getComponentInstanceFromVNode retrieves a reference to a Component instance from a VNode object.
  *
  * @param node VNode which contains reference to a Component instance.
  * @returns null if VNode doesn't have a reference to a Component instance.

@@ -5,7 +5,7 @@ import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
 
 /**
- * Component function constructor.
+ * Stateless Component function.
  */
 export interface StatelessComponent<P = void> {
   (props: P): VNode<any>;
@@ -14,7 +14,7 @@ export interface StatelessComponent<P = void> {
 }
 
 /**
- * Component class constructor.
+ * Component class type.
  */
 export interface ComponentClass<P = void> {
   new(props: P): Component<P>;
@@ -29,11 +29,12 @@ export interface ComponentClass<P = void> {
  *
  *     class Hello extends Component<string> {
  *         render() {
- *             return $t(`Hello ${this.props}`);
+ *             return h.t(`Hello ${this.props}`);
  *         }
  *     }
+ *     const hello = componentFactory(Hello);
  *
- *     render($c(Hello, "world"), document.getElementById("App")!);
+ *     render(hello("world"), document.getElementById("App")!);
  */
 export abstract class Component<P = void> {
   /**
@@ -163,13 +164,13 @@ function isPropsNotShallowEqual(a: any, b: any): boolean {
  *
  *     checkPropsShallowEquality(MyComponent);
  *     function MyComponent(props: { text: string }) {
- *         return $h("div").children(props.text);
+ *         return h.div().children(props.text);
  *     });
  *
  *     @checkPropsShallowEquality
  *     class MyClassComponent extends Component<{ text: string }> {
  *         render() {
- *             return $h("div").children(this.props.text);
+ *             return h.div().children(this.props.text);
  *         }
  *     }
  *
@@ -192,13 +193,13 @@ export function checkPropsShallowEquality<P extends ComponentClass<any> | Statel
  *
  *     staticComponent(MyComponent);
  *     function MyComponent(props: { text: string }) {
- *         return $h("div").children(props.text);
+ *         return h.div().children(props.text);
  *     });
  *
  *     @staticComponent
  *     class MyClassComponent extends Component<{ text: string }> {
  *         render() {
- *             return $h("div").children(this.props.text);
+ *             return h.div().children(this.props.text);
  *         }
  *     }
  *
@@ -215,21 +216,28 @@ export function staticComponent<P extends ComponentClass<any> | StatelessCompone
 }
 
 /**
- * Get component name from component instance or component function.
+ * getComponentName retrieves component name from component instance or component function.
  *
  * @param component Component.
  * @return Component name.
  */
 export function getComponentName(component: Component<any> | StatelessComponent<any>): string {
   return getFunctionName(
-    (component as StatelessComponent<any>).prototype.render === undefined ?
+    (component as StatelessComponent<any>).prototype === undefined ||
+      (component as StatelessComponent<any>).prototype.render === undefined ?
       component as StatelessComponent<any> :
       (component as StatelessComponent<any>).constructor,
   );
 }
 
-export function isComponentClass(componentClass: any): componentClass is ComponentClass<any> {
-  return componentClass.prototype.render !== undefined;
+/**
+ * isComponentClass returns `true` when object looks like a Component class.
+ *
+ * @param o Object.
+ * @returns `true` when object looks like a Component class.
+ */
+export function isComponentClass(o: any): o is ComponentClass<any> {
+  return o.prototype !== undefined && o.prototype.render !== undefined;
 }
 
 /**
