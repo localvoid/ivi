@@ -849,16 +849,14 @@ function vNodeAugment(
             if (vnode._className) {
               const className = (node as Element).getAttribute("class");
               if (className !== vnode._className) {
-                throw new Error(`Invalid class name: expected "${vnode._className}", ` +
-                  `actual "${className}".`);
+                throw new Error(`Invalid class name: expected "${vnode._className}", actual "${className}".`);
               }
             }
             // We can't check any style properties, because browsers ignore style names they don't
             // understand, like style names with browser specific prefixes.
             if (vnode._children === null) {
               if (node.hasChildNodes()) {
-                throw new Error(`Invalid children: expected "0" children, ` +
-                  `actual "${node.childNodes.length}".`);
+                throw new Error(`Invalid children: expected "0" children, actual "${node.childNodes.length}".`);
               }
             }
           }
@@ -877,8 +875,7 @@ function vNodeAugment(
               for (let i = 0; i < children.length; i++) {
                 if (__IVI_DEV__) {
                   if (domChild === null) {
-                    throw new Error(`Invalid children: expected to find ${children.length} ` +
-                      `children nodes.`);
+                    throw new Error(`Invalid children: expected to find ${children.length} children nodes.`);
                   }
                 }
                 const next = domChild!.nextSibling;
@@ -887,8 +884,7 @@ function vNodeAugment(
               }
               if (__IVI_DEV__) {
                 if (domChild !== null) {
-                  throw new Error(`Invalid children: document contains more children nodes ` +
-                    `than expected.`);
+                  throw new Error(`Invalid children: document contains more children nodes than expected.`);
                 }
               }
             } else {
@@ -897,8 +893,7 @@ function vNodeAugment(
                   throw new Error(`Invalid children: expected to find 1 child node.`);
                 }
                 if (domChild.nextSibling !== null) {
-                  throw new Error(`Invalid children: document contains more children nodes ` +
-                    `than expected.`);
+                  throw new Error(`Invalid children: document contains more children nodes than expected.`);
                 }
               }
               vNodeAugment(node, domChild, vnode._children as VNode<any>, context);
@@ -917,7 +912,7 @@ function vNodeAugment(
               throw new Error(`Invalid node type: expected "3", actual "${node.nodeType}".`);
             }
             if (!node.nodeValue!.startsWith(children)) {
-              throw new Error(`Invalid text content: expected "${vnode._children}", actual ` +
+              throw new Error(`Invalid text content: expected "${vnode._children}", actual` +
                 `"${node.nodeValue!.slice(0, children.length)}".`);
             }
           }
