@@ -64,45 +64,45 @@ export const AncestorFlagsByTagName: { [tagName: string]: AncestorFlags } = {
 /**
  * Convert AncestorFlags to list of tagNames.
  *
- * @param ancestorFlags AncestorFlags.
+ * @param aFlags AncestorFlags.
  * @returns list of tagNames.
  */
-function ancestorFlagsToTagNames(ancestorFlags: AncestorFlags): string[] {
+function ancestorFlagsToTagNames(aFlags: AncestorFlags): string[] {
   const result = [] as string[];
-  if ((ancestorFlags & AncestorFlags.Select) !== 0) {
+  if ((aFlags & AncestorFlags.Select) !== 0) {
     result.push("select");
   }
-  if ((ancestorFlags & AncestorFlags.OptGroup) !== 0) {
+  if ((aFlags & AncestorFlags.OptGroup) !== 0) {
     result.push("optgroup");
   }
-  if ((ancestorFlags & AncestorFlags.Option) !== 0) {
+  if ((aFlags & AncestorFlags.Option) !== 0) {
     result.push("option");
   }
-  if ((ancestorFlags & AncestorFlags.Table) !== 0) {
+  if ((aFlags & AncestorFlags.Table) !== 0) {
     result.push("table");
   }
-  if ((ancestorFlags & AncestorFlags.TableBlock) !== 0) {
+  if ((aFlags & AncestorFlags.TableBlock) !== 0) {
     result.push("tbody", "thead", "tfoot");
   }
-  if ((ancestorFlags & AncestorFlags.TableRow) !== 0) {
+  if ((aFlags & AncestorFlags.TableRow) !== 0) {
     result.push("tr");
   }
-  if ((ancestorFlags & AncestorFlags.Header) !== 0) {
+  if ((aFlags & AncestorFlags.Header) !== 0) {
     result.push("h1", "h2", "h3", "h4", "h5", "h6");
   }
-  if ((ancestorFlags & AncestorFlags.Form) !== 0) {
+  if ((aFlags & AncestorFlags.Form) !== 0) {
     result.push("form");
   }
-  if ((ancestorFlags & AncestorFlags.Anchor) !== 0) {
+  if ((aFlags & AncestorFlags.Anchor) !== 0) {
     result.push("a");
   }
-  if ((ancestorFlags & AncestorFlags.ListItem) !== 0) {
+  if ((aFlags & AncestorFlags.ListItem) !== 0) {
     result.push("li");
   }
-  if ((ancestorFlags & AncestorFlags.DescriptionListItem) !== 0) {
+  if ((aFlags & AncestorFlags.DescriptionListItem) !== 0) {
     result.push("dd", "dt");
   }
-  if ((ancestorFlags & AncestorFlags.RubyAnnotation) !== 0) {
+  if ((aFlags & AncestorFlags.RubyAnnotation) !== 0) {
     result.push("rp", "rt");
   }
   return result;
@@ -238,11 +238,11 @@ export function pushNestingState(childTagName: string): void {
  * We aren't using push/pop API to improve performance, we just store all this data on the stack and restore it when
  * unwinding stack.
  */
-export function restoreNestingState(parentTagName: string | undefined, ancestorFlags: AncestorFlags): void {
+export function restoreNestingState(parentTagName: string | undefined, aFlags: AncestorFlags): void {
   if (__IVI_DEV__) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       _parentTagName = parentTagName;
-      _ancestorFlags = ancestorFlags;
+      _ancestorFlags = aFlags;
       _childTagName = undefined;
     }
   }
