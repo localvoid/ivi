@@ -43,8 +43,23 @@
     "dist:ssr": "../../node_modules/.bin/tsc --project ./tsconfig.build.ssr.json",
     "watch": "../../node_modules/.bin/tsc --watch --project ./tsconfig.build.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ../../node_modules/.bin/mocha -r ../../node_modules/ts-node/register tests/index.ts"
+    "test": "../../node_modules/.bin/jest",
+    "coverage": "../../node_modules/.bin/jest --coverage"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "jest": {
+    "globals": {
+      "__IVI_DEV__": true,
+      "__IVI_BROWSER__": false
+    },
+    "transform": {
+      ".ts": "../..//node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/tests/.*|\\.(test|spec))\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
+  }
 }
