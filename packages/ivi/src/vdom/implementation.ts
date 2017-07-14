@@ -483,13 +483,13 @@ function vNodeUpdateComponents(
           const newRoot = vnode._children = component.render();
           vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
           component.flags &= ~ComponentFlags.Dirty;
-          component.updated();
+          component.updated(true);
           deepUpdate = 1;
           componentPerfMarkEnd("update", vnode);
         } else {
           deepUpdate = vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
           if (deepUpdate !== 0) {
-            component.updated();
+            component.updated(false);
           }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
@@ -1130,12 +1130,12 @@ function vNodeSync(
           const newRoot = b._children = component.render();
           vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
           component.flags &= ~ComponentFlags.Dirty;
-          component.updated();
+          component.updated(true);
           componentPerfMarkEnd("update", a);
         } else {
           b._children = a._children;
           if (vNodeUpdateComponents(parent, oldRoot, context, syncFlags) !== 0) {
-            component.updated();
+            component.updated(false);
           }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
