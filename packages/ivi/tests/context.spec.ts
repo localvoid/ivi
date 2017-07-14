@@ -16,11 +16,11 @@ const $ContextTestPrinter = connect(
   function (
     prev: ContextTestPrinterSelect,
     props: null,
-    context: Context<{ value: string }>,
+    ctx: Context<{ value: string }>,
   ): ContextTestPrinterSelect {
     return {
-      in: context.value,
-      out: context.value,
+      in: ctx.value,
+      out: ctx.value,
     };
   },
   ContextTestPrinter,

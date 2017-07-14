@@ -102,7 +102,7 @@ describe("augment", () => {
 
   it("<div style={}>", () => {
     checkDOMOps((c) => {
-      augment(html("div").style(""), `<div></div>`);
+      augment(html("div").style({}), `<div></div>`);
       expectDOMOps(c, 1, 0, 0, 0, 0, 0, 0);
     });
   });
