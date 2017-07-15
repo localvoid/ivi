@@ -4,6 +4,7 @@ coverage
 
 node_modules
 
+.nyc_output
 .DS_Store
 .idea
 .vscode
