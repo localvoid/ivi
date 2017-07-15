@@ -7,6 +7,8 @@ module.exports = function (config) {
   baseConfig(config);
 
   config.set({
+    singleRun: true,
+
     webpack: merge.smart(config.webpack, {
       module: {
         rules: [{
@@ -15,7 +17,6 @@ module.exports = function (config) {
           exclude: [
             /node_modules/,
             path.resolve("src/dev_mode/dev_mode.ts"),
-            path.resolve("src/dev_mode/screen_of_death.ts"),
             path.resolve("src/dev_mode/stack_trace.ts"),
           ],
           loader: "istanbul-instrumenter-loader",
@@ -30,6 +31,7 @@ module.exports = function (config) {
       reports: ["lcov", "text"],
       dir: "./coverage",
       fixWebpackSourcePath: true,
+      skipFilesWithNoCoverage: true,
     },
   });
 

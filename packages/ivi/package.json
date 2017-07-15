@@ -40,6 +40,7 @@
   "scripts": {
     "test": "../../node_modules/.bin/karma start --single-run",
     "test:watch": "../../node_modules/.bin/karma start",
+    "coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
     "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "dist:unpkg": "../../node_modules/.bin/rollup -c ./rollup.conf.unpkg.js",

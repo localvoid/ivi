@@ -2,7 +2,7 @@ const webpack = require("webpack");
 
 module.exports = function (config) {
   config.set({
-    browsers: ["Chrome"],
+    browsers: ["ChromeHeadless"],
     frameworks: ["mocha", "chai"],
     files: ["tests/index.ts"],
     preprocessors: { "tests/index.ts": ["webpack", "sourcemap"] },

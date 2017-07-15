@@ -38,7 +38,7 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
     super(props);
     lifecycleTouch(props.id, "constructor");
     if (props.hooks.construct) {
-      props.hooks.construct.call(this, props, context);
+      props.hooks.construct.call(this, props);
     }
   }
 
