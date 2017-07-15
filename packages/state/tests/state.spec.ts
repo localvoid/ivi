@@ -1,7 +1,3 @@
-/* tslint:disable:no-unused-expression */
-
-(global as any).__IVI_DEV__ = true;
-
 import { expect } from "chai";
 import { mut } from "../src/mutable";
 import { createStore } from "../src/store";
