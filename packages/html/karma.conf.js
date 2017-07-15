@@ -17,7 +17,7 @@ module.exports = function (config) {
               {
                 loader: "ts-loader",
                 options: {
-                  configFileName: "tsconfig.tests.json",
+                  configFileName: "tsconfig.json",
                 },
               },
             ],
