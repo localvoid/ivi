@@ -204,13 +204,22 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "video": h.video,
 };
 
-const VoidElements = [
-  "area",
-  "base",
-  "br",
-  "col",
-  "embed",
-];
+const VoidElements = {
+  "area": 1,
+  "base": 1,
+  "br": 1,
+  "col": 1,
+  "embed": 1,
+  "hr": 1,
+  "img": 1,
+  "keygen": 1,
+  "link": 1,
+  "meta": 1,
+  "param": 1,
+  "source": 1,
+  "track": 1,
+  "wbr": 1,
+};
 
 const InputTypes = [
   "button",
@@ -328,11 +337,17 @@ describe("elements", () => {
   });
 
   describe("void elements", () => {
-    for (const name of VoidElements) {
+    for (const name of Object.keys(Elements)) {
       const factory = Elements[name];
       it(`${name}`, () => {
         const n = factory();
-        expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(true);
+        if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(true);
+        } else if (name in VoidElements) {
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(true);
+        } else {
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(false);
+        }
       });
     }
   });
