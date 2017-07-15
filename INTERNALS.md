@@ -73,34 +73,8 @@ modules, we will try to match their conventions.
 
 ## Development Environment
 
-Install all development dependencies at the root of the repository
+Bootstrap Development Environment
 
 ```sh
-$ npm install
-```
-
-Create links for all packages
-
-```sh
-$ npm run link
-```
-
-Build all packages
-
-```sh
-$ npm run dist
-```
-
-Select a package that you want to change and enter into its directory.
-
-Build ES6 module with
-
-```sh
-$ npm run dist
-```
-
-Build commonjs module with
-
-```sh
-$ npm run dist:cjs
+$ npm run bootstrap
 ```

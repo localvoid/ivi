@@ -30,11 +30,11 @@
   "github": "https://github.com/ivijs/ivi",
   "files": [],
   "scripts": {
+    "bootstrap": "npm install && lerna bootstrap",
     "clean": "gulp clean",
     "dist": "gulp build",
     "link": "gulp link"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/mocha": "^2.2.41",
@@ -55,6 +55,7 @@
     "karma-sauce-launcher": "^1.1.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
+    "lerna": "^2.0.0",
     "mocha": "^3.4.2",
     "rollup": "^0.45.1",
     "rollup-plugin-node-resolve": "^3.0.0",

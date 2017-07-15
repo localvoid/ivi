@@ -38,7 +38,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "prepublish": "npm run dist",
+    "dist": "npm run dist:es6 && npm run dist:cjs && npm run dist:ssr",
+    "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "dist:ssr": "../../node_modules/.bin/tsc --project ./tsconfig.build.ssr.json",
     "watch": "../../node_modules/.bin/tsc --watch --project ./tsconfig.build.json",
@@ -49,5 +51,7 @@
     "ivi-core": "^0.1.0"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "ivi-core": "^0.1.0"
+  }
 }

@@ -123,20 +123,7 @@ gulp.task("link", [
   "link:ssr",
   "link:ssr-html",
   "link:state",
-], function (done) {
-  exec(`npm link ivi-core ivi-dom ivi-events ivi-html ivi-scheduler ivi ivi-snapshot ivi-ssr ivi-ssr-html ivi-state`,
-    function (err, stdout, stderr) {
-      if (stdout) {
-        console.log(stdout);
-      }
-      if (stderr) {
-        console.log(stderr);
-      }
-      done(err);
-    });
-});
-
-
+]);
 
 gulp.task("build:es6:core", function (done) {
   compileTypeScript("./packages/core/tsconfig.build.json", done);

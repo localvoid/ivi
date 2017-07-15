@@ -37,7 +37,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "prepublish": "npm run dist",
+    "dist": "npm run dist:es6 && npm run dist:cjs",
+    "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "watch": "../../node_modules/.bin/tsc --watch --project ./tsconfig.build.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",

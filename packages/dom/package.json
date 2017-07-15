@@ -37,10 +37,12 @@
     "LICENSE"
   ],
   "scripts": {
+    "prepublish": "npm run dist",
+    "dist": "npm run dist:es6 && npm run dist:cjs",
+    "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "test": "../../node_modules/.bin/karma start --single-run",
     "test:watch": "../../node_modules/.bin/karma start",
-    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "watch": "../../node_modules/.bin/tsc --watch --project ./tsconfig.build.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
@@ -48,5 +50,7 @@
   "peerDependencies": {
     "ivi-core": "^0.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "ivi-core": "^0.1.0"
+  }
 }
