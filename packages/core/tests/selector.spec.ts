@@ -1,26 +1,28 @@
+/* tslint:disable:no-unused-expression */
 import { SelectorData, selectorData, memoizeSelector } from "../src/index";
+import { expect } from "chai";
 
 describe("selector", function () {
   describe("data", function () {
-    test("should assign input data as a first param", function () {
+    it("should assign input data as a first param", function () {
       const d = selectorData(1);
-      expect(d.in).toBe(1);
+      expect(d.in).to.equal(1);
     });
 
-    test("should assign output data as a second param", function () {
+    it("should assign output data as a second param", function () {
       const d = selectorData(1, 2);
-      expect(d.in).toBe(1);
-      expect(d.out).toBe(2);
+      expect(d.in).to.equal(1);
+      expect(d.out).to.equal(2);
     });
 
-    test("should use first param as output when second param is omitted", function () {
+    it("should use first param as output when second param is omitted", function () {
       const d = selectorData(1);
-      expect(d.out).toBe(1);
+      expect(d.out).to.equal(1);
     });
   });
   describe("memoize", function () {
     describe("normal", function () {
-      test("should initially pass a null value as a prev state", function () {
+      it("should initially pass a null value as a prev state", function () {
         let p: SelectorData | undefined;
         let r: SelectorData<number, number> | null = null;
         const sel = memoizeSelector(
@@ -33,10 +35,10 @@ describe("selector", function () {
           },
         );
         sel(null, 2);
-        expect(p).toBeNull();
+        expect(p).to.be.null;
       });
 
-      test("should pass memoized value as a prev state", function () {
+      it("should pass memoized value as a prev state", function () {
         let p: SelectorData | undefined;
         let r: SelectorData<number, number> | null = null;
         const sel = memoizeSelector(
@@ -50,9 +52,9 @@ describe("selector", function () {
         );
         sel(null, 2);
         sel(null, 3);
-        expect(p).not.toBeNull();
-        expect(p!.in).toBe(2);
-        expect(p!.out).toBe(2);
+        expect(p).to.be.not.null;
+        expect(p!.in).to.be.equal(2);
+        expect(p!.out).to.be.equal(2);
       });
     });
   });

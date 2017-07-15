@@ -1,22 +1,24 @@
+/* tslint:disable:no-unused-expression */
 import { shallowEqual } from "../src/index";
+import { expect } from "chai";
 
 describe("equality", () => {
   describe("isPropsNotShallowEqual", () => {
-    test("{a} === {a} (same instance)", () => {
+    it("{a} === {a} (same instance)", () => {
       const a = { a: 1 };
-      expect(shallowEqual(a, a)).toBeTruthy();
+      expect(shallowEqual(a, a)).to.true;
     });
 
-    test("{a} === {a} (different instances)", () => {
-      expect(shallowEqual({ a: 1 }, { a: 1 })).toBeTruthy();
+    it("{a} === {a} (different instances)", () => {
+      expect(shallowEqual({ a: 1 }, { a: 1 })).to.true;
     });
 
-    test("{a:1} !== {a:2}", () => {
-      expect(shallowEqual({ a: 1 }, { a: 2 })).toBeFalsy();
+    it("{a:1} !== {a:2}", () => {
+      expect(shallowEqual({ a: 1 }, { a: 2 })).to.false;
     });
 
-    test("{a, b} !== {a}", () => {
-      expect(shallowEqual({ a: 1, b: 2 }, { a: 1 })).toBeFalsy();
+    it("{a, b} !== {a}", () => {
+      expect(shallowEqual({ a: 1, b: 2 }, { a: 1 })).to.false;
     });
   });
 });
