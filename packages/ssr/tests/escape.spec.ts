@@ -1,6 +1,3 @@
-(global as any).__IVI_BROWSER__ = false;
-(global as any).__IVI_DEV__ = true;
-
 import { escapeAttributeValue, escapeText } from "../src/escape";
 import { expect } from "chai";
 
