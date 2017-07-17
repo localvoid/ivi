@@ -1,11 +1,10 @@
 {
-  "name": "ivi-snapshot",
+  "name": "ivi-test",
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
-  "serverModule": "dist/ssr/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.1.0",
-  "description": "Snapshot renderer for ivi library.",
+  "description": "Test utils for ivi library.",
   "license": "MIT",
   "author": {
     "name": "Boris Kaul",
@@ -14,9 +13,8 @@
   },
   "keywords": [
     "ivi",
-    "snapshot",
     "test",
-    "jest",
+    "snapshot",
     "virtual",
     "dom",
     "virtualdom",
@@ -42,17 +40,18 @@
     "dist": "npm run dist:es6 && npm run dist:cjs && npm run dist:ssr",
     "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
-    "dist:ssr": "../../node_modules/.bin/tsc --project ./tsconfig.build.ssr.json",
-    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "../../node_modules/.bin/mocha -r ../../node_modules/ts-node/register tests/*.ts"
+    "test": "../../node_modules/.bin/karma start --single-run",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
   "peerDependencies": {
     "ivi-core": "^0.1.0",
-    "ivi-ssr": "^0.1.0"
+    "ivi-html": "^0.1.0",
+    "ivi": "^0.8.0"
   },
   "dependencies": {},
   "devDependencies": {
     "ivi-core": "^0.1.0",
-    "ivi-ssr": "^0.1.0"
+    "ivi-html": "^0.1.0",
+    "ivi": "^0.8.0"
   }
 }

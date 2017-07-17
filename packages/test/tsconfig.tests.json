@@ -1,13 +1,14 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "target": "es5",
     "module": "commonjs",
-    "sourceMap": true,
+    "declaration": false,
+    "sourceMap": false,
     "inlineSourceMap": true,
     "types": [
       "chai",
-      "mocha",
-      "node"
+      "mocha"
     ]
   },
   "include": [
