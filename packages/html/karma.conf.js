@@ -4,8 +4,8 @@ module.exports = function (config) {
   config.set({
     browsers: ["ChromeHeadless"],
     frameworks: ["mocha"],
-    files: ["tests/index.ts"],
-    preprocessors: { "tests/index.ts": ["webpack", "sourcemap"] },
+    files: ["__tests__/index.ts"],
+    preprocessors: { "__tests__/index.ts": ["webpack", "sourcemap"] },
 
     webpack: {
       module: {

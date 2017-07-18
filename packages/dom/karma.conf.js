@@ -4,8 +4,12 @@ module.exports = function (config) {
   config.set({
     browsers: ["ChromeHeadless"],
     frameworks: ["mocha"],
-    files: ["tests/index.ts"],
-    preprocessors: { "tests/index.ts": ["webpack", "sourcemap"] },
+    reporters: ["mocha"],
+    preprocessors: { "__tests__/index.ts": ["webpack", "sourcemap"] },
+    files: ["__tests__/index.ts"],
+
+    colors: true,
+    autoWatch: true,
 
     webpack: {
       module: {
@@ -45,11 +49,6 @@ module.exports = function (config) {
       stats: "errors-only",
       noInfo: true
     },
-
-    reporters: ["mocha"],
-
-    colors: true,
-    autoWatch: true,
 
     client: {
       mocha: {
