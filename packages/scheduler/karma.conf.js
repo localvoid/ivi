@@ -3,7 +3,7 @@ const webpack = require("webpack");
 module.exports = function (config) {
   config.set({
     browsers: ["Chrome"],
-    frameworks: ["mocha", "chai"],
+    frameworks: ["mocha"],
     files: ["tests/index.ts"],
     preprocessors: { "tests/index.ts": ["webpack", "sourcemap"] },
 
