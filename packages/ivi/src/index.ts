@@ -109,12 +109,13 @@ if (__IVI_DEV__) {
     document.title += " [DEV MODE]";
   }
 
-  function printFeatureGroup(name: string, flag: number) {
+  const printFeatureGroup = function (name: string, flag: number) {
     console.groupCollapsed(`${((FEATURES & flag) ? "✔" : "✖")} ${name}`);
-  }
-  function printFeature(name: string, flag: number) {
+  };
+
+  const printFeature = function (name: string, flag: number) {
     console.log(`${((FEATURES & flag) ? "✔" : "✖")} ${name}`);
-  }
+  };
 
   console.groupCollapsed("Detected browser features");
   printFeature("Passive Events", FeatureFlags.PassiveEvents);

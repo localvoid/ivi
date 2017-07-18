@@ -52,13 +52,12 @@ function findVNode(
  */
 export function findVNodeByNode(node: Node): VNode<any> | null {
   if (__IVI_DEV__) {
-    function match(vnode: VNode) {
+    return findVNode(function (vnode: VNode) {
       if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
         return node === getDOMInstanceFromVNode(vnode._children as VNode<any>);
       }
       return false;
-    }
-    return findVNode(match);
+    });
   }
   return null;
 }
@@ -71,13 +70,12 @@ export function findVNodeByNode(node: Node): VNode<any> | null {
  */
 export function findVNodeByDebugId(id: number): VNode<any> | null {
   if (__IVI_DEV__) {
-    function match(vnode: VNode) {
+    return findVNode(function (vnode: VNode) {
       if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
         return id === (vnode._instance as Component<any>)._debugId;
       }
       return false;
-    }
-    return findVNode(match);
+    });
   }
   return null;
 }
