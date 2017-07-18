@@ -163,17 +163,17 @@ function renderVNodeToSnapshot(
         }
       }
 
-      if (multiline || childrenString !== "") {
-        if (multiline) {
-          result += `\n${indent(il)}`;
-        }
-        result += `>`;
-        if (childrenString !== "") {
-          result += childrenString;
-        }
-        result += `\n${indent(il)}</${closeTagName}>`;
+      if (multiline) {
+        result += `\n${indent(il)}`;
       } else {
-        result += ` />`;
+        result += ` `;
+      }
+      if (childrenString === "") {
+        result += `/>`;
+      } else {
+        result += `>`;
+        result += childrenString;
+        result += `\n${indent(il)}</${closeTagName}>`;
       }
 
       return result;
