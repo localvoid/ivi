@@ -50,14 +50,13 @@ function _requestNextFrame(): void {
  * requestNextFrame triggers next frame tasks execution.
  */
 export function requestNextFrame(): void {
-  if (__IVI_DEV__) {
-    if (isSyncMode()) {
-      handleNextFrame();
-      return;
-    }
-  }
   if (_pending === false) {
     _pending = true;
+    if (__IVI_DEV__) {
+      if (isSyncMode()) {
+        return;
+      }
+    }
     scheduleMicrotask(_requestNextFrame);
   }
 }
