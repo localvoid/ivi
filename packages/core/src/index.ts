@@ -91,6 +91,7 @@ if (__IVI_DEV__) {
   if (__IVI_BROWSER__) {
     const hooks = window.__test_hooks__;
     if (hooks !== undefined) {
+      console.info(`Detected test environment`);
       hooks.before = devModeOnBeforeTest;
       hooks.after = devModeOnAfterTest;
     }
