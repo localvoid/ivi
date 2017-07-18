@@ -62,7 +62,7 @@ function UpdateContext() {
  */
 export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Context<T>> {
   return new VNode<Context<T>>(
-    VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
+    VNodeFlags.UpdateContext,
     __IVI_DEV__ ? UpdateContext as () => VNode<any> : null,
     ctx,
     null,
@@ -148,7 +148,7 @@ export function connect<I, O, P>(
   }
   return function (props: P): VNode<P> {
     return new VNode<P>(
-      VNodeFlags.ComponentFunction | VNodeFlags.Connect,
+      VNodeFlags.Connect,
       descriptor,
       props,
       null,
@@ -181,7 +181,7 @@ export function keepAlive<P>(
   props?: P,
 ): VNode<P> {
   return new VNode<P>(
-    VNodeFlags.ComponentFunction | VNodeFlags.KeepAlive,
+    VNodeFlags.KeepAlive,
     handler,
     props === undefined ? null : props,
     null,

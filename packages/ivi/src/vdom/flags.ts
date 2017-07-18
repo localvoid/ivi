@@ -13,8 +13,6 @@ export const enum VNodeFlags {
   Element = 1 << 1,
   /**
    * VNode represents a simple "function" component.
-   *
-   * It can also represent specialized components like "UpdateContext" component.
    */
   ComponentFunction = 1 << 2,
   /**
@@ -89,7 +87,7 @@ export const enum VNodeFlags {
   /**
    * VNode represents a Component.
    */
-  Component = ComponentFunction | ComponentClass,
+  Component = ComponentFunction | ComponentClass | Connect | UpdateContext | KeepAlive,
   /**
    * Flags that should match to be compatible for syncing.
    */
@@ -102,9 +100,6 @@ export const enum VNodeFlags {
   | TextAreaElement
   | MediaElement
   | SvgElement
-  | Connect
-  | UpdateContext
-  | KeepAlive
   | VoidElement,
 }
 
