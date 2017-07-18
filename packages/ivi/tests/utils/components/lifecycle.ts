@@ -1,7 +1,6 @@
-import { Component } from "../../../src/vdom/component";
-import { VNode } from "../../../src/vdom/vnode";
+import { Component, componentFactory, VNode } from "../../../src";
+import * as h from "../html";
 import { lifecycleTouch } from "../lifecycle";
-import { component, text } from "../vdom";
 
 export interface ComponentHooks<P> {
   construct?: (
@@ -27,14 +26,14 @@ export interface ComponentHooks<P> {
   shouldAugment?: (this: Component<P>) => boolean;
 }
 
-export interface TestLifecycleComponentProps {
+export interface LifecycleTesterProps {
   id: string;
   child: VNode<any>;
-  hooks: ComponentHooks<TestLifecycleComponentProps>;
+  hooks: ComponentHooks<LifecycleTesterProps>;
 }
 
-export class TestLifecycleComponent extends Component<TestLifecycleComponentProps> {
-  constructor(props: TestLifecycleComponentProps) {
+export class LifecycleTester extends Component<LifecycleTesterProps> {
+  constructor(props: LifecycleTesterProps) {
     super(props);
     lifecycleTouch(props.id, "constructor");
     if (props.hooks.construct) {
@@ -42,7 +41,7 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
     }
   }
 
-  isPropsChanged(oldProps: TestLifecycleComponentProps, newProps: TestLifecycleComponentProps): boolean {
+  isPropsChanged(oldProps: LifecycleTesterProps, newProps: LifecycleTesterProps): boolean {
     lifecycleTouch(newProps.id, "isPropsChanged");
     if (newProps.hooks.isPropsChanged) {
       return newProps.hooks.isPropsChanged.call(this, oldProps, newProps);
@@ -50,7 +49,7 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
     return true;
   }
 
-  newPropsReceived(oldProps: TestLifecycleComponentProps, newProps: TestLifecycleComponentProps): void {
+  newPropsReceived(oldProps: LifecycleTesterProps, newProps: LifecycleTesterProps): void {
     lifecycleTouch(newProps.id, "newPropsReceived");
     if (newProps.hooks.newPropsReceived) {
       newProps.hooks.newPropsReceived.call(this, oldProps, newProps);
@@ -109,47 +108,49 @@ export class TestLifecycleComponent extends Component<TestLifecycleComponentProp
   }
 }
 
+export const lifecycleTester = componentFactory(LifecycleTester);
+
 export function $lc(
   id: string,
-  hooks?: ComponentHooks<TestLifecycleComponentProps>,
-): VNode<TestLifecycleComponentProps>;
+  hooks?: ComponentHooks<LifecycleTesterProps>,
+): VNode<LifecycleTesterProps>;
 export function $lc(
   id: string,
   child?: VNode<any>,
-): VNode<TestLifecycleComponentProps>;
+): VNode<LifecycleTesterProps>;
 export function $lc(
   id: string,
-  hooks: ComponentHooks<TestLifecycleComponentProps>,
+  hooks: ComponentHooks<LifecycleTesterProps>,
   child?: VNode<any>,
-): VNode<TestLifecycleComponentProps>;
+): VNode<LifecycleTesterProps>;
 export function $lc(
   id: string,
-  p1?: ComponentHooks<TestLifecycleComponentProps> | VNode<any>,
+  p1?: ComponentHooks<LifecycleTesterProps> | VNode<any>,
   p2?: VNode<any>,
-): VNode<TestLifecycleComponentProps> {
+): VNode<LifecycleTesterProps> {
   if (arguments.length === 3) {
-    return component(TestLifecycleComponent, {
+    return lifecycleTester({
       id: id,
       child: p2 as VNode<any>,
-      hooks: p1 as ComponentHooks<TestLifecycleComponentProps>,
+      hooks: p1 as ComponentHooks<LifecycleTesterProps>,
     });
   } else if (arguments.length === 2) {
     if (p1!.constructor === VNode) {
-      return component(TestLifecycleComponent, {
+      return lifecycleTester({
         id: id,
         child: p1 as VNode<any>,
         hooks: {},
       });
     }
-    return component(TestLifecycleComponent, {
+    return lifecycleTester({
       id: id,
-      child: text(""),
-      hooks: p1 as ComponentHooks<TestLifecycleComponentProps>,
+      child: h.t(""),
+      hooks: p1 as ComponentHooks<LifecycleTesterProps>,
     });
   }
-  return component(TestLifecycleComponent, {
+  return lifecycleTester({
     id: id,
-    child: text(""),
+    child: h.t(""),
     hooks: {},
   });
 }

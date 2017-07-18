@@ -19,7 +19,7 @@ export class DOMOpsCounter {
 }
 
 declare global {
-  export namespace Chai {
+  namespace Chai {
     interface Assertion {
       matchDOMOps(
         createElement: number,

@@ -1,4 +1,5 @@
-import { startRender, $lc, $tfc, TestLifecycleComponentProps, TestFunctionalComponentProps, html } from "./utils";
+import { startRender, $lc, $tfc, LifecycleTesterProps, TestStatelessComponentProps } from "./utils";
+import * as h from "./utils/html";
 import { expect } from "chai";
 
 describe("component state", () => {
@@ -7,10 +8,10 @@ describe("component state", () => {
       startRender((r) => {
         r($tfc("1", {
           render: (
-            props: TestFunctionalComponentProps,
+            props: TestStatelessComponentProps,
           ) => {
-            expect(props.id).to.be.equal("1");
-            return html("div");
+            expect(props.id).to.equal("1");
+            return h.div();
           },
         }));
       });
@@ -18,17 +19,17 @@ describe("component state", () => {
 
     it("isPropsChanged", () => {
       startRender((r) => {
-        r($tfc("1", html("div")));
+        r($tfc("1", h.div()));
         r($tfc("2", {
           isPropsChanged: (
-            oldProps: TestFunctionalComponentProps,
-            newProps: TestFunctionalComponentProps,
+            oldProps: TestStatelessComponentProps,
+            newProps: TestStatelessComponentProps,
           ) => {
-            expect(oldProps.id).to.be.equal("1");
-            expect(newProps.id).to.be.equal("2");
+            expect(oldProps.id).to.equal("1");
+            expect(newProps.id).to.equal("2");
             return true;
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
   });
@@ -38,42 +39,42 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           construct: (
-            props: TestLifecycleComponentProps,
+            props: LifecycleTesterProps,
           ) => {
-            expect(props.id).to.be.equal("1");
+            expect(props.id).to.equal("1");
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
 
     it("isPropsChanged", () => {
       startRender((r) => {
-        r($lc("1", html("div")));
+        r($lc("1", h.div()));
         r($lc("2", {
           isPropsChanged: (
-            oldProps: TestLifecycleComponentProps,
-            newProps: TestLifecycleComponentProps,
+            oldProps: LifecycleTesterProps,
+            newProps: LifecycleTesterProps,
           ) => {
-            expect(oldProps.id).to.be.equal("1");
-            expect(newProps.id).to.be.equal("2");
+            expect(oldProps.id).to.equal("1");
+            expect(newProps.id).to.equal("2");
             return true;
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
 
     it("newPropsReceived", () => {
       startRender((r) => {
-        r($lc("1", html("div")));
+        r($lc("1", h.div()));
         r($lc("2", {
           newPropsReceived: (
-            oldProps: TestLifecycleComponentProps,
-            newProps: TestLifecycleComponentProps,
+            oldProps: LifecycleTesterProps,
+            newProps: LifecycleTesterProps,
           ) => {
-            expect(oldProps.id).to.be.equal("1");
-            expect(newProps.id).to.be.equal("2");
+            expect(oldProps.id).to.equal("1");
+            expect(newProps.id).to.equal("2");
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
 
@@ -81,9 +82,9 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           attached: function () {
-            expect(this.props.id).to.be.equal("1");
+            expect(this.props.id).to.equal("1");
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
 
@@ -91,9 +92,9 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           detached: function () {
-            expect(this.props.id).to.be.equal("1");
+            expect(this.props.id).to.equal("1");
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
 
@@ -101,9 +102,9 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           beforeUpdate: function () {
-            expect(this.props.id).to.be.equal("1");
+            expect(this.props.id).to.equal("1");
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
 
@@ -111,9 +112,9 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           updated: function () {
-            expect(this.props.id).to.be.equal("1");
+            expect(this.props.id).to.equal("1");
           },
-        }, html("div")));
+        }, h.div()));
       });
     });
   });

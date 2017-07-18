@@ -1,6 +1,7 @@
 import { VNode } from "../src/vdom/vnode";
 import { keepAlive } from "../src/vdom/vnode_factories";
-import { startRender, checkLifecycle, $lc, html } from "./utils";
+import { startRender, checkLifecycle, $lc } from "./utils";
+import * as h from "./utils/html";
 import { expect } from "chai";
 
 function pooledKeepAlive(maxItems = 1) {
@@ -29,7 +30,7 @@ describe("Keep Alive", function () {
       startRender((render) => {
         checkLifecycle((c) => {
           const $ka = pooledKeepAlive();
-          render($ka($lc("1", html("div"))));
+          render($ka($lc("1", h.div())));
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("1", "render")).to.equal(1);
@@ -50,8 +51,8 @@ describe("Keep Alive", function () {
       startRender((render) => {
         checkLifecycle((c) => {
           const $ka = pooledKeepAlive();
-          render($ka($lc("1", html("div"))));
-          render(html("div"));
+          render($ka($lc("1", h.div())));
+          render(h.div());
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("1", "render")).to.equal(1);
@@ -73,7 +74,7 @@ describe("Keep Alive", function () {
         checkLifecycle((c) => {
           const $ka1 = pooledKeepAlive();
           const $ka2 = pooledKeepAlive();
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("1", "render")).to.equal(1);
@@ -106,8 +107,8 @@ describe("Keep Alive", function () {
         checkLifecycle((c) => {
           const $ka1 = pooledKeepAlive();
           const $ka2 = pooledKeepAlive();
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
-          render(html("div"));
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
+          render(h.div());
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("1", "render")).to.equal(1);
@@ -140,9 +141,9 @@ describe("Keep Alive", function () {
         checkLifecycle((c) => {
           const $ka1 = pooledKeepAlive();
           const $ka2 = pooledKeepAlive();
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
-          render(html("div"));
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
+          render(h.div());
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("2", "constructor")).to.equal(2);
@@ -175,9 +176,9 @@ describe("Keep Alive", function () {
         checkLifecycle((c) => {
           const $ka1 = pooledKeepAlive();
           const $ka2 = pooledKeepAlive();
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
-          render($ka1($lc("1", html("div"))));
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
+          render($ka1($lc("1", h.div())));
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("2", "constructor")).to.equal(2);
@@ -210,9 +211,9 @@ describe("Keep Alive", function () {
         checkLifecycle((c) => {
           const $ka1 = pooledKeepAlive();
           const $ka2 = pooledKeepAlive();
-          render($ka1($lc("1", $ka2($lc("2", html("div"))))));
-          render(html("div"));
-          render($ka2($lc("2", html("div"))));
+          render($ka1($lc("1", $ka2($lc("2", h.div())))));
+          render(h.div());
+          render($ka2($lc("2", h.div())));
 
           expect(c("1", "constructor")).to.equal(0);
           expect(c("1", "render")).to.equal(1);

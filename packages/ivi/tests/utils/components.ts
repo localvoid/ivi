@@ -1,19 +1,18 @@
-export * from "./components/functional";
+import { Component, componentFactory, VNode } from "../../src";
+import * as h from "./html";
+
+export * from "./components/stateless";
 export * from "./components/lifecycle";
 export * from "./components/static";
 
-import { VNode } from "../../src/vdom/vnode";
-import { Component } from "../../src/vdom/component";
-import { component, statelessComponent, html, text } from "./vdom";
-
-export interface TestComponentProps {
+export interface ComponentTesterProps {
   child: VNode<any>;
   wrapDepth?: number;
 }
 
-export function TestComponentFunction(props: TestComponentProps): VNode<any> {
+export function StatelessComponentTester(props: ComponentTesterProps): VNode<any> {
   if (props.wrapDepth) {
-    return statelessComponent(TestComponentFunction, {
+    return statelessComponentTester({
       child: props.child,
       wrapDepth: props.wrapDepth - 1,
     });
@@ -21,11 +20,12 @@ export function TestComponentFunction(props: TestComponentProps): VNode<any> {
 
   return props.child;
 }
+export const statelessComponentTester = componentFactory(StatelessComponentTester);
 
-export class TestComponent extends Component<TestComponentProps> {
+export class ComponentTester extends Component<ComponentTesterProps> {
   render(): VNode<any> {
     if (this.props.wrapDepth) {
-      return component(TestComponent, {
+      return componentTester({
         child: this.props.child,
         wrapDepth: this.props.wrapDepth - 1,
       });
@@ -34,23 +34,24 @@ export class TestComponent extends Component<TestComponentProps> {
     return this.props.child;
   }
 }
+export const componentTester = componentFactory(ComponentTester);
 
 export function $tcf(
-  child: VNode<any> | string = html("div"),
+  child: VNode<any> | string = h.div(),
   wrapDepth = 0,
-): VNode<TestComponentProps> {
-  return statelessComponent(TestComponentFunction, {
-    child: typeof child === "string" ? text(child) : child,
+): VNode<ComponentTesterProps> {
+  return statelessComponentTester({
+    child: typeof child === "string" ? h.t(child) : child,
     wrapDepth: wrapDepth,
   });
 }
 
 export function $tc(
-  child: VNode<any> | string = html("div"),
+  child: VNode<any> | string = h.div(),
   wrapDepth = 0,
-): VNode<TestComponentProps> {
-  return component(TestComponent, {
-    child: typeof child === "string" ? text(child) : child,
+): VNode<ComponentTesterProps> {
+  return componentTester({
+    child: typeof child === "string" ? h.t(child) : child,
     wrapDepth: wrapDepth,
   });
 }

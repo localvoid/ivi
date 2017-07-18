@@ -8,6 +8,9 @@ module.exports = function (config) {
     preprocessors: { "tests/index.ts": ["webpack", "sourcemap"] },
     files: ["tests/index.ts"],
 
+    colors: true,
+    autoWatch: true,
+
     webpack: {
       module: {
         rules: [
@@ -46,9 +49,6 @@ module.exports = function (config) {
       stats: "errors-only",
       noInfo: true
     },
-
-    colors: true,
-    autoWatch: true,
 
     mochaReporter: {
       showDiff: true,

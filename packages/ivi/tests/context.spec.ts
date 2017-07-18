@@ -1,10 +1,11 @@
 import { Context } from "ivi-core";
-import { frag, render, $sc, $fsc, text } from "./utils";
+import { frag, render, staticComponent, staticComponentFunction } from "./utils";
+import * as h from "./utils/html";
 import { context, connect } from "../src/vdom/vnode_factories";
 import { expect } from "chai";
 
 function ContextTestPrinter(value: string) {
-  return text(value);
+  return h.t(value);
 }
 
 interface ContextTestPrinterSelect {
@@ -42,15 +43,15 @@ describe("context", () => {
 
     it("<C><S>10</S></C> => <C><S>20</S></C>", () => {
       const f = frag();
-      render<HTMLElement>(context({ value: 10 }, $sc($ContextTestPrinter())), f);
-      const b = render<HTMLElement>(context({ value: 20 }, $sc($ContextTestPrinter())), f);
+      render<HTMLElement>(context({ value: 10 }, staticComponent($ContextTestPrinter())), f);
+      const b = render<HTMLElement>(context({ value: 20 }, staticComponent($ContextTestPrinter())), f);
       expect(b.nodeValue).to.equal("20");
     });
 
     it("<C><SF>10</SF></C> => <C><SF>20</SF></C>", () => {
       const f = frag();
-      render<HTMLElement>(context({ value: 10 }, $fsc($ContextTestPrinter())), f);
-      const b = render<HTMLElement>(context({ value: 20 }, $fsc($ContextTestPrinter())), f);
+      render<HTMLElement>(context({ value: 10 }, staticComponentFunction($ContextTestPrinter())), f);
+      const b = render<HTMLElement>(context({ value: 20 }, staticComponentFunction($ContextTestPrinter())), f);
       expect(b.nodeValue).to.equal("20");
     });
   });
