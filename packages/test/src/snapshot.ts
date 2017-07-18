@@ -88,15 +88,10 @@ function renderVNodeToSnapshot(
       let multiline = false;
       let closeTagName;
       if ((flags & VNodeFlags.InputElement) !== 0) {
-        if ((flags & VNodeFlags.TextAreaElement) !== 0) {
-          result += `<textarea`;
-          closeTagName = `textarea`;
-        } else {
-          closeTagName = `input`;
-          result += `<input\n`;
-          result += `${indent(il + 1)}type="${vnode._tag}"`;
-          multiline = true;
-        }
+        closeTagName = `input`;
+        result += `<input\n`;
+        result += `${indent(il + 1)}type="${vnode._tag}"`;
+        multiline = true;
       } else {
         closeTagName = vnode._tag;
         result += `<${vnode._tag}`;

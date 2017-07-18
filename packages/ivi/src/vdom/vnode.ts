@@ -252,6 +252,9 @@ export class VNode<P = null> {
       if (this._flags & VNodeFlags.InputElement) {
         throw new Error("Failed to set children, input elements can't have children.");
       }
+      if (this._flags & VNodeFlags.TextAreaElement) {
+        throw new Error("Failed to set children, textarea elements can't have children.");
+      }
       if (this._flags & VNodeFlags.MediaElement) {
         throw new Error("Failed to set children, media elements can't have children.");
       }
@@ -390,6 +393,9 @@ export class VNode<P = null> {
       if (this._flags & VNodeFlags.InputElement) {
         throw new Error("Failed to set unsafeHTML, input elements can't have innerHTML.");
       }
+      if (this._flags & VNodeFlags.TextAreaElement) {
+        throw new Error("Failed to set unsafeHTML, textarea elements can't have innerHTML.");
+      }
       if (this._flags & VNodeFlags.MediaElement) {
         throw new Error("Failed to set unsafeHTML, media elements can't have children.");
       }
@@ -410,8 +416,8 @@ export class VNode<P = null> {
    */
   value(value: string | null): VNode<P> {
     if (__IVI_DEV__) {
-      if (!(this._flags & VNodeFlags.InputElement)) {
-        throw new Error("Failed to set value, value is available on input elements only.");
+      if (!(this._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
+        throw new Error("Failed to set value, value is available on input and textarea elements only.");
       }
     }
     this._children = value;

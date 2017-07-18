@@ -638,18 +638,14 @@ function vNodeRender(
         if ((flags & VNodeFlags.SvgElement) !== 0) {
           node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
         } else {
-          if ((flags & VNodeFlags.TextAreaElement) !== 0) {
-            node = document.createElement("textarea");
-          } else {
-            node = document.createElement("input");
-            /**
-             * #quirks
-             *
-             * It is important that we assign `type` before any other properties. IE11 will remove assigned
-             * `value` when `type` is assigned.
-             */
-            (node as HTMLInputElement).type = vnode._tag as string;
-          }
+          node = document.createElement("input");
+          /**
+           * #quirks
+           *
+           * It is important that we assign `type` before any other properties. IE11 will remove assigned
+           * `value` when `type` is assigned.
+           */
+          (node as HTMLInputElement).type = vnode._tag as string;
         }
       } else {
         node = document.createElement(vnode._tag as string);
@@ -694,7 +690,7 @@ function vNodeRender(
           child = children as VNode<any>;
           childNode = vNodeRender(node, child, context);
           node.insertBefore(childNode, null);
-        } else if ((flags & VNodeFlags.InputElement) !== 0) {
+        } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
           /**
            * #quirks
            *
@@ -1247,7 +1243,7 @@ function syncChildren(
       }
     } else if ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
       vNodeRenderIntoAndAttach(parent, null, b as VNode<any>, context, syncFlags);
-    } else if ((bParentFlags & VNodeFlags.InputElement) !== 0) {
+    } else if ((bParentFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
       setHTMLInputValue(parent as HTMLInputElement, b as string | boolean);
     } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
       if (b) {

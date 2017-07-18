@@ -1579,7 +1579,7 @@ export function view(className?: string): VNode<SVGViewElementProps | null> {
 // Textarea / Input Elements:
 export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.TextAreaElement,
+    VNodeFlags.Element | VNodeFlags.TextAreaElement,
     "textarea",
     null,
     className === undefined ? null : className,
