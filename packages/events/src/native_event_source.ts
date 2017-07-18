@@ -1,3 +1,4 @@
+import { DEV_HOOKS, devModeAddHook } from "ivi-core";
 import { scheduleTask } from "ivi-scheduler";
 import { getEventTarget, getNativeEventOptions } from "./utils";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
@@ -83,6 +84,18 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
     this.name = name;
     this.eventType = eventType;
     this.deactivating = false;
+
+    if (__IVI_DEV__) {
+      DEV_HOOKS.onAfterTestHook = devModeAddHook(DEV_HOOKS.onAfterTestHook, () => {
+        document.removeEventListener(
+          this.name,
+          this.dispatch,
+          getNativeEventOptions(this.flags) as boolean,
+        );
+        this.dependencies = 0;
+        this.deactivating = false;
+      });
+    }
   }
 
   private matchEventSource = (h: EventHandler) => h.source === this.eventSource;
