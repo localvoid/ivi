@@ -3,9 +3,13 @@ const webpack = require("webpack");
 module.exports = function (config) {
   config.set({
     browsers: ["ChromeHeadless"],
-    frameworks: ["mocha"],
-    files: ["tests/index.ts"],
+    frameworks: ["mocha", "snapshot", "mocha-snapshot"],
+    reporters: ["mocha"],
     preprocessors: { "tests/index.ts": ["webpack", "sourcemap"] },
+    files: ["tests/index.ts"],
+
+    colors: true,
+    autoWatch: true,
 
     webpack: {
       module: {
@@ -46,10 +50,13 @@ module.exports = function (config) {
       noInfo: true
     },
 
-    reporters: ["mocha"],
+    snapshot: {
+      update: !!process.env.UPDATE,
+    },
 
-    colors: true,
-    autoWatch: true,
+    mochaReporter: {
+      showDiff: true,
+    },
 
     client: {
       mocha: {

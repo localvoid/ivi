@@ -478,7 +478,7 @@ describe("render", () => {
       });
     });
 
-    it("<input type='checkbox checked=true'>", () => {
+    it("<input type='checkbox' checked='true'>", () => {
       checkDOMOps((c) => {
         const n = render<HTMLInputElement>(h.inputCheckbox().checked(true));
         expect(n.tagName.toLowerCase()).to.equal("input");
