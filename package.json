@@ -29,16 +29,11 @@
   },
   "github": "https://github.com/ivijs/ivi",
   "files": [],
-  "scripts": {
-    "bootstrap": "npm install && lerna bootstrap",
-    "clean": "gulp clean",
-    "dist": "gulp build",
-    "link": "gulp link"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.10",
+    "@types/node": "^8.0.14",
     "chai": "^4.1.0",
     "core-js": "^2.4.1",
     "istanbul-instrumenter-loader": "^2.0.0",
@@ -53,18 +48,20 @@
     "karma-sauce-launcher": "^1.1.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
-    "lerna": "^2.0.0",
     "mocha": "^3.4.2",
     "nyc": "^11.0.3",
-    "rollup": "^0.45.1",
+    "rollup": "^0.45.2",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-replace": "^1.1.1",
-    "ts-loader": "^2.2.2",
+    "ts-loader": "^2.3.0",
     "ts-node": "^3.2.0",
     "tslib": "^1.7.1",
     "tslint": "^5.5.0",
     "typescript": "^2.4.1",
-    "webpack": "^3.2.0",
+    "webpack": "^3.3.0",
     "webpack-merge": "^4.1.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

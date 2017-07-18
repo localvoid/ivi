@@ -73,8 +73,14 @@ modules, we will try to match their conventions.
 
 ## Development Environment
 
-Bootstrap Development Environment
+Bootstrap Development Environment (Do not use lerna to bootstrap)
 
 ```sh
-$ npm run bootstrap
+$ yarn install
+```
+
+Build packages
+
+```sh
+$ lerna run dist
 ```
