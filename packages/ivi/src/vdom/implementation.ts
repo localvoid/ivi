@@ -15,15 +15,11 @@
  * #component - Component related functions.
  */
 
-import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
+import { Context, SVG_NAMESPACE, SelectorData, devModeOnError } from "ivi-core";
 import { setInnerHTML } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
-import {
-  devModeOnError, devModeOnElementBeforeCreate, devModeOnElementCreated, devModeOnComponentCreated,
-  devModeOnComponentAttached, devModeOnComponentDetached,
-} from "../dev_mode/hooks";
 import {
   setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
   nestingStateParentTagName,
@@ -375,7 +371,6 @@ function vNodeAttach(vnode: VNode<any>): void {
 
       component.flags |= ComponentFlags.Attached;
       component.attached();
-      devModeOnComponentAttached(component);
     }
     vNodeAttach(vnode._children as VNode<any>);
     stackTracePopComponent();
@@ -424,7 +419,6 @@ function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
         }
         component.flags &= ~ComponentFlags.Attached;
         component.detached();
-        devModeOnComponentDetached(component);
       }
     }
     stackTracePopComponent();
@@ -633,7 +627,6 @@ function vNodeRender(
       pushNestingState(vnode._tag as string);
       checkNestingViolation();
 
-      devModeOnElementBeforeCreate(vnode);
       if ((flags & (VNodeFlags.InputElement | VNodeFlags.SvgElement)) !== 0) {
         if ((flags & VNodeFlags.SvgElement) !== 0) {
           node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
@@ -650,7 +643,6 @@ function vNodeRender(
       } else {
         node = document.createElement(vnode._tag as string);
       }
-      devModeOnElementCreated(vnode, node as Element);
 
       if ((flags & VNodeFlags.Autofocus) !== 0) {
         autofocus(node as Element);
@@ -711,7 +703,6 @@ function vNodeRender(
   } else { // (flags & VNodeFlags.Component)
     if ((flags & VNodeFlags.ComponentClass) !== 0) {
       const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
-      devModeOnComponentCreated(component);
       stackTracePushComponent(vnode, instance);
       componentPerfMarkBegin("create", vnode);
       const root = vnode._children = component.render();
@@ -923,7 +914,6 @@ function vNodeAugment(
       } else { // (flags & VNodeFlags.Component)
         if ((flags & VNodeFlags.ComponentClass) !== 0) {
           const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
-          devModeOnComponentCreated(component);
           stackTracePushComponent(vnode, instance);
           const root = vnode._children = component.render();
           if (component.shouldAugment() === true) {
