@@ -1,4 +1,5 @@
 import { USER_AGENT, UserAgentFlags } from "ivi-core";
+import { isSyncMode } from "./sync_mode";
 import { incrementClock } from "./clock";
 
 let _pending = false;
@@ -42,6 +43,12 @@ function requestMicrotaskExecution(): void {
  * @param task Microtask.
  */
 export function scheduleMicrotask(task: () => void): void {
+  if (__IVI_DEV__) {
+    if (isSyncMode()) {
+      task();
+      return;
+    }
+  }
   requestMicrotaskExecution();
   _microtasks.push(task);
 }

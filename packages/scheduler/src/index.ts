@@ -1,3 +1,4 @@
+export { setSyncMode, isSyncMode } from "./sync_mode";
 export { FrameTasksGroup } from "./frame_tasks_group";
 export { clock } from "./clock";
 export { scheduleMicrotask } from "./microtask";

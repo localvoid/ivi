@@ -1,4 +1,5 @@
 import { NOOP } from "ivi-core";
+import { isSyncMode } from "./sync_mode";
 import { isVisible, addVisibilityObserver } from "./visibility";
 import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
 import { executeDOMReaders } from "./dom_reader";
@@ -49,6 +50,12 @@ function _requestNextFrame(): void {
  * requestNextFrame triggers next frame tasks execution.
  */
 export function requestNextFrame(): void {
+  if (__IVI_DEV__) {
+    if (isSyncMode()) {
+      handleNextFrame();
+      return;
+    }
+  }
   if (_pending === false) {
     _pending = true;
     scheduleMicrotask(_requestNextFrame);
@@ -170,7 +177,10 @@ export function currentFrame(): FrameTasksGroup {
  * syncFrameUpdate performs a synchronous frame update.
  */
 export function syncFrameUpdate(): void {
-  handleNextFrame();
+  if (_pending === true) {
+    _pending = false;
+    handleNextFrame();
+  }
 }
 
 function handleVisibilityChange(visible: boolean): void {

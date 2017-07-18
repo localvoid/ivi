@@ -1,4 +1,4 @@
-import { RepeatableTaskList } from "ivi-core";
+import { RepeatableTaskList, DEV_HOOKS, devModeAddHook } from "ivi-core";
 
 const _readers = new RepeatableTaskList();
 
@@ -18,4 +18,10 @@ export function addDOMReader(reader: () => boolean | undefined): void {
  */
 export function executeDOMReaders(): void {
   _readers.run();
+}
+
+if (__IVI_DEV__) {
+  DEV_HOOKS.onAfterTestHook = devModeAddHook(DEV_HOOKS.onAfterTestHook, function () {
+    _readers.tasks.length = 0;
+  });
 }

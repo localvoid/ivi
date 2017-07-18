@@ -1,3 +1,4 @@
+import { isSyncMode } from "./sync_mode";
 import { incrementClock } from "./clock";
 
 let _pending = false;
@@ -52,6 +53,12 @@ function requestTaskExecution(): void {
  * @param task Task.
  */
 export function scheduleTask(task: () => void): void {
+  if (__IVI_DEV__) {
+    if (isSyncMode()) {
+      task();
+      return;
+    }
+  }
   requestTaskExecution();
   _tasks.push(task);
 }

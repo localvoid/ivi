@@ -1,3 +1,4 @@
+import { DEV_HOOKS, devModeAddHook } from "ivi-core";
 import { scheduleMicrotask } from "./microtask";
 
 let _visible = true;
@@ -62,3 +63,9 @@ if (typeof document["hidden"] !== "undefined") {
   };
 }
 _visible = !_isHidden();
+
+if (__IVI_DEV__) {
+  DEV_HOOKS.onAfterTestHook = devModeAddHook(DEV_HOOKS.onAfterTestHook, function () {
+    _visibilityObservers.length = 0;
+  });
+}

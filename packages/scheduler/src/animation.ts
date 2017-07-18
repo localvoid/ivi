@@ -1,4 +1,4 @@
-import { RepeatableTaskList } from "ivi-core";
+import { RepeatableTaskList, DEV_HOOKS, devModeAddHook } from "ivi-core";
 import { requestNextFrame } from "./frame";
 
 const _animations = new RepeatableTaskList();
@@ -22,4 +22,10 @@ export function executeAnimations(): void {
 
 export function shouldRequestNextFrameForAnimations(): boolean {
   return (_animations.tasks.length > 0);
+}
+
+if (__IVI_DEV__) {
+  DEV_HOOKS.onAfterTestHook = devModeAddHook(DEV_HOOKS.onAfterTestHook, function () {
+    _animations.tasks.length = 0;
+  });
 }
