@@ -102,6 +102,11 @@ function renderVNodeToSnapshot(
         multiline = true;
       }
 
+      if ((flags & VNodeFlags.Autofocus) !== 0) {
+        result += `\n${indent(il + 1)}autofocus="true"`;
+        multiline = true;
+      }
+
       const props = vnode._props;
       if (props !== null) {
         const attrs = props.attrs;
@@ -133,16 +138,24 @@ function renderVNodeToSnapshot(
       }
 
       let childrenString = "";
-      if ((flags & VNodeFlags.VoidElement) === 0) {
-        if (vnode._children !== null) {
-          if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
-            if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-              const children = vnode._children as VNode<any>[];
-              for (let i = 0; i < children.length; i++) {
-                childrenString += `\n${renderVNodeToSnapshot(options, il + 1, children[i], context)}`;
+      if (vnode._children !== null) {
+        if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
+          if ((flags & VNodeFlags.ChildrenArray) !== 0) {
+            const children = vnode._children as VNode<any>[];
+            for (let i = 0; i < children.length; i++) {
+              childrenString += `\n${renderVNodeToSnapshot(options, il + 1, children[i], context)}`;
+            }
+          } else {
+            childrenString = `\n${renderVNodeToSnapshot(options, il + 1, vnode._children as VNode<any>, context)}`;
+          }
+        } else {
+          if ((flags & VNodeFlags.InputElement) !== 0) {
+            if (vnode._children !== null) {
+              if (typeof vnode._children === "boolean") {
+                result += `${indent(il + 1)}checked="${vnode._children}"`;
+              } else {
+                result += `${indent(il + 1)}value="${vnode._children}"`;
               }
-            } else {
-              childrenString = `\n${renderVNodeToSnapshot(options, il + 1, vnode._children as VNode<any>, context)}`;
             }
           } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
             childrenString = `\n${indent(il + 1)}${vnode._children}`;
