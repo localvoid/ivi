@@ -1,4 +1,4 @@
-import { NOOP } from "ivi-core";
+import { NOOP, DEV_HOOKS, devModeAddHook } from "ivi-core";
 import { isSyncMode } from "./sync_mode";
 import { isVisible, addVisibilityObserver } from "./visibility";
 import { FrameTasksGroupFlags, FrameTasksGroup } from "./frame_tasks_group";
@@ -191,3 +191,14 @@ function handleVisibilityChange(visible: boolean): void {
 }
 
 addVisibilityObserver(handleVisibilityChange);
+
+if (__IVI_DEV__) {
+  DEV_HOOKS.onAfterTestHook = devModeAddHook(DEV_HOOKS.onAfterTestHook, function () {
+    _pending = false;
+    _currentFrameReady = false;
+    _currentFrame = new FrameTasksGroup();
+    _nextFrame = new FrameTasksGroup();
+    _frameStartTime = 0;
+    _autofocusedElement = null;
+  });
+}
