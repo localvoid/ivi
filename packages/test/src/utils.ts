@@ -7,7 +7,7 @@ export function containsClassName(classNames: string, className: string): boolea
     .some((c) => c === className);
 }
 
-export function matchProps(
+export function matchValues(
   props: { [key: string]: any } | null,
   match: { [key: string]: any } | null,
 ): boolean {

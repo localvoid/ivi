@@ -1,8 +1,14 @@
-import { CSSStyleProps, shallowEqual } from "ivi-core";
-import { VNode, VNodeFlags } from "ivi";
+import { CSSStyleProps } from "ivi-core";
 import { EventSource } from "ivi-events";
-import { VNodeWrapper, visitWrapped } from "./vdom";
-import { containsClassName, matchProps, matchKeys, containsEventHandler } from "./utils";
+import {
+  VNodeWrapper, visitWrapped,
+
+  isElement, isInputElement, isElementWithClassName, isInputElementWithClassName,
+  hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasClassName, hasKey, hasProps, hasExactProps,
+  hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML, isAutofocused,
+  hasInputValue, hasInputChecked,
+  innerText,
+} from "./vdom";
 
 export type Predicate<T> = (value: T) => boolean;
 
@@ -30,83 +36,116 @@ export class Matcher<T> {
 
 export class VNodeMatcher extends Matcher<VNodeWrapper> {
   hasParent(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(hasParent(matcher.match));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasParent(n, matcher.match);
+    });
     return this;
   }
 
   hasDirectParent(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(hasDirectParent(matcher.match));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasDirectParent(n, matcher.match);
+    });
     return this;
   }
 
   hasChild(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(hasChild(matcher.match));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasChild(n, matcher.match);
+    });
     return this;
   }
 
   hasSibling(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(hasSibling(matcher.match));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasSibling(n, matcher.match);
+    });
     return this;
   }
 
   hasPrevSibling(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(hasPrevSibling(matcher.match));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasPrevSibling(n, matcher.match);
+    });
     return this;
   }
 }
 
 export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
   hasClassName(className: string): VNodeElementMatcher {
-    this.addPredicate(hasClassName(className));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasClassName(n, className);
+    });
     return this;
   }
 
   hasKey(key: any): VNodeElementMatcher {
-    this.addPredicate(hasKey(key));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasKey(n, key);
+    });
     return this;
   }
 
   hasProps(props: { [key: string]: any }): VNodeElementMatcher {
-    this.addPredicate(hasProps(props));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasProps(n, props);
+    });
     return this;
   }
 
   hasExactProps(props: { [key: string]: any }): VNodeElementMatcher {
-    this.addPredicate(hasExactProps(props));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasExactProps(n, props);
+    });
     return this;
   }
 
   hasAssignedProps(props: { [key: string]: boolean }): VNodeElementMatcher {
-    this.addPredicate(hasAssignedProps(props));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasAssignedProps(n, props);
+    });
     return this;
   }
 
   hasStyle(style: CSSStyleProps): VNodeElementMatcher {
-    this.addPredicate(hasStyle(style));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasStyle(n, style);
+    });
     return this;
   }
 
   hasExactStyle(style: CSSStyleProps): VNodeElementMatcher {
-    this.addPredicate(hasExactStyle(style));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasExactStyle(n, style);
+    });
     return this;
   }
 
   hasAssignedStyle(style: { [key: string]: boolean }): VNodeElementMatcher {
-    this.addPredicate(hasAssignedStyle(style));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasAssignedStyle(n, style);
+    });
     return this;
   }
 
   hasEventHandler(eventSource: EventSource): VNodeElementMatcher {
-    this.addPredicate(hasEventHandler(eventSource));
-    return this;
-  }
-
-  containsText(text: string): VNodeElementMatcher {
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasEventHandler(n, eventSource);
+    });
     return this;
   }
 
   hasUnsafeHTML(html?: string): VNodeElementMatcher {
-    this.addPredicate(hasUnsafeHTML(html));
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasUnsafeHTML(n, html);
+    });
+    return this;
+  }
+
+  containsText(text: string): VNodeElementMatcher {
+    this.addPredicate(function (n: VNodeWrapper) {
+      return innerText(n).indexOf(text) > -1;
+    });
     return this;
   }
 
@@ -118,175 +157,47 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
 
 export class VNodeInputElementMatcher extends VNodeElementMatcher {
   hasValue(value?: string): VNodeInputElementMatcher {
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasInputValue(n, value);
+    });
     return this;
   }
 
   isChecked(value?: boolean): VNodeInputElementMatcher {
+    this.addPredicate(function (n: VNodeWrapper) {
+      return hasInputChecked(n, value);
+    });
     return this;
   }
 }
 
-function createVNodeElementMatcherFactory(tagName: string): () => VNodeElementMatcher {
+function createVNodeElementMatcherFactory(tagName: string, className?: string): () => VNodeElementMatcher {
+  if (className !== undefined) {
+    return function (): VNodeElementMatcher {
+      return new VNodeElementMatcher(function (n: VNodeWrapper) {
+        return isElementWithClassName(n, tagName, className);
+      });
+    };
+  }
   return function (): VNodeElementMatcher {
-    return new VNodeElementMatcher(isElement(tagName));
-  };
-}
-
-function createVNodeInputElementMatcherFactory(type: string): () => VNodeInputElementMatcher {
-  return function (): VNodeInputElementMatcher {
-    return new VNodeInputElementMatcher(isInputElement(type));
-  };
-}
-
-function isElement(tagName: string): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return ((vnode._flags & VNodeFlags.Element) !== 0 && vnode._tag === tagName);
-  };
-}
-
-function isInputElement(type: string): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return ((vnode._flags & VNodeFlags.InputElement) !== 0 && vnode._tag === type);
-  };
-}
-
-function hasKey(key: any): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return ((vnode._flags & VNodeFlags.Key) !== 0 && vnode._key === key);
-  };
-}
-
-function hasClassName(className: string): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._className !== null && containsClassName(vnode._className, className) === true);
-  };
-}
-
-function hasProps(props: any): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && matchProps(vnode._props.props, props) === true);
-  };
-}
-
-function hasExactProps(props: any): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && shallowEqual(vnode._props.props, props) === true);
-  };
-}
-
-function hasAssignedProps(props: { [key: string]: boolean }): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && matchKeys(vnode._props.props, props));
-  };
-}
-
-function hasStyle(style: CSSStyleProps): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && matchProps(vnode._props.style, style) === true);
-  };
-}
-
-function hasExactStyle(style: CSSStyleProps): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && shallowEqual(vnode._props.style, style) === true);
-  };
-}
-
-function hasAssignedStyle(style: { [key: string]: boolean }): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && matchKeys(vnode._props.style, style));
-  };
-}
-
-function hasEventHandler(eventSource: EventSource): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return (vnode._props !== null && containsEventHandler(vnode._props.events, eventSource) === true);
-  };
-}
-
-function hasUnsafeHTML(html?: string): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const vnode = wrapper.vnode;
-    return ((vnode._flags & VNodeFlags.UnsafeHTML) !== 0 && (html === undefined || vnode._children === html));
-  };
-}
-
-function isAutofocused(wrapper: VNodeWrapper): boolean {
-  return ((wrapper.vnode._flags & VNodeFlags.Autofocus) !== 0);
-}
-
-function hasParent(predicate: Predicate<VNodeWrapper>): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    let parent = wrapper.parent;
-    while (parent !== null) {
-      if (predicate(parent) === true) {
-        return true;
-      }
-      parent = parent.parent;
-    }
-    return false;
-  };
-}
-
-function hasDirectParent(predicate: Predicate<VNodeWrapper>): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const parent = wrapper.parent;
-    return (parent !== null && predicate(parent) === true);
-  };
-}
-
-function hasChild(predicate: Predicate<VNodeWrapper>): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    return visitWrapped(wrapper, function (n) {
-      return (wrapper !== n && predicate(n) === true);
+    return new VNodeElementMatcher(function (n: VNodeWrapper) {
+      return isElement(n, tagName);
     });
   };
 }
 
-function hasSibling(predicate: Predicate<VNodeWrapper>): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const parent = wrapper.parent;
-    if (parent !== null && (parent.vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
-      const children = parent.vnode._children as VNode[];
-      for (let i = 0; i < children.length; i++) {
-        const c = children[i];
-        if (wrapper.vnode !== c) {
-          if (predicate(new VNodeWrapper(c, parent, wrapper.context)) === true) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  };
-}
-
-function hasPrevSibling(predicate: Predicate<VNodeWrapper>): Predicate<VNodeWrapper> {
-  return function (wrapper: VNodeWrapper): boolean {
-    const parent = wrapper.parent;
-    if (parent !== null && (parent.vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
-      const children = parent.vnode._children as VNode<any>[];
-      let prev: VNode<any> | null = null;
-      for (let i = 0; i < children.length; i++) {
-        const c = children[i];
-        if (wrapper.vnode === c) {
-          return (prev !== null && predicate(new VNodeWrapper(prev, parent, wrapper.context)) === true);
-        }
-        prev = c;
-      }
-    }
-    return false;
+function createVNodeInputElementMatcherFactory(type: string, className?: string): () => VNodeInputElementMatcher {
+  if (className !== undefined) {
+    return function (): VNodeInputElementMatcher {
+      return new VNodeInputElementMatcher(function (n: VNodeWrapper) {
+        return isInputElementWithClassName(n, type, className);
+      });
+    };
+  }
+  return function (): VNodeInputElementMatcher {
+    return new VNodeInputElementMatcher(function (n: VNodeWrapper) {
+      return isInputElement(n, type);
+    });
   };
 }
 
@@ -311,6 +222,17 @@ export function queryAll(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrappe
     return false;
   });
   return result;
+}
+
+export function closest(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper | null {
+  let parent = wrapper.parent;
+  while (parent !== null) {
+    if (predicate(parent) === true) {
+      return parent;
+    }
+    parent = parent.parent;
+  }
+  return null;
 }
 
 export const q = {
