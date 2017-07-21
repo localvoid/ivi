@@ -136,7 +136,7 @@ function _virtualRender(depth: number, vnode: VNode<any>, parent: VNode<any> | n
       const next = vnode._instance = connect.select(null, vnode._props, context);
       vnode._children = connect.render(next);
     }
-    if (depth > 1) {
+    if (depth === -1 || depth > 1) {
       return _virtualRender(depth - 1, vnode._children, vnode, context);
     }
   }
@@ -166,6 +166,16 @@ export class VNodeListWrapper {
     return this.items.length === 0;
   }
 
+  filter(matcher: VNodeMatcher): VNodeListWrapper {
+    return new VNodeListWrapper(this.items.filter(function (i) {
+      return matcher.match(i);
+    }));
+  }
+
+  forEach(fn: (n: VNodeWrapper, i: number) => void): void {
+    this.items.forEach(fn);
+  }
+
   map<P>(fn: (n: VNodeWrapper, i: number) => P): P[] {
     return this.items.map((n, i) => fn(n, i));
   }
@@ -185,6 +195,14 @@ export class VNodeListWrapper {
   last(): VNodeWrapper {
     return this.items[this.items.length - 1];
   }
+
+  some(matcher: VNodeMatcher): boolean {
+    return this.items.some(matcher.match);
+  }
+
+  every(matcher: VNodeMatcher): boolean {
+    return this.items.every(matcher.match);
+  }
 }
 
 export class VNodeWrapper {
@@ -196,6 +214,10 @@ export class VNodeWrapper {
     this.vnode = vnode;
     this.parent = parent;
     this.context = context;
+  }
+
+  is(matcher: VNodeMatcher): boolean {
+    return matcher.match(this);
   }
 
   isText(): boolean {
@@ -244,11 +266,28 @@ export class VNodeWrapper {
     return this.vnode._tag as string;
   }
 
+  getDOMInstance<P extends Node>(): P {
+    if (!this.isText() && !this.isElement()) {
+      throw new Error("VNodeWrapper::getDOMInstance() can only be called on DOM nodes");
+    }
+    if (this.vnode._instance === null) {
+      throw new Error("Virtual DOM node is not instantiated");
+    }
+    return this.vnode._instance as P;
+  }
+
   getComponentInstance<P extends Component<any>>(): P {
     if (!this.isStatefulComponent()) {
       throw new Error("VNodeWrapper::getComponentInstance() can only be called on stateful components");
     }
+    if (this.vnode._instance === null) {
+      throw new Error("Virtual DOM node is not instantiated");
+    }
     return this.vnode._instance as P;
+  }
+
+  getCurrentContext<P = {}>(): Context<P> {
+    return this.context as Context<P>;
   }
 
   getKey(): any {
@@ -256,6 +295,24 @@ export class VNodeWrapper {
       return null;
     }
     return this.vnode._key;
+  }
+
+  getChildren(): VNodeListWrapper {
+    if (!this.isElement()) {
+      throw new Error("VNodeWrapper::getChildren() can only be called on element nodes");
+    }
+    const flags = this.vnode._flags;
+    let children: VNodeWrapper[];
+    if ((flags & VNodeFlags.ChildrenArray) !== 0) {
+      children = (this.vnode._children as VNode[]).map((c) => {
+        return new VNodeWrapper(c, this, this.context);
+      });
+    } else if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+      children = [new VNodeWrapper(this.vnode._children as VNode<any>, this, this.context)];
+    } else {
+      children = [];
+    }
+    return new VNodeListWrapper(children);
   }
 
   getClassName(): string | null {
