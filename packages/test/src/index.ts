@@ -1,3 +1,5 @@
-export { SnapshotRendererOptions, createSnapshotRenderer } from "./snapshot";
+export { SnapshotFlags, toSnapshot } from "./snapshot";
 export { VNodeWrapper, VNodeListWrapper, visitUnwrapped, visitWrapped, virtualRender } from "./vdom";
-export { Predicate, Matcher, VNodeMatcher, VNodeElementMatcher, q, query, queryAll } from "./query";
+export {
+  Predicate, Matcher, VNodeMatcher, VNodeElementMatcher, VNodeInputElementMatcher, VNodeComponentMatcher, q,
+} from "./query";

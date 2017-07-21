@@ -1,29 +1,25 @@
-import { VNode, VNodeFlags, Context, ComponentClass, StatelessComponent, ConnectDescriptor } from "ivi";
+import { VNode, VNodeFlags, ComponentClass, StatelessComponent } from "ivi";
 
-export interface SnapshotRendererOptions {
-  shallow?: boolean;
-  ignoreEvents?: boolean;
-  ignoreContextNodes?: boolean;
-  ignoreConnectNodes?: boolean;
-  ignoreKeepAliveNodes?: boolean;
+export const enum SnapshotFlags {
+  IgnoreEvents = 1,
+  IgnoreStatefulComponents = 1 << 1,
+  IgnoreStatelessComponents = 1 << 2,
+  IgnoreContextComponents = 1 << 3,
+  IgnoreConnectComponents = 1 << 4,
+  IgnoreKeepAliveComponents = 1 << 5,
+
+  IgnoreComponents = 0
+  | IgnoreStatefulComponents
+  | IgnoreStatelessComponents
+  | IgnoreContextComponents
+  | IgnoreConnectComponents
+  | IgnoreKeepAliveComponents,
+
+  DefaultFlags = IgnoreEvents | IgnoreContextComponents | IgnoreKeepAliveComponents,
 }
 
-const DefaultOptions: SnapshotRendererOptions = {
-  shallow: false,
-  ignoreEvents: true,
-  ignoreContextNodes: true,
-  ignoreConnectNodes: true,
-  ignoreKeepAliveNodes: true,
-};
-
-export function createSnapshotRenderer(options?: SnapshotRendererOptions): (vnode: VNode<any>) => string {
-  const o = options === undefined ?
-    DefaultOptions :
-    { ...DefaultOptions, ...options };
-
-  return function (vnode: VNode<any>, context: Context = {}): string {
-    return `\n${renderVNodeToSnapshot(o, 0, vnode, context)}\n`;
-  };
+export function toSnapshot(vnode: VNode<any>, flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
+  return `\n${_toSnapshot(0, vnode, flags)}\n`;
 }
 
 function indent(n: number): string {
@@ -75,11 +71,10 @@ function renderEventsToSnapshot(il: number, events: { [key: string]: any }): str
   return "";
 }
 
-function renderVNodeToSnapshot(
-  options: SnapshotRendererOptions,
+function _toSnapshot(
   il: number,
   vnode: VNode<any>,
-  context: Context,
+  sFlags: SnapshotFlags,
 ): string {
   const flags = vnode._flags;
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
@@ -125,7 +120,7 @@ function renderVNodeToSnapshot(
           }
           result += s;
         }
-        if (options.ignoreEvents === false) {
+        if ((sFlags & SnapshotFlags.IgnoreEvents) === 0) {
           const events = props.events;
           if (events !== null) {
             const s = renderEventsToSnapshot(il + 1, events);
@@ -143,10 +138,10 @@ function renderVNodeToSnapshot(
           if ((flags & VNodeFlags.ChildrenArray) !== 0) {
             const children = vnode._children as VNode<any>[];
             for (let i = 0; i < children.length; i++) {
-              childrenString += `\n${renderVNodeToSnapshot(options, il + 1, children[i], context)}`;
+              childrenString += `\n${_toSnapshot(il + 1, children[i], sFlags)}`;
             }
           } else {
-            childrenString = `\n${renderVNodeToSnapshot(options, il + 1, vnode._children as VNode<any>, context)}`;
+            childrenString = `\n${_toSnapshot(il + 1, vnode._children as VNode<any>, sFlags)}`;
           }
         } else {
           if ((flags & VNodeFlags.InputElement) !== 0) {
@@ -182,45 +177,37 @@ function renderVNodeToSnapshot(
     }
   } else { // ((flags & VNodeFlags.Component) !== 0)
     if ((flags & VNodeFlags.ComponentClass) !== 0) {
-      const componentName = (vnode._tag as ComponentClass<any>).displayName;
-      if (options.shallow === true) {
-        return `${indent(il)}<${componentName} />`;
-      } else {
-        const component = new (vnode._tag as ComponentClass<any>)(vnode._props);
-        let result = `${indent(il)}<${componentName}>`;
-        result += renderVNodeToSnapshot(options, il + 1, component.render(), context);
-        result += `${indent(il)}</${componentName}>`;
-        return result;
+      if ((sFlags & SnapshotFlags.IgnoreStatefulComponents) === 0) {
+        const componentName = (vnode._tag as ComponentClass<any>).displayName;
+        if (vnode._children === null) {
+          return `${indent(il)}<${componentName} />`;
+        } else {
+          let result = `${indent(il)}<${componentName}>`;
+          result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+          result += `${indent(il)}</${componentName}>`;
+          return result;
+        }
       }
-    } else { // ((node._flags & VNodeFlags.ComponentFunction) !== 0)
+    } else {
       if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0) {
         if ((flags & VNodeFlags.Connect) !== 0) {
-          if (options.shallow === true) {
-            return `${indent(il)}<Connect />`;
-          } else {
-            const connect = vnode._tag as ConnectDescriptor<any, any, any>;
-            const selectData = connect.select(null, vnode._props, context);
-            const root = connect.render(selectData.out);
-            if (options.ignoreConnectNodes === true) {
-              return renderVNodeToSnapshot(options, il, root, context);
+          if ((sFlags & SnapshotFlags.IgnoreConnectComponents) === 0) {
+            if (vnode._children === null) {
+              return `${indent(il)}<Connect />`;
             } else {
               let result = `${indent(il)}<Connect>`;
-              result += renderVNodeToSnapshot(options, il + 1, root, context);
+              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
               result += `\n${indent(il)}</Connect>`;
               return result;
             }
           }
         } else {
-          if (options.shallow === true) {
-            return `${indent(il)}<UpdateContext />`;
-          } else {
-            context = Object.assign({}, context, vnode._props);
-            const root = vnode._children as VNode;
-            if (options.ignoreContextNodes === true) {
-              return renderVNodeToSnapshot(options, il, root, context);
+          if ((sFlags & SnapshotFlags.IgnoreContextComponents) === 0) {
+            if (vnode._children === null) {
+              return `${indent(il)}<UpdateContext />`;
             } else {
               let result = `${indent(il)}<UpdateContext>`;
-              result += renderVNodeToSnapshot(options, il + 1, root, context);
+              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
               result += `\n${indent(il)}</UpdateContext>`;
               return result;
             }
@@ -228,31 +215,34 @@ function renderVNodeToSnapshot(
         }
       } else {
         if ((flags & VNodeFlags.KeepAlive) !== 0) {
-          if (options.shallow === true) {
-            return `${indent(il)}<KeepAlive />`;
-          } else {
-            if (options.ignoreKeepAliveNodes === true) {
-              return renderVNodeToSnapshot(options, il, vnode._children as VNode<any>, context);
+          if ((sFlags & SnapshotFlags.IgnoreKeepAliveComponents) === 0) {
+            if (vnode._children === null) {
+              return `${indent(il)}<KeepAlive />`;
             } else {
               let result = `${indent(il)}<KeepAlive>`;
-              result += renderVNodeToSnapshot(options, il + 1, vnode._children as VNode<any>, context);
+              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
               result += `\n${indent(il)}</KeepAlive>`;
               return result;
             }
           }
         } else {
-          const componentName = (vnode._tag as StatelessComponent<any>).displayName;
-          if (options.shallow === true) {
-            return `${indent(il)}<${componentName} />`;
-          } else {
-            const root = (vnode._tag as StatelessComponent<any>)(vnode._props);
-            let result = `${indent(il)}<${componentName}>`;
-            result += renderVNodeToSnapshot(options, il + 1, root, context);
-            result += `${indent(il)}</${componentName}>`;
-            return result;
+          if ((sFlags & SnapshotFlags.IgnoreStatelessComponents) === 0) {
+            const componentName = (vnode._tag as StatelessComponent<any>).displayName;
+            if (vnode._children === null) {
+              return `${indent(il)}<${componentName} />`;
+            } else {
+              let result = `${indent(il)}<${componentName}>`;
+              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+              result += `${indent(il)}</${componentName}>`;
+              return result;
+            }
           }
         }
       }
+      if (vnode._children !== null) {
+        return _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+      }
     }
   }
+  return "";
 }

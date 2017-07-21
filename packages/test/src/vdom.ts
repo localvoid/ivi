@@ -3,6 +3,7 @@ import { EventSource } from "ivi-events";
 import { Context, VNode, VNodeFlags, Component, ComponentClass, StatelessComponent, ConnectDescriptor } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { Predicate, VNodeMatcher, query, queryAll, closest } from "./query";
+import { SnapshotFlags, toSnapshot } from "./snapshot";
 
 const VNodeLooseMatchFlags = 0
   | VNodeFlags.Text
@@ -147,12 +148,13 @@ export function virtualRender(
   root: VNode<any>,
   rootContext: Context = {},
   depth = 1,
-): void {
+): VNodeWrapper {
   visitUnwrapped(root, null, rootContext,
     function (vnode: VNode<any>, parent: VNode<any> | null, context: Context) {
       return _virtualRender(depth, vnode, parent, context);
     },
   );
+  return new VNodeWrapper(root, null, rootContext);
 }
 
 export class VNodeListWrapper {
@@ -468,6 +470,10 @@ export class VNodeWrapper {
 
   closest(matcher: VNodeMatcher): VNodeWrapper | null {
     return closest(this, matcher.match);
+  }
+
+  toSnapshot(flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
+    return toSnapshot(this.vnode, flags);
   }
 }
 
