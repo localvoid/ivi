@@ -12,6 +12,7 @@ export {
  */
 export {
   ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
+  isComponentClass,
 } from "./vdom/component";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
@@ -20,7 +21,9 @@ export {
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
 } from "./vdom/vnode";
-export { componentFactory, context, connect, keepAlive } from "./vdom/vnode_factories";
+export {
+  ComponentFactory, isComponentFactory, componentFactory, context, connect, keepAlive,
+} from "./vdom/vnode_factories";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 
 /**

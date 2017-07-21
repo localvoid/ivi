@@ -5,6 +5,15 @@ import { VNodeFlags } from "./flags";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
 import { VNode } from "./vnode";
 
+export interface ComponentFactory<P> {
+  (props?: P): VNode<P>;
+  __ComponentFactory__?: ComponentClass<P> | StatelessComponent<P>;
+}
+
+export function isComponentFactory(o: object): o is ComponentFactory<any> {
+  return (o as ComponentFactory<any>).__ComponentFactory__ !== undefined;
+}
+
 export function componentFactory(c: StatelessComponent<void>): () => VNode<null>;
 export function componentFactory(c: StatelessComponent<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: StatelessComponent<P>): (props: U) => VNode<P>;
@@ -12,7 +21,7 @@ export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props?: P) => VNode<P> {
-  return isComponentClass(c) ?
+  const f = isComponentClass(c) ?
     function (props: P): VNode<P> {
       return new VNode<P>(
         VNodeFlags.ComponentClass,
@@ -41,6 +50,10 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
           null,
         );
       };
+  if (__IVI_DEV__) {
+    (f as ComponentFactory<P>).__ComponentFactory__ = c;
+  }
+  return f;
 }
 
 /**

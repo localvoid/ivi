@@ -1,5 +1,6 @@
 import { CSSStyleProps } from "ivi-core";
 import { EventSource } from "ivi-events";
+import { ComponentClass, StatelessComponent, ComponentFactory, isComponentFactory } from "ivi";
 import {
   VNodeWrapper, visitWrapped,
 
@@ -171,6 +172,9 @@ export class VNodeInputElementMatcher extends VNodeElementMatcher {
   }
 }
 
+export class VNodeComponentMatcher extends VNodeMatcher {
+}
+
 function createVNodeElementMatcherFactory(tagName: string, className?: string): () => VNodeElementMatcher {
   if (className !== undefined) {
     return function (): VNodeElementMatcher {
@@ -199,6 +203,17 @@ function createVNodeInputElementMatcherFactory(type: string, className?: string)
       return isInputElement(n, type);
     });
   };
+}
+
+function componentMatcherFactory(
+  component: ComponentClass<any> | StatelessComponent<any> | ComponentFactory<any>,
+): VNodeComponentMatcher {
+  if (isComponentFactory(component)) {
+    component = component.__ComponentFactory__!;
+  }
+  return new VNodeComponentMatcher(function (n: VNodeWrapper) {
+    return n.vnode._tag === component;
+  });
 }
 
 export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper | null {
@@ -438,4 +453,7 @@ export const q = {
   // Media Elements:
   audio: createVNodeElementMatcherFactory("audio"),
   video: createVNodeElementMatcherFactory("video"),
+
+  // Components:
+  component: componentMatcherFactory,
 };
