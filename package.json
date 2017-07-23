@@ -36,6 +36,7 @@
     "@types/node": "^8.0.14",
     "chai": "^4.1.0",
     "core-js": "^2.4.1",
+    "iko": "^0.1.0",
     "istanbul-instrumenter-loader": "^2.0.0",
     "ivi-tslint-rules": "^0.1.2",
     "karma": "^1.7.0",

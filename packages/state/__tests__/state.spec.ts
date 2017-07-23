@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { expect } from "iko";
 import { mut } from "../src/mutable";
 import { createStore } from "../src/store";
 
@@ -7,15 +7,15 @@ describe("state", function () {
     it("init", function () {
       const m = { a: 1 };
       const a = mut(m);
-      expect(a.ref).to.equal(m);
+      expect(a.ref).toBeEqual(m);
     });
 
     it("mutate", function () {
       const m = { a: 1 };
       const a = mut(m);
       const b = mut(a.ref);
-      expect(b.ref).to.equal(m);
-      expect(a).to.not.equal(b);
+      expect(b.ref).toBeEqual(m);
+      expect(a).notToBeEqual(b);
     });
   });
 
@@ -26,7 +26,7 @@ describe("state", function () {
         function (state: any) { return state; },
         function () { return; },
       );
-      expect(store.getState().a).to.equal(1);
+      expect(store.getState().a).toBeEqual(1);
     });
 
     it("should not trigger onUpdate when state isn't changed", function () {
@@ -37,7 +37,7 @@ describe("state", function () {
         function () { updated = true; },
       );
       store.dispatch(0);
-      expect(updated).to.equal(false);
+      expect(updated).toBeEqual(false);
     });
 
     it("should trigger onUpdate when state is changed", function () {
@@ -48,7 +48,7 @@ describe("state", function () {
         function () { updated = true; },
       );
       store.dispatch(0);
-      expect(updated).to.equal(true);
+      expect(updated).toBeEqual(true);
     });
 
     it("should update state after dispatch", function () {
@@ -58,8 +58,8 @@ describe("state", function () {
         function () { return; },
       );
       store.dispatch(0);
-      expect(store.getState().a).to.equal(1);
-      expect(store.getState().b).to.equal(3);
+      expect(store.getState().a).toBeEqual(1);
+      expect(store.getState().b).toBeEqual(3);
     });
 
     it("should pass action to reducer", function () {
@@ -69,7 +69,7 @@ describe("state", function () {
         function () { return; },
       );
       store.dispatch(1);
-      expect(store.getState().a).to.equal(1);
+      expect(store.getState().a).toBeEqual(1);
     });
   });
 });
