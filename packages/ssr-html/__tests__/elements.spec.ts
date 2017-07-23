@@ -1,6 +1,6 @@
 import { VNode, VNodeFlags } from "ivi-ssr";
 import * as h from "../src";
-import { expect } from "chai";
+import { expect } from "iko";
 
 const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "a": h.a,
@@ -309,8 +309,8 @@ const SvgElements = [
 
 it("text", () => {
   const text = h.t("abc");
-  expect((text._flags & VNodeFlags.Text) !== 0).to.equal(true);
-  expect(text._children).to.equal("abc");
+  expect((text._flags & VNodeFlags.Text) !== 0).toBeEqual(true);
+  expect(text._children).toBeEqual("abc");
 });
 
 describe("elements", () => {
@@ -320,7 +320,7 @@ describe("elements", () => {
       it(`${name}`, () => {
         const n = factory();
         if ((n._flags & VNodeFlags.InputElement) === 0) {
-          expect(n._tag).to.equal(`<${name}`);
+          expect(n._tag).toBeEqual(`<${name}`);
         }
       });
     }
@@ -332,9 +332,9 @@ describe("elements", () => {
       it(`${name}`, () => {
         const n = factory();
         if ((n._flags & VNodeFlags.VoidElement) !== 0) {
-          expect(n._close).to.equal(null);
+          expect(n._close).toBeEqual(null);
         } else {
-          expect(n._close).to.equal(`</${name}>`);
+          expect(n._close).toBeEqual(`</${name}>`);
         }
       });
     }
@@ -345,7 +345,7 @@ describe("elements", () => {
       const factory = Elements[name];
       it(`${name}`, () => {
         const n = factory("abc");
-        expect(n._className).to.equal("abc");
+        expect(n._className).toBeEqual("abc");
       });
     }
   });
@@ -356,11 +356,11 @@ describe("elements", () => {
       it(`${name}`, () => {
         const n = factory();
         if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(true);
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBeEqual(true);
         } else if (name in VoidElements) {
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(true);
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBeEqual(true);
         } else {
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).to.equal(false);
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBeEqual(false);
         }
       });
     }
@@ -371,7 +371,7 @@ describe("elements", () => {
       const factory = Elements[name];
       it(`${name}`, () => {
         const n = factory();
-        expect((n._flags & VNodeFlags.SvgElement) !== 0).to.equal(true);
+        expect((n._flags & VNodeFlags.SvgElement) !== 0).toBeEqual(true);
       });
     }
   });
@@ -381,7 +381,7 @@ describe("elements", () => {
       const factory = Elements[name];
       it(`${name}`, () => {
         const n = factory();
-        expect((n._flags & VNodeFlags.MediaElement) !== 0).to.equal(true);
+        expect((n._flags & VNodeFlags.MediaElement) !== 0).toBeEqual(true);
       });
     }
   });
@@ -391,17 +391,17 @@ describe("elements", () => {
       const factory = Elements[`input:${type}`];
       it(`input:${type}`, () => {
         const n = factory();
-        expect((n._flags & VNodeFlags.InputElement) !== 0).to.equal(true);
-        expect(n._tag).to.equal(`<input type="${type}"`);
-        expect(n._close).to.equal(null);
+        expect((n._flags & VNodeFlags.InputElement) !== 0).toBeEqual(true);
+        expect(n._tag).toBeEqual(`<input type="${type}"`);
+        expect(n._close).toBeEqual(null);
       });
     }
   });
 
   it("textarea", () => {
     const n = h.textarea();
-    expect((n._flags & VNodeFlags.TextAreaElement) !== 0).to.equal(true);
-    expect(n._tag).to.equal("<textarea");
-    expect(n._close).to.equal("</textarea>");
+    expect((n._flags & VNodeFlags.TextAreaElement) !== 0).toBeEqual(true);
+    expect(n._tag).toBeEqual("<textarea");
+    expect(n._close).toBeEqual("</textarea>");
   });
 });

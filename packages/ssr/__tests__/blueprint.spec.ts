@@ -1,11 +1,10 @@
-/* tslint:disable:no-unused-expression */
 import { BlueprintNode, createBlueprint } from "../src/blueprint";
 import { VNodeFlags } from "../src/vnode";
 import { context } from "../src/vnode_factories";
 import { ComponentClass, StatelessComponent } from "../src/component";
 import * as h from "./utils/html";
 import * as c from "./utils/components";
-import { expect } from "chai";
+import { expect } from "iko";
 
 class BlueprintObserver {
   node: BlueprintNode;
@@ -44,61 +43,61 @@ class BlueprintObserver {
   }
 
   expectNoDeepConnect() {
-    expect((this.node.flags & VNodeFlags.DeepConnect) !== 0).to.be.false;
+    expect((this.node.flags & VNodeFlags.DeepConnect) !== 0).toBeFalsy();
     return this;
   }
 
   expectDeepConnect() {
-    expect((this.node.flags & VNodeFlags.DeepConnect) !== 0).to.be.true;
+    expect((this.node.flags & VNodeFlags.DeepConnect) !== 0).toBeTruthy();
     return this;
   }
 
   expectNoChildren() {
-    expect(this.node.children).to.be.null;
+    expect(this.node.children).toBeNull();
     return this;
   }
 
   expectChildren(children: BlueprintNode[] | BlueprintNode | string | number | boolean | null) {
-    expect(this.node.children).to.be.equal(children);
+    expect(this.node.children).toBeEqual(children);
     return this;
   }
 
   expectString(s: string) {
-    expect(this.node.string).to.be.equal(s);
+    expect(this.node.string).toBeEqual(s);
     return this;
   }
 
   expectText(content: string) {
-    expect((this.node.flags & VNodeFlags.Text) !== 0).to.be.true;
-    expect(this.node.vnode._children).to.be.equal(content);
+    expect((this.node.flags & VNodeFlags.Text) !== 0).toBeTruthy();
+    expect(this.node.vnode._children).toBeEqual(content);
     return this;
   }
 
   expectElement(tag: string) {
-    expect((this.node.flags & VNodeFlags.Element) !== 0).to.be.true;
-    expect((this.node.vnode._tag as string).slice(1)).to.be.equal(tag);
+    expect((this.node.flags & VNodeFlags.Element) !== 0).toBeTruthy();
+    expect((this.node.vnode._tag as string).slice(1)).toBeEqual(tag);
     return this;
   }
 
   expectComponent(cls: ComponentClass<any>) {
-    expect((this.node.flags & VNodeFlags.ComponentClass) !== 0).to.be.true;
-    expect(this.node.vnode._tag).to.be.equal(cls);
+    expect((this.node.flags & VNodeFlags.ComponentClass) !== 0).toBeTruthy();
+    expect(this.node.vnode._tag).toBeEqual(cls);
     return this;
   }
 
   expectStatelessComponent(fn: StatelessComponent<any>) {
-    expect((this.node.flags & VNodeFlags.ComponentFunction) !== 0).to.be.true;
-    expect(this.node.vnode._tag).to.be.equal(fn);
+    expect((this.node.flags & VNodeFlags.ComponentFunction) !== 0).toBeTruthy();
+    expect(this.node.vnode._tag).toBeEqual(fn);
     return this;
   }
 
   expectConnect() {
-    expect((this.node.flags & VNodeFlags.Connect) !== 0).to.be.true;
+    expect((this.node.flags & VNodeFlags.Connect) !== 0).toBeTruthy();
     return this;
   }
 
   expectUpdateContext() {
-    expect((this.node.flags & VNodeFlags.UpdateContext) !== 0).to.be.true;
+    expect((this.node.flags & VNodeFlags.UpdateContext) !== 0).toBeTruthy();
     return this;
   }
 }
@@ -314,7 +313,7 @@ describe("blueprint", () => {
         const n = h.div();
         const a = createBlueprint(n);
         const b = createBlueprint(n, undefined, a);
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
@@ -324,67 +323,67 @@ describe("blueprint", () => {
         const b = createBlueprint(h.div(), undefined, a);
         observeBlueprint(b)
           .expectNoDeepConnect();
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
       });
 
       it(`div with same class`, () => {
         const a = createBlueprint(h.div("abc"));
         const b = createBlueprint(h.div("abc"), undefined, a);
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
       });
 
       it(`div with diff class`, () => {
         const a = createBlueprint(h.div("abc"));
         const b = createBlueprint(h.div("def"), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
       });
 
       it(`div with same props`, () => {
         const a = createBlueprint(h.div().props({ a: "123" }));
         const b = createBlueprint(h.div().props({ a: "123" }), undefined, a);
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
       });
 
       it(`div with diff props`, () => {
         const a = createBlueprint(h.div().props({ a: "123" }));
         const b = createBlueprint(h.div().props({ a: "456" }), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
       });
 
       it(`div with same style`, () => {
         const a = createBlueprint(h.div().style({ color: "green" }));
         const b = createBlueprint(h.div().style({ color: "green" }), undefined, a);
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
       });
 
       it(`div with diff style`, () => {
         const a = createBlueprint(h.div().style({ color: "green" }));
         const b = createBlueprint(h.div().style({ color: "red" }), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
       });
 
       it(`div with same class/props diff style`, () => {
         const a = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "green" }));
         const b = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "red" }), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
       });
 
       it(`div with same class/style diff props`, () => {
         const a = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "green" }));
         const b = createBlueprint(h.div("abc").props({ a: "456" }).style({ color: "green" }), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
       });
 
       it(`div with same props/style diff class`, () => {
         const a = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "green" }));
         const b = createBlueprint(h.div("def").props({ a: "123" }).style({ color: "green" }), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
       });
 
       it(`same children`, () => {
         const a = createBlueprint(h.div().children(h.span()));
         const b = createBlueprint(h.div().children(h.span()), undefined, a);
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
@@ -392,7 +391,7 @@ describe("blueprint", () => {
       it(`same multiple children`, () => {
         const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
         const b = createBlueprint(h.div().children(h.span(), h.div(), h.span()), undefined, a);
-        expect(a).to.be.equal(b);
+        expect(a).toBeEqual(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
@@ -400,7 +399,7 @@ describe("blueprint", () => {
       it(`diff children`, () => {
         const a = createBlueprint(h.div().children(h.span()));
         const b = createBlueprint(h.div().children(h.div()), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
@@ -408,7 +407,7 @@ describe("blueprint", () => {
       it(`diff multiple children`, () => {
         const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
         const b = createBlueprint(h.div().children(h.span(), h.span(), h.span()), undefined, a);
-        expect(a).not.to.be.equal(b);
+        expect(a).notToBeEqual(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
@@ -424,9 +423,9 @@ describe("blueprint", () => {
         const c2 = c1.nextSibling();
         const c3 = c2.nextSibling();
 
-        expect(index.has(c1.node)).to.be.true;
-        expect(index.has(c2.node)).to.be.false;
-        expect(index.has(c3.node)).to.be.true;
+        expect(index.has(c1.node)).toBeTruthy();
+        expect(index.has(c2.node)).toBeFalsy();
+        expect(index.has(c3.node)).toBeTruthy();
       });
 
       it(`children keys`, () => {
@@ -442,9 +441,9 @@ describe("blueprint", () => {
         const c2 = c1.nextSibling();
         const c3 = c2.nextSibling();
 
-        expect(index.has(c1.node)).to.be.true;
-        expect(index.has(c2.node)).to.be.true;
-        expect(index.has(c3.node)).to.be.true;
+        expect(index.has(c1.node)).toBeTruthy();
+        expect(index.has(c2.node)).toBeTruthy();
+        expect(index.has(c3.node)).toBeTruthy();
       });
     });
   });
