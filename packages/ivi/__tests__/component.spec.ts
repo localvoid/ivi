@@ -1,6 +1,6 @@
 import { startRender, $lc, $tfc, LifecycleTesterProps, TestStatelessComponentProps } from "./utils";
 import * as h from "./utils/html";
-import { expect } from "chai";
+import { expect } from "iko";
 
 describe("component state", () => {
   describe("stateless", () => {
@@ -10,7 +10,7 @@ describe("component state", () => {
           render: (
             props: TestStatelessComponentProps,
           ) => {
-            expect(props.id).to.equal("1");
+            expect(props.id).toBeEqual("1");
             return h.div();
           },
         }));
@@ -25,8 +25,8 @@ describe("component state", () => {
             oldProps: TestStatelessComponentProps,
             newProps: TestStatelessComponentProps,
           ) => {
-            expect(oldProps.id).to.equal("1");
-            expect(newProps.id).to.equal("2");
+            expect(oldProps.id).toBeEqual("1");
+            expect(newProps.id).toBeEqual("2");
             return true;
           },
         }, h.div()));
@@ -41,7 +41,7 @@ describe("component state", () => {
           construct: (
             props: LifecycleTesterProps,
           ) => {
-            expect(props.id).to.equal("1");
+            expect(props.id).toBeEqual("1");
           },
         }, h.div()));
       });
@@ -55,8 +55,8 @@ describe("component state", () => {
             oldProps: LifecycleTesterProps,
             newProps: LifecycleTesterProps,
           ) => {
-            expect(oldProps.id).to.equal("1");
-            expect(newProps.id).to.equal("2");
+            expect(oldProps.id).toBeEqual("1");
+            expect(newProps.id).toBeEqual("2");
             return true;
           },
         }, h.div()));
@@ -71,8 +71,8 @@ describe("component state", () => {
             oldProps: LifecycleTesterProps,
             newProps: LifecycleTesterProps,
           ) => {
-            expect(oldProps.id).to.equal("1");
-            expect(newProps.id).to.equal("2");
+            expect(oldProps.id).toBeEqual("1");
+            expect(newProps.id).toBeEqual("2");
           },
         }, h.div()));
       });
@@ -82,7 +82,7 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           attached: function () {
-            expect(this.props.id).to.equal("1");
+            expect(this.props.id).toBeEqual("1");
           },
         }, h.div()));
       });
@@ -92,7 +92,7 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           detached: function () {
-            expect(this.props.id).to.equal("1");
+            expect(this.props.id).toBeEqual("1");
           },
         }, h.div()));
       });
@@ -102,7 +102,7 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           beforeUpdate: function () {
-            expect(this.props.id).to.equal("1");
+            expect(this.props.id).toBeEqual("1");
           },
         }, h.div()));
       });
@@ -112,7 +112,7 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", {
           updated: function () {
-            expect(this.props.id).to.equal("1");
+            expect(this.props.id).toBeEqual("1");
           },
         }, h.div()));
       });

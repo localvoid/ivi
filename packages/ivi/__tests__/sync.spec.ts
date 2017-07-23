@@ -1,12 +1,10 @@
-/* tslint:disable:no-unused-expression */
-
 import { ComponentFlags } from "../src/vdom/flags";
 import { VNode, getComponentInstanceFromVNode } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
 import { componentFactory } from "../src/vdom/vnode_factories";
 import { render, startRender, checkDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
 import * as h from "./utils/html";
-import { expect } from "chai";
+import { expect } from "iko";
 
 function genVNodes(item: any, keys: boolean): VNode<any> | VNode<any>[] {
   if (typeof item === "number") {
@@ -51,7 +49,7 @@ function checkInnerHtmlEquals(ax: VNode<any>[], bx: VNode<any>[], cx: VNode<any>
   counter.reset();
   render(c, aDiv);
 
-  expect(aDiv.innerHTML).to.equal(bDiv.innerHTML);
+  expect(aDiv.innerHTML).toBeEqual(bDiv.innerHTML);
 }
 
 describe("sync", () => {
@@ -61,7 +59,7 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           r(h.div().props({}));
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -71,7 +69,7 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({}));
           r(h.div());
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -81,7 +79,7 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({}));
           r(h.div().props({}));
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -91,8 +89,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().props({ title: "1" })) as HTMLElement;
-          expect(b.title).to.equal("1");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("1");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -102,8 +100,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({}));
           const b = r(h.div().props({ title: "1" })) as HTMLElement;
-          expect(b.title).to.equal("1");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("1");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -113,8 +111,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1" }));
           const b = r(h.div().props({ title: "2" })) as HTMLElement;
-          expect(b.title).to.equal("2");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("2");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -124,9 +122,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({}));
           const b = r(h.div().props({ title: "2", tabIndex: 2 })) as HTMLElement;
-          expect(b.title).to.equal("2");
-          expect(b.tabIndex).to.equal(2);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("2");
+          expect(b.tabIndex).toBeEqual(2);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -136,9 +134,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1" }));
           const b = r(h.div().props({ title: "2", tabIndex: 2 })) as HTMLElement;
-          expect(b.title).to.equal("2");
-          expect(b.tabIndex).to.equal(2);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("2");
+          expect(b.tabIndex).toBeEqual(2);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -148,9 +146,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div().props({ title: "2", tabIndex: 2 })) as HTMLElement;
-          expect(b.title).to.equal("2");
-          expect(b.tabIndex).to.equal(2);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("2");
+          expect(b.tabIndex).toBeEqual(2);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -160,9 +158,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div().props({ title: "1", tabIndex: 1 })) as HTMLElement;
-          expect(b.title).to.equal("1");
-          expect(b.tabIndex).to.equal(1);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("1");
+          expect(b.tabIndex).toBeEqual(1);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -172,9 +170,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div().props({ title: "2" })) as HTMLElement;
-          expect(b.title).to.equal("2");
-          expect(b.tabIndex).to.lessThan(1);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("2");
+          expect(b.tabIndex).toBeLessThan(1);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -184,10 +182,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div().props({ title: "2", lang: "en" })) as HTMLElement;
-          expect(b.title).to.equal("2");
-          expect(b.tabIndex).to.lessThan(1);
-          expect(b.lang).to.equal("en");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("2");
+          expect(b.tabIndex).toBeLessThan(1);
+          expect(b.lang).toBeEqual("en");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -197,10 +195,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div().props({ lang: "en" })) as HTMLElement;
-          expect(b.title).to.equal("");
-          expect(b.tabIndex).to.lessThan(1);
-          expect(b.lang).to.equal("en");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("");
+          expect(b.tabIndex).toBeLessThan(1);
+          expect(b.lang).toBeEqual("en");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -210,9 +208,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div().props({})) as HTMLElement;
-          expect(b.title).to.equal("");
-          expect(b.tabIndex).to.lessThan(1);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("");
+          expect(b.tabIndex).toBeLessThan(1);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -222,9 +220,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().props({ title: "1", tabIndex: 1 }));
           const b = r(h.div()) as HTMLElement;
-          expect(b.title).to.equal("");
-          expect(b.tabIndex).to.lessThan(1);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.title).toBeEqual("");
+          expect(b.tabIndex).toBeLessThan(1);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -236,9 +234,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div("a")) as HTMLElement;
-          expect(b.classList.length).to.equal(1);
-          expect(b.classList.contains("a")).to.true;
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.classList.length).toBeEqual(1);
+          expect(b.classList.contains("a")).toBeEqual(true);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -248,8 +246,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div("a"));
           const b = r(h.div()) as HTMLElement;
-          expect(b.classList.length).to.equal(0);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.classList.length).toBeEqual(0);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -259,9 +257,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div("a"));
           const b = r(h.div("a")) as HTMLElement;
-          expect(b.classList.length).to.equal(1);
-          expect(b.classList.contains("a")).to.true;
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.classList.length).toBeEqual(1);
+          expect(b.classList.contains("a")).toBeEqual(true);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -271,10 +269,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div("a b")) as HTMLElement;
-          expect(b.classList.length).to.equal(2);
-          expect(b.classList.contains("a")).to.true;
-          expect(b.classList.contains("b")).to.true;
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.classList.length).toBeEqual(2);
+          expect(b.classList.contains("a")).toBeEqual(true);
+          expect(b.classList.contains("b")).toBeEqual(true);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -286,8 +284,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({}));
           const b = r(h.div()) as HTMLElement;
-          expect(b.style.cssText).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.cssText).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -297,8 +295,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().style({})) as HTMLElement;
-          expect(b.style.cssText).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.cssText).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -308,8 +306,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({}));
           const b = r(h.div().style({})) as HTMLElement;
-          expect(b.style.cssText).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.cssText).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -319,8 +317,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().style({ top: "10px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -330,8 +328,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({}));
           const b = r(h.div().style({ top: "10px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -341,9 +339,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().style({ top: "10px", left: "20px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(b.style.left).to.equal("20px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(b.style.left).toBeEqual("20px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -353,9 +351,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px" }));
           const b = r(h.div().style({ top: "10px", left: "20px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(b.style.left).to.equal("20px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(b.style.left).toBeEqual("20px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -365,9 +363,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div().style({ top: "10px", left: "20px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(b.style.left).to.equal("20px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(b.style.left).toBeEqual("20px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -377,10 +375,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div().style({ top: "10px", left: "20px", right: "30px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(b.style.left).to.equal("20px");
-          expect(b.style.right).to.equal("30px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(b.style.left).toBeEqual("20px");
+          expect(b.style.right).toBeEqual("30px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -390,10 +388,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div().style({ top: "10px", right: "30px" })) as HTMLElement;
-          expect(b.style.top).to.equal("10px");
-          expect(b.style.left).to.equal("");
-          expect(b.style.right).to.equal("30px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("10px");
+          expect(b.style.left).toBeEqual("");
+          expect(b.style.right).toBeEqual("30px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -403,10 +401,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div().style({ right: "30px" })) as HTMLElement;
-          expect(b.style.top).to.equal("");
-          expect(b.style.left).to.equal("");
-          expect(b.style.right).to.equal("30px");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("");
+          expect(b.style.left).toBeEqual("");
+          expect(b.style.right).toBeEqual("30px");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -416,9 +414,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div().style({ top: "1px" })) as HTMLElement;
-          expect(b.style.top).to.equal("1px");
-          expect(b.style.left).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("1px");
+          expect(b.style.left).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -428,9 +426,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div().style({})) as HTMLElement;
-          expect(b.style.top).to.equal("");
-          expect(b.style.left).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("");
+          expect(b.style.left).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -440,9 +438,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.div().style({ top: "1px", left: "1px" }));
           const b = r(h.div()) as HTMLElement;
-          expect(b.style.top).to.equal("");
-          expect(b.style.left).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.style.top).toBeEqual("");
+          expect(b.style.left).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -623,9 +621,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().children("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -635,9 +633,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().children(10));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("10");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("10");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -647,8 +645,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children("abc"));
             const b = r(h.div());
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -658,8 +656,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(10));
             const b = r(h.div());
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -669,9 +667,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children("abc"));
             const b = r(h.div().children("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -681,9 +679,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(10));
             const b = r(h.div().children(10));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("10");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("10");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -693,9 +691,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children("abc"));
             const b = r(h.div().children("cde"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("cde");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("cde");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -705,9 +703,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(""));
             const b = r(h.div().children("cde"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("cde");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("cde");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -717,9 +715,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children("abc"));
             const b = r(h.div().children(10));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("10");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("10");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -729,9 +727,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(10));
             const b = r(h.div().children("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -741,9 +739,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().children(h.div())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("div");
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
           });
         });
       });
@@ -753,9 +751,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div()));
             const b = r(h.div().children("cde"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("cde");
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("cde");
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
           });
         });
       });
@@ -765,9 +763,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children("cde"));
             const b = r(h.div().children(h.div())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("div");
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
           });
         });
       });
@@ -777,9 +775,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().children(h.div())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("div");
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
           });
         });
       });
@@ -789,8 +787,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div()));
             const b = r(h.div());
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
           });
         });
       });
@@ -800,8 +798,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children([h.div()]));
             const b = r(h.div());
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
           });
         });
       });
@@ -811,8 +809,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div()));
             const b = r(h.div().children(null));
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
           });
         });
       });
@@ -822,10 +820,10 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().children(h.div(), h.div())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(2);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(b.children[1].tagName.toLowerCase()).to.equal("div");
-            expect(c).to.matchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(b.childNodes.length).toBeEqual(2);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("div");
+            expect(b.children[1].tagName.toLowerCase()).toBeEqual("div");
+            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
           });
         });
       });
@@ -835,8 +833,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div(), h.div()));
             const b = r(h.div());
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
           });
         });
       });
@@ -846,9 +844,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -858,9 +856,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(123));
             const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
           });
         });
       });
@@ -870,10 +868,10 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(123));
             const b = r(h.div().children(h.h1(), h.h2())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(2);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
-            expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
-            expect(c).to.matchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(b.childNodes.length).toBeEqual(2);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("h1");
+            expect(b.children[1].tagName.toLowerCase()).toBeEqual("h2");
+            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
           });
         });
       });
@@ -883,9 +881,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.h1(), h.h2()));
             const b = r(h.div().children(123));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("123");
-            expect(c).to.matchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("123");
+            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
           });
         });
       });
@@ -895,9 +893,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.h1(), h.h2()));
             const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
           });
         });
       });
@@ -907,9 +905,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.h1(), h.h2()));
             const b = r(h.div().children(h.div())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(c).to.matchDOMOps(4, 0, 0, 0, 3, 1, 1);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("div");
+            expect(c).toMatchDOMOps(4, 0, 0, 0, 3, 1, 1);
           });
         });
       });
@@ -919,9 +917,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children([]));
             const b = r(h.div().children(h.div())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("div");
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("div");
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
           });
         });
       });
@@ -931,9 +929,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div()));
             const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.firstChild!.nodeValue).to.equal("abc");
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.firstChild!.nodeValue).toBeEqual("abc");
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
           });
         });
       });
@@ -943,9 +941,9 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.h1()));
             const b = r(h.div().children(h.h2())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(1);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("h2");
-            expect(c).to.matchDOMOps(3, 0, 0, 0, 2, 1, 0);
+            expect(b.childNodes.length).toBeEqual(1);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("h2");
+            expect(c).toMatchDOMOps(3, 0, 0, 0, 2, 1, 0);
           });
         });
       });
@@ -955,10 +953,10 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div()));
             const b = r(h.div().children(h.h1(), h.h2())) as HTMLElement;
-            expect(b.childNodes.length).to.equal(2);
-            expect(b.children[0].tagName.toLowerCase()).to.equal("h1");
-            expect(b.children[1].tagName.toLowerCase()).to.equal("h2");
-            expect(c).to.matchDOMOps(4, 0, 0, 0, 3, 1, 0);
+            expect(b.childNodes.length).toBeEqual(2);
+            expect(b.children[0].tagName.toLowerCase()).toBeEqual("h1");
+            expect(b.children[1].tagName.toLowerCase()).toBeEqual("h2");
+            expect(c).toMatchDOMOps(4, 0, 0, 0, 3, 1, 0);
           });
         });
       });
@@ -968,8 +966,8 @@ describe("sync", () => {
           checkDOMOps((c) => {
             r(h.div().children(h.div()));
             const b = r(h.div().children([]));
-            expect(b.childNodes.length).to.equal(0);
-            expect(c).to.matchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(b.childNodes.length).toBeEqual(0);
+            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
           });
         });
       });
@@ -985,8 +983,8 @@ describe("sync", () => {
               genVNodes(t[1], true) as VNode<any>[],
               true,
               c);
-            const e = expect(c).to;
-            e.matchDOMOps.apply(e, t[2]);
+            const e = expect(c);
+            e.toMatchDOMOps.apply(e, t[2]);
           });
         };
         it(name, testFn);
@@ -1003,8 +1001,8 @@ describe("sync", () => {
               genVNodes(t[1], false) as VNode<any>[],
               false,
               c);
-            const e = expect(c).to;
-            e.matchDOMOps.apply(e, t[3]);
+            const e = expect(c);
+            e.toMatchDOMOps.apply(e, t[3]);
           });
         };
         it(name, testFn);
@@ -1018,8 +1016,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tc()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1029,9 +1027,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tc());
           const b = r(h.div()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1041,9 +1039,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r(h.div());
           const b = r($tc()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1053,8 +1051,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tc());
           const b = r(h.span()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("span");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("span");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1064,9 +1062,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tc());
           const b = r($tc()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.equal(b);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).toBeEqual(b);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1076,9 +1074,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tc());
           const b = r($tc(""));
-          expect(b.nodeType).to.equal(Node.TEXT_NODE);
-          expect(b.nodeValue).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(b.nodeType).toBeEqual(Node.TEXT_NODE);
+          expect(b.nodeValue).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
         });
       });
     });
@@ -1088,8 +1086,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tc(""));
           const b = r($tc()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(c).to.matchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
         });
       });
     });
@@ -1099,8 +1097,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tc(h.div(), 3));
           const b = r(h.span()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("span");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("span");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1110,8 +1108,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tc(h.div(), 3)) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1121,9 +1119,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tc(h.div(), 3));
           const b = r($tc(h.div(), 3)) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.equal(b);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).toBeEqual(b);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1133,8 +1131,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tcf()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1144,9 +1142,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tcf());
           const b = r(h.div()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1156,9 +1154,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r(h.div());
           const b = r($tcf()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1168,8 +1166,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tcf());
           const b = r(h.span()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("span");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("span");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1179,9 +1177,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tcf());
           const b = r($tcf()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.equal(b);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).toBeEqual(b);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1191,9 +1189,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tcf());
           const b = r($tcf("")) as HTMLElement;
-          expect(b.nodeType).to.equal(Node.TEXT_NODE);
-          expect(b.nodeValue).to.equal("");
-          expect(c).to.matchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(b.nodeType).toBeEqual(Node.TEXT_NODE);
+          expect(b.nodeValue).toBeEqual("");
+          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
         });
       });
     });
@@ -1203,8 +1201,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tcf(""));
           const b = r($tcf()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(c).to.matchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
         });
       });
     });
@@ -1214,8 +1212,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r($tcf(h.div(), 3));
           const b = r(h.span()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("span");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("span");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1225,8 +1223,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tcf(h.div(), 3)) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1236,9 +1234,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tcf(h.div(), 3));
           const b = r($tcf(h.div(), 3)) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.equal(b);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).toBeEqual(b);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1248,9 +1246,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tc());
           const b = r($tcf()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1260,9 +1258,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tcf());
           const b = r($tc()) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1272,9 +1270,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tc(h.div(), 3));
           const b = r($tcf(h.div(), 3)) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1284,9 +1282,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           const a = r($tcf(h.div(), 3));
           const b = r($tc(h.div(), 3)) as HTMLElement;
-          expect(b.tagName.toLowerCase()).to.equal("div");
-          expect(a).to.not.equal(b);
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("div");
+          expect(a).notToBeEqual(b);
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1298,9 +1296,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputText());
           const b = r(h.inputCheckbox()) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("checkbox");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("checkbox");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1310,10 +1308,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputText());
           const b = r(h.inputText().value("cde")) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("text");
-          expect(b.value).to.equal("cde");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("text");
+          expect(b.value).toBeEqual("cde");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1323,10 +1321,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputText().value("abc"));
           const b = r(h.inputText().value("cde")) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("text");
-          expect(b.value).to.equal("cde");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("text");
+          expect(b.value).toBeEqual("cde");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1336,10 +1334,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputText().value("abc"));
           const b = r(h.inputText()) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("text");
-          expect(b.value).to.equal("abc");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("text");
+          expect(b.value).toBeEqual("abc");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1349,10 +1347,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputCheckbox());
           const b = r(h.inputCheckbox().checked(true)) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("checkbox");
-          expect(b.checked).to.equal(true);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("checkbox");
+          expect(b.checked).toBeEqual(true);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1362,10 +1360,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputCheckbox().checked(true));
           const b = r(h.inputCheckbox().checked(false)) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("checkbox");
-          expect(b.checked).to.equal(false);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("checkbox");
+          expect(b.checked).toBeEqual(false);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1375,10 +1373,10 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputCheckbox().checked(true));
           const b = r(h.inputCheckbox()) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("checkbox");
-          expect(b.checked).to.equal(true);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("checkbox");
+          expect(b.checked).toBeEqual(true);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1388,8 +1386,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.inputText());
           const b = r(h.textarea()) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).to.equal("textarea");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("textarea");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1399,9 +1397,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.textarea());
           const b = r(h.inputText()) as HTMLInputElement;
-          expect(b.tagName.toLowerCase()).to.equal("input");
-          expect(b.type).to.equal("text");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("input");
+          expect(b.type).toBeEqual("text");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1411,9 +1409,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.textarea());
           const b = r(h.textarea().value("cde")) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).to.equal("textarea");
-          expect(b.value).to.equal("cde");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("textarea");
+          expect(b.value).toBeEqual("cde");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1423,9 +1421,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.textarea().value("abc"));
           const b = r(h.textarea().value("cde")) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).to.equal("textarea");
-          expect(b.value).to.equal("cde");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("textarea");
+          expect(b.value).toBeEqual("cde");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1435,9 +1433,9 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.textarea().value("abc"));
           const b = r(h.textarea()) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).to.equal("textarea");
-          expect(b.value).to.equal("abc");
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("textarea");
+          expect(b.value).toBeEqual("abc");
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1447,8 +1445,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.audio());
           const b = r(h.video()) as HTMLMediaElement;
-          expect(b.tagName.toLowerCase()).to.equal("video");
-          expect(c).to.matchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(b.tagName.toLowerCase()).toBeEqual("video");
+          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
         });
       });
     });
@@ -1458,8 +1456,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.audio());
           const b = r(h.audio().props({ volume: 0.5 })) as HTMLMediaElement;
-          expect(b.volume).to.equal(0.5);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.volume).toBeEqual(0.5);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1469,8 +1467,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.audio().props({ volume: 0.3 }));
           const b = r(h.audio().props({ volume: 0.5 })) as HTMLMediaElement;
-          expect(b.volume).to.equal(0.5);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.volume).toBeEqual(0.5);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1480,8 +1478,8 @@ describe("sync", () => {
         checkDOMOps((c) => {
           r(h.audio().props({ volume: 0.3 }));
           const b = r(h.audio()) as HTMLMediaElement;
-          expect(b.volume).to.equal(0.3);
-          expect(c).to.matchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(b.volume).toBeEqual(0.3);
+          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
     });
@@ -1536,9 +1534,9 @@ describe("sync", () => {
             ca(1).key(1),
             h.h1().key(0),
           )) as HTMLDivElement;
-          expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-          expect(n.children[0].firstChild!.nodeValue).to.equal("1");
-          expect(c).to.matchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(n.children[0].tagName.toLowerCase()).toBeEqual("span");
+          expect(n.children[0].firstChild!.nodeValue).toBeEqual("1");
+          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
         });
       });
     });
@@ -1556,9 +1554,9 @@ describe("sync", () => {
             cb(ca(1)).key(1),
             h.h1().key(0),
           )) as HTMLDivElement;
-          expect(n.children[0].tagName.toLowerCase()).to.equal("span");
-          expect(n.children[0].firstChild!.nodeValue).to.equal("1");
-          expect(c).to.matchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(n.children[0].tagName.toLowerCase()).toBeEqual("span");
+          expect(n.children[0].firstChild!.nodeValue).toBeEqual("1");
+          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
         });
       });
     });
@@ -1577,9 +1575,9 @@ describe("sync", () => {
             h.h1().key(0),
             ca(1).key(1),
           )) as HTMLDivElement;
-          expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-          expect(n.children[1].firstChild!.nodeValue).to.equal("1");
-          expect(c).to.matchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(n.children[1].tagName.toLowerCase()).toBeEqual("span");
+          expect(n.children[1].firstChild!.nodeValue).toBeEqual("1");
+          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
         });
       });
     });
@@ -1597,9 +1595,9 @@ describe("sync", () => {
             h.h1().key(0),
             cb(ca(1)).key(1),
           )) as HTMLDivElement;
-          expect(n.children[1].tagName.toLowerCase()).to.equal("span");
-          expect(n.children[1].firstChild!.nodeValue).to.equal("1");
-          expect(c).to.matchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(n.children[1].tagName.toLowerCase()).toBeEqual("span");
+          expect(n.children[1].firstChild!.nodeValue).toBeEqual("1");
+          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
         });
       });
     });
@@ -1615,12 +1613,12 @@ describe("sync", () => {
           const b = r(h.div().children(
             h.t("a"), h.t("b").key(0), h.t("c").key(1), h.t("e").key(2), h.t("d"),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("b");
-          expect(b.childNodes[2].nodeValue).to.equal("c");
-          expect(b.childNodes[3].nodeValue).to.equal("e");
-          expect(b.childNodes[4].nodeValue).to.equal("d");
-          expect(c).to.matchDOMOps(1, 0, 6, 0, 7, 0, 1);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("b");
+          expect(b.childNodes[2].nodeValue).toBeEqual("c");
+          expect(b.childNodes[3].nodeValue).toBeEqual("e");
+          expect(b.childNodes[4].nodeValue).toBeEqual("d");
+          expect(c).toMatchDOMOps(1, 0, 6, 0, 7, 0, 1);
         });
       });
     });
@@ -1634,10 +1632,10 @@ describe("sync", () => {
           const b = r(h.div().children(
             h.t("a"), h.t("b").key(0), h.t("d"),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("b");
-          expect(b.childNodes[2].nodeValue).to.equal("d");
-          expect(c).to.matchDOMOps(1, 0, 5, 0, 6, 0, 2);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("b");
+          expect(b.childNodes[2].nodeValue).toBeEqual("d");
+          expect(c).toMatchDOMOps(1, 0, 5, 0, 6, 0, 2);
         });
       });
     });
@@ -1651,11 +1649,11 @@ describe("sync", () => {
           const b = r(h.div().children(
             h.t("a"), h.t("c").key(1), h.t("b").key(0), h.t("d"),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("c");
-          expect(b.childNodes[2].nodeValue).to.equal("b");
-          expect(b.childNodes[3].nodeValue).to.equal("d");
-          expect(c).to.matchDOMOps(1, 0, 4, 0, 6, 0, 0);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("c");
+          expect(b.childNodes[2].nodeValue).toBeEqual("b");
+          expect(b.childNodes[3].nodeValue).toBeEqual("d");
+          expect(c).toMatchDOMOps(1, 0, 4, 0, 6, 0, 0);
         });
       });
     });
@@ -1669,12 +1667,12 @@ describe("sync", () => {
           const b = r(h.div().children(
             h.t("a"), h.t("c").key(1), h.t("e"), h.t("b").key(0), h.t("d"),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("c");
-          expect(b.childNodes[2].nodeValue).to.equal("e");
-          expect(b.childNodes[3].nodeValue).to.equal("b");
-          expect(b.childNodes[4].nodeValue).to.equal("d");
-          expect(c).to.matchDOMOps(1, 0, 5, 0, 8, 0, 0);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("c");
+          expect(b.childNodes[2].nodeValue).toBeEqual("e");
+          expect(b.childNodes[3].nodeValue).toBeEqual("b");
+          expect(b.childNodes[4].nodeValue).toBeEqual("d");
+          expect(c).toMatchDOMOps(1, 0, 5, 0, 8, 0, 0);
         });
       });
     });
@@ -1688,9 +1686,9 @@ describe("sync", () => {
           const b = r(h.div().children(
             null, h.t("b"), h.t("c"), null,
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("b");
-          expect(b.childNodes[1].nodeValue).to.equal("c");
-          expect(c).to.matchDOMOps(1, 0, 4, 0, 5, 0, 2);
+          expect(b.childNodes[0].nodeValue).toBeEqual("b");
+          expect(b.childNodes[1].nodeValue).toBeEqual("c");
+          expect(c).toMatchDOMOps(1, 0, 4, 0, 5, 0, 2);
         });
       });
     });
@@ -1704,11 +1702,11 @@ describe("sync", () => {
           const b = r(h.div().children(
             h.t("a").key(0), h.t("b"), h.t("c"), h.t("d").key(1),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("b");
-          expect(b.childNodes[2].nodeValue).to.equal("c");
-          expect(b.childNodes[3].nodeValue).to.equal("d");
-          expect(c).to.matchDOMOps(1, 0, 4, 0, 5, 0, 0);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("b");
+          expect(b.childNodes[2].nodeValue).toBeEqual("c");
+          expect(b.childNodes[3].nodeValue).toBeEqual("d");
+          expect(c).toMatchDOMOps(1, 0, 4, 0, 5, 0, 0);
         });
       });
     });
@@ -1725,19 +1723,19 @@ describe("sync", () => {
             h.t("i").key(6),
             h.t("j").key(7), h.t("k").key(8), h.t("l").key(9),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("b");
-          expect(b.childNodes[2].nodeValue).to.equal("c");
-          expect(b.childNodes[3].nodeValue).to.equal("d");
-          expect(b.childNodes[4].nodeValue).to.equal("e");
-          expect(b.childNodes[5].nodeValue).to.equal("f");
-          expect(b.childNodes[6].nodeValue).to.equal("g");
-          expect(b.childNodes[7].nodeValue).to.equal("h");
-          expect(b.childNodes[8].nodeValue).to.equal("i");
-          expect(b.childNodes[9].nodeValue).to.equal("j");
-          expect(b.childNodes[10].nodeValue).to.equal("k");
-          expect(b.childNodes[11].nodeValue).to.equal("l");
-          expect(c).to.matchDOMOps(1, 0, 12, 0, 13, 0, 0);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("b");
+          expect(b.childNodes[2].nodeValue).toBeEqual("c");
+          expect(b.childNodes[3].nodeValue).toBeEqual("d");
+          expect(b.childNodes[4].nodeValue).toBeEqual("e");
+          expect(b.childNodes[5].nodeValue).toBeEqual("f");
+          expect(b.childNodes[6].nodeValue).toBeEqual("g");
+          expect(b.childNodes[7].nodeValue).toBeEqual("h");
+          expect(b.childNodes[8].nodeValue).toBeEqual("i");
+          expect(b.childNodes[9].nodeValue).toBeEqual("j");
+          expect(b.childNodes[10].nodeValue).toBeEqual("k");
+          expect(b.childNodes[11].nodeValue).toBeEqual("l");
+          expect(c).toMatchDOMOps(1, 0, 12, 0, 13, 0, 0);
         });
       });
     });
@@ -1751,12 +1749,12 @@ describe("sync", () => {
           const b = r(h.div().children(
             h.t("a"), h.t("c").key(1), h.t("e"), h.t("b").key(0), h.t("d"),
           ));
-          expect(b.childNodes[0].nodeValue).to.equal("a");
-          expect(b.childNodes[1].nodeValue).to.equal("c");
-          expect(b.childNodes[2].nodeValue).to.equal("e");
-          expect(b.childNodes[3].nodeValue).to.equal("b");
-          expect(b.childNodes[4].nodeValue).to.equal("d");
-          expect(c).to.matchDOMOps(3, 0, 8, 0, 11, 1, 4);
+          expect(b.childNodes[0].nodeValue).toBeEqual("a");
+          expect(b.childNodes[1].nodeValue).toBeEqual("c");
+          expect(b.childNodes[2].nodeValue).toBeEqual("e");
+          expect(b.childNodes[3].nodeValue).toBeEqual("b");
+          expect(b.childNodes[4].nodeValue).toBeEqual("d");
+          expect(c).toMatchDOMOps(3, 0, 8, 0, 11, 1, 4);
         });
       });
     });

@@ -5,7 +5,6 @@
     "sourceMap": true,
     "inlineSourceMap": true,
     "types": [
-      "chai",
       "mocha"
     ]
   },

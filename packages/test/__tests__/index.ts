@@ -1,6 +1,3 @@
-import { use } from "chai";
-import { matchSnapshot } from "chai-snapshot";
+import "iko-karma-snapshot";
 import "./snapshot.spec";
 import "./query.spec";
-
-use(matchSnapshot);

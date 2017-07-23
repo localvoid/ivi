@@ -2,18 +2,18 @@ import { clock } from "../src/clock";
 import { scheduleMicrotask } from "../src/microtask";
 import { scheduleTask } from "../src/task";
 import { currentFrame, nextFrame } from "../src/frame";
-import { expect } from "chai";
+import { expect } from "iko";
 
 describe("scheduler", () => {
   describe("execution order", () => {
     it("microtasks before tasks", (done) => {
       let i = 0;
       scheduleTask(() => {
-        expect(i).to.equal(1);
+        expect(i).toBeEqual(1);
         done();
       });
       scheduleMicrotask(() => {
-        expect(i).to.equal(0);
+        expect(i).toBeEqual(0);
         i = 1;
       });
     });
@@ -22,35 +22,35 @@ describe("scheduler", () => {
       nextFrame().write(() => {
         let i = 0;
         currentFrame().after(() => {
-          expect(i).to.equal(6);
+          expect(i).toBeEqual(6);
           i = 7;
         });
         currentFrame().after(() => {
-          expect(i).to.equal(7);
+          expect(i).toBeEqual(7);
           done();
         });
         currentFrame().read(() => {
-          expect(i).to.equal(1);
+          expect(i).toBeEqual(1);
           i = 2;
         });
         currentFrame().read(() => {
-          expect(i).to.equal(2);
+          expect(i).toBeEqual(2);
           i = 3;
           currentFrame().write(() => {
-            expect(i).to.equal(4);
+            expect(i).toBeEqual(4);
             i = 5;
           });
           currentFrame().write(() => {
-            expect(i).to.equal(5);
+            expect(i).toBeEqual(5);
             i = 6;
           });
           currentFrame().read(() => {
-            expect(i).to.equal(3);
+            expect(i).toBeEqual(3);
             i = 4;
           });
         });
         currentFrame().write(() => {
-          expect(i).to.equal(0);
+          expect(i).toBeEqual(0);
           i = 1;
         });
       });
@@ -61,9 +61,9 @@ describe("scheduler", () => {
     it("advance clock by 1 after microtask execution", (done) => {
       const c = clock();
       scheduleMicrotask(() => {
-        expect(clock()).to.equal(c);
+        expect(clock()).toBeEqual(c);
         setTimeout(() => {
-          expect(clock()).to.equal(c + 1);
+          expect(clock()).toBeEqual(c + 1);
           done();
         }, 10);
       });
@@ -72,9 +72,9 @@ describe("scheduler", () => {
     it("advance clock by 1 after task execution", (done) => {
       const c = clock();
       scheduleTask(() => {
-        expect(clock()).to.equal(c);
+        expect(clock()).toBeEqual(c);
         setTimeout(() => {
-          expect(clock()).to.equal(c + 1);
+          expect(clock()).toBeEqual(c + 1);
           done();
         }, 10);
       });
@@ -83,9 +83,9 @@ describe("scheduler", () => {
     it("advance clock by 1 after after next frame", (done) => {
       const c = clock() + 1;
       nextFrame().after(() => {
-        expect(clock()).to.equal(c);
+        expect(clock()).toBeEqual(c);
         setTimeout(() => {
-          expect(clock()).to.equal(c + 1);
+          expect(clock()).toBeEqual(c + 1);
           done();
         }, 10);
       });
@@ -94,13 +94,13 @@ describe("scheduler", () => {
     it("should have the same clock when switching between read and write batches", (done) => {
       const c = clock() + 1;
       nextFrame().write(() => {
-        expect(clock()).to.equal(c);
+        expect(clock()).toBeEqual(c);
         currentFrame().read(() => {
-          expect(clock()).to.equal(c);
+          expect(clock()).toBeEqual(c);
           currentFrame().write(() => {
-            expect(clock()).to.equal(c);
+            expect(clock()).toBeEqual(c);
             setTimeout(() => {
-              expect(clock()).to.equal(c + 1);
+              expect(clock()).toBeEqual(c + 1);
               done();
             }, 10);
           });

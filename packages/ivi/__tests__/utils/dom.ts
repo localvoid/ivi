@@ -1,3 +1,5 @@
+import { Assertion, AssertionError, addAssertionType } from "iko";
+
 export class DOMOpsCounter {
   createElement = 0;
   createElementNS = 0;
@@ -18,121 +20,101 @@ export class DOMOpsCounter {
   }
 }
 
-declare global {
-  namespace Chai {
-    interface Assertion {
-      matchDOMOps(
-        createElement: number,
-        createElementNS: number,
-        createTextNode: number,
-        appendChild: number,
-        insertBefore: number,
-        replaceChild: number,
-        removeChild: number,
-      ): Assertion;
-    }
-  }
+declare module "iko" {
+  function expect(counter: DOMOpsCounter): DOMOpsCounterAssertion;
 }
 
-export function matchDOMOps(chai: any, utils: any) {
-  utils.addMethod(
-    chai.Assertion.prototype, "matchDOMOps",
-    function (this: any,
-      createElement: number,
-      createElementNS: number,
-      createTextNode: number,
-      appendChild: number,
-      insertBefore: number,
-      replaceChild: number,
-      removeChild: number,
-    ) {
-      const ssfi = utils.flag(this, "ssfi");
-      const obj = chai.util.flag(this, "object") as DOMOpsCounter;
+addAssertionType(function (obj: any) {
+  if (typeof obj === "object" && obj instanceof DOMOpsCounter) {
+    return new DOMOpsCounterAssertion(obj);
+  }
+  return undefined;
+});
 
-      if (obj.createElement !== createElement) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.createElement" ${obj.createElement} to equal ${createElement}`,
-          {
-            actual: obj.createElement,
-            expected: createElement,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
+export class DOMOpsCounterAssertion extends Assertion<DOMOpsCounter> {
+  toMatchDOMOps(
+    createElement: number,
+    createElementNS: number,
+    createTextNode: number,
+    appendChild: number,
+    insertBefore: number,
+    replaceChild: number,
+    removeChild: number,
+  ): DOMOpsCounterAssertion {
+    const obj = this.obj;
 
-      if (obj.createElementNS !== createElementNS) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.createElementNS" ${obj.createElementNS} to equal ${createElementNS}`,
-          {
-            actual: obj.createElementNS,
-            expected: createElementNS,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
+    if (obj.createElement !== createElement) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.createElement" ${obj.createElement} to equal ${createElement}`,
+        createElement,
+        obj.createElement,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
 
-      if (obj.createTextNode !== createTextNode) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.createTextNode" ${obj.createTextNode} to equal ${createTextNode}`,
-          {
-            actual: obj.createTextNode,
-            expected: createTextNode,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
+    if (obj.createElementNS !== createElementNS) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.createElementNS" ${obj.createElementNS} to equal ${createElementNS}`,
+        createElementNS,
+        obj.createElementNS,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
 
-      if (obj.appendChild !== appendChild) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.appendCHild" ${obj.appendChild} to equal ${appendChild}`,
-          {
-            actual: obj.appendChild,
-            expected: appendChild,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
+    if (obj.createTextNode !== createTextNode) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.createTextNode" ${obj.createTextNode} to equal ${createTextNode}`,
+        createTextNode,
+        obj.createTextNode,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
 
-      if (obj.insertBefore !== insertBefore) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.insertBefore" ${obj.insertBefore} to equal ${insertBefore}`,
-          {
-            actual: obj.insertBefore,
-            expected: insertBefore,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
+    if (obj.appendChild !== appendChild) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.appendCHild" ${obj.appendChild} to equal ${appendChild}`,
+        appendChild,
+        obj.appendChild,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
 
-      if (obj.replaceChild !== replaceChild) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.replaceChild" ${obj.replaceChild} to equal ${replaceChild}`,
-          {
-            actual: obj.replaceChild,
-            expected: replaceChild,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
+    if (obj.insertBefore !== insertBefore) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.insertBefore" ${obj.insertBefore} to equal ${insertBefore}`,
+        insertBefore,
+        obj.insertBefore,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
 
-      if (obj.removeChild !== removeChild) {
-        throw new chai.AssertionError(
-          `Expected DOM ops counter "document.removeChild" ${obj.removeChild} to equal ${removeChild}`,
-          {
-            actual: obj.removeChild,
-            expected: removeChild,
-            showDiff: true,
-          },
-          ssfi,
-        );
-      }
-    });
+    if (obj.replaceChild !== replaceChild) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.replaceChild" ${obj.replaceChild} to equal ${replaceChild}`,
+        replaceChild,
+        obj.replaceChild,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
+
+    if (obj.removeChild !== removeChild) {
+      throw new AssertionError(
+        `Expected DOM ops counter "document.removeChild" ${obj.removeChild} to equal ${removeChild}`,
+        removeChild,
+        obj.removeChild,
+        true,
+        this.toMatchDOMOps,
+      );
+    }
+
+    return this;
+  }
 }
 
 export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {

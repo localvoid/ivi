@@ -1,25 +1,24 @@
-/* tslint:disable:no-unused-expression */
-import { expect } from "chai";
 import { RepeatableTaskList } from "../src/repeatable_task_list";
 import { NOOP_FALSE } from "../src/noop";
+import { expect } from "iko";
 
 describe("RepeatableTaskList", () => {
   it("empty", () => {
     const t = new RepeatableTaskList();
-    expect(t.tasks).to.be.eql([]);
+    expect(t.tasks).toMatch([]);
   });
 
   it("add task", () => {
     const t = new RepeatableTaskList();
     t.add(NOOP_FALSE);
-    expect(t.tasks.length).to.be.equal(1);
+    expect(t.tasks.length).toBeEqual(1);
   });
 
   it("add two tasks", () => {
     const t = new RepeatableTaskList();
     t.add(NOOP_FALSE);
     t.add(NOOP_FALSE);
-    expect(t.tasks.length).to.be.equal(2);
+    expect(t.tasks.length).toBeEqual(2);
   });
 
   it("run one task", () => {
@@ -27,7 +26,7 @@ describe("RepeatableTaskList", () => {
     let i = 0;
     t.add(() => { i++; return false; });
     t.run();
-    expect(i).to.equal(1);
+    expect(i).toBeEqual(1);
   });
 
   it("run two tasks", () => {
@@ -36,7 +35,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.add(() => { i++; return false; });
     t.run();
-    expect(i).to.equal(2);
+    expect(i).toBeEqual(2);
   });
 
   it("run one task twice", () => {
@@ -45,7 +44,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.run();
     t.run();
-    expect(i).to.equal(2);
+    expect(i).toBeEqual(2);
   });
 
   it("run two tasks twice", () => {
@@ -55,7 +54,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.run();
     t.run();
-    expect(i).to.equal(4);
+    expect(i).toBeEqual(4);
   });
 
   it("run one one-time task twice", () => {
@@ -64,7 +63,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return true; });
     t.run();
     t.run();
-    expect(i).to.equal(1);
+    expect(i).toBeEqual(1);
   });
 
   it("run one one-time and one simple task twice", () => {
@@ -74,6 +73,6 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.run();
     t.run();
-    expect(i).to.equal(3);
+    expect(i).toBeEqual(3);
   });
 });

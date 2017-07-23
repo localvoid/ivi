@@ -1,7 +1,5 @@
 import "core-js";
-import { use } from "chai";
-import { matchDOMOps } from "./utils/dom";
-use(matchDOMOps);
+import "./utils/dom";
 
 import "./vnode.spec";
 import "./render.spec";

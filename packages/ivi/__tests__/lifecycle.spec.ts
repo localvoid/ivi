@@ -1,6 +1,6 @@
 import { startRender, augment, checkLifecycle, $lc, staticComponent } from "./utils";
 import * as h from "./utils/html";
-import { expect } from "chai";
+import { expect } from "iko";
 
 describe("lifecycle", () => {
   it("<C><div></C>", () => {
@@ -8,17 +8,17 @@ describe("lifecycle", () => {
       checkLifecycle((c) => {
         render($lc("1", h.div()));
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "attached")).to.equal(2);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "attached")).toBeEqual(2);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -29,17 +29,17 @@ describe("lifecycle", () => {
         render($lc("1", h.div()));
         render(h.div());
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "attached")).to.equal(2);
-        expect(c("1", "detached")).to.equal(3);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "attached")).toBeEqual(2);
+        expect(c("1", "detached")).toBeEqual(3);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -50,17 +50,17 @@ describe("lifecycle", () => {
         render(h.div());
         render($lc("1", h.div()));
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "attached")).to.equal(2);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "attached")).toBeEqual(2);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -71,17 +71,17 @@ describe("lifecycle", () => {
         render(h.div());
         render(h.div().children($lc("1", h.div())));
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "attached")).to.equal(2);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "attached")).toBeEqual(2);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -92,17 +92,17 @@ describe("lifecycle", () => {
         render(h.div().children($lc("1", h.div())));
         render(h.div());
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "attached")).to.equal(2);
-        expect(c("1", "detached")).to.equal(3);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "attached")).toBeEqual(2);
+        expect(c("1", "detached")).toBeEqual(3);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -112,28 +112,28 @@ describe("lifecycle", () => {
       checkLifecycle((c) => {
         render($lc("1", $lc("2", h.div())));
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("2", "constructor")).to.equal(2);
-        expect(c("2", "render")).to.equal(3);
-        expect(c("1", "attached")).to.equal(4);
-        expect(c("2", "attached")).to.equal(5);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("2", "constructor")).toBeEqual(2);
+        expect(c("2", "render")).toBeEqual(3);
+        expect(c("1", "attached")).toBeEqual(4);
+        expect(c("2", "attached")).toBeEqual(5);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
 
-        expect(c("2", "isPropsChanged")).to.equal(-1);
-        expect(c("2", "newPropsReceived")).to.equal(-1);
-        expect(c("2", "detached")).to.equal(-1);
-        expect(c("2", "beforeUpdate")).to.equal(-1);
-        expect(c("2", "updated")).to.equal(-1);
-        expect(c("2", "invalidated")).to.equal(-1);
-        expect(c("2", "shouldAugment")).to.equal(-1);
+        expect(c("2", "isPropsChanged")).toBeEqual(-1);
+        expect(c("2", "newPropsReceived")).toBeEqual(-1);
+        expect(c("2", "detached")).toBeEqual(-1);
+        expect(c("2", "beforeUpdate")).toBeEqual(-1);
+        expect(c("2", "updated")).toBeEqual(-1);
+        expect(c("2", "invalidated")).toBeEqual(-1);
+        expect(c("2", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -144,28 +144,28 @@ describe("lifecycle", () => {
         render($lc("1", $lc("2", h.div())));
         render(h.div());
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("2", "constructor")).to.equal(2);
-        expect(c("2", "render")).to.equal(3);
-        expect(c("1", "attached")).to.equal(4);
-        expect(c("2", "attached")).to.equal(5);
-        expect(c("2", "detached")).to.equal(6);
-        expect(c("1", "detached")).to.equal(7);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("2", "constructor")).toBeEqual(2);
+        expect(c("2", "render")).toBeEqual(3);
+        expect(c("1", "attached")).toBeEqual(4);
+        expect(c("2", "attached")).toBeEqual(5);
+        expect(c("2", "detached")).toBeEqual(6);
+        expect(c("1", "detached")).toBeEqual(7);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
 
-        expect(c("2", "isPropsChanged")).to.equal(-1);
-        expect(c("2", "newPropsReceived")).to.equal(-1);
-        expect(c("2", "beforeUpdate")).to.equal(-1);
-        expect(c("2", "updated")).to.equal(-1);
-        expect(c("2", "invalidated")).to.equal(-1);
-        expect(c("2", "shouldAugment")).to.equal(-1);
+        expect(c("2", "isPropsChanged")).toBeEqual(-1);
+        expect(c("2", "newPropsReceived")).toBeEqual(-1);
+        expect(c("2", "beforeUpdate")).toBeEqual(-1);
+        expect(c("2", "updated")).toBeEqual(-1);
+        expect(c("2", "invalidated")).toBeEqual(-1);
+        expect(c("2", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -176,19 +176,19 @@ describe("lifecycle", () => {
         render($lc("1", h.div()));
         render($lc("1", h.div()));
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "attached")).to.equal(2);
-        expect(c("1", "isPropsChanged")).to.equal(3);
-        expect(c("1", "newPropsReceived")).to.equal(4);
-        expect(c("1", "beforeUpdate")).to.equal(5);
-        expect(c("1", "render")).to.equal(6); // 1
-        expect(c("1", "updated")).to.equal(7);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "attached")).toBeEqual(2);
+        expect(c("1", "isPropsChanged")).toBeEqual(3);
+        expect(c("1", "newPropsReceived")).toBeEqual(4);
+        expect(c("1", "beforeUpdate")).toBeEqual(5);
+        expect(c("1", "render")).toBeEqual(6); // 1
+        expect(c("1", "updated")).toBeEqual(7);
 
-        expect(c("1", "render", false)).to.equal(1);
+        expect(c("1", "render", false)).toBeEqual(1);
 
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -199,19 +199,19 @@ describe("lifecycle", () => {
         render(staticComponent($lc("1", h.div())));
         render(staticComponent($lc("1", h.div())));
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "attached")).to.equal(2);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "attached")).toBeEqual(2);
 
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
 
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
-        expect(c("1", "shouldAugment")).to.equal(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
+        expect(c("1", "shouldAugment")).toBeEqual(-1);
       });
     });
   });
@@ -221,17 +221,17 @@ describe("lifecycle", () => {
       checkLifecycle((c) => {
         augment($lc("1", h.div()), `<div></div>`);
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "shouldAugment")).to.equal(2);
-        expect(c("1", "attached")).to.equal(3);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "shouldAugment")).toBeEqual(2);
+        expect(c("1", "attached")).toBeEqual(3);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
       });
     });
 
@@ -239,17 +239,17 @@ describe("lifecycle", () => {
       checkLifecycle((c) => {
         augment($lc("1", { shouldAugment: () => false }, h.div()), `<div></div>`);
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "shouldAugment")).to.equal(2);
-        expect(c("1", "attached")).to.equal(3);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "shouldAugment")).toBeEqual(2);
+        expect(c("1", "attached")).toBeEqual(3);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
       });
     });
 
@@ -257,28 +257,28 @@ describe("lifecycle", () => {
       checkLifecycle((c) => {
         augment($lc("1", { shouldAugment: () => false }, $lc("2", h.div())), `<div></div>`);
 
-        expect(c("1", "constructor")).to.equal(0);
-        expect(c("1", "render")).to.equal(1);
-        expect(c("1", "shouldAugment")).to.equal(2);
-        expect(c("2", "constructor")).to.equal(3);
-        expect(c("2", "render")).to.equal(4);
-        expect(c("1", "attached")).to.equal(5);
-        expect(c("2", "attached")).to.equal(6);
+        expect(c("1", "constructor")).toBeEqual(0);
+        expect(c("1", "render")).toBeEqual(1);
+        expect(c("1", "shouldAugment")).toBeEqual(2);
+        expect(c("2", "constructor")).toBeEqual(3);
+        expect(c("2", "render")).toBeEqual(4);
+        expect(c("1", "attached")).toBeEqual(5);
+        expect(c("2", "attached")).toBeEqual(6);
 
-        expect(c("1", "isPropsChanged")).to.equal(-1);
-        expect(c("1", "newPropsReceived")).to.equal(-1);
-        expect(c("1", "detached")).to.equal(-1);
-        expect(c("1", "beforeUpdate")).to.equal(-1);
-        expect(c("1", "updated")).to.equal(-1);
-        expect(c("1", "invalidated")).to.equal(-1);
+        expect(c("1", "isPropsChanged")).toBeEqual(-1);
+        expect(c("1", "newPropsReceived")).toBeEqual(-1);
+        expect(c("1", "detached")).toBeEqual(-1);
+        expect(c("1", "beforeUpdate")).toBeEqual(-1);
+        expect(c("1", "updated")).toBeEqual(-1);
+        expect(c("1", "invalidated")).toBeEqual(-1);
 
-        expect(c("2", "isPropsChanged")).to.equal(-1);
-        expect(c("2", "newPropsReceived")).to.equal(-1);
-        expect(c("2", "detached")).to.equal(-1);
-        expect(c("2", "beforeUpdate")).to.equal(-1);
-        expect(c("2", "updated")).to.equal(-1);
-        expect(c("2", "invalidated")).to.equal(-1);
-        expect(c("2", "shouldAugment")).to.equal(-1);
+        expect(c("2", "isPropsChanged")).toBeEqual(-1);
+        expect(c("2", "newPropsReceived")).toBeEqual(-1);
+        expect(c("2", "detached")).toBeEqual(-1);
+        expect(c("2", "beforeUpdate")).toBeEqual(-1);
+        expect(c("2", "updated")).toBeEqual(-1);
+        expect(c("2", "invalidated")).toBeEqual(-1);
+        expect(c("2", "shouldAugment")).toBeEqual(-1);
       });
     });
   });

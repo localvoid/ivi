@@ -1,9 +1,7 @@
-/* tslint:disable:no-unused-expression */
-
 import { VNodeFlags, SyncFlags } from "../../src/vdom/flags";
 import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
 import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
-import { expect } from "chai";
+import { expect } from "iko";
 
 const DEFAULT_CONTEXT = {};
 
@@ -14,11 +12,11 @@ export function frag() {
 export function checkRefs(n: Node, v: VNode<any>) {
   const flags = v._flags;
 
-  expect(getDOMInstanceFromVNode(v)).to.equal(n);
+  expect(getDOMInstanceFromVNode(v)).toBeEqual(n);
 
   if (flags & VNodeFlags.Component) {
     if (flags & VNodeFlags.ComponentClass) {
-      expect(getDOMInstanceFromVNode(v)).to.equal(n);
+      expect(getDOMInstanceFromVNode(v)).toBeEqual(n);
       const root = v._children as VNode<any>;
       if (root) {
         checkRefs(n, root);
@@ -33,14 +31,14 @@ export function checkRefs(n: Node, v: VNode<any>) {
     let i = 0;
     let child = n.firstChild;
     if (child) {
-      expect(!!(flags & VNodeFlags.Element)).to.true;
+      expect(!!(flags & VNodeFlags.Element)).toBeEqual(true);
     }
     while (child) {
       if (flags & VNodeFlags.ChildrenArray) {
         checkRefs(child, (v._children as VNode<any>[])[i++]);
       } else if (flags & VNodeFlags.ChildrenVNode) {
         checkRefs(child, v._children as VNode<any>);
-        expect(child.nextSibling).to.null;
+        expect(child.nextSibling).toBeNull();
       }
       child = child.nextSibling;
     }

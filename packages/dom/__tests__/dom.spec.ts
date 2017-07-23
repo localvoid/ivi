@@ -1,5 +1,5 @@
 import { nodeDepth } from "../src/traverse";
-import { expect } from "chai";
+import { expect } from "iko";
 
 describe("DOM", () => {
   describe("nodeDepth", () => {
@@ -8,11 +8,11 @@ describe("DOM", () => {
     a.appendChild(b);
 
     it("a: 1", () => {
-      expect(nodeDepth(a)).to.equal(1);
+      expect(nodeDepth(a)).toBeEqual(1);
     });
 
     it("b: 2", () => {
-      expect(nodeDepth(b)).to.equal(2);
+      expect(nodeDepth(b)).toBeEqual(2);
     });
   });
 });

@@ -3,7 +3,6 @@
   "compilerOptions": {
     "module": "commonjs",
     "types": [
-      "chai",
       "mocha",
       "node"
     ]
