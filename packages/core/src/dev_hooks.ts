@@ -1,3 +1,30 @@
+/**
+ * It is just an ugly workaround because Karma is running all tests in the same environment.
+ */
+let _addTestResetTask: (task: () => void) => void;
+
+export function enableTestEnvironment(addTestResetTaskHook: (task: () => void) => void): void {
+  if (__IVI_DEV__) {
+    _addTestResetTask = addTestResetTaskHook;
+  }
+}
+
+export function isTestEnvironment(): boolean {
+  if (__IVI_DEV__) {
+    return _addTestResetTask !== undefined;
+  }
+  return false;
+}
+
+export function addTestResetTask(task: () => void): void {
+  if (__IVI_DEV__) {
+    if (_addTestResetTask === undefined) {
+      throw new Error("Failed to add test reset task. Test environment is disabled.");
+    }
+    _addTestResetTask(task);
+  }
+}
+
 export type OnErrorHook = (error: Error) => void;
 
 export type OnBeforeTestHook = () => void;

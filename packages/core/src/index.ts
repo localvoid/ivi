@@ -65,7 +65,7 @@ export {
   SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "./dom_props";
 
-export { unorderedArrayDelete, map, mapRange, mapFilterUndefined } from "./array";
+export { append, unorderedArrayDelete, map, mapRange, mapFilterUndefined } from "./array";
 export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList } from "./repeatable_task_list";
 export { shallowEqual } from "./equal";
@@ -74,6 +74,7 @@ export { USER_AGENT, UserAgentFlags } from "./user_agent";
 export { FEATURES, FeatureFlags } from "./feature_detection";
 export {
   DevModeHooks, DEV_HOOKS, devModeAddHook, OnAfterTestHook, OnBeforeTestHook, OnErrorHook, devModeOnError,
+  enableTestEnvironment, isTestEnvironment, addTestResetTask,
 } from "./dev_hooks";
 
 import { devModeOnBeforeTest, devModeOnAfterTest } from "./dev_hooks";
