@@ -145,11 +145,7 @@ export const enum SyncFlags {
    */
   DirtyComponent = 1 << 3,
   /**
-   * Force update for all components.
-   */
-  ForceUpdate = 1 << 4,
-  /**
    * Context is dirty.
    */
-  DirtyContext = 1 << 5,
+  DirtyContext = 1 << 4,
 }

@@ -12,7 +12,6 @@ export interface Root {
   currentVNode: VNode<any> | null;
   newVNode: VNode<any> | null;
   invalidated: boolean;
-  syncFlags: SyncFlags;
 }
 
 /**
@@ -26,12 +25,10 @@ export const ROOTS = [] as Root[];
 const EMPTY_CONTEXT: Context = {};
 
 let _pendingUpdate = false;
-let _globalSyncFlags: SyncFlags = 0;
 
 function reset() {
   ROOTS.length = 0;
   _pendingUpdate = false;
-  _globalSyncFlags = 0;
 }
 
 /**
@@ -74,7 +71,6 @@ function _update() {
       const root = ROOTS[i];
       const container = root.container;
       const currentVNode = root.currentVNode;
-      const syncFlags = _globalSyncFlags | root.syncFlags | SyncFlags.Attached;
 
       if (root.invalidated) {
         let newVNode = root.newVNode;
@@ -84,7 +80,7 @@ function _update() {
             newVNode = new VNode(VNodeFlags.Text, null, null, null, "");
           }
           if (currentVNode) {
-            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, syncFlags);
+            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, SyncFlags.Attached);
           } else {
             renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
             iOSFixEventBubbling(container);
@@ -101,12 +97,9 @@ function _update() {
         root.newVNode = null;
         root.invalidated = false;
       } else if (currentVNode) {
-        updateComponents(container, currentVNode, EMPTY_CONTEXT, syncFlags);
+        updateComponents(container, currentVNode, EMPTY_CONTEXT, SyncFlags.Attached);
       }
-      root.syncFlags = 0;
     }
-
-    _globalSyncFlags = 0;
   }
 }
 
@@ -115,14 +108,12 @@ function _update() {
  *
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
- * @param syncFlags Sync Flags.
  */
 export function render(
   node: VNode<any> | null,
   container: Element,
-  syncFlags: SyncFlags = 0,
 ): void {
-  renderNextFrame(node, container, syncFlags);
+  renderNextFrame(node, container);
   triggerNextFrame();
 }
 
@@ -131,12 +122,10 @@ export function render(
  *
  * @param node VNode to render.
  * @param container DOM Node that will contain rendered node.
- * @param syncFlags Sync Flags.
  */
 export function renderNextFrame(
   node: VNode<any> | null,
   container: Element,
-  syncFlags: SyncFlags = 0,
 ): void {
   if (__IVI_DEV__) {
     if (container === document.body) {
@@ -152,14 +141,12 @@ export function renderNextFrame(
   if (root) {
     root.newVNode = node;
     root.invalidated = true;
-    root.syncFlags = syncFlags;
   } else {
     ROOTS.push({
       container: container,
       currentVNode: null,
       newVNode: node,
       invalidated: true,
-      syncFlags: syncFlags,
     });
     if (__IVI_DEV__) {
       if (isTestEnvironment()) {
@@ -173,21 +160,16 @@ export function renderNextFrame(
 
 /**
  * Update dirty components.
- *
- * @param syncFlags Sync Flags.
  */
-export function update(syncFlags?: SyncFlags) {
-  updateNextFrame(syncFlags);
+export function update() {
+  updateNextFrame();
   triggerNextFrame();
 }
 
 /**
  * Update dirty components on the next frame.
- *
- * @param syncFlags Sync Flags.
  */
-export function updateNextFrame(syncFlags: SyncFlags = 0) {
-  _globalSyncFlags |= syncFlags;
+export function updateNextFrame() {
   if (!_pendingUpdate) {
     _pendingUpdate = true;
     nextFrameWrite(_update);
@@ -227,7 +209,6 @@ export function augment(
       currentVNode: node,
       newVNode: null,
       invalidated: false,
-      syncFlags: 0,
     });
     if (__IVI_DEV__) {
       if (isTestEnvironment()) {

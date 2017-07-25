@@ -471,7 +471,7 @@ function vNodeUpdateComponents(
 
         const cflags = component.flags;
         const oldRoot = vnode._children as VNode<any>;
-        if (((cflags & ComponentFlags.Dirty) | (syncFlags & SyncFlags.ForceUpdate)) !== 0) {
+        if ((cflags & ComponentFlags.Dirty) !== 0) {
           componentPerfMarkBegin("update", vnode);
           component.beforeUpdate();
           const newRoot = vnode._children = component.render();
@@ -1103,9 +1103,7 @@ function vNodeSync(
         component.props = newProps;
 
         const oldRoot = a._children as VNode<any>;
-        if ((propsChanged |
-          (component.flags & ComponentFlags.Dirty) |
-          (syncFlags & SyncFlags.ForceUpdate)) !== 0) {
+        if ((propsChanged | (component.flags & ComponentFlags.Dirty)) !== 0) {
           componentPerfMarkBegin("update", a);
           component.beforeUpdate();
           const newRoot = b._children = component.render();
@@ -1167,13 +1165,10 @@ function vNodeSync(
             );
           }
         } else {
-          if (((syncFlags & SyncFlags.ForceUpdate) !== 0) ||
-            (
-              ((bFlags & VNodeFlags.CheckChangedProps) === 0 &&
-                a._props !== b._props) ||
-              ((bFlags & VNodeFlags.CheckChangedProps) !== 0 &&
-                fn.isPropsChanged!(a._props, b._props) === true)
-            )) {
+          if (
+            ((bFlags & VNodeFlags.CheckChangedProps) === 0 && a._props !== b._props) ||
+            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && fn.isPropsChanged!(a._props, b._props) === true)
+          ) {
             componentPerfMarkBegin("update", b);
             const oldRoot = a._children as VNode<any>;
             const newRoot = b._children = fn(b._props);
