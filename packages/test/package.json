@@ -51,8 +51,8 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "ivi": "^0.8.0",
     "ivi-core": "^0.1.0",
-    "ivi-html": "^0.1.0",
-    "ivi": "^0.8.0"
+    "ivi-html": "^0.1.0"
   }
 }

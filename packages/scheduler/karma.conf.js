@@ -11,6 +11,11 @@ module.exports = function (config) {
       module: {
         rules: [
           {
+            test: /\.js$/,
+            use: ["source-map-loader"],
+            enforce: "pre"
+          },
+          {
             test: /\.ts$/,
             exclude: /node_modules/,
             use: [

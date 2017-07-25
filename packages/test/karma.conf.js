@@ -1,3 +1,4 @@
+const path = require("path");
 const webpack = require("webpack");
 
 module.exports = function (config) {
@@ -14,6 +15,11 @@ module.exports = function (config) {
     webpack: {
       module: {
         rules: [
+          {
+            test: /\.js$/,
+            use: ["source-map-loader"],
+            enforce: "pre"
+          },
           {
             test: /\.ts$/,
             exclude: /node_modules/,
@@ -38,6 +44,9 @@ module.exports = function (config) {
         }),
       ],
       resolve: {
+        alias: {
+          "ivi-scheduler": path.join(__dirname, "src", "scheduler"),
+        },
         extensions: [".ts", ".js"],
       },
       performance: {
