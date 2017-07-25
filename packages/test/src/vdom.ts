@@ -475,6 +475,13 @@ export class VNodeWrapper {
   toSnapshot(flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
     return toSnapshot(this.vnode, flags);
   }
+
+  emit(ev: Event): void {
+    if (!this.isElement()) {
+      throw new Error("VNodeWrapper::emit() can only be called on element nodes");
+    }
+    this.getDOMInstance().dispatchEvent(ev);
+  }
 }
 
 export function isElement(wrapper: VNodeWrapper, tagName: string): boolean {
