@@ -1,4 +1,6 @@
+import { isTestEnvironment, addTestResetTask } from "ivi-core";
 import { EventHandler } from "./event_handler";
+import { EventHandlerFlags } from "./flags";
 
 /**
  * registerEventHandler is a shortcut for Event Handler registration.
@@ -6,6 +8,16 @@ import { EventHandler } from "./event_handler";
  * @param handler Event Handler.
  */
 function registerEventHandler(handler: EventHandler<any>): void {
+  if (__IVI_DEV__) {
+    handler.flags |= EventHandlerFlags.Active;
+    if (isTestEnvironment()) {
+      addTestResetTask(function () {
+        if ((handler.flags & EventHandlerFlags.Active) !== 0) {
+          unregisterEventHandler(handler);
+        }
+      });
+    }
+  }
   handler.source.addListener(handler);
 }
 
@@ -15,6 +27,9 @@ function registerEventHandler(handler: EventHandler<any>): void {
  * @param handler Event Handler.
  */
 function unregisterEventHandler(handler: EventHandler<any>): void {
+  if (__IVI_DEV__) {
+    handler.flags &= ~EventHandlerFlags.Active;
+  }
   handler.source.removeListener(handler);
 }
 

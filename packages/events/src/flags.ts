@@ -33,6 +33,10 @@ export const enum EventHandlerFlags {
    * bubbling phase.
    */
   Bubble = 1 << 1,
+  /**
+   * Active flag indicates that Event Handler is activated. Available only in Dev Mode.
+   */
+  Active = 1 << 2,
 }
 
 /**

@@ -1,5 +1,3 @@
-import { DEV_HOOKS, devModeAddHook } from "ivi-core";
-import { scheduleTask } from "ivi-scheduler";
 import { getEventTarget, getNativeEventOptions } from "./utils";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";
@@ -37,10 +35,6 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
    * Synthetic Event constructor.
    */
   readonly eventType: E;
-  /**
-   * Flag indicating that Event Dispatcher will be deactivated in the task.
-   */
-  private deactivating: boolean;
 
   constructor(
     flags: NativeEventSourceFlags,
@@ -50,32 +44,20 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
     this.eventSource = {
       addListener: () => {
         if (this.dependencies++ === 0) {
-          if (this.deactivating === true) {
-            this.deactivating = false;
-          } else {
-            document.addEventListener(
-              this.name,
-              this.dispatch,
-              getNativeEventOptions(this.flags) as boolean,
-            );
-          }
+          document.addEventListener(
+            this.name,
+            this.dispatch,
+            getNativeEventOptions(this.flags) as boolean,
+          );
         }
       },
       removeListener: () => {
         if (--this.dependencies === 0) {
-          if (this.deactivating === false) {
-            this.deactivating = true;
-            scheduleTask(() => {
-              if (this.deactivating === true) {
-                document.removeEventListener(
-                  this.name,
-                  this.dispatch,
-                  getNativeEventOptions(this.flags) as boolean,
-                );
-                this.deactivating = false;
-              }
-            });
-          }
+          document.removeEventListener(
+            this.name,
+            this.dispatch,
+            getNativeEventOptions(this.flags) as boolean,
+          );
         }
       },
     };
@@ -83,19 +65,6 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
     this.flags = flags;
     this.name = name;
     this.eventType = eventType;
-    this.deactivating = false;
-
-    if (__IVI_DEV__) {
-      DEV_HOOKS.onAfterTestHook = devModeAddHook(DEV_HOOKS.onAfterTestHook, () => {
-        document.removeEventListener(
-          this.name,
-          this.dispatch,
-          getNativeEventOptions(this.flags) as boolean,
-        );
-        this.dependencies = 0;
-        this.deactivating = false;
-      });
-    }
   }
 
   private matchEventSource = (h: EventHandler) => h.source === this.eventSource;
