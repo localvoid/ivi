@@ -9,3 +9,4 @@ export {
   nextFrameUpdate, nextFrameWrite, removeVisibilityObserver, requestNextFrame, runMicrotasks, runTasks,
   scheduleMicrotask, scheduleTask, setUpdateFunction, toggleVisibility, triggerNextFrame, triggerNextTick,
 } from "./scheduler";
+export { DOMRenderer, initDOMRenderer } from "./dom";

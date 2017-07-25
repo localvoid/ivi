@@ -1,4 +1,4 @@
-import { Context, USER_AGENT, UserAgentFlags, NOOP } from "ivi-core";
+import { Context, USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
@@ -24,6 +24,15 @@ export const ROOTS = [] as Root[];
  * Empty Context object.
  */
 const EMPTY_CONTEXT: Context = {};
+
+let _pendingUpdate = false;
+let _globalSyncFlags: SyncFlags = 0;
+
+function reset() {
+  ROOTS.length = 0;
+  _pendingUpdate = false;
+  _globalSyncFlags = 0;
+}
 
 /**
  * Find Root node in container.
@@ -54,9 +63,6 @@ function iOSFixEventBubbling(container: Element): void {
     (container as HTMLElement).onclick = NOOP;
   }
 }
-
-let _pendingUpdate = false;
-let _globalSyncFlags: SyncFlags = 0;
 
 /**
  * Update root nodes.
@@ -99,6 +105,8 @@ function _update() {
       }
       root.syncFlags = 0;
     }
+
+    _globalSyncFlags = 0;
   }
 }
 
@@ -140,20 +148,24 @@ export function renderNextFrame(
     }
   }
 
-  let root = findRoot(container);
+  const root = findRoot(container);
   if (root) {
     root.newVNode = node;
     root.invalidated = true;
     root.syncFlags = syncFlags;
   } else {
-    root = {
+    ROOTS.push({
       container: container,
       currentVNode: null,
       newVNode: node,
       invalidated: true,
       syncFlags: syncFlags,
-    };
-    ROOTS.push(root);
+    });
+    if (__IVI_DEV__) {
+      if (isTestEnvironment()) {
+        addTestResetTask(reset);
+      }
+    }
   }
 
   updateNextFrame();
@@ -175,7 +187,7 @@ export function update(syncFlags?: SyncFlags) {
  * @param syncFlags Sync Flags.
  */
 export function updateNextFrame(syncFlags: SyncFlags = 0) {
-  _globalSyncFlags = syncFlags;
+  _globalSyncFlags |= syncFlags;
   if (!_pendingUpdate) {
     _pendingUpdate = true;
     nextFrameWrite(_update);
@@ -217,6 +229,11 @@ export function augment(
       invalidated: false,
       syncFlags: 0,
     });
+    if (__IVI_DEV__) {
+      if (isTestEnvironment()) {
+        addTestResetTask(reset);
+      }
+    }
 
     nextFrameWrite(function augmentNextFrame() {
       augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
