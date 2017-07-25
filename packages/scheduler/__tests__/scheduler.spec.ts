@@ -1,7 +1,7 @@
-import { clock } from "../src/clock";
-import { scheduleMicrotask } from "../src/microtask";
-import { scheduleTask } from "../src/task";
-import { currentFrame, nextFrame } from "../src/frame";
+import {
+  clock, scheduleMicrotask, scheduleTask, currentFrameRead, currentFrameWrite, currentFrameAfter, nextFrameWrite,
+  nextFrameAfter,
+} from "../src/index";
 import { expect } from "iko";
 
 describe("scheduler", () => {
@@ -19,37 +19,37 @@ describe("scheduler", () => {
     });
 
     it("batch read/write/after frame tasks", (done) => {
-      nextFrame().write(() => {
+      nextFrameWrite(() => {
         let i = 0;
-        currentFrame().after(() => {
+        currentFrameAfter(() => {
           expect(i).toBeEqual(6);
           i = 7;
         });
-        currentFrame().after(() => {
+        currentFrameAfter(() => {
           expect(i).toBeEqual(7);
           done();
         });
-        currentFrame().read(() => {
+        currentFrameRead(() => {
           expect(i).toBeEqual(1);
           i = 2;
         });
-        currentFrame().read(() => {
+        currentFrameRead(() => {
           expect(i).toBeEqual(2);
           i = 3;
-          currentFrame().write(() => {
+          currentFrameWrite(() => {
             expect(i).toBeEqual(4);
             i = 5;
           });
-          currentFrame().write(() => {
+          currentFrameWrite(() => {
             expect(i).toBeEqual(5);
             i = 6;
           });
-          currentFrame().read(() => {
+          currentFrameRead(() => {
             expect(i).toBeEqual(3);
             i = 4;
           });
         });
-        currentFrame().write(() => {
+        currentFrameWrite(() => {
           expect(i).toBeEqual(0);
           i = 1;
         });
@@ -82,7 +82,7 @@ describe("scheduler", () => {
 
     it("advance clock by 1 after after next frame", (done) => {
       const c = clock() + 1;
-      nextFrame().after(() => {
+      nextFrameAfter(() => {
         expect(clock()).toBeEqual(c);
         setTimeout(() => {
           expect(clock()).toBeEqual(c + 1);
@@ -93,11 +93,11 @@ describe("scheduler", () => {
 
     it("should have the same clock when switching between read and write batches", (done) => {
       const c = clock() + 1;
-      nextFrame().write(() => {
+      nextFrameWrite(() => {
         expect(clock()).toBeEqual(c);
-        currentFrame().read(() => {
+        currentFrameRead(() => {
           expect(clock()).toBeEqual(c);
-          currentFrame().write(() => {
+          currentFrameWrite(() => {
             expect(clock()).toBeEqual(c);
             setTimeout(() => {
               expect(clock()).toBeEqual(c + 1);

@@ -20,8 +20,10 @@ export {
 export { componentFactory, context, connect, keepAlive } from "./vnode_factories";
 
 export {
-  FrameTasksGroup, clock, scheduleMicrotask, scheduleTask, addDOMReader, addAnimation, addVisibilityObserver,
-  removeVisibilityObserver, isVisible, autofocus, frameStartTime, nextFrame, currentFrame,
+  clock, scheduleMicrotask, scheduleTask, addDOMReader, addAnimation, addVisibilityObserver,
+  removeVisibilityObserver, isHidden, autofocus, currentFrameAfter, currentFrameRead, currentFrameStartTime,
+  currentFrameUpdate, currentFrameWrite, nextFrameAfter, nextFrameRead, nextFrameUpdate, nextFrameWrite,
+  requestNextFrame, triggerNextFrame,
 } from "./scheduler";
 
 export {

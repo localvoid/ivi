@@ -11,47 +11,6 @@ export function clock() {
 }
 
 /**
- * Frame tasks group contains tasks for updating components, read dom and write dom tasks, and tasks that should be
- * executed after all other tasks are finished.
- *
- * To get access to the frame tasks group, use: `currentFrame()` and `nextFrame()` scheduler methods.
- *
- *     scheduler.currentFrame().read(() => {
- *         console.log(element.clientWidth);
- *     });
- *
- * @final
- */
-export interface FrameTasksGroup {
-  /**
-   * update marks frame for update.
-   *
-   * @param component
-   */
-  update(): void;
-  /**
-   * write adds new task to the write DOM task queue.
-   *
-   * @param task Write task.
-   */
-  write(task: () => void): void;
-
-  /**
-   * write adds new task to the read DOM task queue.
-   *
-   * @param task Read task.
-   */
-  read(task: () => void): void;
-
-  /**
-   * after adds new task to the task queue that will execute tasks when all DOM tasks are finished.
-   *
-   * @param task After task.
-   */
-  after(task: () => void): void;
-}
-
-/**
  * NOOP_TASK ignores tasks on server.
  *
  * @param task Any task.
@@ -64,20 +23,23 @@ export const scheduleMicrotask: (task: () => void) => void = NOOP_TASK;
 export const scheduleTask: (task: () => void) => void = NOOP_TASK;
 export const addDOMReader: (task: () => boolean | undefined) => void = NOOP_TASK;
 export const addAnimation: (task: () => boolean | undefined) => void = NOOP_TASK;
-export const addVisibilityObserver: (task: (visible: boolean) => void) => void = NOOP_TASK;
-export const removeVisibilityObserver: (task: (visible: boolean) => void) => void = NOOP_TASK;
+export const addVisibilityObserver: (observer: (hidden: boolean) => void) => void = NOOP_TASK;
+export const removeVisibilityObserver: (observer: (hidden: boolean) => void) => void = NOOP_TASK;
+export const requestNextFrame: () => void = NOOP;
+export const triggerNextFrame: () => void = NOOP;
+export const nextFrameUpdate: () => void = NOOP;
+export const currentFrameUpdate: () => void = NOOP;
+export const nextFrameWrite: (task: () => void) => void = NOOP_TASK;
+export const currentFrameWrite: (task: () => void) => void = NOOP_TASK;
+export const nextFrameRead: (task: () => void) => void = NOOP_TASK;
+export const currentFrameRead: (task: () => void) => void = NOOP_TASK;
+export const nextFrameAfter: (task: () => void) => void = NOOP_TASK;
+export const currentFrameAfter: (task: () => void) => void = NOOP_TASK;
 
-export function isVisible(): boolean {
+export function isHidden(): boolean {
   // Always visible on server.
-  return true;
+  return false;
 }
-
-const frame: FrameTasksGroup = {
-  update: NOOP,
-  write: NOOP_TASK,
-  read: NOOP_TASK,
-  after: NOOP_TASK,
-};
 
 /**
  * autofocus sets autofocus on element.
@@ -89,28 +51,10 @@ export function autofocus(element: Element): void {
 }
 
 /**
- * frameStartTime returns current frame start time.
+ * currentFrameStartTime returns current frame start time.
  *
  * @returns current frame start time.
  */
-export function frameStartTime(): number {
+export function currentFrameStartTime(): number {
   return 0;
-}
-
-/**
- * nextFrame returns task list for the next frame.
- *
- * @returns Frame tasks group.
- */
-export function nextFrame(): FrameTasksGroup {
-  return frame;
-}
-
-/**
- * currentFrame returns task list for the current frame.
- *
- * @returns Frame tasks group.
- */
-export function currentFrame(): FrameTasksGroup {
-  return frame;
 }

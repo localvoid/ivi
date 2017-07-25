@@ -1,5 +1,5 @@
 import { Context, USER_AGENT, UserAgentFlags, NOOP } from "ivi-core";
-import { nextFrame, syncFrameUpdate } from "ivi-scheduler";
+import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
@@ -115,7 +115,7 @@ export function render(
   syncFlags: SyncFlags = 0,
 ): void {
   renderNextFrame(node, container, syncFlags);
-  syncFrameUpdate();
+  triggerNextFrame();
 }
 
 /**
@@ -166,7 +166,7 @@ export function renderNextFrame(
  */
 export function update(syncFlags?: SyncFlags) {
   updateNextFrame(syncFlags);
-  syncFrameUpdate();
+  triggerNextFrame();
 }
 
 /**
@@ -178,7 +178,7 @@ export function updateNextFrame(syncFlags: SyncFlags = 0) {
   _globalSyncFlags = syncFlags;
   if (!_pendingUpdate) {
     _pendingUpdate = true;
-    nextFrame().write(_update);
+    nextFrameWrite(_update);
   }
 }
 
@@ -218,11 +218,11 @@ export function augment(
       syncFlags: 0,
     });
 
-    nextFrame().write(function augmentNextFrame() {
+    nextFrameWrite(function augmentNextFrame() {
       augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
       iOSFixEventBubbling(container);
     });
 
-    syncFrameUpdate();
+    triggerNextFrame();
   }
 }

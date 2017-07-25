@@ -1,5 +1,5 @@
 import { NOOP_FALSE, shallowEqual } from "ivi-core";
-import { currentFrame } from "ivi-scheduler";
+import { currentFrameUpdate } from "ivi-scheduler";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
@@ -148,7 +148,7 @@ export abstract class Component<P = void> {
     this.flags |= ComponentFlags.DirtyState;
     this.invalidated();
     if ((this.flags & ComponentFlags.Attached) !== 0) {
-      currentFrame().update();
+      currentFrameUpdate();
     }
   }
 }
