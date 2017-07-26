@@ -1292,7 +1292,7 @@ function syncChildren(
         i = 0;
         do {
           node = a[i];
-          if (vNodeEqualKeys(node, b)) {
+          if (vNodeEqualKeys(node, b) === true) {
             vNodeSync(parent, node, b, context, syncFlags);
             synced = i;
             break;
@@ -1326,7 +1326,7 @@ function syncChildren(
         i = 0;
         do {
           node = b[i];
-          if (vNodeEqualKeys(a, node)) {
+          if (vNodeEqualKeys(a, node) === true) {
             vNodeSync(parent, a, node, context, syncFlags);
             synced = i;
             break;
@@ -1636,7 +1636,7 @@ function syncChildrenTrackByKeys(
   let bEndNode = b[bEnd];
   let i: number;
   let j: number | undefined;
-  let nextPos: number;
+  let k: number;
   let next: Node | null;
   let aNode: VNode<any> | null;
   let bNode: VNode<any>;
@@ -1645,7 +1645,7 @@ function syncChildrenTrackByKeys(
   // Step 1
   outer: while (true) {
     // Sync nodes with the same key at the beginning.
-    while (vNodeEqualKeys(aStartNode, bStartNode)) {
+    while (vNodeEqualKeys(aStartNode, bStartNode) === true) {
       vNodeSync(parent, aStartNode, bStartNode, context, syncFlags);
       aStart++;
       bStart++;
@@ -1657,7 +1657,7 @@ function syncChildrenTrackByKeys(
     }
 
     // Sync nodes with the same key at the end.
-    while (vNodeEqualKeys(aEndNode, bEndNode)) {
+    while (vNodeEqualKeys(aEndNode, bEndNode) === true) {
       vNodeSync(parent, aEndNode, bEndNode, context, syncFlags);
       aEnd--;
       bEnd--;
@@ -1669,7 +1669,7 @@ function syncChildrenTrackByKeys(
     }
 
     // Move and sync nodes from right to left.
-    if (vNodeEqualKeys(aEndNode, bStartNode)) {
+    if (vNodeEqualKeys(aEndNode, bStartNode) === true) {
       vNodeSync(parent, aEndNode, bStartNode, context, syncFlags);
       vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
       aEnd--;
@@ -1693,10 +1693,10 @@ function syncChildrenTrackByKeys(
     }
 
     // Move and sync nodes from left to right.
-    if (vNodeEqualKeys(aStartNode, bEndNode)) {
+    if (vNodeEqualKeys(aStartNode, bEndNode) === true) {
       vNodeSync(parent, aStartNode, bEndNode, context, syncFlags);
-      nextPos = bEnd + 1;
-      next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
+      k = bEnd + 1;
+      next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
       vNodeMoveChild(parent, bEndNode, next);
       aStart++;
       bEnd--;
@@ -1711,8 +1711,8 @@ function syncChildrenTrackByKeys(
   if (aStart > aEnd) {
     // All nodes from a are synced, insert the rest from b.
     if (bStart <= bEnd) {
-      nextPos = bEnd + 1;
-      next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
+      k = bEnd + 1;
+      next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
       do {
         vNodeRenderIntoAndAttach(parent, next, b[bStart++], context, syncFlags);
       } while (bStart <= bEnd);
@@ -1745,16 +1745,15 @@ function syncChildrenTrackByKeys(
     let pos = 0;
     let synced = 0;
 
-    // When children lists are small, we are using naive O(N) algorithm to find if child is removed.
-    // TODO: In the future, Map implementations will use similar optimization.
-    if ((bLength <= 4) || ((aLength * bLength) <= 16)) {
-      for (i = aStart; i <= aEnd; i++) {
-        aNode = a[i];
-        if (synced < bLength) {
-          for (j = bStart; j <= bEnd; j++) {
+    for (i = aStart; i <= aEnd; i++) {
+      aNode = a[i];
+      if (synced < bLength) {
+        for (j = bStart; j <= bEnd; j++) {
+          k = j - bStart;
+          if (sources[k] === -1) {
             bNode = b[j];
-            if (vNodeEqualKeys(aNode, bNode)) {
-              sources[j - bStart] = i;
+            if (vNodeEqualKeys(aNode, bNode) === true) {
+              sources[k] = i;
 
               if (pos > j) {
                 moved = true;
@@ -1766,49 +1765,6 @@ function syncChildrenTrackByKeys(
               aNullable[i] = null;
               break;
             }
-          }
-        }
-      }
-    } else {
-      let keyIndex: Map<any, number> | undefined;
-      let positionKeyIndex: Map<number, number> | undefined;
-
-      for (i = bStart; i <= bEnd; i++) {
-        node = b[i];
-        if ((node._flags & VNodeFlags.Key) !== 0) {
-          if (keyIndex === undefined) {
-            keyIndex = new Map<any, number>();
-          }
-          keyIndex.set(node._key, i);
-        } else {
-          if (positionKeyIndex === undefined) {
-            positionKeyIndex = new Map<number, number>();
-          }
-          positionKeyIndex.set(node._key - aStart, i);
-        }
-      }
-
-      for (i = aStart; i <= aEnd; i++) {
-        aNode = a[i];
-
-        if (synced < bLength) {
-          if ((aNode._flags & VNodeFlags.Key) !== 0) {
-            j = keyIndex !== undefined ? keyIndex.get(aNode._key) : undefined;
-          } else {
-            j = positionKeyIndex !== undefined ? positionKeyIndex.get(aNode._key - aStart) : undefined;
-          }
-
-          if (j !== undefined) {
-            bNode = b[j];
-            sources[j - bStart] = i;
-            if (pos > j) {
-              moved = true;
-            } else {
-              pos = j;
-            }
-            vNodeSync(parent, aNode, bNode, context, syncFlags);
-            synced++;
-            aNullable[i] = null;
           }
         }
       }
@@ -1838,15 +1794,15 @@ function syncChildrenTrackByKeys(
           if (sources[i] === -1) {
             pos = i + bStart;
             node = b[pos];
-            nextPos = pos + 1;
-            next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
+            k = pos + 1;
+            next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
             vNodeRenderIntoAndAttach(parent, next, node, context, syncFlags);
           } else {
             if (j < 0 || i !== seq[j]) {
               pos = i + bStart;
               node = b[pos];
-              nextPos = pos + 1;
-              next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
+              k = pos + 1;
+              next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
               vNodeMoveChild(parent, node, next);
             } else {
               j--;
@@ -1858,8 +1814,8 @@ function syncChildrenTrackByKeys(
           if (sources[i] === -1) {
             pos = i + bStart;
             node = b[pos];
-            nextPos = pos + 1;
-            next = nextPos < b.length ? getDOMInstanceFromVNode(b[nextPos]) : null;
+            k = pos + 1;
+            next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
             vNodeRenderIntoAndAttach(parent, next, node, context, syncFlags);
           }
         }
