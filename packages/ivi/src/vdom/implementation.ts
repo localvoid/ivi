@@ -1745,26 +1745,71 @@ function syncChildrenTrackByKeys(
     let pos = 0;
     let synced = 0;
 
-    for (i = aStart; i <= aEnd; i++) {
-      aNode = a[i];
-      if (synced < bLength) {
-        for (j = bStart; j <= bEnd; j++) {
-          k = j - bStart;
-          if (sources[k] === -1) {
-            bNode = b[j];
-            if (vNodeEqualKeys(aNode, bNode) === true) {
-              sources[k] = i;
+    if ((aLength | bLength) < 32 || bLength < 4) {
+      for (i = aStart; i <= aEnd; i++) {
+        aNode = a[i];
+        if (synced < bLength) {
+          for (j = bStart; j <= bEnd; j++) {
+            k = j - bStart;
+            if (sources[k] === -1) {
+              bNode = b[j];
+              if (vNodeEqualKeys(aNode, bNode) === true) {
+                sources[k] = i;
 
-              if (pos > j) {
-                moved = true;
-              } else {
-                pos = j;
+                if (pos > j) {
+                  moved = true;
+                } else {
+                  pos = j;
+                }
+                vNodeSync(parent, aNode, bNode, context, syncFlags);
+                synced++;
+                aNullable[i] = null;
+                break;
               }
-              vNodeSync(parent, aNode, bNode, context, syncFlags);
-              synced++;
-              aNullable[i] = null;
-              break;
             }
+          }
+        }
+      }
+    } else {
+      let keyIndex: Map<any, number> | undefined;
+      let positionKeyIndex: Map<number, number> | undefined;
+
+      for (i = bStart; i <= bEnd; i++) {
+        node = b[i];
+        if ((node._flags & VNodeFlags.Key) !== 0) {
+          if (keyIndex === undefined) {
+            keyIndex = new Map<any, number>();
+          }
+          keyIndex.set(node._key, i);
+        } else {
+          if (positionKeyIndex === undefined) {
+            positionKeyIndex = new Map<number, number>();
+          }
+          positionKeyIndex.set(node._key - aStart, i);
+        }
+      }
+
+      for (i = aStart; i <= aEnd; i++) {
+        aNode = a[i];
+
+        if (synced < bLength) {
+          if ((aNode._flags & VNodeFlags.Key) !== 0) {
+            j = keyIndex !== undefined ? keyIndex.get(aNode._key) : undefined;
+          } else {
+            j = positionKeyIndex !== undefined ? positionKeyIndex.get(aNode._key - aStart) : undefined;
+          }
+
+          if (j !== undefined) {
+            bNode = b[j];
+            sources[j - bStart] = i;
+            if (pos > j) {
+              moved = true;
+            } else {
+              pos = j;
+            }
+            vNodeSync(parent, aNode, bNode, context, syncFlags);
+            synced++;
+            aNullable[i] = null;
           }
         }
       }
