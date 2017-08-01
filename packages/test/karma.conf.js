@@ -4,10 +4,16 @@ const webpack = require("webpack");
 module.exports = function (config) {
   config.set({
     browsers: ["ChromeHeadless"],
-    frameworks: ["mocha", "snapshot", "mocha-snapshot"],
-    reporters: ["mocha"],
-    preprocessors: { "__tests__/index.ts": ["webpack", "sourcemap"] },
-    files: ["__tests__/index.ts"],
+    frameworks: ["iko", "snapshot"],
+    reporters: ["iko"],
+    preprocessors: {
+      "__snapshots__/**/*.md": ["snapshot"],
+      "__tests__/index.ts": ["webpack", "sourcemap"]
+    },
+    files: [
+      "__snapshots__/**/*.md",
+      "__tests__/index.ts"
+    ],
 
     colors: true,
     autoWatch: true,
@@ -61,10 +67,6 @@ module.exports = function (config) {
 
     snapshot: {
       update: !!process.env.UPDATE,
-    },
-
-    mochaReporter: {
-      showDiff: true,
     },
 
     client: {

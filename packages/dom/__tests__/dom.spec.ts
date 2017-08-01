@@ -8,11 +8,11 @@ describe("DOM", () => {
     a.appendChild(b);
 
     it("a: 1", () => {
-      expect(nodeDepth(a)).toBeEqual(1);
+      expect(nodeDepth(a)).toBe(1);
     });
 
     it("b: 2", () => {
-      expect(nodeDepth(b)).toBeEqual(2);
+      expect(nodeDepth(b)).toBe(2);
     });
   });
 });

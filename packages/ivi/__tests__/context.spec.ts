@@ -31,28 +31,28 @@ describe("context", () => {
   describe("component API", () => {
     it("<C>10</C>", () => {
       const n = render<HTMLElement>(context({ value: 10 }, $ContextTestPrinter()));
-      expect(n.nodeValue).toBeEqual("10");
+      expect(n.nodeValue).toBe("10");
     });
 
     it("<C>10</C> => <C>20</C>", () => {
       const f = frag();
       render<HTMLElement>(context({ value: 10 }, $ContextTestPrinter()), f);
       const b = render<HTMLElement>(context({ value: 20 }, $ContextTestPrinter()), f);
-      expect(b.nodeValue).toBeEqual("20");
+      expect(b.nodeValue).toBe("20");
     });
 
     it("<C><S>10</S></C> => <C><S>20</S></C>", () => {
       const f = frag();
       render<HTMLElement>(context({ value: 10 }, staticComponent($ContextTestPrinter())), f);
       const b = render<HTMLElement>(context({ value: 20 }, staticComponent($ContextTestPrinter())), f);
-      expect(b.nodeValue).toBeEqual("20");
+      expect(b.nodeValue).toBe("20");
     });
 
     it("<C><SF>10</SF></C> => <C><SF>20</SF></C>", () => {
       const f = frag();
       render<HTMLElement>(context({ value: 10 }, staticComponentFunction($ContextTestPrinter())), f);
       const b = render<HTMLElement>(context({ value: 20 }, staticComponentFunction($ContextTestPrinter())), f);
-      expect(b.nodeValue).toBeEqual("20");
+      expect(b.nodeValue).toBe("20");
     });
   });
 });

@@ -7,14 +7,14 @@ describe("setInnerHTML", () => {
     it("set", () => {
       const c = document.createElement("div");
       setInnerHTML(c, "a", false);
-      expect(c.firstChild!.nodeValue).toBeEqual("a");
+      expect(c.firstChild!.nodeValue).toBe("a");
     });
 
     it("override", () => {
       const c = document.createElement("div");
       setInnerHTML(c, "a", false);
       setInnerHTML(c, "b", false);
-      expect(c.firstChild!.nodeValue).toBeEqual("b");
+      expect(c.firstChild!.nodeValue).toBe("b");
     });
   });
 
@@ -22,14 +22,14 @@ describe("setInnerHTML", () => {
     it("set", () => {
       const c = document.createElementNS(SVG_NAMESPACE, "svg");
       setInnerHTML(c, "a", false);
-      expect(c.firstChild!.nodeValue).toBeEqual("a");
+      expect(c.firstChild!.nodeValue).toBe("a");
     });
 
     it("override", () => {
       const c = document.createElementNS(SVG_NAMESPACE, "svg");
       setInnerHTML(c, "a", false);
       setInnerHTML(c, "b", false);
-      expect(c.firstChild!.nodeValue).toBeEqual("b");
+      expect(c.firstChild!.nodeValue).toBe("b");
     });
   });
 });

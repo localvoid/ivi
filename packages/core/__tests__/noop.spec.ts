@@ -4,10 +4,10 @@ import { expect } from "iko";
 
 describe("NOOP", () => {
   it("NOOP => undefined", () => {
-    expect(NOOP()).toBeEqual(undefined);
+    expect(NOOP()).toBe(undefined);
   });
 
   it("NOOP_FALSE => false", () => {
-    expect(NOOP_FALSE()).toBeEqual(false);
+    expect(NOOP_FALSE()).toBe(false);
   });
 });

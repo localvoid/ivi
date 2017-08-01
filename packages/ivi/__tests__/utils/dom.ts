@@ -1,4 +1,5 @@
-import { Assertion, AssertionError, addAssertionType } from "iko";
+import { Assertion, AssertionError, addAssertionType, mh, e, r } from "iko";
+import { richText } from "rtext-writer";
 
 export class DOMOpsCounter {
   createElement = 0;
@@ -44,71 +45,99 @@ export class DOMOpsCounterAssertion extends Assertion<DOMOpsCounter> {
     const obj = this.obj;
 
     if (obj.createElement !== createElement) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.createElement' to be ", e(createElement),
+        ", instead it is ", r(obj.createElement), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.createElement" ${obj.createElement} to equal ${createElement}`,
+        message.compose(),
         createElement,
         obj.createElement,
-        true,
         this.toMatchDOMOps,
       );
     }
 
     if (obj.createElementNS !== createElementNS) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.createElementNS' to be ", e(createElementNS),
+        ", instead it is ", r(obj.createElementNS), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.createElementNS" ${obj.createElementNS} to equal ${createElementNS}`,
+        message.compose(),
         createElementNS,
         obj.createElementNS,
-        true,
         this.toMatchDOMOps,
       );
     }
 
     if (obj.createTextNode !== createTextNode) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.createTextNode' to be ", e(createTextNode),
+        ", instead it is ", r(obj.createTextNode), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.createTextNode" ${obj.createTextNode} to equal ${createTextNode}`,
+        message.compose(),
         createTextNode,
         obj.createTextNode,
-        true,
         this.toMatchDOMOps,
       );
     }
 
     if (obj.appendChild !== appendChild) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.appendChild' to be ", e(appendChild),
+        ", instead it is ", r(obj.appendChild), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.appendCHild" ${obj.appendChild} to equal ${appendChild}`,
+        message.compose(),
         appendChild,
         obj.appendChild,
-        true,
         this.toMatchDOMOps,
       );
     }
 
     if (obj.insertBefore !== insertBefore) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.insertBefore' to be ", e(insertBefore),
+        ", instead it is ", r(obj.insertBefore), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.insertBefore" ${obj.insertBefore} to equal ${insertBefore}`,
+        message.compose(),
         insertBefore,
         obj.insertBefore,
-        true,
         this.toMatchDOMOps,
       );
     }
 
     if (obj.replaceChild !== replaceChild) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.replaceChild' to be ", e(replaceChild),
+        ", instead it is ", r(obj.replaceChild), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.replaceChild" ${obj.replaceChild} to equal ${replaceChild}`,
+        message.compose(),
         replaceChild,
         obj.replaceChild,
-        true,
         this.toMatchDOMOps,
       );
     }
 
     if (obj.removeChild !== removeChild) {
+      const message = richText()
+        .write(mh("toMatchDOMOps"))
+        .write("Expected DOM ops counter 'document.removeChild' to be ", e(removeChild),
+        ", instead it is ", r(obj.removeChild), "\n");
+
       throw new AssertionError(
-        `Expected DOM ops counter "document.removeChild" ${obj.removeChild} to equal ${removeChild}`,
+        message.compose(),
         removeChild,
         obj.removeChild,
-        true,
         this.toMatchDOMOps,
       );
     }

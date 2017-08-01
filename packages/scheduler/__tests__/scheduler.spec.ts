@@ -9,11 +9,11 @@ describe("scheduler", () => {
     it("microtasks before tasks", (done) => {
       let i = 0;
       scheduleTask(() => {
-        expect(i).toBeEqual(1);
+        expect(i).toBe(1);
         done();
       });
       scheduleMicrotask(() => {
-        expect(i).toBeEqual(0);
+        expect(i).toBe(0);
         i = 1;
       });
     });
@@ -22,35 +22,35 @@ describe("scheduler", () => {
       nextFrameWrite(() => {
         let i = 0;
         currentFrameAfter(() => {
-          expect(i).toBeEqual(6);
+          expect(i).toBe(6);
           i = 7;
         });
         currentFrameAfter(() => {
-          expect(i).toBeEqual(7);
+          expect(i).toBe(7);
           done();
         });
         currentFrameRead(() => {
-          expect(i).toBeEqual(1);
+          expect(i).toBe(1);
           i = 2;
         });
         currentFrameRead(() => {
-          expect(i).toBeEqual(2);
+          expect(i).toBe(2);
           i = 3;
           currentFrameWrite(() => {
-            expect(i).toBeEqual(4);
+            expect(i).toBe(4);
             i = 5;
           });
           currentFrameWrite(() => {
-            expect(i).toBeEqual(5);
+            expect(i).toBe(5);
             i = 6;
           });
           currentFrameRead(() => {
-            expect(i).toBeEqual(3);
+            expect(i).toBe(3);
             i = 4;
           });
         });
         currentFrameWrite(() => {
-          expect(i).toBeEqual(0);
+          expect(i).toBe(0);
           i = 1;
         });
       });
@@ -61,9 +61,9 @@ describe("scheduler", () => {
     it("advance clock by 1 after microtask execution", (done) => {
       const c = clock();
       scheduleMicrotask(() => {
-        expect(clock()).toBeEqual(c);
+        expect(clock()).toBe(c);
         setTimeout(() => {
-          expect(clock()).toBeEqual(c + 1);
+          expect(clock()).toBe(c + 1);
           done();
         }, 10);
       });
@@ -72,9 +72,9 @@ describe("scheduler", () => {
     it("advance clock by 1 after task execution", (done) => {
       const c = clock();
       scheduleTask(() => {
-        expect(clock()).toBeEqual(c);
+        expect(clock()).toBe(c);
         setTimeout(() => {
-          expect(clock()).toBeEqual(c + 1);
+          expect(clock()).toBe(c + 1);
           done();
         }, 10);
       });
@@ -83,9 +83,9 @@ describe("scheduler", () => {
     it("advance clock by 1 after after next frame", (done) => {
       const c = clock() + 1;
       nextFrameAfter(() => {
-        expect(clock()).toBeEqual(c);
+        expect(clock()).toBe(c);
         setTimeout(() => {
-          expect(clock()).toBeEqual(c + 1);
+          expect(clock()).toBe(c + 1);
           done();
         }, 10);
       });
@@ -94,13 +94,13 @@ describe("scheduler", () => {
     it("should have the same clock when switching between read and write batches", (done) => {
       const c = clock() + 1;
       nextFrameWrite(() => {
-        expect(clock()).toBeEqual(c);
+        expect(clock()).toBe(c);
         currentFrameRead(() => {
-          expect(clock()).toBeEqual(c);
+          expect(clock()).toBe(c);
           currentFrameWrite(() => {
-            expect(clock()).toBeEqual(c);
+            expect(clock()).toBe(c);
             setTimeout(() => {
-              expect(clock()).toBeEqual(c + 1);
+              expect(clock()).toBe(c + 1);
               done();
             }, 10);
           });

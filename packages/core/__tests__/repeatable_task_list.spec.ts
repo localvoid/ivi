@@ -11,14 +11,14 @@ describe("RepeatableTaskList", () => {
   it("add task", () => {
     const t = new RepeatableTaskList();
     t.add(NOOP_FALSE);
-    expect(t.tasks.length).toBeEqual(1);
+    expect(t.tasks.length).toBe(1);
   });
 
   it("add two tasks", () => {
     const t = new RepeatableTaskList();
     t.add(NOOP_FALSE);
     t.add(NOOP_FALSE);
-    expect(t.tasks.length).toBeEqual(2);
+    expect(t.tasks.length).toBe(2);
   });
 
   it("run one task", () => {
@@ -26,7 +26,7 @@ describe("RepeatableTaskList", () => {
     let i = 0;
     t.add(() => { i++; return false; });
     t.run();
-    expect(i).toBeEqual(1);
+    expect(i).toBe(1);
   });
 
   it("run two tasks", () => {
@@ -35,7 +35,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.add(() => { i++; return false; });
     t.run();
-    expect(i).toBeEqual(2);
+    expect(i).toBe(2);
   });
 
   it("run one task twice", () => {
@@ -44,7 +44,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.run();
     t.run();
-    expect(i).toBeEqual(2);
+    expect(i).toBe(2);
   });
 
   it("run two tasks twice", () => {
@@ -54,7 +54,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.run();
     t.run();
-    expect(i).toBeEqual(4);
+    expect(i).toBe(4);
   });
 
   it("run one one-time task twice", () => {
@@ -63,7 +63,7 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return true; });
     t.run();
     t.run();
-    expect(i).toBeEqual(1);
+    expect(i).toBe(1);
   });
 
   it("run one one-time and one simple task twice", () => {
@@ -73,6 +73,6 @@ describe("RepeatableTaskList", () => {
     t.add(() => { i++; return false; });
     t.run();
     t.run();
-    expect(i).toBeEqual(3);
+    expect(i).toBe(3);
   });
 });

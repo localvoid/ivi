@@ -12,11 +12,11 @@ export function frag() {
 export function checkRefs(n: Node, v: VNode<any>) {
   const flags = v._flags;
 
-  expect(getDOMInstanceFromVNode(v)).toBeEqual(n);
+  expect(getDOMInstanceFromVNode(v)).toBe(n);
 
   if (flags & VNodeFlags.Component) {
     if (flags & VNodeFlags.ComponentClass) {
-      expect(getDOMInstanceFromVNode(v)).toBeEqual(n);
+      expect(getDOMInstanceFromVNode(v)).toBe(n);
       const root = v._children as VNode<any>;
       if (root) {
         checkRefs(n, root);
@@ -31,7 +31,7 @@ export function checkRefs(n: Node, v: VNode<any>) {
     let i = 0;
     let child = n.firstChild;
     if (child) {
-      expect(!!(flags & VNodeFlags.Element)).toBeEqual(true);
+      expect(!!(flags & VNodeFlags.Element)).toBe(true);
     }
     while (child) {
       if (flags & VNodeFlags.ChildrenArray) {

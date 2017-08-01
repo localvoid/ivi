@@ -9,24 +9,24 @@ describe("query", () => {
   describe("one", () => {
     it("div", () => {
       const result = query(tree, q.div().match);
-      expect(result).toBeEqual(null);
+      expect(result).toBe(null);
     });
 
     it("span", () => {
       const result = query(tree, q.span().match);
-      expect(result!.getTagName()).toBeEqual("span");
+      expect(result!.getTagName()).toBe("span");
     });
   });
 
   describe("many", () => {
     it("div", () => {
       const result = queryAll(tree, q.div().match);
-      expect(result.length).toBeEqual(0);
+      expect(result.length).toBe(0);
     });
 
     it("span", () => {
       const result = queryAll(tree, q.span().match);
-      expect(result.length).toBeEqual(2);
+      expect(result.length).toBe(2);
     });
   });
 });

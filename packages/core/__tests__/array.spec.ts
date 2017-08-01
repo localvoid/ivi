@@ -53,18 +53,18 @@ describe("array", () => {
         i++;
         return null;
       });
-      expect(i).toBeEqual(0);
+      expect(i).toBe(0);
       expect(r).toMatch([]);
     });
 
     it("two items", () => {
       let i = 0;
       const r = map([0, 1], (item: any, idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         i++;
         return item + 10;
       });
-      expect(i).toBeEqual(2);
+      expect(i).toBe(2);
       expect(r).toMatch([10, 11]);
     });
   });
@@ -76,40 +76,40 @@ describe("array", () => {
         i++;
         return null;
       });
-      expect(i).toBeEqual(0);
+      expect(i).toBe(0);
       expect(r).toMatch([]);
     });
 
     it("[0, 2)", () => {
       let i = 0;
       const r = mapRange(0, 2, (idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         i++;
         return 10 + idx;
       });
-      expect(i).toBeEqual(2);
+      expect(i).toBe(2);
       expect(r).toMatch([10, 11]);
     });
 
     it("[2, 4)", () => {
       let i = 2;
       const r = mapRange(2, 4, (idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         i++;
         return 10 + idx;
       });
-      expect(i).toBeEqual(4);
+      expect(i).toBe(4);
       expect(r).toMatch([12, 13]);
     });
 
     it("[-2, 0)", () => {
       let i = -2;
       const r = mapRange(-2, 0, (idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         i++;
         return 10 + idx;
       });
-      expect(i).toBeEqual(0);
+      expect(i).toBe(0);
       expect(r).toMatch([8, 9]);
     });
   });
@@ -121,44 +121,44 @@ describe("array", () => {
         i++;
         return null;
       });
-      expect(i).toBeEqual(0);
+      expect(i).toBe(0);
       expect(r).toMatch([]);
     });
 
     it("two items", () => {
       let i = 0;
       const r = mapFilterUndefined([0, 1], (item: any, idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         i++;
         return item + 10;
       });
-      expect(i).toBeEqual(2);
+      expect(i).toBe(2);
       expect(r).toMatch([10, 11]);
     });
 
     it("two items, skip first", () => {
       let i = 0;
       const r = mapFilterUndefined([0, 1], (item: any, idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         if (i++ === 0) {
           return undefined;
         }
         return item + 10;
       });
-      expect(i).toBeEqual(2);
+      expect(i).toBe(2);
       expect(r).toMatch([11]);
     });
 
     it("two items, skip second", () => {
       let i = 0;
       const r = mapFilterUndefined([0, 1], (item: any, idx: number) => {
-        expect(idx).toBeEqual(i);
+        expect(idx).toBe(i);
         if (i++ === 1) {
           return undefined;
         }
         return item + 10;
       });
-      expect(i).toBeEqual(2);
+      expect(i).toBe(2);
       expect(r).toMatch([10]);
     });
   });
