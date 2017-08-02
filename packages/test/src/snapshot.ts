@@ -19,7 +19,7 @@ export const enum SnapshotFlags {
 }
 
 export function toSnapshot(vnode: VNode<any>, flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
-  return `\n${_toSnapshot(0, vnode, flags)}\n`;
+  return _toSnapshot(0, vnode, flags);
 }
 
 function indent(n: number): string {

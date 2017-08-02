@@ -67,6 +67,11 @@ module.exports = function (config) {
 
     snapshot: {
       update: !!process.env.UPDATE,
+      format: "indented-md",
+      checkSourceFile: true,
+      pathResolver: function (basePath, suiteName) {
+        return path.join(basePath, "__snapshots__", suiteName + ".md");
+      },
     },
 
     client: {

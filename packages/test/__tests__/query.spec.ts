@@ -3,7 +3,7 @@ import { query, queryAll, q } from "../src/query";
 import { VNodeWrapper } from "../src/vdom";
 import { expect } from "iko";
 
-describe("query", () => {
+describe("src/query.ts", () => {
   const tree = new VNodeWrapper(h.div().children(h.span(), h.span()), null, {});
 
   describe("one", () => {

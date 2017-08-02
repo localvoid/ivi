@@ -1,3 +1,4 @@
 (global as any).__IVI_DEV__ = true;
 
-import "./state.spec";
+import "./mutable.spec";
+import "./store.spec";

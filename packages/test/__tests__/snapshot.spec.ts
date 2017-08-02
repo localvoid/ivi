@@ -1,9 +1,8 @@
 import { virtualRender as render } from "../src/vdom";
 import * as h from "ivi-html";
-import "iko-karma-snapshot";
 import { expect } from "iko";
 
-describe("default renderer", () => {
+describe("src/snapshot.ts", () => {
   it("'abc'", () => {
     expect(render(h.t("abc")).toSnapshot()).toMatchSnapshot();
   });
