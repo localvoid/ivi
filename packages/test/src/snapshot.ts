@@ -160,8 +160,6 @@ function _toSnapshot(
 
       if (multiline) {
         result += `\n${indent(il)}`;
-      } else {
-        result += ` `;
       }
       if (childrenString === "") {
         result += `/>`;

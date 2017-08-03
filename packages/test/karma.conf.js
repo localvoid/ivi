@@ -67,6 +67,7 @@ module.exports = function (config) {
 
     snapshot: {
       update: !!process.env.UPDATE,
+      prune: !!process.env.PRUNE,
       format: "indented-md",
       checkSourceFile: true,
       pathResolver: function (basePath, suiteName) {

@@ -2,7 +2,7 @@ const webpack = require("webpack");
 
 module.exports = function (config) {
   config.set({
-    browsers: ["Chrome"],
+    browsers: ["ChromeHeadless"],
     frameworks: ["iko"],
     reporters: ["iko"],
     preprocessors: { "__tests__/index.ts": ["webpack", "sourcemap"] },

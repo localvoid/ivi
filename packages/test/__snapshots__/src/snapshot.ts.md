@@ -6,19 +6,19 @@
 
 #### `<div>`
 
-    <div />
+    <div/>
 
 #### `<span>`
 
-    <span />
+    <span/>
 
 #### `<div> (null props)`
 
-    <div />
+    <div/>
 
 #### `<div> ({} props)`
 
-    <div />
+    <div/>
 
 #### `<div tabIndex='1'>`
 
@@ -47,7 +47,7 @@
 
 #### `<div class=null>`
 
-    <div />
+    <div/>
 
 #### `<div class=''>`
 
@@ -69,7 +69,7 @@
 
 #### `<div style=null>`
 
-    <div />
+    <div/>
 
 #### `<div style={top: 10px}>`
 
@@ -95,68 +95,68 @@
 
 #### `<div></div> (null children)`
 
-    <div />
+    <div/>
 
 #### `<div>'abc'</div>`
 
-    <div >
+    <div>
       abc
     </div>
 
 #### `<div>10</div>`
 
-    <div >
+    <div>
       10
     </div>
 
 #### `<div><span></div>`
 
-    <div >
-      <span />
+    <div>
+      <span/>
     </div>
 
 #### `<div>[]</div>`
 
-    <div />
+    <div/>
 
 #### `<div>[<span>]</div>`
 
-    <div >
-      <span />
+    <div>
+      <span/>
     </div>
 
 #### `<div>[<span>, <strong>]</div>`
 
-    <div >
-      <span />
-      <strong />
+    <div>
+      <span/>
+      <strong/>
     </div>
 
 #### `<div>[  <div>'hello'</div>,  <div>[<span>'world'</span>, <div><span></div>]</div>,  <div><div></div>,  <div>]</div>`
 
-    <div >
-      <div >
+    <div>
+      <div>
         hello
       </div>
-      <div >
-        <span >
+      <div>
+        <span>
           world
         </span>
-        <div >
-          <span />
+        <div>
+          <span/>
         </div>
       </div>
-      <div >
-        <div />
+      <div>
+        <div/>
       </div>
-      <div />
+      <div/>
     </div>
 
 ## `svg`
 
 ####   `<circle>`
 
-    <circle />
+    <circle/>
 
 ####   `<circle class='a'>`
 
@@ -211,17 +211,17 @@
 
 ####   `<textarea>`
 
-    <textarea />
+    <textarea/>
 
 ####   `<textarea>abc</textarea>`
 
-    <textarea >
+    <textarea>
       abc
     </textarea>
 
 ####   `<audio>`
 
-    <audio />
+    <audio/>
 
 ####   `<audio volume=0.5>`
 

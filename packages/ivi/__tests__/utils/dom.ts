@@ -1,5 +1,4 @@
-import { Assertion, AssertionError, addAssertionType, mh, e, r } from "iko";
-import { richText } from "rtext-writer";
+import { Assertion, AssertionError, addAssertionType, errMsg, e, r } from "iko";
 
 export class DOMOpsCounter {
   createElement = 0;
@@ -45,101 +44,66 @@ export class DOMOpsCounterAssertion extends Assertion<DOMOpsCounter> {
     const obj = this.obj;
 
     if (obj.createElement !== createElement) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.createElement' to be ", e(createElement),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.createElement' to be ", e(createElement),
         ", instead it is ", r(obj.createElement), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        createElement,
-        obj.createElement,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     if (obj.createElementNS !== createElementNS) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.createElementNS' to be ", e(createElementNS),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.createElementNS' to be ", e(createElementNS),
         ", instead it is ", r(obj.createElementNS), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        createElementNS,
-        obj.createElementNS,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     if (obj.createTextNode !== createTextNode) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.createTextNode' to be ", e(createTextNode),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.createTextNode' to be ", e(createTextNode),
         ", instead it is ", r(obj.createTextNode), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        createTextNode,
-        obj.createTextNode,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     if (obj.appendChild !== appendChild) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.appendChild' to be ", e(appendChild),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.appendChild' to be ", e(appendChild),
         ", instead it is ", r(obj.appendChild), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        appendChild,
-        obj.appendChild,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     if (obj.insertBefore !== insertBefore) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.insertBefore' to be ", e(insertBefore),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.insertBefore' to be ", e(insertBefore),
         ", instead it is ", r(obj.insertBefore), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        insertBefore,
-        obj.insertBefore,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     if (obj.replaceChild !== replaceChild) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.replaceChild' to be ", e(replaceChild),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.replaceChild' to be ", e(replaceChild),
         ", instead it is ", r(obj.replaceChild), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        replaceChild,
-        obj.replaceChild,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     if (obj.removeChild !== removeChild) {
-      const message = richText()
-        .write(mh("toMatchDOMOps"))
-        .write("Expected DOM ops counter 'document.removeChild' to be ", e(removeChild),
+      const message = errMsg()
+        .matcherHint("toMatchDOMOps")
+        .info("Expected DOM ops counter 'document.removeChild' to be ", e(removeChild),
         ", instead it is ", r(obj.removeChild), "\n");
 
-      throw new AssertionError(
-        message.compose(),
-        removeChild,
-        obj.removeChild,
-        this.toMatchDOMOps,
-      );
+      throw new AssertionError(message.compose(), this.toMatchDOMOps);
     }
 
     return this;
