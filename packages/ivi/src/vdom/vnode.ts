@@ -119,7 +119,7 @@ export class VNode<P = null> {
    * @param key Any object that should be unique among its siblings.
    * @returns VNode
    */
-  key(key: any): VNode<P> {
+  key(key: any): this {
     this._flags |= VNodeFlags.Key;
     this._key = key;
     return this;
@@ -131,7 +131,7 @@ export class VNode<P = null> {
    * @param className CSS Class name.
    * @returns VNode
    */
-  className(className: string | null): VNode<P> {
+  className(className: string | null): this {
     if (__IVI_DEV__) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set className, className is available on element nodes only.");
@@ -147,7 +147,7 @@ export class VNode<P = null> {
    * @param style Style.
    * @returns VNode
    */
-  style<U extends CSSStyleProps>(style: U | null): VNode<P> {
+  style<U extends CSSStyleProps>(style: U | null): this {
     if (__IVI_DEV__) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set style, style is available on element nodes only.");
@@ -176,7 +176,7 @@ export class VNode<P = null> {
    * @param events Events.
    * @returns VNode
    */
-  events(events: Array<EventHandler | null> | EventHandler | null): VNode<P> {
+  events(events: Array<EventHandler | null> | EventHandler | null): this {
     if (__IVI_DEV__) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set events, events are available on element nodes only.");
@@ -201,7 +201,7 @@ export class VNode<P = null> {
    * @param props Props.
    * @returns VNode
    */
-  props<U extends P>(props: U | null): VNode<P> {
+  props<U extends P>(props: U | null): this {
     if (__IVI_DEV__) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set props, props are available on element nodes only.");
@@ -236,8 +236,8 @@ export class VNode<P = null> {
    *   strings with text nodes.
    * @returns VNode
    */
-  children(...children: Array<VNode<any>[] | VNode<any> | string | number | null>): VNode<P>;
-  children(): VNode<P> {
+  children(...children: Array<VNode<any>[] | VNode<any> | string | number | null>): this;
+  children(): this {
     if (__IVI_DEV__) {
       if (this._flags &
         (VNodeFlags.ChildrenArray |
@@ -371,7 +371,7 @@ export class VNode<P = null> {
    *   strings with text nodes
    * @returns VNode
    */
-  applyChildren(children: Array<VNode<any>[] | VNode<any> | string | number | null>): VNode<P> {
+  applyChildren(children: Array<VNode<any>[] | VNode<any> | string | number | null>): this {
     this.children.apply(this, children);
     return this;
   }
@@ -382,7 +382,7 @@ export class VNode<P = null> {
    * @param html innerHTML in a string format.
    * @returns VNode
    */
-  unsafeHTML(html: string | null): VNode<P> {
+  unsafeHTML(html: string | null): this {
     if (__IVI_DEV__) {
       if (this._flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenBasic)) {
         throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
@@ -414,7 +414,7 @@ export class VNode<P = null> {
    * @param text Text value.
    * @returns VNode
    */
-  value(value: string | null): VNode<P> {
+  value(value: string | null): this {
     if (__IVI_DEV__) {
       if (!(this._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
         throw new Error("Failed to set value, value is available on input and textarea elements only.");
@@ -430,7 +430,7 @@ export class VNode<P = null> {
    * @param checked Checked value.
    * @returns VNode
    */
-  checked(checked: boolean | null): VNode<P> {
+  checked(checked: boolean | null): this {
     if (__IVI_DEV__) {
       if (!(this._flags & VNodeFlags.InputElement)) {
         throw new Error("Failed to set checked, checked is available on input elements only.");
@@ -450,7 +450,7 @@ export class VNode<P = null> {
    * @param props
    * @return VNode
    */
-  mergeProps<U extends P>(props: U | null): VNode<P> {
+  mergeProps<U extends P>(props: U | null): this {
     if (__IVI_DEV__) {
       if (props && typeof props !== "object") {
         throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
@@ -477,7 +477,7 @@ export class VNode<P = null> {
    * @param props
    * @return VNode
    */
-  mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P> {
+  mergeStyle<U extends CSSStyleProps>(style: U | null): this {
     if (style !== null) {
       return this.style(
         this._props !== null && (this._props as ElementProps<P>).style !== null ?
@@ -494,7 +494,7 @@ export class VNode<P = null> {
    * @param focus
    * @return VNode
    */
-  autofocus(focus: boolean): VNode<P> {
+  autofocus(focus: boolean): this {
     if (__IVI_DEV__) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set autofocus, autofocus is available on element nodes only.");
