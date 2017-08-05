@@ -1610,8 +1610,6 @@ function syncChildren(
  * [1] Actually it is almost minimum number of dom ops, when node is removed and another one is inserted at the same
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
- * Also, there are some rare cases like "ab" => "bc" that will use more DOM ops that is necessary because of
- * prefix/suffix optimization.
  *
  * @param parent Parent node.
  * @param a Old VNode list.
@@ -1748,26 +1746,24 @@ function syncChildrenTrackByKeys(
     let synced = 0;
 
     if ((aLength | bLength) < 32 || bLength < 4) {
-      for (i = aStart; i <= aEnd; i++) {
+      for (i = aStart; i <= aEnd && synced < bLength; i++) {
         aNode = a[i];
-        if (synced < bLength) {
-          for (j = bStart; j <= bEnd; j++) {
-            k = j - bStart;
-            if (sources[k] === -1) {
-              bNode = b[j];
-              if (vNodeEqualKeys(aNode, bNode) === true) {
-                sources[k] = i;
+        for (j = bStart; j <= bEnd; j++) {
+          k = j - bStart;
+          if (sources[k] === -1) {
+            bNode = b[j];
+            if (vNodeEqualKeys(aNode, bNode) === true) {
+              sources[k] = i;
 
-                if (pos > j) {
-                  moved = true;
-                } else {
-                  pos = j;
-                }
-                vNodeSync(parent, aNode, bNode, context, syncFlags);
-                synced++;
-                aNullable[i] = null;
-                break;
+              if (pos > j) {
+                moved = true;
+              } else {
+                pos = j;
               }
+              vNodeSync(parent, aNode, bNode, context, syncFlags);
+              synced++;
+              aNullable[i] = null;
+              break;
             }
           }
         }
@@ -1787,32 +1783,30 @@ function syncChildrenTrackByKeys(
           if (positionKeyIndex === undefined) {
             positionKeyIndex = new Map<number, number>();
           }
-          positionKeyIndex.set(node._key - aStart, i);
+          positionKeyIndex.set(node._key, i);
         }
       }
 
-      for (i = aStart; i <= aEnd; i++) {
+      for (i = aStart; i <= aEnd && synced < bLength; i++) {
         aNode = a[i];
 
-        if (synced < bLength) {
-          if ((aNode._flags & VNodeFlags.Key) !== 0) {
-            j = keyIndex !== undefined ? keyIndex.get(aNode._key) : undefined;
-          } else {
-            j = positionKeyIndex !== undefined ? positionKeyIndex.get(aNode._key - aStart) : undefined;
-          }
+        if ((aNode._flags & VNodeFlags.Key) !== 0) {
+          j = keyIndex !== undefined ? keyIndex.get(aNode._key) : undefined;
+        } else {
+          j = positionKeyIndex !== undefined ? positionKeyIndex.get(aNode._key) : undefined;
+        }
 
-          if (j !== undefined) {
-            bNode = b[j];
-            sources[j - bStart] = i;
-            if (pos > j) {
-              moved = true;
-            } else {
-              pos = j;
-            }
-            vNodeSync(parent, aNode, bNode, context, syncFlags);
-            synced++;
-            aNullable[i] = null;
+        if (j !== undefined) {
+          bNode = b[j];
+          sources[j - bStart] = i;
+          if (pos > j) {
+            moved = true;
+          } else {
+            pos = j;
           }
+          vNodeSync(parent, aNode, bNode, context, syncFlags);
+          synced++;
+          aNullable[i] = null;
         }
       }
     }
