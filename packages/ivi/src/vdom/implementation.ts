@@ -1668,42 +1668,44 @@ function syncChildrenTrackByKeys(
       bEndNode = b[bEnd];
     }
 
-    // Move and sync nodes from right to left.
-    if (vNodeEqualKeys(aEndNode, bStartNode) === true) {
-      vNodeSync(parent, aEndNode, bStartNode, context, syncFlags);
-      vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
-      aEnd--;
-      bStart++;
-      // There is no need to check when we out of bounds, because the only way we can get here is when there are
-      // more nodes in the lists.
-      //
-      // Impossible transformations:
-      //   [a] => [a b] (common prefix)
-      //   [b a] => [a] (common suffix)
-      //
-      // Possible transformations:
-      //   [b a] => [a b]
-      //   [b a] => [a c]
+    // // This optimization may cause unnecessary move.
+    //
+    // // Move and sync nodes from right to left.
+    // if (vNodeEqualKeys(aEndNode, bStartNode) === true) {
+    //   vNodeSync(parent, aEndNode, bStartNode, context, syncFlags);
+    //   vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
+    //   aEnd--;
+    //   bStart++;
+    //   // There is no need to check when we out of bounds, because the only way we can get here is when there are
+    //   // more nodes in the lists.
+    //   //
+    //   // Impossible transformations:
+    //   //   [a] => [a b] (common prefix)
+    //   //   [b a] => [a] (common suffix)
+    //   //
+    //   // Possible transformations:
+    //   //   [b a] => [a b]
+    //   //   [b a] => [a c]
 
-      aEndNode = a[aEnd];
-      bStartNode = b[bStart];
-      // In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-      // immediately jump to the start of this prefix/suffix algo.
-      continue;
-    }
+    //   aEndNode = a[aEnd];
+    //   bStartNode = b[bStart];
+    //   // In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+    //   // immediately jump to the start of this prefix/suffix algo.
+    //   continue;
+    // }
 
-    // Move and sync nodes from left to right.
-    if (vNodeEqualKeys(aStartNode, bEndNode) === true) {
-      vNodeSync(parent, aStartNode, bEndNode, context, syncFlags);
-      k = bEnd + 1;
-      next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
-      vNodeMoveChild(parent, bEndNode, next);
-      aStart++;
-      bEnd--;
-      aStartNode = a[aStart];
-      bEndNode = b[bEnd];
-      continue;
-    }
+    // // Move and sync nodes from left to right.
+    // if (vNodeEqualKeys(aStartNode, bEndNode) === true) {
+    //   vNodeSync(parent, aStartNode, bEndNode, context, syncFlags);
+    //   k = bEnd + 1;
+    //   next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
+    //   vNodeMoveChild(parent, bEndNode, next);
+    //   aStart++;
+    //   bEnd--;
+    //   aStartNode = a[aStart];
+    //   bEndNode = b[bEnd];
+    //   continue;
+    // }
 
     break;
   }
