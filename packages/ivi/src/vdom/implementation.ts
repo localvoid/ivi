@@ -1380,39 +1380,24 @@ function syncChildren(
  *
  * This algorithm finds a minimum[1] number of DOM operations. It works in several steps:
  *
- * 1. Find common suffix and prefix, and perform simple moves on the edges.
+ * 1. Find common suffix and prefix.
  *
  * This optimization technique is searching for nodes with identical keys by simultaneously iterating over nodes in the
  * old children list `A` and new children list `B` from both sides:
  *
- *  A: -> [a b c d e f g] <-
- *  B: -> [a b f d c g] <-
+ *  A: -> [a b c d] <-
+ *  B: -> [a b d] <-
  *
- * Here we can skip nodes "a" and "b" at the begininng, and node "g" at the end.
+ * Here we can skip nodes "a" and "b" at the begininng, and node "d" at the end.
  *
- *  A: -> [c d e f] <-
- *  B: -> [f d c] <-
+ *  A: -> [c] <-
+ *  B: -> [] <-
  *
- * At this position it will try to look at the opposite edge, and if there is a node with the same key at the opposite
- * edge, it will perform simple move operation. Node "c" is moved to the right edge, and node "f" is moved to the left
- * edge.
+ * Here it will check if the size of one of the list is equal to zero. When length of the old children list is zero,
+ * it will insert all remaining nodes from the new list, and when length of the new children list is zero, it will
+ * remove all remaining nodes from the old list.
  *
- *  A: -> [d e] <-
- *  B: -> [d] <-
- *
- * Now it will try again to find common prefix and suffix, node "d" is the same, so we can skip it.
- *
- *  A: [e]
- *  B: []
- *
- * Here it will check if the size of one of the list is equal to zero, and if length of the old children list is zero,
- * it will insert all remaining nodes from the new list, or if length of the new children list is zero, it will remove
- * all remaining nodes from the old list.
- *
- * This simple optimization technique will cover most of the real world use cases, even reversing the children list,
- * except for sorting.
- *
- * When algorithm couldn't find a solution with this simple optimization technique, it will go to the next step of the
+ * When algorithm can't find a solution with this simple optimization technique, it will go to the next step of the
  * algorithm. For example:
  *
  *  A: -> [a b c d e f g] <-
@@ -1666,45 +1651,6 @@ function syncChildrenTrackByKeys(
       bEndNode = b[bEnd];
     }
 
-    // // This optimization may cause unnecessary move.
-    //
-    // // Move and sync nodes from right to left.
-    // if (vNodeEqualKeys(aEndNode, bStartNode) === true) {
-    //   vNodeSync(parent, aEndNode, bStartNode, context, syncFlags);
-    //   vNodeMoveChild(parent, bStartNode, getDOMInstanceFromVNode(aStartNode));
-    //   aEnd--;
-    //   bStart++;
-    //   // There is no need to check when we out of bounds, because the only way we can get here is when there are
-    //   // more nodes in the lists.
-    //   //
-    //   // Impossible transformations:
-    //   //   [a] => [a b] (common prefix)
-    //   //   [b a] => [a] (common suffix)
-    //   //
-    //   // Possible transformations:
-    //   //   [b a] => [a b]
-    //   //   [b a] => [a c]
-
-    //   aEndNode = a[aEnd];
-    //   bStartNode = b[bStart];
-    //   // In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-    //   // immediately jump to the start of this prefix/suffix algo.
-    //   continue;
-    // }
-
-    // // Move and sync nodes from left to right.
-    // if (vNodeEqualKeys(aStartNode, bEndNode) === true) {
-    //   vNodeSync(parent, aStartNode, bEndNode, context, syncFlags);
-    //   k = bEnd + 1;
-    //   next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
-    //   vNodeMoveChild(parent, bEndNode, next);
-    //   aStart++;
-    //   bEnd--;
-    //   aStartNode = a[aStart];
-    //   bEndNode = b[bEnd];
-    //   continue;
-    // }
-
     break;
   }
 
@@ -1726,17 +1672,7 @@ function syncChildrenTrackByKeys(
   } else {
     const aLength = aEnd - aStart + 1;
     const bLength = bEnd - bStart + 1;
-    // Optimization for use cases when there is just one node left after prefix/suffix step.
-    // TODO: Is it worth enabling it?
-    //
-    // if ((aLength | bLength) === 1) {
-    //     next = vNodeRender(parent, bStartNode, context);
-    //     parent.replaceChild(next, getDOMInstanceFromVNode(aStartNode)!);
-    //     if (syncFlags & SyncFlags.Attached) {
-    //         vNodeDetach(aStartNode, syncFlags | SyncFlags.Dispose);
-    //         vNodeAttach(bStartNode);
-    //     }
-    // }
+
     const aNullable = a as Array<VNode<any> | null>; // will be removed by js optimizing compilers.
     // Mark all nodes as inserted.
     const sources = new Array<number>(bLength).fill(-1);

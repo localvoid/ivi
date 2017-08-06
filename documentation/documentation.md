@@ -22,4 +22,5 @@
 ## Misc
 
 - [Performance Tips](misc/perf-tips.md)
+- [Children Reconciliation](misc/children-reconciliation.md)
 - [Unsupported React Features](misc/unsupported-react-features.md)
