@@ -23,34 +23,21 @@ is looking like this:
 6. Check that `read` tasks queue is empty, otherwise go to step 2.
 7. Execute `after` tasks until after task queue is empty.
 
-There are two functions to access frame tasks: one to get current frame tasks group and another for the next frame tasks
-group.
+There are three functions to add tasks into different task queues in the current frame:
 
 ```ts
-function currentFrame(): FrameTasksGroup;
-function nextFrame(): FrameTasksGroup;
+function currentFrameRead(task: () => void): void;
+function currentFrameWrite(task: () => void): void;
+function currentFrameAfter(task: () => void): void;
 ```
 
-`FrameTasksGroup` object provides different task queues for components, read, write tasks, and tasks that will be
-executed when all other tasks are finished:
+And three functions for the next frame:
 
 ```ts
-interface FrameTasksGroup {
-    read(task: () => void): void;
-    write(task: () => void): void;
-    after(task: () => void): void;
-}
+function nextFrameRead(task: () => void): void;
+function nextFrameWrite(task: () => void): void;
+function nextFrameAfter(task: () => void): void;
 ```
-
-For example, when `render` function is invoked, it adds a write task to the next frame, and immediately triggers a
-synchronous update with a `syncFrameUpdate` function.
-
-```ts
-function syncFrameUpdate(): void;
-```
-
-`renderNextFrame` function is used to batch many render invocations until animation frame is fired by a browser. It will
-update DOM tree just once per animation frame using the most recent virtual dom tree.
 
 ## DOM Reader
 
@@ -63,10 +50,10 @@ phase, and when component is updated we just need to register `after` task that 
 DOM reader tasks are registered with `addDOMReader` function.
 
 ```ts
-function addDOMReader(reader: () => boolean | undefined): void;
+function addDOMReader(reader: () => boolean): void;
 ```
 
-`Animation` return value indicates when reader should be canceled.
+`reader` return value indicates when reader should be canceled.
 
 ## Animations
 
@@ -76,7 +63,7 @@ Animation tasks will be executed just once per each animation frame when all "re
 before "after" tasks.
 
 ```ts
-function addAnimation(animation: () => boolean | undefined): void;
+function addAnimation(animation: () => boolean) void;
 ```
 
-`Animation` return value indicates when animation should be canceled.
+`animation` return value indicates when animation should be canceled.

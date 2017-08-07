@@ -6,9 +6,12 @@
 - Components (stateless functions and stateful ES6 classes)
 - Extensible synthetic event subsystem
 - Synchronous and deterministic syncing algorithm
+- Children reconciliation with minimum number of DOM operations
 - Fast performance
 - Server side rendering
 - Advanced development mode
+- Test utilities
+- Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler)
 
 ## Questions
 
