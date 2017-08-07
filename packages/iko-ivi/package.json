@@ -1,0 +1,54 @@
+{
+  "name": "iko-ivi",
+  "main": "dist/cjs/index.js",
+  "module": "dist/js/index.js",
+  "typings": "dist/typings/index.d.ts",
+  "version": "0.1.0",
+  "description": "iko extension for ivi library.",
+  "license": "MIT",
+  "author": {
+    "name": "Boris Kaul",
+    "email": "localvoid@gmail.com",
+    "url": "https://github.com/localvoid"
+  },
+  "keywords": [
+    "iko",
+    "test",
+    "ivi"
+  ],
+  "homepage": "https://github.com/ivijs/ivi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivijs/ivi"
+  },
+  "bugs": {
+    "url": "https://github.com/ivijs/ivi/issues"
+  },
+  "github": "https://github.com/ivijs/ivi",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "prepublish": "npm run dist",
+    "dist": "npm run dist:es6 && npm run dist:cjs",
+    "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
+    "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
+  },
+  "peerDependencies": {
+    "ivi-core": "^0.1.0",
+    "ivi-html": "^0.1.0",
+    "ivi-test": "^0.1.0",
+    "ivi": "^0.8.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "ivi": "^0.8.0",
+    "ivi-core": "^0.1.0",
+    "ivi-html": "^0.1.0",
+    "ivi-test": "^0.1.0"
+  }
+}
