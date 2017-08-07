@@ -30,7 +30,6 @@ export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
  * API available only in browser environment.
  */
 export { VNodeFlags } from "./vdom/flags";
-export { TraceLog, TraceLogEntry, getTraceLog, trace } from "./dev_mode/trace";
 export { render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
 
 /**

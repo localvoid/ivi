@@ -1,33 +1,53 @@
-import { DEV_MODE, DevModeFlags } from "./dev_mode";
-
-let nextId = 0;
-
+/**
+ * TraceLogEntry is an entry in a TraceLog.
+ */
 export interface TraceLogEntry {
+  /**
+   * Unique ID.
+   */
   id: number;
-  text: string;
+  /**
+   * Log message.
+   */
+  message: string;
+  /**
+   * The number of collapsed messages.
+   */
   count: number;
 }
 
+/**
+ * TraceLog is a container of trace messages.
+ *
+ * It automatically collapses similar message into one entry.
+ */
 export class TraceLog {
   private readonly maxEntries: number;
   private readonly entries: TraceLogEntry[];
   private readonly onChangeHandlers: Array<() => void>;
   private i: number;
+  private nextId: number;
 
   constructor(maxEntries: number = 200) {
     this.maxEntries = maxEntries;
     this.entries = [];
     this.onChangeHandlers = [];
     this.i = -1;
+    this.nextId = 0;
   }
 
-  push(text: string) {
+  /**
+   * push adds a message to the log.
+   *
+   * @param message Log message.
+   */
+  push(message: string): void {
     if (this.i !== -1) {
       const last = this.entries[this.i];
-      if (last.text === text) {
+      if (last.message === message) {
         this.entries[this.i] = {
           id: last.id,
-          text,
+          message,
           count: last.count + 1,
         };
         this.changed();
@@ -36,13 +56,18 @@ export class TraceLog {
     }
     this.i = (this.i + 1) % this.maxEntries;
     this.entries[this.i] = {
-      id: nextId++,
-      text,
+      id: this.nextId++,
+      message,
       count: 1,
     };
     this.changed();
   }
 
+  /**
+   * forEach iterates over log entries and invokes callback functions.
+   *
+   * @param fn Callback.
+   */
   forEach(fn: (entry: TraceLogEntry, index: number) => void): void {
     const entries = this.entries;
     const length = entries.length;
@@ -51,6 +76,11 @@ export class TraceLog {
     }
   }
 
+  /**
+   * onChange adds a handler that will be invoked when new message is added.
+   *
+   * @param handler Callback.
+   */
   onChange(handler: () => void): void {
     this.onChangeHandlers.push(handler);
   }
@@ -60,18 +90,4 @@ export class TraceLog {
       this.onChangeHandlers[i]();
     }
   }
-}
-
-const TRACE_LOG = new TraceLog();
-
-export function trace(text: string): void {
-  if (__IVI_DEV__) {
-    if (DEV_MODE & DevModeFlags.EnableTracing) {
-      TRACE_LOG.push(text);
-    }
-  }
-}
-
-export function getTraceLog(): TraceLog {
-  return TRACE_LOG;
 }

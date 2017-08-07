@@ -45,14 +45,6 @@ export const enum DevModeFlags {
    * Enable Component Performance Profiling.
    */
   EnableComponentPerformanceProfiling = 1 << 4,
-  /**
-   * Enable Tracing.
-   */
-  EnableTracing = 1 << 5,
-  /**
-   * Stack Trace capture API is available.
-   */
-  CaptureStackTraceSupported = 1 << 6,
 }
 
 /**
@@ -223,12 +215,6 @@ function parseQueryString(query: string): { [key: string]: string } {
 }
 
 if (__IVI_DEV__) {
-  if ("captureStackTrace" in Error.prototype) {
-    DEV_MODE |= DevModeFlags.CaptureStackTraceSupported;
-  }
-}
-
-if (__IVI_DEV__) {
   const query = parseQueryString(window.location.search);
 
   if (query["_nv"] === "false") {
@@ -242,9 +228,6 @@ if (__IVI_DEV__) {
   }
   if (query["_perf"] === "true") {
     DEV_MODE |= DevModeFlags.EnableComponentPerformanceProfiling;
-  }
-  if (query["_trace"] === "true") {
-    DEV_MODE |= DevModeFlags.EnableTracing;
   }
   if (query["_export"] !== undefined) {
     GLOBAL_EXPORT = query["_export"];
