@@ -4,7 +4,7 @@
   "module": "dist/js/index.js",
   "serverModule": "dist/ssr/index.js",
   "typings": "dist/typings/index.d.ts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
   "author": {
@@ -48,11 +48,11 @@
     "test:coverage": "../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.ts"
   },
   "peerDependencies": {
-    "ivi-core": "^0.1.0"
+    "ivi-core": "^0.2.0"
   },
   "dependencies": {},
   "devDependencies": {
-    "ivi-core": "^0.1.0"
+    "ivi-core": "^0.2.0"
   },
   "nyc": {
     "require": [

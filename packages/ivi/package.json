@@ -50,15 +50,15 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.1.0",
-    "ivi-dom": "^0.1.0",
-    "ivi-scheduler": "^0.1.0",
-    "ivi-events": "^0.1.0"
+    "ivi-core": "^0.2.0",
+    "ivi-dom": "^0.2.0",
+    "ivi-scheduler": "^0.2.0",
+    "ivi-events": "^0.2.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.1.0",
-    "ivi-dom": "^0.1.0",
-    "ivi-scheduler": "^0.1.0",
-    "ivi-events": "^0.1.0"
+    "ivi-core": "^0.2.0",
+    "ivi-dom": "^0.2.0",
+    "ivi-scheduler": "^0.2.0",
+    "ivi-events": "^0.2.0"
   }
 }

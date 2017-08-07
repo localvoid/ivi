@@ -3,7 +3,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Test utils for ivi library.",
   "license": "MIT",
   "author": {
@@ -45,14 +45,14 @@
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
   "peerDependencies": {
-    "ivi-core": "^0.1.0",
-    "ivi-html": "^0.1.0",
-    "ivi": "^0.8.0"
+    "ivi-core": "^0.2.0",
+    "ivi-html": "^0.2.0",
+    "ivi": "^0.9.0"
   },
   "dependencies": {},
   "devDependencies": {
-    "ivi": "^0.8.0",
-    "ivi-core": "^0.1.0",
-    "ivi-html": "^0.1.0"
+    "ivi": "^0.9.0",
+    "ivi-core": "^0.2.0",
+    "ivi-html": "^0.2.0"
   }
 }
