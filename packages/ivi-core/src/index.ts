@@ -74,28 +74,6 @@ export { TraceLog, TraceLogEntry } from "./trace";
 export { USER_AGENT, UserAgentFlags } from "./user_agent";
 export { FEATURES, FeatureFlags } from "./feature_detection";
 export {
-  DevModeHooks, DEV_HOOKS, devModeAddHook, OnAfterTestHook, OnBeforeTestHook, OnErrorHook, devModeOnError,
-  enableTestEnvironment, isTestEnvironment, addTestResetTask,
+  DevModeHooks, DEV_HOOKS, devModeAddHook, OnErrorHook, devModeOnError, enableTestEnvironment, isTestEnvironment,
+  addTestResetTask,
 } from "./dev_hooks";
-
-import { devModeOnBeforeTest, devModeOnAfterTest } from "./dev_hooks";
-
-declare global {
-  interface Window {
-    __test_hooks__: undefined | {
-      before: () => void;
-      after: () => void;
-    };
-  }
-}
-
-if (__IVI_DEV__) {
-  if (__IVI_BROWSER__) {
-    const hooks = window.__test_hooks__;
-    if (hooks !== undefined) {
-      console.info(`Detected test environment`);
-      hooks.before = devModeOnBeforeTest;
-      hooks.after = devModeOnAfterTest;
-    }
-  }
-}
