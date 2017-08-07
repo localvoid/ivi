@@ -13,24 +13,24 @@ to make it easier to share code between client and server implementations.
 into its own namespace and prevent name collisions.
 - Improved tree shaking by simple bundlers (Google closure compiler can handle much more complicated scenarios).
 
-### core
+### ivi-core
 
 Shared code for browser and server implementations. It contains: basic types, data structures, helper functions,
 client-side feature detection and user-agent detection.
 
-### dom
+### ivi-dom
 
 Fixes for browser quirks and DOM-related helper functions.
 
-### events
+### ivi-events
 
 Synthetic Events subsystem with native event sources (completely separated from Virtual DOM).
 
-### html
+### ivi-html
 
 Virtual DOM node factories for HTML and SVG nodes.
 
-### scheduler
+### ivi-scheduler
 
 Client-side scheduler.
 
@@ -39,15 +39,23 @@ Client-side scheduler.
 Client-side Virtual DOM implementation with public API. It also re-exports some types and functions from `ivi-core`
 package.
 
-### ssr
+### ivi-ssr
 
 Server-side implementation for `ivi-events`, `ivi-scheduler` and `ivi` packages.
 
-### ssr-html
+### ivi-ssr-html
 
 Server-side implementation for `ivi-html` package.
 
-### state
+### ivi-test
+
+Test utilities.
+
+### iko-ivi
+
+Extension for [iko](https://github.com/localvoid/iko) assertion library.
+
+### ivi-state
 
 Basic global store implementation, useful for demo purposes.
 
@@ -76,7 +84,7 @@ modules, we will try to match their conventions.
 Bootstrap Development Environment (Do not use lerna to bootstrap)
 
 ```sh
-$ yarn install
+$ yarn
 ```
 
 Build packages
