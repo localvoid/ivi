@@ -40,7 +40,7 @@ exclusively for bug reports and feature requests.
 
 - [Performance Tips](https://github.com/ivijs/ivi/blob/master/documentation/misc/perf-tips.md)
 - [Children Reconciliation](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
-- [Unsupported React Features](https://github.com/ivijs/ivi/blob/master/misc/unsupported-react-features.md)
+- [Unsupported React Features](https://github.com/ivijs/ivi/blob/master/documentation/misc/unsupported-react-features.md)
 
 ### Installation
 
