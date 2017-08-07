@@ -73,21 +73,24 @@
 
 #### `<div style={top: 10px}>`
 
-    <div  style={
+    <div
+      style={
         top: 10px;
       }
     />
 
 #### `<div style={float: 'left'}>`
 
-    <div  style={
+    <div
+      style={
         float: left;
       }
     />
 
 #### `<div style={top: 10px; left: 20px}>`
 
-    <div  style={
+    <div
+      style={
         top: 10px;
         left: 20px;
       }
@@ -166,7 +169,8 @@
 
 ####   `<circle style={top: 10px}>`
 
-    <circle  style={
+    <circle
+      style={
         top: 10px;
       }
     />
@@ -194,7 +198,8 @@
 ####   `<input type='text' value='abc'>`
 
     <input
-      type="text"  value="abc"
+      type="text"
+      value="abc"
     />
 
 ####   `<input type='checkbox'>`
@@ -206,7 +211,8 @@
 ####   `<input type='checkbox' checked='true'>`
 
     <input
-      type="checkbox"  checked="true"
+      type="checkbox"
+      checked="true"
     />
 
 ####   `<textarea>`

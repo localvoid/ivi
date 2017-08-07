@@ -56,7 +56,7 @@ function renderStyleToSnapshot(il: number, style: { [key: string]: any }): strin
     return "";
   }
 
-  let result = `${indent(il)}style={`;
+  let result = `\n${indent(il)}style={`;
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     const value = style[key];
@@ -147,9 +147,9 @@ function _toSnapshot(
           if ((flags & VNodeFlags.InputElement) !== 0) {
             if (vnode._children !== null) {
               if (typeof vnode._children === "boolean") {
-                result += `${indent(il + 1)}checked="${vnode._children}"`;
+                result += `\n${indent(il + 1)}checked="${vnode._children}"`;
               } else {
-                result += `${indent(il + 1)}value="${vnode._children}"`;
+                result += `\n${indent(il + 1)}value="${vnode._children}"`;
               }
             }
           } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
