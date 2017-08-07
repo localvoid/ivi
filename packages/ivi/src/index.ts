@@ -20,6 +20,7 @@ export {
   VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
+  disableDirtyCheck,
 } from "./vdom/vnode";
 export {
   ComponentFactory, isComponentFactory, componentFactory, context, connect, keepAlive,

@@ -613,6 +613,17 @@ export function getElementStyleFromVNode(node: VNode<any>): CSSStyleProps | null
   return null;
 }
 
+/**
+ * disableDirtyCheck disables dirty checking for all descendants.
+ *
+ * @param node VNode.
+ * @returns VNode.
+ */
+export function disableDirtyCheck<N extends VNode<any>>(node: N): N {
+  node._flags |= VNodeFlags.DisabledDirtyCheck;
+  return node;
+}
+
 function checkUniqueKeys(children: VNode<any>[]): void {
   if (__IVI_DEV__) {
     let keys: Set<any> | undefined;

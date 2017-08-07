@@ -16,6 +16,7 @@ export {
   VNodeFlags, VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode, cloneVNode, shallowCloneVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
+  disableDirtyCheck,
 } from "./vnode";
 export { componentFactory, context, connect, keepAlive } from "./vnode_factories";
 

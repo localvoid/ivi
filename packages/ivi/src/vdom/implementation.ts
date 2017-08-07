@@ -452,7 +452,8 @@ function vNodeUpdateComponents(
 ): number {
   const flags = vnode._flags;
   let deepUpdate = 0;
-  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray | VNodeFlags.Component)) !== 0) {
+  if ((flags &
+    (VNodeFlags.DisabledDirtyCheck | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray | VNodeFlags.Component)) > 0) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       const p = vnode._instance as Node;
       let children = vnode._children;
