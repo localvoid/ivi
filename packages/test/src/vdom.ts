@@ -5,48 +5,6 @@ import { containsClassName, containsEventHandler, matchValues, matchKeys } from 
 import { Predicate, VNodeMatcher, query, queryAll, closest } from "./query";
 import { SnapshotFlags, toSnapshot } from "./snapshot";
 
-const VNodeLooseMatchFlags = 0
-  | VNodeFlags.Text
-  | VNodeFlags.Element
-  | VNodeFlags.ComponentFunction
-  | VNodeFlags.ComponentClass
-  | VNodeFlags.InputElement
-  | VNodeFlags.TextAreaElement
-  | VNodeFlags.MediaElement
-  | VNodeFlags.SvgElement
-  | VNodeFlags.Connect
-  | VNodeFlags.UpdateContext
-  | VNodeFlags.KeepAlive
-  | VNodeFlags.VoidElement;
-
-export function isVNodeLooseMatch(a: VNode<any>, b: VNode<any>): boolean {
-  const bFlags = b._flags;
-  if (((a._flags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {
-    return false;
-  }
-
-  if (a._tag !== b._tag) {
-    return false;
-  }
-
-  if ((bFlags & VNodeFlags.Element) !== 0) {
-    if (b._props !== null) {
-      if (a._props === null) {
-        return false;
-      }
-
-      if (matchValues(a._props.attrs, b._props.attrs) === false) {
-        return false;
-      }
-      if (matchValues(a._props.syle, b._props.style) === false) {
-        return false;
-      }
-
-    }
-  }
-  return true;
-}
-
 export function visitUnwrapped(
   vnode: VNode<any>,
   parent: VNode<any> | null,
