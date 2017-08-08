@@ -9,5 +9,5 @@ node_modules
 .idea
 .vscode
 .npm-debug
-npm-debug.log
+npm-debug.log*
 lerna-debug.log
