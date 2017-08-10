@@ -105,7 +105,7 @@ describe("VNode", () => {
     it("props", () => {
       const s = {};
       const e = h.div().props(s);
-      expect((e._props as ElementProps<any>).attrs).toBe(s);
+      expect(e._props).toBe(s);
     });
 
     it("children", () => {
@@ -138,23 +138,18 @@ describe("VNode", () => {
 
     it("mergeProps: null", () => {
       const e = h.div().props({ title: "abc" }).mergeProps(null);
-      expect((e._props as ElementProps<any>).attrs!.title).toBe("abc");
+      expect((e._props as any).title).toBe("abc");
     });
 
     it("mergeProps", () => {
       const e = h.div().props({ title: "abc" }).mergeProps({ width: "100" });
-      expect((e._props as ElementProps<any>).attrs!.title).toBe("abc");
-      expect((e._props as ElementProps<any>).attrs!.width).toBe("100");
+      expect((e._props as any).title).toBe("abc");
+      expect((e._props as any).width).toBe("100");
     });
 
     it("mergeProps override", () => {
       const e = h.div().props({ title: "abc" }).mergeProps({ title: "100" });
-      expect((e._props as ElementProps<any>).attrs!.title).toBe("100");
-    });
-
-    it("mergeProps: invalid objects", () => {
-      expect(() => h.div().props("abc" as any).mergeProps({})).toThrow(Error);
-      expect(() => h.div().props({}).mergeProps("abc" as any)).toThrow(Error);
+      expect((e._props as any).title).toBe("100");
     });
 
     it("mergeStyle: null", () => {

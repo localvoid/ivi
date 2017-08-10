@@ -354,8 +354,7 @@ function vNodeAttach(vnode: VNode<any>): void {
         vNodeAttach(children as VNode<any>);
       }
     }
-    if ((flags & VNodeFlags.ElementProps) !== 0 &&
-      (vnode._props as ElementProps<any>).events !== null) {
+    if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
       attachEvents((vnode._props as ElementProps<any>).events!);
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
@@ -394,8 +393,7 @@ function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
         vNodeDetach(children as VNode<any>, syncFlags);
       }
     }
-    if ((flags & VNodeFlags.ElementProps) !== 0 &&
-      (vnode._props as ElementProps<any>).events !== null) {
+    if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
       detachEvents((vnode._props as ElementProps<any>).events!);
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
@@ -653,16 +651,20 @@ function vNodeRender(
         syncClassName(node as Element, flags, null, vnode._className);
       }
 
-      if ((flags & VNodeFlags.ElementProps) !== 0) {
-        const props = (vnode._props as ElementProps<any>);
-        if (props.attrs !== null) {
-          syncDOMProps(node as Element, flags, null, props.attrs);
-        }
-        if (props.style !== null) {
-          syncStyle(node as HTMLElement, null, props.style);
-        }
-        if (props.events !== null) {
-          setEventHandlersToDOMNode(node as Element, props.events);
+      if ((flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
+        const props = vnode._props;
+        if ((flags & VNodeFlags.ElementMultiProps) === 0) {
+          syncDOMProps(node as Element, flags, null, props);
+        } else {
+          if (props.attrs !== null) {
+            syncDOMProps(node as Element, flags, null, props.attrs);
+          }
+          if (props.style !== null) {
+            syncStyle(node as HTMLElement, null, props.style);
+          }
+          if (props.events !== null) {
+            setEventHandlersToDOMNode(node as Element, props.events);
+          }
         }
       }
 
@@ -849,7 +851,7 @@ function vNodeAugment(
             }
           }
 
-          if ((flags & VNodeFlags.ElementProps) !== 0) {
+          if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
             const props = (vnode._props as ElementProps<any>);
             if (props.events !== null) {
               setEventHandlersToDOMNode(node as Element, props.events);
@@ -1035,7 +1037,7 @@ function vNodeSync(
         }
 
         const aFlags = a._flags;
-        if (((aFlags | bFlags) & VNodeFlags.ElementProps) !== 0) {
+        if (((aFlags | bFlags) & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
           let props;
           let aAttrs = null;
           let bAttrs = null;
@@ -1044,17 +1046,25 @@ function vNodeSync(
           let aEvents = null;
           let bEvents = null;
 
-          if ((aFlags & VNodeFlags.ElementProps) !== 0) {
+          if ((aFlags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
             props = (a._props as ElementProps<any>);
-            aAttrs = props.attrs;
-            aStyle = props.style;
-            aEvents = props.events;
+            if ((aFlags & VNodeFlags.ElementMultiProps) === 0) {
+              aAttrs = props;
+            } else {
+              aAttrs = props.attrs;
+              aStyle = props.style;
+              aEvents = props.events;
+            }
           }
-          if ((bFlags & VNodeFlags.ElementProps) !== 0) {
+          if ((bFlags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
             props = (b._props as ElementProps<any>);
-            bAttrs = props.attrs;
-            bStyle = props.style;
-            bEvents = props.events;
+            if ((bFlags & VNodeFlags.ElementMultiProps) === 0) {
+              bAttrs = props;
+            } else {
+              bAttrs = props.attrs;
+              bStyle = props.style;
+              bEvents = props.events;
+            }
           }
 
           if (aAttrs !== bAttrs) {

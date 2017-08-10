@@ -157,10 +157,10 @@ export class VNode<P = null> {
         checkDOMStylesForTypos(style);
       }
     }
-    if (this._props === null) {
-      this._flags |= VNodeFlags.ElementProps;
+    if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
+      this._flags |= VNodeFlags.ElementMultiProps;
       this._props = {
-        attrs: null,
+        attrs: this._props as P,
         style,
         events: null,
       };
@@ -182,14 +182,15 @@ export class VNode<P = null> {
         throw new Error("Failed to set events, events are available on element nodes only.");
       }
     }
-    if (this._props === null) {
-      this._flags |= VNodeFlags.ElementProps;
+    if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
+      this._flags |= VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsEvents;
       this._props = {
-        attrs: null,
+        attrs: this._props as P,
         style: null,
         events,
       };
     } else {
+      this._flags |= VNodeFlags.ElementPropsEvents;
       (this._props as ElementProps<P>).events = events;
     }
     return this;
@@ -215,13 +216,9 @@ export class VNode<P = null> {
         }
       }
     }
-    if (this._props === null) {
-      this._flags |= VNodeFlags.ElementProps;
-      this._props = {
-        attrs: props,
-        style: null,
-        events: null,
-      };
+    this._flags |= VNodeFlags.ElementPropsAttrs;
+    if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
+      this._props = props;
     } else {
       (this._props as ElementProps<P>).attrs = props;
     }
@@ -451,21 +448,18 @@ export class VNode<P = null> {
    * @return VNode
    */
   mergeProps<U extends P>(props: U | null): this {
-    if (__IVI_DEV__) {
-      if (props && typeof props !== "object") {
-        throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
-      }
-      if (this._props &&
-        (this._props as ElementProps<P>).attrs &&
-        typeof (this._props as ElementProps<P>).attrs !== "object") {
-        throw new Error(`Failed to merge props, props object has type "${typeof this._props}".`);
-      }
-    }
     if (props !== null) {
+      const flags = this._flags;
       return this.props(
-        this._props !== null && (this._props as ElementProps<P>).attrs !== null ?
-          Object.assign({}, (this._props as ElementProps<P>).attrs, props) :
-          props,
+        (flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) === 0 ?
+          props :
+          Object.assign(
+            {},
+            ((flags & VNodeFlags.ElementMultiProps) === 0) ?
+              this._props :
+              (this._props as ElementProps<P>).attrs,
+            props,
+          ),
       );
     }
     return this;

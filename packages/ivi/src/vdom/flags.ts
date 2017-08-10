@@ -42,47 +42,55 @@ export const enum VNodeFlags {
   /**
    * Element contains props object.
    */
-  ElementProps = 1 << 9,
+  ElementMultiProps = 1 << 9,
+  /**
+   * Element contains attributes.
+   */
+  ElementPropsAttrs = 1 << 10,
+  /**
+   * Element contains events.
+   */
+  ElementPropsEvents = 1 << 11,
   /**
    * VNode represents an HTMLInputElement element.
    */
-  InputElement = 1 << 10,
+  InputElement = 1 << 12,
   /**
    * VNode represents a HTMLTextAreaElement.
    */
-  TextAreaElement = 1 << 11,
+  TextAreaElement = 1 << 13,
   /**
    * VNode represents a HTMLMediaElement.
    */
-  MediaElement = 1 << 12,
+  MediaElement = 1 << 14,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 13,
+  SvgElement = 1 << 15,
   /**
    * Specialized VNode with connect functionality.
    */
-  Connect = 1 << 14,
+  Connect = 1 << 16,
   /**
    * Specialized VNode with an update context functionality.
    */
-  UpdateContext = 1 << 15,
+  UpdateContext = 1 << 17,
   /**
    * Specialized VNode with keep alive functionality.
    */
-  KeepAlive = 1 << 16,
+  KeepAlive = 1 << 18,
   /**
    * Stateless component is using `isPropsChanged` hook.
    */
-  CheckChangedProps = 1 << 17,
+  CheckChangedProps = 1 << 19,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 18,
+  Autofocus = 1 << 20,
   /**
    * VNode element cannot contain any children.
    */
-  VoidElement = 1 << 19,
+  VoidElement = 1 << 21,
   /**
    * Dirty checking is disabled for all descendants.
    *
