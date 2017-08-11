@@ -9,7 +9,7 @@
  * To disable nesting validation, set Dev Mode `DisableNestingValidation` flag with a function
  * `setDevModeFlags(DevModeFlags.DisableNestingValidation)`.
  */
-
+import { DEV } from "ivi-vars";
 import { DEV_MODE, DevModeFlags } from "./dev_mode";
 
 /**
@@ -115,7 +115,7 @@ function ancestorFlagsToTagNames(aFlags: AncestorFlags): string[] {
  * @returns Ancestor Flags.
  */
 function ancestorFlags(element: Element | null): AncestorFlags {
-  if (__IVI_DEV__) {
+  if (DEV) {
     let result = 0;
     while (element !== null && (element !== document.body)) {
       result |= AncestorFlagsByTagName[element.tagName.toLowerCase()];
@@ -204,7 +204,7 @@ let _childTagName: string | undefined;
  * @param ancestorFlags
  */
 export function setInitialNestingState(parent: Element): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       if ((parent as Element).tagName) {
         _parentTagName = (parent as Element).tagName.toLowerCase();
@@ -223,7 +223,7 @@ export function setInitialNestingState(parent: Element): void {
  * @param childTagName
  */
 export function pushNestingState(childTagName: string): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       if (_parentTagName) {
         _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
@@ -239,7 +239,7 @@ export function pushNestingState(childTagName: string): void {
  * unwinding stack.
  */
 export function restoreNestingState(parentTagName: string | undefined, aFlags: AncestorFlags): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       _parentTagName = parentTagName;
       _ancestorFlags = aFlags;
@@ -252,7 +252,7 @@ export function restoreNestingState(parentTagName: string | undefined, aFlags: A
  * Get current parent tag name.
  */
 export function nestingStateParentTagName(): string | undefined {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       return _parentTagName;
     }
@@ -264,7 +264,7 @@ export function nestingStateParentTagName(): string | undefined {
  * Get current ancestor flags.
  */
 export function nestingStateAncestorFlags(): AncestorFlags {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       return _ancestorFlags;
     }
@@ -281,7 +281,7 @@ const REPORT_MSG = "If you are certain that you aren't violating any HTML nestin
  * @throws Error when child nesting rules are violated.
  */
 export function checkNestingViolation(): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
       if (_parentTagName !== undefined) {
         const validChildren = validChildList[_parentTagName];

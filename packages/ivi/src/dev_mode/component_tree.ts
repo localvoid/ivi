@@ -1,3 +1,4 @@
+import { DEV } from "ivi-vars";
 import { VNode, getDOMInstanceFromVNode } from "../vdom/vnode";
 import { VNodeFlags } from "../vdom/flags";
 import { Component } from "../vdom/component";
@@ -33,7 +34,7 @@ function _findVNode(
 function findVNode(
   match: (vnode: VNode<any>) => boolean,
 ): VNode<any> | null {
-  if (__IVI_DEV__) {
+  if (DEV) {
     for (const root of ROOTS) {
       const result = _findVNode(match, root.currentVNode!);
       if (result !== null) {
@@ -51,7 +52,7 @@ function findVNode(
  * @returns VNode instance or `null`.
  */
 export function findVNodeByNode(node: Node): VNode<any> | null {
-  if (__IVI_DEV__) {
+  if (DEV) {
     return findVNode(function (vnode: VNode) {
       if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
         return node === getDOMInstanceFromVNode(vnode._children as VNode<any>);
@@ -69,7 +70,7 @@ export function findVNodeByNode(node: Node): VNode<any> | null {
  * @returns VNode instance or `null`.
  */
 export function findVNodeByDebugId(id: number): VNode<any> | null {
-  if (__IVI_DEV__) {
+  if (DEV) {
     return findVNode(function (vnode: VNode) {
       if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
         return id === (vnode._instance as Component<any>)._debugId;

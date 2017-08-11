@@ -1,3 +1,4 @@
+import { DEV } from "ivi-vars";
 import { Context, USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
@@ -127,7 +128,7 @@ export function renderNextFrame(
   node: VNode<any> | null,
   container: Element,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (container === document.body) {
       throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
         "your application.");
@@ -148,7 +149,7 @@ export function renderNextFrame(
       newVNode: node,
       invalidated: true,
     });
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (isTestEnvironment()) {
         addTestResetTask(reset);
       }
@@ -189,7 +190,7 @@ export function augment(
   node: VNode<any> | null,
   container: Element,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (container === document.body) {
       throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
         "your application.");
@@ -210,7 +211,7 @@ export function augment(
       newVNode: null,
       invalidated: false,
     });
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (isTestEnvironment()) {
         addTestResetTask(reset);
       }

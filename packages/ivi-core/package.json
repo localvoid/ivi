@@ -47,8 +47,13 @@
     "test": "../../node_modules/.bin/mocha --reporter mocha-iko-reporter -r ../../node_modules/ts-node/register __tests__/index.ts",
     "test:coverage": "../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.ts"
   },
+  "peerDependencies": {
+    "ivi-vars": "^0.1.0"
+  },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "ivi-vars": "^0.1.0"
+  },
   "nyc": {
     "require": [
       "../../node_modules/ts-node/register"

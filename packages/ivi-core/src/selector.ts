@@ -1,3 +1,4 @@
+import { DEV } from "ivi-vars";
 import { Context } from "./types";
 
 /**
@@ -65,7 +66,7 @@ export function memoizeSelector<T, U extends SelectorData>(
   select: (prev: U | null, props: T, context: Context) => U,
   ref: (v?: U | null, context?: Context) => U | null,
 ): (prev: U | null, props: T, context: Context) => U {
-  if (__IVI_DEV__) {
+  if (DEV) {
     const fn = function (prev: U | null, props: T, context: Context) {
       const state = select(ref(undefined, context), props, context);
       ref(state, context);

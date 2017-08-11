@@ -1,8 +1,9 @@
+import { DEV } from "ivi-vars";
 import { CSSStyleProps } from "ivi-core";
 import { DEV_MODE, DevModeFlags, printWarn, printWarnOnce } from "./dev_mode";
 
 let DOMAttributeTypos: { [key: string]: string };
-if (__IVI_DEV__) {
+if (DEV) {
   DOMAttributeTypos = {
     "autoFocus": `Typo: to enable autofocus for an element, use "VNode.autofocus(focus: boolean)" method.`,
     "autofocus": `Typo: to enable autofocus for an element, use "VNode.autofocus(focus: boolean)" method.`,
@@ -15,7 +16,7 @@ if (__IVI_DEV__) {
  * @param attr Attributes.
  */
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
       for (const attrName of Object.keys(attrs)) {
         const msg = DOMAttributeTypos[attrName];
@@ -29,7 +30,7 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
 }
 
 let DOMStyleTypos: { [key: string]: string };
-if (__IVI_DEV__) {
+if (DEV) {
   DOMStyleTypos = {
   };
 }
@@ -40,7 +41,7 @@ if (__IVI_DEV__) {
  * @param styles Styles.
  */
 export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
       for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
         const styleValue = styles[styleName];
@@ -77,7 +78,7 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
  * @param attrs SVG attributes.
  */
 export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
       switch (tag) {
         case "svg":

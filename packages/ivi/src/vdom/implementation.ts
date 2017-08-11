@@ -15,6 +15,7 @@
  * #component - Component related functions.
  */
 
+import { DEV } from "ivi-vars";
 import { Context, SVG_NAMESPACE, SelectorData, devModeOnError } from "ivi-core";
 import { setInnerHTML } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
@@ -40,7 +41,7 @@ import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
 let perfMarkIds: string[];
 let perfMarkIndex: number;
 
-if (__IVI_DEV__) {
+if (DEV) {
   if (DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) {
     perfMarkIds = [];
     perfMarkIndex = 0;
@@ -54,7 +55,7 @@ if (__IVI_DEV__) {
  * @param vnode
  */
 function componentPerfMarkBegin(method: string, vnode: VNode<any>): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) !== 0) {
       let id;
       if (perfMarkIndex >= perfMarkIds.length) {
@@ -79,7 +80,7 @@ function componentPerfMarkEnd(
   method: string,
   vnode: VNode<any>,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) !== 0) {
       const flags = vnode._flags;
       const id = perfMarkIds[--perfMarkIndex];
@@ -122,7 +123,7 @@ export function renderVNode(
   vnode: VNode<any>,
   context: Context,
 ): Node {
-  if (__IVI_DEV__) {
+  if (DEV) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -174,7 +175,7 @@ export function syncVNode(
   context: Context,
   syncFlags: SyncFlags,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -220,7 +221,7 @@ function _syncVNode(
  * @param node VNode element to remove.
  */
 export function removeVNode(parent: Node, node: VNode<any>): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     try {
       _removeVNode(parent, node);
       return;
@@ -264,7 +265,7 @@ export function augmentVNode(
   vnode: VNode<any>,
   context: Context,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -318,7 +319,7 @@ export function updateComponents(
   context: Context,
   syncFlags: SyncFlags,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -362,7 +363,7 @@ function vNodeAttach(vnode: VNode<any>): void {
     if ((flags & VNodeFlags.ComponentClass) !== 0) {
       const component = vnode._instance as Component<any>;
 
-      if (__IVI_DEV__) {
+      if (DEV) {
         if ((component.flags & ComponentFlags.Attached) !== 0) {
           throw new Error("Failed to attach Component: component is already attached.");
         }
@@ -410,7 +411,7 @@ function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
         (syncFlags & SyncFlags.Attached) !== 0) {
         const component = vnode._instance as Component<any>;
 
-        if (__IVI_DEV__) {
+        if (DEV) {
           if ((component.flags & ComponentFlags.Attached) === 0) {
             throw new Error("Failed to detach Component: component is already detached.");
           }
@@ -599,7 +600,7 @@ function vNodeRender(
   vnode: VNode<any>,
   context: Context,
 ): Node {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (vnode._instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
         "clone VNode with `cloneVNode`.");
@@ -750,7 +751,7 @@ function vNodeRender(
           vnode._children as VNode<any>,
           context,
         );
-        if (__IVI_DEV__) {
+        if (DEV) {
           if (!(flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect))) {
             componentPerfMarkEnd("create", vnode);
           }
@@ -809,7 +810,7 @@ function vNodeAugment(
   vnode: VNode<any>,
   context: Context,
 ): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (vnode._instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
         "clone VNode with `cloneVNode`.");
@@ -830,7 +831,7 @@ function vNodeAugment(
         instance = node;
 
         if ((flags & VNodeFlags.Element) !== 0) {
-          if (__IVI_DEV__) {
+          if (DEV) {
             pushNestingState(vnode._tag as string);
             checkNestingViolation();
             if (node.nodeType !== 1) {
@@ -863,7 +864,7 @@ function vNodeAugment(
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
               const children = vnode._children as VNode<any>[];
               for (let i = 0; i < children.length; i++) {
-                if (__IVI_DEV__) {
+                if (DEV) {
                   if (domChild === null) {
                     throw new Error(`Invalid children: expected to find ${children.length} children nodes.`);
                   }
@@ -872,13 +873,13 @@ function vNodeAugment(
                 vNodeAugment(node, domChild, children[i], context);
                 domChild = next;
               }
-              if (__IVI_DEV__) {
+              if (DEV) {
                 if (domChild !== null) {
                   throw new Error(`Invalid children: document contains more children nodes than expected.`);
                 }
               }
             } else {
-              if (__IVI_DEV__) {
+              if (DEV) {
                 if (domChild === null) {
                   throw new Error(`Invalid children: expected to find 1 child node.`);
                 }
@@ -894,7 +895,7 @@ function vNodeAugment(
             vnode._children.toString() :
             vnode._children as string;
 
-          if (__IVI_DEV__) {
+          if (DEV) {
             pushNestingState("$t");
             checkNestingViolation();
 
@@ -1014,7 +1015,7 @@ function vNodeSync(
     return;
   }
 
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (b._instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
         "clone VNode with `cloneVNode` function.");

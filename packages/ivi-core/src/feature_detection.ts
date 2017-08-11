@@ -4,6 +4,7 @@
  *
  * NOTE: Do not implement feature detection for features that aren't used in `ivi` libraries.
  */
+import { BROWSER } from "ivi-vars";
 import { SVG_NAMESPACE } from "./const";
 
 /**
@@ -61,7 +62,7 @@ export const enum FeatureFlags {
  */
 export let FEATURES: FeatureFlags = 0;
 
-if (__IVI_BROWSER__) {
+if (BROWSER) {
   /**
    * Passive Events:
    *

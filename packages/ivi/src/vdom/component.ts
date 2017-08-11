@@ -1,3 +1,4 @@
+import { DEV } from "ivi-vars";
 import { NOOP_FALSE, shallowEqual } from "ivi-core";
 import { currentFrameUpdate } from "ivi-scheduler";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
@@ -59,7 +60,7 @@ export abstract class Component<P = void> {
   constructor(props: P) {
     this.flags = 0;
     this.props = props;
-    if (__IVI_DEV__) {
+    if (DEV) {
       this._debugId = nextDebugId();
     }
   }

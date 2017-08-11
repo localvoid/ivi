@@ -34,10 +34,6 @@ module.exports = function (config) {
         ],
       },
       plugins: [
-        new webpack.DefinePlugin({
-          "__IVI_DEV__": true,
-          "__IVI_BROWSER__": true,
-        }),
         new webpack.SourceMapDevToolPlugin({
           test: /\.(ts|js)$/,
         }),

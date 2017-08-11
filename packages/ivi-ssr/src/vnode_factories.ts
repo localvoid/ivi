@@ -1,3 +1,4 @@
+import { DEV } from "ivi-vars";
 import { Context, SelectorData } from "ivi-core";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
@@ -114,7 +115,7 @@ function UpdateContext() {
 export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Context<T>> {
   return new VNode<Context<T>>(
     VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
-    __IVI_DEV__ ? UpdateContext as () => VNode<any> : null,
+    DEV ? UpdateContext as () => VNode<any> : null,
     ctx,
     null,
     child,
@@ -160,7 +161,7 @@ export function connect<I, O, P>(
   render: ComponentClass<O> | ((props: O) => VNode<any>),
 ): (props: P) => VNode<P> {
   let descriptor: ConnectDescriptor<I, O, P>;
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (isComponentClass(render)) {
       const fn = function (props: O): VNode<O> {
         return new VNode<O>(

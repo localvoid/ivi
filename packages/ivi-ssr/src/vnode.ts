@@ -1,3 +1,4 @@
+import { DEV } from "ivi-vars";
 import { CSSStyleProps } from "ivi-core";
 import { EventHandler } from "./events";
 import { BlueprintNode } from "./blueprint";
@@ -212,7 +213,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   className(className: string | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set className, className is available on element nodes only.");
       }
@@ -228,7 +229,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   style<U extends CSSStyleProps>(style: U | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set style, style is available on element nodes only.");
       }
@@ -244,7 +245,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   events(events: Array<EventHandler | null> | EventHandler | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set events, events are available on element nodes only.");
       }
@@ -259,7 +260,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   props<U extends P>(props: U | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set props, props are available on element nodes only.");
       }
@@ -279,7 +280,7 @@ export class VNode<P = null> {
    */
   children(...children: Array<VNode<any>[] | VNode<any> | string | number | null>): this;
   children(): VNode<P> {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (this._flags &
         (VNodeFlags.ChildrenArray |
           VNodeFlags.ChildrenVNode |
@@ -372,7 +373,7 @@ export class VNode<P = null> {
               if (c !== null) {
                 if (c.constructor === Array) {
                   for (j = 0; j < c.length; j++) {
-                    if (__IVI_DEV__) {
+                    if (DEV) {
                       if (!(c[j]._flags & VNodeFlags.Key)) {
                         throw new Error("Invalid children array. All children nodes in nested" +
                           " array should have explicit keys.");
@@ -421,7 +422,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   unsafeHTML(html: string | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (this._flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenBasic)) {
         throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
       }
@@ -450,7 +451,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   value(value: string | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.InputElement)) {
         throw new Error("Failed to set value, value is available on input elements only.");
       }
@@ -466,7 +467,7 @@ export class VNode<P = null> {
    * @returns VNode
    */
   checked(checked: boolean | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.InputElement)) {
         throw new Error("Failed to set checked, checked is available on input elements only.");
       }
@@ -482,7 +483,7 @@ export class VNode<P = null> {
    * @return VNode
    */
   mergeProps<U extends P>(props: U | null): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (props && typeof props !== "object") {
         throw new Error(`Failed to merge props, props object has type "${typeof props}".`);
       }
@@ -524,7 +525,7 @@ export class VNode<P = null> {
    * @return VNode
    */
   autofocus(focus: boolean): this {
-    if (__IVI_DEV__) {
+    if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set autofocus, autofocus is available on element nodes only.");
       }
@@ -553,7 +554,7 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | n
  * @returns null if VNode doesn't have a reference to a Component instance.
  */
 export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode<any>): T | null {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((node._flags & VNodeFlags.Component) === 0) {
       throw new Error("Failed to get component instance: VNode should represent a Component.");
     }
@@ -562,7 +563,7 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
 }
 
 export function checkUniqueKeys(children: VNode<any>[]): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     let keys: Set<any> | undefined;
     for (let i = 0; i < children.length; i++) {
       const child = children[i];

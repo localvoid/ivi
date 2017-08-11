@@ -1,0 +1,37 @@
+{
+  "name": "ivi-vars",
+  "main": "cjs/index.js",
+  "module": "browser-dev.js",
+  "serverModule": "ssr-dev.js",
+  "typings": "index.d.ts",
+  "version": "0.1.0",
+  "description": "ivi variables.",
+  "license": "MIT",
+  "author": {
+    "name": "Boris Kaul",
+    "email": "localvoid@gmail.com",
+    "url": "https://github.com/localvoid"
+  },
+  "keywords": [
+    "ivi",
+    "vars"
+  ],
+  "homepage": "https://github.com/ivijs/ivi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivijs/ivi"
+  },
+  "bugs": {
+    "url": "https://github.com/ivijs/ivi/issues"
+  },
+  "github": "https://github.com/ivijs/ivi",
+  "files": [
+    "es6"
+  ],
+  "scripts": {
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {}
+}

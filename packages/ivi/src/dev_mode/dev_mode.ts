@@ -1,7 +1,7 @@
 /**
  * Development Mode.
  *
- * Development Mode is enabled when global variable `__IVI_DEV__` is `true`.
+ * Development Mode is enabled when global variable `DEV` is `true`.
  *
  * Development Mode can be configured via query parameters:
  *   _nv=false   Disable Nesting Validation.
@@ -12,6 +12,7 @@
  * Development Mode global export variable can be changed via query parameter:
  *   _export=<name>
  */
+import { DEV } from "ivi-vars";
 import { printComponentStackTrace } from "./stack_trace";
 
 /**
@@ -63,7 +64,7 @@ export let GLOBAL_EXPORT: string;
  * @param flags See `DevModeFlags` for details.
  */
 export function setDevModeFlags(flags: DevModeFlags): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     DEV_MODE |= flags;
   }
 }
@@ -79,7 +80,7 @@ let _nextDebugId = 0;
  * @return unique debug id.
  */
 export function nextDebugId(): number {
-  if (__IVI_DEV__) {
+  if (DEV) {
     return _nextDebugId++;
   }
   return 0;
@@ -93,7 +94,7 @@ export function nextDebugId(): number {
  * @param message Error message.
  */
 export function printError(message: string): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     console.error(message);
     printComponentStackTrace();
     try {
@@ -113,7 +114,7 @@ export function printError(message: string): void {
  * @param message Warning message.
  */
 export function printWarn(message: string): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     console.warn(message);
     printComponentStackTrace();
     try {
@@ -134,7 +135,7 @@ let _printedWarnings: Set<string>;
  * @param message Warning message.
  */
 export function printWarnOnce(key: string, message: string): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (!_printedWarnings) {
       _printedWarnings = new Set();
     }
@@ -170,7 +171,7 @@ export function getFunctionName(fn: Function): string {
  * @param markName
  */
 export function perfMarkBegin(markName: string): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     performance.mark(markName);
   }
 }
@@ -182,7 +183,7 @@ export function perfMarkBegin(markName: string): void {
  * @param markName
  */
 export function perfMarkEnd(measureName: string, markName: string): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     performance.measure(measureName, markName);
     performance.clearMarks(markName);
     performance.clearMeasures(measureName);
@@ -214,7 +215,7 @@ function parseQueryString(query: string): { [key: string]: string } {
   return b;
 }
 
-if (__IVI_DEV__) {
+if (DEV) {
   const query = parseQueryString(window.location.search);
 
   if (query["_nv"] === "false") {

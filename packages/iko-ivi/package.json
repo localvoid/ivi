@@ -41,7 +41,7 @@
   "peerDependencies": {
     "ivi-core": "^0.2.0",
     "ivi-html": "^0.2.0",
-    "ivi-test": "^0.2.0",
+    "ivi-test": "^0.0.1",
     "ivi": "^0.9.0"
   },
   "dependencies": {},
@@ -49,6 +49,6 @@
     "ivi": "^0.9.0",
     "ivi-core": "^0.2.0",
     "ivi-html": "^0.2.0",
-    "ivi-test": "^0.2.0"
+    "ivi-test": "^0.0.1"
   }
 }

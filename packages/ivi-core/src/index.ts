@@ -1,29 +1,10 @@
-/**
- * Global variables.
- */
 declare global {
-  /* tslint:disable:no-unused-variable */
-  /**
-   * Global variable that enables Development Mode.
-   *
-   * @define {boolean}
-   */
-  const __IVI_DEV__: boolean;
-
-  /**
-   * Global variable that indicates that code is executed in a browser environment.
-   *
-   * @define {boolean}
-   */
-  const __IVI_BROWSER__: boolean;
-
   /**
    * Adds missing displayName.
    */
   interface Function {
     displayName: string;
   }
-  /* tslint:enable:no-unused-variable */
 }
 
 export { Context, MaybeUndefined } from "./types";

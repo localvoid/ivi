@@ -3,6 +3,7 @@
  *
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
+import { DEV } from "ivi-vars";
 import { Context } from "ivi-core";
 import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
 import { ComponentClass, StatelessComponent, Component } from "../vdom/component";
@@ -32,7 +33,7 @@ export interface ComponentStackTraceFrame {
 export let STACK_TRACE: Array<ComponentStackTraceFrame>;
 let STACK_TRACE_DEPTH: number;
 
-if (__IVI_DEV__) {
+if (DEV) {
   STACK_TRACE = [];
   STACK_TRACE_DEPTH = 0;
 }
@@ -43,7 +44,7 @@ if (__IVI_DEV__) {
  * @param vnode VNode.
  */
 export function stackTracePushComponent(vnode: VNode<any>, instance?: Component<any> | Context): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
       const flags = vnode._flags;
       let type;
@@ -93,7 +94,7 @@ export function stackTracePushComponent(vnode: VNode<any>, instance?: Component<
  * Pop component from stack trace.
  */
 export function stackTracePopComponent(): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
       const frame = STACK_TRACE[--STACK_TRACE_DEPTH];
       frame.tag = undefined;
@@ -106,7 +107,7 @@ export function stackTracePopComponent(): void {
  * Reset stack trace.
  */
 export function stackTraceReset(): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
       for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
         const frame = STACK_TRACE[i];
@@ -165,7 +166,7 @@ function stackTraceToString(): string {
  * @param e Error instance.
  */
 export function stackTraceAugment(e: Error): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
       if (e.stack) {
         e.stack += "\n\nComponents stack trace:" + stackTraceToString();
@@ -178,7 +179,7 @@ export function stackTraceAugment(e: Error): void {
  * Prints current component stack trace to the console.
  */
 export function printComponentStackTrace(): void {
-  if (__IVI_DEV__) {
+  if (DEV) {
     if (STACK_TRACE_DEPTH) {
       console.groupCollapsed("Component Stack Trace:");
       for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
