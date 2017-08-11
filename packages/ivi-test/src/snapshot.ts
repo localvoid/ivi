@@ -103,9 +103,15 @@ function _toSnapshot(
       }
 
       const props = vnode._props;
-      if (props !== null) {
-        const attrs = props.attrs;
-        const style = props.style;
+      if ((flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
+        let attrs = null;
+        let style = null;
+        if ((flags & VNodeFlags.ElementMultiProps) === 0) {
+          attrs = props;
+        } else {
+          attrs = props.attrs;
+          style = props.style;
+        }
         if (attrs !== null) {
           const s = renderAttrsToSnapshot(il + 1, attrs);
           if (s !== "") {
