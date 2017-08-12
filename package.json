@@ -1,7 +1,7 @@
 {
   "name": "ivi",
   "private": true,
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
   "author": {
@@ -31,9 +31,9 @@
   "files": [],
   "scripts": {},
   "devDependencies": {
+    "@types/lodash": "4.14.72",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.19",
-    "@types/lodash": "4.14.71",
+    "@types/node": "^8.0.20",
     "core-js": "^2.5.0",
     "iko": "^0.4.0",
     "iko-karma-snapshot": "^0.2.0",
@@ -51,7 +51,7 @@
     "mocha": "^3.5.0",
     "mocha-iko-reporter": "^0.1.1",
     "nyc": "^11.1.0",
-    "rollup": "^0.45.2",
+    "rollup": "^0.47.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rtext": "^0.1.0",
@@ -60,9 +60,9 @@
     "ts-loader": "^2.3.2",
     "ts-node": "^3.3.0",
     "tslib": "^1.7.1",
-    "tslint": "^5.5.0",
+    "tslint": "^5.6.0",
     "typescript": "^2.4.2",
-    "webpack": "^3.4.1",
+    "webpack": "^3.5.3",
     "webpack-merge": "^4.1.0"
   },
   "workspaces": [
