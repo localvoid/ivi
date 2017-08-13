@@ -117,8 +117,9 @@ const VNodeLooseMatchFlags = 0
  * @returns true when VNode are loosely matching.
  */
 export function isVNodeLooseMatch(a: VNode<any>, b: VNode<any>): boolean {
+  const aFlags = a._flags;
   const bFlags = b._flags;
-  if (((a._flags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {
+  if (((aFlags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {
     return false;
   }
 
@@ -127,18 +128,33 @@ export function isVNodeLooseMatch(a: VNode<any>, b: VNode<any>): boolean {
   }
 
   if ((bFlags & VNodeFlags.Element) !== 0) {
-    if (b._props !== null) {
-      if (a._props === null) {
-        return false;
-      }
+    let aAttrs = null;
+    let aStyle = null;
+    let bAttrs = null;
+    let bStyle = null;
 
-      if (matchValues(a._props.attrs, b._props.attrs) === false) {
-        return false;
+    if ((aFlags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
+      if ((aFlags & VNodeFlags.ElementMultiProps) === 0) {
+        aAttrs = a._props;
+      } else {
+        aAttrs = a._props.attrs;
+        aStyle = a._props.style;
       }
-      if (matchValues(a._props.syle, b._props.style) === false) {
-        return false;
+    }
+    if ((bFlags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
+      if ((bFlags & VNodeFlags.ElementMultiProps) === 0) {
+        bAttrs = b._props;
+      } else {
+        bAttrs = b._props.attrs;
+        bStyle = b._props.style;
       }
+    }
 
+    if (matchValues(aAttrs, bAttrs) === false) {
+      return false;
+    }
+    if (matchValues(aStyle, bStyle) === false) {
+      return false;
     }
   }
   return true;
