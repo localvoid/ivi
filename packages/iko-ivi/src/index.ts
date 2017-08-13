@@ -50,6 +50,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
+   * notToBeText checks that VNode is not representing a Text node.
+   *
+   * @returns this instance.
+   */
+  notToBeText(): this {
+    const received = this.obj;
+    const pass = !received.isText();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeText", "received", "")
+        .info(`Expected ${this.type} not to be a Text node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeText);
+    }
+
+    return this;
+  }
+
+  /**
    * toBeElement checks that VNode is representing an Element node.
    *
    * @returns this instance.
@@ -64,6 +83,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
         .info("  ", r(received), "\n");
 
       throw new AssertionError(message.compose(), this.toBeElement);
+    }
+
+    return this;
+  }
+
+  /**
+   * notToBeElement checks that VNode is not representing an Element node.
+   *
+   * @returns this instance.
+   */
+  notToBeElement(): this {
+    const received = this.obj;
+    const pass = !received.isElement();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeElement", "received", "")
+        .info(`Expected ${this.type} not to be an Element node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeElement);
     }
 
     return this;
@@ -90,6 +128,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
+   * notToBeComponent checks that VNode is not representing a Component.
+   *
+   * @returns this instance.
+   */
+  notToBeComponent(): this {
+    const received = this.obj;
+    const pass = !received.isComponent();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeComponent", "received", "")
+        .info(`Expected ${this.type} not to be a Component node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeComponent);
+    }
+
+    return this;
+  }
+
+  /**
    * toBeStatefulComponent checks that VNode is representing a Stateful component.
    *
    * @returns this instance.
@@ -104,6 +161,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
         .info("  ", r(received), "\n");
 
       throw new AssertionError(message.compose(), this.toBeStatefulComponent);
+    }
+
+    return this;
+  }
+
+  /**
+   * notToBeStatefulComponent checks that VNode is not representing a Stateful component.
+   *
+   * @returns this instance.
+   */
+  notToBeStatefulComponent(): this {
+    const received = this.obj;
+    const pass = !received.isStatefulComponent();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeStatefulComponent", "received", "")
+        .info(`Expected ${this.type} not to be a Stateful component node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeStatefulComponent);
     }
 
     return this;
@@ -130,6 +206,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
+   * notToBeStatelessComponent checks that VNode is not representing a Stateless component.
+   *
+   * @returns this instance.
+   */
+  notToBeStatelessComponent(): this {
+    const received = this.obj;
+    const pass = !received.isStatelessComponent();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeStatelessComponent", "received", "")
+        .info(`Expected ${this.type} not to be a Stateless component node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeStatelessComponent);
+    }
+
+    return this;
+  }
+
+  /**
    * toBeContextComponent checks that VNode is representing a Context component.
    *
    * @returns this instance.
@@ -144,6 +239,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
         .info("  ", r(received), "\n");
 
       throw new AssertionError(message.compose(), this.toBeContextComponent);
+    }
+
+    return this;
+  }
+
+  /**
+   * notToBeContextComponent checks that VNode is not representing a Context component.
+   *
+   * @returns this instance.
+   */
+  notToBeContextComponent(): this {
+    const received = this.obj;
+    const pass = !received.isContextComponent();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeContextComponent", "received", "")
+        .info(`Expected ${this.type} not to be a Context component node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeContextComponent);
     }
 
     return this;
@@ -170,6 +284,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
+   * notToBeConnectComponent checks that VNode is not representing a Connect component.
+   *
+   * @returns this instance.
+   */
+  notToBeConnectComponent(): this {
+    const received = this.obj;
+    const pass = !received.isConnectComponent();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeConnectComponent", "received", "")
+        .info(`Expected ${this.type} to be a Connect component node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeConnectComponent);
+    }
+
+    return this;
+  }
+
+  /**
    * toBeKeepAliveComponent checks that VNode is representing a Keep alive component.
    *
    * @returns this instance.
@@ -184,6 +317,25 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
         .info("  ", r(received), "\n");
 
       throw new AssertionError(message.compose(), this.toBeKeepAliveComponent);
+    }
+
+    return this;
+  }
+
+  /**
+   * notToBeKeepAliveComponent checks that VNode is not representing a Keep alive component.
+   *
+   * @returns this instance.
+   */
+  notToBeKeepAliveComponent(): this {
+    const received = this.obj;
+    const pass = !received.isKeepAliveComponent();
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToBeKeepAliveComponent", "received", "")
+        .info(`Expected ${this.type} to be a Keep Alive component node\n`);
+
+      throw new AssertionError(message.compose(), this.notToBeKeepAliveComponent);
     }
 
     return this;
@@ -211,6 +363,27 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
+   * notToHaveTagName checks that VNode does not have a matching tag name.
+   *
+   * @param tagName Tag name.
+   * @returns this instance.
+   */
+  notToHaveTagName(tagName: string): this {
+    const received = this.obj.getTagName();
+    const expected = tagName;
+    const pass = received !== expected;
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToHaveTagName")
+        .info(rt`Expected ${this.type} not to have tag name ${e(expected)}\n`);
+
+      throw new AssertionError(message.compose(), this.notToHaveTagName);
+    }
+
+    return this;
+  }
+
+  /**
    * toHaveKey checks that VNode has matching key.
    *
    * @param key Key.
@@ -232,6 +405,27 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
+   * notToHaveKey checks that VNode does not have a matching key.
+   *
+   * @param key Key.
+   * @returns this instance.
+   */
+  notToHaveKey(key: any): this {
+    const received = this.obj.getKey();
+    const expected = key;
+    const pass = received !== expected;
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToHaveKey")
+        .info(rt`Expected ${this.type} not to have key ${e(expected)}\n`);
+
+      throw new AssertionError(message.compose(), this.notToHaveKey);
+    }
+
+    return this;
+  }
+
+  /**
    * toHaveClassName checks that VNode has matching class name.
    *
    * @param className Class name.
@@ -247,6 +441,27 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
         .info(rt`Expected ${this.type} to have class name ${e(expected)}, instead received ${r(received)}\n`);
 
       throw new AssertionError(message.compose(), this.toHaveClassName);
+    }
+
+    return this;
+  }
+
+  /**
+   * notToHaveClassName checks that VNode does not have a matching class name.
+   *
+   * @param className Class name.
+   * @returns this instance.
+   */
+  notToHaveClassName(className: string): this {
+    const received = this.obj.getClassName();
+    const expected = className;
+    const pass = received !== expected;
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("notToHaveClassName")
+        .info(rt`Expected ${this.type} not to have class name ${e(expected)}\n`);
+
+      throw new AssertionError(message.compose(), this.notToHaveClassName);
     }
 
     return this;
