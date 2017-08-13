@@ -1,6 +1,13 @@
 import { EventHandler, EventSource } from "ivi-events";
 import { VNode, VNodeFlags } from "ivi";
 
+/**
+ * containsClassName checks if className list contains a className.
+ *
+ * @param classNames className list in a HTML format with all values separated by space characters.
+ * @param className className to check.
+ * @returns true when className list contains a className.
+ */
 export function containsClassName(classNames: string, className: string): boolean {
   return classNames
     .split(" ")
@@ -8,6 +15,13 @@ export function containsClassName(classNames: string, className: string): boolea
     .some((c) => c === className);
 }
 
+/**
+ * matchValues checks property values for matching. Properties that aren't in `match` property are ignored.
+ *
+ * @param props Properties that should be matched against `match` property.
+ * @param match Is a map of values that should match.
+ * @returns true when properties are matching.
+ */
 export function matchValues(
   props: { [key: string]: any } | null,
   match: { [key: string]: any } | null,
@@ -29,6 +43,13 @@ export function matchValues(
   return true;
 }
 
+/**
+ * matchKeys checks that property keys are existing.
+ *
+ * @param props Properties that should be checked against `match` property.
+ * @param match Is a map of keys that should exist.
+ * @returns true when matching properties are existing.
+ */
 export function matchKeys(
   props: { [key: string]: any } | null,
   match: { [key: string]: boolean },
@@ -48,6 +69,13 @@ export function matchKeys(
   return true;
 }
 
+/**
+ * containsEventHandler checks if event handler list contain an event source.
+ *
+ * @param eventHandlers Event handlers.
+ * @param eventSource Event source.
+ * @returns true when event handlers contain an event source.
+ */
 export function containsEventHandler(
   eventHandlers: Array<EventHandler | null> | EventHandler | null,
   eventSource: EventSource,
@@ -81,6 +109,13 @@ const VNodeLooseMatchFlags = 0
   | VNodeFlags.KeepAlive
   | VNodeFlags.VoidElement;
 
+/**
+ * isVNodeLooseMatch performs a loose match on VNodes.
+ *
+ * @param a VNode.
+ * @param b VNode.
+ * @returns true when VNode are loosely matching.
+ */
 export function isVNodeLooseMatch(a: VNode<any>, b: VNode<any>): boolean {
   const bFlags = b._flags;
   if (((a._flags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {
