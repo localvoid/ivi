@@ -12,15 +12,28 @@ declare module "iko" {
   function expect(obj: VNode<any>): VNodeAssertion;
 }
 
+/**
+ * VNodeAssertion
+ */
 export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   constructor(obj: VNodeWrapper) {
     super(obj, "VNode");
   }
 
+  /**
+   * toSnapshot serializes VNode to snapshot.
+   *
+   * @returns this instance.
+   */
   toSnapshot(): string {
     return toSnapshot(this.obj.vnode);
   }
 
+  /**
+   * toBeText checks that VNode is representing a Text node.
+   *
+   * @returns this instance.
+   */
   toBeText(): this {
     const received = this.obj;
     const pass = received.isText();
@@ -36,6 +49,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeElement checks that VNode is representing an Element node.
+   *
+   * @returns this instance.
+   */
   toBeElement(): this {
     const received = this.obj;
     const pass = received.isElement();
@@ -51,6 +69,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeComponent checks that VNode is representing a Component.
+   *
+   * @returns this instance.
+   */
   toBeComponent(): this {
     const received = this.obj;
     const pass = received.isComponent();
@@ -66,6 +89,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeStatefulComponent checks that VNode is representing a Stateful component.
+   *
+   * @returns this instance.
+   */
   toBeStatefulComponent(): this {
     const received = this.obj;
     const pass = received.isStatefulComponent();
@@ -81,6 +109,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeStatelessComponent checks that VNode is representing a Stateless component.
+   *
+   * @returns this instance.
+   */
   toBeStatelessComponent(): this {
     const received = this.obj;
     const pass = received.isStatelessComponent();
@@ -96,6 +129,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeContextComponent checks that VNode is representing a Context component.
+   *
+   * @returns this instance.
+   */
   toBeContextComponent(): this {
     const received = this.obj;
     const pass = received.isContextComponent();
@@ -111,6 +149,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeConnectComponent checks that VNode is representing a Connect component.
+   *
+   * @returns this instance.
+   */
   toBeConnectComponent(): this {
     const received = this.obj;
     const pass = received.isConnectComponent();
@@ -126,6 +169,11 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toBeKeepAliveComponent checks that VNode is representing a Keep alive component.
+   *
+   * @returns this instance.
+   */
   toBeKeepAliveComponent(): this {
     const received = this.obj;
     const pass = received.isKeepAliveComponent();
@@ -141,6 +189,12 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toHaveTagName checks that VNode has a matching tag name.
+   *
+   * @param tagName Tag name.
+   * @returns this instance.
+   */
   toHaveTagName(tagName: string): this {
     const received = this.obj.getTagName();
     const expected = tagName;
@@ -156,6 +210,12 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toHaveKey checks that VNode has matching key.
+   *
+   * @param key Key.
+   * @returns this instance.
+   */
   toHaveKey(key: any): this {
     const received = this.obj.getKey();
     const expected = key;
@@ -171,6 +231,12 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
     return this;
   }
 
+  /**
+   * toHaveClassName checks that VNode has matching class name.
+   *
+   * @param className Class name.
+   * @returns this instance.
+   */
   toHaveClassName(className: string): this {
     const received = this.obj.getClassName();
     const expected = className;
@@ -187,30 +253,35 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 }
 
-addAssertionType((obj: any) => {
-  if (typeof obj === "object") {
-    if (obj instanceof VNodeWrapper) {
-      return new VNodeAssertion(obj);
+/**
+ * enableIviSupport patches iko library and adds support for ivi library.
+ */
+export function enableIviSupport() {
+  addAssertionType((obj: any) => {
+    if (typeof obj === "object") {
+      if (obj instanceof VNodeWrapper) {
+        return new VNodeAssertion(obj);
+      }
+      if (obj instanceof VNode) {
+        return new VNodeAssertion(new VNodeWrapper(obj, null, {}));
+      }
     }
-    if (obj instanceof VNode) {
-      return new VNodeAssertion(new VNodeWrapper(obj, null, {}));
+    return undefined;
+  });
+
+  ObjectAssertion.prototype.toBeVNode = function (): VNodeAssertion {
+    const received = this.obj;
+    const pass = typeof received === "object" && (received instanceof VNode || received instanceof VNodeWrapper);
+
+    if (!pass) {
+      const message = errMsg()
+        .matcherHint("toBeVNode", "received", "")
+        .info(`Expected ${this.type} to have VNode type:\n`)
+        .info("  ", r(received), "\n");
+
+      throw new AssertionError(message.compose(), this.toBeVNode);
     }
-  }
-  return undefined;
-});
 
-ObjectAssertion.prototype.toBeVNode = function (): VNodeAssertion {
-  const received = this.obj;
-  const pass = typeof received === "object" && (received instanceof VNode || received instanceof VNodeWrapper);
-
-  if (!pass) {
-    const message = errMsg()
-      .matcherHint("toBeVNode", "received", "")
-      .info(`Expected ${this.type} to have VNode type:\n`)
-      .info("  ", r(received), "\n");
-
-    throw new AssertionError(message.compose(), this.toBeVNode);
-  }
-
-  return this as any as VNodeAssertion;
-};
+    return this as any as VNodeAssertion;
+  };
+}
