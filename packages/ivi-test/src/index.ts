@@ -1,7 +1,7 @@
 export { SnapshotFlags, toSnapshot } from "./snapshot";
 export { VNodeWrapper, VNodeListWrapper, visitUnwrapped, visitWrapped, virtualRender } from "./vdom";
 export {
-  Predicate, Matcher, VNodeMatcher, VNodeElementMatcher, VNodeInputElementMatcher, VNodeComponentMatcher, q,
+  Matcher, VNodeMatcher, VNodeElementMatcher, VNodeInputElementMatcher, VNodeComponentMatcher, q,
 } from "./query";
 export {
   addAnimation, addDOMReader, addVisibilityObserver, autofocus, clock, currentFrameAfter, currentFrameRead,

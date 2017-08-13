@@ -1,8 +1,8 @@
-import { CSSStyleProps, shallowEqual } from "ivi-core";
+import { CSSStyleProps, shallowEqual, Predicate } from "ivi-core";
 import { EventSource } from "ivi-events";
 import { Context, VNode, VNodeFlags, Component, ComponentClass, StatelessComponent, ConnectDescriptor } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
-import { Predicate, VNodeMatcher, query, queryAll, closest } from "./query";
+import { VNodeMatcher, query, queryAll, closest } from "./query";
 import { SnapshotFlags, toSnapshot } from "./snapshot";
 
 export function visitUnwrapped(
