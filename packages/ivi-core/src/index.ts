@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-export { Context, MaybeUndefined } from "./types";
+export { Predicate, Context, MaybeUndefined } from "./types";
 export { SelectorData, SelectorDataRef, selectorDataRef, selectorData, memoizeSelector } from "./selector";
 
 export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";

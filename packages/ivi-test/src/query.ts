@@ -1,4 +1,4 @@
-import { CSSStyleProps } from "ivi-core";
+import { Predicate, CSSStyleProps } from "ivi-core";
 import { EventSource } from "ivi-events";
 import { ComponentClass, StatelessComponent, ComponentFactory, isComponentFactory } from "ivi";
 import {
@@ -10,8 +10,6 @@ import {
   hasInputValue, hasInputChecked,
   innerText,
 } from "./vdom";
-
-export type Predicate<T> = (value: T) => boolean;
 
 function and<T>(a: Predicate<T>, b: Predicate<T>): Predicate<T> {
   return function (value: T): boolean {
