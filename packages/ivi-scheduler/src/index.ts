@@ -1,3 +1,5 @@
+import { DEV } from "ivi-vars";
+import { devModeOnError } from "ivi-core";
 import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
@@ -284,7 +286,7 @@ export function requestNextFrame(): void {
  *
  * @param t Current time.
  */
-function handleNextFrame(time?: number): void {
+function _handleNextFrame(time?: number): void {
   _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
 
   _updateCurrentFrameStartTime(time);
@@ -359,6 +361,24 @@ function handleNextFrame(time?: number): void {
   }
 
   _clock++;
+}
+
+/**
+ * Frame tasks scheduler event handler.
+ *
+ * @param t Current time.
+ */
+function handleNextFrame(t?: number): void {
+  if (DEV) {
+    try {
+      _handleNextFrame(t);
+    } catch (e) {
+      devModeOnError(e);
+      throw e;
+    }
+  } else {
+    _handleNextFrame(t);
+  }
 }
 
 function addFrameTaskUpdate(frame: FrameTasksGroup): void {

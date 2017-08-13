@@ -1,3 +1,4 @@
+import { devModeOnError } from "ivi-core";
 import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
@@ -318,82 +319,86 @@ export function triggerNextTick(): void {
  * triggerNextFrame triggers an update for the next frame.
  */
 export function triggerNextFrame(time?: number): void {
-  if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
-    _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
+  try {
+    if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
+      _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
 
-    if (time !== undefined) {
-      _currentFrameStartTime = time / 1000;
-    }
-
-    let tasks: (() => void)[];
-    let i: number;
-
-    const frame = _nextFrame;
-    _nextFrame = _currentFrame;
-    _currentFrame = frame;
-
-    _readers.run();
-
-    // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
-    // and repeat until all read and write tasks are executed.
-    do {
-      while ((frame.flags & FrameTasksGroupFlags.Read) !== 0) {
-        frame.flags ^= FrameTasksGroupFlags.Read;
-        tasks = frame.read!;
-        frame.read = null;
-
-        for (i = 0; i < tasks.length; i++) {
-          tasks[i]();
-        }
+      if (time !== undefined) {
+        _currentFrameStartTime = time / 1000;
       }
 
-      while ((frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) !== 0) {
-        if ((frame.flags & FrameTasksGroupFlags.Write) !== 0) {
-          frame.flags ^= FrameTasksGroupFlags.Write;
-          tasks = frame.write!;
-          frame.write = null;
+      let tasks: (() => void)[];
+      let i: number;
+
+      const frame = _nextFrame;
+      _nextFrame = _currentFrame;
+      _currentFrame = frame;
+
+      _readers.run();
+
+      // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM
+      // tasks and repeat until all read and write tasks are executed.
+      do {
+        while ((frame.flags & FrameTasksGroupFlags.Read) !== 0) {
+          frame.flags ^= FrameTasksGroupFlags.Read;
+          tasks = frame.read!;
+          frame.read = null;
+
           for (i = 0; i < tasks.length; i++) {
             tasks[i]();
           }
         }
 
-        if ((frame.flags & FrameTasksGroupFlags.Update) !== 0) {
-          frame.flags ^= FrameTasksGroupFlags.Update;
-          _update();
+        while ((frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) !== 0) {
+          if ((frame.flags & FrameTasksGroupFlags.Write) !== 0) {
+            frame.flags ^= FrameTasksGroupFlags.Write;
+            tasks = frame.write!;
+            frame.write = null;
+            for (i = 0; i < tasks.length; i++) {
+              tasks[i]();
+            }
+          }
+
+          if ((frame.flags & FrameTasksGroupFlags.Update) !== 0) {
+            frame.flags ^= FrameTasksGroupFlags.Update;
+            _update();
+          }
+        }
+      } while ((frame.flags & (
+        FrameTasksGroupFlags.Update |
+        FrameTasksGroupFlags.Write |
+        FrameTasksGroupFlags.Read
+      )) !== 0);
+
+      _flags ^= SchedulerFlags.CurrentFrameReady;
+
+      if ((_flags & SchedulerFlags.Hidden) === 0) {
+        _animations.run();
+      }
+
+      // Perform tasks that should be executed when all DOM ops are finished.
+      while ((frame.flags & FrameTasksGroupFlags.After) !== 0) {
+        frame.flags ^= FrameTasksGroupFlags.After;
+
+        tasks = frame.after!;
+        frame.after = null;
+        for (i = 0; i < tasks.length; i++) {
+          tasks[i]();
         }
       }
-    } while ((frame.flags & (
-      FrameTasksGroupFlags.Update |
-      FrameTasksGroupFlags.Write |
-      FrameTasksGroupFlags.Read
-    )) !== 0);
 
-    _flags ^= SchedulerFlags.CurrentFrameReady;
-
-    if ((_flags & SchedulerFlags.Hidden) === 0) {
-      _animations.run();
-    }
-
-    // Perform tasks that should be executed when all DOM ops are finished.
-    while ((frame.flags & FrameTasksGroupFlags.After) !== 0) {
-      frame.flags ^= FrameTasksGroupFlags.After;
-
-      tasks = frame.after!;
-      frame.after = null;
-      for (i = 0; i < tasks.length; i++) {
-        tasks[i]();
+      if (_autofocusedElement !== null) {
+        (_autofocusedElement as HTMLElement).focus();
+        _autofocusedElement = null;
       }
-    }
 
-    if (_autofocusedElement !== null) {
-      (_autofocusedElement as HTMLElement).focus();
-      _autofocusedElement = null;
-    }
+      if (_animations.tasks.length > 0) {
+        requestNextFrame();
+      }
 
-    if (_animations.tasks.length > 0) {
-      requestNextFrame();
+      _clock++;
     }
-
-    _clock++;
+  } catch (e) {
+    devModeOnError(e);
   }
 }

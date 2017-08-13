@@ -16,7 +16,7 @@
  */
 
 import { DEV } from "ivi-vars";
-import { Context, SVG_NAMESPACE, SelectorData, devModeOnError } from "ivi-core";
+import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
 import { setInnerHTML } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
@@ -130,7 +130,6 @@ export function renderVNode(
       return _renderVNode(parent, refChild, vnode, context);
     } catch (e) {
       stackTraceAugment(e);
-      devModeOnError(e);
       stackTraceReset();
       throw e;
     }
@@ -183,7 +182,6 @@ export function syncVNode(
       return;
     } catch (e) {
       stackTraceAugment(e);
-      devModeOnError(e);
       stackTraceReset();
       throw e;
     }
@@ -227,7 +225,6 @@ export function removeVNode(parent: Node, node: VNode<any>): void {
       return;
     } catch (e) {
       stackTraceAugment(e);
-      devModeOnError(e);
       stackTraceReset();
       throw e;
     }
@@ -273,7 +270,6 @@ export function augmentVNode(
       return;
     } catch (e) {
       stackTraceAugment(e);
-      devModeOnError(e);
       stackTraceReset();
       throw e;
     }
@@ -327,7 +323,6 @@ export function updateComponents(
       return;
     } catch (e) {
       stackTraceAugment(e);
-      devModeOnError(e);
       stackTraceReset();
       throw e;
     }
