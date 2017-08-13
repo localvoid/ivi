@@ -13,6 +13,20 @@ to make it easier to share code between client and server implementations.
 into its own namespace and prevent name collisions.
 - Improved tree shaking by simple bundlers (Google closure compiler can handle much more complicated scenarios).
 
+### ivi-vars
+
+This package contains different modules with predefined global variables that control behavior of ivi libraries.
+
+```
+ivi-vars/browser.js
+ivi-vars/browser-dev.js
+ivi-vars/ssr.js
+ivi-vars/ssr-dev.js
+ivi-vars/cjs/index.js
+```
+
+By default, ES6 module is pointing to `browser-dev.js` module and commonjs modules is pointing to `cjs/index.js`.
+
 ### ivi-core
 
 Shared code for browser and server implementations. It contains: basic types, data structures, helper functions,
@@ -59,6 +73,10 @@ Extension for [iko](https://github.com/localvoid/iko) assertion library.
 
 Basic global store implementation, useful for demo purposes.
 
+### ivi-tslint-rules
+
+TSLint rules.
+
 ## Virtual DOM
 
 ### Node Factories
@@ -69,15 +87,6 @@ correctly handle client-side and server-side differences.
 Because internal datastructure is semi-private, we need to create factory functions for all HTML and SVG elements and
 expose them as a public API, this way we can easily substitute this factory functions and get specialized
 implementation for client and server platforms.
-
-## Global Variables
-
-`__IVI_DEV__` is used for development builds.
-
-`__IVI_BROWSER__` is used for client-side builds.
-
-It is probably will be changed in the future, when google closure compiler adds support for defining variables in es6
-modules, we will try to match their conventions.
 
 ## Development Environment
 
