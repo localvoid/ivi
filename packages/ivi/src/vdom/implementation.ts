@@ -1020,7 +1020,7 @@ function vNodeSync(
   let instance;
   const bFlags = b._flags;
   if (vNodeCanSync(a, b) === true) {
-    instance = b._instance = a._instance;
+    b._instance = instance = a._instance;
 
     if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
       if ((bFlags & VNodeFlags.Text) !== 0) {
