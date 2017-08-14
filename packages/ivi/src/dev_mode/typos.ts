@@ -5,8 +5,10 @@ import { DEV_MODE, DevModeFlags, printWarn, printWarnOnce } from "./dev_mode";
 let DOMAttributeTypos: { [key: string]: string };
 if (DEV) {
   DOMAttributeTypos = {
-    "autoFocus": `Typo: to enable autofocus for an element, use "VNode.autofocus(focus: boolean)" method.`,
-    "autofocus": `Typo: to enable autofocus for an element, use "VNode.autofocus(focus: boolean)" method.`,
+    "autoFocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
+    "autofocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
+    "value": `Typo: use "VNode.value(value: string)" to set an input value.`,
+    "checked": `Typo: use "VNode.checked(checked: boolean)" to set an input checked status.`,
   };
 }
 
