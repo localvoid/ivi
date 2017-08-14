@@ -1,5 +1,8 @@
 import { VNode, VNodeFlags, ComponentClass, StatelessComponent } from "ivi";
 
+/**
+ * SnapshotFlags
+ */
 export const enum SnapshotFlags {
   IgnoreEvents = 1,
   IgnoreStatefulComponents = 1 << 1,
@@ -18,10 +21,23 @@ export const enum SnapshotFlags {
   DefaultFlags = IgnoreEvents | IgnoreContextComponents | IgnoreKeepAliveComponents,
 }
 
+/**
+ * toSnapshot generates a snapshot string from VNode.
+ *
+ * @param vnode VNode.
+ * @param flags See `SnapshotFlags` for details.
+ * @returns Snapshot string.
+ */
 export function toSnapshot(vnode: VNode<any>, flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
   return _toSnapshot(0, vnode, flags);
 }
 
+/**
+ * indent creates an indented string.
+ *
+ * @param n Indentation depth.
+ * @returns Indented string.
+ */
 function indent(n: number): string {
   let result = "";
   for (let i = 0; i < n; i++) {
@@ -30,6 +46,13 @@ function indent(n: number): string {
   return result;
 }
 
+/**
+ * renderAttrsToSnapshot generates a snapshot string from VNode properties.
+ *
+ * @param il Indentation depth.
+ * @param props Properties.
+ * @returns Stringified properties.
+ */
 function renderAttrsToSnapshot(il: number, props: { [key: string]: string }): string {
   let result = "";
   const keys = Object.keys(props);
@@ -50,6 +73,13 @@ function renderAttrsToSnapshot(il: number, props: { [key: string]: string }): st
   return result;
 }
 
+/**
+ * renderStyleToSnapshot generates a snapshot string from VNode style.
+ *
+ * @param il Indentation depth.
+ * @param style Style.
+ * @returns Stringified style.
+ */
 function renderStyleToSnapshot(il: number, style: { [key: string]: any }): string {
   const keys = Object.keys(style);
   if (keys.length === 0) {
@@ -67,10 +97,25 @@ function renderStyleToSnapshot(il: number, style: { [key: string]: any }): strin
   return result;
 }
 
+/**
+ * renderEventsToSnapshot generates a snapshot string from VNode events.
+ *
+ * @param il Indentation depth.
+ * @param events Events.
+ * @returns Stringified events.
+ */
 function renderEventsToSnapshot(il: number, events: { [key: string]: any }): string {
   return "";
 }
 
+/**
+ * _toSnapshot generates a snapshot string from VNode.
+ *
+ * @param il Indentation depth.
+ * @param vnode VNode.
+ * @param sFlags See `SnapshotFlags` for details.
+ * @returns Snapshot string.
+ */
 function _toSnapshot(
   il: number,
   vnode: VNode<any>,
