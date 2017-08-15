@@ -4,6 +4,7 @@
 
 - Declarative rendering with Virtual DOM
 - Components (stateless functions and stateful ES6 classes)
+- Connectors for sideways data loading
 - Extensible synthetic event subsystem
 - Synchronous and deterministic syncing algorithm
 - Children reconciliation with minimum number of DOM operations
@@ -11,7 +12,48 @@
 - Server side rendering
 - Advanced development mode
 - Test utilities
-- Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler)
+- Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler) `ADVANCED` mode.
+
+## Library Size
+
+It seems that nowadays many people in javascript community were brainwashed that small library size is a synonym to
+fast performance and simple implementation. In reality it usually means that library is using different tricks to reduce
+code size by using inappropriate data structures (slower performance), initializing data structures at runtime (slower
+bootstrap performance), reusing code for many different data types (slower performance), etc.
+
+Library size in ivi library is at the bottom on the list of priorities:
+
+- Correctness
+- Consistency / Predictable Behavior
+- Performance / Developer Experience
+- Library Size
+
+The minimal "hello world" application that is built with ivi library weights **~13kB** (~5kB gzipped).
+
+## Performance / Developer Experience
+
+Performance in ivi library is not about being just fast, it is a feature that improves Developer Experience by a lot. It
+is possible to build a fast UI application with any modern web UI library, but the difference is how much complexity it
+would require from an application developer to build a fast UI application.
+
+With a fast UI library we can completely ignore any complexities for majority of UI applications and rerender entire
+view from scratch when something is changed.
+
+ivi is optimized for idiomatic code without any weird "advanced" optimizations that are used by many UI libraries to get
+better results in benchmarks. And even without any "advanced" optimizations it is still
+[faster than all other libraries](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html)
+with a similar feature set. It is even
+[faster than popular string-based template renderers](https://medium.com/@localvoid/virtual-dom-ssr-performance-5c292d4961a0)
+for server-side rendering.
+
+But performance is also isn't a top priority for ivi, and that is why it provides many useful features that are lacking
+in many virtual dom libraries:
+
+- [Predictable reconciliation behaviour](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
+- Updatable contexts
+- Implicit keys to support patterns like this `condition ? h.div() : null`
+- `attached` lifecycle is invoked from top to bottom after instantiating all instances
+- `updated` lifecycle is always invoked for all parents when descendant is updated
 
 ## Questions
 
