@@ -7,7 +7,6 @@
  */
 
 import { FEATURES, FeatureFlags } from "ivi-core";
-import { scheduleTask } from "ivi-scheduler";
 import {
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventSource, EventHandler, dispatchEvent,
 } from "ivi-events";
@@ -32,7 +31,6 @@ export class GestureEventSource {
   private dependencies: number;
   private readonly pointers: GesturePointerEvent[];
   private readonly listener: GestureNativeEventSource;
-  private deactivating: boolean;
 
   constructor() {
     this.eventSource = {
@@ -44,40 +42,19 @@ export class GestureEventSource {
     this.listener = (FEATURES & FeatureFlags.TouchEvents) ?
       createTouchEventListener(this.pointers, this.dispatch) :
       createMouseEventListener(this.dispatch);
-    this.deactivating = false;
-  }
-
-  private addPointerListener = () => {
-    if (this.dependencies++ === 0) {
-      if (this.deactivating === true) {
-        this.deactivating = false;
-      } else {
-        this.listener.activate();
-      }
-    }
-  }
-
-  private removePointerListener = () => {
-    if (--this.dependencies === 0) {
-      if (this.deactivating === false) {
-        this.deactivating = true;
-        scheduleTask(() => {
-          if (this.deactivating === true) {
-            this.listener.deactivate();
-            this.deactivating = false;
-          }
-        });
-      }
-    }
   }
 
   private addGestureListener = (h: EventHandler) => {
-    this.addPointerListener();
+    if (this.dependencies++ === 0) {
+      this.listener.activate();
+    }
     h.listeners++;
   }
 
   private removeGestureListener = (h: EventHandler) => {
-    this.removePointerListener();
+    if (--this.dependencies === 0) {
+      this.listener.deactivate();
+    }
     if (--h.listeners === 0) {
       if (h.state !== null) {
         h.state.dispose();
@@ -134,7 +111,7 @@ export class GestureEventSource {
       }
 
       if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
-        this.listener.release(ev);
+        this.listener.stopMoveTracking(ev);
         pointerListDelete(this.pointers, ev.id);
       } else {
         pointerListSet(this.pointers, ev);

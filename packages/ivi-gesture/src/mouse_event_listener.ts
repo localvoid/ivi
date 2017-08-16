@@ -1,4 +1,5 @@
 import { FEATURES, FeatureFlags } from "ivi-core";
+import { getMouseButtons } from "ivi-dom";
 import { SyntheticEventFlags } from "ivi-events";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
@@ -11,19 +12,6 @@ declare global {
   interface UIEvent {
     sourceCapabilities: InputDeviceCapabilities;
   }
-}
-
-function getMouseButtons(ev: MouseEvent): number {
-  if ((FEATURES & FeatureFlags.MouseEventButtons) !== 0) {
-    return ev.buttons;
-  }
-
-  const button = ev.button;
-  const r = 1 << button;
-  if ((r & (2 | 4)) !== 0) {
-    return button << (((r >> 2) ^ 1) << 1);
-  }
-  return r;
 }
 
 function createGesturePointerEventFromMouseEvent(
