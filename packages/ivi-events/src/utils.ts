@@ -63,11 +63,27 @@ export const EVENT_CAPTURE_PASSIVE_OPTIONS =
     true;
 
 /**
+ * `{ capture: true, passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
+ */
+export const EVENT_CAPTURE_ACTIVE_OPTIONS =
+  ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
+    { "capture": true, "passive": false } :
+    true;
+
+/**
  * `{ passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
 export const EVENT_PASSIVE_OPTIONS =
   ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
     { "passive": true } :
+    false;
+
+/**
+ * `{ passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
+ */
+export const EVENT_ACTIVE_OPTIONS =
+  ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
+    { "passive": false } :
     false;
 
 /**
