@@ -1,5 +1,5 @@
 {
-  "name": "ivi-gesture",
+  "name": "ivi-gestures",
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
@@ -47,12 +47,14 @@
     "ivi-core": "^0.2.0",
     "ivi-dom": "^0.2.0",
     "ivi-events": "^0.2.0",
+    "ivi-math": "^0.0.1",
     "ivi-scheduler": "^0.2.0"
   },
   "devDependencies": {
     "ivi-core": "^0.2.0",
     "ivi-dom": "^0.2.0",
     "ivi-events": "^0.2.0",
+    "ivi-math": "^0.0.1",
     "ivi-scheduler": "^0.2.0"
   }
 }
