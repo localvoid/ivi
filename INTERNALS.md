@@ -32,6 +32,10 @@ By default, ES6 module is pointing to `browser-dev.js` module and commonjs modul
 Shared code for browser and server implementations. It contains: basic types, data structures, helper functions,
 client-side feature detection and user-agent detection.
 
+### ivi-math
+
+Math library for UI development.
+
 ### ivi-dom
 
 Fixes for browser quirks and DOM-related helper functions.
@@ -76,6 +80,10 @@ Basic global store implementation, useful for demo purposes.
 ### ivi-tslint-rules
 
 TSLint rules.
+
+### ivi-gestures
+
+**EXPERIMENTAL** package with gesture recognition (+DnD)
 
 ## Virtual DOM
 

@@ -51,8 +51,8 @@ in many virtual dom libraries:
 
 - [Predictable reconciliation behaviour](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Updatable contexts
-- Implicit keys to support patterns like this `condition ? h.div() : null`
-- `attached` lifecycle is invoked from top to bottom after instantiating all instances
+- Implicit keys to correctly support patterns like `condition ? h.div() : null`
+- `attached` lifecycle is invoked from top to bottom when all DOM nodes are instantiated
 - `updated` lifecycle is always invoked for all parents when descendant is updated
 
 ## Questions
