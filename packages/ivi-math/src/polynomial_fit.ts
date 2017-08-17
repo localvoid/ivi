@@ -3,8 +3,7 @@ import {
   matrixRowViewSet,
 } from "./matrix";
 
-export interface PolynomialFit {
-  coefficients: number[];
+export interface PolynomialFit extends Array<number> {
   confidence: number;
 }
 
@@ -13,10 +12,8 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
     return null;
   }
 
-  const result: PolynomialFit = {
-    coefficients: new Array<number>(degree + 1).fill(0),
-    confidence: 0,
-  };
+  const result = new Array<number>(degree + 1).fill(0) as PolynomialFit;
+  result.confidence = 0;
 
   const m = x.length;
   const n = degree + 1;
@@ -69,11 +66,11 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
   }
   for (let i = n - 1; i >= 0; i--) {
     matrixGetRowView(rowViewA, q, i);
-    result.coefficients[i] = matrixRowViewMul(rowViewA, wy);
+    result[i] = matrixRowViewMul(rowViewA, wy);
     for (let j = n - 1; j > i; j--) {
-      result.coefficients[i] -= matrixGet(r, i, j) * result.coefficients[j];
+      result[i] -= matrixGet(r, i, j) * result[j];
     }
-    result.coefficients[i] /= matrixGet(r, i, i);
+    result[i] /= matrixGet(r, i, i);
   }
 
   let yMean = 0;
@@ -86,10 +83,10 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
   let sumSquaredTotal = 0;
   for (let h = 0; h < m; h++) {
     let term = 1;
-    let err = y[h] - result.coefficients[0];
+    let err = y[h] - result[0];
     for (let i = 1; i < n; i++) {
       term *= x[h];
-      err -= term * result.coefficients[i];
+      err -= term * result[i];
     }
     const ww = w[h] * w[h];
     const v = y[h] - yMean;
