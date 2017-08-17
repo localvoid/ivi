@@ -31,18 +31,23 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
 
   const q = matrix(n, m);
   const r = matrix(n, n);
+  const rowViewA = matrixRowView(null, 0, 0);
+  const rowViewB = matrixRowView(null, 0, 0);
   for (let j = 0; j < n; j++) {
     for (let h = 0; h < m; h++) {
       matrixSet(q, j, h, matrixGet(a, j, h));
     }
     for (let i = 0; i < j; i++) {
-      const dot = matrixRowViewMul(matrixGetRowView(q, j), matrixGetRowView(q, i));
+      matrixGetRowView(rowViewA, q, j);
+      matrixGetRowView(rowViewB, q, i);
+      const dot = matrixRowViewMul(rowViewA, rowViewB);
       for (let h = 0; h < m; h++) {
         matrixSet(q, j, h, matrixGet(q, j, h) - dot * matrixGet(q, i, h));
       }
     }
 
-    const norm = matrixRowViewNormalize(matrixGetRowView(q, j));
+    matrixGetRowView(rowViewA, q, j);
+    const norm = matrixRowViewNormalize(rowViewA);
     if (norm < 0.000001) {
       return null;
     }
@@ -52,7 +57,9 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
       matrixSet(q, j, h, matrixGet(q, j, h) * inverseNorm);
     }
     for (let i = 0; i < n; i++) {
-      matrixSet(r, j, i, i < j ? 0.0 : matrixRowViewMul(matrixGetRowView(q, j), matrixGetRowView(a, i)));
+      matrixGetRowView(rowViewA, q, j);
+      matrixGetRowView(rowViewB, a, i);
+      matrixSet(r, j, i, i < j ? 0.0 : matrixRowViewMul(rowViewA, rowViewB));
     }
   }
 
@@ -61,7 +68,8 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
     matrixRowViewSet(wy, h, y[h] * w[h]);
   }
   for (let i = n - 1; i >= 0; i--) {
-    result.coefficients[i] = matrixRowViewMul(matrixGetRowView(q, i), wy);
+    matrixGetRowView(rowViewA, q, i);
+    result.coefficients[i] = matrixRowViewMul(rowViewA, wy);
     for (let j = n - 1; j > i; j--) {
       result.coefficients[i] -= matrixGet(r, i, j) * result.coefficients[j];
     }

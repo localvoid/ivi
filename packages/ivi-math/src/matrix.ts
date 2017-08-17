@@ -4,7 +4,7 @@ export interface Matrix {
 }
 
 export interface MatrixRowView {
-  items: number[];
+  items: number[] | null;
   offset: number;
   length: number;
 }
@@ -24,26 +24,28 @@ export function matrixSet(m: Matrix, i: number, j: number, value: number): void 
   m.items[i * m.columns + j] = value;
 }
 
-export function matrixGetRowView(m: Matrix, row: number): MatrixRowView {
-  return matrixRowView(m.items, row * m.columns, m.columns);
-}
-
-export function matrixRowView(items: number[], offset: number, length: number): MatrixRowView {
+export function matrixRowView(items: number[] | null, offset: number, length: number): MatrixRowView {
   return { items, offset, length };
 }
 
+export function matrixGetRowView(view: MatrixRowView, m: Matrix, row: number): void {
+  view.items = m.items;
+  view.offset = row * m.columns;
+  view.length = m.columns;
+}
+
 export function matrixRowViewGet(v: MatrixRowView, i: number): number {
-  return v.items[i + v.offset];
+  return v.items![i + v.offset];
 }
 
 export function matrixRowViewSet(v: MatrixRowView, i: number, value: number): void {
-  v.items[i + v.offset] = value;
+  v.items![i + v.offset] = value;
 }
 
 export function matrixRowViewMul(lhs: MatrixRowView, rhs: MatrixRowView): number {
   let result = 0;
   for (let i = 0; i < lhs.length; i++) {
-    result += lhs.items[i] * rhs.items[i];
+    result += lhs.items![i] * rhs.items![i];
   }
   return result;
 }
