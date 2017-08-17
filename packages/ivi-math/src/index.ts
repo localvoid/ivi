@@ -6,3 +6,4 @@ export {
   Matrix, MatrixRowView, matrixGet, matrixSet, matrixGetRowView, matrixRowView, matrixRowViewGet, matrixRowViewSet,
   matrixRowViewMul, matrixRowViewNormalize,
 } from "./matrix";
+export { PolynomialFit, polynomialFit } from "./polynomial_fit";
