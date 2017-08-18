@@ -36,13 +36,13 @@ const HORIZON_MILLISECONDS = 100;
 const MIN_SAMPLE_SIZE = 3;
 
 export interface VelocityTracker {
-  readonly samples: PointAtTime[];
+  readonly samples: Array<PointAtTime | null>;
   index: number;
 }
 
 export function createVelocityTracker(): VelocityTracker {
   return {
-    samples: new Array<PointAtTime>(HISTORY_SIZE),
+    samples: new Array<PointAtTime | null>(HISTORY_SIZE).fill(null),
     index: 0,
   };
 }
@@ -89,9 +89,12 @@ export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | n
     y.push(position.y);
     w.push(1);
     time.push(-age);
-    index = ((index === 0) ? HISTORY_SIZE : index) - 1;
+    index = (index - 1) & INDEX_MASK;
     sampleCount++;
   } while (sampleCount < HISTORY_SIZE);
+
+  const duration = newestSample.time - oldestSample.time;
+  const offset = vec2Sub(newestSample.point, oldestSample.point);
 
   if (sampleCount > MIN_SAMPLE_SIZE) {
     const xFit = polynomialFit(2, time, x, w);
@@ -101,19 +104,14 @@ export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | n
         return velocityEstimate(
           vec2(xFit[1] * 1000, yFit[1] * 1000),
           xFit.confidence * yFit.confidence,
-          newestSample.time - oldestSample.time,
-          vec2Sub(newestSample.point, oldestSample.point),
+          duration,
+          offset,
         );
       }
     }
   }
 
-  return velocityEstimate(
-    ZeroVec2,
-    1,
-    newestSample.time - oldestSample.time,
-    vec2Sub(newestSample.point, oldestSample.point),
-  );
+  return velocityEstimate(ZeroVec2, 1, duration, offset);
 }
 
 export function calculateVelocity(tracker: VelocityTracker): Vec2 | null {
