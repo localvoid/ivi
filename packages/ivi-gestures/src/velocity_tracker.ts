@@ -30,91 +30,96 @@ function velocityEstimate(pixelsPerSecond: Vec2, confidence: number, duration: n
 }
 
 const ASSUME_POINTER_MOVE_STOPPED_MILLISECONDS = 40;
-const HISTORY_SIZE = 20;
+const HISTORY_SIZE = 16;
+const INDEX_MASK = 0b1111;
 const HORIZON_MILLISECONDS = 100;
 const MIN_SAMPLE_SIZE = 3;
 
-export class VelocityTracker {
-  private _samples = new Array<PointAtTime>(HISTORY_SIZE);
-  private _index = 0;
+export interface VelocityTracker {
+  readonly samples: PointAtTime[];
+  index: number;
+}
 
-  addPosition(time: number, position: Vec2) {
-    this._index++;
-    if (this._index === HISTORY_SIZE) {
-      this._index = 0;
-    }
-    this._samples[this._index] = { time: time, point: position };
+export function createVelocityTracker(): VelocityTracker {
+  return {
+    samples: new Array<PointAtTime>(HISTORY_SIZE),
+    index: 0,
+  };
+}
+
+export function trackPosition(tracker: VelocityTracker, time: number, point: Vec2): void {
+  const index = (tracker.index + 1) & INDEX_MASK;
+  tracker.index = index;
+  tracker.samples[index] = { time, point };
+}
+
+export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | null {
+  let index = tracker.index;
+  const newestSample = tracker.samples[index];
+  if (newestSample === null) {
+    return null;
   }
 
-  getVelocityEstimate(): VelocityEstimate | null {
-    let index = this._index;
+  const x = [] as number[];
+  const y = [] as number[];
+  const w = [] as number[];
+  const time = [] as number[];
 
-    const newestSample = this._samples[index];
-    if (newestSample === null) {
-      return null;
+  let sampleCount = 0;
+  let previousSample = newestSample;
+  let oldestSample = newestSample;
+
+  do {
+    const sample = tracker.samples[index];
+    if (sample === null) {
+      break;
     }
 
-    const x = [] as number[];
-    const y = [] as number[];
-    const w = [] as number[];
-    const time = [] as number[];
+    const age = newestSample.time - sample.time;
+    const delta = Math.abs(sample.time - previousSample.time);
+    previousSample = sample;
 
-    let sampleCount = 0;
-    let previousSample = newestSample;
-    let oldestSample = newestSample;
-
-    do {
-      const sample = this._samples[index];
-      if (sample === null) {
-        break;
-      }
-
-      const age = newestSample.time - sample.time;
-      const delta = Math.abs(sample.time - previousSample.time);
-      previousSample = sample;
-
-      if (age > HORIZON_MILLISECONDS || delta > ASSUME_POINTER_MOVE_STOPPED_MILLISECONDS) {
-        break;
-      }
-
-      oldestSample = sample;
-      const position = sample.point;
-      x.push(position.x);
-      y.push(position.y);
-      w.push(1);
-      time.push(-age);
-      index = ((index === 0) ? HISTORY_SIZE : index) - 1;
-      sampleCount++;
-    } while (sampleCount < HISTORY_SIZE);
-
-    if (sampleCount > MIN_SAMPLE_SIZE) {
-      const xFit = polynomialFit(2, time, x, w);
-      if (xFit !== null) {
-        const yFit = polynomialFit(2, time, y, w);
-        if (yFit !== null) {
-          return velocityEstimate(
-            vec2(xFit[1] * 1000, yFit[1] * 1000),
-            xFit.confidence * yFit.confidence,
-            newestSample.time - oldestSample.time,
-            vec2Sub(newestSample.point, oldestSample.point),
-          );
-        }
-      }
+    if (age > HORIZON_MILLISECONDS || delta > ASSUME_POINTER_MOVE_STOPPED_MILLISECONDS) {
+      break;
     }
 
-    return velocityEstimate(
-      ZeroVec2,
-      1,
-      newestSample.time - oldestSample.time,
-      vec2Sub(newestSample.point, oldestSample.point),
-    );
+    oldestSample = sample;
+    const position = sample.point;
+    x.push(position.x);
+    y.push(position.y);
+    w.push(1);
+    time.push(-age);
+    index = ((index === 0) ? HISTORY_SIZE : index) - 1;
+    sampleCount++;
+  } while (sampleCount < HISTORY_SIZE);
+
+  if (sampleCount > MIN_SAMPLE_SIZE) {
+    const xFit = polynomialFit(2, time, x, w);
+    if (xFit !== null) {
+      const yFit = polynomialFit(2, time, y, w);
+      if (yFit !== null) {
+        return velocityEstimate(
+          vec2(xFit[1] * 1000, yFit[1] * 1000),
+          xFit.confidence * yFit.confidence,
+          newestSample.time - oldestSample.time,
+          vec2Sub(newestSample.point, oldestSample.point),
+        );
+      }
+    }
   }
 
-  getVelocity(): Vec2 | null {
-    const estimate = this.getVelocityEstimate();
-    if (estimate === null || vec2Equal(estimate.pixelsPerSecond, ZeroVec2)) {
-      return null;
-    }
-    return estimate.pixelsPerSecond;
+  return velocityEstimate(
+    ZeroVec2,
+    1,
+    newestSample.time - oldestSample.time,
+    vec2Sub(newestSample.point, oldestSample.point),
+  );
+}
+
+export function calculateVelocity(tracker: VelocityTracker): Vec2 | null {
+  const estimate = estimateVelocity(tracker);
+  if (estimate === null || vec2Equal(estimate.pixelsPerSecond, ZeroVec2) === true) {
+    return null;
   }
+  return estimate.pixelsPerSecond;
 }
