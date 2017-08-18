@@ -18,6 +18,25 @@ export { NativeEventSource } from "./native_event_source";
 export { syncEvents, attachEvents, detachEvents } from "./sync_events";
 
 export {
+  EventSourceAbort, EventSourceActivate, EventSourceAriaRequest, EventSourceBeforeActivate, EventSourceBeforeCopy,
+  EventSourceBeforeCut, EventSourceBeforeDeactivate, EventSourceBeforePaste, EventSourceBlur, EventSourceCanPlay,
+  EventSourceCanPlaythrough, EventSourceChange, EventSourceClick, EventSourceContextMenu, EventSourceCopy,
+  EventSourceCueChange, EventSourceCut, EventSourceDoubleClick, EventSourceDeactivate, EventSourceDrag,
+  EventSourceDragEnd, EventSourceDragEnter, EventSourceDragLeave, EventSourceDragOver, EventSourceDragStart,
+  EventSourceDrop, EventSourceDurationChange, EventSourceEmptied, EventSourceEncrypted, EventSourceEnded,
+  EventSourceError, EventSourceFocus, EventSourceGotPointerCapture, EventSourceInput, EventSourceInvalid,
+  EventSourceKeyDown, EventSourceKeyPress, EventSourceKeyUp, EventSourceLoad, EventSourceLoadedSata,
+  EventSourceLoadedMetadata, EventSourceLoadStart, EventSourceLostPointerCapture, EventSourceMouseDown,
+  EventSourceMouseEnter, EventSourceMouseLeave, EventSourceMouseMove, EventSourceMouseOut, EventSourceMouseOver,
+  EventSourceMouseUp, EventSourcePaste, EventSourcePause, EventSourcePlay, EventSourcePlaying,
+  EventSourcePointerCancel, EventSourcePointerDown, EventSourcePointerEnter, EventSourcePointerLeave,
+  EventSourcePointerMove, EventSourcePointerOut, EventSourcePointerOver, EventSourcePointerUp, EventSourceProgress,
+  EventSourceRateChange, EventSourceReset, EventSourceScroll, EventSourceSeeked, EventSourceSeeking, EventSourceSelect,
+  EventSourceSelectStart, EventSourceStalled, EventSourceSubmit, EventSourceSuspend, EventSourceTimeUpdate,
+  EventSourceTouchCancel, EventSourceTouchEnd, EventSourceTouchMove, EventSourceTouchStart, EventSourceUnload,
+  EventSourceVolumeChange, EventSourceWaiting, EventSourceWheel, EventSourceActiveTouchEnd, EventSourceActiveTouchMove,
+  EventSourceActiveTouchstart, EventSourceActiveWheel,
+
   createEventHandler,
 
   onAbort, onActivate, onAriaRequest, onBeforeActivate, onBeforeCopy, onBeforeCut, onBeforeDeactivate, onBeforePaste,
