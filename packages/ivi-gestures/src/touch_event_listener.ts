@@ -1,5 +1,8 @@
 import { FEATURES, FeatureFlags } from "ivi-core";
-import { SyntheticEventFlags, EVENT_CAPTURE_ACTIVE_OPTIONS } from "ivi-events";
+import {
+  SyntheticEventFlags, SyntheticTouchEvent, EventSourceActiveTouchStart, EventSourceTouchEnd, EventSourceTouchCancel,
+  EventSourceActiveTouchMove,
+} from "ivi-events";
 import { isNativeGestureAccepted } from "./arena";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
@@ -111,15 +114,15 @@ export function createTouchEventListener(
   function activate() {
     mouseListener.activate();
     // touchstart should be active, otherwise touchmove can't be canceled.
-    document.addEventListener("touchstart", onStart, EVENT_CAPTURE_ACTIVE_OPTIONS as any);
-    document.addEventListener("touchend", onEnd);
-    document.addEventListener("touchcancel", onCancel);
+    EventSourceActiveTouchStart.addBeforeListener(onStart);
+    EventSourceTouchEnd.addBeforeListener(onEnd);
+    EventSourceTouchCancel.addBeforeListener(onCancel);
   }
 
   function deactivate() {
-    document.removeEventListener("touchstart", onStart, EVENT_CAPTURE_ACTIVE_OPTIONS as any);
-    document.removeEventListener("touchend", onEnd);
-    document.removeEventListener("touchcancel", onCancel);
+    EventSourceActiveTouchStart.removeBeforeListener(onStart);
+    EventSourceTouchEnd.removeBeforeListener(onEnd);
+    EventSourceTouchCancel.removeBeforeListener(onCancel);
     mouseListener.deactivate();
   }
 
@@ -127,7 +130,7 @@ export function createTouchEventListener(
     if (ev.id === 1) {
       mouseListener.startMoveTracking(ev, target);
     } else {
-      document.addEventListener("touchmove", onMove, EVENT_CAPTURE_ACTIVE_OPTIONS as any);
+      EventSourceActiveTouchMove.addBeforeListener(onMove);
     }
   }
 
@@ -135,7 +138,7 @@ export function createTouchEventListener(
     if (ev.id === 1) {
       mouseListener.stopMoveTracking(ev);
     } else {
-      document.removeEventListener("touchmove", onMove, EVENT_CAPTURE_ACTIVE_OPTIONS as any);
+      EventSourceActiveTouchMove.removeBeforeListener(onMove);
     }
   }
 
@@ -169,7 +172,8 @@ export function createTouchEventListener(
     }
   }
 
-  function onStart(ev: TouchEvent) {
+  function onStart(s: SyntheticTouchEvent): void {
+    const ev = s.native;
     vacuum(ev);
 
     const touches = ev.changedTouches;
@@ -194,7 +198,8 @@ export function createTouchEventListener(
     }
   }
 
-  function onMove(ev: TouchEvent) {
+  function onMove(s: SyntheticTouchEvent) {
+    const ev = s.native;
     const touches = ev.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const touch = touches[i];
@@ -212,7 +217,8 @@ export function createTouchEventListener(
     }
   }
 
-  function onEnd(ev: TouchEvent) {
+  function onEnd(s: SyntheticTouchEvent) {
+    const ev = s.native;
     const touches = ev.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const touch = touches[i];
@@ -233,7 +239,8 @@ export function createTouchEventListener(
     }
   }
 
-  function onCancel(ev: TouchEvent) {
+  function onCancel(s: SyntheticTouchEvent) {
+    const ev = s.native;
     const touches = ev.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const touch = touches[i];

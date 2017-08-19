@@ -1,6 +1,8 @@
 import { FEATURES, FeatureFlags } from "ivi-core";
 import { getMouseButtons } from "ivi-dom";
-import { SyntheticEventFlags } from "ivi-events";
+import {
+  SyntheticEventFlags, SyntheticMouseEvent, EventSourceMouseDown, EventSourceMouseUp, EventSourceMouseMove,
+} from "ivi-events";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
 
@@ -43,23 +45,23 @@ export function createMouseEventListener(
   let activePointer: GesturePointerEvent | null = null;
 
   function activate() {
-    document.addEventListener("mousedown", onDown, true);
-    document.addEventListener("mouseup", onUp, true);
+    EventSourceMouseDown.addBeforeListener(onDown);
+    EventSourceMouseUp.addBeforeListener(onUp);
   }
 
   function deactivate() {
-    document.removeEventListener("mousedown", onDown, true);
-    document.removeEventListener("mouseup", onUp, true);
+    EventSourceMouseDown.removeBeforeListener(onDown);
+    EventSourceMouseUp.removeBeforeListener(onUp);
   }
 
   function startMoveTracking(ev: GesturePointerEvent, target: Element) {
     activePointer = ev;
-    document.addEventListener("mousemove", onMove, true);
+    EventSourceMouseMove.addBeforeListener(onMove);
   }
 
   function stopMoveTracking(ev: GesturePointerEvent) {
     activePointer = null;
-    document.removeEventListener("mousemove", onMove, true);
+    EventSourceMouseMove.removeBeforeListener(onMove);
   }
 
   function isEventSimulatedFromTouch(ev: MouseEvent): boolean {
@@ -85,7 +87,8 @@ export function createMouseEventListener(
     return false;
   }
 
-  function onDown(ev: MouseEvent) {
+  function onDown(s: SyntheticMouseEvent<MouseEvent>): void {
+    const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       const buttons = getMouseButtons(ev);
       let pointer;
@@ -106,7 +109,8 @@ export function createMouseEventListener(
     }
   }
 
-  function onMove(ev: MouseEvent) {
+  function onMove(s: SyntheticMouseEvent<MouseEvent>): void {
+    const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       if (activePointer !== null) {
         let pointer;
@@ -128,7 +132,8 @@ export function createMouseEventListener(
     }
   }
 
-  function onUp(ev: MouseEvent) {
+  function onUp(s: SyntheticMouseEvent<MouseEvent>): void {
+    const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       if (activePointer !== null) {
         let buttons = getMouseButtons(ev);
