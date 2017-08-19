@@ -101,7 +101,7 @@ export const EventSourceWheel = new NativeEventSource<SyntheticNativeEventClass<
 
 export const EventSourceActiveTouchEnd = new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchend", SyntheticTouchEvent);
 export const EventSourceActiveTouchMove = new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchmove", SyntheticTouchEvent);
-export const EventSourceActiveTouchstart = new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchstart", SyntheticTouchEvent);
+export const EventSourceActiveTouchStart = new NativeEventSource<SyntheticNativeEventClass<TouchEvent, SyntheticTouchEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchstart", SyntheticTouchEvent);
 export const EventSourceActiveWheel = new NativeEventSource<SyntheticNativeEventClass<WheelEvent, SyntheticWheelEvent>>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "wheel", SyntheticWheelEvent);
 
 /**
@@ -625,25 +625,25 @@ export function onActiveTouchEnd(
   handler: (ev: SyntheticTouchEvent) => void,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
-  return createEventHandler<SyntheticTouchEvent>(EventSourceTouchEnd.eventSource, handler, capture);
+  return createEventHandler<SyntheticTouchEvent>(EventSourceActiveTouchEnd.eventSource, handler, capture);
 }
 export function onActiveTouchMove(
   handler: (ev: SyntheticTouchEvent) => void,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
-  return createEventHandler<SyntheticTouchEvent>(EventSourceTouchMove.eventSource, handler, capture);
+  return createEventHandler<SyntheticTouchEvent>(EventSourceActiveTouchMove.eventSource, handler, capture);
 }
 export function onActiveTouchStart(
   handler: (ev: SyntheticTouchEvent) => void,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
-  return createEventHandler<SyntheticTouchEvent>(EventSourceTouchStart.eventSource, handler, capture);
+  return createEventHandler<SyntheticTouchEvent>(EventSourceActiveTouchStart.eventSource, handler, capture);
 }
 export function onActiveWheel(
   handler: (ev: SyntheticWheelEvent) => void,
   capture = false,
 ): EventHandler<SyntheticWheelEvent> {
-  return createEventHandler<SyntheticWheelEvent>(EventSourceWheel.eventSource, handler, capture);
+  return createEventHandler<SyntheticWheelEvent>(EventSourceActiveWheel.eventSource, handler, capture);
 }
 
 /* tslint:enable:max-line-length */

@@ -35,7 +35,7 @@ export {
   EventSourceSelectStart, EventSourceStalled, EventSourceSubmit, EventSourceSuspend, EventSourceTimeUpdate,
   EventSourceTouchCancel, EventSourceTouchEnd, EventSourceTouchMove, EventSourceTouchStart, EventSourceUnload,
   EventSourceVolumeChange, EventSourceWaiting, EventSourceWheel, EventSourceActiveTouchEnd, EventSourceActiveTouchMove,
-  EventSourceActiveTouchstart, EventSourceActiveWheel,
+  EventSourceActiveTouchStart, EventSourceActiveWheel,
 
   createEventHandler,
 
