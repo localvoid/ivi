@@ -7,7 +7,7 @@
 export function nodeDepth(node: Node | null): number {
   let depth = 0;
   while (node !== null) {
-    depth++;
+    ++depth;
     node = node.parentNode;
   }
   return depth;

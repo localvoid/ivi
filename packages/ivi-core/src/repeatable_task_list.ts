@@ -26,7 +26,7 @@ export class RepeatableTaskList {
    * run runs repeatable tasks.
    */
   run(): void {
-    for (let i = 0; i < this.tasks.length; i++) {
+    for (let i = 0; i < this.tasks.length; ++i) {
       const task = this.tasks[i];
       if (task() === true) {
         unorderedArrayDelete(this.tasks, i--);

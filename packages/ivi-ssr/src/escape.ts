@@ -13,7 +13,7 @@ export function escapeText(text: string | number): string {
     let result = text;
     let start = 0;
     let i = 0;
-    for (; i < text.length; i++) {
+    for (; i < text.length; ++i) {
       let escape;
       switch (text.charCodeAt(i)) {
         case 38: // &
@@ -61,7 +61,7 @@ export function escapeAttributeValue(text: string | number): string {
     let result = text;
     let start = 0;
     let i = 0;
-    for (; i < text.length; i++) {
+    for (; i < text.length; ++i) {
       let escape;
       switch (text.charCodeAt(i)) {
         case 34: // "
@@ -107,7 +107,7 @@ export function escapeJavascript(text: string): string {
   let escape;
   let start = 0;
   let i = 0;
-  for (; i < text.length; i++) {
+  for (; i < text.length; ++i) {
     switch (text.charCodeAt(i)) {
       case 47: // /
         escape = "\\u002F";

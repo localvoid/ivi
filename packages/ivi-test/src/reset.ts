@@ -13,7 +13,7 @@ export function reset() {
   const tasks = _resetTasks;
   if (tasks.length > 0) {
     _resetTasks = [];
-    for (let i = 0; i < tasks.length; i++) {
+    for (let i = 0; i < tasks.length; ++i) {
       tasks[i]();
     }
   }

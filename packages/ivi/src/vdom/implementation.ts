@@ -64,7 +64,7 @@ function componentPerfMarkBegin(method: string, vnode: VNode<any>): void {
       } else {
         id = perfMarkIds[perfMarkIndex];
       }
-      perfMarkIndex++;
+      ++perfMarkIndex;
       perfMarkBegin(id);
     }
   }
@@ -343,7 +343,7 @@ function vNodeAttach(vnode: VNode<any>): void {
       let children = vnode._children;
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
-        for (let i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; ++i) {
           vNodeAttach(children[i]);
         }
       } else {
@@ -425,7 +425,7 @@ function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
  * @param vnodes Array of VNodes.
  */
 function vNodeDetachAll(vnodes: VNode<any>[], syncFlags: SyncFlags): void {
-  for (let i = 0; i < vnodes.length; i++) {
+  for (let i = 0; i < vnodes.length; ++i) {
     vNodeDetach(vnodes[i], syncFlags);
   }
 }
@@ -453,7 +453,7 @@ function vNodeUpdateComponents(
       let children = vnode._children;
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
-        for (let i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; ++i) {
           deepUpdate |= vNodeUpdateComponents(p, children[i], context, syncFlags);
         }
       } else {
@@ -671,7 +671,7 @@ function vNodeRender(
             node.textContent = children as string;
           } else {
             children = children as VNode<any>[];
-            for (i = 0; i < children.length; i++) {
+            for (i = 0; i < children.length; ++i) {
               child = children[i];
               childNode = vNodeRender(node, child, context);
               node.insertBefore(childNode, null);
@@ -858,7 +858,7 @@ function vNodeAugment(
             let domChild = node.firstChild;
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
               const children = vnode._children as VNode<any>[];
-              for (let i = 0; i < children.length; i++) {
+              for (let i = 0; i < children.length; ++i) {
                 if (DEV) {
                   if (domChild === null) {
                     throw new Error(`Invalid children: expected to find ${children.length} children nodes.`);
@@ -1229,9 +1229,9 @@ function syncChildren(
         parent.textContent = b as string;
       } else {
         b = b as VNode<any>[];
-        do {
-          vNodeRenderIntoAndAttach(parent, null, b[i++], context, syncFlags);
-        } while (i < b.length);
+        for (; i < b.length; ++i) {
+          vNodeRenderIntoAndAttach(parent, null, b[i], context, syncFlags);
+        }
       }
     } else if ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
       vNodeRenderIntoAndAttach(parent, null, b as VNode<any>, context, syncFlags);
@@ -1275,9 +1275,9 @@ function syncChildren(
         parent.textContent = "";
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
           b = b as VNode<any>[];
-          do {
-            vNodeRenderIntoAndAttach(parent, null, b[i++], context, syncFlags);
-          } while (i < b.length);
+          for (; i < b.length; ++i) {
+            vNodeRenderIntoAndAttach(parent, null, b[i], context, syncFlags);
+          }
         } else {
           vNodeRenderIntoAndAttach(parent, null, b as VNode<any>, context, syncFlags);
         }
@@ -1296,21 +1296,19 @@ function syncChildren(
       } else {
         b = b as VNode<any>;
         synced = -1;
-        i = 0;
-        do {
+        for (i = 0; i < a.length; ++i) {
           node = a[i];
           if (vNodeEqualKeys(node, b) === true) {
             vNodeSync(parent, node, b, context, syncFlags);
             synced = i;
             break;
           }
-          i++;
-        } while (i < a.length);
+        }
         if (synced > -1) {
-          for (i = 0; i < synced; i++) {
+          for (i = 0; i < synced; ++i) {
             vNodeRemoveChild(parent, a[i], syncFlags);
           }
-          for (i = synced + 1; i < a.length; i++) {
+          for (i = synced + 1; i < a.length; ++i) {
             vNodeRemoveChild(parent, a[i], syncFlags);
           }
         } else {
@@ -1330,27 +1328,25 @@ function syncChildren(
       } else if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
         b = b as VNode<any>[];
         synced = -1;
-        i = 0;
-        do {
+        for (i = 0; i < b.length; ++i) {
           node = b[i];
           if (vNodeEqualKeys(a, node) === true) {
             vNodeSync(parent, a, node, context, syncFlags);
             synced = i;
             break;
           }
-          i++;
-        } while (i < b.length);
+        }
         if (synced > -1) {
           const next = getDOMInstanceFromVNode(a);
-          for (i = 0; i < synced; i++) {
+          for (i = 0; i < synced; ++i) {
             vNodeRenderIntoAndAttach(parent, next, b[i], context, syncFlags);
           }
-          for (i = synced + 1; i < b.length; i++) {
+          for (i = synced + 1; i < b.length; ++i) {
             vNodeRenderIntoAndAttach(parent, null, b[i], context, syncFlags);
           }
         } else {
           vNodeRemoveChild(parent, a, syncFlags);
-          for (i = 0; i < b.length; i++) {
+          for (i = 0; i < b.length; ++i) {
             vNodeRenderIntoAndAttach(parent, null, b[i], context, syncFlags);
           }
         }
@@ -1637,8 +1633,8 @@ function syncChildrenTrackByKeys(
     // Sync nodes with the same key at the beginning.
     while (vNodeEqualKeys(aStartNode, bStartNode) === true) {
       vNodeSync(parent, aStartNode, bStartNode, context, syncFlags);
-      aStart++;
-      bStart++;
+      ++aStart;
+      ++bStart;
       if (aStart > aEnd || bStart > bEnd) {
         break outer;
       }
@@ -1649,8 +1645,8 @@ function syncChildrenTrackByKeys(
     // Sync nodes with the same key at the end.
     while (vNodeEqualKeys(aEndNode, bEndNode) === true) {
       vNodeSync(parent, aEndNode, bEndNode, context, syncFlags);
-      aEnd--;
-      bEnd--;
+      --aEnd;
+      --bEnd;
       if (aStart > aEnd || bStart > bEnd) {
         break outer;
       }
@@ -1689,9 +1685,9 @@ function syncChildrenTrackByKeys(
     let synced = 0;
 
     if ((aLength | bLength) < 32 || bLength < 4) {
-      for (i = aStart; i <= aEnd && synced < bLength; i++) {
+      for (i = aStart; i <= aEnd && synced < bLength; ++i) {
         aNode = a[i];
-        for (j = bStart; j <= bEnd; j++) {
+        for (j = bStart; j <= bEnd; ++j) {
           k = j - bStart;
           if (sources[k] === -1) {
             bNode = b[j];
@@ -1704,7 +1700,7 @@ function syncChildrenTrackByKeys(
                 pos = j;
               }
               vNodeSync(parent, aNode, bNode, context, syncFlags);
-              synced++;
+              ++synced;
               aNullable[i] = null;
               break;
             }
@@ -1715,7 +1711,7 @@ function syncChildrenTrackByKeys(
       let keyIndex: Map<any, number> | undefined;
       let positionKeyIndex: Map<number, number> | undefined;
 
-      for (i = bStart; i <= bEnd; i++) {
+      for (i = bStart; i <= bEnd; ++i) {
         node = b[i];
         if ((node._flags & VNodeFlags.Key) !== 0) {
           if (keyIndex === undefined) {
@@ -1730,7 +1726,7 @@ function syncChildrenTrackByKeys(
         }
       }
 
-      for (i = aStart; i <= aEnd && synced < bLength; i++) {
+      for (i = aStart; i <= aEnd && synced < bLength; ++i) {
         aNode = a[i];
 
         if ((aNode._flags & VNodeFlags.Key) !== 0) {
@@ -1748,7 +1744,7 @@ function syncChildrenTrackByKeys(
             pos = j;
           }
           vNodeSync(parent, aNode, bNode, context, syncFlags);
-          synced++;
+          ++synced;
           aNullable[i] = null;
         }
       }
@@ -1757,8 +1753,8 @@ function syncChildrenTrackByKeys(
     if (aLength === a.length && synced === 0) {
       // Noone is synced, remove all children with one dom op.
       vNodeRemoveAllChildren(parent, a, syncFlags);
-      while (bStart < bLength) {
-        vNodeRenderIntoAndAttach(parent, null, b[bStart++], context, syncFlags);
+      for (; bStart < bLength; ++bStart) {
+        vNodeRenderIntoAndAttach(parent, null, b[bStart], context, syncFlags);
       }
     } else {
       i = aLength - synced;
@@ -1774,7 +1770,7 @@ function syncChildrenTrackByKeys(
       if (moved === true) {
         const seq = lis(sources);
         j = seq.length - 1;
-        for (i = bLength - 1; i >= 0; i--) {
+        for (i = bLength - 1; i >= 0; --i) {
           if (sources[i] === -1) {
             pos = i + bStart;
             node = b[pos];
@@ -1794,7 +1790,7 @@ function syncChildrenTrackByKeys(
           }
         }
       } else if (synced !== bLength) {
-        for (i = bLength - 1; i >= 0; i--) {
+        for (i = bLength - 1; i >= 0; --i) {
           if (sources[i] === -1) {
             pos = i + bStart;
             node = b[pos];
@@ -1824,7 +1820,7 @@ function lis(a: number[]): number[] {
   let u: number;
   let v: number;
 
-  for (let i = 0, il = a.length; i < il; i++) {
+  for (let i = 0, il = a.length; i < il; ++i) {
     if (a[i] === -1) {
       continue;
     }

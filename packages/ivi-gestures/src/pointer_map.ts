@@ -13,7 +13,7 @@ export function pointerMapPush<T>(map: PointerMap<T>, id: number, value: T) {
 }
 
 export function pointerMapSet<T>(map: PointerMap<T>, id: number, value: T) {
-  for (let i = 0; i < map.length; i++) {
+  for (let i = 0; i < map.length; ++i) {
     const item = map[i];
     if (item.id === id) {
       item.value = value;
@@ -24,7 +24,7 @@ export function pointerMapSet<T>(map: PointerMap<T>, id: number, value: T) {
 }
 
 export function pointerMapGet<T>(map: PointerMap<T>, id: number): T | undefined {
-  for (let i = 0; i < map.length; i++) {
+  for (let i = 0; i < map.length; ++i) {
     const item = map[i];
     if (item.id === id) {
       return item.value;
@@ -34,7 +34,7 @@ export function pointerMapGet<T>(map: PointerMap<T>, id: number): T | undefined 
 }
 
 export function pointerMapDelete<T>(map: PointerMap<T>, id: number): void {
-  for (let i = 0; i < map.length; i++) {
+  for (let i = 0; i < map.length; ++i) {
     const item = map[i];
     if (item.id === id) {
       unorderedArrayDelete(map, i);
@@ -44,7 +44,7 @@ export function pointerMapDelete<T>(map: PointerMap<T>, id: number): void {
 }
 
 export function pointerMapListPush<T>(map: PointerMapList<T>, id: number, value: T): void {
-  for (let i = 0; i < map.length; i++) {
+  for (let i = 0; i < map.length; ++i) {
     const item = map[i];
     if (item.id === id) {
       item.value.push(value);
@@ -58,14 +58,14 @@ export function pointerMapListPush<T>(map: PointerMapList<T>, id: number, value:
 }
 
 export function pointerMapListDelete<T>(map: PointerMapList<T>, id: number, value: T): void {
-  for (let i = 0; i < map.length; i++) {
+  for (let i = 0; i < map.length; ++i) {
     const item = map[i];
     if (item.id === id) {
       const values = item.value;
       if (values.length === 1) {
         unorderedArrayDelete(map, i);
       } else {
-        for (let j = 0; j < values.length; j++) {
+        for (let j = 0; j < values.length; ++j) {
           const v = values[j];
           if (v === value) {
             unorderedArrayDelete(values, j);

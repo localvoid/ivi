@@ -44,7 +44,7 @@ export function matrixRowViewSet(v: MatrixRowView, i: number, value: number): vo
 
 export function matrixRowViewMul(lhs: MatrixRowView, rhs: MatrixRowView): number {
   let result = 0;
-  for (let i = 0; i < lhs.length; i++) {
+  for (let i = 0; i < lhs.length; ++i) {
     result += lhs.items![i] * rhs.items![i];
   }
   return result;

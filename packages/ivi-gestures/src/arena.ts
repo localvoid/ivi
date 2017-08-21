@@ -190,7 +190,7 @@ export const arena: GestureArena = new GestureArena();
  */
 export function addRecognizerToArena(recognizer: GestureRecognizer): void {
   arena.recognizers.push(recognizer);
-  arena.activeRecognizers++;
+  ++arena.activeRecognizers;
 }
 
 /**
@@ -209,7 +209,7 @@ function acceptRecognizer(recognizer: GestureRecognizer): void {
       if ((arena.flags & GestureArenaFlags.Closed) !== 0) {
         arena.flags |= GestureArenaFlags.Resolved;
 
-        for (let i = 0; i < arena.recognizers.length; i++) {
+        for (let i = 0; i < arena.recognizers.length; ++i) {
           const r = arena.recognizers[i];
           if (r !== null && r !== recognizer) {
             arena.activeRecognizers--;
@@ -239,7 +239,7 @@ function rejectRecognizer(recognizer: GestureRecognizer): void {
   if ((arena.flags & GestureArenaFlags.Resolved) === 0) {
     if (arena.activeRecognizers === 1 && (arena.flags & GestureArenaFlags.Closed) !== 0) {
       arena.flags |= GestureArenaFlags.Resolved;
-      for (let i = 0; i < recognizers.length; i++) {
+      for (let i = 0; i < recognizers.length; ++i) {
         const r = recognizers[i];
         if (r !== null) {
           arena.winner = r;
@@ -266,7 +266,7 @@ export function closeArena(): void {
     // Arena was captured before closing.
     arena.flags |= GestureArenaFlags.Resolved;
     recognizer = arena.winner;
-    for (i = 0; i < recognizers.length; i++) {
+    for (i = 0; i < recognizers.length; ++i) {
       const r = recognizers[i];
       if (r !== null && r !== recognizer) {
         arena.activeRecognizers--;
@@ -277,7 +277,7 @@ export function closeArena(): void {
   } else if (arena.activeRecognizers === 1) {
     // When there is just one recognizer, it automatically wins.
     arena.flags |= GestureArenaFlags.Resolved;
-    for (i = 0; i < recognizers.length; i++) {
+    for (i = 0; i < recognizers.length; ++i) {
       recognizer = recognizers[i];
       if (recognizer !== null) {
         arena.winner = recognizer;
@@ -302,8 +302,8 @@ export function sweepArena(event: GesturePointerEvent): void {
     let recognizer;
 
     // First non-null recognizer is accepted.
-    while (i < arena.recognizers.length) {
-      recognizer = arena.recognizers[i++];
+    for (; i < arena.recognizers.length; ++i) {
+      recognizer = arena.recognizers[i];
       if (recognizer !== null) {
         arena.winner = recognizer;
         recognizer.accepted();
@@ -313,10 +313,10 @@ export function sweepArena(event: GesturePointerEvent): void {
     }
 
     // Other recognizers are rejected.
-    for (; i < arena.recognizers.length; i++) {
+    for (; i < arena.recognizers.length; ++i) {
       recognizer = arena.recognizers[i];
       if (recognizer !== null) {
-        arena.activeRecognizers--;
+        --arena.activeRecognizers;
         recognizer.rejected();
       }
     }
@@ -334,7 +334,7 @@ export function cancelArena(): void {
     arena.winner!.rejected();
   } else {
     arena.flags |= GestureArenaFlags.Resolved;
-    for (let i = 0; i < arena.recognizers.length; i++) {
+    for (let i = 0; i < arena.recognizers.length; ++i) {
       const recognizer = arena.recognizers[i];
       if (recognizer !== null) {
         recognizer.rejected();
@@ -345,7 +345,7 @@ export function cancelArena(): void {
 
 export function dispatchMoveEventToRecognizers(event: GesturePointerEvent): void {
   if (arena.winner === null) {
-    for (let i = 0; i < arena.recognizers.length; i++) {
+    for (let i = 0; i < arena.recognizers.length; ++i) {
       const recognizer = arena.recognizers[i];
       if (recognizer !== null) {
         recognizer.pointerMoved(event);
@@ -358,7 +358,7 @@ export function dispatchMoveEventToRecognizers(event: GesturePointerEvent): void
 
 export function dispatchReleaseEventToRecognizers(event: GesturePointerEvent): void {
   if (arena.winner === null) {
-    for (let i = 0; i < arena.recognizers.length; i++) {
+    for (let i = 0; i < arena.recognizers.length; ++i) {
       const recognizer = arena.recognizers[i];
       if (recognizer !== null) {
         recognizer.pointerReleased(event);
@@ -372,7 +372,7 @@ export function dispatchReleaseEventToRecognizers(event: GesturePointerEvent): v
 export function holdArena(): void {
   if ((arena.flags & GestureArenaFlags.PrimaryPointerReleased) === 0) {
     arena.flags |= GestureArenaFlags.Held;
-    arena.holdCounter++;
+    ++arena.holdCounter;
   }
 }
 

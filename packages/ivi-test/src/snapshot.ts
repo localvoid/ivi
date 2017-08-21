@@ -40,7 +40,7 @@ export function toSnapshot(vnode: VNode<any>, flags: SnapshotFlags = SnapshotFla
  */
 function indent(n: number): string {
   let result = "";
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < n; ++i) {
     result += "  ";
   }
   return result;
@@ -56,7 +56,7 @@ function indent(n: number): string {
 function renderAttrsToSnapshot(il: number, props: { [key: string]: string }): string {
   let result = "";
   const keys = Object.keys(props);
-  for (let i = 0; i < keys.length; i++) {
+  for (let i = 0; i < keys.length; ++i) {
     const key = keys[i];
     const value = props[key];
     if (typeof value !== "boolean") {
@@ -87,7 +87,7 @@ function renderStyleToSnapshot(il: number, style: { [key: string]: any }): strin
   }
 
   let result = `\n${indent(il)}style={`;
-  for (let i = 0; i < keys.length; i++) {
+  for (let i = 0; i < keys.length; ++i) {
     const key = keys[i];
     const value = style[key];
     result += `\n${indent(il + 1)}${key}: ${value};`;
@@ -188,7 +188,7 @@ function _toSnapshot(
         if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
           if ((flags & VNodeFlags.ChildrenArray) !== 0) {
             const children = vnode._children as VNode<any>[];
-            for (let i = 0; i < children.length; i++) {
+            for (let i = 0; i < children.length; ++i) {
               childrenString += `\n${_toSnapshot(il + 1, children[i], sFlags)}`;
             }
           } else {

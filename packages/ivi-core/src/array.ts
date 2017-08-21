@@ -37,7 +37,7 @@ export function unorderedArrayDelete<T>(array: T[], index: number): void {
  */
 export function map<I, O>(items: I[], fn: (item: I, idx: number) => O): O[] {
   const result = new Array(items.length);
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; ++i) {
     result[i] = fn(items[i], i);
   }
   return result;
@@ -53,7 +53,7 @@ export function map<I, O>(items: I[], fn: (item: I, idx: number) => O): O[] {
 export function mapRange<O>(start: number, end: number, fn: (idx: number) => O): O[] {
   const length = end - start;
   const result = new Array(length);
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length; ++i) {
     result[i] = fn(i + start);
   }
   return result;
@@ -68,7 +68,7 @@ export function mapRange<O>(start: number, end: number, fn: (idx: number) => O):
  */
 export function mapFilterUndefined<I, O>(items: I[], fn: (item: I, idx: number) => O | undefined): O[] {
   const result = [];
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; ++i) {
     const r = fn(items[i], i);
     if (r !== undefined) {
       result.push(r);

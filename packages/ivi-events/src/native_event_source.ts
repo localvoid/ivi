@@ -50,11 +50,11 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
   ) {
     this.eventSource = {
       addListener: () => {
-        this.listeners++;
+        ++this.listeners;
         this.incDependencies();
       },
       removeListener: () => {
-        this.listeners--;
+        --this.listeners;
         this.decDependencies();
       },
     };
@@ -84,7 +84,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
       );
       if (this.onBeforeListeners !== null) {
         const cbs = this.onBeforeListeners.slice(0);
-        for (let i = 0; i < cbs.length; i++) {
+        for (let i = 0; i < cbs.length; ++i) {
           cbs[i](s);
         }
       }
@@ -93,7 +93,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
       }
       if (this.onAfterListeners !== null) {
         const cbs = this.onAfterListeners.slice(0);
-        for (let i = 0; i < cbs.length; i++) {
+        for (let i = 0; i < cbs.length; ++i) {
           cbs[i](s);
         }
       }

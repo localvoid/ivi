@@ -290,7 +290,7 @@ export class VNode<P = null> {
       let j = 0;
       let k = 0;
       let c;
-      for (i = 0; i < children.length; i++) {
+      for (i = 0; i < children.length; ++i) {
         c = children[i];
         if (c !== null) {
           if (c.constructor === Array) {
@@ -326,7 +326,7 @@ export class VNode<P = null> {
           f = VNodeFlags.ChildrenArray;
           r = new Array(k);
           k = 0;
-          for (i = 0; i < children.length; i++) {
+          for (i = 0; i < children.length; ++i) {
             c = children[i];
             if (typeof c === "object") {
               if (c !== null) {
@@ -622,7 +622,7 @@ export function disableDirtyCheck<N extends VNode<any>>(node: N): N {
 function checkUniqueKeys(children: VNode<any>[]): void {
   if (DEV) {
     let keys: Set<any> | undefined;
-    for (let i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; ++i) {
       const child = children[i];
       if ((child._flags & VNodeFlags.Key) !== 0) {
         if (keys === undefined) {

@@ -31,7 +31,7 @@ function renderElementProps(props: { [key: string]: string }): string {
   let result = "";
 
   const keys = Object.keys(props);
-  for (let i = 0; i < keys.length; i++) {
+  for (let i = 0; i < keys.length; ++i) {
     const key = keys[i];
     const value = props[key];
     if (typeof value !== "boolean") {
@@ -62,7 +62,7 @@ function renderElementStyle(style: { [key: string]: any }): string {
 
   let result = ` style="`;
   let semicolon = false;
-  for (let i = 0; i < keys.length; i++) {
+  for (let i = 0; i < keys.length; ++i) {
     const key = keys[i];
     const value = style[key];
     if (semicolon === true) {
@@ -131,7 +131,7 @@ function renderVNode(node: VNode<any>, context: Context): string {
             childrenString = "";
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
               const children = node._children as VNode<any>[];
-              for (let i = 0; i < children.length; i++) {
+              for (let i = 0; i < children.length; ++i) {
                 childrenString += renderVNode(children[i], context);
               }
             } else {
@@ -205,7 +205,7 @@ function patchCheckDeepChanges(
           if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
             const children = bp.children;
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-              for (let i = 0; i < (children as BlueprintNode[]).length; i++) {
+              for (let i = 0; i < (children as BlueprintNode[]).length; ++i) {
                 result += patchCheckDeepChanges(
                   (children as BlueprintNode[])[i],
                   context,
@@ -479,7 +479,7 @@ function patchChildren(
     if ((bParentFlags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
         let result = "";
-        for (let i = 0; i < (b as VNode<any>[]).length; i++) {
+        for (let i = 0; i < (b as VNode<any>[]).length; ++i) {
           result += renderVNode((b as VNode<any>[])[i], context);
         }
         return result;
@@ -508,7 +508,7 @@ function patchChildren(
             context,
           );
         } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
-          for (let i = 0; i < (a as BlueprintNode[]).length; i++) {
+          for (let i = 0; i < (a as BlueprintNode[]).length; ++i) {
             node = (a as BlueprintNode[])[i];
             if (vNodeEqualKeys(node.vnode, b as VNode<any>) === true) {
               return patchVNode(node, b as VNode<any>, context);
@@ -527,7 +527,7 @@ function patchChildren(
       if ((bParentFlags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
           let result = "";
-          for (let i = 0; i < (b as VNode<any>[]).length; i++) {
+          for (let i = 0; i < (b as VNode<any>[]).length; ++i) {
             node = (b as VNode<any>[])[i];
             if (vNodeEqualKeys((a as BlueprintNode).vnode, node) === true) {
               result += patchVNode(a as BlueprintNode, node, context);
@@ -579,8 +579,8 @@ function patchChildrenTrackByKeys(
 
   while (vNodeEqualKeys(aStartNode.vnode, bStartNode) === true) {
     result += patchVNode(aStartNode, bStartNode, context);
-    aStart++;
-    bStart++;
+    ++aStart;
+    ++bStart;
     if (aStart > aEnd || bStart > bEnd) {
       break;
     }

@@ -85,7 +85,7 @@ export function stackTracePushComponent(vnode: VNode<any>, instance?: Component<
         frame.tag = tag;
         frame.instance = instance;
       }
-      STACK_TRACE_DEPTH++;
+      ++STACK_TRACE_DEPTH;
     }
   }
 }
@@ -109,7 +109,7 @@ export function stackTracePopComponent(): void {
 export function stackTraceReset(): void {
   if (DEV) {
     if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-      for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
+      for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {
         const frame = STACK_TRACE[i];
         frame.tag = undefined;
         frame.instance = undefined;
@@ -128,7 +128,7 @@ function stackTraceToString(): string {
   let result = "";
 
   if (STACK_TRACE_DEPTH) {
-    for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
+    for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {
       const frame = STACK_TRACE[i];
       result += "\n  ";
       switch (frame.type) {
@@ -182,7 +182,7 @@ export function printComponentStackTrace(): void {
   if (DEV) {
     if (STACK_TRACE_DEPTH) {
       console.groupCollapsed("Component Stack Trace:");
-      for (let i = 0; i < STACK_TRACE_DEPTH; i++) {
+      for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {
         const frame = STACK_TRACE[i];
         switch (frame.type) {
           case ComponentStackFrameType.Component:

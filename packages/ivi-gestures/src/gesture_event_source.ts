@@ -48,7 +48,7 @@ export class GestureEventSource {
     if (this.dependencies++ === 0) {
       this.listener.activate();
     }
-    h.listeners++;
+    ++h.listeners;
   }
 
   private removeGestureListener = (h: EventHandler) => {

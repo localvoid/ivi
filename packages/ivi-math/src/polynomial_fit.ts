@@ -19,9 +19,9 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
   const n = degree + 1;
 
   const a = matrix(n, m);
-  for (let h = 0; h < m; h++) {
+  for (let h = 0; h < m; ++h) {
     matrixSet(a, 0, h, w[h]);
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < n; ++i) {
       matrixSet(a, i, h, matrixGet(a, i - 1, h) * x[h]);
     }
   }
@@ -30,15 +30,15 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
   const r = matrix(n, n);
   const rowViewA = matrixRowView(null, 0, 0);
   const rowViewB = matrixRowView(null, 0, 0);
-  for (let j = 0; j < n; j++) {
-    for (let h = 0; h < m; h++) {
+  for (let j = 0; j < n; ++j) {
+    for (let h = 0; h < m; ++h) {
       matrixSet(q, j, h, matrixGet(a, j, h));
     }
-    for (let i = 0; i < j; i++) {
+    for (let i = 0; i < j; ++i) {
       matrixGetRowView(rowViewA, q, j);
       matrixGetRowView(rowViewB, q, i);
       const dot = matrixRowViewMul(rowViewA, rowViewB);
-      for (let h = 0; h < m; h++) {
+      for (let h = 0; h < m; ++h) {
         matrixSet(q, j, h, matrixGet(q, j, h) - dot * matrixGet(q, i, h));
       }
     }
@@ -50,10 +50,10 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
     }
 
     const inverseNorm = 1 / norm;
-    for (let h = 0; h < m; h++) {
+    for (let h = 0; h < m; ++h) {
       matrixSet(q, j, h, matrixGet(q, j, h) * inverseNorm);
     }
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < n; ++i) {
       matrixGetRowView(rowViewA, q, j);
       matrixGetRowView(rowViewB, a, i);
       matrixSet(r, j, i, i < j ? 0.0 : matrixRowViewMul(rowViewA, rowViewB));
@@ -61,7 +61,7 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
   }
 
   const wy = matrixRowView(new Array(m).fill(0), 0, m);
-  for (let h = 0; h < m; h++) {
+  for (let h = 0; h < m; ++h) {
     matrixRowViewSet(wy, h, y[h] * w[h]);
   }
   for (let i = n - 1; i >= 0; i--) {
@@ -74,17 +74,17 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
   }
 
   let yMean = 0;
-  for (let h = 0; h < m; h++) {
+  for (let h = 0; h < m; ++h) {
     yMean += y[h];
   }
   yMean /= m;
 
   let sumSquaredError = 0;
   let sumSquaredTotal = 0;
-  for (let h = 0; h < m; h++) {
+  for (let h = 0; h < m; ++h) {
     let term = 1;
     let err = y[h] - result[0];
-    for (let i = 1; i < n; i++) {
+    for (let i = 1; i < n; ++i) {
       term *= x[h];
       err -= term * result[i];
     }

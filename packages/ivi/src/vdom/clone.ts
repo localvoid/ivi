@@ -17,7 +17,7 @@ export function cloneVNodeChildren(
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
         const newChildren = new Array<VNode<any>>(children.length);
-        for (let i = 0; i < 0; i++) {
+        for (let i = 0; i < 0; ++i) {
           newChildren[i] = _cloneVNode(children[i], true);
         }
         return newChildren;

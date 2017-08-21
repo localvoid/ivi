@@ -32,7 +32,7 @@ export function matchValues(
       if (props === null) {
         return false;
       }
-      for (let i = 0; i < keys.length; i++) {
+      for (let i = 0; i < keys.length; ++i) {
         const key = keys[i];
         if (props.hasOwnProperty(key) === false || props[key] !== match[key]) {
           return false;
@@ -59,7 +59,7 @@ export function matchKeys(
     if (props === null) {
       return false;
     }
-    for (let i = 0; i < keys.length; i++) {
+    for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
       if (match[key] !== props.hasOwnProperty(key)) {
         return false;
@@ -82,7 +82,7 @@ export function containsEventHandler(
 ): boolean {
   if (eventHandlers !== null) {
     if (Array.isArray(eventHandlers)) {
-      for (let i = 0; i < eventHandlers.length; i++) {
+      for (let i = 0; i < eventHandlers.length; ++i) {
         const h = eventHandlers[i];
         if (h !== null && h.source === eventSource) {
           return true;

@@ -331,18 +331,18 @@ export class VNode<P = null> {
       let j = 0;
       let k = 0;
       let c;
-      for (i = 0; i < children.length; i++) {
+      for (i = 0; i < children.length; ++i) {
         c = children[i];
         if (c !== null) {
           if (c.constructor === Array) {
             if (c.length > 0) {
               k += c.length;
-              j++;
+              ++j;
               r = c;
             }
           } else {
-            k++;
-            j++;
+            ++k;
+            ++j;
             r = c;
           }
         }
@@ -367,12 +367,12 @@ export class VNode<P = null> {
           f = VNodeFlags.ChildrenArray;
           r = new Array(k);
           k = 0;
-          for (i = 0; i < children.length; i++) {
+          for (i = 0; i < children.length; ++i) {
             c = children[i];
             if (typeof c === "object") {
               if (c !== null) {
                 if (c.constructor === Array) {
-                  for (j = 0; j < c.length; j++) {
+                  for (j = 0; j < c.length; ++j) {
                     if (DEV) {
                       if (!(c[j]._flags & VNodeFlags.Key)) {
                         throw new Error("Invalid children array. All children nodes in nested" +
@@ -565,7 +565,7 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
 export function checkUniqueKeys(children: VNode<any>[]): void {
   if (DEV) {
     let keys: Set<any> | undefined;
-    for (let i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; ++i) {
       const child = children[i];
       if ((child._flags & VNodeFlags.Key) !== 0) {
         if (keys === undefined) {
@@ -600,7 +600,7 @@ export function cloneVNodeChildren(
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
         const newChildren = new Array<VNode<any>>(children.length);
-        for (let i = 0; i < 0; i++) {
+        for (let i = 0; i < 0; ++i) {
           newChildren[i] = _cloneVNode(children[i], true);
         }
         return newChildren;

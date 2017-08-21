@@ -39,7 +39,7 @@ function reset() {
  * @returns root node or undefined when root node doesn't exist.
  */
 export function findRoot(container: Element): Root | undefined {
-  for (let i = 0; i < ROOTS.length; i++) {
+  for (let i = 0; i < ROOTS.length; ++i) {
     const r = ROOTS[i];
     if (r.container === container) {
       return r;
@@ -68,7 +68,7 @@ function iOSFixEventBubbling(container: Element): void {
 function _update() {
   if (_pendingUpdate) {
     _pendingUpdate = false;
-    for (let i = 0; i < ROOTS.length; i++) {
+    for (let i = 0; i < ROOTS.length; ++i) {
       const root = ROOTS[i];
       const container = root.container;
       const currentVNode = root.currentVNode;

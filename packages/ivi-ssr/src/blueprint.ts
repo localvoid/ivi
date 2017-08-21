@@ -55,7 +55,7 @@ export class BlueprintNode {
     let childrenPosIndex = null;
     if ((vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
       children = children as BlueprintNode[];
-      for (let i = 0; i < children.length; i++) {
+      for (let i = 0; i < children.length; ++i) {
         const c = children[i];
         if ((c.flags & VNodeFlags.Key) !== 0) {
           if (childrenKeyIndex === null) {
@@ -93,7 +93,7 @@ function createBlueprintFromVNode(vnode: VNode<any>, context: Context): Blueprin
         if ((flags & VNodeFlags.ChildrenArray) !== 0) {
           const children = vnode._children as VNode[];
           childrenInstances = new Array(children.length);
-          for (let i = 0; i < children.length; i++) {
+          for (let i = 0; i < children.length; ++i) {
             childrenInstances[i] = createBlueprintFromVNode(
               children[i],
               context,
@@ -170,7 +170,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
             const children = bp.children as BlueprintNode[];
             const newChildren = new Array(children.length);
             let dirty = false;
-            for (let i = 0; i < children.length; i++) {
+            for (let i = 0; i < children.length; ++i) {
               const c = children[i];
               n = cloneChangedBlueprintNode(c, context);
               if (c !== n) {
@@ -479,9 +479,9 @@ function diffBlueprintChildren(
       if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
         b = b as VNode[];
         const nodes = new Array(b.length);
-        do {
-          nodes[i] = createBlueprintFromVNode(b[i++], context);
-        } while (i < b.length);
+        for (; i < b.length; ++i) {
+          nodes[i] = createBlueprintFromVNode(b[i], context);
+        }
 
         return nodes;
       } else { // ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0)
@@ -500,7 +500,7 @@ function diffBlueprintChildren(
           );
         } else {
           b = b as VNode;
-          for (; i < a.length; i++) {
+          for (; i < a.length; ++i) {
             node = a[i];
             if (vNodeEqualKeys(node.vnode, b)) {
               return diffBlueprintNode(node, b, context);
@@ -513,7 +513,7 @@ function diffBlueprintChildren(
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
           b = b as VNode[];
           const nodes = new Array(b.length);
-          for (i = 0; i < b.length; i++) {
+          for (i = 0; i < b.length; ++i) {
             node = b[i];
             nodes[i] = vNodeEqualKeys(a.vnode, node) ?
               diffBlueprintNode(a, node, context) :
@@ -550,7 +550,7 @@ function diffBlueprintChildrenTrackByKeys(
   let synced = 0;
   let dirty = false;
 
-  for (let i = 0; i < b.length; i++) {
+  for (let i = 0; i < b.length; ++i) {
     let aNode;
     const bNode = b[i];
     if ((bNode._flags & VNodeFlags.Key) !== 0) {
@@ -571,7 +571,7 @@ function diffBlueprintChildrenTrackByKeys(
       if (aNode !== n) {
         dirty = true;
       }
-      synced++;
+      ++synced;
     }
     newChildren[i] = n;
   }
@@ -603,7 +603,7 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
           if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
               const children = node.children as BlueprintNode[];
-              for (let i = 0; i < children.length; i++) {
+              for (let i = 0; i < children.length; ++i) {
                 const c = children[i];
                 prerenderBlueprint(c, componentNode);
                 node.flags |= c.flags & VNodeFlags.DeepConnect;

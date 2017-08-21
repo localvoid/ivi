@@ -90,7 +90,7 @@ export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | n
     w.push(1);
     time.push(-age);
     index = (index - 1) & INDEX_MASK;
-    sampleCount++;
+    ++sampleCount;
   } while (sampleCount < HISTORY_SIZE);
 
   const duration = newestSample.time - oldestSample.time;

@@ -71,7 +71,7 @@ export class TraceLog {
   forEach(fn: (entry: TraceLogEntry, index: number) => void): void {
     const entries = this.entries;
     const length = entries.length;
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; ++i) {
       fn(entries[(this.i + i + 1) % length], i);
     }
   }
@@ -86,7 +86,7 @@ export class TraceLog {
   }
 
   private changed() {
-    for (let i = 0; i < this.onChangeHandlers.length; i++) {
+    for (let i = 0; i < this.onChangeHandlers.length; ++i) {
       this.onChangeHandlers[i]();
     }
   }

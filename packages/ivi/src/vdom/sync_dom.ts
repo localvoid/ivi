@@ -47,7 +47,7 @@ export function syncStyle(
       // a is empty, insert all styles from b.
       style = node.style;
       keys = Object.keys(b);
-      for (i = 0; i < keys.length; i++) {
+      for (i = 0; i < keys.length; ++i) {
         key = keys[i];
         style.setProperty(key, (b as { [key: string]: string })[key]);
       }
@@ -56,7 +56,7 @@ export function syncStyle(
     // b is empty, remove all styles from a.
     style = node.style;
     keys = Object.keys(a);
-    for (i = 0; i < keys.length; i++) {
+    for (i = 0; i < keys.length; ++i) {
       style.removeProperty(keys[i]);
     }
   } else {
@@ -64,7 +64,7 @@ export function syncStyle(
     let matchCount = 0;
 
     keys = Object.keys(a);
-    for (i = 0; i < keys.length; i++) {
+    for (i = 0; i < keys.length; ++i) {
       key = keys[i];
       const bValue = (b as { [key: string]: string })[key];
 
@@ -73,19 +73,18 @@ export function syncStyle(
         if (aValue !== bValue) {
           style.setProperty(key, bValue);
         }
-        matchCount++;
+        ++matchCount;
       } else {
         style.removeProperty(key);
       }
     }
 
     keys = Object.keys(b);
-    i = 0;
-    while (matchCount < keys.length && i < keys.length) {
-      key = keys[i++];
+    for (i = 0; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
       if (a.hasOwnProperty(key) === false) {
         style.setProperty(key, (b as { [key: string]: string })[key]);
-        matchCount++;
+        ++matchCount;
       }
     }
   }
@@ -196,7 +195,7 @@ export function syncDOMProps(
     if (b !== null) {
       // a is empty, insert all attributes from b.
       keys = Object.keys(b);
-      for (i = 0; i < keys.length; i++) {
+      for (i = 0; i < keys.length; ++i) {
         key = keys[i];
         setDOMProperty(node, flags, key, b[key]);
       }
@@ -204,7 +203,7 @@ export function syncDOMProps(
   } else if (b === null) {
     // b is empty, remove all attributes from a.
     keys = Object.keys(a);
-    for (i = 0; i < keys.length; i++) {
+    for (i = 0; i < keys.length; ++i) {
       setDOMProperty(node, flags, keys[i]);
     }
   } else {
@@ -212,7 +211,7 @@ export function syncDOMProps(
 
     // Remove and update attributes.
     keys = Object.keys(a);
-    for (i = 0; i < keys.length; i++) {
+    for (i = 0; i < keys.length; ++i) {
       key = keys[i];
       const bValue = b[key];
       if (bValue === undefined) {
@@ -222,18 +221,17 @@ export function syncDOMProps(
         if (aValue !== bValue) {
           setDOMProperty(node, flags, key, bValue, aValue);
         }
-        matchCount++;
+        ++matchCount;
       }
     }
 
     // Insert new attributes.
     keys = Object.keys(b);
-    i = 0;
-    while (matchCount < keys.length && i < keys.length) {
-      key = keys[i++];
+    for (i = 0; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
       if (a.hasOwnProperty(key) === false) {
         setDOMProperty(node, flags, key, b[key]);
-        matchCount++;
+        ++matchCount;
       }
     }
   }

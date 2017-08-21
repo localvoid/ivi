@@ -100,13 +100,13 @@ const microtaskObserver = new MutationObserver(function runMicrotasks(): void {
   while (_microtasks.length > 0) {
     const tasks = _microtasks;
     _microtasks = [];
-    for (let i = 0; i < tasks.length; i++) {
+    for (let i = 0; i < tasks.length; ++i) {
       tasks[i]();
     }
   }
 
   _flags ^= SchedulerFlags.MicrotaskPending;
-  _clock++;
+  ++_clock;
 });
 microtaskObserver.observe(_microtaskNode, { "characterData": true });
 
@@ -116,10 +116,10 @@ window.addEventListener("message", function runTasks(ev: MessageEvent): void {
     _flags ^= SchedulerFlags.TaskPending;
     const tasks = _tasks;
     _tasks = [];
-    for (let i = 0; i < tasks.length; i++) {
+    for (let i = 0; i < tasks.length; ++i) {
       tasks[i]();
     }
-    _clock++;
+    ++_clock;
   }
 });
 
@@ -133,7 +133,7 @@ function handleVisibilityChange(): void {
     }
 
     const observers = _visibilityObservers;
-    for (let i = 0; i < observers.length; i++) {
+    for (let i = 0; i < observers.length; ++i) {
       observers[i](newHidden);
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
@@ -308,7 +308,7 @@ function _handleNextFrame(time?: number): void {
       tasks = frame.read!;
       frame.read = null;
 
-      for (i = 0; i < tasks.length; i++) {
+      for (i = 0; i < tasks.length; ++i) {
         tasks[i]();
       }
     }
@@ -318,7 +318,7 @@ function _handleNextFrame(time?: number): void {
         frame.flags ^= FrameTasksGroupFlags.Write;
         tasks = frame.write!;
         frame.write = null;
-        for (i = 0; i < tasks.length; i++) {
+        for (i = 0; i < tasks.length; ++i) {
           tasks[i]();
         }
       }
@@ -346,7 +346,7 @@ function _handleNextFrame(time?: number): void {
 
     tasks = frame.after!;
     frame.after = null;
-    for (i = 0; i < tasks.length; i++) {
+    for (i = 0; i < tasks.length; ++i) {
       tasks[i]();
     }
   }
@@ -360,7 +360,7 @@ function _handleNextFrame(time?: number): void {
     requestNextFrame();
   }
 
-  _clock++;
+  ++_clock;
 }
 
 /**

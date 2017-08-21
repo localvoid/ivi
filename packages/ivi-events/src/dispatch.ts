@@ -41,7 +41,7 @@ function dispatchEventToLocalEventHandlers(
       }
     }
   } else {
-    for (let j = 0; j < handlers.length; j++) {
+    for (let j = 0; j < handlers.length; ++j) {
       const handler = handlers[j];
       if ((handler.flags & matchFlags) !== 0) {
         if (dispatch === undefined) {
@@ -88,10 +88,9 @@ export function dispatchEvent(
 
   // bubble phase
   if (bubble === true) {
-    i = 0;
     event.flags |= SyntheticEventFlags.BubblePhase;
-    while (i < targets.length) {
-      dispatchEventToLocalEventHandlers(targets[i++], event, EventHandlerFlags.Bubble, dispatch);
+    for (i = 0; i < targets.length; ++i) {
+      dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Bubble, dispatch);
       if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
         return;
       }

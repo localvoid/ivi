@@ -62,7 +62,7 @@ export function syncEvents(
       if (typeof b === "function") {
         registerEventHandler(b);
 
-        for (i = 0; i < a.length; i++) {
+        for (i = 0; i < a.length; ++i) {
           h1 = a[i];
           if (h1 !== null) {
             unregisterEventHandler(h1);
@@ -108,7 +108,7 @@ export function attachEvents(events: Array<EventHandler | null> | EventHandler):
   if (typeof events === "function") {
     registerEventHandler(events);
   } else {
-    for (let i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; ++i) {
       const h = events[i];
       if (h !== null) {
         registerEventHandler(h);
@@ -126,7 +126,7 @@ export function detachEvents(events: Array<EventHandler | null> | EventHandler):
   if (typeof events === "function") {
     unregisterEventHandler(events);
   } else {
-    for (let i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; ++i) {
       const h = events[i];
       if (h !== null) {
         unregisterEventHandler(h);

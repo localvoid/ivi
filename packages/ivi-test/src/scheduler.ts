@@ -104,7 +104,7 @@ export function toggleVisibility(hidden: boolean): void {
     }
 
     const observers = _visibilityObservers;
-    for (let i = 0; i < observers.length; i++) {
+    for (let i = 0; i < observers.length; ++i) {
       observers[i](hidden);
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
@@ -288,13 +288,13 @@ export function runMicrotasks(): void {
     while (_microtasks.length > 0) {
       const tasks = _microtasks;
       _microtasks = [];
-      for (let i = 0; i < tasks.length; i++) {
+      for (let i = 0; i < tasks.length; ++i) {
         tasks[i]();
       }
     }
 
     _flags ^= SchedulerFlags.MicrotaskPending;
-    _clock++;
+    ++_clock;
   }
 }
 
@@ -303,10 +303,10 @@ export function runTasks(): void {
     _flags ^= SchedulerFlags.TaskPending;
     const tasks = _tasks;
     _tasks = [];
-    for (let i = 0; i < tasks.length; i++) {
+    for (let i = 0; i < tasks.length; ++i) {
       tasks[i]();
     }
-    _clock++;
+    ++_clock;
   }
 }
 
@@ -344,7 +344,7 @@ export function triggerNextFrame(time?: number): void {
           tasks = frame.read!;
           frame.read = null;
 
-          for (i = 0; i < tasks.length; i++) {
+          for (i = 0; i < tasks.length; ++i) {
             tasks[i]();
           }
         }
@@ -354,7 +354,7 @@ export function triggerNextFrame(time?: number): void {
             frame.flags ^= FrameTasksGroupFlags.Write;
             tasks = frame.write!;
             frame.write = null;
-            for (i = 0; i < tasks.length; i++) {
+            for (i = 0; i < tasks.length; ++i) {
               tasks[i]();
             }
           }
@@ -382,7 +382,7 @@ export function triggerNextFrame(time?: number): void {
 
         tasks = frame.after!;
         frame.after = null;
-        for (i = 0; i < tasks.length; i++) {
+        for (i = 0; i < tasks.length; ++i) {
           tasks[i]();
         }
       }
@@ -396,7 +396,7 @@ export function triggerNextFrame(time?: number): void {
         requestNextFrame();
       }
 
-      _clock++;
+      ++_clock;
     }
   } catch (e) {
     devModeOnError(e);

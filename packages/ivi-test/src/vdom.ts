@@ -21,7 +21,7 @@ export function visitUnwrapped(
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
-        for (let i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; ++i) {
           if (visitUnwrapped(children[i], vnode, context, visitor) === true) {
             return true;
           }
@@ -58,7 +58,7 @@ export function visitWrapped(
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode<any>[];
-        for (let i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; ++i) {
           if (visitWrapped(new VNodeWrapper(children[i], wrapper, context), visitor) === true) {
             return true;
           }

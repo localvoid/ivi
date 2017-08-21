@@ -23,7 +23,7 @@ export function accumulateDispatchTargetsFromElement(
       }
     } else {
       let count = 0;
-      for (let i = 0; i < events.length; i++) {
+      for (let i = 0; i < events.length; ++i) {
         const h = events[i];
         if (h !== null && match(h) === true) {
           if (count === 0) {
@@ -33,7 +33,7 @@ export function accumulateDispatchTargetsFromElement(
           } else {
             (matches as EventHandler[]).push(h);
           }
-          count++;
+          ++count;
         }
       }
     }

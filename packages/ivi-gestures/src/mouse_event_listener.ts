@@ -73,7 +73,7 @@ export function createMouseEventListener(
       if (primaryPointers !== null) {
         const x = ev.clientX;
         const y = ev.clientY;
-        for (let i = 0; i < primaryPointers.length; i++) {
+        for (let i = 0; i < primaryPointers.length; ++i) {
           const pointer = primaryPointers[i];
           const dx = Math.abs(x - pointer.x);
           const dy = Math.abs(y - pointer.y);
