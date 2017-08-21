@@ -10,19 +10,17 @@ export function initRouter<T>(
   const location = window.location;
   const history = window.history;
 
-  const goTo = function (url: string): void {
-    history.pushState(null, "", url);
-  };
-
   let path = location.pathname;
-  onChange(resolve(routes, path, mergeData));
 
-  window.addEventListener("popstate", function (ev) {
-    const nextPath = location.pathname;
+  const goTo = function (nextPath: string): void {
     if (path !== nextPath) {
       path = nextPath;
       onChange(resolve(routes, nextPath, mergeData));
     }
+  };
+
+  window.addEventListener("popstate", function (ev) {
+    goTo(location.pathname);
   });
 
   EventSourceClick.addAfterListener(function (ev) {
@@ -31,11 +29,14 @@ export function initRouter<T>(
       if (anchor !== null) {
         const href = anchor.href;
         if (href.startsWith(baseURL)) {
-          goTo(href);
+          history.pushState(null, "", href);
+          goTo(anchor.pathname);
         }
       }
     }
   });
+
+  onChange(resolve(routes, path, mergeData));
 }
 
 function findAnchorNode(element: Element): HTMLAnchorElement | null {
