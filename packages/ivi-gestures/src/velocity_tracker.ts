@@ -20,7 +20,7 @@ export interface VelocityEstimate {
   readonly offset: Vec2;
 }
 
-interface PointAtTime {
+export interface PointAtTime {
   readonly time: number;
   readonly point: Vec2;
 }
