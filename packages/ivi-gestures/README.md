@@ -1,12 +1,12 @@
-# Pointer Events
+# Gestures
 
-Abstraction on top of Touch and Mouse events.
+It is an **EXPERIMENTAL** package that provides an abstraction on top of Touch and Mouse events.
 
-## Status
+Instead of using raw native events for different pointers, all touch and mouse interactions should be implemented as
+gestures. Native gestures like scrolling is also implemented as gestures, so when native gesture is detected we can
+remove all event handlers to make sure that scrolling isn't waiting for responses from UI thread.
 
-EXPERIMENTAL
+It also provides extended capabilities to efficieltny solve:
 
-## TODO
-
-- Drag and Drop
-- Gestures with gesture disambiguation
+- Drag and Drop with complex use cases like long-pressure DnD inside a container with native scrolling
+- Click-outside events
