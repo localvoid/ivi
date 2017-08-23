@@ -534,6 +534,8 @@ export class VNode<P = null> {
   }
 }
 
+export type Children = Array<VNode<any>[] | VNode<any> | string | number | boolean | null>;
+
 /**
  * getDOMInstanceFromVNode retrieves a reference to a DOM node from a VNode object.
  *

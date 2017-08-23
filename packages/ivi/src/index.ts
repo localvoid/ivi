@@ -17,7 +17,7 @@ export {
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
-  VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode,
+  VNode, Children, getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
   disableDirtyCheck,

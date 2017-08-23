@@ -13,7 +13,7 @@ export {
 export { KeepAliveHandler } from "./keep_alive";
 export { ConnectDescriptor } from "./connect_descriptor";
 export {
-  VNodeFlags, VNode, getDOMInstanceFromVNode, getComponentInstanceFromVNode, cloneVNode, shallowCloneVNode,
+  VNodeFlags, VNode, Children, getDOMInstanceFromVNode, getComponentInstanceFromVNode, cloneVNode, shallowCloneVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
   disableDirtyCheck,
