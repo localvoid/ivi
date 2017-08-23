@@ -403,19 +403,6 @@ export class VNode<P = null> {
   }
 
   /**
-   * applyChildren calls `children` method with arguments provided as an array.
-   *
-   * @param children Children can be a simple string, single VNode or recursive list of VNodes with strings and null
-   *   values. It will automatically normalize recursive lists by flattening, filtering out null values and replacing
-   *   strings with text nodes
-   * @returns VNode
-   */
-  applyChildren(children: Array<VNode<any>[] | VNode<any> | string | number | null>): this {
-    this.children.apply(this, children);
-    return this;
-  }
-
-  /**
    * unsafeHTML assigns children as an innerHTML string. It is potentially vulnerable to XSS attacks.
    *
    * @param html innerHTML in a string format.
