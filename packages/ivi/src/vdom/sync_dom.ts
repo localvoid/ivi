@@ -1,10 +1,11 @@
 import { XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps } from "ivi-core";
 import { VNodeFlags } from "./flags";
 
-const _setAttribute = Element.prototype.setAttribute;
-const _setAttributeNS = Element.prototype.setAttributeNS;
-const _removeAttribute = Element.prototype.removeAttribute;
-const _className = Object.getOwnPropertyDescriptor(Element.prototype, "className").set!;
+const elementProto = Element.prototype;
+const _setAttribute = elementProto.setAttribute;
+const _setAttributeNS = elementProto.setAttributeNS;
+const _removeAttribute = elementProto.removeAttribute;
+const _className = Object.getOwnPropertyDescriptor(elementProto, "className").set!;
 
 function removeAttribute(el: Element, name: string): void {
   _removeAttribute.call(el, name);

@@ -106,6 +106,28 @@ function componentPerfMarkEnd(
   }
 }
 
+const nodeProto = Node.prototype;
+const _insertBefore = nodeProto.insertBefore;
+const _removeChild = nodeProto.removeChild;
+const _replaceChild = nodeProto.replaceChild;
+const _setTextContent = Object.getOwnPropertyDescriptor(nodeProto, "textContent").set!;
+
+function insertBefore(parent: Node, newChild: Node, refChild: Node | null): void {
+  _insertBefore.call(parent, newChild, refChild);
+}
+
+function removeChild(parent: Node, child: Node): void {
+  _removeChild.call(parent, child);
+}
+
+function replaceChild(parent: Node, newChild: Node, oldChild: Node): void {
+  _replaceChild.call(parent, newChild, oldChild);
+}
+
+function setTextContent(el: Node, value: string): void {
+  _setTextContent.call(el, value);
+}
+
 /**
  * Render VNode entry point tryCatch wrapper.
  *
@@ -241,7 +263,7 @@ export function removeVNode(parent: Node, node: VNode<any>): void {
  * @param node VNode element to remove.
  */
 function _removeVNode(parent: Node, node: VNode<any>): void {
-  parent.removeChild(getDOMInstanceFromVNode(node)!);
+  removeChild(parent, getDOMInstanceFromVNode(node)!);
   vNodeDetach(node, SyncFlags.Dispose | SyncFlags.Attached);
 }
 
@@ -537,7 +559,7 @@ function vNodeUpdateComponents(
  * @param nextRef Reference to the next node, if it is null, node will be moved to the end.
  */
 function vNodeMoveChild(parent: Node, node: VNode<any>, nextRef: Node | null): void {
-  parent.insertBefore(getDOMInstanceFromVNode(node)!, nextRef!);
+  insertBefore(parent, getDOMInstanceFromVNode(node)!, nextRef!);
 }
 
 /**
@@ -549,7 +571,7 @@ function vNodeMoveChild(parent: Node, node: VNode<any>, nextRef: Node | null): v
  * @param nodes Arrays of VNodes to remove.
  */
 function vNodeRemoveAllChildren(parent: Node, nodes: VNode<any>[], syncFlags: SyncFlags): void {
-  parent.textContent = "";
+  setTextContent(parent, "");
   vNodeDetachAll(nodes, syncFlags | SyncFlags.Dispose);
 }
 
@@ -562,7 +584,7 @@ function vNodeRemoveAllChildren(parent: Node, nodes: VNode<any>[], syncFlags: Sy
  * @param node VNode element to remove.
  */
 function vNodeRemoveChild(parent: Node, node: VNode<any>, syncFlags: SyncFlags): void {
-  parent.removeChild(getDOMInstanceFromVNode(node)!);
+  removeChild(parent, getDOMInstanceFromVNode(node)!);
   vNodeDetach(node, syncFlags | SyncFlags.Dispose);
 }
 
@@ -670,19 +692,19 @@ function vNodeRender(
       if (children !== null) {
         if ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) !== 0) {
           if ((flags & VNodeFlags.ChildrenBasic) !== 0) {
-            node.textContent = children as string;
+            setTextContent(node, children as string);
           } else {
             children = children as VNode<any>[];
             for (i = 0; i < children.length; ++i) {
               child = children[i];
               childNode = vNodeRender(node, child, context);
-              node.insertBefore(childNode, null);
+              insertBefore(node, childNode, null);
             }
           }
         } else if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
           child = children as VNode<any>;
           childNode = vNodeRender(node, child, context);
-          node.insertBefore(childNode, null);
+          insertBefore(node, childNode, null);
         } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
           /**
            * #quirks
@@ -784,7 +806,7 @@ function vNodeRenderIntoAndAttach(
   syncFlags: SyncFlags,
 ): Node {
   const node = vNodeRender(parent, vnode, context);
-  parent.insertBefore(node, refChild);
+  insertBefore(parent, node, refChild);
   if ((syncFlags & SyncFlags.Attached) !== 0) {
     vNodeAttach(vnode);
   }
@@ -906,7 +928,7 @@ function vNodeAugment(
           }
 
           if (node.nodeValue!.length > children.length) {
-            parent.insertBefore((node as Text).splitText(children.length), node.nextSibling);
+            insertBefore(parent, (node as Text).splitText(children.length), node.nextSibling);
           }
 
         }
@@ -920,7 +942,7 @@ function vNodeAugment(
           if (component.shouldAugment() === true) {
             vNodeAugment(parent, node, root, context);
           } else {
-            parent.replaceChild(vNodeRender(parent, root, context), node);
+            replaceChild(parent, vNodeRender(parent, root, context), node);
           }
         } else {
           stackTracePushComponent(vnode);
@@ -940,7 +962,7 @@ function vNodeAugment(
               fc.shouldAugment(vnode._props) === true) {
               vNodeAugment(parent, node, vnode._children as VNode<any>, context);
             } else {
-              parent.replaceChild(vNodeRender(parent, vnode._children as VNode<any>, context), node);
+              replaceChild(parent, vNodeRender(parent, vnode._children as VNode<any>, context), node);
             }
           }
         }
@@ -950,10 +972,10 @@ function vNodeAugment(
 
       vnode._instance = instance;
     } else {
-      parent.replaceChild(vNodeRender(parent, vnode, context), node);
+      replaceChild(parent, vNodeRender(parent, vnode, context), node);
     }
   } else {
-    parent.insertBefore(vNodeRender(parent, vnode, context), null);
+    insertBefore(parent, vNodeRender(parent, vnode, context), null);
   }
 }
 
@@ -1193,7 +1215,7 @@ function vNodeSync(
     }
   } else {
     instance = vNodeRender(parent, b, context);
-    parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
+    replaceChild(parent, instance, getDOMInstanceFromVNode(a)!);
     if ((syncFlags & SyncFlags.Attached) !== 0) {
       vNodeDetach(a, syncFlags | SyncFlags.Dispose);
       vNodeAttach(b);
@@ -1228,7 +1250,7 @@ function syncChildren(
   if (a === null) {
     if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) !== 0) {
       if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-        parent.textContent = b as string;
+        setTextContent(parent, b as string);
       } else {
         b = b as VNode<any>[];
         for (; i < b.length; ++i) {
@@ -1246,7 +1268,7 @@ function syncChildren(
     }
   } else if (b === null) {
     if ((aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
-      parent.textContent = "";
+      setTextContent(parent, "");
     } else if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
       vNodeRemoveAllChildren(parent, a as VNode<any>[], syncFlags);
     } else if ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
@@ -1264,17 +1286,17 @@ function syncChildren(
           if (c !== null) {
             c.nodeValue = b as string;
           } else {
-            parent.textContent = b as string;
+            setTextContent(parent, b as string);
           }
         } else {
           if (b) {
             setInnerHTML((parent as Element), b as string, (bParentFlags & VNodeFlags.SvgElement) !== 0);
           } else {
-            parent.textContent = "";
+            setTextContent(parent, "");
           }
         }
       } else {
-        parent.textContent = "";
+        setTextContent(parent, "");
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
           b = b as VNode<any>[];
           for (; i < b.length; ++i) {
@@ -1288,7 +1310,7 @@ function syncChildren(
       a = a as VNode<any>[];
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0 || !b) {
-          parent.textContent = b as string;
+          setTextContent(parent, b as string);
         } else {
           setInnerHTML(parent as Element, b as string, (bParentFlags & VNodeFlags.SvgElement) !== 0);
         }
@@ -1322,7 +1344,7 @@ function syncChildren(
       a = a as VNode<any>;
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0 || !b) {
-          parent.textContent = b as string;
+          setTextContent(parent, b as string);
         } else {
           setInnerHTML(parent as Element, b as string, (bParentFlags & VNodeFlags.SvgElement) !== 0);
         }
