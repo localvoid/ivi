@@ -1,5 +1,5 @@
 import { EventHandler } from "ivi-events";
-import { VNode, ElementProps } from "../src/vdom/vnode";
+import { VNode, ElementProps, mergeAttrs, mergeStyle } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { componentFactory } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
@@ -53,7 +53,7 @@ describe("VNode", () => {
     });
 
     it("mergeStyle", () => {
-      expect(() => h.t("abc").mergeStyle({})).toThrow(Error);
+      expect(() => mergeStyle(h.t("abc"), {})).toThrow(Error);
     });
 
     it("autofocus", () => {
@@ -137,34 +137,34 @@ describe("VNode", () => {
     });
 
     it("mergeProps: null", () => {
-      const e = h.div().props({ title: "abc" }).mergeProps(null);
+      const e = mergeAttrs(h.div().props({ title: "abc" }), null);
       expect((e._props as any).title).toBe("abc");
     });
 
     it("mergeProps", () => {
-      const e = h.div().props({ title: "abc" }).mergeProps({ width: "100" });
+      const e = mergeAttrs(h.div().props({ title: "abc" }), { width: "100" });
       expect((e._props as any).title).toBe("abc");
       expect((e._props as any).width).toBe("100");
     });
 
     it("mergeProps override", () => {
-      const e = h.div().props({ title: "abc" }).mergeProps({ title: "100" });
+      const e = mergeAttrs(h.div().props({ title: "abc" }), { title: "100" });
       expect((e._props as any).title).toBe("100");
     });
 
     it("mergeStyle: null", () => {
-      const e = h.div().style({ top: "10px" }).mergeStyle(null);
+      const e = mergeStyle(h.div().style({ top: "10px" }), null);
       expect((e._props as ElementProps<any>).style!.top).toBe("10px");
     });
 
     it("mergeStyle", () => {
-      const e = h.div().style({ top: "10px" }).mergeStyle({ left: "20px" });
+      const e = mergeStyle(h.div().style({ top: "10px" }), { left: "20px" });
       expect((e._props as ElementProps<any>).style!.top).toBe("10px");
       expect((e._props as ElementProps<any>).style!.left).toBe("20px");
     });
 
     it("mergeStyle override", () => {
-      const e = h.div().style({ top: "10px" }).mergeStyle({ top: "20px" });
+      const e = mergeStyle(h.div().style({ top: "10px" }), { top: "20px" });
       expect((e._props as ElementProps<any>).style!.top).toBe("20px");
     });
 
@@ -204,7 +204,7 @@ describe("VNode", () => {
     });
 
     it("mergeStyle", () => {
-      expect(() => emptyComponent().mergeStyle({})).toThrow(Error);
+      expect(() => mergeStyle(emptyComponent(), {})).toThrow(Error);
     });
 
     it("autofocus", () => {

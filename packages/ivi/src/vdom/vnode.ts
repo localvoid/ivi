@@ -432,47 +432,6 @@ export class VNode<P = null> {
   }
 
   /**
-   * mergeProps merges props with existing props for an Element node.
-   *
-   * @param props
-   * @return VNode
-   */
-  mergeProps(props: { [key: string]: any } | null): this {
-    if (props !== null) {
-      const flags = this._flags;
-      return this.props(
-        (flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) === 0 ?
-          props :
-          Object.assign(
-            {},
-            ((flags & VNodeFlags.ElementMultiProps) === 0) ?
-              this._props :
-              (this._props as ElementProps<P>).attrs,
-            props,
-          ),
-      );
-    }
-    return this;
-  }
-
-  /**
-   * mergeStyle merges style with existing style for an Element node.
-   *
-   * @param props
-   * @return VNode
-   */
-  mergeStyle<U extends CSSStyleProps>(style: U | null): this {
-    if (style !== null) {
-      return this.style(
-        this._props !== null && (this._props as ElementProps<P>).style !== null ?
-          Object.assign({}, (this._props as ElementProps<P>).style, style) :
-          style,
-      );
-    }
-    return this;
-  }
-
-  /**
    * autofocus makes an Element autofocused on instantiation.
    *
    * @param focus
@@ -492,6 +451,47 @@ export class VNode<P = null> {
 }
 
 export type Children = Array<VNode<any>[] | VNode<any> | string | number | boolean | null>;
+
+/**
+ * mergeProps merges props with existing props for an Element node.
+ *
+ * @param props
+ * @return VNode
+ */
+export function mergeAttrs<P>(node: VNode<P>, props: { [key: string]: any } | null): VNode<P> {
+  if (props !== null) {
+    const flags = node._flags;
+    return node.props(
+      (flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) === 0 ?
+        props :
+        Object.assign(
+          {},
+          ((flags & VNodeFlags.ElementMultiProps) === 0) ?
+            node._props :
+            (node._props as ElementProps<P>).attrs,
+          props,
+        ),
+    );
+  }
+  return node;
+}
+
+/**
+ * mergeStyle merges style with existing style for an Element node.
+ *
+ * @param props
+ * @return VNode
+ */
+export function mergeStyle<P, U extends CSSStyleProps>(node: VNode<P>, style: U | null): VNode<P> {
+  if (style !== null) {
+    return node.style(
+      node._props !== null && (node._props as ElementProps<P>).style !== null ?
+        Object.assign({}, (node._props as ElementProps<P>).style, style) :
+        style,
+    );
+  }
+  return node;
+}
 
 /**
  * getDOMInstanceFromVNode retrieves a reference to a DOM node from a VNode object.
