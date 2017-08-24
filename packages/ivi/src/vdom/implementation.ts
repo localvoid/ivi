@@ -33,7 +33,7 @@ import { VNode, ElementProps, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { ComponentClass, StatelessComponent, Component } from "./component";
-import { syncDOMProps, syncClassName, syncStyle } from "./sync_dom";
+import { syncDOMAttrs, syncClassName, syncStyle } from "./sync_dom";
 
 /**
  * Pool of perf mark ids.
@@ -652,10 +652,10 @@ function vNodeRender(
       if ((flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
         const props = vnode._props;
         if ((flags & VNodeFlags.ElementMultiProps) === 0) {
-          syncDOMProps(node as Element, flags, null, props);
+          syncDOMAttrs(node as Element, flags, null, props);
         } else {
           if (props.attrs !== null) {
-            syncDOMProps(node as Element, flags, null, props.attrs);
+            syncDOMAttrs(node as Element, flags, null, props.attrs);
           }
           if (props.style !== null) {
             syncStyle(node as HTMLElement, null, props.style);
@@ -1066,7 +1066,7 @@ function vNodeSync(
           }
 
           if (aAttrs !== bAttrs) {
-            syncDOMProps(instance as Element, bFlags, aAttrs, bAttrs);
+            syncDOMAttrs(instance as Element, bFlags, aAttrs, bAttrs);
           }
           if (aStyle !== bStyle) {
             syncStyle(instance as HTMLElement, aStyle, bStyle);

@@ -40,11 +40,6 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
 /**
  * Sync DOM styles.
  *
- * Implementation detail: Syncing algorithm has an optimization with an early detection of object shape changes.
- * Objects with static shape will make syncing algorithm slightly faster because it doesn't need to check which
- * properties didn't existed before, so it is possible to just use the static object shapes, and use `undefined` values
- * when you want to remove property and have the same object shape.
- *
  * @param node HTML or SVG Element.
  * @param a Old styles.
  * @param b New styles.
@@ -151,19 +146,14 @@ function setDOMAttribute(node: Element, flags: VNodeFlags, key: string, value: a
 }
 
 /**
- * Sync DOM properties.
- *
- * Implementation detail: Syncing algorithm has an optimization with an early detection of object shape changes.
- * Objects with static shape will make syncing algorithm slightly faster because it doesn't need to check which
- * properties didn't existed before, so it is possible to just use the static object shapes, and use `undefined` values
- * when you want to remove property and have the same object shape.
+ * Sync DOM Attributes.
  *
  * @param node HTML or SVG Element.
  * @param flags VNode flags.
  * @param a Old DOM properties.
  * @param b New DOM properties.
  */
-export function syncDOMProps(
+export function syncDOMAttrs(
   node: Element,
   flags: VNodeFlags,
   a: { [key: string]: any } | null,
