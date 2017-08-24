@@ -36,7 +36,7 @@ SSR blueprint diffing doesn't use any complicated diffing algorithms and perform
 ```ts
 function Menu() {
   return h.div()
-    .props({ id: "menu" })
+    .attrs({ id: "menu" })
     .children(...);
 }
 ```
@@ -48,7 +48,7 @@ const MenuProps = { id: "menu" };
 
 function Menu() {
   return h.div()
-    .props(MenuProps)
+    .attrs(MenuProps)
     .children(...);
 }
 ```

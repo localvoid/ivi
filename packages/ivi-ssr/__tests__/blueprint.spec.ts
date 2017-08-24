@@ -146,7 +146,7 @@ describe("blueprint", () => {
     });
 
     it(`<div id="123">`, () => {
-      observeBlueprint(createBlueprint(h.div().props({
+      observeBlueprint(createBlueprint(h.div().attrs({
         id: "123",
       })))
         .expectElement("div")
@@ -154,7 +154,7 @@ describe("blueprint", () => {
     });
 
     it(`<div id="123" title="qwe">`, () => {
-      observeBlueprint(createBlueprint(h.div().props({
+      observeBlueprint(createBlueprint(h.div().attrs({
         id: "123",
         title: "qwe",
       })))
@@ -163,7 +163,7 @@ describe("blueprint", () => {
     });
 
     it(`<div class="abc" id="123">`, () => {
-      observeBlueprint(createBlueprint(h.div("abc").props({
+      observeBlueprint(createBlueprint(h.div("abc").attrs({
         id: "123",
       })))
         .expectElement("div")
@@ -196,7 +196,7 @@ describe("blueprint", () => {
     });
 
     it(`<div id="123" style="color:green">`, () => {
-      observeBlueprint(createBlueprint(h.div().props({
+      observeBlueprint(createBlueprint(h.div().attrs({
         id: "123",
       }).style({
         color: "green",
@@ -206,7 +206,7 @@ describe("blueprint", () => {
     });
 
     it(`<div class="abc" id="123" style="color:green">`, () => {
-      observeBlueprint(createBlueprint(h.div("abc").props({
+      observeBlueprint(createBlueprint(h.div("abc").attrs({
         id: "123",
       }).style({
         color: "green",
@@ -339,14 +339,14 @@ describe("blueprint", () => {
       });
 
       it(`div with same props`, () => {
-        const a = createBlueprint(h.div().props({ a: "123" }));
-        const b = createBlueprint(h.div().props({ a: "123" }), undefined, a);
+        const a = createBlueprint(h.div().attrs({ a: "123" }));
+        const b = createBlueprint(h.div().attrs({ a: "123" }), undefined, a);
         expect(a).toBe(b);
       });
 
       it(`div with diff props`, () => {
-        const a = createBlueprint(h.div().props({ a: "123" }));
-        const b = createBlueprint(h.div().props({ a: "456" }), undefined, a);
+        const a = createBlueprint(h.div().attrs({ a: "123" }));
+        const b = createBlueprint(h.div().attrs({ a: "456" }), undefined, a);
         expect(a).notToBe(b);
       });
 
@@ -363,20 +363,20 @@ describe("blueprint", () => {
       });
 
       it(`div with same class/props diff style`, () => {
-        const a = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "green" }));
-        const b = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "red" }), undefined, a);
+        const a = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "green" }));
+        const b = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "red" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`div with same class/style diff props`, () => {
-        const a = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "green" }));
-        const b = createBlueprint(h.div("abc").props({ a: "456" }).style({ color: "green" }), undefined, a);
+        const a = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "green" }));
+        const b = createBlueprint(h.div("abc").attrs({ a: "456" }).style({ color: "green" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`div with same props/style diff class`, () => {
-        const a = createBlueprint(h.div("abc").props({ a: "123" }).style({ color: "green" }));
-        const b = createBlueprint(h.div("def").props({ a: "123" }).style({ color: "green" }), undefined, a);
+        const a = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "green" }));
+        const b = createBlueprint(h.div("def").attrs({ a: "123" }).style({ color: "green" }), undefined, a);
         expect(a).notToBe(b);
       });
 

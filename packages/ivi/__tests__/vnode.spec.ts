@@ -104,7 +104,7 @@ describe("VNode", () => {
 
     it("props", () => {
       const s = {};
-      const e = h.div().props(s);
+      const e = h.div().attrs(s);
       expect(e._props).toBe(s);
     });
 
@@ -137,18 +137,18 @@ describe("VNode", () => {
     });
 
     it("mergeProps: null", () => {
-      const e = mergeAttrs(h.div().props({ title: "abc" }), null);
+      const e = mergeAttrs(h.div().attrs({ title: "abc" }), null);
       expect((e._props as any).title).toBe("abc");
     });
 
     it("mergeProps", () => {
-      const e = mergeAttrs(h.div().props({ title: "abc" }), { width: "100" });
+      const e = mergeAttrs(h.div().attrs({ title: "abc" }), { width: "100" });
       expect((e._props as any).title).toBe("abc");
       expect((e._props as any).width).toBe("100");
     });
 
     it("mergeProps override", () => {
-      const e = mergeAttrs(h.div().props({ title: "abc" }), { title: "100" });
+      const e = mergeAttrs(h.div().attrs({ title: "abc" }), { title: "100" });
       expect((e._props as any).title).toBe("100");
     });
 

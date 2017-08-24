@@ -44,35 +44,35 @@ describe("renderToString", () => {
   });
 
   it("<div> (null props)", () => {
-    expect(renderToString(h.div().props(null))).toBe("<div></div>");
+    expect(renderToString(h.div().attrs(null))).toBe("<div></div>");
   });
 
   it("<div> ({} props)", () => {
-    expect(renderToString(h.div().props({}))).toBe("<div></div>");
+    expect(renderToString(h.div().attrs({}))).toBe("<div></div>");
   });
 
   it("<div tabIndex='1'>", () => {
-    expect(renderToString(h.div().props({ tabIndex: 1 }))).toBe(`<div tabIndex="1"></div>`);
+    expect(renderToString(h.div().attrs({ tabIndex: 1 }))).toBe(`<div tabIndex="1"></div>`);
   });
 
   it("<div tabIndex='1' title='2'>", () => {
-    expect(renderToString(h.div().props({ tabIndex: 1, title: "2" }))).toBe(`<div tabIndex="1" title="2"></div>`);
+    expect(renderToString(h.div().attrs({ tabIndex: 1, title: "2" }))).toBe(`<div tabIndex="1" title="2"></div>`);
   });
 
   it("<div data-abc='a'", () => {
-    expect(renderToString(h.div().props({ "data-abc": "a" }))).toBe(`<div data-abc="a"></div>`);
+    expect(renderToString(h.div().attrs({ "data-abc": "a" }))).toBe(`<div data-abc="a"></div>`);
   });
 
   it("<div aria-type='button'", () => {
-    expect(renderToString(h.div().props({ "aria-type": "button" }))).toBe(`<div aria-type="button"></div>`);
+    expect(renderToString(h.div().attrs({ "aria-type": "button" }))).toBe(`<div aria-type="button"></div>`);
   });
 
   it("<div boolean=false", () => {
-    expect(renderToString(h.div().props({ boolean: false }))).toBe(`<div></div>`);
+    expect(renderToString(h.div().attrs({ boolean: false }))).toBe(`<div></div>`);
   });
 
   it("<div boolean=true", () => {
-    expect(renderToString(h.div().props({ boolean: true }))).toBe(`<div boolean></div>`);
+    expect(renderToString(h.div().attrs({ boolean: true }))).toBe(`<div boolean></div>`);
   });
 
   it("<div class=null>", () => {
@@ -166,11 +166,11 @@ describe("renderToString", () => {
     });
 
     it("<circle xlink:href='a'>", () => {
-      expect(renderToString(h.circle().props({ "xlink:href": "a" }))).toBe(`<circle xlink:href="a"></circle>`);
+      expect(renderToString(h.circle().attrs({ "xlink:href": "a" }))).toBe(`<circle xlink:href="a"></circle>`);
     });
 
     it("<circle xml:text='a'>", () => {
-      expect(renderToString(h.circle().props({ "xml:text": "a" }))).toBe(`<circle xml:text="a"></circle>`);
+      expect(renderToString(h.circle().attrs({ "xml:text": "a" }))).toBe(`<circle xml:text="a"></circle>`);
     });
   });
 
@@ -229,12 +229,12 @@ describe("renderToString", () => {
       });
 
       it("text with class and props", () => {
-        expect(renderToString(h.inputText("abc").props({ id: "123" })))
+        expect(renderToString(h.inputText("abc").attrs({ id: "123" })))
           .toBe(`<input type="text" class="abc" id="123">`);
       });
 
       it("text with class and props and value", () => {
-        expect(renderToString(h.inputText("abc").props({ id: "123" }).value("val")))
+        expect(renderToString(h.inputText("abc").attrs({ id: "123" }).value("val")))
           .toBe(`<input type="text" class="abc" value="val" id="123">`);
       });
 
@@ -267,19 +267,19 @@ describe("renderToString", () => {
 
     describe("attributes", () => {
       it("accept-charset", () => {
-        expect(renderToString(h.div().props({ acceptCharset: `utf-8` })))
+        expect(renderToString(h.div().attrs({ acceptCharset: `utf-8` })))
           .toBe(`<div accept-charset="utf-8"></div>`);
       });
 
       it("for", () => {
-        expect(renderToString(h.div().props({ htmlFor: `a` }))).toBe(`<div for="a"></div>`);
+        expect(renderToString(h.div().attrs({ htmlFor: `a` }))).toBe(`<div for="a"></div>`);
       });
     });
   });
 
   describe("escape", () => {
     it("attribute values", () => {
-      expect(renderToString(h.div().props({ id: `"&` }))).toBe(`<div id="&quot;&amp;"></div>`);
+      expect(renderToString(h.div().attrs({ id: `"&` }))).toBe(`<div id="&quot;&amp;"></div>`);
     });
 
     it("style values", () => {
@@ -320,37 +320,37 @@ describe("renderToString", () => {
     describe("props", () => {
       it(`null => {}`, () => {
         const bp = createBlueprint(h.div());
-        expect(renderToString(h.div().props({}), undefined, bp)).toBe(`<div></div>`);
+        expect(renderToString(h.div().attrs({}), undefined, bp)).toBe(`<div></div>`);
       });
 
       it(`{} => null`, () => {
-        const bp = createBlueprint(h.div().props({}));
+        const bp = createBlueprint(h.div().attrs({}));
         expect(renderToString(h.div(), undefined, bp)).toBe(`<div></div>`);
       });
 
       it(`{} => {}`, () => {
-        const bp = createBlueprint(h.div().props({}));
-        expect(renderToString(h.div().props({}), undefined, bp)).toBe(`<div></div>`);
+        const bp = createBlueprint(h.div().attrs({}));
+        expect(renderToString(h.div().attrs({}), undefined, bp)).toBe(`<div></div>`);
       });
 
       it(`null => { title: "abc" }`, () => {
         const bp = createBlueprint(h.div());
-        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
+        expect(renderToString(h.div().attrs({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
       });
 
       it(`{} => { title: "abc" }`, () => {
-        const bp = createBlueprint(h.div().props({}));
-        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
+        const bp = createBlueprint(h.div().attrs({}));
+        expect(renderToString(h.div().attrs({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
       });
 
       it(`{ title: "abc" } => { title: "abc" }`, () => {
-        const bp = createBlueprint(h.div().props({ title: "abc" }));
-        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
+        const bp = createBlueprint(h.div().attrs({ title: "abc" }));
+        expect(renderToString(h.div().attrs({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
       });
 
       it(`{ title: "a" } => { title: "abc" }`, () => {
-        const bp = createBlueprint(h.div().props({ title: "a" }));
-        expect(renderToString(h.div().props({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
+        const bp = createBlueprint(h.div().attrs({ title: "a" }));
+        expect(renderToString(h.div().attrs({ title: "abc" }), undefined, bp)).toBe(`<div title="abc"></div>`);
       });
     });
 

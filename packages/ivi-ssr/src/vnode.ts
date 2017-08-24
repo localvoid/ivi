@@ -256,19 +256,19 @@ export class VNode<P = null> {
   }
 
   /**
-   * props assigns props for an Element node.
+   * attrs assigns DOM attributes for an Element node.
    *
-   * @param props Props.
+   * @param attrs DOM attributes.
    * @returns VNode
    */
-  props(props: { [key: string]: any } | null): this {
+  attrs(attrs: { [key: string]: any } | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
-        throw new Error("Failed to set props, props are available on element nodes only.");
+        throw new Error("Failed to set attrs, attrs are available on element nodes only.");
       }
     }
 
-    this._props = props as P;
+    this._props = attrs as P;
     return this;
   }
 
@@ -499,7 +499,7 @@ export function mergeAttrs<P>(node: VNode<P>, props: { [key: string]: any } | nu
     }
   }
   if (props !== null) {
-    return node.props(
+    return node.attrs(
       node._props !== null ?
         Object.assign({}, node._props, props) :
         props,

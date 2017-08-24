@@ -200,30 +200,30 @@ export class VNode<P = null> {
   }
 
   /**
-   * props assigns props for an Element node.
+   * attrs assigns DOM attributes for an Element node.
    *
-   * @param props Props.
+   * @param attrs DOM attributes.
    * @returns VNode
    */
-  props(props: { [key: string]: any } | null): this {
+  attrs(attrs: { [key: string]: any } | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
-        throw new Error("Failed to set props, props are available on element nodes only.");
+        throw new Error("Failed to set attrs, attrs are available on element nodes only.");
       }
 
-      if (props) {
-        checkDOMAttributesForTypos(props);
+      if (attrs) {
+        checkDOMAttributesForTypos(attrs);
 
         if (this._flags & VNodeFlags.SvgElement) {
-          checkDeprecatedDOMSVGAttributes(this._tag as string, props);
+          checkDeprecatedDOMSVGAttributes(this._tag as string, attrs);
         }
       }
     }
     this._flags |= VNodeFlags.ElementPropsAttrs;
     if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
-      this._props = props as P;
+      this._props = attrs as P;
     } else {
-      (this._props as ElementProps<P>).attrs = props as P;
+      (this._props as ElementProps<P>).attrs = attrs as P;
     }
     return this;
   }
@@ -461,7 +461,7 @@ export type Children = Array<VNode<any>[] | VNode<any> | string | number | boole
 export function mergeAttrs<P>(node: VNode<P>, props: { [key: string]: any } | null): VNode<P> {
   if (props !== null) {
     const flags = node._flags;
-    return node.props(
+    return node.attrs(
       (flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) === 0 ?
         props :
         Object.assign(

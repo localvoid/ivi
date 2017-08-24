@@ -58,7 +58,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          r(h.div().props({}));
+          r(h.div().attrs({}));
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
@@ -67,7 +67,7 @@ describe("sync", () => {
     it("{} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({}));
+          r(h.div().attrs({}));
           r(h.div());
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -77,8 +77,8 @@ describe("sync", () => {
     it("{} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({}));
-          r(h.div().props({}));
+          r(h.div().attrs({}));
+          r(h.div().attrs({}));
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
@@ -88,7 +88,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          const b = r(h.div().props({ title: "1" })) as HTMLElement;
+          const b = r(h.div().attrs({ title: "1" })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -98,8 +98,8 @@ describe("sync", () => {
     it("{} => {title: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({}));
-          const b = r(h.div().props({ title: "1" })) as HTMLElement;
+          r(h.div().attrs({}));
+          const b = r(h.div().attrs({ title: "1" })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -109,8 +109,8 @@ describe("sync", () => {
     it("{title: 1} => {title: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1" }));
-          const b = r(h.div().props({ title: "2" })) as HTMLElement;
+          r(h.div().attrs({ title: "1" }));
+          const b = r(h.div().attrs({ title: "2" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -120,8 +120,8 @@ describe("sync", () => {
     it("{} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({}));
-          const b = r(h.div().props({ title: "2", tabIndex: 2 })) as HTMLElement;
+          r(h.div().attrs({}));
+          const b = r(h.div().attrs({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -132,8 +132,8 @@ describe("sync", () => {
     it("{title: 1} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1" }));
-          const b = r(h.div().props({ title: "2", tabIndex: 2 })) as HTMLElement;
+          r(h.div().attrs({ title: "1" }));
+          const b = r(h.div().attrs({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -144,8 +144,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().props({ title: "2", tabIndex: 2 })) as HTMLElement;
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().attrs({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -156,8 +156,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 1, tabIndex: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().props({ title: "1", tabIndex: 1 })) as HTMLElement;
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().attrs({ title: "1", tabIndex: 1 })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(b.tabIndex).toBe(1);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -168,8 +168,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().props({ title: "2" })) as HTMLElement;
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().attrs({ title: "2" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBeLessThan(1);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -180,8 +180,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 2, lang: en}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().props({ title: "2", lang: "en" })) as HTMLElement;
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().attrs({ title: "2", lang: "en" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBeLessThan(1);
           expect(b.lang).toBe("en");
@@ -193,8 +193,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {lang: en}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().props({ lang: "en" })) as HTMLElement;
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().attrs({ lang: "en" })) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
           expect(b.lang).toBe("en");
@@ -206,8 +206,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().props({})) as HTMLElement;
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().attrs({})) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -218,7 +218,7 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().props({ title: "1", tabIndex: 1 }));
+          r(h.div().attrs({ title: "1", tabIndex: 1 }));
           const b = r(h.div()) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);

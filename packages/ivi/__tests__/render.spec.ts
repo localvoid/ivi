@@ -31,21 +31,21 @@ describe("render", () => {
 
   it("<div> (null props)", () => {
     checkDOMOps((c) => {
-      render<HTMLElement>(h.div().props(null));
+      render<HTMLElement>(h.div().attrs(null));
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
   });
 
   it("<div> ({} props)", () => {
     checkDOMOps((c) => {
-      render<HTMLElement>(h.div().props({}));
+      render<HTMLElement>(h.div().attrs({}));
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
   });
 
   it("<div tabIndex='1'>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().props({ tabIndex: 1 }));
+      const n = render<HTMLElement>(h.div().attrs({ tabIndex: 1 }));
       expect(n.tabIndex).toBe(1);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -53,7 +53,7 @@ describe("render", () => {
 
   it("<div tabIndex='1' title='2'>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().props({ tabIndex: 1, title: "2" }));
+      const n = render<HTMLElement>(h.div().attrs({ tabIndex: 1, title: "2" }));
       expect(n.tabIndex).toBe(1);
       expect(n.title).toBe("2");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -62,7 +62,7 @@ describe("render", () => {
 
   it("<div data-abc='a'", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().props({ "data-abc": "a" }));
+      const n = render<HTMLElement>(h.div().attrs({ "data-abc": "a" }));
       expect(n.getAttribute("data-abc")).toBe("a");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -70,7 +70,7 @@ describe("render", () => {
 
   it("<div aria-type='button'", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().props({ "aria-type": "button" }));
+      const n = render<HTMLElement>(h.div().attrs({ "aria-type": "button" }));
       expect(n.getAttribute("aria-type")).toBe("button");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -273,7 +273,7 @@ describe("render", () => {
 
     it("<circle xlink:href='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().props({ "xlink:href": "a" }));
+        const n = render<SVGCircleElement>(h.circle().attrs({ "xlink:href": "a" }));
         expect(n.getAttributeNS(XLINK_NAMESPACE, "href")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -281,7 +281,7 @@ describe("render", () => {
 
     it("<circle xml:text='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().props({ "xml:test": "a" }));
+        const n = render<SVGCircleElement>(h.circle().attrs({ "xml:test": "a" }));
         expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });

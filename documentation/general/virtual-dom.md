@@ -7,7 +7,7 @@ For example, to assign an event and id attribute on a div element:
 ```ts
 const node = h.div()
   .events(Events.onClick((ev) => { console.log("click"); }))
-  .props({ id: "unique-id" });
+  .attrs({ id: "unique-id" });
 ```
 
 ## Chained Methods
@@ -27,11 +27,9 @@ find how to rearrange nodes when they are moved, removed or inserted.
 
 ```ts
 interface VNode<P> {
-  props(props: P): VNode<P>;
+  attrs(attrs: P): VNode<P>;
   style(style: CSSStyleProps | null): VNode<P>;
   events(events: Array<EventHandler | null> | EventHandler | null): VNode<P>;
-  mergeProps<U extends P>(props: P): VNode<P>;
-  mergeStyle<U extends CSSStyleProps>(style: U | null): VNode<P>;
 }
 ```
 
