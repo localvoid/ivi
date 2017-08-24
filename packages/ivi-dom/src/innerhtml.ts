@@ -1,4 +1,5 @@
 import { FeatureFlags, FEATURES } from "ivi-core";
+import { doc, nodeInsertBefore, nodeSetTextContent, elementSetInnerHTML, nodeGetFirstChild } from "./shortcuts";
 
 /**
  * setInnerHTML sets inner HTML for HTML and SVG elements.
@@ -13,7 +14,7 @@ import { FeatureFlags, FEATURES } from "ivi-core";
  */
 export const setInnerHTML = ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0) ?
   function (element: Element, content: string, isSVG: boolean): void {
-    element.innerHTML = content;
+    elementSetInnerHTML(element, content);
   } :
   function (element: Element, content: string, isSVG: boolean): void {
     // #msapp
@@ -23,7 +24,7 @@ export const setInnerHTML = ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0) ?
 
     // Doesn't work on SVG Elements in IE. Latest Edge versions are working fine.
     if (isSVG === false) {
-      element.innerHTML = content;
+      elementSetInnerHTML(element, content);
     } else {
       setInnerSVG(element as SVGElement, content);
     }
@@ -46,14 +47,14 @@ let innerHTMLSVGContainer: HTMLDivElement | undefined;
  */
 function setInnerSVG(element: SVGElement, content: string): void {
   if (innerHTMLSVGContainer === undefined) {
-    innerHTMLSVGContainer = document.createElement("div");
+    innerHTMLSVGContainer = doc.createElement("div");
   }
-  element.textContent = "";
-  innerHTMLSVGContainer.innerHTML = `<svg>${content}</svg>`;
+  nodeSetTextContent(element, "");
+  elementSetInnerHTML(innerHTMLSVGContainer, `<svg>${content}</svg>`);
   const svg = innerHTMLSVGContainer.firstChild;
-  let c = svg!.firstChild;
+  let c = nodeGetFirstChild(svg!);
   while (c !== null) {
-    element.appendChild(c);
-    c = svg!.firstChild;
+    nodeInsertBefore(element, c, null);
+    c = nodeGetFirstChild(svg!);
   }
 }

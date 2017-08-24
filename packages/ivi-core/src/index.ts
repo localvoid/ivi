@@ -8,6 +8,7 @@ declare global {
 }
 
 export { Predicate, Context, MaybeUndefined } from "./types";
+export { objectGetOwnPropertyDescriptor, objectHasOwnProperty } from "./shortcuts";
 export { SelectorData, SelectorDataRef, selectorDataRef, selectorData, memoizeSelector } from "./selector";
 
 export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";

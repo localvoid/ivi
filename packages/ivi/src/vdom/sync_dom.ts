@@ -1,28 +1,6 @@
-import { XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps } from "ivi-core";
+import { XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty } from "ivi-core";
+import { elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS, elementSetClassName } from "ivi-dom";
 import { VNodeFlags } from "./flags";
-
-const elementProto = Element.prototype;
-const _setAttribute = elementProto.setAttribute;
-const _setAttributeNS = elementProto.setAttributeNS;
-const _removeAttribute = elementProto.removeAttribute;
-const _className = Object.getOwnPropertyDescriptor(elementProto, "className").set!;
-const _hasOwnProperty = Object.prototype.hasOwnProperty;
-
-function removeAttribute(el: Element, name: string): void {
-  _removeAttribute.call(el, name);
-}
-
-function setAttribute(el: Element, name: string, value: any): void {
-  _setAttribute.call(el, name, value);
-}
-
-function setAttributeNS(el: Element, namespace: string, name: string, value: any): void {
-  _setAttributeNS.call(el, namespace, name, value);
-}
-
-function hasProperty(o: object, property: string): boolean {
-  return _hasOwnProperty.call(o, property);
-}
 
 /**
  * Sync DOM class names.
@@ -37,9 +15,9 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
     b = "";
   }
   if ((flags & VNodeFlags.SvgElement) === 0) {
-    _className.call(node, b);
+    elementSetClassName(node, b);
   } else {
-    setAttribute(node, "class", b);
+    elementSetAttribute(node, "class", b);
   }
 }
 
@@ -100,7 +78,7 @@ export function syncStyle(
       keys = Object.keys(b);
       for (i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
-        if (hasProperty(a, key) === false) {
+        if (objectHasOwnProperty(a, key) === false) {
           style.setProperty(key, (b as { [key: string]: string })[key]);
           ++matchCount;
         }
@@ -122,7 +100,7 @@ function setDOMAttribute(node: Element, flags: VNodeFlags, key: string, value: a
     value = value === true ? "" : undefined;
   }
   if (value === undefined) {
-    removeAttribute(node, key);
+    elementRemoveAttribute(node, key);
   } else {
     if ((flags & VNodeFlags.SvgElement) !== 0) {
       if (key.length > 5) {
@@ -132,7 +110,7 @@ function setDOMAttribute(node: Element, flags: VNodeFlags, key: string, value: a
             /**
              * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
              */
-            setAttributeNS(node, XML_NAMESPACE, key, value);
+            elementSetAttributeNS(node, XML_NAMESPACE, key, value);
             return;
           } else if (key.charCodeAt(1) === 108 &&
             key.charCodeAt(2) === 105 &&
@@ -141,13 +119,13 @@ function setDOMAttribute(node: Element, flags: VNodeFlags, key: string, value: a
             /**
              * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
              */
-            setAttributeNS(node, XLINK_NAMESPACE, key, value);
+            elementSetAttributeNS(node, XLINK_NAMESPACE, key, value);
             return;
           }
         }
       }
     }
-    setAttribute(node, key, value);
+    elementSetAttribute(node, key, value);
   }
 }
 
@@ -184,7 +162,7 @@ export function syncDOMAttrs(
     if (b === null) {
       // b is empty, remove all attributes from a.
       for (; i < keys.length; ++i) {
-        removeAttribute(node, keys[i]);
+        elementRemoveAttribute(node, keys[i]);
       }
     } else {
       // Remove and update attributes.
@@ -193,7 +171,7 @@ export function syncDOMAttrs(
         key = keys[i];
         const bValue = b[key];
         if (bValue === undefined) {
-          removeAttribute(node, key);
+          elementRemoveAttribute(node, key);
         } else {
           const aValue = a[key];
           if (aValue !== bValue) {
@@ -207,7 +185,7 @@ export function syncDOMAttrs(
       keys = Object.keys(b);
       for (i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
-        if (hasProperty(a, key) === false) {
+        if (objectHasOwnProperty(a, key) === false) {
           setDOMAttribute(node, flags, key, b[key]);
           ++matchCount;
         }

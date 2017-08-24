@@ -1,11 +1,7 @@
+import { nodeGetParentElement } from "ivi-dom";
 import { EventHandler } from "./event_handler";
 import { DispatchTarget } from "./dispatch";
 import { getEventHandlersFromDOMNode } from "./utils";
-
-const _getParentElement = Object.getOwnPropertyDescriptor(Node.prototype, "parentElement").get!;
-function getParentElement(node: Node): Element | null {
-  return _getParentElement.call(node);
-}
 
 /**
  * accumulateDispatchTargetsFromElement accumulates matching Event Handlers in `result` array from the `target` Element.
@@ -66,6 +62,6 @@ export function accumulateDispatchTargets(
 ): void {
   while (target !== null) {
     accumulateDispatchTargetsFromElement(result, target, match);
-    target = getParentElement(target);
+    target = nodeGetParentElement(target);
   }
 }
