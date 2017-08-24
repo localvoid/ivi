@@ -6,6 +6,7 @@ const _setAttribute = elementProto.setAttribute;
 const _setAttributeNS = elementProto.setAttributeNS;
 const _removeAttribute = elementProto.removeAttribute;
 const _className = Object.getOwnPropertyDescriptor(elementProto, "className").set!;
+const _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 function removeAttribute(el: Element, name: string): void {
   _removeAttribute.call(el, name);
@@ -17,6 +18,10 @@ function setAttribute(el: Element, name: string, value: any): void {
 
 function setAttributeNS(el: Element, namespace: string, name: string, value: any): void {
   _setAttributeNS.call(el, namespace, name, value);
+}
+
+function hasProperty(o: object, property: string): boolean {
+  return _hasOwnProperty.call(o, property);
 }
 
 /**
@@ -95,7 +100,7 @@ export function syncStyle(
       keys = Object.keys(b);
       for (i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
-        if (a.hasOwnProperty(key) === false) {
+        if (hasProperty(a, key) === false) {
           style.setProperty(key, (b as { [key: string]: string })[key]);
           ++matchCount;
         }
@@ -202,7 +207,7 @@ export function syncDOMAttrs(
       keys = Object.keys(b);
       for (i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
-        if (a.hasOwnProperty(key) === false) {
+        if (hasProperty(a, key) === false) {
           setDOMAttribute(node, flags, key, b[key]);
           ++matchCount;
         }
