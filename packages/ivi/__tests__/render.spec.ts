@@ -510,24 +510,6 @@ describe("render", () => {
         expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
       });
     });
-
-    it("<audio volume=0.5>", () => {
-      checkDOMOps((c) => {
-        const n = render<HTMLAudioElement>(h.audio().props({ volume: 0.5 }));
-        expect(n.tagName.toLowerCase()).toBe("audio");
-        expect(n.volume).toBe(0.5);
-        expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
-      });
-    });
-
-    it("<video volume=0.5>", () => {
-      checkDOMOps((c) => {
-        const n = render<HTMLVideoElement>(h.video().props({ volume: 0.5 }));
-        expect(n.tagName.toLowerCase()).toBe("video");
-        expect(n.volume).toBe(0.5);
-        expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
-      });
-    });
   });
 
   describe("reusing vnodes", () => {

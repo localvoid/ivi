@@ -1450,39 +1450,6 @@ describe("sync", () => {
         });
       });
     });
-
-    it("<audio> => <audio volume=0.5>", () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.audio());
-          const b = r(h.audio().props({ volume: 0.5 })) as HTMLMediaElement;
-          expect(b.volume).toBe(0.5);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
-        });
-      });
-    });
-
-    it("<audio volume=0.3> => <audio volume=0.5>", () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.audio().props({ volume: 0.3 }));
-          const b = r(h.audio().props({ volume: 0.5 })) as HTMLMediaElement;
-          expect(b.volume).toBe(0.5);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
-        });
-      });
-    });
-
-    it("<audio volume=0.3> => <audio>", () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.audio().props({ volume: 0.3 }));
-          const b = r(h.audio()) as HTMLMediaElement;
-          expect(b.volume).toBe(0.3);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
-        });
-      });
-    });
   });
 
   describe("complex transformations", () => {

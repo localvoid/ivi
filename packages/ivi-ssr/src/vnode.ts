@@ -5,6 +5,8 @@ import { BlueprintNode } from "./blueprint";
 import { StatelessComponent, ComponentClass, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 
+const _Array = Array;
+
 /**
  * VNode flags.
  */
@@ -259,14 +261,14 @@ export class VNode<P = null> {
    * @param props Props.
    * @returns VNode
    */
-  props<U extends P>(props: U | null): this {
+  props(props: { [key: string]: any } | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set props, props are available on element nodes only.");
       }
     }
 
-    this._props = props;
+    this._props = props as P;
     return this;
   }
 
@@ -309,7 +311,7 @@ export class VNode<P = null> {
       r = children[0] as VNode<any>[] | VNode<any> | string | number | null;
       if (typeof r === "object") {
         if (r !== null) {
-          if (r.constructor === Array) {
+          if (r.constructor === _Array) {
             r = r as VNode<any>[];
             if (r.length > 1) {
               f = VNodeFlags.ChildrenArray;
@@ -334,7 +336,7 @@ export class VNode<P = null> {
       for (i = 0; i < children.length; ++i) {
         c = children[i];
         if (c !== null) {
-          if (c.constructor === Array) {
+          if (c.constructor === _Array) {
             if (c.length > 0) {
               k += c.length;
               ++j;
@@ -350,7 +352,7 @@ export class VNode<P = null> {
       if (j > 0) {
         if ((j | k) === 1) {
           if (typeof r === "object") {
-            if (r.constructor === Array) {
+            if (r.constructor === _Array) {
               if (k > 1) {
                 f = VNodeFlags.ChildrenArray;
               } else {
@@ -371,7 +373,7 @@ export class VNode<P = null> {
             c = children[i];
             if (typeof c === "object") {
               if (c !== null) {
-                if (c.constructor === Array) {
+                if (c.constructor === _Array) {
                   for (j = 0; j < c.length; ++j) {
                     if (DEV) {
                       if (!(c[j]._flags & VNodeFlags.Key)) {
@@ -469,7 +471,7 @@ export class VNode<P = null> {
    * @param props
    * @return VNode
    */
-  mergeProps<U extends P>(props: U | null): this {
+  mergeProps(props: { [key: string]: any } | null): this {
     if (DEV) {
       if (props && typeof props !== "object") {
         throw new Error(`Failed to merge props, props object has type "${typeof props}".`);

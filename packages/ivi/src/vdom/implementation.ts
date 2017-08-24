@@ -582,6 +582,8 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
   }
 }
 
+const doc = document;
+
 /**
  * Render VNode.
  *
@@ -617,16 +619,16 @@ function vNodeRender(
     if ((flags & VNodeFlags.Text) !== 0) {
       pushNestingState("$t");
       checkNestingViolation();
-      node = document.createTextNode(vnode._children as string);
+      node = doc.createTextNode(vnode._children as string);
     } else { // (flags & VNodeFlags.Element)
       pushNestingState(vnode._tag as string);
       checkNestingViolation();
 
       if ((flags & (VNodeFlags.InputElement | VNodeFlags.SvgElement)) !== 0) {
         if ((flags & VNodeFlags.SvgElement) !== 0) {
-          node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
+          node = doc.createElementNS(SVG_NAMESPACE, vnode._tag as string);
         } else {
-          node = document.createElement("input");
+          node = doc.createElement("input");
           /**
            * #quirks
            *
@@ -636,7 +638,7 @@ function vNodeRender(
           (node as HTMLInputElement).type = vnode._tag as string;
         }
       } else {
-        node = document.createElement(vnode._tag as string);
+        node = doc.createElement(vnode._tag as string);
       }
 
       if ((flags & VNodeFlags.Autofocus) !== 0) {
