@@ -3,22 +3,6 @@ import { elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS } fr
 import { VNodeFlags } from "./flags";
 
 /**
- * Sync DOM class names.
- *
- * @param node HTML or SVG Element.
- * @param flags VNode flags.
- * @param a Old className.
- * @param b New className.
- */
-export function syncClassName(node: Element, flags: VNodeFlags, b: string): void {
-  if ((flags & VNodeFlags.SvgElement) === 0) {
-    node.className = b;
-  } else {
-    elementSetAttribute(node, "class", b);
-  }
-}
-
-/**
  * Sync DOM styles.
  *
  * @param node HTML or SVG Element.

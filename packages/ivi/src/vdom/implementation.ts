@@ -33,7 +33,7 @@ import { VNode, ElementProps, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 import { ComponentClass, StatelessComponent, Component } from "./component";
-import { syncDOMAttrs, syncClassName, syncStyle } from "./sync_dom";
+import { syncDOMAttrs, syncStyle } from "./sync_dom";
 
 /**
  * Pool of perf mark ids.
@@ -644,7 +644,10 @@ function vNodeRender(
       }
 
       if (vnode._className !== null) {
-        syncClassName(node as Element, flags, vnode._className);
+        /**
+         * NOTE: In FF setAttribute("class") is way much faster on SVG elements, in Chrome it is the opposite.
+         */
+        (node as Element).className = vnode._className;
       }
 
       if ((flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
@@ -1029,7 +1032,7 @@ function vNodeSync(
         }
       } else { // (flags & VNodeFlags.Element)
         if (a._className !== b._className) {
-          syncClassName(instance as Element, bFlags, b._className === null ? "" : b._className);
+          (instance as Element).className = b._className === null ? "" : b._className;
         }
 
         const aFlags = a._flags;
