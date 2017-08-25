@@ -1,3 +1,5 @@
+import { DEV } from "ivi-vars";
+
 const nodeProto = Node.prototype;
 const elementProto = Element.prototype;
 const _nodeInsertBefore = nodeProto.insertBefore;
@@ -8,25 +10,49 @@ const _elementSetAttributeNS = elementProto.setAttributeNS;
 const _elementRemoveAttribute = elementProto.removeAttribute;
 
 export function nodeInsertBefore(parent: Node, newChild: Node, refChild: Node | null): void {
-  _nodeInsertBefore.call(parent, newChild, refChild);
+  if (DEV) {
+    parent.insertBefore(newChild, refChild);
+  } else {
+    _nodeInsertBefore.call(parent, newChild, refChild);
+  }
 }
 
 export function nodeRemoveChild(parent: Node, child: Node): void {
-  _nodeRemoveChild.call(parent, child);
+  if (DEV) {
+    parent.removeChild(child);
+  } else {
+    _nodeRemoveChild.call(parent, child);
+  }
 }
 
 export function nodeReplaceChild(parent: Node, newChild: Node, oldChild: Node): void {
-  _nodeReplaceChild.call(parent, newChild, oldChild);
+  if (DEV) {
+    parent.replaceChild(newChild, oldChild);
+  } else {
+    _nodeReplaceChild.call(parent, newChild, oldChild);
+  }
 }
 
 export function elementRemoveAttribute(el: Element, name: string): void {
-  _elementRemoveAttribute.call(el, name);
+  if (DEV) {
+    el.removeAttribute(name);
+  } else {
+    _elementRemoveAttribute.call(el, name);
+  }
 }
 
 export function elementSetAttribute(el: Element, name: string, value: any): void {
-  _elementSetAttribute.call(el, name, value);
+  if (DEV) {
+    el.setAttribute(name, value);
+  } else {
+    _elementSetAttribute.call(el, name, value);
+  }
 }
 
 export function elementSetAttributeNS(el: Element, namespace: string, name: string, value: any): void {
-  _elementSetAttributeNS.call(el, namespace, name, value);
+  if (DEV) {
+    el.setAttributeNS(namespace, name, value);
+  } else {
+    _elementSetAttributeNS.call(el, namespace, name, value);
+  }
 }
