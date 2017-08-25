@@ -10,10 +10,7 @@ import { VNodeFlags } from "./flags";
  * @param a Old className.
  * @param b New className.
  */
-export function syncClassName(node: Element, flags: VNodeFlags, a: string | null, b: string | null): void {
-  if (b === null) {
-    b = "";
-  }
+export function syncClassName(node: Element, flags: VNodeFlags, b: string): void {
   if ((flags & VNodeFlags.SvgElement) === 0) {
     node.className = b;
   } else {
