@@ -1,4 +1,3 @@
-import { doc } from "ivi-dom";
 import { SyntheticEvent, SyntheticEventFlags } from "ivi-events";
 
 export const enum GesturePointerAction {
@@ -47,7 +46,7 @@ export class GesturePointerEvent extends SyntheticEvent {
 
   findHitTarget(): Element {
     if (this.hitTarget === null) {
-      this.hitTarget = doc.elementFromPoint(this.x, this.y);
+      this.hitTarget = document.elementFromPoint(this.x, this.y);
     }
     return this.hitTarget;
   }

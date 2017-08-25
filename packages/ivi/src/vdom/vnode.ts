@@ -8,8 +8,6 @@ import { StatelessComponent, ComponentClass, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 
-const _Array = Array;
-
 /**
  * Element properties.
  */
@@ -270,7 +268,7 @@ export class VNode<P = null> {
       r = children[0] as VNode<any>[] | VNode<any> | string | number | null;
       if (typeof r === "object") {
         if (r !== null) {
-          if (r.constructor === _Array) {
+          if (r.constructor === Array) {
             r = r as VNode<any>[];
             if (r.length > 1) {
               f = VNodeFlags.ChildrenArray;
@@ -295,7 +293,7 @@ export class VNode<P = null> {
       for (i = 0; i < children.length; ++i) {
         c = children[i];
         if (c !== null) {
-          if (c.constructor === _Array) {
+          if (c.constructor === Array) {
             if (c.length > 0) {
               k += c.length;
               j++;
@@ -311,7 +309,7 @@ export class VNode<P = null> {
       if (j > 0) {
         if ((j | k) === 1) {
           if (typeof r === "object") {
-            if (r.constructor === _Array) {
+            if (r.constructor === Array) {
               if (k > 1) {
                 f = VNodeFlags.ChildrenArray;
               } else {
@@ -332,7 +330,7 @@ export class VNode<P = null> {
             c = children[i];
             if (typeof c === "object") {
               if (c !== null) {
-                if (c.constructor === _Array) {
+                if (c.constructor === Array) {
                   for (j = 0; j < c.length; j++) {
                     if (DEV) {
                       if (!(c[j]._flags & VNodeFlags.Key)) {

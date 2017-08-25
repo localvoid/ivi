@@ -1,7 +1,6 @@
 export {
-  win, doc, nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeGetParentElement, nodeGetFirstChild,
-  nodeGetNodeValue, nodeSetNodeValue, nodeSetTextContent, elementSetInnerHTML, elementRemoveAttribute,
-  elementSetAttribute, elementSetAttributeNS, elementSetClassName,
+  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, elementRemoveAttribute, elementSetAttribute,
+  elementSetAttributeNS,
 } from "./shortcuts";
 export { getEventCharCode, getEventKey, getMouseButtons } from "./input";
 export { firstLeaf, nextSibling, nodeDepth } from "./traverse";

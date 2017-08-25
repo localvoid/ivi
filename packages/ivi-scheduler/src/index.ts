@@ -1,6 +1,5 @@
 import { DEV } from "ivi-vars";
 import { devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
-import { doc } from "ivi-dom";
 
 /**
  * Scheduler flags.
@@ -73,7 +72,7 @@ function createFrameTasksGroup(): FrameTasksGroup {
 let _flags: SchedulerFlags = 0;
 let _clock = 0;
 let _microtasks: (() => void)[] = [];
-const _microtaskNode: Text = doc.createTextNode("");
+const _microtaskNode: Text = document.createTextNode("");
 let _microtaskToggle = 0;
 
 /**
@@ -140,11 +139,11 @@ function handleVisibilityChange(): void {
   }
 }
 
-if (typeof doc["hidden"] !== "undefined") {
+if (typeof document["hidden"] !== "undefined") {
   _isHidden = function () {
-    return doc.hidden;
+    return document.hidden;
   };
-  doc.addEventListener("visibilitychange", handleVisibilityChange);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
 } else if (typeof (document as any)["webkitHidden"] !== "undefined") {
   /**
    * #quirks
@@ -152,9 +151,9 @@ if (typeof doc["hidden"] !== "undefined") {
    * Android 4.4
    */
   _isHidden = function () {
-    return (doc as any)["webkitHidden"];
+    return (document as any)["webkitHidden"];
   };
-  doc.addEventListener("webkitvisibilitychange", handleVisibilityChange);
+  document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
 } else {
   _isHidden = function () {
     return true;

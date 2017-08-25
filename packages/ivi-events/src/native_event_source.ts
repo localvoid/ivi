@@ -1,5 +1,4 @@
 import { append, unorderedArrayDelete } from "ivi-core";
-import { doc } from "ivi-dom";
 import { getEventTarget, getNativeEventOptions } from "./utils";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";
@@ -130,7 +129,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
 
   private incDependencies(): void {
     if (this.dependencies++ === 0) {
-      doc.addEventListener(
+      document.addEventListener(
         this.name,
         this.dispatch,
         getNativeEventOptions(this.flags) as boolean,
@@ -140,7 +139,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
 
   private decDependencies(): void {
     if (--this.dependencies === 0) {
-      doc.removeEventListener(
+      document.removeEventListener(
         this.name,
         this.dispatch,
         getNativeEventOptions(this.flags) as boolean,

@@ -17,10 +17,7 @@
 
 import { DEV } from "ivi-vars";
 import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
-import {
-  setInnerHTML, doc, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, nodeGetFirstChild, nodeGetNodeValue,
-  nodeSetNodeValue, nodeSetTextContent,
-} from "ivi-dom";
+import { setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
@@ -552,7 +549,7 @@ function vNodeMoveChild(parent: Node, node: VNode<any>, nextRef: Node | null): v
  * @param nodes Arrays of VNodes to remove.
  */
 function vNodeRemoveAllChildren(parent: Node, nodes: VNode<any>[], syncFlags: SyncFlags): void {
-  nodeSetTextContent(parent, "");
+  parent.textContent = "";
   vNodeDetachAll(nodes, syncFlags | SyncFlags.Dispose);
 }
 
@@ -620,16 +617,16 @@ function vNodeRender(
     if ((flags & VNodeFlags.Text) !== 0) {
       pushNestingState("$t");
       checkNestingViolation();
-      node = doc.createTextNode(vnode._children as string);
+      node = document.createTextNode(vnode._children as string);
     } else { // (flags & VNodeFlags.Element)
       pushNestingState(vnode._tag as string);
       checkNestingViolation();
 
       if ((flags & (VNodeFlags.InputElement | VNodeFlags.SvgElement)) !== 0) {
         if ((flags & VNodeFlags.SvgElement) !== 0) {
-          node = doc.createElementNS(SVG_NAMESPACE, vnode._tag as string);
+          node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
         } else {
-          node = doc.createElement("input");
+          node = document.createElement("input");
           /**
            * #quirks
            *
@@ -639,7 +636,7 @@ function vNodeRender(
           (node as HTMLInputElement).type = vnode._tag as string;
         }
       } else {
-        node = doc.createElement(vnode._tag as string);
+        node = document.createElement(vnode._tag as string);
       }
 
       if ((flags & VNodeFlags.Autofocus) !== 0) {
@@ -671,7 +668,7 @@ function vNodeRender(
       if (children !== null) {
         if ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) !== 0) {
           if ((flags & VNodeFlags.ChildrenBasic) !== 0) {
-            nodeSetTextContent(node, children as string);
+            node.textContent = children as string;
           } else {
             children = children as VNode<any>[];
             for (i = 0; i < children.length; ++i) {
@@ -858,7 +855,7 @@ function vNodeAugment(
           }
 
           if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
-            let domChild = nodeGetFirstChild(node);
+            let domChild = node.firstChild;
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
               const children = vnode._children as VNode<any>[];
               for (let i = 0; i < children.length; ++i) {
@@ -906,7 +903,7 @@ function vNodeAugment(
             }
           }
 
-          if (nodeGetNodeValue(node)!.length > children.length) {
+          if (node.nodeValue!.length > children.length) {
             nodeInsertBefore(parent, (node as Text).splitText(children.length), node.nextSibling);
           }
 
@@ -1028,7 +1025,7 @@ function vNodeSync(
     if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
       if ((bFlags & VNodeFlags.Text) !== 0) {
         if (a._children !== b._children) {
-          nodeSetNodeValue((instance as Text), b._children as string);
+          (instance as Text).nodeValue = b._children as string;
         }
       } else { // (flags & VNodeFlags.Element)
         if (a._className !== b._className) {
@@ -1229,7 +1226,7 @@ function syncChildren(
   if (a === null) {
     if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.ChildrenArray)) !== 0) {
       if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-        nodeSetTextContent(parent, b as string);
+        parent.textContent = b as string;
       } else {
         b = b as VNode<any>[];
         for (; i < b.length; ++i) {
@@ -1247,7 +1244,7 @@ function syncChildren(
     }
   } else if (b === null) {
     if ((aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
-      nodeSetTextContent(parent, "");
+      parent.textContent = "";
     } else if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
       vNodeRemoveAllChildren(parent, a as VNode<any>[], syncFlags);
     } else if ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
@@ -1261,21 +1258,21 @@ function syncChildren(
     if ((aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
-          const c = nodeGetFirstChild(parent);
+          const c = parent.firstChild;
           if (c !== null) {
-            nodeSetNodeValue(c, b as string);
+            c.nodeValue = b as string;
           } else {
-            nodeSetTextContent(parent, b as string);
+            parent.textContent = b as string;
           }
         } else {
           if (b) {
             setInnerHTML((parent as Element), b as string, (bParentFlags & VNodeFlags.SvgElement) !== 0);
           } else {
-            nodeSetTextContent(parent, "");
+            parent.textContent = "";
           }
         }
       } else {
-        nodeSetTextContent(parent, "");
+        parent.textContent = "";
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
           b = b as VNode<any>[];
           for (; i < b.length; ++i) {
@@ -1289,7 +1286,7 @@ function syncChildren(
       a = a as VNode<any>[];
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0 || !b) {
-          nodeSetTextContent(parent, b as string);
+          parent.textContent = b as string;
         } else {
           setInnerHTML(parent as Element, b as string, (bParentFlags & VNodeFlags.SvgElement) !== 0);
         }
@@ -1323,7 +1320,7 @@ function syncChildren(
       a = a as VNode<any>;
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0 || !b) {
-          nodeSetTextContent(parent, b as string);
+          parent.textContent = b as string;
         } else {
           setInnerHTML(parent as Element, b as string, (bParentFlags & VNodeFlags.SvgElement) !== 0);
         }

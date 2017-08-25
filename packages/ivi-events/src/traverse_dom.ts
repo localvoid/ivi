@@ -1,4 +1,3 @@
-import { nodeGetParentElement } from "ivi-dom";
 import { EventHandler } from "./event_handler";
 import { DispatchTarget } from "./dispatch";
 import { getEventHandlersFromDOMNode } from "./utils";
@@ -62,6 +61,6 @@ export function accumulateDispatchTargets(
 ): void {
   while (target !== null) {
     accumulateDispatchTargetsFromElement(result, target, match);
-    target = nodeGetParentElement(target);
+    target = target.parentElement;
   }
 }

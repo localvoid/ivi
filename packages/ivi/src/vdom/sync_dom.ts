@@ -1,5 +1,5 @@
 import { XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty } from "ivi-core";
-import { elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS, elementSetClassName } from "ivi-dom";
+import { elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS } from "ivi-dom";
 import { VNodeFlags } from "./flags";
 
 /**
@@ -15,7 +15,7 @@ export function syncClassName(node: Element, flags: VNodeFlags, a: string | null
     b = "";
   }
   if ((flags & VNodeFlags.SvgElement) === 0) {
-    elementSetClassName(node, b);
+    node.className = b;
   } else {
     elementSetAttribute(node, "class", b);
   }
