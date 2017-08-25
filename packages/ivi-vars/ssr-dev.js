@@ -6,8 +6,8 @@
 export const DEV = true;
 
 /**
- * Browser Environment.
+ * Target Environment.
  * 
- * @const {boolean}
+ * @const {number}
  */
-export const BROWSER = false;
+export const TARGET = 1;

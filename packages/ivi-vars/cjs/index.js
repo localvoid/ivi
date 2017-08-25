@@ -6,11 +6,11 @@
 const DEV = true;
 
 /**
- * Development Mode.
+ * Target Environment.
  * 
- * @const {boolean}
+ * @const {number}
  */
-const BROWSER = false;
+const TARGET = 1;
 
 module.exports.DEV = DEV;
-module.exports.BROWSER = BROWSER;
+module.exports.TARGET = TARGET;

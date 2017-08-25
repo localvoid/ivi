@@ -1,4 +1,4 @@
-import { BROWSER } from "ivi-vars";
+import { TARGET, Target } from "ivi-vars";
 
 /**
  * User Agent detection is used to fix some quirks like iOS event bubbling, etc.
@@ -6,7 +6,7 @@ import { BROWSER } from "ivi-vars";
  * NOTE: Do not implement any browser detection that aren't used in `ivi` library.
  */
 
-const ua = BROWSER && navigator ? navigator.userAgent : "";
+const ua = (TARGET & Target.Browser) && navigator ? navigator.userAgent : "";
 
 /**
  * User Agent Flags.
@@ -31,7 +31,7 @@ export const enum UserAgentFlags {
  */
 export let USER_AGENT: UserAgentFlags = 0;
 
-if (BROWSER) {
+if (TARGET & Target.Browser) {
   if (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) {
     USER_AGENT |= ("standalone" in navigator) ?
       UserAgentFlags.iOS | UserAgentFlags.iOSStandalone :
