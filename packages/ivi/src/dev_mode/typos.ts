@@ -2,18 +2,18 @@ import { DEV } from "ivi-vars";
 import { CSSStyleProps } from "ivi-core";
 import { DEV_MODE, DevModeFlags, printWarn, printWarnOnce } from "./dev_mode";
 
-let DOMAttributeTypos: { [key: string]: string };
-if (DEV) {
-  DOMAttributeTypos = {
-    "autoFocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
-    "autofocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
-    "value": `Typo: use "VNode.value(value: string)" to set an input value.`,
-    "checked": `Typo: use "VNode.checked(checked: boolean)" to set an input checked status.`,
-  };
-}
+const DOMHTMLAttributeTypos: { [key: string]: string | ((v: any) => string | undefined) } = {
+  "autoFocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
+  "autofocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
+  "value": `Typo: use "VNode.value(value: string)" to set an input value.`,
+  "checked": `Typo: use "VNode.checked(checked: boolean)" to set an input checked status.`,
+};
+
+const DOMSVGAttributeTypos: { [key: string]: string | ((v: any) => string | undefined) } = {
+};
 
 /**
- * Checks DOM attribute typos and prints warning message with possible typos.
+ * Checks HTML attribute typos and print warning message with possible typos.
  *
  * @param attr Attributes.
  */
@@ -21,10 +21,61 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
   if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
       for (const attrName of Object.keys(attrs)) {
-        const msg = DOMAttributeTypos[attrName];
+        const check = DOMHTMLAttributeTypos[attrName];
+        const value = attrs[attrName];
 
-        if (msg !== undefined) {
-          printWarnOnce(`typo.attribute.${attrName}`, msg);
+        if (typeof value === "function") {
+          printWarnOnce(
+            "typo.attribute.value.function",
+            "Incorrect attribute value. Value has a function type that cannot be coerced to string.",
+          );
+        } else if (typeof value === "symbol") {
+          printWarnOnce(
+            "typo.attribute.value.symbol",
+            "Incorrect attribute value. Value has a symbol type that cannot be coerced to string.",
+          );
+        }
+
+        if (check !== undefined) {
+          const msg = (typeof check === "function") ? check(value) : check;
+          if (msg) {
+            printWarnOnce(`typo.attribute.html.${attrName}`, msg);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Checks HTML attribute typos and print warning message with possible typos.
+ *
+ * @param attr Attributes.
+ */
+export function checkSVGDOMAttributesForTypos(attrs: { [key: string]: any }): void {
+  if (DEV) {
+    if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
+      for (const attrName of Object.keys(attrs)) {
+        const check = DOMSVGAttributeTypos[attrName];
+        const value = attrs[attrName];
+
+        if (typeof value === "function") {
+          printWarnOnce(
+            "typo.attribute.value.function",
+            "Incorrect attribute value. Value has a function type that cannot be coerced to string.",
+          );
+        } else if (typeof value === "symbol") {
+          printWarnOnce(
+            "typo.attribute.value.symbol",
+            "Incorrect attribute value. Value has a symbol type that cannot be coerced to string.",
+          );
+        }
+
+        if (check !== undefined) {
+          const msg = (typeof check === "function") ? check(value) : check;
+          if (msg) {
+            printWarnOnce(`typo.attribute.svg.${attrName}`, msg);
+          }
         }
       }
     }
