@@ -95,7 +95,7 @@ let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
 let _autofocusedElement: Element | null = null;
 
-function _runMicrotasks(): void {
+const microtaskObserver = new MutationObserver(catchError(function runMicrotasks(): void {
   while (_microtasks.length > 0) {
     const tasks = _microtasks;
     _microtasks = [];
@@ -106,31 +106,23 @@ function _runMicrotasks(): void {
 
   _flags ^= SchedulerFlags.MicrotaskPending;
   ++_clock;
-}
-
-const microtaskObserver = new MutationObserver(function runMicrotasks(): void {
-  catchError(_runMicrotasks);
-});
+}));
 microtaskObserver.observe(_microtaskNode, { "characterData": true });
 
 // Task scheduler based on postMessage
-function _runTasks(): void {
-  _flags ^= SchedulerFlags.TaskPending;
-  const tasks = _tasks;
-  _tasks = [];
-  for (let i = 0; i < tasks.length; ++i) {
-    tasks[i]();
-  }
-  ++_clock;
-}
-
-window.addEventListener("message", function runTasks(ev: MessageEvent): void {
+window.addEventListener("message", catchError(function runTasks(ev: MessageEvent): void {
   if (ev.source === window && ev.data === TASK_MESSAGE_UUID) {
-    catchError(_runTasks);
+    _flags ^= SchedulerFlags.TaskPending;
+    const tasks = _tasks;
+    _tasks = [];
+    for (let i = 0; i < tasks.length; ++i) {
+      tasks[i]();
+    }
+    ++_clock;
   }
-});
+}));
 
-function _handleVisibilityChange(): void {
+const handleVisibilityChange = catchError(function (): void {
   const newHidden = _isHidden();
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
@@ -145,11 +137,7 @@ function _handleVisibilityChange(): void {
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
   }
-}
-
-function handleVisibilityChange(): void {
-  catchError(_handleVisibilityChange);
-}
+});
 
 if (typeof document["hidden"] !== "undefined") {
   _isHidden = function () {
@@ -297,7 +285,7 @@ export function requestNextFrame(): void {
  *
  * @param t Current time.
  */
-function _handleNextFrame(time?: number): void {
+const _handleNextFrame = catchError(function (time?: number): void {
   _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
 
   _updateCurrentFrameStartTime(time);
@@ -372,7 +360,7 @@ function _handleNextFrame(time?: number): void {
   }
 
   ++_clock;
-}
+});
 
 /**
  * Frame tasks scheduler event handler.
@@ -382,17 +370,13 @@ function _handleNextFrame(time?: number): void {
 function handleNextFrame(t?: number): void {
   if (DEV) {
     try {
-      catchError(function () {
-        _handleNextFrame(t);
-      });
+      _handleNextFrame(t);
     } catch (e) {
       devModeOnError(e);
       throw e;
     }
   } else {
-    catchError(function () {
-      _handleNextFrame(t);
-    });
+    _handleNextFrame(t);
   }
 }
 
