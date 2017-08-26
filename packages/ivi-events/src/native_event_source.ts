@@ -1,4 +1,4 @@
-import { append, unorderedArrayDelete } from "ivi-core";
+import { append, unorderedArrayDelete, catchError } from "ivi-core";
 import { getEventTarget, getNativeEventOptions } from "./utils";
 import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
 import { SyntheticNativeEvent, SyntheticNativeEventClass } from "./synthetic_event";
@@ -69,7 +69,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
 
   private matchEventSource = (h: EventHandler) => h.source === this.eventSource;
 
-  private dispatch = (ev: Event): void => {
+  private dispatch = catchError((ev: Event): void => {
     const targets: DispatchTarget[] = [];
     if (this.listeners > 0) {
       accumulateDispatchTargets(targets, getEventTarget(ev) as Element, this.matchEventSource);
@@ -101,7 +101,7 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
         ev.preventDefault();
       }
     }
-  }
+  });
 
   addBeforeListener(cb: (e: SyntheticNativeEvent<any>) => void): void {
     this.onBeforeListeners = append(this.onBeforeListeners, cb);

@@ -6,7 +6,7 @@
  *   https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU
  */
 
-import { FEATURES, FeatureFlags } from "ivi-core";
+import { FEATURES, FeatureFlags, catchError } from "ivi-core";
 import {
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventSource, EventHandler, dispatchEvent,
 } from "ivi-events";
@@ -65,7 +65,7 @@ export class GestureEventSource {
 
   private matchEventSource = (h: EventHandler) => (h.source === this.eventSource);
 
-  private dispatch = (ev: GesturePointerEvent, target?: Element) => {
+  private dispatch = catchError((ev: GesturePointerEvent, target?: Element) => {
     const action = ev.action;
 
     if (action === GesturePointerAction.Down) {
@@ -117,5 +117,5 @@ export class GestureEventSource {
         pointerListSet(this.pointers, ev);
       }
     }
-  }
+  });
 }
