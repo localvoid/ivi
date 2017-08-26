@@ -11,5 +11,6 @@ export function catchError(fn: () => void): void {
     for (let i = 0; i < _errorHandlers.length; ++i) {
       _errorHandlers[i](e);
     }
+    throw e;
   }
 }
