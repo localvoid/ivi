@@ -1,5 +1,5 @@
 import { DEV } from "ivi-vars";
-import { devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
+import { catchError, devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -95,7 +95,7 @@ let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
 let _autofocusedElement: Element | null = null;
 
-const microtaskObserver = new MutationObserver(function runMicrotasks(): void {
+function _runMicrotasks(): void {
   while (_microtasks.length > 0) {
     const tasks = _microtasks;
     _microtasks = [];
@@ -106,23 +106,31 @@ const microtaskObserver = new MutationObserver(function runMicrotasks(): void {
 
   _flags ^= SchedulerFlags.MicrotaskPending;
   ++_clock;
+}
+
+const microtaskObserver = new MutationObserver(function runMicrotasks(): void {
+  catchError(_runMicrotasks);
 });
 microtaskObserver.observe(_microtaskNode, { "characterData": true });
 
 // Task scheduler based on postMessage
+function _runTasks(): void {
+  _flags ^= SchedulerFlags.TaskPending;
+  const tasks = _tasks;
+  _tasks = [];
+  for (let i = 0; i < tasks.length; ++i) {
+    tasks[i]();
+  }
+  ++_clock;
+}
+
 window.addEventListener("message", function runTasks(ev: MessageEvent): void {
   if (ev.source === window && ev.data === TASK_MESSAGE_UUID) {
-    _flags ^= SchedulerFlags.TaskPending;
-    const tasks = _tasks;
-    _tasks = [];
-    for (let i = 0; i < tasks.length; ++i) {
-      tasks[i]();
-    }
-    ++_clock;
+    catchError(_runTasks);
   }
 });
 
-function handleVisibilityChange(): void {
+function _handleVisibilityChange(): void {
   const newHidden = _isHidden();
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
@@ -137,6 +145,10 @@ function handleVisibilityChange(): void {
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
   }
+}
+
+function handleVisibilityChange(): void {
+  catchError(_handleVisibilityChange);
 }
 
 if (typeof document["hidden"] !== "undefined") {
@@ -370,13 +382,17 @@ function _handleNextFrame(time?: number): void {
 function handleNextFrame(t?: number): void {
   if (DEV) {
     try {
-      _handleNextFrame(t);
+      catchError(function () {
+        _handleNextFrame(t);
+      });
     } catch (e) {
       devModeOnError(e);
       throw e;
     }
   } else {
-    _handleNextFrame(t);
+    catchError(function () {
+      _handleNextFrame(t);
+    });
   }
 }
 

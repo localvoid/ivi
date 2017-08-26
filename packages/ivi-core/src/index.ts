@@ -8,6 +8,7 @@ declare global {
 }
 
 export { Predicate, Context, MaybeUndefined } from "./types";
+export { addErrorHandler, catchError } from "./error";
 export { objectGetOwnPropertyDescriptor, objectHasOwnProperty } from "./shortcuts";
 export { SelectorData, SelectorDataRef, selectorDataRef, selectorData, memoizeSelector } from "./selector";
 
