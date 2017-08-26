@@ -7,6 +7,6 @@ export {
   addAnimation, addDOMReader, addVisibilityObserver, autofocus, clock, currentFrameAfter, currentFrameRead,
   currentFrameStartTime, currentFrameUpdate, currentFrameWrite, isHidden, nextFrameAfter, nextFrameRead,
   nextFrameUpdate, nextFrameWrite, removeVisibilityObserver, requestNextFrame, runMicrotasks, runTasks,
-  scheduleMicrotask, scheduleTask, setUpdateFunction, toggleVisibility, triggerNextFrame, triggerNextTick,
+  scheduleMicrotask, scheduleTask, setUpdateDOMHandler, toggleVisibility, triggerNextFrame, triggerNextTick,
 } from "./scheduler";
 export { DOMRenderer, initDOMRenderer } from "./dom";

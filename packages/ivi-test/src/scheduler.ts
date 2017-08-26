@@ -71,7 +71,7 @@ function createFrameTasksGroup(): FrameTasksGroup {
 
 let _flags: SchedulerFlags = 0;
 let _clock = 0;
-let _update: () => void = NOOP;
+let _updateDOMHandler: () => void = NOOP;
 let _microtasks: (() => void)[] = [];
 let _tasks: (() => void)[] = [];
 let _visibilityObservers: ((hidden: boolean) => void)[] = [];
@@ -165,8 +165,8 @@ export function removeVisibilityObserver(observer: (visible: boolean) => void): 
   }
 }
 
-export function setUpdateFunction(update: () => void): void {
-  _update = update;
+export function setUpdateDOMHandler(handler: () => void): void {
+  _updateDOMHandler = handler;
 }
 
 /**
@@ -361,7 +361,7 @@ export function triggerNextFrame(time?: number): void {
 
           if ((frame.flags & FrameTasksGroupFlags.Update) !== 0) {
             frame.flags ^= FrameTasksGroupFlags.Update;
-            _update();
+            _updateDOMHandler();
           }
         }
       } while ((frame.flags & (

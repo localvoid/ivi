@@ -45,7 +45,7 @@ export { BlueprintNode, createBlueprint, linkBlueprint, renderToString, serializ
  */
 import { DEV } from "ivi-vars";
 import { FEATURES, FeatureFlags, Context } from "ivi-core";
-import { setUpdateFunction } from "ivi-scheduler";
+import { setUpdateDOMHandler } from "ivi-scheduler";
 import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/dev_mode";
 import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode/component_tree";
 import { Component, ComponentClass, StatelessComponent } from "./vdom/component";
@@ -55,7 +55,7 @@ import { VNodeFlags } from "./vdom/flags";
 import { VNode } from "./vdom/vnode";
 import { update } from "./vdom/root";
 
-setUpdateFunction(update);
+setUpdateDOMHandler(update);
 
 function _printComponentTreeVisitor(vnode: VNode<any>) {
   if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {

@@ -89,7 +89,7 @@ let _isHidden: () => boolean;
 
 const _animations = new RepeatableTaskList();
 const _readers = new RepeatableTaskList();
-let _update: () => void = NOOP;
+let _updateDOMHandler: () => void = NOOP;
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
@@ -220,8 +220,8 @@ export function removeVisibilityObserver(observer: (visible: boolean) => void): 
   }
 }
 
-export function setUpdateFunction(update: () => void): void {
-  _update = update;
+export function setUpdateDOMHandler(handler: () => void): void {
+  _updateDOMHandler = handler;
 }
 
 /**
@@ -324,7 +324,7 @@ function _handleNextFrame(time?: number): void {
 
       if ((frame.flags & FrameTasksGroupFlags.Update) !== 0) {
         frame.flags ^= FrameTasksGroupFlags.Update;
-        _update();
+        _updateDOMHandler();
       }
     }
   } while ((frame.flags & (
