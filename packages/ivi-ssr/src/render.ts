@@ -6,37 +6,21 @@ import { ConnectDescriptor } from "./connect_descriptor";
 import { escapeAttributeValue, escapeText } from "./escape";
 
 /**
- * attributeName converts property names to attribute names.
+ * renderElementAttrs renders element attributes to string.
  *
- * @param name Property name.
- * @returns Attribute name.
+ * @param attrs Element attributes.
+ * @returns Element attributes in string format.
  */
-function attributeName(name: string): string {
-  switch (name) {
-    case "acceptCharset":
-      return "accept-charset";
-    case "htmlFor":
-      return "for";
-  }
-  return name;
-}
-
-/**
- * renderElementProps renders element properties to string.
- *
- * @param props Element properties.
- * @returns Element properties in string format.
- */
-function renderElementProps(props: { [key: string]: string }): string {
+function renderElementAttrs(attrs: { [key: string]: string }): string {
   let result = "";
 
-  const keys = Object.keys(props);
+  const keys = Object.keys(attrs);
   for (let i = 0; i < keys.length; ++i) {
     const key = keys[i];
-    const value = props[key];
+    const value = attrs[key];
     if (typeof value !== "boolean") {
       if (value !== null) {
-        result += ` ${attributeName(key)}="${escapeAttributeValue(value)}"`;
+        result += ` ${key}="${escapeAttributeValue(value)}"`;
       }
     } else {
       if (value === true) {
@@ -102,7 +86,7 @@ export function renderOpenElement(node: VNode<any>): string {
   }
 
   if (node._props !== null) {
-    result += renderElementProps(node._props);
+    result += renderElementAttrs(node._props);
   }
   if (node._style !== null) {
     result += renderElementStyle(node._style);
