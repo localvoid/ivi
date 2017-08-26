@@ -46,12 +46,7 @@ export function getEventTarget(ev: Event): EventTarget {
     target = (target as any).correspondingUseElement;
   }
 
-  /**
-   * Safari fires events on Text Nodes.
-   *
-   * http://www.quirksmode.org/js/events_properties.html
-   */
-  return (target as Node).nodeType === 3 ? (target as Node).parentNode! : target;
+  return target;
 }
 
 /**
