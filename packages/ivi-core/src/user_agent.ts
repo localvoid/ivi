@@ -32,13 +32,15 @@ export const enum UserAgentFlags {
 export let USER_AGENT: UserAgentFlags = 0;
 
 if (TARGET & Target.Browser) {
-  if (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) {
-    USER_AGENT |= ("standalone" in navigator) ?
-      UserAgentFlags.iOS | UserAgentFlags.iOSStandalone :
-      UserAgentFlags.iOS;
-  }
+  if ((TARGET & Target.Electron) === 0) {
+    if (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) {
+      USER_AGENT |= ("standalone" in navigator) ?
+        UserAgentFlags.iOS | UserAgentFlags.iOSStandalone :
+        UserAgentFlags.iOS;
+    }
 
-  if (ua.indexOf("Android") > -1) {
-    USER_AGENT |= UserAgentFlags.Android;
+    if (ua.indexOf("Android") > -1) {
+      USER_AGENT |= UserAgentFlags.Android;
+    }
   }
 }

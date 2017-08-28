@@ -1,4 +1,4 @@
-import { DEV } from "ivi-vars";
+import { DEV, TARGET, Target } from "ivi-vars";
 import { catchError, devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
@@ -139,7 +139,10 @@ const handleVisibilityChange = catchError(function (): void {
   }
 });
 
-if (typeof document["hidden"] !== "undefined") {
+if (
+  (TARGET & (Target.Electron | Target.Cordova | Target.EvergreenBrowser)) ||
+  typeof document["hidden"] !== "undefined"
+) {
   _isHidden = function () {
     return document.hidden;
   };

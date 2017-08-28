@@ -68,37 +68,44 @@ if (TARGET & Target.Browser) {
    *
    * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
    */
-  try {
-    // Test via a getter in the options object to see if the passive property is accessed
-    const opts = Object.defineProperty({}, "passive", {
-      get() {
-        FEATURES |= FeatureFlags.PassiveEvents;
-      },
-    });
-    window.addEventListener("test", null as any as (ev: Event) => void, opts);
-  } catch (e) {
-    /* tslint:disable:no-empty */
-    /* tslint:enable:no-empty */
+  if (TARGET & Target.Electron) {
+    FEATURES |= FeatureFlags.PassiveEvents;
+  } else {
+    try {
+      // Test via a getter in the options object to see if the passive property is accessed
+      const opts = Object.defineProperty({}, "passive", {
+        get() {
+          FEATURES |= FeatureFlags.PassiveEvents;
+        },
+      });
+      window.addEventListener("test", null as any as (ev: Event) => void, opts);
+    } catch (e) {
+      /* tslint:disable:no-empty */
+      /* tslint:enable:no-empty */
+    }
   }
 
   /**
    * Check `innerHTML` property in `SVGElement`.
    */
-  if (document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined) {
+  if (
+    (TARGET & (Target.Electron | Target.Cordova | Target.EvergreenBrowser)) ||
+    document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined
+  ) {
     FEATURES |= FeatureFlags.SVGInnerHTML;
   }
 
   /**
    * Check `key` property in `KeyboardEvent`.
    */
-  if ("key" in KeyboardEvent.prototype) {
+  if ((TARGET & Target.Electron) || "key" in KeyboardEvent.prototype) {
     FEATURES |= FeatureFlags.KeyboardEventKey;
   }
 
   /**
    * Check `buttons` property in `MouseEvent`.
    */
-  if ("buttons" in MouseEvent.prototype) {
+  if ((TARGET & Target.Electron) || "buttons" in MouseEvent.prototype) {
     FEATURES |= FeatureFlags.MouseEventButtons;
   }
 
@@ -112,7 +119,7 @@ if (TARGET & Target.Browser) {
   /**
    * Check pointer events API.
    */
-  if ("PointerEvent" in window) {
+  if ((TARGET & Target.Electron) || "PointerEvent" in window) {
     FEATURES |= FeatureFlags.PointerEvents;
     /**
      * Touch/Multitouch detection.
@@ -128,7 +135,7 @@ if (TARGET & Target.Browser) {
   /**
    * Check `sourceCapabilities` property in UIEvent.
    */
-  if ("sourceCapabilities" in UIEvent.prototype) {
+  if ((TARGET & Target.Electron) || "sourceCapabilities" in UIEvent.prototype) {
     FEATURES |= FeatureFlags.InputDeviceCapabilities;
   }
 }
