@@ -98,16 +98,6 @@ describe("component state", () => {
       });
     });
 
-    it("beforeUpdate", () => {
-      startRender((r) => {
-        r($lc("1", {
-          beforeUpdate: function () {
-            expect(this.props.id).toBe("1");
-          },
-        }, h.div()));
-      });
-    });
-
     it("updated", () => {
       startRender((r) => {
         r($lc("1", {
