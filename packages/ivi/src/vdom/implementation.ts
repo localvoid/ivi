@@ -17,7 +17,7 @@
 
 import { DEV } from "ivi-vars";
 import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
-import { setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild } from "ivi-dom";
+import { setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
@@ -644,9 +644,13 @@ function vNodeRender(
 
       if (vnode._className !== null) {
         /**
-         * NOTE: In FF setAttribute("class") is way much faster on SVG elements, in Chrome it is the opposite.
+         * SVGElement.className returns `SVGAnimatedString`
          */
-        (node as Element).className = vnode._className;
+        if ((flags & VNodeFlags.SvgElement) === 0) {
+          (node as Element).className = vnode._className;
+        } else {
+          elementSetAttribute(node as Element, "class", vnode._className);
+        }
       }
 
       if ((flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
@@ -1031,7 +1035,12 @@ function vNodeSync(
         }
       } else { // (flags & VNodeFlags.Element)
         if (a._className !== b._className) {
-          (instance as Element).className = b._className === null ? "" : b._className;
+          const className = b._className === null ? "" : b._className;
+          if ((bFlags & VNodeFlags.SvgElement) === 0) {
+            (instance as Element).className = className;
+          } else {
+            elementSetAttribute(instance as Element, "class", className);
+          }
         }
 
         const aFlags = a._flags;
