@@ -15,7 +15,6 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
@@ -36,7 +35,6 @@ describe("lifecycle", () => {
 
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
@@ -57,7 +55,6 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
@@ -78,7 +75,6 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
@@ -99,7 +95,6 @@ describe("lifecycle", () => {
 
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
@@ -122,7 +117,6 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
@@ -130,7 +124,6 @@ describe("lifecycle", () => {
         expect(c("2", "isPropsChanged")).toBe(-1);
         expect(c("2", "newPropsReceived")).toBe(-1);
         expect(c("2", "detached")).toBe(-1);
-        expect(c("2", "beforeUpdate")).toBe(-1);
         expect(c("2", "updated")).toBe(-1);
         expect(c("2", "invalidated")).toBe(-1);
         expect(c("2", "shouldAugment")).toBe(-1);
@@ -155,14 +148,12 @@ describe("lifecycle", () => {
 
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
 
         expect(c("2", "isPropsChanged")).toBe(-1);
         expect(c("2", "newPropsReceived")).toBe(-1);
-        expect(c("2", "beforeUpdate")).toBe(-1);
         expect(c("2", "updated")).toBe(-1);
         expect(c("2", "invalidated")).toBe(-1);
         expect(c("2", "shouldAugment")).toBe(-1);
@@ -180,9 +171,8 @@ describe("lifecycle", () => {
         expect(c("1", "attached")).toBe(2);
         expect(c("1", "isPropsChanged")).toBe(3);
         expect(c("1", "newPropsReceived")).toBe(4);
-        expect(c("1", "beforeUpdate")).toBe(5);
-        expect(c("1", "render")).toBe(6); // 1
-        expect(c("1", "updated")).toBe(7);
+        expect(c("1", "render")).toBe(5); // 1
+        expect(c("1", "updated")).toBe(6);
 
         expect(c("1", "render", false)).toBe(1);
 
@@ -203,7 +193,6 @@ describe("lifecycle", () => {
         expect(c("1", "render")).toBe(1);
         expect(c("1", "attached")).toBe(2);
 
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
 
         expect(c("1", "isPropsChanged")).toBe(-1);
@@ -229,7 +218,6 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
       });
@@ -247,7 +235,6 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
       });
@@ -268,14 +255,12 @@ describe("lifecycle", () => {
         expect(c("1", "isPropsChanged")).toBe(-1);
         expect(c("1", "newPropsReceived")).toBe(-1);
         expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "beforeUpdate")).toBe(-1);
         expect(c("1", "updated")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
 
         expect(c("2", "isPropsChanged")).toBe(-1);
         expect(c("2", "newPropsReceived")).toBe(-1);
         expect(c("2", "detached")).toBe(-1);
-        expect(c("2", "beforeUpdate")).toBe(-1);
         expect(c("2", "updated")).toBe(-1);
         expect(c("2", "invalidated")).toBe(-1);
         expect(c("2", "shouldAugment")).toBe(-1);

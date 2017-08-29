@@ -39,7 +39,6 @@ describe("Keep Alive", function () {
           expect(c("1", "isPropsChanged")).toBe(-1);
           expect(c("1", "newPropsReceived")).toBe(-1);
           expect(c("1", "detached")).toBe(-1);
-          expect(c("1", "beforeUpdate")).toBe(-1);
           expect(c("1", "updated")).toBe(-1);
           expect(c("1", "invalidated")).toBe(-1);
           expect(c("1", "shouldAugment")).toBe(-1);
@@ -61,7 +60,6 @@ describe("Keep Alive", function () {
 
           expect(c("1", "isPropsChanged")).toBe(-1);
           expect(c("1", "newPropsReceived")).toBe(-1);
-          expect(c("1", "beforeUpdate")).toBe(-1);
           expect(c("1", "updated")).toBe(-1);
           expect(c("1", "invalidated")).toBe(-1);
           expect(c("1", "shouldAugment")).toBe(-1);
@@ -86,7 +84,6 @@ describe("Keep Alive", function () {
           expect(c("1", "isPropsChanged")).toBe(-1);
           expect(c("1", "newPropsReceived")).toBe(-1);
           expect(c("1", "detached")).toBe(-1);
-          expect(c("1", "beforeUpdate")).toBe(-1);
           expect(c("1", "updated")).toBe(-1);
           expect(c("1", "invalidated")).toBe(-1);
           expect(c("1", "shouldAugment")).toBe(-1);
@@ -94,7 +91,6 @@ describe("Keep Alive", function () {
           expect(c("2", "isPropsChanged")).toBe(-1);
           expect(c("2", "newPropsReceived")).toBe(-1);
           expect(c("2", "detached")).toBe(-1);
-          expect(c("2", "beforeUpdate")).toBe(-1);
           expect(c("2", "updated")).toBe(-1);
           expect(c("2", "invalidated")).toBe(-1);
           expect(c("2", "shouldAugment")).toBe(-1);
@@ -121,14 +117,12 @@ describe("Keep Alive", function () {
 
           expect(c("1", "isPropsChanged")).toBe(-1);
           expect(c("1", "newPropsReceived")).toBe(-1);
-          expect(c("1", "beforeUpdate")).toBe(-1);
           expect(c("1", "updated")).toBe(-1);
           expect(c("1", "invalidated")).toBe(-1);
           expect(c("1", "shouldAugment")).toBe(-1);
 
           expect(c("2", "isPropsChanged")).toBe(-1);
           expect(c("2", "newPropsReceived")).toBe(-1);
-          expect(c("2", "beforeUpdate")).toBe(-1);
           expect(c("2", "updated")).toBe(-1);
           expect(c("2", "invalidated")).toBe(-1);
           expect(c("2", "shouldAugment")).toBe(-1);
@@ -151,16 +145,14 @@ describe("Keep Alive", function () {
           expect(c("1", "detached")).toBe(7);
           expect(c("1", "isPropsChanged")).toBe(8);
           expect(c("1", "newPropsReceived")).toBe(9);
-          expect(c("1", "beforeUpdate")).toBe(10);
-          expect(c("1", "render")).toBe(11);
-          expect(c("2", "isPropsChanged")).toBe(12);
-          expect(c("2", "newPropsReceived")).toBe(13);
-          expect(c("2", "beforeUpdate")).toBe(14);
-          expect(c("2", "render")).toBe(15);
-          expect(c("2", "updated")).toBe(16);
-          expect(c("1", "updated")).toBe(17);
-          expect(c("1", "attached")).toBe(18);
-          expect(c("2", "attached")).toBe(19);
+          expect(c("1", "render")).toBe(10);
+          expect(c("2", "isPropsChanged")).toBe(11);
+          expect(c("2", "newPropsReceived")).toBe(12);
+          expect(c("2", "render")).toBe(13);
+          expect(c("2", "updated")).toBe(14);
+          expect(c("1", "updated")).toBe(15);
+          expect(c("1", "attached")).toBe(16);
+          expect(c("2", "attached")).toBe(17);
 
           expect(c("1", "invalidated")).toBe(-1);
           expect(c("1", "shouldAugment")).toBe(-1);
@@ -183,18 +175,16 @@ describe("Keep Alive", function () {
           expect(c("1", "constructor")).toBe(0);
           expect(c("2", "constructor")).toBe(2);
           expect(c("1", "attached")).toBe(4);
-          expect(c("2", "detached")).toBe(10);
-          expect(c("1", "isPropsChanged")).toBe(12);
-          expect(c("1", "newPropsReceived")).toBe(13);
-          expect(c("1", "beforeUpdate")).toBe(14);
-          expect(c("1", "render")).toBe(15);
-          expect(c("2", "isPropsChanged")).toBe(16);
-          expect(c("2", "newPropsReceived")).toBe(17);
-          expect(c("2", "beforeUpdate")).toBe(18);
-          expect(c("2", "render")).toBe(19);
-          expect(c("2", "updated")).toBe(20);
-          expect(c("2", "attached")).toBe(21);
-          expect(c("1", "updated")).toBe(22);
+          expect(c("2", "detached")).toBe(9);
+          expect(c("1", "isPropsChanged")).toBe(11);
+          expect(c("1", "newPropsReceived")).toBe(12);
+          expect(c("1", "render")).toBe(13);
+          expect(c("2", "isPropsChanged")).toBe(14);
+          expect(c("2", "newPropsReceived")).toBe(15);
+          expect(c("2", "render")).toBe(16);
+          expect(c("2", "updated")).toBe(17);
+          expect(c("2", "attached")).toBe(18);
+          expect(c("1", "updated")).toBe(19);
 
           expect(c("1", "detached")).toBe(-1);
           expect(c("1", "invalidated")).toBe(-1);
@@ -226,14 +216,12 @@ describe("Keep Alive", function () {
 
           expect(c("1", "isPropsChanged")).toBe(-1);
           expect(c("1", "newPropsReceived")).toBe(-1);
-          expect(c("1", "beforeUpdate")).toBe(-1);
           expect(c("1", "updated")).toBe(-1);
           expect(c("1", "invalidated")).toBe(-1);
           expect(c("1", "shouldAugment")).toBe(-1);
 
           expect(c("2", "isPropsChanged")).toBe(-1);
           expect(c("2", "newPropsReceived")).toBe(-1);
-          expect(c("2", "beforeUpdate")).toBe(-1);
           expect(c("2", "updated")).toBe(-1);
           expect(c("2", "invalidated")).toBe(-1);
           expect(c("2", "shouldAugment")).toBe(-1);

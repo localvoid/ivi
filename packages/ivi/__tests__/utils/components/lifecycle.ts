@@ -19,7 +19,6 @@ export interface ComponentHooks<P> {
   ) => void;
   attached?: (this: Component<P>) => void;
   detached?: (this: Component<P>) => void;
-  beforeUpdate?: (this: Component<P>) => void;
   updated?: (this: Component<P>) => void;
   invalidated?: (this: Component<P>) => void;
   render?: (this: Component<P>) => VNode<any>;
@@ -67,13 +66,6 @@ export class LifecycleTester extends Component<LifecycleTesterProps> {
     lifecycleTouch(this.props.id, "detached");
     if (this.props.hooks.detached) {
       this.props.hooks.detached.call(this);
-    }
-  }
-
-  beforeUpdate(): void {
-    lifecycleTouch(this.props.id, "beforeUpdate");
-    if (this.props.hooks.beforeUpdate) {
-      this.props.hooks.beforeUpdate.call(this);
     }
   }
 

@@ -131,14 +131,6 @@ interface Component {
 }
 ```
 
-Component will be updated.
-
-```ts
-interface Component {
-  beforeUpdate(): void;
-}
-```
-
 Component updated.
 
 ```ts

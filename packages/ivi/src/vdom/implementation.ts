@@ -468,7 +468,6 @@ function vNodeUpdateComponents(
         const oldRoot = vnode._children as VNode<any>;
         if ((cflags & ComponentFlags.Dirty) !== 0) {
           componentPerfMarkBegin("update", vnode);
-          component.beforeUpdate();
           const newRoot = vnode._children = component.render();
           vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
           component.flags &= ~ComponentFlags.Dirty;
@@ -1115,7 +1114,6 @@ function vNodeSync(
         const oldRoot = a._children as VNode<any>;
         if ((propsChanged | (component.flags & ComponentFlags.Dirty)) !== 0) {
           componentPerfMarkBegin("update", a);
-          component.beforeUpdate();
           const newRoot = b._children = component.render();
           vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
           component.flags &= ~ComponentFlags.Dirty;

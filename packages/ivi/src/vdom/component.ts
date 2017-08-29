@@ -115,14 +115,6 @@ export abstract class Component<P = void> {
   }
 
   /**
-   * Lifecycle method `beforeUpdate` is invoked before update.
-   */
-  beforeUpdate(): void {
-    /* tslint:disable:no-empty */
-    /* tslint:enable:no-empty */
-  }
-
-  /**
    * Lifecycle method `updated` is invoked after update.
    *
    * @param localUpdates Update was caused by local updates.
