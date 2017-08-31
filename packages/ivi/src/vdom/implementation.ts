@@ -604,9 +604,7 @@ function vNodeRender(
   const flags = vnode._flags;
   let instance: Node | Component<any> | null = null;
   let node: Node;
-  let childNode: Node;
   let i: number;
-  let child: VNode<any>;
 
   if ((flags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
     // Push nesting state and check for nesting violation.
@@ -671,15 +669,11 @@ function vNodeRender(
           } else {
             children = children as VNode<any>[];
             for (i = 0; i < children.length; ++i) {
-              child = children[i];
-              childNode = vNodeRender(node, child, context);
-              nodeInsertBefore(node, childNode, null);
+              nodeInsertBefore(node, vNodeRender(node, children[i], context), null);
             }
           }
         } else if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-          child = children as VNode<any>;
-          childNode = vNodeRender(node, child, context);
-          nodeInsertBefore(node, childNode, null);
+          nodeInsertBefore(node, vNodeRender(node, children as VNode<any>, context), null);
         } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
           /**
            * #quirks
@@ -1100,7 +1094,7 @@ function vNodeSync(
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
             const connect = b._tag as ConnectDescriptor<any, any, any>;
-            const prevSelectData = a._instance as SelectorData;
+            const prevSelectData = instance as SelectorData;
             componentPerfMarkBegin("update", b);
             const selectData = connect.select(prevSelectData, b._props, context);
             b._instance = selectData;
@@ -1130,7 +1124,7 @@ function vNodeSync(
                 syncFlags |= SyncFlags.DirtyContext;
                 context = b._instance = Object.assign({}, context, b._props);
               } else {
-                context = b._instance = a._instance as Context;
+                context = b._instance = instance as Context;
               }
             }
             vNodeSync(
