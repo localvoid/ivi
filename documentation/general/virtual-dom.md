@@ -94,7 +94,6 @@ Render Virtual DOM into container.
 function render<T extends Node>(
   node: VNode<any> | null,
   container: Element,
-  syncFlags?: SyncFlags,
 ): void;
 ```
 
@@ -105,15 +104,14 @@ when it is invoked multiple times per frame.
 function renderNextFrame(
   node: VNode<any> | null,
   container: Element,
-  syncFlags?: SyncFlags,
 ): void;
 ```
 
 Update dirty components.
 
 ```ts
-function update(syncFlags?: SyncFlags);
-function updateNextFrame(syncFlags?: SyncFlags);
+function update();
+function updateNextFrame();
 ```
 
 Augment existing DOM tree with a Virtual DOM.
