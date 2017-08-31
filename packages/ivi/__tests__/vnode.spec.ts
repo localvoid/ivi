@@ -1,5 +1,5 @@
 import { EventHandler } from "ivi-events";
-import { VNode, ElementProps, mergeAttrs, mergeStyle } from "../src/vdom/vnode";
+import { VNode, mergeAttrs, mergeStyle } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { componentFactory } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
@@ -93,13 +93,13 @@ describe("VNode", () => {
     it("style", () => {
       const s = { top: "10px" };
       const e = h.div().style(s);
-      expect((e._props as ElementProps<any>).style).toBe(s);
+      expect(e._style).toBe(s);
     });
 
     it("events", () => {
       const s = [] as EventHandler[];
       const e = h.div().events(s);
-      expect((e._props as ElementProps<any>).events).toBe(s);
+      expect(e._events).toBe(s);
     });
 
     it("props", () => {
@@ -154,18 +154,18 @@ describe("VNode", () => {
 
     it("mergeStyle: null", () => {
       const e = mergeStyle(h.div().style({ top: "10px" }), null);
-      expect((e._props as ElementProps<any>).style!.top).toBe("10px");
+      expect(e._style!.top).toBe("10px");
     });
 
     it("mergeStyle", () => {
       const e = mergeStyle(h.div().style({ top: "10px" }), { left: "20px" });
-      expect((e._props as ElementProps<any>).style!.top).toBe("10px");
-      expect((e._props as ElementProps<any>).style!.left).toBe("20px");
+      expect(e._style!.top).toBe("10px");
+      expect(e._style!.left).toBe("20px");
     });
 
     it("mergeStyle override", () => {
       const e = mergeStyle(h.div().style({ top: "10px" }), { top: "20px" });
-      expect((e._props as ElementProps<any>).style!.top).toBe("20px");
+      expect(e._style!.top).toBe("20px");
     });
 
     it("autofocus", () => {

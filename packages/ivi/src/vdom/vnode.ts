@@ -9,24 +9,6 @@ import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 
 /**
- * Element properties.
- */
-export interface ElementProps<P> {
-  /**
-   * Attributes.
-   */
-  attrs: P | null;
-  /**
-   * Style.
-   */
-  style: CSSStyleProps | null;
-  /**
-   * Events.
-   */
-  events: Array<EventHandler | null> | EventHandler | null;
-}
-
-/**
  * Virtual DOM Node.
  *
  *     const vnode = html.div("div-class-name")
@@ -72,7 +54,7 @@ export class VNode<P = null> {
   /**
    * Properties.
    */
-  _props: ElementProps<P> | P | null;
+  _props: P | null;
   /**
    * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
    * time VNode is synced, reference will be transferred from the old VNode to the new one.
@@ -82,6 +64,14 @@ export class VNode<P = null> {
    * Class name.
    */
   _className: string | null;
+  /**
+   * Style.
+   */
+  _style: CSSStyleProps | null;
+  /**
+   * Events.
+   */
+  _events: Array<EventHandler | null> | EventHandler | null;
 
   constructor(
     flags: number,
@@ -92,7 +82,7 @@ export class VNode<P = null> {
       | ConnectDescriptor<any, any, any>
       | KeepAliveHandler
       | null,
-    props: ElementProps<P> | P | null,
+    props: P | null,
     className: string | null,
     children:
       | VNode<any>[]
@@ -109,6 +99,8 @@ export class VNode<P = null> {
     this._props = props;
     this._instance = null;
     this._className = className;
+    this._style = null;
+    this._events = null;
   }
 
   /**
@@ -158,16 +150,7 @@ export class VNode<P = null> {
         checkDOMStylesForTypos(style);
       }
     }
-    if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
-      this._flags |= VNodeFlags.ElementMultiProps;
-      this._props = {
-        attrs: this._props as P,
-        style,
-        events: null,
-      };
-    } else {
-      (this._props as ElementProps<P>).style = style;
-    }
+    this._style = style;
     return this;
   }
 
@@ -183,17 +166,8 @@ export class VNode<P = null> {
         throw new Error("Failed to set events, events are available on element nodes only.");
       }
     }
-    if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
-      this._flags |= VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsEvents;
-      this._props = {
-        attrs: this._props as P,
-        style: null,
-        events,
-      };
-    } else {
-      this._flags |= VNodeFlags.ElementPropsEvents;
-      (this._props as ElementProps<P>).events = events;
-    }
+    this._flags |= VNodeFlags.ElementPropsEvents;
+    this._events = events;
     return this;
   }
 
@@ -217,12 +191,7 @@ export class VNode<P = null> {
         }
       }
     }
-    this._flags |= VNodeFlags.ElementPropsAttrs;
-    if ((this._flags & VNodeFlags.ElementMultiProps) === 0) {
-      this._props = attrs as P;
-    } else {
-      (this._props as ElementProps<P>).attrs = attrs as P;
-    }
+    this._props = attrs as P;
     return this;
   }
 
@@ -453,21 +422,18 @@ export type Children = Array<VNode<any>[] | VNode<any> | string | number | boole
 /**
  * mergeProps merges props with existing props for an Element node.
  *
- * @param props
+ * @param attrs
  * @return VNode
  */
-export function mergeAttrs<P>(node: VNode<P>, props: { [key: string]: any } | null): VNode<P> {
-  if (props !== null) {
-    const flags = node._flags;
+export function mergeAttrs<P>(node: VNode<P>, attrs: { [key: string]: any } | null): VNode<P> {
+  if (attrs !== null) {
     return node.attrs(
-      (flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) === 0 ?
-        props :
+      node._props === null ?
+        attrs :
         Object.assign(
           {},
-          ((flags & VNodeFlags.ElementMultiProps) === 0) ?
-            node._props :
-            (node._props as ElementProps<P>).attrs,
-          props,
+          node._props,
+          attrs,
         ),
     );
   }
@@ -477,15 +443,19 @@ export function mergeAttrs<P>(node: VNode<P>, props: { [key: string]: any } | nu
 /**
  * mergeStyle merges style with existing style for an Element node.
  *
- * @param props
+ * @param style
  * @return VNode
  */
 export function mergeStyle<P, U extends CSSStyleProps>(node: VNode<P>, style: U | null): VNode<P> {
   if (style !== null) {
     return node.style(
-      node._props !== null && (node._props as ElementProps<P>).style !== null ?
-        Object.assign({}, (node._props as ElementProps<P>).style, style) :
-        style,
+      node._style === null ?
+        style :
+        Object.assign(
+          {},
+          node._style,
+          style,
+        ),
     );
   }
   return node;
@@ -576,11 +546,7 @@ export function getElementClassNameFromVNode(node: VNode<any>): string | null {
  * @returns element properties.
  */
 export function getElementPropsFromVNode<P>(node: VNode<P>): P | null {
-  const props = (node._props as ElementProps<P>);
-  if (props !== null) {
-    return props.attrs;
-  }
-  return null;
+  return node._props;
 }
 
 /**
@@ -590,11 +556,7 @@ export function getElementPropsFromVNode<P>(node: VNode<P>): P | null {
  * @returns `style` property.
  */
 export function getElementStyleFromVNode(node: VNode<any>): CSSStyleProps | null {
-  const props = (node._props as ElementProps<any>);
-  if (props !== null) {
-    return props.style;
-  }
-  return null;
+  return node._style;
 }
 
 /**

@@ -40,14 +40,6 @@ export const enum VNodeFlags {
    */
   Key = 1 << 8,
   /**
-   * Element contains props object.
-   */
-  ElementMultiProps = 1 << 9,
-  /**
-   * Element contains attributes.
-   */
-  ElementPropsAttrs = 1 << 10,
-  /**
    * Element contains events.
    */
   ElementPropsEvents = 1 << 11,
