@@ -14,7 +14,7 @@ export { KeepAliveHandler } from "./keep_alive";
 export { ConnectDescriptor } from "./connect_descriptor";
 export {
   VNodeFlags, VNode, Children,
-  mergeAttrs, mergeStyle,
+  changeClassName, mergeAttrs, mergeStyle,
   getDOMInstanceFromVNode, getComponentInstanceFromVNode, cloneVNode, shallowCloneVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,

@@ -209,22 +209,6 @@ export class VNode<P = null> {
   }
 
   /**
-   * className assigns className for an Element node.
-   *
-   * @param className CSS Class name.
-   * @returns VNode
-   */
-  className(className: string | null): this {
-    if (DEV) {
-      if (!(this._flags & VNodeFlags.Element)) {
-        throw new Error("Failed to set className, className is available on element nodes only.");
-      }
-    }
-    this._className = className;
-    return this;
-  }
-
-  /**
    * style assigns style for an Element node.
    *
    * @param style Style.
@@ -484,7 +468,23 @@ export class VNode<P = null> {
 export type Children = Array<VNode<any>[] | VNode<any> | string | number | boolean | null>;
 
 /**
- * mergeProps merges props with existing props for an Element node.
+ * changeClassName assigns className for an Element node.
+ *
+ * @param className CSS Class name.
+ * @returns VNode
+ */
+export function changeClassName<P>(node: VNode, className: string | null): VNode<P> {
+  if (DEV) {
+    if (!(node._flags & VNodeFlags.Element)) {
+      throw new Error("Failed to set className, className is available on element nodes only.");
+    }
+  }
+  node._className = className;
+  return node;
+}
+
+/**
+ * mergeAttrs merges props with existing props for an Element node.
  *
  * @param props
  * @return VNode
