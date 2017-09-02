@@ -22,7 +22,7 @@ export interface EventSource {
  *
  * @final
  */
-export type EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = any> = void;
+export type EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = any> = void | E | P | S;
 
 /**
  * Synthetic Event.
