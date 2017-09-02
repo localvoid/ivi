@@ -1,3 +1,5 @@
+const TEXT_RE = /[&<]/;
+const ATTR_RE = /["&]/;
 
 /**
  * escapeText escapes HTML text.
@@ -10,6 +12,10 @@
  */
 export function escapeText(text: string | number): string {
   if (typeof text === "string") {
+    if (TEXT_RE.test(text) === false) {
+      return text;
+    }
+
     let result = text;
     let start = 0;
     let i = 0;
@@ -58,6 +64,10 @@ export function escapeText(text: string | number): string {
  */
 export function escapeAttributeValue(text: string | number): string {
   if (typeof text === "string") {
+    if (ATTR_RE.test(text) === false) {
+      return text;
+    }
+
     let result = text;
     let start = 0;
     let i = 0;
