@@ -147,39 +147,30 @@ function _toSnapshot(
         multiline = true;
       }
 
-      const props = vnode._props;
-      if ((flags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
-        let attrs = null;
-        let style = null;
-        if ((flags & VNodeFlags.ElementMultiProps) === 0) {
-          attrs = props;
-        } else {
-          attrs = props.attrs;
-          style = props.style;
+      const attrs = vnode._props;
+      if (attrs !== null) {
+        const s = renderAttrsToSnapshot(il + 1, attrs);
+        if (s !== "") {
+          multiline = true;
         }
-        if (attrs !== null) {
-          const s = renderAttrsToSnapshot(il + 1, attrs);
+        result += s;
+      }
+      const style = vnode._style;
+      if (style !== null) {
+        const s = renderStyleToSnapshot(il + 1, style);
+        if (s !== "") {
+          multiline = true;
+        }
+        result += s;
+      }
+      if ((sFlags & SnapshotFlags.IgnoreEvents) === 0) {
+        const events = vnode._events;
+        if (events !== null) {
+          const s = renderEventsToSnapshot(il + 1, events);
           if (s !== "") {
             multiline = true;
           }
           result += s;
-        }
-        if (style !== null) {
-          const s = renderStyleToSnapshot(il + 1, style);
-          if (s !== "") {
-            multiline = true;
-          }
-          result += s;
-        }
-        if ((sFlags & SnapshotFlags.IgnoreEvents) === 0) {
-          const events = props.events;
-          if (events !== null) {
-            const s = renderEventsToSnapshot(il + 1, events);
-            if (s !== "") {
-              multiline = true;
-            }
-            result += s;
-          }
         }
       }
 

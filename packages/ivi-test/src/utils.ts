@@ -128,32 +128,10 @@ export function isVNodeLooseMatch(a: VNode<any>, b: VNode<any>): boolean {
   }
 
   if ((bFlags & VNodeFlags.Element) !== 0) {
-    let aAttrs = null;
-    let aStyle = null;
-    let bAttrs = null;
-    let bStyle = null;
-
-    if ((aFlags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
-      if ((aFlags & VNodeFlags.ElementMultiProps) === 0) {
-        aAttrs = a._props;
-      } else {
-        aAttrs = a._props.attrs;
-        aStyle = a._props.style;
-      }
-    }
-    if ((bFlags & (VNodeFlags.ElementMultiProps | VNodeFlags.ElementPropsAttrs)) !== 0) {
-      if ((bFlags & VNodeFlags.ElementMultiProps) === 0) {
-        bAttrs = b._props;
-      } else {
-        bAttrs = b._props.attrs;
-        bStyle = b._props.style;
-      }
-    }
-
-    if (matchValues(aAttrs, bAttrs) === false) {
+    if (matchValues(a._props, b._props) === false) {
       return false;
     }
-    if (matchValues(aStyle, bStyle) === false) {
+    if (matchValues(a._style, b._style) === false) {
       return false;
     }
   }
