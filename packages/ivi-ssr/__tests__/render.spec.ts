@@ -75,10 +75,6 @@ describe("renderToString", () => {
     expect(renderToString(h.div().attrs({ boolean: true }))).toBe(`<div boolean></div>`);
   });
 
-  it("<div class=null>", () => {
-    expect(renderToString(h.div().className(null))).toBe(`<div></div>`);
-  });
-
   it("<div class=''>", () => {
     expect(renderToString(h.div(""))).toBe(`<div class=""></div>`);
   });
@@ -155,10 +151,6 @@ describe("renderToString", () => {
   describe("svg", () => {
     it("<circle>", () => {
       expect(renderToString(h.circle())).toBe(`<circle></circle>`);
-    });
-
-    it("<circle class='a'>", () => {
-      expect(renderToString(h.circle().className("a"))).toBe(`<circle class="a"></circle>`);
     });
 
     it("<circle style={top: 10px}>", () => {
@@ -262,17 +254,6 @@ describe("renderToString", () => {
 
       it("double newline", () => {
         expect(renderToString(h.textarea().children("\n\n"))).toBe(`<textarea>\n\n\n</textarea>`);
-      });
-    });
-
-    describe("attributes", () => {
-      it("accept-charset", () => {
-        expect(renderToString(h.div().attrs({ acceptCharset: `utf-8` })))
-          .toBe(`<div accept-charset="utf-8"></div>`);
-      });
-
-      it("for", () => {
-        expect(renderToString(h.div().attrs({ htmlFor: `a` }))).toBe(`<div for="a"></div>`);
       });
     });
   });

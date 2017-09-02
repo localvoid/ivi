@@ -66,13 +66,6 @@ describe("augment", () => {
     });
   });
 
-  it("<div class=null>", () => {
-    checkDOMOps((c) => {
-      augment(h.div().className(null), `<div></div>`);
-      expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
-    });
-  });
-
   it("<div class=''>", () => {
     checkDOMOps((c) => {
       augment(h.div(""), `<div class=""></div>`);

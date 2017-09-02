@@ -24,10 +24,6 @@ describe("VNode", () => {
       expect(t._key).toBe("k");
     });
 
-    it("className", () => {
-      expect(() => h.t("abc").className("cls")).toThrow(Error);
-    });
-
     it("style", () => {
       expect(() => h.t("abc").style({})).toThrow(Error);
     });
@@ -78,16 +74,6 @@ describe("VNode", () => {
     it("key", () => {
       const e = h.div().key("k");
       expect(e._key).toBe("k");
-    });
-
-    it("className", () => {
-      const e = h.div().className("cls");
-      expect(e._className).toBe("cls");
-    });
-
-    it("override className", () => {
-      const e = h.div("a").className("cls");
-      expect(e._className).toBe("cls");
     });
 
     it("style", () => {
@@ -175,10 +161,6 @@ describe("VNode", () => {
   });
 
   describe("$c", () => {
-    it("className", () => {
-      expect(() => emptyComponent().className("cls")).toThrow(Error);
-    });
-
     it("style", () => {
       expect(() => emptyComponent().style({})).toThrow(Error);
     });

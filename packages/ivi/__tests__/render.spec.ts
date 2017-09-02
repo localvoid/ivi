@@ -76,14 +76,6 @@ describe("render", () => {
     });
   });
 
-  it("<div class=null>", () => {
-    checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().className(null));
-      expect(n.className).toBe("");
-      expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
-    });
-  });
-
   it("<div class=''>", () => {
     checkDOMOps((c) => {
       const n = render<HTMLElement>(h.div(""));
