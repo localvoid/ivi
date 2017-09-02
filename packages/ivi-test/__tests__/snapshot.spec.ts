@@ -16,31 +16,27 @@ describe("src/snapshot.ts", () => {
   });
 
   it("<div> (null props)", () => {
-    expect(render(h.div().props(null)).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().attrs(null)).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div> ({} props)", () => {
-    expect(render(h.div().props({})).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().attrs({})).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div tabIndex='1'>", () => {
-    expect(render(h.div().props({ tabIndex: 1 })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().attrs({ tabIndex: 1 })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div tabIndex='1' title='2'>", () => {
-    expect(render(h.div().props({ tabIndex: 1, title: "2" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().attrs({ tabIndex: 1, title: "2" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div data-abc='a'", () => {
-    expect(render(h.div().props({ "data-abc": "a" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().attrs({ "data-abc": "a" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div aria-type='button'", () => {
-    expect(render(h.div().props({ "aria-type": "button" })).toSnapshot()).toMatchSnapshot();
-  });
-
-  it("<div class=null>", () => {
-    expect(render(h.div().className(null)).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().attrs({ "aria-type": "button" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div class=''>", () => {
@@ -127,11 +123,11 @@ describe("src/snapshot.ts", () => {
     });
 
     it("<circle xlink:href='a'>", () => {
-      expect(render(h.circle().props({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.circle().attrs({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle xml:text='a'>", () => {
-      expect(render(h.circle().props({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.circle().attrs({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
     });
   });
 
@@ -165,11 +161,11 @@ describe("src/snapshot.ts", () => {
     });
 
     it("<audio volume=0.5>", () => {
-      expect(render(h.audio().props({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.audio().attrs({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<video volume=0.5>", () => {
-      expect(render(h.video().props({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.video().attrs({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
     });
   });
 });
