@@ -5,7 +5,7 @@ import { componentFactory } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
 import { expect } from "iko";
 
-function EmptyComponent(): VNode<any> {
+function EmptyComponent(): VNode {
   return h.t("");
 }
 const emptyComponent = componentFactory(EmptyComponent);

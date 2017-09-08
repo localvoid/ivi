@@ -10,19 +10,19 @@ import { VNode } from "./vnode";
  */
 export function cloneVNodeChildren(
   flags: VNodeFlags,
-  children: VNode<any>[] | VNode<any> | string | number | boolean | null,
-): VNode<any>[] | VNode<any> | string | number | boolean | null {
+  children: VNode[] | VNode | string | number | boolean | null,
+): VNode[] | VNode | string | number | boolean | null {
   if (children !== null) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-        children = children as VNode<any>[];
-        const newChildren = new Array<VNode<any>>(children.length);
+        children = children as VNode[];
+        const newChildren = new Array<VNode>(children.length);
         for (let i = 0; i < children.length; ++i) {
           newChildren[i] = _cloneVNode(children[i], true);
         }
         return newChildren;
       } else {
-        return _cloneVNode(children as VNode<any>, true);
+        return _cloneVNode(children as VNode, true);
       }
     }
   }
@@ -30,10 +30,10 @@ export function cloneVNodeChildren(
   return children;
 }
 
-function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
+function _cloneVNode<P, N>(node: VNode<P, N>, cloneKey: boolean): VNode<P, N> {
   const flags = node._flags;
 
-  const newNode = new VNode(
+  const newNode = new VNode<P, N>(
     flags,
     node._tag,
     node._props,
@@ -59,7 +59,7 @@ function _cloneVNode(node: VNode<any>, cloneKey: boolean): VNode<any> {
  * @param node VNode to clone.
  * @returns Cloned VNode.
  */
-export function cloneVNode(node: VNode<any>): VNode<any> {
+export function cloneVNode<P, N>(node: VNode<P, N>): VNode<P, N> {
   return _cloneVNode(node, (node._flags & VNodeFlags.Key) !== 0);
 }
 
@@ -69,10 +69,10 @@ export function cloneVNode(node: VNode<any>): VNode<any> {
  * @param node VNode to clone.
  * @returns Cloned VNode.
  */
-export function shallowCloneVNode(node: VNode<any>): VNode<any> {
+export function shallowCloneVNode<P, N>(node: VNode<P, N>): VNode<P, N> {
   const flags = node._flags;
 
-  const newNode = new VNode(
+  const newNode = new VNode<P, N>(
     flags & ~(
       VNodeFlags.ChildrenArray |
       VNodeFlags.ChildrenBasic |

@@ -6,11 +6,11 @@ export * from "./components/lifecycle";
 export * from "./components/static";
 
 export interface ComponentTesterProps {
-  child: VNode<any>;
+  child: VNode;
   wrapDepth?: number;
 }
 
-export function StatelessComponentTester(props: ComponentTesterProps): VNode<any> {
+export function StatelessComponentTester(props: ComponentTesterProps): VNode {
   if (props.wrapDepth) {
     return statelessComponentTester({
       child: props.child,
@@ -23,7 +23,7 @@ export function StatelessComponentTester(props: ComponentTesterProps): VNode<any
 export const statelessComponentTester = componentFactory(StatelessComponentTester);
 
 export class ComponentTester extends Component<ComponentTesterProps> {
-  render(): VNode<any> {
+  render(): VNode {
     if (this.props.wrapDepth) {
       return componentTester({
         child: this.props.child,
@@ -37,7 +37,7 @@ export class ComponentTester extends Component<ComponentTesterProps> {
 export const componentTester = componentFactory(ComponentTester);
 
 export function $tcf(
-  child: VNode<any> | string = h.div(),
+  child: VNode | string = h.div(),
   wrapDepth = 0,
 ): VNode<ComponentTesterProps> {
   return statelessComponentTester({
@@ -47,7 +47,7 @@ export function $tcf(
 }
 
 export function $tc(
-  child: VNode<any> | string = h.div(),
+  child: VNode | string = h.div(),
   wrapDepth = 0,
 ): VNode<ComponentTesterProps> {
   return componentTester({

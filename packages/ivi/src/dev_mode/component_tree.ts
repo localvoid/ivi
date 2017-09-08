@@ -5,9 +5,9 @@ import { Component } from "../vdom/component";
 import { ROOTS } from "../vdom/root";
 
 function _findVNode(
-  match: (vnode: VNode<any>) => boolean,
-  vnode: VNode<any>,
-): VNode<any> | null {
+  match: (vnode: VNode) => boolean,
+  vnode: VNode,
+): VNode | null {
   if (match(vnode) === true) {
     return vnode;
   }
@@ -15,25 +15,25 @@ function _findVNode(
     if ((vnode._flags & VNodeFlags.Element) !== 0) {
       if (vnode._children !== null) {
         if ((vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
-          const children = vnode._children as VNode<any>[];
+          const children = vnode._children as VNode[];
           for (const c of children) {
             return _findVNode(match, c);
           }
         } else if ((vnode._flags & VNodeFlags.ChildrenVNode) !== 0) {
-          return _findVNode(match, vnode._children as VNode<any>);
+          return _findVNode(match, vnode._children as VNode);
         }
       }
     }
   } else if ((vnode._flags & VNodeFlags.Component) !== 0) {
-    return _findVNode(match, vnode._children as VNode<any>);
+    return _findVNode(match, vnode._children as VNode);
   }
 
   return null;
 }
 
 function findVNode(
-  match: (vnode: VNode<any>) => boolean,
-): VNode<any> | null {
+  match: (vnode: VNode) => boolean,
+): VNode | null {
   if (DEV) {
     for (const root of ROOTS) {
       const result = _findVNode(match, root.currentVNode!);
@@ -51,11 +51,11 @@ function findVNode(
  * @param node DOM Node.
  * @returns VNode instance or `null`.
  */
-export function findVNodeByNode(node: Node): VNode<any> | null {
+export function findVNodeByNode(node: Node): VNode | null {
   if (DEV) {
     return findVNode(function (vnode: VNode) {
       if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
-        return node === getDOMInstanceFromVNode(vnode._children as VNode<any>);
+        return node === getDOMInstanceFromVNode(vnode._children as VNode);
       }
       return false;
     });
@@ -69,7 +69,7 @@ export function findVNodeByNode(node: Node): VNode<any> | null {
  * @param debugId Debug ID.
  * @returns VNode instance or `null`.
  */
-export function findVNodeByDebugId(id: number): VNode<any> | null {
+export function findVNodeByDebugId(id: number): VNode | null {
   if (DEV) {
     return findVNode(function (vnode: VNode) {
       if ((vnode._flags & VNodeFlags.ComponentClass) !== 0) {
@@ -81,7 +81,7 @@ export function findVNodeByDebugId(id: number): VNode<any> | null {
   return null;
 }
 
-export function visitComponents(visitor: (vnode: VNode<any>) => void, vnode?: VNode<any>): void {
+export function visitComponents(visitor: (vnode: VNode) => void, vnode?: VNode): void {
   if (!vnode) {
     for (const root of ROOTS) {
       visitComponents(visitor, root.currentVNode!);
@@ -90,11 +90,11 @@ export function visitComponents(visitor: (vnode: VNode<any>) => void, vnode?: VN
     if ((vnode._flags & VNodeFlags.Element) !== 0) {
       if (vnode._children !== null) {
         if ((vnode._flags & VNodeFlags.ChildrenArray) !== 0) {
-          for (const c of vnode._children as VNode<any>[]) {
+          for (const c of vnode._children as VNode[]) {
             visitComponents(visitor, c);
           }
         } else if ((vnode._flags & VNodeFlags.ChildrenVNode) !== 0) {
-          return visitComponents(visitor, vnode._children as VNode<any>);
+          return visitComponents(visitor, vnode._children as VNode);
         }
       }
     } else if ((vnode._flags & VNodeFlags.Component) !== 0) {

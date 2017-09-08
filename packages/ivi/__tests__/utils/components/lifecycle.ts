@@ -21,13 +21,13 @@ export interface ComponentHooks<P> {
   detached?: (this: Component<P>) => void;
   updated?: (this: Component<P>) => void;
   invalidated?: (this: Component<P>) => void;
-  render?: (this: Component<P>) => VNode<any>;
+  render?: (this: Component<P>) => VNode;
   shouldAugment?: (this: Component<P>) => boolean;
 }
 
 export interface LifecycleTesterProps {
   id: string;
-  child: VNode<any>;
+  child: VNode;
   hooks: ComponentHooks<LifecycleTesterProps>;
 }
 
@@ -108,29 +108,29 @@ export function $lc(
 ): VNode<LifecycleTesterProps>;
 export function $lc(
   id: string,
-  child?: VNode<any>,
+  child?: VNode,
 ): VNode<LifecycleTesterProps>;
 export function $lc(
   id: string,
   hooks: ComponentHooks<LifecycleTesterProps>,
-  child?: VNode<any>,
+  child?: VNode,
 ): VNode<LifecycleTesterProps>;
 export function $lc(
   id: string,
-  p1?: ComponentHooks<LifecycleTesterProps> | VNode<any>,
-  p2?: VNode<any>,
+  p1?: ComponentHooks<LifecycleTesterProps> | VNode,
+  p2?: VNode,
 ): VNode<LifecycleTesterProps> {
   if (arguments.length === 3) {
     return lifecycleTester({
       id: id,
-      child: p2 as VNode<any>,
+      child: p2 as VNode,
       hooks: p1 as ComponentHooks<LifecycleTesterProps>,
     });
   } else if (arguments.length === 2) {
     if (p1!.constructor === VNode) {
       return lifecycleTester({
         id: id,
-        child: p1 as VNode<any>,
+        child: p1 as VNode,
         hooks: {},
       });
     }

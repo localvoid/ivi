@@ -16,7 +16,7 @@ export interface BlueprintNode {
  * @param blueprint Blueprint that will be reused to reduce memory usage.
  * @returns Blueprint.
  */
-export function createBlueprint(node: VNode<any>, context: Context = {}, blueprint?: BlueprintNode): BlueprintNode {
+export function createBlueprint(node: VNode, context: Context = {}, blueprint?: BlueprintNode): BlueprintNode {
   throw new Error("createBlueprint() function isn't available in browser environment.");
 }
 
@@ -41,7 +41,7 @@ export function linkBlueprint<P>(componentFactory: (props?: P) => VNode<P>, blue
  * @returns Virtual DOM in string format.
  */
 export function renderToString(
-  node: VNode<any>,
+  node: VNode,
   context: Context = {},
   blueprint?: BlueprintNode,
 ): string {

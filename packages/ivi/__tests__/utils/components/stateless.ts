@@ -2,14 +2,14 @@ import { StatelessComponent, componentFactory, VNode } from "../../../src";
 import * as h from "../html";
 
 export interface TestStatelessComponentHooks<P> {
-  render?: (props: P) => VNode<any>;
+  render?: (props: P) => VNode;
   isPropsChanged?: (oldProps: P, newProps: P) => boolean;
   shouldAugment?: (props: P) => boolean;
 }
 
 export interface TestStatelessComponentProps {
   id: string;
-  child: VNode<any>;
+  child: VNode;
   hooks: TestStatelessComponentHooks<TestStatelessComponentProps>;
 }
 
@@ -47,29 +47,29 @@ export function $tfc(
 ): VNode<TestStatelessComponentProps>;
 export function $tfc(
   id: string,
-  child?: VNode<any>,
+  child?: VNode,
 ): VNode<TestStatelessComponentProps>;
 export function $tfc(
   id: string,
   hooks: TestStatelessComponentHooks<TestStatelessComponentProps>,
-  child?: VNode<any>,
+  child?: VNode,
 ): VNode<TestStatelessComponentProps>;
 export function $tfc(
   id: string,
-  p1?: TestStatelessComponentHooks<TestStatelessComponentProps> | VNode<any>,
-  p2?: VNode<any>,
+  p1?: TestStatelessComponentHooks<TestStatelessComponentProps> | VNode,
+  p2?: VNode,
 ): VNode<TestStatelessComponentProps> {
   if (arguments.length === 3) {
     return testStatelessComponent({
       id: id,
-      child: p2 as VNode<any>,
+      child: p2 as VNode,
       hooks: p1 as TestStatelessComponentHooks<TestStatelessComponentProps>,
     });
   } else if (arguments.length === 2) {
     if (p1!.constructor === VNode) {
       return testStatelessComponent({
         id: id,
-        child: p1 as VNode<any>,
+        child: p1 as VNode,
         hooks: {},
       });
     }

@@ -13,7 +13,7 @@ import {
   HTMLSelectElementProps, HTMLSourceElementProps, HTMLSpanElementProps, HTMLStyleElementProps,
   HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
   HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
-  HTMLTrackElementProps, HTMLUListElementProps, HTMLUnknownElementProps, HTMLVideoElementProps,
+  HTMLTrackElementProps, HTMLUListElementProps, HTMLVideoElementProps,
   MSHTMLWebViewElementProps,
 
   SVGCircleElementProps, SVGClipPathElementProps, SVGDefsElementProps, SVGDescElementProps, SVGEllipseElementProps,
@@ -38,12 +38,12 @@ import { VNode, VNodeFlags } from "../../src";
  * @param content Text content.
  * @returns VNode object.
  */
-export function t(content: string | number | null): VNode<null> {
-  return new VNode<null>(VNodeFlags.Text, null, null, null, content);
+export function t(content: string | number | null): VNode<null, Text> {
+  return new VNode(VNodeFlags.Text, null, null, null, content);
 }
 
 // HTML Elements:
-export function a(className?: string): VNode<HTMLAnchorElementProps | null> {
+export function a(className?: string): VNode<HTMLAnchorElementProps | null, HTMLAnchorElement> {
   return new VNode(
     VNodeFlags.Element,
     "a",
@@ -52,7 +52,7 @@ export function a(className?: string): VNode<HTMLAnchorElementProps | null> {
     null,
   );
 }
-export function abbr(className?: string): VNode<HTMLElementProps | null> {
+export function abbr(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "abbr",
@@ -61,7 +61,7 @@ export function abbr(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function acronym(className?: string): VNode<HTMLElementProps | null> {
+export function acronym(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "acronym",
@@ -70,7 +70,7 @@ export function acronym(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function address(className?: string): VNode<HTMLElementProps | null> {
+export function address(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "address",
@@ -79,7 +79,7 @@ export function address(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function applet(className?: string): VNode<HTMLAppletElementProps | null> {
+export function applet(className?: string): VNode<HTMLAppletElementProps | null, HTMLAppletElement> {
   return new VNode(
     VNodeFlags.Element,
     "applet",
@@ -88,7 +88,7 @@ export function applet(className?: string): VNode<HTMLAppletElementProps | null>
     null,
   );
 }
-export function area(className?: string): VNode<HTMLAreaElementProps | null> {
+export function area(className?: string): VNode<HTMLAreaElementProps | null, HTMLAreaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "area",
@@ -97,7 +97,7 @@ export function area(className?: string): VNode<HTMLAreaElementProps | null> {
     null,
   );
 }
-export function article(className?: string): VNode<HTMLElementProps | null> {
+export function article(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "article",
@@ -106,7 +106,7 @@ export function article(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function aside(className?: string): VNode<HTMLElementProps | null> {
+export function aside(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "aside",
@@ -115,7 +115,7 @@ export function aside(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function b(className?: string): VNode<HTMLElementProps | null> {
+export function b(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "b",
@@ -124,7 +124,7 @@ export function b(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function base(className?: string): VNode<HTMLBaseElementProps | null> {
+export function base(className?: string): VNode<HTMLBaseElementProps | null, HTMLBaseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "base",
@@ -133,7 +133,7 @@ export function base(className?: string): VNode<HTMLBaseElementProps | null> {
     null,
   );
 }
-export function basefont(className?: string): VNode<HTMLBaseFontElementProps | null> {
+export function basefont(className?: string): VNode<HTMLBaseFontElementProps | null, HTMLBaseFontElement> {
   return new VNode(
     VNodeFlags.Element,
     "basefont",
@@ -142,7 +142,7 @@ export function basefont(className?: string): VNode<HTMLBaseFontElementProps | n
     null,
   );
 }
-export function bdo(className?: string): VNode<HTMLElementProps | null> {
+export function bdo(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "bdo",
@@ -151,7 +151,7 @@ export function bdo(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function big(className?: string): VNode<HTMLElementProps | null> {
+export function big(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "big",
@@ -160,7 +160,7 @@ export function big(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function blockquote(className?: string): VNode<HTMLQuoteElementProps | null> {
+export function blockquote(className?: string): VNode<HTMLQuoteElementProps | null, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element,
     "blockquote",
@@ -169,7 +169,7 @@ export function blockquote(className?: string): VNode<HTMLQuoteElementProps | nu
     null,
   );
 }
-export function body(className?: string): VNode<HTMLBodyElementProps | null> {
+export function body(className?: string): VNode<HTMLBodyElementProps | null, HTMLBodyElement> {
   return new VNode(
     VNodeFlags.Element,
     "body",
@@ -178,7 +178,7 @@ export function body(className?: string): VNode<HTMLBodyElementProps | null> {
     null,
   );
 }
-export function br(className?: string): VNode<HTMLBRElementProps | null> {
+export function br(className?: string): VNode<HTMLBRElementProps | null, HTMLBRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "br",
@@ -187,7 +187,7 @@ export function br(className?: string): VNode<HTMLBRElementProps | null> {
     null,
   );
 }
-export function button(className?: string): VNode<HTMLButtonElementProps | null> {
+export function button(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
   return new VNode(
     VNodeFlags.Element,
     "button",
@@ -196,7 +196,7 @@ export function button(className?: string): VNode<HTMLButtonElementProps | null>
     null,
   );
 }
-export function canvas(className?: string): VNode<HTMLCanvasElementProps | null> {
+export function canvas(className?: string): VNode<HTMLCanvasElementProps | null, HTMLCanvasElement> {
   return new VNode(
     VNodeFlags.Element,
     "canvas",
@@ -205,7 +205,7 @@ export function canvas(className?: string): VNode<HTMLCanvasElementProps | null>
     null,
   );
 }
-export function caption(className?: string): VNode<HTMLTableCaptionElementProps | null> {
+export function caption(className?: string): VNode<HTMLTableCaptionElementProps | null, HTMLTableCaptionElement> {
   return new VNode(
     VNodeFlags.Element,
     "caption",
@@ -214,7 +214,7 @@ export function caption(className?: string): VNode<HTMLTableCaptionElementProps 
     null,
   );
 }
-export function center(className?: string): VNode<HTMLElementProps | null> {
+export function center(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "center",
@@ -223,7 +223,7 @@ export function center(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function cite(className?: string): VNode<HTMLElementProps | null> {
+export function cite(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "cite",
@@ -232,7 +232,7 @@ export function cite(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function code(className?: string): VNode<HTMLElementProps | null> {
+export function code(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "code",
@@ -241,7 +241,7 @@ export function code(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function col(className?: string): VNode<HTMLTableColElementProps | null> {
+export function col(className?: string): VNode<HTMLTableColElementProps | null, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "col",
@@ -250,7 +250,7 @@ export function col(className?: string): VNode<HTMLTableColElementProps | null> 
     null,
   );
 }
-export function colgroup(className?: string): VNode<HTMLTableColElementProps | null> {
+export function colgroup(className?: string): VNode<HTMLTableColElementProps | null, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element,
     "colgroup",
@@ -259,7 +259,7 @@ export function colgroup(className?: string): VNode<HTMLTableColElementProps | n
     null,
   );
 }
-export function datalist(className?: string): VNode<HTMLDataListElementProps | null> {
+export function datalist(className?: string): VNode<HTMLDataListElementProps | null, HTMLDataListElement> {
   return new VNode(
     VNodeFlags.Element,
     "datalist",
@@ -268,7 +268,7 @@ export function datalist(className?: string): VNode<HTMLDataListElementProps | n
     null,
   );
 }
-export function dd(className?: string): VNode<HTMLElementProps | null> {
+export function dd(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "dd",
@@ -277,7 +277,7 @@ export function dd(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function del(className?: string): VNode<HTMLModElementProps | null> {
+export function del(className?: string): VNode<HTMLModElementProps | null, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element,
     "del",
@@ -286,7 +286,7 @@ export function del(className?: string): VNode<HTMLModElementProps | null> {
     null,
   );
 }
-export function dfn(className?: string): VNode<HTMLElementProps | null> {
+export function dfn(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "dfn",
@@ -295,7 +295,7 @@ export function dfn(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function dir(className?: string): VNode<HTMLDirectoryElementProps | null> {
+export function dir(className?: string): VNode<HTMLDirectoryElementProps | null, HTMLDirectoryElement> {
   return new VNode(
     VNodeFlags.Element,
     "dir",
@@ -304,7 +304,7 @@ export function dir(className?: string): VNode<HTMLDirectoryElementProps | null>
     null,
   );
 }
-export function div(className?: string): VNode<HTMLDivElementProps | null> {
+export function div(className?: string): VNode<HTMLDivElementProps | null, HTMLDivElement> {
   return new VNode(
     VNodeFlags.Element,
     "div",
@@ -313,7 +313,7 @@ export function div(className?: string): VNode<HTMLDivElementProps | null> {
     null,
   );
 }
-export function dl(className?: string): VNode<HTMLDListElementProps | null> {
+export function dl(className?: string): VNode<HTMLDListElementProps | null, HTMLDListElement> {
   return new VNode(
     VNodeFlags.Element,
     "dl",
@@ -322,7 +322,7 @@ export function dl(className?: string): VNode<HTMLDListElementProps | null> {
     null,
   );
 }
-export function dt(className?: string): VNode<HTMLElementProps | null> {
+export function dt(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "dt",
@@ -331,7 +331,7 @@ export function dt(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function em(className?: string): VNode<HTMLElementProps | null> {
+export function em(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "em",
@@ -340,7 +340,7 @@ export function em(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function embed(className?: string): VNode<HTMLEmbedElementProps | null> {
+export function embed(className?: string): VNode<HTMLEmbedElementProps | null, HTMLEmbedElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "embed",
@@ -349,7 +349,7 @@ export function embed(className?: string): VNode<HTMLEmbedElementProps | null> {
     null,
   );
 }
-export function fieldset(className?: string): VNode<HTMLFieldSetElementProps | null> {
+export function fieldset(className?: string): VNode<HTMLFieldSetElementProps | null, HTMLFieldSetElement> {
   return new VNode(
     VNodeFlags.Element,
     "fieldset",
@@ -358,7 +358,7 @@ export function fieldset(className?: string): VNode<HTMLFieldSetElementProps | n
     null,
   );
 }
-export function figcaption(className?: string): VNode<HTMLElementProps | null> {
+export function figcaption(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "figcaption",
@@ -367,7 +367,7 @@ export function figcaption(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function figure(className?: string): VNode<HTMLElementProps | null> {
+export function figure(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "figure",
@@ -376,7 +376,7 @@ export function figure(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function font(className?: string): VNode<HTMLFontElementProps | null> {
+export function font(className?: string): VNode<HTMLFontElementProps | null, HTMLFontElement> {
   return new VNode(
     VNodeFlags.Element,
     "font",
@@ -385,7 +385,7 @@ export function font(className?: string): VNode<HTMLFontElementProps | null> {
     null,
   );
 }
-export function footer(className?: string): VNode<HTMLElementProps | null> {
+export function footer(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "footer",
@@ -394,7 +394,7 @@ export function footer(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function form(className?: string): VNode<HTMLFormElementProps | null> {
+export function form(className?: string): VNode<HTMLFormElementProps | null, HTMLFormElement> {
   return new VNode(
     VNodeFlags.Element,
     "form",
@@ -403,7 +403,7 @@ export function form(className?: string): VNode<HTMLFormElementProps | null> {
     null,
   );
 }
-export function frame(className?: string): VNode<HTMLFrameElementProps | null> {
+export function frame(className?: string): VNode<HTMLFrameElementProps | null, HTMLFrameElement> {
   return new VNode(
     VNodeFlags.Element,
     "frame",
@@ -412,7 +412,7 @@ export function frame(className?: string): VNode<HTMLFrameElementProps | null> {
     null,
   );
 }
-export function frameset(className?: string): VNode<HTMLFrameSetElementProps | null> {
+export function frameset(className?: string): VNode<HTMLFrameSetElementProps | null, HTMLFrameSetElement> {
   return new VNode(
     VNodeFlags.Element,
     "frameset",
@@ -421,7 +421,7 @@ export function frameset(className?: string): VNode<HTMLFrameSetElementProps | n
     null,
   );
 }
-export function h1(className?: string): VNode<HTMLHeadingElementProps | null> {
+export function h1(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element,
     "h1",
@@ -430,7 +430,7 @@ export function h1(className?: string): VNode<HTMLHeadingElementProps | null> {
     null,
   );
 }
-export function h2(className?: string): VNode<HTMLHeadingElementProps | null> {
+export function h2(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element,
     "h2",
@@ -439,7 +439,7 @@ export function h2(className?: string): VNode<HTMLHeadingElementProps | null> {
     null,
   );
 }
-export function h3(className?: string): VNode<HTMLHeadingElementProps | null> {
+export function h3(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element,
     "h3",
@@ -448,7 +448,7 @@ export function h3(className?: string): VNode<HTMLHeadingElementProps | null> {
     null,
   );
 }
-export function h4(className?: string): VNode<HTMLHeadingElementProps | null> {
+export function h4(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element,
     "h4",
@@ -457,7 +457,7 @@ export function h4(className?: string): VNode<HTMLHeadingElementProps | null> {
     null,
   );
 }
-export function h5(className?: string): VNode<HTMLHeadingElementProps | null> {
+export function h5(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element,
     "h5",
@@ -466,7 +466,7 @@ export function h5(className?: string): VNode<HTMLHeadingElementProps | null> {
     null,
   );
 }
-export function h6(className?: string): VNode<HTMLHeadingElementProps | null> {
+export function h6(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element,
     "h6",
@@ -475,7 +475,7 @@ export function h6(className?: string): VNode<HTMLHeadingElementProps | null> {
     null,
   );
 }
-export function head(className?: string): VNode<HTMLHeadElementProps | null> {
+export function head(className?: string): VNode<HTMLHeadElementProps | null, HTMLHeadElement> {
   return new VNode(
     VNodeFlags.Element,
     "head",
@@ -484,7 +484,7 @@ export function head(className?: string): VNode<HTMLHeadElementProps | null> {
     null,
   );
 }
-export function header(className?: string): VNode<HTMLElementProps | null> {
+export function header(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "header",
@@ -493,7 +493,7 @@ export function header(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function hgroup(className?: string): VNode<HTMLElementProps | null> {
+export function hgroup(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "hgroup",
@@ -502,7 +502,7 @@ export function hgroup(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function hr(className?: string): VNode<HTMLHRElementProps | null> {
+export function hr(className?: string): VNode<HTMLHRElementProps | null, HTMLHRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "hr",
@@ -511,7 +511,7 @@ export function hr(className?: string): VNode<HTMLHRElementProps | null> {
     null,
   );
 }
-export function html(className?: string): VNode<HTMLHtmlElementProps | null> {
+export function html(className?: string): VNode<HTMLHtmlElementProps | null, HTMLHtmlElement> {
   return new VNode(
     VNodeFlags.Element,
     "html",
@@ -520,7 +520,7 @@ export function html(className?: string): VNode<HTMLHtmlElementProps | null> {
     null,
   );
 }
-export function i(className?: string): VNode<HTMLElementProps | null> {
+export function i(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "i",
@@ -529,7 +529,7 @@ export function i(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function iframe(className?: string): VNode<HTMLIFrameElementProps | null> {
+export function iframe(className?: string): VNode<HTMLIFrameElementProps | null, HTMLIFrameElement> {
   return new VNode(
     VNodeFlags.Element,
     "iframe",
@@ -538,7 +538,7 @@ export function iframe(className?: string): VNode<HTMLIFrameElementProps | null>
     null,
   );
 }
-export function img(className?: string): VNode<HTMLImageElementProps | null> {
+export function img(className?: string): VNode<HTMLImageElementProps | null, HTMLImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "img",
@@ -547,7 +547,7 @@ export function img(className?: string): VNode<HTMLImageElementProps | null> {
     null,
   );
 }
-export function ins(className?: string): VNode<HTMLModElementProps | null> {
+export function ins(className?: string): VNode<HTMLModElementProps | null, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element,
     "ins",
@@ -556,16 +556,7 @@ export function ins(className?: string): VNode<HTMLModElementProps | null> {
     null,
   );
 }
-export function isindex(className?: string): VNode<HTMLUnknownElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element,
-    "isindex",
-    null,
-    className === undefined ? null : className,
-    null,
-  );
-}
-export function kbd(className?: string): VNode<HTMLElementProps | null> {
+export function kbd(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "kbd",
@@ -574,7 +565,7 @@ export function kbd(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function keygen(className?: string): VNode<HTMLElementProps | null> {
+export function keygen(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "keygen",
@@ -583,7 +574,7 @@ export function keygen(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function label(className?: string): VNode<HTMLLabelElementProps | null> {
+export function label(className?: string): VNode<HTMLLabelElementProps | null, HTMLLabelElement> {
   return new VNode(
     VNodeFlags.Element,
     "label",
@@ -592,7 +583,7 @@ export function label(className?: string): VNode<HTMLLabelElementProps | null> {
     null,
   );
 }
-export function legend(className?: string): VNode<HTMLLegendElementProps | null> {
+export function legend(className?: string): VNode<HTMLLegendElementProps | null, HTMLLegendElement> {
   return new VNode(
     VNodeFlags.Element,
     "legend",
@@ -601,7 +592,7 @@ export function legend(className?: string): VNode<HTMLLegendElementProps | null>
     null,
   );
 }
-export function li(className?: string): VNode<HTMLLIElementProps | null> {
+export function li(className?: string): VNode<HTMLLIElementProps | null, HTMLLIElement> {
   return new VNode(
     VNodeFlags.Element,
     "li",
@@ -610,7 +601,7 @@ export function li(className?: string): VNode<HTMLLIElementProps | null> {
     null,
   );
 }
-export function link(className?: string): VNode<HTMLLinkElementProps | null> {
+export function link(className?: string): VNode<HTMLLinkElementProps | null, HTMLLinkElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "link",
@@ -619,7 +610,7 @@ export function link(className?: string): VNode<HTMLLinkElementProps | null> {
     null,
   );
 }
-export function listing(className?: string): VNode<HTMLPreElementProps | null> {
+export function listing(className?: string): VNode<HTMLPreElementProps | null, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element,
     "listing",
@@ -628,7 +619,7 @@ export function listing(className?: string): VNode<HTMLPreElementProps | null> {
     null,
   );
 }
-export function main(className?: string): VNode<HTMLMapElementProps | null> {
+export function main(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "main",
@@ -637,7 +628,7 @@ export function main(className?: string): VNode<HTMLMapElementProps | null> {
     null,
   );
 }
-export function map(className?: string): VNode<HTMLMapElementProps | null> {
+export function map(className?: string): VNode<HTMLMapElementProps | null, HTMLMapElement> {
   return new VNode(
     VNodeFlags.Element,
     "map",
@@ -646,7 +637,7 @@ export function map(className?: string): VNode<HTMLMapElementProps | null> {
     null,
   );
 }
-export function mark(className?: string): VNode<HTMLElementProps | null> {
+export function mark(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "mark",
@@ -655,7 +646,7 @@ export function mark(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function menu(className?: string): VNode<HTMLMenuElementProps | null> {
+export function menu(className?: string): VNode<HTMLMenuElementProps | null, HTMLMenuElement> {
   return new VNode(
     VNodeFlags.Element,
     "menu",
@@ -664,7 +655,7 @@ export function menu(className?: string): VNode<HTMLMenuElementProps | null> {
     null,
   );
 }
-export function meta(className?: string): VNode<HTMLMetaElementProps | null> {
+export function meta(className?: string): VNode<HTMLMetaElementProps | null, HTMLMetaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "meta",
@@ -673,7 +664,7 @@ export function meta(className?: string): VNode<HTMLMetaElementProps | null> {
     null,
   );
 }
-export function meter(className?: string): VNode<HTMLMeterElementProps | null> {
+export function meter(className?: string): VNode<HTMLMeterElementProps | null, HTMLMeterElement> {
   return new VNode(
     VNodeFlags.Element,
     "meter",
@@ -682,7 +673,7 @@ export function meter(className?: string): VNode<HTMLMeterElementProps | null> {
     null,
   );
 }
-export function nav(className?: string): VNode<HTMLElementProps | null> {
+export function nav(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "nav",
@@ -691,16 +682,7 @@ export function nav(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function nextid(className?: string): VNode<HTMLUnknownElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element,
-    "nextid",
-    null,
-    className === undefined ? null : className,
-    null,
-  );
-}
-export function nobr(className?: string): VNode<HTMLElementProps | null> {
+export function nobr(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "nobr",
@@ -709,7 +691,7 @@ export function nobr(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function noframes(className?: string): VNode<HTMLElementProps | null> {
+export function noframes(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "noframes",
@@ -718,7 +700,7 @@ export function noframes(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function noscript(className?: string): VNode<HTMLElementProps | null> {
+export function noscript(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "noscript",
@@ -727,7 +709,7 @@ export function noscript(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function object(className?: string): VNode<HTMLObjectElementProps | null> {
+export function object(className?: string): VNode<HTMLObjectElementProps | null, HTMLObjectElement> {
   return new VNode(
     VNodeFlags.Element,
     "object",
@@ -736,7 +718,7 @@ export function object(className?: string): VNode<HTMLObjectElementProps | null>
     null,
   );
 }
-export function ol(className?: string): VNode<HTMLOListElementProps | null> {
+export function ol(className?: string): VNode<HTMLOListElementProps | null, HTMLOListElement> {
   return new VNode(
     VNodeFlags.Element,
     "ol",
@@ -745,7 +727,7 @@ export function ol(className?: string): VNode<HTMLOListElementProps | null> {
     null,
   );
 }
-export function optgroup(className?: string): VNode<HTMLOptGroupElementProps | null> {
+export function optgroup(className?: string): VNode<HTMLOptGroupElementProps | null, HTMLOptGroupElement> {
   return new VNode(
     VNodeFlags.Element,
     "optgroup",
@@ -754,7 +736,7 @@ export function optgroup(className?: string): VNode<HTMLOptGroupElementProps | n
     null,
   );
 }
-export function option(className?: string): VNode<HTMLOptionElementProps | null> {
+export function option(className?: string): VNode<HTMLOptionElementProps | null, HTMLOptionElement> {
   return new VNode(
     VNodeFlags.Element,
     "option",
@@ -763,7 +745,7 @@ export function option(className?: string): VNode<HTMLOptionElementProps | null>
     null,
   );
 }
-export function p(className?: string): VNode<HTMLParagraphElementProps | null> {
+export function p(className?: string): VNode<HTMLParagraphElementProps | null, HTMLParagraphElement> {
   return new VNode(
     VNodeFlags.Element,
     "p",
@@ -772,7 +754,7 @@ export function p(className?: string): VNode<HTMLParagraphElementProps | null> {
     null,
   );
 }
-export function param(className?: string): VNode<HTMLParamElementProps | null> {
+export function param(className?: string): VNode<HTMLParamElementProps | null, HTMLParamElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "param",
@@ -781,7 +763,7 @@ export function param(className?: string): VNode<HTMLParamElementProps | null> {
     null,
   );
 }
-export function picture(className?: string): VNode<HTMLPictureElementProps | null> {
+export function picture(className?: string): VNode<HTMLPictureElementProps | null, HTMLPictureElement> {
   return new VNode(
     VNodeFlags.Element,
     "picture",
@@ -790,7 +772,7 @@ export function picture(className?: string): VNode<HTMLPictureElementProps | nul
     null,
   );
 }
-export function plaintext(className?: string): VNode<HTMLElementProps | null> {
+export function plaintext(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "plaintext",
@@ -799,7 +781,7 @@ export function plaintext(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function pre(className?: string): VNode<HTMLPreElementProps | null> {
+export function pre(className?: string): VNode<HTMLPreElementProps | null, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element,
     "pre",
@@ -808,7 +790,7 @@ export function pre(className?: string): VNode<HTMLPreElementProps | null> {
     null,
   );
 }
-export function progress(className?: string): VNode<HTMLProgressElementProps | null> {
+export function progress(className?: string): VNode<HTMLProgressElementProps | null, HTMLProgressElement> {
   return new VNode(
     VNodeFlags.Element,
     "progress",
@@ -817,7 +799,7 @@ export function progress(className?: string): VNode<HTMLProgressElementProps | n
     null,
   );
 }
-export function q(className?: string): VNode<HTMLQuoteElementProps | null> {
+export function q(className?: string): VNode<HTMLQuoteElementProps | null, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element,
     "q",
@@ -826,7 +808,7 @@ export function q(className?: string): VNode<HTMLQuoteElementProps | null> {
     null,
   );
 }
-export function rt(className?: string): VNode<HTMLElementProps | null> {
+export function rt(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "rt",
@@ -835,7 +817,7 @@ export function rt(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function ruby(className?: string): VNode<HTMLElementProps | null> {
+export function ruby(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "ruby",
@@ -844,7 +826,7 @@ export function ruby(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function s(className?: string): VNode<HTMLElementProps | null> {
+export function s(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "s",
@@ -853,7 +835,7 @@ export function s(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function samp(className?: string): VNode<HTMLElementProps | null> {
+export function samp(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "samp",
@@ -862,7 +844,7 @@ export function samp(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function script(className?: string): VNode<HTMLScriptElementProps | null> {
+export function script(className?: string): VNode<HTMLScriptElementProps | null, HTMLScriptElement> {
   return new VNode(
     VNodeFlags.Element,
     "script",
@@ -871,7 +853,7 @@ export function script(className?: string): VNode<HTMLScriptElementProps | null>
     null,
   );
 }
-export function section(className?: string): VNode<HTMLElementProps | null> {
+export function section(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "section",
@@ -880,7 +862,7 @@ export function section(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function select(className?: string): VNode<HTMLSelectElementProps | null> {
+export function select(className?: string): VNode<HTMLSelectElementProps | null, HTMLSelectElement> {
   return new VNode(
     VNodeFlags.Element,
     "select",
@@ -889,7 +871,7 @@ export function select(className?: string): VNode<HTMLSelectElementProps | null>
     null,
   );
 }
-export function small(className?: string): VNode<HTMLElementProps | null> {
+export function small(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "small",
@@ -898,7 +880,7 @@ export function small(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function source(className?: string): VNode<HTMLSourceElementProps | null> {
+export function source(className?: string): VNode<HTMLSourceElementProps | null, HTMLSourceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "source",
@@ -907,7 +889,7 @@ export function source(className?: string): VNode<HTMLSourceElementProps | null>
     null,
   );
 }
-export function span(className?: string): VNode<HTMLSpanElementProps | null> {
+export function span(className?: string): VNode<HTMLSpanElementProps | null, HTMLSpanElement> {
   return new VNode(
     VNodeFlags.Element,
     "span",
@@ -916,7 +898,7 @@ export function span(className?: string): VNode<HTMLSpanElementProps | null> {
     null,
   );
 }
-export function strike(className?: string): VNode<HTMLElementProps | null> {
+export function strike(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "strike",
@@ -925,7 +907,7 @@ export function strike(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function strong(className?: string): VNode<HTMLElementProps | null> {
+export function strong(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "strong",
@@ -934,7 +916,7 @@ export function strong(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function style(className?: string): VNode<HTMLStyleElementProps | null> {
+export function style(className?: string): VNode<HTMLStyleElementProps | null, HTMLStyleElement> {
   return new VNode(
     VNodeFlags.Element,
     "style",
@@ -943,7 +925,7 @@ export function style(className?: string): VNode<HTMLStyleElementProps | null> {
     null,
   );
 }
-export function sub(className?: string): VNode<HTMLElementProps | null> {
+export function sub(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "sub",
@@ -952,7 +934,7 @@ export function sub(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function sup(className?: string): VNode<HTMLElementProps | null> {
+export function sup(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "sup",
@@ -961,7 +943,7 @@ export function sup(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function table(className?: string): VNode<HTMLTableElementProps | null> {
+export function table(className?: string): VNode<HTMLTableElementProps | null, HTMLTableElement> {
   return new VNode(
     VNodeFlags.Element,
     "table",
@@ -970,7 +952,7 @@ export function table(className?: string): VNode<HTMLTableElementProps | null> {
     null,
   );
 }
-export function tbody(className?: string): VNode<HTMLTableSectionElementProps | null> {
+export function tbody(className?: string): VNode<HTMLTableSectionElementProps | null, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element,
     "tbody",
@@ -979,7 +961,7 @@ export function tbody(className?: string): VNode<HTMLTableSectionElementProps | 
     null,
   );
 }
-export function td(className?: string): VNode<HTMLTableDataCellElementProps | null> {
+export function td(className?: string): VNode<HTMLTableDataCellElementProps | null, HTMLTableDataCellElement> {
   return new VNode(
     VNodeFlags.Element,
     "td",
@@ -988,7 +970,7 @@ export function td(className?: string): VNode<HTMLTableDataCellElementProps | nu
     null,
   );
 }
-export function template(className?: string): VNode<HTMLTemplateElementProps | null> {
+export function template(className?: string): VNode<HTMLTemplateElementProps | null, HTMLTemplateElement> {
   return new VNode(
     VNodeFlags.Element,
     "template",
@@ -997,7 +979,7 @@ export function template(className?: string): VNode<HTMLTemplateElementProps | n
     null,
   );
 }
-export function tfoot(className?: string): VNode<HTMLTableSectionElementProps | null> {
+export function tfoot(className?: string): VNode<HTMLTableSectionElementProps | null, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element,
     "tfoot",
@@ -1006,7 +988,7 @@ export function tfoot(className?: string): VNode<HTMLTableSectionElementProps | 
     null,
   );
 }
-export function th(className?: string): VNode<HTMLTableHeaderCellElementProps | null> {
+export function th(className?: string): VNode<HTMLTableHeaderCellElementProps | null, HTMLTableHeaderCellElement> {
   return new VNode(
     VNodeFlags.Element,
     "th",
@@ -1015,7 +997,7 @@ export function th(className?: string): VNode<HTMLTableHeaderCellElementProps | 
     null,
   );
 }
-export function thead(className?: string): VNode<HTMLTableSectionElementProps | null> {
+export function thead(className?: string): VNode<HTMLTableSectionElementProps | null, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element,
     "thead",
@@ -1024,7 +1006,7 @@ export function thead(className?: string): VNode<HTMLTableSectionElementProps | 
     null,
   );
 }
-export function title(className?: string): VNode<HTMLTitleElementProps | null> {
+export function title(className?: string): VNode<HTMLTitleElementProps | null, HTMLTitleElement> {
   return new VNode(
     VNodeFlags.Element,
     "title",
@@ -1033,7 +1015,7 @@ export function title(className?: string): VNode<HTMLTitleElementProps | null> {
     null,
   );
 }
-export function tr(className?: string): VNode<HTMLTableRowElementProps | null> {
+export function tr(className?: string): VNode<HTMLTableRowElementProps | null, HTMLTableRowElement> {
   return new VNode(
     VNodeFlags.Element,
     "tr",
@@ -1042,7 +1024,7 @@ export function tr(className?: string): VNode<HTMLTableRowElementProps | null> {
     null,
   );
 }
-export function track(className?: string): VNode<HTMLTrackElementProps | null> {
+export function track(className?: string): VNode<HTMLTrackElementProps | null, HTMLTrackElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "track",
@@ -1051,7 +1033,7 @@ export function track(className?: string): VNode<HTMLTrackElementProps | null> {
     null,
   );
 }
-export function tt(className?: string): VNode<HTMLElementProps | null> {
+export function tt(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "tt",
@@ -1060,7 +1042,7 @@ export function tt(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function u(className?: string): VNode<HTMLElementProps | null> {
+export function u(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element,
     "u",
@@ -1069,7 +1051,7 @@ export function u(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function ul(className?: string): VNode<HTMLUListElementProps | null> {
+export function ul(className?: string): VNode<HTMLUListElementProps | null, HTMLUListElement> {
   return new VNode(
     VNodeFlags.Element,
     "ul",
@@ -1078,7 +1060,7 @@ export function ul(className?: string): VNode<HTMLUListElementProps | null> {
     null,
   );
 }
-export function wbr(className?: string): VNode<HTMLElementProps | null> {
+export function wbr(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "wbr",
@@ -1087,7 +1069,7 @@ export function wbr(className?: string): VNode<HTMLElementProps | null> {
     null,
   );
 }
-export function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | null> {
+export function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | null, MSHTMLWebViewElement> {
   return new VNode(
     VNodeFlags.Element,
     "x-ms-webview",
@@ -1096,7 +1078,7 @@ export function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProp
     null,
   );
 }
-export function xmp(className?: string): VNode<HTMLPreElementProps | null> {
+export function xmp(className?: string): VNode<HTMLPreElementProps | null, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element,
     "xmp",
@@ -1107,7 +1089,7 @@ export function xmp(className?: string): VNode<HTMLPreElementProps | null> {
 }
 
 // SVG Elements:
-export function circle(className?: string): VNode<SVGCircleElementProps | null> {
+export function circle(className?: string): VNode<SVGCircleElementProps | null, SVGCircleElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "circle",
@@ -1116,7 +1098,7 @@ export function circle(className?: string): VNode<SVGCircleElementProps | null> 
     null,
   );
 }
-export function clippath(className?: string): VNode<SVGClipPathElementProps | null> {
+export function clippath(className?: string): VNode<SVGClipPathElementProps | null, SVGClipPathElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "clippath",
@@ -1125,7 +1107,7 @@ export function clippath(className?: string): VNode<SVGClipPathElementProps | nu
     null,
   );
 }
-export function defs(className?: string): VNode<SVGDefsElementProps | null> {
+export function defs(className?: string): VNode<SVGDefsElementProps | null, SVGDefsElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "defs",
@@ -1134,7 +1116,7 @@ export function defs(className?: string): VNode<SVGDefsElementProps | null> {
     null,
   );
 }
-export function desc(className?: string): VNode<SVGDescElementProps | null> {
+export function desc(className?: string): VNode<SVGDescElementProps | null, SVGDescElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "desc",
@@ -1143,7 +1125,7 @@ export function desc(className?: string): VNode<SVGDescElementProps | null> {
     null,
   );
 }
-export function ellipse(className?: string): VNode<SVGEllipseElementProps | null> {
+export function ellipse(className?: string): VNode<SVGEllipseElementProps | null, SVGEllipseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "ellipse",
@@ -1152,7 +1134,7 @@ export function ellipse(className?: string): VNode<SVGEllipseElementProps | null
     null,
   );
 }
-export function feblend(className?: string): VNode<SVGFEBlendElementProps | null> {
+export function feblend(className?: string): VNode<SVGFEBlendElementProps | null, SVGFEBlendElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "feblend",
@@ -1161,7 +1143,7 @@ export function feblend(className?: string): VNode<SVGFEBlendElementProps | null
     null,
   );
 }
-export function fecolormatrix(className?: string): VNode<SVGFEColorMatrixElementProps | null> {
+export function fecolormatrix(className?: string): VNode<SVGFEColorMatrixElementProps | null, SVGFEColorMatrixElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fecolormatrix",
@@ -1170,7 +1152,8 @@ export function fecolormatrix(className?: string): VNode<SVGFEColorMatrixElement
     null,
   );
 }
-export function fecomponenttransfer(className?: string): VNode<SVGFEComponentTransferElementProps | null> {
+export function fecomponenttransfer(className?: string):
+  VNode<SVGFEComponentTransferElementProps | null, SVGFEComponentTransferElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fecomponenttransfer",
@@ -1179,7 +1162,7 @@ export function fecomponenttransfer(className?: string): VNode<SVGFEComponentTra
     null,
   );
 }
-export function fecomposite(className?: string): VNode<SVGFECompositeElementProps | null> {
+export function fecomposite(className?: string): VNode<SVGFECompositeElementProps | null, SVGFECompositeElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fecomposite",
@@ -1188,7 +1171,8 @@ export function fecomposite(className?: string): VNode<SVGFECompositeElementProp
     null,
   );
 }
-export function feconvolvematrix(className?: string): VNode<SVGFEConvolveMatrixElementProps | null> {
+export function feconvolvematrix(className?: string):
+  VNode<SVGFEConvolveMatrixElementProps | null, SVGFEConvolveMatrixElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "feconvolvematrix",
@@ -1197,7 +1181,8 @@ export function feconvolvematrix(className?: string): VNode<SVGFEConvolveMatrixE
     null,
   );
 }
-export function fediffuselighting(className?: string): VNode<SVGFEDiffuseLightingElementProps | null> {
+export function fediffuselighting(className?: string):
+  VNode<SVGFEDiffuseLightingElementProps | null, SVGFEDiffuseLightingElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fediffuselighting",
@@ -1206,7 +1191,8 @@ export function fediffuselighting(className?: string): VNode<SVGFEDiffuseLightin
     null,
   );
 }
-export function fedisplacementmap(className?: string): VNode<SVGFEDisplacementMapElementProps | null> {
+export function fedisplacementmap(className?: string):
+  VNode<SVGFEDisplacementMapElementProps | null, SVGFEDisplacementMapElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fedisplacementmap",
@@ -1215,7 +1201,8 @@ export function fedisplacementmap(className?: string): VNode<SVGFEDisplacementMa
     null,
   );
 }
-export function fedistantlight(className?: string): VNode<SVGFEDistantLightElementProps | null> {
+export function fedistantlight(className?: string):
+  VNode<SVGFEDistantLightElementProps | null, SVGFEDistantLightElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fedistantlight",
@@ -1224,7 +1211,7 @@ export function fedistantlight(className?: string): VNode<SVGFEDistantLightEleme
     null,
   );
 }
-export function feflood(className?: string): VNode<SVGFEFloodElementProps | null> {
+export function feflood(className?: string): VNode<SVGFEFloodElementProps | null, SVGFEFloodElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "feflood",
@@ -1233,7 +1220,7 @@ export function feflood(className?: string): VNode<SVGFEFloodElementProps | null
     null,
   );
 }
-export function fefunca(className?: string): VNode<SVGFEFuncAElementProps | null> {
+export function fefunca(className?: string): VNode<SVGFEFuncAElementProps | null, SVGFEFuncAElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fefunca",
@@ -1242,7 +1229,7 @@ export function fefunca(className?: string): VNode<SVGFEFuncAElementProps | null
     null,
   );
 }
-export function fefuncb(className?: string): VNode<SVGFEFuncBElementProps | null> {
+export function fefuncb(className?: string): VNode<SVGFEFuncBElementProps | null, SVGFEFuncBElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fefuncb",
@@ -1251,7 +1238,7 @@ export function fefuncb(className?: string): VNode<SVGFEFuncBElementProps | null
     null,
   );
 }
-export function fefuncg(className?: string): VNode<SVGFEFuncGElementProps | null> {
+export function fefuncg(className?: string): VNode<SVGFEFuncGElementProps | null, SVGFEFuncGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fefuncg",
@@ -1260,7 +1247,7 @@ export function fefuncg(className?: string): VNode<SVGFEFuncGElementProps | null
     null,
   );
 }
-export function fefuncr(className?: string): VNode<SVGFEFuncRElementProps | null> {
+export function fefuncr(className?: string): VNode<SVGFEFuncRElementProps | null, SVGFEFuncRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fefuncr",
@@ -1269,7 +1256,8 @@ export function fefuncr(className?: string): VNode<SVGFEFuncRElementProps | null
     null,
   );
 }
-export function fegaussianblur(className?: string): VNode<SVGFEGaussianBlurElementProps | null> {
+export function fegaussianblur(className?: string):
+  VNode<SVGFEGaussianBlurElementProps | null, SVGFEGaussianBlurElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fegaussianblur",
@@ -1278,7 +1266,7 @@ export function fegaussianblur(className?: string): VNode<SVGFEGaussianBlurEleme
     null,
   );
 }
-export function feimage(className?: string): VNode<SVGFEImageElementProps | null> {
+export function feimage(className?: string): VNode<SVGFEImageElementProps | null, SVGFEImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "feimage",
@@ -1287,7 +1275,7 @@ export function feimage(className?: string): VNode<SVGFEImageElementProps | null
     null,
   );
 }
-export function femerge(className?: string): VNode<SVGFEMergeElementProps | null> {
+export function femerge(className?: string): VNode<SVGFEMergeElementProps | null, SVGFEMergeElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "femerge",
@@ -1296,7 +1284,7 @@ export function femerge(className?: string): VNode<SVGFEMergeElementProps | null
     null,
   );
 }
-export function femergenode(className?: string): VNode<SVGFEMergeNodeElementProps | null> {
+export function femergenode(className?: string): VNode<SVGFEMergeNodeElementProps | null, SVGFEMergeNodeElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "femergenode",
@@ -1305,7 +1293,7 @@ export function femergenode(className?: string): VNode<SVGFEMergeNodeElementProp
     null,
   );
 }
-export function femorphology(className?: string): VNode<SVGFEMorphologyElementProps | null> {
+export function femorphology(className?: string): VNode<SVGFEMorphologyElementProps | null, SVGFEMorphologyElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "femorphology",
@@ -1314,7 +1302,7 @@ export function femorphology(className?: string): VNode<SVGFEMorphologyElementPr
     null,
   );
 }
-export function feoffset(className?: string): VNode<SVGFEOffsetElementProps | null> {
+export function feoffset(className?: string): VNode<SVGFEOffsetElementProps | null, SVGFEOffsetElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "feoffset",
@@ -1323,7 +1311,7 @@ export function feoffset(className?: string): VNode<SVGFEOffsetElementProps | nu
     null,
   );
 }
-export function fepointlight(className?: string): VNode<SVGFEPointLightElementProps | null> {
+export function fepointlight(className?: string): VNode<SVGFEPointLightElementProps | null, SVGFEPointLightElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fepointlight",
@@ -1332,7 +1320,8 @@ export function fepointlight(className?: string): VNode<SVGFEPointLightElementPr
     null,
   );
 }
-export function fespecularlighting(className?: string): VNode<SVGFESpecularLightingElementProps | null> {
+export function fespecularlighting(className?: string):
+  VNode<SVGFESpecularLightingElementProps | null, SVGFESpecularLightingElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fespecularlighting",
@@ -1341,7 +1330,7 @@ export function fespecularlighting(className?: string): VNode<SVGFESpecularLight
     null,
   );
 }
-export function fespotlight(className?: string): VNode<SVGFESpotLightElementProps | null> {
+export function fespotlight(className?: string): VNode<SVGFESpotLightElementProps | null, SVGFESpotLightElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fespotlight",
@@ -1350,7 +1339,7 @@ export function fespotlight(className?: string): VNode<SVGFESpotLightElementProp
     null,
   );
 }
-export function fetile(className?: string): VNode<SVGFETileElementProps | null> {
+export function fetile(className?: string): VNode<SVGFETileElementProps | null, SVGFETileElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "fetile",
@@ -1359,7 +1348,7 @@ export function fetile(className?: string): VNode<SVGFETileElementProps | null> 
     null,
   );
 }
-export function feturbulence(className?: string): VNode<SVGFETurbulenceElementProps | null> {
+export function feturbulence(className?: string): VNode<SVGFETurbulenceElementProps | null, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "feturbulence",
@@ -1368,7 +1357,7 @@ export function feturbulence(className?: string): VNode<SVGFETurbulenceElementPr
     null,
   );
 }
-export function filter(className?: string): VNode<SVGFilterElementProps | null> {
+export function filter(className?: string): VNode<SVGFilterElementProps | null, SVGFilterElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "filter",
@@ -1377,7 +1366,7 @@ export function filter(className?: string): VNode<SVGFilterElementProps | null> 
     null,
   );
 }
-export function foreignobject(className?: string): VNode<SVGForeignObjectElementProps | null> {
+export function foreignobject(className?: string): VNode<SVGForeignObjectElementProps | null, SVGForeignObjectElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "foreignobject",
@@ -1386,7 +1375,7 @@ export function foreignobject(className?: string): VNode<SVGForeignObjectElement
     null,
   );
 }
-export function g(className?: string): VNode<SVGGElementProps | null> {
+export function g(className?: string): VNode<SVGGElementProps | null, SVGGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "g",
@@ -1395,7 +1384,7 @@ export function g(className?: string): VNode<SVGGElementProps | null> {
     null,
   );
 }
-export function image(className?: string): VNode<SVGImageElementProps | null> {
+export function image(className?: string): VNode<SVGImageElementProps | null, SVGImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "image",
@@ -1404,7 +1393,7 @@ export function image(className?: string): VNode<SVGImageElementProps | null> {
     null,
   );
 }
-export function line(className?: string): VNode<SVGLineElementProps | null> {
+export function line(className?: string): VNode<SVGLineElementProps | null, SVGLineElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "line",
@@ -1413,7 +1402,8 @@ export function line(className?: string): VNode<SVGLineElementProps | null> {
     null,
   );
 }
-export function lineargradient(className?: string): VNode<SVGLinearGradientElementProps | null> {
+export function lineargradient(className?: string):
+  VNode<SVGLinearGradientElementProps | null, SVGLinearGradientElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "lineargradient",
@@ -1422,7 +1412,7 @@ export function lineargradient(className?: string): VNode<SVGLinearGradientEleme
     null,
   );
 }
-export function marker(className?: string): VNode<SVGMarkerElementProps | null> {
+export function marker(className?: string): VNode<SVGMarkerElementProps | null, SVGMarkerElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "marker",
@@ -1431,7 +1421,7 @@ export function marker(className?: string): VNode<SVGMarkerElementProps | null> 
     null,
   );
 }
-export function mask(className?: string): VNode<SVGMaskElementProps | null> {
+export function mask(className?: string): VNode<SVGMaskElementProps | null, SVGMaskElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "mask",
@@ -1440,7 +1430,7 @@ export function mask(className?: string): VNode<SVGMaskElementProps | null> {
     null,
   );
 }
-export function metadata(className?: string): VNode<SVGMetadataElementProps | null> {
+export function metadata(className?: string): VNode<SVGMetadataElementProps | null, SVGMetadataElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "metadata",
@@ -1449,7 +1439,7 @@ export function metadata(className?: string): VNode<SVGMetadataElementProps | nu
     null,
   );
 }
-export function path(className?: string): VNode<SVGPathElementProps | null> {
+export function path(className?: string): VNode<SVGPathElementProps | null, SVGPathElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "path",
@@ -1458,7 +1448,7 @@ export function path(className?: string): VNode<SVGPathElementProps | null> {
     null,
   );
 }
-export function pattern(className?: string): VNode<SVGPatternElementProps | null> {
+export function pattern(className?: string): VNode<SVGPatternElementProps | null, SVGPatternElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "pattern",
@@ -1467,7 +1457,7 @@ export function pattern(className?: string): VNode<SVGPatternElementProps | null
     null,
   );
 }
-export function polygon(className?: string): VNode<SVGPolygonElementProps | null> {
+export function polygon(className?: string): VNode<SVGPolygonElementProps | null, SVGPolygonElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "polygon",
@@ -1476,7 +1466,7 @@ export function polygon(className?: string): VNode<SVGPolygonElementProps | null
     null,
   );
 }
-export function polyline(className?: string): VNode<SVGPolylineElementProps | null> {
+export function polyline(className?: string): VNode<SVGPolylineElementProps | null, SVGPolylineElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "polyline",
@@ -1485,7 +1475,8 @@ export function polyline(className?: string): VNode<SVGPolylineElementProps | nu
     null,
   );
 }
-export function radialgradient(className?: string): VNode<SVGRadialGradientElementProps | null> {
+export function radialgradient(className?: string):
+  VNode<SVGRadialGradientElementProps | null, SVGRadialGradientElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "radialgradient",
@@ -1494,7 +1485,7 @@ export function radialgradient(className?: string): VNode<SVGRadialGradientEleme
     null,
   );
 }
-export function rect(className?: string): VNode<SVGRectElementProps | null> {
+export function rect(className?: string): VNode<SVGRectElementProps | null, SVGRectElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "rect",
@@ -1503,7 +1494,7 @@ export function rect(className?: string): VNode<SVGRectElementProps | null> {
     null,
   );
 }
-export function stop(className?: string): VNode<SVGStopElementProps | null> {
+export function stop(className?: string): VNode<SVGStopElementProps | null, SVGStopElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "stop",
@@ -1512,7 +1503,7 @@ export function stop(className?: string): VNode<SVGStopElementProps | null> {
     null,
   );
 }
-export function svg(className?: string): VNode<SVGSVGElementProps | null> {
+export function svg(className?: string): VNode<SVGSVGElementProps | null, SVGSVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "svg",
@@ -1521,7 +1512,7 @@ export function svg(className?: string): VNode<SVGSVGElementProps | null> {
     null,
   );
 }
-export function symbol(className?: string): VNode<SVGSymbolElementProps | null> {
+export function symbol(className?: string): VNode<SVGSymbolElementProps | null, SVGSymbolElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "symbol",
@@ -1530,7 +1521,7 @@ export function symbol(className?: string): VNode<SVGSymbolElementProps | null> 
     null,
   );
 }
-export function text(className?: string): VNode<SVGTextElementProps | null> {
+export function text(className?: string): VNode<SVGTextElementProps | null, SVGTextElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "text",
@@ -1539,7 +1530,7 @@ export function text(className?: string): VNode<SVGTextElementProps | null> {
     null,
   );
 }
-export function textpath(className?: string): VNode<SVGTextPathElementProps | null> {
+export function textpath(className?: string): VNode<SVGTextPathElementProps | null, SVGTextPathElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "textpath",
@@ -1548,7 +1539,7 @@ export function textpath(className?: string): VNode<SVGTextPathElementProps | nu
     null,
   );
 }
-export function tspan(className?: string): VNode<SVGTSpanElementProps | null> {
+export function tspan(className?: string): VNode<SVGTSpanElementProps | null, SVGTSpanElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "tspan",
@@ -1557,7 +1548,7 @@ export function tspan(className?: string): VNode<SVGTSpanElementProps | null> {
     null,
   );
 }
-export function use(className?: string): VNode<SVGUseElementProps | null> {
+export function use(className?: string): VNode<SVGUseElementProps | null, SVGUseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "use",
@@ -1566,7 +1557,7 @@ export function use(className?: string): VNode<SVGUseElementProps | null> {
     null,
   );
 }
-export function view(className?: string): VNode<SVGViewElementProps | null> {
+export function view(className?: string): VNode<SVGViewElementProps | null, SVGViewElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement,
     "view",
@@ -1577,7 +1568,7 @@ export function view(className?: string): VNode<SVGViewElementProps | null> {
 }
 
 // Textarea / Input Elements:
-export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null> {
+export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null, HTMLTextAreaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.TextAreaElement,
     "textarea",
@@ -1586,7 +1577,7 @@ export function textarea(className?: string): VNode<HTMLTextAreaElementProps | n
     null,
   );
 }
-export function inputButton(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputButton(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "button",
@@ -1595,7 +1586,7 @@ export function inputButton(className?: string): VNode<HTMLInputElementProps | n
     null,
   );
 }
-export function inputCheckbox(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputCheckbox(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "checkbox",
@@ -1604,7 +1595,7 @@ export function inputCheckbox(className?: string): VNode<HTMLInputElementProps |
     null,
   );
 }
-export function inputColor(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputColor(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "color",
@@ -1613,7 +1604,7 @@ export function inputColor(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputDate(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputDate(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "date",
@@ -1622,7 +1613,7 @@ export function inputDate(className?: string): VNode<HTMLInputElementProps | nul
     null,
   );
 }
-export function inputDatetime(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputDatetime(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "datetime",
@@ -1631,7 +1622,7 @@ export function inputDatetime(className?: string): VNode<HTMLInputElementProps |
     null,
   );
 }
-export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "datetime-local",
@@ -1640,7 +1631,7 @@ export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementPr
     null,
   );
 }
-export function inputEmail(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputEmail(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "email",
@@ -1649,7 +1640,7 @@ export function inputEmail(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputFile(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputFile(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "file",
@@ -1658,7 +1649,7 @@ export function inputFile(className?: string): VNode<HTMLInputElementProps | nul
     null,
   );
 }
-export function inputHidden(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputHidden(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "hidden",
@@ -1667,7 +1658,7 @@ export function inputHidden(className?: string): VNode<HTMLInputElementProps | n
     null,
   );
 }
-export function inputImage(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputImage(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "image",
@@ -1676,7 +1667,7 @@ export function inputImage(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputMonth(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputMonth(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "month",
@@ -1685,7 +1676,7 @@ export function inputMonth(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputNumber(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputNumber(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "number",
@@ -1694,7 +1685,7 @@ export function inputNumber(className?: string): VNode<HTMLInputElementProps | n
     null,
   );
 }
-export function inputPassword(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputPassword(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "password",
@@ -1703,7 +1694,7 @@ export function inputPassword(className?: string): VNode<HTMLInputElementProps |
     null,
   );
 }
-export function inputRadio(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputRadio(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "radio",
@@ -1712,7 +1703,7 @@ export function inputRadio(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputRange(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputRange(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "range",
@@ -1721,7 +1712,7 @@ export function inputRange(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputReset(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputReset(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "reset",
@@ -1730,7 +1721,7 @@ export function inputReset(className?: string): VNode<HTMLInputElementProps | nu
     null,
   );
 }
-export function inputSearch(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputSearch(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "search",
@@ -1739,7 +1730,7 @@ export function inputSearch(className?: string): VNode<HTMLInputElementProps | n
     null,
   );
 }
-export function inputSubmit(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputSubmit(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "submit",
@@ -1748,7 +1739,7 @@ export function inputSubmit(className?: string): VNode<HTMLInputElementProps | n
     null,
   );
 }
-export function inputTel(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputTel(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "tel",
@@ -1757,7 +1748,7 @@ export function inputTel(className?: string): VNode<HTMLInputElementProps | null
     null,
   );
 }
-export function inputText(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputText(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "text",
@@ -1766,7 +1757,7 @@ export function inputText(className?: string): VNode<HTMLInputElementProps | nul
     null,
   );
 }
-export function inputTime(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputTime(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "time",
@@ -1775,7 +1766,7 @@ export function inputTime(className?: string): VNode<HTMLInputElementProps | nul
     null,
   );
 }
-export function inputUrl(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputUrl(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "url",
@@ -1784,7 +1775,7 @@ export function inputUrl(className?: string): VNode<HTMLInputElementProps | null
     null,
   );
 }
-export function inputWeek(className?: string): VNode<HTMLInputElementProps | null> {
+export function inputWeek(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "week",
@@ -1795,7 +1786,7 @@ export function inputWeek(className?: string): VNode<HTMLInputElementProps | nul
 }
 
 // Media Elements:
-export function audio(className?: string): VNode<HTMLAudioElementProps | null> {
+export function audio(className?: string): VNode<HTMLAudioElementProps | null, HTMLAudioElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.MediaElement,
     "audio",
@@ -1805,7 +1796,7 @@ export function audio(className?: string): VNode<HTMLAudioElementProps | null> {
 
 }
 
-export function video(className?: string): VNode<HTMLVideoElementProps | null> {
+export function video(className?: string): VNode<HTMLVideoElementProps | null, HTMLVideoElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.MediaElement,
     "video",

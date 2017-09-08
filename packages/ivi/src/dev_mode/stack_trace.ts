@@ -43,7 +43,7 @@ if (DEV) {
  *
  * @param vnode VNode.
  */
-export function stackTracePushComponent(vnode: VNode<any>, instance?: Component<any> | Context): void {
+export function stackTracePushComponent(vnode: VNode, instance?: Component<any> | Context): void {
   if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
       const flags = vnode._flags;

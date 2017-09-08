@@ -116,7 +116,7 @@ const VNodeLooseMatchFlags = 0
  * @param b VNode.
  * @returns true when VNode are loosely matching.
  */
-export function isVNodeLooseMatch(a: VNode<any>, b: VNode<any>): boolean {
+export function isVNodeLooseMatch(a: VNode, b: VNode): boolean {
   const aFlags = a._flags;
   const bFlags = b._flags;
   if (((aFlags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {

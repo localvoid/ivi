@@ -21,7 +21,7 @@ export class DOMRenderer {
    * @param vnode VNode.
    * @returns VNodeWrapper object.
    */
-  render(vnode: VNode<any>): VNodeWrapper {
+  render(vnode: VNode): VNodeWrapper {
     render(vnode, this.container);
     return new VNodeWrapper(vnode, null, {});
   }

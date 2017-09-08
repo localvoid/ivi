@@ -4,7 +4,7 @@ import { render as rootRender } from "../src/vdom/root";
 import * as h from "./utils/html";
 import { expect } from "iko";
 
-function render<T extends Element>(node: VNode<any> | null, container: Element): T {
+function render<T extends Element>(node: VNode | null, container: Element): T {
   rootRender(node, container);
   return container.firstChild as T;
 }

@@ -9,7 +9,7 @@ declare module "iko" {
   }
 
   function expect(obj: VNodeWrapper): VNodeAssertion;
-  function expect(obj: VNode<any>): VNodeAssertion;
+  function expect(obj: VNode): VNodeAssertion;
 }
 
 /**

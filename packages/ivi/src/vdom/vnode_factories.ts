@@ -74,10 +74,10 @@ function UpdateContext() {
  * @param child Child VNode.
  * @returns VNodeBuilder object.
  */
-export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Context<T>> {
+export function context<T = {}>(ctx: Context<T>, child: VNode): VNode<Context<T>> {
   return new VNode<Context<T>>(
     VNodeFlags.UpdateContext,
-    DEV ? UpdateContext as () => VNode<any> : null,
+    DEV ? UpdateContext as () => VNode : null,
     ctx,
     null,
     child,
@@ -91,7 +91,7 @@ export function connect<I, O, P>(
 ): () => VNode<P>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
+  render: (props: O) => VNode,
 ): () => VNode<P>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
@@ -99,7 +99,7 @@ export function connect<I, O, P>(
 ): (props: P) => VNode<P>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
+  render: (props: O) => VNode,
 ): (props: P) => VNode<P>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null, props: null | void) => SelectorData<I, O>,
@@ -107,7 +107,7 @@ export function connect<I, O, P>(
 ): () => VNode<null>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null, props: null | void) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
+  render: (props: O) => VNode,
 ): () => VNode<null>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
@@ -115,11 +115,11 @@ export function connect<I, O, P>(
 ): () => VNode<null>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
+  render: (props: O) => VNode,
 ): () => VNode<null>;
 export function connect<I, O, P>(
   select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
-  render: ComponentClass<O> | ((props: O) => VNode<any>),
+  render: ComponentClass<O> | ((props: O) => VNode),
 ): (props: P) => VNode<P> {
   let descriptor: ConnectDescriptor<I, O, P>;
   if (DEV) {
@@ -181,17 +181,17 @@ export function connect<I, O, P>(
  * @returns VNodeBuilder object.
  */
 export function keepAlive<P>(
-  handler: (disposed: VNode<any> | null, props: P) => VNode<any> | null,
-  child: VNode<any>,
+  handler: (disposed: VNode | null, props: P) => VNode | null,
+  child: VNode,
   props: P,
 ): VNode<P>;
 export function keepAlive(
-  handler: (disposed: VNode<any> | null) => VNode<any> | null,
-  child: VNode<any>,
+  handler: (disposed: VNode | null) => VNode | null,
+  child: VNode,
 ): VNode<null>;
 export function keepAlive<P>(
   handler: KeepAliveHandler,
-  child: VNode<any>,
+  child: VNode,
   props?: P,
 ): VNode<P> {
   return new VNode<P>(

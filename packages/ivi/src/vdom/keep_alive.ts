@@ -1,6 +1,6 @@
 import { VNode } from "./vnode";
 
 export type KeepAliveHandler<P = any> = (
-  disposed: VNode<any> | null,
+  disposed: VNode | null,
   props: P,
-) => VNode<any> | null;
+) => VNode | null;

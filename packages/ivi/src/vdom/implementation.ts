@@ -54,7 +54,7 @@ if (DEV) {
  * @param method
  * @param vnode
  */
-function componentPerfMarkBegin(method: string, vnode: VNode<any>): void {
+function componentPerfMarkBegin(method: string, vnode: VNode): void {
   if (DEV) {
     if ((DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) !== 0) {
       let id;
@@ -78,7 +78,7 @@ function componentPerfMarkBegin(method: string, vnode: VNode<any>): void {
  */
 function componentPerfMarkEnd(
   method: string,
-  vnode: VNode<any>,
+  vnode: VNode,
 ): void {
   if (DEV) {
     if ((DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) !== 0) {
@@ -120,7 +120,7 @@ function componentPerfMarkEnd(
 export function renderVNode(
   parent: Node,
   refChild: Node | null,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
 ): Node {
   if (DEV) {
@@ -152,7 +152,7 @@ export function renderVNode(
 function _renderVNode(
   parent: Node,
   refChild: Node | null,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
 ): Node {
   return vNodeRenderIntoAndAttach(parent, refChild, vnode, context, SyncFlags.Attached);
@@ -169,8 +169,8 @@ function _renderVNode(
  */
 export function syncVNode(
   parent: Node,
-  a: VNode<any>,
-  b: VNode<any>,
+  a: VNode,
+  b: VNode,
   context: Context,
   syncFlags: SyncFlags,
 ): void {
@@ -202,8 +202,8 @@ export function syncVNode(
  */
 function _syncVNode(
   parent: Node,
-  a: VNode<any>,
-  b: VNode<any>,
+  a: VNode,
+  b: VNode,
   context: Context,
   syncFlags: SyncFlags,
 ): void {
@@ -218,7 +218,7 @@ function _syncVNode(
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
  */
-export function removeVNode(parent: Node, node: VNode<any>): void {
+export function removeVNode(parent: Node, node: VNode): void {
   if (DEV) {
     try {
       _removeVNode(parent, node);
@@ -240,7 +240,7 @@ export function removeVNode(parent: Node, node: VNode<any>): void {
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
  */
-function _removeVNode(parent: Node, node: VNode<any>): void {
+function _removeVNode(parent: Node, node: VNode): void {
   nodeRemoveChild(parent, getDOMInstanceFromVNode(node)!);
   vNodeDetach(node, SyncFlags.Dispose | SyncFlags.Attached);
 }
@@ -259,7 +259,7 @@ function _removeVNode(parent: Node, node: VNode<any>): void {
 export function augmentVNode(
   parent: Node,
   node: Node | null,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
 ): void {
   if (DEV) {
@@ -291,7 +291,7 @@ export function augmentVNode(
 function _augmentVNode(
   parent: Node,
   node: Node | null,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
 ): void {
   vNodeAugment(parent, node, vnode, context);
@@ -311,7 +311,7 @@ function _augmentVNode(
  */
 export function updateComponents(
   parent: Node,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
   syncFlags: SyncFlags,
 ): void {
@@ -335,19 +335,19 @@ export function updateComponents(
  *
  * @param vnode VNode.
  */
-function vNodeAttach(vnode: VNode<any>): void {
+function vNodeAttach(vnode: VNode): void {
   const flags = vnode._flags;
 
   if ((flags & VNodeFlags.Element) !== 0) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       let children = vnode._children;
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-        children = children as VNode<any>[];
+        children = children as VNode[];
         for (let i = 0; i < children.length; ++i) {
           vNodeAttach(children[i]);
         }
       } else {
-        vNodeAttach(children as VNode<any>);
+        vNodeAttach(children as VNode);
       }
     }
     if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
@@ -367,7 +367,7 @@ function vNodeAttach(vnode: VNode<any>): void {
       component.flags |= ComponentFlags.Attached;
       component.attached();
     }
-    vNodeAttach(vnode._children as VNode<any>);
+    vNodeAttach(vnode._children as VNode);
     stackTracePopComponent();
   }
 }
@@ -377,16 +377,16 @@ function vNodeAttach(vnode: VNode<any>): void {
  *
  * @param vnode VNode.
  */
-function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
+function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
   const flags = vnode._flags;
 
   if ((flags & VNodeFlags.Element) !== 0) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
       const children = vnode._children;
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-        vNodeDetachAll(children as VNode<any>[], syncFlags);
+        vNodeDetachAll(children as VNode[], syncFlags);
       } else {
-        vNodeDetach(children as VNode<any>, syncFlags);
+        vNodeDetach(children as VNode, syncFlags);
       }
     }
     if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
@@ -396,12 +396,12 @@ function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
     stackTracePushComponent(vnode);
     if ((flags & VNodeFlags.KeepAlive) !== 0 &&
       (syncFlags & SyncFlags.Dispose) !== 0 &&
-      ((vnode._tag as KeepAliveHandler)(vnode._children as VNode<any>, vnode._props)) !== null) {
+      ((vnode._tag as KeepAliveHandler)(vnode._children as VNode, vnode._props)) !== null) {
       if ((syncFlags & SyncFlags.Attached) !== 0) {
-        vNodeDetach(vnode._children as VNode<any>, syncFlags ^ SyncFlags.Dispose);
+        vNodeDetach(vnode._children as VNode, syncFlags ^ SyncFlags.Dispose);
       }
     } else {
-      vNodeDetach(vnode._children as VNode<any>, syncFlags);
+      vNodeDetach(vnode._children as VNode, syncFlags);
       if ((flags & VNodeFlags.ComponentClass) !== 0 &&
         (syncFlags & SyncFlags.Attached) !== 0) {
         const component = vnode._instance as Component<any>;
@@ -424,7 +424,7 @@ function vNodeDetach(vnode: VNode<any>, syncFlags: SyncFlags): void {
  *
  * @param vnodes Array of VNodes.
  */
-function vNodeDetachAll(vnodes: VNode<any>[], syncFlags: SyncFlags): void {
+function vNodeDetachAll(vnodes: VNode[], syncFlags: SyncFlags): void {
   for (let i = 0; i < vnodes.length; ++i) {
     vNodeDetach(vnodes[i], syncFlags);
   }
@@ -440,7 +440,7 @@ function vNodeDetachAll(vnodes: VNode<any>[], syncFlags: SyncFlags): void {
  */
 function vNodeUpdateComponents(
   parent: Node,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
   syncFlags: SyncFlags,
 ): number {
@@ -452,12 +452,12 @@ function vNodeUpdateComponents(
       const p = vnode._instance as Node;
       let children = vnode._children;
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-        children = children as VNode<any>[];
+        children = children as VNode[];
         for (let i = 0; i < children.length; ++i) {
           deepUpdate |= vNodeUpdateComponents(p, children[i], context, syncFlags);
         }
       } else {
-        deepUpdate = vNodeUpdateComponents(p, children as VNode<any>, context, syncFlags);
+        deepUpdate = vNodeUpdateComponents(p, children as VNode, context, syncFlags);
       }
     } else {
       stackTracePushComponent(vnode);
@@ -465,7 +465,7 @@ function vNodeUpdateComponents(
         const component = vnode._instance as Component<any>;
 
         const cflags = component.flags;
-        const oldRoot = vnode._children as VNode<any>;
+        const oldRoot = vnode._children as VNode;
         if ((cflags & ComponentFlags.Dirty) !== 0) {
           componentPerfMarkBegin("update", vnode);
           const newRoot = vnode._children = component.render();
@@ -490,7 +490,7 @@ function vNodeUpdateComponents(
           if (prevSelectData === selectData) {
             deepUpdate = vNodeUpdateComponents(
               parent,
-              prevChildren as VNode<any>,
+              prevChildren as VNode,
               context,
               syncFlags,
             );
@@ -500,8 +500,8 @@ function vNodeUpdateComponents(
             vnode._instance = selectData;
             vNodeSync(
               parent,
-              prevChildren as VNode<any>,
-              vnode._children as VNode<any>,
+              prevChildren as VNode,
+              vnode._children as VNode,
               context,
               syncFlags,
             );
@@ -516,7 +516,7 @@ function vNodeUpdateComponents(
           }
           deepUpdate = vNodeUpdateComponents(
             parent,
-            vnode._children as VNode<any>,
+            vnode._children as VNode,
             context,
             syncFlags,
           );
@@ -535,7 +535,7 @@ function vNodeUpdateComponents(
  * @param node VNode element to move.
  * @param nextRef Reference to the next node, if it is null, node will be moved to the end.
  */
-function vNodeMoveChild(parent: Node, node: VNode<any>, nextRef: Node | null): void {
+function vNodeMoveChild(parent: Node, node: VNode, nextRef: Node | null): void {
   nodeInsertBefore(parent, getDOMInstanceFromVNode(node)!, nextRef!);
 }
 
@@ -547,7 +547,7 @@ function vNodeMoveChild(parent: Node, node: VNode<any>, nextRef: Node | null): v
  * @param parent Parent DOM node.
  * @param nodes Arrays of VNodes to remove.
  */
-function vNodeRemoveAllChildren(parent: Node, nodes: VNode<any>[], syncFlags: SyncFlags): void {
+function vNodeRemoveAllChildren(parent: Node, nodes: VNode[], syncFlags: SyncFlags): void {
   parent.textContent = "";
   vNodeDetachAll(nodes, syncFlags | SyncFlags.Dispose);
 }
@@ -560,7 +560,7 @@ function vNodeRemoveAllChildren(parent: Node, nodes: VNode<any>[], syncFlags: Sy
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
  */
-function vNodeRemoveChild(parent: Node, node: VNode<any>, syncFlags: SyncFlags): void {
+function vNodeRemoveChild(parent: Node, node: VNode, syncFlags: SyncFlags): void {
   nodeRemoveChild(parent, getDOMInstanceFromVNode(node)!);
   vNodeDetach(node, syncFlags | SyncFlags.Dispose);
 }
@@ -591,7 +591,7 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
  */
 function vNodeRender(
   parent: Node,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
 ): Node {
   if (DEV) {
@@ -667,13 +667,13 @@ function vNodeRender(
           if ((flags & VNodeFlags.ChildrenBasic) !== 0) {
             node.textContent = children as string;
           } else {
-            children = children as VNode<any>[];
+            children = children as VNode[];
             for (i = 0; i < children.length; ++i) {
               nodeInsertBefore(node, vNodeRender(node, children[i], context), null);
             }
           }
         } else if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-          nodeInsertBefore(node, vNodeRender(node, children as VNode<any>, context), null);
+          nodeInsertBefore(node, vNodeRender(node, children as VNode, context), null);
         } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
           /**
            * #quirks
@@ -708,16 +708,16 @@ function vNodeRender(
         if (prev !== null) {
           vNodeSync(
             parent,
-            prev as VNode<any>,
-            vnode._children as VNode<any>,
+            prev as VNode,
+            vnode._children as VNode,
             context,
             SyncFlags.DirtyContext,
           );
-          node = getDOMInstanceFromVNode(vnode._children as VNode<any>)!;
+          node = getDOMInstanceFromVNode(vnode._children as VNode)!;
         } else {
           node = vNodeRender(
             parent,
-            vnode._children as VNode<any>,
+            vnode._children as VNode,
             context,
           );
         }
@@ -736,7 +736,7 @@ function vNodeRender(
         }
         node = vNodeRender(
           parent,
-          vnode._children as VNode<any>,
+          vnode._children as VNode,
           context,
         );
         if (DEV) {
@@ -770,7 +770,7 @@ function vNodeRender(
 function vNodeRenderIntoAndAttach(
   parent: Node,
   refChild: Node | null,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
   syncFlags: SyncFlags,
 ): Node {
@@ -795,7 +795,7 @@ function vNodeRenderIntoAndAttach(
 function vNodeAugment(
   parent: Node,
   node: Node | null,
-  vnode: VNode<any>,
+  vnode: VNode,
   context: Context,
 ): void {
   if (DEV) {
@@ -849,7 +849,7 @@ function vNodeAugment(
           if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
             let domChild = node.firstChild;
             if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-              const children = vnode._children as VNode<any>[];
+              const children = vnode._children as VNode[];
               for (let i = 0; i < children.length; ++i) {
                 if (DEV) {
                   if (domChild === null) {
@@ -874,7 +874,7 @@ function vNodeAugment(
                   throw new Error(`Invalid children: document contains more children nodes than expected.`);
                 }
               }
-              vNodeAugment(node, domChild, vnode._children as VNode<any>, context);
+              vNodeAugment(node, domChild, vnode._children as VNode, context);
             }
           }
         } else { // (flags & VNodeFlags.Text)
@@ -922,15 +922,15 @@ function vNodeAugment(
             } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
               context = instance = Object.assign({}, context, vnode._props);
             }
-            vNodeAugment(parent, node, vnode._children as VNode<any>, context);
+            vNodeAugment(parent, node, vnode._children as VNode, context);
           } else {
             const fc = vnode._tag as StatelessComponent<any>;
             vnode._children = fc(vnode._props);
             if (fc.shouldAugment === undefined ||
               fc.shouldAugment(vnode._props) === true) {
-              vNodeAugment(parent, node, vnode._children as VNode<any>, context);
+              vNodeAugment(parent, node, vnode._children as VNode, context);
             } else {
-              nodeReplaceChild(parent, vNodeRender(parent, vnode._children as VNode<any>, context), node);
+              nodeReplaceChild(parent, vNodeRender(parent, vnode._children as VNode, context), node);
             }
           }
         }
@@ -956,7 +956,7 @@ function vNodeAugment(
  * @param b New VNode.
  * @returns true if nodes can be synced.
  */
-function vNodeCanSync(a: VNode<any>, b: VNode<any>): boolean {
+function vNodeCanSync(a: VNode, b: VNode): boolean {
   return (
     (((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0) &&
     a._tag === b._tag &&
@@ -971,7 +971,7 @@ function vNodeCanSync(a: VNode<any>, b: VNode<any>): boolean {
  * @param b VNode.
  * @returns true if nodes has equal keys.
  */
-function vNodeEqualKeys(a: VNode<any>, b: VNode<any>): boolean {
+function vNodeEqualKeys(a: VNode, b: VNode): boolean {
   return (
     (a._key === b._key) &&
     ((a._flags ^ b._flags) & VNodeFlags.Key) === 0
@@ -992,8 +992,8 @@ function vNodeEqualKeys(a: VNode<any>, b: VNode<any>): boolean {
  */
 function vNodeSync(
   parent: Node,
-  a: VNode<any>,
-  b: VNode<any>,
+  a: VNode,
+  b: VNode,
   context: Context,
   syncFlags: SyncFlags,
 ): void {
@@ -1047,8 +1047,8 @@ function vNodeSync(
             instance as Element,
             a._flags,
             bFlags,
-            a._children as VNode<any>[] | VNode<any> | string | number | boolean,
-            b._children as VNode<any>[] | VNode<any> | string | number | boolean,
+            a._children as VNode[] | VNode | string | number | boolean,
+            b._children as VNode[] | VNode | string | number | boolean,
             context,
             syncFlags,
           );
@@ -1074,7 +1074,7 @@ function vNodeSync(
         // in memory two values even when they are the same, we just always reassign it to the new value.
         component.props = newProps;
 
-        const oldRoot = a._children as VNode<any>;
+        const oldRoot = a._children as VNode;
         if ((propsChanged | (component.flags & ComponentFlags.Dirty)) !== 0) {
           componentPerfMarkBegin("update", a);
           const newRoot = b._children = component.render();
@@ -1110,8 +1110,8 @@ function vNodeSync(
               b._children = connect.render(selectData.out);
               vNodeSync(
                 parent,
-                a._children as VNode<any>,
-                b._children as VNode<any>,
+                a._children as VNode,
+                b._children as VNode,
                 context,
                 syncFlags,
               );
@@ -1129,8 +1129,8 @@ function vNodeSync(
             }
             vNodeSync(
               parent,
-              a._children as VNode<any>,
-              b._children as VNode<any>,
+              a._children as VNode,
+              b._children as VNode,
               context,
               syncFlags,
             );
@@ -1141,13 +1141,13 @@ function vNodeSync(
             ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && fn.isPropsChanged!(a._props, b._props) === true)
           ) {
             componentPerfMarkBegin("update", b);
-            const oldRoot = a._children as VNode<any>;
+            const oldRoot = a._children as VNode;
             const newRoot = b._children = fn(b._props);
             vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
             componentPerfMarkEnd("update", b);
           } else {
             b._children = a._children;
-            vNodeUpdateComponents(parent, b._children as VNode<any>, context, syncFlags);
+            vNodeUpdateComponents(parent, b._children as VNode, context, syncFlags);
           }
         }
       }
@@ -1178,8 +1178,8 @@ function syncChildren(
   parent: Node,
   aParentFlags: VNodeFlags,
   bParentFlags: VNodeFlags,
-  a: VNode<any>[] | VNode<any> | string | number | boolean,
-  b: VNode<any>[] | VNode<any> | string | number | boolean,
+  a: VNode[] | VNode | string | number | boolean,
+  b: VNode[] | VNode | string | number | boolean,
   context: Context,
   syncFlags: SyncFlags,
 ): void {
@@ -1192,13 +1192,13 @@ function syncChildren(
       if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0) {
         parent.textContent = b as string;
       } else {
-        b = b as VNode<any>[];
+        b = b as VNode[];
         for (; i < b.length; ++i) {
           vNodeRenderIntoAndAttach(parent, null, b[i], context, syncFlags);
         }
       }
     } else if ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-      vNodeRenderIntoAndAttach(parent, null, b as VNode<any>, context, syncFlags);
+      vNodeRenderIntoAndAttach(parent, null, b as VNode, context, syncFlags);
     } else if ((bParentFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
       setHTMLInputValue(parent as HTMLInputElement, b as string | boolean);
     } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
@@ -1210,9 +1210,9 @@ function syncChildren(
     if ((aParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
       parent.textContent = "";
     } else if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-      vNodeRemoveAllChildren(parent, a as VNode<any>[], syncFlags);
+      vNodeRemoveAllChildren(parent, a as VNode[], syncFlags);
     } else if ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-      vNodeRemoveChild(parent, a as VNode<any>, syncFlags);
+      vNodeRemoveChild(parent, a as VNode, syncFlags);
     } else { // (bParentFlags & VNodeFlags.InputElement)
       /**
        * When value/checked isn't specified, we should just ignore it.
@@ -1238,16 +1238,16 @@ function syncChildren(
       } else {
         parent.textContent = "";
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-          b = b as VNode<any>[];
+          b = b as VNode[];
           for (; i < b.length; ++i) {
             vNodeRenderIntoAndAttach(parent, null, b[i], context, syncFlags);
           }
         } else {
-          vNodeRenderIntoAndAttach(parent, null, b as VNode<any>, context, syncFlags);
+          vNodeRenderIntoAndAttach(parent, null, b as VNode, context, syncFlags);
         }
       }
     } else if ((aParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-      a = a as VNode<any>[];
+      a = a as VNode[];
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0 || !b) {
           parent.textContent = b as string;
@@ -1256,9 +1256,9 @@ function syncChildren(
         }
         vNodeDetachAll(a, syncFlags | SyncFlags.Dispose);
       } else if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-        syncChildrenTrackByKeys(parent, a, b as VNode<any>[], context, syncFlags);
+        syncChildrenTrackByKeys(parent, a, b as VNode[], context, syncFlags);
       } else {
-        b = b as VNode<any>;
+        b = b as VNode;
         synced = -1;
         for (i = 0; i < a.length; ++i) {
           node = a[i];
@@ -1281,7 +1281,7 @@ function syncChildren(
         }
       }
     } else if ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-      a = a as VNode<any>;
+      a = a as VNode;
       if ((bParentFlags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0) {
         if ((bParentFlags & VNodeFlags.ChildrenBasic) !== 0 || !b) {
           parent.textContent = b as string;
@@ -1290,7 +1290,7 @@ function syncChildren(
         }
         vNodeDetach(a, syncFlags | SyncFlags.Dispose);
       } else if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
-        b = b as VNode<any>[];
+        b = b as VNode[];
         synced = -1;
         for (i = 0; i < b.length; ++i) {
           node = b[i];
@@ -1315,7 +1315,7 @@ function syncChildren(
           }
         }
       } else {
-        vNodeSync(parent, a, b as VNode<any>, context, syncFlags);
+        vNodeSync(parent, a, b as VNode, context, syncFlags);
       }
     } else { // (aParentFlags & VNodeFlags.InputElement)
       /**
@@ -1571,8 +1571,8 @@ function syncChildren(
  */
 function syncChildrenTrackByKeys(
   parent: Node,
-  a: VNode<any>[],
-  b: VNode<any>[],
+  a: VNode[],
+  b: VNode[],
   context: Context,
   syncFlags: SyncFlags,
 ): void {
@@ -1588,9 +1588,9 @@ function syncChildrenTrackByKeys(
   let j: number | undefined;
   let k: number;
   let next: Node | null;
-  let aNode: VNode<any> | null;
-  let bNode: VNode<any>;
-  let node: VNode<any>;
+  let aNode: VNode | null;
+  let bNode: VNode;
+  let node: VNode;
 
   // Step 1
   outer: while (true) {
@@ -1640,7 +1640,7 @@ function syncChildrenTrackByKeys(
     const aLength = aEnd - aStart + 1;
     const bLength = bEnd - bStart + 1;
 
-    const aNullable = a as Array<VNode<any> | null>; // will be removed by js optimizing compilers.
+    const aNullable = a as Array<VNode | null>; // will be removed by js optimizing compilers.
     // Mark all nodes as inserted.
     const sources = new Array<number>(bLength).fill(-1);
 

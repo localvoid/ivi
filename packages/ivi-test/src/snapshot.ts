@@ -28,7 +28,7 @@ export const enum SnapshotFlags {
  * @param flags See `SnapshotFlags` for details.
  * @returns Snapshot string.
  */
-export function toSnapshot(vnode: VNode<any>, flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
+export function toSnapshot(vnode: VNode, flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
   return _toSnapshot(0, vnode, flags);
 }
 
@@ -118,7 +118,7 @@ function renderEventsToSnapshot(il: number, events: { [key: string]: any }): str
  */
 function _toSnapshot(
   il: number,
-  vnode: VNode<any>,
+  vnode: VNode,
   sFlags: SnapshotFlags,
 ): string {
   const flags = vnode._flags;
@@ -178,12 +178,12 @@ function _toSnapshot(
       if (vnode._children !== null) {
         if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
           if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-            const children = vnode._children as VNode<any>[];
+            const children = vnode._children as VNode[];
             for (let i = 0; i < children.length; ++i) {
               childrenString += `\n${_toSnapshot(il + 1, children[i], sFlags)}`;
             }
           } else {
-            childrenString = `\n${_toSnapshot(il + 1, vnode._children as VNode<any>, sFlags)}`;
+            childrenString = `\n${_toSnapshot(il + 1, vnode._children as VNode, sFlags)}`;
           }
         } else {
           if ((flags & VNodeFlags.InputElement) !== 0) {
@@ -223,7 +223,7 @@ function _toSnapshot(
           return `${indent(il)}<${componentName} />`;
         } else {
           let result = `${indent(il)}<${componentName}>`;
-          result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+          result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
           result += `${indent(il)}</${componentName}>`;
           return result;
         }
@@ -236,7 +236,7 @@ function _toSnapshot(
               return `${indent(il)}<Connect />`;
             } else {
               let result = `${indent(il)}<Connect>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
               result += `\n${indent(il)}</Connect>`;
               return result;
             }
@@ -247,7 +247,7 @@ function _toSnapshot(
               return `${indent(il)}<UpdateContext />`;
             } else {
               let result = `${indent(il)}<UpdateContext>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
               result += `\n${indent(il)}</UpdateContext>`;
               return result;
             }
@@ -260,7 +260,7 @@ function _toSnapshot(
               return `${indent(il)}<KeepAlive />`;
             } else {
               let result = `${indent(il)}<KeepAlive>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
               result += `\n${indent(il)}</KeepAlive>`;
               return result;
             }
@@ -272,7 +272,7 @@ function _toSnapshot(
               return `${indent(il)}<${componentName} />`;
             } else {
               let result = `${indent(il)}<${componentName}>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
               result += `${indent(il)}</${componentName}>`;
               return result;
             }
@@ -280,7 +280,7 @@ function _toSnapshot(
         }
       }
       if (vnode._children !== null) {
-        return _toSnapshot(il + 1, vnode._children as VNode<any>, sFlags);
+        return _toSnapshot(il + 1, vnode._children as VNode, sFlags);
       }
     }
   }

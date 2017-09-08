@@ -13,7 +13,7 @@ import {
   HTMLSelectElementProps, HTMLSourceElementProps, HTMLSpanElementProps, HTMLStyleElementProps,
   HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
   HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
-  HTMLTrackElementProps, HTMLUListElementProps, HTMLUnknownElementProps, HTMLVideoElementProps,
+  HTMLTrackElementProps, HTMLUListElementProps, HTMLVideoElementProps,
   MSHTMLWebViewElementProps,
 
   SVGCircleElementProps, SVGClipPathElementProps, SVGDefsElementProps, SVGDescElementProps, SVGEllipseElementProps,
@@ -613,16 +613,6 @@ export function ins(className?: string): VNode<HTMLModElementProps | null> {
     "</ins>",
   );
 }
-export function isindex(className?: string): VNode<HTMLUnknownElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element,
-    "<isindex",
-    null,
-    className === undefined ? null : className,
-    null,
-    "</isindex>",
-  );
-}
 export function kbd(className?: string): VNode<HTMLElementProps | null> {
   return new VNode(
     VNodeFlags.Element,
@@ -761,16 +751,6 @@ export function nav(className?: string): VNode<HTMLElementProps | null> {
     className === undefined ? null : className,
     null,
     "</nav>",
-  );
-}
-export function nextid(className?: string): VNode<HTMLUnknownElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element,
-    "<nextid",
-    null,
-    className === undefined ? null : className,
-    null,
-    "</nextid>",
   );
 }
 export function nobr(className?: string): VNode<HTMLElementProps | null> {

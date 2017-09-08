@@ -9,7 +9,7 @@ import { VNode } from "./vnode";
  * Stateless Component function.
  */
 export interface StatelessComponent<P = void> {
-  (props: P): VNode<any>;
+  (props: P): VNode;
   isPropsChanged?: (oldProps: P, newProps: P) => boolean;
   shouldAugment?: (props: P) => boolean;
 }
@@ -132,7 +132,7 @@ export abstract class Component<P = void> {
     /* tslint:enable:no-empty */
   }
 
-  abstract render(): VNode<any>;
+  abstract render(): VNode;
 
   /**
    * Invalidate view.

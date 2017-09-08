@@ -9,7 +9,7 @@ export function frag() {
   return document.createDocumentFragment();
 }
 
-export function checkRefs(n: Node, v: VNode<any>) {
+export function checkRefs(n: Node, v: VNode) {
   const flags = v._flags;
 
   expect(getDOMInstanceFromVNode(v)).toBe(n);
@@ -17,12 +17,12 @@ export function checkRefs(n: Node, v: VNode<any>) {
   if (flags & VNodeFlags.Component) {
     if (flags & VNodeFlags.ComponentClass) {
       expect(getDOMInstanceFromVNode(v)).toBe(n);
-      const root = v._children as VNode<any>;
+      const root = v._children as VNode;
       if (root) {
         checkRefs(n, root);
       }
     } else {
-      const root = v._children as VNode<any>;
+      const root = v._children as VNode;
       if (root) {
         checkRefs(n, root);
       }
@@ -35,9 +35,9 @@ export function checkRefs(n: Node, v: VNode<any>) {
     }
     while (child) {
       if (flags & VNodeFlags.ChildrenArray) {
-        checkRefs(child, (v._children as VNode<any>[])[i++]);
+        checkRefs(child, (v._children as VNode[])[i++]);
       } else if (flags & VNodeFlags.ChildrenVNode) {
-        checkRefs(child, v._children as VNode<any>);
+        checkRefs(child, v._children as VNode);
         expect(child.nextSibling).toBeNull();
       }
       child = child.nextSibling;
@@ -46,11 +46,11 @@ export function checkRefs(n: Node, v: VNode<any>) {
 }
 
 export function startRender(
-  fn: (render: (n: VNode<any>) => Node) => void,
+  fn: (render: (n: VNode) => Node) => void,
   container?: Element | DocumentFragment,
   disableCheckRefs?: boolean,
 ): void {
-  function r(n: VNode<any>): Node {
+  function r(n: VNode): Node {
     return render(n, container, disableCheckRefs);
   }
 
@@ -62,7 +62,7 @@ export function startRender(
 }
 
 export function render<T extends Node>(
-  node: VNode<any>,
+  node: VNode,
   container?: Element | DocumentFragment,
   disableCheckRefs?: boolean,
 ): T {
@@ -70,7 +70,7 @@ export function render<T extends Node>(
     container = document.createDocumentFragment();
   }
 
-  const oldRoot = (container as any).__ivi_root as VNode<any> | undefined;
+  const oldRoot = (container as any).__ivi_root as VNode | undefined;
   (container as any).__ivi_root = node;
   if (oldRoot) {
     syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, SyncFlags.Attached);
@@ -87,7 +87,7 @@ export function render<T extends Node>(
   return result;
 }
 
-export function augment(node: VNode<any>, innerHTML: string, container?: Element): Element {
+export function augment(node: VNode, innerHTML: string, container?: Element): Element {
   if (!container) {
     container = document.createElement("div");
   }

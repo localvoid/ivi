@@ -5,8 +5,8 @@ import * as h from "./utils/html";
 import { expect } from "iko";
 
 function pooledKeepAlive(maxItems = 1) {
-  const pool = [] as VNode<any>[];
-  function handler(disposed: VNode<any>) {
+  const pool = [] as VNode[];
+  function handler(disposed: VNode) {
     if (disposed) {
       if (pool.length >= maxItems) {
         return null;
@@ -19,7 +19,7 @@ function pooledKeepAlive(maxItems = 1) {
     }
     return null;
   }
-  return function $ka(child: VNode<any>) {
+  return function $ka(child: VNode) {
     return keepAlive(handler, child);
   };
 }

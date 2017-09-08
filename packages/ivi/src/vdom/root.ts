@@ -10,8 +10,8 @@ import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } f
  */
 export interface Root {
   container: Element;
-  currentVNode: VNode<any> | null;
-  newVNode: VNode<any> | null;
+  currentVNode: VNode | null;
+  newVNode: VNode | null;
   invalidated: boolean;
 }
 
@@ -111,7 +111,7 @@ function _update() {
  * @param container DOM Node that will contain rendered node.
  */
 export function render(
-  node: VNode<any> | null,
+  node: VNode | null,
   container: Element,
 ): void {
   renderNextFrame(node, container);
@@ -125,7 +125,7 @@ export function render(
  * @param container DOM Node that will contain rendered node.
  */
 export function renderNextFrame(
-  node: VNode<any> | null,
+  node: VNode | null,
   container: Element,
 ): void {
   if (DEV) {
@@ -187,7 +187,7 @@ export function updateNextFrame() {
  * @param container Container DOM Node.
  */
 export function augment(
-  node: VNode<any> | null,
+  node: VNode | null,
   container: Element,
 ): void {
   if (DEV) {

@@ -11,14 +11,14 @@ import { KeepAliveHandler } from "./keep_alive";
 /**
  * Virtual DOM Node.
  *
- *     const vnode = html.div("div-class-name")
- *         .props({ id: "div-id" })
+ *     const vnode = h.div("div-class-name")
+ *         .attrs({ id: "div-id" })
  *         .events(Events.onClick((e) => console.log("click event", e)))
  *         .children("Hello");
  *
  * @final
  */
-export class VNode<P = null> {
+export class VNode<P = any, N = Node> {
   /**
    * Flags, see `VNodeFlags` for details.
    */
@@ -32,7 +32,7 @@ export class VNode<P = null> {
    *
    * Components should contain virtual root nodes.
    */
-  _children: VNode<any>[] | VNode<any> | string | number | boolean | null;
+  _children: VNode[] | VNode | string | number | boolean | null;
   /**
    * Tag property contains details about the type of the element.
    *
@@ -59,7 +59,7 @@ export class VNode<P = null> {
    * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
    * time VNode is synced, reference will be transferred from the old VNode to the new one.
    */
-  _instance: Node | Component<any> | SelectorData | Context | null;
+  _instance: N | Component<any> | SelectorData | Context | null;
   /**
    * Class name.
    */
@@ -72,6 +72,10 @@ export class VNode<P = null> {
    * Events.
    */
   _events: Array<EventHandler | null> | EventHandler | null;
+  /**
+   * Workaround to get rid of unused property error.
+   */
+  protected $$nodeType?: N;
 
   constructor(
     flags: number,
@@ -85,8 +89,8 @@ export class VNode<P = null> {
     props: P | null,
     className: string | null,
     children:
-      | VNode<any>[]
-      | VNode<any>
+      | VNode[]
+      | VNode
       | string
       | number
       | boolean
@@ -161,7 +165,7 @@ export class VNode<P = null> {
    * @param attrs DOM attributes.
    * @returns VNode
    */
-  attrs(attrs: { [key: string]: any } | null): this {
+  attrs(attrs: P | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set attrs, attrs are available on element nodes only.");
@@ -187,7 +191,7 @@ export class VNode<P = null> {
    *   strings with text nodes.
    * @returns VNode
    */
-  children(...children: Array<VNode<any>[] | VNode<any> | string | number | null>): this;
+  children(...children: Array<VNode[] | VNode | string | number | null>): this;
   children(): this {
     if (DEV) {
       if (this._flags &
@@ -218,11 +222,11 @@ export class VNode<P = null> {
     let f = 0;
     let r = null;
     if (children.length === 1) {
-      r = children[0] as VNode<any>[] | VNode<any> | string | number | null;
+      r = children[0] as VNode[] | VNode | string | number | null;
       if (typeof r === "object") {
         if (r !== null) {
           if (r.constructor === Array) {
-            r = r as VNode<any>[];
+            r = r as VNode[];
             if (r.length > 1) {
               f = VNodeFlags.ChildrenArray;
             } else if (r.length === 1) {
@@ -291,10 +295,10 @@ export class VNode<P = null> {
                           " array should have explicit keys.");
                       }
                     }
-                    r[k++] = c[j] as VNode<any>;
+                    r[k++] = c[j] as VNode;
                   }
                 } else {
-                  r[k++] = c as VNode<any>;
+                  r[k++] = c as VNode;
                   if ((c._flags & VNodeFlags.Key) === 0) {
                     c._key = i;
                   }
@@ -401,7 +405,7 @@ export class VNode<P = null> {
   }
 }
 
-export type Children = Array<VNode<any>[] | VNode<any> | string | number | boolean | null>;
+export type Children = Array<VNode[] | VNode | string | number | boolean | null>;
 
 /**
  * changeClassName assigns className for an Element node.
@@ -425,7 +429,7 @@ export function changeClassName<P>(node: VNode, className: string | null): VNode
  * @param attrs
  * @return VNode
  */
-export function mergeAttrs<P>(node: VNode<P>, attrs: { [key: string]: any } | null): VNode<P> {
+export function mergeAttrs<P>(node: VNode<P>, attrs: P | null): VNode<P> {
   if (attrs !== null) {
     return node.attrs(
       node._props === null ?
@@ -467,9 +471,9 @@ export function mergeStyle<P, U extends CSSStyleProps>(node: VNode<P>, style: U 
  * @param node VNode which contains reference to a DOM node.
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
-export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | null {
+export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T | null {
   if ((node._flags & VNodeFlags.Component) !== 0) {
-    return getDOMInstanceFromVNode<T>(node._children as VNode<any>);
+    return getDOMInstanceFromVNode<T>(node._children as VNode<any, T>);
   }
   return node._instance as T;
 }
@@ -480,7 +484,7 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any>): T | n
  * @param node VNode which contains reference to a Component instance.
  * @returns null if VNode doesn't have a reference to a Component instance.
  */
-export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode<any>): T | null {
+export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode): T | null {
   if (DEV) {
     if ((node._flags & VNodeFlags.Component) === 0) {
       throw new Error("Failed to get component instance: VNode should represent a Component.");
@@ -495,7 +499,7 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
  * @param node VNode.
  * @returns `true` when VNode is a Text node.
  */
-export function isTextVNode(node: VNode<any>): boolean {
+export function isTextVNode(node: VNode): boolean {
   return (node._flags & VNodeFlags.Text) !== 0;
 }
 
@@ -505,7 +509,7 @@ export function isTextVNode(node: VNode<any>): boolean {
  * @param node VNode.
  * @returns `true` when VNode is an Element node.
  */
-export function isElementVNode(node: VNode<any>): boolean {
+export function isElementVNode(node: VNode): boolean {
   return (node._flags & VNodeFlags.Element) !== 0;
 }
 
@@ -515,7 +519,7 @@ export function isElementVNode(node: VNode<any>): boolean {
  * @param node VNode.
  * @returns `true` when VNode is a Component node.
  */
-export function isComponentVNode(node: VNode<any>): boolean {
+export function isComponentVNode(node: VNode): boolean {
   return (node._flags & VNodeFlags.Component) !== 0;
 }
 
@@ -525,7 +529,7 @@ export function isComponentVNode(node: VNode<any>): boolean {
  * @param node VNode.
  * @returns `key` property.
  */
-export function getKeyFromVNode<T = any>(node: VNode<any>): T {
+export function getKeyFromVNode<T = any>(node: VNode): T {
   return node._key;
 }
 
@@ -535,7 +539,7 @@ export function getKeyFromVNode<T = any>(node: VNode<any>): T {
  * @param node VNode.
  * @returns `className` property.
  */
-export function getElementClassNameFromVNode(node: VNode<any>): string | null {
+export function getElementClassNameFromVNode(node: VNode): string | null {
   return node._className;
 }
 
@@ -555,7 +559,7 @@ export function getElementPropsFromVNode<P>(node: VNode<P>): P | null {
  * @param node VNode.
  * @returns `style` property.
  */
-export function getElementStyleFromVNode(node: VNode<any>): CSSStyleProps | null {
+export function getElementStyleFromVNode(node: VNode): CSSStyleProps | null {
   return node._style;
 }
 
@@ -565,12 +569,12 @@ export function getElementStyleFromVNode(node: VNode<any>): CSSStyleProps | null
  * @param node VNode.
  * @returns VNode.
  */
-export function disableDirtyCheck<N extends VNode<any>>(node: N): N {
+export function disableDirtyCheck<N extends VNode>(node: N): N {
   node._flags |= VNodeFlags.DisabledDirtyCheck;
   return node;
 }
 
-function checkUniqueKeys(children: VNode<any>[]): void {
+function checkUniqueKeys(children: VNode[]): void {
   if (DEV) {
     let keys: Set<any> | undefined;
     for (let i = 0; i < children.length; ++i) {
