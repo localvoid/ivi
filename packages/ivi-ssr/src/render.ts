@@ -14,9 +14,7 @@ import { escapeAttributeValue, escapeText } from "./escape";
 function renderElementAttrs(attrs: { [key: string]: string }): string {
   let result = "";
 
-  const keys = Object.keys(attrs);
-  for (let i = 0; i < keys.length; ++i) {
-    const key = keys[i];
+  for (const key in attrs) {
     const value = attrs[key];
     if (typeof value !== "boolean") {
       if (value !== null) {
@@ -39,15 +37,9 @@ function renderElementAttrs(attrs: { [key: string]: string }): string {
  * @returns Element styles in string format.
  */
 function renderElementStyle(style: { [key: string]: any }): string {
-  const keys = Object.keys(style);
-  if (keys.length === 0) {
-    return "";
-  }
-
   let result = ` style="`;
   let semicolon = false;
-  for (let i = 0; i < keys.length; ++i) {
-    const key = keys[i];
+  for (const key in style) {
     const value = style[key];
     if (semicolon === true) {
       result += ";";
@@ -55,6 +47,10 @@ function renderElementStyle(style: { [key: string]: any }): string {
       semicolon = true;
     }
     result += `${key}:${escapeAttributeValue(value)}`;
+  }
+
+  if (semicolon === false) {
+    return "";
   }
 
   return `${result}"`;
