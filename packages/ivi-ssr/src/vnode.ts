@@ -465,7 +465,7 @@ export class VNode<P = null> {
   }
 }
 
-export type Children = Array<VNode<any>[] | VNode<any> | string | number | boolean | null>;
+export type Children = Array<VNode<any>[] | VNode<any> | string | number | null>;
 
 /**
  * changeClassName assigns className for an Element node.
