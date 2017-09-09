@@ -35,7 +35,7 @@ export declare interface CSSStyleProps {
   /**
    * "visible" | "hidden"
    */
-  "backface-visibility"?: null;
+  "backface-visibility"?: string | null;
   "background"?: string | null;
   "background-attachment"?: string | null;
   /**
@@ -488,7 +488,7 @@ export declare interface NodeProps {
   [key: string]: any;
 }
 
-export declare interface AriaProps {
+export declare interface AriaAttrs {
   // Global States and Properties
   "aria-current"?: string | null;  // state
   "aria-details"?: string | null;
@@ -544,10 +544,7 @@ export declare interface AriaProps {
   "aria-setsize"?: string | null;
 }
 
-export declare interface GlobalEventHandlersProps {
-}
-
-export declare interface ElementProps extends NodeProps, GlobalEventHandlersProps {
+export declare interface ElementProps extends NodeProps {
   id?: string;
   msContentZoomFactor?: number;
   scrollLeft?: number;
@@ -562,15 +559,12 @@ export declare interface HTMLElementProps extends ElementProps {
   hidden?: boolean;
   hideFocus?: boolean;
   lang?: string;
-  outerHTML?: string;
-  outerText?: string;
   spellcheck?: boolean;
   tabIndex?: number;
   title?: string;
 }
 
 export declare interface HTMLAnchorElementProps extends HTMLElementProps {
-  Methods?: string;
   /**
    * Sets or retrieves the character set used to encode the object.
    */
