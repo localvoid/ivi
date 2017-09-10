@@ -197,75 +197,77 @@ const MediaElements = [
   "video",
 ];
 
-it("text", () => {
-  const text = h.t("abc");
-  expect((text._flags & VNodeFlags.Text) !== 0).toBe(true);
-  expect(text._children).toBe("abc");
-});
-
-describe("elements", () => {
-  describe("tag name", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
-      it(`${name}`, () => {
-        const n = factory();
-        if ((n._flags & VNodeFlags.InputElement) === 0) {
-          expect(n._tag).toBe(name);
-        }
-      });
-    }
+describe("src/index.ts", () => {
+  it("text", () => {
+    const text = h.t("abc");
+    expect((text._flags & VNodeFlags.Text) !== 0).toBe(true);
+    expect(text._children).toBe("abc");
   });
 
-  describe("class name", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
-      it(`${name}`, () => {
-        const n = factory("abc");
-        expect(n._className).toBe("abc");
-      });
-    }
-  });
+  describe("elements", () => {
+    describe("tag name", () => {
+      for (const name of Object.keys(Elements)) {
+        const factory = Elements[name];
+        it(`${name}`, () => {
+          const n = factory();
+          if ((n._flags & VNodeFlags.InputElement) === 0) {
+            expect(n._tag).toBe(name);
+          }
+        });
+      }
+    });
 
-  describe("void elements", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
-      it(`${name}`, () => {
-        const n = factory();
-        if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
-        } else if (name in VoidElements) {
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
-        } else {
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(false);
-        }
-      });
-    }
-  });
+    describe("class name", () => {
+      for (const name of Object.keys(Elements)) {
+        const factory = Elements[name];
+        it(`${name}`, () => {
+          const n = factory("abc");
+          expect(n._className).toBe("abc");
+        });
+      }
+    });
 
-  describe("media elements", () => {
-    for (const name of MediaElements) {
-      const factory = Elements[name];
-      it(`${name}`, () => {
-        const n = factory();
-        expect((n._flags & VNodeFlags.MediaElement) !== 0).toBe(true);
-      });
-    }
-  });
+    describe("void elements", () => {
+      for (const name of Object.keys(Elements)) {
+        const factory = Elements[name];
+        it(`${name}`, () => {
+          const n = factory();
+          if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
+            expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+          } else if (name in VoidElements) {
+            expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+          } else {
+            expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(false);
+          }
+        });
+      }
+    });
 
-  describe("input elements", () => {
-    for (const type of InputTypes) {
-      const factory = Elements[`input:${type}`];
-      it(`input:${type}`, () => {
-        const n = factory();
-        expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
-        expect(n._tag).toBe(type);
-      });
-    }
-  });
+    describe("media elements", () => {
+      for (const name of MediaElements) {
+        const factory = Elements[name];
+        it(`${name}`, () => {
+          const n = factory();
+          expect((n._flags & VNodeFlags.MediaElement) !== 0).toBe(true);
+        });
+      }
+    });
 
-  it("textarea", () => {
-    const n = h.textarea();
-    expect((n._flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
-    expect(n._tag).toBe("textarea");
+    describe("input elements", () => {
+      for (const type of InputTypes) {
+        const factory = Elements[`input:${type}`];
+        it(`input:${type}`, () => {
+          const n = factory();
+          expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
+          expect(n._tag).toBe(type);
+        });
+      }
+    });
+
+    it("textarea", () => {
+      const n = h.textarea();
+      expect((n._flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
+      expect(n._tag).toBe("textarea");
+    });
   });
 });
