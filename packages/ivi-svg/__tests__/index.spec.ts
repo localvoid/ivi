@@ -193,6 +193,16 @@ describe("src/index.ts", () => {
     }
   });
 
+  describe("class name", () => {
+    for (const name of Object.keys(Elements)) {
+      const factory = Elements[name];
+      it(`${name}`, () => {
+        const n = factory("abc");
+        expect(n._className).toBe("abc");
+      });
+    }
+  });
+
   describe("svg flag", () => {
     for (const name of SvgElements) {
       const factory = Elements[name];
