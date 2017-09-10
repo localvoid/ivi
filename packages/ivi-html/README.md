@@ -1,6 +1,4 @@
-# VNode factories for HTML and SVG elements
-
-## HTML
+# VNode factories for HTML elements
 
 ```ts
 function a(className?: string): VNode<HTMLAnchorElementProps | null>;
@@ -125,7 +123,7 @@ function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | nul
 function xmp(className?: string): VNode<HTMLPreElementProps | null>;
 ```
 
-### Input Elements
+## Input Elements
 
 ```ts
 function inputButton(className?: string): VNode<HTMLInputElementProps | null>;
@@ -151,61 +149,4 @@ function inputText(className?: string): VNode<HTMLInputElementProps | null>;
 function inputTime(className?: string): VNode<HTMLInputElementProps | null>;
 function inputUrl(className?: string): VNode<HTMLInputElementProps | null>;
 function inputWeek(className?: string): VNode<HTMLInputElementProps | null>;
-```
-
-## SVG
-
-```ts
-function circle(className?: string): VNode<SVGCircleElementProps | null>;
-function clippath(className?: string): VNode<SVGClipPathElementProps | null>;
-function defs(className?: string): VNode<SVGDefsElementProps | null>;
-function desc(className?: string): VNode<SVGDescElementProps | null>;
-function ellipse(className?: string): VNode<SVGEllipseElementProps | null>;
-function feblend(className?: string): VNode<SVGFEBlendElementProps | null>
-function fecolormatrix(className?: string): VNode<SVGFEColorMatrixElementProps | null>;
-function fecomponenttransfer(className?: string): VNode<SVGFEComponentTransferElementProps | null>;
-function fecomposite(className?: string): VNode<SVGFECompositeElementProps | null>;
-function feconvolvematrix(className?: string): VNode<SVGFEConvolveMatrixElementProps | null>;
-function fediffuselighting(className?: string): VNode<SVGFEDiffuseLightingElementProps | null>;
-function fedisplacementmap(className?: string): VNode<SVGFEDisplacementMapElementProps | null>;
-function fedistantlight(className?: string): VNode<SVGFEDistantLightElementProps | null>;
-function feflood(className?: string): VNode<SVGFEFloodElementProps | null>;
-function fefunca(className?: string): VNode<SVGFEFuncAElementProps | null>;
-function fefuncb(className?: string): VNode<SVGFEFuncBElementProps | null>;
-function fefuncg(className?: string): VNode<SVGFEFuncGElementProps | null>;
-function fefuncr(className?: string): VNode<SVGFEFuncRElementProps | null>;
-function fegaussianblur(className?: string): VNode<SVGFEGaussianBlurElementProps | null>;
-function feimage(className?: string): VNode<SVGFEImageElementProps | null>;
-function femerge(className?: string): VNode<SVGFEMergeElementProps | null>;
-function femergenode(className?: string): VNode<SVGFEMergeNodeElementProps | null>;
-function femorphology(className?: string): VNode<SVGFEMorphologyElementProps | null>;
-function feoffset(className?: string): VNode<SVGFEOffsetElementProps | null>;
-function fepointlight(className?: string): VNode<SVGFEPointLightElementProps | null>;
-function fespecularlighting(className?: string): VNode<SVGFESpecularLightingElementProps | null>;
-function fespotlight(className?: string): VNode<SVGFESpotLightElementProps | null>;
-function fetile(className?: string): VNode<SVGFETileElementProps | null>;
-function feturbulence(className?: string): VNode<SVGFETurbulenceElementProps | null>;
-function filter(className?: string): VNode<SVGFilterElementProps | null>;
-function foreignobject(className?: string): VNode<SVGForeignObjectElementProps | null>;
-function g(className?: string): VNode<SVGGElementProps | null>;
-function image(className?: string): VNode<SVGImageElementProps | null>;
-function line(className?: string): VNode<SVGLineElementProps | null>;
-function lineargradient(className?: string): VNode<SVGLinearGradientElementProps | null>;
-function marker(className?: string): VNode<SVGMarkerElementProps | null>;
-function mask(className?: string): VNode<SVGMaskElementProps | null>;
-function metadata(className?: string): VNode<SVGMetadataElementProps | null>;
-function path(className?: string): VNode<SVGPathElementProps | null>;
-function pattern(className?: string): VNode<SVGPatternElementProps | null>;
-function polygon(className?: string): VNode<SVGPolygonElementProps | null>;
-function polyline(className?: string): VNode<SVGPolylineElementProps | null>;
-function radialgradient(className?: string): VNode<SVGRadialGradientElementProps | null>;
-function rect(className?: string): VNode<SVGRectElementProps | null>;
-function stop(className?: string): VNode<SVGStopElementProps | null>;
-function svg(className?: string): VNode<SVGSVGElementProps | null>;
-function symbol(className?: string): VNode<SVGSymbolElementProps | null>;
-function text(className?: string): VNode<SVGTextElementProps | null>;
-function textpath(className?: string): VNode<SVGTextPathElementProps | null>;
-function tspan(className?: string): VNode<SVGTSpanElementProps | null>;
-function use(className?: string): VNode<SVGUseElementProps | null>;
-function view(className?: string): VNode<SVGViewElementProps | null>;
 ```

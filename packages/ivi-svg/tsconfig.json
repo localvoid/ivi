@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "types": [
+      "mocha",
+      "node"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "__tests__/**/*.ts"
+  ]
+}

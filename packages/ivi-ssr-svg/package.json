@@ -1,5 +1,5 @@
 {
-  "name": "ivi-ssr-html",
+  "name": "ivi-ssr-svg",
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "serverModule": "dist/ssr/index.js",

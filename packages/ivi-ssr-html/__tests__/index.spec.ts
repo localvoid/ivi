@@ -120,59 +120,6 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "wbr": h.wbr,
   "x-ms-webview": h.x_ms_webview,
   "xmp": h.xmp,
-  // SVG Elements
-  "circle": h.circle,
-  "clippath": h.clippath,
-  "defs": h.defs,
-  "desc": h.desc,
-  "ellipse": h.ellipse,
-  "feblend": h.feblend,
-  "fecolormatrix": h.fecolormatrix,
-  "fecomponenttransfer": h.fecomponenttransfer,
-  "fecomposite": h.fecomposite,
-  "feconvolvematrix": h.feconvolvematrix,
-  "fediffuselighting": h.fediffuselighting,
-  "fedisplacementmap": h.fedisplacementmap,
-  "fedistantlight": h.fedistantlight,
-  "feflood": h.feflood,
-  "fefunca": h.fefunca,
-  "fefuncb": h.fefuncb,
-  "fefuncg": h.fefuncg,
-  "fefuncr": h.fefuncr,
-  "fegaussianblur": h.fegaussianblur,
-  "feimage": h.feimage,
-  "femerge": h.femerge,
-  "femergenode": h.femergenode,
-  "femorphology": h.femorphology,
-  "feoffset": h.feoffset,
-  "fepointlight": h.fepointlight,
-  "fespecularlighting": h.fespecularlighting,
-  "fespotlight": h.fespotlight,
-  "fetile": h.fetile,
-  "feturbulence": h.feturbulence,
-  "filter": h.filter,
-  "foreignobject": h.foreignobject,
-  "g": h.g,
-  "image": h.image,
-  "line": h.line,
-  "lineargradient": h.lineargradient,
-  "marker": h.marker,
-  "mask": h.mask,
-  "metadata": h.metadata,
-  "path": h.path,
-  "pattern": h.pattern,
-  "polygon": h.polygon,
-  "polyline": h.polyline,
-  "radialgradient": h.radialgradient,
-  "rect": h.rect,
-  "stop": h.stop,
-  "svg": h.svg,
-  "symbol": h.symbol,
-  "text": h.text,
-  "textpath": h.textpath,
-  "tspan": h.tspan,
-  "use": h.use,
-  "view": h.view,
   // Input Elements
   "input:button": h.inputButton,
   "input:checkbox": h.inputCheckbox,
@@ -250,61 +197,6 @@ const MediaElements = [
   "video",
 ];
 
-const SvgElements = [
-  "circle",
-  "clippath",
-  "defs",
-  "desc",
-  "ellipse",
-  "feblend",
-  "fecolormatrix",
-  "fecomponenttransfer",
-  "fecomposite",
-  "feconvolvematrix",
-  "fediffuselighting",
-  "fedisplacementmap",
-  "fedistantlight",
-  "feflood",
-  "fefunca",
-  "fefuncb",
-  "fefuncg",
-  "fefuncr",
-  "fegaussianblur",
-  "feimage",
-  "femerge",
-  "femergenode",
-  "femorphology",
-  "feoffset",
-  "fepointlight",
-  "fespecularlighting",
-  "fespotlight",
-  "fetile",
-  "feturbulence",
-  "filter",
-  "foreignobject",
-  "g",
-  "image",
-  "line",
-  "lineargradient",
-  "marker",
-  "mask",
-  "metadata",
-  "path",
-  "pattern",
-  "polygon",
-  "polyline",
-  "radialgradient",
-  "rect",
-  "stop",
-  "svg",
-  "symbol",
-  "text",
-  "textpath",
-  "tspan",
-  "use",
-  "view",
-];
-
 describe("src/index.ts", () => {
   it("text", () => {
     const text = h.t("abc");
@@ -361,16 +253,6 @@ describe("src/index.ts", () => {
           } else {
             expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(false);
           }
-        });
-      }
-    });
-
-    describe("svg elements", () => {
-      for (const name of SvgElements) {
-        const factory = Elements[name];
-        it(`${name}`, () => {
-          const n = factory();
-          expect((n._flags & VNodeFlags.SvgElement) !== 0).toBe(true);
         });
       }
     });

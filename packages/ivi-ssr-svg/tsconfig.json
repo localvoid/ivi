@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "sourceMap": true,
+    "inlineSourceMap": true,
+    "types": [
+      "mocha",
+      "node"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "__tests__/**/*.ts"
+  ]
+}

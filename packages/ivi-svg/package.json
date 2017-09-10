@@ -1,8 +1,7 @@
 {
-  "name": "ivi-ssr-html",
+  "name": "ivi-svg",
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
-  "serverModule": "dist/ssr/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.2.0",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
@@ -39,37 +38,21 @@
   ],
   "scripts": {
     "prepublish": "npm run dist",
-    "dist": "npm run dist:es6 && npm run dist:cjs && npm run dist:ssr",
+    "dist": "npm run dist:es6 && npm run dist:cjs",
     "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
-    "dist:ssr": "../../node_modules/.bin/tsc --project ./tsconfig.build.ssr.json",
-    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "../../node_modules/.bin/mocha --reporter mocha-iko-reporter -r ../../node_modules/ts-node/register __tests__/index.spec.ts",
-    "test:coverage": "../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.spec.ts"
-  },
-  "peerDependencies": {
-    "ivi-core": "^0.2.0",
-    "ivi-ssr": "^0.2.0"
+    "test": "../../node_modules/.bin/karma start --single-run",
+    "test:coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
+    "test:watch": "../../node_modules/.bin/karma start",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
   "dependencies": {},
+  "peerDependencies": {
+    "ivi-core": "^0.2.0",
+    "ivi": "^0.9.0"
+  },
   "devDependencies": {
     "ivi-core": "^0.2.0",
-    "ivi-ssr": "^0.2.0"
-  },
-  "nyc": {
-    "require": [
-      "../../node_modules/ts-node/register"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "reporter": [
-      "lcov",
-      "text-summary"
-    ],
-    "cache": true
+    "ivi": "^0.9.0"
   }
 }
