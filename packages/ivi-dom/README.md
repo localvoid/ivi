@@ -8,8 +8,7 @@
 function setInnerHTML(element: Element, content: string, isSVG: boolean): void;
 ```
 
-`setInnerHTML()` sets innerHTML propert for HTML and SVG elements in all supported browsers. IE doesn't support
-innerHTML on SVG elements.
+`setInnerHTML()` sets innerHTML property for HTML and SVG elements (IE doesn't have native innerHTML on SVG elements).
 
 ### KeyboardEvent
 
