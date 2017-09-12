@@ -17,14 +17,14 @@ export function accumulateDispatchTargetsFromElement(
   const events = getEventHandlersFromDOMNode(target);
   if (events !== null && events !== undefined) {
     let matches: EventHandler[] | EventHandler | undefined;
-    if (typeof events === "function") {
-      if (match(events) === true) {
-        matches = events;
+    if (events.constructor !== Array) {
+      if (match(events as EventHandler) === true) {
+        matches = events as EventHandler;
       }
     } else {
       let count = 0;
-      for (let i = 0; i < events.length; ++i) {
-        const h = events[i];
+      for (let i = 0; i < (events as Array<EventHandler | null>).length; ++i) {
+        const h = (events as Array<EventHandler | null>)[i];
         if (h !== null && match(h) === true) {
           if (count === 0) {
             matches = h;

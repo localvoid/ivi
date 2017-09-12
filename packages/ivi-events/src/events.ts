@@ -119,13 +119,14 @@ export function createEventHandler<E extends SyntheticNativeEvent<any>>(
   fn: (ev: E) => void,
   capture?: boolean,
 ): EventHandler<E> {
-  const handler = fn as EventHandler<E>;
-  handler.source = source;
-  handler.flags = capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble;
-  handler.listeners = 0;
-  handler.props = null;
-  handler.state = null;
-  return handler;
+  return {
+    source: source,
+    flags: capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble,
+    handler: fn,
+    listeners: 0,
+    props: null,
+    state: null,
+  };
 }
 
 export function onAbort(

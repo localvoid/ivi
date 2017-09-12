@@ -13,7 +13,7 @@ export interface DispatchTarget {
   /**
    * Matched Event Handlers.
    */
-  handlers: EventHandler | EventHandler<any>[];
+  handlers: EventHandler | EventHandler[];
 }
 
 /**
@@ -32,20 +32,20 @@ function dispatchEventToLocalEventHandlers(
 ): void {
   const handlers = target.handlers;
 
-  if (typeof handlers === "function") {
-    if ((handlers.flags & matchFlags) !== 0) {
+  if (handlers.constructor !== Array) {
+    if (((handlers as EventHandler).flags & matchFlags) !== 0) {
       if (dispatch === undefined) {
-        handlers(event);
+        (handlers as EventHandler).handler(event);
       } else {
-        dispatch(handlers, event);
+        dispatch((handlers as EventHandler), event);
       }
     }
   } else {
-    for (let j = 0; j < handlers.length; ++j) {
-      const handler = handlers[j];
+    for (let j = 0; j < (handlers as EventHandler[]).length; ++j) {
+      const handler = (handlers as EventHandler[])[j];
       if ((handler.flags & matchFlags) !== 0) {
         if (dispatch === undefined) {
-          handler(event);
+          handler.handler(event);
         } else {
           dispatch(handler, event);
         }

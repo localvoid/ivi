@@ -23,12 +23,13 @@ export function onPointer(
   flags?: GestureEventFlags,
   capture?: boolean,
 ): EventHandler<GesturePointerEvent> {
-  const handler = fn as EventHandler<GesturePointerEvent>;
-  handler.source = GestureEventSources.Pointer.eventSource;
-  handler.flags = (flags === undefined ? 0 : flags) |
-    (capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble);
-  handler.listeners = 0;
-  handler.props = null;
-  handler.state = null;
-  return fn as EventHandler<GesturePointerEvent>;
+  return {
+    source: GestureEventSources.Pointer.eventSource,
+    flags: (flags === undefined ? 0 : flags) |
+    (capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble),
+    handler: fn,
+    listeners: 0,
+    props: null,
+    state: null,
+  };
 }

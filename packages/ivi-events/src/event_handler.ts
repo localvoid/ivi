@@ -12,10 +12,6 @@ import { EventSource } from "./event_source";
  */
 export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = any> {
   /**
-   * Event Handler function call interface.
-   */
-  (ev: E): void;
-  /**
    * Reference to the event source that will dispatch events for this event handler.
    */
   source: EventSource;
@@ -23,6 +19,10 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any
    * See `EventHandlerFlags` for details.
    */
   flags: EventHandlerFlags;
+  /**
+   * Event Handler function call interface.
+   */
+  handler(ev: E): void;
   /**
    * Number of active listeners.
    */
