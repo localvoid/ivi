@@ -1642,7 +1642,7 @@ function syncChildrenTrackByKeys(
 
     const aNullable = a as Array<VNode | null>; // will be removed by js optimizing compilers.
     // Mark all nodes as inserted.
-    const sources = new Array<number>(bLength).fill(-1);
+    const sources = new Int32Array(bLength).fill(-1);
 
     let moved = false;
     let pos = 0;
@@ -1777,7 +1777,7 @@ function syncChildrenTrackByKeys(
  * @param a Array of numbers.
  * @returns Longest increasing subsequence.
  */
-function lis(a: number[]): number[] {
+function lis(a: Int32Array): number[] {
   const p = a.slice(0);
   const result: number[] = [];
   result.push(0);
