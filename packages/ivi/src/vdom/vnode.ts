@@ -305,7 +305,7 @@ export class VNode<P = any, N = Node> {
                 }
               }
             } else {
-              c = r[k++] = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
+              r[k++] = c = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
               c._key = i;
             }
           }
