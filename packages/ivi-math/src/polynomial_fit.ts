@@ -3,17 +3,17 @@ import {
   matrixRowViewSet,
 } from "./matrix";
 
-export interface PolynomialFit extends Array<number> {
+export interface PolynomialFit {
   confidence: number;
+  result: Float64Array;
 }
 
-export function polynomialFit(degree: number, x: number[], y: number[], w: number[]): PolynomialFit | null {
+export function polynomialFit(degree: number, x: Float64Array, y: Float64Array, w: Float64Array): PolynomialFit | null {
   if (degree > x.length) {
     return null;
   }
 
-  const result = new Array<number>(degree + 1).fill(0) as PolynomialFit;
-  result.confidence = 0;
+  const result = new Float64Array(degree + 1);
 
   const m = x.length;
   const n = degree + 1;
@@ -60,7 +60,7 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
     }
   }
 
-  const wy = matrixRowView(new Array(m).fill(0), 0, m);
+  const wy = matrixRowView(new Float64Array(m), 0, m);
   for (let h = 0; h < m; ++h) {
     matrixRowViewSet(wy, h, y[h] * w[h]);
   }
@@ -94,9 +94,8 @@ export function polynomialFit(degree: number, x: number[], y: number[], w: numbe
     sumSquaredTotal += ww * v * v;
   }
 
-  result.confidence = (sumSquaredTotal <= 0.000001) ?
-    1 :
-    1 - (sumSquaredError / sumSquaredTotal);
-
-  return result;
+  return {
+    confidence: (sumSquaredTotal <= 0.000001) ? 1 : 1 - (sumSquaredError / sumSquaredTotal),
+    result,
+  };
 }

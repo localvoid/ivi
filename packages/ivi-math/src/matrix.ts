@@ -1,17 +1,17 @@
 export interface Matrix {
-  items: number[];
+  items: Float64Array;
   columns: number;
 }
 
 export interface MatrixRowView {
-  items: number[] | null;
+  items: Float64Array | null;
   offset: number;
   length: number;
 }
 
 export function matrix(rows: number, cols: number): Matrix {
   return {
-    items: new Array(rows * cols).fill(0),
+    items: new Float64Array(rows * cols),
     columns: cols,
   };
 }
@@ -24,7 +24,7 @@ export function matrixSet(m: Matrix, i: number, j: number, value: number): void 
   m.items[i * m.columns + j] = value;
 }
 
-export function matrixRowView(items: number[] | null, offset: number, length: number): MatrixRowView {
+export function matrixRowView(items: Float64Array | null, offset: number, length: number): MatrixRowView {
   return { items, offset, length };
 }
 
