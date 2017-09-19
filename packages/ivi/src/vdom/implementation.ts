@@ -1350,6 +1350,9 @@ function syncChildren(
 /**
  * Sync children.
  *
+ * High-level overview of the algorithm that is implemented in this function (this overview doesn't include some details
+ * how it handles nodes with implicit keys and many small tricks to reduce memory allocations and unnecessary work).
+ *
  * This algorithm finds a minimum[1] number of DOM operations. It works in several steps:
  *
  * 1. Find common suffix and prefix.
@@ -1561,8 +1564,6 @@ function syncChildren(
  *
  * When moved flag is off, we don't need to find LIS, and we just iterate over the new children list and check its
  * current position in the positions array, if it is `-1`, then we insert new node.
- *
- * That is how children reconciliation algorithm is working in one of the fastest virtual dom libraries :)
  *
  * [1] Actually it is almost minimum number of dom ops, when node is removed and another one is inserted at the same
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
