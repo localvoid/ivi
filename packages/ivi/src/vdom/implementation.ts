@@ -1652,33 +1652,59 @@ function syncChildrenTrackByKeys(
     let moved = false;
     let pos = 0;
     let synced = 0;
+    let bPositionKeyStart = bStart;
 
     if ((aLength | bLength) < 32 || bLength < 4) {
       for (i = aStart; i <= aEnd && synced < bLength; ++i) {
         aNode = a[i];
-        for (j = bStart; j <= bEnd; ++j) {
-          k = j - bStart;
-          if (sources[k] === -1) {
-            bNode = b[j];
-            if (vNodeEqualKeys(aNode, bNode) === true) {
-              sources[k] = i;
-
-              if (pos > j) {
-                moved = true;
-              } else {
-                pos = j;
+        if ((aNode._flags & VNodeFlags.Key) !== 0) {
+          for (j = bStart; j <= bEnd; ++j) {
+            k = j - bStart;
+            if (sources[k] === -1) {
+              bNode = b[j];
+              if ((bNode._flags & VNodeFlags.Key) !== 0 && aNode._key === bNode._key) {
+                if (pos > j) {
+                  moved = true;
+                } else {
+                  pos = j;
+                }
+                ++synced;
+                sources[k] = i;
+                aNullable[i] = null;
+                vNodeSync(parent, aNode, bNode, context, syncFlags);
+                break;
               }
-              vNodeSync(parent, aNode, bNode, context, syncFlags);
-              ++synced;
-              aNullable[i] = null;
-              break;
             }
+          }
+        } else {
+          while (bPositionKeyStart <= bEnd) {
+            k = bPositionKeyStart - bStart;
+            if (sources[k] === -1) {
+              bNode = b[bPositionKeyStart];
+              if ((bNode._flags & VNodeFlags.Key) === 0) {
+                if (bNode._key >= aNode._key) {
+                  if (bNode._key === aNode._key) {
+                    if (pos > bPositionKeyStart) {
+                      moved = true;
+                    } else {
+                      pos = bPositionKeyStart;
+                    }
+                    ++synced;
+                    ++bPositionKeyStart;
+                    sources[k] = i;
+                    aNullable[i] = null;
+                    vNodeSync(parent, aNode, bNode, context, syncFlags);
+                  }
+                  break;
+                }
+              }
+            }
+            ++bPositionKeyStart;
           }
         }
       }
     } else {
       let keyIndex: Map<any, number> | undefined;
-      let positionKeyIndex: Map<number, number> | undefined;
 
       for (i = bStart; i <= bEnd; ++i) {
         node = b[i];
@@ -1687,11 +1713,6 @@ function syncChildrenTrackByKeys(
             keyIndex = new Map<any, number>();
           }
           keyIndex.set(node._key, i);
-        } else {
-          if (positionKeyIndex === undefined) {
-            positionKeyIndex = new Map<number, number>();
-          }
-          positionKeyIndex.set(node._key, i);
         }
       }
 
@@ -1699,22 +1720,46 @@ function syncChildrenTrackByKeys(
         aNode = a[i];
 
         if ((aNode._flags & VNodeFlags.Key) !== 0) {
-          j = keyIndex !== undefined ? keyIndex.get(aNode._key) : undefined;
-        } else {
-          j = positionKeyIndex !== undefined ? positionKeyIndex.get(aNode._key) : undefined;
-        }
-
-        if (j !== undefined) {
-          bNode = b[j];
-          sources[j - bStart] = i;
-          if (pos > j) {
-            moved = true;
-          } else {
-            pos = j;
+          if (keyIndex !== undefined) {
+            j = keyIndex.get(aNode._key);
+            if (j !== undefined) {
+              if (pos > j) {
+                moved = true;
+              } else {
+                pos = j;
+              }
+              ++synced;
+              bNode = b[j];
+              sources[j - bStart] = i;
+              aNullable[i] = null;
+              vNodeSync(parent, aNode, bNode, context, syncFlags);
+            }
           }
-          vNodeSync(parent, aNode, bNode, context, syncFlags);
-          ++synced;
-          aNullable[i] = null;
+        } else {
+          while (bPositionKeyStart <= bEnd) {
+            k = bPositionKeyStart - bStart;
+            if (sources[k] === -1) {
+              bNode = b[bPositionKeyStart];
+              if ((bNode._flags & VNodeFlags.Key) === 0) {
+                if (bNode._key >= aNode._key) {
+                  if (bNode._key === aNode._key) {
+                    if (pos > bPositionKeyStart) {
+                      moved = true;
+                    } else {
+                      pos = bPositionKeyStart;
+                    }
+                    ++synced;
+                    ++bPositionKeyStart;
+                    sources[k] = i;
+                    aNullable[i] = null;
+                    vNodeSync(parent, aNode, bNode, context, syncFlags);
+                  }
+                  break;
+                }
+              }
+            }
+            ++bPositionKeyStart;
+          }
         }
       }
     }
