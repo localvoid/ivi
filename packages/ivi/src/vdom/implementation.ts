@@ -1649,7 +1649,10 @@ function syncChildrenTrackByKeys(
     // Mark all nodes as inserted.
     const sources = new Int32Array(bLength).fill(-1);
     // When lists are small, perform a linear search instead of building an index.
-    const linearSearch = (aLength | bLength) < 32 || bLength < 4;
+    // 0 - unitialized (lazy initialization)
+    // 1 - linear search
+    // 2 - hashmap search
+    let matchKeyMode = 0;
 
     let bPositionKeyStart = bStart;
     let moved = false;
@@ -1658,24 +1661,28 @@ function syncChildrenTrackByKeys(
 
     let keyIndex: Map<any, number> | undefined;
 
-    if (linearSearch === false) {
-      // Build an index that maps keys to their locations in the new children list.
-      for (i = bStart; i <= bEnd; ++i) {
-        node = b[i];
-        if ((node._flags & VNodeFlags.Key) !== 0) {
-          if (keyIndex === undefined) {
-            keyIndex = new Map<any, number>();
-          }
-          keyIndex.set(node._key, i);
-        }
-      }
-    }
-
     for (i = aStart; i <= aEnd && synced < bLength; ++i) {
       aNode = a[i];
 
       if ((aNode._flags & VNodeFlags.Key) !== 0) {
-        if (linearSearch === true) {
+        if (matchKeyMode === 0) {
+          if ((aLength | bLength) < 32 || bLength < 4) {
+            matchKeyMode = 1;
+          } else {
+            matchKeyMode = 2;
+            // Build an index that maps keys to their locations in the new children list.
+            for (j = bStart; j <= bEnd; ++j) {
+              node = b[j];
+              if ((node._flags & VNodeFlags.Key) !== 0) {
+                if (keyIndex === undefined) {
+                  keyIndex = new Map<any, number>();
+                }
+                keyIndex.set(node._key, j);
+              }
+            }
+          }
+        }
+        if (matchKeyMode === 1) {
           for (j = bStart; j <= bEnd; ++j) {
             k = j - bStart;
             if (sources[k] === -1) {
