@@ -1655,7 +1655,7 @@ function syncChildrenTrackByKeys(
     let matchKeyMode = 0;
 
     let bPositionKeyStart = bStart;
-    let moved = false;
+    // When pos === 2147483647, it means that one of the nodes in the wrong position.
     let pos = 0;
     let synced = 0;
 
@@ -1688,11 +1688,7 @@ function syncChildrenTrackByKeys(
             if (sources[k] === -1) {
               bNode = b[j];
               if ((bNode._flags & VNodeFlags.Key) !== 0 && aNode._key === bNode._key) {
-                if (pos > j) {
-                  moved = true;
-                } else {
-                  pos = j;
-                }
+                pos = (pos > j) ? 2147483647 : j;
                 ++synced;
                 sources[k] = i;
                 aNullable[i] = null;
@@ -1704,11 +1700,7 @@ function syncChildrenTrackByKeys(
         } else if (keyIndex !== undefined) {
           j = keyIndex.get(aNode._key);
           if (j !== undefined) {
-            if (pos > j) {
-              moved = true;
-            } else {
-              pos = j;
-            }
+            pos = (pos > j) ? 2147483647 : j;
             ++synced;
             bNode = b[j];
             sources[j - bStart] = i;
@@ -1727,11 +1719,7 @@ function syncChildrenTrackByKeys(
             if ((bNode._flags & VNodeFlags.Key) === 0) {
               if (bNode._key >= aNode._key) {
                 if (bNode._key === aNode._key) {
-                  if (pos > bPositionKeyStart) {
-                    moved = true;
-                  } else {
-                    pos = bPositionKeyStart;
-                  }
+                  pos = (pos > bPositionKeyStart) ? 2147483647 : bPositionKeyStart;
                   ++synced;
                   ++bPositionKeyStart;
                   sources[k] = i;
@@ -1764,7 +1752,7 @@ function syncChildrenTrackByKeys(
       }
 
       // Step 3
-      if (moved === true) {
+      if (pos === 2147483647) {
         const seq = lis(sources);
         j = seq.length - 1;
         for (i = bLength - 1; i >= 0; --i) {
