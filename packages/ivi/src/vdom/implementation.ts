@@ -1595,7 +1595,6 @@ function syncChildrenTrackByKeys(
   let next: Node | null;
   let aNode: VNode | null;
   let bNode: VNode;
-  let node: VNode;
 
   // Step 1
   outer: while (true) {
@@ -1672,12 +1671,12 @@ function syncChildrenTrackByKeys(
             matchKeyMode = 2;
             // Build an index that maps keys to their locations in the new children list.
             for (j = bStart; j <= bEnd; ++j) {
-              node = b[j];
-              if ((node._flags & VNodeFlags.Key) !== 0) {
+              bNode = b[j];
+              if ((bNode._flags & VNodeFlags.Key) !== 0) {
                 if (keyIndex === undefined) {
                   keyIndex = new Map<any, number>();
                 }
-                keyIndex.set(node._key, j);
+                keyIndex.set(bNode._key, j);
               }
             }
           }
@@ -1755,33 +1754,32 @@ function syncChildrenTrackByKeys(
       if (pos === 2147483647) {
         const seq = lis(sources);
         j = seq.length - 1;
+        k = b.length;
         for (i = bLength - 1; i >= 0; --i) {
           if (sources[i] === -1) {
             pos = i + bStart;
-            node = b[pos];
-            k = pos + 1;
-            next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
-            vNodeRenderIntoAndAttach(parent, next, node, context, syncFlags);
+            bNode = b[pos++];
+            next = pos < k ? getDOMInstanceFromVNode(b[pos]) : null;
+            vNodeRenderIntoAndAttach(parent, next, bNode, context, syncFlags);
           } else {
             if (j < 0 || i !== seq[j]) {
               pos = i + bStart;
-              node = b[pos];
-              k = pos + 1;
-              next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
-              vNodeMoveChild(parent, node, next);
+              bNode = b[pos++];
+              next = pos < k ? getDOMInstanceFromVNode(b[pos]) : null;
+              vNodeMoveChild(parent, bNode, next);
             } else {
-              j--;
+              --j;
             }
           }
         }
       } else if (synced !== bLength) {
+        k = b.length;
         for (i = bLength - 1; i >= 0; --i) {
           if (sources[i] === -1) {
             pos = i + bStart;
-            node = b[pos];
-            k = pos + 1;
-            next = k < b.length ? getDOMInstanceFromVNode(b[k]) : null;
-            vNodeRenderIntoAndAttach(parent, next, node, context, syncFlags);
+            bNode = b[pos++];
+            next = pos < k ? getDOMInstanceFromVNode(b[pos]) : null;
+            vNodeRenderIntoAndAttach(parent, next, bNode, context, syncFlags);
           }
         }
       }
