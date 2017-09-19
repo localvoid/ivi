@@ -399,7 +399,10 @@ function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
       ((vnode._tag as KeepAliveHandler)(vnode._children as VNode, vnode._props)) !== null) {
       if ((syncFlags & SyncFlags.Attached) !== 0) {
         const node = getDOMInstanceFromVNode(vnode._children as VNode)!;
-        nodeRemoveChild(node.parentNode!, node);
+        const parentNode = node.parentNode;
+        if (parentNode !== null) {
+          nodeRemoveChild(parentNode, node);
+        }
         vNodeDetach(vnode._children as VNode, syncFlags ^ SyncFlags.Dispose);
       }
     } else {
