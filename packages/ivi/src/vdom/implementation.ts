@@ -1648,16 +1648,34 @@ function syncChildrenTrackByKeys(
     const aNullable = a as Array<VNode | null>; // will be removed by js optimizing compilers.
     // Mark all nodes as inserted.
     const sources = new Int32Array(bLength).fill(-1);
+    // When lists are small, perform a linear search instead of building an index.
+    const linearSearch = (aLength | bLength) < 32 || bLength < 4;
 
+    let bPositionKeyStart = bStart;
     let moved = false;
     let pos = 0;
     let synced = 0;
-    let bPositionKeyStart = bStart;
 
-    if ((aLength | bLength) < 32 || bLength < 4) {
-      for (i = aStart; i <= aEnd && synced < bLength; ++i) {
-        aNode = a[i];
-        if ((aNode._flags & VNodeFlags.Key) !== 0) {
+    let keyIndex: Map<any, number> | undefined;
+
+    if (linearSearch === false) {
+      // Build an index that maps keys to their locations in the new children list.
+      for (i = bStart; i <= bEnd; ++i) {
+        node = b[i];
+        if ((node._flags & VNodeFlags.Key) !== 0) {
+          if (keyIndex === undefined) {
+            keyIndex = new Map<any, number>();
+          }
+          keyIndex.set(node._key, i);
+        }
+      }
+    }
+
+    for (i = aStart; i <= aEnd && synced < bLength; ++i) {
+      aNode = a[i];
+
+      if ((aNode._flags & VNodeFlags.Key) !== 0) {
+        if (linearSearch === true) {
           for (j = bStart; j <= bEnd; ++j) {
             k = j - bStart;
             if (sources[k] === -1) {
@@ -1676,90 +1694,48 @@ function syncChildrenTrackByKeys(
               }
             }
           }
-        } else {
-          while (bPositionKeyStart <= bEnd) {
-            k = bPositionKeyStart - bStart;
-            if (sources[k] === -1) {
-              bNode = b[bPositionKeyStart];
-              if ((bNode._flags & VNodeFlags.Key) === 0) {
-                if (bNode._key >= aNode._key) {
-                  if (bNode._key === aNode._key) {
-                    if (pos > bPositionKeyStart) {
-                      moved = true;
-                    } else {
-                      pos = bPositionKeyStart;
-                    }
-                    ++synced;
-                    ++bPositionKeyStart;
-                    sources[k] = i;
-                    aNullable[i] = null;
-                    vNodeSync(parent, aNode, bNode, context, syncFlags);
-                  }
-                  break;
-                }
-              }
+        } else if (keyIndex !== undefined) {
+          j = keyIndex.get(aNode._key);
+          if (j !== undefined) {
+            if (pos > j) {
+              moved = true;
+            } else {
+              pos = j;
             }
-            ++bPositionKeyStart;
+            ++synced;
+            bNode = b[j];
+            sources[j - bStart] = i;
+            aNullable[i] = null;
+            vNodeSync(parent, aNode, bNode, context, syncFlags);
           }
         }
-      }
-    } else {
-      let keyIndex: Map<any, number> | undefined;
-
-      for (i = bStart; i <= bEnd; ++i) {
-        node = b[i];
-        if ((node._flags & VNodeFlags.Key) !== 0) {
-          if (keyIndex === undefined) {
-            keyIndex = new Map<any, number>();
-          }
-          keyIndex.set(node._key, i);
-        }
-      }
-
-      for (i = aStart; i <= aEnd && synced < bLength; ++i) {
-        aNode = a[i];
-
-        if ((aNode._flags & VNodeFlags.Key) !== 0) {
-          if (keyIndex !== undefined) {
-            j = keyIndex.get(aNode._key);
-            if (j !== undefined) {
-              if (pos > j) {
-                moved = true;
-              } else {
-                pos = j;
-              }
-              ++synced;
-              bNode = b[j];
-              sources[j - bStart] = i;
-              aNullable[i] = null;
-              vNodeSync(parent, aNode, bNode, context, syncFlags);
-            }
-          }
-        } else {
-          while (bPositionKeyStart <= bEnd) {
-            k = bPositionKeyStart - bStart;
-            if (sources[k] === -1) {
-              bNode = b[bPositionKeyStart];
-              if ((bNode._flags & VNodeFlags.Key) === 0) {
-                if (bNode._key >= aNode._key) {
-                  if (bNode._key === aNode._key) {
-                    if (pos > bPositionKeyStart) {
-                      moved = true;
-                    } else {
-                      pos = bPositionKeyStart;
-                    }
-                    ++synced;
-                    ++bPositionKeyStart;
-                    sources[k] = i;
-                    aNullable[i] = null;
-                    vNodeSync(parent, aNode, bNode, context, syncFlags);
+      } else {
+        // Matching nodes with implicit keys is always performed with linear search.
+        // Because position keys are always in a sorted order, we can just start from the last position and search
+        // until implicit key of the new node is larger or equal.
+        while (bPositionKeyStart <= bEnd) {
+          k = bPositionKeyStart - bStart;
+          if (sources[k] === -1) {
+            bNode = b[bPositionKeyStart];
+            if ((bNode._flags & VNodeFlags.Key) === 0) {
+              if (bNode._key >= aNode._key) {
+                if (bNode._key === aNode._key) {
+                  if (pos > bPositionKeyStart) {
+                    moved = true;
+                  } else {
+                    pos = bPositionKeyStart;
                   }
-                  break;
+                  ++synced;
+                  ++bPositionKeyStart;
+                  sources[k] = i;
+                  aNullable[i] = null;
+                  vNodeSync(parent, aNode, bNode, context, syncFlags);
                 }
+                break;
               }
             }
-            ++bPositionKeyStart;
           }
+          ++bPositionKeyStart;
         }
       }
     }
