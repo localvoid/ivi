@@ -46,7 +46,7 @@ export function escapeText(text: string | number): string {
       }
       start = i + 1;
     }
-    if (start !== 0 && i !== start) {
+    if (i !== start) {
       return result + text.slice(start, i);
     }
     return result;
@@ -98,7 +98,7 @@ export function escapeAttributeValue(text: string | number): string {
       }
       start = i + 1;
     }
-    if (start !== 0 && i !== start) {
+    if (i !== start) {
       return result + text.slice(start, i);
     }
     return result;
