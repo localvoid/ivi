@@ -1,6 +1,3 @@
-const TEXT_RE = /[&<]/;
-const ATTR_RE = /["&]/;
-
 /**
  * escapeText escapes HTML text.
  *
@@ -12,7 +9,7 @@ const ATTR_RE = /["&]/;
  */
 export function escapeText(text: string | number): string {
   if (typeof text === "string") {
-    if (TEXT_RE.test(text) === false) {
+    if (text.indexOf("&") === -1 && text.indexOf("<") === -1) {
       return text;
     }
 
@@ -64,7 +61,7 @@ export function escapeText(text: string | number): string {
  */
 export function escapeAttributeValue(text: string | number): string {
   if (typeof text === "string") {
-    if (ATTR_RE.test(text) === false) {
+    if (text.indexOf("\"") === -1 && text.indexOf("&") === -1) {
       return text;
     }
 
