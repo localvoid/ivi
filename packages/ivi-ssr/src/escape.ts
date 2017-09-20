@@ -28,19 +28,10 @@ export function escapeText(text: string | number): string {
         default:
           continue;
       }
-      if (start > 0) {
-        if (i > start) {
-          result += text.slice(start, i) + escape;
-        } else {
-          result += escape;
-        }
-      } else {
-        if (i > start) {
-          result = text.slice(0, i) + escape;
-        } else {
-          result = escape;
-        }
+      if (i > start) {
+        escape = text.slice(start, i) + escape;
       }
+      result = (start > 0) ? result + escape : escape;
       start = i + 1;
     }
     if (i !== start) {
@@ -80,19 +71,10 @@ export function escapeAttributeValue(text: string | number): string {
         default:
           continue;
       }
-      if (start > 0) {
-        if (i > start) {
-          result += text.slice(start, i) + escape;
-        } else {
-          result += escape;
-        }
-      } else {
-        if (i > start) {
-          result = text.slice(0, i) + escape;
-        } else {
-          result = escape;
-        }
+      if (i > start) {
+        escape = text.slice(start, i) + escape;
       }
+      result = (start > 0) ? result + escape : escape;
       start = i + 1;
     }
     if (i !== start) {
@@ -134,19 +116,10 @@ export function escapeJavascript(text: string): string {
       default:
         continue;
     }
-    if (start > 0) {
-      if (i > start) {
-        result += text.slice(start, i) + escape;
-      } else {
-        result += escape;
-      }
-    } else {
-      if (i > start) {
-        result = text.slice(0, i) + escape;
-      } else {
-        result = escape;
-      }
+    if (i > start) {
+      escape = text.slice(start, i) + escape;
     }
+    result = (start > 0) ? result + escape : escape;
     start = i + 1;
   }
   if (start !== 0 && i !== start) {
