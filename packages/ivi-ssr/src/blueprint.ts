@@ -92,12 +92,12 @@ function createBlueprintFromVNode(vnode: VNode<any>, context: Context): Blueprin
       if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
         if ((flags & VNodeFlags.ChildrenArray) !== 0) {
           const children = vnode._children as VNode[];
-          childrenInstances = new Array(children.length);
+          childrenInstances = [];
           for (let i = 0; i < children.length; ++i) {
-            childrenInstances[i] = createBlueprintFromVNode(
+            childrenInstances.push(createBlueprintFromVNode(
               children[i],
               context,
-            );
+            ));
           }
         } else {
           childrenInstances = createBlueprintFromVNode(
@@ -168,7 +168,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
         if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
           if ((flags & VNodeFlags.ChildrenArray) !== 0) {
             const children = bp.children as BlueprintNode[];
-            const newChildren = new Array(children.length);
+            const newChildren = [];
             let dirty = false;
             for (let i = 0; i < children.length; ++i) {
               const c = children[i];
@@ -176,7 +176,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
               if (c !== n) {
                 dirty = true;
               }
-              newChildren[i] = n;
+              newChildren.push(n);
             }
             if (dirty === true) {
               return new BlueprintNode(
@@ -478,9 +478,9 @@ function diffBlueprintChildren(
     if ((aParentFlags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) === 0) {
       if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
         b = b as VNode[];
-        const nodes = new Array(b.length);
+        const nodes = [];
         for (; i < b.length; ++i) {
-          nodes[i] = createBlueprintFromVNode(b[i], context);
+          nodes.push(createBlueprintFromVNode(b[i], context));
         }
 
         return nodes;
@@ -512,12 +512,14 @@ function diffBlueprintChildren(
         a = a as BlueprintNode;
         if ((bParentFlags & VNodeFlags.ChildrenArray) !== 0) {
           b = b as VNode[];
-          const nodes = new Array(b.length);
+          const nodes = [];
           for (i = 0; i < b.length; ++i) {
             node = b[i];
-            nodes[i] = vNodeEqualKeys(a.vnode, node) ?
-              diffBlueprintNode(a, node, context) :
-              createBlueprintFromVNode(node, context);
+            nodes.push(
+              vNodeEqualKeys(a.vnode, node) ?
+                diffBlueprintNode(a, node, context) :
+                createBlueprintFromVNode(node, context),
+            );
           }
           return nodes;
         } else {
@@ -546,7 +548,7 @@ function diffBlueprintChildrenTrackByKeys(
   b: VNode[],
   context: Context,
 ): BlueprintNode[] {
-  const newChildren = new Array(b.length);
+  const newChildren = [];
   let synced = 0;
   let dirty = false;
 
@@ -573,7 +575,7 @@ function diffBlueprintChildrenTrackByKeys(
       }
       ++synced;
     }
-    newChildren[i] = n;
+    newChildren.push(n);
   }
 
   if (dirty === false && synced === a.length) {
