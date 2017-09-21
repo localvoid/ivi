@@ -319,7 +319,7 @@ export function updateComponents(
     setInitialNestingState(parent as Element);
 
     try {
-      vNodeUpdateComponents(parent, vnode, context, syncFlags | SyncFlags.DirtyComponent);
+      vNodeDirtyCheck(parent, vnode, context, syncFlags | SyncFlags.DirtyComponent);
       return;
     } catch (e) {
       stackTraceAugment(e);
@@ -327,7 +327,7 @@ export function updateComponents(
       throw e;
     }
   }
-  vNodeUpdateComponents(parent, vnode, context, syncFlags | SyncFlags.DirtyComponent);
+  vNodeDirtyCheck(parent, vnode, context, syncFlags | SyncFlags.DirtyComponent);
 }
 
 /**
@@ -436,14 +436,14 @@ function vNodeDetachAll(vnodes: VNode[], syncFlags: SyncFlags): void {
 }
 
 /**
- * Recursively update all dirty components.
+ * Recursively perform dirty checking.
  *
  * @param parent Parent DOM Node.
  * @param vnode VNode.
  * @param context New context.
  * @param syncFlags Sync flags.
  */
-function vNodeUpdateComponents(
+function vNodeDirtyCheck(
   parent: Node,
   vnode: VNode,
   context: Context,
@@ -451,51 +451,56 @@ function vNodeUpdateComponents(
 ): number {
   const flags = vnode._flags;
   let deepUpdate = 0;
-  if ((flags &
-    (VNodeFlags.DisabledDirtyCheck | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray | VNodeFlags.Component)) > 0) {
+  let children: VNode | VNode[] | undefined;
+  let instance: Node | Component<any> | SelectorData | undefined;
+
+  if ((flags & (
+    VNodeFlags.DisabledDirtyChecking |
+    VNodeFlags.ChildrenVNode |
+    VNodeFlags.ChildrenArray |
+    VNodeFlags.Component
+  )) > 0) {
     if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenArray)) !== 0) {
-      const p = vnode._instance as Node;
-      let children = vnode._children;
+      instance = vnode._instance as Node;
+      children = vnode._children as VNode | VNode[];
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode[];
         for (let i = 0; i < children.length; ++i) {
-          deepUpdate |= vNodeUpdateComponents(p, children[i], context, syncFlags);
+          deepUpdate |= vNodeDirtyCheck(instance, children[i], context, syncFlags);
         }
       } else {
-        deepUpdate = vNodeUpdateComponents(p, children as VNode, context, syncFlags);
+        deepUpdate = vNodeDirtyCheck(instance, children as VNode, context, syncFlags);
       }
     } else {
       stackTracePushComponent(vnode);
       if ((flags & VNodeFlags.ComponentClass) !== 0) {
-        const component = vnode._instance as Component<any>;
-
-        const cflags = component.flags;
-        const oldRoot = vnode._children as VNode;
-        if ((cflags & ComponentFlags.Dirty) !== 0) {
+        instance = vnode._instance as Component<any>;
+        children = vnode._children as VNode;
+        if ((instance.flags & ComponentFlags.Dirty) !== 0) {
           componentPerfMarkBegin("update", vnode);
-          const newRoot = vnode._children = component.render();
-          vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
-          component.flags &= ~ComponentFlags.Dirty;
-          component.updated(true);
+          const newRoot = vnode._children = instance.render();
+          vNodeSync(parent, children, newRoot, context, syncFlags);
+          instance.flags &= ~ComponentFlags.Dirty;
+          instance.updated(true);
           deepUpdate = 1;
           componentPerfMarkEnd("update", vnode);
         } else {
-          deepUpdate = vNodeUpdateComponents(parent, oldRoot, context, syncFlags);
+          deepUpdate = vNodeDirtyCheck(parent, children, context, syncFlags);
           if (deepUpdate !== 0) {
-            component.updated(false);
+            instance.updated(false);
           }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
         if ((flags & VNodeFlags.Connect) !== 0) {
           const connect = vnode._tag as ConnectDescriptor<any, any, any>;
-          const prevSelectData = vnode._instance as SelectorData;
+          instance = vnode._instance as SelectorData;
           componentPerfMarkBegin("update", vnode);
-          const selectData = connect.select(prevSelectData, vnode._props, context);
-          const prevChildren = vnode._children;
-          if (prevSelectData === selectData) {
-            deepUpdate = vNodeUpdateComponents(
+          const selectData = connect.select(instance, vnode._props, context);
+          children = vnode._children as VNode;
+          if (instance === selectData) {
+            deepUpdate = vNodeDirtyCheck(
               parent,
-              prevChildren as VNode,
+              children as VNode,
               context,
               syncFlags,
             );
@@ -505,7 +510,7 @@ function vNodeUpdateComponents(
             vnode._instance = selectData;
             vNodeSync(
               parent,
-              prevChildren as VNode,
+              children as VNode,
               vnode._children as VNode,
               context,
               syncFlags,
@@ -519,7 +524,7 @@ function vNodeUpdateComponents(
             }
             context = vnode._instance as Context;
           }
-          deepUpdate = vNodeUpdateComponents(
+          deepUpdate = vNodeDirtyCheck(
             parent,
             vnode._children as VNode,
             context,
@@ -1003,7 +1008,7 @@ function vNodeSync(
   syncFlags: SyncFlags,
 ): void {
   if (a === b) {
-    vNodeUpdateComponents(parent, b, context, syncFlags);
+    vNodeDirtyCheck(parent, b, context, syncFlags);
     return;
   }
 
@@ -1089,7 +1094,7 @@ function vNodeSync(
           componentPerfMarkEnd("update", a);
         } else {
           b._children = a._children;
-          if (vNodeUpdateComponents(parent, oldRoot, context, syncFlags) !== 0) {
+          if (vNodeDirtyCheck(parent, oldRoot, context, syncFlags) !== 0) {
             component.updated(false);
           }
         }
@@ -1105,7 +1110,7 @@ function vNodeSync(
             b._instance = selectData;
             if (prevSelectData === selectData) {
               b._children = a._children;
-              vNodeUpdateComponents(
+              vNodeDirtyCheck(
                 parent,
                 b,
                 context,
@@ -1152,7 +1157,7 @@ function vNodeSync(
             componentPerfMarkEnd("update", b);
           } else {
             b._children = a._children;
-            vNodeUpdateComponents(parent, b._children as VNode, context, syncFlags);
+            vNodeDirtyCheck(parent, b._children as VNode, context, syncFlags);
           }
         }
       }

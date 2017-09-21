@@ -89,7 +89,7 @@ export const enum VNodeFlags {
    * NOTE: It is important that this flag is `1 << 31 === -1`. It allows to use a simple `flags > 0` check in the hot
    * path of the dirty checking instead of using two checks.
    */
-  DisabledDirtyCheck = 1 << 31,
+  DisabledDirtyChecking = 1 << 31,
 
   /**
    * VNode represents a Component.

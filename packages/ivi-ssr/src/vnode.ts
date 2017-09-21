@@ -735,11 +735,11 @@ export function getElementStyleFromVNode(node: VNode<any>): CSSStyleProps | null
 }
 
 /**
- * disableDirtyCheck disables dirty checking for all descendants.
+ * disableDirtyChecking disables dirty checking for all descendants.
  *
  * @param node VNode.
  * @returns VNode.
  */
-export function disableDirtyCheck<N extends VNode<any>>(node: N): N {
+export function disableDirtyChecking<N extends VNode<any>>(node: N): N {
   return node;
 }
