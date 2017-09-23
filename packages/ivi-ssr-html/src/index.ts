@@ -269,6 +269,16 @@ export function colgroup(className?: string): VNode<HTMLTableColElementProps | n
     "</colgroup>",
   );
 }
+export function data(className?: string): VNode<HTMLElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element,
+    "<data",
+    null,
+    className === undefined ? null : className,
+    null,
+    "</data>",
+  );
+}
 export function datalist(className?: string): VNode<HTMLDataListElementProps | null> {
   return new VNode(
     VNodeFlags.Element,
@@ -1097,6 +1107,16 @@ export function thead(className?: string): VNode<HTMLTableSectionElementProps | 
     className === undefined ? null : className,
     null,
     "</thead>",
+  );
+}
+export function time(className?: string): VNode<HTMLElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element,
+    "<time",
+    null,
+    className === undefined ? null : className,
+    null,
+    "</time>",
   );
 }
 export function title(className?: string): VNode<HTMLTitleElementProps | null> {
