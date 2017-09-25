@@ -15,7 +15,7 @@
  * #component - Component related functions.
  */
 
-import { DEV } from "ivi-vars";
+import { DEV, TARGET, Target } from "ivi-vars";
 import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
 import { setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
@@ -47,6 +47,26 @@ if (DEV) {
     perfMarkIndex = 0;
   }
 }
+
+/**
+ * fillArray fills array with -1 value.
+ *
+ * IE11 doesn't have Int32Array.prototype.fill method.
+ *
+ * #quirks
+ */
+const fillArray = (
+  ((TARGET & (Target.Cordova | Target.Electron | Target.EvergreenBrowser)) !== 0) ||
+  Int32Array.prototype.fill
+) ?
+  function (a: Int32Array): void {
+    a.fill(-1);
+  } :
+  function (a: Int32Array): void {
+    for (let i = 0; i < a.length; ++i) {
+      a[i] = -1;
+    }
+  };
 
 /**
  * Begin component perf mark.
@@ -1652,7 +1672,8 @@ function syncChildrenTrackByKeys(
 
     const aNullable = a as Array<VNode | null>; // will be removed by js optimizing compilers.
     // Mark all nodes as inserted.
-    const sources = new Int32Array(bLength).fill(-1);
+    const sources = new Int32Array(bLength);
+    fillArray(sources);
     // When lists are small, perform a linear search instead of building an index.
     // 0 - unitialized (lazy initialization)
     // 1 - linear search
@@ -1803,7 +1824,7 @@ function syncChildrenTrackByKeys(
  * @returns Longest increasing subsequence.
  */
 function lis(a: Int32Array): number[] {
-  const p = a.slice(0);
+  const p = new Int32Array(a);
   const result: number[] = [];
   result.push(0);
   let u: number;
