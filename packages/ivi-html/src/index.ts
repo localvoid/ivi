@@ -1769,7 +1769,7 @@ export function inputTel(className?: string): VNode<HTMLInputElementProps | null
 export function inputText(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "text",
+    "",
     null,
     className === undefined ? null : className,
     null,

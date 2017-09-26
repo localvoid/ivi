@@ -635,12 +635,18 @@ function vNodeRender(
         } else {
           node = document.createElement("input");
           /**
-           * #quirks
-           *
-           * It is important that we assign `type` before any other properties. IE11 will remove assigned
-           * `value` when `type` is assigned.
+           * Default value for input element type is "text", so we can just ignore assigning it for text inputs. Factory
+           * function for input text has an empty string as a tag value.
            */
-          (node as HTMLInputElement).type = vnode._tag as string;
+          if (vnode._tag !== "") {
+            /**
+             * #quirks
+             *
+             * It is important that we assign `type` before any other properties. IE11 will remove assigned
+             * `value` when `type` is assigned.
+             */
+            (node as HTMLInputElement).type = vnode._tag as string;
+          }
         }
       } else {
         node = document.createElement(vnode._tag as string);

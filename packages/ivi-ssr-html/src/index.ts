@@ -1414,7 +1414,7 @@ export function inputTel(className?: string): VNode<HTMLInputElementProps | null
 export function inputText(className?: string): VNode<HTMLInputElementProps | null> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    `<input type="text"`,
+    `<input`,
     null,
     className === undefined ? null : className,
     null,
