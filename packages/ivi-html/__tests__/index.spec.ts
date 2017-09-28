@@ -123,6 +123,7 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "x-ms-webview": h.x_ms_webview,
   "xmp": h.xmp,
   // Input Elements
+  "input:": h.inputText,
   "input:button": h.inputButton,
   "input:checkbox": h.inputCheckbox,
   "input:color": h.inputColor,
@@ -142,7 +143,6 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "input:search": h.inputSearch,
   "input:submit": h.inputSubmit,
   "input:tel": h.inputTel,
-  "input:text": h.inputText,
   "input:time": h.inputTime,
   "input:url": h.inputUrl,
   "input:week": h.inputWeek,
@@ -169,6 +169,7 @@ const VoidElements = {
 };
 
 const InputTypes = [
+  "",
   "button",
   "checkbox",
   "color",
@@ -188,7 +189,6 @@ const InputTypes = [
   "search",
   "submit",
   "tel",
-  "text",
   "time",
   "url",
   "week",

@@ -275,7 +275,11 @@ describe("src/index.ts", () => {
         it(`input:${type}`, () => {
           const n = factory();
           expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
-          expect(n._tag).toBe(`<input type="${type}"`);
+          if (type === "text") {
+            expect(n._tag).toBe(`<input`);
+          } else {
+            expect(n._tag).toBe(`<input type="${type}"`);
+          }
           expect(n._close).toBe(null);
         });
       }
