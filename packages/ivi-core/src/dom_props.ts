@@ -638,66 +638,6 @@ export declare interface HTMLAnchorElementProps extends HTMLElementProps {
   urn?: string;
 }
 
-export declare interface HTMLAppletElementProps extends HTMLElementProps {
-  align?: string;
-  /**
-   * Sets or retrieves a text alternative to the graphic.
-   */
-  alt?: string;
-  /**
-   * Gets or sets the optional alternative HTML script to execute if the object fails to load.
-   */
-  altHtml?: string;
-  /**
-   * Sets or retrieves a character string that can be used to implement your own archive functionality for the
-   * object.
-   */
-  archive?: string;
-  border?: string;
-  code?: string;
-  /**
-   * Sets or retrieves the URL of the component.
-   */
-  codeBase?: string;
-  /**
-   * Sets or retrieves the Internet media type for the code associated with the object.
-   */
-  codeType?: string;
-  /**
-   * Sets or retrieves the URL that references the data of the object.
-   */
-  data?: string;
-  /**
-   * Sets or retrieves a character string that can be used to implement your own declare functionality for the
-   * object.
-   */
-  declare?: boolean;
-  /**
-   * Sets or retrieves the height of the object.
-   */
-  height?: string;
-  hspace?: number;
-  /**
-   * Sets or retrieves the shape of the object.
-   */
-  name?: string;
-  object?: string | null;
-  /**
-   * Sets or retrieves a message to be displayed while an object is loading.
-   */
-  standby?: string;
-  /**
-   * Returns the content type of the object.
-   */
-  type?: string;
-  /**
-   * Sets or retrieves the URL, often with a bookmark extension (#name), to use as a client-side image map.
-   */
-  useMap?: string;
-  vspace?: number;
-  width?: number;
-}
-
 export declare interface HTMLAreaElementProps extends HTMLElementProps {
   /**
    * Sets or retrieves a text alternative to the graphic.

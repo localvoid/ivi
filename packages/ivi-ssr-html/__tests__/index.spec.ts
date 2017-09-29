@@ -7,7 +7,6 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "abbr": h.abbr,
   "acronym": h.acronym,
   "address": h.address,
-  "applet": h.applet,
   "area": h.area,
   "article": h.article,
   "aside": h.aside,
