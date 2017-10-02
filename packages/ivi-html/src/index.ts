@@ -180,8 +180,26 @@ export function br(className?: string): VNode<HTMLBRElementProps | null, HTMLBRE
 }
 export function button(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
   return new VNode(
-    VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.ButtonElement,
     "button",
+    null,
+    className === undefined ? null : className,
+    null,
+  );
+}
+export function buttonSubmit(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.ButtonElement,
+    "",
+    null,
+    className === undefined ? null : className,
+    null,
+  );
+}
+export function buttonReset(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.ButtonElement,
+    "reset",
     null,
     className === undefined ? null : className,
     null,

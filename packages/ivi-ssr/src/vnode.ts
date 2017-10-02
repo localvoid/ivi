@@ -58,48 +58,52 @@ export const enum VNodeFlags {
    */
   TextAreaElement = 1 << 10,
   /**
+   * VNode represents a HTMLButtonElement.
+   */
+  ButtonElement = 1 << 11,
+  /**
    * VNode represents a HTMLMediaElement.
    */
-  MediaElement = 1 << 11,
+  MediaElement = 1 << 12,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 12,
+  SvgElement = 1 << 13,
   /**
    * Specialized VNode with connect functionality.
    */
-  Connect = 1 << 13,
+  Connect = 1 << 14,
   /**
    * Specialized VNode with an update context functionality.
    */
-  UpdateContext = 1 << 14,
+  UpdateContext = 1 << 15,
   /**
    * VNode element cannot contain any children.
    */
-  VoidElement = 1 << 15,
+  VoidElement = 1 << 16,
   /**
    * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
    * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
    */
-  NewLineEatingElement = 1 << 16,
+  NewLineEatingElement = 1 << 17,
   /**
    * Component VNode has a linked blueprint.
    */
-  LinkedBlueprint = 1 << 17,
+  LinkedBlueprint = 1 << 18,
   /**
    * Stateless component is using `isPropsChanged` hook.
    */
-  CheckChangedProps = 1 << 18,
+  CheckChangedProps = 1 << 19,
 
   // Blueprint specific flags:
   /**
    * Blueprint Node contains connect node.
    */
-  DeepConnect = 1 << 19,
+  DeepConnect = 1 << 20,
   /**
    * Blueprint Node is frozen and shouldn't be changed.
    */
-  Frozen = 1 << 20,
+  Frozen = 1 << 21,
 
   /**
    * VNode represents a Component.
@@ -114,6 +118,7 @@ export const enum VNodeFlags {
   // | Key (Keys shouldn't be checked for blueprint nodes)
   | InputElement
   | TextAreaElement
+  | ButtonElement
   | MediaElement
   | SvgElement
   | Connect

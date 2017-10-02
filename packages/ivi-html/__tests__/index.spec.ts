@@ -145,6 +145,10 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "input:time": h.inputTime,
   "input:url": h.inputUrl,
   "input:week": h.inputWeek,
+  // Button Elements
+  "button:": h.buttonSubmit,
+  "button:button": h.button,
+  "button:reset": h.buttonReset,
   // Media Elements
   "audio": h.audio,
   "video": h.video,
@@ -193,6 +197,12 @@ const InputTypes = [
   "week",
 ];
 
+const ButtonTypes = [
+  "",
+  "button",
+  "reset",
+];
+
 const MediaElements = [
   "audio",
   "video",
@@ -211,7 +221,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         it(`${name}`, () => {
           const n = factory();
-          if ((n._flags & VNodeFlags.InputElement) === 0) {
+          if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement)) === 0) {
             expect(n._tag).toBe(name);
           }
         });
@@ -260,6 +270,18 @@ describe("src/index.ts", () => {
         it(`input:${type}`, () => {
           const n = factory();
           expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+          expect(n._tag).toBe(type);
+        });
+      }
+    });
+
+    describe("button elements", () => {
+      for (const type of ButtonTypes) {
+        const factory = Elements[`button:${type}`];
+        it(`button:${type}`, () => {
+          const n = factory();
+          expect((n._flags & VNodeFlags.ButtonElement) !== 0).toBe(true);
           expect(n._tag).toBe(type);
         });
       }

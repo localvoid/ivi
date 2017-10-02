@@ -629,11 +629,15 @@ function vNodeRender(
       pushNestingState(vnode._tag as string);
       checkNestingViolation();
 
-      if ((flags & (VNodeFlags.InputElement | VNodeFlags.SvgElement)) !== 0) {
+      if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
         if ((flags & VNodeFlags.SvgElement) !== 0) {
           node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
         } else {
-          node = document.createElement("input");
+          if ((flags & VNodeFlags.InputElement) !== 0) {
+            node = document.createElement("input");
+          } else {
+            node = document.createElement("button");
+          }
           /**
            * Default value for input element type is "text", so we can just ignore assigning it for text inputs. Factory
            * function for input text has an empty string as a tag value.

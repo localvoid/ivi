@@ -191,8 +191,28 @@ export function br(className?: string): VNode<HTMLBRElementProps | null> {
 }
 export function button(className?: string): VNode<HTMLButtonElementProps | null> {
   return new VNode(
-    VNodeFlags.Element,
+    VNodeFlags.Element | VNodeFlags.ButtonElement,
+    "<button type=\"button\"",
+    null,
+    className === undefined ? null : className,
+    null,
+    "</button>",
+  );
+}
+export function buttonSubmit(className?: string): VNode<HTMLButtonElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.ButtonElement,
     "<button",
+    null,
+    className === undefined ? null : className,
+    null,
+    "</button>",
+  );
+}
+export function buttonReset(className?: string): VNode<HTMLButtonElementProps | null> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.ButtonElement,
+    "<button type=\"reset\"",
     null,
     className === undefined ? null : className,
     null,

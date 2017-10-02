@@ -145,6 +145,10 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "input:time": h.inputTime,
   "input:url": h.inputUrl,
   "input:week": h.inputWeek,
+  // Button Elements
+  "button:button": h.button,
+  "button:submit": h.buttonSubmit,
+  "button:reset": h.buttonReset,
   // Media Elements
   "audio": h.audio,
   "video": h.video,
@@ -193,6 +197,12 @@ const InputTypes = [
   "week",
 ];
 
+const ButtonTypes = [
+  "button",
+  "submit",
+  "reset",
+];
+
 const MediaElements = [
   "audio",
   "video",
@@ -211,7 +221,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         it(`${name}`, () => {
           const n = factory();
-          if ((n._flags & VNodeFlags.InputElement) === 0) {
+          if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement)) === 0) {
             expect(n._tag).toBe(`<${name}`);
           }
         });
@@ -226,7 +236,11 @@ describe("src/index.ts", () => {
           if ((n._flags & VNodeFlags.VoidElement) !== 0) {
             expect(n._close).toBe(null);
           } else {
-            expect(n._close).toBe(`</${name}>`);
+            if ((n._flags & VNodeFlags.ButtonElement) !== 0) {
+              expect(n._close).toBe(`</button>`);
+            } else {
+              expect(n._close).toBe(`</${name}>`);
+            }
           }
         });
       }
@@ -274,12 +288,27 @@ describe("src/index.ts", () => {
         it(`input:${type}`, () => {
           const n = factory();
           expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
+          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
           if (type === "text") {
             expect(n._tag).toBe(`<input`);
           } else {
             expect(n._tag).toBe(`<input type="${type}"`);
           }
-          expect(n._close).toBe(null);
+        });
+      }
+    });
+
+    describe("button elements", () => {
+      for (const type of ButtonTypes) {
+        const factory = Elements[`button:${type}`];
+        it(`button:${type}`, () => {
+          const n = factory();
+          expect((n._flags & VNodeFlags.ButtonElement) !== 0).toBe(true);
+          if (type === "submit") {
+            expect(n._tag).toBe(`<button`);
+          } else {
+            expect(n._tag).toBe(`<button type="${type}"`);
+          }
         });
       }
     });
