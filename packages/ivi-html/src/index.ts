@@ -583,15 +583,6 @@ export function kbd(className?: string): VNode<HTMLElementProps | null, HTMLElem
     null,
   );
 }
-export function keygen(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement,
-    "keygen",
-    null,
-    className === undefined ? null : className,
-    null,
-  );
-}
 export function label(className?: string): VNode<HTMLLabelElementProps | null, HTMLLabelElement> {
   return new VNode(
     VNodeFlags.Element,

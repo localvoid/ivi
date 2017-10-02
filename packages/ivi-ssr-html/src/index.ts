@@ -639,16 +639,6 @@ export function kbd(className?: string): VNode<HTMLElementProps | null> {
     "</kbd>",
   );
 }
-export function keygen(className?: string): VNode<HTMLElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement,
-    "<keygen",
-    null,
-    className === undefined ? null : className,
-    null,
-    null,
-  );
-}
 export function label(className?: string): VNode<HTMLLabelElementProps | null> {
   return new VNode(
     VNodeFlags.Element,
