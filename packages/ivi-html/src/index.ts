@@ -1604,6 +1604,15 @@ export function textarea(className?: string): VNode<HTMLTextAreaElementProps | n
     null,
   );
 }
+export function input(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
+  return new VNode(
+    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
+    "",
+    null,
+    className === undefined ? null : className,
+    null,
+  );
+}
 export function inputButton(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
@@ -1770,15 +1779,6 @@ export function inputTel(className?: string): VNode<HTMLInputElementProps | null
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
     "tel",
-    null,
-    className === undefined ? null : className,
-    null,
-  );
-}
-export function inputText(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement,
-    "",
     null,
     className === undefined ? null : className,
     null,

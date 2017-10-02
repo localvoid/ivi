@@ -141,7 +141,7 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "input:search": h.inputSearch,
   "input:submit": h.inputSubmit,
   "input:tel": h.inputTel,
-  "input:text": h.inputText,
+  "input:text": h.input,
   "input:time": h.inputTime,
   "input:url": h.inputUrl,
   "input:week": h.inputWeek,

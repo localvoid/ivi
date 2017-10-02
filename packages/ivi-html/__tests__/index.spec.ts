@@ -122,7 +122,7 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "x-ms-webview": h.x_ms_webview,
   "xmp": h.xmp,
   // Input Elements
-  "input:": h.inputText,
+  "input:": h.input,
   "input:button": h.inputButton,
   "input:checkbox": h.inputCheckbox,
   "input:color": h.inputColor,
