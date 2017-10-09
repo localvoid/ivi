@@ -102,7 +102,7 @@ export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | n
       const yFit = polynomialFit(2, time, y, w);
       if (yFit !== null) {
         return velocityEstimate(
-          vec2(xFit[1] * 1000, yFit[1] * 1000),
+          vec2(xFit.result[1] * 1000, yFit.result[1] * 1000),
           xFit.confidence * yFit.confidence,
           duration,
           offset,

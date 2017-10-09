@@ -8,7 +8,7 @@ export interface PolynomialFit {
   result: Float64Array;
 }
 
-export function polynomialFit(degree: number, x: Float64Array, y: Float64Array, w: Float64Array): PolynomialFit | null {
+export function polynomialFit(degree: number, x: number[], y: number[], w: number[]): PolynomialFit | null {
   if (degree > x.length) {
     return null;
   }
