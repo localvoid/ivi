@@ -1,5 +1,5 @@
 import {
-  HTMLAnchorElementProps, HTMLElementProps, HTMLAppletElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
+  HTMLAnchorElementProps, HTMLElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
   HTMLBaseElementProps, HTMLBaseFontElementProps, HTMLBodyElementProps, HTMLBRElementProps, HTMLButtonElementProps,
   HTMLCanvasElementProps, HTMLQuoteElementProps, HTMLTableCaptionElementProps, HTMLTableColElementProps,
   HTMLDataListElementProps, HTMLModElementProps, HTMLDirectoryElementProps, HTMLDivElementProps,
@@ -67,16 +67,6 @@ export function address(className?: string): VNode<HTMLElementProps | null> {
     className === undefined ? null : className,
     null,
     "</address>",
-  );
-}
-export function applet(className?: string): VNode<HTMLAppletElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element,
-    "<applet",
-    null,
-    className === undefined ? null : className,
-    null,
-    "</applet>",
   );
 }
 export function area(className?: string): VNode<HTMLAreaElementProps | null> {
