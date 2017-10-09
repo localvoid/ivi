@@ -4,6 +4,7 @@ import { ConnectDescriptor } from "./connect_descriptor";
 import { VNodeFlags, VNode, vNodeEqualKeys } from "./vnode";
 import { renderOpenElement } from "./render";
 import { escapeText } from "./escape";
+import { flattenString } from "./flatten";
 
 /**
  * Blueprint Node.
@@ -595,7 +596,7 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
   if ((flags & (VNodeFlags.Element | VNodeFlags.Component)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
       if ((flags & VNodeFlags.Frozen) === 0) {
-        node.string = renderOpenElement(node.vnode);
+        node.string = flattenString(renderOpenElement(node.vnode));
       }
       if (componentNode !== undefined) {
         componentNode.string += node.string;
@@ -618,7 +619,7 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
           } else {
             if ((flags & VNodeFlags.Frozen) === 0) {
               if ((flags & VNodeFlags.UnsafeHTML) === 0) {
-                node.children = escapeText(node.vnode._children as string | number);
+                node.children = flattenString(escapeText(node.vnode._children as string | number));
               } else {
                 node.children = node.vnode._children as string;
               }
@@ -637,6 +638,7 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
       if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) === 0) {
         if ((flags & VNodeFlags.Frozen) === 0) {
           prerenderBlueprint(c, node);
+          node.string = flattenString(node.string);
           node.flags |= c.flags & VNodeFlags.DeepConnect;
         }
         if (componentNode !== undefined) {
@@ -655,7 +657,7 @@ function prerenderBlueprint(node: BlueprintNode, componentNode?: BlueprintNode):
     }
   } else { // (((flags & VNodeFlags.Text) !== 0)
     if ((flags & VNodeFlags.Frozen) === 0) {
-      node.string = escapeText(node.children as string | number);
+      node.string = flattenString(escapeText(node.children as string | number));
     }
     if (componentNode !== undefined) {
       componentNode.string += node.string;
