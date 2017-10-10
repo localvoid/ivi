@@ -54,3 +54,4 @@ export {
 export { createBlueprint, linkBlueprint } from "./blueprint";
 export { renderToString } from "./render";
 export { serializeState } from "./serialize";
+export { flattenString } from "./flatten";

@@ -603,9 +603,7 @@ export function renderToString(
   context: Context = {},
   blueprint?: BlueprintNode,
 ): string {
-  if (blueprint === undefined) {
-    return renderVNode(node, context);
-  } else {
-    return patchVNode(blueprint, node, context);
-  }
+  return blueprint === void 0 ?
+    renderVNode(node, context) :
+    patchVNode(blueprint, node, context);
 }
