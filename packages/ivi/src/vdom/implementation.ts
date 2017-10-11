@@ -60,6 +60,7 @@ function componentPerfMarkBegin(method: string, vnode: VNode): void {
       let id;
       if (perfMarkIndex >= perfMarkIds.length) {
         id = `ivi:` + perfMarkIndex;
+        Number(id); // flatten string
         perfMarkIds.push(id);
       } else {
         id = perfMarkIds[perfMarkIndex];
