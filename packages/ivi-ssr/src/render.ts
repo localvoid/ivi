@@ -4,6 +4,7 @@ import { BlueprintNode } from "./blueprint";
 import { ComponentClass, StatelessComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { escapeAttributeValue, escapeText } from "./escape";
+import { flattenString } from "./flatten";
 
 /**
  * renderElementAttrs renders element attributes to string.
@@ -603,7 +604,7 @@ export function renderToString(
   context: Context = {},
   blueprint?: BlueprintNode,
 ): string {
-  return blueprint === void 0 ?
+  return flattenString(blueprint === void 0 ?
     renderVNode(node, context) :
-    patchVNode(blueprint, node, context);
+    patchVNode(blueprint, node, context));
 }
