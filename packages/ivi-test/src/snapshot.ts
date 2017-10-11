@@ -129,9 +129,11 @@ function _toSnapshot(
       let closeTagName;
       if ((flags & VNodeFlags.InputElement) !== 0) {
         closeTagName = `input`;
-        result += `<input\n`;
-        result += `${indent(il + 1)}type="${vnode._tag}"`;
-        multiline = true;
+        result += `<input`;
+        if (vnode._tag !== "") {
+          result += `\n${indent(il + 1)}type="${vnode._tag}"`;
+          multiline = true;
+        }
       } else {
         closeTagName = vnode._tag;
         result += `<${vnode._tag}`;
@@ -193,6 +195,7 @@ function _toSnapshot(
               } else {
                 result += `\n${indent(il + 1)}value="${vnode._children}"`;
               }
+              multiline = true;
             }
           } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
             childrenString = `\n${indent(il + 1)}${vnode._children}`;

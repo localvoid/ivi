@@ -45,10 +45,6 @@
       aria-type="button"
     />
 
-#### `<div class=null>`
-
-    <div/>
-
 #### `<div class=''>`
 
     <div
@@ -189,16 +185,13 @@
 
 ## `special elements`
 
-####   `<input type='text'>`
+####   `<input>`
+
+    <input/>
+
+####   `<input value='abc'>`
 
     <input
-      type="text"
-    />
-
-####   `<input type='text' value='abc'>`
-
-    <input
-      type="text"
       value="abc"
     />
 

@@ -132,12 +132,12 @@ describe("src/snapshot.ts", () => {
   });
 
   describe("special elements", () => {
-    it("<input type='text'>", () => {
-      expect(render(h.inputText()).toSnapshot()).toMatchSnapshot();
+    it("<input>", () => {
+      expect(render(h.input()).toSnapshot()).toMatchSnapshot();
     });
 
-    it("<input type='text' value='abc'>", () => {
-      expect(render(h.inputText().value("abc")).toSnapshot()).toMatchSnapshot();
+    it("<input value='abc'>", () => {
+      expect(render(h.input().value("abc")).toSnapshot()).toMatchSnapshot();
     });
 
     it("<input type='checkbox'>", () => {
