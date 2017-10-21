@@ -4,7 +4,7 @@
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.2.0",
-  "description": "Javascript (TypeScript) library for building web user interfaces.",
+  "description": "Synthetic Events for ivi library",
   "license": "MIT",
   "author": {
     "name": "Boris Kaul",
@@ -12,16 +12,7 @@
     "url": "https://github.com/localvoid"
   },
   "keywords": [
-    "ui",
-    "virtual",
-    "dom",
-    "virtualdom",
-    "vdom",
-    "diff",
-    "browser",
-    "typescript",
-    "synthetic",
-    "events"
+    "ivi"
   ],
   "homepage": "https://github.com/ivijs/ivi",
   "repository": {

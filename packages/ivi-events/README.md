@@ -47,13 +47,13 @@ For example, native event sources are using two-phase dispatching, that is almos
 
 ```ts
 class SyntheticEvent {
-    flags: SyntheticEventFlags;
-    readonly timestamp: number;
+  flags: SyntheticEventFlags;
+  readonly timestamp: number;
 
-    constructor(flags: SyntheticEventFlags, timestamp: number);
+  constructor(flags: SyntheticEventFlags, timestamp: number);
 
-    stopPropagation();
-    preventDefault();
+  stopPropagation();
+  preventDefault();
 }
 ```
 
@@ -63,32 +63,32 @@ class SyntheticEvent {
 
 ```ts
 interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = any> {
-    /**
-     * Event Handler function call interface.
-     */
-    (ev: E): void;
-    /**
-     * Event Source.
-     */
-    source: EventSource;
-    /**
-     * See `EventHandlerFlags` for details.
-     */
-    flags: EventHandlerFlags;
-    /**
-     * Number of active listeners.
-     */
-    listeners: number;
-    /**
-     * Event Handler props.
-     */
-    props: P;
-    /**
-     * Event Handler state.
-     *
-     * Internal state that can be used to store gesture recognizers state.
-     */
-    state: S | null;
+  /**
+   * Event Handler function call interface.
+   */
+  (ev: E): void;
+  /**
+   * Event Source.
+   */
+  source: EventSource;
+  /**
+   * See `EventHandlerFlags` for details.
+   */
+  flags: EventHandlerFlags;
+  /**
+   * Number of active listeners.
+   */
+  listeners: number;
+  /**
+   * Event Handler props.
+   */
+  props: P;
+  /**
+   * Event Handler state.
+   *
+   * Internal state that can be used to store gesture recognizers state.
+   */
+  state: S | null;
 }
 ```
 
@@ -96,7 +96,7 @@ interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = a
 
 ```ts
 interface EventSource {
-    addListener(handler: EventHandler): void;
-    removeListener(handler: EventHandler): void;
+  addListener(handler: EventHandler): void;
+  removeListener(handler: EventHandler): void;
 }
 ```
