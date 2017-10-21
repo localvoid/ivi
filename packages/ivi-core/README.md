@@ -1,4 +1,4 @@
-# Core Package
+# ivi Core Package
 
 `ivi-core` package provides reusable code for browser and server environments.
 
