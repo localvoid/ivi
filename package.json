@@ -31,9 +31,9 @@
   "files": [],
   "scripts": {},
   "devDependencies": {
-    "@types/lodash": "4.14.77",
+    "@types/lodash": "^4.14.78",
     "@types/mocha": "^2.2.43",
-    "@types/node": "^8.0.34",
+    "@types/node": "^8.0.46",
     "core-js": "^2.5.1",
     "iko": "^0.4.0",
     "iko-karma-snapshot": "^0.2.0",
@@ -57,12 +57,12 @@
     "rtext": "^0.1.0",
     "rtext-writer": "^0.1.1",
     "source-map-loader": "^0.2.2",
-    "ts-loader": "^2.3.7",
+    "ts-loader": "^3.0.5",
     "ts-node": "^3.3.0",
     "tslib": "^1.8.0",
-    "tslint": "^5.7.0",
+    "tslint": "^5.8.0",
     "typescript": "^2.5.3",
-    "webpack": "^3.6.0",
+    "webpack": "^3.8.1",
     "webpack-merge": "^4.1.0"
   },
   "workspaces": [
