@@ -4,8 +4,8 @@
   "module": "browser-dev.js",
   "serverModule": "ssr-dev.js",
   "typings": "index.d.ts",
-  "version": "0.1.0",
-  "description": "ivi variables.",
+  "version": "0.1.1",
+  "description": "Environment Variables for ivi library",
   "license": "MIT",
   "author": {
     "name": "Boris Kaul",
@@ -26,11 +26,12 @@
   },
   "github": "https://github.com/ivijs/ivi",
   "files": [
-    "es6"
+    "cjs/*.js",
+    "*.js",
+    "LICENSE",
+    "README.md"
   ],
-  "scripts": {
-    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
-  },
+  "scripts": {},
   "dependencies": {},
   "peerDependencies": {},
   "devDependencies": {}
