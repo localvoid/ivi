@@ -4,7 +4,7 @@
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.2.0",
-  "description": "Javascript (TypeScript) library for building web user interfaces.",
+  "description": "VNode factories for SVG elements",
   "license": "MIT",
   "author": {
     "name": "Boris Kaul",
@@ -12,14 +12,7 @@
     "url": "https://github.com/localvoid"
   },
   "keywords": [
-    "ui",
-    "virtual",
-    "dom",
-    "virtualdom",
-    "vdom",
-    "diff",
-    "browser",
-    "typescript"
+    "ivi"
   ],
   "homepage": "https://github.com/ivijs/ivi",
   "repository": {
@@ -49,10 +42,10 @@
   "dependencies": {},
   "peerDependencies": {
     "ivi-core": "^0.2.0",
-    "ivi": "^0.9.0"
+    "ivi": "^0.9.1"
   },
   "devDependencies": {
     "ivi-core": "^0.2.0",
-    "ivi": "^0.9.0"
+    "ivi": "^0.9.1"
   }
 }
