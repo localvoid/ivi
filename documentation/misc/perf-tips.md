@@ -52,27 +52,3 @@ function Menu() {
     .children(...);
 }
 ```
-
-## Array.prototype.map
-
-Prefer simple `map` implementation over `Array.prototype.map` when rendering children lists.
-
-### Bad
-
-```ts
-function Menu(menuItems: { title: string }) {
-  return h.div()
-    .children(menuItems.map((item) => menuItem(item)));
-}
-```
-
-### Good
-
-```ts
-import { map } from "ivi";
-
-function Menu(menuItems: { title: string }) {
-  return h.div()
-    .children(map(menuItems, (item) => menuItem(item)));
-}
-```

@@ -133,6 +133,10 @@ interface Component {
 
 Component updated.
 
+`updated` lifecycle is invoked for all parents every time component is updated or any descendant component is updated.
+`localUpdates` argument is used to distinguish between updates that was caused by updating one of the descendants or
+updates in the current component.
+
 ```ts
 interface Component {
   updated(localUpdates: boolean): void;

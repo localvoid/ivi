@@ -7,7 +7,7 @@ nodes.
 
 Finding a minimum number of DOM operations is not just about performance, it is also about preserving internal state
 of DOM nodes. Moving DOM nodes isn't always a side-effect free operation, it may restart animations, drop focus, reset
-scrollbar positions, stop video playback, etc.
+scrollbar positions, stop video playback, collapse IME etc.
 
 ## Defined behaviour
 
