@@ -11,8 +11,7 @@
   },
   "keywords": [
     "ivi",
-    "tslint",
-    "rules"
+    "tslint"
   ],
   "homepage": "https://github.com/ivijs/ivi",
   "repository": {
@@ -24,7 +23,7 @@
   },
   "github": "https://github.com/ivijs/ivi",
   "files": [
-    "ivi-tslint-rules.json",
+    "index.json",
     "README.md",
     "LICENSE"
   ]

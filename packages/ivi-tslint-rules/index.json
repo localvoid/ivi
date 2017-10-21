@@ -21,6 +21,7 @@
     "align": [
       false
     ],
+    "no-conditional-assignment": false,
     "no-console": [
       false
     ],
