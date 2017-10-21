@@ -1,4 +1,4 @@
-# DOM Abstractions
+# DOM Helpers
 
 ## Browser Quirks
 
