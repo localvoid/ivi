@@ -5,7 +5,6 @@ function a(className?: string): VNode<HTMLAnchorElementProps | null>;
 function abbr(className?: string): VNode<HTMLElementProps | null>;
 function acronym(className?: string): VNode<HTMLElementProps | null>;
 function address(className?: string): VNode<HTMLElementProps | null>;
-function applet(className?: string): VNode<HTMLAppletElementProps | null>;
 function area(className?: string): VNode<HTMLAreaElementProps | null>;
 function article(className?: string): VNode<HTMLElementProps | null>;
 function aside(className?: string): VNode<HTMLElementProps | null>;
