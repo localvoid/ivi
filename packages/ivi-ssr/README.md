@@ -1,29 +1,26 @@
 # Server-Side Rendering
 
-`ivi-ssr` package provides a specialized renderer for server-side rendering.
+`ivi-ssr` package provides a renderer for server-side rendering.
 
-Since ivi 0.8.0, all APIs were completely redesigned to make sure that server-side Virtual DOM rendering can compete
-with string based template renderers. And basic benchmarks shows that it can outperform all modern string based
-template renderers.
-
-Efficient Virtual DOM rendering is built on two key ideas:
+Efficient server-side Virtual DOM rendering is built on two key ideas:
 
 - Minimal API surface that would allow to create completely different implementations, optimized for specific platforms.
-- New form of diff/patch rendering, optimized for string rendering.
+- Specialized diff/patch vdom rendering, optimized for string rendering.
 
 ## Configuring Webpack
 
 ```js
 {
-    target: "node",
-    resolve: {
-        alias: {
-            "ivi-html": "ivi-ssr-html",
-            "ivi-events": "ivi-ssr",
-            "ivi-scheduler": "ivi-ssr",
-            "ivi": "ivi-ssr"
-        }
+  target: "node",
+  resolve: {
+    alias: {
+      "ivi-html": "ivi-ssr-html",
+      "ivi-svg": "ivi-ssr-svg",
+      "ivi-events": "ivi-ssr",
+      "ivi-scheduler": "ivi-ssr",
+      "ivi": "ivi-ssr"
     }
+  }
 }
 ```
 

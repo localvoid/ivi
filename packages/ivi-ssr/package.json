@@ -5,7 +5,7 @@
   "serverModule": "dist/ssr/index.js",
   "typings": "dist/typings/index.d.ts",
   "version": "0.2.0",
-  "description": "Javascript (TypeScript) library for building web user interfaces.",
+  "description": "Server-side rendering interface for ivi library",
   "license": "MIT",
   "author": {
     "name": "Boris Kaul",
@@ -13,14 +13,8 @@
     "url": "https://github.com/localvoid"
   },
   "keywords": [
-    "ui",
-    "virtual",
-    "dom",
-    "virtualdom",
-    "vdom",
-    "diff",
-    "browser",
-    "typescript"
+    "ivi",
+    "ssr"
   ],
   "homepage": "https://github.com/ivijs/ivi",
   "repository": {
