@@ -1,1 +1,1 @@
-`ivi-html` reimplementation for Server-Side Rendering.
+`ivi-html` implementation for Server-Side Rendering.
