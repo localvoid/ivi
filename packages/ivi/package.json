@@ -4,7 +4,7 @@
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
   "unpkg": "dist/unpkg/index.js",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
   "author": {
@@ -14,8 +14,6 @@
   },
   "keywords": [
     "ui",
-    "virtual",
-    "dom",
     "virtualdom",
     "vdom",
     "diff",
@@ -38,7 +36,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "prepublish": "npm run dist",
+    "prepublishOnly": "npm run dist",
     "dist": "npm run dist:es6 && npm run dist:cjs && npm run dist:unpkg",
     "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
@@ -50,14 +48,14 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-vars": "^0.1.0",
+    "ivi-vars": "^0.1.1",
     "ivi-core": "^0.2.0",
     "ivi-dom": "^0.2.0",
     "ivi-scheduler": "^0.2.0",
     "ivi-events": "^0.2.0"
   },
   "devDependencies": {
-    "ivi-vars": "^0.1.0",
+    "ivi-vars": "^0.1.1",
     "ivi-core": "^0.2.0",
     "ivi-dom": "^0.2.0",
     "ivi-scheduler": "^0.2.0",
