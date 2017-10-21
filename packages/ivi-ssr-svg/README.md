@@ -1,1 +1,1 @@
-`ivi-svg` reimplementation for Server-Side Rendering.
+`ivi-svg` implementation for Server-Side Rendering.
