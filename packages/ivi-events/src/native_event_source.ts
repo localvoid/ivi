@@ -12,7 +12,7 @@ import { DispatchTarget, dispatchEvent } from "./dispatch";
  *
  * It is using two-phase dispatching algorithm similar to native DOM events flow.
  */
-export class NativeEventSource<E extends SyntheticNativeEventClass<Event, SyntheticNativeEvent<any>>> {
+export class NativeEventSource<T extends SyntheticNativeEvent<any>, E extends SyntheticNativeEventClass<any, T>> {
   /**
    * Public EventSource interface.
    */
@@ -40,8 +40,8 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
    * Synthetic Event constructor.
    */
   readonly eventType: E;
-  private onBeforeListeners: Array<(ev: SyntheticNativeEvent<any>) => void> | null;
-  private onAfterListeners: Array<(ev: SyntheticNativeEvent<any>) => void> | null;
+  private onBeforeListeners: Array<(ev: T) => void> | null;
+  private onAfterListeners: Array<(ev: T) => void> | null;
 
   constructor(
     flags: NativeEventSourceFlags,
@@ -103,24 +103,24 @@ export class NativeEventSource<E extends SyntheticNativeEventClass<Event, Synthe
     }
   });
 
-  addBeforeListener(cb: (e: SyntheticNativeEvent<any>) => void): void {
+  addBeforeListener(cb: (e: T) => void): void {
     this.onBeforeListeners = append(this.onBeforeListeners, cb);
     this.incDependencies();
   }
 
-  addAfterListener(cb: (e: SyntheticNativeEvent<any>) => void): void {
+  addAfterListener(cb: (e: T) => void): void {
     this.onAfterListeners = append(this.onAfterListeners, cb);
     this.incDependencies();
   }
 
-  removeBeforeListener(cb: (e: SyntheticNativeEvent<any>) => void): void {
+  removeBeforeListener(cb: (e: T) => void): void {
     if (this.onBeforeListeners !== null) {
       unorderedArrayDelete(this.onBeforeListeners, this.onBeforeListeners.indexOf(cb));
       this.decDependencies();
     }
   }
 
-  removeAfterListener(cb: (e: SyntheticNativeEvent<any>) => void): void {
+  removeAfterListener(cb: (e: T) => void): void {
     if (this.onAfterListeners !== null) {
       unorderedArrayDelete(this.onAfterListeners, this.onAfterListeners.indexOf(cb));
       this.decDependencies();

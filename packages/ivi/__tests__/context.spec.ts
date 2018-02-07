@@ -8,17 +8,8 @@ function ContextTestPrinter(value: string) {
   return h.t(value);
 }
 
-interface ContextTestPrinterSelect {
-  in: string;
-  out: string;
-}
-
 const $ContextTestPrinter = connect(
-  function (
-    prev: ContextTestPrinterSelect,
-    props: null,
-    ctx: Context<{ value: string }>,
-  ): ContextTestPrinterSelect {
+  function (prev, props, ctx: Context<{ value: string }>) {
     return {
       in: ctx.value,
       out: ctx.value,

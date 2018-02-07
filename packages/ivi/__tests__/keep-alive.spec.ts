@@ -6,7 +6,7 @@ import { expect } from "iko";
 
 function pooledKeepAlive(maxItems = 1) {
   const pool = [] as VNode[];
-  function handler(disposed: VNode) {
+  function handler(disposed: VNode | null) {
     if (disposed) {
       if (pool.length >= maxItems) {
         return null;

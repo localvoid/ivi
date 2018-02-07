@@ -91,7 +91,7 @@ function componentPerfMarkEnd(
       } else {
         if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
-            const d = vnode._tag as ConnectDescriptor<any, any, any>;
+            const d = vnode._tag as ConnectDescriptor<any, any, any, Context>;
             perfMarkEnd(`${method} [+]${getFunctionName(d.select)}`, id);
           } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
             perfMarkEnd(`${method} [^]`, id);
@@ -493,7 +493,7 @@ function vNodeDirtyCheck(
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
         if ((flags & VNodeFlags.Connect) !== 0) {
-          const connect = vnode._tag as ConnectDescriptor<any, any, any>;
+          const connect = vnode._tag as ConnectDescriptor<any, any, any, Context>;
           instance = vnode._instance as SelectorData;
           componentPerfMarkBegin("update", vnode);
           const selectData = connect.select(instance, vnode._props, context);
@@ -745,7 +745,7 @@ function vNodeRender(
       } else {
         if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
-            const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
+            const connect = (vnode._tag as ConnectDescriptor<any, any, any, Context>);
             const selectData = vnode._instance = connect.select(null, vnode._props, context);
             vnode._children = connect.render(selectData.out);
           } else {
@@ -937,7 +937,7 @@ function vNodeAugment(
           stackTracePushComponent(vnode);
           if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
             if ((flags & VNodeFlags.Connect) !== 0) {
-              const connect = (vnode._tag as ConnectDescriptor<any, any, any>);
+              const connect = (vnode._tag as ConnectDescriptor<any, any, any, Context>);
               const selectData = vnode._instance = connect.select(null, vnode._props, context);
               vnode._children = connect.render(selectData.out);
             } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
@@ -1114,7 +1114,7 @@ function vNodeSync(
 
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
-            const connect = b._tag as ConnectDescriptor<any, any, any>;
+            const connect = b._tag as ConnectDescriptor<any, any, any, Context>;
             const prevSelectData = instance as SelectorData;
             componentPerfMarkBegin("update", b);
             const selectData = connect.select(prevSelectData, b._props, context);

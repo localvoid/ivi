@@ -55,7 +55,7 @@ export abstract class Component<P = void> {
    *
    * Dev Mode.
    */
-  _debugId: number;
+  _debugId!: number;
 
   constructor(props: P) {
     this.flags = 0;

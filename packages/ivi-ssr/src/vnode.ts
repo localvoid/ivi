@@ -478,7 +478,7 @@ export type Children = Array<VNode<any>[] | VNode<any> | string | number | null>
  * @param className CSS Class name.
  * @returns VNode
  */
-export function changeClassName<P>(node: VNode, className: string | null): VNode<P> {
+export function changeClassName<P>(node: VNode<P>, className: string | null): VNode<P> {
   if (DEV) {
     if (!(node._flags & VNodeFlags.Element)) {
       throw new Error("Failed to set className, className is available on element nodes only.");

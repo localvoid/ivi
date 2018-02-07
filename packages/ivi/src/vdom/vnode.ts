@@ -40,12 +40,12 @@ export class VNode<P = any, N = Node> {
    * descriptors for nodes that change syncing algorithm behavior.
    */
   _tag:
-  | string
-  | ComponentClass<any>
-  | StatelessComponent<any>
-  | ConnectDescriptor<any, any, any>
-  | KeepAliveHandler
-  | null;
+    | string
+    | ComponentClass<any>
+    | StatelessComponent<any>
+    | ConnectDescriptor<any, any, any, Context>
+    | KeepAliveHandler
+    | null;
   /**
    * Children syncing algorithm is using key property to find the same node in the previous children array. Key
    * should be unique among its siblings.
@@ -83,7 +83,7 @@ export class VNode<P = any, N = Node> {
       | string
       | StatelessComponent<P>
       | ComponentClass<P>
-      | ConnectDescriptor<any, any, any>
+      | ConnectDescriptor<any, any, any, Context>
       | KeepAliveHandler
       | null,
     props: P | null,

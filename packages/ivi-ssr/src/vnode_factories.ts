@@ -18,7 +18,7 @@ export function componentFactory<P, U extends P>(c: StatelessComponent<P>): (pro
 export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
-export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props?: P) => VNode<P> {
+export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props: P) => VNode<P> {
   let linkedBlueprint: BlueprintNode | null = null;
   function linkBlueprint(blueprint: BlueprintNode): void {
     linkedBlueprint = blueprint;
@@ -123,44 +123,43 @@ export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Conte
   );
 }
 
-/* tslint:disable:unified-signatures */
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,
-  render: ComponentClass<O>,
-): () => VNode<P>;
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: null | void, context: Context) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<P>;
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
-  render: ComponentClass<O>,
-): (props: P) => VNode<P>;
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): (props: P) => VNode<P>;
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: null | void) => SelectorData<I, O>,
+export function connect<I, O, C extends Context>(
+  select: (prev: SelectorData<I, O> | null, props: null, context: C) => SelectorData<I, O>,
   render: ComponentClass<O>,
 ): () => VNode<null>;
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: null | void) => SelectorData<I, O>,
+export function connect<I, O, C extends Context>(
+  select: (prev: SelectorData<I, O> | null, props: null, context: C) => SelectorData<I, O>,
   render: (props: O) => VNode<any>,
 ): () => VNode<null>;
-export function connect<I, O, P>(
+export function connect<I, O, P, C extends Context>(
+  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
+  render: ComponentClass<O>,
+): (props: P) => VNode<P>;
+export function connect<I, O, P, C extends Context>(
+  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
+  render: (props: O) => VNode<any>,
+): (props: P) => VNode<P>;
+export function connect<I, O>(
+  select: (prev: SelectorData<I, O> | null, props: null) => SelectorData<I, O>,
+  render: ComponentClass<O>,
+): () => VNode<null>;
+export function connect<I, O>(
+  select: (prev: SelectorData<I, O> | null, props: null) => SelectorData<I, O>,
+  render: (props: O) => VNode<any>,
+): () => VNode<null>;
+export function connect<I, O>(
   select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
   render: ComponentClass<O>,
 ): () => VNode<null>;
-export function connect<I, O, P>(
+export function connect<I, O>(
   select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
   render: (props: O) => VNode<any>,
 ): () => VNode<null>;
-export function connect<I, O, P>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: Context) => SelectorData<I, O>,
+export function connect<I, O, P, C extends Context>(
+  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
   render: ComponentClass<O> | ((props: O) => VNode<any>),
 ): (props: P) => VNode<P> {
-  let descriptor: ConnectDescriptor<I, O, P>;
+  let descriptor: ConnectDescriptor<I, O, P, C>;
   if (DEV) {
     if (isComponentClass(render)) {
       const fn = function (props: O): VNode<O> {
@@ -181,7 +180,7 @@ export function connect<I, O, P>(
     } else {
       descriptor = {
         select,
-        render,
+        render: render as (props: O) => VNode<any>,
       };
     }
   } else {
@@ -198,7 +197,7 @@ export function connect<I, O, P>(
             null,
           );
         } :
-        render,
+        render as (props: O) => VNode<any>,
     };
   }
   return function (props: P): VNode<P> {
@@ -212,7 +211,6 @@ export function connect<I, O, P>(
     );
   };
 }
-/* tslint:enable:unified-signatures */
 
 /**
  * Create Keep Alive VNode.

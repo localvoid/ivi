@@ -54,7 +54,7 @@ export class SyntheticNativeEvent<D extends Event> extends SyntheticEvent {
 }
 
 export interface SyntheticNativeEventClass<D, E extends SyntheticNativeEvent<any>> {
-  new (
+  new(
     flags: SyntheticEventFlags,
     target: EventTarget,
     timestamp: number,

@@ -37,8 +37,8 @@
     "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "dist:ssr": "../../node_modules/.bin/tsc --project ./tsconfig.build.ssr.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "../../node_modules/.bin/mocha --reporter mocha-iko-reporter -r ../../node_modules/ts-node/register __tests__/index.ts",
-    "test:coverage": "../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.ts"
+    "test": "TS_NODE_TYPE_CHECK=Y ../../node_modules/.bin/mocha --reporter mocha-iko-reporter -r ../../node_modules/ts-node/register __tests__/index.ts",
+    "test:coverage": "TS_NODE_TYPE_CHECK=Y ../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.ts"
   },
   "peerDependencies": {
     "ivi-vars": "^0.1.1"
@@ -46,21 +46,5 @@
   "dependencies": {},
   "devDependencies": {
     "ivi-vars": "^0.1.1"
-  },
-  "nyc": {
-    "require": [
-      "../../node_modules/ts-node/register"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "reporter": [
-      "lcov",
-      "text-summary"
-    ],
-    "cache": true
   }
 }
