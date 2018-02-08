@@ -1,10 +1,10 @@
 import { DEV } from "ivi-vars";
-import { Context, SelectorData } from "ivi-core";
-import { ConnectDescriptor } from "./connect_descriptor";
+import { Context } from "ivi-core";
 import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
 import { VNode } from "./vnode";
+import { ConnectDescriptor } from "..";
 
 export interface ComponentFactory<P> {
   (props?: P): VNode<P>;
@@ -84,85 +84,35 @@ export function context<T = {}>(ctx: Context<T>, child: VNode): VNode<Context<T>
   );
 }
 
-export function connect<I, O, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: null, context: C) => SelectorData<I, O>,
-  render: ComponentClass<O>,
+export function connect<T, C extends Context>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: null, context: C) => T,
 ): () => VNode<null>;
-export function connect<I, O, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: null, context: C) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<null>;
-export function connect<I, O, P, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
-  render: ComponentClass<O>,
+export function connect<T, P, C extends Context>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: P, context: C) => T,
 ): (props: P) => VNode<P>;
-export function connect<I, O, P, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
+export function connect<T>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: null) => T,
+): () => VNode<null>;
+export function connect<T, P>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: P) => T,
 ): (props: P) => VNode<P>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null, props: null) => SelectorData<I, O>,
-  render: ComponentClass<O>,
+export function connect<T>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null) => T,
 ): () => VNode<null>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null, props: null) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<null>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
-  render: ComponentClass<O>,
-): () => VNode<null>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<null>;
-export function connect<I, O, P, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
-  render: ComponentClass<O> | ((props: O) => VNode<any>),
+export function connect<T, P, C extends Context>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: P, context: C) => T,
 ): (props: P) => VNode<P> {
-  let descriptor: ConnectDescriptor<I, O, P, C>;
-  if (DEV) {
-    if (isComponentClass(render)) {
-      const fn = function (props: O): VNode<O> {
-        return new VNode<O>(
-          VNodeFlags.ComponentClass,
-          render as ComponentClass<any>,
-          props!,
-          null,
-          null,
-        );
-      };
-      fn.displayName = render.constructor.name;
-      descriptor = {
-        select,
-        render: fn,
-      };
-    } else {
-      descriptor = {
-        select,
-        render: render as (props: O) => VNode,
-      };
-    }
-  } else {
-    descriptor = {
-      select,
-      render: isComponentClass(render) ?
-        function (props: O): VNode<O> {
-          return new VNode<O>(
-            VNodeFlags.ComponentClass,
-            render as ComponentClass<any>,
-            props!,
-            null,
-            null,
-          );
-        } :
-        render as (props: O) => VNode,
-    };
-  }
+  const descriptor = { select, render };
   return function (props: P): VNode<P> {
     return new VNode<P>(
       VNodeFlags.Connect,
-      descriptor as ConnectDescriptor<any, any, any, Context>,
+      descriptor as ConnectDescriptor<any, any, Context>,
       props,
       null,
       null,

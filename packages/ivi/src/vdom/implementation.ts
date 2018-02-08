@@ -16,7 +16,7 @@
  */
 
 import { DEV } from "ivi-vars";
-import { Context, SVG_NAMESPACE, SelectorData } from "ivi-core";
+import { Context, SVG_NAMESPACE } from "ivi-core";
 import { setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute } from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
@@ -91,7 +91,7 @@ function componentPerfMarkEnd(
       } else {
         if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
-            const d = vnode._tag as ConnectDescriptor<any, any, any, Context>;
+            const d = vnode._tag as ConnectDescriptor<any, any, Context>;
             perfMarkEnd(`${method} [+]${getFunctionName(d.select)}`, id);
           } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
             perfMarkEnd(`${method} [^]`, id);
@@ -453,7 +453,7 @@ function vNodeDirtyCheck(
   const flags = vnode._flags;
   let deepUpdate = 0;
   let children: VNode | VNode[] | undefined;
-  let instance: Node | Component<any> | SelectorData | undefined;
+  let instance: Node | Component<any> | {} | undefined;
 
   if ((flags & (
     VNodeFlags.DisabledDirtyChecking |
@@ -467,34 +467,34 @@ function vNodeDirtyCheck(
       if ((flags & VNodeFlags.ChildrenArray) !== 0) {
         children = children as VNode[];
         for (let i = 0; i < children.length; ++i) {
-          deepUpdate |= vNodeDirtyCheck(instance, children[i], context, syncFlags);
+          deepUpdate |= vNodeDirtyCheck(instance as Node, children[i], context, syncFlags);
         }
       } else {
-        deepUpdate = vNodeDirtyCheck(instance, children as VNode, context, syncFlags);
+        deepUpdate = vNodeDirtyCheck(instance as Node, children as VNode, context, syncFlags);
       }
     } else {
       stackTracePushComponent(vnode);
       if ((flags & VNodeFlags.ComponentClass) !== 0) {
         instance = vnode._instance as Component<any>;
         children = vnode._children as VNode;
-        if ((instance.flags & ComponentFlags.Dirty) !== 0) {
+        if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
           componentPerfMarkBegin("update", vnode);
-          const newRoot = vnode._children = instance.render();
+          const newRoot = vnode._children = (instance as Component<any>).render();
           vNodeSync(parent, children, newRoot, context, syncFlags);
-          instance.flags &= ~ComponentFlags.Dirty;
-          instance.updated(true);
+          (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
+          (instance as Component<any>).updated(true);
           deepUpdate = 1;
           componentPerfMarkEnd("update", vnode);
         } else {
           deepUpdate = vNodeDirtyCheck(parent, children, context, syncFlags);
           if (deepUpdate !== 0) {
-            instance.updated(false);
+            (instance as Component<any>).updated(false);
           }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
         if ((flags & VNodeFlags.Connect) !== 0) {
-          const connect = vnode._tag as ConnectDescriptor<any, any, any, Context>;
-          instance = vnode._instance as SelectorData;
+          const connect = vnode._tag as ConnectDescriptor<any, any, Context>;
+          instance = vnode._instance as {};
           componentPerfMarkBegin("update", vnode);
           const selectData = connect.select(instance, vnode._props, context);
           children = vnode._children as VNode;
@@ -507,7 +507,7 @@ function vNodeDirtyCheck(
             );
           } else {
             deepUpdate = 1;
-            vnode._children = connect.render(selectData.out);
+            vnode._children = connect.render(selectData);
             vnode._instance = selectData;
             vNodeSync(
               parent,
@@ -745,9 +745,9 @@ function vNodeRender(
       } else {
         if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
-            const connect = (vnode._tag as ConnectDescriptor<any, any, any, Context>);
+            const connect = (vnode._tag as ConnectDescriptor<any, any, Context>);
             const selectData = vnode._instance = connect.select(null, vnode._props, context);
-            vnode._children = connect.render(selectData.out);
+            vnode._children = connect.render(selectData);
           } else {
             context = instance = Object.assign({}, context, vnode._props);
           }
@@ -937,9 +937,9 @@ function vNodeAugment(
           stackTracePushComponent(vnode);
           if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
             if ((flags & VNodeFlags.Connect) !== 0) {
-              const connect = (vnode._tag as ConnectDescriptor<any, any, any, Context>);
+              const connect = (vnode._tag as ConnectDescriptor<any, any, Context>);
               const selectData = vnode._instance = connect.select(null, vnode._props, context);
-              vnode._children = connect.render(selectData.out);
+              vnode._children = connect.render(selectData);
             } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
               context = instance = Object.assign({}, context, vnode._props);
             }
@@ -1114,8 +1114,8 @@ function vNodeSync(
 
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
-            const connect = b._tag as ConnectDescriptor<any, any, any, Context>;
-            const prevSelectData = instance as SelectorData;
+            const connect = b._tag as ConnectDescriptor<any, any, Context>;
+            const prevSelectData = instance;
             componentPerfMarkBegin("update", b);
             const selectData = connect.select(prevSelectData, b._props, context);
             b._instance = selectData;
@@ -1128,7 +1128,7 @@ function vNodeSync(
                 syncFlags,
               );
             } else {
-              b._children = connect.render(selectData.out);
+              b._children = connect.render(selectData);
               vNodeSync(
                 parent,
                 a._children as VNode,

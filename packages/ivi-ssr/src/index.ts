@@ -3,7 +3,7 @@
  */
 export {
   map, mapRange, mapFilterUndefined,
-  Context, SelectorData, SelectorDataRef, selectorDataRef, selectorData, memoizeSelector,
+  Context, memoizeSelector,
   KeyCode, KeyLocation, MouseButtons,
 } from "ivi-core";
 

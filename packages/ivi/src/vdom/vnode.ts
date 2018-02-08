@@ -1,5 +1,5 @@
 import { DEV } from "ivi-vars";
-import { Context, CSSStyleProps, SelectorData } from "ivi-core";
+import { Context, CSSStyleProps } from "ivi-core";
 import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
@@ -43,7 +43,7 @@ export class VNode<P = any, N = Node> {
     | string
     | ComponentClass<any>
     | StatelessComponent<any>
-    | ConnectDescriptor<any, any, any, Context>
+    | ConnectDescriptor<any, any, Context>
     | KeepAliveHandler
     | null;
   /**
@@ -59,7 +59,7 @@ export class VNode<P = any, N = Node> {
    * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
    * time VNode is synced, reference will be transferred from the old VNode to the new one.
    */
-  _instance: N | Component<any> | SelectorData | Context | null;
+  _instance: N | Component<any> | {} | Context | null;
   /**
    * Class name.
    */
@@ -83,7 +83,7 @@ export class VNode<P = any, N = Node> {
       | string
       | StatelessComponent<P>
       | ComponentClass<P>
-      | ConnectDescriptor<any, any, any, Context>
+      | ConnectDescriptor<any, any, Context>
       | KeepAliveHandler
       | null,
     props: P | null,

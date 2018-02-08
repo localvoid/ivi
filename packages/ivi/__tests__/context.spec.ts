@@ -4,18 +4,13 @@ import * as h from "./utils/html";
 import { context, connect } from "../src/vdom/vnode_factories";
 import { expect } from "iko";
 
-function ContextTestPrinter(value: string) {
-  return h.t(value);
-}
-
 const $ContextTestPrinter = connect(
-  function (prev, props, ctx: Context<{ value: string }>) {
-    return {
-      in: ctx.value,
-      out: ctx.value,
-    };
+  function (props: { value: string }) {
+    return h.t(props.value);
   },
-  ContextTestPrinter,
+  function (prev, props, ctx: Context<{ value: string }>) {
+    return { value: ctx.value };
+  },
 );
 
 describe("context", () => {

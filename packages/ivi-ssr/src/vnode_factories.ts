@@ -1,6 +1,5 @@
 import { DEV } from "ivi-vars";
-import { Context, SelectorData } from "ivi-core";
-import { ConnectDescriptor } from "./connect_descriptor";
+import { Context } from "ivi-core";
 import { KeepAliveHandler } from "./keep_alive";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
 import { VNodeFlags, VNode } from "./vnode";
@@ -123,83 +122,31 @@ export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Conte
   );
 }
 
-export function connect<I, O, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: null, context: C) => SelectorData<I, O>,
-  render: ComponentClass<O>,
+export function connect<T, C extends Context>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: null, context: C) => T,
 ): () => VNode<null>;
-export function connect<I, O, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: null, context: C) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<null>;
-export function connect<I, O, P, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
-  render: ComponentClass<O>,
+export function connect<T, P, C extends Context>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: P, context: C) => T,
 ): (props: P) => VNode<P>;
-export function connect<I, O, P, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
+export function connect<T>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: null) => T,
+): () => VNode<null>;
+export function connect<T, P>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: P) => T,
 ): (props: P) => VNode<P>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null, props: null) => SelectorData<I, O>,
-  render: ComponentClass<O>,
+export function connect<T>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null) => T,
 ): () => VNode<null>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null, props: null) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<null>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
-  render: ComponentClass<O>,
-): () => VNode<null>;
-export function connect<I, O>(
-  select: (prev: SelectorData<I, O> | null) => SelectorData<I, O>,
-  render: (props: O) => VNode<any>,
-): () => VNode<null>;
-export function connect<I, O, P, C extends Context>(
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>,
-  render: ComponentClass<O> | ((props: O) => VNode<any>),
+export function connect<T, P, C extends Context>(
+  render: (props: T) => VNode<any>,
+  select: (prev: T | null, props: P, context: C) => T,
 ): (props: P) => VNode<P> {
-  let descriptor: ConnectDescriptor<I, O, P, C>;
-  if (DEV) {
-    if (isComponentClass(render)) {
-      const fn = function (props: O): VNode<O> {
-        return new VNode<O>(
-          VNodeFlags.ComponentClass,
-          render as ComponentClass<any>,
-          props!,
-          null,
-          null,
-          null,
-        );
-      };
-      fn.displayName = render.constructor.name;
-      descriptor = {
-        select,
-        render: fn,
-      };
-    } else {
-      descriptor = {
-        select,
-        render: render as (props: O) => VNode<any>,
-      };
-    }
-  } else {
-    descriptor = {
-      select,
-      render: (isComponentClass(render)) ?
-        function (props: O): VNode<O> {
-          return new VNode<O>(
-            VNodeFlags.ComponentClass,
-            render as ComponentClass<any>,
-            props!,
-            null,
-            null,
-            null,
-          );
-        } :
-        render as (props: O) => VNode<any>,
-    };
-  }
+  const descriptor = { select, render };
   return function (props: P): VNode<P> {
     return new VNode<P>(
       VNodeFlags.ComponentFunction | VNodeFlags.Connect,

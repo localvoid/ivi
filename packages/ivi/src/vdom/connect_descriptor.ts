@@ -1,7 +1,7 @@
-import { Context, SelectorData } from "ivi-core";
+import { Context } from "ivi-core";
 import { VNode } from "./vnode";
 
-export interface ConnectDescriptor<I, O, P, C extends Context> {
-  select: (prev: SelectorData<I, O> | null, props: P, context: C) => SelectorData<I, O>;
-  render: (props: O) => VNode<any>;
+export interface ConnectDescriptor<T, P, C extends Context> {
+  select: (prev: T | null, props: P, context: C) => T;
+  render: (props: T) => VNode<any>;
 }

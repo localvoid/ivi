@@ -1,4 +1,4 @@
-import { Context, SelectorData, shallowEqual } from "ivi-core";
+import { Context, shallowEqual } from "ivi-core";
 import { Component, ComponentClass, StatelessComponent } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { VNodeFlags, VNode, vNodeEqualKeys } from "./vnode";
@@ -31,7 +31,7 @@ export class BlueprintNode {
    *
    * Component instances for component nodes, and Selector data for connectors.
    */
-  data: Component | SelectorData | null;
+  data: Component | {} | null;
   /**
    * Children index for explicit keys.
    */
@@ -44,7 +44,7 @@ export class BlueprintNode {
   constructor(
     vnode: VNode,
     children: | BlueprintNode[] | BlueprintNode | string | number | boolean | null,
-    data: Component | SelectorData | null,
+    data: Component | {} | null,
   ) {
     this.vnode = vnode;
     this.flags = vnode._flags;
@@ -129,7 +129,7 @@ function createBlueprintFromVNode(vnode: VNode<any>, context: Context): Blueprin
           const selectData = connect.select(null, vnode._props, context);
           return new BlueprintNode(
             vnode,
-            createBlueprintFromVNode(connect.render(selectData.out), context),
+            createBlueprintFromVNode(connect.render(selectData), context),
             selectData,
           );
         } else { // ((flags & VNodeFlags.UpdateContext) !== 0)
@@ -215,7 +215,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
         if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
             const connect = bp.vnode._tag as ConnectDescriptor<any, any, any>;
-            const prevSelectData = bp.data as SelectorData;
+            const prevSelectData = bp.data;
             const selectData = connect.select(
               prevSelectData,
               bp.vnode._props,
@@ -224,7 +224,7 @@ function cloneChangedBlueprintNode(bp: BlueprintNode, context: Context): Bluepri
             if (prevSelectData !== selectData) {
               n = diffBlueprintNode(
                 bp.children as BlueprintNode,
-                connect.render(selectData.out),
+                connect.render(selectData),
                 context,
               );
               return new BlueprintNode(
@@ -375,7 +375,7 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
         if ((aFlags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0) {
           if ((aFlags & VNodeFlags.Connect) !== 0) {
             const connect = a.vnode._tag as ConnectDescriptor<any, any, any>;
-            const prevSelectData = a.data as SelectorData;
+            const prevSelectData = a.data;
             const selectData = connect.select(
               prevSelectData,
               a.vnode._props,
@@ -384,7 +384,7 @@ function diffBlueprintNode(a: BlueprintNode, b: VNode<any>, context: Context): B
             if (prevSelectData !== selectData) {
               n = diffBlueprintNode(
                 a.children as BlueprintNode,
-                connect.render(selectData.out),
+                connect.render(selectData),
                 context,
               );
               return new BlueprintNode(

@@ -1,4 +1,4 @@
-import { Context, SelectorData } from "ivi-core";
+import { Context } from "ivi-core";
 import { VNodeFlags, VNode, vNodeEqualKeys } from "./vnode";
 import { BlueprintNode } from "./blueprint";
 import { ComponentClass, StatelessComponent, Component } from "./component";
@@ -148,7 +148,7 @@ function renderVNode(node: VNode<any>, context: Context): string {
         if ((flags & VNodeFlags.Connect) !== 0) {
           const connect = node._tag as ConnectDescriptor<any, any, any>;
           const selectData = connect.select(null, node._props, context);
-          root = connect.render(selectData.out);
+          root = connect.render(selectData);
         } else {
           if ((flags & VNodeFlags.UpdateContext) !== 0) {
             context = Object.assign({}, context, node._props);
@@ -219,7 +219,7 @@ function patchCheckDeepChanges(
     } else {
       if ((flags & VNodeFlags.Connect) !== 0) {
         const connect = bp.vnode._tag as ConnectDescriptor<any, any, any>;
-        const prevSelectData = bp.data as SelectorData;
+        const prevSelectData = bp.data;
         const selectData = connect.select(
           prevSelectData,
           bp.vnode._props,
@@ -238,7 +238,7 @@ function patchCheckDeepChanges(
         } else {
           return patchVNode(
             prevChildren,
-            connect.render(selectData.out),
+            connect.render(selectData),
             context,
           );
         }
@@ -321,7 +321,7 @@ function patchStatelessComponentVNode(a: BlueprintNode, b: VNode<any>, context: 
  */
 function patchConnectVNode(a: BlueprintNode, b: VNode<any>, context: Context): string {
   const connect = b._tag as ConnectDescriptor<any, any, any>;
-  const prevSelectData = a.data as SelectorData;
+  const prevSelectData = a.data;
   const selectData = connect.select(
     prevSelectData,
     b._props,
@@ -335,7 +335,7 @@ function patchConnectVNode(a: BlueprintNode, b: VNode<any>, context: Context): s
   } else {
     return patchVNode(
       a.children as BlueprintNode,
-      connect.render(selectData.out),
+      connect.render(selectData),
       context,
     );
   }
