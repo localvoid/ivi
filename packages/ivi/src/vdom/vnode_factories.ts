@@ -86,7 +86,7 @@ export function context<T = {}>(ctx: Context<T>, child: VNode): VNode<Context<T>
 
 export function connect<T, C extends Context>(
   render: (props: T) => VNode<any>,
-  select: (prev: T | null, props: null, context: C) => T,
+  select: (prev: T | null, props: undefined, context: C) => T,
 ): () => VNode<null>;
 export function connect<T, P, C extends Context>(
   render: (props: T) => VNode<any>,
@@ -94,7 +94,7 @@ export function connect<T, P, C extends Context>(
 ): (props: P) => VNode<P>;
 export function connect<T>(
   render: (props: T) => VNode<any>,
-  select: (prev: T | null, props: null) => T,
+  select: (prev: T | null, props: undefined) => T,
 ): () => VNode<null>;
 export function connect<T, P>(
   render: (props: T) => VNode<any>,
