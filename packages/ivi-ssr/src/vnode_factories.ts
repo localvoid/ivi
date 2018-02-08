@@ -1,4 +1,3 @@
-import { DEV } from "ivi-vars";
 import { Context } from "ivi-core";
 import { KeepAliveHandler } from "./keep_alive";
 import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
