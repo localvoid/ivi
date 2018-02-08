@@ -95,16 +95,6 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
 }
 
 /**
- * Placeholder function for Update Context components.
- *
- * It is used only in Dev Mode for stack traces.
- */
-function UpdateContext() {
-  /* tslint:disable:no-empty */
-  /* tslint:enable:no-empty */
-}
-
-/**
  * Create an update context VNode.
  *
  * @param ctx Context.
@@ -114,7 +104,7 @@ function UpdateContext() {
 export function context<T = {}>(ctx: Context<T>, child: VNode<any>): VNode<Context<T>> {
   return new VNode<Context<T>>(
     VNodeFlags.ComponentFunction | VNodeFlags.UpdateContext,
-    DEV ? UpdateContext as () => VNode<any> : null,
+    null,
     ctx,
     null,
     child,
