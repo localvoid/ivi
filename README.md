@@ -28,7 +28,8 @@ Library size in ivi library is at the bottom on the list of priorities:
 - Performance / Developer Experience
 - Library Size
 
-The minimal "hello world" application that is built with ivi library weights **~13kB** (~5kB gzipped).
+Internal APIs are carefully designed to make sure that unnecessary code will be removed by Dead Code Elimination
+passes and the minimal "hello world" application that is built with ivi library weights **~13kB** (~5kB gzipped).
 
 ## Performance / Developer Experience
 
@@ -38,13 +39,6 @@ would require from an application developer to build a fast UI application.
 
 With a fast UI library we can completely ignore any complexities for majority of UI applications and rerender entire
 view from scratch when something is changed.
-
-ivi is optimized for idiomatic code without any weird "advanced" optimizations that are used by many UI libraries to get
-better results in benchmarks. And even without any "advanced" optimizations it is still
-[faster than all other libraries](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html)
-with a similar feature set. It is even
-[faster than popular string-based template renderers](https://medium.com/@localvoid/virtual-dom-ssr-performance-5c292d4961a0)
-for server-side rendering.
 
 But performance is also isn't a top priority for ivi, and that is why it provides many useful features that are lacking
 in many virtual dom libraries:
