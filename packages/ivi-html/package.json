@@ -31,9 +31,8 @@
   ],
   "scripts": {
     "prepublish": "npm run dist",
-    "dist": "npm run dist:es6 && npm run dist:cjs",
+    "dist": "npm run dist:es6",
     "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
-    "dist:cjs": "../../node_modules/.bin/tsc --project ./tsconfig.build.cjs.json",
     "test": "../../node_modules/.bin/karma start --single-run",
     "test:coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
     "test:watch": "../../node_modules/.bin/karma start",
