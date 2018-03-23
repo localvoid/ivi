@@ -12,9 +12,9 @@ import { KeepAliveHandler } from "./keep_alive";
  * Virtual DOM Node.
  *
  *     const vnode = h.div("div-class-name")
- *         .attrs({ id: "div-id" })
- *         .events(Events.onClick((e) => console.log("click event", e)))
- *         .children("Hello");
+ *         .a({ id: "div-id" })
+ *         .e(Events.onClick((e) => console.log("click event", e)))
+ *         .c("Hello");
  *
  * @final
  */
@@ -108,7 +108,7 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * key assigns a key.
+   * k assigns a key.
    *
    * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
    * should be unique among its siblings.
@@ -116,19 +116,19 @@ export class VNode<P = any, N = Node> {
    * @param key Any object that should be unique among its siblings.
    * @returns VNode
    */
-  key(key: any): this {
+  k(key: any): this {
     this._flags |= VNodeFlags.Key;
     this._key = key;
     return this;
   }
 
   /**
-   * style assigns style for an Element node.
+   * s assigns style for an Element node.
    *
    * @param style Style.
    * @returns VNode
    */
-  style<U extends CSSStyleProps>(style: U | null): this {
+  s<U extends CSSStyleProps>(style: U | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set style, style is available on element nodes only.");
@@ -143,12 +143,12 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * events assign events for an Element node.
+   * e assign events for an Element node.
    *
    * @param events Events.
    * @returns VNode
    */
-  events(events: Array<EventHandler | null> | EventHandler | null): this {
+  e(events: Array<EventHandler | null> | EventHandler | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set events, events are available on element nodes only.");
@@ -160,12 +160,12 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * attrs assigns DOM attributes for an Element node.
+   * a assigns DOM attributes for an Element node.
    *
    * @param attrs DOM attributes.
    * @returns VNode
    */
-  attrs(attrs: P | null): this {
+  a(attrs: P | null): this {
     if (DEV) {
       if (!(this._flags & VNodeFlags.Element)) {
         throw new Error("Failed to set attrs, attrs are available on element nodes only.");
@@ -184,15 +184,15 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * children assigns children for an Element node.
+   * c assigns children for an Element node.
    *
    * @param children Children can be a simple string, single VNode or recursive list of VNodes with strings and null
    *   values. It will automatically normalize recursive lists by flattening, filtering out null values and replacing
    *   strings with text nodes.
    * @returns VNode
    */
-  children(...children: Array<VNode[] | VNode | string | number | null>): this;
-  children(): this {
+  c(...children: Array<VNode[] | VNode | string | number | null>): this;
+  c(): this {
     if (DEV) {
       if (this._flags &
         (VNodeFlags.ChildrenArray |
@@ -431,7 +431,7 @@ export function changeClassName<P>(node: VNode, className: string | null): VNode
  */
 export function mergeAttrs<P>(node: VNode<P>, attrs: P | null): VNode<P> {
   if (attrs !== null) {
-    return node.attrs(
+    return node.a(
       node._props === null ?
         attrs :
         Object.assign(
@@ -452,7 +452,7 @@ export function mergeAttrs<P>(node: VNode<P>, attrs: P | null): VNode<P> {
  */
 export function mergeStyle<P, U extends CSSStyleProps>(node: VNode<P>, style: U | null): VNode<P> {
   if (style !== null) {
-    return node.style(
+    return node.s(
       node._style === null ?
         style :
         Object.assign(

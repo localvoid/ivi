@@ -27,7 +27,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
         return new VNode<P>(
           VNodeFlags.ComponentClass,
           c,
-          props!,
+          props,
           null,
           null,
           null,
@@ -36,7 +36,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
       const v = new VNode<P>(
         VNodeFlags.ComponentClass | VNodeFlags.LinkedBlueprint,
         c,
-        props!,
+        props,
         null,
         null,
         null,
@@ -50,7 +50,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
           return new VNode<P>(
             VNodeFlags.ComponentFunction,
             c,
-            props!,
+            props,
             null,
             null,
             null,
@@ -72,7 +72,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
           return new VNode<P>(
             VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
             c,
-            props!,
+            props,
             null,
             null,
             null,
@@ -81,7 +81,7 @@ export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>
         const v = new VNode<P>(
           VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps | VNodeFlags.LinkedBlueprint,
           c,
-          props!,
+          props,
           null,
           null,
           null,
