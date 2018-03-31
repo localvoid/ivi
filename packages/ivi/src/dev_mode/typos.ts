@@ -1,6 +1,7 @@
 import { DEV } from "ivi-vars";
 import { CSSStyleProps } from "ivi-core";
-import { DEV_MODE, DevModeFlags, printWarn, printWarnOnce } from "./dev_mode";
+import { DEV_MODE, DevModeFlags } from "./dev_mode";
+import { printWarn, printWarnOnce } from "./print";
 
 const DOMHTMLAttributeTypos: { [key: string]: string | ((v: any) => string | undefined) } = {
   "autoFocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,

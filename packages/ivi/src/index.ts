@@ -46,7 +46,8 @@ export { BlueprintNode, createBlueprint, linkBlueprint, renderToString, serializ
 import { DEV } from "ivi-vars";
 import { FEATURES, FeatureFlags, Context } from "ivi-core";
 import { setUpdateDOMHandler } from "ivi-scheduler";
-import { VERSION, GLOBAL_EXPORT, printError, getFunctionName } from "./dev_mode/dev_mode";
+import { VERSION, GLOBAL_EXPORT, getFunctionName } from "./dev_mode/dev_mode";
+import { printError } from "./dev_mode/print";
 import { findVNodeByDebugId, findVNodeByNode, visitComponents } from "./dev_mode/component_tree";
 import { Component, ComponentClass, StatelessComponent } from "./vdom/component";
 import { ConnectDescriptor } from "./vdom/connect_descriptor";
