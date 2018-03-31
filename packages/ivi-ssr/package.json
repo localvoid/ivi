@@ -4,7 +4,7 @@
   "module": "dist/js/index.js",
   "serverModule": "dist/ssr/index.js",
   "typings": "dist/typings/index.d.ts",
-  "version": "0.2.0",
+  "version": "0.10.0",
   "description": "Server-side rendering interface for ivi library",
   "license": "MIT",
   "author": {

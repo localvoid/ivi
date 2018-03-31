@@ -14,7 +14,6 @@ import {
   HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
   HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
   HTMLTrackElementProps, HTMLUListElementProps, HTMLVideoElementProps,
-  MSHTMLWebViewElementProps,
 } from "ivi-core";
 import { VNode, VNodeFlags } from "ivi-ssr";
 
@@ -1187,16 +1186,6 @@ export function wbr(className?: string): VNode<HTMLElementProps | null> {
     className === undefined ? null : className,
     null,
     null,
-  );
-}
-export function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | null> {
-  return new VNode(
-    VNodeFlags.Element,
-    "<x-ms-webview",
-    null,
-    className === undefined ? null : className,
-    null,
-    "</x-ms-webview>",
   );
 }
 export function xmp(className?: string): VNode<HTMLPreElementProps | null> {

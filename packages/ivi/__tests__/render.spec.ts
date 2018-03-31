@@ -31,21 +31,21 @@ describe("render", () => {
 
   it("<div> (null props)", () => {
     checkDOMOps((c) => {
-      render<HTMLElement>(h.div().attrs(null));
+      render<HTMLElement>(h.div().a(null));
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
   });
 
   it("<div> ({} props)", () => {
     checkDOMOps((c) => {
-      render<HTMLElement>(h.div().attrs({}));
+      render<HTMLElement>(h.div().a({}));
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
   });
 
   it("<div tabIndex='1'>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().attrs({ tabIndex: 1 }));
+      const n = render<HTMLElement>(h.div().a({ tabIndex: 1 }));
       expect(n.tabIndex).toBe(1);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -53,7 +53,7 @@ describe("render", () => {
 
   it("<div tabIndex='1' title='2'>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().attrs({ tabIndex: 1, title: "2" }));
+      const n = render<HTMLElement>(h.div().a({ tabIndex: 1, title: "2" }));
       expect(n.tabIndex).toBe(1);
       expect(n.title).toBe("2");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -62,7 +62,7 @@ describe("render", () => {
 
   it("<div data-abc='a'", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().attrs({ "data-abc": "a" }));
+      const n = render<HTMLElement>(h.div().a({ "data-abc": "a" }));
       expect(n.getAttribute("data-abc")).toBe("a");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -70,7 +70,7 @@ describe("render", () => {
 
   it("<div aria-type='button'", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().attrs({ "aria-type": "button" }));
+      const n = render<HTMLElement>(h.div().a({ "aria-type": "button" }));
       expect(n.getAttribute("aria-type")).toBe("button");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -106,7 +106,7 @@ describe("render", () => {
 
   it("<div style=null>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().style(null));
+      const n = render<HTMLElement>(h.div().s(null));
       expect(n.style.cssText).toBe("");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -114,7 +114,7 @@ describe("render", () => {
 
   it("<div style={top: 10px}>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().style({ top: "10px" }));
+      const n = render<HTMLElement>(h.div().s({ top: "10px" }));
       expect(n.style.top).toBe("10px");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -122,7 +122,7 @@ describe("render", () => {
 
   it("<div style={float: 'left'}>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().style({ float: "left" }));
+      const n = render<HTMLElement>(h.div().s({ float: "left" }));
       expect(n.style.cssFloat).toBe("left");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -130,7 +130,7 @@ describe("render", () => {
 
   it("<div style={top: 10px; left: 20px}>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().style({ top: "10px", left: "20px" }));
+      const n = render<HTMLElement>(h.div().s({ top: "10px", left: "20px" }));
       expect(n.style.top).toBe("10px");
       expect(n.style.left).toBe("20px");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -139,7 +139,7 @@ describe("render", () => {
 
   it("<div></div> (null children)", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children(null));
+      const n = render<HTMLElement>(h.div().c(null));
       expect(n.childNodes.length).toBe(0);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -147,7 +147,7 @@ describe("render", () => {
 
   it("<div>'abc'</div>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children("abc"));
+      const n = render<HTMLElement>(h.div().c("abc"));
       expect(n.childNodes.length).toBe(1);
       expect(n.firstChild!.nodeValue).toBe("abc");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -156,7 +156,7 @@ describe("render", () => {
 
   it("<div>10</div>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children(10));
+      const n = render<HTMLElement>(h.div().c(10));
       expect(n.childNodes.length).toBe(1);
       expect(n.firstChild!.nodeValue).toBe("10");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -165,7 +165,7 @@ describe("render", () => {
 
   it("<div><span></div>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children(h.span()));
+      const n = render<HTMLElement>(h.div().c(h.span()));
       expect(n.childNodes.length).toBe(1);
       expect(n.children[0].tagName.toLowerCase()).toBe("span");
       expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -174,7 +174,7 @@ describe("render", () => {
 
   it("<div>[]</div>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children([]));
+      const n = render<HTMLElement>(h.div().c([]));
       expect(n.childNodes.length).toBe(0);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
     });
@@ -182,7 +182,7 @@ describe("render", () => {
 
   it("<div>[<span>]</div>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children(h.span()));
+      const n = render<HTMLElement>(h.div().c(h.span()));
       expect(n.childNodes.length).toBe(1);
       expect(n.children[0].tagName.toLowerCase()).toBe("span");
       expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -191,7 +191,7 @@ describe("render", () => {
 
   it("<div>[<span>, <strong>]</div>", () => {
     checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().children(h.span(), h.strong()));
+      const n = render<HTMLElement>(h.div().c(h.span(), h.strong()));
       expect(n.childNodes.length).toBe(2);
       expect(n.children[0].tagName.toLowerCase()).toBe("span");
       expect(n.children[1].tagName.toLowerCase()).toBe("strong");
@@ -206,10 +206,10 @@ describe("render", () => {
     "  <div>" +
     "]</div>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLElement>(h.div().children(
-          h.div().children("hello"),
-          h.div().children(h.span().children("world"), h.div().children(h.span())),
-          h.div().children(h.div()),
+        const n = render<HTMLElement>(h.div().c(
+          h.div().c("hello"),
+          h.div().c(h.span().c("world"), h.div().c(h.span())),
+          h.div().c(h.div()),
           h.div(),
         ));
         expect(n.childNodes.length).toBe(4);
@@ -257,7 +257,7 @@ describe("render", () => {
 
     it("<circle style={top: 10px}>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().style({ top: "10px" }));
+        const n = render<SVGCircleElement>(h.circle().s({ top: "10px" }));
         expect(n.style.top).toBe("10px");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -265,7 +265,7 @@ describe("render", () => {
 
     it("<circle xlink:href='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().attrs({ "xlink:href": "a" }));
+        const n = render<SVGCircleElement>(h.circle().a({ "xlink:href": "a" }));
         expect(n.getAttributeNS(XLINK_NAMESPACE, "href")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -273,7 +273,7 @@ describe("render", () => {
 
     it("<circle xml:text='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().attrs({ "xml:test": "a" }));
+        const n = render<SVGCircleElement>(h.circle().a({ "xml:test": "a" }));
         expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -284,9 +284,9 @@ describe("render", () => {
     it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
       checkDOMOps((c) => {
         const n = render<HTMLElement>(
-          h.div().children(
+          h.div().c(
             h.span(),
-            [h.strong().key("strong"), h.a().key("a")], h.span(),
+            [h.strong().k("strong"), h.a().k("a")], h.span(),
           ),
         );
         expect(n.childNodes.length).toBe(4);
@@ -300,7 +300,7 @@ describe("render", () => {
 
     it("<div>['abc', []]</div>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLElement>(h.div().children("abc", []));
+        const n = render<HTMLElement>(h.div().c("abc", []));
         expect(n.childNodes.length).toBe(1);
         expect(n.childNodes[0].nodeType).toBe(Node.TEXT_NODE);
         expect(n.childNodes[0].nodeValue).toBe("abc");
@@ -310,7 +310,7 @@ describe("render", () => {
 
     it("<div>[<div>, null, <span>]</div>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLElement>(h.div().children(h.div(), null, h.span()));
+        const n = render<HTMLElement>(h.div().c(h.div(), null, h.span()));
         expect(n.childNodes.length).toBe(2);
         expect(n.children[0].tagName.toLowerCase()).toBe("div");
         expect(n.children[1].tagName.toLowerCase()).toBe("span");
@@ -320,7 +320,7 @@ describe("render", () => {
 
     it("<div>[<div>, 'abc', <span>]</div>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLElement>(h.div().children(h.div(), "abc", h.span()));
+        const n = render<HTMLElement>(h.div().c(h.div(), "abc", h.span()));
         expect(n.childNodes.length).toBe(3);
         expect(n.children[0].tagName.toLowerCase()).toBe("div");
         expect(n.childNodes[1].nodeValue).toBe("abc");
@@ -331,7 +331,7 @@ describe("render", () => {
 
     it("<div>[<div>, 123, <span>]</div>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLElement>(h.div().children(h.div(), 123, h.span()));
+        const n = render<HTMLElement>(h.div().c(h.div(), 123, h.span()));
         expect(n.childNodes.length).toBe(3);
         expect(n.children[0].tagName.toLowerCase()).toBe("div");
         expect(n.childNodes[1].nodeValue).toBe("123");
@@ -507,7 +507,7 @@ describe("render", () => {
   describe("reusing vnodes", () => {
     it("<div>a</div>", () => {
       checkDOMOps((c) => {
-        const v = h.div().children("a");
+        const v = h.div().c("a");
         const a = render<HTMLDivElement>(v, undefined, true);
         const b = render<HTMLDivElement>(cloneVNode(v), undefined, true);
         expect(a.childNodes.length).toBe(1);
@@ -521,15 +521,15 @@ describe("render", () => {
 
   describe("nesting rules violation", () => {
     it("<table><tr></table>", () => {
-      expect(() => { render(h.table().children(h.tr())); }).toThrow(Error);
+      expect(() => { render(h.table().c(h.tr())); }).toThrow(Error);
     });
 
     it("<h1><h2></h1>", () => {
-      expect(() => { render(h.h1().children(h.h2())); }).toThrow(Error);
+      expect(() => { render(h.h1().c(h.h2())); }).toThrow(Error);
     });
 
     it("<h1><span><h2></span></h1>", () => {
-      expect(() => { render(h.h1().children(h.span().children(h.h2()))); }).toThrow(Error);
+      expect(() => { render(h.h1().c(h.span().c(h.h2()))); }).toThrow(Error);
     });
   });
 });

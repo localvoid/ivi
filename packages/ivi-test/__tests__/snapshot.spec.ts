@@ -16,27 +16,27 @@ describe("src/snapshot.ts", () => {
   });
 
   it("<div> (null props)", () => {
-    expect(render(h.div().attrs(null)).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().a(null)).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div> ({} props)", () => {
-    expect(render(h.div().attrs({})).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().a({})).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div tabIndex='1'>", () => {
-    expect(render(h.div().attrs({ tabIndex: 1 })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().a({ tabIndex: 1 })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div tabIndex='1' title='2'>", () => {
-    expect(render(h.div().attrs({ tabIndex: 1, title: "2" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().a({ tabIndex: 1, title: "2" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div data-abc='a'", () => {
-    expect(render(h.div().attrs({ "data-abc": "a" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().a({ "data-abc": "a" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div aria-type='button'", () => {
-    expect(render(h.div().attrs({ "aria-type": "button" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().a({ "aria-type": "button" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div class=''>", () => {
@@ -52,47 +52,47 @@ describe("src/snapshot.ts", () => {
   });
 
   it("<div style=null>", () => {
-    expect(render(h.div().style(null)).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().s(null)).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div style={top: 10px}>", () => {
-    expect(render(h.div().style({ top: "10px" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().s({ top: "10px" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div style={float: 'left'}>", () => {
-    expect(render(h.div().style({ float: "left" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().s({ float: "left" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div style={top: 10px; left: 20px}>", () => {
-    expect(render(h.div().style({ top: "10px", left: "20px" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().s({ top: "10px", left: "20px" })).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div></div> (null children)", () => {
-    expect(render(h.div().children(null)).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c(null)).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div>'abc'</div>", () => {
-    expect(render(h.div().children("abc")).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c("abc")).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div>10</div>", () => {
-    expect(render(h.div().children(10)).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c(10)).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div><span></div>", () => {
-    expect(render(h.div().children(h.span())).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c(h.span())).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div>[]</div>", () => {
-    expect(render(h.div().children([])).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c([])).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div>[<span>]</div>", () => {
-    expect(render(h.div().children(h.span())).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c(h.span())).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div>[<span>, <strong>]</div>", () => {
-    expect(render(h.div().children(h.span(), h.strong())).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div().c(h.span(), h.strong())).toSnapshot()).toMatchSnapshot();
   });
 
   it("<div>[" +
@@ -101,10 +101,10 @@ describe("src/snapshot.ts", () => {
     "  <div><div></div>," +
     "  <div>" +
     "]</div>", () => {
-      expect(render(h.div().children(
-        h.div().children("hello"),
-        h.div().children(h.span().children("world"), h.div().children(h.span())),
-        h.div().children(h.div()),
+      expect(render(h.div().c(
+        h.div().c("hello"),
+        h.div().c(h.span().c("world"), h.div().c(h.span())),
+        h.div().c(h.div()),
         h.div(),
       )).toSnapshot()).toMatchSnapshot();
     });
@@ -119,15 +119,15 @@ describe("src/snapshot.ts", () => {
     });
 
     it("<circle style={top: 10px}>", () => {
-      expect(render(h.circle().style({ top: "10px" })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.circle().s({ top: "10px" })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle xlink:href='a'>", () => {
-      expect(render(h.circle().attrs({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.circle().a({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle xml:text='a'>", () => {
-      expect(render(h.circle().attrs({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.circle().a({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
     });
   });
 
@@ -161,11 +161,11 @@ describe("src/snapshot.ts", () => {
     });
 
     it("<audio volume=0.5>", () => {
-      expect(render(h.audio().attrs({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.audio().a({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<video volume=0.5>", () => {
-      expect(render(h.video().attrs({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.video().a({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
     });
   });
 });

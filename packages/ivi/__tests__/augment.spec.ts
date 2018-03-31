@@ -26,42 +26,42 @@ describe("augment", () => {
 
   it("<div> (null props)", () => {
     checkDOMOps((c) => {
-      augment(h.div().attrs(null), "<div></div>");
+      augment(h.div().a(null), "<div></div>");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div> ({} props)", () => {
     checkDOMOps((c) => {
-      augment(h.div().attrs({}), "<div></div>");
+      augment(h.div().a({}), "<div></div>");
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div tabIndex='1'>", () => {
     checkDOMOps((c) => {
-      augment(h.div().attrs({ tabIndex: 1 }), `<div tabIndex="1"></div>`);
+      augment(h.div().a({ tabIndex: 1 }), `<div tabIndex="1"></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div tabIndex='1' title='2'>", () => {
     checkDOMOps((c) => {
-      augment(h.div().attrs({ tabIndex: 1, title: "2" }), `<div tabIndex="1" title="2"></div>`);
+      augment(h.div().a({ tabIndex: 1, title: "2" }), `<div tabIndex="1" title="2"></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div data-abc='a'", () => {
     checkDOMOps((c) => {
-      augment(h.div().attrs({ "data-abc": "a" }), `<div data-abc="a"></div>`);
+      augment(h.div().a({ "data-abc": "a" }), `<div data-abc="a"></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div aria-type='button'", () => {
     checkDOMOps((c) => {
-      augment(h.div().attrs({ "aria-type": "button" }), `<div aria-type="button"></div>`);
+      augment(h.div().a({ "aria-type": "button" }), `<div aria-type="button"></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
@@ -89,77 +89,77 @@ describe("augment", () => {
 
   it("<div style=null>", () => {
     checkDOMOps((c) => {
-      augment(h.div().style(null), `<div></div>`);
+      augment(h.div().s(null), `<div></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div style={}>", () => {
     checkDOMOps((c) => {
-      augment(h.div().style({}), `<div></div>`);
+      augment(h.div().s({}), `<div></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div style={top: 10px}>", () => {
     checkDOMOps((c) => {
-      augment(h.div().style({ top: "10px" }), `<div style="top:10px"></div>`);
+      augment(h.div().s({ top: "10px" }), `<div style="top:10px"></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div style={top: 10px; left: 20px}>", () => {
     checkDOMOps((c) => {
-      augment(h.div().style({ top: "10px", left: "20px" }), `<div style="top:10px;left:20px"></div>`);
+      augment(h.div().s({ top: "10px", left: "20px" }), `<div style="top:10px;left:20px"></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div></div> (null children)", () => {
     checkDOMOps((c) => {
-      augment(h.div().children(null), `<div></div>`);
+      augment(h.div().c(null), `<div></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div>'abc'</div>", () => {
     checkDOMOps((c) => {
-      augment(h.div().children("abc"), `<div>abc</div>`);
+      augment(h.div().c("abc"), `<div>abc</div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div>10</div>", () => {
     checkDOMOps((c) => {
-      augment(h.div().children(10), `<div>10</div>`);
+      augment(h.div().c(10), `<div>10</div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div><span></div>", () => {
     checkDOMOps((c) => {
-      augment(h.div().children(h.span()), `<div><span></span></div>`);
+      augment(h.div().c(h.span()), `<div><span></span></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div>[]</div>", () => {
     checkDOMOps((c) => {
-      augment(h.div().children([]), `<div></div>`);
+      augment(h.div().c([]), `<div></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div>[<span>]</div>", () => {
     checkDOMOps((c) => {
-      augment(h.div().children(h.span()), `<div><span></span></div>`);
+      augment(h.div().c(h.span()), `<div><span></span></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
 
   it("<div>[<span>, <strong>]</div>", () => {
     checkDOMOps((c) => {
-      augment(h.div().children(h.span(), h.strong()), `<div><span></span><strong></strong></div>`);
+      augment(h.div().c(h.span(), h.strong()), `<div><span></span><strong></strong></div>`);
       expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
     });
   });
@@ -171,10 +171,10 @@ describe("augment", () => {
     "  <div>" +
     "]</div>", () => {
       checkDOMOps((c) => {
-        augment(h.div().children(
-          h.div().children("hello"),
-          h.div().children(h.span().children("world"), h.div().children(h.span())),
-          h.div().children(h.div()),
+        augment(h.div().c(
+          h.div().c("hello"),
+          h.div().c(h.span().c("world"), h.div().c(h.span())),
+          h.div().c(h.div()),
           h.div(),
         ), `<div><div>hello</div><div><span>world</span><div><span></span></div></div><div><div></div></div>` +
           `<div></div></div>`);
@@ -199,21 +199,21 @@ describe("augment", () => {
 
     it("<circle style={top: 10px}>", () => {
       checkDOMOps((c) => {
-        augment(h.circle().style({ top: "10px" }), `<circle style="top:10px"></circle>`);
+        augment(h.circle().s({ top: "10px" }), `<circle style="top:10px"></circle>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
 
     it("<circle xlink:href='a'>", () => {
       checkDOMOps((c) => {
-        augment(h.circle().attrs({ "xlink:href": "a" }), `<circle xlink:href="a"></circle>`);
+        augment(h.circle().a({ "xlink:href": "a" }), `<circle xlink:href="a"></circle>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
 
     it("<circle xml:text='a'>", () => {
       checkDOMOps((c) => {
-        augment(h.circle().attrs({ "xml:test": "a" }), `<circle xml:text="a"></circle>`);
+        augment(h.circle().a({ "xml:test": "a" }), `<circle xml:text="a"></circle>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
@@ -223,9 +223,9 @@ describe("augment", () => {
     it("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children(
+          h.div().c(
             h.span(),
-            [h.strong().key("strong"), h.a().key("a")], h.span(),
+            [h.strong().k("strong"), h.a().k("a")], h.span(),
           ),
           `<div><span></span><strong></strong><a></a><span></span></div>`,
         );
@@ -235,14 +235,14 @@ describe("augment", () => {
 
     it("<div>['abc', []]</div>", () => {
       checkDOMOps((c) => {
-        augment(h.div().children("abc", []), `<div>abc</div>`);
+        augment(h.div().c("abc", []), `<div>abc</div>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
 
     it("<div>[<div>, null, <span>]</div>", () => {
       checkDOMOps((c) => {
-        augment(h.div().children(h.div(), null, h.span()), `<div><div></div><span></span></div>`);
+        augment(h.div().c(h.div(), null, h.span()), `<div><div></div><span></span></div>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
@@ -250,7 +250,7 @@ describe("augment", () => {
     it("<div>[<div>, 'abc', <span>]</div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children(
+          h.div().c(
             h.div(), "abc", h.span(),
           ),
           `<div><div></div>abc<span></span></div>`,
@@ -261,7 +261,7 @@ describe("augment", () => {
 
     it("<div>[<div>, 123, <span>]</div>", () => {
       checkDOMOps((c) => {
-        augment(h.div().children(h.div(), 123, h.span()), `<div><div></div>123<span></span></div>`);
+        augment(h.div().c(h.div(), 123, h.span()), `<div><div></div>123<span></span></div>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
@@ -327,7 +327,7 @@ describe("augment", () => {
     it("<div><C>''</C></div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children($lc("1", h.t(""))),
+          h.div().c($lc("1", h.t(""))),
           `<div><!----></div>`);
         expect(c).toMatchDOMOps(1, 0, 1, 0, 0, 1, 0);
       });
@@ -336,7 +336,7 @@ describe("augment", () => {
     it("<div>[<C>''</C>]</div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children($lc("1", h.t(""))),
+          h.div().c($lc("1", h.t(""))),
           `<div><!----></div>`);
         expect(c).toMatchDOMOps(1, 0, 1, 0, 0, 1, 0);
       });
@@ -345,7 +345,7 @@ describe("augment", () => {
     it("<div>[<C>''</C><C>''</C>]</div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children($lc("1", h.t("")), $lc("2", h.t(""))),
+          h.div().c($lc("1", h.t("")), $lc("2", h.t(""))),
           `<div><!----><!----></div>`);
         expect(c).toMatchDOMOps(1, 0, 2, 0, 0, 2, 0);
       });
@@ -354,7 +354,7 @@ describe("augment", () => {
     it("<div>[<C>''</C><div><C>''</C>]</div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children($lc("1", h.t("")), h.div(), $lc("2", h.t(""))),
+          h.div().c($lc("1", h.t("")), h.div(), $lc("2", h.t(""))),
           `<div><!----><div></div><!----></div>`);
         expect(c).toMatchDOMOps(1, 0, 2, 0, 0, 2, 0);
       });
@@ -413,14 +413,14 @@ describe("augment", () => {
 
     it("<audio volume=0.5>", () => {
       checkDOMOps((c) => {
-        augment(h.audio().attrs({ volume: 0.5 }), `<audio volume="0.5"></audio>`);
+        augment(h.audio().a({ volume: 0.5 }), `<audio volume="0.5"></audio>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
 
     it("<video volume=0.5>", () => {
       checkDOMOps((c) => {
-        augment(h.video().attrs({ volume: 0.5 }), `<video volume="0.5"></video>`);
+        augment(h.video().a({ volume: 0.5 }), `<video volume="0.5"></video>`);
         expect(c).toMatchDOMOps(1, 0, 0, 0, 0, 0, 0);
       });
     });
@@ -444,7 +444,7 @@ describe("augment", () => {
     it("<div><C shouldAugment=false><div></C></div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children($lc("1", { shouldAugment: () => false }, h.div())),
+          h.div().c($lc("1", { shouldAugment: () => false }, h.div())),
           `<div><div></div></div>`);
         expect(c).toMatchDOMOps(2, 0, 0, 0, 0, 1, 0);
       });
@@ -453,7 +453,7 @@ describe("augment", () => {
     it("<div><C shouldAugment=false>''</C></div>", () => {
       checkDOMOps((c) => {
         augment(
-          h.div().children($lc("1", { shouldAugment: () => false }, h.t(""))),
+          h.div().c($lc("1", { shouldAugment: () => false }, h.t(""))),
           `<div><!----></div>`);
         expect(c).toMatchDOMOps(1, 0, 1, 0, 0, 1, 0);
       });
@@ -462,16 +462,16 @@ describe("augment", () => {
 
   describe("Nesting rules violation", () => {
     it("<table><tr></table>", () => {
-      expect(() => { augment(h.table().children(h.tr()), `<table><tr></tr></table>`); }).toThrow(Error);
+      expect(() => { augment(h.table().c(h.tr()), `<table><tr></tr></table>`); }).toThrow(Error);
     });
 
     it("<h1><h2></h1>", () => {
-      expect(() => { augment(h.h1().children(h.h2()), `<h1><h2></h2></h1>`); }).toThrow(Error);
+      expect(() => { augment(h.h1().c(h.h2()), `<h1><h2></h2></h1>`); }).toThrow(Error);
     });
 
     it("<h1><span><h2></span></h1>", () => {
       expect(() => {
-        augment(h.h1().children(h.span().children(h.h2())), `<h1><span><h2></h2></span></h1>`);
+        augment(h.h1().c(h.span().c(h.h2())), `<h1><span><h2></h2></span></h1>`);
       }).toThrow(Error);
     });
   });

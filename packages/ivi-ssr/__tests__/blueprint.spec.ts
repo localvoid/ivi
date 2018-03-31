@@ -146,7 +146,7 @@ describe("blueprint", () => {
     });
 
     it(`<div id="123">`, () => {
-      observeBlueprint(createBlueprint(h.div().attrs({
+      observeBlueprint(createBlueprint(h.div().a({
         id: "123",
       })))
         .expectElement("div")
@@ -154,7 +154,7 @@ describe("blueprint", () => {
     });
 
     it(`<div id="123" title="qwe">`, () => {
-      observeBlueprint(createBlueprint(h.div().attrs({
+      observeBlueprint(createBlueprint(h.div().a({
         id: "123",
         title: "qwe",
       })))
@@ -163,7 +163,7 @@ describe("blueprint", () => {
     });
 
     it(`<div class="abc" id="123">`, () => {
-      observeBlueprint(createBlueprint(h.div("abc").attrs({
+      observeBlueprint(createBlueprint(h.div("abc").a({
         id: "123",
       })))
         .expectElement("div")
@@ -171,7 +171,7 @@ describe("blueprint", () => {
     });
 
     it(`<div style="color:green">`, () => {
-      observeBlueprint(createBlueprint(h.div().style({
+      observeBlueprint(createBlueprint(h.div().s({
         color: "green",
       })))
         .expectElement("div")
@@ -179,7 +179,7 @@ describe("blueprint", () => {
     });
 
     it(`<div style="color:green;font-size:1">`, () => {
-      observeBlueprint(createBlueprint(h.div().style({
+      observeBlueprint(createBlueprint(h.div().s({
         color: "green",
         "font-size": 1,
       })))
@@ -188,7 +188,7 @@ describe("blueprint", () => {
     });
 
     it(`<div class="abc" style="color:green">`, () => {
-      observeBlueprint(createBlueprint(h.div("abc").style({
+      observeBlueprint(createBlueprint(h.div("abc").s({
         color: "green",
       })))
         .expectElement("div")
@@ -196,9 +196,9 @@ describe("blueprint", () => {
     });
 
     it(`<div id="123" style="color:green">`, () => {
-      observeBlueprint(createBlueprint(h.div().attrs({
+      observeBlueprint(createBlueprint(h.div().a({
         id: "123",
-      }).style({
+      }).s({
         color: "green",
       })))
         .expectElement("div")
@@ -206,9 +206,9 @@ describe("blueprint", () => {
     });
 
     it(`<div class="abc" id="123" style="color:green">`, () => {
-      observeBlueprint(createBlueprint(h.div("abc").attrs({
+      observeBlueprint(createBlueprint(h.div("abc").a({
         id: "123",
-      }).style({
+      }).s({
         color: "green",
       })))
         .expectElement("div")
@@ -231,7 +231,7 @@ describe("blueprint", () => {
     });
 
     it(`<C><div><C><span></C></div><C>`, () => {
-      const a = observeBlueprint(createBlueprint(c.rc(h.div().children(c.rc(h.span())))))
+      const a = observeBlueprint(createBlueprint(c.rc(h.div().c(c.rc(h.span())))))
         .expectComponent(c.RenderChild)
         .expectString(`<div><span></span></div>`);
 
@@ -256,7 +256,7 @@ describe("blueprint", () => {
     });
 
     it(`<SC><div><SC><span></SC></div><SC>`, () => {
-      const a = observeBlueprint(createBlueprint(c.src(h.div().children(c.src(h.span())))))
+      const a = observeBlueprint(createBlueprint(c.src(h.div().c(c.src(h.span())))))
         .expectStatelessComponent(c.StatelessRenderChild)
         .expectString(`<div><span></span></div>`);
 
@@ -273,8 +273,8 @@ describe("blueprint", () => {
 
     it(`<span><cc></span>`, () => {
       const ctx = { child: h.strong() };
-      const a = observeBlueprint(createBlueprint(h.div().children(
-        context(ctx, h.span().children(c.cc())),
+      const a = observeBlueprint(createBlueprint(h.div().c(
+        context(ctx, h.span().c(c.cc())),
       )))
         .expectString(`<div>`);
 
@@ -288,8 +288,8 @@ describe("blueprint", () => {
     });
 
     it(`<span><ccp></span>`, () => {
-      const a = observeBlueprint(createBlueprint(h.div().children(
-        h.span().children(c.ccp(h.strong())),
+      const a = observeBlueprint(createBlueprint(h.div().c(
+        h.span().c(c.ccp(h.strong())),
       )))
         .expectString(`<div>`);
 
@@ -339,74 +339,74 @@ describe("blueprint", () => {
       });
 
       it(`div with same props`, () => {
-        const a = createBlueprint(h.div().attrs({ a: "123" }));
-        const b = createBlueprint(h.div().attrs({ a: "123" }), undefined, a);
+        const a = createBlueprint(h.div().a({ a: "123" }));
+        const b = createBlueprint(h.div().a({ a: "123" }), undefined, a);
         expect(a).toBe(b);
       });
 
       it(`div with diff props`, () => {
-        const a = createBlueprint(h.div().attrs({ a: "123" }));
-        const b = createBlueprint(h.div().attrs({ a: "456" }), undefined, a);
+        const a = createBlueprint(h.div().a({ a: "123" }));
+        const b = createBlueprint(h.div().a({ a: "456" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`div with same style`, () => {
-        const a = createBlueprint(h.div().style({ color: "green" }));
-        const b = createBlueprint(h.div().style({ color: "green" }), undefined, a);
+        const a = createBlueprint(h.div().s({ color: "green" }));
+        const b = createBlueprint(h.div().s({ color: "green" }), undefined, a);
         expect(a).toBe(b);
       });
 
       it(`div with diff style`, () => {
-        const a = createBlueprint(h.div().style({ color: "green" }));
-        const b = createBlueprint(h.div().style({ color: "red" }), undefined, a);
+        const a = createBlueprint(h.div().s({ color: "green" }));
+        const b = createBlueprint(h.div().s({ color: "red" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`div with same class/props diff style`, () => {
-        const a = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "green" }));
-        const b = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "red" }), undefined, a);
+        const a = createBlueprint(h.div("abc").a({ a: "123" }).s({ color: "green" }));
+        const b = createBlueprint(h.div("abc").a({ a: "123" }).s({ color: "red" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`div with same class/style diff props`, () => {
-        const a = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "green" }));
-        const b = createBlueprint(h.div("abc").attrs({ a: "456" }).style({ color: "green" }), undefined, a);
+        const a = createBlueprint(h.div("abc").a({ a: "123" }).s({ color: "green" }));
+        const b = createBlueprint(h.div("abc").a({ a: "456" }).s({ color: "green" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`div with same props/style diff class`, () => {
-        const a = createBlueprint(h.div("abc").attrs({ a: "123" }).style({ color: "green" }));
-        const b = createBlueprint(h.div("def").attrs({ a: "123" }).style({ color: "green" }), undefined, a);
+        const a = createBlueprint(h.div("abc").a({ a: "123" }).s({ color: "green" }));
+        const b = createBlueprint(h.div("def").a({ a: "123" }).s({ color: "green" }), undefined, a);
         expect(a).notToBe(b);
       });
 
       it(`same children`, () => {
-        const a = createBlueprint(h.div().children(h.span()));
-        const b = createBlueprint(h.div().children(h.span()), undefined, a);
+        const a = createBlueprint(h.div().c(h.span()));
+        const b = createBlueprint(h.div().c(h.span()), undefined, a);
         expect(a).toBe(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
 
       it(`same multiple children`, () => {
-        const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
-        const b = createBlueprint(h.div().children(h.span(), h.div(), h.span()), undefined, a);
+        const a = createBlueprint(h.div().c(h.span(), h.div(), h.span()));
+        const b = createBlueprint(h.div().c(h.span(), h.div(), h.span()), undefined, a);
         expect(a).toBe(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
 
       it(`diff children`, () => {
-        const a = createBlueprint(h.div().children(h.span()));
-        const b = createBlueprint(h.div().children(h.div()), undefined, a);
+        const a = createBlueprint(h.div().c(h.span()));
+        const b = createBlueprint(h.div().c(h.div()), undefined, a);
         expect(a).notToBe(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
       });
 
       it(`diff multiple children`, () => {
-        const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
-        const b = createBlueprint(h.div().children(h.span(), h.span(), h.span()), undefined, a);
+        const a = createBlueprint(h.div().c(h.span(), h.div(), h.span()));
+        const b = createBlueprint(h.div().c(h.span(), h.span(), h.span()), undefined, a);
         expect(a).notToBe(b);
         observeBlueprint(b)
           .expectNoDeepConnect();
@@ -415,8 +415,8 @@ describe("blueprint", () => {
 
     describe("deep reuse", () => {
       it(`1`, () => {
-        const a = createBlueprint(h.div().children(h.span(), h.div(), h.span()));
-        const b = createBlueprint(h.div().children(h.span(), h.span(), h.span()), undefined, a);
+        const a = createBlueprint(h.div().c(h.span(), h.div(), h.span()));
+        const b = createBlueprint(h.div().c(h.span(), h.span(), h.span()), undefined, a);
         const index = createBlueprintIndex(a);
         const o = observeBlueprint(b);
         const c1 = o.firstChild();
@@ -429,9 +429,9 @@ describe("blueprint", () => {
       });
 
       it(`children keys`, () => {
-        const a = createBlueprint(h.div().children(h.span().key("a"), h.div().key("b"), h.span().key("c")));
+        const a = createBlueprint(h.div().c(h.span().k("a"), h.div().k("b"), h.span().k("c")));
         const b = createBlueprint(
-          h.div().children(h.span().key("c"), h.span().key("a"), h.div().key("b")),
+          h.div().c(h.span().k("c"), h.span().k("a"), h.div().k("b")),
           undefined,
           a,
         );
@@ -479,8 +479,8 @@ describe("blueprint", () => {
 
     it(`<div><cc></div>`, () => {
       const ctx = { child: h.div() };
-      const a = observeBlueprint(createBlueprint(h.div().children(
-        context(ctx, h.div().children(c.cc())),
+      const a = observeBlueprint(createBlueprint(h.div().c(
+        context(ctx, h.div().c(c.cc())),
       )))
         .expectDeepConnect();
 
@@ -497,8 +497,8 @@ describe("blueprint", () => {
 
     it(`<div><div></div><cc></div>`, () => {
       const ctx = { child: h.div() };
-      observeBlueprint(createBlueprint(h.div().children(
-        context(ctx, h.div().children(h.div(), c.cc())),
+      observeBlueprint(createBlueprint(h.div().c(
+        context(ctx, h.div().c(h.div(), c.cc())),
       )))
         .expectDeepConnect();
     });

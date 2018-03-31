@@ -2198,12 +2198,6 @@ export declare interface HTMLVideoElementProps extends HTMLMediaElementProps {
   width?: number;
 }
 
-export declare interface MSHTMLWebViewElementProps extends HTMLElementProps {
-  height?: number;
-  src?: string;
-  width?: number;
-}
-
 export declare interface SVGLangSpaceProps {
   xmllang?: string;
   xmlspace?: string;

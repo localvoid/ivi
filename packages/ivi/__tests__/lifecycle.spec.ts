@@ -66,7 +66,7 @@ describe("lifecycle", () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(h.div());
-        render(h.div().children($lc("1", h.div())));
+        render(h.div().c($lc("1", h.div())));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "render")).toBe(1);
@@ -85,7 +85,7 @@ describe("lifecycle", () => {
   it("<div><C><div></C></div> => <div></div>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render(h.div().children($lc("1", h.div())));
+        render(h.div().c($lc("1", h.div())));
         render(h.div());
 
         expect(c("1", "constructor")).toBe(0);

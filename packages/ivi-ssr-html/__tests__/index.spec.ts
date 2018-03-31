@@ -118,7 +118,6 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "u": h.u,
   "ul": h.ul,
   "wbr": h.wbr,
-  "x-ms-webview": h.x_ms_webview,
   "xmp": h.xmp,
   // Input Elements
   "input:button": h.inputButton,

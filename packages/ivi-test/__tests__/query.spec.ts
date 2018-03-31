@@ -4,7 +4,7 @@ import { VNodeWrapper } from "../src/vdom";
 import { expect } from "iko";
 
 describe("src/query.ts", () => {
-  const tree = new VNodeWrapper(h.div().children(h.span(), h.span()), null, {});
+  const tree = new VNodeWrapper(h.div().c(h.span(), h.span()), null, {});
 
   describe("one", () => {
     it("div", () => {

@@ -115,10 +115,6 @@ export class SyntheticKeyboardEvent extends SyntheticUIEvent<KeyboardEvent> {
     return 0;
   }
 
-  get locale(): string {
-    return this.native.locale;
-  }
-
   get location(): number {
     return this.native.location;
   }

@@ -8,7 +8,7 @@ import { expect } from "iko";
 
 function genVNodes(item: any, keys: boolean): VNode | VNode[] {
   if (typeof item === "number") {
-    return keys ? h.t(item.toString()).key(item.toString()) : h.t(item.toString());
+    return keys ? h.t(item.toString()).k(item.toString()) : h.t(item.toString());
   } else if (Array.isArray(item)) {
     const result: VNode[] = [];
     for (let i = 0; i < item.length; i++) {
@@ -16,29 +16,28 @@ function genVNodes(item: any, keys: boolean): VNode | VNode[] {
     }
     return result;
   } else {
-    const e = keys ? h.div().key(item.key) : h.div();
+    const e = keys ? h.div().k(item.key) : h.div();
     if (keys) {
-      e.children.apply(e, genVNodes(item.children, keys) as VNode[]);
+      e.c(...genVNodes(item.children, keys) as VNode[]);
     } else {
-      e.children.apply(e, genVNodes(item.children, keys) as VNode[]);
+      e.c(...genVNodes(item.children, keys) as VNode[]);
     }
     return e;
   }
 }
 
-function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boolean,
-  counter: DOMOpsCounter): void {
+function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boolean, counter: DOMOpsCounter): void {
   const a = h.div();
   const b = h.div();
   const c = h.div();
   if (keys) {
-    a.children.apply(a, ax);
-    b.children.apply(b, bx);
-    c.children.apply(c, cx);
+    a.c(...ax);
+    b.c(...bx);
+    c.c(...cx);
   } else {
-    a.children.apply(a, ax);
-    b.children.apply(b, bx);
-    c.children.apply(c, cx);
+    a.c(...ax);
+    b.c(...bx);
+    c.c(...cx);
   }
 
   const aDiv = document.createElement("div");
@@ -58,7 +57,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          r(h.div().attrs({}));
+          r(h.div().a({}));
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
@@ -67,7 +66,7 @@ describe("sync", () => {
     it("{} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({}));
+          r(h.div().a({}));
           r(h.div());
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -77,8 +76,8 @@ describe("sync", () => {
     it("{} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({}));
-          r(h.div().attrs({}));
+          r(h.div().a({}));
+          r(h.div().a({}));
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
       });
@@ -88,7 +87,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          const b = r(h.div().attrs({ title: "1" })) as HTMLElement;
+          const b = r(h.div().a({ title: "1" })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -98,8 +97,8 @@ describe("sync", () => {
     it("{} => {title: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({}));
-          const b = r(h.div().attrs({ title: "1" })) as HTMLElement;
+          r(h.div().a({}));
+          const b = r(h.div().a({ title: "1" })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -109,8 +108,8 @@ describe("sync", () => {
     it("{title: 1} => {title: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1" }));
-          const b = r(h.div().attrs({ title: "2" })) as HTMLElement;
+          r(h.div().a({ title: "1" }));
+          const b = r(h.div().a({ title: "2" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -120,8 +119,8 @@ describe("sync", () => {
     it("{} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({}));
-          const b = r(h.div().attrs({ title: "2", tabIndex: 2 })) as HTMLElement;
+          r(h.div().a({}));
+          const b = r(h.div().a({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -132,8 +131,8 @@ describe("sync", () => {
     it("{title: 1} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1" }));
-          const b = r(h.div().attrs({ title: "2", tabIndex: 2 })) as HTMLElement;
+          r(h.div().a({ title: "1" }));
+          const b = r(h.div().a({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -144,8 +143,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().attrs({ title: "2", tabIndex: 2 })) as HTMLElement;
+          r(h.div().a({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().a({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -156,8 +155,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 1, tabIndex: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().attrs({ title: "1", tabIndex: 1 })) as HTMLElement;
+          r(h.div().a({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().a({ title: "1", tabIndex: 1 })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(b.tabIndex).toBe(1);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -168,8 +167,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().attrs({ title: "2" })) as HTMLElement;
+          r(h.div().a({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().a({ title: "2" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBeLessThan(1);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -180,8 +179,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {title: 2, lang: en}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().attrs({ title: "2", lang: "en" })) as HTMLElement;
+          r(h.div().a({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().a({ title: "2", lang: "en" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBeLessThan(1);
           expect(b.lang).toBe("en");
@@ -193,8 +192,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {lang: en}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().attrs({ lang: "en" })) as HTMLElement;
+          r(h.div().a({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().a({ lang: "en" })) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
           expect(b.lang).toBe("en");
@@ -206,8 +205,8 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
-          const b = r(h.div().attrs({})) as HTMLElement;
+          r(h.div().a({ title: "1", tabIndex: 1 }));
+          const b = r(h.div().a({})) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -218,7 +217,7 @@ describe("sync", () => {
     it("{title: 1, tabIndex: 1} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().attrs({ title: "1", tabIndex: 1 }));
+          r(h.div().a({ title: "1", tabIndex: 1 }));
           const b = r(h.div()) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
@@ -282,7 +281,7 @@ describe("sync", () => {
     it("{} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({}));
+          r(h.div().s({}));
           const b = r(h.div()) as HTMLElement;
           expect(b.style.cssText).toBe("");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -294,7 +293,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          const b = r(h.div().style({})) as HTMLElement;
+          const b = r(h.div().s({})) as HTMLElement;
           expect(b.style.cssText).toBe("");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -304,8 +303,8 @@ describe("sync", () => {
     it("{} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({}));
-          const b = r(h.div().style({})) as HTMLElement;
+          r(h.div().s({}));
+          const b = r(h.div().s({})) as HTMLElement;
           expect(b.style.cssText).toBe("");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -316,7 +315,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          const b = r(h.div().style({ top: "10px" })) as HTMLElement;
+          const b = r(h.div().s({ top: "10px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -326,8 +325,8 @@ describe("sync", () => {
     it("{} => {top: 10px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({}));
-          const b = r(h.div().style({ top: "10px" })) as HTMLElement;
+          r(h.div().s({}));
+          const b = r(h.div().s({ top: "10px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
         });
@@ -338,7 +337,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
-          const b = r(h.div().style({ top: "10px", left: "20px" })) as HTMLElement;
+          const b = r(h.div().s({ top: "10px", left: "20px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -349,8 +348,8 @@ describe("sync", () => {
     it("{top: 1px} => {top: 10px, left: 20px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px" }));
-          const b = r(h.div().style({ top: "10px", left: "20px" })) as HTMLElement;
+          r(h.div().s({ top: "1px" }));
+          const b = r(h.div().s({ top: "10px", left: "20px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -361,8 +360,8 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => {top: 10px, left: 20px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
-          const b = r(h.div().style({ top: "10px", left: "20px" })) as HTMLElement;
+          r(h.div().s({ top: "1px", left: "1px" }));
+          const b = r(h.div().s({ top: "10px", left: "20px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -373,8 +372,8 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => {top: 10px, left: 20px, right: 30px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
-          const b = r(h.div().style({ top: "10px", left: "20px", right: "30px" })) as HTMLElement;
+          r(h.div().s({ top: "1px", left: "1px" }));
+          const b = r(h.div().s({ top: "10px", left: "20px", right: "30px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
           expect(b.style.right).toBe("30px");
@@ -386,8 +385,8 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => {top: 10px, right: 30px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
-          const b = r(h.div().style({ top: "10px", right: "30px" })) as HTMLElement;
+          r(h.div().s({ top: "1px", left: "1px" }));
+          const b = r(h.div().s({ top: "10px", right: "30px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("");
           expect(b.style.right).toBe("30px");
@@ -399,8 +398,8 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => {right: 30px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
-          const b = r(h.div().style({ right: "30px" })) as HTMLElement;
+          r(h.div().s({ top: "1px", left: "1px" }));
+          const b = r(h.div().s({ right: "30px" })) as HTMLElement;
           expect(b.style.top).toBe("");
           expect(b.style.left).toBe("");
           expect(b.style.right).toBe("30px");
@@ -412,8 +411,8 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => {top: 1px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
-          const b = r(h.div().style({ top: "1px" })) as HTMLElement;
+          r(h.div().s({ top: "1px", left: "1px" }));
+          const b = r(h.div().s({ top: "1px" })) as HTMLElement;
           expect(b.style.top).toBe("1px");
           expect(b.style.left).toBe("");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -424,8 +423,8 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
-          const b = r(h.div().style({})) as HTMLElement;
+          r(h.div().s({ top: "1px", left: "1px" }));
+          const b = r(h.div().s({})) as HTMLElement;
           expect(b.style.top).toBe("");
           expect(b.style.left).toBe("");
           expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -436,7 +435,7 @@ describe("sync", () => {
     it("{top: 1px, left: 1px} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().style({ top: "1px", left: "1px" }));
+          r(h.div().s({ top: "1px", left: "1px" }));
           const b = r(h.div()) as HTMLElement;
           expect(b.style.top).toBe("");
           expect(b.style.left).toBe("");
@@ -620,7 +619,7 @@ describe("sync", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
-            const b = r(h.div().children("abc"));
+            const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -632,7 +631,7 @@ describe("sync", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
-            const b = r(h.div().children(10));
+            const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -643,7 +642,7 @@ describe("sync", () => {
       it("'abc' => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children("abc"));
+            r(h.div().c("abc"));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -654,7 +653,7 @@ describe("sync", () => {
       it("10 => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(10));
+            r(h.div().c(10));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -665,8 +664,8 @@ describe("sync", () => {
       it("'abc' => 'abc'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children("abc"));
-            const b = r(h.div().children("abc"));
+            r(h.div().c("abc"));
+            const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -677,8 +676,8 @@ describe("sync", () => {
       it("10 => 10", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(10));
-            const b = r(h.div().children(10));
+            r(h.div().c(10));
+            const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -689,8 +688,8 @@ describe("sync", () => {
       it("'abc' => 'cde'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children("abc"));
-            const b = r(h.div().children("cde"));
+            r(h.div().c("abc"));
+            const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -701,8 +700,8 @@ describe("sync", () => {
       it("'' => 'cde'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(""));
-            const b = r(h.div().children("cde"));
+            r(h.div().c(""));
+            const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -713,8 +712,8 @@ describe("sync", () => {
       it("'abc' => 10", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children("abc"));
-            const b = r(h.div().children(10));
+            r(h.div().c("abc"));
+            const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -725,8 +724,8 @@ describe("sync", () => {
       it("10 => 'abc'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(10));
-            const b = r(h.div().children("abc"));
+            r(h.div().c(10));
+            const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
             expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -738,7 +737,7 @@ describe("sync", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
-            const b = r(h.div().children(h.div())) as HTMLElement;
+            const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -749,8 +748,8 @@ describe("sync", () => {
       it("<div> => 'cde'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div()));
-            const b = r(h.div().children("cde"));
+            r(h.div().c(h.div()));
+            const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -761,8 +760,8 @@ describe("sync", () => {
       it("'cde' => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children("cde"));
-            const b = r(h.div().children(h.div())) as HTMLElement;
+            r(h.div().c("cde"));
+            const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -774,7 +773,7 @@ describe("sync", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
-            const b = r(h.div().children(h.div())) as HTMLElement;
+            const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -785,7 +784,7 @@ describe("sync", () => {
       it("<div> => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div()));
+            r(h.div().c(h.div()));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
@@ -796,7 +795,7 @@ describe("sync", () => {
       it("[<div>] => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children([h.div()]));
+            r(h.div().c([h.div()]));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
@@ -807,8 +806,8 @@ describe("sync", () => {
       it("[<div>] => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div()));
-            const b = r(h.div().children(null));
+            r(h.div().c(h.div()));
+            const b = r(h.div().c(null));
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
           });
@@ -819,7 +818,7 @@ describe("sync", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
-            const b = r(h.div().children(h.div(), h.div())) as HTMLElement;
+            const b = r(h.div().c(h.div(), h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(b.children[1].tagName.toLowerCase()).toBe("div");
@@ -831,7 +830,7 @@ describe("sync", () => {
       it("[<div>, <div>] => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div(), h.div()));
+            r(h.div().c(h.div(), h.div()));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
@@ -854,7 +853,7 @@ describe("sync", () => {
       it("123 => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(123));
+            r(h.div().c(123));
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
@@ -866,8 +865,8 @@ describe("sync", () => {
       it("123 => [<h1><h2>]", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(123));
-            const b = r(h.div().children(h.h1(), h.h2())) as HTMLElement;
+            r(h.div().c(123));
+            const b = r(h.div().c(h.h1(), h.h2())) as HTMLElement;
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("h1");
             expect(b.children[1].tagName.toLowerCase()).toBe("h2");
@@ -879,8 +878,8 @@ describe("sync", () => {
       it("[<h1><h2>] => 123", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.h1(), h.h2()));
-            const b = r(h.div().children(123));
+            r(h.div().c(h.h1(), h.h2()));
+            const b = r(h.div().c(123));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("123");
             expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
@@ -891,7 +890,7 @@ describe("sync", () => {
       it("[<h1><h2>] => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.h1(), h.h2()));
+            r(h.div().c(h.h1(), h.h2()));
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
@@ -903,8 +902,8 @@ describe("sync", () => {
       it("[<h1><h2>] => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.h1(), h.h2()));
-            const b = r(h.div().children(h.div())) as HTMLElement;
+            r(h.div().c(h.h1(), h.h2()));
+            const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(c).toMatchDOMOps(4, 0, 0, 0, 3, 1, 1);
@@ -915,8 +914,8 @@ describe("sync", () => {
       it("[] => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children([]));
-            const b = r(h.div().children(h.div())) as HTMLElement;
+            r(h.div().c([]));
+            const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
@@ -927,7 +926,7 @@ describe("sync", () => {
       it("<div> => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div()));
+            r(h.div().c(h.div()));
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
@@ -939,8 +938,8 @@ describe("sync", () => {
       it("<h1> => <h2>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.h1()));
-            const b = r(h.div().children(h.h2())) as HTMLElement;
+            r(h.div().c(h.h1()));
+            const b = r(h.div().c(h.h2())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("h2");
             expect(c).toMatchDOMOps(3, 0, 0, 0, 2, 1, 0);
@@ -951,8 +950,8 @@ describe("sync", () => {
       it("<div> => [<h1><h2>]", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div()));
-            const b = r(h.div().children(h.h1(), h.h2())) as HTMLElement;
+            r(h.div().c(h.div()));
+            const b = r(h.div().c(h.h1(), h.h2())) as HTMLElement;
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("h1");
             expect(b.children[1].tagName.toLowerCase()).toBe("h2");
@@ -964,8 +963,8 @@ describe("sync", () => {
       it("<div> => []", () => {
         startRender((r) => {
           checkDOMOps((c) => {
-            r(h.div().children(h.div()));
-            const b = r(h.div().children([]));
+            r(h.div().c(h.div()));
+            const b = r(h.div().c([]));
             expect(b.childNodes.length).toBe(0);
             expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
           });
@@ -1468,9 +1467,9 @@ describe("sync", () => {
 
       render() {
         if (this.state === 1) {
-          return h.span().children(1);
+          return h.span().c(1);
         }
-        return h.div().children(0);
+        return h.div().c(0);
       }
 
       updateState(state: number) {
@@ -1491,15 +1490,15 @@ describe("sync", () => {
     it("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          const a = ca(0).key(1);
-          r(h.div().children(
-            h.h1().key(0),
+          const a = ca(0).k(1);
+          r(h.div().c(
+            h.h1().k(0),
             a,
           ));
           getComponentInstanceFromVNode<A>(a)!.updateState(1);
-          const n = r(h.div().children(
-            ca(1).key(1),
-            h.h1().key(0),
+          const n = r(h.div().c(
+            ca(1).k(1),
+            h.h1().k(0),
           )) as HTMLDivElement;
           expect(n.children[0].tagName.toLowerCase()).toBe("span");
           expect(n.children[0].firstChild!.nodeValue).toBe("1");
@@ -1512,14 +1511,14 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0);
-          r(h.div().children(
-            h.h1().key(0),
-            cb(a).key(1),
+          r(h.div().c(
+            h.h1().k(0),
+            cb(a).k(1),
           ));
           getComponentInstanceFromVNode<A>(a)!.updateState(1);
-          const n = r(h.div().children(
-            cb(ca(1)).key(1),
-            h.h1().key(0),
+          const n = r(h.div().c(
+            cb(ca(1)).k(1),
+            h.h1().k(0),
           )) as HTMLDivElement;
           expect(n.children[0].tagName.toLowerCase()).toBe("span");
           expect(n.children[0].firstChild!.nodeValue).toBe("1");
@@ -1532,15 +1531,15 @@ describe("sync", () => {
     it("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          const a = ca(0).key(1);
-          r(h.div().children(
+          const a = ca(0).k(1);
+          r(h.div().c(
             a,
-            h.h1().key(0),
+            h.h1().k(0),
           ));
           getComponentInstanceFromVNode<A>(a)!.updateState(1);
-          const n = r(h.div().children(
-            h.h1().key(0),
-            ca(1).key(1),
+          const n = r(h.div().c(
+            h.h1().k(0),
+            ca(1).k(1),
           )) as HTMLDivElement;
           expect(n.children[1].tagName.toLowerCase()).toBe("span");
           expect(n.children[1].firstChild!.nodeValue).toBe("1");
@@ -1553,14 +1552,14 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0);
-          r(h.div().children(
-            cb(a).key(1),
-            h.h1().key(0),
+          r(h.div().c(
+            cb(a).k(1),
+            h.h1().k(0),
           ));
           getComponentInstanceFromVNode<A>(a)!.updateState(1);
-          const n = r(h.div().children(
-            h.h1().key(0),
-            cb(ca(1)).key(1),
+          const n = r(h.div().c(
+            h.h1().k(0),
+            cb(ca(1)).k(1),
           )) as HTMLDivElement;
           expect(n.children[1].tagName.toLowerCase()).toBe("span");
           expect(n.children[1].firstChild!.nodeValue).toBe("1");
@@ -1574,11 +1573,11 @@ describe("sync", () => {
     it("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
-            h.t("a"), h.t("b").key(0), h.t("c").key(1), h.t("d"),
+          r(h.div().c(
+            h.t("a"), h.t("b").k(0), h.t("c").k(1), h.t("d"),
           ));
-          const b = r(h.div().children(
-            h.t("a"), h.t("b").key(0), h.t("c").key(1), h.t("e").key(2), h.t("d"),
+          const b = r(h.div().c(
+            h.t("a"), h.t("b").k(0), h.t("c").k(1), h.t("e").k(2), h.t("d"),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("b");
@@ -1593,11 +1592,11 @@ describe("sync", () => {
     it("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
-            h.t("a"), h.t("b").key(0), h.t("c").key(1), h.t("d"),
+          r(h.div().c(
+            h.t("a"), h.t("b").k(0), h.t("c").k(1), h.t("d"),
           ));
-          const b = r(h.div().children(
-            h.t("a"), h.t("b").key(0), h.t("d"),
+          const b = r(h.div().c(
+            h.t("a"), h.t("b").k(0), h.t("d"),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("b");
@@ -1610,11 +1609,11 @@ describe("sync", () => {
     it("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
-            h.t("a"), h.t("b").key(0), h.t("c").key(1), h.t("d"),
+          r(h.div().c(
+            h.t("a"), h.t("b").k(0), h.t("c").k(1), h.t("d"),
           ));
-          const b = r(h.div().children(
-            h.t("a"), h.t("c").key(1), h.t("b").key(0), h.t("d"),
+          const b = r(h.div().c(
+            h.t("a"), h.t("c").k(1), h.t("b").k(0), h.t("d"),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("c");
@@ -1628,11 +1627,11 @@ describe("sync", () => {
     it("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
-            h.t("a"), h.t("b").key(0), h.t("e"), h.t("c").key(1), h.t("d"),
+          r(h.div().c(
+            h.t("a"), h.t("b").k(0), h.t("e"), h.t("c").k(1), h.t("d"),
           ));
-          const b = r(h.div().children(
-            h.t("a"), h.t("c").key(1), h.t("e"), h.t("b").key(0), h.t("d"),
+          const b = r(h.div().c(
+            h.t("a"), h.t("c").k(1), h.t("e"), h.t("b").k(0), h.t("d"),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("c");
@@ -1647,10 +1646,10 @@ describe("sync", () => {
     it("<div>#0.1.2#1</div> => <div>.1.2</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
-            h.t("a").key(0), h.t("b"), h.t("c"), h.t("d").key(1),
+          r(h.div().c(
+            h.t("a").k(0), h.t("b"), h.t("c"), h.t("d").k(1),
           ));
-          const b = r(h.div().children(
+          const b = r(h.div().c(
             null, h.t("b"), h.t("c"), null,
           ));
           expect(b.childNodes[0].nodeValue).toBe("b");
@@ -1663,11 +1662,11 @@ describe("sync", () => {
     it("<div>.1.2</div> => <div>#0.1.2#1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
+          r(h.div().c(
             null, h.t("b"), h.t("c"), null,
           ));
-          const b = r(h.div().children(
-            h.t("a").key(0), h.t("b"), h.t("c"), h.t("d").key(1),
+          const b = r(h.div().c(
+            h.t("a").k(0), h.t("b"), h.t("c"), h.t("d").k(1),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("b");
@@ -1681,14 +1680,14 @@ describe("sync", () => {
     it("<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
+          r(h.div().c(
             null, h.t("b"), h.t("c"), null,
           ));
-          const b = r(h.div().children(
-            h.t("a").key(0), h.t("b"), h.t("c"),
-            h.t("d").key(1), h.t("e").key(2), h.t("f").key(3), h.t("g").key(4), h.t("h").key(5),
-            h.t("i").key(6),
-            h.t("j").key(7), h.t("k").key(8), h.t("l").key(9),
+          const b = r(h.div().c(
+            h.t("a").k(0), h.t("b"), h.t("c"),
+            h.t("d").k(1), h.t("e").k(2), h.t("f").k(3), h.t("g").k(4), h.t("h").k(5),
+            h.t("i").k(6),
+            h.t("j").k(7), h.t("k").k(8), h.t("l").k(9),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("b");
@@ -1710,11 +1709,11 @@ describe("sync", () => {
     it("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.div().children(
-            h.div(), h.t("a"), h.t("b").key(0), h.t("e"), h.t("c").key(1), h.t("d"), h.div(),
+          r(h.div().c(
+            h.div(), h.t("a"), h.t("b").k(0), h.t("e"), h.t("c").k(1), h.t("d"), h.div(),
           ));
-          const b = r(h.div().children(
-            h.t("a"), h.t("c").key(1), h.t("e"), h.t("b").key(0), h.t("d"),
+          const b = r(h.div().c(
+            h.t("a"), h.t("c").k(1), h.t("e"), h.t("b").k(0), h.t("d"),
           ));
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("c");

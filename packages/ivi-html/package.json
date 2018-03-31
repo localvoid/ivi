@@ -3,7 +3,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
-  "version": "0.2.0",
+  "version": "0.10.0",
   "description": "VNode factories for HTML elements",
   "license": "MIT",
   "author": {

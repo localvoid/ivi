@@ -19,21 +19,21 @@ describe("VNode", () => {
     });
 
     it("key", () => {
-      const t = h.t("abc").key("k");
+      const t = h.t("abc").k("k");
       expect(t._flags & VNodeFlags.Key).toBe(VNodeFlags.Key);
       expect(t._key).toBe("k");
     });
 
     it("style", () => {
-      expect(() => h.t("abc").style({})).toThrow(Error);
+      expect(() => h.t("abc").s({})).toThrow(Error);
     });
 
     it("events", () => {
-      expect(() => h.t("abc").events([])).toThrow(Error);
+      expect(() => h.t("abc").e([])).toThrow(Error);
     });
 
     it("children", () => {
-      expect(() => h.t("abc").children("123")).toThrow(Error);
+      expect(() => h.t("abc").c("123")).toThrow(Error);
     });
 
     it("unsafeHTML", () => {
@@ -72,41 +72,41 @@ describe("VNode", () => {
     });
 
     it("key", () => {
-      const e = h.div().key("k");
+      const e = h.div().k("k");
       expect(e._key).toBe("k");
     });
 
     it("style", () => {
       const s = { top: "10px" };
-      const e = h.div().style(s);
+      const e = h.div().s(s);
       expect(e._style).toBe(s);
     });
 
     it("events", () => {
       const s = [] as EventHandler[];
-      const e = h.div().events(s);
+      const e = h.div().e(s);
       expect(e._events).toBe(s);
     });
 
     it("props", () => {
       const s = {};
-      const e = h.div().attrs(s);
+      const e = h.div().a(s);
       expect(e._props).toBe(s);
     });
 
     it("children", () => {
-      const e = h.div().children("abc");
+      const e = h.div().c("abc");
       expect(e._children).toBe("abc");
     });
 
     it("children override", () => {
-      const e = h.div().children("abc");
-      expect(() => e.children("123")).toThrow(Error);
+      const e = h.div().c("abc");
+      expect(() => e.c("123")).toThrow(Error);
       expect(() => e.unsafeHTML("123")).toThrow(Error);
     });
 
     it("children: duplicate keys", () => {
-      expect(() => h.div().children(h.t("").key("a"), h.t("").key("a"))).toThrow(Error);
+      expect(() => h.div().c(h.t("").k("a"), h.t("").k("a"))).toThrow(Error);
     });
 
     it("unsafeHTML", () => {
@@ -123,34 +123,34 @@ describe("VNode", () => {
     });
 
     it("mergeProps: null", () => {
-      const e = mergeAttrs(h.div().attrs({ title: "abc" }), null);
+      const e = mergeAttrs(h.div().a({ title: "abc" }), null);
       expect((e._props as any).title).toBe("abc");
     });
 
     it("mergeProps", () => {
-      const e = mergeAttrs(h.div().attrs({ title: "abc" }), { width: "100" });
+      const e = mergeAttrs(h.div().a({ title: "abc" }), { width: "100" });
       expect((e._props as any).title).toBe("abc");
       expect((e._props as any).width).toBe("100");
     });
 
     it("mergeProps override", () => {
-      const e = mergeAttrs(h.div().attrs({ title: "abc" }), { title: "100" });
+      const e = mergeAttrs(h.div().a({ title: "abc" }), { title: "100" });
       expect((e._props as any).title).toBe("100");
     });
 
     it("mergeStyle: null", () => {
-      const e = mergeStyle(h.div().style({ top: "10px" }), null);
+      const e = mergeStyle(h.div().s({ top: "10px" }), null);
       expect(e._style!.top).toBe("10px");
     });
 
     it("mergeStyle", () => {
-      const e = mergeStyle(h.div().style({ top: "10px" }), { left: "20px" });
+      const e = mergeStyle(h.div().s({ top: "10px" }), { left: "20px" });
       expect(e._style!.top).toBe("10px");
       expect(e._style!.left).toBe("20px");
     });
 
     it("mergeStyle override", () => {
-      const e = mergeStyle(h.div().style({ top: "10px" }), { top: "20px" });
+      const e = mergeStyle(h.div().s({ top: "10px" }), { top: "20px" });
       expect(e._style!.top).toBe("20px");
     });
 
@@ -162,15 +162,15 @@ describe("VNode", () => {
 
   describe("$c", () => {
     it("style", () => {
-      expect(() => emptyComponent().style({})).toThrow(Error);
+      expect(() => emptyComponent().s({})).toThrow(Error);
     });
 
     it("events", () => {
-      expect(() => emptyComponent().events([])).toThrow(Error);
+      expect(() => emptyComponent().e([])).toThrow(Error);
     });
 
     it("children", () => {
-      expect(() => emptyComponent().children("123")).toThrow(Error);
+      expect(() => emptyComponent().c("123")).toThrow(Error);
     });
 
     it("unsafeHTML", () => {
@@ -196,7 +196,7 @@ describe("VNode", () => {
 
   describe("$i", () => {
     it("children", () => {
-      expect(() => h.inputText().children("123")).toThrow(Error);
+      expect(() => h.inputText().c("123")).toThrow(Error);
     });
 
     it("unsafeHTML", () => {
@@ -204,7 +204,7 @@ describe("VNode", () => {
     });
 
     it("textarea: children", () => {
-      expect(() => h.textarea().children("123")).toThrow(Error);
+      expect(() => h.textarea().c("123")).toThrow(Error);
     });
 
     it("textarea: unsafeHTML", () => {
@@ -237,7 +237,7 @@ describe("VNode", () => {
 
   describe("$m", () => {
     it("children", () => {
-      expect(() => h.audio().children("123")).toThrow(Error);
+      expect(() => h.audio().c("123")).toThrow(Error);
     });
 
     it("unsafeHTML", () => {

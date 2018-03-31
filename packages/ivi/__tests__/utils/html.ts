@@ -14,7 +14,6 @@ import {
   HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
   HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
   HTMLTrackElementProps, HTMLUListElementProps, HTMLVideoElementProps,
-  MSHTMLWebViewElementProps,
 
   SVGCircleElementProps, SVGClipPathElementProps, SVGDefsElementProps, SVGDescElementProps, SVGEllipseElementProps,
   SVGFEBlendElementProps, SVGFEColorMatrixElementProps, SVGFEComponentTransferElementProps,
@@ -1055,15 +1054,6 @@ export function wbr(className?: string): VNode<HTMLElementProps | null, HTMLElem
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement,
     "wbr",
-    null,
-    className === undefined ? null : className,
-    null,
-  );
-}
-export function x_ms_webview(className?: string): VNode<MSHTMLWebViewElementProps | null, MSHTMLWebViewElement> {
-  return new VNode(
-    VNodeFlags.Element,
-    "x-ms-webview",
     null,
     className === undefined ? null : className,
     null,
