@@ -1,9 +1,9 @@
 {
   "name": "ivi-vars",
-  "main": "cjs/index.js",
+  "main": "borwser-dev.js",
   "module": "browser-dev.js",
-  "serverModule": "ssr-dev.js",
   "typings": "index.d.ts",
+  "sideEffects": false,
   "version": "0.1.1",
   "description": "Environment Variables for ivi library",
   "license": "MIT",

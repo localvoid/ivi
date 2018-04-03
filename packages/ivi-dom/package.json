@@ -1,8 +1,9 @@
 {
   "name": "ivi-dom",
-  "main": "dist/cjs/index.js",
+  "main": "dist/js/index.js",
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
+  "sideEffects": false,
   "version": "0.10.0",
   "description": "DOM helpers for ivi library",
   "license": "MIT",
@@ -31,8 +32,7 @@
   ],
   "scripts": {
     "prepublish": "npm run dist",
-    "dist": "npm run dist:es6",
-    "dist:es6": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
+    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "test": "../../node_modules/.bin/karma start --single-run",
     "test:watch": "../../node_modules/.bin/karma start",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
