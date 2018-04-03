@@ -22,7 +22,6 @@ export interface ComponentHooks<P> {
   updated?: (this: Component<P>) => void;
   invalidated?: (this: Component<P>) => void;
   render?: (this: Component<P>) => VNode;
-  shouldAugment?: (this: Component<P>) => boolean;
 }
 
 export interface LifecycleTesterProps {
@@ -89,14 +88,6 @@ export class LifecycleTester extends Component<LifecycleTesterProps> {
       return this.props.hooks.render.call(this);
     }
     return this.props.child;
-  }
-
-  shouldAugment() {
-    lifecycleTouch(this.props.id, "shouldAugment");
-    if (this.props.hooks.shouldAugment) {
-      return this.props.hooks.shouldAugment.call(this);
-    }
-    return true;
   }
 }
 

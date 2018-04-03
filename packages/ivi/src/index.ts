@@ -33,7 +33,7 @@ export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
  * API available only in browser environment.
  */
 export { VNodeFlags } from "./vdom/flags";
-export { render, renderNextFrame, augment, update, updateNextFrame } from "./vdom/root";
+export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
 
 /**
  * SSR API.

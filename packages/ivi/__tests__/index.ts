@@ -8,5 +8,4 @@ import "./lifecycle.spec";
 import "./context.spec";
 import "./component.spec";
 import "./events.spec";
-import "./augment.spec";
 import "./keep-alive.spec";

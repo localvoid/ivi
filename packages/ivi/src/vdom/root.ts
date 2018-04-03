@@ -3,7 +3,7 @@ import { Context, USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestRe
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
-import { renderVNode, syncVNode, removeVNode, augmentVNode, updateComponents } from "./implementation";
+import { renderVNode, syncVNode, removeVNode, updateComponents } from "./implementation";
 
 /**
  * Root.
@@ -174,54 +174,5 @@ export function updateNextFrame() {
   if (!_pendingUpdate) {
     _pendingUpdate = true;
     nextFrameWrite(_update);
-  }
-}
-
-/**
- * Augment existing DOM tree with a Virtual DOM tree.
- *
- * Augmentation is separated from `render` function to reduce code size when web application doesn't use augmentation.
- * Optimizing javascript compiler should remove all code associated with augmentation when it isn't used.
- *
- * @param node Root VNode.
- * @param container Container DOM Node.
- */
-export function augment(
-  node: VNode | null,
-  container: Element,
-): void {
-  if (DEV) {
-    if (container === document.body) {
-      throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
-        "your application.");
-    }
-    if (!document.body.contains(container)) {
-      throw new Error("Container element should be attached to the document.");
-    }
-
-    if (findRoot(container)) {
-      throw new Error("Failed to augment, container is associated with a Virtual DOM.");
-    }
-  }
-
-  if (node) {
-    ROOTS.push({
-      container: container,
-      currentVNode: node,
-      newVNode: null,
-      invalidated: false,
-    });
-    if (DEV) {
-      if (isTestEnvironment()) {
-        addTestResetTask(reset);
-      }
-    }
-
-    nextFrameWrite(function augmentNextFrame() {
-      augmentVNode(container, container.firstChild!, node, EMPTY_CONTEXT);
-      iOSFixEventBubbling(container);
-    });
-
-    triggerNextFrame();
   }
 }

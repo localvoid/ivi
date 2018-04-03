@@ -4,7 +4,6 @@ import * as h from "../html";
 export interface TestStatelessComponentHooks<P> {
   render?: (props: P) => VNode;
   isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-  shouldAugment?: (props: P) => boolean;
 }
 
 export interface TestStatelessComponentProps {
@@ -28,15 +27,6 @@ export const testStatelessComponent = componentFactory(TestStatelessComponent);
 ) {
   if (newProps.hooks.isPropsChanged) {
     return newProps.hooks.isPropsChanged(oldProps, newProps);
-  }
-  return true;
-};
-
-(TestStatelessComponent as StatelessComponent<TestStatelessComponentProps>).shouldAugment = function (
-  props: TestStatelessComponentProps,
-) {
-  if (props.hooks.shouldAugment) {
-    return props.hooks.shouldAugment(props);
   }
   return true;
 };

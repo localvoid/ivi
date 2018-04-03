@@ -1,4 +1,4 @@
-import { startRender, augment, checkLifecycle, $lc, staticComponent } from "./utils";
+import { startRender, checkLifecycle, $lc, staticComponent } from "./utils";
 import * as h from "./utils/html";
 import { expect } from "iko";
 
@@ -201,69 +201,6 @@ describe("lifecycle", () => {
         expect(c("1", "detached")).toBe(-1);
         expect(c("1", "invalidated")).toBe(-1);
         expect(c("1", "shouldAugment")).toBe(-1);
-      });
-    });
-  });
-
-  describe("augment", () => {
-    it("<C><div></C>", () => {
-      checkLifecycle((c) => {
-        augment($lc("1", h.div()), `<div></div>`);
-
-        expect(c("1", "constructor")).toBe(0);
-        expect(c("1", "render")).toBe(1);
-        expect(c("1", "shouldAugment")).toBe(2);
-        expect(c("1", "attached")).toBe(3);
-
-        expect(c("1", "isPropsChanged")).toBe(-1);
-        expect(c("1", "newPropsReceived")).toBe(-1);
-        expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "updated")).toBe(-1);
-        expect(c("1", "invalidated")).toBe(-1);
-      });
-    });
-
-    it("<C shouldAugment=false><div></C>", () => {
-      checkLifecycle((c) => {
-        augment($lc("1", { shouldAugment: () => false }, h.div()), `<div></div>`);
-
-        expect(c("1", "constructor")).toBe(0);
-        expect(c("1", "render")).toBe(1);
-        expect(c("1", "shouldAugment")).toBe(2);
-        expect(c("1", "attached")).toBe(3);
-
-        expect(c("1", "isPropsChanged")).toBe(-1);
-        expect(c("1", "newPropsReceived")).toBe(-1);
-        expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "updated")).toBe(-1);
-        expect(c("1", "invalidated")).toBe(-1);
-      });
-    });
-
-    it("<C shouldAugment=false><C><div></C></C>", () => {
-      checkLifecycle((c) => {
-        augment($lc("1", { shouldAugment: () => false }, $lc("2", h.div())), `<div></div>`);
-
-        expect(c("1", "constructor")).toBe(0);
-        expect(c("1", "render")).toBe(1);
-        expect(c("1", "shouldAugment")).toBe(2);
-        expect(c("2", "constructor")).toBe(3);
-        expect(c("2", "render")).toBe(4);
-        expect(c("1", "attached")).toBe(5);
-        expect(c("2", "attached")).toBe(6);
-
-        expect(c("1", "isPropsChanged")).toBe(-1);
-        expect(c("1", "newPropsReceived")).toBe(-1);
-        expect(c("1", "detached")).toBe(-1);
-        expect(c("1", "updated")).toBe(-1);
-        expect(c("1", "invalidated")).toBe(-1);
-
-        expect(c("2", "isPropsChanged")).toBe(-1);
-        expect(c("2", "newPropsReceived")).toBe(-1);
-        expect(c("2", "detached")).toBe(-1);
-        expect(c("2", "updated")).toBe(-1);
-        expect(c("2", "invalidated")).toBe(-1);
-        expect(c("2", "shouldAugment")).toBe(-1);
       });
     });
   });

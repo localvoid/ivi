@@ -1,6 +1,6 @@
 import { VNodeFlags, SyncFlags } from "../../src/vdom/flags";
 import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
-import { renderVNode, syncVNode, augmentVNode } from "../../src/vdom/implementation";
+import { renderVNode, syncVNode } from "../../src/vdom/implementation";
 import { expect } from "iko";
 
 const DEFAULT_CONTEXT = {};
@@ -85,17 +85,4 @@ export function render<T extends Node>(
   }
 
   return result;
-}
-
-export function augment(node: VNode, innerHTML: string, container?: Element): Element {
-  if (!container) {
-    container = document.createElement("div");
-  }
-
-  (container as any).__ivi_root = node;
-  container.innerHTML = innerHTML;
-  augmentVNode(container, container.firstChild, node, DEFAULT_CONTEXT);
-  checkRefs(container.firstChild!, node);
-
-  return container;
 }

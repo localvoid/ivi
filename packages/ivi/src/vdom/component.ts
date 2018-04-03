@@ -11,7 +11,6 @@ import { VNode } from "./vnode";
 export interface StatelessComponent<P = void> {
   (props: P): VNode;
   isPropsChanged?: (oldProps: P, newProps: P) => boolean;
-  shouldAugment?: (props: P) => boolean;
 }
 
 /**
@@ -87,15 +86,6 @@ export abstract class Component<P = void> {
   newPropsReceived(oldProps: P, newProps: P): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
-  }
-
-  /**
-   * Lifecycle method `shouldAugment` is invoked before augmentation.
-   *
-   * @returns true when component should be augmented.
-   */
-  shouldAugment(): boolean {
-    return true;
   }
 
   /**
