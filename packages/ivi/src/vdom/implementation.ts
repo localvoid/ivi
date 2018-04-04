@@ -761,7 +761,7 @@ function vNodeRenderIntoAndAttach(
 function vNodeCanSync(a: VNode, b: VNode): boolean {
   return (
     (((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0) &&
-    a._tag === b._tag &&
+    ((a._flags & (VNodeFlags.Text | VNodeFlags.Element)) === 0 || a._tag === b._tag) &&
     a._key === b._key
   );
 }
