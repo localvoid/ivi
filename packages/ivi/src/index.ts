@@ -31,11 +31,6 @@ export { VNodeFlags } from "./vdom/flags";
 export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
 
 /**
- * SSR API.
- */
-export { BlueprintNode, createBlueprint, linkBlueprint, renderToString, serializeState } from "./vdom/ssr";
-
-/**
  * Entry.
  */
 import { DEV } from "ivi-vars";
