@@ -11,85 +11,86 @@ export const enum VNodeFlags {
    * VNode represents an Element node.
    */
   Element = 1 << 1,
+  ElementFactory = 1 << 2,
   /**
    * VNode represents a simple "function" component.
    */
-  ComponentFunction = 1 << 2,
+  ComponentFunction = 1 << 3,
   /**
    * VNode represents a component.
    */
-  ComponentClass = 1 << 3,
+  ComponentClass = 1 << 4,
   /**
    * Children property contains a child with a basic type (number/string/boolean).
    */
-  ChildrenBasic = 1 << 4,
+  ChildrenBasic = 1 << 5,
   /**
    * Children property contains a child VNode.
    */
-  ChildrenVNode = 1 << 5,
+  ChildrenVNode = 1 << 6,
   /**
    * Children property contains an Array type.
    */
-  ChildrenArray = 1 << 6,
+  ChildrenArray = 1 << 7,
   /**
    * Children property contains unsafe HTML.
    */
-  UnsafeHTML = 1 << 7,
+  UnsafeHTML = 1 << 8,
   /**
    * VNode is using a non-artificial key.
    */
-  Key = 1 << 8,
+  Key = 1 << 9,
   /**
    * Element contains events.
    */
-  ElementPropsEvents = 1 << 9,
+  ElementPropsEvents = 1 << 10,
   /**
    * VNode represents an HTMLInputElement element.
    */
-  InputElement = 1 << 10,
+  InputElement = 1 << 11,
   /**
    * VNode represents a HTMLTextAreaElement.
    */
-  TextAreaElement = 1 << 11,
+  TextAreaElement = 1 << 12,
   /**
    * VNode represents a HTMLButtonElement.
    */
-  ButtonElement = 1 << 12,
+  ButtonElement = 1 << 13,
   /**
    * VNode represents a HTMLMediaElement.
    */
-  MediaElement = 1 << 13,
+  MediaElement = 1 << 14,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 14,
+  SvgElement = 1 << 15,
   /**
    * Specialized VNode with connect functionality.
    */
-  Connect = 1 << 15,
+  Connect = 1 << 16,
   /**
    * Specialized VNode with an update context functionality.
    */
-  UpdateContext = 1 << 16,
+  UpdateContext = 1 << 17,
   /**
    * Specialized VNode with keep alive functionality.
    */
-  KeepAlive = 1 << 17,
+  KeepAlive = 1 << 18,
   /**
    * Stateless component is using `isPropsChanged` hook.
    */
-  CheckChangedProps = 1 << 18,
+  CheckChangedProps = 1 << 19,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 19,
+  Autofocus = 1 << 20,
   /**
    * VNode element cannot contain any children.
    */
-  VoidElement = 1 << 20,
+  VoidElement = 1 << 21,
 
-  ElementIdMask = 255 << 21,
-  ElementIdOffset = 21,
+  ElementIdMask = 255 << 22,
+  ElementIdOffset = 22,
   /**
    * Dirty checking is disabled for all descendants.
    *

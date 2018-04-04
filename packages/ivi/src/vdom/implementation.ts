@@ -16,7 +16,10 @@
 
 import { DEV } from "ivi-vars";
 import { Context, SVG_NAMESPACE } from "ivi-core";
-import { setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute } from "ivi-dom";
+import {
+  setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute,
+  nodeCloneNode,
+} from "ivi-dom";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
 import { DevModeFlags, DEV_MODE, perfMarkBegin, perfMarkEnd, getFunctionName } from "../dev_mode/dev_mode";
@@ -576,31 +579,39 @@ function vNodeRender(
       pushNestingState(vnode._tag as string);
       checkNestingViolation();
 
-      if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
-        if ((flags & VNodeFlags.SvgElement) !== 0) {
-          node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
-        } else {
-          if ((flags & VNodeFlags.InputElement) !== 0) {
-            node = document.createElement("input");
+      if ((flags & VNodeFlags.ElementFactory) === 0) {
+        if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
+          if ((flags & VNodeFlags.SvgElement) !== 0) {
+            node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
           } else {
-            node = document.createElement("button");
-          }
-          /**
-           * Default value for input element type is "text", so we can just ignore assigning it for text inputs. Factory
-           * function for input text has an empty string as a tag value.
-           */
-          if (vnode._tag !== "") {
+            if ((flags & VNodeFlags.InputElement) !== 0) {
+              node = document.createElement("input");
+            } else {
+              node = document.createElement("button");
+            }
             /**
-             * #quirks
-             *
-             * It is important that we assign `type` before any other properties. IE11 will remove assigned
-             * `value` when `type` is assigned.
+             * Default value for input element type is "text", so we can just ignore assigning it for text inputs.
+             * Factory function for input text has an empty string as a tag value.
              */
-            (node as HTMLInputElement).type = vnode._tag as string;
+            if (vnode._tag !== "") {
+              /**
+               * #quirks
+               *
+               * It is important that we assign `type` before any other properties. IE11 will remove assigned
+               * `value` when `type` is assigned.
+               */
+              (node as HTMLInputElement).type = vnode._tag as string;
+            }
           }
+        } else {
+          node = document.createElement(vnode._tag as string);
         }
       } else {
-        node = document.createElement(vnode._tag as string);
+        const factory = vnode._tag as VNode;
+        if (factory._instance === null) {
+          vNodeRender(parent, factory, context);
+        }
+        node = nodeCloneNode(factory._instance as Node);
       }
 
       if ((flags & VNodeFlags.Autofocus) !== 0) {
@@ -761,7 +772,16 @@ function vNodeRenderIntoAndAttach(
 function vNodeCanSync(a: VNode, b: VNode): boolean {
   return (
     (((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0) &&
-    ((a._flags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0 || a._tag === b._tag) &&
+    (
+      (a._flags & (
+        VNodeFlags.ElementFactory |
+        VNodeFlags.ComponentFunction |
+        VNodeFlags.ComponentClass |
+        VNodeFlags.Connect |
+        VNodeFlags.KeepAlive
+      )) === 0 ||
+      a._tag === b._tag
+    ) &&
     a._key === b._key
   );
 }

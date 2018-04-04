@@ -21,6 +21,7 @@ export {
   getElementPropsFromVNode, getElementStyleFromVNode,
   disableDirtyChecking,
 } from "./vdom/vnode";
+export { elementFactory } from "./vdom/element";
 export { componentFactory, statelessComponentFactory, context, connect, keepAlive } from "./vdom/vnode_factories";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 

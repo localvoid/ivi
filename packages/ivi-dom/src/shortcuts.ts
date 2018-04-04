@@ -5,6 +5,7 @@ const elementProto = Element.prototype;
 const _nodeInsertBefore = nodeProto.insertBefore;
 const _nodeRemoveChild = nodeProto.removeChild;
 const _nodeReplaceChild = nodeProto.replaceChild;
+const _nodeCloneNode = nodeProto.cloneNode;
 const _elementSetAttribute = elementProto.setAttribute;
 const _elementSetAttributeNS = elementProto.setAttributeNS;
 const _elementRemoveAttribute = elementProto.removeAttribute;
@@ -30,6 +31,14 @@ export function nodeReplaceChild(parent: Node, newChild: Node, oldChild: Node): 
     parent.replaceChild(newChild, oldChild);
   } else {
     _nodeReplaceChild.call(parent, newChild, oldChild);
+  }
+}
+
+export function nodeCloneNode(node: Node): Node {
+  if (DEV) {
+    return node.cloneNode(false);
+  } else {
+    return _nodeCloneNode.call(node, false);
   }
 }
 

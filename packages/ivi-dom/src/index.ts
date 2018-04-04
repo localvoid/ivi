@@ -1,5 +1,5 @@
 export {
-  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, elementRemoveAttribute, elementSetAttribute,
+  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
   elementSetAttributeNS,
 } from "./shortcuts";
 export { getEventCharCode, getEventKey, getMouseButtons } from "./input";

@@ -41,6 +41,7 @@ export class VNode<P = any, N = Node> {
    */
   _tag:
     | string
+    | VNode
     | ComponentClass<any>
     | StatelessComponent<any>
     | ConnectDescriptor<any, any, Context>
@@ -77,6 +78,7 @@ export class VNode<P = any, N = Node> {
     flags: number,
     tag:
       | string
+      | VNode
       | StatelessComponent<P>
       | ComponentClass<P>
       | ConnectDescriptor<any, any, Context>
