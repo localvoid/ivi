@@ -1,60 +1,58 @@
-import { DEV } from "ivi-vars";
 import { Context } from "ivi-core";
 import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
-import { StatelessComponent, ComponentClass, isComponentClass } from "./component";
+import { ComponentClass } from "./component";
 import { VNode } from "./vnode";
 import { ConnectDescriptor } from "..";
 
-export interface ComponentFactory<P> {
-  (props?: P): VNode<P>;
-  __ComponentFactory__?: ComponentClass<P> | StatelessComponent<P>;
-}
-
-export function isComponentFactory(o: object): o is ComponentFactory<any> {
-  return (o as ComponentFactory<any>).__ComponentFactory__ !== undefined;
-}
-
-export function componentFactory(c: StatelessComponent<void>): () => VNode<null>;
-export function componentFactory(c: StatelessComponent<null>): () => VNode<null>;
-export function componentFactory<P, U extends P>(c: StatelessComponent<P>): (props: U) => VNode<P>;
-export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
-export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
-export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
-export function componentFactory<P>(c: ComponentClass<P> | StatelessComponent<P>): (props: P) => VNode<P> {
-  const f = isComponentClass(c) ?
-    function (props: P): VNode<P> {
+export function statelessComponentFactory(c: () => VNode): () => VNode<null>;
+export function statelessComponentFactory<P, U extends P>(
+  c: (props: U) => VNode<P>,
+  isPropsChanged?: (oldProps: P, newProps: P) => boolean,
+): (props: U) => VNode<P>;
+export function statelessComponentFactory<P>(
+  c: (props: P) => VNode<P>,
+  isPropsChanged?: (oldProps: P, newProps: P) => boolean,
+): (props: P) => VNode<P> {
+  const d = {
+    render: c,
+    isPropsChanged,
+  };
+  if (isPropsChanged === undefined) {
+    return function (props: P): VNode<P> {
       return new VNode<P>(
-        VNodeFlags.ComponentClass,
-        c,
+        VNodeFlags.ComponentFunction,
+        d,
         props,
         null,
         null,
       );
-    } :
-    (c as StatelessComponent<P>).isPropsChanged === undefined ?
-      function (props: P): VNode<P> {
-        return new VNode<P>(
-          VNodeFlags.ComponentFunction,
-          c,
-          props,
-          null,
-          null,
-        );
-      } :
-      function (props: P): VNode<P> {
-        return new VNode<P>(
-          VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
-          c,
-          props,
-          null,
-          null,
-        );
-      };
-  if (DEV) {
-    (f as ComponentFactory<P>).__ComponentFactory__ = c;
+    };
   }
-  return f;
+  return function (props: P): VNode<P> {
+    return new VNode<P>(
+      VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
+      d,
+      props,
+      null,
+      null,
+    );
+  };
+}
+
+export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
+export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
+export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
+export function componentFactory<P>(c: ComponentClass<P>): (props: P) => VNode<P> {
+  return function (props: P): VNode<P> {
+    return new VNode<P>(
+      VNodeFlags.ComponentClass,
+      c,
+      props,
+      null,
+      null,
+    );
+  };
 }
 
 /**

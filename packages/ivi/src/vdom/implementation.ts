@@ -98,8 +98,8 @@ function componentPerfMarkEnd(
             perfMarkEnd(`${method} [K]`, id);
           }
         } else {
-          const fn = vnode._tag as StatelessComponent<any>;
-          perfMarkEnd(`${method} [F]${getFunctionName(fn)}`, id);
+          const sc = vnode._tag as StatelessComponent<any>;
+          perfMarkEnd(`${method} [F]${getFunctionName(sc.render)}`, id);
         }
       }
     }
@@ -699,7 +699,7 @@ function vNodeRender(
           }
         } else {
           componentPerfMarkBegin("create", vnode);
-          vnode._children = (vnode._tag as StatelessComponent<any>)(vnode._props);
+          vnode._children = (vnode._tag as StatelessComponent<any>).render(vnode._props);
         }
         node = vNodeRender(
           parent,
@@ -891,7 +891,7 @@ function vNodeSync(
           }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
-        const fn = b._tag as StatelessComponent<any>;
+        const sc = b._tag as StatelessComponent<any>;
 
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
@@ -940,11 +940,11 @@ function vNodeSync(
         } else {
           if (
             ((bFlags & VNodeFlags.CheckChangedProps) === 0 && a._props !== b._props) ||
-            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && fn.isPropsChanged!(a._props, b._props) === true)
+            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && sc.isPropsChanged!(a._props, b._props) === true)
           ) {
             componentPerfMarkBegin("update", b);
             const oldRoot = a._children as VNode;
-            const newRoot = b._children = fn(b._props);
+            const newRoot = b._children = sc.render(b._props);
             vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
             componentPerfMarkEnd("update", b);
           } else {

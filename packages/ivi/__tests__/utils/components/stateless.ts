@@ -1,4 +1,4 @@
-import { StatelessComponent, componentFactory, VNode } from "../../../src";
+import { statelessComponentFactory, VNode } from "../../../src";
 import * as h from "../html";
 
 export interface TestStatelessComponentHooks<P> {
@@ -12,24 +12,26 @@ export interface TestStatelessComponentProps {
   hooks: TestStatelessComponentHooks<TestStatelessComponentProps>;
 }
 
-export function TestStatelessComponent(props: TestStatelessComponentProps) {
-  if (props.hooks.render) {
-    return props.hooks.render(props);
-  }
+export const testStatelessComponent = statelessComponentFactory(
+  function TestStatelessComponent(props: TestStatelessComponentProps) {
+    if (props.hooks.render) {
+      return props.hooks.render(props);
+    }
 
-  return props.child;
-}
-export const testStatelessComponent = componentFactory(TestStatelessComponent);
+    return props.child;
+  },
+  function (
+    oldProps: TestStatelessComponentProps,
+    newProps: TestStatelessComponentProps,
+  ) {
+    if (newProps.hooks.isPropsChanged) {
+      return newProps.hooks.isPropsChanged(oldProps, newProps);
+    }
+    return true;
+  },
+);
 
-(TestStatelessComponent as StatelessComponent<TestStatelessComponentProps>).isPropsChanged = function (
-  oldProps: TestStatelessComponentProps,
-  newProps: TestStatelessComponentProps,
-) {
-  if (newProps.hooks.isPropsChanged) {
-    return newProps.hooks.isPropsChanged(oldProps, newProps);
-  }
-  return true;
-};
+export const staticComponent = statelessComponentFactory((child: VNode) => child, () => false);
 
 export function $tfc(
   id: string,

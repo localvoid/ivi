@@ -1,5 +1,4 @@
 import { DEV } from "ivi-vars";
-import { NOOP_FALSE, shallowEqual } from "ivi-core";
 import { currentFrameUpdate } from "ivi-scheduler";
 import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
 import { ComponentFlags } from "./flags";
@@ -9,8 +8,8 @@ import { VNode } from "./vnode";
  * Stateless Component function.
  */
 export interface StatelessComponent<P = void> {
-  (props: P): VNode;
-  isPropsChanged?: (oldProps: P, newProps: P) => boolean;
+  render: (props: P) => VNode;
+  isPropsChanged: ((oldProps: P, newProps: P) => boolean) | undefined;
 }
 
 /**
@@ -136,68 +135,6 @@ export abstract class Component<P = void> {
   }
 }
 
-function isPropsNotShallowEqual(a: any, b: any): boolean {
-  return !shallowEqual(a, b);
-}
-
-/**
- * Checks props for shallow equality.
- *
- * This function can be used as a wrapper for function expression, or as a class decorator.
- *
- *     checkPropsShallowEquality(MyComponent);
- *     function MyComponent(props: { text: string }) {
- *         return h.div().children(props.text);
- *     });
- *
- *     @checkPropsShallowEquality
- *     class MyClassComponent extends Component<{ text: string }> {
- *         render() {
- *             return h.div().children(this.props.text);
- *         }
- *     }
- *
- * @param target Component constructor.
- * @returns Component constructor with identity check.
- */
-export function checkPropsShallowEquality<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-  if (isComponentClass(target)) {
-    target.prototype.isPropsChanged = isPropsNotShallowEqual;
-  } else {
-    (target as StatelessComponent<any>).isPropsChanged = isPropsNotShallowEqual;
-  }
-  return target;
-}
-
-/**
- * Marks component as static.
- *
- * This function can be used as a wrapper for function expression, or as a class decorator.
- *
- *     staticComponent(MyComponent);
- *     function MyComponent(props: { text: string }) {
- *         return h.div().children(props.text);
- *     });
- *
- *     @staticComponent
- *     class MyClassComponent extends Component<{ text: string }> {
- *         render() {
- *             return h.div().children(this.props.text);
- *         }
- *     }
- *
- * @param target Component constructor.
- * @returns Component constructor with static property.
- */
-export function staticComponent<P extends ComponentClass<any> | StatelessComponent<any>>(target: P): P {
-  if (isComponentClass(target)) {
-    target.prototype.isPropsChanged = NOOP_FALSE;
-  } else {
-    (target as StatelessComponent<any>).isPropsChanged = NOOP_FALSE;
-  }
-  return target;
-}
-
 /**
  * getComponentName retrieves component name from component instance or component function.
  *
@@ -208,7 +145,7 @@ export function getComponentName(component: Component<any> | StatelessComponent<
   return getFunctionName(
     isComponentClass(component) ?
       component.constructor :
-      component as StatelessComponent<any>,
+      component.render,
   );
 }
 

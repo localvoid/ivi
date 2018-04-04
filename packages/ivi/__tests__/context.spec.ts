@@ -1,5 +1,5 @@
 import { Context } from "ivi-core";
-import { frag, render, staticComponent, staticComponentFunction } from "./utils";
+import { frag, render, staticComponent } from "./utils";
 import * as h from "./utils/html";
 import { context, connect } from "../src/vdom/vnode_factories";
 import { expect } from "iko";
@@ -31,13 +31,6 @@ describe("context", () => {
       const f = frag();
       render<HTMLElement>(context({ value: 10 }, staticComponent($ContextTestPrinter())), f);
       const b = render<HTMLElement>(context({ value: 20 }, staticComponent($ContextTestPrinter())), f);
-      expect(b.nodeValue).toBe("20");
-    });
-
-    it("<C><SF>10</SF></C> => <C><SF>20</SF></C>", () => {
-      const f = frag();
-      render<HTMLElement>(context({ value: 10 }, staticComponentFunction($ContextTestPrinter())), f);
-      const b = render<HTMLElement>(context({ value: 20 }, staticComponentFunction($ContextTestPrinter())), f);
       expect(b.nodeValue).toBe("20");
     });
   });

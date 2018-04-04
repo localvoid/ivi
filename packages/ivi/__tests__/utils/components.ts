@@ -1,26 +1,26 @@
-import { Component, componentFactory, VNode } from "../../src";
+import { Component, componentFactory, statelessComponentFactory, VNode } from "../../src";
 import * as h from "./html";
 
 export * from "./components/stateless";
 export * from "./components/lifecycle";
-export * from "./components/static";
 
 export interface ComponentTesterProps {
   child: VNode;
   wrapDepth?: number;
 }
 
-export function StatelessComponentTester(props: ComponentTesterProps): VNode {
-  if (props.wrapDepth) {
-    return statelessComponentTester({
-      child: props.child,
-      wrapDepth: props.wrapDepth - 1,
-    });
-  }
+export const statelessComponentTester = statelessComponentFactory(
+  function StatelessComponentTester(props: ComponentTesterProps): VNode {
+    if (props.wrapDepth) {
+      return statelessComponentTester({
+        child: props.child,
+        wrapDepth: props.wrapDepth - 1,
+      });
+    }
 
-  return props.child;
-}
-export const statelessComponentTester = componentFactory(StatelessComponentTester);
+    return props.child;
+  },
+);
 
 export class ComponentTester extends Component<ComponentTesterProps> {
   render(): VNode {

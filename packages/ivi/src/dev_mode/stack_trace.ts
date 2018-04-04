@@ -138,8 +138,8 @@ function stackTraceToString(): string {
           result += `[C]${getFunctionName(cls)} #${instance._debugId}`;
           break;
         case ComponentStackFrameType.ComponentFunction:
-          const fn = frame.tag as StatelessComponent<any>;
-          result += `[F]${getFunctionName(fn)}`;
+          const sc = frame.tag as StatelessComponent<any>;
+          result += `[F]${getFunctionName(sc.render)}`;
           break;
         case ComponentStackFrameType.Connect:
           const d = frame.tag as ConnectDescriptor<any, any, any>;
@@ -193,8 +193,8 @@ export function printComponentStackTrace(): void {
             console.groupEnd();
             break;
           case ComponentStackFrameType.ComponentFunction:
-            const fn = frame.tag as StatelessComponent<any>;
-            console.log(`[F]${getFunctionName(fn)}`);
+            const sc = frame.tag as StatelessComponent<any>;
+            console.log(`[F]${getFunctionName(sc.render)}`);
             break;
           case ComponentStackFrameType.Connect:
             const d = frame.tag as ConnectDescriptor<any, any, any>;

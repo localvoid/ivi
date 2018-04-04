@@ -10,10 +10,7 @@ export {
 /**
  * Virtual DOM:
  */
-export {
-  ComponentClass, StatelessComponent, Component, checkPropsShallowEquality, staticComponent, isComponentAttached,
-  isComponentClass,
-} from "./vdom/component";
+export { ComponentClass, StatelessComponent, Component, isComponentAttached, isComponentClass } from "./vdom/component";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
@@ -24,9 +21,7 @@ export {
   getElementPropsFromVNode, getElementStyleFromVNode,
   disableDirtyChecking,
 } from "./vdom/vnode";
-export {
-  ComponentFactory, isComponentFactory, componentFactory, context, connect, keepAlive,
-} from "./vdom/vnode_factories";
+export { componentFactory, statelessComponentFactory, context, connect, keepAlive } from "./vdom/vnode_factories";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 
 /**
@@ -78,7 +73,7 @@ function _printComponentTreeVisitor(vnode: VNode<any>) {
         console.groupCollapsed(`[K]${getFunctionName(handler)}`);
       }
     } else {
-      console.groupCollapsed(`[F]${getFunctionName(vnode._tag as StatelessComponent)}`);
+      console.groupCollapsed(`[F]${getFunctionName((vnode._tag as StatelessComponent).render)}`);
     }
   }
   console.groupEnd();

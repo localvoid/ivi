@@ -1,14 +1,11 @@
 import { EventHandler } from "ivi-events";
-import { VNode, mergeAttrs, mergeStyle } from "../src/vdom/vnode";
+import { mergeAttrs, mergeStyle } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { componentFactory } from "../src/vdom/vnode_factories";
+import { statelessComponentFactory } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
 import { expect } from "iko";
 
-function EmptyComponent(): VNode {
-  return h.t("");
-}
-const emptyComponent = componentFactory(EmptyComponent);
+const emptyComponent = statelessComponentFactory(() => h.t(""));
 
 describe("VNode", () => {
   describe("$t", () => {
