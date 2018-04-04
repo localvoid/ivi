@@ -87,6 +87,9 @@ export const enum VNodeFlags {
    * VNode element cannot contain any children.
    */
   VoidElement = 1 << 20,
+
+  ElementIdMask = 255 << 21,
+  ElementIdOffset = 21,
   /**
    * Dirty checking is disabled for all descendants.
    *
@@ -112,7 +115,8 @@ export const enum VNodeFlags {
   | ButtonElement
   | MediaElement
   | SvgElement
-  | VoidElement,
+  | VoidElement
+  | ElementIdMask,
 }
 
 /**
