@@ -270,7 +270,7 @@ function _toSnapshot(
           }
         } else {
           if ((sFlags & SnapshotFlags.IgnoreStatelessComponents) === 0) {
-            const componentName = (vnode._tag as StatelessComponent<any>).displayName;
+            const componentName = (vnode._tag as StatelessComponent<any>).render.displayName;
             if (vnode._children === null) {
               return `${indent(il)}<${componentName} />`;
             } else {

@@ -1,5 +1,6 @@
 import { virtualRender as render } from "../src/vdom";
 import * as h from "ivi-html";
+import * as s from "ivi-svg";
 import { expect } from "iko";
 
 describe("src/snapshot.ts", () => {
@@ -111,23 +112,23 @@ describe("src/snapshot.ts", () => {
 
   describe("svg", () => {
     it("<circle>", () => {
-      expect(render(h.circle()).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle()).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle class='a'>", () => {
-      expect(render(h.circle("a")).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle("a")).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle style={top: 10px}>", () => {
-      expect(render(h.circle().s({ top: "10px" })).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle().s({ top: "10px" })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle xlink:href='a'>", () => {
-      expect(render(h.circle().a({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle().a({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
     });
 
     it("<circle xml:text='a'>", () => {
-      expect(render(h.circle().a({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle().a({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
     });
   });
 

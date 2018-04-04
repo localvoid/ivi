@@ -88,7 +88,7 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
         vnode._children = component.render();
       } else {
         const component = vnode._tag as StatelessComponent<any>;
-        vnode._children = component(vnode._props);
+        vnode._children = component.render(vnode._props);
       }
     } else {
       const connect = vnode._tag as ConnectDescriptor<any, any, any>;
