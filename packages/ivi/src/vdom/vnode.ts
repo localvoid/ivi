@@ -72,10 +72,6 @@ export class VNode<P = any, N = Node> {
    * Events.
    */
   _events: Array<EventHandler | null> | EventHandler | null;
-  /**
-   * Workaround to get rid of unused property error.
-   */
-  protected $$nodeType?: N;
 
   constructor(
     flags: number,

@@ -39,7 +39,7 @@ export const componentTester = componentFactory(ComponentTester);
 export function $tcf(
   child: VNode | string = h.div(),
   wrapDepth = 0,
-): VNode<ComponentTesterProps> {
+) {
   return statelessComponentTester({
     child: typeof child === "string" ? h.t(child) : child,
     wrapDepth: wrapDepth,
@@ -49,7 +49,7 @@ export function $tcf(
 export function $tc(
   child: VNode | string = h.div(),
   wrapDepth = 0,
-): VNode<ComponentTesterProps> {
+) {
   return componentTester({
     child: typeof child === "string" ? h.t(child) : child,
     wrapDepth: wrapDepth,

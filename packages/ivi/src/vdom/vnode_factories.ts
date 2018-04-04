@@ -7,11 +7,15 @@ import { ConnectDescriptor } from "..";
 
 export function statelessComponentFactory(c: () => VNode): () => VNode<null>;
 export function statelessComponentFactory<P, U extends P>(
-  c: (props: U) => VNode<P>,
+  c: (props: U | undefined) => VNode<any>,
+  isPropsChanged?: (oldProps: P, newProps: P) => boolean,
+): (props?: U) => VNode<P>;
+export function statelessComponentFactory<P, U extends P>(
+  c: (props: U) => VNode<any>,
   isPropsChanged?: (oldProps: P, newProps: P) => boolean,
 ): (props: U) => VNode<P>;
 export function statelessComponentFactory<P>(
-  c: (props: P) => VNode<P>,
+  c: (props: P) => VNode<any>,
   isPropsChanged?: (oldProps: P, newProps: P) => boolean,
 ): (props: P) => VNode<P> {
   const d = {
@@ -42,6 +46,7 @@ export function statelessComponentFactory<P>(
 
 export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
 export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
+export function componentFactory<P, U extends P>(c: ComponentClass<P | undefined>): (props?: U) => VNode<P>;
 export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: ComponentClass<P>): (props: P) => VNode<P> {
   return function (props: P): VNode<P> {
