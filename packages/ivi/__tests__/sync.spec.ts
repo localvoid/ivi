@@ -1293,7 +1293,7 @@ describe("sync", () => {
     it("<input type='text'> => <input type='checkbox'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.inputText());
+          r(h.input());
           const b = r(h.inputCheckbox()) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("checkbox");
@@ -1305,8 +1305,8 @@ describe("sync", () => {
     it("<input type='text'> => <input type='text' value='cde'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.inputText());
-          const b = r(h.inputText().value("cde")) as HTMLInputElement;
+          r(h.input());
+          const b = r(h.input().value("cde")) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(b.value).toBe("cde");
@@ -1318,8 +1318,8 @@ describe("sync", () => {
     it("<input type='text' value='abc'> => <input type='text' value='cde'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.inputText().value("abc"));
-          const b = r(h.inputText().value("cde")) as HTMLInputElement;
+          r(h.input().value("abc"));
+          const b = r(h.input().value("cde")) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(b.value).toBe("cde");
@@ -1331,8 +1331,8 @@ describe("sync", () => {
     it("<input type='text' value='abc'> => <input type='text'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.inputText().value("abc"));
-          const b = r(h.inputText()) as HTMLInputElement;
+          r(h.input().value("abc"));
+          const b = r(h.input()) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(b.value).toBe("abc");
@@ -1383,7 +1383,7 @@ describe("sync", () => {
     it("<input type='text'> => <textarea>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
-          r(h.inputText());
+          r(h.input());
           const b = r(h.textarea()) as HTMLTextAreaElement;
           expect(b.tagName.toLowerCase()).toBe("textarea");
           expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
@@ -1395,7 +1395,7 @@ describe("sync", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea());
-          const b = r(h.inputText()) as HTMLInputElement;
+          const b = r(h.input()) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);

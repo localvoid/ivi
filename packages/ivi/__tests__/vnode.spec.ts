@@ -196,11 +196,11 @@ describe("VNode", () => {
 
   describe("$i", () => {
     it("children", () => {
-      expect(() => h.inputText().c("123")).toThrow(Error);
+      expect(() => h.input().c("123")).toThrow(Error);
     });
 
     it("unsafeHTML", () => {
-      expect(() => h.inputText().unsafeHTML("123")).toThrow(Error);
+      expect(() => h.input().unsafeHTML("123")).toThrow(Error);
     });
 
     it("textarea: children", () => {
@@ -212,7 +212,7 @@ describe("VNode", () => {
     });
 
     it("value", () => {
-      const e = h.inputText().value("abc");
+      const e = h.input().value("abc");
       expect(e._children).toBe("abc");
     });
 
@@ -222,7 +222,7 @@ describe("VNode", () => {
     });
 
     it("checked", () => {
-      expect(() => h.inputText().checked(true)).toThrow(Error);
+      expect(() => h.input().checked(true)).toThrow(Error);
     });
 
     it("textarea", () => {

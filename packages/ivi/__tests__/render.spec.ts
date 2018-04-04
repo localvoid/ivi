@@ -2,6 +2,7 @@ import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "ivi-core";
 import { render, checkDOMOps, $tc, $tcf } from "./utils";
 import { cloneVNode } from "../src/vdom/clone";
 import * as h from "./utils/html";
+import * as s from "./utils/svg";
 import { expect } from "iko";
 
 describe("render", () => {
@@ -240,7 +241,7 @@ describe("render", () => {
   describe("svg", () => {
     it("<circle>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle());
+        const n = render<SVGCircleElement>(s.circle());
         expect(n.tagName.toLowerCase()).toBe("circle");
         expect(n.namespaceURI).toBe(SVG_NAMESPACE);
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
@@ -249,7 +250,7 @@ describe("render", () => {
 
     it("<circle class='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle("a"));
+        const n = render<SVGCircleElement>(s.circle("a"));
         expect(n.getAttribute("class")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -257,7 +258,7 @@ describe("render", () => {
 
     it("<circle style={top: 10px}>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().s({ top: "10px" }));
+        const n = render<SVGCircleElement>(s.circle().s({ top: "10px" }));
         expect(n.style.top).toBe("10px");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -265,7 +266,7 @@ describe("render", () => {
 
     it("<circle xlink:href='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().a({ "xlink:href": "a" }));
+        const n = render<SVGCircleElement>(s.circle().a({ "xlink:href": "a" }));
         expect(n.getAttributeNS(XLINK_NAMESPACE, "href")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -273,7 +274,7 @@ describe("render", () => {
 
     it("<circle xml:text='a'>", () => {
       checkDOMOps((c) => {
-        const n = render<SVGCircleElement>(h.circle().a({ "xml:test": "a" }));
+        const n = render<SVGCircleElement>(s.circle().a({ "xml:test": "a" }));
         expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("a");
         expect(c).toMatchDOMOps(0, 1, 0, 0, 1, 0, 0);
       });
@@ -442,7 +443,7 @@ describe("render", () => {
   describe("special elements", () => {
     it("<input type='text'>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLInputElement>(h.inputText());
+        const n = render<HTMLInputElement>(h.input());
         expect(n.tagName.toLowerCase()).toBe("input");
         expect(n.type).toBe("text");
         expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
@@ -451,7 +452,7 @@ describe("render", () => {
 
     it("<input type='text' value='abc'>", () => {
       checkDOMOps((c) => {
-        const n = render<HTMLInputElement>(h.inputText().value("abc"));
+        const n = render<HTMLInputElement>(h.input().value("abc"));
         expect(n.tagName.toLowerCase()).toBe("input");
         expect(n.type).toBe("text");
         expect(n.value).toBe("abc");
