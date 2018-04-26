@@ -5,8 +5,8 @@ module.exports = function (config) {
     browsers: ["ChromeHeadless"],
     frameworks: ["iko"],
     reporters: ["iko"],
-    preprocessors: { "__tests__/index.spec.ts": ["webpack", "sourcemap"] },
-    files: ["__tests__/index.spec.ts"],
+    preprocessors: { "__tests__/index.ts": ["webpack", "sourcemap"] },
+    files: ["__tests__/index.ts"],
 
     colors: true,
     autoWatch: true,

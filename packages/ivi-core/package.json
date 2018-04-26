@@ -34,8 +34,9 @@
     "prepublish": "npm run dist",
     "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "TS_NODE_TYPE_CHECK=Y ../../node_modules/.bin/mocha --reporter mocha-iko-reporter -r ../../node_modules/ts-node/register __tests__/index.ts",
-    "test:coverage": "TS_NODE_TYPE_CHECK=Y ../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.ts"
+    "test": "../../node_modules/.bin/karma start --single-run",
+    "test:coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
+    "test:watch": "../../node_modules/.bin/karma start"
   },
   "peerDependencies": {
     "ivi-vars": "^0.10.0"

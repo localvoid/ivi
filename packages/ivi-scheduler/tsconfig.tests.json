@@ -3,6 +3,9 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "declaration": false,
+    "sourceMap": false,
+    "inlineSourceMap": true,
     "types": [
       "mocha"
     ]
