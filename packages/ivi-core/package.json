@@ -38,10 +38,10 @@
     "test:coverage": "TS_NODE_TYPE_CHECK=Y ../../node_modules/.bin/nyc ../../node_modules/.bin/mocha __tests__/index.ts"
   },
   "peerDependencies": {
-    "ivi-vars": "^0.1.1"
+    "ivi-vars": "^0.10.0"
   },
   "dependencies": {},
   "devDependencies": {
-    "ivi-vars": "^0.1.1"
+    "ivi-vars": "^0.10.0"
   }
 }

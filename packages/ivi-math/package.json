@@ -37,11 +37,11 @@
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
   "peerDependencies": {
-    "ivi-vars": "^0.1.0"
+    "ivi-vars": "^0.10.0"
   },
   "dependencies": {},
   "devDependencies": {
-    "ivi-vars": "^0.1.0"
+    "ivi-vars": "^0.10.0"
   },
   "nyc": {
     "require": [

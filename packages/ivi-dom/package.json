@@ -39,9 +39,9 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.2.0"
+    "ivi-core": "^0.10.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.2.0"
+    "ivi-core": "^0.10.0"
   }
 }

@@ -4,7 +4,7 @@
   "module": "dist/js/index.js",
   "typings": "dist/typings/index.d.ts",
   "sideEffects": false,
-  "version": "0.2.0",
+  "version": "0.10.0",
   "description": "Task scheduler for ivi library",
   "license": "MIT",
   "author": {
@@ -39,11 +39,11 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.2.0",
-    "ivi-dom": "^0.2.0"
+    "ivi-core": "^0.10.0",
+    "ivi-dom": "^0.10.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.2.0",
-    "ivi-dom": "^0.2.0"
+    "ivi-core": "^0.10.0",
+    "ivi-dom": "^0.10.0"
   }
 }

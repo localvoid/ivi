@@ -39,9 +39,9 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-events": "^0.2.0"
+    "ivi-events": "^0.10.0"
   },
   "devDependencies": {
-    "ivi-events": "^0.2.0"
+    "ivi-events": "^0.10.0"
   }
 }
