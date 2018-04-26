@@ -3,15 +3,6 @@
  *
  * There are so many circular dependencies between functions in this module, so just leave it all here instead of
  * creating many circular dependencies between JS modules.
- *
- * Code in this module is working only in browser environments.
- *
- * Tags:
- *
- * #entry - Entry point, function that will be invoked just once when the reconciliation process is started with a root
- *   render, or when scheduler updates invalidated components. Entry point is a good place to inject tryCatch statements
- *   to improve stack trace messages etc.
- * #component - Component related functions.
  */
 
 import { DEV } from "ivi-vars";
@@ -39,8 +30,6 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
 /**
  * Render VNode entry point tryCatch wrapper.
  *
- * #entry
- *
  * @param parent Parent DOM Node.
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
@@ -65,8 +54,6 @@ export function renderVNode(parent: Node, refChild: Node | null, vnode: VNode, c
 /**
  * Render VNode entry point. Renders VNode into container and invokes `attached` lifecycle methods after VNode is
  * inserted into container.
- *
- * #entry
  *
  * @param parent Parent DOM Node.
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
@@ -106,8 +93,6 @@ export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFla
 /**
  * Sync VNode entry point. Sync VNode with a new one or replace when they aren't compatible.
  *
- * #entry
- *
  * @param parent Parent node.
  * @param a Old VNode.
  * @param b New VNode.
@@ -120,8 +105,6 @@ function _syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Sy
 
 /**
  * Remove VNode entry point tryCatch wrapper.
- *
- * #entry
  *
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
@@ -143,8 +126,6 @@ export function removeVNode(parent: Node, node: VNode): void {
 /**
  * Remove VNode entry point.
  *
- * #entry
- *
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
  */
@@ -155,9 +136,6 @@ function _removeVNode(parent: Node, node: VNode): void {
 
 /**
  * Update Components entry point.
- *
- * #entry
- * #component
  *
  * @param parent Parent DOM Node.
  * @param vnode Virtual DOM Node.
@@ -226,6 +204,7 @@ function vNodeAttach(vnode: VNode): void {
  * Recursively detach all nodes.
  *
  * @param vnode VNode.
+ * @param syncFlags Sync flags.
  */
 function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
   const flags = vnode._flags;
@@ -397,6 +376,7 @@ function vNodeMoveChild(parent: Node, node: VNode, nextRef: Node | null): void {
  *
  * @param parent Parent DOM node.
  * @param nodes Arrays of VNodes to remove.
+ * @param syncFlags Sync flags.
  */
 function vNodeRemoveAllChildren(parent: Node, nodes: VNode[], syncFlags: SyncFlags): void {
   parent.textContent = "";
@@ -410,6 +390,7 @@ function vNodeRemoveAllChildren(parent: Node, nodes: VNode[], syncFlags: SyncFla
  *
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
+ * @param syncFlags Sync flags.
  */
 function vNodeRemoveChild(parent: Node, node: VNode, syncFlags: SyncFlags): void {
   nodeRemoveChild(parent, getDOMInstanceFromVNode(node)!);
@@ -622,6 +603,7 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
  * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
  * @param vnode VNode.
  * @param context Current context.
+ * @param syncFlags Sync flags.
  * @returns Rendered DOM Node.
  */
 function vNodeRenderIntoAndAttach(

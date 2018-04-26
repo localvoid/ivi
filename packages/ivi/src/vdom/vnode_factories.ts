@@ -60,7 +60,7 @@ export function componentFactory<P>(c: ComponentClass<P>): (props: P) => VNode<P
 }
 
 /**
- * context creates an update context VNode.
+ * context creates a VNode that modifies current context.
  *
  * @param ctx Context.
  * @param child Child VNode.
@@ -105,7 +105,7 @@ export function connect<T, P, C>(
 }
 
 /**
- * keepAlive creates keep alive VNode.
+ * keepAlive creates a keep alive VNode.
  *
  * @param handler Keep Alive Handler.
  * @param child Child VNode.

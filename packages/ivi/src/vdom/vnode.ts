@@ -12,9 +12,9 @@ import { KeepAliveHandler } from "./keep_alive";
  * Virtual DOM Node.
  *
  *     const vnode = h.div("div-class-name")
- *         .a({ id: "div-id" })
- *         .e(Events.onClick((e) => console.log("click event", e)))
- *         .c("Hello");
+ *       .a({ id: "div-id" })
+ *       .e(Events.onClick((e) => console.log("click event", e)))
+ *       .c("Hello");
  *
  * @final
  */
@@ -26,18 +26,15 @@ export class VNode<P = any, N = Node> {
   /**
    * Children property has a dynamic type that depends on the node kind.
    *
-   * Element Nodes should contain children virtual nodes in a flat array, singular virtual node or a simple text.
+   * Element Nodes should contain children virtual nodes as a flat array, singular virtual node or a simple text.
    *
-   * Input Element Nodes should contain input value (value or checked).
+   * Input Element Nodes should contain input value (text or checked status).
    *
    * Components should contain virtual root nodes.
    */
   _children: VNode[] | VNode | string | number | boolean | null;
   /**
    * Tag property contains details about the type of the element.
-   *
-   * Simple elements has a string type values, components can be a simple functions, constructor, or special
-   * descriptors for nodes that change syncing algorithm behavior.
    */
   _tag:
     | string
@@ -48,8 +45,7 @@ export class VNode<P = any, N = Node> {
     | KeepAliveHandler
     | null;
   /**
-   * Children syncing algorithm is using key property to find the same node in the previous children array. Key
-   * should be unique among its siblings.
+   * Children syncing algorithm is using key property to match nodes. Key should be unique among its siblings.
    */
   _key: any;
   /**
@@ -57,8 +53,10 @@ export class VNode<P = any, N = Node> {
    */
   _props: P | null;
   /**
-   * Reference to HTML node or Component instance. It will be available after virtual node is created or synced. Each
-   * time VNode is synced, reference will be transferred from the old VNode to the new one.
+   * Reference to HTML node or Component instance.
+   *
+   * It will be available after virtual node is created or synced. Each time VNode is synced, reference will be
+   * transferred from the old VNode to the new one.
    */
   _instance: N | Component<any> | {} | null;
   /**
@@ -108,8 +106,7 @@ export class VNode<P = any, N = Node> {
   /**
    * k assigns a key.
    *
-   * Children reconciliation algorithm is using key property to find the same node in the previous children array. Key
-   * should be unique among its siblings.
+   * Children reconciliation algorithm is using keys to match nodes. Key should be unique among its siblings.
    *
    * @param key Any object that should be unique among its siblings.
    * @returns VNode
@@ -385,7 +382,7 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * autofocus makes an Element autofocused on instantiation.
+   * autofocus makes an Element autofocused after instantiation.
    *
    * @param focus
    * @return VNode

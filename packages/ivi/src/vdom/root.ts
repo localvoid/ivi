@@ -16,7 +16,7 @@ export interface Root {
 }
 
 /**
- * Array of registered root nodes.
+ * Root nodes.
  */
 export const ROOTS = [] as Root[];
 
@@ -160,7 +160,7 @@ export function renderNextFrame(
 }
 
 /**
- * Update dirty components.
+ * update updates dirty components.
  */
 export function update() {
   updateNextFrame();
@@ -168,7 +168,7 @@ export function update() {
 }
 
 /**
- * Update dirty components on the next frame.
+ * updateNextFrame adds a task to update dirty components that will be executed at the next frame.
  */
 export function updateNextFrame() {
   if (!_pendingUpdate) {
