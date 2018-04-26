@@ -1,6 +1,5 @@
 import { DEV } from "ivi-vars";
 import { CSSStyleProps } from "ivi-core";
-import { DEV_MODE, DevModeFlags } from "./dev_mode";
 import { printWarn, printWarnOnce } from "./print";
 
 const DOMHTMLAttributeTypos: { [key: string]: string | ((v: any) => string | undefined) } = {
@@ -20,28 +19,26 @@ const DOMSVGAttributeTypos: { [key: string]: string | ((v: any) => string | unde
  */
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
-      for (const attrName of Object.keys(attrs)) {
-        const check = DOMHTMLAttributeTypos[attrName];
-        const value = attrs[attrName];
+    for (const attrName of Object.keys(attrs)) {
+      const check = DOMHTMLAttributeTypos[attrName];
+      const value = attrs[attrName];
 
-        if (typeof value === "function") {
-          printWarnOnce(
-            "typo.attribute.value.function",
-            "Incorrect attribute value. Value has a function type that cannot be coerced to string.",
-          );
-        } else if (typeof value === "symbol") {
-          printWarnOnce(
-            "typo.attribute.value.symbol",
-            "Incorrect attribute value. Value has a symbol type that cannot be coerced to string.",
-          );
-        }
+      if (typeof value === "function") {
+        printWarnOnce(
+          "typo.attribute.value.function",
+          "Incorrect attribute value. Value has a function type that cannot be coerced to string.",
+        );
+      } else if (typeof value === "symbol") {
+        printWarnOnce(
+          "typo.attribute.value.symbol",
+          "Incorrect attribute value. Value has a symbol type that cannot be coerced to string.",
+        );
+      }
 
-        if (check !== undefined) {
-          const msg = (typeof check === "function") ? check(value) : check;
-          if (msg) {
-            printWarnOnce(`typo.attribute.html.${attrName}`, msg);
-          }
+      if (check !== undefined) {
+        const msg = (typeof check === "function") ? check(value) : check;
+        if (msg) {
+          printWarnOnce(`typo.attribute.html.${attrName}`, msg);
         }
       }
     }
@@ -55,28 +52,26 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
  */
 export function checkSVGDOMAttributesForTypos(attrs: { [key: string]: any }): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
-      for (const attrName of Object.keys(attrs)) {
-        const check = DOMSVGAttributeTypos[attrName];
-        const value = attrs[attrName];
+    for (const attrName of Object.keys(attrs)) {
+      const check = DOMSVGAttributeTypos[attrName];
+      const value = attrs[attrName];
 
-        if (typeof value === "function") {
-          printWarnOnce(
-            "typo.attribute.value.function",
-            "Incorrect attribute value. Value has a function type that cannot be coerced to string.",
-          );
-        } else if (typeof value === "symbol") {
-          printWarnOnce(
-            "typo.attribute.value.symbol",
-            "Incorrect attribute value. Value has a symbol type that cannot be coerced to string.",
-          );
-        }
+      if (typeof value === "function") {
+        printWarnOnce(
+          "typo.attribute.value.function",
+          "Incorrect attribute value. Value has a function type that cannot be coerced to string.",
+        );
+      } else if (typeof value === "symbol") {
+        printWarnOnce(
+          "typo.attribute.value.symbol",
+          "Incorrect attribute value. Value has a symbol type that cannot be coerced to string.",
+        );
+      }
 
-        if (check !== undefined) {
-          const msg = (typeof check === "function") ? check(value) : check;
-          if (msg) {
-            printWarnOnce(`typo.attribute.svg.${attrName}`, msg);
-          }
+      if (check !== undefined) {
+        const msg = (typeof check === "function") ? check(value) : check;
+        if (msg) {
+          printWarnOnce(`typo.attribute.svg.${attrName}`, msg);
         }
       }
     }
@@ -96,29 +91,27 @@ if (DEV) {
  */
 export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableCheckingForTypos) === 0) {
-      for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
-        const styleValue = styles[styleName];
-        const match = DOMStyleTypos[styleName];
-        if (match !== undefined) {
-          printWarnOnce(`typo.style.${styleName}`,
-            `Typo: style name "${styleName}" should be "${match}".`);
-        } else if (styleName.indexOf("-") > -1) {
-          printWarnOnce(`typo.style.${styleName}`,
-            `Typo: style "${styleName}" contains a hyphen symbol.`);
-        }
+    for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
+      const styleValue = styles[styleName];
+      const match = DOMStyleTypos[styleName];
+      if (match !== undefined) {
+        printWarnOnce(`typo.style.${styleName}`,
+          `Typo: style name "${styleName}" should be "${match}".`);
+      } else if (styleName.indexOf("-") > -1) {
+        printWarnOnce(`typo.style.${styleName}`,
+          `Typo: style "${styleName}" contains a hyphen symbol.`);
+      }
 
-        if (typeof styleValue === "string") {
-          if (styleValue.indexOf("\n") > -1) {
-            printWarn(`Typo: style "${styleName}" has a value with a newline character "${styleValue}".`);
-          }
-          if (styleValue.indexOf(";") > -1) {
-            printWarn(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
-          }
-        } else if (typeof styleValue === "number") {
-          if (isNaN(styleValue)) {
-            printWarn(`Typo: style "${styleName}" has a numeric NaN value.`);
-          }
+      if (typeof styleValue === "string") {
+        if (styleValue.indexOf("\n") > -1) {
+          printWarn(`Typo: style "${styleName}" has a value with a newline character "${styleValue}".`);
+        }
+        if (styleValue.indexOf(";") > -1) {
+          printWarn(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
+        }
+      } else if (typeof styleValue === "number") {
+        if (isNaN(styleValue)) {
+          printWarn(`Typo: style "${styleName}" has a numeric NaN value.`);
         }
       }
     }
@@ -133,21 +126,19 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
  */
 export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
   if (DEV) {
-    if (!(DEV_MODE & DevModeFlags.DisableWarningsForUnsupportedFeatures)) {
-      switch (tag) {
-        case "svg":
-          if (attrs.hasOwnProperty("viewport")) {
-            printWarnOnce("deprecated.svg.attribute.viewport",
-              `SVG attribute "viewport" is deprecated.`);
-          }
-          break;
-        case "view":
-          if (attrs.hasOwnProperty("viewTarget")) {
-            printWarnOnce("deprecated.svg.attribute.viewTarget",
-              `SVG attribute "viewTarget" is deprecated.`);
-          }
-          break;
-      }
+    switch (tag) {
+      case "svg":
+        if (attrs.hasOwnProperty("viewport")) {
+          printWarnOnce("deprecated.svg.attribute.viewport",
+            `SVG attribute "viewport" is deprecated.`);
+        }
+        break;
+      case "view":
+        if (attrs.hasOwnProperty("viewTarget")) {
+          printWarnOnce("deprecated.svg.attribute.viewTarget",
+            `SVG attribute "viewTarget" is deprecated.`);
+        }
+        break;
     }
   }
 }

@@ -1,59 +1,11 @@
 /**
  * Development Mode.
- *
- * Development Mode is enabled when global variable `DEV` is `true`.
- *
- * Development Mode can be configured via query parameters:
- *   _nv=false   Disable Nesting Validation.
- *   _st=false   Disable Stack Trace Augmentation.
- *   _typos=true Enable Checking for Typos.
  */
-import { DEV } from "ivi-vars";
 
 /**
  * Version number in string format.
  */
 export const VERSION = "0.10.0";
-
-/**
- * Dev Mode Flags.
- *
- * `setDevModeFlags` function is used to set Dev Mode flags.
- */
-export const enum DevModeFlags {
-  /**
-   * Disable Nesting Validation.
-   */
-  DisableNestingValidation = 1,
-  /**
-   * Disable Stack Trace Augmentation.
-   */
-  DisableStackTraceAugmentation = 1 << 1,
-  /**
-   * Disable Checking for Typos.
-   */
-  DisableCheckingForTypos = 1 << 2,
-  /**
-   * Disable Warnings for Unsupported Features.
-   */
-  DisableWarningsForUnsupportedFeatures = 1 << 3,
-}
-
-/**
- * Dev Mode Flags. See `DevModeFlags` for details.
- */
-export let DEV_MODE: DevModeFlags = 0;
-
-/**
- * Set `DevModeFlags`.
- *
- * @param flags See `DevModeFlags` for details.
- */
-export function setDevModeFlags(flags: DevModeFlags): void {
-  if (DEV) {
-    DEV_MODE |= flags;
-  }
-}
 
 /* tslint:disable:ban-types */
 /**
@@ -66,42 +18,3 @@ export function getFunctionName(fn: Function): string {
   return fn.displayName || fn.name || "(anonymous function)";
 }
 /* tslint:enable:ban-types */
-
-/**
- * Parse query string.
- *
- * @param query Query string.
- * @returns object with key-value
- */
-function parseQueryString(query: string): { [key: string]: string } {
-  const params = query.substr(1).split("&");
-
-  if (params.length === 0) {
-    return {};
-  }
-
-  const b: { [key: string]: string } = {};
-  for (const kv of params) {
-    const p = kv.split("=", 2);
-    if (p.length === 1) {
-      b[p[0]] = "";
-    } else {
-      b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-    }
-  }
-  return b;
-}
-
-if (DEV) {
-  const query = parseQueryString(window.location.search);
-
-  if (query["_nv"] === "false") {
-    DEV_MODE |= DevModeFlags.DisableNestingValidation;
-  }
-  if (query["_st"] === "false") {
-    DEV_MODE |= DevModeFlags.DisableStackTraceAugmentation;
-  }
-  if (query["_typos"] === "false") {
-    DEV_MODE |= DevModeFlags.DisableCheckingForTypos;
-  }
-}

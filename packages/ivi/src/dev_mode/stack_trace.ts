@@ -4,7 +4,7 @@
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
 import { DEV } from "ivi-vars";
-import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
+import { getFunctionName } from "./dev_mode";
 import { ComponentClass, StatelessComponent, Component } from "../vdom/component";
 import { VNode } from "../vdom/vnode";
 import { VNodeFlags } from "../vdom/flags";
@@ -44,48 +44,46 @@ if (DEV) {
  */
 export function stackTracePushComponent(vnode: VNode, instance?: Component<any> | {}): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
-      const flags = vnode._flags;
-      let type;
-      const tag = vnode._tag as ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
-        KeepAliveHandler;
+    const flags = vnode._flags;
+    let type;
+    const tag = vnode._tag as ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
+      KeepAliveHandler;
 
-      if ((flags & VNodeFlags.ComponentClass) !== 0) {
-        type = ComponentStackFrameType.Component;
-        if (instance === undefined) {
-          instance = vnode._instance as Component<any> | {};
-        }
-      } else {
-        if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
-          if ((flags & VNodeFlags.Connect) !== 0) {
-            type = ComponentStackFrameType.Connect;
-          } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
-            type = ComponentStackFrameType.UpdateContext;
-            if (instance === undefined) {
-              instance = vnode._props as {};
-            }
-          } else {
-            type = ComponentStackFrameType.KeepAlive;
+    if ((flags & VNodeFlags.ComponentClass) !== 0) {
+      type = ComponentStackFrameType.Component;
+      if (instance === undefined) {
+        instance = vnode._instance as Component<any> | {};
+      }
+    } else {
+      if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
+        if ((flags & VNodeFlags.Connect) !== 0) {
+          type = ComponentStackFrameType.Connect;
+        } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
+          type = ComponentStackFrameType.UpdateContext;
+          if (instance === undefined) {
+            instance = vnode._props as {};
           }
         } else {
-          type = ComponentStackFrameType.ComponentFunction;
+          type = ComponentStackFrameType.KeepAlive;
         }
-      }
-
-      if (STACK_TRACE_DEPTH >= STACK_TRACE.length) {
-        STACK_TRACE.push({
-          type: type,
-          tag: tag,
-          instance: instance,
-        });
       } else {
-        const frame = STACK_TRACE[STACK_TRACE_DEPTH];
-        frame.type = type;
-        frame.tag = tag;
-        frame.instance = instance;
+        type = ComponentStackFrameType.ComponentFunction;
       }
-      ++STACK_TRACE_DEPTH;
     }
+
+    if (STACK_TRACE_DEPTH >= STACK_TRACE.length) {
+      STACK_TRACE.push({
+        type: type,
+        tag: tag,
+        instance: instance,
+      });
+    } else {
+      const frame = STACK_TRACE[STACK_TRACE_DEPTH];
+      frame.type = type;
+      frame.tag = tag;
+      frame.instance = instance;
+    }
+    ++STACK_TRACE_DEPTH;
   }
 }
 
@@ -94,11 +92,9 @@ export function stackTracePushComponent(vnode: VNode, instance?: Component<any> 
  */
 export function stackTracePopComponent(): void {
   if (DEV) {
-    if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-      const frame = STACK_TRACE[--STACK_TRACE_DEPTH];
-      frame.tag = undefined;
-      frame.instance = undefined;
-    }
+    const frame = STACK_TRACE[--STACK_TRACE_DEPTH];
+    frame.tag = undefined;
+    frame.instance = undefined;
   }
 }
 
@@ -107,14 +103,12 @@ export function stackTracePopComponent(): void {
  */
 export function stackTraceReset(): void {
   if (DEV) {
-    if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-      for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {
-        const frame = STACK_TRACE[i];
-        frame.tag = undefined;
-        frame.instance = undefined;
-      }
-      STACK_TRACE_DEPTH = 0;
+    for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {
+      const frame = STACK_TRACE[i];
+      frame.tag = undefined;
+      frame.instance = undefined;
     }
+    STACK_TRACE_DEPTH = 0;
   }
 }
 
@@ -165,10 +159,8 @@ function stackTraceToString(): string {
  */
 export function stackTraceAugment(e: Error): void {
   if (DEV) {
-    if (!(DEV_MODE & DevModeFlags.DisableStackTraceAugmentation)) {
-      if (e.stack) {
-        e.stack += "\n\nComponents stack trace:" + stackTraceToString();
-      }
+    if (e.stack) {
+      e.stack += "\n\nComponents stack trace:" + stackTraceToString();
     }
   }
 }

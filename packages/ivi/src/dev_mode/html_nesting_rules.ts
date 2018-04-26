@@ -5,12 +5,8 @@
  * `tbody`, `thead`, etc as its children. Browsers are handling such cases in a way that they automatically inject
  * missing elements or close existing elements, to prevent such behaviour we are just throwing errors in Dev Mode when
  * HTML nesting rules are violated.
- *
- * To disable nesting validation, set Dev Mode `DisableNestingValidation` flag with a function
- * `setDevModeFlags(DevModeFlags.DisableNestingValidation)`.
  */
 import { DEV } from "ivi-vars";
-import { DEV_MODE, DevModeFlags } from "./dev_mode";
 
 /**
  * Ancestor Flags.
@@ -188,9 +184,9 @@ const invalidAncestorList: { [child: string]: AncestorFlags } = {
   "button": AncestorFlags.Button,
   "a": AncestorFlags.Anchor,
   "rp": AncestorFlags.DescriptionListItem | AncestorFlags.ListItem | AncestorFlags.ListItem | AncestorFlags.Option |
-  AncestorFlags.OptGroup | AncestorFlags.Paragraph | AncestorFlags.RubyAnnotation,
+    AncestorFlags.OptGroup | AncestorFlags.Paragraph | AncestorFlags.RubyAnnotation,
   "rt": AncestorFlags.DescriptionListItem | AncestorFlags.ListItem | AncestorFlags.ListItem | AncestorFlags.Option |
-  AncestorFlags.OptGroup | AncestorFlags.Paragraph | AncestorFlags.RubyAnnotation,
+    AncestorFlags.OptGroup | AncestorFlags.Paragraph | AncestorFlags.RubyAnnotation,
 };
 
 let _parentTagName: string | undefined;
@@ -205,14 +201,12 @@ let _childTagName: string | undefined;
  */
 export function setInitialNestingState(parent: Element): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
-      if ((parent as Element).tagName) {
-        _parentTagName = (parent as Element).tagName.toLowerCase();
-        _ancestorFlags = ancestorFlags(parent as Element);
-      } else {
-        _parentTagName = "";
-        _ancestorFlags = 0;
-      }
+    if ((parent as Element).tagName) {
+      _parentTagName = (parent as Element).tagName.toLowerCase();
+      _ancestorFlags = ancestorFlags(parent as Element);
+    } else {
+      _parentTagName = "";
+      _ancestorFlags = 0;
     }
   }
 }
@@ -224,13 +218,11 @@ export function setInitialNestingState(parent: Element): void {
  */
 export function pushNestingState(childTagName: string): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
-      if (_parentTagName) {
-        _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
-      }
-      _parentTagName = _childTagName;
-      _childTagName = childTagName;
+    if (_parentTagName) {
+      _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
     }
+    _parentTagName = _childTagName;
+    _childTagName = childTagName;
   }
 }
 
@@ -240,11 +232,9 @@ export function pushNestingState(childTagName: string): void {
  */
 export function restoreNestingState(parentTagName: string | undefined, aFlags: AncestorFlags): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
-      _parentTagName = parentTagName;
-      _ancestorFlags = aFlags;
-      _childTagName = undefined;
-    }
+    _parentTagName = parentTagName;
+    _ancestorFlags = aFlags;
+    _childTagName = undefined;
   }
 }
 
@@ -253,9 +243,7 @@ export function restoreNestingState(parentTagName: string | undefined, aFlags: A
  */
 export function nestingStateParentTagName(): string | undefined {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
-      return _parentTagName;
-    }
+    return _parentTagName;
   }
   return;
 }
@@ -265,9 +253,7 @@ export function nestingStateParentTagName(): string | undefined {
  */
 export function nestingStateAncestorFlags(): AncestorFlags {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
-      return _ancestorFlags;
-    }
+    return _ancestorFlags;
   }
   return 0;
 }
@@ -282,25 +268,23 @@ const REPORT_MSG = "If you are certain that you aren't violating any HTML nestin
  */
 export function checkNestingViolation(): void {
   if (DEV) {
-    if ((DEV_MODE & DevModeFlags.DisableNestingValidation) === 0) {
-      if (_parentTagName !== undefined) {
-        const validChildren = validChildList[_parentTagName];
-        if (validChildren !== undefined) {
-          for (const child of validChildren) {
-            if (_childTagName === child) {
-              return;
-            }
+    if (_parentTagName !== undefined) {
+      const validChildren = validChildList[_parentTagName];
+      if (validChildren !== undefined) {
+        for (const child of validChildren) {
+          if (_childTagName === child) {
+            return;
           }
-          throw Error(`HTML child nesting rule violation: <${_parentTagName}> element can contain ` +
-            `[${validChildren.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
         }
+        throw Error(`HTML child nesting rule violation: <${_parentTagName}> element can contain ` +
+          `[${validChildren.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
+      }
 
-        if (_childTagName !== undefined && _childTagName !== "$t") {
-          const invalidAncestorFlags = invalidAncestorList[_childTagName];
-          if (invalidAncestorFlags !== undefined && ((_ancestorFlags & invalidAncestorFlags) !== 0)) {
-            throw Error(`HTML child nesting rule violation: <${_childTagName}> element has invalid ` +
-              `ancestor [${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n` + REPORT_MSG);
-          }
+      if (_childTagName !== undefined && _childTagName !== "$t") {
+        const invalidAncestorFlags = invalidAncestorList[_childTagName];
+        if (invalidAncestorFlags !== undefined && ((_ancestorFlags & invalidAncestorFlags) !== 0)) {
+          throw Error(`HTML child nesting rule violation: <${_childTagName}> element has invalid ` +
+            `ancestor [${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n` + REPORT_MSG);
         }
       }
     }
