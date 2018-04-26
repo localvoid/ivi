@@ -10,4 +10,4 @@ export const DEV = true;
  * 
  * @const {number}
  */
-export const TARGET = 18;
+export const TARGET = 4;

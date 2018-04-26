@@ -1,10 +1,10 @@
 {
   "name": "ivi-vars",
-  "main": "borwser-dev.js",
+  "main": "browser-dev.js",
   "module": "browser-dev.js",
   "typings": "index.d.ts",
   "sideEffects": false,
-  "version": "0.1.1",
+  "version": "0.10.0",
   "description": "Environment Variables for ivi library",
   "license": "MIT",
   "author": {
@@ -26,7 +26,7 @@
   },
   "github": "https://github.com/ivijs/ivi",
   "files": [
-    "cjs/*.js",
+    "index.d.ts",
     "*.js",
     "LICENSE",
     "README.md"
