@@ -183,7 +183,7 @@ function vNodeAttach(vnode: VNode): void {
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
     stackTracePushComponent(vnode);
-    if ((flags & VNodeFlags.ComponentClass) !== 0) {
+    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = vnode._instance as Component<any>;
 
       if (DEV) {
@@ -236,7 +236,7 @@ function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
       }
     } else {
       vNodeDetach(vnode._children as VNode, syncFlags);
-      if ((flags & VNodeFlags.ComponentClass) !== 0 &&
+      if ((flags & VNodeFlags.StatefulComponent) !== 0 &&
         (syncFlags & SyncFlags.Attached) !== 0) {
         const component = vnode._instance as Component<any>;
 
@@ -297,7 +297,7 @@ function vNodeDirtyCheck(parent: Node, vnode: VNode, context: {}, syncFlags: Syn
       }
     } else {
       stackTracePushComponent(vnode);
-      if ((flags & VNodeFlags.ComponentClass) !== 0) {
+      if ((flags & VNodeFlags.StatefulComponent) !== 0) {
         instance = vnode._instance as Component<any>;
         children = vnode._children as VNode;
         if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
@@ -539,7 +539,7 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
     instance = node;
     restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
   } else { // (flags & VNodeFlags.Component)
-    if ((flags & VNodeFlags.ComponentClass) !== 0) {
+    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
       stackTracePushComponent(vnode, instance);
       const root = vnode._children = component.render();
@@ -636,8 +636,8 @@ function vNodeCanSync(a: VNode, b: VNode): boolean {
     (
       (a._flags & (
         VNodeFlags.ElementFactory |
-        VNodeFlags.ComponentFunction |
-        VNodeFlags.ComponentClass |
+        VNodeFlags.StatelessComponent |
+        VNodeFlags.StatefulComponent |
         VNodeFlags.Connect |
         VNodeFlags.KeepAlive
       )) === 0 ||
@@ -733,7 +733,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
       }
     } else { // (flags & VNodeFlags.Component)
       stackTracePushComponent(b);
-      if ((bFlags & VNodeFlags.ComponentClass) !== 0) {
+      if ((bFlags & VNodeFlags.StatefulComponent) !== 0) {
         const component = instance as Component<any>;
         // Update component props
         const oldProps = a._props;

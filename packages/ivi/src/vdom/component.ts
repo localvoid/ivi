@@ -1,44 +1,41 @@
 import { currentFrameUpdate } from "ivi-scheduler";
-import { getFunctionName } from "../dev_mode/dev_mode";
 import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
 
 /**
- * Stateless Component function.
+ * Stateless Component descriptor.
  */
-export interface StatelessComponent<P = void> {
+export interface StatelessComponent<P = null> {
   render: (props: P) => VNode;
   isPropsChanged: ((oldProps: P, newProps: P) => boolean) | undefined;
 }
 
 /**
- * Component class type.
+ * Stateful Component constructor.
  */
-export interface StatefulComponent<P = void> {
+export interface StatefulComponent<P = null> {
   new(props: P): Component<P>;
 }
 
 /**
- * Component is the main building block that is used to build UI applications.
+ * Component is a base class for stateful components.
  *
  * Component class has a parametric type `P` to specify `props` type.
  *
  * Example:
  *
  *     class Hello extends Component<string> {
- *         render() {
- *             return h.t(`Hello ${this.props}`);
- *         }
+ *       render() {
+ *         return h.t(`Hello ${this.props}`);
+ *       }
  *     }
  *     const hello = componentFactory(Hello);
  *
  *     render(hello("world"), document.getElementById("App")!);
  */
-export abstract class Component<P = void> {
+export abstract class Component<P = null> {
   /**
    * Flags, see `ComponentFlags` for details.
-   *
-   * Lowest 16 bits are reserved for ivi flags, other bits can be used for user flags.
    */
   flags: ComponentFlags;
   /**
@@ -52,13 +49,13 @@ export abstract class Component<P = void> {
   }
 
   /**
-   * Lifecycle method `isPropsChanged` is used as a hint that can reduce unnecessary updates.
+   * Lifecycle method `isPropsChanged` is used as a hint to reduce unnecessary updates.
    *
    * By default props checked by their identity.
    *
    * @param oldProps Old props.
    * @param newProps New props.
-   * @returns `true` when props should be updated.
+   * @returns `true` when props has been changed.
    */
   isPropsChanged(oldProps: P, newProps: P): boolean {
     return oldProps !== newProps;
@@ -94,9 +91,9 @@ export abstract class Component<P = void> {
   /**
    * Lifecycle method `updated` is invoked after update.
    *
-   * @param localUpdates Update was caused by local updates.
+   * @param local `true` when update was caused by local changes.
    */
-  updated(localUpdates: boolean): void {
+  updated(local: boolean): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
   }
@@ -121,20 +118,6 @@ export abstract class Component<P = void> {
       currentFrameUpdate();
     }
   }
-}
-
-/**
- * getComponentName retrieves component name from component instance or component function.
- *
- * @param component Component.
- * @return Component name.
- */
-export function getComponentName(component: Component<any> | StatelessComponent<any>): string {
-  return getFunctionName(
-    isStatefulComponent(component) ?
-      component.constructor :
-      component.render,
-  );
 }
 
 /**

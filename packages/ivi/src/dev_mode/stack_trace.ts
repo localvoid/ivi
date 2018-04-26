@@ -49,7 +49,7 @@ export function stackTracePushComponent(vnode: VNode, instance?: Component<any> 
     const tag = vnode._tag as StatefulComponent<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
       KeepAliveHandler;
 
-    if ((flags & VNodeFlags.ComponentClass) !== 0) {
+    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       type = ComponentStackFrameType.Component;
       if (instance === undefined) {
         instance = vnode._instance as Component<any> | {};

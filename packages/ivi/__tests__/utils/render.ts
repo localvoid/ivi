@@ -15,7 +15,7 @@ export function checkRefs(n: Node, v: VNode) {
   expect(getDOMInstanceFromVNode(v)).toBe(n);
 
   if (flags & VNodeFlags.Component) {
-    if (flags & VNodeFlags.ComponentClass) {
+    if (flags & VNodeFlags.StatefulComponent) {
       expect(getDOMInstanceFromVNode(v)).toBe(n);
       const root = v._children as VNode;
       if (root) {

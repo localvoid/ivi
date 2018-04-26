@@ -8,7 +8,7 @@ export {
 } from "ivi-core";
 
 /**
- * Virtual DOM:
+ * Virtual DOM
  */
 export {
   StatefulComponent, StatelessComponent, Component,
@@ -29,13 +29,13 @@ export { componentFactory, statelessComponentFactory, context, connect, keepAliv
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 
 /**
- * API available only in browser environment.
+ * API available only in browser environment
  */
 export { VNodeFlags } from "./vdom/flags";
 export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
 
 /**
- * Entry.
+ * Entry
  */
 import { DEV } from "ivi-vars";
 import { FEATURES, FeatureFlags } from "ivi-core";

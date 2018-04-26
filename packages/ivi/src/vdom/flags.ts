@@ -11,17 +11,20 @@ export const enum VNodeFlags {
    * VNode represents an Element node.
    */
   Element = 1 << 1,
+  /**
+   * VNode is using an element factory to instantiate an Element node.
+   */
   ElementFactory = 1 << 2,
   /**
-   * VNode represents a simple "function" component.
+   * VNode represents a stateless component.
    */
-  ComponentFunction = 1 << 3,
+  StatelessComponent = 1 << 3,
   /**
-   * VNode represents a component.
+   * VNode represents a stateful component.
    */
-  ComponentClass = 1 << 4,
+  StatefulComponent = 1 << 4,
   /**
-   * Children property contains a child with a basic type (number/string/boolean).
+   * Children property contains a child with a basic type (number|string|boolean).
    */
   ChildrenBasic = 1 << 5,
   /**
@@ -37,7 +40,7 @@ export const enum VNodeFlags {
    */
   UnsafeHTML = 1 << 8,
   /**
-   * VNode is using a non-artificial key.
+   * VNode is using an explicit key.
    */
   Key = 1 << 9,
   /**
@@ -102,7 +105,7 @@ export const enum VNodeFlags {
   /**
    * VNode represents a Component.
    */
-  Component = ComponentFunction | ComponentClass | Connect | UpdateContext | KeepAlive,
+  Component = StatelessComponent | StatefulComponent | Connect | UpdateContext | KeepAlive,
   /**
    * Flags that should match to be compatible for syncing.
    */

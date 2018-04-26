@@ -24,7 +24,7 @@ export function statelessComponentFactory<P>(
   if (isPropsChanged === undefined) {
     return function (props: P): VNode<P> {
       return new VNode<P>(
-        VNodeFlags.ComponentFunction,
+        VNodeFlags.StatelessComponent,
         d,
         props,
         null,
@@ -34,7 +34,7 @@ export function statelessComponentFactory<P>(
   }
   return function (props: P): VNode<P> {
     return new VNode<P>(
-      VNodeFlags.ComponentFunction | VNodeFlags.CheckChangedProps,
+      VNodeFlags.StatelessComponent | VNodeFlags.CheckChangedProps,
       d,
       props,
       null,
@@ -43,14 +43,13 @@ export function statelessComponentFactory<P>(
   };
 }
 
-export function componentFactory(c: StatefulComponent<void>): () => VNode<null>;
 export function componentFactory(c: StatefulComponent<null>): () => VNode<null>;
 export function componentFactory<P, U extends P>(c: StatefulComponent<P | undefined>): (props?: U) => VNode<P>;
 export function componentFactory<P, U extends P>(c: StatefulComponent<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: StatefulComponent<P>): (props: P) => VNode<P> {
   return function (props: P): VNode<P> {
     return new VNode<P>(
-      VNodeFlags.ComponentClass,
+      VNodeFlags.StatefulComponent,
       c,
       props,
       null,
