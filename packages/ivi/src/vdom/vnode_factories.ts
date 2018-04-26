@@ -1,6 +1,6 @@
 import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
-import { ComponentClass } from "./component";
+import { StatefulComponent } from "./component";
 import { VNode } from "./vnode";
 import { ConnectDescriptor } from "..";
 
@@ -43,11 +43,11 @@ export function statelessComponentFactory<P>(
   };
 }
 
-export function componentFactory(c: ComponentClass<void>): () => VNode<null>;
-export function componentFactory(c: ComponentClass<null>): () => VNode<null>;
-export function componentFactory<P, U extends P>(c: ComponentClass<P | undefined>): (props?: U) => VNode<P>;
-export function componentFactory<P, U extends P>(c: ComponentClass<P>): (props: U) => VNode<P>;
-export function componentFactory<P>(c: ComponentClass<P>): (props: P) => VNode<P> {
+export function componentFactory(c: StatefulComponent<void>): () => VNode<null>;
+export function componentFactory(c: StatefulComponent<null>): () => VNode<null>;
+export function componentFactory<P, U extends P>(c: StatefulComponent<P | undefined>): (props?: U) => VNode<P>;
+export function componentFactory<P, U extends P>(c: StatefulComponent<P>): (props: U) => VNode<P>;
+export function componentFactory<P>(c: StatefulComponent<P>): (props: P) => VNode<P> {
   return function (props: P): VNode<P> {
     return new VNode<P>(
       VNodeFlags.ComponentClass,

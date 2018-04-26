@@ -5,7 +5,7 @@
  */
 import { DEV } from "ivi-vars";
 import { getFunctionName } from "./dev_mode";
-import { ComponentClass, StatelessComponent, Component } from "../vdom/component";
+import { StatefulComponent, StatelessComponent, Component } from "../vdom/component";
 import { VNode } from "../vdom/vnode";
 import { VNodeFlags } from "../vdom/flags";
 import { ConnectDescriptor } from "../vdom/connect_descriptor";
@@ -21,7 +21,7 @@ export const enum ComponentStackFrameType {
 
 export interface ComponentStackTraceFrame {
   type: ComponentStackFrameType;
-  tag: ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | KeepAliveHandler |
+  tag: StatefulComponent<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | KeepAliveHandler |
   undefined;
   instance: Component<any> | {} | undefined;
 }
@@ -46,7 +46,7 @@ export function stackTracePushComponent(vnode: VNode, instance?: Component<any> 
   if (DEV) {
     const flags = vnode._flags;
     let type;
-    const tag = vnode._tag as ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
+    const tag = vnode._tag as StatefulComponent<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
       KeepAliveHandler;
 
     if ((flags & VNodeFlags.ComponentClass) !== 0) {
@@ -126,7 +126,7 @@ function stackTraceToString(): string {
       result += "\n  ";
       switch (frame.type) {
         case ComponentStackFrameType.Component:
-          const cls = frame.tag as ComponentClass<any>;
+          const cls = frame.tag as StatefulComponent<any>;
           result += `[C]${getFunctionName(cls)}`;
           break;
         case ComponentStackFrameType.ComponentFunction:
@@ -176,7 +176,7 @@ export function printComponentStackTrace(): void {
         const frame = STACK_TRACE[i];
         switch (frame.type) {
           case ComponentStackFrameType.Component:
-            const cls = frame.tag as ComponentClass<any>;
+            const cls = frame.tag as StatefulComponent<any>;
             const instance = frame.instance as Component<any>;
             console.groupCollapsed(`[C]${getFunctionName(cls)}`);
             console.log(instance);

@@ -14,7 +14,7 @@ export interface StatelessComponent<P = void> {
 /**
  * Component class type.
  */
-export interface ComponentClass<P = void> {
+export interface StatefulComponent<P = void> {
   new(props: P): Component<P>;
 }
 
@@ -131,7 +131,7 @@ export abstract class Component<P = void> {
  */
 export function getComponentName(component: Component<any> | StatelessComponent<any>): string {
   return getFunctionName(
-    isComponentClass(component) ?
+    isStatefulComponent(component) ?
       component.constructor :
       component.render,
   );
@@ -143,7 +143,7 @@ export function getComponentName(component: Component<any> | StatelessComponent<
  * @param o Object.
  * @returns `true` when object looks like a Component class.
  */
-export function isComponentClass(o: any): o is ComponentClass<any> {
+export function isStatefulComponent(o: any): o is StatefulComponent<any> {
   return o.prototype !== undefined && o.prototype.render !== undefined;
 }
 

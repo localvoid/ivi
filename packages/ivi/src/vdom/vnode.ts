@@ -4,7 +4,7 @@ import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { VNodeFlags } from "./flags";
-import { StatelessComponent, ComponentClass, Component } from "./component";
+import { StatelessComponent, StatefulComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
 
@@ -39,7 +39,7 @@ export class VNode<P = any, N = Node> {
   _tag:
     | string
     | VNode
-    | ComponentClass<any>
+    | StatefulComponent<any>
     | StatelessComponent<any>
     | ConnectDescriptor<any, any, {}>
     | KeepAliveHandler
@@ -78,7 +78,7 @@ export class VNode<P = any, N = Node> {
       | string
       | VNode
       | StatelessComponent<P>
-      | ComponentClass<P>
+      | StatefulComponent<P>
       | ConnectDescriptor<any, any, {}>
       | KeepAliveHandler
       | null,

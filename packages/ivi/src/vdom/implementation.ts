@@ -24,7 +24,7 @@ import { VNodeFlags, ComponentFlags, SyncFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { KeepAliveHandler } from "./keep_alive";
-import { ComponentClass, StatelessComponent, Component } from "./component";
+import { StatefulComponent, StatelessComponent, Component } from "./component";
 import { syncDOMAttrs, syncStyle } from "./sync_dom";
 
 /**
@@ -540,7 +540,7 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
     restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
   } else { // (flags & VNodeFlags.Component)
     if ((flags & VNodeFlags.ComponentClass) !== 0) {
-      const component = instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
+      const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
       stackTracePushComponent(vnode, instance);
       const root = vnode._children = component.render();
       node = vNodeRender(parent, root, context);
