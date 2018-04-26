@@ -76,29 +76,21 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
   );
 }
 
-export function connect<T, C>(
-  render: (props: T) => VNode<any>,
-  select: (prev: T | null, props: undefined, context: C) => T,
-): () => VNode<null>;
-export function connect<T, P, C>(
-  render: (props: T) => VNode<any>,
-  select: (prev: T | null, props: P, context: C) => T,
-): (props: P) => VNode<P>;
 export function connect<T>(
-  render: (props: T) => VNode<any>,
-  select: (prev: T | null, props: undefined) => T,
-): () => VNode<null>;
-export function connect<T, P>(
-  render: (props: T) => VNode<any>,
-  select: (prev: T | null, props: P) => T,
-): (props: P) => VNode<P>;
-export function connect<T>(
-  render: (props: T) => VNode<any>,
   select: (prev: T | null) => T,
+  render: (props: T) => VNode<any>,
+): () => VNode<null>;
+export function connect<T, C>(
+  select: (prev: T | null, props: undefined, context: C) => T,
+  render: (props: T) => VNode<any>,
 ): () => VNode<null>;
 export function connect<T, P, C>(
-  render: (props: T) => VNode<any>,
   select: (prev: T | null, props: P, context: C) => T,
+  render: (props: T) => VNode<any>,
+): (props: P) => VNode<P>;
+export function connect<T, P, C>(
+  select: (prev: T | null, props: P, context: C) => T,
+  render: (props: T) => VNode<any>,
 ): (props: P) => VNode<P> {
   const descriptor = { select, render };
   return function (props: P): VNode<P> {
@@ -120,15 +112,15 @@ export function connect<T, P, C>(
  * @param props Props.
  * @returns VNodeBuilder object.
  */
+export function keepAlive(
+  handler: (disposed: VNode | null) => VNode | null,
+  child: VNode,
+): VNode<null>;
 export function keepAlive<P>(
   handler: (disposed: VNode | null, props: P) => VNode | null,
   child: VNode,
   props: P,
 ): VNode<P>;
-export function keepAlive(
-  handler: (disposed: VNode | null) => VNode | null,
-  child: VNode,
-): VNode<null>;
 export function keepAlive<P>(
   handler: KeepAliveHandler,
   child: VNode,

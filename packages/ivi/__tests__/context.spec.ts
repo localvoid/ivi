@@ -3,13 +3,9 @@ import * as h from "./utils/html";
 import { context, connect } from "../src/vdom/vnode_factories";
 import { expect } from "iko";
 
-const $ContextTestPrinter = connect(
-  function (props: { value: string }) {
-    return h.t(props.value);
-  },
-  function (prev, props, ctx: { value: string }) {
-    return { value: ctx.value };
-  },
+const $ContextTestPrinter = connect<{ value: string }, { value: string }>(
+  (prev, props, ctx) => ({ value: ctx.value }),
+  (props) => h.t(props.value),
 );
 
 describe("context", () => {
