@@ -55,23 +55,6 @@ export function setDevModeFlags(flags: DevModeFlags): void {
   }
 }
 
-/**
- * Debug Id counter.
- */
-let _nextDebugId = 0;
-
-/**
- * Debug Id generator.
- *
- * @return unique debug id.
- */
-export function nextDebugId(): number {
-  if (DEV) {
-    return _nextDebugId++;
-  }
-  return 0;
-}
-
 /* tslint:disable:ban-types */
 /**
  * Get function name.

@@ -133,8 +133,7 @@ function stackTraceToString(): string {
       switch (frame.type) {
         case ComponentStackFrameType.Component:
           const cls = frame.tag as ComponentClass<any>;
-          const instance = frame.instance as Component<any>;
-          result += `[C]${getFunctionName(cls)} #${instance._debugId}`;
+          result += `[C]${getFunctionName(cls)}`;
           break;
         case ComponentStackFrameType.ComponentFunction:
           const sc = frame.tag as StatelessComponent<any>;
@@ -187,7 +186,7 @@ export function printComponentStackTrace(): void {
           case ComponentStackFrameType.Component:
             const cls = frame.tag as ComponentClass<any>;
             const instance = frame.instance as Component<any>;
-            console.groupCollapsed(`[C]${getFunctionName(cls)} #${instance._debugId}`);
+            console.groupCollapsed(`[C]${getFunctionName(cls)}`);
             console.log(instance);
             console.groupEnd();
             break;

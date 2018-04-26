@@ -1,6 +1,5 @@
-import { DEV } from "ivi-vars";
 import { currentFrameUpdate } from "ivi-scheduler";
-import { getFunctionName, nextDebugId } from "../dev_mode/dev_mode";
+import { getFunctionName } from "../dev_mode/dev_mode";
 import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
 
@@ -46,21 +45,10 @@ export abstract class Component<P = void> {
    * Component properties.
    */
   props: P;
-  /**
-   * Unique ID.
-   *
-   * ID generator is using `dev_mode.uniqueId()` function, so it will be unique across all Dev Mode ids.
-   *
-   * Dev Mode.
-   */
-  _debugId!: number;
 
   constructor(props: P) {
     this.flags = 0;
     this.props = props;
-    if (DEV) {
-      this._debugId = nextDebugId();
-    }
   }
 
   /**
