@@ -1,4 +1,3 @@
-import { Context } from "ivi-core";
 import { frag, render, staticComponent } from "./utils";
 import * as h from "./utils/html";
 import { context, connect } from "../src/vdom/vnode_factories";
@@ -8,7 +7,7 @@ const $ContextTestPrinter = connect(
   function (props: { value: string }) {
     return h.t(props.value);
   },
-  function (prev, props, ctx: Context<{ value: string }>) {
+  function (prev, props, ctx: { value: string }) {
     return { value: ctx.value };
   },
 );
