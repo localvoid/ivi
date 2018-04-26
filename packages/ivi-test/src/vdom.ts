@@ -1,6 +1,6 @@
 import { CSSStyleProps, shallowEqual, Predicate } from "ivi-core";
 import { EventSource } from "ivi-events";
-import { Context, VNode, VNodeFlags, Component, ComponentClass, StatelessComponent, ConnectDescriptor } from "ivi";
+import { VNode, VNodeFlags, Component, ComponentClass, StatelessComponent, ConnectDescriptor } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
 import { SnapshotFlags, toSnapshot } from "./snapshot";
@@ -8,8 +8,8 @@ import { SnapshotFlags, toSnapshot } from "./snapshot";
 export function visitUnwrapped(
   vnode: VNode,
   parent: VNode | null,
-  context: Context,
-  visitor: (vnode: VNode, parent: VNode | null, context: Context) => boolean,
+  context: {},
+  visitor: (vnode: VNode, parent: VNode | null, context: {}) => boolean,
 ): boolean {
   if (visitor(vnode, parent, context) === true) {
     return true;
@@ -79,7 +79,7 @@ export function visitWrapped(
   return false;
 }
 
-function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, context: Context): boolean {
+function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, context: {}): boolean {
   const flags = vnode._flags;
   if ((flags & (VNodeFlags.ComponentClass | VNodeFlags.ComponentFunction | VNodeFlags.Connect)) !== 0) {
     if ((flags & (VNodeFlags.ComponentClass | VNodeFlags.ComponentFunction)) !== 0) {
@@ -104,11 +104,11 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
 
 export function virtualRender(
   root: VNode,
-  rootContext: Context = {},
+  rootContext: {} = {},
   depth = 1,
 ): VNodeWrapper {
   visitUnwrapped(root, null, rootContext,
-    function (vnode: VNode, parent: VNode | null, context: Context) {
+    function (vnode: VNode, parent: VNode | null, context: {}) {
       return _virtualRender(depth, vnode, parent, context);
     },
   );
@@ -168,9 +168,9 @@ export class VNodeListWrapper {
 export class VNodeWrapper {
   readonly vnode: VNode;
   readonly parent: VNodeWrapper | null;
-  readonly context: Context;
+  readonly context: {};
 
-  constructor(vnode: VNode, parent: VNodeWrapper | null, context: Context) {
+  constructor(vnode: VNode, parent: VNodeWrapper | null, context: {}) {
     this.vnode = vnode;
     this.parent = parent;
     this.context = context;
@@ -246,8 +246,8 @@ export class VNodeWrapper {
     return this.vnode._instance as P;
   }
 
-  getCurrentContext<P = {}>(): Context<P> {
-    return this.context as Context<P>;
+  getCurrentContext<P = {}>(): P {
+    return this.context as P;
   }
 
   getKey(): any {

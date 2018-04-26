@@ -140,7 +140,7 @@ const handleVisibilityChange = catchError(function (): void {
 });
 
 if (
-  (TARGET & (Target.Electron | Target.Cordova | Target.EvergreenBrowser)) ||
+  (TARGET & (Target.Electron | Target.Cordova | Target.Evergreen)) ||
   typeof document["hidden"] !== "undefined"
 ) {
   _isHidden = function () {

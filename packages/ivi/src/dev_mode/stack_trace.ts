@@ -4,7 +4,6 @@
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
 import { DEV } from "ivi-vars";
-import { Context } from "ivi-core";
 import { DEV_MODE, DevModeFlags, getFunctionName } from "./dev_mode";
 import { ComponentClass, StatelessComponent, Component } from "../vdom/component";
 import { VNode } from "../vdom/vnode";
@@ -24,7 +23,7 @@ export interface ComponentStackTraceFrame {
   type: ComponentStackFrameType;
   tag: ComponentClass<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> | KeepAliveHandler |
   undefined;
-  instance: Component<any> | Context | undefined;
+  instance: Component<any> | {} | undefined;
 }
 
 /**
@@ -43,7 +42,7 @@ if (DEV) {
  *
  * @param vnode VNode.
  */
-export function stackTracePushComponent(vnode: VNode, instance?: Component<any> | Context): void {
+export function stackTracePushComponent(vnode: VNode, instance?: Component<any> | {}): void {
   if (DEV) {
     if ((DEV_MODE & DevModeFlags.DisableStackTraceAugmentation) === 0) {
       const flags = vnode._flags;
@@ -54,7 +53,7 @@ export function stackTracePushComponent(vnode: VNode, instance?: Component<any> 
       if ((flags & VNodeFlags.ComponentClass) !== 0) {
         type = ComponentStackFrameType.Component;
         if (instance === undefined) {
-          instance = vnode._instance as Component<any> | Context;
+          instance = vnode._instance as Component<any> | {};
         }
       } else {
         if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
@@ -63,7 +62,7 @@ export function stackTracePushComponent(vnode: VNode, instance?: Component<any> 
           } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
             type = ComponentStackFrameType.UpdateContext;
             if (instance === undefined) {
-              instance = vnode._props as Context;
+              instance = vnode._props as {};
             }
           } else {
             type = ComponentStackFrameType.KeepAlive;
@@ -146,7 +145,7 @@ function stackTraceToString(): string {
           result += `[+]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`;
           break;
         case ComponentStackFrameType.UpdateContext:
-          const context = frame.instance as Context;
+          const context = frame.instance as {};
           result += `[^]${Object.keys(context)}`;
           break;
         case ComponentStackFrameType.KeepAlive:
@@ -201,7 +200,7 @@ export function printComponentStackTrace(): void {
             console.log(`[*]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
             break;
           case ComponentStackFrameType.UpdateContext:
-            const context = frame.instance as Context;
+            const context = frame.instance as {};
             console.groupCollapsed(`[+]${Object.keys(context)}`);
             console.log(context);
             console.groupEnd();

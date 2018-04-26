@@ -1,5 +1,4 @@
 import { DEV } from "ivi-vars";
-import { Context } from "./types";
 
 /**
  * memoizeSelector creates memoized selector.
@@ -10,18 +9,18 @@ import { Context } from "./types";
  */
 export function memoizeSelector<T>(
   select: (prev: T | null) => T,
-  ref: (v?: T | null, context?: Context) => T | null,
+  ref: (v?: T | null, context?: {}) => T | null,
 ): (prev: T | null) => T;
 export function memoizeSelector<T, P>(
   select: (prev: T | null, props: P) => T,
-  ref: (v?: T | null, context?: Context) => T | null,
+  ref: (v?: T | null, context?: {}) => T | null,
 ): (prev: T | null, props: P) => T;
 export function memoizeSelector<T, P>(
-  select: (prev: T | null, props: P, context: Context) => T,
-  ref: (v?: T | null, context?: Context) => T | null,
-): (prev: T | null, props: P, context: Context) => T {
+  select: (prev: T | null, props: P, context: {}) => T,
+  ref: (v?: T | null, context?: {}) => T | null,
+): (prev: T | null, props: P, context: {}) => T {
   if (DEV) {
-    const fn = function (prev: T | null, props: P, context: Context) {
+    const fn = function (prev: T | null, props: P, context: {}) {
       const state = select(ref(undefined, context), props, context);
       ref(state, context);
       return state;
@@ -29,7 +28,7 @@ export function memoizeSelector<T, P>(
     fn.displayName = select.name;
     return fn;
   }
-  return function (prev: T | null, props: P, context: Context) {
+  return function (prev: T | null, props: P, context: {}) {
     const state = select(ref(undefined, context), props, context);
     ref(state, context);
     return state;

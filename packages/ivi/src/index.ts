@@ -3,7 +3,7 @@
  */
 export {
   map, mapRange, mapFilterUndefined,
-  Context, memoizeSelector,
+  memoizeSelector,
   KeyCode, KeyLocation, MouseButtons,
 } from "ivi-core";
 
@@ -35,7 +35,7 @@ export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
  * Entry.
  */
 import { DEV } from "ivi-vars";
-import { FEATURES, FeatureFlags, Context } from "ivi-core";
+import { FEATURES, FeatureFlags } from "ivi-core";
 import { setUpdateDOMHandler } from "ivi-scheduler";
 import { VERSION, GLOBAL_EXPORT, getFunctionName } from "./dev_mode/dev_mode";
 import { printError } from "./dev_mode/print";
@@ -61,7 +61,7 @@ function _printComponentTreeVisitor(vnode: VNode<any>) {
         const d = vnode._tag as ConnectDescriptor<any, any, any>;
         console.groupCollapsed(`[+]${getFunctionName(d.select)} => ${getFunctionName(d.render)}`);
       } else if ((vnode._flags & VNodeFlags.UpdateContext) !== 0) {
-        const context = vnode._instance as Context;
+        const context = vnode._instance as {};
         console.groupCollapsed(`[^]${Object.keys(context)}`);
         console.log(context);
       } else {
@@ -87,7 +87,8 @@ if (DEV) {
     console.info(
       "It looks like you're using a minified script in Development Mode. " +
       "When deploying ivi apps to production, disable Development Mode. It" +
-      "will remove many runtime checks and will work significantly faster.");
+      "will remove many runtime checks and will work significantly faster.",
+    );
   }
 
   if (typeof Array.isArray !== "function") {

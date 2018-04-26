@@ -1,4 +1,3 @@
-import { Context } from "ivi-core";
 import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
 import { ComponentClass } from "./component";
@@ -67,8 +66,8 @@ export function componentFactory<P>(c: ComponentClass<P>): (props: P) => VNode<P
  * @param child Child VNode.
  * @returns VNodeBuilder object.
  */
-export function context<T = {}>(ctx: Context<T>, child: VNode): VNode<Context<T>> {
-  return new VNode<Context<T>>(
+export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
+  return new VNode<T>(
     VNodeFlags.UpdateContext,
     null,
     ctx,
@@ -77,11 +76,11 @@ export function context<T = {}>(ctx: Context<T>, child: VNode): VNode<Context<T>
   );
 }
 
-export function connect<T, C extends Context>(
+export function connect<T, C>(
   render: (props: T) => VNode<any>,
   select: (prev: T | null, props: undefined, context: C) => T,
 ): () => VNode<null>;
-export function connect<T, P, C extends Context>(
+export function connect<T, P, C>(
   render: (props: T) => VNode<any>,
   select: (prev: T | null, props: P, context: C) => T,
 ): (props: P) => VNode<P>;
@@ -97,7 +96,7 @@ export function connect<T>(
   render: (props: T) => VNode<any>,
   select: (prev: T | null) => T,
 ): () => VNode<null>;
-export function connect<T, P, C extends Context>(
+export function connect<T, P, C>(
   render: (props: T) => VNode<any>,
   select: (prev: T | null, props: P, context: C) => T,
 ): (props: P) => VNode<P> {
@@ -105,7 +104,7 @@ export function connect<T, P, C extends Context>(
   return function (props: P): VNode<P> {
     return new VNode<P>(
       VNodeFlags.Connect,
-      descriptor as ConnectDescriptor<any, any, Context>,
+      descriptor as ConnectDescriptor<any, any, {}>,
       props,
       null,
       null,

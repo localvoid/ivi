@@ -15,7 +15,7 @@
  */
 
 import { DEV } from "ivi-vars";
-import { Context, SVG_NAMESPACE } from "ivi-core";
+import { SVG_NAMESPACE } from "ivi-core";
 import {
   setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute,
   nodeCloneNode,
@@ -79,10 +79,7 @@ function componentPerfMarkBegin(method: string, vnode: VNode): void {
  * @param method
  * @param vnode
  */
-function componentPerfMarkEnd(
-  method: string,
-  vnode: VNode,
-): void {
+function componentPerfMarkEnd(method: string, vnode: VNode): void {
   if (DEV) {
     if ((DEV_MODE & DevModeFlags.EnableComponentPerformanceProfiling) !== 0) {
       const flags = vnode._flags;
@@ -93,7 +90,7 @@ function componentPerfMarkEnd(
       } else {
         if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext | VNodeFlags.KeepAlive)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
-            const d = vnode._tag as ConnectDescriptor<any, any, Context>;
+            const d = vnode._tag as ConnectDescriptor<any, any, {}>;
             perfMarkEnd(`${method} [+]${getFunctionName(d.select)}`, id);
           } else if ((flags & VNodeFlags.UpdateContext) !== 0) {
             perfMarkEnd(`${method} [^]`, id);
@@ -120,12 +117,7 @@ function componentPerfMarkEnd(
  * @param context Current context.
  * @returns Rendered DOM Node.
  */
-export function renderVNode(
-  parent: Node,
-  refChild: Node | null,
-  vnode: VNode,
-  context: Context,
-): Node {
+export function renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
   if (DEV) {
     setInitialNestingState(parent as Element);
 
@@ -152,12 +144,7 @@ export function renderVNode(
  * @param context Current context.
  * @returns Rendered DOM Node.
  */
-function _renderVNode(
-  parent: Node,
-  refChild: Node | null,
-  vnode: VNode,
-  context: Context,
-): Node {
+function _renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
   return vNodeRenderIntoAndAttach(parent, refChild, vnode, context, SyncFlags.Attached);
 }
 
@@ -170,13 +157,7 @@ function _renderVNode(
  * @param context Current context.
  * @param syncFlags Sync flags.
  */
-export function syncVNode(
-  parent: Node,
-  a: VNode,
-  b: VNode,
-  context: Context,
-  syncFlags: SyncFlags,
-): void {
+export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags): void {
   if (DEV) {
     setInitialNestingState(parent as Element);
 
@@ -203,13 +184,7 @@ export function syncVNode(
  * @param context Current context.
  * @param syncFlags Sync flags.
  */
-function _syncVNode(
-  parent: Node,
-  a: VNode,
-  b: VNode,
-  context: Context,
-  syncFlags: SyncFlags,
-): void {
+function _syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags): void {
   vNodeSync(parent, a, b, context, syncFlags);
 }
 
@@ -259,12 +234,7 @@ function _removeVNode(parent: Node, node: VNode): void {
  * @param context Context.
  * @param syncFlags Sync Flags.
  */
-export function updateComponents(
-  parent: Node,
-  vnode: VNode,
-  context: Context,
-  syncFlags: SyncFlags,
-): void {
+export function updateComponents(parent: Node, vnode: VNode, context: {}, syncFlags: SyncFlags): void {
   if (DEV) {
     setInitialNestingState(parent as Element);
 
@@ -393,12 +363,7 @@ function vNodeDetachAll(vnodes: VNode[], syncFlags: SyncFlags): void {
  * @param context New context.
  * @param syncFlags Sync flags.
  */
-function vNodeDirtyCheck(
-  parent: Node,
-  vnode: VNode,
-  context: Context,
-  syncFlags: SyncFlags,
-): number {
+function vNodeDirtyCheck(parent: Node, vnode: VNode, context: {}, syncFlags: SyncFlags): number {
   const flags = vnode._flags;
   let deepUpdate = 0;
   let children: VNode | VNode[] | undefined;
@@ -442,7 +407,7 @@ function vNodeDirtyCheck(
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
         if ((flags & VNodeFlags.Connect) !== 0) {
-          const connect = vnode._tag as ConnectDescriptor<any, any, Context>;
+          const connect = vnode._tag as ConnectDescriptor<any, any, {}>;
           instance = vnode._instance as {};
           componentPerfMarkBegin("update", vnode);
           const selectData = connect.select(instance, vnode._props, context);
@@ -472,7 +437,7 @@ function vNodeDirtyCheck(
             if ((syncFlags & SyncFlags.DirtyContext) !== 0) {
               vnode._instance = Object.assign({}, context, vnode._props);
             }
-            context = vnode._instance as Context;
+            context = vnode._instance as {};
           }
           deepUpdate = vNodeDirtyCheck(
             parent,
@@ -549,11 +514,7 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
  * @param context Current context.
  * @returns Rendered DOM Node.
  */
-function vNodeRender(
-  parent: Node,
-  vnode: VNode,
-  context: Context,
-): Node {
+function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
   if (DEV) {
     if (vnode._instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
@@ -702,7 +663,7 @@ function vNodeRender(
       } else {
         if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
           if ((flags & VNodeFlags.Connect) !== 0) {
-            const connect = (vnode._tag as ConnectDescriptor<any, any, Context>);
+            const connect = (vnode._tag as ConnectDescriptor<any, any, {}>);
             const selectData = vnode._instance = connect.select(null, vnode._props, context);
             vnode._children = connect.render(selectData);
           } else {
@@ -749,7 +710,7 @@ function vNodeRenderIntoAndAttach(
   parent: Node,
   refChild: Node | null,
   vnode: VNode,
-  context: Context,
+  context: {},
   syncFlags: SyncFlags,
 ): Node {
   const node = vNodeRender(parent, vnode, context);
@@ -812,13 +773,7 @@ function vNodeEqualKeys(a: VNode, b: VNode): boolean {
  * @param context Current context.
  * @param syncFlags Sync flags.
  */
-function vNodeSync(
-  parent: Node,
-  a: VNode,
-  b: VNode,
-  context: Context,
-  syncFlags: SyncFlags,
-): void {
+function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags): void {
   if (a === b) {
     vNodeDirtyCheck(parent, b, context, syncFlags);
     return;
@@ -915,7 +870,7 @@ function vNodeSync(
 
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect | VNodeFlags.KeepAlive)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
-            const connect = b._tag as ConnectDescriptor<any, any, Context>;
+            const connect = b._tag as ConnectDescriptor<any, any, {}>;
             const prevSelectData = instance;
             componentPerfMarkBegin("update", b);
             const selectData = connect.select(prevSelectData, b._props, context);
@@ -946,7 +901,7 @@ function vNodeSync(
                 syncFlags |= SyncFlags.DirtyContext;
                 context = b._instance = Object.assign({}, context, b._props);
               } else {
-                context = b._instance = instance as Context;
+                context = b._instance = instance as {};
               }
             }
             vNodeSync(
@@ -1002,7 +957,7 @@ function syncChildren(
   bParentFlags: VNodeFlags,
   a: VNode[] | VNode | string | number | boolean,
   b: VNode[] | VNode | string | number | boolean,
-  context: Context,
+  context: {},
   syncFlags: SyncFlags,
 ): void {
   let i = 0;
@@ -1392,13 +1347,7 @@ function syncChildren(
  * @param context Current context.
  * @param syncFlags Sync flags.
  */
-function syncChildrenTrackByKeys(
-  parent: Node,
-  a: VNode[],
-  b: VNode[],
-  context: Context,
-  syncFlags: SyncFlags,
-): void {
+function syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context: {}, syncFlags: SyncFlags): void {
   let aStart = 0;
   let bStart = 0;
   let aEnd = a.length - 1;

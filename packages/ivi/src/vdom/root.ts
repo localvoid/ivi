@@ -1,5 +1,5 @@
 import { DEV } from "ivi-vars";
-import { Context, USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
+import { USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
@@ -23,7 +23,7 @@ export const ROOTS = [] as Root[];
 /**
  * Empty Context object.
  */
-const EMPTY_CONTEXT: Context = {};
+const EMPTY_CONTEXT = {};
 
 let _pendingUpdate = false;
 

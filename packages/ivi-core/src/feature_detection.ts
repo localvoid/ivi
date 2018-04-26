@@ -62,80 +62,78 @@ export const enum FeatureFlags {
  */
 export let FEATURES: FeatureFlags = 0;
 
-if (TARGET & Target.Browser) {
+/**
+ * Passive Events:
+ *
+ * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
+ */
+if (TARGET & Target.Electron) {
+  FEATURES |= FeatureFlags.PassiveEvents;
+} else {
+  try {
+    // Test via a getter in the options object to see if the passive property is accessed
+    const opts = Object.defineProperty({}, "passive", {
+      get() {
+        FEATURES |= FeatureFlags.PassiveEvents;
+      },
+    });
+    window.addEventListener("test", null as any as (ev: Event) => void, opts);
+  } catch (e) {
+    /* tslint:disable:no-empty */
+    /* tslint:enable:no-empty */
+  }
+}
+
+/**
+ * Check `innerHTML` property in `SVGElement`.
+ */
+if (
+  (TARGET & (Target.Electron | Target.Cordova | Target.Evergreen)) ||
+  document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined
+) {
+  FEATURES |= FeatureFlags.SVGInnerHTML;
+}
+
+/**
+ * Check `key` property in `KeyboardEvent`.
+ */
+if ((TARGET & Target.Electron) || "key" in KeyboardEvent.prototype) {
+  FEATURES |= FeatureFlags.KeyboardEventKey;
+}
+
+/**
+ * Check `buttons` property in `MouseEvent`.
+ */
+if ((TARGET & Target.Electron) || "buttons" in MouseEvent.prototype) {
+  FEATURES |= FeatureFlags.MouseEventButtons;
+}
+
+/**
+ * Check touch events API.
+ */
+if ("ontouchstart" in window) {
+  FEATURES |= FeatureFlags.TouchEvents;
+}
+
+/**
+ * Check pointer events API.
+ */
+if ((TARGET & Target.Electron) || "PointerEvent" in window) {
+  FEATURES |= FeatureFlags.PointerEvents;
   /**
-   * Passive Events:
-   *
-   * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
+   * Touch/Multitouch detection.
    */
-  if (TARGET & Target.Electron) {
-    FEATURES |= FeatureFlags.PassiveEvents;
-  } else {
-    try {
-      // Test via a getter in the options object to see if the passive property is accessed
-      const opts = Object.defineProperty({}, "passive", {
-        get() {
-          FEATURES |= FeatureFlags.PassiveEvents;
-        },
-      });
-      window.addEventListener("test", null as any as (ev: Event) => void, opts);
-    } catch (e) {
-      /* tslint:disable:no-empty */
-      /* tslint:enable:no-empty */
+  if (navigator.maxTouchPoints > 0) {
+    FEATURES |= FeatureFlags.PointerEventsTouch;
+    if (navigator.maxTouchPoints > 1) {
+      FEATURES |= FeatureFlags.PointerEventsMultiTouch;
     }
   }
+}
 
-  /**
-   * Check `innerHTML` property in `SVGElement`.
-   */
-  if (
-    (TARGET & (Target.Electron | Target.Cordova | Target.EvergreenBrowser)) ||
-    document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined
-  ) {
-    FEATURES |= FeatureFlags.SVGInnerHTML;
-  }
-
-  /**
-   * Check `key` property in `KeyboardEvent`.
-   */
-  if ((TARGET & Target.Electron) || "key" in KeyboardEvent.prototype) {
-    FEATURES |= FeatureFlags.KeyboardEventKey;
-  }
-
-  /**
-   * Check `buttons` property in `MouseEvent`.
-   */
-  if ((TARGET & Target.Electron) || "buttons" in MouseEvent.prototype) {
-    FEATURES |= FeatureFlags.MouseEventButtons;
-  }
-
-  /**
-   * Check touch events API.
-   */
-  if ("ontouchstart" in window) {
-    FEATURES |= FeatureFlags.TouchEvents;
-  }
-
-  /**
-   * Check pointer events API.
-   */
-  if ((TARGET & Target.Electron) || "PointerEvent" in window) {
-    FEATURES |= FeatureFlags.PointerEvents;
-    /**
-     * Touch/Multitouch detection.
-     */
-    if (navigator.maxTouchPoints > 0) {
-      FEATURES |= FeatureFlags.PointerEventsTouch;
-      if (navigator.maxTouchPoints > 1) {
-        FEATURES |= FeatureFlags.PointerEventsMultiTouch;
-      }
-    }
-  }
-
-  /**
-   * Check `sourceCapabilities` property in UIEvent.
-   */
-  if ((TARGET & Target.Electron) || "sourceCapabilities" in UIEvent.prototype) {
-    FEATURES |= FeatureFlags.InputDeviceCapabilities;
-  }
+/**
+ * Check `sourceCapabilities` property in UIEvent.
+ */
+if ((TARGET & Target.Electron) || "sourceCapabilities" in UIEvent.prototype) {
+  FEATURES |= FeatureFlags.InputDeviceCapabilities;
 }

@@ -14,7 +14,7 @@ import { nodeInsertBefore } from "./shortcuts";
  * @param isSVG Element is SVG.
  */
 export const setInnerHTML = (
-  (TARGET & (Target.Cordova | Target.Electron | Target.EvergreenBrowser)) ||
+  (TARGET & (Target.Cordova | Target.Electron | Target.Evergreen)) ||
   ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0)
 ) ?
   function (element: Element, content: string, isSVG: boolean): void {
