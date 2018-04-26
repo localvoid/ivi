@@ -8,24 +8,16 @@ Project is separated into many different packages because of the following reaso
 
 - reduce TypeScript type conflicts between server-side and client-side implementations.
 - server-side renderer has completely different implementation for most public APIs, so we are using `ivi-core` package
-to make it easier to share code between client and server implementations.
+ to make it easier to share code between client and server implementations.
 - HTML VNode and Synthetic Event factories are separated into its own packages, so it will be possible to import them
-into its own namespace and prevent name collisions.
+ into its own namespace and prevent name collisions.
 - Improved tree shaking by simple bundlers (Google closure compiler can handle much more complicated scenarios).
 
 ### ivi-vars
 
 This package contains different modules with predefined global variables that control behavior of ivi libraries.
 
-```
-ivi-vars/browser.js
-ivi-vars/browser-dev.js
-ivi-vars/ssr.js
-ivi-vars/ssr-dev.js
-ivi-vars/cjs/index.js
-```
-
-By default, ES6 module is pointing to `browser-dev.js` module and commonjs modules is pointing to `cjs/index.js`.
+By default, ES6 module is pointing to `browser-dev.js` module.
 
 ### ivi-core
 
@@ -56,14 +48,6 @@ Client-side scheduler.
 
 Client-side Virtual DOM implementation with public API. It also re-exports some types and functions from `ivi-core`
 package.
-
-### ivi-ssr
-
-Server-side implementation for `ivi-events`, `ivi-scheduler` and `ivi` packages.
-
-### ivi-ssr-html
-
-Server-side implementation for `ivi-html` package.
 
 ### ivi-test
 
