@@ -7,10 +7,6 @@
  *   _nv=false   Disable Nesting Validation.
  *   _st=false   Disable Stack Trace Augmentation.
  *   _typos=true Enable Checking for Typos.
- *   _perf=true  Enable Component Performance Profiling.
- *
- * Development Mode global export variable can be changed via query parameter:
- *   _export=<name>
  */
 import { DEV } from "ivi-vars";
 
@@ -47,11 +43,6 @@ export const enum DevModeFlags {
  * Dev Mode Flags. See `DevModeFlags` for details.
  */
 export let DEV_MODE: DevModeFlags = 0;
-
-/**
- * Name of the global variable that will be used to export `ivi` Dev Mode API.
- */
-export let GLOBAL_EXPORT: string;
 
 /**
  * Set `DevModeFlags`.
@@ -129,8 +120,5 @@ if (DEV) {
   }
   if (query["_typos"] === "false") {
     DEV_MODE |= DevModeFlags.DisableCheckingForTypos;
-  }
-  if (query["_export"] !== undefined) {
-    GLOBAL_EXPORT = query["_export"];
   }
 }
