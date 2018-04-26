@@ -41,10 +41,6 @@ export const enum DevModeFlags {
    * Disable Warnings for Unsupported Features.
    */
   DisableWarningsForUnsupportedFeatures = 1 << 3,
-  /**
-   * Enable Component Performance Profiling.
-   */
-  EnableComponentPerformanceProfiling = 1 << 4,
 }
 
 /**
@@ -98,31 +94,6 @@ export function getFunctionName(fn: Function): string {
 /* tslint:enable:ban-types */
 
 /**
- * Begin mark perf.
- *
- * @param markName
- */
-export function perfMarkBegin(markName: string): void {
-  if (DEV) {
-    performance.mark(markName);
-  }
-}
-
-/**
- * End mark perf.
- *
- * @param measureName
- * @param markName
- */
-export function perfMarkEnd(measureName: string, markName: string): void {
-  if (DEV) {
-    performance.measure(measureName, markName);
-    performance.clearMarks(markName);
-    performance.clearMeasures(measureName);
-  }
-}
-
-/**
  * Parse query string.
  *
  * @param query Query string.
@@ -158,9 +129,6 @@ if (DEV) {
   }
   if (query["_typos"] === "false") {
     DEV_MODE |= DevModeFlags.DisableCheckingForTypos;
-  }
-  if (query["_perf"] === "true") {
-    DEV_MODE |= DevModeFlags.EnableComponentPerformanceProfiling;
   }
   if (query["_export"] !== undefined) {
     GLOBAL_EXPORT = query["_export"];
