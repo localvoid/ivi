@@ -444,38 +444,38 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
       checkNestingViolation();
       node = document.createTextNode(vnode._children as string);
     } else { // (flags & VNodeFlags.Element)
-      pushNestingState(vnode._tag as string);
-      checkNestingViolation();
-
       if ((flags & VNodeFlags.ElementFactory) === 0) {
+        const tagName = vnode._tag as string;
+        pushNestingState(tagName);
+        checkNestingViolation();
+
         if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
           if ((flags & VNodeFlags.SvgElement) !== 0) {
-            node = document.createElementNS(SVG_NAMESPACE, vnode._tag as string);
+            node = document.createElementNS(SVG_NAMESPACE, tagName);
           } else {
-            if ((flags & VNodeFlags.InputElement) !== 0) {
-              node = document.createElement("input");
-            } else {
-              node = document.createElement("button");
-            }
+            node = document.createElement(((flags & VNodeFlags.InputElement) !== 0) ? "input" : "button");
             /**
              * Default value for input element type is "text", so we can just ignore assigning it for text inputs.
              * Factory function for input text has an empty string as a tag value.
              */
-            if (vnode._tag !== "") {
+            if (tagName !== "") {
               /**
                * #quirks
                *
                * It is important that we assign `type` before any other properties. IE11 will remove assigned
                * `value` when `type` is assigned.
                */
-              (node as HTMLInputElement).type = vnode._tag as string;
+              (node as HTMLInputElement).type = tagName;
             }
           }
         } else {
-          node = document.createElement(vnode._tag as string);
+          node = document.createElement(tagName);
         }
       } else {
         const factory = vnode._tag as VNode;
+        pushNestingState(factory._tag as string);
+        checkNestingViolation();
+
         if (factory._instance === null) {
           vNodeRender(parent, factory, context);
         }
