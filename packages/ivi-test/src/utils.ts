@@ -98,8 +98,8 @@ export function containsEventHandler(
 const VNodeLooseMatchFlags = 0
   | VNodeFlags.Text
   | VNodeFlags.Element
-  | VNodeFlags.ComponentFunction
-  | VNodeFlags.ComponentClass
+  | VNodeFlags.StatelessComponent
+  | VNodeFlags.StatefulComponent
   | VNodeFlags.InputElement
   | VNodeFlags.TextAreaElement
   | VNodeFlags.MediaElement

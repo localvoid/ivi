@@ -1,4 +1,4 @@
-import { VNode, VNodeFlags, ComponentClass, StatelessComponent } from "ivi";
+import { VNode, VNodeFlags, StatefulComponent, StatelessComponent } from "ivi";
 
 /**
  * SnapshotFlags
@@ -218,10 +218,10 @@ function _toSnapshot(
     } else {
       return vnode._children as string;
     }
-  } else { // ((flags & VNodeFlags.Component) !== 0)
-    if ((flags & VNodeFlags.ComponentClass) !== 0) {
+  } else {
+    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       if ((sFlags & SnapshotFlags.IgnoreStatefulComponents) === 0) {
-        const componentName = (vnode._tag as ComponentClass<any>).displayName;
+        const componentName = (vnode._tag as StatefulComponent<any>).displayName;
         if (vnode._children === null) {
           return `${indent(il)}<${componentName} />`;
         } else {

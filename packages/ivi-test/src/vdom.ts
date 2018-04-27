@@ -1,6 +1,6 @@
 import { CSSStyleProps, shallowEqual, Predicate } from "ivi-core";
 import { EventSource } from "ivi-events";
-import { VNode, VNodeFlags, Component, ComponentClass, StatelessComponent, ConnectDescriptor } from "ivi";
+import { VNode, VNodeFlags, Component, StatefulComponent, StatelessComponent, ConnectDescriptor } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
 import { SnapshotFlags, toSnapshot } from "./snapshot";
@@ -81,10 +81,10 @@ export function visitWrapped(
 
 function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, context: {}): boolean {
   const flags = vnode._flags;
-  if ((flags & (VNodeFlags.ComponentClass | VNodeFlags.ComponentFunction | VNodeFlags.Connect)) !== 0) {
-    if ((flags & (VNodeFlags.ComponentClass | VNodeFlags.ComponentFunction)) !== 0) {
-      if ((flags & VNodeFlags.ComponentClass) !== 0) {
-        const component = vnode._instance = new (vnode._tag as ComponentClass<any>)(vnode._props);
+  if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent | VNodeFlags.Connect)) !== 0) {
+    if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
+      if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+        const component = vnode._instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
         vnode._children = component.render();
       } else {
         const component = vnode._tag as StatelessComponent<any>;
@@ -193,11 +193,11 @@ export class VNodeWrapper {
   }
 
   isStatefulComponent(): boolean {
-    return (this.vnode._flags & VNodeFlags.ComponentClass) !== 0;
+    return (this.vnode._flags & VNodeFlags.StatefulComponent) !== 0;
   }
 
   isStatelessComponent(): boolean {
-    return (this.vnode._flags & VNodeFlags.ComponentFunction) !== 0;
+    return (this.vnode._flags & VNodeFlags.StatelessComponent) !== 0;
   }
 
   isContextComponent(): boolean {

@@ -1,6 +1,6 @@
 import { Predicate, CSSStyleProps } from "ivi-core";
 import { EventSource } from "ivi-events";
-import { ComponentClass } from "ivi";
+import { StatefulComponent } from "ivi";
 import {
   VNodeWrapper, visitWrapped,
 
@@ -203,7 +203,7 @@ function createVNodeInputElementMatcherFactory(type: string, className?: string)
   };
 }
 
-function componentMatcherFactory(component: ComponentClass<any>): VNodeComponentMatcher {
+function componentMatcherFactory(component: StatefulComponent<any>): VNodeComponentMatcher {
   return new VNodeComponentMatcher(function (n: VNodeWrapper) {
     return n.vnode._tag === component;
   });
