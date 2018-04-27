@@ -10,10 +10,7 @@ export {
 /**
  * Virtual DOM
  */
-export {
-  StatefulComponent, StatelessComponent, Component,
-  isComponentAttached, isStatefulComponent,
-} from "./vdom/component";
+export { StatefulComponent, StatelessComponent, Component, isComponentAttached } from "./vdom/component";
 export { KeepAliveHandler } from "./vdom/keep_alive";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {

@@ -121,16 +121,6 @@ export abstract class Component<P = undefined> {
 }
 
 /**
- * isComponentClass returns `true` when object looks like a Component class.
- *
- * @param o Object.
- * @returns `true` when object looks like a Component class.
- */
-export function isStatefulComponent(o: any): o is StatefulComponent<any> {
-  return o.prototype !== undefined && o.prototype.render !== undefined;
-}
-
-/**
  * isComponentAttached returns `true` when component is attached.
  *
  * @returns `true` when component is attached.
