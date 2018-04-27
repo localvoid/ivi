@@ -1,6 +1,5 @@
 import { XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty } from "ivi-core";
 import { elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS } from "ivi-dom";
-import { VNodeFlags } from "./flags";
 
 /**
  * Sync DOM styles.
@@ -65,18 +64,18 @@ export function syncStyle(
  * Set DOM property.
  *
  * @param node HTML or SVG Element.
- * @param isSVG node is an SVG Element.
+ * @param svg SVG Element.
  * @param key Attribute name.
  * @param value Attribute value.
  */
-function setDOMAttribute(node: Element, flags: VNodeFlags, key: string, value: any): void {
+function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): void {
   if (typeof value === "boolean") {
     value = value === true ? "" : undefined;
   }
   if (value === undefined) {
     elementRemoveAttribute(node, key);
   } else {
-    if ((flags & VNodeFlags.SvgElement) !== 0) {
+    if (svg === true) {
       if (key.length > 5) {
         if (key.charCodeAt(0) === 120 &&
           (key.charCodeAt(3) === 58 || key.charCodeAt(5) === 58)) { // 58 === ":" "xml:", "xlink:"
@@ -107,13 +106,13 @@ function setDOMAttribute(node: Element, flags: VNodeFlags, key: string, value: a
  * Sync DOM Attributes.
  *
  * @param node HTML or SVG Element.
- * @param flags VNode flags.
+ * @param svg SVG Element.
  * @param a Old DOM properties.
  * @param b New DOM properties.
  */
 export function syncDOMAttrs(
   node: Element,
-  flags: VNodeFlags,
+  svg: boolean,
   a: { [key: string]: any } | null,
   b: { [key: string]: any } | null,
 ): void {
@@ -123,7 +122,7 @@ export function syncDOMAttrs(
     if (b !== null) {
       // a is empty, insert all attributes from b.
       for (key in b) {
-        setDOMAttribute(node, flags, key, b[key]);
+        setDOMAttribute(node, svg, key, b[key]);
       }
     }
   } else {
@@ -142,7 +141,7 @@ export function syncDOMAttrs(
         } else {
           const aValue = a[key];
           if (aValue !== bValue) {
-            setDOMAttribute(node, flags, key, bValue);
+            setDOMAttribute(node, svg, key, bValue);
           }
           ++matchCount;
         }
@@ -153,7 +152,7 @@ export function syncDOMAttrs(
       for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
         if (objectHasOwnProperty(a, key) === false) {
-          setDOMAttribute(node, flags, key, b[key]);
+          setDOMAttribute(node, svg, key, b[key]);
           ++matchCount;
         }
       }

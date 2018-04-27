@@ -444,13 +444,14 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
       checkNestingViolation();
       node = document.createTextNode(vnode._children as string);
     } else { // (flags & VNodeFlags.Element)
+      const svg = (flags & VNodeFlags.SvgElement) !== 0;
       if ((flags & VNodeFlags.ElementFactory) === 0) {
         const tagName = vnode._tag as string;
         pushNestingState(tagName);
         checkNestingViolation();
 
         if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
-          if ((flags & VNodeFlags.SvgElement) !== 0) {
+          if (svg === true) {
             node = document.createElementNS(SVG_NAMESPACE, tagName);
           } else {
             node = document.createElement(((flags & VNodeFlags.InputElement) !== 0) ? "input" : "button");
@@ -490,15 +491,15 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
         /**
          * SVGElement.className returns `SVGAnimatedString`
          */
-        if ((flags & VNodeFlags.SvgElement) === 0) {
-          (node as Element).className = vnode._className;
-        } else {
+        if (svg === true) {
           elementSetAttribute(node as Element, "class", vnode._className);
+        } else {
+          (node as Element).className = vnode._className;
         }
       }
 
       if (vnode._props !== null) {
-        syncDOMAttrs(node as Element, flags, null, vnode._props);
+        syncDOMAttrs(node as Element, svg, null, vnode._props);
       }
       if (vnode._style !== null) {
         syncStyle(node as HTMLElement, null, vnode._style);
@@ -530,7 +531,7 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
           setHTMLInputValue(node as HTMLInputElement, children as string | boolean);
         } else { // (flags & VNodeFlags.UnsafeHTML)
           if (children) {
-            setInnerHTML((node as Element), children as string, (flags & VNodeFlags.SvgElement) !== 0);
+            setInnerHTML((node as Element), children as string, svg);
           }
         }
       }
@@ -697,17 +698,19 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
           (instance as Text).nodeValue = b._children as string;
         }
       } else { // (flags & VNodeFlags.Element)
+        const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
+
         if (a._className !== b._className) {
           const className = b._className === void 0 ? "" : b._className;
-          if ((bFlags & VNodeFlags.SvgElement) === 0) {
-            (instance as Element).className = className;
-          } else {
+          if (svg === true) {
             elementSetAttribute(instance as Element, "class", className);
+          } else {
+            (instance as Element).className = className;
           }
         }
 
         if (a._props !== b._props) {
-          syncDOMAttrs(instance as Element, bFlags, a._props, b._props);
+          syncDOMAttrs(instance as Element, svg, a._props, b._props);
         }
         if (a._style !== b._style) {
           syncStyle(instance as HTMLElement, a._style, b._style);
