@@ -1,2 +1,2 @@
-import "./mutable.spec";
+import "./box.spec";
 import "./store.spec";

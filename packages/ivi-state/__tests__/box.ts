@@ -1,17 +1,17 @@
 import { expect } from "iko";
-import { mut } from "../src/mutable";
+import { box } from "../src/box";
 
-describe("src/mutable.ts", function () {
+describe("src/box.ts", function () {
   it("init", function () {
     const m = { a: 1 };
-    const a = mut(m);
+    const a = box(m);
     expect(a.ref).toBe(m);
   });
 
-  it("mutate", function () {
+  it("boxate", function () {
     const m = { a: 1 };
-    const a = mut(m);
-    const b = mut(a.ref);
+    const a = box(m);
+    const b = box(a.ref);
     expect(b.ref).toBe(m);
     expect(a).notToBe(b);
   });
