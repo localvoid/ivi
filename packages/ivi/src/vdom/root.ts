@@ -78,7 +78,7 @@ function _update() {
 
         if (newVNode) {
           if (newVNode.constructor !== VNode) {
-            newVNode = new VNode(VNodeFlags.Text, null, null, null, "");
+            newVNode = new VNode(VNodeFlags.Text, null, null, void 0, "");
           }
           if (currentVNode) {
             syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, SyncFlags.Attached);

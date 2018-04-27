@@ -2,9 +2,9 @@ import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
 import { StatefulComponent } from "./component";
 import { VNode } from "./vnode";
-import { ConnectDescriptor } from "..";
+import { ConnectDescriptor } from "./connect_descriptor";
 
-export function statelessComponentFactory(c: () => VNode): () => VNode<null>;
+export function statelessComponentFactory(c: () => VNode): () => VNode<undefined>;
 export function statelessComponentFactory<P, U extends P>(
   c: (props: U | undefined) => VNode<any>,
   isPropsChanged?: (oldProps: P, newProps: P) => boolean,
@@ -27,7 +27,7 @@ export function statelessComponentFactory<P>(
         VNodeFlags.StatelessComponent,
         d,
         props,
-        null,
+        void 0,
         null,
       );
     };
@@ -37,13 +37,13 @@ export function statelessComponentFactory<P>(
       VNodeFlags.StatelessComponent | VNodeFlags.CheckChangedProps,
       d,
       props,
-      null,
+      void 0,
       null,
     );
   };
 }
 
-export function componentFactory(c: StatefulComponent<null>): () => VNode<null>;
+export function componentFactory(c: StatefulComponent<undefined>): () => VNode<undefined>;
 export function componentFactory<P, U extends P>(c: StatefulComponent<P | undefined>): (props?: U) => VNode<P>;
 export function componentFactory<P, U extends P>(c: StatefulComponent<P>): (props: U) => VNode<P>;
 export function componentFactory<P>(c: StatefulComponent<P>): (props: P) => VNode<P> {
@@ -52,7 +52,7 @@ export function componentFactory<P>(c: StatefulComponent<P>): (props: P) => VNod
       VNodeFlags.StatefulComponent,
       c,
       props,
-      null,
+      void 0,
       null,
     );
   };
@@ -70,7 +70,7 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
     VNodeFlags.UpdateContext,
     null,
     ctx,
-    null,
+    void 0,
     child,
   );
 }
@@ -97,7 +97,7 @@ export function connect<T, P, C>(
       VNodeFlags.Connect,
       descriptor as ConnectDescriptor<any, any, {}>,
       props,
-      null,
+      void 0,
       null,
     );
   };
@@ -114,7 +114,7 @@ export function connect<T, P, C>(
 export function keepAlive(
   handler: (disposed: VNode | null) => VNode | null,
   child: VNode,
-): VNode<null>;
+): VNode<undefined>;
 export function keepAlive<P>(
   handler: (disposed: VNode | null, props: P) => VNode | null,
   child: VNode,
@@ -128,8 +128,8 @@ export function keepAlive<P>(
   return new VNode<P>(
     VNodeFlags.KeepAlive,
     handler,
-    props === undefined ? null : props,
-    null,
+    props,
+    void 0,
     child,
   );
 }

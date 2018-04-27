@@ -5,7 +5,7 @@ import { VNode } from "./vnode";
 /**
  * Stateless Component descriptor.
  */
-export interface StatelessComponent<P = null> {
+export interface StatelessComponent<P = undefined> {
   render: (props: P) => VNode;
   isPropsChanged: ((oldProps: P, newProps: P) => boolean) | undefined;
 }
@@ -13,7 +13,7 @@ export interface StatelessComponent<P = null> {
 /**
  * Stateful Component constructor.
  */
-export interface StatefulComponent<P = null> {
+export interface StatefulComponent<P = undefined> {
   new(props: P): Component<P>;
 }
 
@@ -33,7 +33,7 @@ export interface StatefulComponent<P = null> {
  *
  *     render(hello("world"), document.getElementById("App")!);
  */
-export abstract class Component<P = null> {
+export abstract class Component<P = undefined> {
   /**
    * Flags, see `ComponentFlags` for details.
    */

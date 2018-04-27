@@ -13,8 +13,8 @@ export function elementFactory<P, N>(element: VNode<P, N>): (className?: string)
     return new VNode<P, N>(
       flags,
       element,
-      null,
-      className === undefined ? null : className,
+      void 0,
+      className,
       null,
     );
   };

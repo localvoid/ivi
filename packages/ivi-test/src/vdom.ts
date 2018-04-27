@@ -275,7 +275,7 @@ export class VNodeWrapper {
     return new VNodeListWrapper(children);
   }
 
-  getClassName(): string | null {
+  getClassName(): string | undefined {
     if (!this.isElement()) {
       throw new Error("VNodeWrapper::getClassName() can only be called on element nodes");
     }
@@ -451,7 +451,7 @@ export function isElementWithClassName(wrapper: VNodeWrapper, tagName: string, c
   const vnode = wrapper.vnode;
   return (
     isElement(wrapper, tagName) === true &&
-    vnode._className !== null &&
+    vnode._className !== void 0 &&
     containsClassName(vnode._className, className) === true
   );
 }
@@ -465,7 +465,7 @@ export function isInputElementWithClassName(wrapper: VNodeWrapper, type: string,
   const vnode = wrapper.vnode;
   return (
     isInputElement(wrapper, type) === true &&
-    vnode._className !== null &&
+    vnode._className !== void 0 &&
     containsClassName(vnode._className, className) === true
   );
 }
@@ -477,12 +477,12 @@ export function hasKey(wrapper: VNodeWrapper, key: any): boolean {
 
 export function hasClassName(wrapper: VNodeWrapper, className: string): boolean {
   const vnode = wrapper.vnode;
-  return (vnode._className !== null && containsClassName(vnode._className, className) === true);
+  return (vnode._className !== void 0 && containsClassName(vnode._className, className) === true);
 }
 
 export function hasProps(wrapper: VNodeWrapper, props: { [key: string]: any }): boolean {
   const vnode = wrapper.vnode;
-  return (vnode._props !== null && matchValues(vnode._props.props, props) === true);
+  return (vnode._props !== void 0 && matchValues(vnode._props.props, props) === true);
 }
 
 export function hasExactProps(wrapper: VNodeWrapper, props: { [key: string]: any }): boolean {

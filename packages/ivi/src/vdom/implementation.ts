@@ -486,7 +486,7 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
         autofocus(node as Element);
       }
 
-      if (vnode._className !== null) {
+      if (vnode._className !== void 0) {
         /**
          * SVGElement.className returns `SVGAnimatedString`
          */
@@ -698,7 +698,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
         }
       } else { // (flags & VNodeFlags.Element)
         if (a._className !== b._className) {
-          const className = b._className === null ? "" : b._className;
+          const className = b._className === void 0 ? "" : b._className;
           if ((bFlags & VNodeFlags.SvgElement) === 0) {
             (instance as Element).className = className;
           } else {

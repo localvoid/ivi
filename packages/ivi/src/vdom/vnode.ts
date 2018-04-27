@@ -51,7 +51,7 @@ export class VNode<P = any, N = Node> {
   /**
    * Properties.
    */
-  _props: P | null;
+  _props: P | undefined;
   /**
    * Reference to HTML node or Component instance.
    *
@@ -62,7 +62,7 @@ export class VNode<P = any, N = Node> {
   /**
    * Class name.
    */
-  _className: string | null;
+  _className: string | undefined;
   /**
    * Style.
    */
@@ -82,8 +82,8 @@ export class VNode<P = any, N = Node> {
       | ConnectDescriptor<any, any, {}>
       | KeepAliveHandler
       | null,
-    props: P | null,
-    className: string | null,
+    props: P | undefined,
+    className: string | undefined,
     children:
       | VNode[]
       | VNode
@@ -300,7 +300,7 @@ export class VNode<P = any, N = Node> {
                 }
               }
             } else {
-              r[k++] = c = new VNode<null>(VNodeFlags.Text, null, null, null, c as string | number);
+              r[k++] = c = new VNode<null>(VNodeFlags.Text, null, null, void 0, c as string | number);
               c._key = i;
             }
           }
@@ -408,7 +408,7 @@ export type Children = Array<VNode[] | VNode | string | number | null>;
  * @param className CSS Class name.
  * @returns VNode
  */
-export function changeClassName<P>(node: VNode, className: string | null): VNode<P> {
+export function changeClassName<P>(node: VNode, className: string | undefined): VNode<P> {
   if (DEV) {
     if (!(node._flags & VNodeFlags.Element)) {
       throw new Error("Failed to set className, className is available on element nodes only.");
@@ -534,7 +534,7 @@ export function getKeyFromVNode<T = any>(node: VNode): T {
  * @param node VNode.
  * @returns `className` property.
  */
-export function getElementClassNameFromVNode(node: VNode): string | null {
+export function getElementClassNameFromVNode(node: VNode): string | undefined {
   return node._className;
 }
 
@@ -544,7 +544,7 @@ export function getElementClassNameFromVNode(node: VNode): string | null {
  * @param node VNode.
  * @returns element properties.
  */
-export function getElementPropsFromVNode<P>(node: VNode<P>): P | null {
+export function getElementPropsFromVNode<P>(node: VNode<P>): P | undefined {
   return node._props;
 }
 

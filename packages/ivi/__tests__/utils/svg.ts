@@ -111,7 +111,7 @@ export function a(className?: string): VNode<SVGElementProps | null, SVGAElement
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.A << VNodeFlags.ElementIdOffset),
     "a",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -121,7 +121,7 @@ export function altGlyph(className?: string): VNode<SVGElementProps | null, SVGE
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AltGlyph << VNodeFlags.ElementIdOffset),
     "altGlyph",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -131,7 +131,7 @@ export function altGlyphDef(className?: string): VNode<SVGElementProps | null, S
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AltGlyphDef << VNodeFlags.ElementIdOffset),
     "altGlyphDef",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -141,7 +141,7 @@ export function altGlyphItem(className?: string): VNode<SVGElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AltGlyphItem << VNodeFlags.ElementIdOffset),
     "altGlyphItem",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -151,7 +151,7 @@ export function animate(className?: string): VNode<SVGElementProps | null, SVGEl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Animate << VNodeFlags.ElementIdOffset),
     "animate",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -161,7 +161,7 @@ export function animateColor(className?: string): VNode<SVGElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateColor << VNodeFlags.ElementIdOffset),
     "animateColor",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -171,7 +171,7 @@ export function animateMotion(className?: string): VNode<SVGElementProps | null,
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateMotion << VNodeFlags.ElementIdOffset),
     "animateMotion",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -181,7 +181,7 @@ export function animateTransform(className?: string): VNode<SVGElementProps | nu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateTransform << VNodeFlags.ElementIdOffset),
     "animateTransform",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -191,7 +191,7 @@ export function circle(className?: string): VNode<SVGCircleElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Circle << VNodeFlags.ElementIdOffset),
     "circle",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -201,7 +201,7 @@ export function clipPath(className?: string): VNode<SVGClipPathElementProps | nu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ClipPath << VNodeFlags.ElementIdOffset),
     "clipPath",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -211,7 +211,7 @@ export function colorProfile(className?: string): VNode<SVGElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ColorProfile << VNodeFlags.ElementIdOffset),
     "color-profile",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -221,7 +221,7 @@ export function cursor(className?: string): VNode<SVGElementProps | null, SVGEle
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Cursor << VNodeFlags.ElementIdOffset),
     "cursor",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -231,7 +231,7 @@ export function defs(className?: string): VNode<SVGDefsElementProps | null, SVGD
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Defs << VNodeFlags.ElementIdOffset),
     "defs",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -241,7 +241,7 @@ export function desc(className?: string): VNode<SVGDescElementProps | null, SVGD
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Desc << VNodeFlags.ElementIdOffset),
     "desc",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -251,7 +251,7 @@ export function discard(className?: string): VNode<SVGElementProps | null, SVGEl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Discard << VNodeFlags.ElementIdOffset),
     "discard",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -261,7 +261,7 @@ export function ellipse(className?: string): VNode<SVGEllipseElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Ellipse << VNodeFlags.ElementIdOffset),
     "ellipse",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -271,7 +271,7 @@ export function feBlend(className?: string): VNode<SVGFEBlendElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeBlend << VNodeFlags.ElementIdOffset),
     "feBlend",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -281,7 +281,7 @@ export function feColorMatrix(className?: string): VNode<SVGFEColorMatrixElement
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeColorMatrix << VNodeFlags.ElementIdOffset),
     "feColorMatrix",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -292,7 +292,7 @@ export function feComponentTransfer(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeComponentTransfer << VNodeFlags.ElementIdOffset),
     "feComponentTransfer",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -302,7 +302,7 @@ export function feComposite(className?: string): VNode<SVGFECompositeElementProp
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeComposite << VNodeFlags.ElementIdOffset),
     "feComposite",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -313,7 +313,7 @@ export function feConvolveMatrix(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeConvolveMatrix << VNodeFlags.ElementIdOffset),
     "feConvolveMatrix",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -324,7 +324,7 @@ export function feDiffuseLighting(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDiffuseLighting << VNodeFlags.ElementIdOffset),
     "feDiffuseLighting",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -335,7 +335,7 @@ export function feDisplacementMap(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDisplacementMap << VNodeFlags.ElementIdOffset),
     "feDisplacementMap",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -346,7 +346,7 @@ export function feDistantLight(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDistantLight << VNodeFlags.ElementIdOffset),
     "feDistantLight",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -357,7 +357,7 @@ export function feDropShadow(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDropShadow << VNodeFlags.ElementIdOffset),
     "feDropShadow",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -367,7 +367,7 @@ export function feFlood(className?: string): VNode<SVGFEFloodElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFlood << VNodeFlags.ElementIdOffset),
     "feFlood",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -377,7 +377,7 @@ export function feFuncA(className?: string): VNode<SVGFEFuncAElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncA << VNodeFlags.ElementIdOffset),
     "feFuncA",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -387,7 +387,7 @@ export function feFuncB(className?: string): VNode<SVGFEFuncBElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncB << VNodeFlags.ElementIdOffset),
     "feFuncB",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -397,7 +397,7 @@ export function feFuncG(className?: string): VNode<SVGFEFuncGElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncG << VNodeFlags.ElementIdOffset),
     "feFuncG",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -407,7 +407,7 @@ export function feFuncR(className?: string): VNode<SVGFEFuncRElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncR << VNodeFlags.ElementIdOffset),
     "feFuncR",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -418,7 +418,7 @@ export function feGaussianBlur(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeGaussianBlur << VNodeFlags.ElementIdOffset),
     "feGaussianBlur",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -428,7 +428,7 @@ export function feImage(className?: string): VNode<SVGFEImageElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeImage << VNodeFlags.ElementIdOffset),
     "feImage",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -438,7 +438,7 @@ export function feMerge(className?: string): VNode<SVGFEMergeElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMerge << VNodeFlags.ElementIdOffset),
     "feMerge",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -448,7 +448,7 @@ export function feMergeNode(className?: string): VNode<SVGFEMergeNodeElementProp
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMergeNode << VNodeFlags.ElementIdOffset),
     "feMergeNode",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -458,7 +458,7 @@ export function feMorphology(className?: string): VNode<SVGFEMorphologyElementPr
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMorphology << VNodeFlags.ElementIdOffset),
     "feMorphology",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -468,7 +468,7 @@ export function feOffset(className?: string): VNode<SVGFEOffsetElementProps | nu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeOffset << VNodeFlags.ElementIdOffset),
     "feOffset",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -478,7 +478,7 @@ export function fePointLight(className?: string): VNode<SVGFEPointLightElementPr
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FePointLight << VNodeFlags.ElementIdOffset),
     "fePointLight",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -489,7 +489,7 @@ export function feSpecularLighting(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeSpecularLighting << VNodeFlags.ElementIdOffset),
     "feSpecularLighting",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -499,7 +499,7 @@ export function feSpotLight(className?: string): VNode<SVGFESpotLightElementProp
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeSpotLight << VNodeFlags.ElementIdOffset),
     "feSpotLight",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -509,7 +509,7 @@ export function feTile(className?: string): VNode<SVGFETileElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeTile << VNodeFlags.ElementIdOffset),
     "feTile",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -519,7 +519,7 @@ export function feTurbulence(className?: string): VNode<SVGFETurbulenceElementPr
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeTurbulence << VNodeFlags.ElementIdOffset),
     "feTurbulence",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -529,7 +529,7 @@ export function filter(className?: string): VNode<SVGFilterElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Filter << VNodeFlags.ElementIdOffset),
     "filter",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -539,7 +539,7 @@ export function font(className?: string): VNode<SVGElementProps | null, SVGFETur
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Font << VNodeFlags.ElementIdOffset),
     "font",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -549,7 +549,7 @@ export function fontFace(className?: string): VNode<SVGElementProps | null, SVGF
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFace << VNodeFlags.ElementIdOffset),
     "font-face",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -559,7 +559,7 @@ export function fontFaceFormat(className?: string): VNode<SVGElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceFormat << VNodeFlags.ElementIdOffset),
     "font-face-format",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -569,7 +569,7 @@ export function fontFaceName(className?: string): VNode<SVGElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceName << VNodeFlags.ElementIdOffset),
     "font-face-name",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -579,7 +579,7 @@ export function fontFaceSrc(className?: string): VNode<SVGElementProps | null, S
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceSrc << VNodeFlags.ElementIdOffset),
     "font-face-src",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -589,7 +589,7 @@ export function fontFaceUri(className?: string): VNode<SVGElementProps | null, S
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceUri << VNodeFlags.ElementIdOffset),
     "font-face-uri",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -599,7 +599,7 @@ export function foreignObject(className?: string): VNode<SVGForeignObjectElement
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ForeignObject << VNodeFlags.ElementIdOffset),
     "foreignObject",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -609,7 +609,7 @@ export function g(className?: string): VNode<SVGGElementProps | null, SVGGElemen
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.G << VNodeFlags.ElementIdOffset),
     "g",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -619,7 +619,7 @@ export function glyph(className?: string): VNode<SVGElementProps | null, SVGElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Glyph << VNodeFlags.ElementIdOffset),
     "glyph",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -629,7 +629,7 @@ export function glyphRef(className?: string): VNode<SVGElementProps | null, SVGE
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.GlyphRef << VNodeFlags.ElementIdOffset),
     "glyphRef",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -639,7 +639,7 @@ export function hatch(className?: string): VNode<SVGElementProps | null, SVGElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hatch << VNodeFlags.ElementIdOffset),
     "hatch",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -649,7 +649,7 @@ export function hatchpath(className?: string): VNode<SVGElementProps | null, SVG
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hatchpath << VNodeFlags.ElementIdOffset),
     "hatchpath",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -659,7 +659,7 @@ export function hkern(className?: string): VNode<SVGElementProps | null, SVGFETu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hkern << VNodeFlags.ElementIdOffset),
     "hkern",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -669,7 +669,7 @@ export function image(className?: string): VNode<SVGImageElementProps | null, SV
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Image << VNodeFlags.ElementIdOffset),
     "image",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -679,7 +679,7 @@ export function line(className?: string): VNode<SVGLineElementProps | null, SVGL
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Line << VNodeFlags.ElementIdOffset),
     "line",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -690,7 +690,7 @@ export function linearGradient(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.LinearGradient << VNodeFlags.ElementIdOffset),
     "linearGradient",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -700,7 +700,7 @@ export function marker(className?: string): VNode<SVGMarkerElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Marker << VNodeFlags.ElementIdOffset),
     "marker",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -710,7 +710,7 @@ export function mask(className?: string): VNode<SVGMaskElementProps | null, SVGM
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mask << VNodeFlags.ElementIdOffset),
     "mask",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -720,7 +720,7 @@ export function mesh(className?: string): VNode<SVGElementProps | null, SVGEleme
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mesh << VNodeFlags.ElementIdOffset),
     "mesh",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -730,7 +730,7 @@ export function meshgradient(className?: string): VNode<SVGElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshgradient << VNodeFlags.ElementIdOffset),
     "meshgradient",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -740,7 +740,7 @@ export function meshpatch(className?: string): VNode<SVGElementProps | null, SVG
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshpatch << VNodeFlags.ElementIdOffset),
     "meshpatch",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -750,7 +750,7 @@ export function meshrow(className?: string): VNode<SVGElementProps | null, SVGEl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshrow << VNodeFlags.ElementIdOffset),
     "meshrow",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -760,7 +760,7 @@ export function metadata(className?: string): VNode<SVGMetadataElementProps | nu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Metadata << VNodeFlags.ElementIdOffset),
     "metadata",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -770,7 +770,7 @@ export function missingGlyph(className?: string): VNode<SVGElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.MissingGlyph << VNodeFlags.ElementIdOffset),
     "missing-glyph",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -780,7 +780,7 @@ export function mpath(className?: string): VNode<SVGElementProps | null, SVGElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mpath << VNodeFlags.ElementIdOffset),
     "mpath",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -790,7 +790,7 @@ export function path(className?: string): VNode<SVGPathElementProps | null, SVGP
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Path << VNodeFlags.ElementIdOffset),
     "path",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -800,7 +800,7 @@ export function pattern(className?: string): VNode<SVGPatternElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Pattern << VNodeFlags.ElementIdOffset),
     "pattern",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -810,7 +810,7 @@ export function polygon(className?: string): VNode<SVGPolygonElementProps | null
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Polygon << VNodeFlags.ElementIdOffset),
     "polygon",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -820,7 +820,7 @@ export function polyline(className?: string): VNode<SVGPolylineElementProps | nu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Polyline << VNodeFlags.ElementIdOffset),
     "polyline",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -831,7 +831,7 @@ export function radialGradient(className?: string):
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.RadialGradient << VNodeFlags.ElementIdOffset),
     "radialGradient",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -841,7 +841,7 @@ export function rect(className?: string): VNode<SVGRectElementProps | null, SVGR
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Rect << VNodeFlags.ElementIdOffset),
     "rect",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -851,7 +851,7 @@ export function set(className?: string): VNode<SVGElementProps | null, SVGElemen
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Set << VNodeFlags.ElementIdOffset),
     "set",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -861,7 +861,7 @@ export function solidcolor(className?: string): VNode<SVGElementProps | null, SV
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Solidcolor << VNodeFlags.ElementIdOffset),
     "solidcolor",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -871,7 +871,7 @@ export function stop(className?: string): VNode<SVGStopElementProps | null, SVGS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Stop << VNodeFlags.ElementIdOffset),
     "stop",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -881,7 +881,7 @@ export function svg(className?: string): VNode<SVGSVGElementProps | null, SVGSVG
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Svg << VNodeFlags.ElementIdOffset),
     "svg",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -891,7 +891,7 @@ export function svgSwitch(className?: string): VNode<SVGElementProps | null, SVG
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Switch << VNodeFlags.ElementIdOffset),
     "switch",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -901,7 +901,7 @@ export function symbol(className?: string): VNode<SVGSymbolElementProps | null, 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Symbol << VNodeFlags.ElementIdOffset),
     "symbol",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -911,7 +911,7 @@ export function text(className?: string): VNode<SVGTextElementProps | null, SVGT
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Text << VNodeFlags.ElementIdOffset),
     "text",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -921,7 +921,7 @@ export function textPath(className?: string): VNode<SVGTextPathElementProps | nu
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.TextPath << VNodeFlags.ElementIdOffset),
     "textPath",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -931,7 +931,7 @@ export function title(className?: string): VNode<SVGElementProps | null, SVGTitl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Title << VNodeFlags.ElementIdOffset),
     "title",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -941,7 +941,7 @@ export function tref(className?: string): VNode<SVGElementProps | null, SVGEleme
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Tref << VNodeFlags.ElementIdOffset),
     "tref",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -951,7 +951,7 @@ export function tspan(className?: string): VNode<SVGTSpanElementProps | null, SV
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Tspan << VNodeFlags.ElementIdOffset),
     "tspan",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -961,7 +961,7 @@ export function use(className?: string): VNode<SVGUseElementProps | null, SVGUse
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Use << VNodeFlags.ElementIdOffset),
     "use",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -971,7 +971,7 @@ export function view(className?: string): VNode<SVGViewElementProps | null, SVGV
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.View << VNodeFlags.ElementIdOffset),
     "view",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
@@ -981,7 +981,7 @@ export function vkern(className?: string): VNode<SVGElementProps | null, SVGElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Vkern << VNodeFlags.ElementIdOffset),
     "vkern",
     null,
-    className === undefined ? null : className,
+    className,
     null,
   );
 }
