@@ -5,7 +5,6 @@ import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent, StatefulComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
-import { KeepAliveHandler } from "./keep_alive";
 
 /**
  * Virtual DOM Node.
@@ -41,7 +40,6 @@ export class VNode<P = any, N = Node> {
     | StatefulComponent<any>
     | StatelessComponent<any>
     | ConnectDescriptor<any, any, {}>
-    | KeepAliveHandler
     | null;
   /**
    * Children syncing algorithm is using key property to match nodes. Key should be unique among its siblings.
@@ -79,7 +77,6 @@ export class VNode<P = any, N = Node> {
       | StatelessComponent<P>
       | StatefulComponent<P>
       | ConnectDescriptor<any, any, {}>
-      | KeepAliveHandler
       | null,
     props: P | undefined,
     className: string | undefined,

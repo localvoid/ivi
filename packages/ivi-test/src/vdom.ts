@@ -208,10 +208,6 @@ export class VNodeWrapper {
     return (this.vnode._flags & VNodeFlags.Connect) !== 0;
   }
 
-  isKeepAliveComponent(): boolean {
-    return (this.vnode._flags & VNodeFlags.KeepAlive) !== 0;
-  }
-
   isInputElement(): boolean {
     return (this.vnode._flags & VNodeFlags.InputElement) !== 0;
   }

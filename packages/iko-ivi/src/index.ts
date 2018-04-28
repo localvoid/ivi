@@ -303,45 +303,6 @@ export class VNodeAssertion extends ObjectAssertion<VNodeWrapper> {
   }
 
   /**
-   * toBeKeepAliveComponent checks that VNode is representing a Keep alive component.
-   *
-   * @returns this instance.
-   */
-  toBeKeepAliveComponent(): this {
-    const received = this.obj;
-    const pass = received.isKeepAliveComponent();
-    if (!pass) {
-      const message = errMsg()
-        .matcherHint("toBeKeepAliveComponent", "received", "")
-        .info(`Expected ${this.type} to be a Keep Alive component node:\n`)
-        .info("  ", r(received), "\n");
-
-      throw new AssertionError(message.compose(), this.toBeKeepAliveComponent);
-    }
-
-    return this;
-  }
-
-  /**
-   * notToBeKeepAliveComponent checks that VNode is not representing a Keep alive component.
-   *
-   * @returns this instance.
-   */
-  notToBeKeepAliveComponent(): this {
-    const received = this.obj;
-    const pass = !received.isKeepAliveComponent();
-    if (!pass) {
-      const message = errMsg()
-        .matcherHint("notToBeKeepAliveComponent", "received", "")
-        .info(`Expected ${this.type} to be a Keep Alive component node\n`);
-
-      throw new AssertionError(message.compose(), this.notToBeKeepAliveComponent);
-    }
-
-    return this;
-  }
-
-  /**
    * toHaveTagName checks that VNode has a matching tag name.
    *
    * @param tagName Tag name.

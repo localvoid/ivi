@@ -76,10 +76,6 @@ export const enum VNodeFlags {
    */
   UpdateContext = 1 << 17,
   /**
-   * Specialized VNode with keep alive functionality.
-   */
-  KeepAlive = 1 << 18,
-  /**
    * Stateless component is using `isPropsChanged` hook.
    */
   CheckChangedProps = 1 << 19,
@@ -105,7 +101,7 @@ export const enum VNodeFlags {
   /**
    * VNode represents a Component.
    */
-  Component = StatelessComponent | StatefulComponent | Connect | UpdateContext | KeepAlive,
+  Component = StatelessComponent | StatefulComponent | Connect | UpdateContext,
   /**
    * Flags that should match to be compatible for syncing.
    */
@@ -144,28 +140,4 @@ export const enum ComponentFlags {
    * Component is dirty and should be updated.
    */
   Dirty = DirtyState | Animated,
-}
-
-/**
- * Sync Flags.
- */
-export const enum SyncFlags {
-  /**
-   * Tree is attached to the document.
-   */
-  Attached = 1,
-  /**
-   * Tree should be disposed.
-   *
-   * When tree is disposed, keep alive components can capture disposed subtrees.
-   */
-  Dispose = 1 << 2,
-  /**
-   * Update dirty components.
-   */
-  DirtyComponent = 1 << 3,
-  /**
-   * Context is dirty.
-   */
-  DirtyContext = 1 << 4,
 }

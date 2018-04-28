@@ -106,7 +106,6 @@ const VNodeLooseMatchFlags = 0
   | VNodeFlags.SvgElement
   | VNodeFlags.Connect
   | VNodeFlags.UpdateContext
-  | VNodeFlags.KeepAlive
   | VNodeFlags.VoidElement;
 
 /**

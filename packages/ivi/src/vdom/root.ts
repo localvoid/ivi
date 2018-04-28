@@ -1,6 +1,6 @@
 import { USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
-import { SyncFlags, VNodeFlags } from "./flags";
+import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, updateComponents } from "./implementation";
 
@@ -80,7 +80,7 @@ function _update() {
             newVNode = new VNode(VNodeFlags.Text, null, null, void 0, "");
           }
           if (currentVNode) {
-            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, SyncFlags.Attached);
+            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, false);
           } else {
             renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
             iOSFixEventBubbling(container);
@@ -97,7 +97,7 @@ function _update() {
         root.newVNode = null;
         root.invalidated = false;
       } else if (currentVNode) {
-        updateComponents(container, currentVNode, EMPTY_CONTEXT, SyncFlags.Attached);
+        updateComponents(container, currentVNode, EMPTY_CONTEXT, false);
       }
     }
   }

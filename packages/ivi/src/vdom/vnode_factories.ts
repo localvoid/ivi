@@ -1,4 +1,3 @@
-import { KeepAliveHandler } from "./keep_alive";
 import { VNodeFlags } from "./flags";
 import { StatefulComponent } from "./component";
 import { VNode } from "./vnode";
@@ -98,35 +97,4 @@ export function connect<T, P, C>(
       null,
     );
   };
-}
-
-/**
- * keepAlive creates a keep alive VNode.
- *
- * @param handler Keep Alive Handler.
- * @param child Child VNode.
- * @param props Props.
- * @returns VNodeBuilder object.
- */
-export function keepAlive(
-  handler: (disposed: VNode | null) => VNode | null,
-  child: VNode,
-): VNode<undefined>;
-export function keepAlive<P>(
-  handler: (disposed: VNode | null, props: P) => VNode | null,
-  child: VNode,
-  props: P,
-): VNode<P>;
-export function keepAlive<P>(
-  handler: KeepAliveHandler,
-  child: VNode,
-  props?: P,
-): VNode<P> {
-  return new VNode<P>(
-    VNodeFlags.KeepAlive,
-    handler,
-    props,
-    void 0,
-    child,
-  );
 }

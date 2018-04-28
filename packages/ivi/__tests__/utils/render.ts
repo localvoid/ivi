@@ -1,4 +1,4 @@
-import { VNodeFlags, SyncFlags } from "../../src/vdom/flags";
+import { VNodeFlags } from "../../src/vdom/flags";
 import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
 import { renderVNode, syncVNode } from "../../src/vdom/implementation";
 import { expect } from "iko";
@@ -73,7 +73,7 @@ export function render<T extends Node>(
   const oldRoot = (container as any).__ivi_root as VNode | undefined;
   (container as any).__ivi_root = node;
   if (oldRoot) {
-    syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, SyncFlags.Attached);
+    syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, false);
   } else {
     renderVNode(container, null, node, DEFAULT_CONTEXT);
   }

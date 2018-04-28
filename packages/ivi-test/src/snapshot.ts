@@ -9,16 +9,14 @@ export const enum SnapshotFlags {
   IgnoreStatelessComponents = 1 << 2,
   IgnoreContextComponents = 1 << 3,
   IgnoreConnectComponents = 1 << 4,
-  IgnoreKeepAliveComponents = 1 << 5,
 
   IgnoreComponents = 0
   | IgnoreStatefulComponents
   | IgnoreStatelessComponents
   | IgnoreContextComponents
-  | IgnoreConnectComponents
-  | IgnoreKeepAliveComponents,
+  | IgnoreConnectComponents,
 
-  DefaultFlags = IgnoreEvents | IgnoreContextComponents | IgnoreKeepAliveComponents,
+  DefaultFlags = IgnoreEvents | IgnoreContextComponents,
 }
 
 /**
@@ -257,28 +255,15 @@ function _toSnapshot(
           }
         }
       } else {
-        if ((flags & VNodeFlags.KeepAlive) !== 0) {
-          if ((sFlags & SnapshotFlags.IgnoreKeepAliveComponents) === 0) {
-            if (vnode._children === null) {
-              return `${indent(il)}<KeepAlive />`;
-            } else {
-              let result = `${indent(il)}<KeepAlive>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
-              result += `\n${indent(il)}</KeepAlive>`;
-              return result;
-            }
-          }
-        } else {
-          if ((sFlags & SnapshotFlags.IgnoreStatelessComponents) === 0) {
-            const componentName = (vnode._tag as StatelessComponent<any>).render.displayName;
-            if (vnode._children === null) {
-              return `${indent(il)}<${componentName} />`;
-            } else {
-              let result = `${indent(il)}<${componentName}>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
-              result += `${indent(il)}</${componentName}>`;
-              return result;
-            }
+        if ((sFlags & SnapshotFlags.IgnoreStatelessComponents) === 0) {
+          const componentName = (vnode._tag as StatelessComponent<any>).render.displayName;
+          if (vnode._children === null) {
+            return `${indent(il)}<${componentName} />`;
+          } else {
+            let result = `${indent(il)}<${componentName}>`;
+            result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
+            result += `${indent(il)}</${componentName}>`;
+            return result;
           }
         }
       }

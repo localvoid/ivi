@@ -11,7 +11,6 @@ export {
  * Virtual DOM
  */
 export { StatefulComponent, StatelessComponent, Component, isComponentAttached } from "./vdom/component";
-export { KeepAliveHandler } from "./vdom/keep_alive";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode, Children,
@@ -22,7 +21,7 @@ export {
   disableDirtyChecking,
 } from "./vdom/vnode";
 export { elementFactory } from "./vdom/element";
-export { componentFactory, statelessComponentFactory, context, connect, keepAlive } from "./vdom/vnode_factories";
+export { componentFactory, statelessComponentFactory, context, connect } from "./vdom/vnode_factories";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 
 /**
