@@ -28,8 +28,8 @@ making a mistake because deeply nested arrays cannot have keys.
 
 ## Key Collisions in Nested Arrays
 
-React won't have any collisions of keys when there are several nested arrays in the children list.
+React won't have any key collisions when there are several nested arrays in the children list.
 
-## Fragments (React >16)
+## Fragments
 
 React components can return arrays of children nodes.

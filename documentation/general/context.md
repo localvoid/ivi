@@ -32,23 +32,16 @@ class StatefulComponent extends Component {
   }
 }
 
-function Child(counter: number) {
-  return h.div().children(counter);
-}
-
-interface ChildSelectorData {
-  in: number,
-  out: number,
-}
-
-const child = connect(
-  function(prev: ChildSelectorData, props: null, context: Context<{ counter: number }>) {
-      const counter = context.counter;
-      if (prev && prev.in === counter) {
-          return prev;
-      }
-      return selectorData(counter);
+const child = connect<number, undefined, { counter: number }>(
+  (prev, props, context) => {
+    const counter = context.counter;
+    if (prev && prev === counter) {
+      return prev;
+    }
+    return counter;
   },
-  Child,
+  (counter: number) => (
+    h.div().children(counter);
+  ),
 );
 ```

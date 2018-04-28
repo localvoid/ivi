@@ -2,12 +2,10 @@
 
 ## Stateless Component
 
-Stateless components are implemented with simple functions.
-
 ```ts
-function StatelessComponent(props: string) {
-  return h.div().children(`Hello ${props}`);
-}
+const HelloComponent = statelessComponent((props: string) => (
+  h.div().children(`Hello ${props}`);
+));
 ```
 
 ## Stateful Component
@@ -16,17 +14,17 @@ Stateful components are implemented with ES6 classes and should be extended from
 `Component<P>`. Base class has a parametric type `P` that specifies props type.
 
 ```ts
-class StatefulComponent extends Component<string> {
+const HelloComponent = statefulComponent(class extends Component<string> {
   render() {
     return h.div().children(`Hello ${this.props}`);
   }
-}
+});
 ```
 
 ### Constructor
 
 ```ts
-class StatefulComponent extends Component<string> {
+class HelloComponent extends Component<string> {
   private internalState: string;
 
   constructor(props: string) {
@@ -43,7 +41,7 @@ class StatefulComponent extends Component<string> {
 ### Properties
 
 ```ts
-interface Component<P = void> {
+interface Component<P = undefined> {
   props: P;
 }
 ```
@@ -59,7 +57,7 @@ interface Component {
 ```
 
 ```ts
-class StatefulComponent extends Component {
+class CounterComponent extends Component {
   private counter = 0;
 
   attached() {
@@ -86,7 +84,7 @@ interface Component {
 ```
 
 ```ts
-class StatefulComponent extends Component<string> {
+class HelloComponent extends Component<string> {
   render() {
     return h.div().children(`Hello ${this.props}`);
   }
@@ -102,7 +100,7 @@ interface Component {
 ```
 
 ```ts
-class StatefulComponent extends Component<string> {
+class HelloComponent extends Component<string> {
   private internalState = this.props + "!!";
 
   newPropsReceived(oldProps: string, newProps: string) {
@@ -134,12 +132,12 @@ interface Component {
 Component updated.
 
 `updated` lifecycle is invoked for all parents every time component is updated or any descendant component is updated.
-`localUpdates` argument is used to distinguish between updates that was caused by updating one of the descendants or
+`local` argument is used to distinguish between updates that was caused by updating one of the descendants or
 updates in the current component.
 
 ```ts
 interface Component {
-  updated(localUpdates: boolean): void;
+  updated(local: boolean): void;
 }
 ```
 

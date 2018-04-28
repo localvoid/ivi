@@ -15,7 +15,7 @@ Imagine this situation:
  the store).
 - Another Input Event is fired because user entered one more letter.
 - Because we don't have enough information about text transformations, we just took the latest value from input element
-and updated external store. And this value will be `oldValue + newValue`.
+ and updated external store. And this value will be `oldValue + newValue`.
 - Animation Frame is fired.
 - View is updated and now input element has `oldValue + newValue`.
 
@@ -31,11 +31,11 @@ In the future, it will be possible to solve this issue with new [input events](h
 ### Simple solution with locks
 
 ```ts
-class Form extends Component<null> {
+class Form extends Component {
   private lock = false;
   private value = "";
 
-  private onInput = Event.onInput((ev) => {
+  private onInput = Events.onInput((ev) => {
     if (!this.lock) {
       this.value = (ev.target as HTMLInputElement).value;
     }
@@ -54,7 +54,7 @@ class Form extends Component<null> {
   render() {
     return h.form().children(
       h.inputText()
-        .events({ input: this.onInput })
+        .e(this.onInput)
         .value(this.value);
       );
   }
@@ -64,10 +64,6 @@ class Form extends Component<null> {
   }
 }
 ```
-
-## Returning multiple nodes from render
-
-There is no support for fragments, components can return just one node.
 
 ## Web Components
 

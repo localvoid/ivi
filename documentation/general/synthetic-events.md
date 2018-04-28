@@ -58,11 +58,11 @@ class StatefulComponent extends Component {
 
   render() {
     return h.div()
-      .events([
+      .e([
         this.onClick,
         this.onClick,
       ])
-      .children(`Clicks: ${this.counter}`);
+      .c(`Clicks: ${this.counter}`);
   }
 }
 ```

@@ -9,7 +9,6 @@
 - Synchronous and deterministic syncing algorithm
 - Children reconciliation with minimum number of DOM operations
 - Fast performance
-- Server side rendering
 - Advanced development mode
 - Test utilities
 - Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler) `ADVANCED` mode.
@@ -63,12 +62,9 @@ exclusively for bug reports and feature requests.
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/general/synthetic-events.md)
 - [External State](https://github.com/ivijs/ivi/blob/master/documentation/general/external-state.md)
 - [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
-- [Build Configuration](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md)
 
 ### Advanced
 
-- [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
-- [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/advanced/keep-alive.md)
 - [Scheduler](https://github.com/ivijs/ivi/blob/master/documentation/advanced/scheduler.md)
 - [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/advanced/dev-mode.md)
 - [TypeScript Enums](https://github.com/ivijs/ivi/blob/master/documentation/advanced/typescript-enums.md)
@@ -85,7 +81,7 @@ exclusively for bug reports and feature requests.
 
 #### NPM
 
-ivi npm packages provide es6 modules and TypeScript typings.
+ivi npm packages provide es2015 modules and TypeScript typings.
 
 ```sh
 $ npm install ivi-core ivi-dom ivi-scheduler ivi-events ivi-html ivi
@@ -116,7 +112,7 @@ import { render } from "ivi";
 import * as h from "ivi-html";
 
 render(
-  h.div().children("Hello world!"),
+  h.div().c("Hello world!"),
   document.getElementById("app")!,
 );
 ```
@@ -131,7 +127,7 @@ let counter = 0;
 
 function update() {
   render(
-    h.div().children(`Counter: ${counter}`),
+    h.div().c(`Counter: ${counter}`),
     document.getElementById("app")!,
   );
 
@@ -149,13 +145,12 @@ Components are the basic building blocks for your applications, they will help y
 Stateless components are implemented with simple functions.
 
 ```ts
-import { componentFactory, render } from "ivi";
+import { statelessComponent, render } from "ivi";
 import * as h from "ivi-html";
 
-function StatelessComponent(text: string) {
-  return h.div().children(text);
-}
-const statelessComponent = componentFactory(StatelessComponent);
+const statelessComponent = statelessComponent((text: string) => (
+  h.div().c(text)
+));
 
 render(
   statelessComponent("Hello Stateless Component!"),
@@ -188,7 +183,7 @@ class StatefulComponent extends Component {
   }
 
   render() {
-    return h.div().children(`Time: ${this.time}`);
+    return h.div().c(`Time: ${this.time}`);
   }
 }
 const statefulComponent = componentFactory(StatefulComponent);

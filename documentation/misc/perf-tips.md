@@ -4,7 +4,7 @@
 
 Prefer [interned strings](https://en.wikipedia.org/wiki/String_interning) over creating new strings on each render.
 
-### Bad
+#### Bad
 
 ```ts
 function Button(props: { active: boolean }) {
@@ -16,7 +16,7 @@ function Button(props: { active: boolean }) {
 }
 ```
 
-### Good
+#### Good
 
 ```ts
 function Button(props: { active: boolean }) {
@@ -29,9 +29,7 @@ function Button(props: { active: boolean }) {
 Syncing algorithm always performs identity checks before diffing, by hoisting static values we can reduce diffing
 overhead.
 
-SSR blueprint diffing doesn't use any complicated diffing algorithms and performs only basic identity checks.
-
-### Bad
+#### Bad
 
 ```ts
 function Menu() {
@@ -41,7 +39,7 @@ function Menu() {
 }
 ```
 
-### Good
+#### Good
 
 ```ts
 const MenuProps = { id: "menu" };

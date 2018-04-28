@@ -4,15 +4,6 @@ General overview of the project.
 
 ## Packages
 
-Project is separated into many different packages because of the following reasons:
-
-- reduce TypeScript type conflicts between server-side and client-side implementations.
-- server-side renderer has completely different implementation for most public APIs, so we are using `ivi-core` package
- to make it easier to share code between client and server implementations.
-- HTML VNode and Synthetic Event factories are separated into its own packages, so it will be possible to import them
- into its own namespace and prevent name collisions.
-- Improved tree shaking by simple bundlers (Google closure compiler can handle much more complicated scenarios).
-
 ### ivi-core
 
 Shared code for browser and server implementations. It contains: basic types, data structures, helper functions,
@@ -62,17 +53,6 @@ TSLint rules.
 ### ivi-gestures
 
 **EXPERIMENTAL** package with gesture recognition (+DnD)
-
-## Virtual DOM
-
-### Node Factories
-
-Virtual DOM Node internal datastructure are considered as a semi-private API. It can be used by tools that can
-correctly handle client-side and server-side differences.
-
-Because internal datastructure is semi-private, we need to create factory functions for all HTML and SVG elements and
-expose them as a public API, this way we can easily substitute this factory functions and get specialized
-implementation for client and server platforms.
 
 ## Development Environment
 

@@ -6,8 +6,8 @@ For example, to assign an event and id attribute on a div element:
 
 ```ts
 const node = h.div()
-  .events(Events.onClick((ev) => { console.log("click"); }))
-  .attrs({ id: "unique-id" });
+  .e(Events.onClick((ev) => { console.log("click"); }))
+  .a({ id: "unique-id" });
 ```
 
 ## Chained Methods
@@ -16,20 +16,20 @@ const node = h.div()
 
 ```ts
 interface VNode<P> {
-  key(key: any): VNode<P>;
+  k(key: any): VNode<P>;
 }
 ```
 
-`key` property is used to uniquely identify Virtual Node among its siblings. It is used by children syncing algorithm to
+`k` property is used to uniquely identify Virtual Node among its siblings. It is used by children syncing algorithm to
 find how to rearrange nodes when they are moved, removed or inserted.
 
 ### HTML, SVG, Input and Media elements
 
 ```ts
 interface VNode<P> {
-  attrs(attrs: P): VNode<P>;
-  style(style: CSSStyleProps | null): VNode<P>;
-  events(events: Array<EventHandler | null> | EventHandler | null): VNode<P>;
+  a(attrs: P): VNode<P>;
+  s(style: CSSStyleProps | null): VNode<P>;
+  e(events: Array<EventHandler | null> | EventHandler | null): VNode<P>;
 }
 ```
 
@@ -37,7 +37,7 @@ interface VNode<P> {
 
 ```ts
 interface VNode<P> {
-  children(...children: Array<IVNode<any>[] | IVNode<any> | string | number | null>): VNode<P>;
+  c(...children: Array<IVNode<any>[] | IVNode<any> | string | number | null>): VNode<P>;
   unsafeHTML(html: string): VNode<P>
 }
 ```
@@ -51,9 +51,9 @@ Each non-nested child that doesn't have assigned explicit key will be assigned w
 used to support code patterns like this:
 
 ```ts
-h.div().children(
-  isVisible ? componentA() : null,
-  componentB(),
+h.div().c(
+  isVisible ? ComponentA() : null,
+  ComponentB(),
 );
 ```
 
@@ -112,13 +112,4 @@ Update dirty components.
 ```ts
 function update();
 function updateNextFrame();
-```
-
-Augment existing DOM tree with a Virtual DOM.
-
-```ts
-function augment(
-  node: VNode<any> | null,
-  container: Element,
-): void;
 ```

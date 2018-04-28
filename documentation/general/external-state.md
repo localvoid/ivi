@@ -17,37 +17,33 @@ and reuse previous values.
 
 ```ts
 function connect<T, P, C extends Context>(
-  render: (props: T) => VNode<any>,
   select: (prev: T | null, props: P, context: C) => T,
-): (props: P) => VNode<P> 
+  render: (props: T) => VNode<any>,
+): (props: P) => VNode<P>;
 ```
 
 `connect()` function creates a factory function that will instantiate virtual dom connector nodes.
 
-`render` param is a function uses that takes an object created by `select` function and returns a virtual dom node.
-
 `select` param is a function that retrieves data from an external state and returns objects that are passed to the
 `render` function.
+
+`render` param is a function uses that takes an object created by `select` function and returns a virtual dom node.
 
 
 ### Example
 
 ```ts
-const article = connect(
-  function (props: { content: string }) {
-    return h.div().children(props.content);
-  },
-  function (
-    prev,
-    id: number,
-    context: Context<{articles: Map<number, string>}>,
-  ) {
+const article = connect<{ content: string }, number, { articles: Map<number, string> }>(
+  (prev, id, context) => {
     const content = context.articles.get(id);
     if (prev && prev.content === content) {
       return prev;
     }
     return { content };
   },
+  (props) => (
+    h.div().c(props.content)
+  )),
 );
 
 const articles = new Map<number, string>();
@@ -69,4 +65,4 @@ function memoizeSelector<T, P>(
 ```
 
 By default, all selectors are memoized locally, with this helper function it is possible to create selectors memoized
-in the current `Context`.
+in the current context.
