@@ -7,7 +7,7 @@ import { VNode } from "./vnode";
  */
 export interface StatelessComponent<P = undefined> {
   render: (props: P) => VNode;
-  isPropsChanged: ((oldProps: P, newProps: P) => boolean) | undefined;
+  shouldUpdate: ((oldProps: P, newProps: P) => boolean) | undefined;
 }
 
 /**
@@ -49,19 +49,6 @@ export abstract class Component<P = undefined> {
   }
 
   /**
-   * Lifecycle method `isPropsChanged` is used as a hint to reduce unnecessary updates.
-   *
-   * By default props checked by their identity.
-   *
-   * @param oldProps Old props.
-   * @param newProps New props.
-   * @returns `true` when props has been changed.
-   */
-  isPropsChanged(oldProps: P, newProps: P): boolean {
-    return oldProps !== newProps;
-  }
-
-  /**
    * Lifecycle method `newPropsReceived` is invoked after new props are assigned.
    *
    * @param oldProps Old props.
@@ -86,6 +73,17 @@ export abstract class Component<P = undefined> {
   detached(): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
+  }
+
+  /**
+   * Lifecycle method `shouldUpdate` is used as a hint to reduce unnecessary updates.
+   *
+   * @param oldProps Old props.
+   * @param newProps New props.
+   * @returns `true` when changes in props should trigger update.
+   */
+  shouldUpdate(oldProps: P, newProps: P): boolean {
+    return oldProps !== newProps;
   }
 
   /**

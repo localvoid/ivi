@@ -51,7 +51,7 @@ describe("component state", () => {
       startRender((r) => {
         r($lc("1", h.div()));
         r($lc("2", {
-          isPropsChanged: (
+          shouldUpdate: (
             oldProps: LifecycleTesterProps,
             newProps: LifecycleTesterProps,
           ) => {

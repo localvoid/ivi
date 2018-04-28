@@ -6,22 +6,19 @@ import { ConnectDescriptor } from "./connect_descriptor";
 
 export function statelessComponentFactory(c: () => VNode): () => VNode<undefined>;
 export function statelessComponentFactory<P, U extends P>(
-  c: (props: U | undefined) => VNode<any>,
-  isPropsChanged?: (oldProps: P, newProps: P) => boolean,
+  render: (props: U | undefined) => VNode<any>,
+  shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): (props?: U) => VNode<P>;
 export function statelessComponentFactory<P, U extends P>(
-  c: (props: U) => VNode<any>,
-  isPropsChanged?: (oldProps: P, newProps: P) => boolean,
+  render: (props: U) => VNode<any>,
+  shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): (props: U) => VNode<P>;
 export function statelessComponentFactory<P>(
-  c: (props: P) => VNode<any>,
-  isPropsChanged?: (oldProps: P, newProps: P) => boolean,
+  render: (props: P) => VNode<any>,
+  shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): (props: P) => VNode<P> {
-  const d = {
-    render: c,
-    isPropsChanged,
-  };
-  if (isPropsChanged === undefined) {
+  const d = { render, shouldUpdate };
+  if (shouldUpdate === undefined) {
     return function (props: P): VNode<P> {
       return new VNode<P>(
         VNodeFlags.StatelessComponent,

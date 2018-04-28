@@ -768,9 +768,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
         // Update component props
         const oldProps = a._props;
         const newProps = b._props;
-        let propsChanged = 0;
-        if (component.isPropsChanged(oldProps, newProps) === true) {
-          propsChanged = 1;
+        if (oldProps !== newProps) {
           // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
           // reassigned later to reduce memory usage.
           component.newPropsReceived(oldProps, newProps);
@@ -782,7 +780,10 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
         component.props = newProps;
 
         const oldRoot = a._children as VNode;
-        if ((propsChanged | (component.flags & ComponentFlags.Dirty)) !== 0) {
+        if (
+          ((component.flags & ComponentFlags.Dirty) !== 0) ||
+          (component.shouldUpdate(oldProps, newProps) === true)
+        ) {
           const newRoot = b._children = component.render();
           vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
           component.flags &= ~ComponentFlags.Dirty;
@@ -841,7 +842,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
         } else {
           if (
             ((bFlags & VNodeFlags.CheckChangedProps) === 0 && a._props !== b._props) ||
-            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && sc.isPropsChanged!(a._props, b._props) === true)
+            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && sc.shouldUpdate!(a._props, b._props) === true)
           ) {
             const oldRoot = a._children as VNode;
             const newRoot = b._children = sc.render(b._props);

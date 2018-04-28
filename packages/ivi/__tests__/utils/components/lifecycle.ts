@@ -7,7 +7,7 @@ export interface ComponentHooks<P> {
     this: Component<P>,
     props: P,
   ) => void;
-  isPropsChanged?: (
+  shouldUpdate?: (
     this: Component<P>,
     oldProps: P,
     newProps: P,
@@ -39,10 +39,10 @@ export class LifecycleTester extends Component<LifecycleTesterProps> {
     }
   }
 
-  isPropsChanged(oldProps: LifecycleTesterProps, newProps: LifecycleTesterProps): boolean {
-    lifecycleTouch(newProps.id, "isPropsChanged");
-    if (newProps.hooks.isPropsChanged) {
-      return newProps.hooks.isPropsChanged.call(this, oldProps, newProps);
+  shouldUpdate(oldProps: LifecycleTesterProps, newProps: LifecycleTesterProps): boolean {
+    lifecycleTouch(newProps.id, "shouldUpdate");
+    if (newProps.hooks.shouldUpdate) {
+      return newProps.hooks.shouldUpdate.call(this, oldProps, newProps);
     }
     return true;
   }
