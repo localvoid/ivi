@@ -99,7 +99,7 @@ export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFla
  * @param syncFlags Sync flags.
  */
 function _syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags): void {
-  vNodeSync(parent, a, b, context, syncFlags);
+  vNodeSync(parent, a, b, context, syncFlags, true);
 }
 
 /**
@@ -311,7 +311,7 @@ function vNodeDirtyCheck(parent: Node, vnode: VNode, context: {}, syncFlags: Syn
         children = vnode._children as VNode;
         if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
           const newRoot = vnode._children = (instance as Component<any>).render();
-          vNodeSync(parent, children, newRoot, context, syncFlags);
+          vNodeSync(parent, children, newRoot, context, syncFlags, true);
           (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
           (instance as Component<any>).updated(true);
           deepUpdate = 1;
@@ -344,6 +344,7 @@ function vNodeDirtyCheck(parent: Node, vnode: VNode, context: {}, syncFlags: Syn
               vnode._children as VNode,
               context,
               syncFlags,
+              true,
             );
           }
         } else {
@@ -580,6 +581,7 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
             vnode._children as VNode,
             context,
             SyncFlags.DirtyContext,
+            false,
           );
           node = getDOMInstanceFromVNode(vnode._children as VNode)!;
         } else {
@@ -648,32 +650,6 @@ function vNodeRenderIntoAndAttach(
 }
 
 /**
- * Check if two nodes can be synced.
- *
- * Two nodes can be synced when their flags and tags are identical.
- *
- * @param a Old VNode.
- * @param b New VNode.
- * @returns true if nodes can be synced.
- */
-function vNodeCanSync(a: VNode, b: VNode): boolean {
-  return (
-    (((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0) &&
-    (
-      (a._flags & (
-        VNodeFlags.ElementFactory |
-        VNodeFlags.StatelessComponent |
-        VNodeFlags.StatefulComponent |
-        VNodeFlags.Connect |
-        VNodeFlags.KeepAlive
-      )) === 0 ||
-      a._tag === b._tag
-    ) &&
-    a._key === b._key
-  );
-}
-
-/**
  * Check if two nodes has equal keys.
  *
  * @param a VNode.
@@ -698,8 +674,9 @@ function vNodeEqualKeys(a: VNode, b: VNode): boolean {
  * @param b New VNode.
  * @param context Current context.
  * @param syncFlags Sync flags.
+ * @param checkKeys Check vnode keys.
  */
-function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags): void {
+function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags, checkKeys: boolean): void {
   if (a === b) {
     vNodeDirtyCheck(parent, b, context, syncFlags);
     return;
@@ -707,14 +684,26 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
 
   if (DEBUG) {
     if (b._instance !== null) {
-      throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
-        "clone VNode with `cloneVNode` function.");
+      throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times");
     }
   }
 
   let instance;
   const bFlags = b._flags;
-  if (vNodeCanSync(a, b) === true) {
+  if (
+    (((a._flags ^ b._flags) & VNodeFlags.Syncable) === 0) &&
+    (
+      (a._flags & (
+        VNodeFlags.ElementFactory |
+        VNodeFlags.StatelessComponent |
+        VNodeFlags.StatefulComponent |
+        VNodeFlags.Connect |
+        VNodeFlags.KeepAlive
+      )) === 0 ||
+      a._tag === b._tag
+    ) &&
+    (checkKeys === false || a._key === b._key)
+  ) {
     b._instance = instance = a._instance;
 
     if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
@@ -785,7 +774,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
           (component.shouldUpdate(oldProps, newProps) === true)
         ) {
           const newRoot = b._children = component.render();
-          vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+          vNodeSync(parent, oldRoot, newRoot, context, syncFlags, true);
           component.flags &= ~ComponentFlags.Dirty;
           component.updated(true);
         } else {
@@ -819,6 +808,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
                 b._children as VNode,
                 context,
                 syncFlags,
+                true,
               );
             }
           } else {
@@ -837,16 +827,17 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
               b._children as VNode,
               context,
               syncFlags,
+              true,
             );
           }
         } else {
           if (
-            ((bFlags & VNodeFlags.CheckChangedProps) === 0 && a._props !== b._props) ||
-            ((bFlags & VNodeFlags.CheckChangedProps) !== 0 && sc.shouldUpdate!(a._props, b._props) === true)
+            (a._props !== b._props) &&
+            ((bFlags & VNodeFlags.CheckChangedProps) === 0 || sc.shouldUpdate!(a._props, b._props) === true)
           ) {
             const oldRoot = a._children as VNode;
             const newRoot = b._children = sc.render(b._props);
-            vNodeSync(parent, oldRoot, newRoot, context, syncFlags);
+            vNodeSync(parent, oldRoot, newRoot, context, syncFlags, true);
           } else {
             b._children = a._children;
             vNodeDirtyCheck(parent, b._children as VNode, context, syncFlags);
@@ -967,7 +958,7 @@ function syncChildren(
         for (i = 0; i < a.length; ++i) {
           node = a[i];
           if (vNodeEqualKeys(node, b) === true) {
-            vNodeSync(parent, node, b, context, syncFlags);
+            vNodeSync(parent, node, b, context, syncFlags, false);
             synced = i;
             break;
           }
@@ -999,7 +990,7 @@ function syncChildren(
         for (i = 0; i < b.length; ++i) {
           node = b[i];
           if (vNodeEqualKeys(a, node) === true) {
-            vNodeSync(parent, a, node, context, syncFlags);
+            vNodeSync(parent, a, node, context, syncFlags, false);
             synced = i;
             break;
           }
@@ -1019,7 +1010,7 @@ function syncChildren(
           }
         }
       } else {
-        vNodeSync(parent, a, b as VNode, context, syncFlags);
+        vNodeSync(parent, a, b as VNode, context, syncFlags, true);
       }
     } else { // (aParentFlags & VNodeFlags.InputElement)
       /**
@@ -1294,7 +1285,7 @@ function syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context: 
   outer: while (true) {
     // Sync nodes with the same key at the beginning.
     while (vNodeEqualKeys(aStartNode, bStartNode) === true) {
-      vNodeSync(parent, aStartNode, bStartNode, context, syncFlags);
+      vNodeSync(parent, aStartNode, bStartNode, context, syncFlags, false);
       ++aStart;
       ++bStart;
       if (aStart > aEnd || bStart > bEnd) {
@@ -1306,7 +1297,7 @@ function syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context: 
 
     // Sync nodes with the same key at the end.
     while (vNodeEqualKeys(aEndNode, bEndNode) === true) {
-      vNodeSync(parent, aEndNode, bEndNode, context, syncFlags);
+      vNodeSync(parent, aEndNode, bEndNode, context, syncFlags, false);
       --aEnd;
       --bEnd;
       if (aStart > aEnd || bStart > bEnd) {
@@ -1388,7 +1379,7 @@ function syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context: 
                 ++synced;
                 sources[k] = i;
                 aNullable[i] = null;
-                vNodeSync(parent, aNode, bNode, context, syncFlags);
+                vNodeSync(parent, aNode, bNode, context, syncFlags, false);
                 break;
               }
             }
@@ -1401,7 +1392,7 @@ function syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context: 
             bNode = b[j];
             sources[j - bStart] = i;
             aNullable[i] = null;
-            vNodeSync(parent, aNode, bNode, context, syncFlags);
+            vNodeSync(parent, aNode, bNode, context, syncFlags, false);
           }
         }
       } else {
@@ -1420,7 +1411,7 @@ function syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context: 
                   ++bPositionKeyStart;
                   sources[k] = i;
                   aNullable[i] = null;
-                  vNodeSync(parent, aNode, bNode, context, syncFlags);
+                  vNodeSync(parent, aNode, bNode, context, syncFlags, false);
                 }
                 break;
               }
