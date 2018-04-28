@@ -1,4 +1,3 @@
-import { Target, TARGET } from "ivi-vars";
 import { FeatureFlags, FEATURES } from "ivi-core";
 import { nodeInsertBefore } from "./shortcuts";
 
@@ -13,10 +12,7 @@ import { nodeInsertBefore } from "./shortcuts";
  * @param content Inner HTML content.
  * @param isSVG Element is SVG.
  */
-export const setInnerHTML = (
-  (TARGET & (Target.Cordova | Target.Electron | Target.Evergreen)) ||
-  ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0)
-) ?
+export const setInnerHTML = (TARGET !== "browser" || ((FEATURES & FeatureFlags.SVGInnerHTML) !== 0)) ?
   function (element: Element, content: string, isSVG: boolean): void {
     element.innerHTML = content;
   } :

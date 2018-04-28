@@ -34,7 +34,6 @@ export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
 /**
  * Entry
  */
-import { DEV } from "ivi-vars";
 import { FEATURES, FeatureFlags } from "ivi-core";
 import { setUpdateDOMHandler } from "ivi-scheduler";
 import { VERSION } from "./dev_mode/dev_mode";
@@ -42,7 +41,7 @@ import { update } from "./vdom/root";
 
 setUpdateDOMHandler(update);
 
-if (DEV) {
+if (DEBUG) {
   console.info(`IVI [${VERSION}]: DEVELOPMENT MODE`);
 
   if (document) {

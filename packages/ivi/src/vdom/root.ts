@@ -1,4 +1,3 @@
-import { DEV } from "ivi-vars";
 import { USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { SyncFlags, VNodeFlags } from "./flags";
@@ -128,7 +127,7 @@ export function renderNextFrame(
   node: VNode | null,
   container: Element,
 ): void {
-  if (DEV) {
+  if (DEBUG) {
     if (container === document.body) {
       throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +
         "your application.");
@@ -149,7 +148,7 @@ export function renderNextFrame(
       newVNode: node,
       invalidated: true,
     });
-    if (DEV) {
+    if (DEBUG) {
       if (isTestEnvironment()) {
         addTestResetTask(reset);
       }

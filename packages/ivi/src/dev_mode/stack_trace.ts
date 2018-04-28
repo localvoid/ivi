@@ -3,7 +3,6 @@
  *
  * When exception is thrown, their stack traces will be augmented with Components stack trace.
  */
-import { DEV } from "ivi-vars";
 import { getFunctionName } from "./dev_mode";
 import { StatefulComponent, StatelessComponent, Component } from "../vdom/component";
 import { VNode } from "../vdom/vnode";
@@ -32,7 +31,7 @@ export interface ComponentStackTraceFrame {
 export let STACK_TRACE: Array<ComponentStackTraceFrame>;
 let STACK_TRACE_DEPTH: number;
 
-if (DEV) {
+if (DEBUG) {
   STACK_TRACE = [];
   STACK_TRACE_DEPTH = 0;
 }
@@ -43,7 +42,7 @@ if (DEV) {
  * @param vnode VNode.
  */
 export function stackTracePushComponent(vnode: VNode, instance?: Component<any> | {}): void {
-  if (DEV) {
+  if (DEBUG) {
     const flags = vnode._flags;
     let type;
     const tag = vnode._tag as StatefulComponent<any> | StatelessComponent<any> | ConnectDescriptor<any, any, any> |
@@ -91,7 +90,7 @@ export function stackTracePushComponent(vnode: VNode, instance?: Component<any> 
  * Pop component from stack trace.
  */
 export function stackTracePopComponent(): void {
-  if (DEV) {
+  if (DEBUG) {
     const frame = STACK_TRACE[--STACK_TRACE_DEPTH];
     frame.tag = undefined;
     frame.instance = undefined;
@@ -102,7 +101,7 @@ export function stackTracePopComponent(): void {
  * Reset stack trace.
  */
 export function stackTraceReset(): void {
-  if (DEV) {
+  if (DEBUG) {
     for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {
       const frame = STACK_TRACE[i];
       frame.tag = undefined;
@@ -158,7 +157,7 @@ function stackTraceToString(): string {
  * @param e Error instance.
  */
 export function stackTraceAugment(e: Error): void {
-  if (DEV) {
+  if (DEBUG) {
     if (e.stack) {
       e.stack += "\n\nComponents stack trace:" + stackTraceToString();
     }
@@ -169,7 +168,7 @@ export function stackTraceAugment(e: Error): void {
  * Prints current component stack trace to the console.
  */
 export function printComponentStackTrace(): void {
-  if (DEV) {
+  if (DEBUG) {
     if (STACK_TRACE_DEPTH) {
       console.groupCollapsed("Component Stack Trace:");
       for (let i = 0; i < STACK_TRACE_DEPTH; ++i) {

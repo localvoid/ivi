@@ -4,7 +4,6 @@
  *
  * NOTE: Do not implement feature detection for features that aren't used in `ivi` libraries.
  */
-import { TARGET, Target } from "ivi-vars";
 import { SVG_NAMESPACE } from "./const";
 
 /**
@@ -67,7 +66,7 @@ export let FEATURES: FeatureFlags = 0;
  *
  * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
  */
-if (TARGET & Target.Electron) {
+if (TARGET === "electron") {
   FEATURES |= FeatureFlags.PassiveEvents;
 } else {
   try {
@@ -87,24 +86,21 @@ if (TARGET & Target.Electron) {
 /**
  * Check `innerHTML` property in `SVGElement`.
  */
-if (
-  (TARGET & (Target.Electron | Target.Cordova | Target.Evergreen)) ||
-  document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined
-) {
+if (TARGET !== "browser" || document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined) {
   FEATURES |= FeatureFlags.SVGInnerHTML;
 }
 
 /**
  * Check `key` property in `KeyboardEvent`.
  */
-if ((TARGET & Target.Electron) || "key" in KeyboardEvent.prototype) {
+if ((TARGET === "electron") || "key" in KeyboardEvent.prototype) {
   FEATURES |= FeatureFlags.KeyboardEventKey;
 }
 
 /**
  * Check `buttons` property in `MouseEvent`.
  */
-if ((TARGET & Target.Electron) || "buttons" in MouseEvent.prototype) {
+if ((TARGET === "electron") || "buttons" in MouseEvent.prototype) {
   FEATURES |= FeatureFlags.MouseEventButtons;
 }
 
@@ -118,7 +114,7 @@ if ("ontouchstart" in window) {
 /**
  * Check pointer events API.
  */
-if ((TARGET & Target.Electron) || "PointerEvent" in window) {
+if ((TARGET === "electron") || "PointerEvent" in window) {
   FEATURES |= FeatureFlags.PointerEvents;
   /**
    * Touch/Multitouch detection.
@@ -134,6 +130,6 @@ if ((TARGET & Target.Electron) || "PointerEvent" in window) {
 /**
  * Check `sourceCapabilities` property in UIEvent.
  */
-if ((TARGET & Target.Electron) || "sourceCapabilities" in UIEvent.prototype) {
+if ((TARGET === "electron") || "sourceCapabilities" in UIEvent.prototype) {
   FEATURES |= FeatureFlags.InputDeviceCapabilities;
 }

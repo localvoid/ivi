@@ -6,7 +6,6 @@
  * missing elements or close existing elements, to prevent such behaviour we are just throwing errors in Dev Mode when
  * HTML nesting rules are violated.
  */
-import { DEV } from "ivi-vars";
 
 /**
  * Ancestor Flags.
@@ -111,7 +110,7 @@ function ancestorFlagsToTagNames(aFlags: AncestorFlags): string[] {
  * @returns Ancestor Flags.
  */
 function ancestorFlags(element: Element | null): AncestorFlags {
-  if (DEV) {
+  if (DEBUG) {
     let result = 0;
     while (element !== null && (element !== document.body)) {
       result |= AncestorFlagsByTagName[element.tagName.toLowerCase()];
@@ -126,7 +125,7 @@ function ancestorFlags(element: Element | null): AncestorFlags {
 /**
  * List of child elements that allowed in `parent` elements.
  */
-const validChildList: { [parent: string]: string[] } = {
+const validChildList: { [parent: string]: string[] } | undefined = DEBUG ? {
   "select": ["option", "optgroup", "$t"],
   "optgroup": ["option", "$t"],
   "option": ["$t"],
@@ -134,9 +133,11 @@ const validChildList: { [parent: string]: string[] } = {
   "tbody": ["tr", "style", "script", "template"],
   "colgroup": ["col", "template"],
   "table": ["caption", "colgroup", "tbody", "tfoot", "thead", "style", "script", "template"],
-};
-validChildList["thead"] = validChildList["tbody"];
-validChildList["tfoot"] = validChildList["tbody"];
+} : undefined;
+if (DEBUG) {
+  validChildList!["thead"] = validChildList!["tbody"];
+  validChildList!["tfoot"] = validChildList!["tbody"];
+}
 
 /**
  * List of invalid ancestors for `child` elements.
@@ -200,7 +201,7 @@ let _childTagName: string | undefined;
  * @param ancestorFlags
  */
 export function setInitialNestingState(parent: Element): void {
-  if (DEV) {
+  if (DEBUG) {
     if ((parent as Element).tagName) {
       _parentTagName = (parent as Element).tagName.toLowerCase();
       _ancestorFlags = ancestorFlags(parent as Element);
@@ -217,7 +218,7 @@ export function setInitialNestingState(parent: Element): void {
  * @param childTagName
  */
 export function pushNestingState(childTagName: string): void {
-  if (DEV) {
+  if (DEBUG) {
     if (_parentTagName) {
       _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
     }
@@ -231,7 +232,7 @@ export function pushNestingState(childTagName: string): void {
  * unwinding stack.
  */
 export function restoreNestingState(parentTagName: string | undefined, aFlags: AncestorFlags): void {
-  if (DEV) {
+  if (DEBUG) {
     _parentTagName = parentTagName;
     _ancestorFlags = aFlags;
     _childTagName = undefined;
@@ -242,7 +243,7 @@ export function restoreNestingState(parentTagName: string | undefined, aFlags: A
  * Get current parent tag name.
  */
 export function nestingStateParentTagName(): string | undefined {
-  if (DEV) {
+  if (DEBUG) {
     return _parentTagName;
   }
   return;
@@ -252,7 +253,7 @@ export function nestingStateParentTagName(): string | undefined {
  * Get current ancestor flags.
  */
 export function nestingStateAncestorFlags(): AncestorFlags {
-  if (DEV) {
+  if (DEBUG) {
     return _ancestorFlags;
   }
   return 0;
@@ -267,9 +268,9 @@ const REPORT_MSG = "If you are certain that you aren't violating any HTML nestin
  * @throws Error when child nesting rules are violated.
  */
 export function checkNestingViolation(): void {
-  if (DEV) {
+  if (DEBUG) {
     if (_parentTagName !== undefined) {
-      const validChildren = validChildList[_parentTagName];
+      const validChildren = validChildList![_parentTagName];
       if (validChildren !== undefined) {
         for (const child of validChildren) {
           if (_childTagName === child) {

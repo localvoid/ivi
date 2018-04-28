@@ -5,7 +5,6 @@
  * creating many circular dependencies between JS modules.
  */
 
-import { DEV } from "ivi-vars";
 import { SVG_NAMESPACE } from "ivi-core";
 import {
   setInnerHTML, nodeRemoveChild, nodeInsertBefore, nodeReplaceChild, elementSetAttribute,
@@ -37,7 +36,7 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
  * @returns Rendered DOM Node.
  */
 export function renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
-  if (DEV) {
+  if (DEBUG) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -75,7 +74,7 @@ function _renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context
  * @param syncFlags Sync flags.
  */
 export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: SyncFlags): void {
-  if (DEV) {
+  if (DEBUG) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -110,7 +109,7 @@ function _syncVNode(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Sy
  * @param node VNode element to remove.
  */
 export function removeVNode(parent: Node, node: VNode): void {
-  if (DEV) {
+  if (DEBUG) {
     try {
       _removeVNode(parent, node);
       return;
@@ -143,7 +142,7 @@ function _removeVNode(parent: Node, node: VNode): void {
  * @param syncFlags Sync Flags.
  */
 export function updateComponents(parent: Node, vnode: VNode, context: {}, syncFlags: SyncFlags): void {
-  if (DEV) {
+  if (DEBUG) {
     setInitialNestingState(parent as Element);
 
     try {
@@ -182,11 +181,13 @@ function vNodeAttach(vnode: VNode): void {
       attachEvents(vnode._events!);
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
-    stackTracePushComponent(vnode);
+    if (DEBUG) {
+      stackTracePushComponent(vnode);
+    }
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = vnode._instance as Component<any>;
 
-      if (DEV) {
+      if (DEBUG) {
         if ((component.flags & ComponentFlags.Attached) !== 0) {
           throw new Error("Failed to attach Component: component is already attached.");
         }
@@ -196,7 +197,9 @@ function vNodeAttach(vnode: VNode): void {
       component.attached();
     }
     vNodeAttach(vnode._children as VNode);
-    stackTracePopComponent();
+    if (DEBUG) {
+      stackTracePopComponent();
+    }
   }
 }
 
@@ -222,7 +225,9 @@ function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
       detachEvents(vnode._events!);
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
-    stackTracePushComponent(vnode);
+    if (DEBUG) {
+      stackTracePushComponent(vnode);
+    }
     if ((flags & VNodeFlags.KeepAlive) !== 0 &&
       (syncFlags & SyncFlags.Dispose) !== 0 &&
       ((vnode._tag as KeepAliveHandler)(vnode._children as VNode, vnode._props)) !== null) {
@@ -240,7 +245,7 @@ function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
         (syncFlags & SyncFlags.Attached) !== 0) {
         const component = vnode._instance as Component<any>;
 
-        if (DEV) {
+        if (DEBUG) {
           if ((component.flags & ComponentFlags.Attached) === 0) {
             throw new Error("Failed to detach Component: component is already detached.");
           }
@@ -249,7 +254,9 @@ function vNodeDetach(vnode: VNode, syncFlags: SyncFlags): void {
         component.detached();
       }
     }
-    stackTracePopComponent();
+    if (DEBUG) {
+      stackTracePopComponent();
+    }
   }
 }
 
@@ -296,7 +303,9 @@ function vNodeDirtyCheck(parent: Node, vnode: VNode, context: {}, syncFlags: Syn
         deepUpdate = vNodeDirtyCheck(instance as Node, children as VNode, context, syncFlags);
       }
     } else {
-      stackTracePushComponent(vnode);
+      if (DEBUG) {
+        stackTracePushComponent(vnode);
+      }
       if ((flags & VNodeFlags.StatefulComponent) !== 0) {
         instance = vnode._instance as Component<any>;
         children = vnode._children as VNode;
@@ -352,7 +361,9 @@ function vNodeDirtyCheck(parent: Node, vnode: VNode, context: {}, syncFlags: Syn
           );
         }
       }
-      stackTracePopComponent();
+      if (DEBUG) {
+        stackTracePopComponent();
+      }
     }
   }
   return deepUpdate;
@@ -422,7 +433,7 @@ function setHTMLInputValue(input: HTMLInputElement, value: string | boolean | nu
  * @returns Rendered DOM Node.
  */
 function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
-  if (DEV) {
+  if (DEBUG) {
     if (vnode._instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
         "clone VNode with `cloneVNode`.");
@@ -440,15 +451,19 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
     const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
 
     if ((flags & VNodeFlags.Text) !== 0) {
-      pushNestingState("$t");
-      checkNestingViolation();
+      if (DEBUG) {
+        pushNestingState("$t");
+        checkNestingViolation();
+      }
       node = document.createTextNode(vnode._children as string);
     } else { // (flags & VNodeFlags.Element)
       const svg = (flags & VNodeFlags.SvgElement) !== 0;
       if ((flags & VNodeFlags.ElementFactory) === 0) {
         const tagName = vnode._tag as string;
-        pushNestingState(tagName);
-        checkNestingViolation();
+        if (DEBUG) {
+          pushNestingState(tagName);
+          checkNestingViolation();
+        }
 
         if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
           if (svg === true) {
@@ -474,8 +489,10 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
         }
       } else {
         const factory = vnode._tag as VNode;
-        pushNestingState(factory._tag as string);
-        checkNestingViolation();
+        if (DEBUG) {
+          pushNestingState(factory._tag as string);
+          checkNestingViolation();
+        }
 
         if (factory._instance === null) {
           vNodeRender(parent, factory, context);
@@ -538,15 +555,21 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
     }
 
     instance = node;
-    restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
+    if (DEBUG) {
+      restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
+    }
   } else { // (flags & VNodeFlags.Component)
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
-      stackTracePushComponent(vnode, instance);
+      if (DEBUG) {
+        stackTracePushComponent(vnode, instance);
+      }
       const root = vnode._children = component.render();
       node = vNodeRender(parent, root, context);
     } else { // (flags & VNodeFlags.ComponentFunction)
-      stackTracePushComponent(vnode);
+      if (DEBUG) {
+        stackTracePushComponent(vnode);
+      }
       if ((flags & VNodeFlags.KeepAlive) !== 0) {
         const keepAlive = vnode._tag as KeepAliveHandler;
         const prev = keepAlive(null, vnode._props);
@@ -585,7 +608,9 @@ function vNodeRender(parent: Node, vnode: VNode, context: {}): Node {
         );
       }
     }
-    stackTracePopComponent();
+    if (DEBUG) {
+      stackTracePopComponent();
+    }
   }
 
   vnode._instance = instance;
@@ -680,7 +705,7 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
     return;
   }
 
-  if (DEV) {
+  if (DEBUG) {
     if (b._instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
         "clone VNode with `cloneVNode` function.");
@@ -735,7 +760,9 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
         }
       }
     } else { // (flags & VNodeFlags.Component)
-      stackTracePushComponent(b);
+      if (DEBUG) {
+        stackTracePushComponent(b);
+      }
       if ((bFlags & VNodeFlags.StatefulComponent) !== 0) {
         const component = instance as Component<any>;
         // Update component props
@@ -825,7 +852,9 @@ function vNodeSync(parent: Node, a: VNode, b: VNode, context: {}, syncFlags: Syn
           }
         }
       }
-      stackTracePopComponent();
+      if (DEBUG) {
+        stackTracePopComponent();
+      }
     }
   } else {
     instance = vNodeRender(parent, b, context);

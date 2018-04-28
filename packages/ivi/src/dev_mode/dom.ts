@@ -1,5 +1,3 @@
-import { DEV } from "ivi-vars";
-
 /**
  * Is tag valid.
  *
@@ -7,7 +5,7 @@ import { DEV } from "ivi-vars";
  * @returns `true` when tag name is valid.
  */
 export function isValidTag(tag: string): boolean {
-  if (DEV) {
+  if (DEBUG) {
     return /^[a-zA-Z][a-zA-Z:_\.\-\d]*$/.test(tag);
   }
   return true;

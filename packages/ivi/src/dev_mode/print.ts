@@ -1,4 +1,3 @@
-import { DEV } from "ivi-vars";
 import { printComponentStackTrace } from "./stack_trace";
 
 /**
@@ -9,7 +8,7 @@ import { printComponentStackTrace } from "./stack_trace";
  * @param message Error message.
  */
 export function printError(message: string): void {
-  if (DEV) {
+  if (DEBUG) {
     console.error(message);
     printComponentStackTrace();
     try {
@@ -29,7 +28,7 @@ export function printError(message: string): void {
  * @param message Warning message.
  */
 export function printWarn(message: string): void {
-  if (DEV) {
+  if (DEBUG) {
     console.warn(message);
     printComponentStackTrace();
     try {
@@ -50,7 +49,7 @@ let _printedWarnings: Set<string>;
  * @param message Warning message.
  */
 export function printWarnOnce(key: string, message: string): void {
-  if (DEV) {
+  if (DEBUG) {
     if (!_printedWarnings) {
       _printedWarnings = new Set();
     }

@@ -139,7 +139,7 @@ function _toSnapshot(
         result += `<${vnode._tag}`;
       }
 
-      if (vnode._className !== null) {
+      if (vnode._className !== void 0) {
         result += `\n${indent(il + 1)}class="${vnode._className}"`;
         multiline = true;
       }

@@ -5,6 +5,9 @@ declare global {
   interface Function {
     displayName: string;
   }
+
+  const DEBUG: boolean;
+  const TARGET: string;
 }
 
 export { Predicate, MaybeUndefined } from "./types";

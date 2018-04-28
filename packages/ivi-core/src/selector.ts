@@ -1,5 +1,3 @@
-import { DEV } from "ivi-vars";
-
 /**
  * memoizeSelector creates memoized selector.
  *
@@ -19,7 +17,7 @@ export function memoizeSelector<T, P>(
   select: (prev: T | null, props: P, context: {}) => T,
   ref: (v?: T | null, context?: {}) => T | null,
 ): (prev: T | null, props: P, context: {}) => T {
-  if (DEV) {
+  if (DEBUG) {
     const fn = function (prev: T | null, props: P, context: {}) {
       const state = select(ref(undefined, context), props, context);
       ref(state, context);

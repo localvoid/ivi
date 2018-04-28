@@ -13,12 +13,6 @@ Project is separated into many different packages because of the following reaso
  into its own namespace and prevent name collisions.
 - Improved tree shaking by simple bundlers (Google closure compiler can handle much more complicated scenarios).
 
-### ivi-vars
-
-This package contains different modules with predefined global variables that control behavior of ivi libraries.
-
-By default, ES6 module is pointing to `browser-dev.js` module.
-
 ### ivi-core
 
 Shared code for browser and server implementations. It contains: basic types, data structures, helper functions,

@@ -1,4 +1,3 @@
-import { TARGET, Target } from "ivi-vars";
 import { FEATURES, FeatureFlags } from "ivi-core";
 
 const KEY_CODE_TO_KEY: { [key: number]: string } = {
@@ -100,7 +99,7 @@ export function getEventKey(ev: KeyboardEvent): string {
  * @param ev
  * @returns MouseEvent `buttons` value.
  */
-export const getMouseButtons = ((TARGET & Target.Electron) || (FEATURES & FeatureFlags.MouseEventButtons)) ?
+export const getMouseButtons = (TARGET === "electron" || (FEATURES & FeatureFlags.MouseEventButtons)) ?
   function (ev: MouseEvent): number {
     return ev.buttons;
   } :

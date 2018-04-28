@@ -1,4 +1,3 @@
-import { DEV, TARGET, Target } from "ivi-vars";
 import { catchError, devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
@@ -139,10 +138,7 @@ const handleVisibilityChange = catchError(function (): void {
   }
 });
 
-if (
-  (TARGET & (Target.Electron | Target.Cordova | Target.Evergreen)) ||
-  typeof document["hidden"] !== "undefined"
-) {
+if (TARGET !== "browser" || typeof document["hidden"] !== "undefined") {
   _isHidden = function () {
     return document.hidden;
   };
@@ -371,7 +367,7 @@ const _handleNextFrame = catchError(function (time?: number): void {
  * @param t Current time.
  */
 function handleNextFrame(t?: number): void {
-  if (DEV) {
+  if (DEBUG) {
     try {
       _handleNextFrame(t);
     } catch (e) {

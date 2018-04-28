@@ -1,4 +1,3 @@
-import { DEV } from "ivi-vars";
 import { CSSStyleProps } from "ivi-core";
 import { printWarn, printWarnOnce } from "./print";
 
@@ -18,7 +17,7 @@ const DOMSVGAttributeTypos: { [key: string]: string | ((v: any) => string | unde
  * @param attr Attributes.
  */
 export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void {
-  if (DEV) {
+  if (DEBUG) {
     for (const attrName of Object.keys(attrs)) {
       const check = DOMHTMLAttributeTypos[attrName];
       const value = attrs[attrName];
@@ -51,7 +50,7 @@ export function checkDOMAttributesForTypos(attrs: { [key: string]: any }): void 
  * @param attr Attributes.
  */
 export function checkSVGDOMAttributesForTypos(attrs: { [key: string]: any }): void {
-  if (DEV) {
+  if (DEBUG) {
     for (const attrName of Object.keys(attrs)) {
       const check = DOMSVGAttributeTypos[attrName];
       const value = attrs[attrName];
@@ -79,7 +78,7 @@ export function checkSVGDOMAttributesForTypos(attrs: { [key: string]: any }): vo
 }
 
 let DOMStyleTypos: { [key: string]: string };
-if (DEV) {
+if (DEBUG) {
   DOMStyleTypos = {
   };
 }
@@ -90,7 +89,7 @@ if (DEV) {
  * @param styles Styles.
  */
 export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
-  if (DEV) {
+  if (DEBUG) {
     for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
       const styleValue = styles[styleName];
       const match = DOMStyleTypos[styleName];
@@ -125,7 +124,7 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
  * @param attrs SVG attributes.
  */
 export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
-  if (DEV) {
+  if (DEBUG) {
     switch (tag) {
       case "svg":
         if (attrs.hasOwnProperty("viewport")) {

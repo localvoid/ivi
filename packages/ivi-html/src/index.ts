@@ -1456,7 +1456,8 @@ export function audio(className?: string): VNode<HTMLAudioElementProps | null, H
     "audio",
     null,
     className,
-    null);
+    null,
+  );
 
 }
 
@@ -1466,5 +1467,6 @@ export function video(className?: string): VNode<HTMLVideoElementProps | null, H
     "video",
     null,
     className,
-    null);
+    null,
+  );
 }

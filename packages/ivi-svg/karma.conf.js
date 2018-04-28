@@ -34,6 +34,10 @@ module.exports = function (config) {
         ],
       },
       plugins: [
+        new webpack.DefinePlugin({
+          "DEBUG": "true",
+          "TARGET": JSON.stringify("browser"),
+        }),
         new webpack.SourceMapDevToolPlugin({
           test: /\.(ts|js)$/,
         }),

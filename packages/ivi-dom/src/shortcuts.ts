@@ -1,5 +1,3 @@
-import { DEV } from "ivi-vars";
-
 const nodeProto = Node.prototype;
 const elementProto = Element.prototype;
 const _nodeInsertBefore = nodeProto.insertBefore;
@@ -11,7 +9,7 @@ const _elementSetAttributeNS = elementProto.setAttributeNS;
 const _elementRemoveAttribute = elementProto.removeAttribute;
 
 export function nodeInsertBefore(parent: Node, newChild: Node, refChild: Node | null): void {
-  if (DEV) {
+  if (DEBUG) {
     parent.insertBefore(newChild, refChild);
   } else {
     _nodeInsertBefore.call(parent, newChild, refChild);
@@ -19,7 +17,7 @@ export function nodeInsertBefore(parent: Node, newChild: Node, refChild: Node | 
 }
 
 export function nodeRemoveChild(parent: Node, child: Node): void {
-  if (DEV) {
+  if (DEBUG) {
     parent.removeChild(child);
   } else {
     _nodeRemoveChild.call(parent, child);
@@ -27,7 +25,7 @@ export function nodeRemoveChild(parent: Node, child: Node): void {
 }
 
 export function nodeReplaceChild(parent: Node, newChild: Node, oldChild: Node): void {
-  if (DEV) {
+  if (DEBUG) {
     parent.replaceChild(newChild, oldChild);
   } else {
     _nodeReplaceChild.call(parent, newChild, oldChild);
@@ -35,7 +33,7 @@ export function nodeReplaceChild(parent: Node, newChild: Node, oldChild: Node): 
 }
 
 export function nodeCloneNode(node: Node): Node {
-  if (DEV) {
+  if (DEBUG) {
     return node.cloneNode(false);
   } else {
     return _nodeCloneNode.call(node, false);
@@ -43,7 +41,7 @@ export function nodeCloneNode(node: Node): Node {
 }
 
 export function elementRemoveAttribute(el: Element, name: string): void {
-  if (DEV) {
+  if (DEBUG) {
     el.removeAttribute(name);
   } else {
     _elementRemoveAttribute.call(el, name);
@@ -51,7 +49,7 @@ export function elementRemoveAttribute(el: Element, name: string): void {
 }
 
 export function elementSetAttribute(el: Element, name: string, value: any): void {
-  if (DEV) {
+  if (DEBUG) {
     el.setAttribute(name, value);
   } else {
     _elementSetAttribute.call(el, name, value);
@@ -59,7 +57,7 @@ export function elementSetAttribute(el: Element, name: string, value: any): void
 }
 
 export function elementSetAttributeNS(el: Element, namespace: string, name: string, value: any): void {
-  if (DEV) {
+  if (DEBUG) {
     el.setAttributeNS(namespace, name, value);
   } else {
     _elementSetAttributeNS.call(el, namespace, name, value);
