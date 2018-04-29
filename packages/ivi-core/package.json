@@ -38,11 +38,7 @@
     "test:coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
     "test:watch": "../../node_modules/.bin/karma start"
   },
-  "peerDependencies": {
-    "ivi-vars": "^0.10.0"
-  },
+  "peerDependencies": {},
   "dependencies": {},
-  "devDependencies": {
-    "ivi-vars": "^0.10.0"
-  }
+  "devDependencies": {}
 }

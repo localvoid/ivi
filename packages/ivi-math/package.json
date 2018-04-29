@@ -36,27 +36,7 @@
     "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
-  "peerDependencies": {
-    "ivi-vars": "^0.10.0"
-  },
+  "peerDependencies": {},
   "dependencies": {},
-  "devDependencies": {
-    "ivi-vars": "^0.10.0"
-  },
-  "nyc": {
-    "require": [
-      "../../node_modules/ts-node/register"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "reporter": [
-      "lcov",
-      "text-summary"
-    ],
-    "cache": true
-  }
+  "devDependencies": {}
 }
