@@ -2,7 +2,7 @@ import { USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask }
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
-import { renderVNode, syncVNode, removeVNode, updateComponents } from "./implementation";
+import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
 
 /**
  * Root.
@@ -97,7 +97,7 @@ function _update() {
         root.newVNode = null;
         root.invalidated = false;
       } else if (currentVNode) {
-        updateComponents(container, currentVNode, EMPTY_CONTEXT, false);
+        dirtyCheck(container, currentVNode, EMPTY_CONTEXT, false);
       }
     }
   }
