@@ -767,7 +767,7 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
         } else {
           if (
             (a._props !== b._props) &&
-            ((bFlags & VNodeFlags.CheckChangedProps) === 0 || sc.shouldUpdate!(a._props, b._props) === true)
+            ((bFlags & VNodeFlags.ShouldUpdateHint) === 0 || sc.shouldUpdate!(a._props, b._props) === true)
           ) {
             const oldRoot = a._children as VNode;
             const newRoot = b._children = sc.render(b._props);

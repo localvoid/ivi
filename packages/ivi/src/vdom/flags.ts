@@ -76,20 +76,20 @@ export const enum VNodeFlags {
    */
   UpdateContext = 1 << 17,
   /**
-   * Stateless component is using `isPropsChanged` hook.
+   * Stateless component is using `shouldUpdate` hook.
    */
-  CheckChangedProps = 1 << 19,
+  ShouldUpdateHint = 1 << 18,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 20,
+  Autofocus = 1 << 19,
   /**
    * VNode element cannot contain any children.
    */
-  VoidElement = 1 << 21,
+  VoidElement = 1 << 20,
 
-  ElementIdMask = 255 << 22,
-  ElementIdOffset = 22,
+  ElementIdMask = 255 << 21,
+  ElementIdOffset = 21,
   /**
    * Dirty checking is disabled for all descendants.
    *

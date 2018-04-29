@@ -30,7 +30,7 @@ export function statelessComponentFactory<P>(
   }
   return function (props: P): VNode<P> {
     return new VNode<P>(
-      VNodeFlags.StatelessComponent | VNodeFlags.CheckChangedProps,
+      VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
       d,
       props,
       void 0,
