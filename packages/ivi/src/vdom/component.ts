@@ -112,7 +112,7 @@ export abstract class Component<P = undefined> {
   invalidate(): void {
     this.flags |= ComponentFlags.DirtyState;
     this.invalidated();
-    if ((this.flags & ComponentFlags.Attached) !== 0) {
+    if ((this.flags & ComponentFlags.Detached) === 0) {
       currentFrameUpdate();
     }
   }
@@ -124,5 +124,5 @@ export abstract class Component<P = undefined> {
  * @returns `true` when component is attached.
  */
 export function isComponentAttached(component: Component<any>): boolean {
-  return (component.flags & ComponentFlags.Attached) !== 0;
+  return (component.flags & ComponentFlags.Detached) === 0;
 }

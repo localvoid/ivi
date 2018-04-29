@@ -183,16 +183,7 @@ function vNodeAttach(vnode: VNode): void {
       stackTracePushComponent(vnode);
     }
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-      const component = vnode._instance as Component<any>;
-
-      if (DEBUG) {
-        if ((component.flags & ComponentFlags.Attached) !== 0) {
-          throw new Error("Failed to attach Component: component is already attached.");
-        }
-      }
-
-      component.flags |= ComponentFlags.Attached;
-      component.attached();
+      (vnode._instance as Component<any>).attached();
     }
     vNodeAttach(vnode._children as VNode);
     if (DEBUG) {
@@ -228,13 +219,7 @@ function vNodeDetach(vnode: VNode): void {
     vNodeDetach(vnode._children as VNode);
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = vnode._instance as Component<any>;
-
-      if (DEBUG) {
-        if ((component.flags & ComponentFlags.Attached) === 0) {
-          throw new Error("Failed to detach Component: component is already detached.");
-        }
-      }
-      component.flags &= ~ComponentFlags.Attached;
+      component.flags |= ComponentFlags.Detached;
       component.detached();
     }
     if (DEBUG) {

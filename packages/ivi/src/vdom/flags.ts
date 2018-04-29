@@ -124,9 +124,9 @@ export const enum VNodeFlags {
  */
 export const enum ComponentFlags {
   /**
-   * Component is attached to the document.
+   * Component is detached from the document.
    */
-  Attached = 1,
+  Detached = 1,
   /**
    * Component is dirty (state) and should be updated.
    */
