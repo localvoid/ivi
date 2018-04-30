@@ -16,7 +16,11 @@ and reuse previous values.
 ### API
 
 ```ts
-function connect<T, P, C extends Context>(
+function connect<T, P, C>(
+  select: (prev: T | null, props: undefined, context: C) => T,
+  render: (props: T) => VNode<any>,
+): () => VNode<P>;
+function connect<T, P, C>(
   select: (prev: T | null, props: P, context: C) => T,
   render: (props: T) => VNode<any>,
 ): (props: P) => VNode<P>;
