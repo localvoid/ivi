@@ -1,18 +1,12 @@
 import { catchError } from "ivi-core";
 
 export class Store<T, U> {
-  private state: T;
-  private reducer: (prev: T, action: U) => T;
-  private onChange: () => void;
-
   constructor(
-    state: T,
-    reducer: (prev: T, action: U) => T,
-    onChange: () => void,
+    private state: T,
+    private reducer: (prev: T, action: U) => T,
+    private onChange: () => void,
   ) {
-    this.state = state;
     this.reducer = catchError(reducer) as (prev: T, action: U) => T;
-    this.onChange = onChange;
   }
 
   getState(): T {
