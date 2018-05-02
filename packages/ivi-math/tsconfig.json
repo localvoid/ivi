@@ -1,12 +1,14 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../tsconfig.checks.json",
   "compilerOptions": {
+    "target": "es2016",
     "module": "commonjs",
-    "sourceMap": true,
-    "inlineSourceMap": true,
+    "moduleResolution": "node",
     "types": [
-      "mocha",
-      "node"
+      "es2015",
+      "es2016",
+      "dom",
+      "jest"
     ]
   },
   "include": [

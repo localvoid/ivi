@@ -1,4 +1,3 @@
-
 export interface LifecycleCounters {
   global: number;
   constructor: number;

@@ -3,241 +3,240 @@ import { mergeAttrs, mergeStyle } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { statelessComponentFactory } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
-import { expect } from "iko";
 
 const emptyComponent = statelessComponentFactory(() => h.t(""));
 
 describe("VNode", () => {
   describe("$t", () => {
-    it("init", () => {
+    test("init", () => {
       const t = h.t("abc");
       expect(t._flags & VNodeFlags.Text).toBe(VNodeFlags.Text);
       expect(t._children).toBe("abc");
     });
 
-    it("key", () => {
+    test("key", () => {
       const t = h.t("abc").k("k");
       expect(t._flags & VNodeFlags.Key).toBe(VNodeFlags.Key);
       expect(t._key).toBe("k");
     });
 
-    it("style", () => {
+    test("style", () => {
       expect(() => h.t("abc").s({})).toThrow(Error);
     });
 
-    it("events", () => {
+    test("events", () => {
       expect(() => h.t("abc").e([])).toThrow(Error);
     });
 
-    it("children", () => {
+    test("children", () => {
       expect(() => h.t("abc").c("123")).toThrow(Error);
     });
 
-    it("unsafeHTML", () => {
+    test("unsafeHTML", () => {
       expect(() => h.t("abc").unsafeHTML("123")).toThrow(Error);
     });
 
-    it("value", () => {
+    test("value", () => {
       expect(() => h.t("abc").value("123")).toThrow(Error);
     });
 
-    it("checked", () => {
+    test("checked", () => {
       expect(() => h.t("abc").checked(true)).toThrow(Error);
     });
 
-    it("mergeStyle", () => {
+    test("mergeStyle", () => {
       expect(() => mergeStyle(h.t("abc"), {})).toThrow(Error);
     });
 
-    it("autofocus", () => {
+    test("autofocus", () => {
       expect(() => h.t("abc").autofocus(true)).toThrow(Error);
     });
   });
 
   describe("$h", () => {
-    it("init", () => {
+    test("init", () => {
       const e = h.div();
       expect(e._flags & VNodeFlags.Element).toBe(VNodeFlags.Element);
       expect(e._tag).toBe("div");
     });
 
-    it("init className", () => {
+    test("init className", () => {
       const e = h.div("cls");
       expect(e._flags & VNodeFlags.Element).toBe(VNodeFlags.Element);
       expect(e._tag).toBe("div");
       expect(e._className).toBe("cls");
     });
 
-    it("key", () => {
+    test("key", () => {
       const e = h.div().k("k");
       expect(e._key).toBe("k");
     });
 
-    it("style", () => {
+    test("style", () => {
       const s = { top: "10px" };
       const e = h.div().s(s);
       expect(e._style).toBe(s);
     });
 
-    it("events", () => {
+    test("events", () => {
       const s = [] as EventHandler[];
       const e = h.div().e(s);
       expect(e._events).toBe(s);
     });
 
-    it("props", () => {
+    test("props", () => {
       const s = {};
       const e = h.div().a(s);
       expect(e._props).toBe(s);
     });
 
-    it("children", () => {
+    test("children", () => {
       const e = h.div().c("abc");
       expect(e._children).toBe("abc");
     });
 
-    it("children override", () => {
+    test("children override", () => {
       const e = h.div().c("abc");
       expect(() => e.c("123")).toThrow(Error);
       expect(() => e.unsafeHTML("123")).toThrow(Error);
     });
 
-    it("children: duplicate keys", () => {
+    test("children: duplicate keys", () => {
       expect(() => h.div().c(h.t("").k("a"), h.t("").k("a"))).toThrow(Error);
     });
 
-    it("unsafeHTML", () => {
+    test("unsafeHTML", () => {
       const e = h.div().unsafeHTML("abc");
       expect(e._children).toBe("abc");
     });
 
-    it("value", () => {
+    test("value", () => {
       expect(() => h.div().value("123")).toThrow(Error);
     });
 
-    it("checked", () => {
+    test("checked", () => {
       expect(() => h.div().checked(true)).toThrow(Error);
     });
 
-    it("mergeProps: null", () => {
+    test("mergeProps: null", () => {
       const e = mergeAttrs(h.div().a({ title: "abc" }), null);
       expect((e._props as any).title).toBe("abc");
     });
 
-    it("mergeProps", () => {
+    test("mergeProps", () => {
       const e = mergeAttrs(h.div().a({ title: "abc" }), { width: "100" });
       expect((e._props as any).title).toBe("abc");
       expect((e._props as any).width).toBe("100");
     });
 
-    it("mergeProps override", () => {
+    test("mergeProps override", () => {
       const e = mergeAttrs(h.div().a({ title: "abc" }), { title: "100" });
       expect((e._props as any).title).toBe("100");
     });
 
-    it("mergeStyle: null", () => {
+    test("mergeStyle: null", () => {
       const e = mergeStyle(h.div().s({ top: "10px" }), null);
       expect(e._style!.top).toBe("10px");
     });
 
-    it("mergeStyle", () => {
+    test("mergeStyle", () => {
       const e = mergeStyle(h.div().s({ top: "10px" }), { left: "20px" });
       expect(e._style!.top).toBe("10px");
       expect(e._style!.left).toBe("20px");
     });
 
-    it("mergeStyle override", () => {
+    test("mergeStyle override", () => {
       const e = mergeStyle(h.div().s({ top: "10px" }), { top: "20px" });
       expect(e._style!.top).toBe("20px");
     });
 
-    it("autofocus", () => {
+    test("autofocus", () => {
       const e = h.div().autofocus(true);
       expect(e._flags & VNodeFlags.Autofocus).toBe(VNodeFlags.Autofocus);
     });
   });
 
   describe("$c", () => {
-    it("style", () => {
+    test("style", () => {
       expect(() => emptyComponent().s({})).toThrow(Error);
     });
 
-    it("events", () => {
+    test("events", () => {
       expect(() => emptyComponent().e([])).toThrow(Error);
     });
 
-    it("children", () => {
+    test("children", () => {
       expect(() => emptyComponent().c("123")).toThrow(Error);
     });
 
-    it("unsafeHTML", () => {
+    test("unsafeHTML", () => {
       expect(() => emptyComponent().unsafeHTML("123")).toThrow(Error);
     });
 
-    it("value", () => {
+    test("value", () => {
       expect(() => emptyComponent().value("123")).toThrow(Error);
     });
 
-    it("checked", () => {
+    test("checked", () => {
       expect(() => emptyComponent().checked(true)).toThrow(Error);
     });
 
-    it("mergeStyle", () => {
+    test("mergeStyle", () => {
       expect(() => mergeStyle(emptyComponent(), {})).toThrow(Error);
     });
 
-    it("autofocus", () => {
+    test("autofocus", () => {
       expect(() => emptyComponent().autofocus(true)).toThrow(Error);
     });
   });
 
   describe("$i", () => {
-    it("children", () => {
+    test("children", () => {
       expect(() => h.input().c("123")).toThrow(Error);
     });
 
-    it("unsafeHTML", () => {
+    test("unsafeHTML", () => {
       expect(() => h.input().unsafeHTML("123")).toThrow(Error);
     });
 
-    it("textarea: children", () => {
+    test("textarea: children", () => {
       expect(() => h.textarea().c("123")).toThrow(Error);
     });
 
-    it("textarea: unsafeHTML", () => {
+    test("textarea: unsafeHTML", () => {
       expect(() => h.textarea().unsafeHTML("123")).toThrow(Error);
     });
 
-    it("value", () => {
+    test("value", () => {
       const e = h.input().value("abc");
       expect(e._children).toBe("abc");
     });
 
-    it("textarea: value", () => {
+    test("textarea: value", () => {
       const e = h.textarea().value("abc");
       expect(e._children).toBe("abc");
     });
 
-    it("checked", () => {
+    test("checked", () => {
       expect(() => h.input().checked(true)).toThrow(Error);
     });
 
-    it("textarea", () => {
+    test("textarea", () => {
       expect(() => h.textarea().checked(true)).toThrow(Error);
     });
 
-    it("checkbox: checked", () => {
+    test("checkbox: checked", () => {
       const e = h.inputCheckbox().checked(true);
       expect(e._children).toBe(true);
     });
   });
 
   describe("$m", () => {
-    it("children", () => {
+    test("children", () => {
       expect(() => h.audio().c("123")).toThrow(Error);
     });
 
-    it("unsafeHTML", () => {
+    test("unsafeHTML", () => {
       expect(() => emptyComponent().unsafeHTML("123")).toThrow(Error);
     });
   });

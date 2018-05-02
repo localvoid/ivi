@@ -2,9 +2,8 @@ import { ComponentFlags } from "../src/vdom/flags";
 import { VNode, getComponentInstanceFromVNode } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
 import { componentFactory } from "../src/vdom/vnode_factories";
-import { render, startRender, checkDOMOps, DOMOpsCounter, $tc, $tcf } from "./utils";
+import { render, startRender, $tc, $tcf, checkDOMOps, DOMOpsCounter, domOps, resetDOMCounter } from "./utils";
 import * as h from "./utils/html";
-import { expect } from "iko";
 
 function genVNodes(item: any, keys: boolean): VNode | VNode[] {
   if (typeof item === "number") {
@@ -45,7 +44,7 @@ function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boole
   render(a, aDiv);
   render(b, bDiv);
 
-  counter.reset();
+  resetDOMCounter(counter);
   render(c, aDiv);
 
   expect(aDiv.innerHTML).toBe(bDiv.innerHTML);
@@ -53,130 +52,130 @@ function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boole
 
 describe("sync", () => {
   describe("props", () => {
-    it("null => {}", () => {
+    test("null => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
           r(h.div().a({}));
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{} => null", () => {
+    test("{} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({}));
           r(h.div());
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{} => {}", () => {
+    test("{} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({}));
           r(h.div().a({}));
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("null => {title: 1}", () => {
+    test("null => {title: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().a({ title: "1" })) as HTMLElement;
           expect(b.title).toBe("1");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{} => {title: 1}", () => {
+    test("{} => {title: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({}));
           const b = r(h.div().a({ title: "1" })) as HTMLElement;
           expect(b.title).toBe("1");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1} => {title: 2}", () => {
+    test("{title: 1} => {title: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1" }));
           const b = r(h.div().a({ title: "2" })) as HTMLElement;
           expect(b.title).toBe("2");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{} => {title: 2, tabIndex: 2}", () => {
+    test("{} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({}));
           const b = r(h.div().a({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1} => {title: 2, tabIndex: 2}", () => {
+    test("{title: 1} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1" }));
           const b = r(h.div().a({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => {title: 2, tabIndex: 2}", () => {
+    test("{title: 1, tabIndex: 1} => {title: 2, tabIndex: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
           const b = r(h.div().a({ title: "2", tabIndex: 2 })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBe(2);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => {title: 1, tabIndex: 1}", () => {
+    test("{title: 1, tabIndex: 1} => {title: 1, tabIndex: 1}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
           const b = r(h.div().a({ title: "1", tabIndex: 1 })) as HTMLElement;
           expect(b.title).toBe("1");
           expect(b.tabIndex).toBe(1);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => {title: 2}", () => {
+    test("{title: 1, tabIndex: 1} => {title: 2}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
           const b = r(h.div().a({ title: "2" })) as HTMLElement;
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBeLessThan(1);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => {title: 2, lang: en}", () => {
+    test("{title: 1, tabIndex: 1} => {title: 2, lang: en}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
@@ -184,12 +183,12 @@ describe("sync", () => {
           expect(b.title).toBe("2");
           expect(b.tabIndex).toBeLessThan(1);
           expect(b.lang).toBe("en");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => {lang: en}", () => {
+    test("{title: 1, tabIndex: 1} => {lang: en}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
@@ -197,73 +196,73 @@ describe("sync", () => {
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
           expect(b.lang).toBe("en");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => {}", () => {
+    test("{title: 1, tabIndex: 1} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
           const b = r(h.div().a({})) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{title: 1, tabIndex: 1} => null", () => {
+    test("{title: 1, tabIndex: 1} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().a({ title: "1", tabIndex: 1 }));
           const b = r(h.div()) as HTMLElement;
           expect(b.title).toBe("");
           expect(b.tabIndex).toBeLessThan(1);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
   });
 
   describe("className", () => {
-    it("null => 'a'", () => {
+    test("null => 'a'", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div("a")) as HTMLElement;
           expect(b.classList.length).toBe(1);
           expect(b.classList.contains("a")).toBe(true);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("'a' => null", () => {
+    test("'a' => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div("a"));
           const b = r(h.div()) as HTMLElement;
           expect(b.classList.length).toBe(0);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("'a' => 'a'", () => {
+    test("'a' => 'a'", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div("a"));
           const b = r(h.div("a")) as HTMLElement;
           expect(b.classList.length).toBe(1);
           expect(b.classList.contains("a")).toBe(true);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("null => 'a'", () => {
+    test("null => 'a'", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
@@ -271,105 +270,105 @@ describe("sync", () => {
           expect(b.classList.length).toBe(2);
           expect(b.classList.contains("a")).toBe(true);
           expect(b.classList.contains("b")).toBe(true);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
   });
 
   describe("style", () => {
-    it("{} => null", () => {
+    test("{} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({}));
           const b = r(h.div()) as HTMLElement;
           expect(b.style.cssText).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("null => {}", () => {
+    test("null => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().s({})) as HTMLElement;
           expect(b.style.cssText).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{} => {}", () => {
+    test("{} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({}));
           const b = r(h.div().s({})) as HTMLElement;
           expect(b.style.cssText).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("null => {top: 10px}", () => {
+    test("null => {top: 10px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().s({ top: "10px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{} => {top: 10px}", () => {
+    test("{} => {top: 10px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({}));
           const b = r(h.div().s({ top: "10px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("null => {top: 10px, left: 20px}", () => {
+    test("null => {top: 10px, left: 20px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
           const b = r(h.div().s({ top: "10px", left: "20px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px} => {top: 10px, left: 20px}", () => {
+    test("{top: 1px} => {top: 10px, left: 20px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px" }));
           const b = r(h.div().s({ top: "10px", left: "20px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => {top: 10px, left: 20px}", () => {
+    test("{top: 1px, left: 1px} => {top: 10px, left: 20px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
           const b = r(h.div().s({ top: "10px", left: "20px" })) as HTMLElement;
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => {top: 10px, left: 20px, right: 30px}", () => {
+    test("{top: 1px, left: 1px} => {top: 10px, left: 20px, right: 30px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -377,12 +376,12 @@ describe("sync", () => {
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("20px");
           expect(b.style.right).toBe("30px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => {top: 10px, right: 30px}", () => {
+    test("{top: 1px, left: 1px} => {top: 10px, right: 30px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -390,12 +389,12 @@ describe("sync", () => {
           expect(b.style.top).toBe("10px");
           expect(b.style.left).toBe("");
           expect(b.style.right).toBe("30px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => {right: 30px}", () => {
+    test("{top: 1px, left: 1px} => {right: 30px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -403,43 +402,43 @@ describe("sync", () => {
           expect(b.style.top).toBe("");
           expect(b.style.left).toBe("");
           expect(b.style.right).toBe("30px");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => {top: 1px}", () => {
+    test("{top: 1px, left: 1px} => {top: 1px}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
           const b = r(h.div().s({ top: "1px" })) as HTMLElement;
           expect(b.style.top).toBe("1px");
           expect(b.style.left).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => {}", () => {
+    test("{top: 1px, left: 1px} => {}", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
           const b = r(h.div().s({})) as HTMLElement;
           expect(b.style.top).toBe("");
           expect(b.style.left).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("{top: 1px, left: 1px} => null", () => {
+    test("{top: 1px, left: 1px} => null", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
           const b = r(h.div()) as HTMLElement;
           expect(b.style.top).toBe("");
           expect(b.style.left).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
@@ -615,206 +614,206 @@ describe("sync", () => {
     ];
 
     describe("syncChildren", () => {
-      it("null => 'abc'", () => {
+      test("null => 'abc'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("null => 10", () => {
+      test("null => 10", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("'abc' => null", () => {
+      test("'abc' => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("10 => null", () => {
+      test("10 => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(10));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("'abc' => 'abc'", () => {
+      test("'abc' => 'abc'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
             const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("10 => 10", () => {
+      test("10 => 10", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(10));
             const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("'abc' => 'cde'", () => {
+      test("'abc' => 'cde'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
             const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("'' => 'cde'", () => {
+      test("'' => 'cde'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(""));
             const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("'abc' => 10", () => {
+      test("'abc' => 10", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
             const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("10 => 'abc'", () => {
+      test("10 => 'abc'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(10));
             const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("null => <div>", () => {
+      test("null => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
 
-      it("<div> => 'cde'", () => {
+      test("<div> => 'cde'", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
             const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
 
-      it("'cde' => <div>", () => {
+      test("'cde' => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("cde"));
             const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
 
-      it("null => [<div>]", () => {
+      test("null => [<div>]", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
 
-      it("<div> => null", () => {
+      test("<div> => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
           });
         });
       });
 
-      it("[<div>] => null", () => {
+      test("[<div>] => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c([h.div()]));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
           });
         });
       });
 
-      it("[<div>] => null", () => {
+      test("[<div>] => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
             const b = r(h.div().c(null));
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
           });
         });
       });
 
-      it("null => [<div>, <div>]", () => {
+      test("null => [<div>, <div>]", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -822,47 +821,47 @@ describe("sync", () => {
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(b.children[1].tagName.toLowerCase()).toBe("div");
-            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
           });
         });
       });
 
-      it("[<div>, <div>] => null", () => {
+      test("[<div>, <div>] => null", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div(), h.div()));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
           });
         });
       });
 
-      it("null => unsafeHTML('abc')", () => {
+      test("null => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("123 => unsafeHTML('abc')", () => {
+      test("123 => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(123));
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
           });
         });
       });
 
-      it("123 => [<h1><h2>]", () => {
+      test("123 => [<h1><h2>]", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(123));
@@ -870,84 +869,84 @@ describe("sync", () => {
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("h1");
             expect(b.children[1].tagName.toLowerCase()).toBe("h2");
-            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
           });
         });
       });
 
-      it("[<h1><h2>] => 123", () => {
+      test("[<h1><h2>] => 123", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1(), h.h2()));
             const b = r(h.div().c(123));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("123");
-            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
           });
         });
       });
 
-      it("[<h1><h2>] => unsafeHTML('abc')", () => {
+      test("[<h1><h2>] => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1(), h.h2()));
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(3, 0, 0, 0, 3, 0, 0);
+            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
           });
         });
       });
 
-      it("[<h1><h2>] => <div>", () => {
+      test("[<h1><h2>] => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1(), h.h2()));
             const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toMatchDOMOps(4, 0, 0, 0, 3, 1, 1);
+            expect(c).toEqual(domOps(4, 0, 0, 0, 3, 1, 1));
           });
         });
       });
 
-      it("[] => <div>", () => {
+      test("[] => <div>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c([]));
             const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
 
-      it("<div> => unsafeHTML('abc')", () => {
+      test("<div> => unsafeHTML('abc')", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 0);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
 
-      it("<h1> => <h2>", () => {
+      test("<h1> => <h2>", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1()));
             const b = r(h.div().c(h.h2())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("h2");
-            expect(c).toMatchDOMOps(3, 0, 0, 0, 2, 1, 0);
+            expect(c).toEqual(domOps(3, 0, 0, 0, 2, 1, 0));
           });
         });
       });
 
-      it("<div> => [<h1><h2>]", () => {
+      test("<div> => [<h1><h2>]", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
@@ -955,18 +954,18 @@ describe("sync", () => {
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("h1");
             expect(b.children[1].tagName.toLowerCase()).toBe("h2");
-            expect(c).toMatchDOMOps(4, 0, 0, 0, 3, 1, 0);
+            expect(c).toEqual(domOps(4, 0, 0, 0, 3, 1, 0));
           });
         });
       });
 
-      it("<div> => []", () => {
+      test("<div> => []", () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
             const b = r(h.div().c([]));
             expect(b.childNodes.length).toBe(0);
-            expect(c).toMatchDOMOps(2, 0, 0, 0, 2, 0, 1);
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
           });
         });
       });
@@ -981,12 +980,12 @@ describe("sync", () => {
               genVNodes(t[1], true) as VNode[],
               genVNodes(t[1], true) as VNode[],
               true,
-              c);
-            const e = expect(c);
-            e.toMatchDOMOps.apply(e, t[2]);
+              c,
+            );
+            expect(c).toEqual(domOps.apply(undefined, t[2]));
           });
         };
-        it(name, testFn);
+        test(name, testFn);
       });
     });
 
@@ -999,310 +998,310 @@ describe("sync", () => {
               genVNodes(t[1], false) as VNode[],
               genVNodes(t[1], false) as VNode[],
               false,
-              c);
-            const e = expect(c);
-            e.toMatchDOMOps.apply(e, t[3]);
+              c,
+            );
+            expect(c).toEqual(domOps.apply(undefined, t[3]));
           });
         };
-        it(name, testFn);
+        test(name, testFn);
       });
     });
   });
 
   describe("components", () => {
-    it("<span> => <C><div></C>", () => {
+    test("<span> => <C><div></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tc()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C><div></C> => <div>", () => {
+    test("<C><div></C> => <div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc());
           const b = r(h.div()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<div> => <C><div></C>", () => {
+    test("<div> => <C><div></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r(h.div());
           const b = r($tc()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C><div></C> => <span>", () => {
+    test("<C><div></C> => <span>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc());
           const b = r(h.span()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("span");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C><div></C> => <C><div></C>", () => {
+    test("<C><div></C> => <C><div></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc());
           const b = r($tc()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
           expect(a).toBe(b);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<C><div></C> => <C>''</C>", () => {
+    test("<C><div></C> => <C>''</C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc());
           const b = r($tc(""));
           expect(b.nodeType).toBe(Node.TEXT_NODE);
           expect(b.nodeValue).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(1, 0, 1, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C>''</C> => <C><div></C>", () => {
+    test("<C>''</C> => <C><div></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc(""));
           const b = r($tc()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(1, 0, 1, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C><C><C><div></C></C></C> => <span>", () => {
+    test("<C><C><C><div></C></C></C> => <span>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc(h.div(), 3));
           const b = r(h.span()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("span");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<span> => <C><C><C><div></C></C></C>", () => {
+    test("<span> => <C><C><C><div></C></C></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tc(h.div(), 3)) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C><C><C><div></C></C></C> => <C><C><C><div></C></C></C>", () => {
+    test("<C><C><C><div></C></C></C> => <C><C><C><div></C></C></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc(h.div(), 3));
           const b = r($tc(h.div(), 3)) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
           expect(a).toBe(b);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<span> => <F><div></F>", () => {
+    test("<span> => <F><div></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tcf()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><div></F> => <div>", () => {
+    test("<F><div></F> => <div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf());
           const b = r(h.div()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<div> => <F><div></F>", () => {
+    test("<div> => <F><div></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r(h.div());
           const b = r($tcf()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><div></F> => <span>", () => {
+    test("<F><div></F> => <span>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf());
           const b = r(h.span()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("span");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><div></F> => <F><div></F>", () => {
+    test("<F><div></F> => <F><div></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf());
           const b = r($tcf()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
           expect(a).toBe(b);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<F><div></F> => <F>''</F>", () => {
+    test("<F><div></F> => <F>''</F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf());
           const b = r($tcf("")) as HTMLElement;
           expect(b.nodeType).toBe(Node.TEXT_NODE);
           expect(b.nodeValue).toBe("");
-          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(1, 0, 1, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F>''</F> => <F><div></F>", () => {
+    test("<F>''</F> => <F><div></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf(""));
           const b = r($tcf()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(c).toMatchDOMOps(1, 0, 1, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(1, 0, 1, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><F><F><div></F></F></F> => <span>", () => {
+    test("<F><F><F><div></F></F></F> => <span>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf(h.div(), 3));
           const b = r(h.span()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("span");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<span> => <F><F><F><div></F></F></F>", () => {
+    test("<span> => <F><F><F><div></F></F></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
           const b = r($tcf(h.div(), 3)) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><F><F><div></F></F></F> => <F><F><F><div></F></F></F>", () => {
+    test("<F><F><F><div></F></F></F> => <F><F><F><div></F></F></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf(h.div(), 3));
           const b = r($tcf(h.div(), 3)) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
           expect(a).toBe(b);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<C><div></C> => <F><div></F>", () => {
+    test("<C><div></C> => <F><div></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc());
           const b = r($tcf()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><div></F> => <C><div></C>", () => {
+    test("<F><div></F> => <C><div></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf());
           const b = r($tc()) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<C><C><C><div></C></C></C> => <F><F><F><div></F></F></F>", () => {
+    test("<C><C><C><div></C></C></C> => <F><F><F><div></F></F></F>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc(h.div(), 3));
           const b = r($tcf(h.div(), 3)) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<F><F><F><div></F></F></F> => <C><C><C><div></C></C></C>", () => {
+    test("<F><F><F><div></F></F></F> => <C><C><C><div></C></C></C>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf(h.div(), 3));
           const b = r($tc(h.div(), 3)) as HTMLElement;
           expect(b.tagName.toLowerCase()).toBe("div");
-          expect(a).notToBe(b);
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(a).not.toBe(b);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
   });
 
   describe("special elements", () => {
-    it("<input type='text'> => <input type='checkbox'>", () => {
+    test("<input type='text'> => <input type='checkbox'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input());
           const b = r(h.inputCheckbox()) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("checkbox");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<input type='text'> => <input type='text' value='cde'>", () => {
+    test("<input type='text'> => <input type='text' value='cde'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input());
@@ -1310,12 +1309,12 @@ describe("sync", () => {
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(b.value).toBe("cde");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<input type='text' value='abc'> => <input type='text' value='cde'>", () => {
+    test("<input type='text' value='abc'> => <input type='text' value='cde'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input().value("abc"));
@@ -1323,12 +1322,12 @@ describe("sync", () => {
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(b.value).toBe("cde");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<input type='text' value='abc'> => <input type='text'>", () => {
+    test("<input type='text' value='abc'> => <input type='text'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input().value("abc"));
@@ -1336,12 +1335,12 @@ describe("sync", () => {
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
           expect(b.value).toBe("abc");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<input type='checkbox'> => <input type='checkbox checked=true'>", () => {
+    test("<input type='checkbox'> => <input type='checkbox checked=true'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.inputCheckbox());
@@ -1349,12 +1348,12 @@ describe("sync", () => {
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("checkbox");
           expect(b.checked).toBe(true);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<input type='checkbox' checked=true> => <input type='checkbox checked=false'>", () => {
+    test("<input type='checkbox' checked=true> => <input type='checkbox checked=false'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.inputCheckbox().checked(true));
@@ -1362,12 +1361,12 @@ describe("sync", () => {
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("checkbox");
           expect(b.checked).toBe(false);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<input type='checkbox' checked=true> => <input type='checkbox'>", () => {
+    test("<input type='checkbox' checked=true> => <input type='checkbox'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.inputCheckbox().checked(true));
@@ -1375,77 +1374,77 @@ describe("sync", () => {
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("checkbox");
           expect(b.checked).toBe(true);
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<input type='text'> => <textarea>", () => {
+    test("<input type='text'> => <textarea>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input());
           const b = r(h.textarea()) as HTMLTextAreaElement;
           expect(b.tagName.toLowerCase()).toBe("textarea");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<textarea> => <input type='text'>", () => {
+    test("<textarea> => <input type='text'>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea());
           const b = r(h.input()) as HTMLInputElement;
           expect(b.tagName.toLowerCase()).toBe("input");
           expect(b.type).toBe("text");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
 
-    it("<textarea></textarea> => <textarea>cde</textarea>", () => {
+    test("<textarea></textarea> => <textarea>cde</textarea>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea());
           const b = r(h.textarea().value("cde")) as HTMLTextAreaElement;
           expect(b.tagName.toLowerCase()).toBe("textarea");
           expect(b.value).toBe("cde");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<textarea>abc</textarea> => <textarea>cde</textarea>", () => {
+    test("<textarea>abc</textarea> => <textarea>cde</textarea>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea().value("abc"));
           const b = r(h.textarea().value("cde")) as HTMLTextAreaElement;
           expect(b.tagName.toLowerCase()).toBe("textarea");
           expect(b.value).toBe("cde");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<textarea>abc</textarea> => <textarea></textarea>", () => {
+    test("<textarea>abc</textarea> => <textarea></textarea>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea().value("abc"));
           const b = r(h.textarea()) as HTMLTextAreaElement;
           expect(b.tagName.toLowerCase()).toBe("textarea");
           expect(b.value).toBe("abc");
-          expect(c).toMatchDOMOps(1, 0, 0, 0, 1, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
         });
       });
     });
 
-    it("<audio> => <video>", () => {
+    test("<audio> => <video>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.audio());
           const b = r(h.video()) as HTMLMediaElement;
           expect(b.tagName.toLowerCase()).toBe("video");
-          expect(c).toMatchDOMOps(2, 0, 0, 0, 1, 1, 0);
+          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
         });
       });
     });
@@ -1487,7 +1486,7 @@ describe("sync", () => {
     const ca = componentFactory(A);
     const cb = componentFactory(B);
 
-    it("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
+    test("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0).k(1);
@@ -1502,12 +1501,12 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[0].tagName.toLowerCase()).toBe("span");
           expect(n.children[0].firstChild!.nodeValue).toBe("1");
-          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
         });
       });
     });
 
-    it("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
+    test("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0);
@@ -1522,13 +1521,13 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[0].tagName.toLowerCase()).toBe("span");
           expect(n.children[0].firstChild!.nodeValue).toBe("1");
-          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
         });
       });
     });
 
     // same tests in the opposite direction
-    it("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
+    test("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0).k(1);
@@ -1543,12 +1542,12 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[1].tagName.toLowerCase()).toBe("span");
           expect(n.children[1].firstChild!.nodeValue).toBe("1");
-          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
         });
       });
     });
 
-    it("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
+    test("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0);
@@ -1563,14 +1562,14 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[1].tagName.toLowerCase()).toBe("span");
           expect(n.children[1].firstChild!.nodeValue).toBe("1");
-          expect(c).toMatchDOMOps(4, 0, 0, 0, 4, 1, 0);
+          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
         });
       });
     });
   });
 
   describe("keyed+non-keyed", () => {
-    it("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
+    test("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1584,12 +1583,12 @@ describe("sync", () => {
           expect(b.childNodes[2].nodeValue).toBe("c");
           expect(b.childNodes[3].nodeValue).toBe("e");
           expect(b.childNodes[4].nodeValue).toBe("d");
-          expect(c).toMatchDOMOps(1, 0, 6, 0, 7, 0, 1);
+          expect(c).toEqual(domOps(1, 0, 6, 0, 7, 0, 1));
         });
       });
     });
 
-    it("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
+    test("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1601,12 +1600,12 @@ describe("sync", () => {
           expect(b.childNodes[0].nodeValue).toBe("a");
           expect(b.childNodes[1].nodeValue).toBe("b");
           expect(b.childNodes[2].nodeValue).toBe("d");
-          expect(c).toMatchDOMOps(1, 0, 5, 0, 6, 0, 2);
+          expect(c).toEqual(domOps(1, 0, 5, 0, 6, 0, 2));
         });
       });
     });
 
-    it("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
+    test("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1619,12 +1618,12 @@ describe("sync", () => {
           expect(b.childNodes[1].nodeValue).toBe("c");
           expect(b.childNodes[2].nodeValue).toBe("b");
           expect(b.childNodes[3].nodeValue).toBe("d");
-          expect(c).toMatchDOMOps(1, 0, 4, 0, 6, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 4, 0, 6, 0, 0));
         });
       });
     });
 
-    it("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
+    test("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1638,12 +1637,12 @@ describe("sync", () => {
           expect(b.childNodes[2].nodeValue).toBe("e");
           expect(b.childNodes[3].nodeValue).toBe("b");
           expect(b.childNodes[4].nodeValue).toBe("d");
-          expect(c).toMatchDOMOps(1, 0, 5, 0, 8, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 5, 0, 8, 0, 0));
         });
       });
     });
 
-    it("<div>#0.1.2#1</div> => <div>.1.2</div>", () => {
+    test("<div>#0.1.2#1</div> => <div>.1.2</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1654,12 +1653,12 @@ describe("sync", () => {
           ));
           expect(b.childNodes[0].nodeValue).toBe("b");
           expect(b.childNodes[1].nodeValue).toBe("c");
-          expect(c).toMatchDOMOps(1, 0, 4, 0, 5, 0, 2);
+          expect(c).toEqual(domOps(1, 0, 4, 0, 5, 0, 2));
         });
       });
     });
 
-    it("<div>.1.2</div> => <div>#0.1.2#1</div>", () => {
+    test("<div>.1.2</div> => <div>#0.1.2#1</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1672,12 +1671,12 @@ describe("sync", () => {
           expect(b.childNodes[1].nodeValue).toBe("b");
           expect(b.childNodes[2].nodeValue).toBe("c");
           expect(b.childNodes[3].nodeValue).toBe("d");
-          expect(c).toMatchDOMOps(1, 0, 4, 0, 5, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 4, 0, 5, 0, 0));
         });
       });
     });
 
-    it("<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>", () => {
+    test("<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1701,12 +1700,12 @@ describe("sync", () => {
           expect(b.childNodes[9].nodeValue).toBe("j");
           expect(b.childNodes[10].nodeValue).toBe("k");
           expect(b.childNodes[11].nodeValue).toBe("l");
-          expect(c).toMatchDOMOps(1, 0, 12, 0, 13, 0, 0);
+          expect(c).toEqual(domOps(1, 0, 12, 0, 13, 0, 0));
         });
       });
     });
 
-    it("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
+    test("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1720,7 +1719,7 @@ describe("sync", () => {
           expect(b.childNodes[2].nodeValue).toBe("e");
           expect(b.childNodes[3].nodeValue).toBe("b");
           expect(b.childNodes[4].nodeValue).toBe("d");
-          expect(c).toMatchDOMOps(3, 0, 8, 0, 11, 1, 4);
+          expect(c).toEqual(domOps(3, 0, 8, 0, 11, 1, 4));
         });
       });
     });

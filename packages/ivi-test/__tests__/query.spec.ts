@@ -1,30 +1,29 @@
 import * as h from "ivi-html";
 import { query, queryAll, q } from "../src/query";
 import { VNodeWrapper } from "../src/vdom";
-import { expect } from "iko";
 
 describe("src/query.ts", () => {
   const tree = new VNodeWrapper(h.div().c(h.span(), h.span()), null, {});
 
   describe("one", () => {
-    it("div", () => {
+    test("div", () => {
       const result = query(tree, q.div().match);
       expect(result).toBe(null);
     });
 
-    it("span", () => {
+    test("span", () => {
       const result = query(tree, q.span().match);
       expect(result!.getTagName()).toBe("span");
     });
   });
 
   describe("many", () => {
-    it("div", () => {
+    test("div", () => {
       const result = queryAll(tree, q.div().match);
       expect(result.length).toBe(0);
     });
 
-    it("span", () => {
+    test("span", () => {
       const result = queryAll(tree, q.span().match);
       expect(result.length).toBe(2);
     });

@@ -2,11 +2,10 @@ import {
   clock, scheduleMicrotask, scheduleTask, currentFrameRead, currentFrameWrite, currentFrameAfter, nextFrameWrite,
   nextFrameAfter,
 } from "../src/index";
-import { expect } from "iko";
 
 describe("scheduler", () => {
   describe("execution order", () => {
-    it("microtasks before tasks", (done) => {
+    test("microtasks before tasks", (done) => {
       let i = 0;
       scheduleTask(() => {
         expect(i).toBe(1);
@@ -18,7 +17,7 @@ describe("scheduler", () => {
       });
     });
 
-    it("batch read/write/after frame tasks", (done) => {
+    test("batch read/write/after frame tasks", (done) => {
       nextFrameWrite(() => {
         let i = 0;
         currentFrameAfter(() => {
@@ -58,7 +57,7 @@ describe("scheduler", () => {
   });
 
   describe("clock", () => {
-    it("advance clock by 1 after microtask execution", (done) => {
+    test("advance clock by 1 after microtask execution", (done) => {
       const c = clock();
       scheduleMicrotask(() => {
         expect(clock()).toBe(c);
@@ -69,7 +68,7 @@ describe("scheduler", () => {
       });
     });
 
-    it("advance clock by 1 after task execution", (done) => {
+    test("advance clock by 1 after task execution", (done) => {
       const c = clock();
       scheduleTask(() => {
         expect(clock()).toBe(c);
@@ -80,7 +79,7 @@ describe("scheduler", () => {
       });
     });
 
-    it("advance clock by 1 after after next frame", (done) => {
+    test("advance clock by 1 after after next frame", (done) => {
       const c = clock() + 1;
       nextFrameAfter(() => {
         expect(clock()).toBe(c);
@@ -91,7 +90,7 @@ describe("scheduler", () => {
       });
     });
 
-    it("should have the same clock when switching between read and write batches", (done) => {
+    test("should have the same clock when switching between read and write batches", (done) => {
       const c = clock() + 1;
       nextFrameWrite(() => {
         expect(clock()).toBe(c);

@@ -1,0 +1,207 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`src/snapshot.ts 'abc' 1`] = `"abc"`;
+
+exports[`src/snapshot.ts <div aria-type='button' 1`] = `
+"<div
+  aria-type=\\"button\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div class=''> 1`] = `
+"<div
+  class=\\"\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div class='a b'> 1`] = `
+"<div
+  class=\\"a b\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div class='a'> 1`] = `
+"<div
+  class=\\"a\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div data-abc='a' 1`] = `
+"<div
+  data-abc=\\"a\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div style={float: 'left'}> 1`] = `
+"<div
+  style={
+    float: left;
+  }
+/>"
+`;
+
+exports[`src/snapshot.ts <div style={top: 10px; left: 20px}> 1`] = `
+"<div
+  style={
+    top: 10px;
+    left: 20px;
+  }
+/>"
+`;
+
+exports[`src/snapshot.ts <div style={top: 10px}> 1`] = `
+"<div
+  style={
+    top: 10px;
+  }
+/>"
+`;
+
+exports[`src/snapshot.ts <div style=null> 1`] = `"<div/>"`;
+
+exports[`src/snapshot.ts <div tabIndex='1' title='2'> 1`] = `
+"<div
+  tabIndex=\\"1\\"
+  title=\\"2\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div tabIndex='1'> 1`] = `
+"<div
+  tabIndex=\\"1\\"
+/>"
+`;
+
+exports[`src/snapshot.ts <div> ({} props) 1`] = `"<div/>"`;
+
+exports[`src/snapshot.ts <div> (null props) 1`] = `"<div/>"`;
+
+exports[`src/snapshot.ts <div> 1`] = `"<div/>"`;
+
+exports[`src/snapshot.ts <div>'abc'</div> 1`] = `
+"<div>
+  abc
+</div>"
+`;
+
+exports[`src/snapshot.ts <div></div> (null children) 1`] = `"<div/>"`;
+
+exports[`src/snapshot.ts <div><span></div> 1`] = `
+"<div>
+  <span/>
+</div>"
+`;
+
+exports[`src/snapshot.ts <div>[  <div>'hello'</div>,  <div>[<span>'world'</span>, <div><span></div>]</div>,  <div><div></div>,  <div>]</div> 1`] = `
+"<div>
+  <div>
+    hello
+  </div>
+  <div>
+    <span>
+      world
+    </span>
+    <div>
+      <span/>
+    </div>
+  </div>
+  <div>
+    <div/>
+  </div>
+  <div/>
+</div>"
+`;
+
+exports[`src/snapshot.ts <div>[<span>, <strong>]</div> 1`] = `
+"<div>
+  <span/>
+  <strong/>
+</div>"
+`;
+
+exports[`src/snapshot.ts <div>[<span>]</div> 1`] = `
+"<div>
+  <span/>
+</div>"
+`;
+
+exports[`src/snapshot.ts <div>[]</div> 1`] = `"<div/>"`;
+
+exports[`src/snapshot.ts <div>10</div> 1`] = `
+"<div>
+  10
+</div>"
+`;
+
+exports[`src/snapshot.ts <span> 1`] = `"<span/>"`;
+
+exports[`src/snapshot.ts special elements <audio volume=0.5> 1`] = `
+"<audio
+  volume=\\"0.5\\"
+/>"
+`;
+
+exports[`src/snapshot.ts special elements <audio> 1`] = `"<audio/>"`;
+
+exports[`src/snapshot.ts special elements <input type='checkbox' checked='true'> 1`] = `
+"<input
+  type=\\"checkbox\\"
+  checked=\\"true\\"
+/>"
+`;
+
+exports[`src/snapshot.ts special elements <input type='checkbox'> 1`] = `
+"<input
+  type=\\"checkbox\\"
+/>"
+`;
+
+exports[`src/snapshot.ts special elements <input value='abc'> 1`] = `
+"<input
+  value=\\"abc\\"
+/>"
+`;
+
+exports[`src/snapshot.ts special elements <input> 1`] = `"<input/>"`;
+
+exports[`src/snapshot.ts special elements <textarea> 1`] = `"<textarea/>"`;
+
+exports[`src/snapshot.ts special elements <textarea>abc</textarea> 1`] = `
+"<textarea>
+  abc
+</textarea>"
+`;
+
+exports[`src/snapshot.ts special elements <video volume=0.5> 1`] = `
+"<video
+  volume=\\"0.5\\"
+/>"
+`;
+
+exports[`src/snapshot.ts svg <circle class='a'> 1`] = `
+"<circle
+  class=\\"a\\"
+/>"
+`;
+
+exports[`src/snapshot.ts svg <circle style={top: 10px}> 1`] = `
+"<circle
+  style={
+    top: 10px;
+  }
+/>"
+`;
+
+exports[`src/snapshot.ts svg <circle xlink:href='a'> 1`] = `
+"<circle
+  xlink:href=\\"a\\"
+/>"
+`;
+
+exports[`src/snapshot.ts svg <circle xml:text='a'> 1`] = `
+"<circle
+  xml:test=\\"a\\"
+/>"
+`;
+
+exports[`src/snapshot.ts svg <circle> 1`] = `"<circle/>"`;

@@ -1,113 +1,33 @@
-import { Assertion, AssertionError, addAssertionType, errMsg, e, r } from "iko";
-
-export class DOMOpsCounter {
-  createElement = 0;
-  createElementNS = 0;
-  createTextNode = 0;
-  appendChild = 0;
-  insertBefore = 0;
-  replaceChild = 0;
-  removeChild = 0;
-
-  reset() {
-    this.createElement = 0;
-    this.createElementNS = 0;
-    this.createTextNode = 0;
-    this.appendChild = 0;
-    this.insertBefore = 0;
-    this.replaceChild = 0;
-    this.removeChild = 0;
-  }
+export interface DOMOpsCounter {
+  createElement: number;
+  createElementNS: number;
+  createTextNode: number;
+  appendChild: number;
+  insertBefore: number;
+  replaceChild: number;
+  removeChild: number;
 }
 
-declare module "iko" {
-  function expect(counter: DOMOpsCounter): DOMOpsCounterAssertion;
+export function domOps(
+  createElement: number,
+  createElementNS: number,
+  createTextNode: number,
+  appendChild: number,
+  insertBefore: number,
+  replaceChild: number,
+  removeChild: number,
+): DOMOpsCounter {
+  return { createElement, createElementNS, createTextNode, appendChild, insertBefore, replaceChild, removeChild };
 }
 
-addAssertionType(function (obj: any) {
-  if (typeof obj === "object" && obj instanceof DOMOpsCounter) {
-    return new DOMOpsCounterAssertion(obj);
-  }
-  return undefined;
-});
-
-export class DOMOpsCounterAssertion extends Assertion<DOMOpsCounter> {
-  toMatchDOMOps(
-    createElement: number,
-    createElementNS: number,
-    createTextNode: number,
-    appendChild: number,
-    insertBefore: number,
-    replaceChild: number,
-    removeChild: number,
-  ): DOMOpsCounterAssertion {
-    const obj = this.obj;
-
-    if (obj.createElement !== createElement) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.createElement' to be ", e(createElement),
-        ", instead it is ", r(obj.createElement), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    if (obj.createElementNS !== createElementNS) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.createElementNS' to be ", e(createElementNS),
-        ", instead it is ", r(obj.createElementNS), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    if (obj.createTextNode !== createTextNode) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.createTextNode' to be ", e(createTextNode),
-        ", instead it is ", r(obj.createTextNode), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    if (obj.appendChild !== appendChild) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.appendChild' to be ", e(appendChild),
-        ", instead it is ", r(obj.appendChild), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    if (obj.insertBefore !== insertBefore) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.insertBefore' to be ", e(insertBefore),
-        ", instead it is ", r(obj.insertBefore), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    if (obj.replaceChild !== replaceChild) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.replaceChild' to be ", e(replaceChild),
-        ", instead it is ", r(obj.replaceChild), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    if (obj.removeChild !== removeChild) {
-      const message = errMsg()
-        .matcherHint("toMatchDOMOps")
-        .info("Expected DOM ops counter 'document.removeChild' to be ", e(removeChild),
-        ", instead it is ", r(obj.removeChild), "\n");
-
-      throw new AssertionError(message.compose(), this.toMatchDOMOps);
-    }
-
-    return this;
-  }
+export function resetDOMCounter(counter: DOMOpsCounter): void {
+  counter.createElement = 0;
+  counter.createElementNS = 0;
+  counter.createTextNode = 0;
+  counter.appendChild = 0;
+  counter.insertBefore = 0;
+  counter.replaceChild = 0;
+  counter.removeChild = 0;
 }
 
 export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
@@ -121,7 +41,16 @@ export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
   const removeChild = Node.prototype.removeChild;
 
   // patch
-  const counter = new DOMOpsCounter();
+  const counter = {
+    createElement: 0,
+    createElementNS: 0,
+    createTextNode: 0,
+    appendChild: 0,
+    insertBefore: 0,
+    replaceChild: 0,
+    removeChild: 0,
+  };
+
   Document.prototype.createElement = function (this: Document) {
     counter.createElement++;
     return createElement.apply(this, arguments);

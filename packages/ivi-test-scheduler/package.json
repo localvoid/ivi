@@ -1,0 +1,52 @@
+{
+  "name": "ivi-test-scheduler",
+  "main": "dist/main/index.js",
+  "module": "dist/module/index.js",
+  "es2016": "dist/es2016/index.js",
+  "typings": "dist/typings/index.d.ts",
+  "sideEffects": false,
+  "version": "0.0.1",
+  "description": "Test scheduler for ivi library.",
+  "license": "MIT",
+  "author": {
+    "name": "Boris Kaul",
+    "email": "localvoid@gmail.com",
+    "url": "https://github.com/localvoid"
+  },
+  "keywords": [
+    "ivi"
+  ],
+  "homepage": "https://github.com/ivijs/ivi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivijs/ivi"
+  },
+  "bugs": {
+    "url": "https://github.com/ivijs/ivi/issues"
+  },
+  "github": "https://github.com/ivijs/ivi",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "prepublish": "npm run clean && npm run dist",
+    "clean": "rm -rf ./dist",
+    "dist": "npm run dist:main && npm run dist:module && npm run dist:es2016",
+    "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
+    "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json",
+    "dist:es2016": "../../node_modules/.bin/tsc -p ./tsconfig.build.es2016.json",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
+    "test": "../../node_modules/.bin/jest",
+    "test:coverage": "../../node_modules/.bin/jest --coverage"
+  },
+  "peerDependencies": {
+    "ivi-core": "^0.10.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "ivi": "^0.10.0"
+  }
+}

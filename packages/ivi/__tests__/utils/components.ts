@@ -1,4 +1,6 @@
-import { Component, componentFactory, statelessComponentFactory, VNode } from "../../src";
+import { Component } from "../../src/vdom/component";
+import { VNode } from "../../src/vdom/vnode";
+import { statelessComponentFactory, componentFactory } from "../../src/vdom/vnode_factories";
 import * as h from "./html";
 
 export * from "./components/stateless";

@@ -1,11 +1,12 @@
 import { EventSourceClick, SyntheticEventFlags, getEventTarget } from "ivi-events";
-import { RouteNode, ResolveResult, resolve } from "routekit-resolver";
+import { RouteMap, ResolveResult, resolve } from "routekit-resolver";
 
-export function initRouter<T>(
+export function initRouter<A, T>(
   baseURL: string,
-  routes: RouteNode<T>,
-  mergeData: (a: T | undefined, b: T | undefined, node: RouteNode<T>) => T,
-  onChange: (result: ResolveResult<T> | null) => void,
+  routes: RouteMap<T>,
+  reducer: (a: A, b: T) => A,
+  data: A,
+  onChange: (result: ResolveResult<A> | null) => void,
 ): void {
   const location = window.location;
   const history = window.history;
@@ -15,7 +16,7 @@ export function initRouter<T>(
   const goTo = function (nextPath: string): void {
     if (path !== nextPath) {
       path = nextPath;
-      onChange(resolve(routes, nextPath, mergeData));
+      onChange(resolve(routes, reducer, nextPath, data));
     }
   };
 
@@ -36,7 +37,7 @@ export function initRouter<T>(
     }
   });
 
-  onChange(resolve(routes, path, mergeData));
+  onChange(resolve(routes, reducer, path, data));
 }
 
 function findAnchorNode(element: Element): HTMLAnchorElement | null {

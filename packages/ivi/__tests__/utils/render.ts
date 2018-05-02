@@ -1,7 +1,6 @@
 import { VNodeFlags } from "../../src/vdom/flags";
 import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
 import { renderVNode, syncVNode } from "../../src/vdom/implementation";
-import { expect } from "iko";
 
 const DEFAULT_CONTEXT = {};
 

@@ -1,4 +1,6 @@
-import { Component, componentFactory, VNode } from "../../../src";
+import { Component } from "../../../src/vdom/component";
+import { VNode } from "../../../src/vdom/vnode";
+import { componentFactory } from "../../../src/vdom/vnode_factories";
 import * as h from "../html";
 import { lifecycleTouch } from "../lifecycle";
 

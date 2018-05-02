@@ -1,16 +1,15 @@
-import { setInnerHTML } from "../src/innerhtml";
 import { SVG_NAMESPACE } from "ivi-core";
-import { expect } from "iko";
+import { setInnerHTML } from "../src/innerhtml";
 
 describe("setInnerHTML", () => {
   describe("HTML", () => {
-    it("set", () => {
+    test("set", () => {
       const c = document.createElement("div");
       setInnerHTML(c, "a", false);
       expect(c.firstChild!.nodeValue).toBe("a");
     });
 
-    it("override", () => {
+    test("override", () => {
       const c = document.createElement("div");
       setInnerHTML(c, "a", false);
       setInnerHTML(c, "b", false);
@@ -19,13 +18,13 @@ describe("setInnerHTML", () => {
   });
 
   describe("SVG", () => {
-    it("set", () => {
+    test("set", () => {
       const c = document.createElementNS(SVG_NAMESPACE, "svg");
       setInnerHTML(c, "a", false);
       expect(c.firstChild!.nodeValue).toBe("a");
     });
 
-    it("override", () => {
+    test("override", () => {
       const c = document.createElementNS(SVG_NAMESPACE, "svg");
       setInnerHTML(c, "a", false);
       setInnerHTML(c, "b", false);

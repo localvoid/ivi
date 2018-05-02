@@ -14,7 +14,8 @@ import {
   SVGSVGElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
   SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps,
 } from "ivi-core";
-import { VNode, VNodeFlags } from "../../src";
+import { VNodeFlags } from "../../src/vdom/flags";
+import { VNode } from "../../src/vdom/vnode";
 
 const enum TagId {
   A = 1,

@@ -1,7 +1,8 @@
 {
   "name": "ivi-html",
-  "main": "dist/js/index.js",
-  "module": "dist/js/index.js",
+  "main": "dist/main/index.js",
+  "module": "dist/module/index.js",
+  "es2016": "dist/es2016/index.js",
   "typings": "dist/typings/index.d.ts",
   "sideEffects": false,
   "version": "0.10.0",
@@ -31,12 +32,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "prepublish": "npm run dist",
-    "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
-    "test": "../../node_modules/.bin/karma start --single-run",
-    "test:coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
-    "test:watch": "../../node_modules/.bin/karma start",
-    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
+    "prepublish": "npm run clean && npm run dist",
+    "clean": "rm -rf ./dist",
+    "dist": "npm run dist:main && npm run dist:module && npm run dist:es2016",
+    "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
+    "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json",
+    "dist:es2016": "../../node_modules/.bin/tsc -p ./tsconfig.build.es2016.json",
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
+    "test": "../../node_modules/.bin/jest",
+    "test:coverage": "../../node_modules/.bin/jest --coverage"
   },
   "dependencies": {},
   "peerDependencies": {

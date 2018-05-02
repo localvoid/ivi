@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "outDir": "dist/main",
+    "declarationDir": "dist/typings",
+    "declaration": true,
+    "preserveConstEnums": true
+  }
+}

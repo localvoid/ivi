@@ -1,6 +1,5 @@
 import { VNode, VNodeFlags } from "ivi";
 import * as s from "../src";
-import { expect } from "iko";
 
 const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "a": s.a,
@@ -186,7 +185,7 @@ describe("src/index.ts", () => {
   describe("tag name", () => {
     for (const name of Object.keys(Elements)) {
       const factory = Elements[name];
-      it(`${name}`, () => {
+      test(`${name}`, () => {
         const n = factory();
         expect(n._tag).toBe(name);
       });
@@ -196,7 +195,7 @@ describe("src/index.ts", () => {
   describe("class name", () => {
     for (const name of Object.keys(Elements)) {
       const factory = Elements[name];
-      it(`${name}`, () => {
+      test(`${name}`, () => {
         const n = factory("abc");
         expect(n._className).toBe("abc");
       });
@@ -206,7 +205,7 @@ describe("src/index.ts", () => {
   describe("svg flag", () => {
     for (const name of SvgElements) {
       const factory = Elements[name];
-      it(`${name}`, () => {
+      test(`${name}`, () => {
         const n = factory();
         expect((n._flags & VNodeFlags.SvgElement) !== 0).toBe(true);
       });

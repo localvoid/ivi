@@ -1,4 +1,5 @@
-import { statelessComponentFactory, VNode } from "../../../src";
+import { VNode } from "../../../src/vdom/vnode";
+import { statelessComponentFactory } from "../../../src/vdom/vnode_factories";
 import * as h from "../html";
 
 export interface TestStatelessComponentHooks<P> {

@@ -1,5 +1,4 @@
 import { nodeDepth } from "../src/traverse";
-import { expect } from "iko";
 
 describe("DOM", () => {
   describe("nodeDepth", () => {
@@ -7,11 +6,11 @@ describe("DOM", () => {
     const b = document.createElement("div");
     a.appendChild(b);
 
-    it("a: 1", () => {
+    test("a: 1", () => {
       expect(nodeDepth(a)).toBe(1);
     });
 
-    it("b: 2", () => {
+    test("b: 2", () => {
       expect(nodeDepth(b)).toBe(2);
     });
   });

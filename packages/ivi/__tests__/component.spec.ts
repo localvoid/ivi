@@ -1,10 +1,9 @@
 import { startRender, $lc, $tfc, LifecycleTesterProps, TestStatelessComponentProps } from "./utils";
 import * as h from "./utils/html";
-import { expect } from "iko";
 
 describe("component state", () => {
   describe("stateless", () => {
-    it("render", () => {
+    test("render", () => {
       startRender((r) => {
         r($tfc("1", {
           render: (
@@ -17,7 +16,7 @@ describe("component state", () => {
       });
     });
 
-    it("isPropsChanged", () => {
+    test("isPropsChanged", () => {
       startRender((r) => {
         r($tfc("1", h.div()));
         r($tfc("2", {
@@ -35,7 +34,7 @@ describe("component state", () => {
   });
 
   describe("stateful", () => {
-    it("construct", () => {
+    test("construct", () => {
       startRender((r) => {
         r($lc("1", {
           construct: (
@@ -47,7 +46,7 @@ describe("component state", () => {
       });
     });
 
-    it("isPropsChanged", () => {
+    test("isPropsChanged", () => {
       startRender((r) => {
         r($lc("1", h.div()));
         r($lc("2", {
@@ -63,7 +62,7 @@ describe("component state", () => {
       });
     });
 
-    it("newPropsReceived", () => {
+    test("newPropsReceived", () => {
       startRender((r) => {
         r($lc("1", h.div()));
         r($lc("2", {
@@ -78,7 +77,7 @@ describe("component state", () => {
       });
     });
 
-    it("attached", () => {
+    test("attached", () => {
       startRender((r) => {
         r($lc("1", {
           attached: function () {
@@ -88,7 +87,7 @@ describe("component state", () => {
       });
     });
 
-    it("detached", () => {
+    test("detached", () => {
       startRender((r) => {
         r($lc("1", {
           detached: function () {
@@ -98,7 +97,7 @@ describe("component state", () => {
       });
     });
 
-    it("updated", () => {
+    test("updated", () => {
       startRender((r) => {
         r($lc("1", {
           updated: function () {

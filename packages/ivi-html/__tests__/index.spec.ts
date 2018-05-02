@@ -1,6 +1,5 @@
 import { VNode, VNodeFlags } from "ivi";
 import * as h from "../src";
-import { expect } from "iko";
 
 const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "a": h.a,
@@ -206,7 +205,7 @@ const MediaElements = [
 ];
 
 describe("src/index.ts", () => {
-  it("text", () => {
+  test("text", () => {
     const text = h.t("abc");
     expect((text._flags & VNodeFlags.Text) !== 0).toBe(true);
     expect(text._children).toBe("abc");
@@ -216,7 +215,7 @@ describe("src/index.ts", () => {
     describe("tag name", () => {
       for (const name of Object.keys(Elements)) {
         const factory = Elements[name];
-        it(`${name}`, () => {
+        test(`${name}`, () => {
           const n = factory();
           if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement)) === 0) {
             expect(n._tag).toBe(name);
@@ -228,7 +227,7 @@ describe("src/index.ts", () => {
     describe("class name", () => {
       for (const name of Object.keys(Elements)) {
         const factory = Elements[name];
-        it(`${name}`, () => {
+        test(`${name}`, () => {
           const n = factory("abc");
           expect(n._className).toBe("abc");
         });
@@ -238,7 +237,7 @@ describe("src/index.ts", () => {
     describe("void elements", () => {
       for (const name of Object.keys(Elements)) {
         const factory = Elements[name];
-        it(`${name}`, () => {
+        test(`${name}`, () => {
           const n = factory();
           if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
             expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
@@ -254,7 +253,7 @@ describe("src/index.ts", () => {
     describe("media elements", () => {
       for (const name of MediaElements) {
         const factory = Elements[name];
-        it(`${name}`, () => {
+        test(`${name}`, () => {
           const n = factory();
           expect((n._flags & VNodeFlags.MediaElement) !== 0).toBe(true);
         });
@@ -264,7 +263,7 @@ describe("src/index.ts", () => {
     describe("input elements", () => {
       for (const type of InputTypes) {
         const factory = Elements[`input:${type}`];
-        it(`input:${type}`, () => {
+        test(`input:${type}`, () => {
           const n = factory();
           expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
           expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
@@ -276,7 +275,7 @@ describe("src/index.ts", () => {
     describe("button elements", () => {
       for (const type of ButtonTypes) {
         const factory = Elements[`button:${type}`];
-        it(`button:${type}`, () => {
+        test(`button:${type}`, () => {
           const n = factory();
           expect((n._flags & VNodeFlags.ButtonElement) !== 0).toBe(true);
           expect(n._tag).toBe(type);
@@ -284,7 +283,7 @@ describe("src/index.ts", () => {
       }
     });
 
-    it("textarea", () => {
+    test("textarea", () => {
       const n = h.textarea();
       expect((n._flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
       expect(n._tag).toBe("textarea");
