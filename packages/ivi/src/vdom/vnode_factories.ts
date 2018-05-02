@@ -71,6 +71,14 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
   );
 }
 
+export function connect<T>(
+  select: (prev: T | null) => T,
+  render: (props: T) => VNode<any>,
+): () => VNode<undefined>;
+export function connect<T, P>(
+  select: (prev: T | null, props: P) => T,
+  render: (props: T) => VNode<any>,
+): (props: P) => VNode<P>;
 export function connect<T, P, C>(
   select: (prev: T | null, props: undefined, context: C) => T,
   render: (props: T) => VNode<any>,
