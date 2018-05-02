@@ -31,6 +31,7 @@
   "files": [],
   "scripts": {},
   "devDependencies": {
+    "@types/jest": "^22.2.3",
     "@types/lodash": "^4.14.108",
     "@types/mocha": "^5.2.0",
     "@types/node": "^9.6.6",
@@ -38,6 +39,7 @@
     "iko": "^0.6.0",
     "iko-karma-snapshot": "^0.3.0",
     "istanbul-instrumenter-loader": "^3.0.1",
+    "jest": "^22.4.3",
     "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
@@ -53,6 +55,7 @@
     "rtext": "^0.1.0",
     "rtext-writer": "^0.1.1",
     "source-map-loader": "^0.2.3",
+    "ts-jest": "^22.4.4",
     "ts-loader": "^4.2.0",
     "ts-node": "^6.0.1",
     "tslib": "^1.9.0",

@@ -34,9 +34,8 @@
     "prepublish": "npm run dist",
     "dist": "../../node_modules/.bin/tsc --project ./tsconfig.build.es6.json",
     "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "../../node_modules/.bin/karma start --single-run",
-    "test:coverage": "../../node_modules/.bin/karma start ./karma.coverage.conf.js",
-    "test:watch": "../../node_modules/.bin/karma start"
+    "test": "../../node_modules/.bin/jest",
+    "test:coverage": "../../node_modules/.bin/jest --coverage"
   },
   "peerDependencies": {},
   "dependencies": {},

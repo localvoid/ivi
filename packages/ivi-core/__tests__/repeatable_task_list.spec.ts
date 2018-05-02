@@ -1,27 +1,26 @@
 import { RepeatableTaskList } from "../src/repeatable_task_list";
 import { NOOP_FALSE } from "../src/noop";
-import { expect } from "iko";
 
 describe("RepeatableTaskList", () => {
-  it("empty", () => {
+  test("empty", () => {
     const t = new RepeatableTaskList();
-    expect(t.tasks).toMatch([]);
+    expect(t.tasks).toEqual([]);
   });
 
-  it("add task", () => {
+  test("add task", () => {
     const t = new RepeatableTaskList();
     t.add(NOOP_FALSE);
     expect(t.tasks.length).toBe(1);
   });
 
-  it("add two tasks", () => {
+  test("add two tasks", () => {
     const t = new RepeatableTaskList();
     t.add(NOOP_FALSE);
     t.add(NOOP_FALSE);
     expect(t.tasks.length).toBe(2);
   });
 
-  it("run one task", () => {
+  test("run one task", () => {
     const t = new RepeatableTaskList();
     let i = 0;
     t.add(() => { i++; return false; });
@@ -29,7 +28,7 @@ describe("RepeatableTaskList", () => {
     expect(i).toBe(1);
   });
 
-  it("run two tasks", () => {
+  test("run two tasks", () => {
     const t = new RepeatableTaskList();
     let i = 0;
     t.add(() => { i++; return false; });
@@ -38,7 +37,7 @@ describe("RepeatableTaskList", () => {
     expect(i).toBe(2);
   });
 
-  it("run one task twice", () => {
+  test("run one task twice", () => {
     const t = new RepeatableTaskList();
     let i = 0;
     t.add(() => { i++; return false; });
@@ -47,7 +46,7 @@ describe("RepeatableTaskList", () => {
     expect(i).toBe(2);
   });
 
-  it("run two tasks twice", () => {
+  test("run two tasks twice", () => {
     const t = new RepeatableTaskList();
     let i = 0;
     t.add(() => { i++; return false; });
@@ -57,7 +56,7 @@ describe("RepeatableTaskList", () => {
     expect(i).toBe(4);
   });
 
-  it("run one one-time task twice", () => {
+  test("run one one-time task twice", () => {
     const t = new RepeatableTaskList();
     let i = 0;
     t.add(() => { i++; return true; });
@@ -66,7 +65,7 @@ describe("RepeatableTaskList", () => {
     expect(i).toBe(1);
   });
 
-  it("run one one-time and one simple task twice", () => {
+  test("run one one-time and one simple task twice", () => {
     const t = new RepeatableTaskList();
     let i = 0;
     t.add(() => { i++; return true; });
