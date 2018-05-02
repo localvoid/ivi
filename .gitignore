@@ -1,14 +1,12 @@
-build
 dist
 coverage
 
 node_modules
 
-.nyc_output
 .DS_Store
 .idea
 .vscode
-.npm-debug
-npm-debug.log*
+
+npm-debug.log
 yarn-error.log
 lerna-debug.log
