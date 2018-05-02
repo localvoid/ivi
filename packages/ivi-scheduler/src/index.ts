@@ -1,4 +1,4 @@
-import { catchError, devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
+import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -48,42 +48,32 @@ interface FrameTasksGroup {
   /**
    * Write DOM task queue.
    */
-  write: (() => void)[] | null;
+  write: Array<() => void>;
   /**
    * Read DOM task queue.
    */
-  read: (() => void)[] | null;
+  read: Array<() => void>;
   /**
    * Tasks that should be executed when all other frame tasks are finished.
    */
-  after: (() => void)[] | null;
+  after: Array<() => void>;
 }
 
 function createFrameTasksGroup(): FrameTasksGroup {
   return {
     flags: 0,
-    write: null,
-    read: null,
-    after: null,
+    write: [],
+    read: [],
+    after: [],
   };
 }
 
 let _flags: SchedulerFlags = 0;
 let _clock = 0;
 let _microtasks: (() => void)[] = [];
-const _microtaskNode: Text = document.createTextNode("");
-let _microtaskToggle = 0;
-
-/**
- * Message ID that will be used to trigger tasks execution.
- *
- * Multiple ivi instances in one document doesn't work for many reasons, so we just use the same uuid as a message ID.
- */
-const TASK_MESSAGE_UUID = "06526c5c-2dcc-4a4e-a86c-86f5dea6319d";
-
 let _tasks: (() => void)[] = [];
 
-let _visibilityObservers: ((hidden: boolean) => void)[] = [];
+let _visibilityObservers: Array<(hidden: boolean) => void> = [];
 let _isHidden: () => boolean;
 
 const _animations = new RepeatableTaskList();
@@ -94,7 +84,7 @@ let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
 let _autofocusedElement: Element | null = null;
 
-const microtaskObserver = new MutationObserver(catchError(function runMicrotasks(): void {
+function runMicrotasks(): void {
   while (_microtasks.length > 0) {
     const tasks = _microtasks;
     _microtasks = [];
@@ -105,23 +95,21 @@ const microtaskObserver = new MutationObserver(catchError(function runMicrotasks
 
   _flags ^= SchedulerFlags.MicrotaskPending;
   ++_clock;
-}));
-microtaskObserver.observe(_microtaskNode, { "characterData": true });
+}
 
-// Task scheduler based on postMessage
-window.addEventListener("message", catchError(function runTasks(ev: MessageEvent): void {
-  if (ev.source === window && ev.data === TASK_MESSAGE_UUID) {
-    _flags ^= SchedulerFlags.TaskPending;
-    const tasks = _tasks;
-    _tasks = [];
-    for (let i = 0; i < tasks.length; ++i) {
-      tasks[i]();
-    }
-    ++_clock;
+// Task scheduler based on MessageChannel
+const _taskChannel = new MessageChannel();
+_taskChannel.port1.onmessage = (ev: MessageEvent) => {
+  _flags ^= SchedulerFlags.TaskPending;
+  const tasks = _tasks;
+  _tasks = [];
+  for (let i = 0; i < tasks.length; ++i) {
+    tasks[i]();
   }
-}));
+  ++_clock;
+};
 
-const handleVisibilityChange = catchError(function (): void {
+const handleVisibilityChange = () => {
   const newHidden = _isHidden();
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
@@ -136,7 +124,7 @@ const handleVisibilityChange = catchError(function (): void {
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
   }
-});
+};
 
 if (TARGET !== "browser" || typeof document["hidden"] !== "undefined") {
   _isHidden = function () {
@@ -179,8 +167,7 @@ export function clock(): number {
 export function scheduleMicrotask(task: () => void): void {
   if ((_flags & SchedulerFlags.MicrotaskPending) === 0) {
     _flags |= SchedulerFlags.MicrotaskPending;
-    _microtaskToggle ^= 1;
-    _microtaskNode.nodeValue = _microtaskToggle ? "1" : "0";
+    Promise.resolve().then(runMicrotasks);
   }
   _microtasks.push(task);
 }
@@ -193,7 +180,7 @@ export function scheduleMicrotask(task: () => void): void {
 export function scheduleTask(task: () => void): void {
   if ((_flags & SchedulerFlags.TaskPending) === 0) {
     _flags |= SchedulerFlags.TaskPending;
-    postMessage(TASK_MESSAGE_UUID, "*");
+    _taskChannel.port2.postMessage(0);
   }
   _tasks.push(task);
 }
@@ -265,7 +252,7 @@ _updateCurrentFrameStartTime();
 
 function _requestNextFrame(): void {
   if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
-    requestAnimationFrame(handleNextFrame);
+    requestAnimationFrame(_handleNextFrame);
   }
 }
 
@@ -284,7 +271,7 @@ export function requestNextFrame(): void {
  *
  * @param t Current time.
  */
-const _handleNextFrame = catchError(function (time?: number): void {
+const _handleNextFrame = (time?: number) => {
   _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
 
   _updateCurrentFrameStartTime(time);
@@ -303,8 +290,8 @@ const _handleNextFrame = catchError(function (time?: number): void {
   do {
     while ((frame.flags & FrameTasksGroupFlags.Read) !== 0) {
       frame.flags ^= FrameTasksGroupFlags.Read;
-      tasks = frame.read!;
-      frame.read = null;
+      tasks = frame.read;
+      frame.read = [];
 
       for (i = 0; i < tasks.length; ++i) {
         tasks[i]();
@@ -314,8 +301,8 @@ const _handleNextFrame = catchError(function (time?: number): void {
     while ((frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) !== 0) {
       if ((frame.flags & FrameTasksGroupFlags.Write) !== 0) {
         frame.flags ^= FrameTasksGroupFlags.Write;
-        tasks = frame.write!;
-        frame.write = null;
+        tasks = frame.write;
+        frame.write = [];
         for (i = 0; i < tasks.length; ++i) {
           tasks[i]();
         }
@@ -342,8 +329,8 @@ const _handleNextFrame = catchError(function (time?: number): void {
   while ((frame.flags & FrameTasksGroupFlags.After) !== 0) {
     frame.flags ^= FrameTasksGroupFlags.After;
 
-    tasks = frame.after!;
-    frame.after = null;
+    tasks = frame.after;
+    frame.after = [];
     for (i = 0; i < tasks.length; ++i) {
       tasks[i]();
     }
@@ -359,25 +346,7 @@ const _handleNextFrame = catchError(function (time?: number): void {
   }
 
   ++_clock;
-});
-
-/**
- * Frame tasks scheduler event handler.
- *
- * @param t Current time.
- */
-function handleNextFrame(t?: number): void {
-  if (DEBUG) {
-    try {
-      _handleNextFrame(t);
-    } catch (e) {
-      devModeOnError(e);
-      throw e;
-    }
-  } else {
-    _handleNextFrame(t);
-  }
-}
+};
 
 function addFrameTaskUpdate(frame: FrameTasksGroup): void {
   frame.flags |= FrameTasksGroupFlags.Update;
@@ -455,6 +424,6 @@ export function currentFrameAfter(task: () => void): void {
  */
 export function triggerNextFrame(): void {
   if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
-    handleNextFrame();
+    _handleNextFrame();
   }
 }
