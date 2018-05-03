@@ -21,7 +21,7 @@ export {
   disableDirtyChecking,
 } from "./vdom/vnode";
 export { elementFactory } from "./vdom/element";
-export { componentFactory, statelessComponentFactory, context, connect } from "./vdom/vnode_factories";
+export { component, statelessComponent, context, connect } from "./vdom/vnode_factories";
 export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 
 /**

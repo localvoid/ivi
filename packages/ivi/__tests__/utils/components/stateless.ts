@@ -1,5 +1,5 @@
 import { VNode } from "../../../src/vdom/vnode";
-import { statelessComponentFactory } from "../../../src/vdom/vnode_factories";
+import { statelessComponent } from "../../../src/vdom/vnode_factories";
 import * as h from "../html";
 
 export interface TestStatelessComponentHooks<P> {
@@ -13,7 +13,7 @@ export interface TestStatelessComponentProps {
   hooks: TestStatelessComponentHooks<TestStatelessComponentProps>;
 }
 
-export const testStatelessComponent = statelessComponentFactory<TestStatelessComponentProps>(
+export const testStatelessComponent = statelessComponent<TestStatelessComponentProps>(
   (props) => {
     if (props.hooks.render) {
       return props.hooks.render(props);
@@ -28,7 +28,7 @@ export const testStatelessComponent = statelessComponentFactory<TestStatelessCom
   },
 );
 
-export const staticComponent = statelessComponentFactory<VNode>((child) => child, () => false);
+export const staticComponent = statelessComponent<VNode>((child) => child, () => false);
 
 export function $tfc(
   id: string,

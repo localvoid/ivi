@@ -1,6 +1,6 @@
 import { Component } from "../../src/vdom/component";
 import { VNode } from "../../src/vdom/vnode";
-import { statelessComponentFactory, componentFactory } from "../../src/vdom/vnode_factories";
+import { statelessComponent, component } from "../../src/vdom/vnode_factories";
 import * as h from "./html";
 
 export * from "./components/stateless";
@@ -11,7 +11,7 @@ export interface ComponentTesterProps {
   wrapDepth?: number;
 }
 
-export const statelessComponentTester = statelessComponentFactory<ComponentTesterProps>(
+export const statelessComponentTester = statelessComponent<ComponentTesterProps>(
   function StatelessComponentTester(props): VNode {
     if (props.wrapDepth) {
       return statelessComponentTester({
@@ -36,7 +36,7 @@ export class ComponentTester extends Component<ComponentTesterProps> {
     return this.props.child;
   }
 }
-export const componentTester = componentFactory(ComponentTester);
+export const componentTester = component(ComponentTester);
 
 export function $tcf(
   child: VNode | string = h.div(),

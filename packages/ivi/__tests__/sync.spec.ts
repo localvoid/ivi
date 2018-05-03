@@ -1,7 +1,7 @@
 import { ComponentFlags } from "../src/vdom/flags";
 import { VNode, getComponentInstanceFromVNode } from "../src/vdom/vnode";
 import { Component } from "../src/vdom/component";
-import { componentFactory } from "../src/vdom/vnode_factories";
+import { component } from "../src/vdom/vnode_factories";
 import { render, startRender, $tc, $tcf, checkDOMOps, DOMOpsCounter, domOps, resetDOMCounter } from "./utils";
 import * as h from "./utils/html";
 
@@ -1483,8 +1483,8 @@ describe("sync", () => {
       }
     }
 
-    const ca = componentFactory(A);
-    const cb = componentFactory(B);
+    const ca = component(A);
+    const cb = component(B);
 
     test("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
       startRender((r) => {

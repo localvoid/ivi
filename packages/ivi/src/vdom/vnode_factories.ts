@@ -3,12 +3,12 @@ import { StatefulComponent } from "./component";
 import { VNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 
-export function statelessComponentFactory(c: () => VNode): () => VNode<undefined>;
-export function statelessComponentFactory<P>(
+export function statelessComponent(c: () => VNode): () => VNode<undefined>;
+export function statelessComponent<P>(
   render: undefined extends P ? (props?: P) => VNode<any> : (props: P) => VNode<any>,
   shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
-export function statelessComponentFactory<P>(
+export function statelessComponent<P>(
   render: (props: P) => VNode<any>,
   shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): (props: P) => VNode<P> {
@@ -35,11 +35,11 @@ export function statelessComponentFactory<P>(
   };
 }
 
-export function componentFactory(c: StatefulComponent<undefined>): () => VNode<undefined>;
-export function componentFactory<P>(
+export function component(c: StatefulComponent<undefined>): () => VNode<undefined>;
+export function component<P>(
   c: StatefulComponent<P>,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
-export function componentFactory<P>(
+export function component<P>(
   c: StatefulComponent<P>,
 ): (props: P) => VNode<P> {
   return function (props: P): VNode<P> {

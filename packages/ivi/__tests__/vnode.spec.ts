@@ -1,10 +1,10 @@
 import { EventHandler } from "ivi-events";
 import { mergeAttrs, mergeStyle } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
-import { statelessComponentFactory } from "../src/vdom/vnode_factories";
+import { statelessComponent } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
 
-const emptyComponent = statelessComponentFactory(() => h.t(""));
+const emptyComponent = statelessComponent(() => h.t(""));
 
 describe("VNode", () => {
   describe("$t", () => {

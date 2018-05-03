@@ -1,6 +1,6 @@
 import { Component } from "../../../src/vdom/component";
 import { VNode } from "../../../src/vdom/vnode";
-import { componentFactory } from "../../../src/vdom/vnode_factories";
+import { component } from "../../../src/vdom/vnode_factories";
 import * as h from "../html";
 import { lifecycleTouch } from "../lifecycle";
 
@@ -93,7 +93,7 @@ export class LifecycleTester extends Component<LifecycleTesterProps> {
   }
 }
 
-export const lifecycleTester = componentFactory(LifecycleTester);
+export const lifecycleTester = component(LifecycleTester);
 
 export function $lc(
   id: string,
