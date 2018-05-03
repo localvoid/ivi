@@ -44,11 +44,11 @@ interface VNode {
 ```
 
 ```ts
-import { Component, render } from "ivi";
+import { Component, componentFactory, render } from "ivi";
 import * as Events from "ivi-events";
 import * as h from "ivi-html";
 
-class StatefulComponent extends Component {
+const StatefulComponent = componentFactory(class extends Component {
   private counter = 0;
 
   private onClick = Events.onClick((ev) => {
@@ -64,5 +64,5 @@ class StatefulComponent extends Component {
       ])
       .c(`Clicks: ${this.counter}`);
   }
-}
+});
 ```

@@ -14,7 +14,7 @@ Stateful components are implemented with ES6 classes and should be extended from
 `Component<P>`. Base class has a parametric type `P` that specifies props type.
 
 ```ts
-const HelloComponent = statefulComponent(class extends Component<string> {
+const HelloComponent = component(class extends Component<string> {
   render() {
     return h.div().children(`Hello ${this.props}`);
   }

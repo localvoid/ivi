@@ -15,7 +15,7 @@ Context data can be accessed with a [connect](external-state.md) selectors.
 ## Example
 
 ```ts
-class StatefulComponent extends Component {
+const Counter = component(class extends Component {
   private _ctx = {
     counter: 0,
   }

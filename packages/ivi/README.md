@@ -2,52 +2,15 @@
 
 ## Features
 
-- Declarative rendering with Virtual DOM
+- Declarative rendering with "Virtual DOM"
 - Components (stateless functions and stateful ES6 classes)
 - Connectors for sideways data loading
 - Extensible synthetic event subsystem
 - Synchronous and deterministic syncing algorithm
 - Children reconciliation with minimum number of DOM operations
 - Fast performance
-- Server side rendering
-- Advanced development mode
 - Test utilities
 - Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler) `ADVANCED` mode.
-
-## Library Size
-
-It seems that nowadays many people in javascript community were brainwashed that small library size is a synonym to
-fast performance and simple implementation. In reality it usually means that library is using different tricks to reduce
-code size by using inappropriate data structures (slower performance), initializing data structures at runtime (slower
-bootstrap performance), reusing code for many different data types (slower performance), etc.
-
-Library size in ivi library is at the bottom on the list of priorities:
-
-- Correctness
-- Consistency / Predictable Behavior
-- Performance / Developer Experience
-- Library Size
-
-Internal APIs are carefully designed to make sure that unnecessary code will be removed by Dead Code Elimination
-passes and the minimal "hello world" application that is built with ivi library weights **~13kB** (~5kB gzipped).
-
-## Performance / Developer Experience
-
-Performance in ivi library is not about being just fast, it is a feature that improves Developer Experience by a lot. It
-is possible to build a fast UI application with any modern web UI library, but the difference is how much complexity it
-would require from an application developer to build a fast UI application.
-
-With a fast UI library we can completely ignore any complexities for majority of UI applications and rerender entire
-view from scratch when something is changed.
-
-But performance is also isn't a top priority for ivi, and that is why it provides many useful features that are lacking
-in many virtual dom libraries:
-
-- [Predictable reconciliation behaviour](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
-- Updatable contexts
-- Implicit keys to correctly support patterns like `condition ? h.div() : null`
-- `attached` lifecycle is invoked from top to bottom when all DOM nodes are instantiated
-- `updated` lifecycle is always invoked for all parents when descendant is updated
 
 ## Questions
 
@@ -61,39 +24,29 @@ exclusively for bug reports and feature requests.
 - [Virtual DOM](https://github.com/ivijs/ivi/blob/master/documentation/general/virtual-dom.md)
 - [Components](https://github.com/ivijs/ivi/blob/master/documentation/general/components.md)
 - [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/general/synthetic-events.md)
-- [External State](https://github.com/ivijs/ivi/blob/master/documentation/general/external-state.md)
+- [Connectors](https://github.com/ivijs/ivi/blob/master/documentation/general/connect.md)
 - [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
-- [Build Configuration](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md)
 
 ### Advanced
 
-- [Optimization Hints](https://github.com/ivijs/ivi/blob/master/documentation/advanced/optimization-hints.md)
-- [Keep Alive](https://github.com/ivijs/ivi/blob/master/documentation/advanced/keep-alive.md)
 - [Scheduler](https://github.com/ivijs/ivi/blob/master/documentation/advanced/scheduler.md)
-- [Development Mode](https://github.com/ivijs/ivi/blob/master/documentation/advanced/dev-mode.md)
 - [TypeScript Enums](https://github.com/ivijs/ivi/blob/master/documentation/advanced/typescript-enums.md)
 - [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
-- [Known Issues](https://github.com/ivijs/ivi/blob/master/documentation/advanced/issues.md)
 
 ### Misc
 
 - [Performance Tips](https://github.com/ivijs/ivi/blob/master/documentation/misc/perf-tips.md)
 - [Children Reconciliation](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
-- [Unsupported React Features](https://github.com/ivijs/ivi/blob/master/documentation/misc/unsupported-react-features.md)
 
 ### Installation
 
 #### NPM
 
-ivi npm packages provide es6 modules and TypeScript typings.
+ivi npm packages provide es2015, commonjs modules and TypeScript typings.
 
 ```sh
 $ npm install ivi-core ivi-dom ivi-scheduler ivi-events ivi-html ivi
 ```
-
-When building an application with an NPM module, make sure that you properly
-[configure](https://github.com/ivijs/ivi/blob/master/documentation/general/build-configuration.md) your bundler and
-specify all configuration variables.
 
 #### Boilerplate
 
@@ -106,33 +59,19 @@ Basic boilerplate configured with:
 $ git clone https://github.com/ivijs/boilerplate
 ```
 
-### Declarative Rendering with Virtual DOM
+### Basic Example
 
-Declarative rendering in ivi is based on the Virtual DOM. Each time you want to update DOM, just create a new Virtual
-DOM tree and syncing algorithm will efficiently update DOM tree.
-
-```ts
+```js
 import { render } from "ivi";
 import * as h from "ivi-html";
 
-render(
-  h.div().children("Hello world!"),
-  document.getElementById("app")!,
-);
-```
-
-Now lets make it alive:
-
-```ts
-import { render } from "ivi";
-import * as h from "ivi-html";
-
+const container = document.getElementById("app");
 let counter = 0;
 
 function update() {
   render(
-    h.div().children(`Counter: ${counter}`),
-    document.getElementById("app")!,
+    h.div().c(`Counter: ${counter}`),
+    container,
   );
 
   setTimeout(update, 100);
@@ -149,16 +88,15 @@ Components are the basic building blocks for your applications, they will help y
 Stateless components are implemented with simple functions.
 
 ```ts
-import { componentFactory, render } from "ivi";
+import { statelessComponentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
-function StatelessComponent(text: string) {
-  return h.div().children(text);
-}
-const statelessComponent = componentFactory(StatelessComponent);
+const HelloComponent = statelessComponent<string>((text) => (
+  h.div().c(text)
+));
 
 render(
-  statelessComponent("Hello Stateless Component!"),
+  HelloComponent("Hello Stateless Component!"),
   document.getElementById("app")!,
 );
 ```
@@ -172,7 +110,7 @@ Stateful components are implemented with ES6 classes and should be extended from
 import { Component, componentFactory, render } from "ivi";
 import * as h from "ivi-html";
 
-class StatefulComponent extends Component {
+const StatefulComponent = component(class extends Component {
   private time = 0;
   private timeoutId = 0;
 
@@ -188,13 +126,12 @@ class StatefulComponent extends Component {
   }
 
   render() {
-    return h.div().children(`Time: ${this.time}`);
+    return h.div().c(`Time: ${this.time}`);
   }
-}
-const statefulComponent = componentFactory(StatefulComponent);
+});
 
 render(
-  statefulComponent(),
+  StatefulComponent(),
   document.getElementById("app")!,
 );
 ```

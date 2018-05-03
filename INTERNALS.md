@@ -23,24 +23,28 @@ Synthetic Events subsystem with native event sources (completely separated from 
 
 ### ivi-html
 
-Virtual DOM node factories for HTML and SVG nodes.
+Virtual DOM node factories for HTML nodes.
+
+### ivi-svg
+
+Virtual DOM node factories for SVG nodes.
 
 ### ivi-scheduler
 
-Client-side scheduler.
+Scheduler.
 
 ### ivi
 
-Client-side Virtual DOM implementation with public API. It also re-exports some types and functions from `ivi-core`
+Virtual DOM implementation with public API. It also re-exports some types and functions from `ivi-core`
 package.
 
 ### ivi-test
 
 Test utilities.
 
-### iko-ivi
+### ivi-test-scheduler
 
-Extension for [iko](https://github.com/localvoid/iko) assertion library.
+Scheduler for test environments.
 
 ### ivi-state
 
@@ -52,11 +56,11 @@ TSLint rules.
 
 ### ivi-gestures
 
-**EXPERIMENTAL** package with gesture recognition (+DnD)
+**EXPERIMENTAL** package with DnD+gesture recognition
 
 ## Development Environment
 
-Bootstrap Development Environment (Do not use lerna to bootstrap)
+Bootstrap Development Environment
 
 ```sh
 $ yarn
