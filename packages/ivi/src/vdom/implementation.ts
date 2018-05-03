@@ -1415,6 +1415,7 @@ function _syncChildrenTrackByKeys(parent: Node, a: VNode[], b: VNode[], context:
  *
  * @param a Array of numbers.
  * @returns Longest increasing subsequence.
+ * @noinline
  */
 function lis(a: number[]): number[] {
   const p = a.slice();
