@@ -13,18 +13,14 @@ export interface TestStatelessComponentProps {
   hooks: TestStatelessComponentHooks<TestStatelessComponentProps>;
 }
 
-export const testStatelessComponent = statelessComponentFactory(
-  function TestStatelessComponent(props: TestStatelessComponentProps) {
+export const testStatelessComponent = statelessComponentFactory<TestStatelessComponentProps>(
+  (props) => {
     if (props.hooks.render) {
       return props.hooks.render(props);
     }
-
     return props.child;
   },
-  function (
-    oldProps: TestStatelessComponentProps,
-    newProps: TestStatelessComponentProps,
-  ) {
+  (oldProps, newProps) => {
     if (newProps.hooks.isPropsChanged) {
       return newProps.hooks.isPropsChanged(oldProps, newProps);
     }

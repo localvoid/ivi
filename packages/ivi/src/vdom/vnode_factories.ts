@@ -5,9 +5,9 @@ import { ConnectDescriptor } from "./connect_descriptor";
 
 export function statelessComponentFactory(c: () => VNode): () => VNode<undefined>;
 export function statelessComponentFactory<P>(
-  render: P extends undefined ? () => VNode<any> : (props: P) => VNode<any>,
+  render: undefined extends P ? (props?: P) => VNode<any> : (props: P) => VNode<any>,
   shouldUpdate?: (oldProps: P, newProps: P) => boolean,
-): P extends undefined ? () => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 export function statelessComponentFactory<P>(
   render: (props: P) => VNode<any>,
   shouldUpdate?: (oldProps: P, newProps: P) => boolean,
@@ -38,7 +38,7 @@ export function statelessComponentFactory<P>(
 export function componentFactory(c: StatefulComponent<undefined>): () => VNode<undefined>;
 export function componentFactory<P>(
   c: StatefulComponent<P>,
-): P extends undefined ? () => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 export function componentFactory<P>(
   c: StatefulComponent<P>,
 ): (props: P) => VNode<P> {
@@ -75,13 +75,13 @@ export function connect<T>(
   render: (props: T) => VNode<any>,
 ): () => VNode<undefined>;
 export function connect<T, P>(
-  select: (prev: T | null, props: P) => T,
+  select: undefined extends P ? (prev: T | null, props?: P) => T : (prev: T | null, props: P) => T,
   render: (props: T) => VNode<any>,
-): P extends undefined ? () => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 export function connect<T, P, C>(
   select: (prev: T | null, props: P, context: C) => T,
   render: (props: T) => VNode<any>,
-): P extends undefined ? () => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? () => VNode<P> : (props: P) => VNode<P>;
 export function connect<T, P, C>(
   select: (prev: T | null, props: P, context: C) => T,
   render: (props: T) => VNode<any>,
