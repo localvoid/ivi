@@ -11,8 +11,8 @@ export interface ComponentTesterProps {
   wrapDepth?: number;
 }
 
-export const statelessComponentTester = statelessComponentFactory(
-  function StatelessComponentTester(props: ComponentTesterProps): VNode {
+export const statelessComponentTester = statelessComponentFactory<ComponentTesterProps>(
+  function StatelessComponentTester(props): VNode {
     if (props.wrapDepth) {
       return statelessComponentTester({
         child: props.child,

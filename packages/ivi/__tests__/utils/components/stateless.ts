@@ -32,7 +32,7 @@ export const testStatelessComponent = statelessComponentFactory(
   },
 );
 
-export const staticComponent = statelessComponentFactory((child: VNode) => child, () => false);
+export const staticComponent = statelessComponentFactory<VNode>((child) => child, () => false);
 
 export function $tfc(
   id: string,
