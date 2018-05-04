@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.checks.json",
+  "extends": "../../tools/typescript/tsconfig.checks.json",
   "compilerOptions": {
     "moduleResolution": "node",
     "declaration": false,

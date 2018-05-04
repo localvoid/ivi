@@ -1,3 +1,3 @@
 module.exports = {
-  ...require("../jest.config.js"),
+  ...require("../../tools/jest/config.js"),
 };

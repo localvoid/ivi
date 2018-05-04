@@ -1,47 +1,22 @@
 {
-  "name": "ivi",
   "private": true,
   "version": "1.0.0",
-  "description": "Javascript (TypeScript) library for building web user interfaces.",
-  "license": "MIT",
-  "author": {
-    "name": "Boris Kaul",
-    "email": "localvoid@gmail.com",
-    "url": "https://github.com/localvoid"
-  },
-  "keywords": [
-    "ui",
-    "virtual",
-    "dom",
-    "virtualdom",
-    "vdom",
-    "diff",
-    "browser",
-    "typescript"
+  "workspaces": [
+    "packages/*"
   ],
-  "homepage": "https://github.com/ivijs/ivi",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ivijs/ivi"
+  "scripts": {
+    "test": "jest"
   },
-  "bugs": {
-    "url": "https://github.com/ivijs/ivi/issues"
-  },
-  "github": "https://github.com/ivijs/ivi",
-  "files": [],
-  "scripts": {},
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "@types/node": "^9.6.6",
     "jest": "^22.4.3",
+    "lerna": "^2.11.0",
     "routekit-resolver": "^0.4.1",
     "ts-jest": "^22.4.4",
-    "ts-node": "^6.0.1",
+    "ts-node": "^6.0.2",
     "tslib": "^1.9.0",
-    "tslint": "^5.9.1",
+    "tslint": "^5.10.0",
     "typescript": "^2.8.3"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+  }
 }
