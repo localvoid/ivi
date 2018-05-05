@@ -312,25 +312,6 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
 }
 
 /**
- * Move node.
- *
- * @param parent Parent DOM node.
- * @param node VNode element to move.
- * @param nextRef Reference to the next node, if it is null, node will be moved to the end.
- */
-function _moveChild(parent: Node, node: VNode, nextRef: Node | null): void {
-  nodeInsertBefore(parent, getDOMInstanceFromVNode(node)!, nextRef!);
-}
-
-function _detachAll(firstNode: VNode): void {
-  let node: VNode | null = firstNode;
-  while (node !== null) {
-    _detach(node);
-    node = node._next;
-  }
-}
-
-/**
  * Remove all children.
  *
  * `detach` lifecycle methods will be invoked for all children and their subtrees.
@@ -340,7 +321,11 @@ function _detachAll(firstNode: VNode): void {
  */
 function _removeAllChildren(parent: Node, firstNode: VNode): void {
   parent.textContent = "";
-  _detachAll(firstNode);
+  let node: VNode | null = firstNode;
+  do {
+    _detach(node);
+    node = node._next;
+  } while (node !== null);
 }
 
 /**
@@ -1074,8 +1059,8 @@ function _syncChildrenTrackByKeys(
   const bLastNode = bFirstNode._prev!;
   let aStartNode: VNode<any> | null = aFirstNode;
   let bStartNode: VNode<any> | null = bFirstNode;
-  let aEndNode: VNode<any> | null = aLastNode;
-  let bEndNode: VNode<any> | null = bLastNode;
+  let aEndNode: VNode<any> = aLastNode;
+  let bEndNode: VNode<any> = bLastNode;
   let aNode: VNode<any> | null;
   let bNode: VNode<any> | null;
   let i: number;
@@ -1112,12 +1097,12 @@ function _syncChildrenTrackByKeys(
       if (aStartNode === aEndNode) {
         finished |= 1;
       } else {
-        aEndNode = aEndNode!._prev;
+        aEndNode = aEndNode._prev;
       }
       if (bStartNode === bEndNode) {
         finished |= 2;
       } else {
-        bEndNode = bEndNode!._prev;
+        bEndNode = bEndNode._prev;
       }
       if (finished) {
         break outer;
@@ -1131,17 +1116,17 @@ function _syncChildrenTrackByKeys(
     if (finished !== 3) {
       if (finished === 1) {
         // All nodes from a are synced, insert the rest from b.
-        next = bEndNode!._next === null ? null : getDOMInstanceFromVNode(bEndNode!._next!);
+        next = bEndNode._next === null ? null : getDOMInstanceFromVNode(bEndNode._next!);
         do {
           _renderIntoAndAttach(parent, next, bStartNode!, context);
           bStartNode = bStartNode!._next;
-        } while (bStartNode !== bEndNode!._next);
+        } while (bStartNode !== bEndNode._next);
       } else {
         // All nodes from b are synced, remove the rest from a.
         do {
           _removeChild(parent, aStartNode!);
           aStartNode = aStartNode!._next;
-        } while (aStartNode !== aEndNode!._next);
+        } while (aStartNode !== aEndNode._next);
       }
     }
   } else { // Step 2
@@ -1171,7 +1156,7 @@ function _syncChildrenTrackByKeys(
       }
       bInnerLength++;
       bNode = bNode!._next;
-    } while (bNode !== bEndNode!._next);
+    } while (bNode !== bEndNode._next);
 
     // Mark all nodes as inserted.
     const bArray = new Array<VNode<any>>(bInnerLength);
@@ -1203,17 +1188,17 @@ function _syncChildrenTrackByKeys(
           i = j;
         }
         bNode = bArray[j];
-        _sync(parent, aNode!, bNode!, context, dirtyContext, false);
+        _sync(parent, aNode!, bNode, context, dirtyContext, false);
         innerSynced++;
       }
       aInnerLength++;
       aNode = aNode!._next;
-    } while (aNode !== aEndNode!._next);
+    } while (aNode !== aEndNode._next);
 
     if (!synced && !innerSynced) {
       // Noone is synced, remove all children with one dom op.
       _removeAllChildren(parent, aFirstNode);
-      while (bStartNode !== bEndNode!._next) {
+      while (bStartNode !== bEndNode._next) {
         _renderIntoAndAttach(parent, null, bStartNode!, context);
         bStartNode = bStartNode!._next;
       }
@@ -1234,26 +1219,26 @@ function _syncChildrenTrackByKeys(
         bNode = bEndNode;
         for (i = bInnerLength - 1; i >= 0; i--) {
           if (sources[i] === -1) {
-            next = bNode!._next === null ? null : getDOMInstanceFromVNode(bNode!._next!);
+            next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
             _renderIntoAndAttach(parent, next, bNode!, context);
           } else {
             if (j < 0 || i !== seq[j]) {
-              next = bNode!._next === null ? null : getDOMInstanceFromVNode(bNode!._next!);
-              _moveChild(parent, bNode!, next);
+              next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
+              nodeInsertBefore(parent, getDOMInstanceFromVNode(bNode)!, next);
             } else {
               j--;
             }
           }
-          bNode = bNode!._prev;
+          bNode = bNode._prev;
         }
       } else if (innerSynced !== bInnerLength) {
         bNode = bEndNode;
         for (i = bInnerLength - 1; i >= 0; i--) {
           if (sources[i] === -1) {
-            next = bNode!._next === null ? null : getDOMInstanceFromVNode(bNode!._next!);
-            _renderIntoAndAttach(parent, next, bNode!, context);
+            next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
+            _renderIntoAndAttach(parent, next, bNode, context);
           }
-          bNode = bNode!._prev;
+          bNode = bNode._prev;
         }
       }
     }

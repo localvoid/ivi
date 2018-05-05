@@ -209,31 +209,32 @@ export class VNode<P = any, N = Node> {
     }
 
     const children = arguments;
-    let first: VNode<any> | string | number | null = null;
-
-    // if (children.length === 1) {
-    //   first = children[0];
-    //   if (typeof first !== "object") {
-    //     this._flags |= VNodeFlags.ChildrenBasic;
-    //     this._children = first;
-    //     return this;
-    //   }
-    // }
-
+    let first: VNode<any> | null = null;
     let prev: VNode<any> | null = null;
-    let n: VNode<any>;
-    for (let i = 0; i < children.length; ++i) {
-      n = children[i];
+
+    for (let i = 0, p = 0; i < children.length; ++i, ++p) {
+      let n = children[i];
 
       if (n !== null) {
         if (typeof n !== "object") {
           n = new VNode<null>(VNodeFlags.Text, null, null, void 0, n);
         }
-        if ((n._flags & VNodeFlags.Key) === 0) {
-          n._key = i;
+        const last = n._prev;
+        const flags = n._flags;
+        if (last === n) {
+          if ((flags & VNodeFlags.Key) === 0) {
+            n._key = p;
+          }
+        } else if ((flags & VNodeFlags.KeyedList) === 0) {
+          let c: VNode | null = n;
+          do {
+            if ((flags & VNodeFlags.Key) === 0) {
+              c!._key = p++;
+            }
+            c = c!._next;
+          } while (c !== null);
         }
 
-        const last = n._prev;
         if (prev !== null) {
           n._prev = prev;
           prev._next = n;
@@ -246,11 +247,11 @@ export class VNode<P = any, N = Node> {
     if (first !== null) {
       first._prev = prev!;
       this._flags |= VNodeFlags.ChildrenVNode;
+      this._children = first;
       if (DEBUG) {
         checkUniqueKeys(first);
       }
     }
-    this._children = first;
 
     return this;
   }
@@ -526,79 +527,4 @@ function checkUniqueKeys(children: VNode): void {
     }
     node = node._next;
   }
-}
-
-/**
- * map creates a new array with the results of calling a provided function on every element in the calling array.
- *
- * @param items Array.
- * @param fn Function that produces an element of the new Array.
- */
-export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U>): VNode<U> | null {
-  if (array.length) {
-    const first = fn(array[0], 0);
-    let prev = first;
-    for (let i = 1; i < array.length; i++) {
-      const vnode = fn(array[i], i);
-      vnode._prev = prev;
-      prev._next = vnode;
-      prev = vnode;
-    }
-    first._prev = prev;
-    return first;
-  }
-  return null;
-}
-
-/**
- * mapRange creates a new array with the results of calling a provided function on every number in the provided range.
- *
- * @param start Range start.
- * @param end Range end.
- * @param fn Function that produces an element for the new Array.
- */
-export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T>): VNode<T> | null {
-  const length = end - start;
-  if (length) {
-    const first = fn(0);
-    let prev = first;
-    for (let i = 1; i < length; ++i) {
-      const vnode = fn(i);
-      vnode._prev = prev;
-      prev._next = vnode;
-      prev = vnode;
-    }
-    first._prev = prev;
-    return first;
-  }
-  return null;
-}
-
-export function mapFilter<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null {
-  if (array.length) {
-    let first: VNode<any> | null = null;
-    let vnode: VNode<any> | null;
-    let i = 0;
-    for (; i < array.length; i++) {
-      vnode = fn(array[i], i);
-      if (vnode !== null) {
-        first = vnode;
-        break;
-      }
-    }
-    if (first !== null) {
-      let prev = first;
-      for (; i < array.length; i++) {
-        vnode = fn(array[i], i);
-        if (vnode !== null) {
-          vnode._prev = prev;
-          prev._next = vnode;
-          prev = vnode;
-        }
-      }
-      first._prev = prev;
-      return first;
-    }
-  }
-  return null;
 }

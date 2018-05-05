@@ -24,21 +24,21 @@ export const enum VNodeFlags {
    */
   StatefulComponent = 1 << 4,
   /**
-   * VNode list is injected, implicit keys should be recalculated.
-   */
-  Slot = 1 << 5,
-  /**
    * Children property contains a child VNode.
    */
-  ChildrenVNode = 1 << 6,
+  ChildrenVNode = 1 << 5,
   /**
    * Children property contains unsafe HTML.
    */
-  UnsafeHTML = 1 << 7,
+  UnsafeHTML = 1 << 6,
   /**
    * VNode is using an explicit key.
    */
-  Key = 1 << 8,
+  Key = 1 << 7,
+  /**
+   * Keyed list.
+   */
+  KeyedList = 1 << 8,
   /**
    * Element contains events.
    */
