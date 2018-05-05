@@ -48,19 +48,6 @@ export function findRoot(container: Element): Root | undefined {
 }
 
 /**
- * Fix for the Mouse Event bubbling on iOS devices.
- *
- * #quirks
- *
- * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
- */
-function iOSFixEventBubbling(container: Element): void {
-  if (USER_AGENT & UserAgentFlags.iOS) {
-    (container as HTMLElement).onclick = NOOP;
-  }
-}
-
-/**
  * Update root nodes.
  */
 function _update() {
@@ -79,7 +66,16 @@ function _update() {
             syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, false);
           } else {
             renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
-            iOSFixEventBubbling(container);
+            /**
+             * Fix for the Mouse Event bubbling on iOS devices.
+             *
+             * #quirks
+             *
+             * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+             */
+            if (TARGET === "browser" && (USER_AGENT & UserAgentFlags.iOS)) {
+              (container as HTMLElement).onclick = NOOP;
+            }
           }
           root.currentVNode = newVNode;
         } else if (currentVNode) {
