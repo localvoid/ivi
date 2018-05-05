@@ -44,13 +44,13 @@ export const enum EventHandlerFlags {
  */
 export const enum SyntheticEventFlags {
   /**
-   * Propagation is stopped.
-   */
-  StoppedPropagation = 1,
-  /**
    * Default behaviour should be prevented.
    */
-  PreventedDefault = 1 << 1,
+  PreventedDefault = 1,
+  /**
+   * Propagation is stopped.
+   */
+  StoppedPropagation = 1 << 1,
 
   /**
    * Event can bubble up through the DOM.
@@ -69,4 +69,9 @@ export const enum SyntheticEventFlags {
    * Event at bubbling phase.
    */
   BubblePhase = 1 << 5,
+}
+
+export const enum EventFlags {
+  PreventDefault = SyntheticEventFlags.PreventedDefault,
+  StopPropagation = SyntheticEventFlags.StoppedPropagation,
 }

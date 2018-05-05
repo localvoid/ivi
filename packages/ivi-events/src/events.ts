@@ -4,7 +4,7 @@
  * Optimizing compilers should inline all this functions and completely remove unused code.
  */
 
-import { EventHandlerFlags, NativeEventSourceFlags } from "./flags";
+import { EventHandlerFlags, NativeEventSourceFlags, EventFlags } from "./flags";
 import { EventHandler } from "./event_handler";
 import { EventSource } from "./event_source";
 import { NativeEventSource } from "./native_event_source";
@@ -116,7 +116,7 @@ export const EventSourceActiveWheel = new NativeEventSource<SyntheticWheelEvent,
  */
 export function createEventHandler<E extends SyntheticNativeEvent<any>>(
   source: EventSource,
-  fn: (ev: E) => void,
+  fn: (ev: E) => EventFlags | undefined,
   capture?: boolean,
 ): EventHandler<E> {
   return {
@@ -130,518 +130,518 @@ export function createEventHandler<E extends SyntheticNativeEvent<any>>(
 }
 
 export function onAbort(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceAbort.eventSource, handler, capture);
 }
 export function onActivate(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceActivate.eventSource, handler, capture);
 }
 export function onAriaRequest(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceAriaRequest.eventSource, handler, capture);
 }
 export function onBeforeActivate(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceBeforeActivate.eventSource, handler, capture);
 }
 export function onBeforeCopy(
-  handler: (ev: SyntheticClipboardEvent) => void,
+  handler: (ev: SyntheticClipboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticClipboardEvent> {
   return createEventHandler<SyntheticClipboardEvent>(EventSourceBeforeCopy.eventSource, handler, capture);
 }
 export function onBeforeCut(
-  handler: (ev: SyntheticClipboardEvent) => void,
+  handler: (ev: SyntheticClipboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticClipboardEvent> {
   return createEventHandler<SyntheticClipboardEvent>(EventSourceBeforeCut.eventSource, handler, capture);
 }
 export function onBeforeDeactivate(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceBeforeDeactivate.eventSource, handler, capture);
 }
 export function onBeforePaste(
-  handler: (ev: SyntheticClipboardEvent) => void,
+  handler: (ev: SyntheticClipboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticClipboardEvent> {
   return createEventHandler<SyntheticClipboardEvent>(EventSourceBeforePaste.eventSource, handler, capture);
 }
 export function onBlur(
-  handler: (ev: SyntheticFocusEvent) => void,
+  handler: (ev: SyntheticFocusEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticFocusEvent> {
   return createEventHandler<SyntheticFocusEvent>(EventSourceBlur.eventSource, handler, capture);
 }
 export function onCanPlay(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceCanPlay.eventSource, handler, capture);
 }
 export function onCanPlaythrough(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceCanPlaythrough.eventSource, handler, capture);
 }
 export function onChange(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceChange.eventSource, handler, capture);
 }
 export function onClick(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceClick.eventSource, handler, capture);
 }
 export function onContextMenu(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourceContextMenu.eventSource, handler, capture);
 }
 export function onCopy(
-  handler: (ev: SyntheticClipboardEvent) => void,
+  handler: (ev: SyntheticClipboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticClipboardEvent> {
   return createEventHandler<SyntheticClipboardEvent>(EventSourceCopy.eventSource, handler, capture);
 }
 export function onCueChange(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceCueChange.eventSource, handler, capture);
 }
 export function onCut(
-  handler: (ev: SyntheticClipboardEvent) => void,
+  handler: (ev: SyntheticClipboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticClipboardEvent> {
   return createEventHandler<SyntheticClipboardEvent>(EventSourceCut.eventSource, handler, capture);
 }
 export function onDoubleClick(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceDoubleClick.eventSource, handler, capture);
 }
 export function onDeactivate(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceDeactivate.eventSource, handler, capture);
 }
 export function onDrag(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDrag.eventSource, handler, capture);
 }
 export function onDragEnd(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDragEnd.eventSource, handler, capture);
 }
 export function onDragEnter(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDragEnter.eventSource, handler, capture);
 }
 export function onDragLeave(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDragLeave.eventSource, handler, capture);
 }
 export function onDragOver(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDragOver.eventSource, handler, capture);
 }
 export function onDragStart(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDragStart.eventSource, handler, capture);
 }
 export function onDrop(
-  handler: (ev: SyntheticDragEvent) => void,
+  handler: (ev: SyntheticDragEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticDragEvent> {
   return createEventHandler<SyntheticDragEvent>(EventSourceDrop.eventSource, handler, capture);
 }
 export function onDurationChange(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceDurationChange.eventSource, handler, capture);
 }
 export function onEmptied(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceEmptied.eventSource, handler, capture);
 }
 export function onEncrypted(
-  handler: (ev: SyntheticMediaEncryptedEvent) => void,
+  handler: (ev: SyntheticMediaEncryptedEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMediaEncryptedEvent> {
   return createEventHandler<SyntheticMediaEncryptedEvent>(EventSourceEncrypted.eventSource, handler, capture);
 }
 export function onEnded(
-  handler: (ev: SyntheticMediaStreamErrorEvent) => void,
+  handler: (ev: SyntheticMediaStreamErrorEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMediaStreamErrorEvent> {
   return createEventHandler<SyntheticMediaStreamErrorEvent>(EventSourceEnded.eventSource, handler, capture);
 }
 export function onError(
-  handler: (ev: SyntheticErrorEvent) => void,
+  handler: (ev: SyntheticErrorEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticErrorEvent> {
   return createEventHandler<SyntheticErrorEvent>(EventSourceError.eventSource, handler, capture);
 }
 export function onFocus(
-  handler: (ev: SyntheticFocusEvent) => void,
+  handler: (ev: SyntheticFocusEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticFocusEvent> {
   return createEventHandler<SyntheticFocusEvent>(EventSourceFocus.eventSource, handler, capture);
 }
 export function onGotPointerCapture(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourceGotPointerCapture.eventSource, handler, capture);
 }
 export function onInput(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceInput.eventSource, handler, capture);
 }
 export function onInvalid(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceInvalid.eventSource, handler, capture);
 }
 export function onKeyDown(
-  handler: (ev: SyntheticKeyboardEvent) => void,
+  handler: (ev: SyntheticKeyboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticKeyboardEvent> {
   return createEventHandler<SyntheticKeyboardEvent>(EventSourceKeyDown.eventSource, handler, capture);
 }
 export function onKeyPress(
-  handler: (ev: SyntheticKeyboardEvent) => void,
+  handler: (ev: SyntheticKeyboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticKeyboardEvent> {
   return createEventHandler<SyntheticKeyboardEvent>(EventSourceKeyPress.eventSource, handler, capture);
 }
 export function onKeyUp(
-  handler: (ev: SyntheticKeyboardEvent) => void,
+  handler: (ev: SyntheticKeyboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticKeyboardEvent> {
   return createEventHandler<SyntheticKeyboardEvent>(EventSourceKeyUp.eventSource, handler, capture);
 }
 export function onLoad(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceLoad.eventSource, handler, capture);
 }
 export function onLoadedData(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceLoadedSata.eventSource, handler, capture);
 }
 export function onLoadedMetadata(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceLoadedMetadata.eventSource, handler, capture);
 }
 export function onLoadStart(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceLoadStart.eventSource, handler, capture);
 }
 export function onLostPointerCapture(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourceLostPointerCapture.eventSource, handler, capture);
 }
 export function onMouseDown(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseDown.eventSource, handler, capture);
 }
 export function onMouseEnter(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseEnter.eventSource, handler, capture);
 }
 export function onMouseLeave(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseLeave.eventSource, handler, capture);
 }
 export function onMouseMove(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseMove.eventSource, handler, capture);
 }
 export function onMouseOut(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseOut.eventSource, handler, capture);
 }
 export function onMouseOver(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseOver.eventSource, handler, capture);
 }
 export function onMouseUp(
-  handler: (ev: SyntheticMouseEvent<MouseEvent>) => void,
+  handler: (ev: SyntheticMouseEvent<MouseEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticMouseEvent<MouseEvent>> {
   return createEventHandler<SyntheticMouseEvent<MouseEvent>>(EventSourceMouseUp.eventSource, handler, capture);
 }
 export function onPaste(
-  handler: (ev: SyntheticClipboardEvent) => void,
+  handler: (ev: SyntheticClipboardEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticClipboardEvent> {
   return createEventHandler<SyntheticClipboardEvent>(EventSourcePaste.eventSource, handler, capture);
 }
 export function onPause(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourcePause.eventSource, handler, capture);
 }
 export function onPlay(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourcePlay.eventSource, handler, capture);
 }
 export function onPlaying(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourcePlaying.eventSource, handler, capture);
 }
 export function onPointerCancel(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerCancel.eventSource, handler, capture);
 }
 export function onPointerDown(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerDown.eventSource, handler, capture);
 }
 export function onPointerEnter(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerEnter.eventSource, handler, capture);
 }
 export function onPointerLeave(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerLeave.eventSource, handler, capture);
 }
 export function onPointerMove(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerMove.eventSource, handler, capture);
 }
 export function onPointerOut(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerOut.eventSource, handler, capture);
 }
 export function onPointerOver(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerOver.eventSource, handler, capture);
 }
 export function onPointerUp(
-  handler: (ev: SyntheticPointerEvent) => void,
+  handler: (ev: SyntheticPointerEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticPointerEvent> {
   return createEventHandler<SyntheticPointerEvent>(EventSourcePointerUp.eventSource, handler, capture);
 }
 export function onProgress(
-  handler: (ev: SyntheticProgressEvent) => void,
+  handler: (ev: SyntheticProgressEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticProgressEvent> {
   return createEventHandler<SyntheticProgressEvent>(EventSourceProgress.eventSource, handler, capture);
 }
 export function onRateChange(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceRateChange.eventSource, handler, capture);
 }
 export function onReset(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceReset.eventSource, handler, capture);
 }
 export function onScroll(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceScroll.eventSource, handler, capture);
 }
 export function onSeeked(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceSeeked.eventSource, handler, capture);
 }
 export function onSeeking(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceSeeking.eventSource, handler, capture);
 }
 export function onSelect(
-  handler: (ev: SyntheticUIEvent<UIEvent>) => void,
+  handler: (ev: SyntheticUIEvent<UIEvent>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticUIEvent<UIEvent>> {
   return createEventHandler<SyntheticUIEvent<UIEvent>>(EventSourceSelect.eventSource, handler, capture);
 }
 export function onSelectStart(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceSelectStart.eventSource, handler, capture);
 }
 export function onStalled(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceStalled.eventSource, handler, capture);
 }
 export function onSubmit(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceSubmit.eventSource, handler, capture);
 }
 export function onSuspend(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceSuspend.eventSource, handler, capture);
 }
 export function onTimeUpdate(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceTimeUpdate.eventSource, handler, capture);
 }
 export function onTouchCancel(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceTouchCancel.eventSource, handler, capture);
 }
 export function onTouchEnd(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceTouchEnd.eventSource, handler, capture);
 }
 export function onTouchMove(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceTouchMove.eventSource, handler, capture);
 }
 export function onTouchStart(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceTouchStart.eventSource, handler, capture);
 }
 export function onUnload(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceUnload.eventSource, handler, capture);
 }
 export function onVolumeChange(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceVolumeChange.eventSource, handler, capture);
 }
 export function onWaiting(
-  handler: (ev: SyntheticNativeEvent<Event>) => void,
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
   return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceWaiting.eventSource, handler, capture);
 }
 export function onWheel(
-  handler: (ev: SyntheticWheelEvent) => void,
+  handler: (ev: SyntheticWheelEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticWheelEvent> {
   return createEventHandler<SyntheticWheelEvent>(EventSourceWheel.eventSource, handler, capture);
 }
 
 export function onActiveTouchEnd(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceActiveTouchEnd.eventSource, handler, capture);
 }
 export function onActiveTouchMove(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceActiveTouchMove.eventSource, handler, capture);
 }
 export function onActiveTouchStart(
-  handler: (ev: SyntheticTouchEvent) => void,
+  handler: (ev: SyntheticTouchEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticTouchEvent> {
   return createEventHandler<SyntheticTouchEvent>(EventSourceActiveTouchStart.eventSource, handler, capture);
 }
 export function onActiveWheel(
-  handler: (ev: SyntheticWheelEvent) => void,
+  handler: (ev: SyntheticWheelEvent) => EventFlags | undefined,
   capture = false,
 ): EventHandler<SyntheticWheelEvent> {
   return createEventHandler<SyntheticWheelEvent>(EventSourceActiveWheel.eventSource, handler, capture);

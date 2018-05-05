@@ -1,4 +1,4 @@
-import { EventHandlerFlags, SyntheticEventFlags } from "./flags";
+import { EventHandlerFlags, SyntheticEventFlags, EventFlags } from "./flags";
 import { EventHandler } from "./event_handler";
 import { SyntheticEvent } from "./synthetic_event";
 
@@ -16,6 +16,10 @@ export interface DispatchTarget {
   handlers: EventHandler | EventHandler[];
 }
 
+function getFlags(flags: EventFlags | undefined): EventFlags {
+  return (flags === void 0) ? 0 : flags;
+}
+
 /**
  * dispatchEventToLocalEventHandlers dispatches event to local(at the same DOM Node) event handlers.
  *
@@ -28,30 +32,25 @@ function dispatchEventToLocalEventHandlers(
   target: DispatchTarget,
   event: SyntheticEvent,
   matchFlags: EventHandlerFlags,
-  dispatch: ((h: EventHandler, ev: SyntheticEvent) => void) | undefined,
+  dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | undefined) | undefined,
 ): void {
   const handlers = target.handlers;
+  let flags: EventFlags = 0;
 
-  if (handlers.constructor !== Array) {
-    if (((handlers as EventHandler).flags & matchFlags) !== 0) {
-      if (dispatch === undefined) {
-        (handlers as EventHandler).handler(event);
-      } else {
-        dispatch((handlers as EventHandler), event);
+  if (Array.isArray(handlers)) {
+    for (let j = 0; j < handlers.length; ++j) {
+      const handler = handlers[j];
+      if ((handler.flags & matchFlags) !== 0) {
+        flags |= getFlags((dispatch === void 0) ? handler.handler(event) : dispatch(handler, event));
       }
     }
   } else {
-    for (let j = 0; j < (handlers as EventHandler[]).length; ++j) {
-      const handler = (handlers as EventHandler[])[j];
-      if ((handler.flags & matchFlags) !== 0) {
-        if (dispatch === undefined) {
-          handler.handler(event);
-        } else {
-          dispatch(handler, event);
-        }
-      }
+    if ((handlers.flags & matchFlags) !== 0) {
+      flags = getFlags((dispatch === void 0) ? handlers.handler(event) : dispatch(handlers, event));
     }
   }
+
+  event.flags |= flags;
 }
 
 /**
@@ -72,7 +71,7 @@ export function dispatchEvent(
   targets: DispatchTarget[],
   event: SyntheticEvent,
   bubble: boolean,
-  dispatch?: (h: EventHandler, ev: SyntheticEvent) => void,
+  dispatch?: (h: EventHandler, ev: SyntheticEvent) => EventFlags | undefined,
 ): void {
   let i = targets.length - 1;
   let target;

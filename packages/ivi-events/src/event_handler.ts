@@ -1,4 +1,4 @@
-import { EventHandlerFlags } from "./flags";
+import { EventHandlerFlags, EventFlags } from "./flags";
 import { SyntheticEvent } from "./synthetic_event";
 import { EventSource } from "./event_source";
 
@@ -22,7 +22,7 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any
   /**
    * Event Handler function call interface.
    */
-  handler(ev: E): void;
+  handler(ev: E): EventFlags | undefined;
   /**
    * Number of active listeners.
    */
