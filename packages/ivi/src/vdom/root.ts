@@ -1,6 +1,5 @@
 import { USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
-import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
 
@@ -73,12 +72,9 @@ function _update() {
       const currentVNode = root.currentVNode;
 
       if (root.invalidated) {
-        let newVNode = root.newVNode;
+        const newVNode = root.newVNode;
 
         if (newVNode) {
-          if (newVNode.constructor !== VNode) {
-            newVNode = new VNode(VNodeFlags.Text, null, null, void 0, "");
-          }
           if (currentVNode) {
             syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, false);
           } else {
