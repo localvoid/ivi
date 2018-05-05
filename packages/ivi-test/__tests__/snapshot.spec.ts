@@ -83,10 +83,6 @@ describe("src/snapshot.ts", () => {
     expect(render(h.div().c(h.span())).toSnapshot()).toMatchSnapshot();
   });
 
-  test("<div>[]</div>", () => {
-    expect(render(h.div().c([])).toSnapshot()).toMatchSnapshot();
-  });
-
   test("<div>[<span>]</div>", () => {
     expect(render(h.div().c(h.span())).toSnapshot()).toMatchSnapshot();
   });

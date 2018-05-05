@@ -453,7 +453,7 @@ describe("sync", () => {
       [[], [4, 9], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
       [[], [9, 3, 6, 1, 0], [0, 0, 5, 0, 5, 0, 0], [0, 0, 5, 0, 5, 0, 0]],
 
-      [[999], [1], [0, 0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 0, 0]],
+      [[999], [1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
       [[999], [1, 999], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
       [[999], [999, 1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
       [[999], [4, 9, 999], [0, 0, 2, 0, 2, 0, 0], [0, 0, 2, 0, 2, 0, 0]],
@@ -483,7 +483,7 @@ describe("sync", () => {
       [[998, 999], [0, 1, 2, 3, 4, 998, 5, 6, 7, 8, 9, 999], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
       [[998, 999], [998, 0, 1, 2, 3, 4, 999, 5, 6, 7, 8, 9], [0, 0, 10, 0, 10, 0, 0], [0, 0, 10, 0, 10, 0, 0]],
 
-      [[1], [], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+      [[1], [], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
       [[1, 2], [2], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
       [[1, 2], [1], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
       [[1, 2, 3], [2, 3], [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
@@ -544,8 +544,8 @@ describe("sync", () => {
       [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0, 9], [0, 0, 0, 0, 5, 0, 2], [0, 0, 0, 0, 0, 0, 2]],
       [[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0], [0, 0, 0, 0, 5, 0, 3], [0, 0, 0, 0, 0, 0, 3]],
 
-      [[0], [1], [0, 0, 1, 0, 0, 1, 0], [0, 0, 0, 0, 0, 0, 0]],
-      [[0], [1, 2], [0, 0, 2, 0, 2, 0, 1], [0, 0, 1, 0, 1, 0, 0]],
+      [[0], [1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
+      [[0], [1, 2], [0, 0, 2, 0, 2, 0, 0], [0, 0, 1, 0, 1, 0, 0]],
       [[0, 2], [1], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 1]],
       [[0, 2], [1, 2], [0, 0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
       [[0, 2], [2, 1], [0, 0, 1, 0, 1, 0, 1], [0, 0, 0, 0, 0, 0, 0]],
@@ -566,11 +566,11 @@ describe("sync", () => {
 
       [[{ key: 0, children: [0] }],
       [{ key: 0, children: [] }],
-      [0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1]],
+      [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]],
 
       [[0, 1, { children: [0], key: 2 }],
       [{ key: 2, children: [] }],
-      [0, 0, 0, 0, 0, 0, 3], [1, 0, 0, 0, 0, 1, 2]],
+      [0, 0, 0, 0, 0, 0, 2], [1, 0, 0, 0, 0, 1, 2]],
 
       [[{ key: 0, children: [] }],
       [1, 2, { key: 0, children: [0] }],
@@ -610,7 +610,7 @@ describe("sync", () => {
 
       [[0, 1, { key: 2, children: [0] }, 3, { key: 4, children: [0] }, 5],
       [6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }],
-      [0, 0, 2, 0, 3, 0, 5], [1, 0, 1, 0, 0, 2, 2]],
+      [0, 0, 2, 0, 3, 0, 3], [1, 0, 1, 0, 0, 2, 1]],
     ];
 
     describe("syncChildren", () => {
@@ -621,7 +621,7 @@ describe("sync", () => {
             const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -633,7 +633,7 @@ describe("sync", () => {
             const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -644,7 +644,7 @@ describe("sync", () => {
             r(h.div().c("abc"));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -655,7 +655,7 @@ describe("sync", () => {
             r(h.div().c(10));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -667,7 +667,7 @@ describe("sync", () => {
             const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -679,7 +679,7 @@ describe("sync", () => {
             const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -691,7 +691,7 @@ describe("sync", () => {
             const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -703,7 +703,7 @@ describe("sync", () => {
             const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -715,7 +715,7 @@ describe("sync", () => {
             const b = r(h.div().c(10));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("10");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -727,7 +727,7 @@ describe("sync", () => {
             const b = r(h.div().c("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
           });
         });
       });
@@ -751,7 +751,7 @@ describe("sync", () => {
             const b = r(h.div().c("cde"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("cde");
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
+            expect(c).toEqual(domOps(2, 0, 1, 0, 2, 1, 0));
           });
         });
       });
@@ -763,7 +763,7 @@ describe("sync", () => {
             const b = r(h.div().c(h.div())) as HTMLElement;
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
+            expect(c).toEqual(domOps(2, 0, 1, 0, 2, 1, 0));
           });
         });
       });
@@ -786,18 +786,7 @@ describe("sync", () => {
             r(h.div().c(h.div()));
             const b = r(h.div());
             expect(b.childNodes.length).toBe(0);
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
-          });
-        });
-      });
-
-      test("[<div>] => null", () => {
-        startRender((r) => {
-          checkDOMOps((c) => {
-            r(h.div().c([h.div()]));
-            const b = r(h.div());
-            expect(b.childNodes.length).toBe(0);
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
@@ -808,7 +797,7 @@ describe("sync", () => {
             r(h.div().c(h.div()));
             const b = r(h.div().c(null));
             expect(b.childNodes.length).toBe(0);
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
+            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
@@ -844,19 +833,7 @@ describe("sync", () => {
             const b = r(h.div().unsafeHTML("abc"));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-          });
-        });
-      });
-
-      test("123 => unsafeHTML('abc')", () => {
-        startRender((r) => {
-          checkDOMOps((c) => {
-            r(h.div().c(123));
-            const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).toBe(1);
-            expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+            expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
           });
         });
       });
@@ -869,7 +846,7 @@ describe("sync", () => {
             expect(b.childNodes.length).toBe(2);
             expect(b.children[0].tagName.toLowerCase()).toBe("h1");
             expect(b.children[1].tagName.toLowerCase()).toBe("h2");
-            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
+            expect(c).toEqual(domOps(3, 0, 1, 0, 3, 1, 0));
           });
         });
       });
@@ -881,19 +858,7 @@ describe("sync", () => {
             const b = r(h.div().c(123));
             expect(b.childNodes.length).toBe(1);
             expect(b.firstChild!.nodeValue).toBe("123");
-            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
-          });
-        });
-      });
-
-      test("[<h1><h2>] => unsafeHTML('abc')", () => {
-        startRender((r) => {
-          checkDOMOps((c) => {
-            r(h.div().c(h.h1(), h.h2()));
-            const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).toBe(1);
-            expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(3, 0, 0, 0, 3, 0, 0));
+            expect(c).toEqual(domOps(3, 0, 1, 0, 3, 1, 1));
           });
         });
       });
@@ -906,30 +871,6 @@ describe("sync", () => {
             expect(b.childNodes.length).toBe(1);
             expect(b.children[0].tagName.toLowerCase()).toBe("div");
             expect(c).toEqual(domOps(4, 0, 0, 0, 3, 1, 1));
-          });
-        });
-      });
-
-      test("[] => <div>", () => {
-        startRender((r) => {
-          checkDOMOps((c) => {
-            r(h.div().c([]));
-            const b = r(h.div().c(h.div())) as HTMLElement;
-            expect(b.childNodes.length).toBe(1);
-            expect(b.children[0].tagName.toLowerCase()).toBe("div");
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
-          });
-        });
-      });
-
-      test("<div> => unsafeHTML('abc')", () => {
-        startRender((r) => {
-          checkDOMOps((c) => {
-            r(h.div().c(h.div()));
-            const b = r(h.div().unsafeHTML("abc"));
-            expect(b.childNodes.length).toBe(1);
-            expect(b.firstChild!.nodeValue).toBe("abc");
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
           });
         });
       });
@@ -955,17 +896,6 @@ describe("sync", () => {
             expect(b.children[0].tagName.toLowerCase()).toBe("h1");
             expect(b.children[1].tagName.toLowerCase()).toBe("h2");
             expect(c).toEqual(domOps(4, 0, 0, 0, 3, 1, 0));
-          });
-        });
-      });
-
-      test("<div> => []", () => {
-        startRender((r) => {
-          checkDOMOps((c) => {
-            r(h.div().c(h.div()));
-            const b = r(h.div().c([]));
-            expect(b.childNodes.length).toBe(0);
-            expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 1));
           });
         });
       });
@@ -1501,7 +1431,7 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[0].tagName.toLowerCase()).toBe("span");
           expect(n.children[0].firstChild!.nodeValue).toBe("1");
-          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
+          expect(c).toEqual(domOps(4, 0, 2, 0, 6, 1, 0));
         });
       });
     });
@@ -1521,7 +1451,7 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[0].tagName.toLowerCase()).toBe("span");
           expect(n.children[0].firstChild!.nodeValue).toBe("1");
-          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
+          expect(c).toEqual(domOps(4, 0, 2, 0, 6, 1, 0));
         });
       });
     });
@@ -1542,7 +1472,7 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[1].tagName.toLowerCase()).toBe("span");
           expect(n.children[1].firstChild!.nodeValue).toBe("1");
-          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
+          expect(c).toEqual(domOps(4, 0, 2, 0, 6, 1, 0));
         });
       });
     });
@@ -1562,7 +1492,7 @@ describe("sync", () => {
           )) as HTMLDivElement;
           expect(n.children[1].tagName.toLowerCase()).toBe("span");
           expect(n.children[1].firstChild!.nodeValue).toBe("1");
-          expect(c).toEqual(domOps(4, 0, 0, 0, 4, 1, 0));
+          expect(c).toEqual(domOps(4, 0, 2, 0, 6, 1, 0));
         });
       });
     });

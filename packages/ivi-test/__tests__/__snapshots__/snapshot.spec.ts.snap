@@ -80,7 +80,7 @@ exports[`src/snapshot.ts <div> 1`] = `"<div/>"`;
 
 exports[`src/snapshot.ts <div>'abc'</div> 1`] = `
 "<div>
-  abc
+abc
 </div>"
 `;
 
@@ -95,11 +95,11 @@ exports[`src/snapshot.ts <div><span></div> 1`] = `
 exports[`src/snapshot.ts <div>[  <div>'hello'</div>,  <div>[<span>'world'</span>, <div><span></div>]</div>,  <div><div></div>,  <div>]</div> 1`] = `
 "<div>
   <div>
-    hello
+hello
   </div>
   <div>
     <span>
-      world
+world
     </span>
     <div>
       <span/>
@@ -125,11 +125,9 @@ exports[`src/snapshot.ts <div>[<span>]</div> 1`] = `
 </div>"
 `;
 
-exports[`src/snapshot.ts <div>[]</div> 1`] = `"<div/>"`;
-
 exports[`src/snapshot.ts <div>10</div> 1`] = `
 "<div>
-  10
+10
 </div>"
 `;
 

@@ -1,6 +1,5 @@
 import { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE } from "ivi-core";
 import { render, $tc, $tcf, checkDOMOps, domOps } from "./utils";
-import { cloneVNode } from "../src/vdom/clone";
 import * as h from "./utils/html";
 import * as s from "./utils/svg";
 
@@ -150,7 +149,7 @@ describe("render", () => {
       const n = render<HTMLElement>(h.div().c("abc"));
       expect(n.childNodes.length).toBe(1);
       expect(n.firstChild!.nodeValue).toBe("abc");
-      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+      expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
     });
   });
 
@@ -159,28 +158,11 @@ describe("render", () => {
       const n = render<HTMLElement>(h.div().c(10));
       expect(n.childNodes.length).toBe(1);
       expect(n.firstChild!.nodeValue).toBe("10");
-      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+      expect(c).toEqual(domOps(1, 0, 1, 0, 2, 0, 0));
     });
   });
 
   test("<div><span></div>", () => {
-    checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().c(h.span()));
-      expect(n.childNodes.length).toBe(1);
-      expect(n.children[0].tagName.toLowerCase()).toBe("span");
-      expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
-    });
-  });
-
-  test("<div>[]</div>", () => {
-    checkDOMOps((c) => {
-      const n = render<HTMLElement>(h.div().c([]));
-      expect(n.childNodes.length).toBe(0);
-      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-    });
-  });
-
-  test("<div>[<span>]</div>", () => {
     checkDOMOps((c) => {
       const n = render<HTMLElement>(h.div().c(h.span()));
       expect(n.childNodes.length).toBe(1);
@@ -233,7 +215,7 @@ describe("render", () => {
 
         expect(n.children[2].children[0].tagName.toLowerCase()).toBe("div");
 
-        expect(c).toEqual(domOps(9, 0, 0, 0, 9, 0, 0));
+        expect(c).toEqual(domOps(9, 0, 2, 0, 11, 0, 0));
       });
     });
 
@@ -281,32 +263,32 @@ describe("render", () => {
   });
 
   describe("children normalization", () => {
-    test("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
-      checkDOMOps((c) => {
-        const n = render<HTMLElement>(
-          h.div().c(
-            h.span(),
-            [h.strong().k("strong"), h.a().k("a")], h.span(),
-          ),
-        );
-        expect(n.childNodes.length).toBe(4);
-        expect(n.children[0].tagName.toLowerCase()).toBe("span");
-        expect(n.children[1].tagName.toLowerCase()).toBe("strong");
-        expect(n.children[2].tagName.toLowerCase()).toBe("a");
-        expect(n.children[3].tagName.toLowerCase()).toBe("span");
-        expect(c).toEqual(domOps(5, 0, 0, 0, 5, 0, 0));
-      });
-    });
+    // test("<div>[<span>, [<strong>, <a>], <span>]</div>", () => {
+    //   checkDOMOps((c) => {
+    //     const n = render<HTMLElement>(
+    //       h.div().c(
+    //         h.span(),
+    //         [h.strong().k("strong"), h.a().k("a")], h.span(),
+    //       ),
+    //     );
+    //     expect(n.childNodes.length).toBe(4);
+    //     expect(n.children[0].tagName.toLowerCase()).toBe("span");
+    //     expect(n.children[1].tagName.toLowerCase()).toBe("strong");
+    //     expect(n.children[2].tagName.toLowerCase()).toBe("a");
+    //     expect(n.children[3].tagName.toLowerCase()).toBe("span");
+    //     expect(c).toEqual(domOps(5, 0, 0, 0, 5, 0, 0));
+    //   });
+    // });
 
-    test("<div>['abc', []]</div>", () => {
-      checkDOMOps((c) => {
-        const n = render<HTMLElement>(h.div().c("abc", []));
-        expect(n.childNodes.length).toBe(1);
-        expect(n.childNodes[0].nodeType).toBe(Node.TEXT_NODE);
-        expect(n.childNodes[0].nodeValue).toBe("abc");
-        expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-      });
-    });
+    // test("<div>['abc', []]</div>", () => {
+    //   checkDOMOps((c) => {
+    //     const n = render<HTMLElement>(h.div().c("abc", []));
+    //     expect(n.childNodes.length).toBe(1);
+    //     expect(n.childNodes[0].nodeType).toBe(Node.TEXT_NODE);
+    //     expect(n.childNodes[0].nodeValue).toBe("abc");
+    //     expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+    //   });
+    // });
 
     test("<div>[<div>, null, <span>]</div>", () => {
       checkDOMOps((c) => {
@@ -500,21 +482,6 @@ describe("render", () => {
         const n = render<HTMLAudioElement>(h.audio());
         expect(n.tagName.toLowerCase()).toBe("audio");
         expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-      });
-    });
-  });
-
-  describe("reusing vnodes", () => {
-    test("<div>a</div>", () => {
-      checkDOMOps((c) => {
-        const v = h.div().c("a");
-        const a = render<HTMLDivElement>(v, undefined, true);
-        const b = render<HTMLDivElement>(cloneVNode(v), undefined, true);
-        expect(a.childNodes.length).toBe(1);
-        expect(a.firstChild!.nodeValue).toBe("a");
-        expect(b.childNodes.length).toBe(1);
-        expect(b.firstChild!.nodeValue).toBe("a");
-        expect(c).toEqual(domOps(2, 0, 0, 0, 2, 0, 0));
       });
     });
   });

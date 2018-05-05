@@ -1,6 +1,6 @@
 import * as Events from "ivi-events";
-import { VNode } from "../src/vdom/vnode";
 import { render as rootRender } from "../src/vdom/root";
+import { VNode } from "../src/vdom/vnode";
 import * as h from "./utils/html";
 
 function render<T extends Element>(node: VNode | null, container: Element): T {

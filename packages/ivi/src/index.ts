@@ -1,11 +1,7 @@
 /**
  * Common types and functions re-exported from ivi-core.
  */
-export {
-  map, mapRange, mapFilterUndefined,
-  memoizeSelector,
-  KeyCode, KeyLocation, MouseButtons,
-} from "ivi-core";
+export { memoizeSelector, KeyCode, KeyLocation, MouseButtons } from "ivi-core";
 
 /**
  * Virtual DOM
@@ -19,10 +15,10 @@ export {
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
   disableDirtyChecking,
+  map, mapRange, mapFilter,
 } from "./vdom/vnode";
 export { elementFactory } from "./vdom/element";
 export { component, statelessComponent, context, connect } from "./vdom/vnode_factories";
-export { cloneVNode, shallowCloneVNode } from "./vdom/clone";
 
 /**
  * API available only in browser environment

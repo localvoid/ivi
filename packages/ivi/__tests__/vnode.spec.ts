@@ -1,5 +1,5 @@
 import { EventHandler } from "ivi-events";
-import { mergeAttrs, mergeStyle } from "../src/vdom/vnode";
+import { mergeAttrs, mergeStyle, VNode } from "../src/vdom/vnode";
 import { VNodeFlags } from "../src/vdom/flags";
 import { statelessComponent } from "../src/vdom/vnode_factories";
 import * as h from "./utils/html";
@@ -92,7 +92,7 @@ describe("VNode", () => {
 
     test("children", () => {
       const e = h.div().c("abc");
-      expect(e._children).toBe("abc");
+      expect((e._children as VNode)._children as string).toBe("abc");
     });
 
     test("children override", () => {

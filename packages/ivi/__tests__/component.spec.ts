@@ -1,4 +1,4 @@
-import { startRender, $lc, $tfc, LifecycleTesterProps, TestStatelessComponentProps } from "./utils";
+import { $lc, $tfc, LifecycleTesterProps, TestStatelessComponentProps, startRender } from "./utils";
 import * as h from "./utils/html";
 
 describe("component state", () => {

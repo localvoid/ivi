@@ -27,19 +27,17 @@ export function checkRefs(n: Node, v: VNode) {
       }
     }
   } else {
-    let i = 0;
     let child = n.firstChild;
     if (child) {
       expect(!!(flags & VNodeFlags.Element)).toBe(true);
     }
-    while (child) {
-      if (flags & VNodeFlags.ChildrenArray) {
-        checkRefs(child, (v._children as VNode[])[i++]);
-      } else if (flags & VNodeFlags.ChildrenVNode) {
-        checkRefs(child, v._children as VNode);
-        expect(child.nextSibling).toBeNull();
-      }
-      child = child.nextSibling;
+    if (flags & VNodeFlags.ChildrenVNode) {
+      let vchild = v._children as VNode<any> | null;
+      do {
+        checkRefs(child!, vchild!);
+        child = child!.nextSibling!;
+        vchild = vchild!._next;
+      } while (vchild !== null);
     }
   }
 }

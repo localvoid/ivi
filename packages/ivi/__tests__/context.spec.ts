@@ -1,6 +1,6 @@
+import { connect, context } from "../src/vdom/vnode_factories";
 import { frag, render, staticComponent } from "./utils";
 import * as h from "./utils/html";
-import { context, connect } from "../src/vdom/vnode_factories";
 
 const $ContextTestPrinter = connect<{ value: string }, undefined, { value: string }>(
   (prev, props, ctx) => ({ value: ctx.value }),

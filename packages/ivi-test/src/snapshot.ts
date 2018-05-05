@@ -176,15 +176,12 @@ function _toSnapshot(
 
       let childrenString = "";
       if (vnode._children !== null) {
-        if ((flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode)) !== 0) {
-          if ((flags & VNodeFlags.ChildrenArray) !== 0) {
-            const children = vnode._children as VNode[];
-            for (let i = 0; i < children.length; ++i) {
-              childrenString += `\n${_toSnapshot(il + 1, children[i], sFlags)}`;
-            }
-          } else {
-            childrenString = `\n${_toSnapshot(il + 1, vnode._children as VNode, sFlags)}`;
-          }
+        if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+          let child: VNode | null = vnode._children as VNode;
+          do {
+            childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
+            child = child._next;
+          } while (child !== null);
         } else {
           if ((flags & VNodeFlags.InputElement) !== 0) {
             if (vnode._children !== null) {
@@ -195,7 +192,7 @@ function _toSnapshot(
               }
               multiline = true;
             }
-          } else { // ((flags & (VNodeFlags.ChildrenBasic | VNodeFlags.UnsafeHTML)) !== 0)
+          } else { // ((flags & VNodeFlags.UnsafeHTML) !== 0)
             childrenString = `\n${indent(il + 1)}${vnode._children}`;
           }
         }

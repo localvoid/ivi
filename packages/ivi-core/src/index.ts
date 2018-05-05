@@ -50,7 +50,7 @@ export {
   SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps, SVGElementProps,
 } from "./dom_props";
 
-export { append, unorderedArrayDelete, map, mapRange, mapFilterUndefined } from "./array";
+export { append, unorderedArrayDelete } from "./array";
 export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList } from "./repeatable_task_list";
 export { shallowEqual } from "./equal";

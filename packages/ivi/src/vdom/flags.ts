@@ -24,72 +24,68 @@ export const enum VNodeFlags {
    */
   StatefulComponent = 1 << 4,
   /**
-   * Children property contains a child with a basic type (number|string|boolean).
+   * VNode list is injected, implicit keys should be recalculated.
    */
-  ChildrenBasic = 1 << 5,
+  Slot = 1 << 5,
   /**
    * Children property contains a child VNode.
    */
   ChildrenVNode = 1 << 6,
   /**
-   * Children property contains an Array type.
-   */
-  ChildrenArray = 1 << 7,
-  /**
    * Children property contains unsafe HTML.
    */
-  UnsafeHTML = 1 << 8,
+  UnsafeHTML = 1 << 7,
   /**
    * VNode is using an explicit key.
    */
-  Key = 1 << 9,
+  Key = 1 << 8,
   /**
    * Element contains events.
    */
-  ElementPropsEvents = 1 << 10,
+  ElementPropsEvents = 1 << 9,
   /**
    * VNode represents an HTMLInputElement element.
    */
-  InputElement = 1 << 11,
+  InputElement = 1 << 10,
   /**
    * VNode represents a HTMLTextAreaElement.
    */
-  TextAreaElement = 1 << 12,
+  TextAreaElement = 1 << 11,
   /**
    * VNode represents a HTMLButtonElement.
    */
-  ButtonElement = 1 << 13,
+  ButtonElement = 1 << 12,
   /**
    * VNode represents a HTMLMediaElement.
    */
-  MediaElement = 1 << 14,
+  MediaElement = 1 << 13,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 15,
+  SvgElement = 1 << 14,
   /**
    * Specialized VNode with connect functionality.
    */
-  Connect = 1 << 16,
+  Connect = 1 << 15,
   /**
    * Specialized VNode with an update context functionality.
    */
-  UpdateContext = 1 << 17,
+  UpdateContext = 1 << 16,
   /**
    * Stateless component is using `shouldUpdate` hook.
    */
-  ShouldUpdateHint = 1 << 18,
+  ShouldUpdateHint = 1 << 17,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 19,
+  Autofocus = 1 << 18,
   /**
    * VNode element cannot contain any children.
    */
-  VoidElement = 1 << 20,
+  VoidElement = 1 << 19,
 
-  ElementIdMask = 255 << 21,
-  ElementIdOffset = 21,
+  ElementIdMask = 255 << 20,
+  ElementIdOffset = 20,
   /**
    * Dirty checking is disabled for all descendants.
    *
@@ -108,7 +104,9 @@ export const enum VNodeFlags {
   Syncable = 0
   | Text
   | Element
+  | ElementFactory
   | Component
+  | UnsafeHTML
   | Key
   | InputElement
   | TextAreaElement

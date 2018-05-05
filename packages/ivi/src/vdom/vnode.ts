@@ -22,15 +22,17 @@ export class VNode<P = any, N = Node> {
    */
   _flags: VNodeFlags;
   /**
-   * Children property has a dynamic type that depends on the node kind.
-   *
-   * Element Nodes should contain children virtual nodes as a flat array, singular virtual node or a simple text.
-   *
-   * Input Element Nodes should contain input value (text or checked status).
-   *
-   * Components should contain virtual root nodes.
+   * Circular link to previous node.
    */
-  _children: VNode[] | VNode | string | number | boolean | null;
+  _prev: VNode;
+  /**
+   * Next sibling node.
+   */
+  _next: VNode | null;
+  /**
+   * Children.
+   */
+  _children: VNode | string | number | boolean | null;
   /**
    * Tag property contains details about the type of the element.
    */
@@ -81,7 +83,6 @@ export class VNode<P = any, N = Node> {
     props: P | undefined,
     className: string | undefined,
     children:
-      | VNode[]
       | VNode
       | string
       | number
@@ -89,6 +90,8 @@ export class VNode<P = any, N = Node> {
       | null,
   ) {
     this._flags = flags;
+    this._prev = this;
+    this._next = null;
     this._children = children;
     this._tag = tag;
     this._key = 0;
@@ -182,14 +185,10 @@ export class VNode<P = any, N = Node> {
    *   strings with text nodes.
    * @returns VNode
    */
-  c(...children: Array<VNode[] | VNode | string | number | null>): this;
+  c(...children: Array<VNode | string | number | null>): this;
   c(): this {
     if (DEBUG) {
-      if (this._flags &
-        (VNodeFlags.ChildrenArray |
-          VNodeFlags.ChildrenVNode |
-          VNodeFlags.ChildrenBasic |
-          VNodeFlags.UnsafeHTML)) {
+      if (this._flags & (VNodeFlags.ChildrenVNode | VNodeFlags.UnsafeHTML)) {
         throw new Error("Failed to set children, VNode element is already having children.");
       }
       if (!(this._flags & VNodeFlags.Element)) {
@@ -210,102 +209,49 @@ export class VNode<P = any, N = Node> {
     }
 
     const children = arguments;
-    let f = 0;
-    let r = null;
-    if (children.length === 1) {
-      r = children[0] as VNode[] | VNode | string | number | null;
-      if (typeof r === "object") {
-        if (r !== null) {
-          if (r.constructor === Array) {
-            r = r as VNode[];
-            if (r.length > 1) {
-              f = VNodeFlags.ChildrenArray;
-            } else if (r.length === 1) {
-              f = VNodeFlags.ChildrenVNode;
-              r = r[0];
-            } else {
-              r = null;
-            }
-          } else {
-            f = VNodeFlags.ChildrenVNode;
-          }
+    let first: VNode<any> | string | number | null = null;
+
+    // if (children.length === 1) {
+    //   first = children[0];
+    //   if (typeof first !== "object") {
+    //     this._flags |= VNodeFlags.ChildrenBasic;
+    //     this._children = first;
+    //     return this;
+    //   }
+    // }
+
+    let prev: VNode<any> | null = null;
+    let n: VNode<any>;
+    for (let i = 0; i < children.length; ++i) {
+      n = children[i];
+
+      if (n !== null) {
+        if (typeof n !== "object") {
+          n = new VNode<null>(VNodeFlags.Text, null, null, void 0, n);
         }
-      } else {
-        f = VNodeFlags.ChildrenBasic;
-      }
-    } else {
-      let i;
-      let j = 0;
-      let k = 0;
-      let c;
-      for (i = 0; i < children.length; ++i) {
-        c = children[i];
-        if (c !== null) {
-          if (c.constructor === Array) {
-            if (c.length > 0) {
-              k += c.length;
-              j++;
-              r = c;
-            }
-          } else {
-            k++;
-            j++;
-            r = c;
-          }
+        if ((n._flags & VNodeFlags.Key) === 0) {
+          n._key = i;
         }
-      }
-      if (j > 0) {
-        if ((j | k) === 1) {
-          if (typeof r === "object") {
-            if (r.constructor === Array) {
-              if (k > 1) {
-                f = VNodeFlags.ChildrenArray;
-              } else {
-                f = VNodeFlags.ChildrenVNode;
-                r = r[0];
-              }
-            } else {
-              f = VNodeFlags.ChildrenVNode;
-            }
-          } else {
-            f = VNodeFlags.ChildrenBasic;
-          }
+
+        const last = n._prev;
+        if (prev !== null) {
+          n._prev = prev;
+          prev._next = n;
         } else {
-          f = VNodeFlags.ChildrenArray;
-          r = new Array(k);
-          k = 0;
-          for (i = 0; i < children.length; ++i) {
-            c = children[i];
-            if (typeof c === "object") {
-              if (c !== null) {
-                if (c.constructor === Array) {
-                  for (j = 0; j < c.length; j++) {
-                    if (DEBUG) {
-                      if (!(c[j]._flags & VNodeFlags.Key)) {
-                        throw new Error("Invalid children array. All children nodes in nested" +
-                          " array should have explicit keys.");
-                      }
-                    }
-                    r[k++] = c[j] as VNode;
-                  }
-                } else {
-                  r[k++] = c as VNode;
-                  if ((c._flags & VNodeFlags.Key) === 0) {
-                    c._key = i;
-                  }
-                }
-              }
-            } else {
-              r[k++] = c = new VNode<null>(VNodeFlags.Text, null, null, void 0, c as string | number);
-              c._key = i;
-            }
-          }
-          checkUniqueKeys(r);
+          first = n;
         }
+        prev = last;
       }
     }
-    this._flags |= f;
-    this._children = r;
+    if (first !== null) {
+      first._prev = prev!;
+      this._flags |= VNodeFlags.ChildrenVNode;
+      if (DEBUG) {
+        checkUniqueKeys(first);
+      }
+    }
+    this._children = first;
+
     return this;
   }
 
@@ -317,7 +263,7 @@ export class VNode<P = any, N = Node> {
    */
   unsafeHTML(html: string | null): this {
     if (DEBUG) {
-      if (this._flags & (VNodeFlags.ChildrenArray | VNodeFlags.ChildrenVNode | VNodeFlags.ChildrenBasic)) {
+      if (this._flags & VNodeFlags.ChildrenVNode) {
         throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
       }
       if (!(this._flags & VNodeFlags.Element)) {
@@ -565,20 +511,94 @@ export function disableDirtyChecking<N extends VNode>(node: N): N {
   return node;
 }
 
-function checkUniqueKeys(children: VNode[]): void {
-  if (DEBUG) {
-    let keys: Set<any> | undefined;
-    for (let i = 0; i < children.length; ++i) {
-      const child = children[i];
-      if ((child._flags & VNodeFlags.Key) !== 0) {
-        if (keys === undefined) {
-          keys = new Set<any>();
-        } else if (keys.has(child._key) === true) {
-          throw new Error(`Failed to set children, invalid children list, key: "${child._key}" ` +
-            `is used multiple times.`);
-        }
-        keys.add(child._key);
+function checkUniqueKeys(children: VNode): void {
+  let keys: Set<any> | undefined;
+  let node: VNode<any> | null = children;
+  while (node !== null) {
+    if (node._flags & VNodeFlags.Key) {
+      if (keys === undefined) {
+        keys = new Set<any>();
+      } else if (keys.has(node._key)) {
+        throw new Error(`Failed to set children, invalid children list, key: "${node._key}" ` +
+          `is used multiple times.`);
+      }
+      keys.add(node._key);
+    }
+    node = node._next;
+  }
+}
+
+/**
+ * map creates a new array with the results of calling a provided function on every element in the calling array.
+ *
+ * @param items Array.
+ * @param fn Function that produces an element of the new Array.
+ */
+export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U>): VNode<U> | null {
+  if (array.length) {
+    const first = fn(array[0], 0);
+    let prev = first;
+    for (let i = 1; i < array.length; i++) {
+      const vnode = fn(array[i], i);
+      vnode._prev = prev;
+      prev._next = vnode;
+      prev = vnode;
+    }
+    first._prev = prev;
+    return first;
+  }
+  return null;
+}
+
+/**
+ * mapRange creates a new array with the results of calling a provided function on every number in the provided range.
+ *
+ * @param start Range start.
+ * @param end Range end.
+ * @param fn Function that produces an element for the new Array.
+ */
+export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T>): VNode<T> | null {
+  const length = end - start;
+  if (length) {
+    const first = fn(0);
+    let prev = first;
+    for (let i = 1; i < length; ++i) {
+      const vnode = fn(i);
+      vnode._prev = prev;
+      prev._next = vnode;
+      prev = vnode;
+    }
+    first._prev = prev;
+    return first;
+  }
+  return null;
+}
+
+export function mapFilter<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null {
+  if (array.length) {
+    let first: VNode<any> | null = null;
+    let vnode: VNode<any> | null;
+    let i = 0;
+    for (; i < array.length; i++) {
+      vnode = fn(array[i], i);
+      if (vnode !== null) {
+        first = vnode;
+        break;
       }
     }
+    if (first !== null) {
+      let prev = first;
+      for (; i < array.length; i++) {
+        vnode = fn(array[i], i);
+        if (vnode !== null) {
+          vnode._prev = prev;
+          prev._next = vnode;
+          prev = vnode;
+        }
+      }
+      first._prev = prev;
+      return first;
+    }
   }
+  return null;
 }
