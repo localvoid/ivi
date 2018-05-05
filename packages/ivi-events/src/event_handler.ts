@@ -22,7 +22,7 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any
   /**
    * Event Handler function call interface.
    */
-  handler(ev: E): EventFlags | undefined;
+  handler(ev: E): EventFlags | void;
   /**
    * Number of active listeners.
    */

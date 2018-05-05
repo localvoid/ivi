@@ -16,7 +16,7 @@ export interface DispatchTarget {
   handlers: EventHandler | EventHandler[];
 }
 
-function getFlags(flags: EventFlags | undefined): EventFlags {
+function getFlags(flags: EventFlags | void): EventFlags {
   return (flags === void 0) ? 0 : flags;
 }
 
@@ -32,7 +32,7 @@ function dispatchEventToLocalEventHandlers(
   target: DispatchTarget,
   event: SyntheticEvent,
   matchFlags: EventHandlerFlags,
-  dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | undefined) | undefined,
+  dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | void) | undefined,
 ): void {
   const handlers = target.handlers;
   let flags: EventFlags = 0;
@@ -71,7 +71,7 @@ export function dispatchEvent(
   targets: DispatchTarget[],
   event: SyntheticEvent,
   bubble: boolean,
-  dispatch?: (h: EventHandler, ev: SyntheticEvent) => EventFlags | undefined,
+  dispatch?: (h: EventHandler, ev: SyntheticEvent) => EventFlags | void,
 ): void {
   let i = targets.length - 1;
   let target;
