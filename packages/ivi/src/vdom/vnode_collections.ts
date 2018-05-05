@@ -1,4 +1,5 @@
-import { VNode, VNodeFlags } from "..";
+import { VNodeFlags } from "./flags";
+import { VNode } from "./vnode";
 
 export function children(...args: Array<VNode | string | number | null>): VNode | null;
 export function children(): VNode | null {

@@ -631,16 +631,60 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
           setEventHandlersToDOMNode(instance as Element, b._events);
         }
 
-        if (a._children !== b._children) {
-          _syncChildren(
-            instance as Element,
-            a._flags,
-            bFlags,
-            a._children as VNode | string | number | boolean,
-            b._children as VNode | string | number | boolean,
-            context,
-            dirtyContext,
-          );
+        const aChild = a._children;
+        let bChild = b._children;
+        if (aChild !== bChild) {
+          const aFlags = a._flags;
+          if (aChild === null) {
+            if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
+              bChild = bChild as VNode;
+              do {
+                _renderIntoAndAttach(instance as Element, null, bChild, context);
+                bChild = bChild._next!;
+              } while (bChild !== null);
+            } else if ((bFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
+              _setInputValue(instance as Element as HTMLInputElement, bChild as string | boolean);
+            } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
+              (instance as Element).innerHTML = bChild as string;
+            }
+          } else if (bChild === null) {
+            if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
+              _removeAllChildren(instance as Element, aChild as VNode);
+            } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
+              (instance as Element).textContent = "";
+            } else { // (bParentFlags & VNodeFlags.InputElement)
+              /**
+               * When value/checked isn't specified, we should just ignore it.
+               */
+            }
+          } else {
+            if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
+              _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
+            } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
+              (instance as Element).innerHTML = bChild as string;
+            } else { // (aParentFlags & VNodeFlags.InputElement)
+              /**
+               * Input elements has an internal state with a `value` property, so it should be checked before an
+               * assignment to prevent unnecessary events when `value` is the same as the `value` in the internal
+               * state.
+               *
+               * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning props
+               * to such elements should be treated as a one-time assignment, so it works almost like `value` attribute,
+               * except when a new value is passed down, it can override previous value when it doesn't match the
+               * previous one. There is absolutely no reasons to overcomplicate such behaviour just to make it more
+               * beatiful like it is a declarative assignment and can't be changed, because in real applications,
+               * component that controls this element will always track changes, and when it changes it will invalidate
+               * its representation, so everything will stay in-sync.
+               */
+              if (typeof bChild === "string") {
+                if ((instance as HTMLInputElement).value !== bChild) {
+                  (instance as HTMLInputElement).value = bChild;
+                }
+              } else {
+                (instance as HTMLInputElement).checked = bChild as boolean;
+              }
+            }
+          }
         }
       }
     } else { // (flags & VNodeFlags.Component)
@@ -745,78 +789,6 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
     nodeReplaceChild(parent, instance, getDOMInstanceFromVNode(a)!);
     _detach(a);
     _attach(b);
-  }
-}
-
-/**
- * Sync old children list with the new one.
- *
- * @param parent Parent node.
- * @param aParentFlags Old parent VNode flags.
- * @param bParentFlags New parent VNode flags.
- * @param a Old VNode list.
- * @param b New VNode list.
- * @param context Current context.
- * @param dirtyContext Dirty context.
- */
-function _syncChildren(
-  parent: Node,
-  aParentFlags: VNodeFlags,
-  bParentFlags: VNodeFlags,
-  a: VNode | string | number | boolean,
-  b: VNode | string | number | boolean,
-  context: {},
-  dirtyContext: boolean,
-): void {
-  if (a === null) {
-    if ((bParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-      b = b as VNode;
-      do {
-        _renderIntoAndAttach(parent, null, b, context);
-        b = b._next!;
-      } while (b !== null);
-    } else if ((bParentFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
-      _setInputValue(parent as HTMLInputElement, b as string | boolean);
-    } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
-      (parent as Element).innerHTML = b as string;
-    }
-  } else if (b === null) {
-    if ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-      _removeAllChildren(parent, a as VNode);
-    } else if ((aParentFlags & VNodeFlags.UnsafeHTML) !== 0) {
-      parent.textContent = "";
-    } else { // (bParentFlags & VNodeFlags.InputElement)
-      /**
-       * When value/checked isn't specified, we should just ignore it.
-       */
-    }
-  } else {
-    if ((aParentFlags & VNodeFlags.ChildrenVNode) !== 0) {
-      _syncChildrenTrackByKeys(parent, a as VNode, b as VNode, context, dirtyContext);
-    } else if ((aParentFlags & VNodeFlags.UnsafeHTML) !== 0) {
-      (parent as Element).innerHTML = b as string;
-    } else { // (aParentFlags & VNodeFlags.InputElement)
-      /**
-       * Input elements has an internal state with a `value` property, so it should be checked before an
-       * assignment to prevent unnecessary events when `value` is the same as the `value` in the internal
-       * state.
-       *
-       * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning props
-       * to such elements should be treated as a one-time assignment, so it works almost like `value` attribute,
-       * except when a new value is passed down, it can override previous value when it doesn't match the previous
-       * one. There is absolutely no reasons to overcomplicate such behaviour just to make it more beatiful like
-       * it is a declarative assignment and can't be changed, because in real applications, component that
-       * controls this element will always track changes, and when it changes it will invalidate its
-       * representation, so everything will stay in-sync.
-       */
-      if (typeof b === "string") {
-        if ((parent as HTMLInputElement).value !== b) {
-          (parent as HTMLInputElement).value = b;
-        }
-      } else {
-        (parent as HTMLInputElement).checked = b as boolean;
-      }
-    }
   }
 }
 
