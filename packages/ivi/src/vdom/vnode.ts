@@ -299,6 +299,10 @@ export class VNode<P = any, N = Node> {
       if (!(this._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
         throw new Error("Failed to set value, value is available on input and textarea elements only.");
       }
+      if (isInputTypeHasCheckedProperty(this._tag as string)) {
+        throw new Error(`Failed to set value, input elements with type ${this._tag} doesn't support `
+          + `value assignments.`);
+      }
     }
     this._children = value;
     return this;
