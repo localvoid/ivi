@@ -3310,7 +3310,9 @@ Object {
 
 exports[`#106 1`] = `
 <div>
-  <div />
+  <div>
+    0
+  </div>
 </div>
 `;
 
@@ -3319,8 +3321,8 @@ Object {
   "appendChild": 0,
   "createElement": 3,
   "createElementNS": 0,
-  "createTextNode": 1,
-  "insertBefore": 4,
+  "createTextNode": 2,
+  "insertBefore": 5,
   "removeChild": 0,
   "replaceChild": 0,
 }
@@ -3328,7 +3330,9 @@ Object {
 
 exports[`#107 1`] = `
 <div>
-  <div />
+  <div>
+    2
+  </div>
 </div>
 `;
 
@@ -3337,8 +3341,8 @@ Object {
   "appendChild": 0,
   "createElement": 5,
   "createElementNS": 0,
-  "createTextNode": 3,
-  "insertBefore": 8,
+  "createTextNode": 4,
+  "insertBefore": 9,
   "removeChild": 2,
   "replaceChild": 0,
 }
@@ -3365,8 +3369,8 @@ Object {
   "appendChild": 0,
   "createElement": 5,
   "createElementNS": 0,
-  "createTextNode": 3,
-  "insertBefore": 8,
+  "createTextNode": 4,
+  "insertBefore": 9,
   "removeChild": 0,
   "replaceChild": 0,
 }
@@ -3483,7 +3487,9 @@ exports[`#112 1`] = `
       0
     </div>
   </div>
-  <div />
+  <div>
+    1
+  </div>
 </div>
 `;
 
@@ -3492,8 +3498,8 @@ Object {
   "appendChild": 0,
   "createElement": 9,
   "createElementNS": 0,
-  "createTextNode": 6,
-  "insertBefore": 16,
+  "createTextNode": 8,
+  "insertBefore": 18,
   "removeChild": 1,
   "replaceChild": 0,
 }
@@ -3512,7 +3518,9 @@ exports[`#113 1`] = `
       1
     </div>
   </div>
-  <div />
+  <div>
+    3
+  </div>
   <div>
     2
   </div>
@@ -3530,8 +3538,8 @@ Object {
   "appendChild": 0,
   "createElement": 13,
   "createElementNS": 0,
-  "createTextNode": 10,
-  "insertBefore": 24,
+  "createTextNode": 12,
+  "insertBefore": 26,
   "removeChild": 2,
   "replaceChild": 0,
 }
@@ -3548,8 +3556,12 @@ exports[`#114 1`] = `
   <div>
     3
   </div>
-  <div />
-  <div />
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
 </div>
 `;
 
@@ -3558,8 +3570,8 @@ Object {
   "appendChild": 0,
   "createElement": 11,
   "createElementNS": 0,
-  "createTextNode": 8,
-  "insertBefore": 20,
+  "createTextNode": 10,
+  "insertBefore": 22,
   "removeChild": 3,
   "replaceChild": 0,
 }
