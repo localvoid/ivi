@@ -1,6 +1,9 @@
-import { connect, context } from "../src/vdom/vnode_factories";
-import { render, staticComponent, startRender } from "./utils";
+import { VNode } from "../src/vdom/vnode";
+import { statelessComponent, connect, context } from "../src/vdom/vnode_factories";
+import { render, startRender } from "./utils";
 import * as h from "./utils/html";
+
+const Static = statelessComponent<VNode>((child) => child, () => false);
 
 const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
   (prev, props, ctx) => ({ value: ctx.value }),
@@ -41,14 +44,14 @@ test(`Sync context value inside component with shouldUpdate=false`, () => {
   startRender((r) => {
     const v1 = (
       context({ value: 10 },
-        staticComponent(
+        Static(
           ContextTestPrinterConnector(),
         ),
       )
     );
     const v2 = (
       context({ value: 20 },
-        staticComponent(
+        Static(
           ContextTestPrinterConnector(),
         ),
       )

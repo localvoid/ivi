@@ -1,4 +1,4 @@
-import { startRender, checkDOMOps, domOps } from "./utils";
+import { startRender, checkDOMOps } from "./utils";
 import * as h from "./utils/html";
 
 test(`<input> => <input type="checkbox">`, () => {

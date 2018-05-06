@@ -1,0 +1,487 @@
+import { startRender, checkDOMOps, domOps } from "./utils";
+import * as h from "./utils/html";
+import { Component } from "../src/vdom/component";
+import { statelessComponent, component } from "../src/vdom/vnode_factories";
+import { VNode } from "../src/vdom/vnode";
+
+const Stateless = statelessComponent<VNode>(
+  (child) => child,
+);
+
+const Stateful = component(class extends Component<VNode> {
+  render() {
+    return this.props;
+  }
+});
+
+test(`#1`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        h.span()
+      );
+      const v2 = (
+        Stateful(
+          h.div(),
+        )
+      );
+
+      r(v1);
+      const n = r(v2);
+
+      expect(n).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#2`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          h.div(),
+        )
+      );
+      const v2 = (
+        h.div()
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#3`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        h.div()
+      );
+      const v2 = (
+        Stateful(
+          h.div(),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#4`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          h.div(),
+        )
+      );
+      const v2 = (
+        h.span()
+      );
+
+      r(v1);
+      const n = r(v2);
+
+      expect(n).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#5`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          h.div(),
+        )
+      );
+      const v2 = (
+        Stateful(
+          h.div(),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#6`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          Stateful(
+            h.div(),
+          ),
+        )
+      );
+      const v2 = (
+        h.span()
+      );
+
+      r(v1);
+      const b = r(v2);
+
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#7`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        h.span()
+      );
+      const v2 = (
+        Stateful(
+          Stateful(
+            h.div(),
+          ),
+        )
+      );
+
+      r(v1);
+      const b = r(v2);
+
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#8`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          Stateful(
+            h.div(),
+          ),
+        )
+      );
+      const v2 = (
+        Stateful(
+          Stateful(
+            h.div(),
+          ),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#9`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        h.span()
+      );
+      const v2 = (
+        Stateless(
+          h.div(),
+        )
+      );
+
+      r(v1);
+      const b = r(v2);
+
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#10`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          h.div(),
+        )
+      );
+      const v2 = (
+        h.div()
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#11`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        h.div()
+      );
+      const v2 = (
+        Stateless(
+          h.div(),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#12`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          h.div(),
+        )
+      );
+      const v2 = (
+        h.span()
+      );
+
+      r(v1);
+      const b = r(v2);
+
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#13`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          h.div(),
+        )
+      );
+      const v2 = (
+        Stateless(
+          h.div(),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#14`, () => {
+  startRender((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          Stateless(
+            h.div(),
+          ),
+        )
+      );
+      const v2 = (
+        h.span()
+      );
+
+      r(v1);
+      const b = r(v2);
+
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#15`, () => {
+  startRender<HTMLElement>((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        h.span()
+      );
+      const v2 = (
+        Stateless(
+          Stateless(
+            h.div(),
+          ),
+        )
+      );
+
+      r(v1);
+      const b = r(v2);
+
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#16`, () => {
+  startRender<HTMLElement>((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          Stateless(
+            h.div(),
+          ),
+        )
+      );
+      const v2 = (
+        Stateless(
+          Stateless(
+            h.div(),
+          ),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+    });
+  });
+});
+
+test(`#17`, () => {
+  startRender<HTMLElement>((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          h.div(),
+        )
+      );
+      const v2 = (
+        Stateless(
+          h.div(),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#18`, () => {
+  startRender<HTMLElement>((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          h.div(),
+        )
+      );
+      const v2 = (
+        Stateful(
+          h.div(),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#19`, () => {
+  startRender<HTMLElement>((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateful(
+          Stateful(
+            h.div(),
+          ),
+        )
+      );
+      const v2 = (
+        Stateless(
+          Stateless(
+            h.div(),
+          ),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
+
+test(`#20`, () => {
+  startRender<HTMLElement>((r) => {
+    checkDOMOps((c) => {
+      const v1 = (
+        Stateless(
+          Stateless(
+            h.div(),
+          ),
+        )
+      );
+      const v2 = (
+        Stateful(
+          Stateful(
+            h.div(),
+          ),
+        )
+      );
+
+      const a = r(v1);
+      const b = r(v2);
+
+      expect(a).not.toBe(b);
+      expect(b).toMatchSnapshot();
+      expect(c).toMatchSnapshot();
+    });
+  });
+});
