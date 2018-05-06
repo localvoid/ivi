@@ -24,6 +24,9 @@ export function children(): VNode | null {
       prev = last;
     }
   }
+  if (first !== null) {
+    first._prev = prev!;
+  }
 
   return first;
 }
