@@ -10,7 +10,6 @@ export { StatefulComponent, StatelessComponent, Component, isComponentAttached }
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode, Children,
-  changeClassName, mergeAttrs, mergeStyle,
   getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,

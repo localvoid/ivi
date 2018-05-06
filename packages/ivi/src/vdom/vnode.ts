@@ -350,64 +350,6 @@ export class VNode<P = any, N = Node> {
 export type Children = Array<VNode[] | VNode | string | number | null>;
 
 /**
- * changeClassName assigns className for an Element node.
- *
- * @param className CSS Class name.
- * @returns VNode
- */
-export function changeClassName<P>(node: VNode, className: string | undefined): VNode<P> {
-  if (DEBUG) {
-    if (!(node._flags & VNodeFlags.Element)) {
-      throw new Error("Failed to set className, className is available on element nodes only.");
-    }
-  }
-  node._className = className;
-  return node;
-}
-
-/**
- * mergeProps merges props with existing props for an Element node.
- *
- * @param attrs
- * @return VNode
- */
-export function mergeAttrs<P>(node: VNode<P>, attrs: P | null): VNode<P> {
-  if (attrs !== null) {
-    return node.a(
-      node._props === null ?
-        attrs :
-        Object.assign(
-          {},
-          node._props,
-          attrs,
-        ),
-    );
-  }
-  return node;
-}
-
-/**
- * mergeStyle merges style with existing style for an Element node.
- *
- * @param style
- * @return VNode
- */
-export function mergeStyle<P, U extends CSSStyleProps>(node: VNode<P>, style: U | null): VNode<P> {
-  if (style !== null) {
-    return node.s(
-      node._style === null ?
-        style :
-        Object.assign(
-          {},
-          node._style,
-          style,
-        ),
-    );
-  }
-  return node;
-}
-
-/**
  * getDOMInstanceFromVNode retrieves a reference to a DOM node from a VNode object.
  *
  * @param node VNode which contains reference to a DOM node.
