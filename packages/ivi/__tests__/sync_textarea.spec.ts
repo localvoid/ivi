@@ -1,0 +1,41 @@
+import { startRender, checkDOMOps, domOps } from "./utils";
+import * as h from "./utils/html";
+
+test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
+  startRender<HTMLTextAreaElement>((r) => {
+    checkDOMOps((c) => {
+      r(h.textarea());
+      const b = r(h.textarea().value("cde"));
+
+      expect(b.tagName.toLowerCase()).toBe("textarea");
+      expect(b.value).toBe("cde");
+      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+    });
+  });
+});
+
+test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
+  startRender<HTMLTextAreaElement>((r) => {
+    checkDOMOps((c) => {
+      r(h.textarea().value("abc"));
+      const b = r(h.textarea().value("cde"));
+
+      expect(b.tagName.toLowerCase()).toBe("textarea");
+      expect(b.value).toBe("cde");
+      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+    });
+  });
+});
+
+test(`<textarea>abc</textarea> => <textarea></textarea>`, () => {
+  startRender<HTMLTextAreaElement>((r) => {
+    checkDOMOps((c) => {
+      r(h.textarea().value("abc"));
+      const b = r(h.textarea());
+
+      expect(b.tagName.toLowerCase()).toBe("textarea");
+      expect(b.value).toBe("abc");
+      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+    });
+  });
+});
