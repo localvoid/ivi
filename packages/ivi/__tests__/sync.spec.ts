@@ -6,55 +6,6 @@ import { startRender, checkDOMOps, domOps } from "./utils";
 import * as h from "./utils/html";
 
 describe("sync", () => {
-  describe("special elements", () => {
-    test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.textarea());
-          const b = r(h.textarea().value("cde")) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).toBe("textarea");
-          expect(b.value).toBe("cde");
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-
-    test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.textarea().value("abc"));
-          const b = r(h.textarea().value("cde")) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).toBe("textarea");
-          expect(b.value).toBe("cde");
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-
-    test(`<textarea>abc</textarea> => <textarea></textarea>`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.textarea().value("abc"));
-          const b = r(h.textarea()) as HTMLTextAreaElement;
-          expect(b.tagName.toLowerCase()).toBe("textarea");
-          expect(b.value).toBe("abc");
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-
-    test(`<audio> => <video>`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.audio());
-          const b = r(h.video()) as HTMLMediaElement;
-          expect(b.tagName.toLowerCase()).toBe("video");
-          expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
-        });
-      });
-    });
-  });
-
   describe("complex transformations", () => {
     /**
      * When component is an entry point for update and it completely changes a root node, refs to DOM Nodes on
