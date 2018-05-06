@@ -1,0 +1,3566 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#1 1`] = `
+<div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#2 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#3 1`] = `
+<div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#4 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 6,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#5 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#6 1`] = `
+<div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#7 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#7 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#8 1`] = `
+<div>
+  <div>
+    999
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#8 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#9 1`] = `
+<div>
+  <div>
+    4
+  </div>
+  <div>
+    9
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#9 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#10 1`] = `
+<div>
+  <div>
+    999
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#10 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#11 1`] = `
+<div>
+  <div>
+    9
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#11 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#12 1`] = `
+<div>
+  <div>
+    999
+  </div>
+  <div>
+    9
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#12 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#13 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#13 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#14 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#14 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#15 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#15 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#16 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#16 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#17 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#17 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#18 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#18 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#19 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#19 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#20 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#20 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#21 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#21 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#22 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#22 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#23 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#23 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 17,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#24 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#24 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#25 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#25 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#26 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#26 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#27 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#27 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#28 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#28 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#29 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#29 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#30 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#30 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#30 3`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#30 4`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#31 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    998
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#31 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#32 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    999
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#32 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#33 1`] = `
+<div>
+  <div>
+    998
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+  <div>
+    999
+  </div>
+</div>
+`;
+
+exports[`#33 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#34 1`] = `<div />`;
+
+exports[`#34 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#35 1`] = `
+<div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#35 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#36 1`] = `
+<div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#36 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#37 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#37 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#38 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#38 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#39 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#39 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#40 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#40 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#41 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#41 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#42 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#42 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#43 1`] = `<div />`;
+
+exports[`#43 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#44 1`] = `
+<div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#44 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#45 1`] = `
+<div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#45 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#46 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#46 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#47 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#47 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#48 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#48 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 9,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#49 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#49 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#50 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+</div>
+`;
+
+exports[`#50 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#51 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#51 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#52 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#52 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 21,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#53 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+</div>
+`;
+
+exports[`#53 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 21,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#54 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#54 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 21,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#55 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+</div>
+`;
+
+exports[`#55 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 21,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#56 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#56 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 21,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#57 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#57 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 6,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#58 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#58 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#59 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#59 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#60 1`] = `
+<div>
+  <div>
+    4
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#60 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#61 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#61 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#62 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#62 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#63 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#63 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#64 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#64 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#65 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#65 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 12,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#66 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+</div>
+`;
+
+exports[`#66 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 8,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "insertBefore": 17,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#67 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+</div>
+`;
+
+exports[`#67 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 8,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "insertBefore": 17,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#68 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#68 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 8,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "insertBefore": 17,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#69 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    6
+  </div>
+</div>
+`;
+
+exports[`#69 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 8,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "insertBefore": 17,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#70 1`] = `
+<div>
+  <div>
+    8
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#70 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 24,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#71 1`] = `
+<div>
+  <div>
+    9
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    8
+  </div>
+</div>
+`;
+
+exports[`#71 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 24,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#72 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#72 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 8,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#73 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#73 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 8,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#74 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#74 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#75 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#75 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#76 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#76 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#77 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#77 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#78 1`] = `
+<div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#78 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 17,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#79 1`] = `
+<div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#79 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 8,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "insertBefore": 19,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#80 1`] = `
+<div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    6
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    7
+  </div>
+</div>
+`;
+
+exports[`#80 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 21,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#81 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#81 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 8,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#82 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#82 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 8,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#83 1`] = `
+<div>
+  <div>
+    7
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#83 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 24,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#84 1`] = `
+<div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#84 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 24,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#85 1`] = `
+<div>
+  <div>
+    7
+  </div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#85 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 24,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#86 1`] = `
+<div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    9
+  </div>
+</div>
+`;
+
+exports[`#86 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 24,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#87 1`] = `
+<div>
+  <div>
+    5
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`;
+
+exports[`#87 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 24,
+  "removeChild": 3,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#88 1`] = `
+<div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#88 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 5,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#89 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#89 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#90 1`] = `
+<div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#90 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#91 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+</div>
+`;
+
+exports[`#91 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#92 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#92 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 7,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#93 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#93 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 13,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#94 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    5
+  </div>
+</div>
+`;
+
+exports[`#94 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 6,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 11,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#95 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    8
+  </div>
+  <div>
+    9
+  </div>
+  <div>
+    10
+  </div>
+  <div>
+    11
+  </div>
+</div>
+`;
+
+exports[`#95 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 12,
+  "insertBefore": 25,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#96 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    8
+  </div>
+</div>
+`;
+
+exports[`#96 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 19,
+  "removeChild": 3,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#97 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    8
+  </div>
+</div>
+`;
+
+exports[`#97 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "insertBefore": 19,
+  "removeChild": 5,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#98 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#98 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#99 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#99 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#100 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#100 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#101 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    1
+  </div>
+</div>
+`;
+
+exports[`#101 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 10,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#102 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    7
+  </div>
+</div>
+`;
+
+exports[`#102 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 18,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#103 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#103 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 18,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#104 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#104 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 18,
+  "removeChild": 3,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#105 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+</div>
+`;
+
+exports[`#105 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 18,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#106 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`#106 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#107 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`#107 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 8,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#108 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    <div>
+      0
+    </div>
+  </div>
+</div>
+`;
+
+exports[`#108 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 8,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#109 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    <div>
+      1
+    </div>
+    <div>
+      0
+    </div>
+  </div>
+</div>
+`;
+
+exports[`#109 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 14,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#110 1`] = `
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    <div>
+      1
+    </div>
+    <div>
+      0
+    </div>
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#110 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 7,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "insertBefore": 14,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#111 1`] = `
+<div>
+  <div>
+    <div>
+      1
+    </div>
+    <div>
+      0
+    </div>
+  </div>
+  <div>
+    <div>
+      1
+    </div>
+    <div>
+      0
+    </div>
+  </div>
+  <div>
+    3
+  </div>
+</div>
+`;
+
+exports[`#111 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 17,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#112 1`] = `
+<div>
+  <div>
+    3
+  </div>
+  <div>
+    <div>
+      1
+    </div>
+    <div>
+      0
+    </div>
+  </div>
+  <div />
+</div>
+`;
+
+exports[`#112 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 9,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "insertBefore": 16,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#113 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    <div>
+      0
+    </div>
+    <div>
+      1
+    </div>
+  </div>
+  <div />
+  <div>
+    2
+  </div>
+  <div>
+    4
+  </div>
+  <div>
+    7
+  </div>
+</div>
+`;
+
+exports[`#113 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 13,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "insertBefore": 24,
+  "removeChild": 2,
+  "replaceChild": 0,
+}
+`;
+
+exports[`#114 1`] = `
+<div>
+  <div>
+    6
+  </div>
+  <div>
+    7
+  </div>
+  <div>
+    3
+  </div>
+  <div />
+  <div />
+</div>
+`;
+
+exports[`#114 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 11,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "insertBefore": 20,
+  "removeChild": 3,
+  "replaceChild": 0,
+}
+`;
