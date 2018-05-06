@@ -84,8 +84,8 @@ export function mapFilter<T, U>(array: Array<T>, fn: (item: T, index: number) =>
     let first: VNode<any> | null = null;
     let vnode: VNode<any> | null;
     let i = 0;
-    for (; i < array.length; i++) {
-      vnode = fn(array[i], i);
+    while (i < array.length) {
+      vnode = fn(array[i], i++);
       if (vnode !== null) {
         first = vnode;
         break;
@@ -93,8 +93,8 @@ export function mapFilter<T, U>(array: Array<T>, fn: (item: T, index: number) =>
     }
     if (first !== null) {
       let prev = first;
-      for (; i < array.length; i++) {
-        vnode = fn(array[i], i);
+      while (i < array.length) {
+        vnode = fn(array[i], i++);
         if (vnode !== null) {
           vnode._prev = prev;
           prev._next = vnode;
