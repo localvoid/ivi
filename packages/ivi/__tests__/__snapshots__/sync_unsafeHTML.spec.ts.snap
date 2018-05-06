@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<div> => <div unsafeHTML="<span>abc</span>"></div> 1`] = `
+<div>
+  <span>
+    abc
+  </span>
+</div>
+`;

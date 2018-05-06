@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<div></div> => <div><div></div><div></div></div> 1`] = `
+<div>
+  <div />
+  <div />
+</div>
+`;
+
+exports[`<div><div></div></div> => <div><h1></h1><h2></h2></div> 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`<div><div></div><div></div></div> => <div></div> 1`] = `<div />`;
+
+exports[`<div><h1></h1></div> => <div><h2></h2></div> 1`] = `
+<div>
+  <h2 />
+</div>
+`;
+
+exports[`<div><h1></h1><h2></h2></div> => <div><div></div></div> 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`<div><h1></h1><h2></h2></div> => <div>123</div> 1`] = `
+<div>
+  123
+</div>
+`;
+
+exports[`<div>123</div> => <div><h1></h1><h2></h2></div> 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
