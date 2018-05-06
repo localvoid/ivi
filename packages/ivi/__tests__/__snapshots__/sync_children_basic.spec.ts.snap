@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<div>""</div> => <div>"cde"</div> 1`] = `
+<div>
+  cde
+</div>
+`;
+
+exports[`<div>"abc"</div> => <div>"abc"</div> 1`] = `
+<div>
+  abc
+</div>
+`;
+
+exports[`<div>"abc"</div> => <div>"cde"</div> 1`] = `
+<div>
+  cde
+</div>
+`;
+
+exports[`<div>"abc"</div> => <div></div> 1`] = `<div />`;
+
+exports[`<div>"abc"</div> => <div>10</div> 1`] = `
+<div>
+  10
+</div>
+`;
+
+exports[`<div>"cde"</div> => <div><div></div></div> 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`<div></div> => <div>"abc"</div> 1`] = `
+<div>
+  abc
+</div>
+`;
+
+exports[`<div></div> => <div><div></div></div> 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`<div></div> => <div>10</div> 1`] = `
+<div>
+  10
+</div>
+`;
+
+exports[`<div><div></div> => <div>"cde"</div> 1`] = `
+<div>
+  cde
+</div>
+`;
+
+exports[`<div><div></div></div> => <div></div> 1`] = `<div />`;
+
+exports[`<div><div></div></div> => <div>{ null }</div> 1`] = `<div />`;
+
+exports[`<div>{ null }</div> => <div><div></div></div> 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`<div>10</div> => <div>"abc"</div> 1`] = `
+<div>
+  abc
+</div>
+`;
+
+exports[`<div>10</div> => <div></div> 1`] = `<div />`;
+
+exports[`<div>10</div> => <div>10</div> 1`] = `
+<div>
+  10
+</div>
+`;
