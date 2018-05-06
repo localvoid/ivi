@@ -9,7 +9,7 @@ abstract class DivComponent<T> extends Component<T> {
   }
 }
 
-test("props should be passed to constructor", () => {
+test(`props should be passed to constructor`, () => {
   startRender((r) => {
     const c = component(class extends DivComponent<number> {
       constructor(props: number) {
@@ -21,7 +21,7 @@ test("props should be passed to constructor", () => {
   });
 });
 
-test("props should be passed to newPropsReceived hook", () => {
+test(`props should be passed to newPropsReceived hook`, () => {
   startRender((r) => {
     const c = component(class extends DivComponent<number> {
       newPropsReceived(a: number, b: number) {
@@ -34,7 +34,7 @@ test("props should be passed to newPropsReceived hook", () => {
   });
 });
 
-test("props should be passed to shouldUpdate hook", () => {
+test(`props should be passed to shouldUpdate hook`, () => {
   startRender((r) => {
     const c = component(class extends DivComponent<number> {
       shouldUpdate(a: number, b: number) {
@@ -48,7 +48,7 @@ test("props should be passed to shouldUpdate hook", () => {
   });
 });
 
-test("props should be available when attached hook is invoked", () => {
+test(`props should be available when attached hook is invoked`, () => {
   startRender((r) => {
     const c = component(class extends DivComponent<number> {
       attached() {
@@ -59,7 +59,7 @@ test("props should be available when attached hook is invoked", () => {
   });
 });
 
-test("props should be available when detached hook is invoked", () => {
+test(`props should be available when detached hook is invoked`, () => {
   startRender((r) => {
     const c = component(class extends DivComponent<number> {
       detached() {
@@ -70,7 +70,7 @@ test("props should be available when detached hook is invoked", () => {
   });
 });
 
-test("props should be available when updated hook is invoked", () => {
+test(`props should be available when updated hook is invoked`, () => {
   startRender((r) => {
     const c = component(class extends DivComponent<number> {
       updated() {

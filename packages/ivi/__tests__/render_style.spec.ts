@@ -26,7 +26,7 @@ describe(`HTML`, () => {
 });
 
 describe(`SVG`, () => {
-  test("<circle style={top: 10px}>", () => {
+  test(`<circle style={top: 10px}>`, () => {
     const n = render<SVGCircleElement>(s.circle().s({ top: "10px" }));
     expect(n.style.top).toBe("10px");
   });

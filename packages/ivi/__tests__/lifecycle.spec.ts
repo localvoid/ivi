@@ -2,7 +2,7 @@ import { startRender, checkLifecycle, Lifecycle, staticComponent } from "./utils
 import * as h from "./utils/html";
 
 describe("lifecycle", () => {
-  test("<C><div></C>", () => {
+  test(`<C><div></C>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(Lifecycle("1", h.div()));
@@ -21,7 +21,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<C><div></C> => <div>", () => {
+  test(`<C><div></C> => <div>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(Lifecycle("1", h.div()));
@@ -41,7 +41,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<div> => <C><div></C>", () => {
+  test(`<div> => <C><div></C>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(h.div());
@@ -61,7 +61,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<div></div> => <div><C><div></C></div>", () => {
+  test(`<div></div> => <div><C><div></C></div>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(h.div());
@@ -81,7 +81,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<div><C><div></C></div> => <div></div>", () => {
+  test(`<div><C><div></C></div> => <div></div>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(h.div().c(Lifecycle("1", h.div())));
@@ -101,7 +101,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<C><C><div></C></C>", () => {
+  test(`<C><C><div></C></C>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(Lifecycle("1", Lifecycle("2", h.div())));
@@ -130,7 +130,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<C><C><div></C></C> => <div>", () => {
+  test(`<C><C><div></C></C> => <div>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(Lifecycle("1", Lifecycle("2", h.div())));
@@ -160,7 +160,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<C><div></C> => <C><div></C>", () => {
+  test(`<C><div></C> => <C><div></C>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(Lifecycle("1", h.div()));
@@ -182,7 +182,7 @@ describe("lifecycle", () => {
     });
   });
 
-  test("<S><C><div></C></S> => <S><C><div></C></S>", () => {
+  test(`<S><C><div></C></S> => <S><C><div></C></S>`, () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(staticComponent(Lifecycle("1", h.div())));

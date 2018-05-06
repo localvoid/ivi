@@ -7,7 +7,7 @@ const ContextTestPrinterConnector = connect<{ value: string }, undefined, { valu
   (props) => h.t(props.value),
 );
 
-test("<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>", () => {
+test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {
   const v = (
     context({ value: 10 },
       ContextTestPrinterConnector(),
@@ -18,7 +18,7 @@ test("<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>", () 
   expect(n.nodeValue).toBe("10");
 });
 
-test("Sync context value", () => {
+test(`Sync context value`, () => {
   startRender((r) => {
     const v1 = (
       context({ value: 10 },
@@ -37,7 +37,7 @@ test("Sync context value", () => {
   });
 });
 
-test("Sync context value inside component with shouldUpdate=false", () => {
+test(`Sync context value inside component with shouldUpdate=false`, () => {
   startRender((r) => {
     const v1 = (
       context({ value: 10 },

@@ -23,7 +23,7 @@ test(`<Stateless><div></div></Stateless>`, () => {
   expect(n.tagName.toLowerCase()).toBe("div");
 });
 
-test("<Stateless><Stateless><div></div></Stateless></Stateless>", () => {
+test(`<Stateless><Stateless><div></div></Stateless></Stateless>`, () => {
   const v = Stateless(
     Stateless(
       h.div(),
@@ -54,7 +54,7 @@ test(`<Stateful><Stateful><div></div></Stateful></Stateful>`, () => {
   expect(n.tagName.toLowerCase()).toBe("div");
 });
 
-test("<Stateless><Stateful><div></div></Stateful></Stateless>", () => {
+test(`<Stateless><Stateful><div></div></Stateful></Stateless>`, () => {
   const v = Stateless(
     Stateful(
       h.div(),
@@ -65,7 +65,7 @@ test("<Stateless><Stateful><div></div></Stateful></Stateless>", () => {
   expect(n.tagName.toLowerCase()).toBe("div");
 });
 
-test("<Stateful><Stateless><div></div></Stateless></Stateful>", () => {
+test(`<Stateful><Stateless><div></div></Stateless></Stateful>`, () => {
   const v = Stateful(
     Stateless(
       h.div(),

@@ -2,7 +2,7 @@ import * as h from "./utils/html";
 import { startRender } from "./utils";
 import { statelessComponent } from "../src/vdom/vnode_factories";
 
-test("props should be passed to render hook", () => {
+test(`props should be passed to render hook`, () => {
   startRender((r) => {
     const c = statelessComponent<number>(
       (props) => {
@@ -14,7 +14,7 @@ test("props should be passed to render hook", () => {
   });
 });
 
-test("props should be passed to shouldUpdate hook", () => {
+test(`props should be passed to shouldUpdate hook`, () => {
   startRender((r) => {
     const c = statelessComponent<number>(
       (props) => h.div().c(props),

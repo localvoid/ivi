@@ -45,14 +45,14 @@ describe("events", () => {
     render(null, container);
   });
 
-  test("<div onclick=FN>", () => {
+  test(`<div onclick=FN>`, () => {
     const click = eventCounter(Events.onClick);
     const n = render<HTMLElement>(h.div().e([click.event]), container);
     n.dispatchEvent(createMouseEvent("click"));
     expect(click.value).toBe(1);
   });
 
-  test("<div onclick=FN onclick=FN>", () => {
+  test(`<div onclick=FN onclick=FN>`, () => {
     const aClick = eventCounter(Events.onClick);
     const bClick = eventCounter(Events.onClick);
     const n = render<HTMLElement>(h.div().e([aClick.event, bClick.event]), container);
@@ -61,7 +61,7 @@ describe("events", () => {
     expect(bClick.value).toBe(1);
   });
 
-  test("<div onclick=FN onmousedown=FN>", () => {
+  test(`<div onclick=FN onmousedown=FN>`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     const n = render<HTMLElement>(h.div().e([click.event, mousedown.event]), container);
@@ -73,17 +73,17 @@ describe("events", () => {
     expect(mousedown.value).toBe(1);
   });
 
-  test("null => []", () => {
+  test(`null => []`, () => {
     render<HTMLElement>(h.div(), container);
     render<HTMLElement>(h.div().e([]), container);
   });
 
-  test("[] => []", () => {
+  test(`[] => []`, () => {
     render<HTMLElement>(h.div().e([]), container);
     render<HTMLElement>(h.div().e([]), container);
   });
 
-  test("null => {onclick}", () => {
+  test(`null => {onclick}`, () => {
     const click = eventCounter(Events.onClick);
     render<HTMLElement>(h.div(), container);
     const b = render<HTMLElement>(h.div().e([click.event]), container);
@@ -91,7 +91,7 @@ describe("events", () => {
     expect(click.value).toBe(1);
   });
 
-  test("{} => [onclick]", () => {
+  test(`{} => [onclick]`, () => {
     const click = eventCounter(Events.onClick);
     render<HTMLElement>(h.div().e([]), container);
     const b = render<HTMLElement>(h.div().e([click.event]), container);
@@ -99,7 +99,7 @@ describe("events", () => {
     expect(click.value).toBe(1);
   });
 
-  test("null => [onclick, onmousedown]", () => {
+  test(`null => [onclick, onmousedown]`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     render<HTMLElement>(h.div(), container);
@@ -110,7 +110,7 @@ describe("events", () => {
     expect(mousedown.value).toBe(1);
   });
 
-  test("{} => [onclick, onmousedown]", () => {
+  test(`{} => [onclick, onmousedown]`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     render<HTMLElement>(h.div().e([]), container);
@@ -121,7 +121,7 @@ describe("events", () => {
     expect(mousedown.value).toBe(1);
   });
 
-  test("null => [onclick, onclick]", () => {
+  test(`null => [onclick, onclick]`, () => {
     const aClick = eventCounter(Events.onClick);
     const bClick = eventCounter(Events.onClick);
     render<HTMLElement>(h.div(), container);
@@ -131,7 +131,7 @@ describe("events", () => {
     expect(bClick.value).toBe(1);
   });
 
-  test("[onclick] => [onclick]", () => {
+  test(`[onclick] => [onclick]`, () => {
     const click = eventCounter(Events.onClick);
     render<HTMLElement>(h.div().e([click.event]), container);
     const b = render<HTMLElement>(h.div().e([click.event]), container);
@@ -139,7 +139,7 @@ describe("events", () => {
     expect(click.value).toBe(1);
   });
 
-  test("[onclick] => []", () => {
+  test(`[onclick] => []`, () => {
     const click = eventCounter(Events.onClick);
     render<HTMLElement>(h.div().e([click.event]), container);
     const b = render<HTMLElement>(h.div().e([]), container);
@@ -147,7 +147,7 @@ describe("events", () => {
     expect(click.value).toBe(0);
   });
 
-  test("[onclick] => null", () => {
+  test(`[onclick] => null`, () => {
     const click = eventCounter(Events.onClick);
     render<HTMLElement>(h.div().e([click.event]), container);
     const b = render<HTMLElement>(h.div().e([]), container);
@@ -155,7 +155,7 @@ describe("events", () => {
     expect(click.value).toBe(0);
   });
 
-  test("[onclick, null] => [null, onclick]", () => {
+  test(`[onclick, null] => [null, onclick]`, () => {
     const aClick = eventCounter(Events.onClick);
     const bClick = eventCounter(Events.onClick);
     render<HTMLElement>(h.div().e([aClick.event, null]), container);
@@ -165,7 +165,7 @@ describe("events", () => {
     expect(bClick.value).toBe(1);
   });
 
-  test("[onclick, onmousedown] => []", () => {
+  test(`[onclick, onmousedown] => []`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     render<HTMLElement>(h.div().e([click.event, mousedown.event]), container);
@@ -176,7 +176,7 @@ describe("events", () => {
     expect(mousedown.value).toBe(0);
   });
 
-  test("[onclick, onmousedown] => null", () => {
+  test(`[onclick, onmousedown] => null`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     render<HTMLElement>(h.div().e([click.event, mousedown.event]), container);
@@ -187,7 +187,7 @@ describe("events", () => {
     expect(mousedown.value).toBe(0);
   });
 
-  test("[onclick, onmousedown] => [onclick]", () => {
+  test(`[onclick, onmousedown] => [onclick]`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     render<HTMLElement>(h.div().e([click.event, mousedown.event]), container);
@@ -198,7 +198,7 @@ describe("events", () => {
     expect(mousedown.value).toBe(0);
   });
 
-  test("[onclick, onmousedown] => [onclick, onmouseup]", () => {
+  test(`[onclick, onmousedown] => [onclick, onmouseup]`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     const mouseup = eventCounter(Events.onMouseUp);
@@ -212,7 +212,7 @@ describe("events", () => {
     expect(mouseup.value).toBe(1);
   });
 
-  test("[onclick, onmousedown] => [onmouseup]", () => {
+  test(`[onclick, onmousedown] => [onmouseup]`, () => {
     const click = eventCounter(Events.onClick);
     const mousedown = eventCounter(Events.onMouseDown);
     const mouseup = eventCounter(Events.onMouseUp);

@@ -52,7 +52,7 @@ function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boole
 
 describe("sync", () => {
   describe("className", () => {
-    test("null => 'a'", () => {
+    test(`null => 'a'`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
@@ -64,7 +64,7 @@ describe("sync", () => {
       });
     });
 
-    test("'a' => null", () => {
+    test(`'a' => null`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div("a"));
@@ -75,7 +75,7 @@ describe("sync", () => {
       });
     });
 
-    test("'a' => 'a'", () => {
+    test(`'a' => 'a'`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div("a"));
@@ -87,7 +87,7 @@ describe("sync", () => {
       });
     });
 
-    test("null => 'a'", () => {
+    test(`null => 'a'`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
@@ -102,7 +102,7 @@ describe("sync", () => {
   });
 
   describe("style", () => {
-    test("{} => null", () => {
+    test(`{} => null`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({}));
@@ -113,7 +113,7 @@ describe("sync", () => {
       });
     });
 
-    test("null => {}", () => {
+    test(`null => {}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
@@ -124,7 +124,7 @@ describe("sync", () => {
       });
     });
 
-    test("{} => {}", () => {
+    test(`{} => {}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({}));
@@ -135,7 +135,7 @@ describe("sync", () => {
       });
     });
 
-    test("null => {top: 10px}", () => {
+    test(`null => {top: 10px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
@@ -146,7 +146,7 @@ describe("sync", () => {
       });
     });
 
-    test("{} => {top: 10px}", () => {
+    test(`{} => {top: 10px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({}));
@@ -157,7 +157,7 @@ describe("sync", () => {
       });
     });
 
-    test("null => {top: 10px, left: 20px}", () => {
+    test(`null => {top: 10px, left: 20px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div());
@@ -169,7 +169,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px} => {top: 10px, left: 20px}", () => {
+    test(`{top: 1px} => {top: 10px, left: 20px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px" }));
@@ -181,7 +181,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => {top: 10px, left: 20px}", () => {
+    test(`{top: 1px, left: 1px} => {top: 10px, left: 20px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -193,7 +193,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => {top: 10px, left: 20px, right: 30px}", () => {
+    test(`{top: 1px, left: 1px} => {top: 10px, left: 20px, right: 30px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -206,7 +206,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => {top: 10px, right: 30px}", () => {
+    test(`{top: 1px, left: 1px} => {top: 10px, right: 30px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -219,7 +219,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => {right: 30px}", () => {
+    test(`{top: 1px, left: 1px} => {right: 30px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -232,7 +232,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => {top: 1px}", () => {
+    test(`{top: 1px, left: 1px} => {top: 1px}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -244,7 +244,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => {}", () => {
+    test(`{top: 1px, left: 1px} => {}`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -256,7 +256,7 @@ describe("sync", () => {
       });
     });
 
-    test("{top: 1px, left: 1px} => null", () => {
+    test(`{top: 1px, left: 1px} => null`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().s({ top: "1px", left: "1px" }));
@@ -439,7 +439,7 @@ describe("sync", () => {
     ];
 
     describe("syncChildren", () => {
-      test("null => 'abc'", () => {
+      test(`null => 'abc'`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -451,7 +451,7 @@ describe("sync", () => {
         });
       });
 
-      test("null => 10", () => {
+      test(`null => 10`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -463,7 +463,7 @@ describe("sync", () => {
         });
       });
 
-      test("'abc' => null", () => {
+      test(`'abc' => null`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
@@ -474,7 +474,7 @@ describe("sync", () => {
         });
       });
 
-      test("10 => null", () => {
+      test(`10 => null`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(10));
@@ -485,7 +485,7 @@ describe("sync", () => {
         });
       });
 
-      test("'abc' => 'abc'", () => {
+      test(`'abc' => 'abc'`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
@@ -497,7 +497,7 @@ describe("sync", () => {
         });
       });
 
-      test("10 => 10", () => {
+      test(`10 => 10`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(10));
@@ -509,7 +509,7 @@ describe("sync", () => {
         });
       });
 
-      test("'abc' => 'cde'", () => {
+      test(`'abc' => 'cde'`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
@@ -521,7 +521,7 @@ describe("sync", () => {
         });
       });
 
-      test("'' => 'cde'", () => {
+      test(`'' => 'cde'`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(""));
@@ -533,7 +533,7 @@ describe("sync", () => {
         });
       });
 
-      test("'abc' => 10", () => {
+      test(`'abc' => 10`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("abc"));
@@ -545,7 +545,7 @@ describe("sync", () => {
         });
       });
 
-      test("10 => 'abc'", () => {
+      test(`10 => 'abc'`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(10));
@@ -557,7 +557,7 @@ describe("sync", () => {
         });
       });
 
-      test("null => <div>", () => {
+      test(`null => <div>`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -569,7 +569,7 @@ describe("sync", () => {
         });
       });
 
-      test("<div> => 'cde'", () => {
+      test(`<div> => 'cde'`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
@@ -581,7 +581,7 @@ describe("sync", () => {
         });
       });
 
-      test("'cde' => <div>", () => {
+      test(`'cde' => <div>`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c("cde"));
@@ -593,7 +593,7 @@ describe("sync", () => {
         });
       });
 
-      test("null => [<div>]", () => {
+      test(`null => [<div>]`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -605,7 +605,7 @@ describe("sync", () => {
         });
       });
 
-      test("<div> => null", () => {
+      test(`<div> => null`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
@@ -616,7 +616,7 @@ describe("sync", () => {
         });
       });
 
-      test("[<div>] => null", () => {
+      test(`[<div>] => null`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
@@ -627,7 +627,7 @@ describe("sync", () => {
         });
       });
 
-      test("null => [<div>, <div>]", () => {
+      test(`null => [<div>, <div>]`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -640,7 +640,7 @@ describe("sync", () => {
         });
       });
 
-      test("[<div>, <div>] => null", () => {
+      test(`[<div>, <div>] => null`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div(), h.div()));
@@ -651,7 +651,7 @@ describe("sync", () => {
         });
       });
 
-      test("null => unsafeHTML('abc')", () => {
+      test(`null => unsafeHTML('abc')`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div());
@@ -663,7 +663,7 @@ describe("sync", () => {
         });
       });
 
-      test("123 => [<h1><h2>]", () => {
+      test(`123 => [<h1><h2>]`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(123));
@@ -676,7 +676,7 @@ describe("sync", () => {
         });
       });
 
-      test("[<h1><h2>] => 123", () => {
+      test(`[<h1><h2>] => 123`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1(), h.h2()));
@@ -688,7 +688,7 @@ describe("sync", () => {
         });
       });
 
-      test("[<h1><h2>] => <div>", () => {
+      test(`[<h1><h2>] => <div>`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1(), h.h2()));
@@ -700,7 +700,7 @@ describe("sync", () => {
         });
       });
 
-      test("<h1> => <h2>", () => {
+      test(`<h1> => <h2>`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.h1()));
@@ -712,7 +712,7 @@ describe("sync", () => {
         });
       });
 
-      test("<div> => [<h1><h2>]", () => {
+      test(`<div> => [<h1><h2>]`, () => {
         startRender((r) => {
           checkDOMOps((c) => {
             r(h.div().c(h.div()));
@@ -764,7 +764,7 @@ describe("sync", () => {
   });
 
   describe("components", () => {
-    test("<span> => <C><div></C>", () => {
+    test(`<span> => <C><div></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
@@ -775,7 +775,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><div></C> => <div>", () => {
+    test(`<C><div></C> => <div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc());
@@ -787,7 +787,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div> => <C><div></C>", () => {
+    test(`<div> => <C><div></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r(h.div());
@@ -799,7 +799,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><div></C> => <span>", () => {
+    test(`<C><div></C> => <span>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc());
@@ -810,7 +810,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><div></C> => <C><div></C>", () => {
+    test(`<C><div></C> => <C><div></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc());
@@ -822,7 +822,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><div></C> => <C>''</C>", () => {
+    test(`<C><div></C> => <C>''</C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc());
@@ -834,7 +834,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C>''</C> => <C><div></C>", () => {
+    test(`<C>''</C> => <C><div></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc(""));
@@ -845,7 +845,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><C><C><div></C></C></C> => <span>", () => {
+    test(`<C><C><C><div></C></C></C> => <span>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tc(h.div(), 3));
@@ -856,7 +856,7 @@ describe("sync", () => {
       });
     });
 
-    test("<span> => <C><C><C><div></C></C></C>", () => {
+    test(`<span> => <C><C><C><div></C></C></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
@@ -867,7 +867,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><C><C><div></C></C></C> => <C><C><C><div></C></C></C>", () => {
+    test(`<C><C><C><div></C></C></C> => <C><C><C><div></C></C></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc(h.div(), 3));
@@ -879,7 +879,7 @@ describe("sync", () => {
       });
     });
 
-    test("<span> => <F><div></F>", () => {
+    test(`<span> => <F><div></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
@@ -890,7 +890,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><div></F> => <div>", () => {
+    test(`<F><div></F> => <div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf());
@@ -902,7 +902,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div> => <F><div></F>", () => {
+    test(`<div> => <F><div></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r(h.div());
@@ -914,7 +914,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><div></F> => <span>", () => {
+    test(`<F><div></F> => <span>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf());
@@ -925,7 +925,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><div></F> => <F><div></F>", () => {
+    test(`<F><div></F> => <F><div></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf());
@@ -937,7 +937,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><div></F> => <F>''</F>", () => {
+    test(`<F><div></F> => <F>''</F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf());
@@ -949,7 +949,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F>''</F> => <F><div></F>", () => {
+    test(`<F>''</F> => <F><div></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf(""));
@@ -960,7 +960,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><F><F><div></F></F></F> => <span>", () => {
+    test(`<F><F><F><div></F></F></F> => <span>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r($tcf(h.div(), 3));
@@ -971,7 +971,7 @@ describe("sync", () => {
       });
     });
 
-    test("<span> => <F><F><F><div></F></F></F>", () => {
+    test(`<span> => <F><F><F><div></F></F></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.span());
@@ -982,7 +982,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><F><F><div></F></F></F> => <F><F><F><div></F></F></F>", () => {
+    test(`<F><F><F><div></F></F></F> => <F><F><F><div></F></F></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf(h.div(), 3));
@@ -994,7 +994,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><div></C> => <F><div></F>", () => {
+    test(`<C><div></C> => <F><div></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc());
@@ -1006,7 +1006,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><div></F> => <C><div></C>", () => {
+    test(`<F><div></F> => <C><div></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf());
@@ -1018,7 +1018,7 @@ describe("sync", () => {
       });
     });
 
-    test("<C><C><C><div></C></C></C> => <F><F><F><div></F></F></F>", () => {
+    test(`<C><C><C><div></C></C></C> => <F><F><F><div></F></F></F>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tc(h.div(), 3));
@@ -1030,7 +1030,7 @@ describe("sync", () => {
       });
     });
 
-    test("<F><F><F><div></F></F></F> => <C><C><C><div></C></C></C>", () => {
+    test(`<F><F><F><div></F></F></F> => <C><C><C><div></C></C></C>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = r($tcf(h.div(), 3));
@@ -1044,7 +1044,7 @@ describe("sync", () => {
   });
 
   describe("special elements", () => {
-    test("<input type='text'> => <input type='checkbox'>", () => {
+    test(`<input type='text'> => <input type='checkbox'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input());
@@ -1056,7 +1056,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='text'> => <input type='text' value='cde'>", () => {
+    test(`<input type='text'> => <input type='text' value='cde'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input());
@@ -1069,7 +1069,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='text' value='abc'> => <input type='text' value='cde'>", () => {
+    test(`<input type='text' value='abc'> => <input type='text' value='cde'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input().value("abc"));
@@ -1082,7 +1082,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='text' value='abc'> => <input type='text'>", () => {
+    test(`<input type='text' value='abc'> => <input type='text'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input().value("abc"));
@@ -1095,7 +1095,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='checkbox'> => <input type='checkbox checked=true'>", () => {
+    test(`<input type='checkbox'> => <input type='checkbox checked=true'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.inputCheckbox());
@@ -1108,7 +1108,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='checkbox' checked=true> => <input type='checkbox checked=false'>", () => {
+    test(`<input type='checkbox' checked=true> => <input type='checkbox checked=false'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.inputCheckbox().checked(true));
@@ -1121,7 +1121,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='checkbox' checked=true> => <input type='checkbox'>", () => {
+    test(`<input type='checkbox' checked=true> => <input type='checkbox'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.inputCheckbox().checked(true));
@@ -1134,7 +1134,7 @@ describe("sync", () => {
       });
     });
 
-    test("<input type='text'> => <textarea>", () => {
+    test(`<input type='text'> => <textarea>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.input());
@@ -1145,7 +1145,7 @@ describe("sync", () => {
       });
     });
 
-    test("<textarea> => <input type='text'>", () => {
+    test(`<textarea> => <input type='text'>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea());
@@ -1157,7 +1157,7 @@ describe("sync", () => {
       });
     });
 
-    test("<textarea></textarea> => <textarea>cde</textarea>", () => {
+    test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea());
@@ -1169,7 +1169,7 @@ describe("sync", () => {
       });
     });
 
-    test("<textarea>abc</textarea> => <textarea>cde</textarea>", () => {
+    test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea().value("abc"));
@@ -1181,7 +1181,7 @@ describe("sync", () => {
       });
     });
 
-    test("<textarea>abc</textarea> => <textarea></textarea>", () => {
+    test(`<textarea>abc</textarea> => <textarea></textarea>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.textarea().value("abc"));
@@ -1193,7 +1193,7 @@ describe("sync", () => {
       });
     });
 
-    test("<audio> => <video>", () => {
+    test(`<audio> => <video>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.audio());
@@ -1241,7 +1241,7 @@ describe("sync", () => {
     const ca = component(A);
     const cb = component(B);
 
-    test("<h1><A.0> => <h1><A.1> => <A.1><h1>", () => {
+    test(`<h1><A.0> => <h1><A.1> => <A.1><h1>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0).k(1);
@@ -1261,7 +1261,7 @@ describe("sync", () => {
       });
     });
 
-    test("<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>", () => {
+    test(`<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0);
@@ -1282,7 +1282,7 @@ describe("sync", () => {
     });
 
     // same tests in the opposite direction
-    test("<A.0><h1> => <A.1><h1> => <h1><A.1>", () => {
+    test(`<A.0><h1> => <A.1><h1> => <h1><A.1>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0).k(1);
@@ -1302,7 +1302,7 @@ describe("sync", () => {
       });
     });
 
-    test("<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>", () => {
+    test(`<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           const a = ca(0);
@@ -1324,7 +1324,7 @@ describe("sync", () => {
   });
 
   describe("keyed+non-keyed", () => {
-    test("<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>", () => {
+    test(`<div>.0#0#1.1</div> => <div>.0#0#1#2.1</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1343,7 +1343,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div>.0#0#1.1</div> => <div>.0#0.1</div>", () => {
+    test(`<div>.0#0#1.1</div> => <div>.0#0.1</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1360,7 +1360,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div>.0#0#1.1</div> => <div>.0#1#0.1</div>", () => {
+    test(`<div>.0#0#1.1</div> => <div>.0#1#0.1</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1378,7 +1378,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>", () => {
+    test(`<div>.0#0.1#1.2</div> => <div>.0#1.1#0.2</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1397,7 +1397,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div>#0.1.2#1</div> => <div>.1.2</div>", () => {
+    test(`<div>#0.1.2#1</div> => <div>.1.2</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1413,7 +1413,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div>.1.2</div> => <div>#0.1.2#1</div>", () => {
+    test(`<div>.1.2</div> => <div>#0.1.2#1</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1431,7 +1431,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>", () => {
+    test(`<div>.1.2</div> => <div>#0.1.2#1#2#3#4#5#6#7#8#9</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
@@ -1460,7 +1460,7 @@ describe("sync", () => {
       });
     });
 
-    test("<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>", () => {
+    test(`<div><div />.0#0.1#1.2<div /></div> => <div>.0#1.1#0.2</div>`, () => {
       startRender((r) => {
         checkDOMOps((c) => {
           r(h.div().c(
