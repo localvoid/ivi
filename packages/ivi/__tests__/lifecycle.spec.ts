@@ -1,11 +1,11 @@
-import { startRender, checkLifecycle, $lc, staticComponent } from "./utils";
+import { startRender, checkLifecycle, Lifecycle, staticComponent } from "./utils";
 import * as h from "./utils/html";
 
 describe("lifecycle", () => {
   test("<C><div></C>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render($lc("1", h.div()));
+        render(Lifecycle("1", h.div()));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "render")).toBe(1);
@@ -24,7 +24,7 @@ describe("lifecycle", () => {
   test("<C><div></C> => <div>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render($lc("1", h.div()));
+        render(Lifecycle("1", h.div()));
         render(h.div());
 
         expect(c("1", "constructor")).toBe(0);
@@ -45,7 +45,7 @@ describe("lifecycle", () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(h.div());
-        render($lc("1", h.div()));
+        render(Lifecycle("1", h.div()));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "render")).toBe(1);
@@ -65,7 +65,7 @@ describe("lifecycle", () => {
     startRender((render) => {
       checkLifecycle((c) => {
         render(h.div());
-        render(h.div().c($lc("1", h.div())));
+        render(h.div().c(Lifecycle("1", h.div())));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "render")).toBe(1);
@@ -84,7 +84,7 @@ describe("lifecycle", () => {
   test("<div><C><div></C></div> => <div></div>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render(h.div().c($lc("1", h.div())));
+        render(h.div().c(Lifecycle("1", h.div())));
         render(h.div());
 
         expect(c("1", "constructor")).toBe(0);
@@ -104,7 +104,7 @@ describe("lifecycle", () => {
   test("<C><C><div></C></C>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render($lc("1", $lc("2", h.div())));
+        render(Lifecycle("1", Lifecycle("2", h.div())));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "render")).toBe(1);
@@ -133,7 +133,7 @@ describe("lifecycle", () => {
   test("<C><C><div></C></C> => <div>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render($lc("1", $lc("2", h.div())));
+        render(Lifecycle("1", Lifecycle("2", h.div())));
         render(h.div());
 
         expect(c("1", "constructor")).toBe(0);
@@ -163,8 +163,8 @@ describe("lifecycle", () => {
   test("<C><div></C> => <C><div></C>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render($lc("1", h.div()));
-        render($lc("1", h.div()));
+        render(Lifecycle("1", h.div()));
+        render(Lifecycle("1", h.div()));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "attached")).toBe(2);
@@ -185,8 +185,8 @@ describe("lifecycle", () => {
   test("<S><C><div></C></S> => <S><C><div></C></S>", () => {
     startRender((render) => {
       checkLifecycle((c) => {
-        render(staticComponent($lc("1", h.div())));
-        render(staticComponent($lc("1", h.div())));
+        render(staticComponent(Lifecycle("1", h.div())));
+        render(staticComponent(Lifecycle("1", h.div())));
 
         expect(c("1", "constructor")).toBe(0);
         expect(c("1", "render")).toBe(1);

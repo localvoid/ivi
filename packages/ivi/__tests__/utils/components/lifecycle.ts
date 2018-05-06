@@ -95,20 +95,20 @@ export class LifecycleTester extends Component<LifecycleTesterProps> {
 
 export const lifecycleTester = component(LifecycleTester);
 
-export function $lc(
+export function Lifecycle(
   id: string,
   hooks?: ComponentHooks<LifecycleTesterProps>,
 ): VNode<LifecycleTesterProps>;
-export function $lc(
+export function Lifecycle(
   id: string,
   child?: VNode,
 ): VNode<LifecycleTesterProps>;
-export function $lc(
+export function Lifecycle(
   id: string,
   hooks: ComponentHooks<LifecycleTesterProps>,
   child?: VNode,
 ): VNode<LifecycleTesterProps>;
-export function $lc(
+export function Lifecycle(
   id: string,
   p1?: ComponentHooks<LifecycleTesterProps> | VNode,
   p2?: VNode,
