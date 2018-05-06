@@ -51,56 +51,6 @@ function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boole
 }
 
 describe("sync", () => {
-  describe("className", () => {
-    test(`null => 'a'`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.div());
-          const b = r(h.div("a")) as HTMLElement;
-          expect(b.classList.length).toBe(1);
-          expect(b.classList.contains("a")).toBe(true);
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-
-    test(`'a' => null`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.div("a"));
-          const b = r(h.div()) as HTMLElement;
-          expect(b.classList.length).toBe(0);
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-
-    test(`'a' => 'a'`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.div("a"));
-          const b = r(h.div("a")) as HTMLElement;
-          expect(b.classList.length).toBe(1);
-          expect(b.classList.contains("a")).toBe(true);
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-
-    test(`null => 'a'`, () => {
-      startRender((r) => {
-        checkDOMOps((c) => {
-          r(h.div());
-          const b = r(h.div("a b")) as HTMLElement;
-          expect(b.classList.length).toBe(2);
-          expect(b.classList.contains("a")).toBe(true);
-          expect(b.classList.contains("b")).toBe(true);
-          expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
-        });
-      });
-    });
-  });
-
   describe("style", () => {
     test(`{} => null`, () => {
       startRender((r) => {
