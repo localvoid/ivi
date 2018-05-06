@@ -42,12 +42,12 @@ export function checkRefs(n: Node, v: VNode) {
   }
 }
 
-export function startRender(
-  fn: (render: (n: VNode) => Node) => void,
+export function startRender<T extends Node>(
+  fn: (render: (n: VNode) => T) => void,
   container?: Element | DocumentFragment,
   disableCheckRefs?: boolean,
 ): void {
-  function r(n: VNode): Node {
+  function r(n: VNode): T {
     return render(n, container, disableCheckRefs);
   }
 
