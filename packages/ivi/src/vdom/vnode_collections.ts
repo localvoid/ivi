@@ -64,10 +64,10 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
 export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T>): VNode<T> | null {
   const length = end - start;
   if (length) {
-    const first = fn(0);
+    const first = fn(start);
     let prev = first;
     for (let i = 1; i < length; ++i) {
-      const vnode = fn(i);
+      const vnode = fn(start + i);
       vnode._prev = prev;
       prev._next = vnode;
       prev = vnode;
