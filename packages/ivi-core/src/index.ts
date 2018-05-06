@@ -13,7 +13,6 @@ declare global {
 export { Predicate, MaybeUndefined } from "./types";
 export { addErrorHandler, catchError } from "./error";
 export { objectGetOwnPropertyDescriptor, objectHasOwnProperty } from "./shortcuts";
-export { memoizeSelector } from "./selector";
 
 export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";
 export {
