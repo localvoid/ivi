@@ -1,5 +1,5 @@
 import { connect, context } from "../src/vdom/vnode_factories";
-import { frag, render, staticComponent } from "./utils";
+import { render, staticComponent, startRender } from "./utils";
 import * as h from "./utils/html";
 
 const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
@@ -7,25 +7,55 @@ const ContextTestPrinterConnector = connect<{ value: string }, undefined, { valu
   (props) => h.t(props.value),
 );
 
-describe("context", () => {
-  describe("component API", () => {
-    test("<C>10</C>", () => {
-      const n = render<HTMLElement>(context({ value: 10 }, ContextTestPrinterConnector()));
-      expect(n.nodeValue).toBe("10");
-    });
+test("<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>", () => {
+  const v = (
+    context({ value: 10 },
+      ContextTestPrinterConnector(),
+    )
+  );
+  const n = render<HTMLElement>(v);
 
-    test("<C>10</C> => <C>20</C>", () => {
-      const f = frag();
-      render<HTMLElement>(context({ value: 10 }, ContextTestPrinterConnector()), f);
-      const b = render<HTMLElement>(context({ value: 20 }, ContextTestPrinterConnector()), f);
-      expect(b.nodeValue).toBe("20");
-    });
+  expect(n.nodeValue).toBe("10");
+});
 
-    test("<C><S>10</S></C> => <C><S>20</S></C>", () => {
-      const f = frag();
-      render<HTMLElement>(context({ value: 10 }, staticComponent(ContextTestPrinterConnector())), f);
-      const b = render<HTMLElement>(context({ value: 20 }, staticComponent(ContextTestPrinterConnector())), f);
-      expect(b.nodeValue).toBe("20");
-    });
+test("Sync context value", () => {
+  startRender((r) => {
+    const v1 = (
+      context({ value: 10 },
+        ContextTestPrinterConnector(),
+      )
+    );
+    const v2 = (
+      context({ value: 20 },
+        ContextTestPrinterConnector(),
+      )
+    );
+    r(v1);
+    const b = r(v2);
+
+    expect(b.nodeValue).toBe("20");
+  });
+});
+
+test("Sync context value inside component with shouldUpdate=false", () => {
+  startRender((r) => {
+    const v1 = (
+      context({ value: 10 },
+        staticComponent(
+          ContextTestPrinterConnector(),
+        ),
+      )
+    );
+    const v2 = (
+      context({ value: 20 },
+        staticComponent(
+          ContextTestPrinterConnector(),
+        ),
+      )
+    );
+    r(v1);
+    const b = r(v2);
+
+    expect(b.nodeValue).toBe("20");
   });
 });
