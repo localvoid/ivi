@@ -122,7 +122,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
 function _attach(vnode: VNode): void {
   const flags = vnode._flags;
 
-  if ((flags & VNodeFlags.Element) !== 0) {
+  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ElementPropsEvents)) !== 0) {
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       let child: VNode | null = vnode._children as VNode;
       do {
@@ -149,7 +149,7 @@ function _attach(vnode: VNode): void {
 function _detach(vnode: VNode): void {
   const flags = vnode._flags;
 
-  if ((flags & VNodeFlags.Element) !== 0) {
+  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ElementPropsEvents)) !== 0) {
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       let child: VNode | null = vnode._children as VNode;
       do {
