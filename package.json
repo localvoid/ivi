@@ -5,7 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",
@@ -13,8 +14,8 @@
     "jest": "^22.4.3",
     "lerna": "^2.11.0",
     "routekit-resolver": "^0.4.1",
-    "ts-jest": "^22.4.4",
-    "ts-node": "^6.0.2",
+    "ts-jest": "^22.4.5",
+    "ts-node": "^6.0.3",
     "tslib": "^1.9.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"

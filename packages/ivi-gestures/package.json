@@ -44,9 +44,7 @@
     "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json",
     "dist:es2016": "../../node_modules/.bin/tsc -p ./tsconfig.build.es2016.json",
-    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json",
-    "test": "../../node_modules/.bin/jest",
-    "test:coverage": "../../node_modules/.bin/jest --coverage"
+    "lint": "../../node_modules/.bin/tslint --project ./tsconfig.json"
   },
   "dependencies": {},
   "peerDependencies": {

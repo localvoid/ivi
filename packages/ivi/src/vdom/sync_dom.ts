@@ -1,5 +1,6 @@
 import {
-  XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty, elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS,
+  XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty, elementRemoveAttribute, elementSetAttribute,
+  elementSetAttributeNS,
 } from "ivi-core";
 
 /**
