@@ -13,26 +13,37 @@ export function statelessComponent<P>(
   shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): (props: P) => VNode<P> {
   const d = { render, shouldUpdate };
+  let f: (props: P) => VNode<P>;
   if (shouldUpdate === undefined) {
-    return function (props: P): VNode<P> {
-      return new VNode<P>(
+    f = function (props: P): VNode<P> {
+      const n = new VNode<P>(
         VNodeFlags.StatelessComponent,
         d,
         props,
         void 0,
         null,
       );
+      if (DEBUG) {
+        n._factory = f;
+      }
+      return n;
     };
+    return f;
   }
-  return function (props: P): VNode<P> {
-    return new VNode<P>(
+  f = function (props: P): VNode<P> {
+    const n = new VNode<P>(
       VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
       d,
       props,
       void 0,
       null,
     );
+    if (DEBUG) {
+      n._factory = f;
+    }
+    return n;
   };
+  return f;
 }
 
 export function component(c: StatefulComponent<undefined>): () => VNode<undefined>;
@@ -42,15 +53,20 @@ export function component<P>(
 export function component<P>(
   c: StatefulComponent<P>,
 ): (props: P) => VNode<P> {
-  return function (props: P): VNode<P> {
-    return new VNode<P>(
+  const f = function (props: P): VNode<P> {
+    const n = new VNode<P>(
       VNodeFlags.StatefulComponent,
       c,
       props,
       void 0,
       null,
     );
+    if (DEBUG) {
+      n._factory = f;
+    }
+    return n;
   };
+  return f;
 }
 
 /**
@@ -87,13 +103,18 @@ export function connect<T, P, C>(
   render: (props: T) => VNode<any>,
 ): (props: P) => VNode<P> {
   const descriptor = { select, render };
-  return function (props: P): VNode<P> {
-    return new VNode<P>(
+  const f = function (props: P): VNode<P> {
+    const n = new VNode<P>(
       VNodeFlags.Connect,
       descriptor as ConnectDescriptor<any, any, {}>,
       props,
       void 0,
       null,
     );
+    if (DEBUG) {
+      n._factory = f;
+    }
+    return n;
   };
+  return f;
 }

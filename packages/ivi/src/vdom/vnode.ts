@@ -1,4 +1,4 @@
-import { CSSStyleProps } from "ivi-core";
+import { CSSStyleProps, NOOP } from "ivi-core";
 import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
 import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
@@ -70,6 +70,14 @@ export class VNode<P = any, N = Node> {
    * Events.
    */
   _events: Array<EventHandler | null> | EventHandler | null;
+  /* tslint:disable:ban-types */
+  /**
+   * Factory function that was used to instantiate this node.
+   *
+   * It is used for debugging and testing purposes.
+   */
+  _factory!: Function;
+  /* tslint:enable:ban-types */
 
   constructor(
     flags: number,
@@ -100,6 +108,9 @@ export class VNode<P = any, N = Node> {
     this._className = className;
     this._style = null;
     this._events = null;
+    if (DEBUG) {
+      this._factory = NOOP;
+    }
   }
 
   /**
