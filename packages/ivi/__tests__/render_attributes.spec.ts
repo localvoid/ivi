@@ -21,6 +21,22 @@ describe(`HTML`, () => {
     expect(n.tabIndex).toBe(1);
   });
 
+  test(`<div attrs={ tabIndex: undefined }>`, () => {
+    const n = render<HTMLElement>(h.div().a({ tabIndex: undefined }));
+    expect(n.attributes.length).toBe(0);
+  });
+
+  test(`<div attrs={ checked: false }>`, () => {
+    const n = render<HTMLElement>(h.div().a({ checked: false }));
+    expect(n.attributes.length).toBe(0);
+  });
+
+  test(`<div attrs={ checked: true }>`, () => {
+    const n = render<HTMLElement>(h.div().a({ checked: true }));
+    expect(n.attributes.length).toBe(1);
+    expect(n.getAttribute("checked")).toBe("");
+  });
+
   test(`<div attrs={ tabIndex: "1", title: "2" }>`, () => {
     const n = render<HTMLElement>(h.div().a({ tabIndex: 1, title: "2" }));
     expect(n.attributes.length).toBe(2);

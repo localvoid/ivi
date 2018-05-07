@@ -1,6 +1,22 @@
-import { unorderedArrayDelete } from "../src/array";
+import { append, unorderedArrayDelete } from "../src/array";
 
 describe("array", () => {
+  describe("append", () => {
+    test("append(null, 1)", () => {
+      expect(append(null, 1)).toEqual([1]);
+    });
+
+    test("append([0], 1)", () => {
+      expect(append([0], 1)).toEqual([0, 1]);
+    });
+
+    test("same instance", () => {
+      const a = [0];
+      const b = append(a, 1);
+      expect(a).toBe(b);
+    });
+  });
+
   describe("unorderedArrayDelete", () => {
     describe("one item", () => {
       test("delete first item", () => {

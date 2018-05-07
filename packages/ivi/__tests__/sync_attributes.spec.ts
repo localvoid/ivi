@@ -64,6 +64,29 @@ describe(`sync element attributes`, () => {
     });
   });
 
+  test(`{ title: "1" } => { title: undefined }`, () => {
+    startRender<HTMLElement>((r) => {
+      r(h.div().a({ title: "1" }));
+      const n = r(h.div().a({
+        title: undefined,
+      }));
+
+      expect(n.attributes.length).toBe(0);
+    });
+  });
+
+  test(`{ checked: false } => { checked: true }`, () => {
+    startRender<HTMLElement>((r) => {
+      r(h.div().a({ checked: false }));
+      const n = r(h.div().a({
+        checked: true,
+      }));
+
+      expect(n.attributes.length).toBe(1);
+      expect(n.getAttribute("checked")).toBe("");
+    });
+  });
+
   test(`{} => { title: "2", tabIndex: 2 }`, () => {
     startRender<HTMLElement>((r) => {
       r(h.div().a({}));

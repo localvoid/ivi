@@ -67,6 +67,29 @@ describe(`sync element style`, () => {
     });
   });
 
+  test(`{ top: "1px" } => null`, () => {
+    startRender<HTMLElement>((r) => {
+      r(h.div().s({
+        top: "1px",
+      }));
+      const n = r(h.div().s(null));
+
+      expect(n.style.length).toBe(0);
+    });
+  });
+
+  test(`{ top: "1px", left: "1px" } => null`, () => {
+    startRender<HTMLElement>((r) => {
+      r(h.div().s({
+        top: "1px",
+        left: "1px",
+      }));
+      const n = r(h.div().s(null));
+
+      expect(n.style.length).toBe(0);
+    });
+  });
+
   test(`{ top: "1px" } => { top: "10px", left: "20px" }`, () => {
     startRender<HTMLElement>((r) => {
       r(h.div().s({
