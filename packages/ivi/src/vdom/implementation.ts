@@ -13,9 +13,6 @@ import {
   setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
   nestingStateParentTagName,
 } from "../dev_mode/html_nesting_rules";
-import {
-  stackTracePushComponent, stackTracePopComponent, stackTraceReset, stackTraceAugment,
-} from "../dev_mode/stack_trace";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -34,14 +31,6 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
 export function renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
   if (DEBUG) {
     setInitialNestingState(parent as Element);
-
-    try {
-      return _renderVNode(parent, refChild, vnode, context);
-    } catch (e) {
-      stackTraceAugment(e);
-      stackTraceReset();
-      throw e;
-    }
   }
   return _renderVNode(parent, refChild, vnode, context);
 }
@@ -72,15 +61,6 @@ function _renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context
 export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: boolean): void {
   if (DEBUG) {
     setInitialNestingState(parent as Element);
-
-    try {
-      _syncVNode(parent, a, b, context, dirtyContext);
-      return;
-    } catch (e) {
-      stackTraceAugment(e);
-      stackTraceReset();
-      throw e;
-    }
   }
   _syncVNode(parent, a, b, context, dirtyContext);
 }
@@ -105,16 +85,6 @@ function _syncVNode(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext:
  * @param node VNode element to remove.
  */
 export function removeVNode(parent: Node, node: VNode): void {
-  if (DEBUG) {
-    try {
-      _removeVNode(parent, node);
-      return;
-    } catch (e) {
-      stackTraceAugment(e);
-      stackTraceReset();
-      throw e;
-    }
-  }
   _removeVNode(parent, node);
 }
 
@@ -140,15 +110,6 @@ function _removeVNode(parent: Node, node: VNode): void {
 export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
   if (DEBUG) {
     setInitialNestingState(parent as Element);
-
-    try {
-      _dirtyCheck(parent, vnode, context, dirtyContext);
-      return;
-    } catch (e) {
-      stackTraceAugment(e);
-      stackTraceReset();
-      throw e;
-    }
   }
   _dirtyCheck(parent, vnode, context, dirtyContext);
 }
@@ -173,16 +134,10 @@ function _attach(vnode: VNode): void {
       attachEvents(vnode._events!);
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
-    if (DEBUG) {
-      stackTracePushComponent(vnode);
-    }
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       (vnode._instance as Component<any>).attached();
     }
     _attach(vnode._children as VNode);
-    if (DEBUG) {
-      stackTracePopComponent();
-    }
   }
 }
 
@@ -206,17 +161,11 @@ function _detach(vnode: VNode): void {
       detachEvents(vnode._events!);
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
-    if (DEBUG) {
-      stackTracePushComponent(vnode);
-    }
     _detach(vnode._children as VNode);
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = vnode._instance as Component<any>;
       component.flags |= ComponentFlags.Detached;
       component.detached();
-    }
-    if (DEBUG) {
-      stackTracePopComponent();
     }
   }
 }
@@ -244,9 +193,6 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
         children = children._next;
       } while (children !== null);
     } else {
-      if (DEBUG) {
-        stackTracePushComponent(vnode);
-      }
       if ((flags & VNodeFlags.StatefulComponent) !== 0) {
         instance = vnode._instance as Component<any>;
         children = vnode._children as VNode;
@@ -302,9 +248,6 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
             dirtyContext,
           );
         }
-      }
-      if (DEBUG) {
-        stackTracePopComponent();
       }
     }
   }
@@ -486,15 +429,9 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   } else { // (flags & VNodeFlags.Component)
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
-      if (DEBUG) {
-        stackTracePushComponent(vnode, instance);
-      }
       const root = vnode._children = component.render();
       node = _render(parent, root, context);
     } else { // (flags & VNodeFlags.ComponentFunction)
-      if (DEBUG) {
-        stackTracePushComponent(vnode);
-      }
       if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
         if ((flags & VNodeFlags.Connect) !== 0) {
           const connect = (vnode._tag as ConnectDescriptor<any, any, {}>);
@@ -511,9 +448,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         vnode._children as VNode,
         context,
       );
-    }
-    if (DEBUG) {
-      stackTracePopComponent();
     }
   }
 
@@ -688,9 +622,6 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
         }
       }
     } else { // (flags & VNodeFlags.Component)
-      if (DEBUG) {
-        stackTracePushComponent(b);
-      }
       if ((bFlags & VNodeFlags.StatefulComponent) !== 0) {
         const component = instance as Component<any>;
         // Update component props
@@ -779,9 +710,6 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
             _dirtyCheck(parent, b._children as VNode, context, dirtyContext);
           }
         }
-      }
-      if (DEBUG) {
-        stackTracePopComponent();
       }
     }
   } else {

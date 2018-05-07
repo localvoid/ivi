@@ -1,5 +1,3 @@
-import { printComponentStackTrace } from "./stack_trace";
-
 /**
  * Print error to the console and throw local exception.
  *
@@ -10,7 +8,6 @@ import { printComponentStackTrace } from "./stack_trace";
 export function printError(message: string): void {
   if (DEBUG) {
     console.error(message);
-    printComponentStackTrace();
     try {
       throw new Error(message);
     } catch (_) {
@@ -30,7 +27,6 @@ export function printError(message: string): void {
 export function printWarn(message: string): void {
   if (DEBUG) {
     console.warn(message);
-    printComponentStackTrace();
     try {
       throw new Error(message);
     } catch (_) {
@@ -56,7 +52,6 @@ export function printWarnOnce(key: string, message: string): void {
     if (!_printedWarnings.has(key)) {
       _printedWarnings.add(key);
       console.warn(message);
-      printComponentStackTrace();
       try {
         throw new Error(message);
       } catch (_) {
