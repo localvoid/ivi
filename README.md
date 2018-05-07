@@ -38,27 +38,6 @@ exclusively for bug reports and feature requests.
 - [Performance Tips](https://github.com/ivijs/ivi/blob/master/documentation/misc/perf-tips.md)
 - [Children Reconciliation](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
 
-### Installation
-
-#### NPM
-
-ivi npm packages provide es2015, commonjs modules and TypeScript typings.
-
-```sh
-$ npm install ivi-core ivi-dom ivi-scheduler ivi-events ivi-html ivi
-```
-
-#### Boilerplate
-
-Basic boilerplate configured with:
-
-- [TypeScript 2.4](https://www.typescriptlang.org)
-- [Webpack 3.1](https://webpack.js.org)
-
-```sh
-$ git clone https://github.com/ivijs/boilerplate
-```
-
 ### Basic Example
 
 ```js
@@ -137,6 +116,10 @@ render(
 ```
 
 ### Examples and demo applications
+
+#### Boilerplate
+
+- [Basic Boilerplate](https://github.com/ivijs/boilerplate/)
 
 #### Basic
 
