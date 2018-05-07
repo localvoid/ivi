@@ -1,5 +1,4 @@
-import { FEATURES, FeatureFlags } from "ivi-core";
-import { getMouseButtons } from "ivi-dom";
+import { FEATURES, FeatureFlags, getMouseButtons } from "ivi-core";
 import {
   SyntheticEventFlags, SyntheticMouseEvent, EventSourceMouseDown, EventSourceMouseUp, EventSourceMouseMove,
 } from "ivi-events";

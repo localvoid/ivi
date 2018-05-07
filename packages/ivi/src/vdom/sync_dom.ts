@@ -1,5 +1,6 @@
-import { XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty } from "ivi-core";
-import { elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS } from "ivi-dom";
+import {
+  XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, objectHasOwnProperty, elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS,
+} from "ivi-core";
 
 /**
  * Sync DOM styles.

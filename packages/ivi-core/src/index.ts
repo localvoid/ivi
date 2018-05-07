@@ -10,7 +10,7 @@ declare global {
   const TARGET: string;
 }
 
-export { Predicate, MaybeUndefined } from "./types";
+export { Predicate } from "./types";
 export { addErrorHandler, catchError } from "./error";
 export { objectGetOwnPropertyDescriptor, objectHasOwnProperty } from "./shortcuts";
 
@@ -61,3 +61,10 @@ export {
   DevModeHooks, DEV_HOOKS, devModeAddHook, OnErrorHook, devModeOnError, enableTestEnvironment, isTestEnvironment,
   addTestResetTask,
 } from "./dev_hooks";
+
+export {
+  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
+  elementSetAttributeNS,
+} from "./dom/shortcuts";
+export { getEventCharCode, getEventKey, getMouseButtons } from "./dom/input";
+export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";

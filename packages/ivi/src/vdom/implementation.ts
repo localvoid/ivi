@@ -5,8 +5,9 @@
  * creating many circular dependencies between JS modules.
  */
 
-import { SVG_NAMESPACE } from "ivi-core";
-import { nodeRemoveChild, nodeInsertBefore, elementSetAttribute, nodeCloneNode, nodeReplaceChild } from "ivi-dom";
+import {
+  SVG_NAMESPACE, nodeRemoveChild, nodeInsertBefore, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
+} from "ivi-core";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
 import {

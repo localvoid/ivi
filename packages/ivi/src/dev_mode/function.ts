@@ -1,12 +1,3 @@
-/**
- * Development Mode.
- */
-
-/**
- * Version number in string format.
- */
-export const VERSION = "0.10.0";
-
 /* tslint:disable:ban-types */
 /**
  * Get function name.

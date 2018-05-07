@@ -11,7 +11,7 @@ export interface StatelessComponent<P = undefined> {
 }
 
 /**
- * Stateful Component constructor.
+ * Stateful Component class interface.
  */
 export interface StatefulComponent<P = undefined> {
   new(props: P): Component<P>;
@@ -24,14 +24,13 @@ export interface StatefulComponent<P = undefined> {
  *
  * Example:
  *
- *     class Hello extends Component<string> {
+ *     const Hello = component(class extends Component<string> {
  *       render() {
  *         return h.t(`Hello ${this.props}`);
  *       }
- *     }
- *     const hello = componentFactory(Hello);
+ *     });
  *
- *     render(hello("world"), document.getElementById("App")!);
+ *     render(Hello("world"), document.getElementById("App")!);
  */
 export abstract class Component<P = undefined> {
   /**

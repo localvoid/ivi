@@ -1,4 +1,4 @@
-import { getEventCharCode, getEventKey, getMouseButtons } from "ivi-dom";
+import { getEventCharCode, getEventKey, getMouseButtons } from "ivi-core";
 import { SyntheticEventFlags } from "./flags";
 
 /**

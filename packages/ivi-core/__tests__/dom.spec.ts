@@ -1,4 +1,4 @@
-import { nodeDepth } from "../src/traverse";
+import { nodeDepth } from "../src/dom/traverse";
 
 describe("DOM", () => {
   describe("nodeDepth", () => {

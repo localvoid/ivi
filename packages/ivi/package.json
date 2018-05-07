@@ -50,13 +50,11 @@
   "dependencies": {},
   "peerDependencies": {
     "ivi-core": "^0.10.0",
-    "ivi-dom": "^0.10.0",
     "ivi-scheduler": "^0.10.0",
     "ivi-events": "^0.10.0"
   },
   "devDependencies": {
     "ivi-core": "^0.10.0",
-    "ivi-dom": "^0.10.0",
     "ivi-scheduler": "^0.10.0",
     "ivi-events": "^0.10.0"
   }

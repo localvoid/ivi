@@ -6,16 +6,11 @@ General overview of the project.
 
 ### ivi-core
 
-Shared code for browser and server implementations. It contains: basic types, data structures, helper functions,
-client-side feature detection and user-agent detection.
+Core library.
 
 ### ivi-math
 
 Math library for UI development.
-
-### ivi-dom
-
-Fixes for browser quirks and DOM-related helper functions.
 
 ### ivi-events
 

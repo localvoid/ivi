@@ -1,4 +1,4 @@
-import { FEATURES, FeatureFlags } from "ivi-core";
+import { FEATURES, FeatureFlags } from "../feature_detection";
 
 const KEY_CODE_TO_KEY: { [key: number]: string } = {
   8: "Backspace",

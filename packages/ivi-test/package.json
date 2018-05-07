@@ -49,9 +49,9 @@
     "test:coverage": "../../node_modules/.bin/jest --coverage"
   },
   "peerDependencies": {
+    "ivi": "^0.10.0",
     "ivi-core": "^0.10.0",
-    "ivi-html": "^0.10.0",
-    "ivi": "^0.10.0"
+    "ivi-html": "^0.10.0"
   },
   "dependencies": {},
   "devDependencies": {

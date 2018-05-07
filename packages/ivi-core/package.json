@@ -44,8 +44,5 @@
   },
   "peerDependencies": {},
   "dependencies": {},
-  "devDependencies": {},
-  "jest": {
-    "browser": true
-  }
+  "devDependencies": {}
 }
