@@ -185,7 +185,7 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
   let children: VNode | null | undefined;
   let instance: Node | Component<any> | {} | undefined;
 
-  if ((flags & (VNodeFlags.DisabledDirtyChecking | VNodeFlags.ChildrenVNode | VNodeFlags.Component)) > 0) {
+  if ((flags & (VNodeFlags.StopDirtyChecking | VNodeFlags.ChildrenVNode | VNodeFlags.Component)) > 0) {
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       instance = vnode._instance as Node;
       children = vnode._children as VNode;

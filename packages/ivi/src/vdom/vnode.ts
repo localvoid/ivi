@@ -461,13 +461,13 @@ export function getElementStyleFromVNode(node: VNode): CSSStyleProps | null {
 }
 
 /**
- * disableDirtyChecking disables dirty checking for all descendants.
+ * stopDirtyChecking stops dirty checking process when it goes through this node.
  *
  * @param node VNode.
  * @returns VNode.
  */
-export function disableDirtyChecking<N extends VNode>(node: N): N {
-  node._flags |= VNodeFlags.DisabledDirtyChecking;
+export function stopDirtyChecking<N extends VNode>(node: N): N {
+  node._flags |= VNodeFlags.StopDirtyChecking;
   return node;
 }
 

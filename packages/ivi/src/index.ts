@@ -13,7 +13,7 @@ export {
   getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
   getElementPropsFromVNode, getElementStyleFromVNode,
-  disableDirtyChecking,
+  stopDirtyChecking,
 } from "./vdom/vnode";
 export { children, map, mapRange, mapFilter } from "./vdom/vnode_collections";
 export { elementFactory } from "./vdom/element";
