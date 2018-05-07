@@ -200,6 +200,28 @@ test(`<div></div>{ children(<div></div><div></div>) }`, () => {
   expect(v3._next).toBeNull();
 });
 
+test(`{ children(<div></div><div></div>) }<div></div>`, () => {
+  const v1 = h.div();
+  const v2 = h.div();
+  const v3 = h.div();
+  const v = h.div().c(children(v1, v2), v3);
+
+  expect(v._flags & VNodeFlags.ChildrenVNode).toBeTruthy();
+  expect(v._children).toBe(v1);
+  expect(v1._flags & VNodeFlags.Key).toBeFalsy();
+  expect(v1._key).toBe(0);
+  expect(v2._flags & VNodeFlags.Key).toBeFalsy();
+  expect(v2._key).toBe(1);
+  expect(v3._flags & VNodeFlags.Key).toBeFalsy();
+  expect(v3._key).toBe(2);
+  expect(v1._prev).toBe(v3);
+  expect(v1._next).toBe(v2);
+  expect(v2._prev).toBe(v1);
+  expect(v2._next).toBe(v3);
+  expect(v3._prev).toBe(v2);
+  expect(v3._next).toBeNull();
+});
+
 test(`{ mapRange(0, 2, (i) => <div key={i}></div>) }`, () => {
   const v1 = h.div().k("a");
   const v2 = h.div().k("b");

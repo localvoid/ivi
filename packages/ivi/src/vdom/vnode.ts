@@ -245,6 +245,7 @@ export class VNode<P = any, N = Node> {
             ++p;
             c = c!._next;
           } while (c !== null);
+          --p;
         }
 
         if (prev !== null) {
