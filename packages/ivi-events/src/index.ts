@@ -8,12 +8,7 @@ export { EventSource } from "./event_source";
 export { accumulateDispatchTargets, accumulateDispatchTargetsFromElement } from "./traverse_dom";
 export { DispatchTarget, dispatchEvent } from "./dispatch";
 export { EventHandler } from "./event_handler";
-export {
-  SyntheticEvent, SyntheticUIEvent, SyntheticDragEvent, SyntheticClipboardEvent,
-  SyntheticErrorEvent, SyntheticNativeEventClass, SyntheticFocusEvent, SyntheticKeyboardEvent,
-  SyntheticMediaEncryptedEvent, SyntheticMediaStreamErrorEvent, SyntheticMouseEvent, SyntheticPointerEvent,
-  SyntheticProgressEvent, SyntheticTouchEvent, SyntheticWheelEvent,
-} from "./synthetic_event";
+export { SyntheticEvent, SyntheticNativeEvent } from "./synthetic_event";
 export { NativeEventSource } from "./native_event_source";
 export { syncEvents, attachEvents, detachEvents } from "./sync_events";
 

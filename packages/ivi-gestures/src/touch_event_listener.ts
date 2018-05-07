@@ -1,7 +1,7 @@
 import { FEATURES, FeatureFlags } from "ivi-core";
 import {
-  SyntheticEventFlags, SyntheticTouchEvent, EventSourceActiveTouchStart, EventSourceTouchEnd, EventSourceTouchCancel,
-  EventSourceActiveTouchMove,
+  SyntheticEventFlags, EventSourceActiveTouchStart, EventSourceTouchEnd, EventSourceTouchCancel,
+  EventSourceActiveTouchMove, SyntheticNativeEvent,
 } from "ivi-events";
 import { isNativeGestureAccepted } from "./arena";
 import { GestureNativeEventSource } from "./gesture_event_source";
@@ -172,7 +172,7 @@ export function createTouchEventListener(
     }
   }
 
-  function onStart(s: SyntheticTouchEvent): void {
+  function onStart(s: SyntheticNativeEvent<TouchEvent>): void {
     const ev = s.native;
     vacuum(ev);
 
@@ -198,7 +198,7 @@ export function createTouchEventListener(
     }
   }
 
-  function onMove(s: SyntheticTouchEvent) {
+  function onMove(s: SyntheticNativeEvent<TouchEvent>) {
     const ev = s.native;
     const touches = ev.changedTouches;
     for (let i = 0; i < touches.length; ++i) {
@@ -217,7 +217,7 @@ export function createTouchEventListener(
     }
   }
 
-  function onEnd(s: SyntheticTouchEvent) {
+  function onEnd(s: SyntheticNativeEvent<TouchEvent>) {
     const ev = s.native;
     const touches = ev.changedTouches;
     for (let i = 0; i < touches.length; ++i) {
@@ -239,7 +239,7 @@ export function createTouchEventListener(
     }
   }
 
-  function onCancel(s: SyntheticTouchEvent) {
+  function onCancel(s: SyntheticNativeEvent<TouchEvent>) {
     const ev = s.native;
     const touches = ev.changedTouches;
     for (let i = 0; i < touches.length; ++i) {

@@ -1,6 +1,6 @@
 import { FEATURES, FeatureFlags, getMouseButtons } from "ivi-core";
 import {
-  SyntheticEventFlags, SyntheticMouseEvent, EventSourceMouseDown, EventSourceMouseUp, EventSourceMouseMove,
+  SyntheticEventFlags, EventSourceMouseDown, EventSourceMouseUp, EventSourceMouseMove, SyntheticNativeEvent,
 } from "ivi-events";
 import { GestureNativeEventSource } from "./gesture_event_source";
 import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
@@ -86,7 +86,7 @@ export function createMouseEventListener(
     return false;
   }
 
-  function onDown(s: SyntheticMouseEvent<MouseEvent>): void {
+  function onDown(s: SyntheticNativeEvent<MouseEvent>): void {
     const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       const buttons = getMouseButtons(ev);
@@ -108,7 +108,7 @@ export function createMouseEventListener(
     }
   }
 
-  function onMove(s: SyntheticMouseEvent<MouseEvent>): void {
+  function onMove(s: SyntheticNativeEvent<MouseEvent>): void {
     const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       if (activePointer !== null) {
@@ -131,7 +131,7 @@ export function createMouseEventListener(
     }
   }
 
-  function onUp(s: SyntheticMouseEvent<MouseEvent>): void {
+  function onUp(s: SyntheticNativeEvent<MouseEvent>): void {
     const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       if (activePointer !== null) {
