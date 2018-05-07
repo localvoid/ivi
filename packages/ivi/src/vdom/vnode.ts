@@ -239,9 +239,10 @@ export class VNode<P = any, N = Node> {
         } else if ((flags & VNodeFlags.KeyedList) === 0) {
           let c: VNode | null = n;
           do {
-            if ((flags & VNodeFlags.Key) === 0) {
-              c!._key = p++;
+            if ((c!._flags & VNodeFlags.Key) === 0) {
+              c!._key = p;
             }
+            ++p;
             c = c!._next;
           } while (c !== null);
         }
