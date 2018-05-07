@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<div unsafeHTML="<div>abc</div>"> => <div unsafeHTML="<span>abc</span>"></div> 1`] = `
+<div>
+  <span>
+    abc
+  </span>
+</div>
+`;
+
+exports[`<div unsafeHTML="<div>abc</div>"> => <div unsafeHTML={ null }></div> 1`] = `<div />`;
+
+exports[`<div unsafeHTML="<div>abc</div>"> => <div></div> 1`] = `<div />`;
+
+exports[`<div unsafeHTML={ null }> => <div unsafeHTML="<span>abc</span>"></div> 1`] = `
+<div>
+  <span>
+    abc
+  </span>
+</div>
+`;
+
 exports[`<div> => <div unsafeHTML="<span>abc</span>"></div> 1`] = `
 <div>
   <span>
