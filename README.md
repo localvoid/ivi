@@ -1,6 +1,6 @@
-# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ivijs/ivi/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi) [![Coverage Status](https://coveralls.io/repos/github/ivijs/ivi/badge.svg)](https://coveralls.io/github/ivijs/ivi) [![CircleCI Status](https://circleci.com/gh/ivijs/ivi.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/ivijs/ivi) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/localvoid/ivi)
+# [ivi](https://github.com/ivijs/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ivijs/ivi/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi) [![Coverage Status](https://coveralls.io/repos/github/ivijs/ivi/badge.svg)](https://coveralls.io/github/ivijs/ivi) [![CircleCI Status](https://circleci.com/gh/ivijs/ivi.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/ivijs/ivi) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ivijs/ivi)
 
-[ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces.
+[ivi](http://github.com/ivijs/ivi) is a javascript (TypeScript) library for building web user interfaces.
 
 ## Features
 
@@ -18,6 +18,26 @@
 
 For questions and support please use the [Gitter chat room](https://gitter.im/ivijs/ivi). The issue list of this repo is
 exclusively for bug reports and feature requests.
+
+## Example
+
+```js
+import { render } from "ivi";
+import * as h from "ivi-html";
+
+const container = document.getElementById("app");
+let counter = 0;
+
+function update() {
+  render(
+    h.div().c(`Counter: ${counter}`),
+    container,
+  );
+
+  setTimeout(update, 100);
+}
+update();
+```
 
 ## Documentation
 
@@ -39,83 +59,6 @@ exclusively for bug reports and feature requests.
 
 - [Performance Tips](https://github.com/ivijs/ivi/blob/master/documentation/misc/perf-tips.md)
 - [Children Reconciliation](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
-
-### Basic Example
-
-```js
-import { render } from "ivi";
-import * as h from "ivi-html";
-
-const container = document.getElementById("app");
-let counter = 0;
-
-function update() {
-  render(
-    h.div().c(`Counter: ${counter}`),
-    container,
-  );
-
-  setTimeout(update, 100);
-}
-update();
-```
-
-### Components
-
-Components are the basic building blocks for your applications, they will help you encapsulate reusable code.
-
-#### Stateless Components
-
-Stateless components are implemented with simple functions.
-
-```ts
-import { statelessComponentFactory, render } from "ivi";
-import * as h from "ivi-html";
-
-const HelloComponent = statelessComponent<string>((text) => (
-  h.div().c(text)
-));
-
-render(
-  HelloComponent("Hello Stateless Component!"),
-  document.getElementById("app")!,
-);
-```
-
-#### Stateful Components
-
-Stateful components are implemented with ES6 classes and should be extended from the base component class
-`Component<P>`. Base class has a parametric type `P` that specifies props type.
-
-```ts
-import { Component, componentFactory, render } from "ivi";
-import * as h from "ivi-html";
-
-const StatefulComponent = component(class extends Component {
-  private time = 0;
-  private timeoutId = 0;
-
-  attached() {
-    this.timeoutId = setInterval(() => {
-      this.time++;
-      this.invalidate();
-    }, 1000);
-  }
-
-  detached() {
-    clearInterval(this.timeoutId);
-  }
-
-  render() {
-    return h.div().c(`Time: ${this.time}`);
-  }
-});
-
-render(
-  StatefulComponent(),
-  document.getElementById("app")!,
-);
-```
 
 ### Examples and demo applications
 
