@@ -24,4 +24,4 @@ jobs:
             - node_modules
           key: v1-node-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
         
-      - run: yarn test
+      - run: yarn run jest -w 1
