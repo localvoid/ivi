@@ -146,3 +146,13 @@ test(`complex tree #1`, () => {
     });
   });
 });
+
+test(`raise an exception when VNode is used multiple times`, () => {
+  startRender((r) => {
+    const v1 = h.div();
+    const v2 = h.div().c(v1);
+    r(v1);
+
+    expect(() => r(v2)).toThrowError();
+  });
+});

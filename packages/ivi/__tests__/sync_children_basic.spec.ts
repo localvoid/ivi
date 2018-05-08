@@ -192,3 +192,14 @@ test(`<div><div></div></div> => <div></div>`, () => {
     });
   });
 });
+
+test(`raise an exception when VNode is used multiple times`, () => {
+  startRender((r) => {
+    const v1 = h.div();
+    const v2 = h.div();
+    r(v1);
+    r(v2);
+
+    expect(() => r(v1)).toThrowError();
+  });
+});
