@@ -53,7 +53,6 @@ export { append, unorderedArrayDelete } from "./array";
 export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList } from "./repeatable_task_list";
 export { shallowEqual } from "./equal";
-export { TraceLog, TraceLogEntry } from "./trace";
 
 export { USER_AGENT, UserAgentFlags } from "./user_agent";
 export { FEATURES, FeatureFlags } from "./feature_detection";
