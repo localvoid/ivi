@@ -1,8 +1,6 @@
+import { Component, VNode, statelessComponent, component } from "ivi";
+import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
-import * as h from "./utils/html";
-import { Component } from "../src/vdom/component";
-import { statelessComponent, component } from "../src/vdom/vnode_factories";
-import { VNode } from "../src/vdom/vnode";
 
 const Stateless = statelessComponent<VNode>(
   (child) => child,

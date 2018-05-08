@@ -1,4 +1,4 @@
-import { createBox, createBoxSnapshot } from "../src/box";
+import { createBox, createBoxSnapshot } from "ivi-state";
 
 test("createBox", function () {
   const m = { a: 1 };

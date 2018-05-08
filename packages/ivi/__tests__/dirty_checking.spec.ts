@@ -1,7 +1,6 @@
-import { connect, context } from "../src/vdom/vnode_factories";
-import { stopDirtyChecking } from "../src/vdom/vnode";
+import { connect, context, stopDirtyChecking } from "ivi";
+import * as h from "ivi-html";
 import { startRender } from "./utils";
-import * as h from "./utils/html";
 
 test(`identical node should trigger dirty checking`, () => {
   startRender((r) => {

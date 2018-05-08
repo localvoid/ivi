@@ -1,6 +1,5 @@
+import { VNodeWrapper, query, queryAll, q } from "ivi-test";
 import * as h from "ivi-html";
-import { query, queryAll, q } from "../src/query";
-import { VNodeWrapper } from "../src/vdom";
 
 describe("src/query.ts", () => {
   const tree = new VNodeWrapper(h.div().c(h.span(), h.span()), null, {});

@@ -1,8 +1,6 @@
-import { render } from "./utils";
-import * as h from "./utils/html";
-import { Component } from "../src/vdom/component";
-import { statelessComponent, component } from "../src/vdom/vnode_factories";
-import { VNode } from "../src/vdom/vnode";
+import { Component, VNode, statelessComponent, component } from "ivi";
+import * as h from "ivi-html";
+import { startRender } from "./utils";
 
 const Stateless = statelessComponent<VNode>(
   (child) => child,
@@ -15,63 +13,75 @@ const Stateful = component(class extends Component<VNode> {
 });
 
 test(`<Stateless><div></div></Stateless>`, () => {
-  const v = Stateless(
-    h.div(),
-  );
-  const n = render<HTMLElement>(v);
+  startRender<HTMLElement>((r) => {
+    const v = Stateless(
+      h.div(),
+    );
+    const n = r(v);
 
-  expect(n.tagName.toLowerCase()).toBe("div");
+    expect(n.tagName.toLowerCase()).toBe("div");
+  });
 });
 
 test(`<Stateless><Stateless><div></div></Stateless></Stateless>`, () => {
-  const v = Stateless(
-    Stateless(
-      h.div(),
-    ),
-  );
-  const n = render<HTMLElement>(v);
+  startRender<HTMLElement>((r) => {
+    const v = Stateless(
+      Stateless(
+        h.div(),
+      ),
+    );
+    const n = r(v);
 
-  expect(n.tagName.toLowerCase()).toBe("div");
+    expect(n.tagName.toLowerCase()).toBe("div");
+  });
 });
 
 test(`<Stateful><div></div></Stateful>`, () => {
-  const v = Stateful(
-    h.div(),
-  );
-  const n = render<HTMLElement>(v);
+  startRender<HTMLElement>((r) => {
+    const v = Stateful(
+      h.div(),
+    );
+    const n = r(v);
 
-  expect(n.tagName.toLowerCase()).toBe("div");
+    expect(n.tagName.toLowerCase()).toBe("div");
+  });
 });
 
 test(`<Stateful><Stateful><div></div></Stateful></Stateful>`, () => {
-  const v = Stateful(
-    Stateful(
-      h.div(),
-    ),
-  );
-  const n = render<HTMLElement>(v);
+  startRender<HTMLElement>((r) => {
+    const v = Stateful(
+      Stateful(
+        h.div(),
+      ),
+    );
+    const n = r(v);
 
-  expect(n.tagName.toLowerCase()).toBe("div");
+    expect(n.tagName.toLowerCase()).toBe("div");
+  });
 });
 
 test(`<Stateless><Stateful><div></div></Stateful></Stateless>`, () => {
-  const v = Stateless(
-    Stateful(
-      h.div(),
-    ),
-  );
-  const n = render<HTMLElement>(v);
+  startRender<HTMLElement>((r) => {
+    const v = Stateless(
+      Stateful(
+        h.div(),
+      ),
+    );
+    const n = r(v);
 
-  expect(n.tagName.toLowerCase()).toBe("div");
+    expect(n.tagName.toLowerCase()).toBe("div");
+  });
 });
 
 test(`<Stateful><Stateless><div></div></Stateless></Stateful>`, () => {
-  const v = Stateful(
-    Stateless(
-      h.div(),
-    ),
-  );
-  const n = render<HTMLElement>(v);
+  startRender<HTMLElement>((r) => {
+    const v = Stateful(
+      Stateless(
+        h.div(),
+      ),
+    );
+    const n = r(v);
 
-  expect(n.tagName.toLowerCase()).toBe("div");
+    expect(n.tagName.toLowerCase()).toBe("div");
+  });
 });

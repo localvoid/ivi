@@ -1,4 +1,4 @@
-import { lazy } from "../src/lazy";
+import { lazy } from "ivi-state";
 
 test(`should be executed lazily`, () => {
   let i = 0;

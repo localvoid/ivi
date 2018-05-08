@@ -1,5 +1,5 @@
-import { mapRange } from "../src/vdom/vnode_collections";
-import * as h from "./utils/html";
+import { mapRange } from "ivi";
+import * as h from "ivi-html";
 
 test(`zero range (0, 0)`, () => {
   expect(mapRange(0, 0, () => h.div())).toBeNull();

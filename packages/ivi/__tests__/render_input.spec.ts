@@ -1,34 +1,44 @@
-import { render } from "./utils";
-import * as h from "./utils/html";
+import * as h from "ivi-html";
+import { startRender } from "./utils";
 
 test(`<input>`, () => {
-  const n = render<HTMLInputElement>(h.input());
+  startRender<HTMLInputElement>((r) => {
+    const n = r(h.input());
 
-  expect(n.tagName.toLowerCase()).toBe("input");
-  expect(n.type).toBe("text");
+    expect(n.tagName.toLowerCase()).toBe("input");
+    expect(n.type).toBe("text");
+  });
 });
 
 test(`<input value="abc">`, () => {
-  const n = render<HTMLInputElement>(h.input().value("abc"));
+  startRender<HTMLInputElement>((r) => {
+    const n = r(h.input().value("abc"));
 
-  expect(n.value).toBe("abc");
+    expect(n.value).toBe("abc");
+  });
 });
 
 test(`<input type="checkbox">`, () => {
-  const n = render<HTMLInputElement>(h.inputCheckbox());
+  startRender<HTMLInputElement>((r) => {
+    const n = r(h.inputCheckbox());
 
-  expect(n.tagName.toLowerCase()).toBe("input");
-  expect(n.type).toBe("checkbox");
+    expect(n.tagName.toLowerCase()).toBe("input");
+    expect(n.type).toBe("checkbox");
+  });
 });
 
 test(`<input type="checkbox" checked="false">`, () => {
-  const n = render<HTMLInputElement>(h.inputCheckbox().checked(false));
+  startRender<HTMLInputElement>((r) => {
+    const n = r(h.inputCheckbox().checked(false));
 
-  expect(n.checked).toBe(false);
+    expect(n.checked).toBe(false);
+  });
 });
 
 test(`<input type="checkbox" checked="true">`, () => {
-  const n = render<HTMLInputElement>(h.inputCheckbox().checked(true));
+  startRender<HTMLInputElement>((r) => {
+    const n = r(h.inputCheckbox().checked(true));
 
-  expect(n.checked).toBe(true);
+    expect(n.checked).toBe(true);
+  });
 });

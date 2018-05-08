@@ -6,6 +6,18 @@ exports[`<div>"abc"</div> 1`] = `
 </div>
 `;
 
+exports[`<div>"abc"</div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 2,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
 exports[`<div><div></div>"abc"<span></span></div> 1`] = `
 <div>
   <div />
@@ -14,11 +26,35 @@ exports[`<div><div></div>"abc"<span></span></div> 1`] = `
 </div>
 `;
 
+exports[`<div><div></div>"abc"<span></span></div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
 exports[`<div><div></div>{ null }<span></span></div> 1`] = `
 <div>
   <div />
   <span />
 </div>
+`;
+
+exports[`<div><div></div>{ null }<span></span></div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
 `;
 
 exports[`<div><div></div>123<span></span></div> 1`] = `
@@ -29,10 +65,34 @@ exports[`<div><div></div>123<span></span></div> 1`] = `
 </div>
 `;
 
+exports[`<div><div></div>123<span></span></div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
 exports[`<div><span></span></div> 1`] = `
 <div>
   <span />
 </div>
+`;
+
+exports[`<div><span></span></div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 2,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
 `;
 
 exports[`<div><span></span><strong></strong></div> 1`] = `
@@ -42,12 +102,48 @@ exports[`<div><span></span><strong></strong></div> 1`] = `
 </div>
 `;
 
+exports[`<div><span></span><strong></strong></div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 4,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
 exports[`<div>{ null }</div> 1`] = `<div />`;
+
+exports[`<div>{ null }</div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
 
 exports[`<div>10</div> 1`] = `
 <div>
   10
 </div>
+`;
+
+exports[`<div>10</div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "insertBefore": 2,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
 `;
 
 exports[`complex tree #1 1`] = `
@@ -68,4 +164,16 @@ exports[`complex tree #1 1`] = `
   </div>
   <div />
 </div>
+`;
+
+exports[`complex tree #1 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 10,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 11,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
 `;

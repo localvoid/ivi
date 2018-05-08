@@ -1,9 +1,6 @@
-import { ComponentFlags } from "../src/vdom/flags";
-import { VNode, getComponentInstanceFromVNode } from "../src/vdom/vnode";
-import { Component } from "../src/vdom/component";
-import { component } from "../src/vdom/vnode_factories";
+import { Component, VNode, component, getComponentInstanceFromVNode } from "ivi";
 import { startRender, checkDOMOps, domOps } from "./utils";
-import * as h from "./utils/html";
+import * as h from "ivi-html";
 
 /**
  * When component is an entry point for update and it completely changes a root node, refs to DOM Nodes on
@@ -27,7 +24,7 @@ class A extends Component<number> {
 
   updateState(state: number) {
     this.state = state;
-    this.flags |= ComponentFlags.DirtyState;
+    this.invalidate();
   }
 }
 

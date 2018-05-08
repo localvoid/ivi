@@ -1,5 +1,5 @@
-import { statelessComponent } from "../src/vdom/vnode_factories";
-import * as h from "./utils/html";
+import { statelessComponent } from "ivi";
+import * as h from "ivi-html";
 
 const Empty = statelessComponent(() => h.t(""));
 

@@ -1,7 +1,6 @@
 import { EventHandler } from "ivi-events";
-import { VNodeFlags } from "../src/vdom/flags";
-import { VNode } from "../src/vdom/vnode";
-import * as h from "./utils/html";
+import { VNodeFlags, VNode } from "ivi";
+import * as h from "ivi-html";
 
 test(`element flags`, () => {
   const v = h.div();

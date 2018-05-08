@@ -1,5 +1,5 @@
-import { map } from "../src/vdom/vnode_collections";
-import * as h from "./utils/html";
+import { map } from "ivi";
+import * as h from "ivi-html";
 
 test(`empty`, () => {
   expect(map([], () => h.div())).toBeNull();

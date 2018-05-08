@@ -1,5 +1,4 @@
-/* tslint:disable:no-unused-expression */
-import { NOOP, NOOP_FALSE } from "../src/noop";
+import { NOOP, NOOP_FALSE } from "ivi-core";
 
 describe("NOOP", () => {
   test("NOOP => undefined", () => {

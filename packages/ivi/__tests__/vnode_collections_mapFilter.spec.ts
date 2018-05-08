@@ -1,5 +1,5 @@
-import { mapFilter } from "../src/vdom/vnode_collections";
-import * as h from "./utils/html";
+import { mapFilter } from "ivi";
+import * as h from "ivi-html";
 
 test(`empty`, () => {
   expect(mapFilter([], () => h.div())).toBeNull();

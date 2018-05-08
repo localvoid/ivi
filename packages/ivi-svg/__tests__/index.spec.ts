@@ -1,5 +1,5 @@
 import { VNode, VNodeFlags } from "ivi";
-import * as s from "../src";
+import * as s from "ivi-svg";
 
 const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "a": s.a,

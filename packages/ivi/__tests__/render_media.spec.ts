@@ -1,7 +1,9 @@
-import { render } from "./utils";
-import * as h from "./utils/html";
+import * as h from "ivi-html";
+import { startRender } from "./utils";
 
 test(`<audio>`, () => {
-  const n = render<HTMLAudioElement>(h.audio());
-  expect(n.tagName.toLowerCase()).toBe("audio");
+  startRender<HTMLAudioElement>((r) => {
+    const n = r(h.audio());
+    expect(n.tagName.toLowerCase()).toBe("audio");
+  });
 });

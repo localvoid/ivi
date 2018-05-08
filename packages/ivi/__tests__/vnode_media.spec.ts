@@ -1,4 +1,4 @@
-import * as h from "./utils/html";
+import * as h from "ivi-html";
 
 test(`assigning children to audio element should raise an exception`, () => {
   expect(() => h.audio().c("123")).toThrow(Error);

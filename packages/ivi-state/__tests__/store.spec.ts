@@ -1,4 +1,4 @@
-import { createStore } from "../src/store";
+import { createStore } from "ivi-state";
 
 describe("src/store.ts", function () {
   test("init", function () {

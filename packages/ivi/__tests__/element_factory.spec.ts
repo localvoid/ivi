@@ -1,6 +1,5 @@
-import { VNodeFlags } from "../src/vdom/flags";
-import { elementFactory } from "../src/vdom/element";
-import * as h from "./utils/html";
+import { VNodeFlags, elementFactory } from "ivi";
+import * as h from "ivi-html";
 
 const div = h.div();
 const input = h.input();

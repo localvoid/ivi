@@ -1,7 +1,5 @@
-import { VNodeFlags } from "../src/vdom/flags";
-import { VNode } from "../src/vdom/vnode";
-import { children, mapRange } from "../src/vdom/vnode_collections";
-import * as h from "./utils/html";
+import { VNodeFlags, VNode, children, mapRange } from "ivi";
+import * as h from "ivi-html";
 
 test(`{ null }`, () => {
   const v = h.div().c(null);

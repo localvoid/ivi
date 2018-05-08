@@ -1,14 +1,18 @@
-import { render } from "./utils";
-import * as h from "./utils/html";
+import * as h from "ivi-html";
+import { startRender } from "./utils";
 
 test(`<textarea>`, () => {
-  const n = render<HTMLTextAreaElement>(h.textarea());
+  startRender<HTMLTextAreaElement>((r) => {
+    const n = r(h.textarea());
 
-  expect(n.tagName.toLowerCase()).toBe("textarea");
+    expect(n.tagName.toLowerCase()).toBe("textarea");
+  });
 });
 
 test(`<textarea>abc</textarea>`, () => {
-  const n = render<HTMLTextAreaElement>(h.textarea().value("abc"));
+  startRender<HTMLTextAreaElement>((r) => {
+    const n = r(h.textarea().value("abc"));
 
-  expect(n.value).toBe("abc");
+    expect(n.value).toBe("abc");
+  });
 });

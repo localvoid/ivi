@@ -1,7 +1,6 @@
-import { VNode } from "../src/vdom/vnode";
-import { statelessComponent, connect, context } from "../src/vdom/vnode_factories";
-import { render, startRender } from "./utils";
-import * as h from "./utils/html";
+import { VNode, statelessComponent, connect, context } from "ivi";
+import * as h from "ivi-html";
+import { startRender } from "./utils";
 
 const Static = statelessComponent<VNode>((child) => child, () => false);
 
@@ -11,14 +10,16 @@ const ContextTestPrinterConnector = connect<{ value: string }, undefined, { valu
 );
 
 test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {
-  const v = (
-    context({ value: 10 },
-      ContextTestPrinterConnector(),
-    )
-  );
-  const n = render<HTMLElement>(v);
+  startRender((r) => {
+    const v = (
+      context({ value: 10 },
+        ContextTestPrinterConnector(),
+      )
+    );
+    const n = r(v);
 
-  expect(n.nodeValue).toBe("10");
+    expect(n.nodeValue).toBe("10");
+  });
 });
 
 test(`Sync context value`, () => {

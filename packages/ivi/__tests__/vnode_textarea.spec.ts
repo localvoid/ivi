@@ -1,4 +1,4 @@
-import * as h from "./utils/html";
+import * as h from "ivi-html";
 
 test(`value`, () => {
   const e = h.textarea().value("abc");

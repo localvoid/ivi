@@ -1,7 +1,6 @@
-import * as h from "./utils/html";
+import { Component, component } from "ivi";
+import * as h from "ivi-html";
 import { startRender } from "./utils";
-import { Component } from "../src/vdom/component";
-import { component } from "../src/vdom/vnode_factories";
 
 abstract class DivComponent<T> extends Component<T> {
   render() {

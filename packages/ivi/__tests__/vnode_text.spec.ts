@@ -1,5 +1,5 @@
-import { VNodeFlags } from "../src/vdom/flags";
-import * as h from "./utils/html";
+import { VNodeFlags } from "ivi";
+import * as h from "ivi-html";
 
 test(`text flags`, () => {
   const t = h.t("abc");

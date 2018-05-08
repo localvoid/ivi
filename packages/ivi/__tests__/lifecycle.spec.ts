@@ -1,8 +1,6 @@
-import { Component } from "../src/vdom/component";
-import { VNode } from "../src/vdom/vnode";
-import { statelessComponent, component } from "../src/vdom/vnode_factories";
+import { Component, VNode, statelessComponent, component } from "ivi";
+import * as h from "ivi-html";
 import { startRender, checkLifecycle, lifecycleTouch } from "./utils";
-import * as h from "./utils/html";
 
 const Static = statelessComponent<VNode>((child) => child, () => false);
 

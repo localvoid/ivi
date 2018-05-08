@@ -1,4 +1,4 @@
-import * as h from "./utils/html";
+import * as h from "ivi-html";
 
 test(`assigning children should raise an exception`, () => {
   expect(() => h.input().c("123")).toThrow(Error);

@@ -1,6 +1,4 @@
-import { SyntheticEvent, SyntheticNativeEvent } from "../src/synthetic_event";
-import { onClick } from "../src/events";
-import { dispatchEvent } from "../src/dispatch";
+import { SyntheticEvent, SyntheticNativeEvent, dispatchEvent, onClick } from "ivi-events";
 
 test("empty dispatch target array should not raise exceptions", () => {
   expect(() => {

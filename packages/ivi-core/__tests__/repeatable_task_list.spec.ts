@@ -1,5 +1,4 @@
-import { RepeatableTaskList } from "../src/repeatable_task_list";
-import { NOOP_FALSE } from "../src/noop";
+import { RepeatableTaskList, NOOP_FALSE } from "ivi-core";
 
 describe("RepeatableTaskList", () => {
   test("empty", () => {

@@ -1,5 +1,5 @@
 import { VNode, VNodeFlags } from "ivi";
-import * as h from "../src";
+import * as h from "ivi-html";
 
 const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "a": h.a,

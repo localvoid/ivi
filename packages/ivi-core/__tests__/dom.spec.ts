@@ -1,4 +1,4 @@
-import { nodeDepth } from "../src/dom/traverse";
+import { nodeDepth } from "ivi-core";
 
 describe("DOM", () => {
   describe("nodeDepth", () => {

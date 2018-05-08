@@ -1,6 +1,6 @@
+import * as h from "ivi-html";
+import * as s from "ivi-svg";
 import { startRender } from "./utils";
-import * as h from "./utils/html";
-import * as s from "./utils/svg";
 
 describe("HTML", () => {
   describe(`sync className`, () => {

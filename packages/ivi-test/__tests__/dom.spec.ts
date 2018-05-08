@@ -1,5 +1,5 @@
+import { initDOMRenderer } from "ivi-test";
 import * as h from "ivi-html";
-import { initDOMRenderer } from "../src/dom";
 
 describe("src/dom.ts", () => {
   test("div", () => {

@@ -1,5 +1,5 @@
+import * as h from "ivi-html";
 import { startRender, checkDOMOps } from "./utils";
-import * as h from "./utils/html";
 
 test(`<input> => <input type="checkbox">`, () => {
   startRender((r) => {

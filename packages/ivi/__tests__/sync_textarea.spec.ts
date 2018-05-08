@@ -1,5 +1,5 @@
+import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
-import * as h from "./utils/html";
 
 test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
   startRender<HTMLTextAreaElement>((r) => {

@@ -1,85 +1,21 @@
-import { VNodeFlags } from "../../src/vdom/flags";
-import { VNode, getDOMInstanceFromVNode } from "../../src/vdom/vnode";
-import { renderVNode, syncVNode } from "../../src/vdom/implementation";
-
-const DEFAULT_CONTEXT = {};
-
-export function frag() {
-  return document.createDocumentFragment();
-}
-
-export function checkRefs(n: Node, v: VNode) {
-  const flags = v._flags;
-
-  expect(getDOMInstanceFromVNode(v)).toBe(n);
-
-  if (flags & VNodeFlags.Component) {
-    if (flags & VNodeFlags.StatefulComponent) {
-      expect(getDOMInstanceFromVNode(v)).toBe(n);
-      const root = v._children as VNode;
-      if (root) {
-        checkRefs(n, root);
-      }
-    } else {
-      const root = v._children as VNode;
-      if (root) {
-        checkRefs(n, root);
-      }
-    }
-  } else {
-    let child = n.firstChild;
-    if (child) {
-      expect(!!(flags & VNodeFlags.Element)).toBe(true);
-    }
-    if (flags & VNodeFlags.ChildrenVNode) {
-      let vchild = v._children as VNode<any> | null;
-      do {
-        checkRefs(child!, vchild!);
-        child = child!.nextSibling!;
-        vchild = vchild!._next;
-      } while (vchild !== null);
-    }
-  }
-}
+import { VNode, render, getDOMInstanceFromVNode } from "ivi";
 
 export function startRender<T extends Node>(
   fn: (render: (n: VNode) => T) => void,
-  container?: Element | DocumentFragment,
-  disableCheckRefs?: boolean,
 ): void {
-  function r(n: VNode): T {
-    return render(n, container, disableCheckRefs);
+  const container = document.createElement("div");
+  container.setAttribute("test-container", "");
+  document.body.appendChild(container);
+
+  try {
+    fn((n: VNode) => {
+      render(n, container);
+      return getDOMInstanceFromVNode(n) as T;
+    });
+  } catch (e) {
+    throw e;
+  } finally {
+    render(null, container);
+    container.remove();
   }
-
-  if (container === undefined) {
-    container = document.createDocumentFragment();
-  }
-
-  fn(r);
-}
-
-export function render<T extends Node>(
-  node: VNode,
-  container?: Element | DocumentFragment,
-  disableCheckRefs?: boolean,
-): T {
-  if (!container) {
-    container = document.createDocumentFragment();
-  }
-
-  const oldRoot = (container as any).__ivi_root as VNode | undefined;
-  (container as any).__ivi_root = node;
-  if (oldRoot) {
-    syncVNode(container, oldRoot, node, DEFAULT_CONTEXT, false);
-  } else {
-    renderVNode(container, null, node, DEFAULT_CONTEXT);
-  }
-
-  const result = getDOMInstanceFromVNode(node) as T;
-
-  if (!disableCheckRefs) {
-    checkRefs(result, node);
-  }
-
-  return result;
 }

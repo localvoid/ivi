@@ -10,10 +10,6 @@ import {
 } from "ivi-core";
 import { autofocus } from "ivi-scheduler";
 import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
-import {
-  setInitialNestingState, pushNestingState, restoreNestingState, checkNestingViolation, nestingStateAncestorFlags,
-  nestingStateParentTagName,
-} from "../dev_mode/html_nesting_rules";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -30,9 +26,6 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
  * @returns Rendered DOM Node.
  */
 export function renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
-  if (DEBUG) {
-    setInitialNestingState(parent as Element);
-  }
   return _renderVNode(parent, refChild, vnode, context);
 }
 
@@ -60,9 +53,6 @@ function _renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context
  * @param dirtyContext Dirty context.
  */
 export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: boolean): void {
-  if (DEBUG) {
-    setInitialNestingState(parent as Element);
-  }
   _syncVNode(parent, a, b, context, dirtyContext);
 }
 
@@ -109,9 +99,6 @@ function _removeVNode(parent: Node, node: VNode): void {
  * @param dirtyContext Dirty context.
  */
 export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
-  if (DEBUG) {
-    setInitialNestingState(parent as Element);
-  }
   _dirtyCheck(parent, vnode, context, dirtyContext);
 }
 
@@ -322,25 +309,12 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   let node: Node;
 
   if ((flags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
-    // Push nesting state and check for nesting violation.
-    const _prevNestingStateParentTagName = nestingStateParentTagName();
-    const _prevNestingStateAncestorFlags = nestingStateAncestorFlags();
-
     if ((flags & VNodeFlags.Text) !== 0) {
-      if (DEBUG) {
-        pushNestingState("$t");
-        checkNestingViolation();
-      }
       node = document.createTextNode(vnode._children as string);
     } else { // (flags & VNodeFlags.Element)
       const svg = (flags & VNodeFlags.SvgElement) !== 0;
       if ((flags & VNodeFlags.ElementFactory) === 0) {
         const tagName = vnode._tag as string;
-        if (DEBUG) {
-          pushNestingState(tagName);
-          checkNestingViolation();
-        }
-
         if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
           if (svg === true) {
             node = document.createElementNS(SVG_NAMESPACE, tagName);
@@ -365,11 +339,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         }
       } else {
         const factory = vnode._tag as VNode;
-        if (DEBUG) {
-          pushNestingState(factory._tag as string);
-          checkNestingViolation();
-        }
-
         if (factory._instance === null) {
           _render(parent, factory, context);
         }
@@ -424,9 +393,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
     }
 
     instance = node;
-    if (DEBUG) {
-      restoreNestingState(_prevNestingStateParentTagName, _prevNestingStateAncestorFlags);
-    }
   } else { // (flags & VNodeFlags.Component)
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);

@@ -1,16 +1,20 @@
-import { render } from "./utils";
-import * as h from "./utils/html";
+import * as h from "ivi-html";
+import { startRender } from "./utils";
 
 test(`<button>`, () => {
-  const n = render<HTMLButtonElement>(h.button());
+  startRender<HTMLButtonElement>((r) => {
+    const n = r(h.button());
 
-  expect(n.tagName.toLowerCase()).toBe("button");
-  expect(n.type).toBe("button");
+    expect(n.tagName.toLowerCase()).toBe("button");
+    expect(n.type).toBe("button");
+  });
 });
 
 test(`<button type="submit">`, () => {
-  const n = render<HTMLButtonElement>(h.buttonSubmit());
+  startRender<HTMLButtonElement>((r) => {
+    const n = r(h.buttonSubmit());
 
-  expect(n.tagName.toLowerCase()).toBe("button");
-  expect(n.type).toBe("submit");
+    expect(n.tagName.toLowerCase()).toBe("button");
+    expect(n.type).toBe("submit");
+  });
 });

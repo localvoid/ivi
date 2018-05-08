@@ -1,5 +1,5 @@
+import * as h from "ivi-html";
 import { startRender } from "./utils";
-import * as h from "./utils/html";
 
 describe(`sync element style`, () => {
   test(`{} => null`, () => {
