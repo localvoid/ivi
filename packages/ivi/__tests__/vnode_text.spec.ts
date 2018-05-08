@@ -23,6 +23,10 @@ test(`explicit key`, () => {
   expect(t._key).toBe("k");
 });
 
+test(`assigning attributes should raise an exception`, () => {
+  expect(() => h.t("abc").a({} as any)).toThrow(Error);
+});
+
 test(`assigning style should raise an exception`, () => {
   expect(() => h.t("abc").s({})).toThrow(Error);
 });
