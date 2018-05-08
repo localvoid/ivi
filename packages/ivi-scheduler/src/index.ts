@@ -1,4 +1,4 @@
-import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
+import { RepeatableTaskList, NOOP, unorderedArrayDelete, append, catchError } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -84,7 +84,7 @@ let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
 let _autofocusedElement: Element | null = null;
 
-function runMicrotasks(): void {
+const runMicrotasks = catchError(() => {
   while (_microtasks.length > 0) {
     const tasks = _microtasks;
     _microtasks = [];
@@ -95,11 +95,11 @@ function runMicrotasks(): void {
 
   _flags ^= SchedulerFlags.MicrotaskPending;
   ++_clock;
-}
+});
 
 // Task scheduler based on MessageChannel
 const _taskChannel = new MessageChannel();
-_taskChannel.port1.onmessage = (ev: MessageEvent) => {
+_taskChannel.port1.onmessage = catchError((ev: MessageEvent) => {
   _flags ^= SchedulerFlags.TaskPending;
   const tasks = _tasks;
   _tasks = [];
@@ -107,9 +107,9 @@ _taskChannel.port1.onmessage = (ev: MessageEvent) => {
     tasks[i]();
   }
   ++_clock;
-};
+});
 
-const handleVisibilityChange = () => {
+const handleVisibilityChange = catchError(() => {
   const newHidden = _isHidden();
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
@@ -124,7 +124,7 @@ const handleVisibilityChange = () => {
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
   }
-};
+});
 
 if (TARGET !== "browser" || typeof document["hidden"] !== "undefined") {
   _isHidden = function () {
@@ -271,7 +271,7 @@ export function requestNextFrame(): void {
  *
  * @param t Current time.
  */
-const _handleNextFrame = (time?: number) => {
+const _handleNextFrame = catchError((time?: number) => {
   _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
 
   _updateCurrentFrameStartTime(time);
@@ -346,7 +346,7 @@ const _handleNextFrame = (time?: number) => {
   }
 
   ++_clock;
-};
+});
 
 function addFrameTaskUpdate(frame: FrameTasksGroup): void {
   frame.flags |= FrameTasksGroupFlags.Update;
