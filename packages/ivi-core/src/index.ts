@@ -57,10 +57,6 @@ export { TraceLog, TraceLogEntry } from "./trace";
 
 export { USER_AGENT, UserAgentFlags } from "./user_agent";
 export { FEATURES, FeatureFlags } from "./feature_detection";
-export {
-  DevModeHooks, DEV_HOOKS, devModeAddHook, OnErrorHook, devModeOnError, enableTestEnvironment, isTestEnvironment,
-  addTestResetTask,
-} from "./dev_hooks";
 
 export {
   nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,

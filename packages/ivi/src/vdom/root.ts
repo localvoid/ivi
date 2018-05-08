@@ -1,4 +1,4 @@
-import { USER_AGENT, UserAgentFlags, NOOP, isTestEnvironment, addTestResetTask } from "ivi-core";
+import { USER_AGENT, UserAgentFlags, NOOP } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
@@ -24,11 +24,6 @@ export const ROOTS = [] as Root[];
 const EMPTY_CONTEXT = {};
 
 let _pendingUpdate = false;
-
-function reset() {
-  ROOTS.length = 0;
-  _pendingUpdate = false;
-}
 
 /**
  * Find Root node in container.
@@ -140,11 +135,6 @@ export function renderNextFrame(
       newVNode: node,
       invalidated: true,
     });
-    if (DEBUG) {
-      if (isTestEnvironment()) {
-        addTestResetTask(reset);
-      }
-    }
   }
 
   updateNextFrame();

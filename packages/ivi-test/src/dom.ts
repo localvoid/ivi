@@ -1,6 +1,5 @@
 import { VNode, render, update } from "ivi";
 import { triggerNextTick, triggerNextFrame } from "./scheduler";
-import { reset } from "./reset";
 import { VNodeWrapper } from "./vdom";
 
 let _container: HTMLDivElement | null = null;
@@ -63,8 +62,6 @@ export function initDOMRenderer(): DOMRenderer {
   } else {
     _container.innerText = "";
   }
-
-  reset();
 
   return new DOMRenderer(_container);
 }

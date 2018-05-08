@@ -1,4 +1,4 @@
-import { devModeOnError, RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
+import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -398,6 +398,6 @@ export function triggerNextFrame(time?: number): void {
       ++_clock;
     }
   } catch (e) {
-    devModeOnError(e);
+    throw e;
   }
 }

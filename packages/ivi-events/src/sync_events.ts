@@ -1,4 +1,3 @@
-import { isTestEnvironment, addTestResetTask } from "ivi-core";
 import { EventHandler } from "./event_handler";
 import { EventHandlerFlags } from "./flags";
 
@@ -10,13 +9,6 @@ import { EventHandlerFlags } from "./flags";
 function registerEventHandler(handler: EventHandler<any>): void {
   if (DEBUG) {
     handler.flags |= EventHandlerFlags.Active;
-    if (isTestEnvironment()) {
-      addTestResetTask(function () {
-        if ((handler.flags & EventHandlerFlags.Active) !== 0) {
-          unregisterEventHandler(handler);
-        }
-      });
-    }
   }
   handler.source.addListener(handler);
 }

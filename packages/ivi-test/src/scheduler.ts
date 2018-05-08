@@ -1,4 +1,3 @@
-import { devModeOnError } from "ivi-core";
 import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
@@ -399,6 +398,6 @@ export function triggerNextFrame(time?: number): void {
       ++_clock;
     }
   } catch (e) {
-    devModeOnError(e);
+    throw e;
   }
 }
