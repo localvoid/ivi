@@ -55,3 +55,11 @@ test(`two nodes`, () => {
   expect(v2._prev).toBe(v1);
   expect(v2._next).toBeNull();
 });
+
+test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {
+  expect(() => { map([0], (v) => h.div()); }).toThrowError();
+});
+
+test(`raise an exception when VNode doesn't have an explicit key (second node)`, () => {
+  expect(() => { map([0, 1], (v) => v === 0 ? h.div().k(0) : h.div()); }).toThrowError();
+});

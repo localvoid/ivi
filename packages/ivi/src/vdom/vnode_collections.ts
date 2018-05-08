@@ -40,9 +40,21 @@ export function children(): VNode | null {
 export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U>): VNode<U> | null {
   if (array.length) {
     const first = fn(array[0], 0);
+    if (DEBUG) {
+      if ((first._flags & VNodeFlags.Key) === 0) {
+        throw new Error(`VNodes created with a map() function should have an explicit key`);
+      }
+    }
+
     let prev = first;
     for (let i = 1; i < array.length; i++) {
       const vnode = fn(array[i], i);
+      if (DEBUG) {
+        if ((vnode._flags & VNodeFlags.Key) === 0) {
+          throw new Error(`VNodes created with a map() function should have an explicit key`);
+        }
+      }
+
       vnode._prev = prev;
       prev._next = vnode;
       prev = vnode;
@@ -65,9 +77,21 @@ export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNo
   const length = end - start;
   if (length) {
     const first = fn(start);
+    if (DEBUG) {
+      if ((first._flags & VNodeFlags.Key) === 0) {
+        throw new Error(`VNodes created with a mapRange() function should have an explicit key`);
+      }
+    }
+
     let prev = first;
     for (let i = 1; i < length; ++i) {
       const vnode = fn(start + i);
+      if (DEBUG) {
+        if ((vnode._flags & VNodeFlags.Key) === 0) {
+          throw new Error(`VNodes created with a mapRange() function should have an explicit key`);
+        }
+      }
+
       vnode._prev = prev;
       prev._next = vnode;
       prev = vnode;
@@ -87,6 +111,11 @@ export function mapFilter<T, U>(array: Array<T>, fn: (item: T, index: number) =>
     while (i < array.length) {
       vnode = fn(array[i], i++);
       if (vnode !== null) {
+        if (DEBUG) {
+          if ((vnode._flags & VNodeFlags.Key) === 0) {
+            throw new Error(`VNodes created with a mapFilter() function should have an explicit key`);
+          }
+        }
         first = vnode;
         break;
       }
@@ -96,6 +125,11 @@ export function mapFilter<T, U>(array: Array<T>, fn: (item: T, index: number) =>
       while (i < array.length) {
         vnode = fn(array[i], i++);
         if (vnode !== null) {
+          if (DEBUG) {
+            if ((vnode._flags & VNodeFlags.Key) === 0) {
+              throw new Error(`VNodes created with a mapFilter() function should have an explicit key`);
+            }
+          }
           vnode._prev = prev;
           prev._next = vnode;
           prev = vnode;
