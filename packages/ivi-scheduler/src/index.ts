@@ -1,4 +1,4 @@
-import { RepeatableTaskList, NOOP, unorderedArrayDelete, append, catchError } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete, append, catchError } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -76,8 +76,8 @@ let _tasks: (() => void)[] = [];
 let _visibilityObservers: Array<(hidden: boolean) => void> = [];
 let _isHidden: () => boolean;
 
-const _animations = new RepeatableTaskList();
-const _readers = new RepeatableTaskList();
+const _animations: RepeatableTaskList = [];
+const _readers: RepeatableTaskList = [];
 let _updateDOMHandler: () => void = NOOP;
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
@@ -114,7 +114,7 @@ const handleVisibilityChange = catchError(() => {
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
 
-    if (newHidden === false && _animations.tasks.length > 0) {
+    if (newHidden === false && _animations.length > 0) {
       requestNextFrame();
     }
 
@@ -216,7 +216,7 @@ export function setUpdateDOMHandler(handler: () => void): void {
  * @param animation Animation task.
  */
 export function addAnimation(animation: () => boolean | undefined): void {
-  _animations.add(animation);
+  _animations.push(animation);
   requestNextFrame();
 }
 
@@ -228,7 +228,7 @@ export function addAnimation(animation: () => boolean | undefined): void {
  * @param reader Task that will be executed until it returns `false`.
  */
 export function addDOMReader(reader: () => boolean | undefined): void {
-  _readers.add(reader);
+  _readers.push(reader);
 }
 
 export function autofocus(element: Element): void {
@@ -283,7 +283,7 @@ const _handleNextFrame = catchError((time?: number) => {
   _nextFrame = _currentFrame;
   _currentFrame = frame;
 
-  _readers.run();
+  runRepeatableTasks(_readers);
 
   // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
   // and repeat until all read and write tasks are executed.
@@ -322,7 +322,7 @@ const _handleNextFrame = catchError((time?: number) => {
   _flags ^= SchedulerFlags.CurrentFrameReady;
 
   if ((_flags & SchedulerFlags.Hidden) === 0) {
-    _animations.run();
+    runRepeatableTasks(_animations);
   }
 
   // Perform tasks that should be executed when all DOM ops are finished.
@@ -341,7 +341,7 @@ const _handleNextFrame = catchError((time?: number) => {
     _autofocusedElement = null;
   }
 
-  if (_animations.tasks.length > 0) {
+  if (_animations.length > 0) {
     requestNextFrame();
   }
 

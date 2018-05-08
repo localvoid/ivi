@@ -3,34 +3,17 @@ import { unorderedArrayDelete } from "./array";
 /**
  * RepeatableTaskList is a data structure for tasks that will be repeated until they return `true` value.
  */
-export class RepeatableTaskList {
-  /**
-   * Repeatable tasks.
-   */
-  readonly tasks: Array<() => boolean | undefined>;
+export type RepeatableTaskList = Array<() => boolean | undefined>;
 
-  constructor() {
-    this.tasks = [];
-  }
-
-  /**
-   * add adds function to the repeatable task list.
-   *
-   * @param task Task function.
-   */
-  add(task: () => boolean | undefined): void {
-    this.tasks.push(task);
-  }
-
-  /**
-   * run runs repeatable tasks.
-   */
-  run(): void {
-    for (let i = 0; i < this.tasks.length; ++i) {
-      const task = this.tasks[i];
-      if (task() === true) {
-        unorderedArrayDelete(this.tasks, i--);
-      }
+/**
+ * runRepeatableTasks runs repeatable tasks.
+ *
+ * @param tasks repeatable tasks.
+ */
+export function runRepeatableTasks(tasks: RepeatableTaskList): void {
+  for (let i = 0; i < tasks.length; ++i) {
+    if (tasks[i]() === true) {
+      unorderedArrayDelete(tasks, i--);
     }
   }
 }

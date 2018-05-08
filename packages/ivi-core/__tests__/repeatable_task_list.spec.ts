@@ -1,76 +1,61 @@
-import { RepeatableTaskList, NOOP_FALSE } from "ivi-core";
+import { runRepeatableTasks } from "ivi-core";
 
 describe("RepeatableTaskList", () => {
-  test("empty", () => {
-    const t = new RepeatableTaskList();
-    expect(t.tasks).toEqual([]);
-  });
-
-  test("add task", () => {
-    const t = new RepeatableTaskList();
-    t.add(NOOP_FALSE);
-    expect(t.tasks.length).toBe(1);
-  });
-
-  test("add two tasks", () => {
-    const t = new RepeatableTaskList();
-    t.add(NOOP_FALSE);
-    t.add(NOOP_FALSE);
-    expect(t.tasks.length).toBe(2);
-  });
-
   test("run one task", () => {
-    const t = new RepeatableTaskList();
+    const t = [];
     let i = 0;
-    t.add(() => { i++; return false; });
-    t.run();
+    t.push(() => { i++; return false; });
+    runRepeatableTasks(t);
     expect(i).toBe(1);
   });
 
   test("run two tasks", () => {
-    const t = new RepeatableTaskList();
+    const t = [];
     let i = 0;
-    t.add(() => { i++; return false; });
-    t.add(() => { i++; return false; });
-    t.run();
+    t.push(() => { i++; return false; });
+    t.push(() => { i++; return false; });
+    runRepeatableTasks(t);
     expect(i).toBe(2);
   });
 
   test("run one task twice", () => {
-    const t = new RepeatableTaskList();
+    const t = [];
     let i = 0;
-    t.add(() => { i++; return false; });
-    t.run();
-    t.run();
+    t.push(() => { i++; return false; });
+    runRepeatableTasks(t);
+    runRepeatableTasks(t);
     expect(i).toBe(2);
   });
 
   test("run two tasks twice", () => {
-    const t = new RepeatableTaskList();
+    const t = [];
     let i = 0;
-    t.add(() => { i++; return false; });
-    t.add(() => { i++; return false; });
-    t.run();
-    t.run();
+    t.push(() => { i++; return false; });
+    t.push(() => { i++; return false; });
+    runRepeatableTasks(t);
+    runRepeatableTasks(t);
+
     expect(i).toBe(4);
   });
 
   test("run one one-time task twice", () => {
-    const t = new RepeatableTaskList();
+    const t = [];
     let i = 0;
-    t.add(() => { i++; return true; });
-    t.run();
-    t.run();
+    t.push(() => { i++; return true; });
+    runRepeatableTasks(t);
+    runRepeatableTasks(t);
+
     expect(i).toBe(1);
   });
 
   test("run one one-time and one simple task twice", () => {
-    const t = new RepeatableTaskList();
+    const t = [];
     let i = 0;
-    t.add(() => { i++; return true; });
-    t.add(() => { i++; return false; });
-    t.run();
-    t.run();
+    t.push(() => { i++; return true; });
+    t.push(() => { i++; return false; });
+    runRepeatableTasks(t);
+    runRepeatableTasks(t);
+
     expect(i).toBe(3);
   });
 });

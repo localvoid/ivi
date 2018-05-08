@@ -1,4 +1,4 @@
-import { RepeatableTaskList, NOOP, unorderedArrayDelete, append } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete, append } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -74,8 +74,8 @@ let _updateDOMHandler: () => void = NOOP;
 let _microtasks: (() => void)[] = [];
 let _tasks: (() => void)[] = [];
 let _visibilityObservers: ((hidden: boolean) => void)[] = [];
-let _animations = new RepeatableTaskList();
-let _readers = new RepeatableTaskList();
+let _animations: RepeatableTaskList = [];
+let _readers: RepeatableTaskList = [];
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
@@ -86,8 +86,8 @@ export function resetSchedulerState() {
   _clock = 0;
   _microtasks = [];
   _tasks = [];
-  _animations = new RepeatableTaskList();
-  _readers = new RepeatableTaskList();
+  _animations = [];
+  _readers = [];
   _currentFrame = createFrameTasksGroup();
   _nextFrame = createFrameTasksGroup();
   _currentFrameStartTime = 0;
@@ -98,7 +98,7 @@ export function toggleVisibility(hidden: boolean): void {
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== hidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
 
-    if (hidden === false && _animations.tasks.length > 0) {
+    if (hidden === false && _animations.length > 0) {
       requestNextFrame();
     }
 
@@ -174,7 +174,7 @@ export function setUpdateDOMHandler(handler: () => void): void {
  * @param animation Animation task.
  */
 export function addAnimation(animation: () => boolean | undefined): void {
-  _animations.add(animation);
+  _animations.push(animation);
   requestNextFrame();
 }
 
@@ -186,7 +186,7 @@ export function addAnimation(animation: () => boolean | undefined): void {
  * @param reader Task that will be executed until it returns `false`.
  */
 export function addDOMReader(reader: () => boolean | undefined): void {
-  _readers.add(reader);
+  _readers.push(reader);
 }
 
 export function autofocus(element: Element): void {
@@ -333,7 +333,7 @@ export function triggerNextFrame(time?: number): void {
       _nextFrame = _currentFrame;
       _currentFrame = frame;
 
-      _readers.run();
+      runRepeatableTasks(_readers);
 
       // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM
       // tasks and repeat until all read and write tasks are executed.
@@ -372,7 +372,7 @@ export function triggerNextFrame(time?: number): void {
       _flags ^= SchedulerFlags.CurrentFrameReady;
 
       if ((_flags & SchedulerFlags.Hidden) === 0) {
-        _animations.run();
+        runRepeatableTasks(_animations);
       }
 
       // Perform tasks that should be executed when all DOM ops are finished.
@@ -391,7 +391,7 @@ export function triggerNextFrame(time?: number): void {
         _autofocusedElement = null;
       }
 
-      if (_animations.tasks.length > 0) {
+      if (_animations.length > 0) {
         requestNextFrame();
       }
 

@@ -19,9 +19,7 @@ export function shallowEqual(a: any, b: any): boolean {
 
   for (let i = 0; i < aKeys.length; ++i) {
     const key = aKeys[i];
-    const aValue = a[key];
-    const bValue = b[key];
-    if (aValue !== bValue) {
+    if (a[key] !== b[key]) {
       return false;
     }
   }

@@ -1,5 +1,5 @@
 import { VNode, render, update } from "ivi";
-import { triggerNextTick, triggerNextFrame } from "./scheduler";
+import { triggerNextTick, triggerNextFrame } from "ivi-test-scheduler";
 import { VNodeWrapper } from "./vdom";
 
 let _container: HTMLDivElement | null = null;

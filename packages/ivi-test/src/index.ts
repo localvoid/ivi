@@ -3,10 +3,4 @@ export { VNodeWrapper, VNodeListWrapper, visitUnwrapped, visitWrapped, virtualRe
 export {
   Matcher, VNodeMatcher, VNodeElementMatcher, VNodeInputElementMatcher, VNodeComponentMatcher, q, query, queryAll,
 } from "./query";
-export {
-  addAnimation, addDOMReader, addVisibilityObserver, autofocus, clock, currentFrameAfter, currentFrameRead,
-  currentFrameStartTime, currentFrameUpdate, currentFrameWrite, isHidden, nextFrameAfter, nextFrameRead,
-  nextFrameUpdate, nextFrameWrite, removeVisibilityObserver, requestNextFrame, runMicrotasks, runTasks,
-  scheduleMicrotask, scheduleTask, setUpdateDOMHandler, toggleVisibility, triggerNextFrame, triggerNextTick,
-} from "./scheduler";
 export { DOMRenderer, initDOMRenderer } from "./dom";
