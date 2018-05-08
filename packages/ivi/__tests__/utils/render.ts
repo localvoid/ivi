@@ -15,7 +15,10 @@ export function startRender<T extends Node>(
   } catch (e) {
     throw e;
   } finally {
-    render(null, container);
-    container.remove();
+    try {
+      render(null, container);
+    } finally {
+      container.remove();
+    }
   }
 }
