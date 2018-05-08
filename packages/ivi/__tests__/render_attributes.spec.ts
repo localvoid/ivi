@@ -34,18 +34,18 @@ describe(`HTML`, () => {
     });
   });
 
-  test(`<div attrs={ checked: false }>`, () => {
+  test(`<div attrs={ bool: false }>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().a({ checked: false }));
+      const n = r(h.div().a({ bool: false }));
       expect(n.attributes.length).toBe(0);
     });
   });
 
-  test(`<div attrs={ checked: true }>`, () => {
+  test(`<div attrs={ bool: true }>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().a({ checked: true }));
+      const n = r(h.div().a({ bool: true }));
       expect(n.attributes.length).toBe(1);
-      expect(n.getAttribute("checked")).toBe("");
+      expect(n.getAttribute("bool")).toBe("");
     });
   });
 

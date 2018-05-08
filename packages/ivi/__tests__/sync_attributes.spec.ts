@@ -75,15 +75,15 @@ describe(`sync element attributes`, () => {
     });
   });
 
-  test(`{ checked: false } => { checked: true }`, () => {
+  test(`{ bool: false } => { bool: true }`, () => {
     startRender<HTMLElement>((r) => {
-      r(h.div().a({ checked: false }));
+      r(h.div().a({ bool: false }));
       const n = r(h.div().a({
-        checked: true,
+        bool: true,
       }));
 
       expect(n.attributes.length).toBe(1);
-      expect(n.getAttribute("checked")).toBe("");
+      expect(n.getAttribute("bool")).toBe("");
     });
   });
 
