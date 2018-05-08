@@ -11,8 +11,6 @@ export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode, Children,
   getDOMInstanceFromVNode, getComponentInstanceFromVNode,
-  isTextVNode, isElementVNode, isComponentVNode, getKeyFromVNode, getElementClassNameFromVNode,
-  getElementPropsFromVNode, getElementStyleFromVNode,
   stopDirtyChecking,
 } from "./vdom/vnode";
 export { children, map, mapRange, mapFilter } from "./vdom/vnode_collections";
