@@ -49,12 +49,16 @@
   "peerDependencies": {
     "ivi": "^0.10.0",
     "ivi-core": "^0.10.0",
-    "ivi-html": "^0.10.0"
+    "ivi-html": "^0.10.0",
+    "ivi-svg": "^0.10.0",
+    "ivi-events": "^0.10.0"
   },
   "dependencies": {},
   "devDependencies": {
     "ivi": "^0.10.0",
     "ivi-core": "^0.10.0",
-    "ivi-html": "^0.10.0"
+    "ivi-html": "^0.10.0",
+    "ivi-svg": "^0.10.0",
+    "ivi-events": "^0.10.0"
   }
 }

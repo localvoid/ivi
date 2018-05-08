@@ -1,0 +1,54 @@
+{
+  "extends": "./tools/typescript/tsconfig.checks.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es2016",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "types": [
+      "es2015",
+      "es2016",
+      "dom",
+      "jest"
+    ],
+    "paths": {
+      "ivi": [
+        "packages/ivi/src"
+      ],
+      "ivi-core": [
+        "packages/ivi-core/src"
+      ],
+      "ivi-events": [
+        "packages/ivi-events/src"
+      ],
+      "ivi-gestures": [
+        "packages/ivi-gestures/src"
+      ],
+      "ivi-html": [
+        "packages/ivi-html/src"
+      ],
+      "ivi-router": [
+        "packages/ivi-router/src"
+      ],
+      "ivi-svg": [
+        "packages/ivi-svg/src"
+      ],
+      "ivi-scheduler": [
+        "packages/ivi-scheduler/src"
+      ],
+      "ivi-state": [
+        "packages/ivi-state/src"
+      ],
+      "ivi-test": [
+        "packages/ivi-test/src"
+      ],
+      "ivi-test-scheduler": [
+        "packages/ivi-test-scheduler/src"
+      ]
+    }
+  },
+  "include": [
+    "packages/*/src/**/*.ts",
+    "packages/*/__tests__/**/*.ts"
+  ]
+}

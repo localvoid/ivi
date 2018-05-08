@@ -6,7 +6,7 @@ module.exports = {
     "DEBUG": true,
     "TARGET": "browser",
     "ts-jest": {
-      "tsConfigFile": "tsconfig.jest.json",
+      "tsConfigFile": "tsconfig.json",
     },
   },
   moduleNameMapper: {
@@ -38,6 +38,7 @@ module.exports = {
   collectCoverageFrom: [
     "packages/**/src/**/*.ts",
     "!**/node_modules/**",
+    "!**/__tests__/**",
     "!packages/ivi-scheduler/**",
     "!packages/ivi-test-scheduler/**",
     "!packages/ivi-test/**",
