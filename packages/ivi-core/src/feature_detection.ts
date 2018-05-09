@@ -4,7 +4,6 @@
  *
  * NOTE: Do not implement feature detection for features that aren't used in `ivi` libraries.
  */
-import { SVG_NAMESPACE } from "./const";
 
 /**
  * Feature Flags.
@@ -19,41 +18,37 @@ export const enum FeatureFlags {
    */
   PassiveEvents = 1,
   /**
-   * IE and some Edge versions doesn't support `innerHTML` on SVG elements.
-   */
-  SVGInnerHTML = 1 << 1,
-  /**
    * `key` property on KeyboardEvent instances.
    */
-  KeyboardEventKey = 1 << 2,
+  KeyboardEventKey = 1 << 1,
   /**
    * MouseEvent.buttons property.
    */
-  MouseEventButtons = 1 << 3,
+  MouseEventButtons = 1 << 2,
   /**
    * Touch Events support.
    */
-  TouchEvents = 1 << 4,
+  TouchEvents = 1 << 3,
   /**
    * Pointer Events support.
    */
-  PointerEvents = 1 << 5,
+  PointerEvents = 1 << 4,
   /**
    * Device with a touchscreen.
    *
    * `navigator.maxTouchPoints > 0`
    */
-  PointerEventsTouch = 1 << 6,
+  PointerEventsTouch = 1 << 5,
   /**
    * Multitouch-capable device.
    *
    * `navigator.maxTouchPoints > 1`
    */
-  PointerEventsMultiTouch = 1 << 7,
+  PointerEventsMultiTouch = 1 << 6,
   /**
    * InputDeviceCapabilities.
    */
-  InputDeviceCapabilities = 1 << 8,
+  InputDeviceCapabilities = 1 << 7,
 }
 
 /**
@@ -82,14 +77,6 @@ if (TARGET === "electron") {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
   }
-}
-
-/* istanbul ignore next */
-/**
- * Check `innerHTML` property in `SVGElement`.
- */
-if (TARGET !== "browser" || document.createElementNS(SVG_NAMESPACE, "svg").innerHTML !== undefined) {
-  FEATURES |= FeatureFlags.SVGInnerHTML;
 }
 
 /* istanbul ignore next */
