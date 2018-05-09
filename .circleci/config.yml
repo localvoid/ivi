@@ -24,6 +24,8 @@ jobs:
             - node_modules
           key: v1-node-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
         
+      - run: yarn lint
+
       - run: yarn run jest -w 1
 
       - run: yarn run jest -w 1 --coverage --coverageReporters=text-lcov | yarn run coveralls
