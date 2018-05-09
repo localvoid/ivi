@@ -1,4 +1,4 @@
-import { map } from "ivi";
+import { map, children, VNodeFlags } from "ivi";
 import * as h from "ivi-html";
 
 test(`empty`, () => {
@@ -40,6 +40,7 @@ test(`one node`, () => {
   const first = map([5], () => v1);
 
   expect(first).toBe(v1);
+  expect(v1._flags & VNodeFlags.KeyedList).toBeTruthy();
   expect(v1._prev).toBe(v1);
   expect(v1._next).toBeNull();
 });
@@ -50,16 +51,49 @@ test(`two nodes`, () => {
   const first = map([5, 6], (v) => v === 5 ? v1 : v2);
 
   expect(first).toBe(v1);
+  expect(v1._flags & VNodeFlags.KeyedList).toBeTruthy();
   expect(v1._prev).toBe(v2);
   expect(v1._next).toBe(v2);
   expect(v2._prev).toBe(v1);
   expect(v2._next).toBeNull();
 });
 
+test(`filter all nodes [5]`, () => {
+  const first = map([5], () => null);
+  expect(first).toBeNull();
+});
+
+test(`filter all nodes [5, 6]`, () => {
+  const first = map([5, 6], () => null);
+  expect(first).toBeNull();
+});
+
+test(`filter first node [5, 6]`, () => {
+  const v1 = h.div().k(5);
+  const first = map([5, 6], (v) => v === 5 ? null : v1);
+
+  expect(first).toBe(v1);
+  expect(v1._prev).toBe(v1);
+  expect(v1._next).toBeNull();
+});
+
+test(`filter second node [5, 6]`, () => {
+  const v1 = h.div().k(5);
+  const first = map([5, 6], (v) => v === 6 ? null : v1);
+
+  expect(first).toBe(v1);
+  expect(v1._prev).toBe(v1);
+  expect(v1._next).toBeNull();
+});
+
 test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {
-  expect(() => { map([0], (v) => h.div()); }).toThrowError();
+  expect(() => { map([0], (v) => h.div()); }).toThrowError("key");
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (second node)`, () => {
-  expect(() => { map([0, 1], (v) => v === 0 ? h.div().k(0) : h.div()); }).toThrowError();
+  expect(() => { map([0, 1], (v) => v === 0 ? h.div().k(0) : h.div()); }).toThrowError("key");
+});
+
+test(`raise an exception when function returns children collection`, () => {
+  expect(() => { map([0], () => children(h.div().k(0), h.div().k(1))); }).toThrowError("singular");
 });

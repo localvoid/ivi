@@ -13,7 +13,7 @@ export {
   getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   stopDirtyChecking,
 } from "./vdom/vnode";
-export { children, map, mapRange, mapFilter } from "./vdom/vnode_collections";
+export { children, map, mapRange } from "./vdom/vnode_collections";
 export { elementFactory } from "./vdom/element";
 export { component, statelessComponent, context, connect } from "./vdom/vnode_factories";
 

@@ -1,4 +1,4 @@
-import { mapRange } from "ivi";
+import { mapRange, VNodeFlags, children } from "ivi";
 import * as h from "ivi-html";
 
 test(`zero range (0, 0)`, () => {
@@ -34,6 +34,7 @@ test(`one node`, () => {
   const first = mapRange(0, 1, () => v1);
 
   expect(first).toBe(v1);
+  expect(v1._flags & VNodeFlags.KeyedList).toBeTruthy();
   expect(v1._prev).toBe(v1);
   expect(v1._next).toBeNull();
 });
@@ -44,6 +45,7 @@ test(`two nodes`, () => {
   const first = mapRange(0, 2, (i) => i === 0 ? v1 : v2);
 
   expect(first).toBe(v1);
+  expect(v1._flags & VNodeFlags.KeyedList).toBeTruthy();
   expect(v1._prev).toBe(v2);
   expect(v1._next).toBe(v2);
   expect(v2._prev).toBe(v1);
@@ -51,9 +53,13 @@ test(`two nodes`, () => {
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {
-  expect(() => { mapRange(0, 1, (v) => h.div()); }).toThrowError();
+  expect(() => { mapRange(0, 1, (v) => h.div()); }).toThrowError("key");
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (second node)`, () => {
-  expect(() => { mapRange(0, 2, (v) => v === 0 ? h.div().k(0) : h.div()); }).toThrowError();
+  expect(() => { mapRange(0, 2, (v) => v === 0 ? h.div().k(0) : h.div()); }).toThrowError("key");
+});
+
+test(`raise an exception when function returns children collection`, () => {
+  expect(() => { mapRange(0, 1, () => children(h.div().k(0), h.div().k(1))); }).toThrowError("singular");
 });
