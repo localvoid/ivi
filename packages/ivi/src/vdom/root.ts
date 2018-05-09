@@ -1,4 +1,4 @@
-import { USER_AGENT, UserAgentFlags, NOOP } from "ivi-core";
+import { USER_AGENT, UserAgentFlags, NOOP, unorderedArrayDelete } from "ivi-core";
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
@@ -76,10 +76,8 @@ function _update() {
           root.currentVNode = newVNode;
         } else if (currentVNode) {
           removeVNode(container, currentVNode);
-          const last = ROOTS.pop();
-          if (last !== root && ROOTS.length) {
-            ROOTS[ROOTS.indexOf(root)] = last!;
-          }
+          unorderedArrayDelete(ROOTS, ROOTS.indexOf(root));
+          --i;
         }
 
         root.newVNode = null;
