@@ -45,7 +45,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-      - run: yarn run jest -w 1 --coverage --coverageReporters=text-lcov
+      - run: yarn run jest -w 1 --coverage --coverageReporters=text-lcov > coverage.lcov
       - run:
          name: report coverage stats for non-PRs
          command: |
