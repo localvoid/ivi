@@ -61,6 +61,7 @@ export const enum FeatureFlags {
  */
 export let FEATURES: FeatureFlags = 0;
 
+/* istanbul ignore next */
 /**
  * Passive Events:
  *
@@ -83,6 +84,7 @@ if (TARGET === "electron") {
   }
 }
 
+/* istanbul ignore next */
 /**
  * Check `innerHTML` property in `SVGElement`.
  */
@@ -90,6 +92,7 @@ if (TARGET !== "browser" || document.createElementNS(SVG_NAMESPACE, "svg").inner
   FEATURES |= FeatureFlags.SVGInnerHTML;
 }
 
+/* istanbul ignore next */
 /**
  * Check `key` property in `KeyboardEvent`.
  */
@@ -97,6 +100,7 @@ if ((TARGET === "electron") || "key" in KeyboardEvent.prototype) {
   FEATURES |= FeatureFlags.KeyboardEventKey;
 }
 
+/* istanbul ignore next */
 /**
  * Check `buttons` property in `MouseEvent`.
  */
@@ -104,6 +108,7 @@ if ((TARGET === "electron") || "buttons" in MouseEvent.prototype) {
   FEATURES |= FeatureFlags.MouseEventButtons;
 }
 
+/* istanbul ignore next */
 /**
  * Check touch events API.
  */
@@ -111,6 +116,7 @@ if ("ontouchstart" in window) {
   FEATURES |= FeatureFlags.TouchEvents;
 }
 
+/* istanbul ignore next */
 /**
  * Check pointer events API.
  */
@@ -127,6 +133,7 @@ if ((TARGET === "electron") || "PointerEvent" in window) {
   }
 }
 
+/* istanbul ignore next */
 /**
  * Check `sourceCapabilities` property in UIEvent.
  */

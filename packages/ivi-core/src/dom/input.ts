@@ -41,6 +41,7 @@ const KEY_CODE_TO_KEY: { [key: number]: string } = {
   224: "Win",
 };
 
+/* istanbul ignore next */
 /**
  * getEventCharCode retrieves a normalized `charCode` from a KeyboardEvent.
  *
@@ -64,6 +65,7 @@ export function getEventCharCode(ev: KeyboardEvent): number {
   return 0;
 }
 
+/* istanbul ignore next */
 /**
  * getEventKey retrieves a `key` from a KeybordEvent with a fallback for browsers that doesn't support `key` property.
  *
@@ -91,6 +93,7 @@ export function getEventKey(ev: KeyboardEvent): string {
   return "Unidentified";
 }
 
+/* istanbul ignore next */
 /**
  * getMouseButtons retrieves a `buttons` property from a MouseEvent with a fallback implementation for Safari.
  *

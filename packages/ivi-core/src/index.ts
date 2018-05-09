@@ -12,7 +12,11 @@ declare global {
 
 export { Predicate } from "./types";
 export { addErrorHandler, catchError } from "./error";
-export { objectGetOwnPropertyDescriptor, objectHasOwnProperty } from "./shortcuts";
+export {
+  objectHasOwnProperty,
+  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
+  elementSetAttributeNS,
+} from "./shortcuts";
 
 export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";
 export {
@@ -57,9 +61,5 @@ export { shallowEqual } from "./equal";
 export { USER_AGENT, UserAgentFlags } from "./user_agent";
 export { FEATURES, FeatureFlags } from "./feature_detection";
 
-export {
-  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
-  elementSetAttributeNS,
-} from "./dom/shortcuts";
 export { getEventCharCode, getEventKey, getMouseButtons } from "./dom/input";
 export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";

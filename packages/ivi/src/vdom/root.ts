@@ -61,6 +61,7 @@ function _update() {
             syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, false);
           } else {
             renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
+            /* istanbul ignore if */
             /**
              * Fix for the Mouse Event bubbling on iOS devices.
              *

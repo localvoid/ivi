@@ -29,6 +29,7 @@ export const enum UserAgentFlags {
  */
 export let USER_AGENT: UserAgentFlags = 0;
 
+/* istanbul ignore if */
 if (TARGET !== "electron") {
   if (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) {
     USER_AGENT |= ("standalone" in navigator) ?
