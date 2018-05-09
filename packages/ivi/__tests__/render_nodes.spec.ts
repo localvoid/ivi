@@ -1,4 +1,5 @@
 import { SVG_NAMESPACE } from "ivi-core";
+import { render } from "ivi";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
 import { startRender } from "./utils";
@@ -40,4 +41,12 @@ describe(`SVG`, () => {
       expect(n.namespaceURI).toBe(SVG_NAMESPACE);
     });
   });
+});
+
+test(`render into document body should raise an exception`, () => {
+  expect(() => render(h.div(), document.body)).toThrowError();
+});
+
+test(`render into detached element should raise an exception`, () => {
+  expect(() => render(h.div(), document.createElement("div"))).toThrowError();
 });

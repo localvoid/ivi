@@ -46,6 +46,7 @@ module.exports = {
     "!packages/ivi-math/**",
     "!packages/ivi-gestures/**",
     "!packages/ivi/src/dev_mode/**",
+    "!packages/ivi-events/src/events.ts",
   ],
   coveragePathIgnorePatterns: ["/__tests__/", "/node_modules/"],
   cacheDirectory: ".jest/cache",

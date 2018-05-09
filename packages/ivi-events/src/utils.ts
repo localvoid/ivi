@@ -11,6 +11,7 @@ declare global {
   }
 }
 
+/* istanbul ignore next */
 /**
  * getEventTarget retrieves target element from an event.
  *
@@ -49,6 +50,7 @@ export function getEventTarget(ev: Event): EventTarget {
   return target;
 }
 
+/* istanbul ignore next */
 /**
  * `{ capture: true, passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
@@ -57,6 +59,7 @@ export const EVENT_CAPTURE_PASSIVE_OPTIONS =
     { "capture": true, "passive": true } :
     true;
 
+/* istanbul ignore next */
 /**
  * `{ capture: true, passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
@@ -65,6 +68,7 @@ export const EVENT_CAPTURE_ACTIVE_OPTIONS =
     { "capture": true, "passive": false } :
     true;
 
+/* istanbul ignore next */
 /**
  * `{ passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
@@ -73,6 +77,7 @@ export const EVENT_PASSIVE_OPTIONS =
     { "passive": true } :
     false;
 
+/* istanbul ignore next */
 /**
  * `{ passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
@@ -81,6 +86,7 @@ export const EVENT_ACTIVE_OPTIONS =
     { "passive": false } :
     false;
 
+/* istanbul ignore next */
 /**
  * getNativeEventOptions converts `NativeEventSourceFlags` to event options that can be used as a 3rd parameter
  * for `addEventListener` method.
