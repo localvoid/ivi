@@ -35,13 +35,12 @@ const Counter = component(class extends Component {
 const child = connect<number, undefined, { counter: number }>(
   (prev, props, context) => {
     const counter = context.counter;
-    if (prev && prev === counter) {
-      return prev;
-    }
-    return counter;
+
+    return (prev && prev === counter) ? prev :
+      counter;
   },
-  (counter: number) => (
-    h.div().children(counter);
+  (counter) => (
+    h.div().children(counter)
   ),
 );
 ```

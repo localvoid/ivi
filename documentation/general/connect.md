@@ -38,10 +38,9 @@ function connect<T, P, C>(
 const article = connect<{ content: string }, number, { articles: Map<number, string> }>(
   (prev, id, context) => {
     const content = context.articles.get(id);
-    if (prev && prev.content === content) {
-      return prev;
-    }
-    return { content };
+
+    return (prev && prev.content === content) ? prev :
+      { content };
   },
   (props) => (
     h.div().c(props.content)
