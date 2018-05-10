@@ -2,6 +2,7 @@ import { INPUT_DEVICE_CAPABILITIES } from "ivi-core";
 import {
   SyntheticEventFlags, EventSourceActiveTouchStart, EventSourceTouchEnd, EventSourceTouchCancel,
   EventSourceActiveTouchMove, SyntheticNativeEvent,
+  removeBeforeListener, addBeforeListener,
 } from "ivi-events";
 import { isNativeGestureAccepted } from "./arena";
 import { GestureNativeEventSource } from "./gesture_event_source";
@@ -112,15 +113,15 @@ export function createTouchEventListener(
   function activate() {
     mouseListener.activate();
     // touchstart should be active, otherwise touchmove can't be canceled.
-    EventSourceActiveTouchStart.addBeforeListener(onStart);
-    EventSourceTouchEnd.addBeforeListener(onEnd);
-    EventSourceTouchCancel.addBeforeListener(onCancel);
+    addBeforeListener(EventSourceActiveTouchStart, onStart);
+    addBeforeListener(EventSourceTouchEnd, onEnd);
+    addBeforeListener(EventSourceTouchCancel, onCancel);
   }
 
   function deactivate() {
-    EventSourceActiveTouchStart.removeBeforeListener(onStart);
-    EventSourceTouchEnd.removeBeforeListener(onEnd);
-    EventSourceTouchCancel.removeBeforeListener(onCancel);
+    removeBeforeListener(EventSourceActiveTouchStart, onStart);
+    removeBeforeListener(EventSourceTouchEnd, onEnd);
+    removeBeforeListener(EventSourceTouchCancel, onCancel);
     mouseListener.deactivate();
   }
 
@@ -128,7 +129,7 @@ export function createTouchEventListener(
     if (ev.id === 1) {
       mouseListener.startMoveTracking(ev, target);
     } else {
-      EventSourceActiveTouchMove.addBeforeListener(onMove);
+      addBeforeListener(EventSourceActiveTouchMove, onMove);
     }
   }
 
@@ -136,7 +137,7 @@ export function createTouchEventListener(
     if (ev.id === 1) {
       mouseListener.stopMoveTracking(ev);
     } else {
-      EventSourceActiveTouchMove.removeBeforeListener(onMove);
+      removeBeforeListener(EventSourceActiveTouchMove, onMove);
     }
   }
 

@@ -9,7 +9,11 @@ export { accumulateDispatchTargets, accumulateDispatchTargetsFromElement } from 
 export { DispatchTarget, dispatchEvent } from "./dispatch";
 export { EventHandler } from "./event_handler";
 export { SyntheticEvent, SyntheticNativeEvent } from "./synthetic_event";
-export { NativeEventSource } from "./native_event_source";
+export {
+  NativeEventSource, createNativeEventSource,
+  addBeforeListener, addAfterListener,
+  removeBeforeListener, removeAfterListener,
+} from "./native_event_source";
 export { syncEvents, attachEvents, detachEvents } from "./sync_events";
 
 export {
