@@ -1,5 +1,5 @@
 import { EventHandler } from "ivi-events";
-import { VNodeFlags, VNode, getComponentInstanceFromVNode } from "ivi";
+import { VNodeFlags, VNode, getComponentInstanceFromVNode, autofocus } from "ivi";
 import * as h from "ivi-html";
 
 test(`element flags`, () => {
@@ -94,7 +94,7 @@ test(`assigning checked value to div should raise an exception`, () => {
 });
 
 test(`autofocus`, () => {
-  const e = h.div().autofocus(true);
+  const e = autofocus(h.div());
   expect(e._flags & VNodeFlags.Autofocus).toBe(VNodeFlags.Autofocus);
 });
 

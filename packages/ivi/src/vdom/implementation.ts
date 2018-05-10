@@ -308,10 +308,8 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   let instance: Node | Component<any> | null = null;
   let node: Node;
 
-  if ((flags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
-    if ((flags & VNodeFlags.Text) !== 0) {
-      node = document.createTextNode(vnode._children as string);
-    } else { // (flags & VNodeFlags.Element)
+  if ((flags & (VNodeFlags.Element | VNodeFlags.Component)) !== 0) {
+    if ((flags & VNodeFlags.Element) !== 0) {
       const svg = (flags & VNodeFlags.SvgElement) !== 0;
       if ((flags & VNodeFlags.ElementFactory) === 0) {
         const tagName = vnode._tag as string;
@@ -343,10 +341,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           _render(parent, factory, context);
         }
         node = nodeCloneNode(factory._instance as Node);
-      }
-
-      if ((flags & VNodeFlags.Autofocus) !== 0) {
-        autofocus(node as Element);
       }
 
       if (vnode._className !== void 0) {
@@ -390,32 +384,38 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           (node as Element).innerHTML = children as string;
         }
       }
+
+      instance = node;
+    } else { // ((flags & VNodeFlags.Component) !== 0)
+      if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+        const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
+        const root = vnode._children = component.render();
+        node = _render(parent, root, context);
+      } else { // (flags & VNodeFlags.ComponentFunction)
+        if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
+          if ((flags & VNodeFlags.Connect) !== 0) {
+            const connect = (vnode._tag as ConnectDescriptor<any, any, {}>);
+            const selectData = instance = connect.select(null, vnode._props, context);
+            vnode._children = connect.render(selectData);
+          } else {
+            context = instance = Object.assign({}, context, vnode._props);
+          }
+        } else {
+          vnode._children = (vnode._tag as StatelessComponent<any>).render(vnode._props);
+        }
+        node = _render(
+          parent,
+          vnode._children as VNode,
+          context,
+        );
+      }
     }
 
-    instance = node;
-  } else { // (flags & VNodeFlags.Component)
-    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-      const component = instance = new (vnode._tag as StatefulComponent<any>)(vnode._props);
-      const root = vnode._children = component.render();
-      node = _render(parent, root, context);
-    } else { // (flags & VNodeFlags.ComponentFunction)
-      if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
-        if ((flags & VNodeFlags.Connect) !== 0) {
-          const connect = (vnode._tag as ConnectDescriptor<any, any, {}>);
-          const selectData = instance = connect.select(null, vnode._props, context);
-          vnode._children = connect.render(selectData);
-        } else {
-          context = instance = Object.assign({}, context, vnode._props);
-        }
-      } else {
-        vnode._children = (vnode._tag as StatelessComponent<any>).render(vnode._props);
-      }
-      node = _render(
-        parent,
-        vnode._children as VNode,
-        context,
-      );
+    if ((flags & VNodeFlags.Autofocus) !== 0) {
+      autofocus(node as Element);
     }
+  } else { // ((flags & VNodeFlags.Text) !== 0)
+    instance = node = document.createTextNode(vnode._children as string);
   }
 
   vnode._instance = instance;

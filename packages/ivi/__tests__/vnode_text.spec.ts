@@ -1,4 +1,4 @@
-import { VNodeFlags } from "ivi";
+import { VNodeFlags, autofocus } from "ivi";
 import * as h from "ivi-html";
 
 test(`text flags`, () => {
@@ -52,5 +52,5 @@ test(`assigning checked value should raise an exception`, () => {
 });
 
 test(`assigning autofocus should raise an exception`, () => {
-  expect(() => h.t("abc").autofocus(true)).toThrow(Error);
+  expect(() => autofocus(h.t("abc"))).toThrow(Error);
 });

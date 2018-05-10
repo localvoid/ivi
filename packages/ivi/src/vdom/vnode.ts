@@ -340,24 +340,6 @@ export class VNode<P = any, N = Node> {
     this._children = checked;
     return this;
   }
-
-  /**
-   * autofocus makes an Element autofocused after instantiation.
-   *
-   * @param focus
-   * @return VNode
-   */
-  autofocus(focus: boolean): this {
-    if (DEBUG) {
-      if (!(this._flags & VNodeFlags.Element)) {
-        throw new Error("Failed to set autofocus, autofocus is available on element nodes only.");
-      }
-    }
-    if (focus === true) {
-      this._flags |= VNodeFlags.Autofocus;
-    }
-    return this;
-  }
 }
 
 export type Children = Array<VNode[] | VNode | string | number | null>;
@@ -388,6 +370,22 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
     }
   }
   return node._instance as T | null;
+}
+
+/**
+ * autofocus makes an element focused after instantiation.
+ *
+ * @param focus
+ * @return VNode
+ */
+export function autofocus<N extends VNode>(node: N): N {
+  if (DEBUG) {
+    if (!(node._flags & (VNodeFlags.Element | VNodeFlags.Component))) {
+      throw new Error("Failed to set autofocus, autofocus is available on element and component nodes only.");
+    }
+  }
+  node._flags |= VNodeFlags.Autofocus;
+  return node;
 }
 
 /**
