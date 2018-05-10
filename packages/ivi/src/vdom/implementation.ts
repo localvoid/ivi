@@ -23,7 +23,11 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
  * @param node VNode element to remove.
  */
 export function removeVNode(parent: Node, node: VNode): void {
-  nodeRemoveChild(parent, getDOMInstanceFromVNode(node)!);
+  if (DEBUG) {
+    parent.removeChild(getDOMInstanceFromVNode(node)!);
+  } else {
+    nodeRemoveChild.call(parent, getDOMInstanceFromVNode(node)!);
+  }
   _detach(node);
 }
 
@@ -185,19 +189,6 @@ function _removeAllChildren(parent: Node, firstNode: VNode): void {
 }
 
 /**
- * Remove child.
- *
- * `detach` lifecycle methods will be invoked for removed node and its subtree.
- *
- * @param parent Parent DOM node.
- * @param node VNode element to remove.
- */
-function _removeChild(parent: Node, node: VNode): void {
-  nodeRemoveChild(parent, getDOMInstanceFromVNode(node)!);
-  _detach(node);
-}
-
-/**
  * Set value for HTMLInputElement.
  *
  * When value has a string type it is assigned to `value` property, otherwise it is assigned to `checked` property.
@@ -265,7 +256,11 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         if (factory._instance === null) {
           _render(parent, factory, context);
         }
-        node = nodeCloneNode(factory._instance as Node);
+        if (DEBUG) {
+          node = (factory._instance as Node).cloneNode(false);
+        } else {
+          node = nodeCloneNode.call(factory._instance as Node, false);
+        }
       }
 
       if (vnode._className !== void 0) {
@@ -273,7 +268,11 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
          * SVGElement.className returns `SVGAnimatedString`
          */
         if (svg === true) {
-          elementSetAttribute(node as Element, "class", vnode._className);
+          if (DEBUG) {
+            (node as Element).setAttribute("class", vnode._className);
+          } else {
+            elementSetAttribute.call(node as Element, "class", vnode._className);
+          }
         } else {
           (node as Element).className = vnode._className;
         }
@@ -294,7 +293,11 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
           children = children as VNode;
           do {
-            nodeInsertBefore(node, _render(node, children, context), null);
+            if (DEBUG) {
+              node.insertBefore(_render(node, children, context), null);
+            } else {
+              nodeInsertBefore.call(node, _render(node, children, context), null);
+            }
             children = children._next;
           } while (children !== null);
         } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
@@ -368,7 +371,11 @@ export function renderVNode(
   context: {},
 ): Node {
   const node = _render(parent, vnode, context);
-  nodeInsertBefore(parent, node, refChild);
+  if (DEBUG) {
+    parent.insertBefore(node, refChild);
+  } else {
+    nodeInsertBefore.call(parent, node, refChild);
+  }
   _attach(vnode);
   return node;
 }
@@ -447,7 +454,11 @@ export function syncVNode(
         if (a._className !== b._className) {
           const className = b._className === void 0 ? "" : b._className;
           if (svg === true) {
-            elementSetAttribute(instance as Element, "class", className);
+            if (DEBUG) {
+              (instance as Element).setAttribute("class", className);
+            } else {
+              elementSetAttribute.call(instance as Element, "class", className);
+            }
           } else {
             (instance as Element).className = className;
           }
@@ -613,7 +624,11 @@ export function syncVNode(
     }
   } else {
     instance = _render(parent, b, context);
-    nodeReplaceChild(parent, instance, getDOMInstanceFromVNode(a)!);
+    if (DEBUG) {
+      parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
+    } else {
+      nodeReplaceChild.call(parent, instance, getDOMInstanceFromVNode(a)!);
+    }
     _detach(a);
     _attach(b);
   }
@@ -923,7 +938,7 @@ function _syncChildrenTrackByKeys(
       } else {
         // All nodes from b are synced, remove the rest from a.
         do {
-          _removeChild(parent, aStartNode!);
+          removeVNode(parent, aStartNode!);
           aStartNode = aStartNode!._next;
         } while (aStartNode !== aEndNode._next);
       }
@@ -1005,7 +1020,7 @@ function _syncChildrenTrackByKeys(
       i = aInnerLength - innerSynced;
       while (i > 0) {
         if (aStartNode!._key === null) {
-          _removeChild(parent, aStartNode!);
+          removeVNode(parent, aStartNode!);
           i--;
         }
         aStartNode = aStartNode!._next;
@@ -1023,7 +1038,11 @@ function _syncChildrenTrackByKeys(
           } else {
             if (j < 0 || i !== seq[j]) {
               next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
-              nodeInsertBefore(parent, getDOMInstanceFromVNode(bNode)!, next);
+              if (DEBUG) {
+                parent.insertBefore(getDOMInstanceFromVNode(bNode)!, next);
+              } else {
+                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bNode)!, next);
+              }
             } else {
               j--;
             }

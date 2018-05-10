@@ -53,7 +53,7 @@ export function syncStyle(
       const keys = Object.keys(b);
       for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
-        if (objectHasOwnProperty(a, key) === false) {
+        if (objectHasOwnProperty.call(a, key) === false) {
           style.setProperty(key, (b as { [key: string]: string })[key]);
           ++matchCount;
         }
@@ -75,7 +75,11 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
     value = value === true ? "" : undefined;
   }
   if (value === undefined) {
-    elementRemoveAttribute(node, key);
+    if (DEBUG) {
+      node.removeAttribute(key);
+    } else {
+      elementRemoveAttribute.call(node, key);
+    }
   } else {
     if (svg === true) {
       if (key.length > 5) {
@@ -85,7 +89,11 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
             /**
              * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
              */
-            elementSetAttributeNS(node, XML_NAMESPACE, key, value);
+            if (DEBUG) {
+              node.setAttributeNS(XML_NAMESPACE, key, value);
+            } else {
+              elementSetAttributeNS.call(node, XML_NAMESPACE, key, value);
+            }
             return;
           } else if (key.charCodeAt(1) === 108 &&
             key.charCodeAt(2) === 105 &&
@@ -94,13 +102,21 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
             /**
              * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
              */
-            elementSetAttributeNS(node, XLINK_NAMESPACE, key, value);
+            if (DEBUG) {
+              node.setAttributeNS(XLINK_NAMESPACE, key, value);
+            } else {
+              elementSetAttributeNS.call(node, XLINK_NAMESPACE, key, value);
+            }
             return;
           }
         }
       }
     }
-    elementSetAttribute(node, key, value);
+    if (DEBUG) {
+      node.setAttribute(key, value);
+    } else {
+      elementSetAttribute.call(node, key, value);
+    }
   }
 }
 
@@ -131,7 +147,11 @@ export function syncDOMAttrs(
     if (b === null) {
       // b is empty, remove all attributes from a.
       for (key in a) {
-        elementRemoveAttribute(node, key);
+        if (DEBUG) {
+          node.removeAttribute(key);
+        } else {
+          elementRemoveAttribute.call(node, key);
+        }
       }
     } else {
       // Remove and update attributes.
@@ -139,7 +159,11 @@ export function syncDOMAttrs(
       for (key in a) {
         const bValue = b[key];
         if (bValue === undefined) {
-          elementRemoveAttribute(node, key);
+          if (DEBUG) {
+            node.removeAttribute(key);
+          } else {
+            elementRemoveAttribute.call(node, key);
+          }
         } else {
           const aValue = a[key];
           if (aValue !== bValue) {
@@ -153,7 +177,7 @@ export function syncDOMAttrs(
       const keys = Object.keys(b);
       for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
         key = keys[i];
-        if (objectHasOwnProperty(a, key) === false) {
+        if (objectHasOwnProperty.call(a, key) === false) {
           setDOMAttribute(node, svg, key, b[key]);
           ++matchCount;
         }
