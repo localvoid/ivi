@@ -11,10 +11,16 @@
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "test:coverage": "jest --coverage"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint && yarn test"
+    }
+  },
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "@types/node": "^9.6.6",
     "codecov": "^3.0.2",
+    "husky": "^1.0.0-rc.4",
     "jest": "^22.4.3",
     "lerna": "^2.11.0",
     "routekit-resolver": "^0.4.1",
