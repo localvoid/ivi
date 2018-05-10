@@ -46,22 +46,8 @@ export function syncEvents(
   } else if (b === null) {
     detachEvents(a);
   } else {
-    if (a.constructor !== Array) {
-      attachEvents(b);
-      unregisterEventHandler(a as EventHandler);
-    } else {
-      a = a as Array<EventHandler | null>;
-      if (b.constructor !== Array) {
-        registerEventHandler(b as EventHandler);
-
-        for (i = 0; i < a.length; ++i) {
-          h1 = a[i];
-          if (h1 !== null) {
-            unregisterEventHandler(h1);
-          }
-        }
-      } else {
-        b = b as Array<EventHandler | null>;
+    if (a instanceof Array) {
+      if (b instanceof Array) {
         i = 0;
         while (i < a.length && i < b.length) {
           h1 = a[i];
@@ -87,7 +73,19 @@ export function syncEvents(
             unregisterEventHandler(h1);
           }
         }
+      } else {
+        registerEventHandler(b as EventHandler);
+
+        for (i = 0; i < a.length; ++i) {
+          h1 = a[i];
+          if (h1 !== null) {
+            unregisterEventHandler(h1);
+          }
+        }
       }
+    } else {
+      attachEvents(b);
+      unregisterEventHandler(a as EventHandler);
     }
   }
 }
@@ -98,16 +96,15 @@ export function syncEvents(
  * @param events Event handlers.
  */
 export function attachEvents(events: Array<EventHandler | null> | EventHandler): void {
-  if (events.constructor !== Array) {
-    registerEventHandler(events as EventHandler);
-  } else {
-    events = events as Array<EventHandler | null>;
+  if (events instanceof Array) {
     for (let i = 0; i < events.length; ++i) {
       const h = events[i];
       if (h !== null) {
         registerEventHandler(h);
       }
     }
+  } else {
+    registerEventHandler(events as EventHandler);
   }
 }
 
@@ -117,15 +114,14 @@ export function attachEvents(events: Array<EventHandler | null> | EventHandler):
  * @param events Event handlers.
  */
 export function detachEvents(events: Array<EventHandler | null> | EventHandler): void {
-  if (events.constructor !== Array) {
-    unregisterEventHandler(events as EventHandler);
-  } else {
-    events = events as Array<EventHandler | null>;
+  if (events instanceof Array) {
     for (let i = 0; i < events.length; ++i) {
       const h = events[i];
       if (h !== null) {
         unregisterEventHandler(h);
       }
     }
+  } else {
+    unregisterEventHandler(events as EventHandler);
   }
 }
