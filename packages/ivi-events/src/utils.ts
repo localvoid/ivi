@@ -1,4 +1,4 @@
-import { FEATURES, FeatureFlags } from "ivi-core";
+import { PASSIVE_EVENTS } from "ivi-core";
 import { NativeEventSourceFlags } from "./flags";
 import { EventHandler } from "./event_handler";
 
@@ -54,37 +54,25 @@ export function getEventTarget(ev: Event): EventTarget {
 /**
  * `{ capture: true, passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
-export const EVENT_CAPTURE_PASSIVE_OPTIONS =
-  ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
-    { "capture": true, "passive": true } :
-    true;
+export const EVENT_CAPTURE_PASSIVE_OPTIONS = PASSIVE_EVENTS ? { "capture": true, "passive": true } : true;
 
 /* istanbul ignore next */
 /**
  * `{ capture: true, passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
-export const EVENT_CAPTURE_ACTIVE_OPTIONS =
-  ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
-    { "capture": true, "passive": false } :
-    true;
+export const EVENT_CAPTURE_ACTIVE_OPTIONS = PASSIVE_EVENTS ? { "capture": true, "passive": false } : true;
 
 /* istanbul ignore next */
 /**
  * `{ passive: true }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
-export const EVENT_PASSIVE_OPTIONS =
-  ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
-    { "passive": true } :
-    false;
+export const EVENT_PASSIVE_OPTIONS = PASSIVE_EVENTS ? { "passive": true } : false;
 
 /* istanbul ignore next */
 /**
  * `{ passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
-export const EVENT_ACTIVE_OPTIONS =
-  ((FEATURES & FeatureFlags.PassiveEvents) !== 0) ?
-    { "passive": false } :
-    false;
+export const EVENT_ACTIVE_OPTIONS = PASSIVE_EVENTS ? { "passive": false } : false;
 
 /* istanbul ignore next */
 /**

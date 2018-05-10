@@ -1,4 +1,4 @@
-import { FEATURES, FeatureFlags } from "ivi-core";
+import { INPUT_DEVICE_CAPABILITIES } from "ivi-core";
 import {
   SyntheticEventFlags, EventSourceActiveTouchStart, EventSourceTouchEnd, EventSourceTouchCancel,
   EventSourceActiveTouchMove, SyntheticNativeEvent,
@@ -73,9 +73,7 @@ export function createTouchEventListener(
   pointers: GesturePointerEvent[],
   dispatch: (ev: GesturePointerEvent, target?: Element) => void,
 ): GestureNativeEventSource {
-  const primaryPointers: GesturePointerEvent[] | null = (FEATURES & FeatureFlags.InputDeviceCapabilities) === 0 ?
-    [] :
-    null;
+  const primaryPointers: GesturePointerEvent[] | null = INPUT_DEVICE_CAPABILITIES ? null : [];
   const mouseListener = createMouseEventListener(dispatch, primaryPointers);
 
   let primaryTouch: Touch | null = null;
@@ -163,7 +161,7 @@ export function createTouchEventListener(
   }
 
   function dedupSyntheticMouseEvents(p: GesturePointerEvent) {
-    if ((FEATURES & FeatureFlags.InputDeviceCapabilities) === 0 && (p.isPrimary === true)) {
+    if (!INPUT_DEVICE_CAPABILITIES && (p.isPrimary === true)) {
       if (primaryPointers!.length === 0) {
         eventTimeOffset = Date.now() - p.timestamp + 2500;
         setTimeout(cleanPrimaryPointersForSyntheticMouseEvents, 2500);

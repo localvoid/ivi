@@ -1,4 +1,4 @@
-import { FEATURES, FeatureFlags } from "../feature_detection";
+import { MOUSE_EVENT_BUTTONS } from "../feature_detection";
 
 const KEY_CODE_TO_KEY: { [key: number]: string } = {
   8: "Backspace",
@@ -102,11 +102,9 @@ export function getEventKey(ev: KeyboardEvent): string {
  * @param ev
  * @returns MouseEvent `buttons` value.
  */
-export const getMouseButtons = (TARGET === "electron" || (FEATURES & FeatureFlags.MouseEventButtons)) ?
-  function (ev: MouseEvent): number {
-    return ev.buttons;
-  } :
-  function (ev: MouseEvent): number {
+export const getMouseButtons = (TARGET === "electron" || MOUSE_EVENT_BUTTONS) ?
+  (ev: MouseEvent) => ev.buttons :
+  (ev: MouseEvent) => {
     const button = ev.button;
     const r = 1 << button;
     if ((r & (2 | 4)) !== 0) {

@@ -1,4 +1,4 @@
-import { FEATURES, FeatureFlags, getMouseButtons } from "ivi-core";
+import { TOUCH_EVENTS, INPUT_DEVICE_CAPABILITIES, MOUSE_EVENT_BUTTONS, getMouseButtons } from "ivi-core";
 import {
   SyntheticEventFlags, EventSourceMouseDown, EventSourceMouseUp, EventSourceMouseMove, SyntheticNativeEvent,
 } from "ivi-events";
@@ -64,8 +64,8 @@ export function createMouseEventListener(
   }
 
   function isEventSimulatedFromTouch(ev: MouseEvent): boolean {
-    if ((FEATURES & FeatureFlags.TouchEvents) !== 0) {
-      if ((FEATURES & FeatureFlags.InputDeviceCapabilities) !== 0) {
+    if (TOUCH_EVENTS) {
+      if (INPUT_DEVICE_CAPABILITIES) {
         return ev.sourceCapabilities.firesTouchEvents;
       }
 
@@ -136,7 +136,7 @@ export function createMouseEventListener(
     if (isEventSimulatedFromTouch(ev) === false) {
       if (activePointer !== null) {
         let buttons = getMouseButtons(ev);
-        if ((FEATURES & FeatureFlags.MouseEventButtons) === 0) {
+        if (!MOUSE_EVENT_BUTTONS) {
           buttons = activePointer.buttons & ~buttons;
         }
         let pointer;

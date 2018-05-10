@@ -59,7 +59,9 @@ export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
 export { shallowEqual } from "./equal";
 
 export { USER_AGENT, UserAgentFlags } from "./user_agent";
-export { FEATURES, FeatureFlags } from "./feature_detection";
+export {
+  PASSIVE_EVENTS, KEYBOARD_EVENT_KEY, MOUSE_EVENT_BUTTONS, TOUCH_EVENTS, POINTER_EVENTS, INPUT_DEVICE_CAPABILITIES,
+} from "./feature_detection";
 
 export { getEventCharCode, getEventKey, getMouseButtons } from "./dom/input";
 export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";
