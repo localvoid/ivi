@@ -17,89 +17,14 @@ import { StatefulComponent, StatelessComponent, Component } from "./component";
 import { syncDOMAttrs, syncStyle } from "./sync_dom";
 
 /**
- * Render VNode entry point tryCatch wrapper.
- *
- * @param parent Parent DOM Node.
- * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
- * @param vnode VNode.
- * @param context Current context.
- * @returns Rendered DOM Node.
- */
-export function renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
-  return _renderVNode(parent, refChild, vnode, context);
-}
-
-/**
- * Render VNode entry point. Renders VNode into container and invokes `attached` lifecycle methods after VNode is
- * inserted into container.
- *
- * @param parent Parent DOM Node.
- * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
- * @param vnode VNode.
- * @param context Current context.
- * @returns Rendered DOM Node.
- */
-function _renderVNode(parent: Node, refChild: Node | null, vnode: VNode, context: {}): Node {
-  return _renderIntoAndAttach(parent, refChild, vnode, context);
-}
-
-/**
- * Sync VNode entry point tryCatch wrapper.
- *
- * @param parent Parent DOM node.
- * @param a Old VNode.
- * @param b New VNode.
- * @param context Current context.
- * @param dirtyContext Dirty context.
- */
-export function syncVNode(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: boolean): void {
-  _syncVNode(parent, a, b, context, dirtyContext);
-}
-
-/**
- * Sync VNode entry point. Sync VNode with a new one or replace when they aren't compatible.
- *
- * @param parent Parent node.
- * @param a Old VNode.
- * @param b New VNode.
- * @param context Current context.
- * @param dirtyContext Dirty context.
- */
-function _syncVNode(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: boolean): void {
-  _sync(parent, a, b, context, dirtyContext, true);
-}
-
-/**
- * Remove VNode entry point tryCatch wrapper.
- *
- * @param parent Parent DOM node.
- * @param node VNode element to remove.
- */
-export function removeVNode(parent: Node, node: VNode): void {
-  _removeVNode(parent, node);
-}
-
-/**
  * Remove VNode entry point.
  *
  * @param parent Parent DOM node.
  * @param node VNode element to remove.
  */
-function _removeVNode(parent: Node, node: VNode): void {
+export function removeVNode(parent: Node, node: VNode): void {
   nodeRemoveChild(parent, getDOMInstanceFromVNode(node)!);
   _detach(node);
-}
-
-/**
- * Dirty checking entry point.
- *
- * @param parent Parent DOM Node.
- * @param vnode Virtual DOM Node.
- * @param context Context.
- * @param dirtyContext Dirty context.
- */
-export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
-  _dirtyCheck(parent, vnode, context, dirtyContext);
 }
 
 /**
@@ -166,7 +91,7 @@ function _detach(vnode: VNode): void {
  * @param context New context.
  * @param dirtyContext Dirty context.
  */
-function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): number {
+export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): number {
   const flags = vnode._flags;
   let deepUpdate = 0;
   let children: VNode | null | undefined;
@@ -177,7 +102,7 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
       instance = vnode._instance as Node;
       children = vnode._children as VNode;
       do {
-        deepUpdate |= _dirtyCheck(instance as Node, children, context, dirtyContext);
+        deepUpdate |= dirtyCheck(instance as Node, children, context, dirtyContext);
         children = children._next;
       } while (children !== null);
     } else {
@@ -186,12 +111,12 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
         children = vnode._children as VNode;
         if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
           const newRoot = vnode._children = (instance as Component<any>).render();
-          _sync(parent, children, newRoot, context, dirtyContext, true);
+          syncVNode(parent, children, newRoot, context, dirtyContext, true);
           (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
           (instance as Component<any>).updated(true);
           deepUpdate = 1;
         } else {
-          deepUpdate = _dirtyCheck(parent, children, context, dirtyContext);
+          deepUpdate = dirtyCheck(parent, children, context, dirtyContext);
           if (deepUpdate !== 0) {
             (instance as Component<any>).updated(false);
           }
@@ -203,7 +128,7 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
           const selectData = connect.select(instance, vnode._props, context);
           children = vnode._children as VNode;
           if (instance === selectData) {
-            deepUpdate = _dirtyCheck(
+            deepUpdate = dirtyCheck(
               parent,
               children as VNode,
               context,
@@ -213,7 +138,7 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
             deepUpdate = 1;
             vnode._children = connect.render(selectData);
             vnode._instance = selectData;
-            _sync(
+            syncVNode(
               parent,
               children as VNode,
               vnode._children as VNode,
@@ -229,7 +154,7 @@ function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: bool
             }
             context = vnode._instance as {};
           }
-          deepUpdate = _dirtyCheck(
+          deepUpdate = dirtyCheck(
             parent,
             vnode._children as VNode,
             context,
@@ -436,7 +361,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
  * @param context Current context.
  * @returns Rendered DOM Node.
  */
-function _renderIntoAndAttach(
+export function renderVNode(
   parent: Node,
   refChild: Node | null,
   vnode: VNode,
@@ -475,9 +400,16 @@ function _eqKeys(a: VNode, b: VNode): boolean {
  * @param dirtyContext Dirty context.
  * @param checkKeys Check vnode keys.
  */
-function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: boolean, checkKeys: boolean): void {
+export function syncVNode(
+  parent: Node,
+  a: VNode,
+  b: VNode,
+  context: {},
+  dirtyContext: boolean,
+  checkKeys: boolean,
+): void {
   if (a === b) {
-    _dirtyCheck(parent, b, context, dirtyContext);
+    dirtyCheck(parent, b, context, dirtyContext);
     return;
   }
 
@@ -540,7 +472,7 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
             if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
               bChild = bChild as VNode;
               do {
-                _renderIntoAndAttach(instance as Element, null, bChild, context);
+                renderVNode(instance as Element, null, bChild, context);
                 bChild = bChild._next!;
               } while (bChild !== null);
             } else if ((bFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
@@ -611,12 +543,12 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
           (component.shouldUpdate(oldProps, newProps) === true)
         ) {
           const newRoot = b._children = component.render();
-          _sync(parent, oldRoot, newRoot, context, dirtyContext, true);
+          syncVNode(parent, oldRoot, newRoot, context, dirtyContext, true);
           component.flags &= ~ComponentFlags.Dirty;
           component.updated(true);
         } else {
           b._children = a._children;
-          if (_dirtyCheck(parent, oldRoot, context, dirtyContext) !== 0) {
+          if (dirtyCheck(parent, oldRoot, context, dirtyContext) !== 0) {
             component.updated(false);
           }
         }
@@ -631,7 +563,7 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
             b._instance = selectData;
             if (prevSelectData === selectData) {
               b._children = a._children;
-              _dirtyCheck(
+              dirtyCheck(
                 parent,
                 b,
                 context,
@@ -639,7 +571,7 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
               );
             } else {
               b._children = connect.render(selectData);
-              _sync(
+              syncVNode(
                 parent,
                 a._children as VNode,
                 b._children as VNode,
@@ -655,7 +587,7 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
             } else {
               context = b._instance = instance as {};
             }
-            _sync(
+            syncVNode(
               parent,
               a._children as VNode,
               b._children as VNode,
@@ -671,10 +603,10 @@ function _sync(parent: Node, a: VNode, b: VNode, context: {}, dirtyContext: bool
           ) {
             const oldRoot = a._children as VNode;
             const newRoot = b._children = sc.render(b._props);
-            _sync(parent, oldRoot, newRoot, context, dirtyContext, true);
+            syncVNode(parent, oldRoot, newRoot, context, dirtyContext, true);
           } else {
             b._children = a._children;
-            _dirtyCheck(parent, b._children as VNode, context, dirtyContext);
+            dirtyCheck(parent, b._children as VNode, context, dirtyContext);
           }
         }
       }
@@ -940,7 +872,7 @@ function _syncChildrenTrackByKeys(
   outer: while (true) {
     // Sync nodes with the same key at the beginning.
     while (_eqKeys(aStartNode!, bStartNode!) === true) {
-      _sync(parent, aStartNode!, bStartNode!, context, dirtyContext, false);
+      syncVNode(parent, aStartNode!, bStartNode!, context, dirtyContext, false);
       synced++;
       if (aStartNode === aEndNode) {
         finished |= 1;
@@ -959,7 +891,7 @@ function _syncChildrenTrackByKeys(
 
     // Sync nodes with the same key at the end.
     while (_eqKeys(aEndNode, bEndNode) === true) {
-      _sync(parent, aEndNode, bEndNode, context, dirtyContext, false);
+      syncVNode(parent, aEndNode, bEndNode, context, dirtyContext, false);
       synced++;
       if (aStartNode === aEndNode) {
         finished |= 1;
@@ -985,7 +917,7 @@ function _syncChildrenTrackByKeys(
         // All nodes from a are synced, insert the rest from b.
         next = bEndNode._next === null ? null : getDOMInstanceFromVNode(bEndNode._next!);
         do {
-          _renderIntoAndAttach(parent, next, bStartNode!, context);
+          renderVNode(parent, next, bStartNode!, context);
           bStartNode = bStartNode!._next;
         } while (bStartNode !== bEndNode._next);
       } else {
@@ -1055,7 +987,7 @@ function _syncChildrenTrackByKeys(
           i = j;
         }
         bNode = bArray[j];
-        _sync(parent, aNode!, bNode, context, dirtyContext, false);
+        syncVNode(parent, aNode!, bNode, context, dirtyContext, false);
         innerSynced++;
       }
       aInnerLength++;
@@ -1066,7 +998,7 @@ function _syncChildrenTrackByKeys(
       // Noone is synced, remove all children with one dom op.
       _removeAllChildren(parent, aFirstNode);
       while (bStartNode !== bEndNode._next) {
-        _renderIntoAndAttach(parent, null, bStartNode!, context);
+        renderVNode(parent, null, bStartNode!, context);
         bStartNode = bStartNode!._next;
       }
     } else {
@@ -1087,7 +1019,7 @@ function _syncChildrenTrackByKeys(
         for (i = bInnerLength - 1; i >= 0; i--) {
           if (sources[i] === -1) {
             next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
-            _renderIntoAndAttach(parent, next, bNode!, context);
+            renderVNode(parent, next, bNode!, context);
           } else {
             if (j < 0 || i !== seq[j]) {
               next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
@@ -1103,7 +1035,7 @@ function _syncChildrenTrackByKeys(
         for (i = bInnerLength - 1; i >= 0; i--) {
           if (sources[i] === -1) {
             next = bNode._next === null ? null : getDOMInstanceFromVNode(bNode._next);
-            _renderIntoAndAttach(parent, next, bNode, context);
+            renderVNode(parent, next, bNode, context);
           }
           bNode = bNode._prev;
         }

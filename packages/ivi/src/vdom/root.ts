@@ -58,7 +58,7 @@ function _update() {
 
         if (newVNode) {
           if (currentVNode) {
-            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, false);
+            syncVNode(container, currentVNode, newVNode, EMPTY_CONTEXT, false, true);
           } else {
             renderVNode(container, null, newVNode!, EMPTY_CONTEXT);
             /* istanbul ignore if */
