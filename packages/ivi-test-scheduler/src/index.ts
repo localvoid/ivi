@@ -189,8 +189,10 @@ export function addDOMReader(reader: () => boolean | undefined): void {
   _readers.push(reader);
 }
 
-export function autofocus(element: Element): void {
-  _autofocusedElement = element;
+export function autofocus(node: Node): void {
+  if (node instanceof Element) {
+    _autofocusedElement = node;
+  }
 }
 
 /**
