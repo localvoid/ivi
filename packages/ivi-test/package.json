@@ -38,7 +38,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "prepublish": "npm run clean && npm run dist",
+    "prepublishOnly": "npm run clean && npm run dist",
     "clean": "rm -rf ./dist",
     "dist": "npm run dist:main && npm run dist:module && npm run dist:es2016",
     "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
