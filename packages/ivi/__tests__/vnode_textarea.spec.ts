@@ -2,7 +2,7 @@ import * as h from "ivi-html";
 
 test(`value`, () => {
   const e = h.textarea().value("abc");
-  expect(e._children).toBe("abc");
+  expect(e.children).toBe("abc");
 });
 
 test(`assigning children should raise an exception`, () => {

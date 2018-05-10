@@ -7,29 +7,29 @@ const divFactory = elementFactory(div);
 const inputFactory = elementFactory(input);
 
 test(`div flags`, () => {
-  expect(divFactory()._flags & ~VNodeFlags.ElementFactory).toBe(h.div()._flags);
+  expect(divFactory().flags & ~VNodeFlags.ElementFactory).toBe(h.div().flags);
 });
 
 test(`input flags`, () => {
-  expect(inputFactory()._flags & ~VNodeFlags.ElementFactory).toBe(h.input()._flags);
+  expect(inputFactory().flags & ~VNodeFlags.ElementFactory).toBe(h.input().flags);
 });
 
 test(`div factory`, () => {
-  expect(divFactory()._tag).toBe(div);
+  expect(divFactory().tag).toBe(div);
 });
 
 test(`input factory`, () => {
-  expect(inputFactory()._tag).toBe(input);
+  expect(inputFactory().tag).toBe(input);
 });
 
 test(`default className = undefined`, () => {
-  expect(divFactory()._className).toBeUndefined();
+  expect(divFactory().className).toBeUndefined();
 });
 
 test(`className = undefined`, () => {
-  expect(divFactory(undefined)._className).toBeUndefined();
+  expect(divFactory(undefined).className).toBeUndefined();
 });
 
 test(`className = "a"`, () => {
-  expect(divFactory("a")._className).toBe("a");
+  expect(divFactory("a").className).toBe("a");
 });

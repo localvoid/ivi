@@ -116,21 +116,21 @@ const VNodeLooseMatchFlags = 0
  * @returns true when VNode are loosely matching.
  */
 export function isVNodeLooseMatch(a: VNode, b: VNode): boolean {
-  const aFlags = a._flags;
-  const bFlags = b._flags;
+  const aFlags = a.flags;
+  const bFlags = b.flags;
   if (((aFlags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {
     return false;
   }
 
-  if (a._tag !== b._tag) {
+  if (a.tag !== b.tag) {
     return false;
   }
 
   if ((bFlags & VNodeFlags.Element) !== 0) {
-    if (matchValues(a._props, b._props) === false) {
+    if (matchValues(a.props, b.props) === false) {
       return false;
     }
-    if (matchValues(a._style, b._style) === false) {
+    if (matchValues(a.style, b.style) === false) {
       return false;
     }
   }

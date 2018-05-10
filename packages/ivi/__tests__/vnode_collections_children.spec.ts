@@ -17,20 +17,20 @@ test(`"abc"`, () => {
   const first = children("abc")!;
 
   expect(first).toBeInstanceOf(VNode);
-  expect(first._flags & VNodeFlags.Text).toBeTruthy();
-  expect(first._children).toBe("abc");
-  expect(first._prev).toBe(first);
-  expect(first._next).toBeNull();
+  expect(first.flags & VNodeFlags.Text).toBeTruthy();
+  expect(first.children).toBe("abc");
+  expect(first.prev).toBe(first);
+  expect(first.next).toBeNull();
 });
 
 test(`10`, () => {
   const first = children(10)!;
 
   expect(first).toBeInstanceOf(VNode);
-  expect(first._flags & VNodeFlags.Text).toBeTruthy();
-  expect(first._children).toBe(10);
-  expect(first._prev).toBe(first);
-  expect(first._next).toBeNull();
+  expect(first.flags & VNodeFlags.Text).toBeTruthy();
+  expect(first.children).toBe(10);
+  expect(first.prev).toBe(first);
+  expect(first.next).toBeNull();
 });
 
 test(`<div></div>`, () => {
@@ -38,8 +38,8 @@ test(`<div></div>`, () => {
   const first = children(v1);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`<div></div></div></div>`, () => {
@@ -48,10 +48,10 @@ test(`<div></div></div></div>`, () => {
   const first = children(v1, v2);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v2);
-  expect(v1._next).toBe(v2);
-  expect(v2._prev).toBe(v1);
-  expect(v2._next).toBeNull();
+  expect(v1.prev).toBe(v2);
+  expect(v1.next).toBe(v2);
+  expect(v2.prev).toBe(v1);
+  expect(v2.next).toBeNull();
 });
 
 test(`{ null }<div></div>`, () => {
@@ -59,8 +59,8 @@ test(`{ null }<div></div>`, () => {
   const first = children(null, v1);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`{ null }{ null }<div></div>`, () => {
@@ -68,8 +68,8 @@ test(`{ null }{ null }<div></div>`, () => {
   const first = children(null, null, v1);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`<div></div>{ null }`, () => {
@@ -77,8 +77,8 @@ test(`<div></div>{ null }`, () => {
   const first = children(v1, null);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`<div></div>{ null }{ null }`, () => {
@@ -86,8 +86,8 @@ test(`<div></div>{ null }{ null }`, () => {
   const first = children(v1, null, null);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`{ null }<div></div>{ null }`, () => {
@@ -95,8 +95,8 @@ test(`{ null }<div></div>{ null }`, () => {
   const first = children(null, v1, null);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`<div></div>{ null }</div></div>`, () => {
@@ -105,10 +105,10 @@ test(`<div></div>{ null }</div></div>`, () => {
   const first = children(v1, null, v2);
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v2);
-  expect(v1._next).toBe(v2);
-  expect(v2._prev).toBe(v1);
-  expect(v2._next).toBeNull();
+  expect(v1.prev).toBe(v2);
+  expect(v1.next).toBe(v2);
+  expect(v2.prev).toBe(v1);
+  expect(v2.next).toBeNull();
 });
 
 test(`{ children(<div></div></div></div>) }`, () => {
@@ -117,10 +117,10 @@ test(`{ children(<div></div></div></div>) }`, () => {
   const first = children(children(v1, v2));
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v2);
-  expect(v1._next).toBe(v2);
-  expect(v2._prev).toBe(v1);
-  expect(v2._next).toBeNull();
+  expect(v1.prev).toBe(v2);
+  expect(v1.next).toBe(v2);
+  expect(v2.prev).toBe(v1);
+  expect(v2.next).toBeNull();
 });
 
 test(`<div></div>{ children(<div></div></div></div>) }`, () => {
@@ -130,10 +130,10 @@ test(`<div></div>{ children(<div></div></div></div>) }`, () => {
   const first = children(v1, children(v2, v3));
 
   expect(first).toBe(v1);
-  expect(v1._prev).toBe(v3);
-  expect(v1._next).toBe(v2);
-  expect(v2._prev).toBe(v1);
-  expect(v2._next).toBe(v3);
-  expect(v3._prev).toBe(v2);
-  expect(v3._next).toBeNull();
+  expect(v1.prev).toBe(v3);
+  expect(v1.next).toBe(v2);
+  expect(v2.prev).toBe(v1);
+  expect(v2.next).toBe(v3);
+  expect(v3.prev).toBe(v2);
+  expect(v3.next).toBeNull();
 });

@@ -24,7 +24,7 @@ export function statelessComponent<P>(
         null,
       );
       if (DEBUG) {
-        n._factory = f;
+        n.factory = f;
       }
       return n;
     };
@@ -39,7 +39,7 @@ export function statelessComponent<P>(
       null,
     );
     if (DEBUG) {
-      n._factory = f;
+      n.factory = f;
     }
     return n;
   };
@@ -62,7 +62,7 @@ export function component<P>(
       null,
     );
     if (DEBUG) {
-      n._factory = f;
+      n.factory = f;
     }
     return n;
   };
@@ -112,7 +112,7 @@ export function connect<T, P, C>(
       null,
     );
     if (DEBUG) {
-      n._factory = f;
+      n.factory = f;
     }
     return n;
   };

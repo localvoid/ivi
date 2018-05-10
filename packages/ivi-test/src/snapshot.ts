@@ -119,7 +119,7 @@ function _toSnapshot(
   vnode: VNode,
   sFlags: SnapshotFlags,
 ): string {
-  const flags = vnode._flags;
+  const flags = vnode.flags;
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
       let result = indent(il);
@@ -128,17 +128,17 @@ function _toSnapshot(
       if ((flags & VNodeFlags.InputElement) !== 0) {
         closeTagName = `input`;
         result += `<input`;
-        if (vnode._tag !== "") {
-          result += `\n${indent(il + 1)}type="${vnode._tag}"`;
+        if (vnode.tag !== "") {
+          result += `\n${indent(il + 1)}type="${vnode.tag}"`;
           multiline = true;
         }
       } else {
-        closeTagName = vnode._tag;
-        result += `<${vnode._tag}`;
+        closeTagName = vnode.tag;
+        result += `<${vnode.tag}`;
       }
 
-      if (vnode._className !== void 0) {
-        result += `\n${indent(il + 1)}class="${vnode._className}"`;
+      if (vnode.className !== void 0) {
+        result += `\n${indent(il + 1)}class="${vnode.className}"`;
         multiline = true;
       }
 
@@ -147,7 +147,7 @@ function _toSnapshot(
         multiline = true;
       }
 
-      const attrs = vnode._props;
+      const attrs = vnode.props;
       if (attrs !== null) {
         const s = renderAttrsToSnapshot(il + 1, attrs);
         if (s !== "") {
@@ -155,7 +155,7 @@ function _toSnapshot(
         }
         result += s;
       }
-      const style = vnode._style;
+      const style = vnode.style;
       if (style !== null) {
         const s = renderStyleToSnapshot(il + 1, style);
         if (s !== "") {
@@ -164,7 +164,7 @@ function _toSnapshot(
         result += s;
       }
       if ((sFlags & SnapshotFlags.IgnoreEvents) === 0) {
-        const events = vnode._events;
+        const events = vnode.events;
         if (events !== null) {
           const s = renderEventsToSnapshot(il + 1, events);
           if (s !== "") {
@@ -175,25 +175,25 @@ function _toSnapshot(
       }
 
       let childrenString = "";
-      if (vnode._children !== null) {
+      if (vnode.children !== null) {
         if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-          let child: VNode | null = vnode._children as VNode;
+          let child: VNode | null = vnode.children as VNode;
           do {
             childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
-            child = child._next;
+            child = child.next;
           } while (child !== null);
         } else {
           if ((flags & VNodeFlags.InputElement) !== 0) {
-            if (vnode._children !== null) {
-              if (typeof vnode._children === "boolean") {
-                result += `\n${indent(il + 1)}checked="${vnode._children}"`;
+            if (vnode.children !== null) {
+              if (typeof vnode.children === "boolean") {
+                result += `\n${indent(il + 1)}checked="${vnode.children}"`;
               } else {
-                result += `\n${indent(il + 1)}value="${vnode._children}"`;
+                result += `\n${indent(il + 1)}value="${vnode.children}"`;
               }
               multiline = true;
             }
           } else { // ((flags & VNodeFlags.UnsafeHTML) !== 0)
-            childrenString = `\n${indent(il + 1)}${vnode._children}`;
+            childrenString = `\n${indent(il + 1)}${vnode.children}`;
           }
         }
       }
@@ -211,17 +211,17 @@ function _toSnapshot(
 
       return result;
     } else {
-      return vnode._children as string;
+      return vnode.children as string;
     }
   } else {
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       if ((sFlags & SnapshotFlags.IgnoreStatefulComponents) === 0) {
-        const componentName = (vnode._tag as StatefulComponent<any>).displayName;
-        if (vnode._children === null) {
+        const componentName = (vnode.tag as StatefulComponent<any>).displayName;
+        if (vnode.children === null) {
           return `${indent(il)}<${componentName} />`;
         } else {
           let result = `${indent(il)}<${componentName}>`;
-          result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
+          result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
           result += `${indent(il)}</${componentName}>`;
           return result;
         }
@@ -230,22 +230,22 @@ function _toSnapshot(
       if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0) {
         if ((flags & VNodeFlags.Connect) !== 0) {
           if ((sFlags & SnapshotFlags.IgnoreConnectComponents) === 0) {
-            if (vnode._children === null) {
+            if (vnode.children === null) {
               return `${indent(il)}<Connect />`;
             } else {
               let result = `${indent(il)}<Connect>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
+              result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
               result += `\n${indent(il)}</Connect>`;
               return result;
             }
           }
         } else {
           if ((sFlags & SnapshotFlags.IgnoreContextComponents) === 0) {
-            if (vnode._children === null) {
+            if (vnode.children === null) {
               return `${indent(il)}<UpdateContext />`;
             } else {
               let result = `${indent(il)}<UpdateContext>`;
-              result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
+              result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
               result += `\n${indent(il)}</UpdateContext>`;
               return result;
             }
@@ -253,19 +253,19 @@ function _toSnapshot(
         }
       } else {
         if ((sFlags & SnapshotFlags.IgnoreStatelessComponents) === 0) {
-          const componentName = (vnode._tag as StatelessComponent<any>).render.displayName;
-          if (vnode._children === null) {
+          const componentName = (vnode.tag as StatelessComponent<any>).render.displayName;
+          if (vnode.children === null) {
             return `${indent(il)}<${componentName} />`;
           } else {
             let result = `${indent(il)}<${componentName}>`;
-            result += _toSnapshot(il + 1, vnode._children as VNode, sFlags);
+            result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
             result += `${indent(il)}</${componentName}>`;
             return result;
           }
         }
       }
-      if (vnode._children !== null) {
-        return _toSnapshot(il + 1, vnode._children as VNode, sFlags);
+      if (vnode.children !== null) {
+        return _toSnapshot(il + 1, vnode.children as VNode, sFlags);
       }
     }
   }

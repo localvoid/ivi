@@ -34,9 +34,9 @@ test(`one node`, () => {
   const first = mapRange(0, 1, () => v1);
 
   expect(first).toBe(v1);
-  expect(v1._flags & VNodeFlags.KeyedList).toBeTruthy();
-  expect(v1._prev).toBe(v1);
-  expect(v1._next).toBeNull();
+  expect(v1.flags & VNodeFlags.KeyedList).toBeTruthy();
+  expect(v1.prev).toBe(v1);
+  expect(v1.next).toBeNull();
 });
 
 test(`two nodes`, () => {
@@ -45,11 +45,11 @@ test(`two nodes`, () => {
   const first = mapRange(0, 2, (i) => i === 0 ? v1 : v2);
 
   expect(first).toBe(v1);
-  expect(v1._flags & VNodeFlags.KeyedList).toBeTruthy();
-  expect(v1._prev).toBe(v2);
-  expect(v1._next).toBe(v2);
-  expect(v2._prev).toBe(v1);
-  expect(v2._next).toBeNull();
+  expect(v1.flags & VNodeFlags.KeyedList).toBeTruthy();
+  expect(v1.prev).toBe(v2);
+  expect(v1.next).toBe(v2);
+  expect(v2.prev).toBe(v1);
+  expect(v2.next).toBeNull();
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {

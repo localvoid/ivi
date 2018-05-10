@@ -207,8 +207,8 @@ const MediaElements = [
 describe("src/index.ts", () => {
   test("text", () => {
     const text = h.t("abc");
-    expect((text._flags & VNodeFlags.Text) !== 0).toBe(true);
-    expect(text._children).toBe("abc");
+    expect((text.flags & VNodeFlags.Text) !== 0).toBe(true);
+    expect(text.children).toBe("abc");
   });
 
   describe("elements", () => {
@@ -217,8 +217,8 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement)) === 0) {
-            expect(n._tag).toBe(name);
+          if ((n.flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement)) === 0) {
+            expect(n.tag).toBe(name);
           }
         });
       }
@@ -229,7 +229,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory("abc");
-          expect(n._className).toBe("abc");
+          expect(n.className).toBe("abc");
         });
       }
     });
@@ -239,12 +239,12 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          if ((n._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
-            expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+          if ((n.flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
+            expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(true);
           } else if (name in VoidElements) {
-            expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+            expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(true);
           } else {
-            expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(false);
+            expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(false);
           }
         });
       }
@@ -255,7 +255,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          expect((n._flags & VNodeFlags.MediaElement) !== 0).toBe(true);
+          expect((n.flags & VNodeFlags.MediaElement) !== 0).toBe(true);
         });
       }
     });
@@ -265,9 +265,9 @@ describe("src/index.ts", () => {
         const factory = Elements[`input:${type}`];
         test(`input:${type}`, () => {
           const n = factory();
-          expect((n._flags & VNodeFlags.InputElement) !== 0).toBe(true);
-          expect((n._flags & VNodeFlags.VoidElement) !== 0).toBe(true);
-          expect(n._tag).toBe(type);
+          expect((n.flags & VNodeFlags.InputElement) !== 0).toBe(true);
+          expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+          expect(n.tag).toBe(type);
         });
       }
     });
@@ -277,16 +277,16 @@ describe("src/index.ts", () => {
         const factory = Elements[`button:${type}`];
         test(`button:${type}`, () => {
           const n = factory();
-          expect((n._flags & VNodeFlags.ButtonElement) !== 0).toBe(true);
-          expect(n._tag).toBe(type);
+          expect((n.flags & VNodeFlags.ButtonElement) !== 0).toBe(true);
+          expect(n.tag).toBe(type);
         });
       }
     });
 
     test("textarea", () => {
       const n = h.textarea();
-      expect((n._flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
-      expect(n._tag).toBe("textarea");
+      expect((n.flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
+      expect(n.tag).toBe("textarea");
     });
   });
 });

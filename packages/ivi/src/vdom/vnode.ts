@@ -20,23 +20,23 @@ export class VNode<P = any, N = Node> {
   /**
    * Flags, see `VNodeFlags` for details.
    */
-  _flags: VNodeFlags;
+  flags: VNodeFlags;
   /**
    * Circular link to previous node.
    */
-  _prev: VNode;
+  prev: VNode;
   /**
    * Next sibling node.
    */
-  _next: VNode | null;
+  next: VNode | null;
   /**
    * Children.
    */
-  _children: VNode | string | number | boolean | null;
+  children: VNode | string | number | boolean | null;
   /**
    * Tag property contains details about the type of the element.
    */
-  _tag:
+  tag:
     | string
     | VNode
     | StatefulComponent<any>
@@ -46,37 +46,37 @@ export class VNode<P = any, N = Node> {
   /**
    * Children syncing algorithm is using key property to match nodes. Key should be unique among its siblings.
    */
-  _key: any;
+  key: any;
   /**
    * Properties.
    */
-  _props: P | undefined;
+  props: P | undefined;
   /**
    * Reference to HTML node or Component instance.
    *
    * It will be available after virtual node is created or synced. Each time VNode is synced, reference will be
    * transferred from the old VNode to the new one.
    */
-  _instance: N | Component<any> | {} | null;
+  instance: N | Component<any> | {} | null;
   /**
    * Class name.
    */
-  _className: string | undefined;
+  className: string | undefined;
   /**
    * Style.
    */
-  _style: CSSStyleProps | null;
+  style: CSSStyleProps | null;
   /**
    * Events.
    */
-  _events: Array<EventHandler | null> | EventHandler | null;
+  events: Array<EventHandler | null> | EventHandler | null;
   /* tslint:disable:ban-types */
   /**
    * Factory function that was used to instantiate this node.
    *
    * It is used for debugging and testing purposes.
    */
-  _factory!: Function;
+  factory!: Function;
   /* tslint:enable:ban-types */
 
   constructor(
@@ -97,19 +97,19 @@ export class VNode<P = any, N = Node> {
       | boolean
       | null,
   ) {
-    this._flags = flags;
-    this._prev = this;
-    this._next = null;
-    this._children = children;
-    this._tag = tag;
-    this._key = 0;
-    this._props = props;
-    this._instance = null;
-    this._className = className;
-    this._style = null;
-    this._events = null;
+    this.flags = flags;
+    this.prev = this;
+    this.next = null;
+    this.children = children;
+    this.tag = tag;
+    this.key = 0;
+    this.props = props;
+    this.instance = null;
+    this.className = className;
+    this.style = null;
+    this.events = null;
     if (DEBUG) {
-      this._factory = NOOP;
+      this.factory = NOOP;
     }
   }
 
@@ -122,8 +122,8 @@ export class VNode<P = any, N = Node> {
    * @returns VNode
    */
   k(key: any): this {
-    this._flags |= VNodeFlags.Key;
-    this._key = key;
+    this.flags |= VNodeFlags.Key;
+    this.key = key;
     return this;
   }
 
@@ -135,7 +135,7 @@ export class VNode<P = any, N = Node> {
    */
   s<U extends CSSStyleProps>(style: U | null): this {
     if (DEBUG) {
-      if (!(this._flags & VNodeFlags.Element)) {
+      if (!(this.flags & VNodeFlags.Element)) {
         throw new Error("Failed to set style, style is available on element nodes only.");
       }
 
@@ -143,7 +143,7 @@ export class VNode<P = any, N = Node> {
         checkDOMStylesForTypos(style);
       }
     }
-    this._style = style;
+    this.style = style;
     return this;
   }
 
@@ -155,12 +155,12 @@ export class VNode<P = any, N = Node> {
    */
   e(events: Array<EventHandler | null> | EventHandler | null): this {
     if (DEBUG) {
-      if (!(this._flags & VNodeFlags.Element)) {
+      if (!(this.flags & VNodeFlags.Element)) {
         throw new Error("Failed to set events, events are available on element nodes only.");
       }
     }
-    this._flags |= VNodeFlags.ElementPropsEvents;
-    this._events = events;
+    this.flags |= VNodeFlags.ElementPropsEvents;
+    this.events = events;
     return this;
   }
 
@@ -172,19 +172,19 @@ export class VNode<P = any, N = Node> {
    */
   a(attrs: P | null): this {
     if (DEBUG) {
-      if (!(this._flags & VNodeFlags.Element)) {
+      if (!(this.flags & VNodeFlags.Element)) {
         throw new Error("Failed to set attrs, attrs are available on element nodes only.");
       }
 
       if (attrs) {
         checkDOMAttributesForTypos(attrs);
 
-        if (this._flags & VNodeFlags.SvgElement) {
-          checkDeprecatedDOMSVGAttributes(this._tag as string, attrs);
+        if (this.flags & VNodeFlags.SvgElement) {
+          checkDeprecatedDOMSVGAttributes(this.tag as string, attrs);
         }
       }
     }
-    this._props = attrs as P;
+    this.props = attrs as P;
     return this;
   }
 
@@ -199,27 +199,27 @@ export class VNode<P = any, N = Node> {
   c(...children: Array<VNode | string | number | null>): this;
   c(): this {
     if (DEBUG) {
-      if (this._flags & (VNodeFlags.ChildrenVNode | VNodeFlags.UnsafeHTML)) {
+      if (this.flags & (VNodeFlags.ChildrenVNode | VNodeFlags.UnsafeHTML)) {
         throw new Error("Failed to set children, VNode element is already having children.");
       }
-      if (!(this._flags & VNodeFlags.Element)) {
+      if (!(this.flags & VNodeFlags.Element)) {
         throw new Error("Failed to set children, children are available on element nodes only.");
       }
-      if (this._flags & VNodeFlags.InputElement) {
+      if (this.flags & VNodeFlags.InputElement) {
         throw new Error("Failed to set children, input elements can't have children.");
       }
-      if (this._flags & VNodeFlags.TextAreaElement) {
+      if (this.flags & VNodeFlags.TextAreaElement) {
         throw new Error("Failed to set children, textarea elements can't have children.");
       }
-      if (this._flags & VNodeFlags.MediaElement) {
+      if (this.flags & VNodeFlags.MediaElement) {
         throw new Error("Failed to set children, media elements can't have children.");
       }
-      if (this._flags & VNodeFlags.VoidElement) {
-        throw new Error(`Failed to set children, ${this._tag} elements can't have children.`);
+      if (this.flags & VNodeFlags.VoidElement) {
+        throw new Error(`Failed to set children, ${this.tag} elements can't have children.`);
       }
     }
 
-    const children = arguments;
+    const children: Array<VNode | string | number | null> = arguments as any;
     let first: VNode<any> | null = null;
     let prev: VNode<any> | null = null;
 
@@ -230,27 +230,27 @@ export class VNode<P = any, N = Node> {
         if (typeof n !== "object") {
           n = new VNode<null>(VNodeFlags.Text, null, null, void 0, n);
         }
-        const last = n._prev;
-        const flags = n._flags;
+        const last = n.prev;
+        const flags = n.flags;
         if (last === n) {
           if ((flags & VNodeFlags.Key) === 0) {
-            n._key = p;
+            n.key = p;
           }
         } else if ((flags & VNodeFlags.KeyedList) === 0) {
           let c: VNode | null = n;
           do {
-            if ((c!._flags & VNodeFlags.Key) === 0) {
-              c!._key = p;
+            if ((c!.flags & VNodeFlags.Key) === 0) {
+              c!.key = p;
             }
             ++p;
-            c = c!._next;
+            c = c!.next;
           } while (c !== null);
           --p;
         }
 
         if (prev !== null) {
-          n._prev = prev;
-          prev._next = n;
+          n.prev = prev;
+          prev.next = n;
         } else {
           first = n;
         }
@@ -258,9 +258,9 @@ export class VNode<P = any, N = Node> {
       }
     }
     if (first !== null) {
-      first._prev = prev!;
-      this._flags |= VNodeFlags.ChildrenVNode;
-      this._children = first;
+      first.prev = prev!;
+      this.flags |= VNodeFlags.ChildrenVNode;
+      this.children = first;
       if (DEBUG) {
         checkUniqueKeys(first);
       }
@@ -277,27 +277,27 @@ export class VNode<P = any, N = Node> {
    */
   unsafeHTML(html: string | null): this {
     if (DEBUG) {
-      if (this._flags & VNodeFlags.ChildrenVNode) {
+      if (this.flags & VNodeFlags.ChildrenVNode) {
         throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
       }
-      if (!(this._flags & VNodeFlags.Element)) {
+      if (!(this.flags & VNodeFlags.Element)) {
         throw new Error("Failed to set unsafeHTML, unsafeHTML is available on element nodes only.");
       }
-      if (this._flags & VNodeFlags.InputElement) {
+      if (this.flags & VNodeFlags.InputElement) {
         throw new Error("Failed to set unsafeHTML, input elements can't have innerHTML.");
       }
-      if (this._flags & VNodeFlags.TextAreaElement) {
+      if (this.flags & VNodeFlags.TextAreaElement) {
         throw new Error("Failed to set unsafeHTML, textarea elements can't have innerHTML.");
       }
-      if (this._flags & VNodeFlags.MediaElement) {
+      if (this.flags & VNodeFlags.MediaElement) {
         throw new Error("Failed to set unsafeHTML, media elements can't have children.");
       }
-      if (this._flags & VNodeFlags.VoidElement) {
-        throw new Error(`Failed to set unsafeHTML, ${this._tag} elements can't have children.`);
+      if (this.flags & VNodeFlags.VoidElement) {
+        throw new Error(`Failed to set unsafeHTML, ${this.tag} elements can't have children.`);
       }
     }
-    this._flags |= VNodeFlags.UnsafeHTML;
-    this._children = html;
+    this.flags |= VNodeFlags.UnsafeHTML;
+    this.children = html;
     return this;
   }
 
@@ -309,23 +309,23 @@ export class VNode<P = any, N = Node> {
    */
   value(value: string | boolean | null): this {
     if (DEBUG) {
-      if (!(this._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
+      if (!(this.flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
         throw new Error("Failed to set value, value is available on input and textarea elements only.");
       }
       if (typeof value === "string") {
-        if (isInputTypeHasCheckedProperty(this._tag as string)) {
-          throw new Error(`Failed to set value, input elements with type ${this._tag} doesn't support `
+        if (isInputTypeHasCheckedProperty(this.tag as string)) {
+          throw new Error(`Failed to set value, input elements with type ${this.tag} doesn't support `
             + `value assignments.`);
         }
       }
       if (typeof value === "boolean") {
-        if (!isInputTypeHasCheckedProperty(this._tag as string)) {
-          throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
+        if (!isInputTypeHasCheckedProperty(this.tag as string)) {
+          throw new Error(`Failed to set checked, input elements with type ${this.tag} doesn't support `
             + `checked value.`);
         }
       }
     }
-    this._children = value;
+    this.children = value;
     return this;
   }
 }
@@ -339,10 +339,10 @@ export type Children = Array<VNode[] | VNode | string | number | null>;
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
 export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T | null {
-  if ((node._flags & VNodeFlags.Component) !== 0) {
-    return getDOMInstanceFromVNode<T>(node._children as VNode<any, T>);
+  if ((node.flags & VNodeFlags.Component) !== 0) {
+    return getDOMInstanceFromVNode<T>(node.children as VNode<any, T>);
   }
-  return node._instance as T;
+  return node.instance as T;
 }
 
 /**
@@ -353,11 +353,11 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T 
  */
 export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode): T | null {
   if (DEBUG) {
-    if ((node._flags & VNodeFlags.Component) === 0) {
+    if ((node.flags & VNodeFlags.Component) === 0) {
       throw new Error("Failed to get component instance: VNode should represent a Component.");
     }
   }
-  return node._instance as T | null;
+  return node.instance as T | null;
 }
 
 /**
@@ -368,11 +368,11 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
  */
 export function autofocus<N extends VNode>(node: N): N {
   if (DEBUG) {
-    if (!(node._flags & (VNodeFlags.Element | VNodeFlags.Component))) {
+    if (!(node.flags & (VNodeFlags.Element | VNodeFlags.Component))) {
       throw new Error("Failed to set autofocus, autofocus is available on element and component nodes only.");
     }
   }
-  node._flags |= VNodeFlags.Autofocus;
+  node.flags |= VNodeFlags.Autofocus;
   return node;
 }
 
@@ -383,7 +383,7 @@ export function autofocus<N extends VNode>(node: N): N {
  * @returns VNode.
  */
 export function stopDirtyChecking<N extends VNode>(node: N): N {
-  node._flags |= VNodeFlags.StopDirtyChecking;
+  node.flags |= VNodeFlags.StopDirtyChecking;
   return node;
 }
 
@@ -391,15 +391,15 @@ function checkUniqueKeys(children: VNode): void {
   let keys: Set<any> | undefined;
   let node: VNode<any> | null = children;
   while (node !== null) {
-    if (node._flags & VNodeFlags.Key) {
+    if (node.flags & VNodeFlags.Key) {
       if (keys === undefined) {
         keys = new Set<any>();
-      } else if (keys.has(node._key)) {
-        throw new Error(`Failed to set children, invalid children list, key: "${node._key}" ` +
+      } else if (keys.has(node.key)) {
+        throw new Error(`Failed to set children, invalid children list, key: "${node.key}" ` +
           `is used multiple times.`);
       }
-      keys.add(node._key);
+      keys.add(node.key);
     }
-    node = node._next;
+    node = node.next;
   }
 }

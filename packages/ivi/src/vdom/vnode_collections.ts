@@ -3,7 +3,7 @@ import { VNode } from "./vnode";
 
 export function children(...args: Array<VNode | string | number | null>): VNode | null;
 export function children(): VNode | null {
-  const args = arguments;
+  const args: Array<VNode | string | number | null> = arguments as any;
   let first: VNode<any> | null = null;
   let prev: VNode<any> | null = null;
 
@@ -14,10 +14,10 @@ export function children(): VNode | null {
       if (typeof n !== "object") {
         n = new VNode<null>(VNodeFlags.Text, null, null, void 0, n);
       }
-      const last = n._prev;
+      const last = n.prev;
       if (prev !== null) {
-        n._prev = prev;
-        prev._next = n;
+        n.prev = prev;
+        prev.next = n;
       } else {
         first = n;
       }
@@ -25,7 +25,7 @@ export function children(): VNode | null {
     }
   }
   if (first !== null) {
-    first._prev = prev!;
+    first.prev = prev!;
   }
 
   return first;
@@ -46,16 +46,16 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
       const n = fn(array[i], i);
       if (n !== null) {
         if (DEBUG) {
-          if ((n._flags & VNodeFlags.Key) === 0) {
+          if ((n.flags & VNodeFlags.Key) === 0) {
             throw new Error(`VNodes created with a map() function should have an explicit key`);
           }
-          if (n._prev !== n) {
+          if (n.prev !== n) {
             throw new Error(`VNodes created with a map() function should be a singular nodes`);
           }
         }
         if (prev !== null) {
-          n._prev = prev;
-          prev._next = n;
+          n.prev = prev;
+          prev.next = n;
         } else {
           first = n;
         }
@@ -63,8 +63,8 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
       }
     }
     if (first !== null) {
-      first._prev = prev!;
-      first._flags |= VNodeFlags.KeyedList;
+      first.prev = prev!;
+      first.flags |= VNodeFlags.KeyedList;
       return first;
     }
   }
@@ -88,16 +88,16 @@ export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNo
       const n = fn(start++);
       if (n !== null) {
         if (DEBUG) {
-          if ((n._flags & VNodeFlags.Key) === 0) {
+          if ((n.flags & VNodeFlags.Key) === 0) {
             throw new Error(`VNodes created with a mapRange() function should have an explicit key`);
           }
-          if (n._prev !== n) {
+          if (n.prev !== n) {
             throw new Error(`VNodes created with a mapRange() function should be a singular nodes`);
           }
         }
         if (prev !== null) {
-          n._prev = prev;
-          prev._next = n;
+          n.prev = prev;
+          prev.next = n;
         } else {
           first = n;
         }
@@ -105,8 +105,8 @@ export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNo
       }
     } while (start < length);
     if (first !== null) {
-      first._prev = prev!;
-      first._flags |= VNodeFlags.KeyedList;
+      first.prev = prev!;
+      first.flags |= VNodeFlags.KeyedList;
       return first;
     }
   }

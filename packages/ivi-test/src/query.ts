@@ -205,7 +205,7 @@ function createVNodeInputElementMatcherFactory(type: string, className?: string)
 
 function componentMatcherFactory(component: StatefulComponent<any>): VNodeComponentMatcher {
   return new VNodeComponentMatcher(function (n: VNodeWrapper) {
-    return n.vnode._tag === component;
+    return n.vnode.tag === component;
   });
 }
 

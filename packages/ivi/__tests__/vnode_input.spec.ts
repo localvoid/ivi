@@ -10,17 +10,17 @@ test(`assigning unsafeHTML should raise an exception`, () => {
 
 test(`value`, () => {
   const e = h.input().value("abc");
-  expect(e._children).toBe("abc");
+  expect(e.children).toBe("abc");
 });
 
 test(`checked=true`, () => {
   const e = h.inputCheckbox().value(true);
-  expect(e._children).toBe(true);
+  expect(e.children).toBe(true);
 });
 
 test(`checked=false`, () => {
   const e = h.inputCheckbox().value(false);
-  expect(e._children).toBe(false);
+  expect(e.children).toBe(false);
 });
 
 test(`input text should raise an exception when checked is assigned`, () => {
