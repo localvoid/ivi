@@ -1,5 +1,5 @@
 /**
- * Is tag valid.
+ * isValidTag returns true when tag is valid.
  *
  * @param tag Tag name.
  * @returns `true` when tag name is valid.
@@ -12,7 +12,7 @@ export function isValidTag(tag: string): boolean {
 }
 
 /**
- * Is input type has checked property.
+ * isInputTypeHasCheckedProperty returns true when input element has a `ckecked` property.
  *
  * @param type Input type.
  * @returns `true` if Input type has `checked` property.

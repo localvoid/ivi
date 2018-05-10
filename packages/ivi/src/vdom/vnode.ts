@@ -22,7 +22,7 @@ export class VNode<P = any, N = Node> {
    */
   flags: VNodeFlags;
   /**
-   * Circular link to previous node.
+   * Circular link to previous sibling node.
    */
   prev: VNode;
   /**
@@ -70,14 +70,12 @@ export class VNode<P = any, N = Node> {
    * Events.
    */
   events: Array<EventHandler | null> | EventHandler | null;
-  /* tslint:disable:ban-types */
   /**
    * Factory function that was used to instantiate this node.
    *
    * It is used for debugging and testing purposes.
    */
   factory!: Function;
-  /* tslint:enable:ban-types */
 
   constructor(
     flags: number,
@@ -387,6 +385,11 @@ export function stopDirtyChecking<N extends VNode>(node: N): N {
   return node;
 }
 
+/**
+ * checkUniqueKeys checks that all nodes have unique keys.
+ *
+ * @param children Children collection.
+ */
 function checkUniqueKeys(children: VNode): void {
   let keys: Set<any> | undefined;
   let node: VNode<any> | null = children;
@@ -395,8 +398,7 @@ function checkUniqueKeys(children: VNode): void {
       if (keys === undefined) {
         keys = new Set<any>();
       } else if (keys.has(node.key)) {
-        throw new Error(`Failed to set children, invalid children list, key: "${node.key}" ` +
-          `is used multiple times.`);
+        throw new Error(`Failed to set children, invalid children list, key: "${node.key}" is used multiple times.`);
       }
       keys.add(node.key);
     }
