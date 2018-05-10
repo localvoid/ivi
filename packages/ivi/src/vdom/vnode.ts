@@ -302,42 +302,30 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * value assigns value property for HTMLInputElement and HTMLTextAreaElement elements.
+   * value assigns value for an HTMLInputElement and HTMLTextAreaElement elements.
    *
-   * @param text Text value.
+   * @param value input value.
    * @returns VNode
    */
-  value(value: string | null): this {
+  value(value: string | boolean | null): this {
     if (DEBUG) {
       if (!(this._flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
         throw new Error("Failed to set value, value is available on input and textarea elements only.");
       }
-      if (isInputTypeHasCheckedProperty(this._tag as string)) {
-        throw new Error(`Failed to set value, input elements with type ${this._tag} doesn't support `
-          + `value assignments.`);
+      if (typeof value === "string") {
+        if (isInputTypeHasCheckedProperty(this._tag as string)) {
+          throw new Error(`Failed to set value, input elements with type ${this._tag} doesn't support `
+            + `value assignments.`);
+        }
+      }
+      if (typeof value === "boolean") {
+        if (!isInputTypeHasCheckedProperty(this._tag as string)) {
+          throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
+            + `checked value.`);
+        }
       }
     }
     this._children = value;
-    return this;
-  }
-
-  /**
-   * checked assigns checked property for HTMLInputElement.
-   *
-   * @param checked Checked value.
-   * @returns VNode
-   */
-  checked(checked: boolean | null): this {
-    if (DEBUG) {
-      if (!(this._flags & VNodeFlags.InputElement)) {
-        throw new Error("Failed to set checked, checked is available on input elements only.");
-      }
-      if (!isInputTypeHasCheckedProperty(this._tag as string)) {
-        throw new Error(`Failed to set checked, input elements with type ${this._tag} doesn't support `
-          + `checked value.`);
-      }
-    }
-    this._children = checked;
     return this;
   }
 }

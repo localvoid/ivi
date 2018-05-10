@@ -29,7 +29,7 @@ test(`<input type="checkbox">`, () => {
 
 test(`<input type="checkbox" checked="false">`, () => {
   startRender<HTMLInputElement>((r) => {
-    const n = r(h.inputCheckbox().checked(false));
+    const n = r(h.inputCheckbox().value(false));
 
     expect(n.checked).toBe(false);
   });
@@ -37,7 +37,7 @@ test(`<input type="checkbox" checked="false">`, () => {
 
 test(`<input type="checkbox" checked="true">`, () => {
   startRender<HTMLInputElement>((r) => {
-    const n = r(h.inputCheckbox().checked(true));
+    const n = r(h.inputCheckbox().value(true));
 
     expect(n.checked).toBe(true);
   });

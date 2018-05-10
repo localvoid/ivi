@@ -90,7 +90,7 @@ test(`assigning input value to div should raise an exception`, () => {
 });
 
 test(`assigning checked value to div should raise an exception`, () => {
-  expect(() => h.div().checked(true)).toThrow(Error);
+  expect(() => h.div().value(true)).toThrow(Error);
 });
 
 test(`autofocus`, () => {

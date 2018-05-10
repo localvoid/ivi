@@ -53,7 +53,7 @@ test(`<input type="checkbox"> => <input type="checkbox" checked=true>`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.inputCheckbox());
-      const n = r(h.inputCheckbox().checked(true));
+      const n = r(h.inputCheckbox().value(true));
 
       expect(n).toMatchSnapshot();
       expect(c).toMatchSnapshot();
@@ -64,8 +64,8 @@ test(`<input type="checkbox"> => <input type="checkbox" checked=true>`, () => {
 test(`<input type="checkbox" checked=true> => <input type="checkbox" checked=false>`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
-      r(h.inputCheckbox().checked(true));
-      const n = r(h.inputCheckbox().checked(false));
+      r(h.inputCheckbox().value(true));
+      const n = r(h.inputCheckbox().value(false));
 
       expect(n).toMatchSnapshot();
       expect(c).toMatchSnapshot();
@@ -76,7 +76,7 @@ test(`<input type="checkbox" checked=true> => <input type="checkbox" checked=fal
 test(`<input type="checkbox" checked=true> => <input type="checkbox">`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
-      r(h.inputCheckbox().checked(true));
+      r(h.inputCheckbox().value(true));
       const n = r(h.inputCheckbox());
 
       expect(n).toMatchSnapshot();

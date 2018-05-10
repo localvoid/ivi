@@ -141,7 +141,7 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<input type='checkbox' checked='true'>", () => {
-      expect(render(h.inputCheckbox().checked(true)).toSnapshot()).toMatchSnapshot();
+      expect(render(h.inputCheckbox().value(true)).toSnapshot()).toMatchSnapshot();
     });
 
     test("<textarea>", () => {

@@ -48,7 +48,7 @@ test(`assigning input value should raise an exception`, () => {
 });
 
 test(`assigning checked value should raise an exception`, () => {
-  expect(() => h.t("abc").checked(true)).toThrow(Error);
+  expect(() => h.t("abc").value(true)).toThrow(Error);
 });
 
 test(`assigning autofocus should raise an exception`, () => {

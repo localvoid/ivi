@@ -24,7 +24,7 @@ test(`assigning input value should raise an exception`, () => {
 });
 
 test(`assigning input checked value should raise an exception`, () => {
-  expect(() => Empty().checked(true)).toThrow(Error);
+  expect(() => Empty().value(true)).toThrow(Error);
 });
 
 test(`assigning autofocus should not raise an exception`, () => {

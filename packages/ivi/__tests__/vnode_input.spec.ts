@@ -14,17 +14,17 @@ test(`value`, () => {
 });
 
 test(`checked=true`, () => {
-  const e = h.inputCheckbox().checked(true);
+  const e = h.inputCheckbox().value(true);
   expect(e._children).toBe(true);
 });
 
 test(`checked=false`, () => {
-  const e = h.inputCheckbox().checked(false);
+  const e = h.inputCheckbox().value(false);
   expect(e._children).toBe(false);
 });
 
 test(`input text should raise an exception when checked is assigned`, () => {
-  expect(() => h.input().checked(true)).toThrow(Error);
+  expect(() => h.input().value(true)).toThrow(Error);
 });
 
 test(`input checkbox should raise an exception when value is assigned`, () => {
