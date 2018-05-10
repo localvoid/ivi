@@ -2,6 +2,7 @@ import { USER_AGENT, UserAgentFlags, NOOP, unorderedArrayDelete } from "ivi-core
 import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
+import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
 
 /**
  * Root.
@@ -84,6 +85,12 @@ function _update() {
         root.invalidated = false;
       } else if (currentVNode) {
         dirtyCheck(container, currentVNode, EMPTY_CONTEXT, false);
+      }
+
+      if (DEBUG) {
+        if (root.currentVNode) {
+          checkNestingViolations(container, root.currentVNode);
+        }
       }
     }
   }

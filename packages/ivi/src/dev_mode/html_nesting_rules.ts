@@ -1,3 +1,6 @@
+import { VNodeFlags } from "../vdom/flags";
+import { VNode } from "../vdom/vnode";
+
 /**
  * HTML nesting rules.
  *
@@ -109,7 +112,7 @@ function ancestorFlagsToTagNames(aFlags: AncestorFlags): string[] {
  * @param element
  * @returns Ancestor Flags.
  */
-function ancestorFlags(element: Element | null): AncestorFlags {
+function calculateAncestorFlags(element: Element | null): AncestorFlags {
   if (DEBUG) {
     let result = 0;
     while (element !== null && (element !== document.body)) {
@@ -190,104 +193,52 @@ const invalidAncestorList: { [child: string]: AncestorFlags } = {
     AncestorFlags.OptGroup | AncestorFlags.Paragraph | AncestorFlags.RubyAnnotation,
 };
 
-let _parentTagName: string | undefined;
-let _ancestorFlags: AncestorFlags = 0;
-let _childTagName: string | undefined;
+function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorFlags): void {
+  const flags = vnode.flags;
 
-/**
- * Set initial nesting state.
- *
- * @param parentTagName
- * @param ancestorFlags
- */
-export function setInitialNestingState(parent: Element): void {
-  if (DEBUG) {
-    if ((parent as Element).tagName) {
-      _parentTagName = (parent as Element).tagName.toLowerCase();
-      _ancestorFlags = ancestorFlags(parent as Element);
-    } else {
-      _parentTagName = "";
-      _ancestorFlags = 0;
+  if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
+    const tagName = ((flags & VNodeFlags.Text) !== 0) ? "$t" : vnode.tag as string;
+
+    const validChildren = validChildList![parentTagName];
+    if (validChildren) {
+      for (const validTagName of validChildren) {
+        if (tagName === validTagName) {
+          break;
+        }
+        throw Error(`HTML child nesting rule violation: <${parentTagName}> element can contain ` +
+          `[${validChildren.join(", ")}] elements, but found <${tagName}> child.\n`);
+      }
     }
-  }
-}
 
-/**
- * Push nesting state.
- *
- * @param childTagName
- */
-export function pushNestingState(childTagName: string): void {
-  if (DEBUG) {
-    if (_parentTagName) {
-      _ancestorFlags = _ancestorFlags | AncestorFlagsByTagName[_parentTagName];
+    if (tagName !== "$t") {
+      const invalidAncestorFlags = invalidAncestorList[tagName];
+      if (invalidAncestorFlags !== undefined && ((ancestorFlags & invalidAncestorFlags) !== 0)) {
+        throw Error(`HTML child nesting rule violation: <${tagName}> element has invalid ` +
+          `ancestor [${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n`);
+      }
     }
-    _parentTagName = _childTagName;
-    _childTagName = childTagName;
+
+    ancestorFlags |= AncestorFlagsByTagName[parentTagName];
+
+    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+      let child: VNode | null = vnode.children as VNode;
+      do {
+        visitNode(child!, parentTagName, ancestorFlags);
+        child = child.next;
+      } while (child !== null);
+    }
+  } else if ((flags & VNodeFlags.Component) !== 0) {
+    visitNode(vnode.children as VNode, parentTagName, ancestorFlags);
   }
 }
 
 /**
- * We aren't using push/pop API to improve performance, we just store all this data on the stack and restore it when
- * unwinding stack.
- */
-export function restoreNestingState(parentTagName: string | undefined, aFlags: AncestorFlags): void {
-  if (DEBUG) {
-    _parentTagName = parentTagName;
-    _ancestorFlags = aFlags;
-    _childTagName = undefined;
-  }
-}
-
-/**
- * Get current parent tag name.
- */
-export function nestingStateParentTagName(): string | undefined {
-  if (DEBUG) {
-    return _parentTagName;
-  }
-  return;
-}
-
-/**
- * Get current ancestor flags.
- */
-export function nestingStateAncestorFlags(): AncestorFlags {
-  if (DEBUG) {
-    return _ancestorFlags;
-  }
-  return 0;
-}
-
-const REPORT_MSG = "If you are certain that you aren't violating any HTML nesting rules, please submit an issue, and " +
-  "temporarily disable HTML child nesting validation with `setDevModeFlags(DevModeFlags.DisableNestingValidation)`.";
-
-/**
- * Check nesting violation.
+ * checkNestingViolations goes through virtual dom tree and checks for HTML nesting rules violations.
  *
  * @throws Error when child nesting rules are violated.
  */
-export function checkNestingViolation(): void {
-  if (DEBUG) {
-    if (_parentTagName !== undefined) {
-      const validChildren = validChildList![_parentTagName];
-      if (validChildren !== undefined) {
-        for (const child of validChildren) {
-          if (_childTagName === child) {
-            return;
-          }
-        }
-        throw Error(`HTML child nesting rule violation: <${_parentTagName}> element can contain ` +
-          `[${validChildren.join(", ")}] elements, but found <${_childTagName}> child.\n` + REPORT_MSG);
-      }
-
-      if (_childTagName !== undefined && _childTagName !== "$t") {
-        const invalidAncestorFlags = invalidAncestorList[_childTagName];
-        if (invalidAncestorFlags !== undefined && ((_ancestorFlags & invalidAncestorFlags) !== 0)) {
-          throw Error(`HTML child nesting rule violation: <${_childTagName}> element has invalid ` +
-            `ancestor [${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n` + REPORT_MSG);
-        }
-      }
-    }
-  }
+export function checkNestingViolations(parent: Element, root: VNode): void {
+  const parentTagName = (parent as Element).tagName.toLowerCase();
+  const ancestorFlags = calculateAncestorFlags(parent as Element);
+  visitNode(root, parentTagName, ancestorFlags);
 }
