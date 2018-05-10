@@ -6,7 +6,7 @@
  *   https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU
  */
 
-import { FEATURES, FeatureFlags, catchError } from "ivi-core";
+import { TOUCH_EVENTS, catchError } from "ivi-core";
 import {
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventSource, EventHandler, dispatchEvent,
 } from "ivi-events";
@@ -39,7 +39,7 @@ export class GestureEventSource {
     };
     this.dependencies = 0;
     this.pointers = [];
-    this.listener = (FEATURES & FeatureFlags.TouchEvents) ?
+    this.listener = TOUCH_EVENTS ?
       createTouchEventListener(this.pointers, this.dispatch) :
       createMouseEventListener(this.dispatch);
   }
