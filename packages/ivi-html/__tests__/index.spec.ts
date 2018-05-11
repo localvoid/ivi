@@ -59,6 +59,7 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "iframe": h.iframe,
   "img": h.img,
   "ins": h.ins,
+  "input": h.input,
   "kbd": h.kbd,
   "label": h.label,
   "legend": h.legend,
@@ -118,34 +119,6 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "ul": h.ul,
   "wbr": h.wbr,
   "xmp": h.xmp,
-  // Input Elements
-  "input:": h.input,
-  "input:button": h.inputButton,
-  "input:checkbox": h.inputCheckbox,
-  "input:color": h.inputColor,
-  "input:date": h.inputDate,
-  "input:datetime": h.inputDatetime,
-  "input:datetime-local": h.inputDatetimeLocal,
-  "input:email": h.inputEmail,
-  "input:file": h.inputFile,
-  "input:hidden": h.inputHidden,
-  "input:image": h.inputImage,
-  "input:month": h.inputMonth,
-  "input:number": h.inputNumber,
-  "input:password": h.inputPassword,
-  "input:radio": h.inputRadio,
-  "input:range": h.inputRange,
-  "input:reset": h.inputReset,
-  "input:search": h.inputSearch,
-  "input:submit": h.inputSubmit,
-  "input:tel": h.inputTel,
-  "input:time": h.inputTime,
-  "input:url": h.inputUrl,
-  "input:week": h.inputWeek,
-  // Button Elements
-  "button:": h.buttonSubmit,
-  "button:button": h.button,
-  "button:reset": h.buttonReset,
   // Media Elements
   "audio": h.audio,
   "video": h.video,
@@ -167,38 +140,6 @@ const VoidElements = {
   "wbr": 1,
 };
 
-const InputTypes = [
-  "",
-  "button",
-  "checkbox",
-  "color",
-  "date",
-  "datetime",
-  "datetime-local",
-  "email",
-  "file",
-  "hidden",
-  "image",
-  "month",
-  "number",
-  "password",
-  "radio",
-  "range",
-  "reset",
-  "search",
-  "submit",
-  "tel",
-  "time",
-  "url",
-  "week",
-];
-
-const ButtonTypes = [
-  "",
-  "button",
-  "reset",
-];
-
 const MediaElements = [
   "audio",
   "video",
@@ -217,9 +158,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          if ((n.flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement)) === 0) {
-            expect(n.tag).toBe(name);
-          }
+          expect(n.tag).toBe(name);
         });
       }
     });
@@ -260,33 +199,16 @@ describe("src/index.ts", () => {
       }
     });
 
-    describe("input elements", () => {
-      for (const type of InputTypes) {
-        const factory = Elements[`input:${type}`];
-        test(`input:${type}`, () => {
-          const n = factory();
-          expect((n.flags & VNodeFlags.InputElement) !== 0).toBe(true);
-          expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(true);
-          expect(n.tag).toBe(type);
-        });
-      }
-    });
-
-    describe("button elements", () => {
-      for (const type of ButtonTypes) {
-        const factory = Elements[`button:${type}`];
-        test(`button:${type}`, () => {
-          const n = factory();
-          expect((n.flags & VNodeFlags.ButtonElement) !== 0).toBe(true);
-          expect(n.tag).toBe(type);
-        });
-      }
-    });
-
     test("textarea", () => {
       const n = h.textarea();
       expect((n.flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
       expect(n.tag).toBe("textarea");
+    });
+
+    test("input", () => {
+      const n = h.input();
+      expect((n.flags & VNodeFlags.InputElement) !== 0).toBe(true);
+      expect(n.tag).toBe("input");
     });
   });
 });

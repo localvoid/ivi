@@ -10,16 +10,3 @@ export function isValidTag(tag: string): boolean {
   }
   return true;
 }
-
-/**
- * isInputTypeHasCheckedProperty returns true when input element has a `ckecked` property.
- *
- * @param type Input type.
- * @returns `true` if Input type has `checked` property.
- */
-export function isInputTypeHasCheckedProperty(type: string): boolean {
-  if (type === "checkbox" || type === "radio") {
-    return true;
-  }
-  return false;
-}

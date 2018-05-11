@@ -33,136 +33,110 @@ const enum TagId {
   Blockquote = 13,
   Body = 14,
   Br = 15,
-  Canvas = 16,
-  Caption = 17,
-  Center = 18,
-  Cite = 19,
-  Code = 20,
-  Col = 21,
-  Colgroup = 22,
-  Data = 23,
-  Datalist = 24,
-  Dd = 25,
-  Del = 26,
-  Dfn = 27,
-  Dir = 28,
-  Div = 29,
-  Dl = 30,
-  Dt = 31,
-  Em = 32,
-  Embed = 33,
-  Fieldset = 34,
-  Figcaption = 35,
-  Figure = 36,
-  Font = 37,
-  Footer = 38,
-  Form = 39,
-  Frame = 40,
-  Frameset = 41,
-  H1 = 42,
-  H2 = 43,
-  H3 = 44,
-  H4 = 45,
-  H5 = 46,
-  H6 = 47,
-  Head = 48,
-  Header = 49,
-  Hgroup = 50,
-  Hr = 51,
-  Html = 52,
-  I = 53,
-  Iframe = 54,
-  Img = 55,
-  Ins = 56,
-  Kbd = 57,
-  Label = 58,
-  Legend = 59,
-  Li = 60,
-  Link = 61,
-  Listing = 62,
-  Main = 63,
-  Map = 64,
-  Mark = 65,
-  Menu = 66,
-  Meta = 67,
-  Meter = 68,
-  Nav = 69,
-  Nobr = 70,
-  Noframes = 71,
-  Noscript = 72,
-  Object = 73,
-  Ol = 74,
-  Optgroup = 75,
-  Option = 76,
-  P = 77,
-  Param = 78,
-  Picture = 79,
-  Plaintext = 80,
-  Pre = 81,
-  Progress = 82,
-  Q = 83,
-  Rt = 84,
-  Ruby = 85,
-  S = 86,
-  Samp = 87,
-  Script = 88,
-  Section = 89,
-  Select = 90,
-  Small = 91,
-  Source = 92,
-  Span = 93,
-  Strike = 94,
-  Strong = 95,
-  Style = 96,
-  Sub = 97,
-  Sup = 98,
-  Table = 99,
-  Tbody = 100,
-  Td = 101,
-  Template = 102,
-  Textarea = 103,
-  Tfoot = 104,
-  Th = 105,
-  Thead = 106,
-  Time = 107,
-  Title = 108,
-  Tr = 109,
-  Track = 110,
-  Tt = 111,
-  U = 112,
-  Ul = 113,
-  Wbr = 114,
-  Xmp = 115,
-  Audio = 116,
-  Video = 117,
-  // Input Elements
-  InputButton = 200,
-  InputCheckbox = 201,
-  InputColor = 202,
-  InputDate = 203,
-  InputDatetime = 204,
-  InputDatetimeLocal = 205,
-  InputEmail = 206,
-  InputFile = 207,
-  InputHidden = 208,
-  InputImage = 209,
-  InputMonth = 210,
-  InputNumber = 211,
-  InputPassword = 212,
-  InputRadio = 213,
-  InputRange = 214,
-  InputReset = 215,
-  InputSearch = 216,
-  InputSubmit = 217,
-  InputTel = 218,
-  Input = 219,
-  InputTime = 220,
-  InputUrl = 221,
-  InputWeek = 222,
-  // Button Elements
-  Button = 230,
-  ButtonSubmit = 231,
-  ButtonReset = 232,
+  Button = 16,
+  Canvas = 17,
+  Caption = 18,
+  Center = 19,
+  Cite = 20,
+  Code = 21,
+  Col = 22,
+  Colgroup = 23,
+  Data = 24,
+  Datalist = 25,
+  Dd = 26,
+  Del = 27,
+  Dfn = 28,
+  Dir = 29,
+  Div = 30,
+  Dl = 31,
+  Dt = 32,
+  Em = 33,
+  Embed = 34,
+  Fieldset = 35,
+  Figcaption = 36,
+  Figure = 37,
+  Font = 38,
+  Footer = 39,
+  Form = 40,
+  Frame = 41,
+  Frameset = 42,
+  H1 = 43,
+  H2 = 44,
+  H3 = 45,
+  H4 = 46,
+  H5 = 47,
+  H6 = 48,
+  Head = 49,
+  Header = 50,
+  Hgroup = 51,
+  Hr = 52,
+  Html = 53,
+  I = 54,
+  Iframe = 55,
+  Img = 56,
+  Input = 57,
+  Ins = 58,
+  Kbd = 59,
+  Label = 60,
+  Legend = 61,
+  Li = 62,
+  Link = 63,
+  Listing = 64,
+  Main = 65,
+  Map = 66,
+  Mark = 67,
+  Menu = 68,
+  Meta = 69,
+  Meter = 70,
+  Nav = 71,
+  Nobr = 72,
+  Noframes = 73,
+  Noscript = 74,
+  Object = 75,
+  Ol = 76,
+  Optgroup = 77,
+  Option = 78,
+  P = 79,
+  Param = 80,
+  Picture = 81,
+  Plaintext = 82,
+  Pre = 83,
+  Progress = 84,
+  Q = 85,
+  Rt = 86,
+  Ruby = 87,
+  S = 88,
+  Samp = 89,
+  Script = 90,
+  Section = 91,
+  Select = 92,
+  Small = 93,
+  Source = 94,
+  Span = 95,
+  Strike = 96,
+  Strong = 97,
+  Style = 98,
+  Sub = 99,
+  Sup = 100,
+  Table = 101,
+  Tbody = 102,
+  Td = 103,
+  Template = 104,
+  Textarea = 105,
+  Tfoot = 106,
+  Th = 107,
+  Thead = 108,
+  Time = 109,
+  Title = 110,
+  Tr = 111,
+  Track = 112,
+  Tt = 113,
+  U = 114,
+  Ul = 115,
+  Wbr = 116,
+  Xmp = 117,
+  Audio = 118,
+  Video = 119,
 }
 
 /**
@@ -313,26 +287,8 @@ export function br(className?: string): VNode<HTMLBRElementProps | null, HTMLBRE
 }
 export function button(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.ButtonElement | (TagId.Button << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Button << VNodeFlags.ElementIdOffset),
     "button",
-    null,
-    className,
-    null,
-  );
-}
-export function buttonSubmit(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.ButtonElement | (TagId.ButtonSubmit << VNodeFlags.ElementIdOffset),
-    "",
-    null,
-    className,
-    null,
-  );
-}
-export function buttonReset(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.ButtonElement | (TagId.ButtonReset << VNodeFlags.ElementIdOffset),
-    "reset",
     null,
     className,
     null,
@@ -1230,7 +1186,6 @@ export function xmp(className?: string): VNode<HTMLPreElementProps | null, HTMLP
   );
 }
 
-/* tslint:disable:max-line-length */
 // Textarea / Input Elements:
 export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null, HTMLTextAreaElement> {
   return new VNode(
@@ -1244,205 +1199,7 @@ export function textarea(className?: string): VNode<HTMLTextAreaElementProps | n
 export function input(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.Input << VNodeFlags.ElementIdOffset),
-    "",
-    null,
-    className,
-    null,
-  );
-}
-export function inputButton(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputButton << VNodeFlags.ElementIdOffset),
-    "button",
-    null,
-    className,
-    null,
-  );
-}
-export function inputCheckbox(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputCheckbox << VNodeFlags.ElementIdOffset),
-    "checkbox",
-    null,
-    className,
-    null,
-  );
-}
-export function inputColor(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputColor << VNodeFlags.ElementIdOffset),
-    "color",
-    null,
-    className,
-    null,
-  );
-}
-export function inputDate(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputDate << VNodeFlags.ElementIdOffset),
-    "date",
-    null,
-    className,
-    null,
-  );
-}
-export function inputDatetime(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputDatetime << VNodeFlags.ElementIdOffset),
-    "datetime",
-    null,
-    className,
-    null,
-  );
-}
-export function inputDatetimeLocal(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputDatetimeLocal << VNodeFlags.ElementIdOffset),
-    "datetime-local",
-    null,
-    className,
-    null,
-  );
-}
-export function inputEmail(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputEmail << VNodeFlags.ElementIdOffset),
-    "email",
-    null,
-    className,
-    null,
-  );
-}
-export function inputFile(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputFile << VNodeFlags.ElementIdOffset),
-    "file",
-    null,
-    className,
-    null,
-  );
-}
-export function inputHidden(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputHidden << VNodeFlags.ElementIdOffset),
-    "hidden",
-    null,
-    className,
-    null,
-  );
-}
-export function inputImage(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputImage << VNodeFlags.ElementIdOffset),
-    "image",
-    null,
-    className,
-    null,
-  );
-}
-export function inputMonth(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputMonth << VNodeFlags.ElementIdOffset),
-    "month",
-    null,
-    className,
-    null,
-  );
-}
-export function inputNumber(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputNumber << VNodeFlags.ElementIdOffset),
-    "number",
-    null,
-    className,
-    null,
-  );
-}
-export function inputPassword(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputPassword << VNodeFlags.ElementIdOffset),
-    "password",
-    null,
-    className,
-    null,
-  );
-}
-export function inputRadio(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputRadio << VNodeFlags.ElementIdOffset),
-    "radio",
-    null,
-    className,
-    null,
-  );
-}
-export function inputRange(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputRange << VNodeFlags.ElementIdOffset),
-    "range",
-    null,
-    className,
-    null,
-  );
-}
-export function inputReset(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputReset << VNodeFlags.ElementIdOffset),
-    "reset",
-    null,
-    className,
-    null,
-  );
-}
-export function inputSearch(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputSearch << VNodeFlags.ElementIdOffset),
-    "search",
-    null,
-    className,
-    null,
-  );
-}
-export function inputSubmit(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputSubmit << VNodeFlags.ElementIdOffset),
-    "submit",
-    null,
-    className,
-    null,
-  );
-}
-export function inputTel(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputTel << VNodeFlags.ElementIdOffset),
-    "tel",
-    null,
-    className,
-    null,
-  );
-}
-export function inputTime(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputTime << VNodeFlags.ElementIdOffset),
-    "time",
-    null,
-    className,
-    null,
-  );
-}
-export function inputUrl(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputUrl << VNodeFlags.ElementIdOffset),
-    "url",
-    null,
-    className,
-    null,
-  );
-}
-export function inputWeek(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
-  return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.InputWeek << VNodeFlags.ElementIdOffset),
-    "week",
+    "input",
     null,
     className,
     null,
@@ -1458,7 +1215,6 @@ export function audio(className?: string): VNode<HTMLAudioElementProps | null, H
     className,
     null,
   );
-
 }
 
 export function video(className?: string): VNode<HTMLVideoElementProps | null, HTMLVideoElement> {

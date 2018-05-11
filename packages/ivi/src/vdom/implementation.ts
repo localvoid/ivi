@@ -218,28 +218,9 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
       const svg = (flags & VNodeFlags.SvgElement) !== 0;
       if ((flags & VNodeFlags.ElementFactory) === 0) {
         const tagName = vnode.tag as string;
-        if ((flags & (VNodeFlags.InputElement | VNodeFlags.ButtonElement | VNodeFlags.SvgElement)) !== 0) {
-          if (svg === true) {
-            node = document.createElementNS(SVG_NAMESPACE, tagName);
-          } else {
-            node = document.createElement(((flags & VNodeFlags.InputElement) !== 0) ? "input" : "button");
-            /**
-             * Default value for input element type is "text", so we can just ignore assigning it for text inputs.
-             * Factory function for input text has an empty string as a tag value.
-             */
-            if (tagName !== "") {
-              /**
-               * #quirks
-               *
-               * It is important that we assign `type` before any other properties. IE11 will remove assigned
-               * `value` when `type` is assigned.
-               */
-              (node as HTMLInputElement).type = tagName;
-            }
-          }
-        } else {
-          node = document.createElement(tagName);
-        }
+        node = svg ?
+          document.createElementNS(SVG_NAMESPACE, tagName) :
+          document.createElement(tagName);
       } else {
         const factory = vnode.tag as VNode;
         if (factory.instance === null) {

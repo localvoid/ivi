@@ -52,40 +52,36 @@ export const enum VNodeFlags {
    */
   TextAreaElement = 1 << 11,
   /**
-   * VNode represents a HTMLButtonElement.
-   */
-  ButtonElement = 1 << 12,
-  /**
    * VNode represents a HTMLMediaElement.
    */
-  MediaElement = 1 << 13,
+  MediaElement = 1 << 12,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 14,
+  SvgElement = 1 << 13,
   /**
    * Specialized VNode with connect functionality.
    */
-  Connect = 1 << 15,
+  Connect = 1 << 14,
   /**
    * Specialized VNode with an update context functionality.
    */
-  UpdateContext = 1 << 16,
+  UpdateContext = 1 << 15,
   /**
    * Stateless component is using `shouldUpdate` hook.
    */
-  ShouldUpdateHint = 1 << 17,
+  ShouldUpdateHint = 1 << 16,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 18,
+  Autofocus = 1 << 17,
   /**
    * VNode element cannot contain any children.
    */
-  VoidElement = 1 << 19,
+  VoidElement = 1 << 18,
 
-  ElementIdMask = 255 << 20,
-  ElementIdOffset = 20,
+  ElementIdMask = 255 << 19,
+  ElementIdOffset = 19,
   /**
    * Dirty checking should be stopped at this node.
    *
@@ -110,7 +106,6 @@ export const enum VNodeFlags {
   | Key
   | InputElement
   | TextAreaElement
-  | ButtonElement
   | MediaElement
   | SvgElement
   | VoidElement

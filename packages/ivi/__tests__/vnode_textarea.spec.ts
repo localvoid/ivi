@@ -12,7 +12,3 @@ test(`assigning children should raise an exception`, () => {
 test(`assigning unsafeHTML should raise an exception`, () => {
   expect(() => h.textarea().unsafeHTML("123")).toThrow(Error);
 });
-
-test(`assigning checked should raise an exception`, () => {
-  expect(() => h.textarea().value(true)).toThrow(Error);
-});

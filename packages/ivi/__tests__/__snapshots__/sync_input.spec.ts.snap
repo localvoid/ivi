@@ -91,12 +91,12 @@ exports[`<input> => <input type="checkbox"> 1`] = `
 exports[`<input> => <input type="checkbox"> 2`] = `
 Object {
   "appendChild": 0,
-  "createElement": 2,
+  "createElement": 1,
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 1,
   "removeChild": 0,
-  "replaceChild": 1,
+  "replaceChild": 0,
 }
 `;
 

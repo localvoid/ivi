@@ -122,20 +122,9 @@ function _toSnapshot(
   const flags = vnode.flags;
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
-      let result = indent(il);
+      const closeTagName = vnode.tag;
+      let result = `${indent(il)}<${vnode.tag}`;
       let multiline = false;
-      let closeTagName;
-      if ((flags & VNodeFlags.InputElement) !== 0) {
-        closeTagName = `input`;
-        result += `<input`;
-        if (vnode.tag !== "") {
-          result += `\n${indent(il + 1)}type="${vnode.tag}"`;
-          multiline = true;
-        }
-      } else {
-        closeTagName = vnode.tag;
-        result += `<${vnode.tag}`;
-      }
 
       if (vnode.className !== void 0) {
         result += `\n${indent(il + 1)}class="${vnode.className}"`;

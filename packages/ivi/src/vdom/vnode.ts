@@ -1,7 +1,6 @@
 import { CSSStyleProps, NOOP } from "ivi-core";
 import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
-import { isInputTypeHasCheckedProperty } from "../dev_mode/dom";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent, StatefulComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -309,18 +308,6 @@ export class VNode<P = any, N = Node> {
     if (DEBUG) {
       if (!(this.flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
         throw new Error("Failed to set value, value is available on input and textarea elements only.");
-      }
-      if (typeof value === "string") {
-        if (isInputTypeHasCheckedProperty(this.tag as string)) {
-          throw new Error(`Failed to set value, input elements with type ${this.tag} doesn't support `
-            + `value assignments.`);
-        }
-      }
-      if (typeof value === "boolean") {
-        if (!isInputTypeHasCheckedProperty(this.tag as string)) {
-          throw new Error(`Failed to set checked, input elements with type ${this.tag} doesn't support `
-            + `checked value.`);
-        }
       }
     }
     this.children = value;
