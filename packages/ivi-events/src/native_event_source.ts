@@ -47,14 +47,8 @@ export function createNativeEventSource<E extends Event>(
 ): NativeEventSource<E> {
   const source: NativeEventSource<E> = {
     eventSource: {
-      addListener: () => {
-        ++source.listeners;
-        incDependencies(source);
-      },
-      removeListener: () => {
-        --source.listeners;
-        decDependencies(source);
-      },
+      addListener: () => { ++source.listeners; incDependencies(source); },
+      removeListener: () => { --source.listeners; decDependencies(source); },
     },
     dependencies: 0,
     listeners: 0,
@@ -73,29 +67,16 @@ export function createNativeEventSource<E extends Event>(
       accumulateDispatchTargets(targets, getEventTarget(ev) as Element, matchEventSource);
     }
 
-    if (targets.length > 0 || source.onBeforeListeners !== null || source.onAfterListeners !== null) {
-      const s = new SyntheticNativeEvent<E>(
-        0,
-        getEventTarget(ev),
-        ev.timeStamp,
-        ev,
-      );
-      if (source.onBeforeListeners !== null) {
-        const cbs = source.onBeforeListeners.slice(0);
-        for (let i = 0; i < cbs.length; ++i) {
-          cbs[i](s);
-        }
+    if (targets.length || source.onBeforeListeners !== null || source.onAfterListeners !== null) {
+      const syntheticEvent = new SyntheticNativeEvent<E>(0, getEventTarget(ev), ev.timeStamp, ev);
+
+      dispatchToListeners(source.onBeforeListeners, syntheticEvent);
+      if (targets.length) {
+        dispatchEvent(targets, syntheticEvent, (source.flags & NativeEventSourceFlags.Bubbles) !== 0);
       }
-      if (targets.length > 0) {
-        dispatchEvent(targets, s, (source.flags & NativeEventSourceFlags.Bubbles) !== 0);
-      }
-      if (source.onAfterListeners !== null) {
-        const cbs = source.onAfterListeners.slice(0);
-        for (let i = 0; i < cbs.length; ++i) {
-          cbs[i](s);
-        }
-      }
-      if ((s.flags & SyntheticEventFlags.PreventedDefault) !== 0) {
+      dispatchToListeners(source.onAfterListeners, syntheticEvent);
+
+      if ((syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) !== 0) {
         ev.preventDefault();
       }
     }
@@ -157,5 +138,17 @@ function decDependencies<E extends Event>(source: NativeEventSource<E>): void {
       source.dispatch!,
       getNativeEventOptions(source.flags) as boolean,
     );
+  }
+}
+
+function dispatchToListeners<E extends Event>(
+  listeners: Array<(ev: SyntheticNativeEvent<E>) => void> | null,
+  ev: SyntheticNativeEvent<E>,
+): void {
+  if (listeners !== null) {
+    const cbs = listeners.slice();
+    for (let i = 0; i < cbs.length; ++i) {
+      cbs[i](ev);
+    }
   }
 }
