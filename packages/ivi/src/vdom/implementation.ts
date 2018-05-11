@@ -213,106 +213,106 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   let instance: Node | Component<any> | null = null;
   let node: Node;
 
-  if ((flags & (VNodeFlags.Element | VNodeFlags.Component)) !== 0) {
-    if ((flags & VNodeFlags.Element) !== 0) {
-      const svg = (flags & VNodeFlags.SvgElement) !== 0;
-      if ((flags & VNodeFlags.ElementFactory) === 0) {
-        const tagName = vnode.tag as string;
-        node = svg ?
-          document.createElementNS(SVG_NAMESPACE, tagName) :
-          document.createElement(tagName);
-      } else {
-        const factory = vnode.tag as VNode;
-        if (factory.instance === null) {
-          _render(parent, factory, context);
-        }
-        /* istanbul ignore else */
-        if (DEBUG) {
-          node = (factory.instance as Node).cloneNode(false);
+  if ((flags & VNodeFlags.Text) !== 0) {
+    instance = node = document.createTextNode(vnode.children as string);
+  } else {
+    if ((flags & (VNodeFlags.Element | VNodeFlags.StatefulComponent)) !== 0) {
+      if ((flags & VNodeFlags.Element) !== 0) {
+        const svg = (flags & VNodeFlags.SvgElement) !== 0;
+        if ((flags & VNodeFlags.ElementFactory) === 0) {
+          const tagName = vnode.tag as string;
+          node = svg ?
+            document.createElementNS(SVG_NAMESPACE, tagName) :
+            document.createElement(tagName);
         } else {
-          node = nodeCloneNode.call(factory.instance as Node, false);
-        }
-      }
-
-      if (vnode.className !== void 0) {
-        /**
-         * SVGElement.className returns `SVGAnimatedString`
-         */
-        if (svg === true) {
+          const factory = vnode.tag as VNode;
+          if (factory.instance === null) {
+            _render(parent, factory, context);
+          }
           /* istanbul ignore else */
           if (DEBUG) {
-            (node as Element).setAttribute("class", vnode.className);
+            node = (factory.instance as Node).cloneNode(false);
           } else {
-            elementSetAttribute.call(node as Element, "class", vnode.className);
+            node = nodeCloneNode.call(factory.instance as Node, false);
           }
-        } else {
-          (node as Element).className = vnode.className;
         }
-      }
 
-      if (vnode.props !== null) {
-        syncDOMAttrs(node as Element, svg, null, vnode.props);
-      }
-      if (vnode.style !== null) {
-        syncStyle(node as HTMLElement, null, vnode.style);
-      }
-      if (vnode.events !== null) {
-        setEventHandlersToDOMNode(node as Element, vnode.events);
-      }
-
-      let children = vnode.children;
-      if (children !== null) {
-        if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-          children = children as VNode;
-          do {
+        if (vnode.className !== void 0) {
+          /**
+           * SVGElement.className returns `SVGAnimatedString`
+           */
+          if (svg === true) {
             /* istanbul ignore else */
             if (DEBUG) {
-              node.insertBefore(_render(node, children, context), null);
+              (node as Element).setAttribute("class", vnode.className);
             } else {
-              nodeInsertBefore.call(node, _render(node, children, context), null);
+              elementSetAttribute.call(node as Element, "class", vnode.className);
             }
-            children = children.next;
-          } while (children !== null);
-        } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
-          /**
-           * #quirks
-           *
-           * It is important that input value is assigned after all properties. It prevents some issues with
-           * rounding, etc. `value` should be assigned after `step`, `min` and `max` properties.
-           */
-          _setInputValue(node as HTMLInputElement, children as string | boolean);
-        } else { // (flags & VNodeFlags.UnsafeHTML)
-          (node as Element).innerHTML = children as string;
+          } else {
+            (node as Element).className = vnode.className;
+          }
         }
-      }
 
-      instance = node;
-    } else { // ((flags & VNodeFlags.Component) !== 0)
-      if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+        if (vnode.props !== null) {
+          syncDOMAttrs(node as Element, svg, null, vnode.props);
+        }
+        if (vnode.style !== null) {
+          syncStyle(node as HTMLElement, null, vnode.style);
+        }
+        if (vnode.events !== null) {
+          setEventHandlersToDOMNode(node as Element, vnode.events);
+        }
+
+        let children = vnode.children;
+        if (children !== null) {
+          if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+            children = children as VNode;
+            do {
+              /* istanbul ignore else */
+              if (DEBUG) {
+                node.insertBefore(_render(node, children, context), null);
+              } else {
+                nodeInsertBefore.call(node, _render(node, children, context), null);
+              }
+              children = children.next;
+            } while (children !== null);
+          } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
+            /**
+             * #quirks
+             *
+             * It is important that input value is assigned after all properties. It prevents some issues with
+             * rounding, etc. `value` should be assigned after `step`, `min` and `max` properties.
+             */
+            _setInputValue(node as HTMLInputElement, children as string | boolean);
+          } else { // (flags & VNodeFlags.UnsafeHTML)
+            (node as Element).innerHTML = children as string;
+          }
+        }
+
+        instance = node;
+      } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
         const component = instance = new (vnode.tag as StatefulComponent<any>)(vnode.props);
         const root = vnode.children = component.render();
         node = _render(parent, root, context);
-      } else { // (flags & VNodeFlags.ComponentFunction)
-        if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
-          if ((flags & VNodeFlags.Connect) !== 0) {
-            const connect = (vnode.tag as ConnectDescriptor<any, any, {}>);
-            const selectData = instance = connect.select(null, vnode.props, context);
-            vnode.children = connect.render(selectData);
-          } else {
-            context = instance = Object.assign({}, context, vnode.props);
-          }
-        } else {
-          vnode.children = (vnode.tag as StatelessComponent<any>).render(vnode.props);
-        }
-        node = _render(parent, vnode.children as VNode, context);
       }
+    } else { // ((flags & (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0)
+      if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
+        if ((flags & VNodeFlags.Connect) !== 0) {
+          const connect = (vnode.tag as ConnectDescriptor<any, any, {}>);
+          const selectData = instance = connect.select(null, vnode.props, context);
+          vnode.children = connect.render(selectData);
+        } else {
+          context = instance = Object.assign({}, context, vnode.props);
+        }
+      } else {
+        vnode.children = (vnode.tag as StatelessComponent<any>).render(vnode.props);
+      }
+      node = _render(parent, vnode.children as VNode, context);
     }
 
     if ((flags & VNodeFlags.Autofocus) !== 0) {
       autofocus(node as Element);
     }
-  } else { // ((flags & VNodeFlags.Text) !== 0)
-    instance = node = document.createTextNode(vnode.children as string);
   }
 
   vnode.instance = instance;
