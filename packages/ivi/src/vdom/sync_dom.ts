@@ -78,8 +78,13 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
     if (svg === true) {
       if (key.length > 5) {
         if (key.charCodeAt(0) === 120 &&
-          (key.charCodeAt(3) === 58 || key.charCodeAt(5) === 58)) { // 58 === ":" "xml:", "xlink:"
-          if (key.charCodeAt(1) === 109 && key.charCodeAt(2) === 108) { // [109, 108] === "ml"
+          // 58 === ":"
+          (
+            key.charCodeAt(3) === 58 || // "xml:"
+            key.charCodeAt(5) === 58    // "xlink:"
+          )
+        ) {
+          if (key.startsWith("xml:")) {
             /**
              * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
              */
@@ -90,10 +95,7 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
               elementSetAttributeNS.call(node, XML_NAMESPACE, key, value);
             }
             return;
-          } else if (key.charCodeAt(1) === 108 &&
-            key.charCodeAt(2) === 105 &&
-            key.charCodeAt(3) === 110 &&
-            key.charCodeAt(4) === 107) { // [108, 105, 110, 107] === "link"
+          } else if (key.startsWith("xlink:")) {
             /**
              * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
              */
