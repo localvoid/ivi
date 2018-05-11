@@ -2,17 +2,28 @@ import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 
 /**
- * elementFactory creates an element factory for an element with predefined attributes.
+ * element creates an virtual DOM node factory that produces elements with predefined attributes.
  *
- * @param element Element prototype.
- * @returns VNode factory function.
+ *     const DivWithIdAttribute = element(
+ *       h.div().a({
+ *         "id": "predefined-id",
+ *       });
+ *     );
+ *
+ *     render(
+ *       DivWithIdAttribute(),
+ *       DOMContainer,
+ *     );
+ *
+ * @param proto virtual DOM element prototype.
+ * @returns factory that produces elements with predefined attributes.
  */
-export function elementFactory<P, N>(element: VNode<P, N>): (className?: string) => VNode<P, N> {
-  const flags = element.flags | VNodeFlags.ElementFactory;
+export function element<P, N>(proto: VNode<P, N>): (className?: string) => VNode<P, N> {
+  const flags = proto.flags | VNodeFlags.ElementFactory;
   return function (className?: string) {
     return new VNode<P, N>(
       flags,
-      element,
+      proto,
       void 0,
       className,
       null,

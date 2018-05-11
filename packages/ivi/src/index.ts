@@ -14,7 +14,7 @@ export {
   autofocus, stopDirtyChecking,
 } from "./vdom/vnode";
 export { children, map, mapRange } from "./vdom/vnode_collections";
-export { elementFactory } from "./vdom/element";
+export { element } from "./vdom/element";
 export { statefulComponent, statelessComponent, context, connect } from "./vdom/vnode_factories";
 
 /**

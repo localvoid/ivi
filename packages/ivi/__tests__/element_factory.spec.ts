@@ -1,10 +1,10 @@
-import { VNodeFlags, elementFactory } from "ivi";
+import { VNodeFlags, element } from "ivi";
 import * as h from "ivi-html";
 
 const div = h.div();
 const input = h.input();
-const divFactory = elementFactory(div);
-const inputFactory = elementFactory(input);
+const divFactory = element(div);
+const inputFactory = element(input);
 
 test(`div flags`, () => {
   expect(divFactory().flags & ~VNodeFlags.ElementFactory).toBe(h.div().flags);
