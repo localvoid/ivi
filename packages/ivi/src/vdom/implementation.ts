@@ -518,18 +518,15 @@ export function syncVNode(
         // in memory two values even when they are the same, we just always reassign it to the new value.
         component.props = newProps;
 
-        const oldRoot = a.children as VNode;
         if (
           ((component.flags & ComponentFlags.Dirty) !== 0) ||
           (component.shouldUpdate(oldProps, newProps) === true)
         ) {
-          const newRoot = b.children = component.render();
-          syncVNode(parent, oldRoot, newRoot, context, dirtyContext);
+          syncVNode(parent, a.children as VNode, b.children = component.render(), context, dirtyContext);
           component.flags &= ~ComponentFlags.Dirty;
           component.updated(true);
         } else {
-          b.children = a.children;
-          if (dirtyCheck(parent, oldRoot, context, dirtyContext) !== 0) {
+          if (dirtyCheck(parent, b.children = a.children as VNode, context, dirtyContext) !== 0) {
             component.updated(false);
           }
         }
@@ -544,23 +541,17 @@ export function syncVNode(
             b.instance = selectData;
             if (prevSelectData === selectData) {
               b.children = a.children;
-              dirtyCheck(
-                parent,
-                b,
-                context,
-                dirtyContext,
-              );
+              dirtyCheck(parent, b.children as VNode, context, dirtyContext);
             } else {
-              b.children = connect.render(selectData);
-              syncVNode(parent, a.children as VNode, b.children as VNode, context, dirtyContext);
+              syncVNode(parent, a.children as VNode, b.children = connect.render(selectData), context, dirtyContext);
             }
           } else {
-            if ((dirtyContext === true) || (a.props !== b.props)) {
+            if (a.props !== b.props) {
               dirtyContext = true;
-              context = b.instance = Object.assign({}, context, b.props);
-            } else {
-              context = b.instance = instance as {};
             }
+            b.instance = context = (dirtyContext === true) ?
+              Object.assign({}, context, b.props) :
+              instance as {};
             syncVNode(parent, a.children as VNode, b.children as VNode, context, dirtyContext);
           }
         } else {
@@ -568,9 +559,7 @@ export function syncVNode(
             (a.props !== b.props) &&
             ((bFlags & VNodeFlags.ShouldUpdateHint) === 0 || sc.shouldUpdate!(a.props, b.props) === true)
           ) {
-            const oldRoot = a.children as VNode;
-            const newRoot = b.children = sc.render(b.props);
-            syncVNode(parent, oldRoot, newRoot, context, dirtyContext);
+            syncVNode(parent, a.children as VNode, b.children = sc.render(b.props), context, dirtyContext);
           } else {
             b.children = a.children;
             dirtyCheck(parent, b.children as VNode, context, dirtyContext);
