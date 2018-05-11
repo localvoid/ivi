@@ -12,9 +12,10 @@ import {
 } from "./vdom";
 
 function and<T>(a: Predicate<T>, b: Predicate<T>): Predicate<T> {
-  return function (value: T): boolean {
-    return a(value) === true && b(value) === true;
-  };
+  return (value: T) => (
+    a(value) === true &&
+    b(value) === true
+  );
 }
 
 export class Matcher<T> {
@@ -34,143 +35,107 @@ export class Matcher<T> {
 }
 
 export class VNodeMatcher extends Matcher<VNodeWrapper> {
-  hasParent(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasParent(n, matcher.match);
-    });
+  hasParent(matcher: VNodeMatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasParent(n, matcher.match));
     return this;
   }
 
-  hasDirectParent(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasDirectParent(n, matcher.match);
-    });
+  hasDirectParent(matcher: VNodeMatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasDirectParent(n, matcher.match));
     return this;
   }
 
-  hasChild(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasChild(n, matcher.match);
-    });
+  hasChild(matcher: VNodeMatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasChild(n, matcher.match));
     return this;
   }
 
-  hasSibling(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasSibling(n, matcher.match);
-    });
+  hasSibling(matcher: VNodeMatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasSibling(n, matcher.match));
     return this;
   }
 
-  hasPrevSibling(matcher: VNodeMatcher): VNodeMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasPrevSibling(n, matcher.match);
-    });
+  hasPrevSibling(matcher: VNodeMatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasPrevSibling(n, matcher.match));
     return this;
   }
 }
 
 export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
-  hasFactory(factory: Function): VNodeElementMatcher {
+  hasFactory(factory: Function): this {
     this.addPredicate((n: VNodeWrapper) => hasFactory(n, factory));
     return this;
   }
 
-  hasClassName(className: string): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasClassName(n, className);
-    });
+  hasClassName(className: string): this {
+    this.addPredicate((n: VNodeWrapper) => hasClassName(n, className));
     return this;
   }
 
-  hasKey(key: any): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasKey(n, key);
-    });
+  hasKey(key: any): this {
+    this.addPredicate((n: VNodeWrapper) => hasKey(n, key));
     return this;
   }
 
-  hasProps(props: { [key: string]: any }): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasProps(n, props);
-    });
+  hasProps(props: { [key: string]: any }): this {
+    this.addPredicate((n: VNodeWrapper) => hasProps(n, props));
     return this;
   }
 
-  hasExactProps(props: { [key: string]: any }): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasExactProps(n, props);
-    });
+  hasExactProps(props: { [key: string]: any }): this {
+    this.addPredicate((n: VNodeWrapper) => hasExactProps(n, props));
     return this;
   }
 
-  hasAssignedProps(props: { [key: string]: boolean }): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasAssignedProps(n, props);
-    });
+  hasAssignedProps(props: { [key: string]: boolean }): this {
+    this.addPredicate((n: VNodeWrapper) => hasAssignedProps(n, props));
     return this;
   }
 
-  hasStyle(style: CSSStyleProps): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasStyle(n, style);
-    });
+  hasStyle(style: CSSStyleProps): this {
+    this.addPredicate((n: VNodeWrapper) => hasStyle(n, style));
     return this;
   }
 
-  hasExactStyle(style: CSSStyleProps): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasExactStyle(n, style);
-    });
+  hasExactStyle(style: CSSStyleProps): this {
+    this.addPredicate((n: VNodeWrapper) => hasExactStyle(n, style));
     return this;
   }
 
-  hasAssignedStyle(style: { [key: string]: boolean }): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasAssignedStyle(n, style);
-    });
+  hasAssignedStyle(style: { [key: string]: boolean }): this {
+    this.addPredicate((n: VNodeWrapper) => hasAssignedStyle(n, style));
     return this;
   }
 
-  hasEventHandler(eventSource: EventSource): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasEventHandler(n, eventSource);
-    });
+  hasEventHandler(eventSource: EventSource): this {
+    this.addPredicate((n: VNodeWrapper) => hasEventHandler(n, eventSource));
     return this;
   }
 
-  hasUnsafeHTML(html?: string): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasUnsafeHTML(n, html);
-    });
+  hasUnsafeHTML(html?: string): this {
+    this.addPredicate((n: VNodeWrapper) => hasUnsafeHTML(n, html));
     return this;
   }
 
-  containsText(text: string): VNodeElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return innerText(n).indexOf(text) > -1;
-    });
+  containsText(text: string): this {
+    this.addPredicate((n: VNodeWrapper) => (innerText(n).indexOf(text) > -1));
     return this;
   }
 
-  isAutofocused(): VNodeElementMatcher {
+  isAutofocused(): this {
     this.addPredicate(isAutofocused);
     return this;
   }
 }
 
 export class VNodeInputElementMatcher extends VNodeElementMatcher {
-  hasValue(value?: string): VNodeInputElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasInputValue(n, value);
-    });
+  hasValue(value?: string): this {
+    this.addPredicate((n: VNodeWrapper) => hasInputValue(n, value));
     return this;
   }
 
-  isChecked(value?: boolean): VNodeInputElementMatcher {
-    this.addPredicate(function (n: VNodeWrapper) {
-      return hasInputChecked(n, value);
-    });
+  isChecked(value?: boolean): this {
+    this.addPredicate((n: VNodeWrapper) => hasInputChecked(n, value));
     return this;
   }
 }
@@ -180,43 +145,25 @@ export class VNodeComponentMatcher extends VNodeMatcher {
 
 function createVNodeElementMatcherFactory(tagName: string, className?: string): () => VNodeElementMatcher {
   if (className !== undefined) {
-    return function (): VNodeElementMatcher {
-      return new VNodeElementMatcher(function (n: VNodeWrapper) {
-        return isElementWithClassName(n, tagName, className);
-      });
-    };
+    return () => new VNodeElementMatcher((n: VNodeWrapper) => isElementWithClassName(n, tagName, className));
   }
-  return function (): VNodeElementMatcher {
-    return new VNodeElementMatcher(function (n: VNodeWrapper) {
-      return isElement(n, tagName);
-    });
-  };
+  return () => new VNodeElementMatcher((n: VNodeWrapper) => isElement(n, tagName));
 }
 
 function createVNodeInputElementMatcherFactory(type: string, className?: string): () => VNodeInputElementMatcher {
   if (className !== undefined) {
-    return function (): VNodeInputElementMatcher {
-      return new VNodeInputElementMatcher(function (n: VNodeWrapper) {
-        return isInputElementWithClassName(n, type, className);
-      });
-    };
+    return () => new VNodeInputElementMatcher((n: VNodeWrapper) => isInputElementWithClassName(n, type, className));
   }
-  return function (): VNodeInputElementMatcher {
-    return new VNodeInputElementMatcher(function (n: VNodeWrapper) {
-      return isInputElement(n, type);
-    });
-  };
+  return () => new VNodeInputElementMatcher((n: VNodeWrapper) => isInputElement(n, type));
 }
 
 function componentMatcherFactory(component: StatefulComponent<any>): VNodeComponentMatcher {
-  return new VNodeComponentMatcher(function (n: VNodeWrapper) {
-    return n.vnode.tag === component;
-  });
+  return new VNodeComponentMatcher((n: VNodeWrapper) => (n.vnode.tag === component));
 }
 
 export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper | null {
   let result: VNodeWrapper | null = null;
-  visitWrapped(wrapper, function (n) {
+  visitWrapped(wrapper, (n) => {
     if (wrapper !== n && predicate(n) === true) {
       result = n;
       return true;
@@ -228,7 +175,7 @@ export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>)
 
 export function queryAll(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper[] {
   const result: VNodeWrapper[] = [];
-  visitWrapped(wrapper, function (n) {
+  visitWrapped(wrapper, (n) => {
     if (wrapper !== n && predicate(n) === true) {
       result.push(n);
     }
