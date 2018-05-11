@@ -1,4 +1,4 @@
-import { Component, VNode, statelessComponent, component } from "ivi";
+import { Component, VNode, statelessComponent, statefulComponent } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkLifecycle, lifecycleTouch } from "./utils";
 
@@ -32,7 +32,7 @@ interface LifecycleTesterProps {
   hooks: ComponentHooks<LifecycleTesterProps>;
 }
 
-const LifecycleTester = component(class extends Component<LifecycleTesterProps> {
+const LifecycleTester = statefulComponent(class extends Component<LifecycleTesterProps> {
   constructor(props: LifecycleTesterProps) {
     super(props);
     lifecycleTouch(props.id, "constructor");

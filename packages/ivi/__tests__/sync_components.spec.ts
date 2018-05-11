@@ -1,4 +1,4 @@
-import { Component, VNode, statelessComponent, component } from "ivi";
+import { Component, VNode, statelessComponent, statefulComponent } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
@@ -6,7 +6,7 @@ const Stateless = statelessComponent<VNode>(
   (child) => child,
 );
 
-const Stateful = component(class extends Component<VNode> {
+const Stateful = statefulComponent(class extends Component<VNode> {
   render() {
     return this.props;
   }

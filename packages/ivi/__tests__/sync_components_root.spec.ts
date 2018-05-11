@@ -1,4 +1,4 @@
-import { Component, VNode, component, getComponentInstanceFromVNode } from "ivi";
+import { Component, VNode, statefulComponent, getComponentInstanceFromVNode } from "ivi";
 import { startRender, checkDOMOps, domOps } from "./utils";
 import * as h from "ivi-html";
 
@@ -34,8 +34,8 @@ class B extends Component<VNode> {
   }
 }
 
-const ca = component(A);
-const cb = component(B);
+const ca = statefulComponent(A);
+const cb = statefulComponent(B);
 
 test(`<h1><A.0> => <h1><A.1> => <A.1><h1>`, () => {
   startRender((r) => {

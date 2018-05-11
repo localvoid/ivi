@@ -102,7 +102,7 @@ export function statelessComponent<P>(
 }
 
 /**
- * component creates a virtual DOM node factory that produces nodes for stateful components.
+ * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
  *     const A = component(class extends Component<string> {
  *       onClick = Events.onClick(() => console.log(this.props));
@@ -124,10 +124,10 @@ export function statelessComponent<P>(
  * @param c stateful component.
  * @returns factory that produces stateful component nodes.
  */
-export function component(c: StatefulComponent<undefined>): () => VNode<undefined>;
+export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<undefined>;
 
 /**
- * component creates a virtual DOM node factory that produces nodes for stateful components.
+ * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
  *     const A = component(class extends Component<string> {
  *       onClick = Events.onClick(() => console.log(this.props));
@@ -149,12 +149,12 @@ export function component(c: StatefulComponent<undefined>): () => VNode<undefine
  * @param c stateful component.
  * @returns factory that produces stateful component nodes.
  */
-export function component<P>(
+export function statefulComponent<P>(
   c: StatefulComponent<P>,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
- * component creates a virtual DOM node factory that produces nodes for stateful components.
+ * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
  *     const A = component(class extends Component<string> {
  *       onClick = Events.onClick(() => console.log(this.props));
@@ -176,7 +176,7 @@ export function component<P>(
  * @param c stateful component.
  * @returns factory that produces stateful component nodes.
  */
-export function component<P>(
+export function statefulComponent<P>(
   c: StatefulComponent<P>,
 ): (props: P) => VNode<P> {
   const f = function (props: P): VNode<P> {
