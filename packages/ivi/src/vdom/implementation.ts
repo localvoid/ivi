@@ -120,7 +120,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         children = vnode.children as VNode;
         if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
           const newRoot = vnode.children = (instance as Component<any>).render();
-          syncVNode(parent, children, newRoot, context, dirtyContext, true);
+          syncVNode(parent, children, newRoot, context, dirtyContext);
           (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
           (instance as Component<any>).updated(true);
           deepUpdate = 1;
@@ -137,24 +137,12 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
           const selectData = connect.select(instance, vnode.props, context);
           children = vnode.children as VNode;
           if (instance === selectData) {
-            deepUpdate = dirtyCheck(
-              parent,
-              children as VNode,
-              context,
-              dirtyContext,
-            );
+            deepUpdate = dirtyCheck(parent, children, context, dirtyContext);
           } else {
             deepUpdate = 1;
             vnode.children = connect.render(selectData);
             vnode.instance = selectData;
-            syncVNode(
-              parent,
-              children as VNode,
-              vnode.children as VNode,
-              context,
-              dirtyContext,
-              true,
-            );
+            syncVNode(parent, children, vnode.children, context, dirtyContext);
           }
         } else {
           if ((flags & VNodeFlags.UpdateContext) !== 0) {
@@ -163,12 +151,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
             }
             context = vnode.instance as {};
           }
-          deepUpdate = dirtyCheck(
-            parent,
-            vnode.children as VNode,
-            context,
-            dirtyContext,
-          );
+          deepUpdate = dirtyCheck(parent, vnode.children as VNode, context, dirtyContext);
         }
       }
     }
@@ -340,11 +323,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         } else {
           vnode.children = (vnode.tag as StatelessComponent<any>).render(vnode.props);
         }
-        node = _render(
-          parent,
-          vnode.children as VNode,
-          context,
-        );
+        node = _render(parent, vnode.children as VNode, context);
       }
     }
 
@@ -415,7 +394,6 @@ function _eqKeys(a: VNode, b: VNode): boolean {
  * @param b New VNode.
  * @param context Current context.
  * @param dirtyContext Dirty context.
- * @param checkKeys Check vnode keys.
  */
 export function syncVNode(
   parent: Node,
@@ -423,7 +401,6 @@ export function syncVNode(
   b: VNode,
   context: {},
   dirtyContext: boolean,
-  checkKeys: boolean,
 ): void {
   if (a === b) {
     dirtyCheck(parent, b, context, dirtyContext);
@@ -450,7 +427,7 @@ export function syncVNode(
       )) === 0 ||
       a.tag === b.tag
     ) &&
-    (checkKeys === false || a.key === b.key)
+    a.key === b.key
   ) {
     b.instance = instance = a.instance;
 
@@ -469,7 +446,7 @@ export function syncVNode(
             if (DEBUG) {
               (instance as Element).setAttribute("class", className);
             } else {
-              elementSetAttribute.call(instance as Element, "class", className);
+              elementSetAttribute.call(instance, "class", className);
             }
           } else {
             (instance as Element).className = className;
@@ -566,7 +543,7 @@ export function syncVNode(
           (component.shouldUpdate(oldProps, newProps) === true)
         ) {
           const newRoot = b.children = component.render();
-          syncVNode(parent, oldRoot, newRoot, context, dirtyContext, true);
+          syncVNode(parent, oldRoot, newRoot, context, dirtyContext);
           component.flags &= ~ComponentFlags.Dirty;
           component.updated(true);
         } else {
@@ -594,14 +571,7 @@ export function syncVNode(
               );
             } else {
               b.children = connect.render(selectData);
-              syncVNode(
-                parent,
-                a.children as VNode,
-                b.children as VNode,
-                context,
-                dirtyContext,
-                true,
-              );
+              syncVNode(parent, a.children as VNode, b.children as VNode, context, dirtyContext);
             }
           } else {
             if ((dirtyContext === true) || (a.props !== b.props)) {
@@ -610,14 +580,7 @@ export function syncVNode(
             } else {
               context = b.instance = instance as {};
             }
-            syncVNode(
-              parent,
-              a.children as VNode,
-              b.children as VNode,
-              context,
-              dirtyContext,
-              true,
-            );
+            syncVNode(parent, a.children as VNode, b.children as VNode, context, dirtyContext);
           }
         } else {
           if (
@@ -626,7 +589,7 @@ export function syncVNode(
           ) {
             const oldRoot = a.children as VNode;
             const newRoot = b.children = sc.render(b.props);
-            syncVNode(parent, oldRoot, newRoot, context, dirtyContext, true);
+            syncVNode(parent, oldRoot, newRoot, context, dirtyContext);
           } else {
             b.children = a.children;
             dirtyCheck(parent, b.children as VNode, context, dirtyContext);
@@ -900,7 +863,7 @@ function _syncChildrenTrackByKeys(
   outer: while (true) {
     // Sync nodes with the same key at the beginning.
     while (_eqKeys(aStartNode!, bStartNode!) === true) {
-      syncVNode(parent, aStartNode!, bStartNode!, context, dirtyContext, false);
+      syncVNode(parent, aStartNode!, bStartNode!, context, dirtyContext);
       synced++;
       if (aStartNode === aEndNode) {
         finished |= 1;
@@ -919,7 +882,7 @@ function _syncChildrenTrackByKeys(
 
     // Sync nodes with the same key at the end.
     while (_eqKeys(aEndNode, bEndNode) === true) {
-      syncVNode(parent, aEndNode, bEndNode, context, dirtyContext, false);
+      syncVNode(parent, aEndNode, bEndNode, context, dirtyContext);
       synced++;
       if (aStartNode === aEndNode) {
         finished |= 1;
@@ -1015,7 +978,7 @@ function _syncChildrenTrackByKeys(
           i = j;
         }
         bNode = bArray[j];
-        syncVNode(parent, aNode!, bNode, context, dirtyContext, false);
+        syncVNode(parent, aNode!, bNode, context, dirtyContext);
         innerSynced++;
       }
       aInnerLength++;
