@@ -40,9 +40,7 @@ export function syncEvents(
   let h2: EventHandler | null;
 
   if (a === null) {
-    if (b !== null) {
-      attachEvents(b);
-    }
+    attachEvents(b!);
   } else if (b === null) {
     detachEvents(a);
   } else {

@@ -75,11 +75,38 @@ describe("events", () => {
     });
   });
 
-  test(`null => []`, () => {
+  test(`unassigned => []`, () => {
     startRender((r) => {
       expect(() => {
         r(h.div());
         r(h.div().e([]));
+      }).not.toThrow();
+    });
+  });
+
+  test(`[] => unassigned`, () => {
+    startRender((r) => {
+      expect(() => {
+        r(h.div().e([]));
+        r(h.div());
+      }).not.toThrow();
+    });
+  });
+
+  test(`null => []`, () => {
+    startRender((r) => {
+      expect(() => {
+        r(h.div().e(null));
+        r(h.div().e([]));
+      }).not.toThrow();
+    });
+  });
+
+  test(`[] => null`, () => {
+    startRender((r) => {
+      expect(() => {
+        r(h.div().e([]));
+        r(h.div().e(null));
       }).not.toThrow();
     });
   });
@@ -93,29 +120,177 @@ describe("events", () => {
     });
   });
 
-  test(`null => {onclick}`, () => {
+  test(`unassigned => onclick`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       r(h.div());
-      const b = r(h.div().e([click.event]));
+      const b = r(h.div().e(
+        click.event,
+      ));
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(1);
     });
   });
 
-  test(`{} => [onclick]`, () => {
+  test(`onclick => unassigned`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e(
+        click.event,
+      ));
+      const b = r(h.div());
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(0);
+    });
+  });
+
+  test(`null => onclick`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e(
+        null,
+      ));
+      const b = r(h.div().e(
+        click.event,
+      ));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(1);
+    });
+  });
+
+  test(`onclick => null`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e(
+        click.event,
+      ));
+      const b = r(h.div().e(
+        null,
+      ));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(0);
+    });
+  });
+
+  test(`unassigned => [onclick]`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div());
+      const b = r(h.div().e([
+        click.event,
+      ]));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(1);
+    });
+  });
+
+  test(`[onclick] => unassigned`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e([
+        click.event,
+      ]));
+      const b = r(h.div());
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(0);
+    });
+  });
+
+  test(`null => [onclick]`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e(null));
+      const b = r(h.div().e([
+        click.event,
+      ]));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(1);
+    });
+  });
+
+  test(`[onclick] => null`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e([
+        click.event,
+      ]));
+      const b = r(h.div().e(
+        null,
+      ));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(0);
+    });
+  });
+
+  test(`onclick => [onclick]`, () => {
+    startRender((r) => {
+      const click1 = eventCounter(Events.onClick);
+      const click2 = eventCounter(Events.onClick);
+      r(h.div().e(
+        click1.event,
+      ));
+      const b = r(h.div().e([
+        click2.event,
+      ]));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click1.value).toBe(0);
+      expect(click2.value).toBe(1);
+    });
+  });
+
+  test(`[onclick] => onclick`, () => {
+    startRender((r) => {
+      const click1 = eventCounter(Events.onClick);
+      const click2 = eventCounter(Events.onClick);
+      r(h.div().e([
+        click1.event,
+      ]));
+      const b = r(h.div().e(
+        click2.event,
+      ));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click1.value).toBe(0);
+      expect(click2.value).toBe(1);
+    });
+  });
+
+  test(`[] => [onclick]`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       r(h.div().e([]));
-      const b = r(h.div().e([click.event]));
+      const b = r(h.div().e([
+        click.event,
+      ]));
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(1);
     });
   });
 
-  test(`null => [onclick, onmousedown]`, () => {
+  test(`[onclick] => []`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e([
+        click.event,
+      ]));
+      const b = r(h.div().e([]));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(0);
+    });
+  });
+
+  test(`unassigned => [onclick, onmousedown]`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
@@ -132,12 +307,35 @@ describe("events", () => {
     });
   });
 
-  test(`{} => [onclick, onmousedown]`, () => {
+  test(`null => [onclick, onmousedown]`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      const mousedown = eventCounter(Events.onMouseDown);
+      r(h.div().e(null));
+      const b = r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
+
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(1);
+
+      b.dispatchEvent(createMouseEvent("mousedown"));
+
+      expect(mousedown.value).toBe(1);
+    });
+  });
+
+  test(`[] => [onclick, onmousedown]`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
       r(h.div().e([]));
-      const b = r(h.div().e([click.event, mousedown.event]));
+      const b = r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
 
       b!.dispatchEvent(createMouseEvent("click"));
 
@@ -153,8 +351,11 @@ describe("events", () => {
     startRender((r) => {
       const aClick = eventCounter(Events.onClick);
       const bClick = eventCounter(Events.onClick);
-      r(h.div());
-      const b = r(h.div().e([aClick.event, bClick.event]));
+      r(h.div().e(null));
+      const b = r(h.div().e([
+        aClick.event,
+        bClick.event,
+      ]));
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(aClick.value).toBe(1);
@@ -165,7 +366,9 @@ describe("events", () => {
   test(`[onclick] => [onclick]`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
-      r(h.div().e([click.event]));
+      r(h.div().e([
+        click.event,
+      ]));
       const b = r(h.div().e([click.event]));
       b.dispatchEvent(createMouseEvent("click"));
 
@@ -173,11 +376,13 @@ describe("events", () => {
     });
   });
 
-  test(`[onclick] => []`, () => {
+  test(`[onclick] => unassigned`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
-      r(h.div().e([click.event]));
-      const b = r(h.div().e([]));
+      r(h.div().e([
+        click.event,
+      ]));
+      const b = r(h.div());
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(0);
@@ -187,7 +392,24 @@ describe("events", () => {
   test(`[onclick] => null`, () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
-      r(h.div().e([click.event]));
+      r(h.div().e([
+        click.event,
+      ]));
+      const b = r(h.div().e(
+        null,
+      ));
+      b.dispatchEvent(createMouseEvent("click"));
+
+      expect(click.value).toBe(0);
+    });
+  });
+
+  test(`[onclick] => []`, () => {
+    startRender((r) => {
+      const click = eventCounter(Events.onClick);
+      r(h.div().e([
+        click.event,
+      ]));
       const b = r(h.div().e([]));
       b.dispatchEvent(createMouseEvent("click"));
 
@@ -199,8 +421,14 @@ describe("events", () => {
     startRender((r) => {
       const aClick = eventCounter(Events.onClick);
       const bClick = eventCounter(Events.onClick);
-      r(h.div().e([aClick.event, null]));
-      const b = r(h.div().e([null, bClick.event]));
+      r(h.div().e([
+        aClick.event,
+        null,
+      ]));
+      const b = r(h.div().e([
+        null,
+        bClick.event,
+      ]));
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(aClick.value).toBe(0);
@@ -212,7 +440,10 @@ describe("events", () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
-      r(h.div().e([click.event, mousedown.event]));
+      r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
       const b = r(h.div().e([]));
 
       b.dispatchEvent(createMouseEvent("click"));
@@ -229,8 +460,13 @@ describe("events", () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
-      r(h.div().e([click.event, mousedown.event]));
-      const b = r(h.div());
+      r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
+      const b = r(h.div().e(
+        null,
+      ));
 
       b.dispatchEvent(createMouseEvent("click"));
 
@@ -246,8 +482,13 @@ describe("events", () => {
     startRender((r) => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
-      r(h.div().e([click.event, mousedown.event]));
-      const b = r(h.div().e([click.event]));
+      r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
+      const b = r(h.div().e([
+        click.event,
+      ]));
 
       b.dispatchEvent(createMouseEvent("click"));
 
@@ -264,8 +505,14 @@ describe("events", () => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
       const mouseup = eventCounter(Events.onMouseUp);
-      r(h.div().e([click.event, mousedown.event]));
-      const b = r(h.div().e([click.event, mouseup.event]));
+      r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
+      const b = r(h.div().e([
+        click.event,
+        mouseup.event,
+      ]));
 
       b.dispatchEvent(createMouseEvent("click"));
 
@@ -286,8 +533,13 @@ describe("events", () => {
       const click = eventCounter(Events.onClick);
       const mousedown = eventCounter(Events.onMouseDown);
       const mouseup = eventCounter(Events.onMouseUp);
-      r(h.div().e([click.event, mousedown.event]));
-      const b = r(h.div().e([mouseup.event]));
+      r(h.div().e([
+        click.event,
+        mousedown.event,
+      ]));
+      const b = r(h.div().e([
+        mouseup.event,
+      ]));
 
       b.dispatchEvent(createMouseEvent("click"));
 

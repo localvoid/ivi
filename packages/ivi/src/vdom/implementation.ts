@@ -48,7 +48,9 @@ function _attach(vnode: VNode): void {
       } while (child !== null);
     }
     if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
-      attachEvents(vnode.events!);
+      if (vnode.events !== null) {
+        attachEvents(vnode.events);
+      }
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
@@ -75,7 +77,9 @@ function _detach(vnode: VNode): void {
       } while (child !== null);
     }
     if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
-      detachEvents(vnode.events!);
+      if (vnode.events !== null) {
+        detachEvents(vnode.events);
+      }
     }
   } else if ((flags & VNodeFlags.Component) !== 0) {
     _detach(vnode.children as VNode);
