@@ -324,7 +324,12 @@ export type Children = Array<VNode[] | VNode | string | number | null>;
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
 export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T | null {
-  if ((node.flags & VNodeFlags.Component) !== 0) {
+  if ((node.flags & (
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
     return getDOMInstanceFromVNode<T>(node.children as VNode<any, T>);
   }
   return node.instance as T;
@@ -338,7 +343,12 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T 
  */
 export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode): T | null {
   if (DEBUG) {
-    if ((node.flags & VNodeFlags.Component) === 0) {
+    if ((node.flags & (
+      VNodeFlags.StatelessComponent |
+      VNodeFlags.StatefulComponent |
+      VNodeFlags.Connect |
+      VNodeFlags.UpdateContext
+    )) === 0) {
       throw new Error("Failed to get component instance: VNode should represent a Component.");
     }
   }
@@ -353,7 +363,13 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
  */
 export function autofocus<N extends VNode>(node: N): N {
   if (DEBUG) {
-    if (!(node.flags & (VNodeFlags.Element | VNodeFlags.Component))) {
+    if (!(node.flags & (
+      VNodeFlags.Element |
+      VNodeFlags.StatelessComponent |
+      VNodeFlags.StatefulComponent |
+      VNodeFlags.Connect |
+      VNodeFlags.UpdateContext
+    ))) {
       throw new Error("Failed to set autofocus, autofocus is available on element and component nodes only.");
     }
   }

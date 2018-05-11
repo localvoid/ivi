@@ -91,17 +91,16 @@ export const enum VNodeFlags {
   StopDirtyChecking = 1 << 31,
 
   /**
-   * VNode represents a Component.
-   */
-  Component = StatelessComponent | StatefulComponent | Connect | UpdateContext,
-  /**
    * Flags that should match to be compatible for syncing.
    */
   Syncable = 0
   | Text
   | Element
   | ElementFactory
-  | Component
+  | StatelessComponent
+  | StatefulComponent
+  | Connect
+  | UpdateContext
   | UnsafeHTML
   | Key
   | InputElement

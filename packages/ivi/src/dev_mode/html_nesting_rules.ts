@@ -227,7 +227,12 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
         child = child.next;
       } while (child !== null);
     }
-  } else if ((flags & VNodeFlags.Component) !== 0) {
+  } else if ((flags & (
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
     visitNode(vnode.children as VNode, parentTagName, ancestorFlags);
   }
 }

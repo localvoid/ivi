@@ -53,7 +53,13 @@ function _attach(vnode: VNode): void {
         attachEvents(vnode.events);
       }
     }
-  } else if ((flags & VNodeFlags.Component) !== 0) {
+  } else if (
+    (flags & (
+      VNodeFlags.StatelessComponent |
+      VNodeFlags.StatefulComponent |
+      VNodeFlags.Connect |
+      VNodeFlags.UpdateContext
+    )) !== 0) {
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       (vnode.instance as Component<any>).attached();
     }
@@ -82,7 +88,12 @@ function _detach(vnode: VNode): void {
         detachEvents(vnode.events);
       }
     }
-  } else if ((flags & VNodeFlags.Component) !== 0) {
+  } else if ((flags & (
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
     _detach(vnode.children as VNode);
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = vnode.instance as Component<any>;
@@ -106,7 +117,14 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
   let children: VNode | null | undefined;
   let instance: Node | Component<any> | {} | undefined;
 
-  if ((flags & (VNodeFlags.StopDirtyChecking | VNodeFlags.ChildrenVNode | VNodeFlags.Component)) > 0) {
+  if ((flags & (
+    VNodeFlags.StopDirtyChecking | // StopDirtyChecking will convert this value to -value
+    VNodeFlags.ChildrenVNode |
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) > 0) {
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       instance = vnode.instance as Node;
       children = vnode.children as VNode;

@@ -16,7 +16,13 @@ export function visitUnwrapped(
   }
 
   const flags = vnode.flags;
-  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.Component)) !== 0) {
+  if ((flags & (
+    VNodeFlags.ChildrenVNode |
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
     const children = vnode.children;
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       let child: VNode | null = children as VNode;
@@ -49,7 +55,13 @@ export function visitWrapped(
 
   const vnode = wrapper.vnode;
   const flags = vnode.flags;
-  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.Component)) !== 0) {
+  if ((flags & (
+    VNodeFlags.ChildrenVNode |
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
     let context = wrapper.context;
     const children = vnode.children;
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
@@ -183,7 +195,7 @@ export class VNodeWrapper {
   }
 
   isComponent(): boolean {
-    return (this.vnode.flags & VNodeFlags.Component) !== 0;
+    return (this.vnode.flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0;
   }
 
   isStatefulComponent(): boolean {
