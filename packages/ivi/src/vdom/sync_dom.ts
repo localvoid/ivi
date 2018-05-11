@@ -15,48 +15,41 @@ export function syncStyle(
   a: CSSStyleProps | null,
   b: CSSStyleProps | null,
 ): void {
+  const style = node.style;
   let key: string;
-  let style: CSSStyleDeclaration;
 
   if (a === null) {
-    if (b !== null) {
-      // a is empty, insert all styles from b.
-      style = node.style;
-      for (key in b) {
-        style.setProperty(key, (b as { [key: string]: string })[key]);
-      }
+    // a is empty, insert all styles from b.
+    for (key in b!) {
+      style.setProperty(key, (b as { [key: string]: string })[key]);
+    }
+  } else if (b === null) {
+    // b is empty, remove all styles from a.
+    for (key in a) {
+      style.removeProperty(key);
     }
   } else {
-    style = node.style;
+    let matchCount = 0;
+    for (key in a) {
+      const bValue = (b as { [key: string]: string })[key];
 
-    if (b === null) {
-      // b is empty, remove all styles from a.
-      for (key in a) {
+      if (bValue !== undefined) {
+        const aValue = (a as { [key: string]: string })[key];
+        if (aValue !== bValue) {
+          style.setProperty(key, bValue);
+        }
+        ++matchCount;
+      } else {
         style.removeProperty(key);
       }
-    } else {
-      let matchCount = 0;
-      for (key in a) {
-        const bValue = (b as { [key: string]: string })[key];
+    }
 
-        if (bValue !== undefined) {
-          const aValue = (a as { [key: string]: string })[key];
-          if (aValue !== bValue) {
-            style.setProperty(key, bValue);
-          }
-          ++matchCount;
-        } else {
-          style.removeProperty(key);
-        }
-      }
-
-      const keys = Object.keys(b);
-      for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
-        key = keys[i];
-        if (objectHasOwnProperty.call(a, key) === false) {
-          style.setProperty(key, (b as { [key: string]: string })[key]);
-          ++matchCount;
-        }
+    const keys = Object.keys(b);
+    for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
+      if (objectHasOwnProperty.call(a, key) === false) {
+        style.setProperty(key, (b as { [key: string]: string })[key]);
+        ++matchCount;
       }
     }
   }
@@ -75,6 +68,7 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
     value = value === true ? "" : undefined;
   }
   if (value === undefined) {
+    /* istanbul ignore else */
     if (DEBUG) {
       node.removeAttribute(key);
     } else {
@@ -89,6 +83,7 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
             /**
              * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
              */
+            /* istanbul ignore else */
             if (DEBUG) {
               node.setAttributeNS(XML_NAMESPACE, key, value);
             } else {
@@ -102,6 +97,7 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
             /**
              * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
              */
+            /* istanbul ignore else */
             if (DEBUG) {
               node.setAttributeNS(XLINK_NAMESPACE, key, value);
             } else {
@@ -112,6 +108,7 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
         }
       }
     }
+    /* istanbul ignore else */
     if (DEBUG) {
       node.setAttribute(key, value);
     } else {
@@ -137,50 +134,48 @@ export function syncDOMAttrs(
   let key: string;
 
   if (a === null) {
-    if (b !== null) {
-      // a is empty, insert all attributes from b.
-      for (key in b) {
-        setDOMAttribute(node, svg, key, b[key]);
+    // a is empty, insert all attributes from b.
+    for (key in b!) {
+      setDOMAttribute(node, svg, key, b![key]);
+    }
+  } else if (b === null) {
+    // b is empty, remove all attributes from a.
+    for (key in a) {
+      /* istanbul ignore else */
+      if (DEBUG) {
+        node.removeAttribute(key);
+      } else {
+        elementRemoveAttribute.call(node, key);
       }
     }
   } else {
-    if (b === null) {
-      // b is empty, remove all attributes from a.
-      for (key in a) {
+    // Remove and update attributes.
+    let matchCount = 0;
+    for (key in a) {
+      const bValue = b[key];
+      if (bValue === undefined) {
+        /* istanbul ignore else */
         if (DEBUG) {
           node.removeAttribute(key);
         } else {
           elementRemoveAttribute.call(node, key);
         }
-      }
-    } else {
-      // Remove and update attributes.
-      let matchCount = 0;
-      for (key in a) {
-        const bValue = b[key];
-        if (bValue === undefined) {
-          if (DEBUG) {
-            node.removeAttribute(key);
-          } else {
-            elementRemoveAttribute.call(node, key);
-          }
-        } else {
-          const aValue = a[key];
-          if (aValue !== bValue) {
-            setDOMAttribute(node, svg, key, bValue);
-          }
-          ++matchCount;
+      } else {
+        const aValue = a[key];
+        if (aValue !== bValue) {
+          setDOMAttribute(node, svg, key, bValue);
         }
+        ++matchCount;
       }
+    }
 
-      // Insert new attributes.
-      const keys = Object.keys(b);
-      for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
-        key = keys[i];
-        if (objectHasOwnProperty.call(a, key) === false) {
-          setDOMAttribute(node, svg, key, b[key]);
-          ++matchCount;
-        }
+    // Insert new attributes.
+    const keys = Object.keys(b);
+    for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
+      if (objectHasOwnProperty.call(a, key) === false) {
+        setDOMAttribute(node, svg, key, b[key]);
+        ++matchCount;
       }
     }
   }

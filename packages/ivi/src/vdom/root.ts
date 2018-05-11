@@ -87,6 +87,7 @@ function _update() {
         dirtyCheck(container, currentVNode, EMPTY_CONTEXT, false);
       }
 
+      /* istanbul ignore else */
       if (DEBUG) {
         if (root.currentVNode) {
           checkNestingViolations(container, root.currentVNode);
@@ -120,6 +121,7 @@ export function renderNextFrame(
   node: VNode | null,
   container: Element,
 ): void {
+  /* istanbul ignore else */
   if (DEBUG) {
     if (container === document.body) {
       throw new Error("Rendering in the <body> aren't allowed, create an element inside body that will contain " +

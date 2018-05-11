@@ -53,6 +53,20 @@ describe(`sync element style`, () => {
     });
   });
 
+  test(`{ top: "10px" } => { top: "10px" }`, () => {
+    startRender<HTMLElement>((r) => {
+      r(h.div().s({
+        top: "10px",
+      }));
+      const n = r(h.div().s({
+        top: "10px",
+      }));
+
+      expect(n.style.length).toBe(1);
+      expect(n.style.getPropertyValue("top")).toBe("10px");
+    });
+  });
+
   test(`null => { top: "10px", left: "20px" }`, () => {
     startRender<HTMLElement>((r) => {
       r(h.div());

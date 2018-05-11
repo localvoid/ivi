@@ -23,6 +23,7 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
  * @param node VNode element to remove.
  */
 export function removeVNode(parent: Node, node: VNode): void {
+  /* istanbul ignore else */
   if (DEBUG) {
     parent.removeChild(getDOMInstanceFromVNode(node)!);
   } else {
@@ -217,6 +218,7 @@ function _setInputValue(input: HTMLInputElement, value: string | boolean | null)
  * @returns Rendered DOM Node.
  */
 function _render(parent: Node, vnode: VNode, context: {}): Node {
+  /* istanbul ignore else */
   if (DEBUG) {
     if (vnode.instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times, " +
@@ -260,6 +262,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         if (factory.instance === null) {
           _render(parent, factory, context);
         }
+        /* istanbul ignore else */
         if (DEBUG) {
           node = (factory.instance as Node).cloneNode(false);
         } else {
@@ -272,6 +275,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
          * SVGElement.className returns `SVGAnimatedString`
          */
         if (svg === true) {
+          /* istanbul ignore else */
           if (DEBUG) {
             (node as Element).setAttribute("class", vnode.className);
           } else {
@@ -297,6 +301,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
           children = children as VNode;
           do {
+            /* istanbul ignore else */
             if (DEBUG) {
               node.insertBefore(_render(node, children, context), null);
             } else {
@@ -375,6 +380,7 @@ export function renderVNode(
   context: {},
 ): Node {
   const node = _render(parent, vnode, context);
+  /* istanbul ignore else */
   if (DEBUG) {
     parent.insertBefore(node, refChild);
   } else {
@@ -424,6 +430,7 @@ export function syncVNode(
     return;
   }
 
+  /* istanbul ignore else */
   if (DEBUG) {
     if (b.instance !== null) {
       throw new Error("VNode is already have a reference to an instance. VNodes can't be used mutliple times");
@@ -458,6 +465,7 @@ export function syncVNode(
         if (a.className !== b.className) {
           const className = b.className === void 0 ? "" : b.className;
           if (svg === true) {
+            /* istanbul ignore else */
             if (DEBUG) {
               (instance as Element).setAttribute("class", className);
             } else {
@@ -628,6 +636,7 @@ export function syncVNode(
     }
   } else {
     instance = _render(parent, b, context);
+    /* istanbul ignore else */
     if (DEBUG) {
       parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
     } else {
@@ -1042,6 +1051,7 @@ function _syncChildrenTrackByKeys(
           } else {
             if (j < 0 || i !== seq[j]) {
               next = bNode.next === null ? null : getDOMInstanceFromVNode(bNode.next);
+              /* istanbul ignore else */
               if (DEBUG) {
                 parent.insertBefore(getDOMInstanceFromVNode(bNode)!, next);
               } else {
