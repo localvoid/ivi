@@ -5,9 +5,9 @@ import {
   VNodeWrapper, visitWrapped,
 
   isElement, isInputElement, isElementWithClassName, isInputElementWithClassName,
-  hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasClassName, hasKey, hasProps, hasExactProps,
-  hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML, isAutofocused,
-  hasInputValue, hasInputChecked,
+  hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasFactory, hasClassName, hasKey, hasProps,
+  hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML,
+  isAutofocused, hasInputValue, hasInputChecked,
   innerText,
 } from "./vdom";
 
@@ -71,6 +71,11 @@ export class VNodeMatcher extends Matcher<VNodeWrapper> {
 }
 
 export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
+  hasFactory(factory: Function): VNodeElementMatcher {
+    this.addPredicate((n: VNodeWrapper) => hasFactory(n, factory));
+    return this;
+  }
+
   hasClassName(className: string): VNodeElementMatcher {
     this.addPredicate(function (n: VNodeWrapper) {
       return hasClassName(n, className);

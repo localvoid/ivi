@@ -305,6 +305,10 @@ export class VNodeWrapper {
     return this.vnode.children as boolean | null;
   }
 
+  hasFactory(factory: Function): boolean {
+    return hasFactory(this, factory);
+  }
+
   hasParent(matcher: VNodeMatcher): boolean {
     return hasParent(this, matcher.match);
   }
@@ -459,6 +463,11 @@ export function isInputElementWithClassName(wrapper: VNodeWrapper, type: string,
     vnode.className !== void 0 &&
     containsClassName(vnode.className, className) === true
   );
+}
+
+export function hasFactory(wrapper: VNodeWrapper, factory: Function): boolean {
+  const vnode = wrapper.vnode;
+  return (vnode.factory === factory);
 }
 
 export function hasKey(wrapper: VNodeWrapper, key: any): boolean {
