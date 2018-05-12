@@ -1,4 +1,4 @@
-import { mapRange, VNodeFlags, children } from "ivi";
+import { mapRange, VNodeFlags, fragment } from "ivi";
 import * as h from "ivi-html";
 
 test(`zero range (0, 0)`, () => {
@@ -61,5 +61,5 @@ test(`raise an exception when VNode doesn't have an explicit key (second node)`,
 });
 
 test(`raise an exception when function returns children collection`, () => {
-  expect(() => { mapRange(0, 1, () => children(h.div().k(0), h.div().k(1))); }).toThrowError("singular");
+  expect(() => { mapRange(0, 1, () => fragment(h.div().k(0), h.div().k(1))); }).toThrowError("singular");
 });

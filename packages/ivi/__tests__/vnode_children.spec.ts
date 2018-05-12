@@ -1,4 +1,4 @@
-import { VNodeFlags, VNode, children, mapRange } from "ivi";
+import { VNodeFlags, VNode, fragment, mapRange } from "ivi";
 import * as h from "ivi-html";
 
 test(`{ null }`, () => {
@@ -128,7 +128,7 @@ test(`<div></div><div></div>{ null }`, () => {
 test(`{ children(<div></div><div></div>) }`, () => {
   const v1 = h.div();
   const v2 = h.div();
-  const v = h.div().c(children(v1, v2));
+  const v = h.div().c(fragment(v1, v2));
 
   expect(v.flags & VNodeFlags.ChildrenVNode).toBeTruthy();
   expect(v.children).toBe(v1);
@@ -145,7 +145,7 @@ test(`{ children(<div></div><div></div>) }`, () => {
 test(`{ null }{ children(<div></div><div></div>) }`, () => {
   const v1 = h.div();
   const v2 = h.div();
-  const v = h.div().c(null, children(v1, v2));
+  const v = h.div().c(null, fragment(v1, v2));
 
   expect(v.flags & VNodeFlags.ChildrenVNode).toBeTruthy();
   expect(v.children).toBe(v1);
@@ -162,7 +162,7 @@ test(`{ null }{ children(<div></div><div></div>) }`, () => {
 test(`{ null }{ children(<div key="a"></div><div></div>) }`, () => {
   const v1 = h.div().k("a");
   const v2 = h.div();
-  const v = h.div().c(null, children(v1, v2));
+  const v = h.div().c(null, fragment(v1, v2));
 
   expect(v.flags & VNodeFlags.ChildrenVNode).toBeTruthy();
   expect(v.children).toBe(v1);
@@ -180,7 +180,7 @@ test(`<div></div>{ children(<div></div><div></div>) }`, () => {
   const v1 = h.div();
   const v2 = h.div();
   const v3 = h.div();
-  const v = h.div().c(v1, children(v2, v3));
+  const v = h.div().c(v1, fragment(v2, v3));
 
   expect(v.flags & VNodeFlags.ChildrenVNode).toBeTruthy();
   expect(v.children).toBe(v1);
@@ -202,7 +202,7 @@ test(`{ children(<div></div><div></div>) }<div></div>`, () => {
   const v1 = h.div();
   const v2 = h.div();
   const v3 = h.div();
-  const v = h.div().c(children(v1, v2), v3);
+  const v = h.div().c(fragment(v1, v2), v3);
 
   expect(v.flags & VNodeFlags.ChildrenVNode).toBeTruthy();
   expect(v.children).toBe(v1);

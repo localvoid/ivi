@@ -1,20 +1,20 @@
-import { VNodeFlags, VNode, children } from "ivi";
+import { VNodeFlags, VNode, fragment } from "ivi";
 import * as h from "ivi-html";
 
 test(`empty`, () => {
-  expect(children()).toBeNull();
+  expect(fragment()).toBeNull();
 });
 
 test(`{ null }`, () => {
-  expect(children(null)).toBeNull();
+  expect(fragment(null)).toBeNull();
 });
 
 test(`{ null }{ null }`, () => {
-  expect(children(null, null)).toBeNull();
+  expect(fragment(null, null)).toBeNull();
 });
 
 test(`"abc"`, () => {
-  const first = children("abc")!;
+  const first = fragment("abc")!;
 
   expect(first).toBeInstanceOf(VNode);
   expect(first.flags & VNodeFlags.Text).toBeTruthy();
@@ -24,7 +24,7 @@ test(`"abc"`, () => {
 });
 
 test(`10`, () => {
-  const first = children(10)!;
+  const first = fragment(10)!;
 
   expect(first).toBeInstanceOf(VNode);
   expect(first.flags & VNodeFlags.Text).toBeTruthy();
@@ -35,7 +35,7 @@ test(`10`, () => {
 
 test(`<div></div>`, () => {
   const v1 = h.div();
-  const first = children(v1);
+  const first = fragment(v1);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v1);
@@ -45,7 +45,7 @@ test(`<div></div>`, () => {
 test(`<div></div></div></div>`, () => {
   const v1 = h.div();
   const v2 = h.div();
-  const first = children(v1, v2);
+  const first = fragment(v1, v2);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v2);
@@ -56,7 +56,7 @@ test(`<div></div></div></div>`, () => {
 
 test(`{ null }<div></div>`, () => {
   const v1 = h.div();
-  const first = children(null, v1);
+  const first = fragment(null, v1);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v1);
@@ -65,7 +65,7 @@ test(`{ null }<div></div>`, () => {
 
 test(`{ null }{ null }<div></div>`, () => {
   const v1 = h.div();
-  const first = children(null, null, v1);
+  const first = fragment(null, null, v1);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v1);
@@ -74,7 +74,7 @@ test(`{ null }{ null }<div></div>`, () => {
 
 test(`<div></div>{ null }`, () => {
   const v1 = h.div();
-  const first = children(v1, null);
+  const first = fragment(v1, null);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v1);
@@ -83,7 +83,7 @@ test(`<div></div>{ null }`, () => {
 
 test(`<div></div>{ null }{ null }`, () => {
   const v1 = h.div();
-  const first = children(v1, null, null);
+  const first = fragment(v1, null, null);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v1);
@@ -92,7 +92,7 @@ test(`<div></div>{ null }{ null }`, () => {
 
 test(`{ null }<div></div>{ null }`, () => {
   const v1 = h.div();
-  const first = children(null, v1, null);
+  const first = fragment(null, v1, null);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v1);
@@ -102,7 +102,7 @@ test(`{ null }<div></div>{ null }`, () => {
 test(`<div></div>{ null }</div></div>`, () => {
   const v1 = h.div();
   const v2 = h.div();
-  const first = children(v1, null, v2);
+  const first = fragment(v1, null, v2);
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v2);
@@ -114,7 +114,7 @@ test(`<div></div>{ null }</div></div>`, () => {
 test(`{ children(<div></div></div></div>) }`, () => {
   const v1 = h.div();
   const v2 = h.div();
-  const first = children(children(v1, v2));
+  const first = fragment(fragment(v1, v2));
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v2);
@@ -127,7 +127,7 @@ test(`<div></div>{ children(<div></div></div></div>) }`, () => {
   const v1 = h.div();
   const v2 = h.div();
   const v3 = h.div();
-  const first = children(v1, children(v2, v3));
+  const first = fragment(v1, fragment(v2, v3));
 
   expect(first).toBe(v1);
   expect(v1.prev).toBe(v3);

@@ -2,7 +2,7 @@ import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 
 /**
- * children is a variadic function that creates a children collection.
+ * fragment is a variadic function that creates a children collection.
  *
  *     const content = children(
  *       h.p().c("Paragraph 1"),
@@ -20,10 +20,10 @@ import { VNode } from "./vnode";
  * @param args children.
  * @returns children collection.
  */
-export function children(...args: Array<VNode | string | number | null>): VNode | null;
+export function fragment(...args: Array<VNode | string | number | null>): VNode | null;
 
 /**
- * children is a variadic function that creates a children collection.
+ * fragment is a variadic function that creates a children collection.
  *
  *     const content = children(
  *       h.p().c("Paragraph 1"),
@@ -40,7 +40,7 @@ export function children(...args: Array<VNode | string | number | null>): VNode 
  *
  * @returns children collection.
  */
-export function children(): VNode | null {
+export function fragment(): VNode | null {
   const args: Array<VNode | string | number | null> = arguments as any;
   let first: VNode<any> | null = null;
   let prev: VNode<any> | null = null;
