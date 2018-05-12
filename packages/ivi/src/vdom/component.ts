@@ -7,7 +7,7 @@ import { VNode } from "./vnode";
  */
 export interface StatelessComponent<P = undefined> {
   render: (props: P) => VNode;
-  shouldUpdate: ((oldProps: P, newProps: P) => boolean) | undefined;
+  shouldUpdate: ((oldProps: P, newProps: P) => boolean) | null;
 }
 
 /**

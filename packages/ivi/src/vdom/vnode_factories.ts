@@ -1,5 +1,5 @@
 import { VNodeFlags } from "./flags";
-import { StatefulComponent } from "./component";
+import { StatefulComponent, StatelessComponent } from "./component";
 import { VNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 
@@ -7,17 +7,15 @@ import { ConnectDescriptor } from "./connect_descriptor";
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
  *
  *     const A = statelessComponent<{ text: string }>(
- *       (props) => h.div().c(props.text);
- *       (prevProps, nextProps) => prevProps.text !== nextProps.text;
+ *       (props) => h.div().c(props.text),
  *     );
  *
  *     render(
- *       A({ text: "Hello" });
+ *       A({ text: "Hello" }),
  *       DOMContainer,
  *     );
  *
  * @param render render function.
- * @param shouldUpdate optional function that performs an early check that prevent unnecessary updates.
  * @returns factory that produces stateless component nodes.
  */
 export function statelessComponent(c: () => VNode): () => VNode<undefined>;
@@ -26,65 +24,82 @@ export function statelessComponent(c: () => VNode): () => VNode<undefined>;
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
  *
  *     const A = statelessComponent<{ text: string }>(
- *       (props) => h.div().c(props.text);
- *       (prevProps, nextProps) => prevProps.text !== nextProps.text;
+ *       (props) => h.div().c(props.text),
  *     );
  *
  *     render(
- *       A({ text: "Hello" });
+ *       A({ text: "Hello" }),
  *       DOMContainer,
  *     );
  *
  * @param render render function.
- * @param shouldUpdate optional function that performs an early check that prevent unnecessary updates.
  * @returns factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   render: undefined extends P ? (props?: P) => VNode<any> : (props: P) => VNode<any>,
-  shouldUpdate?: (oldProps: P, newProps: P) => boolean,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
  *
  *     const A = statelessComponent<{ text: string }>(
- *       (props) => h.div().c(props.text);
- *       (prevProps, nextProps) => prevProps.text !== nextProps.text;
+ *       (props) => h.div().c(props.text),
  *     );
  *
  *     render(
- *       A({ text: "Hello" });
+ *       A({ text: "Hello" }),
  *       DOMContainer,
  *     );
  *
  * @param render render function.
- * @param shouldUpdate optional function that performs an early check that prevent unnecessary updates.
  * @returns factory that produces stateless component nodes.
  */
-export function statelessComponent<P>(
-  render: (props: P) => VNode<any>,
-  shouldUpdate?: (oldProps: P, newProps: P) => boolean,
+export function statelessComponent<P>(render: (props: P) => VNode<any>): (props: P) => VNode<P> {
+  const d = { render, shouldUpdate: null };
+  const f = function (props: P): VNode<P> {
+    const n = new VNode<P>(
+      VNodeFlags.StatelessComponent,
+      d,
+      props,
+      void 0,
+      null,
+    );
+    /* istanbul ignore else */
+    if (DEBUG) {
+      n.factory = f;
+    }
+    return n;
+  };
+  return f;
+}
+
+/**
+ * withShouldUpdate creates a virtual DOM node factory that produces nodes for stateless components with custom
+ * `shouldUpdate` function to prevent unnecessary updates.
+ *
+ *     const A = withShouldUpdate<{ text: string }>(
+ *       (prevProps, nextProps) => prevProps.text !== nextProps.text,
+ *       statelessComponent(
+ *         (props) => h.div().c(props.text),
+ *       ),
+ *     );
+ *
+ *     render(
+ *       A({ text: "Hello" }),
+ *       DOMContainer,
+ *     );
+ *
+ * @param shouldUpdate function that performs an early check that prevent unnecessary updates.
+ * @param factory factory that produces stateless component nodes.
+ * @returns factory that produces stateless component nodes.
+ */
+export function withShouldUpdate<P>(
+  shouldUpdate: (oldProps: P, newProps: P) => boolean,
+  factory: (props: P) => VNode<P>,
 ): (props: P) => VNode<P> {
-  const d = { render, shouldUpdate };
-  let f: (props: P) => VNode<P>;
-  if (shouldUpdate === undefined) {
-    f = function (props: P): VNode<P> {
-      const n = new VNode<P>(
-        VNodeFlags.StatelessComponent,
-        d,
-        props,
-        void 0,
-        null,
-      );
-      /* istanbul ignore else */
-      if (DEBUG) {
-        n.factory = f;
-      }
-      return n;
-    };
-    return f;
-  }
-  f = function (props: P): VNode<P> {
+  const v = factory(null as any);
+  const d = { render: (v.tag as StatelessComponent<P>).render, shouldUpdate };
+  const f = function (props: P): VNode<P> {
     const n = new VNode<P>(
       VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
       d,
@@ -117,7 +132,7 @@ export function statelessComponent<P>(
  *     });
  *
  *     render(
- *       A("clicked");
+ *       A("clicked"),
  *       DOMContainer,
  *     );
  *
@@ -142,7 +157,7 @@ export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<
  *     });
  *
  *     render(
- *       A("clicked");
+ *       A("clicked"),
  *       DOMContainer,
  *     );
  *
@@ -169,7 +184,7 @@ export function statefulComponent<P>(
  *     });
  *
  *     render(
- *       A("clicked");
+ *       A("clicked"),
  *       DOMContainer,
  *     );
  *

@@ -15,7 +15,7 @@ export {
 } from "./vdom/vnode";
 export { children, map, mapRange } from "./vdom/vnode_collections";
 export { element } from "./vdom/element";
-export { statefulComponent, statelessComponent, context, connect } from "./vdom/vnode_factories";
+export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/vnode_factories";
 
 /**
  * API available only in browser environment

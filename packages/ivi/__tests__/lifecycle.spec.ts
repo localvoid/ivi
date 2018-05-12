@@ -1,8 +1,11 @@
-import { Component, VNode, statelessComponent, statefulComponent } from "ivi";
+import { Component, VNode, statelessComponent, withShouldUpdate, statefulComponent } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkLifecycle, lifecycleTouch } from "./utils";
 
-const Static = statelessComponent<VNode>((child) => child, () => false);
+const Static = withShouldUpdate(
+  () => false,
+  statelessComponent<VNode>((child) => child),
+);
 
 interface ComponentHooks<P> {
   construct?: (
