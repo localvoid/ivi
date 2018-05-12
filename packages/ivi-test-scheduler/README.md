@@ -1,1 +1,1 @@
-# Test utils for ivi library
+# Scheduler implementation for test environments

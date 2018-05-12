@@ -1,4 +1,4 @@
-[ivi](http://github.com/localvoid/ivi) is a javascript (TypeScript) library for building web user interfaces.
+ivi is a javascript (TypeScript) library for building web user interfaces.
 
 ## Features
 
@@ -12,108 +12,40 @@
 - Test utilities
 - Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler) `ADVANCED` mode.
 
-## Questions
-
-For questions and support please use the [Gitter chat room](https://gitter.im/ivijs/ivi). The issue list of this repo is
-exclusively for bug reports and feature requests.
-
-## Documentation
-
-### General
-
-- [Virtual DOM](https://github.com/ivijs/ivi/blob/master/documentation/general/virtual-dom.md)
-- [Components](https://github.com/ivijs/ivi/blob/master/documentation/general/components.md)
-- [Synthetic Events](https://github.com/ivijs/ivi/blob/master/documentation/general/synthetic-events.md)
-- [Connectors](https://github.com/ivijs/ivi/blob/master/documentation/general/connect.md)
-- [Context](https://github.com/ivijs/ivi/blob/master/documentation/general/context.md)
-
-### Advanced
-
-- [Scheduler](https://github.com/ivijs/ivi/blob/master/documentation/advanced/scheduler.md)
-- [TypeScript Enums](https://github.com/ivijs/ivi/blob/master/documentation/advanced/typescript-enums.md)
-- [Security](https://github.com/ivijs/ivi/blob/master/documentation/advanced/security.md)
-
-### Misc
-
-- [Performance Tips](https://github.com/ivijs/ivi/blob/master/documentation/misc/perf-tips.md)
-- [Children Reconciliation](https://github.com/ivijs/ivi/blob/master/documentation/misc/children-reconciliation.md)
-
-### Basic Example
+## Example
 
 ```js
 import { render } from "ivi";
 import * as h from "ivi-html";
 
 const container = document.getElementById("app");
-let counter = 0;
-
-function update() {
-  render(
-    h.div().c(`Counter: ${counter}`),
-    container,
-  );
-
-  setTimeout(update, 100);
-}
-update();
-```
-
-### Components
-
-Components are the basic building blocks for your applications, they will help you encapsulate reusable code.
-
-#### Stateless Components
-
-Stateless components are implemented with simple functions.
-
-```ts
-import { statelessComponentFactory, render } from "ivi";
-import * as h from "ivi-html";
-
-const HelloComponent = statelessComponent<string>((text) => (
-  h.div().c(text)
-));
 
 render(
-  HelloComponent("Hello Stateless Component!"),
-  document.getElementById("app")!,
+  h.div().c("Hello World!"),
+  container,
 );
 ```
 
-#### Stateful Components
+## Documentation
 
-Stateful components are implemented with ES6 classes and should be extended from the base component class
-`Component<P>`. Base class has a parametric type `P` that specifies props type.
+### General
 
-```ts
-import { Component, componentFactory, render } from "ivi";
-import * as h from "ivi-html";
+- [Virtual DOM](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
+- [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md)
+- [Synthetic Events](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
+- [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md)
+- [Context](https://github.com/localvoid/ivi/blob/master/documentation/general/context.md)
 
-const StatefulComponent = component(class extends Component {
-  private time = 0;
-  private timeoutId = 0;
+### Advanced
 
-  attached() {
-    this.timeoutId = setInterval(() => {
-      this.time++;
-      this.invalidate();
-    }, 1000);
-  }
+- [Scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
+- [TypeScript Enums](https://github.com/localvoid/ivi/blob/master/documentation/advanced/typescript-enums.md)
+- [Security](https://github.com/localvoid/ivi/blob/master/documentation/advanced/security.md)
 
-  detached() {
-    clearInterval(this.timeoutId);
-  }
+### Misc
 
-  render() {
-    return h.div().c(`Time: ${this.time}`);
-  }
-});
-
-render(
-  StatefulComponent(),
-  document.getElementById("app")!,
-);
-```
+- [Performance Tips](https://github.com/localvoid/ivi/blob/master/documentation/misc/perf-tips.md)
+- [Children Reconciliation](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 
 ### Examples and demo applications
 

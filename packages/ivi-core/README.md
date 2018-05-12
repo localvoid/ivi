@@ -16,12 +16,12 @@ Context.
 
 ```ts
 const enum KeyCode {
-    WinKeyFFLinux = 0,
-    MacEnter = 3,
-    Backspace = 8,
-    Tab = 9,
-    Clear = 12,
-    ...
+  WinKeyFFLinux = 0,
+  MacEnter = 3,
+  Backspace = 8,
+  Tab = 9,
+  Clear = 12,
+  ...
 }
 ```
 
@@ -31,12 +31,12 @@ KeyboardEvent `keyCode` values.
 
 ```ts
 const enum KeyLocation {
-    Standard = 0,
-    Left = 1,
-    Right = 2,
-    NumPad = 3,
-    Mobile = 4,
-    Joystick = 5,
+  Standard = 0,
+  Left = 1,
+  Right = 2,
+  NumPad = 3,
+  Mobile = 4,
+  Joystick = 5,
 }
 ```
 
@@ -46,11 +46,11 @@ KeyboardEvent `keyLocation` values.
 
 ```ts
 const enum MouseButtons {
-    Left = 1,
-    Right = 1 << 1,
-    Middle = 1 << 2,
-    Fourh = 1 << 3,
-    Fifth = 1 << 4,
+  Left = 1,
+  Right = 1 << 1,
+  Middle = 1 << 2,
+  Fourh = 1 << 3,
+  Fifth = 1 << 4,
 }
 ```
 
@@ -69,26 +69,10 @@ function unorderedArrayDelete<T>(array: T[], index: number): void;
 ### Repeatable Task List
 
 ```ts
-interface RepeatableTaskList {
-    readonly tasks: Array<() => boolean | undefined>;
-}
+type RepeatableTaskList = Array<() => boolean | undefined>;
+function runRepeatableTasks(tasks: RepeatableTaskList);
 ```
 
 `RepeatableTaskList` is a data structure for tasks that will be repeated until they return `true` value.
 
-
-```ts
-interface RepeatableTaskList {
-    add(task: () => boolean | undefined): void;
-}
-```
-
-Add function to the task list.
-
-```ts
-interface RepeatableTaskList {
-    run(): void;
-}
-```
-
-Run tasks.
+`runRepeatableTasks()` runs repeatable tasks.

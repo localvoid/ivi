@@ -21,17 +21,11 @@ import { render } from "ivi";
 import * as h from "ivi-html";
 
 const container = document.getElementById("app");
-let counter = 0;
 
-function update() {
-  render(
-    h.div().c(`Counter: ${counter}`),
-    container,
-  );
-
-  setTimeout(update, 100);
-}
-update();
+render(
+  h.div().c("Hello World!"),
+  container,
+);
 ```
 
 ## Documentation

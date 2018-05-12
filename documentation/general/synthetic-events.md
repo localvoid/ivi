@@ -28,17 +28,11 @@ const keyDown = Events.onKeyDown((ev) => {
 ### Event Handler registration
 
 Event Handlers are declaratively registered with a Virtual DOM API. Virtual DOM nodes that represent HTML and SVG
-elements can have an `EventHandlerList` assigned with `e()` method.
-
-`EventHandlerList` is an array of `EventHandler` objects that describe which events should be attached to the DOM node
-at this point in time.
-
-There are no restrictions in number of attached event handlers with the same type, it is possible to attach multiple
-`onClick` event handlers.
+elements can have event handlers assigned with `e()` method.
 
 ```ts
 interface VNode {
-  e(events: EventHandlerList | EventHandler | null): this;
+  e(events: Array<EventHandler | null> | EventHandler | null): this;
   // ...
 }
 ```
@@ -58,6 +52,8 @@ const StatefulComponent = component(class extends Component {
 
   render() {
     return h.div()
+      // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
+      // multiple `onClick` event handlers.
       .e([
         this.onClick,
         this.onClick,

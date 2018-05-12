@@ -87,24 +87,97 @@ Method `unsafeHTML()` method is used to specify `innerHTML`, it is named unsafe 
 
 ```ts
 interface VNode<P> {
-  value(value: string | null): this;
-  checked(checked: boolean | null): this;
+  value(value: string | boolean | null): this;
 }
 ```
 
-Method `value()` is used to assign a value for input elements that can have a text value.
+Method `value()` is used to assign a value and checked values for input elements. When value has a `string` type it is
+assigned an input `value` property, otherwise it is assigned as a `checked` property.
 
-Method `checked()` is used to assign a checked value for input element that can have a checked value.
-
-### Methods available on focusable elements
+## Children collections
 
 ```ts
-interface VNode<P> {
-  autofocus(focus: boolean): this;
-}
+function fragment(...args: Array<VNode | string | number | null>): VNode | null;
 ```
 
-Autofocused element will receive a focus when element is instantiated.
+`fragment()` is a variadic function that creates a fragment children collection.
+
+```ts
+const Button = statelessComponent((slot) => h.div("button").c(slot));
+
+render(
+  Button(
+    fragment(
+      h.span().c("Click"),
+      " ",
+      h.span().c("Me"),
+    ),
+  ),
+  DOMContainer,
+);
+```
+
+### Dynamic lists
+
+`map()` and `mapRange()` functions are used to generate dynamic lists with keyed elements.
+
+```ts
+function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null;
+function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null;
+```
+
+`map()` creates a children collection with the results of calling a provided function on every element in the calling
+array.
+
+```ts
+render(
+  h.div().c(
+    map([1, 2, 3], (item) => h.div().k(item)),
+  ),
+  DOMContainer,
+);
+```
+
+`mapRange()` creates a children collection with the results of calling a provided function on every number in the
+provided range.
+
+```ts
+const items = [1, 2, 3];
+
+render(
+  h.div().c(
+    mapRange(0, items.length, (i) => h.div().k(items[i])),
+  ),
+  DOMContainer,
+);
+```
+
+## Additional functions
+
+### Autofocus
+
+```ts
+function autofocus(vnode: VNode): void;
+```
+
+Autofocused node will receive a focus when element is instantiated. `autofocus()` is working with any node type except
+text nodes.
+
+### Retrieve DOM instance
+
+```ts
+function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T | null;
+```
+
+`getDOMInstanceFromVNode()` retrieves a closest DOM node from a virtual DOM node. This method works with any node type.
+
+### Retrieve Component instance
+
+```ts
+function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode): T | null;
+```
+
+`getComponentInstanceFromVNode()` retrieves a stateful component instance from a virtual DOM node.
 
 ## Rendering virtual DOM into a document
 

@@ -7,7 +7,7 @@ Context implicitly propagates data through component trees.
 Context is updated with a special virtual nodes created with a `context()` function.
 
 ```ts
-function context<T = {}>(context: Context<T>, child: VNode<any>): VNode<Context<T>>;
+function context<T = {}>(context: T, child: VNode<any>): VNode<T>;
 ```
 
 Context data can be accessed with a [connect](external-state.md) selectors.
@@ -28,9 +28,11 @@ const Counter = component(class extends Component {
   }
 
   render() {
-    return context(this._ctx, child());
+    return context(this._ctx,
+      child(),
+    );
   }
-}
+});
 
 const child = connect<number, undefined, { counter: number }>(
   (prev, props, context) => {

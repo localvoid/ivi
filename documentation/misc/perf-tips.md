@@ -7,46 +7,17 @@ Prefer [interned strings](https://en.wikipedia.org/wiki/String_interning) over c
 #### Bad
 
 ```ts
-function Button(props: { active: boolean }) {
+const Button = statelessComponent((active: boolean) => {
   let className = "button";
-  if (props.active === true) {
+  if (active) {
     className += " active";
   }
   return h.div(className);
-}
+});
 ```
 
 #### Good
 
 ```ts
-function Button(props: { active: boolean }) {
-  return h.div(props.active === true ? "button active" : "button");
-}
-```
-
-## Hoist Static Values
-
-Syncing algorithm always performs identity checks before diffing, by hoisting static values we can reduce diffing
-overhead.
-
-#### Bad
-
-```ts
-function Menu() {
-  return h.div()
-    .attrs({ id: "menu" })
-    .children(...);
-}
-```
-
-#### Good
-
-```ts
-const MenuProps = { id: "menu" };
-
-function Menu() {
-  return h.div()
-    .attrs(MenuProps)
-    .children(...);
-}
+const Button = statelessComponent((active: boolean) => h.div(active ? "button active" : "button"));
 ```

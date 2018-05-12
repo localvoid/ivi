@@ -3,10 +3,36 @@
 ## Stateless Component
 
 ```ts
-const HelloComponent = statelessComponent((props: string) => (
-  h.div().children(`Hello ${props}`);
+const A = statelessComponent((props: string) => (
+  h.div().c(`Hello ${props}`)
 ));
+
+render(
+  A("World!"),
+  DOMContainer,
+);
 ```
+
+### `shouldUpdate` hint
+
+`shouldUpdate` hint is used as an early hint that can prevent unnecessary updates.
+
+```ts
+const A = withShouldUpdate<{ title: string }>(
+  (prev, next) => prev.title !== next.title,
+  statelessComponent((props) => (
+    h.div().c(`Hello ${props}`)
+  )),
+);
+
+render(
+  A({ title: "World!" }),
+  DOMContainer,
+);
+```
+
+`withShouldUpdate()` creates a virtual DOM node factory that produces nodes for stateless components with custom
+`shouldUpdate` function to prevent unnecessary updates.
 
 ## Stateful Component
 
@@ -14,17 +40,22 @@ Stateful components are implemented with ES6 classes and should be extended from
 `Component<P>`. Base class has a parametric type `P` that specifies props type.
 
 ```ts
-const HelloComponent = component(class extends Component<string> {
+const A = statefulComponent(class extends Component<string> {
   render() {
-    return h.div().children(`Hello ${this.props}`);
+    return h.div().c(`Hello ${this.props}`);
   }
 });
+
+render(
+  A("World!"),
+  DOMContainer,
+);
 ```
 
 ### Constructor
 
 ```ts
-class HelloComponent extends Component<string> {
+class A extends Component<string> {
   private internalState: string;
 
   constructor(props: string) {
@@ -33,7 +64,7 @@ class HelloComponent extends Component<string> {
   }
 
   render() {
-    return h.div().children(`Hello ${this.internalState}`);
+    return h.div().c(`Hello ${this.internalState}`);
   }
 }
 ```
@@ -48,7 +79,7 @@ interface Component<P = undefined> {
 
 ### Methods
 
-Invalidate view. This method should be invoked when internal state changes should trigger an update of the current view.
+#### `invalidate()`
 
 ```ts
 interface Component {
@@ -56,8 +87,11 @@ interface Component {
 }
 ```
 
+`invalidate()` method invalidates view. This method should be invoked when internal state changes should trigger a
+modification of the current view.
+
 ```ts
-class CounterComponent extends Component {
+class Counter extends Component {
   private counter = 0;
 
   attached() {
@@ -68,30 +102,58 @@ class CounterComponent extends Component {
   }
 
   render() {
-    return h.div().children(`Counter: ${this.counter}`);
+    return h.div().c(`Counter: ${this.counter}`);
   }
 }
 ```
 
 ### Lifecycle methods
 
-Render component representation with a Virtual DOM.
+#### `render()`
 
 ```ts
 interface Component {
-  render(): VNode<any> | undefined;
+  render(): VNode<any>;
 }
 ```
 
+`render()` method is used to produce a component representation with a virtual DOM.
+
 ```ts
-class HelloComponent extends Component<string> {
+class A extends Component<string> {
   render() {
-    return h.div().children(`Hello ${this.props}`);
+    return h.div().c(`Hello ${this.props}`);
   }
 }
 ```
 
-Component received a new props.
+#### `shouldUpdate(prev, next)`
+
+```ts
+interface Component {
+  shouldUpdate(prev: P, next: P): boolean;
+}
+```
+
+Lifecycle method `shouldUpdate` is used as a hint to reduce unnecessary updates.
+
+```ts
+interface Props {
+  title: string;
+}
+
+class A extends Component<Props> {
+  shouldUpdate(prev: Props, next: Props) {
+    return prev.title !== next.title;
+  }
+
+  render() {
+    return h.div().c(`Hello ${this.props.title}`);
+  }
+}
+```
+
+#### `newPropsReceived(prev, next)`
 
 ```ts
 interface Component {
@@ -99,8 +161,10 @@ interface Component {
 }
 ```
 
+`newPropsReceived()` method is invoked when component is received a new props.
+
 ```ts
-class HelloComponent extends Component<string> {
+class A extends Component<string> {
   private internalState = this.props + "!!";
 
   newPropsReceived(oldProps: string, newProps: string) {
@@ -108,12 +172,12 @@ class HelloComponent extends Component<string> {
   }
 
   render() {
-    return h.div().children(`Hello ${this.internalState}`);
+    return h.div().c(`Hello ${this.internalState}`);
   }
 }
 ```
 
-Component is attached to the document. Attached methods are invoked in top to bottom order.
+#### `attached()`
 
 ```ts
 interface Component {
@@ -121,7 +185,10 @@ interface Component {
 }
 ```
 
-Component is detached from the document. Detached methods are invoked in bottom to top order.
+`attached()` method is invoked when component is attached to the document. Attached methods are invoked in top to
+bottom order.
+
+#### `detached()`
 
 ```ts
 interface Component {
@@ -129,11 +196,10 @@ interface Component {
 }
 ```
 
-Component updated.
+`detached()` method is invoked when component is detached from the document. Detached methods are invoked in bottom to
+top order.
 
-`updated` lifecycle is invoked for all parents every time component is updated or any descendant component is updated.
-`local` argument is used to distinguish between updates that was caused by updating one of the descendants or
-updates in the current component.
+#### `updated()`
 
 ```ts
 interface Component {
@@ -141,10 +207,16 @@ interface Component {
 }
 ```
 
-Component invalidated.
+`updated()` method is invoked for all parents every time component is updated or any descendant component is updated.
+`local` argument is used to distinguish between updates that was caused by updating one of the descendants or
+updates in the current component.
+
+#### `invalidated()`
 
 ```ts
 interface Component {
   invalidated(): void;
 }
 ```
+
+`invalidated()` method is invoked when component is invalidated.
