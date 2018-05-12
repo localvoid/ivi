@@ -3,7 +3,7 @@ import { EventSource } from "ivi-events";
 import { VNode, VNodeFlags, Component, StatefulComponent, StatelessComponent, ConnectDescriptor } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
-import { SnapshotFlags, toSnapshot } from "./snapshot";
+import { SnapshotOptions, toSnapshot } from "./snapshot";
 
 export function visitUnwrapped(
   vnode: VNode,
@@ -437,8 +437,8 @@ export class VNodeWrapper {
     return closest(this, matcher.match);
   }
 
-  toSnapshot(flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
-    return toSnapshot(this.vnode, flags);
+  toSnapshot(options?: SnapshotOptions): string {
+    return toSnapshot(this.vnode, options);
   }
 
   emit(ev: Event): void {

@@ -1,22 +1,22 @@
 import { VNode, VNodeFlags, StatefulComponent, StatelessComponent } from "ivi";
 
+export interface SnapshotOptions {
+  readonly ignoreEvents?: boolean;
+  readonly ignoreComponent?: boolean;
+  readonly ignoreContext?: boolean;
+  readonly ignoreConnect?: boolean;
+}
+
 /**
  * SnapshotFlags
  */
-export const enum SnapshotFlags {
+const enum SnapshotFlags {
   IgnoreEvents = 1,
-  IgnoreStatefulComponents = 1 << 1,
-  IgnoreStatelessComponents = 1 << 2,
-  IgnoreContextComponents = 1 << 3,
-  IgnoreConnectComponents = 1 << 4,
+  IgnoreComponent = 1 << 1,
+  IgnoreContext = 1 << 2,
+  IgnoreConnect = 1 << 3,
 
-  IgnoreComponents = 0
-  | IgnoreStatefulComponents
-  | IgnoreStatelessComponents
-  | IgnoreContextComponents
-  | IgnoreConnectComponents,
-
-  DefaultFlags = IgnoreEvents | IgnoreContextComponents,
+  DefaultFlags = IgnoreEvents | IgnoreContext,
 }
 
 /**
@@ -26,7 +26,31 @@ export const enum SnapshotFlags {
  * @param flags See `SnapshotFlags` for details.
  * @returns Snapshot string.
  */
-export function toSnapshot(vnode: VNode, flags: SnapshotFlags = SnapshotFlags.DefaultFlags): string {
+export function toSnapshot(vnode: VNode, options?: SnapshotOptions): string {
+  let flags = SnapshotFlags.DefaultFlags;
+  if (options) {
+    options = {
+      ...{
+        ignoreEvents: true,
+        ignoreContext: true,
+      },
+      ...options,
+    };
+    flags = 0;
+    if (options.ignoreEvents) {
+      flags |= SnapshotFlags.IgnoreEvents;
+    }
+    if (options.ignoreComponent) {
+      flags |= SnapshotFlags.IgnoreComponent;
+    }
+    if (options.ignoreContext) {
+      flags |= SnapshotFlags.IgnoreContext;
+    }
+    if (options.ignoreConnect) {
+      flags |= SnapshotFlags.IgnoreConnect;
+    }
+  }
+
   return _toSnapshot(0, vnode, flags);
 }
 
@@ -54,16 +78,15 @@ function indent(n: number): string {
 function renderAttrsToSnapshot(il: number, props: { [key: string]: string }): string {
   let result = "";
   const keys = Object.keys(props);
-  for (let i = 0; i < keys.length; ++i) {
-    const key = keys[i];
+  for (const key of keys) {
     const value = props[key];
-    if (typeof value !== "boolean") {
-      if (value !== null) {
-        result += `\n${indent(il)}${key}="${value}"`;
+    if (typeof value === "boolean") {
+      if (value) {
+        result += `\n${indent(il)}${key}`;
       }
     } else {
-      if (value === true) {
-        result += `\n${indent(il)}${key}`;
+      if (value !== undefined) {
+        result += `\n${indent(il)}${key}="${value}"`;
       }
     }
   }
@@ -85,13 +108,11 @@ function renderStyleToSnapshot(il: number, style: { [key: string]: any }): strin
   }
 
   let result = `\n${indent(il)}style={`;
-  for (let i = 0; i < keys.length; ++i) {
-    const key = keys[i];
-    const value = style[key];
-    result += `\n${indent(il + 1)}${key}: ${value};`;
+  for (const key of keys) {
+    result += `\n${indent(il + 1)}${key}: ${style[key]};`;
   }
-
   result += `\n${indent(il)}}`;
+
   return result;
 }
 
@@ -103,6 +124,7 @@ function renderStyleToSnapshot(il: number, style: { [key: string]: any }): strin
  * @returns Stringified events.
  */
 function renderEventsToSnapshot(il: number, events: { [key: string]: any }): string {
+  // TODO: missing implementation
   return "";
 }
 
@@ -120,19 +142,20 @@ function _toSnapshot(
   sFlags: SnapshotFlags,
 ): string {
   const flags = vnode.flags;
+  let result = ``;
+  if ((flags & VNodeFlags.Autofocus) !== 0) {
+    result += `${indent(il++)}<autofocus>`;
+  }
+
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
       const closeTagName = vnode.tag;
-      let result = `${indent(il)}<${vnode.tag}`;
       let multiline = false;
+
+      result += `${indent(il)}<${vnode.tag}`;
 
       if (vnode.className !== void 0) {
         result += `\n${indent(il + 1)}class="${vnode.className}"`;
-        multiline = true;
-      }
-
-      if ((flags & VNodeFlags.Autofocus) !== 0) {
-        result += `\n${indent(il + 1)}autofocus="true"`;
         multiline = true;
       }
 
@@ -197,66 +220,58 @@ function _toSnapshot(
         result += childrenString;
         result += `\n${indent(il)}</${closeTagName}>`;
       }
-
-      return result;
     } else {
-      return vnode.children as string;
+      result += vnode.children as string;
     }
   } else {
-    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-      if ((sFlags & SnapshotFlags.IgnoreStatefulComponents) === 0) {
-        const componentName = (vnode.tag as StatefulComponent<any>).displayName;
-        if (vnode.children === null) {
-          return `${indent(il)}<${componentName} />`;
-        } else {
-          let result = `${indent(il)}<${componentName}>`;
-          result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
-          result += `${indent(il)}</${componentName}>`;
-          return result;
-        }
+    if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
+      if ((sFlags & SnapshotFlags.IgnoreComponent) === 0) {
+        const componentName = ((flags & VNodeFlags.StatefulComponent) !== 0) ?
+          (vnode.tag as StatefulComponent<any>).displayName :
+          (vnode.tag as StatelessComponent<any>).render.displayName;
+
+        result += (vnode.children === null) ?
+          `${indent(il)}<${componentName} />` :
+          (
+            `${indent(il)}<${componentName}>` +
+            _toSnapshot(il + 1, vnode.children as VNode, sFlags) +
+            `${indent(il)}</${componentName}>`
+          );
+      } else {
+        result += _toSnapshot(il, vnode.children as VNode, sFlags);
       }
-    } else {
-      if ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0) {
-        if ((flags & VNodeFlags.Connect) !== 0) {
-          if ((sFlags & SnapshotFlags.IgnoreConnectComponents) === 0) {
-            if (vnode.children === null) {
-              return `${indent(il)}<Connect />`;
-            } else {
-              let result = `${indent(il)}<Connect>`;
-              result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
-              result += `\n${indent(il)}</Connect>`;
-              return result;
-            }
-          }
+    } else { // ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0)
+      if ((flags & VNodeFlags.Connect) !== 0) {
+        if ((sFlags & SnapshotFlags.IgnoreConnect) === 0) {
+          result += (vnode.children === null) ?
+            `${indent(il)}<Connect />` :
+            (
+              `${indent(il)}<Connect>` +
+              _toSnapshot(il + 1, vnode.children as VNode, sFlags) +
+              `\n${indent(il)}</Connect>`
+            );
         } else {
-          if ((sFlags & SnapshotFlags.IgnoreContextComponents) === 0) {
-            if (vnode.children === null) {
-              return `${indent(il)}<UpdateContext />`;
-            } else {
-              let result = `${indent(il)}<UpdateContext>`;
-              result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
-              result += `\n${indent(il)}</UpdateContext>`;
-              return result;
-            }
-          }
+          result += _toSnapshot(il, vnode.children as VNode, sFlags);
         }
       } else {
-        if ((sFlags & SnapshotFlags.IgnoreStatelessComponents) === 0) {
-          const componentName = (vnode.tag as StatelessComponent<any>).render.displayName;
-          if (vnode.children === null) {
-            return `${indent(il)}<${componentName} />`;
-          } else {
-            let result = `${indent(il)}<${componentName}>`;
-            result += _toSnapshot(il + 1, vnode.children as VNode, sFlags);
-            result += `${indent(il)}</${componentName}>`;
-            return result;
-          }
+        if ((sFlags & SnapshotFlags.IgnoreContext) === 0) {
+          result += (vnode.children === null) ?
+            `${indent(il)}<UpdateContext />` :
+            (
+              `${indent(il)}<UpdateContext>` +
+              _toSnapshot(il + 1, vnode.children as VNode, sFlags) +
+              `\n${indent(il)}</UpdateContext>`
+            );
+        } else {
+          result += _toSnapshot(il, vnode.children as VNode, sFlags);
         }
-      }
-      if (vnode.children !== null) {
-        return _toSnapshot(il + 1, vnode.children as VNode, sFlags);
       }
     }
   }
-  return "";
+
+  if ((flags & VNodeFlags.Autofocus) !== 0) {
+    result += `${indent(--il)}</autofocus>`;
+  }
+
+  return result;
 }
