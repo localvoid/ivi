@@ -17,14 +17,10 @@ export function accumulateDispatchTargetsFromElement(
   const events = getEventHandlersFromDOMNode(target);
   if (events !== null && events !== undefined) {
     let matches: EventHandler[] | EventHandler | undefined;
-    if (events.constructor !== Array) {
-      if (match(events as EventHandler) === true) {
-        matches = events as EventHandler;
-      }
-    } else {
+    if (events instanceof Array) {
       let count = 0;
-      for (let i = 0; i < (events as Array<EventHandler | null>).length; ++i) {
-        const h = (events as Array<EventHandler | null>)[i];
+      for (let i = 0; i < events.length; ++i) {
+        const h = events[i];
         if (h !== null && match(h) === true) {
           if (count === 0) {
             matches = h;
@@ -35,6 +31,10 @@ export function accumulateDispatchTargetsFromElement(
           }
           ++count;
         }
+      }
+    } else {
+      if (match(events) === true) {
+        matches = events;
       }
     }
     if (matches !== undefined) {
