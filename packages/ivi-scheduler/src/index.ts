@@ -1,4 +1,4 @@
-import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete, append, catchError } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete, catchError } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -34,6 +34,22 @@ const enum FrameTasksGroupFlags {
   After = 1 << 3,
 }
 
+interface TaskList {
+  tasks: Array<() => void>;
+}
+
+function createTaskList(): TaskList {
+  return { tasks: [] };
+}
+
+function run(t: TaskList) {
+  const tasks = t.tasks;
+  t.tasks = [];
+  for (let i = 0; i < tasks.length; ++i) {
+    tasks[i]();
+  }
+}
+
 /**
  * FrameTasksGroup contains tasks for read and write DOM tasks, and tasks that should be executed after all other tasks
  * are finished.
@@ -48,30 +64,30 @@ interface FrameTasksGroup {
   /**
    * Write DOM task queue.
    */
-  write: Array<() => void>;
+  write: TaskList;
   /**
    * Read DOM task queue.
    */
-  read: Array<() => void>;
+  read: TaskList;
   /**
    * Tasks that should be executed when all other frame tasks are finished.
    */
-  after: Array<() => void>;
+  after: TaskList;
 }
 
 function createFrameTasksGroup(): FrameTasksGroup {
   return {
     flags: 0,
-    write: [],
-    read: [],
-    after: [],
+    write: createTaskList(),
+    read: createTaskList(),
+    after: createTaskList(),
   };
 }
 
 let _flags: SchedulerFlags = 0;
 let _clock = 0;
-let _microtasks: (() => void)[] = [];
-let _tasks: (() => void)[] = [];
+const _microtasks = createTaskList();
+const _tasks = createTaskList();
 
 let _visibilityObservers: Array<(hidden: boolean) => void> = [];
 let _isHidden: () => boolean;
@@ -85,12 +101,8 @@ let _currentFrameStartTime = 0;
 let _autofocusedElement: Element | null = null;
 
 const runMicrotasks = catchError(() => {
-  while (_microtasks.length > 0) {
-    const tasks = _microtasks;
-    _microtasks = [];
-    for (let i = 0; i < tasks.length; ++i) {
-      tasks[i]();
-    }
+  while (_microtasks.tasks.length > 0) {
+    run(_microtasks);
   }
 
   _flags ^= SchedulerFlags.MicrotaskPending;
@@ -101,11 +113,7 @@ const runMicrotasks = catchError(() => {
 const _taskChannel = new MessageChannel();
 _taskChannel.port1.onmessage = catchError((ev: MessageEvent) => {
   _flags ^= SchedulerFlags.TaskPending;
-  const tasks = _tasks;
-  _tasks = [];
-  for (let i = 0; i < tasks.length; ++i) {
-    tasks[i]();
-  }
+  run(_tasks);
   ++_clock;
 });
 
@@ -165,11 +173,11 @@ export function clock(): number {
  * @param task Microtask.
  */
 export function scheduleMicrotask(task: () => void): void {
-  if ((_flags & SchedulerFlags.MicrotaskPending) === 0) {
+  if (!(_flags & SchedulerFlags.MicrotaskPending)) {
     _flags |= SchedulerFlags.MicrotaskPending;
     Promise.resolve().then(runMicrotasks);
   }
-  _microtasks.push(task);
+  _microtasks.tasks.push(task);
 }
 
 /**
@@ -178,11 +186,11 @@ export function scheduleMicrotask(task: () => void): void {
  * @param task Task.
  */
 export function scheduleTask(task: () => void): void {
-  if ((_flags & SchedulerFlags.TaskPending) === 0) {
+  if (!(_flags & SchedulerFlags.TaskPending)) {
     _flags |= SchedulerFlags.TaskPending;
     _taskChannel.port2.postMessage(0);
   }
-  _tasks.push(task);
+  _tasks.tasks.push(task);
 }
 
 export function isHidden(): boolean {
@@ -190,14 +198,14 @@ export function isHidden(): boolean {
 }
 
 export function addVisibilityObserver(observer: (visible: boolean) => void): void {
-  if ((_flags & SchedulerFlags.VisibilityObserversCOW) !== 0) {
+  if (_flags & SchedulerFlags.VisibilityObserversCOW) {
     _visibilityObservers = _visibilityObservers.slice();
   }
   _visibilityObservers.push(observer);
 }
 
 export function removeVisibilityObserver(observer: (visible: boolean) => void): void {
-  if ((_flags & SchedulerFlags.VisibilityObserversCOW) !== 0) {
+  if (_flags & SchedulerFlags.VisibilityObserversCOW) {
     _visibilityObservers = _visibilityObservers.slice();
   }
   const index = _visibilityObservers.indexOf(observer);
@@ -253,7 +261,7 @@ function _updateCurrentFrameStartTime(time?: number): void {
 _updateCurrentFrameStartTime();
 
 function _requestNextFrame(): void {
-  if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
+  if (_flags & SchedulerFlags.NextFramePending) {
     requestAnimationFrame(_handleNextFrame);
   }
 }
@@ -262,7 +270,7 @@ function _requestNextFrame(): void {
  * requestNextFrame triggers next frame tasks execution.
  */
 export function requestNextFrame(): void {
-  if ((_flags & SchedulerFlags.NextFramePending) === 0) {
+  if (!(_flags & SchedulerFlags.NextFramePending)) {
     _flags |= SchedulerFlags.NextFramePending;
     scheduleMicrotask(_requestNextFrame);
   }
@@ -278,9 +286,6 @@ const _handleNextFrame = catchError((time?: number) => {
 
   _updateCurrentFrameStartTime(time);
 
-  let tasks: (() => void)[];
-  let i: number;
-
   const frame = _nextFrame;
   _nextFrame = _currentFrame;
   _currentFrame = frame;
@@ -290,52 +295,38 @@ const _handleNextFrame = catchError((time?: number) => {
   // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
   // and repeat until all read and write tasks are executed.
   do {
-    while ((frame.flags & FrameTasksGroupFlags.Read) !== 0) {
+    while (frame.flags & FrameTasksGroupFlags.Read) {
       frame.flags ^= FrameTasksGroupFlags.Read;
-      tasks = frame.read;
-      frame.read = [];
-
-      for (i = 0; i < tasks.length; ++i) {
-        tasks[i]();
-      }
+      run(frame.read);
     }
 
-    while ((frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) !== 0) {
-      if ((frame.flags & FrameTasksGroupFlags.Write) !== 0) {
+    while (frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
+      if (frame.flags & FrameTasksGroupFlags.Write) {
         frame.flags ^= FrameTasksGroupFlags.Write;
-        tasks = frame.write;
-        frame.write = [];
-        for (i = 0; i < tasks.length; ++i) {
-          tasks[i]();
-        }
+        run(frame.write);
       }
 
-      if ((frame.flags & FrameTasksGroupFlags.Update) !== 0) {
+      if (frame.flags & FrameTasksGroupFlags.Update) {
         frame.flags ^= FrameTasksGroupFlags.Update;
         _updateDOMHandler();
       }
     }
-  } while ((frame.flags & (
+  } while (frame.flags & (
     FrameTasksGroupFlags.Update |
     FrameTasksGroupFlags.Write |
     FrameTasksGroupFlags.Read
-  )) !== 0);
+  ));
 
   _flags ^= SchedulerFlags.CurrentFrameReady;
 
-  if ((_flags & SchedulerFlags.Hidden) === 0) {
+  if (!(_flags & SchedulerFlags.Hidden)) {
     runRepeatableTasks(_animations);
   }
 
   // Perform tasks that should be executed when all DOM ops are finished.
-  while ((frame.flags & FrameTasksGroupFlags.After) !== 0) {
+  while ((frame.flags & FrameTasksGroupFlags.After)) {
     frame.flags ^= FrameTasksGroupFlags.After;
-
-    tasks = frame.after;
-    frame.after = [];
-    for (i = 0; i < tasks.length; ++i) {
-      tasks[i]();
-    }
+    run(frame.after);
   }
 
   if (_autofocusedElement !== null) {
@@ -343,7 +334,7 @@ const _handleNextFrame = catchError((time?: number) => {
     _autofocusedElement = null;
   }
 
-  if (_animations.length > 0) {
+  if (_animations.length) {
     requestNextFrame();
   }
 
@@ -356,17 +347,17 @@ function addFrameTaskUpdate(frame: FrameTasksGroup): void {
 
 function addFrameTaskWrite(frame: FrameTasksGroup, task: () => void): void {
   frame.flags |= FrameTasksGroupFlags.Write;
-  frame.write = append(frame.write, task);
+  frame.write.tasks.push(task);
 }
 
 function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
   frame.flags |= FrameTasksGroupFlags.Read;
-  frame.read = append(frame.read, task);
+  frame.read.tasks.push(task);
 }
 
 function addFrameTaskAfter(frame: FrameTasksGroup, task: () => void): void {
   frame.flags |= FrameTasksGroupFlags.After;
-  frame.after = append(frame.after, task);
+  frame.after.tasks.push(task);
 }
 
 export function nextFrameUpdate(): void {
@@ -390,7 +381,7 @@ export function nextFrameAfter(task: () => void): void {
 }
 
 export function currentFrameUpdate(): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
+  if (_flags & SchedulerFlags.CurrentFrameReady) {
     addFrameTaskUpdate(_currentFrame);
   } else {
     nextFrameUpdate();
@@ -398,7 +389,7 @@ export function currentFrameUpdate(): void {
 }
 
 export function currentFrameWrite(task: () => void): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
+  if (_flags & SchedulerFlags.CurrentFrameReady) {
     addFrameTaskWrite(_currentFrame, task);
   } else {
     nextFrameWrite(task);
@@ -406,7 +397,7 @@ export function currentFrameWrite(task: () => void): void {
 }
 
 export function currentFrameRead(task: () => void): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
+  if (_flags & SchedulerFlags.CurrentFrameReady) {
     addFrameTaskRead(_currentFrame, task);
   } else {
     nextFrameRead(task);
@@ -414,7 +405,7 @@ export function currentFrameRead(task: () => void): void {
 }
 
 export function currentFrameAfter(task: () => void): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
+  if (_flags & SchedulerFlags.CurrentFrameReady) {
     addFrameTaskAfter(_currentFrame, task);
   } else {
     nextFrameAfter(task);
@@ -425,7 +416,7 @@ export function currentFrameAfter(task: () => void): void {
  * triggerNextFrame triggers an update for the next frame.
  */
 export function triggerNextFrame(): void {
-  if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
+  if (_flags & SchedulerFlags.NextFramePending) {
     _handleNextFrame();
   }
 }
