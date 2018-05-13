@@ -10,6 +10,13 @@ describe(`HTML`, () => {
     });
   });
 
+  test(`<div style={ top: undefined }>`, () => {
+    startRender<HTMLElement>((r) => {
+      const n = r(h.div().s({ top: undefined }));
+      expect(n.style.cssText).toBe("");
+    });
+  });
+
   test(`<div style={ top: "10px" }>`, () => {
     startRender<HTMLElement>((r) => {
       const n = r(h.div().s({ top: "10px" }));
