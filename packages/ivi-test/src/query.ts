@@ -4,10 +4,10 @@ import { StatefulComponent } from "ivi";
 import {
   VNodeWrapper, visitWrapped,
 
-  isElement, isInputElement, isElementWithClassName, isInputElementWithClassName,
+  isElement, isElementWithClassName,
   hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasFactory, hasClassName, hasKey, hasProps,
   hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML,
-  isAutofocused, hasInputValue, hasInputChecked,
+  hasAutofocus, hasInputValue,
   innerText,
 } from "./vdom";
 
@@ -19,18 +19,14 @@ function and<T>(a: Predicate<T>, b: Predicate<T>): Predicate<T> {
 }
 
 export class Matcher<T> {
-  private _match: Predicate<T>;
-
-  constructor(match: Predicate<T>) {
-    this._match = match;
-  }
+  constructor(private predicate: Predicate<T>) { }
 
   match = (value: T): boolean => {
-    return this._match(value);
+    return this.predicate(value);
   }
 
   addPredicate(predicate: Predicate<T>): void {
-    this._match = and(this._match, predicate);
+    this.predicate = and(this.predicate, predicate);
   }
 }
 
@@ -122,20 +118,13 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
     return this;
   }
 
-  isAutofocused(): this {
-    this.addPredicate(isAutofocused);
+  hasAutofocus(): this {
+    this.addPredicate(hasAutofocus);
     return this;
   }
-}
 
-export class VNodeInputElementMatcher extends VNodeElementMatcher {
-  hasValue(value?: string): this {
+  hasValue(value?: string | boolean): this {
     this.addPredicate((n: VNodeWrapper) => hasInputValue(n, value));
-    return this;
-  }
-
-  isChecked(value?: boolean): this {
-    this.addPredicate((n: VNodeWrapper) => hasInputChecked(n, value));
     return this;
   }
 }
@@ -148,13 +137,6 @@ function createVNodeElementMatcherFactory(tagName: string, className?: string): 
     return () => new VNodeElementMatcher((n: VNodeWrapper) => isElementWithClassName(n, tagName, className));
   }
   return () => new VNodeElementMatcher((n: VNodeWrapper) => isElement(n, tagName));
-}
-
-function createVNodeInputElementMatcherFactory(type: string, className?: string): () => VNodeInputElementMatcher {
-  if (className !== undefined) {
-    return () => new VNodeInputElementMatcher((n: VNodeWrapper) => isInputElementWithClassName(n, type, className));
-  }
-  return () => new VNodeInputElementMatcher((n: VNodeWrapper) => isInputElement(n, type));
 }
 
 function componentMatcherFactory(component: StatefulComponent<any>): VNodeComponentMatcher {
@@ -200,7 +182,6 @@ export const q = {
   abbr: createVNodeElementMatcherFactory("abbr"),
   acronym: createVNodeElementMatcherFactory("acronym"),
   address: createVNodeElementMatcherFactory("address"),
-  applet: createVNodeElementMatcherFactory("applet"),
   area: createVNodeElementMatcherFactory("area"),
   article: createVNodeElementMatcherFactory("article"),
   aside: createVNodeElementMatcherFactory("aside"),
@@ -253,9 +234,8 @@ export const q = {
   iframe: createVNodeElementMatcherFactory("iframe"),
   img: createVNodeElementMatcherFactory("img"),
   ins: createVNodeElementMatcherFactory("ins"),
-  isindex: createVNodeElementMatcherFactory("isindex"),
+  input: createVNodeElementMatcherFactory("input"),
   kbd: createVNodeElementMatcherFactory("kbd"),
-  keygen: createVNodeElementMatcherFactory("keygen"),
   label: createVNodeElementMatcherFactory("label"),
   legend: createVNodeElementMatcherFactory("legend"),
   li: createVNodeElementMatcherFactory("li"),
@@ -268,7 +248,6 @@ export const q = {
   meta: createVNodeElementMatcherFactory("meta"),
   meter: createVNodeElementMatcherFactory("meter"),
   nav: createVNodeElementMatcherFactory("nav"),
-  nextid: createVNodeElementMatcherFactory("nextid"),
   nobr: createVNodeElementMatcherFactory("nobr"),
   noframes: createVNodeElementMatcherFactory("noframes"),
   noscript: createVNodeElementMatcherFactory("noscript"),
@@ -313,8 +292,9 @@ export const q = {
   u: createVNodeElementMatcherFactory("u"),
   ul: createVNodeElementMatcherFactory("ul"),
   wbr: createVNodeElementMatcherFactory("wbr"),
-  x_ms_webview: createVNodeElementMatcherFactory("x_ms_webview"),
   xmp: createVNodeElementMatcherFactory("xmp"),
+  audio: createVNodeElementMatcherFactory("audio"),
+  video: createVNodeElementMatcherFactory("video"),
 
   // SVG Elements:
   circle: createVNodeElementMatcherFactory("circle"),
@@ -369,35 +349,6 @@ export const q = {
   tspan: createVNodeElementMatcherFactory("tspan"),
   use: createVNodeElementMatcherFactory("use"),
   view: createVNodeElementMatcherFactory("view"),
-
-  // Input Elements:
-  inputButton: createVNodeInputElementMatcherFactory("button"),
-  inputCheckbox: createVNodeInputElementMatcherFactory("checkbox"),
-  inputColor: createVNodeInputElementMatcherFactory("color"),
-  inputDate: createVNodeInputElementMatcherFactory("date"),
-  inputDatetime: createVNodeInputElementMatcherFactory("datetime"),
-  inputDatetimeLocal: createVNodeInputElementMatcherFactory("datetime-local"),
-  inputEmail: createVNodeInputElementMatcherFactory("email"),
-  inputFile: createVNodeInputElementMatcherFactory("file"),
-  inputHidden: createVNodeInputElementMatcherFactory("hidden"),
-  inputImage: createVNodeInputElementMatcherFactory("image"),
-  inputMonth: createVNodeInputElementMatcherFactory("month"),
-  inputNumber: createVNodeInputElementMatcherFactory("number"),
-  inputPassword: createVNodeInputElementMatcherFactory("password"),
-  inputRadio: createVNodeInputElementMatcherFactory("radio"),
-  inputRange: createVNodeInputElementMatcherFactory("range"),
-  inputReset: createVNodeInputElementMatcherFactory("reset"),
-  inputSearch: createVNodeInputElementMatcherFactory("search"),
-  inputSubmit: createVNodeInputElementMatcherFactory("submit"),
-  inputTel: createVNodeInputElementMatcherFactory("tel"),
-  inputText: createVNodeInputElementMatcherFactory("text"),
-  inputTime: createVNodeInputElementMatcherFactory("time"),
-  inputUrl: createVNodeInputElementMatcherFactory("url"),
-  inputWeek: createVNodeInputElementMatcherFactory("week"),
-
-  // Media Elements:
-  audio: createVNodeElementMatcherFactory("audio"),
-  video: createVNodeElementMatcherFactory("video"),
 
   // Components:
   component: componentMatcherFactory,

@@ -32,9 +32,8 @@ export function matchValues(
       if (props === null) {
         return false;
       }
-      for (let i = 0; i < keys.length; ++i) {
-        const key = keys[i];
-        if (props.hasOwnProperty(key) === false || props[key] !== match[key]) {
+      for (const key of keys) {
+        if (!props.hasOwnProperty(key) || props[key] !== match[key]) {
           return false;
         }
       }
@@ -59,8 +58,7 @@ export function matchKeys(
     if (props === null) {
       return false;
     }
-    for (let i = 0; i < keys.length; ++i) {
-      const key = keys[i];
+    for (const key of keys) {
       if (match[key] !== props.hasOwnProperty(key)) {
         return false;
       }
@@ -82,8 +80,7 @@ export function containsEventHandler(
 ): boolean {
   if (eventHandlers !== null) {
     if (Array.isArray(eventHandlers)) {
-      for (let i = 0; i < eventHandlers.length; ++i) {
-        const h = eventHandlers[i];
+      for (const h of eventHandlers) {
         if (h !== null && h.source === eventSource) {
           return true;
         }
@@ -127,10 +124,10 @@ export function isVNodeLooseMatch(a: VNode, b: VNode): boolean {
   }
 
   if ((bFlags & VNodeFlags.Element) !== 0) {
-    if (matchValues(a.props, b.props) === false) {
+    if (!matchValues(a.props, b.props)) {
       return false;
     }
-    if (matchValues(a.style, b.style) === false) {
+    if (!matchValues(a.style, b.style)) {
       return false;
     }
   }

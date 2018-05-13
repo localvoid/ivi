@@ -26,15 +26,15 @@ export function visitUnwrapped(
     const children = vnode.children;
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       let child: VNode | null = children as VNode;
-      do {
-        if (visitUnwrapped(child, vnode, context, visitor) === true) {
+      while (child !== null) {
+        if (visitUnwrapped(child, vnode, context, visitor)) {
           return true;
         }
         child = child.next;
-      } while (child !== null);
+      }
     } else {
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
-        context = Object.assign({}, context, vnode.props);
+        context = { ...context, ...vnode.props };
       }
       if (children !== null) {
         return visitUnwrapped(children as VNode, vnode, context, visitor);
@@ -66,15 +66,15 @@ export function visitWrapped(
     const children = vnode.children;
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       let child: VNode | null = children as VNode;
-      do {
-        if (visitWrapped(new VNodeWrapper(child, wrapper, context), visitor) === true) {
+      while (child !== null) {
+        if (visitWrapped(new VNodeWrapper(child, wrapper, context), visitor)) {
           return true;
         }
         child = child.next;
-      } while (child !== null);
+      }
     } else {
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
-        context = Object.assign({}, context, vnode.props);
+        context = { ...context, ...vnode.props };
       }
       if (children !== null) {
         return visitWrapped(new VNodeWrapper(children as VNode, wrapper, context), visitor);
@@ -87,8 +87,21 @@ export function visitWrapped(
 
 function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, context: {}): boolean {
   const flags = vnode.flags;
-  if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent | VNodeFlags.Connect)) !== 0) {
-    if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
+
+  if ((flags & (
+    VNodeFlags.ChildrenVNode |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.UpdateContext |
+    VNodeFlags.Connect
+  )) !== 0) {
+    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+      let child: VNode | null = vnode.children as VNode;
+      while (child !== null) {
+        _virtualRender(depth, child, vnode, context);
+        child = child.next;
+      }
+    } else if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
       if ((flags & VNodeFlags.StatefulComponent) !== 0) {
         const component = vnode.instance = new (vnode.tag as StatefulComponent<any>)(vnode.props);
         vnode.children = component.render();
@@ -97,45 +110,36 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
         vnode.children = component.render(vnode.props);
       }
     } else {
-      const connect = vnode.tag as ConnectDescriptor<any, any, any>;
-      const next = vnode.instance = connect.select(null, vnode.props, context);
-      vnode.children = connect.render(next);
+      if ((flags & VNodeFlags.UpdateContext) !== 0) {
+        vnode.instance = context = { ...context, ...vnode.props };
+      } else {
+        const connect = vnode.tag as ConnectDescriptor<any, any, any>;
+        const next = vnode.instance = connect.select(null, vnode.props, context);
+        vnode.children = connect.render(next);
+      }
     }
-    if (depth === -1 || depth > 1) {
-      return _virtualRender(depth - 1, vnode.children, vnode, context);
+    if (depth > 1) {
+      return _virtualRender(depth - 1, vnode.children as VNode, vnode, context);
     }
   }
+
   return false;
 }
 
-export function virtualRender(
-  root: VNode,
-  rootContext: {} = {},
-  depth = 1,
-): VNodeWrapper {
-  visitUnwrapped(root, null, rootContext,
-    function (vnode: VNode, parent: VNode | null, context: {}) {
-      return _virtualRender(depth, vnode, parent, context);
-    },
-  );
-  return new VNodeWrapper(root, null, rootContext);
+export function virtualRender(root: VNode, context: {} = {}, depth = Number.MAX_SAFE_INTEGER): VNodeWrapper {
+  visitUnwrapped(root, null, context, (v, p, c) => _virtualRender(depth, v, p, c));
+  return new VNodeWrapper(root, null, context);
 }
 
 export class VNodeListWrapper {
-  readonly items: VNodeWrapper[];
-
-  constructor(items: VNodeWrapper[]) {
-    this.items = items;
-  }
+  constructor(public readonly items: VNodeWrapper[]) { }
 
   isEmpty(): boolean {
     return this.items.length === 0;
   }
 
   filter(matcher: VNodeMatcher): VNodeListWrapper {
-    return new VNodeListWrapper(this.items.filter(function (i) {
-      return matcher.match(i);
-    }));
+    return new VNodeListWrapper(this.items.filter((i) => matcher.match(i)));
   }
 
   forEach(fn: (n: VNodeWrapper, i: number) => void): void {
@@ -172,15 +176,11 @@ export class VNodeListWrapper {
 }
 
 export class VNodeWrapper {
-  readonly vnode: VNode;
-  readonly parent: VNodeWrapper | null;
-  readonly context: {};
-
-  constructor(vnode: VNode, parent: VNodeWrapper | null, context: {}) {
-    this.vnode = vnode;
-    this.parent = parent;
-    this.context = context;
-  }
+  constructor(
+    public readonly vnode: VNode,
+    public readonly parent: VNodeWrapper | null,
+    public readonly context: {},
+  ) { }
 
   is(matcher: VNodeMatcher): boolean {
     return matcher.match(this);
@@ -206,11 +206,11 @@ export class VNodeWrapper {
     return (this.vnode.flags & VNodeFlags.StatelessComponent) !== 0;
   }
 
-  isContextComponent(): boolean {
+  isContext(): boolean {
     return (this.vnode.flags & VNodeFlags.UpdateContext) !== 0;
   }
 
-  isConnectComponent(): boolean {
+  isConnect(): boolean {
     return (this.vnode.flags & VNodeFlags.Connect) !== 0;
   }
 
@@ -221,9 +221,6 @@ export class VNodeWrapper {
   getTagName(): string {
     if (!this.isElement()) {
       throw new Error("VNodeWrapper::getTagName() can only be called on element nodes");
-    }
-    if (this.isInputElement()) {
-      return "input";
     }
     return this.vnode.tag as string;
   }
@@ -289,32 +286,25 @@ export class VNodeWrapper {
     if (!this.isElement()) {
       throw new Error("VNodeWrapper::getElementProps() can only be called on element nodes");
     }
-    return this.vnode.props.attrs;
+    return this.vnode.props;
   }
 
   getElementStyle(): any {
     if (!this.isElement()) {
       throw new Error("VNodeWrapper::getElementProps() can only be called on element nodes");
     }
-    return this.vnode.props.style;
+    return this.vnode.style;
   }
 
   getInnerText(): string {
     return innerText(this);
   }
 
-  getInputValue(): string | null {
-    if (!this.isInputElement()) {
+  getInputValue(): string | boolean | null {
+    if ((this.vnode.flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === 0) {
       throw new Error("VNodeWrapper::getInputValue() can only be called on input element nodes");
     }
-    return this.vnode.children as string | null;
-  }
-
-  getInputChecked(): boolean | null {
-    if (!this.isInputElement()) {
-      throw new Error("VNodeWrapper::getInputChecked() can only be called on input element nodes");
-    }
-    return this.vnode.children as boolean | null;
+    return this.vnode.children as string | boolean | null;
   }
 
   hasFactory(factory: Function): boolean {
@@ -404,25 +394,15 @@ export class VNodeWrapper {
     return hasUnsafeHTML(this, html);
   }
 
-  isAutofocused(): boolean {
-    if (!this.isElement()) {
-      throw new Error("VNodeWrapper::isAutofocused() can only be called on element nodes");
-    }
-    return isAutofocused(this);
+  hasAutofocus(): boolean {
+    return hasAutofocus(this);
   }
 
   hasInputValue(value?: string): boolean {
-    if (!this.isInputElement()) {
+    if ((this.vnode.flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === 0) {
       throw new Error("VNodeWrapper::hasInputValue() can only be called on input element nodes");
     }
     return hasInputValue(this, value);
-  }
-
-  isInputChecked(value?: boolean): boolean {
-    if (!this.isInputElement()) {
-      throw new Error("VNodeWrapper::hasInputChecked() can only be called on input element nodes");
-    }
-    return hasInputChecked(this, value);
   }
 
   query(matcher: VNodeMatcher): VNodeWrapper | null {
@@ -463,20 +443,6 @@ export function isElementWithClassName(wrapper: VNodeWrapper, tagName: string, c
   );
 }
 
-export function isInputElement(wrapper: VNodeWrapper, type: string): boolean {
-  const vnode = wrapper.vnode;
-  return ((vnode.flags & VNodeFlags.InputElement) !== 0 && vnode.tag === type);
-}
-
-export function isInputElementWithClassName(wrapper: VNodeWrapper, type: string, className: string): boolean {
-  const vnode = wrapper.vnode;
-  return (
-    isInputElement(wrapper, type) === true &&
-    vnode.className !== void 0 &&
-    containsClassName(vnode.className, className) === true
-  );
-}
-
 export function hasFactory(wrapper: VNodeWrapper, factory: Function): boolean {
   const vnode = wrapper.vnode;
   return (vnode.factory === factory);
@@ -494,37 +460,37 @@ export function hasClassName(wrapper: VNodeWrapper, className: string): boolean 
 
 export function hasProps(wrapper: VNodeWrapper, props: { [key: string]: any }): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== void 0 && matchValues(vnode.props.props, props) === true);
+  return (vnode.props !== void 0 && matchValues(vnode.props, props) === true);
 }
 
 export function hasExactProps(wrapper: VNodeWrapper, props: { [key: string]: any }): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== null && shallowEqual(vnode.props.props, props) === true);
+  return (vnode.props !== null && shallowEqual(vnode.props, props) === true);
 }
 
 export function hasAssignedProps(wrapper: VNodeWrapper, props: { [key: string]: boolean }): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== null && matchKeys(vnode.props.props, props));
+  return (vnode.props !== null && matchKeys(vnode.props, props));
 }
 
 export function hasStyle(wrapper: VNodeWrapper, style: CSSStyleProps): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== null && matchValues(vnode.props.style, style) === true);
+  return (vnode.props !== null && matchValues(vnode.style, style) === true);
 }
 
 export function hasExactStyle(wrapper: VNodeWrapper, style: CSSStyleProps): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== null && shallowEqual(vnode.props.style, style) === true);
+  return (vnode.props !== null && shallowEqual(vnode.style, style) === true);
 }
 
 export function hasAssignedStyle(wrapper: VNodeWrapper, style: { [key: string]: boolean }): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== null && matchKeys(vnode.props.style, style));
+  return (vnode.props !== null && matchKeys(vnode.style, style));
 }
 
 export function hasEventHandler(wrapper: VNodeWrapper, eventSource: EventSource): boolean {
   const vnode = wrapper.vnode;
-  return (vnode.props !== null && containsEventHandler(vnode.props.events, eventSource) === true);
+  return (vnode.props !== null && containsEventHandler(vnode.events, eventSource) === true);
 }
 
 export function hasUnsafeHTML(wrapper: VNodeWrapper, html?: string): boolean {
@@ -532,24 +498,19 @@ export function hasUnsafeHTML(wrapper: VNodeWrapper, html?: string): boolean {
   return ((vnode.flags & VNodeFlags.UnsafeHTML) !== 0 && (html === undefined || vnode.children === html));
 }
 
-export function isAutofocused(wrapper: VNodeWrapper): boolean {
+export function hasAutofocus(wrapper: VNodeWrapper): boolean {
   return ((wrapper.vnode.flags & VNodeFlags.Autofocus) !== 0);
 }
 
-export function hasInputValue(wrapper: VNodeWrapper, value?: string): boolean {
+export function hasInputValue(wrapper: VNodeWrapper, value?: string | boolean): boolean {
   const vnode = wrapper.vnode;
   return (vnode.children !== null && (value === undefined || vnode.children === value));
-}
-
-export function hasInputChecked(wrapper: VNodeWrapper, checked?: boolean): boolean {
-  const vnode = wrapper.vnode;
-  return (vnode.children !== null && (checked === undefined || vnode.children === checked));
 }
 
 export function hasParent(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
   let parent = wrapper.parent;
   while (parent !== null) {
-    if (predicate(parent) === true) {
+    if (predicate(parent)) {
       return true;
     }
     parent = parent.parent;
@@ -559,19 +520,17 @@ export function hasParent(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapp
 
 export function hasDirectParent(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
   const parent = wrapper.parent;
-  return (parent !== null && predicate(parent) === true);
+  return (parent !== null && predicate(parent));
 }
 
 export function hasChild(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
-  return visitWrapped(wrapper, function (n) {
-    return (wrapper !== n && predicate(n) === true);
-  });
+  return visitWrapped(wrapper, (n) => (wrapper !== n && predicate(n)));
 }
 
 export function hasSibling(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
   const parent = wrapper.parent;
   const next = wrapper.vnode.next;
-  return (next !== null && predicate(new VNodeWrapper(next, parent, wrapper.context)) === true);
+  return (next !== null && predicate(new VNodeWrapper(next, parent, wrapper.context)));
 }
 
 export function hasPrevSibling(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
@@ -581,7 +540,7 @@ export function hasPrevSibling(wrapper: VNodeWrapper, predicate: Predicate<VNode
     if (parent.vnode.children === wrapper.vnode) {
       return false;
     }
-    return predicate(new VNodeWrapper(prev, parent, wrapper.context)) === true;
+    return predicate(new VNodeWrapper(prev, parent, wrapper.context));
   }
   return false;
 }

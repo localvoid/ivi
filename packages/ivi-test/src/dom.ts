@@ -2,16 +2,17 @@ import { VNode, render, update } from "ivi";
 import { triggerNextTick, triggerNextFrame } from "ivi-test-scheduler";
 import { VNodeWrapper } from "./vdom";
 
-let _container: HTMLDivElement | null = null;
-
 /**
  * DOMRenderer is a helper object for testing Virtual DOM in a real DOM.
  */
 export class DOMRenderer {
-  private container: HTMLDivElement;
+  constructor(private container: HTMLDivElement) { }
 
-  constructor(container: HTMLDivElement) {
-    this.container = container;
+  /**
+   * reset resets current state.
+   */
+  reset = () => {
+    render(null, this.container);
   }
 
   /**
@@ -40,7 +41,7 @@ export class DOMRenderer {
   }
 
   /**
-   * nextFrame triggers next frame in a scheduler and executal all frame updates.
+   * nextFrame triggers next frame in a scheduler and executes all frame updates.
    *
    * @param time Current time.
    */
@@ -50,18 +51,14 @@ export class DOMRenderer {
 }
 
 /**
- * initDOMRenderer instantiates and initializes DOMRenderer object.
+ * createDOMRenderer instantiates and initializes DOMRenderer object.
  *
  * @returns DOMRenderer.
  */
-export function initDOMRenderer(): DOMRenderer {
-  if (_container === null) {
-    _container = document.createElement("div");
-    _container.className = "ivi-dom-test-container";
-    document.body.appendChild(_container);
-  } else {
-    _container.innerText = "";
-  }
+export function createDOMRenderer(): DOMRenderer {
+  const container = document.createElement("div");
+  container.className = "ivi-test-container";
+  document.body.appendChild(container);
 
-  return new DOMRenderer(_container);
+  return new DOMRenderer(container);
 }
