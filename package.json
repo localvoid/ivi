@@ -6,8 +6,8 @@
   ],
   "scripts": {
     "lint": "tslint --project ./tsconfig.json",
-    "clean": "lerna run clean",
-    "build": "lerna run dist",
+    "clean": "make clean",
+    "build": "make build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
@@ -24,7 +24,6 @@
     "codecov": "^3.0.2",
     "husky": "^1.0.0-rc.4",
     "jest": "^22.4.3",
-    "lerna": "^2.11.0",
     "routekit-resolver": "^0.4.1",
     "ts-jest": "^22.4.5",
     "ts-node": "^6.0.3",
