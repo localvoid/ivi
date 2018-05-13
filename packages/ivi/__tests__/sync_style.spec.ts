@@ -88,7 +88,8 @@ describe(`sync element style`, () => {
       }));
       const n = r(h.div().s(null));
 
-      expect(n.style.length).toBe(0);
+      expect(n.style.length).toBe(1);
+      expect(n.style.getPropertyValue("top")).toBe("1px");
     });
   });
 
@@ -100,7 +101,9 @@ describe(`sync element style`, () => {
       }));
       const n = r(h.div().s(null));
 
-      expect(n.style.length).toBe(0);
+      expect(n.style.length).toBe(2);
+      expect(n.style.getPropertyValue("top")).toBe("1px");
+      expect(n.style.getPropertyValue("left")).toBe("1px");
     });
   });
 
@@ -167,9 +170,10 @@ describe(`sync element style`, () => {
         right: "30px",
       }));
 
-      expect(n.style.length).toBe(2);
+      expect(n.style.length).toBe(3);
       expect(n.style.getPropertyValue("top")).toBe("10px");
       expect(n.style.getPropertyValue("right")).toBe("30px");
+      expect(n.style.getPropertyValue("left")).toBe("1px");
     });
   });
 
@@ -183,8 +187,10 @@ describe(`sync element style`, () => {
         right: "30px",
       }));
 
-      expect(n.style.length).toBe(1);
+      expect(n.style.length).toBe(3);
       expect(n.style.getPropertyValue("right")).toBe("30px");
+      expect(n.style.getPropertyValue("top")).toBe("1px");
+      expect(n.style.getPropertyValue("left")).toBe("1px");
     });
   });
 });

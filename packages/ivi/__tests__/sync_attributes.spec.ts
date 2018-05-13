@@ -161,8 +161,9 @@ describe(`sync element attributes`, () => {
         title: "2",
       }));
 
-      expect(n.attributes).toHaveLength(1);
+      expect(n.attributes).toHaveLength(2);
       expect(n.getAttribute("title")).toBe("2");
+      expect(n.getAttribute("tabIndex")).toBe("1");
     });
   });
 
@@ -177,9 +178,10 @@ describe(`sync element attributes`, () => {
         lang: "en",
       }));
 
-      expect(n.attributes).toHaveLength(2);
+      expect(n.attributes).toHaveLength(3);
       expect(n.getAttribute("title")).toBe("2");
       expect(n.getAttribute("lang")).toBe("en");
+      expect(n.getAttribute("tabIndex")).toBe("1");
     });
   });
 
@@ -193,8 +195,10 @@ describe(`sync element attributes`, () => {
         lang: "en",
       }));
 
-      expect(n.attributes).toHaveLength(1);
+      expect(n.attributes).toHaveLength(3);
       expect(n.getAttribute("lang")).toBe("en");
+      expect(n.getAttribute("title")).toBe("1");
+      expect(n.getAttribute("tabIndex")).toBe("1");
     });
   });
 
@@ -206,7 +210,9 @@ describe(`sync element attributes`, () => {
       }));
       const n = r(h.div().a({}));
 
-      expect(n.attributes).toHaveLength(0);
+      expect(n.attributes).toHaveLength(2);
+      expect(n.getAttribute("title")).toBe("1");
+      expect(n.getAttribute("tabIndex")).toBe("1");
     });
   });
 
@@ -218,7 +224,9 @@ describe(`sync element attributes`, () => {
       }));
       const n = r(h.div());
 
-      expect(n.attributes).toHaveLength(0);
+      expect(n.attributes).toHaveLength(2);
+      expect(n.getAttribute("title")).toBe("1");
+      expect(n.getAttribute("tabIndex")).toBe("1");
     });
   });
 });
