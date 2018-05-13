@@ -78,6 +78,30 @@ describe(`HTML`, () => {
 });
 
 describe(`SVG`, () => {
+  test(`<circle attrs={ "id": "a">`, () => {
+    startRender<SVGElement>((r) => {
+      const n = r(s.circle().a({ "id": "a" }));
+      expect(n.attributes.length).toBe(1);
+      expect(n.getAttribute("id")).toBe("a");
+    });
+  });
+
+  test(`<circle attrs={ "test-attribute": "a">`, () => {
+    startRender<SVGElement>((r) => {
+      const n = r(s.circle().a({ "test-attribute": "a" }));
+      expect(n.attributes.length).toBe(1);
+      expect(n.getAttribute("test-attribute")).toBe("a");
+    });
+  });
+
+  test(`<circle attrs={ "xxx:test": "a">`, () => {
+    startRender<SVGElement>((r) => {
+      const n = r(s.circle().a({ "xxx:test": "a" }));
+      expect(n.attributes.length).toBe(1);
+      expect(n.getAttribute("xxx:test")).toBe("a");
+    });
+  });
+
   test(`<circle attrs={ "xlink:href": "a">`, () => {
     startRender<SVGElement>((r) => {
       const n = r(s.circle().a({ "xlink:href": "a" }));

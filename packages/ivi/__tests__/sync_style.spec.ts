@@ -59,11 +59,10 @@ describe(`sync element style`, () => {
         top: "10px",
       }));
       const n = r(h.div().s({
-        top: "10px",
+        top: undefined,
       }));
 
-      expect(n.style.length).toBe(1);
-      expect(n.style.getPropertyValue("top")).toBe("10px");
+      expect(n.style.length).toBe(0);
     });
   });
 
