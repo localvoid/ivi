@@ -9,6 +9,9 @@ clean: clean_ivi_core clean_ivi_events clean_ivi_html clean_ivi_svg clean_ivi
 
 build: build_ivi_core build_ivi_events build_ivi_html build_ivi_svg build_ivi
 
+changelog:
+	conventional-changelog -p angular -i CHANGELOG.md -s ; $(info $(M) generating CHANGELOG.md)
+
 # ivi-core
 clean_ivi_core: ; $(info $(M) cleaning ivi-core)
 	$Q cd packages/ivi-core && yarn clean
