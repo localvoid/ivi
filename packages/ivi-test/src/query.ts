@@ -5,8 +5,8 @@ import {
   VNodeWrapper, visitWrapped,
 
   isElement, isElementWithClassName,
-  hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasFactory, hasClassName, hasKey, hasProps,
-  hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML,
+  hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasNextSibling, hasFactory, hasClassName, hasKey,
+  hasProps, hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML,
   hasAutofocus, hasInputValue,
   innerText,
 } from "./vdom";
@@ -53,6 +53,11 @@ export class VNodeMatcher extends Matcher<VNodeWrapper> {
 
   hasPrevSibling(matcher: VNodeMatcher): this {
     this.addPredicate((n: VNodeWrapper) => hasPrevSibling(n, matcher.match));
+    return this;
+  }
+
+  hasNextSibling(matcher: VNodeMatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasNextSibling(n, matcher.match));
     return this;
   }
 }

@@ -545,6 +545,15 @@ export function hasPrevSibling(wrapper: VNodeWrapper, predicate: Predicate<VNode
   return false;
 }
 
+export function hasNextSibling(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
+  const parent = wrapper.parent;
+  const next = wrapper.vnode.next;
+  if (next !== null) {
+    return predicate(new VNodeWrapper(next, parent, wrapper.context));
+  }
+  return false;
+}
+
 export function innerText(wrapper: VNodeWrapper): string {
   let result = "";
   visitUnwrapped(
