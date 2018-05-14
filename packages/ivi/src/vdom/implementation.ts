@@ -176,7 +176,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
       } else {
         if ((flags & VNodeFlags.UpdateContext) !== 0) {
           if (dirtyContext === true) {
-            vnode.instance = Object.assign({}, context, vnode.props);
+            vnode.instance = { ...context, ...vnode.props };
           }
           context = vnode.instance as {};
         }
@@ -334,7 +334,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
             shouldBeSingleVNode(connect.render(selectData)) :
             /* istanbul ignore next */connect.render(selectData);
         } else {
-          context = instance = Object.assign({}, context, vnode.props);
+          context = instance = { ...context, ...vnode.props };
         }
       } else {
         vnode.children = DEBUG ?
@@ -600,7 +600,7 @@ export function syncVNode(
               dirtyContext = true;
             }
             b.instance = context = (dirtyContext === true) ?
-              Object.assign({}, context, b.props) :
+              { ...context, ...b.props } :
               instance as {};
             syncVNode(parent, a.children as VNode, b.children as VNode, context, dirtyContext);
           }

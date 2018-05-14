@@ -25,8 +25,8 @@ describe("src/store.ts", function () {
     let updated = false;
     const store = createStore(
       { a: 1 },
-      function (state: any) { return Object.assign({}, state); },
-      function () { updated = true; },
+      (state: any) => ({ ...state }),
+      () => { updated = true; },
     );
     store.dispatch(0);
     expect(updated).toBe(true);
@@ -35,8 +35,8 @@ describe("src/store.ts", function () {
   test("should update state after dispatch", function () {
     const store = createStore(
       { a: 1, b: 2 },
-      function (state: any) { return Object.assign({}, state, { b: 3 }); },
-      function () { return; },
+      (state: any) => ({ ...state, ...{ b: 3 } }),
+      () => { return; },
     );
     store.dispatch(0);
     expect(store.getState().a).toBe(1);
@@ -46,8 +46,8 @@ describe("src/store.ts", function () {
   test("should pass action to reducer", function () {
     const store = createStore(
       { a: 0 },
-      function (state: any, action: any) { return Object.assign({}, state, { a: action }); },
-      function () { return; },
+      (state: any, action: any) => ({ ...state, ...{ a: action } }),
+      () => { return; },
     );
     store.dispatch(1);
     expect(store.getState().a).toBe(1);
