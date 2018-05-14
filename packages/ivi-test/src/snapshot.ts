@@ -143,7 +143,11 @@ function _toSnapshot(
 ): string {
   const flags = vnode.flags;
   let result = ``;
-  if ((flags & VNodeFlags.Autofocus) !== 0) {
+
+  if (flags & VNodeFlags.StopDirtyChecking) {
+    result += `${indent(il++)}<stopDirtyChecking>`;
+  }
+  if (flags & VNodeFlags.Autofocus) {
     result += `${indent(il++)}<autofocus>`;
   }
 
@@ -269,8 +273,11 @@ function _toSnapshot(
     }
   }
 
-  if ((flags & VNodeFlags.Autofocus) !== 0) {
+  if (flags & VNodeFlags.Autofocus) {
     result += `${indent(--il)}</autofocus>`;
+  }
+  if (flags & VNodeFlags.StopDirtyChecking) {
+    result += `${indent(--il)}</stopDirtyChecking>`;
   }
 
   return result;
