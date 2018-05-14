@@ -2,6 +2,7 @@ dist
 coverage
 .jest
 .tmp
+.TODO
 
 node_modules
 
