@@ -226,6 +226,12 @@ export function statefulComponent<P>(
  * @returns context node.
  */
 export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
+  /* istanbul ignore else */
+  if (DEBUG) {
+    if (child.prev !== child) {
+      throw new Error("Context node contains an invalid child. Child should be a singular VNode.");
+    }
+  }
   return new VNode<T>(
     VNodeFlags.UpdateContext,
     null,
