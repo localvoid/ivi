@@ -11,6 +11,7 @@ declare global {
 }
 
 export { Predicate } from "./types";
+export { getFunctionName } from "./function";
 export { addErrorHandler, catchError } from "./error";
 export {
   objectHasOwnProperty,
