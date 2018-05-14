@@ -5,9 +5,9 @@ M = $(shell printf "\033[34;1m▶\033[0m")
 
 all: build
 
-clean: clean_ivi_core clean_ivi_events clean_ivi_html clean_ivi_svg clean_ivi
+clean: clean_ivi_core clean_ivi_events clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_state
 
-build: build_ivi_core build_ivi_events build_ivi_html build_ivi_svg build_ivi
+build: build_ivi_core build_ivi_events build_ivi_html build_ivi_svg build_ivi build_ivi_state
 
 changelog:
 	conventional-changelog -p angular -i CHANGELOG.md -s ; $(info $(M) generating CHANGELOG.md)
@@ -53,4 +53,11 @@ clean_ivi: ; $(info $(M) cleaning ivi)
 
 build_ivi: clean_ivi build_ivi_core build_ivi_scheduler build_ivi_events ; $(info $(M) building ivi)
 	$Q cd packages/ivi && yarn dist
+
+# ivi-state
+clean_ivi_state: ; $(info $(M) cleaning ivi-state)
+	$Q cd packages/ivi-state && yarn clean
+
+build_ivi_state: clean_ivi_state build_ivi_core ; $(info $(M) building ivi-state)
+	$Q cd packages/ivi-state && yarn dist
 
