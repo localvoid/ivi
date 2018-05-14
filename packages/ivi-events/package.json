@@ -1,6 +1,6 @@
 {
   "name": "ivi-events",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "es2016": "dist/es2016/index.js",
@@ -24,12 +24,12 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.10.0",
-    "ivi-scheduler": "^0.10.0"
+    "ivi-core": "^0.11.0",
+    "ivi-scheduler": "^0.11.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.10.0",
-    "ivi-scheduler": "^0.10.0"
+    "ivi-core": "^0.11.0",
+    "ivi-scheduler": "^0.11.0"
   },
   "description": "Synthetic Events for ivi library",
   "license": "MIT",

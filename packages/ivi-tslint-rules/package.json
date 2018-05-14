@@ -1,6 +1,6 @@
 {
   "name": "ivi-tslint-rules",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "index.json",
   "files": [
     "index.json",
