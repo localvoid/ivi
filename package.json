@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "tslint --project ./tsconfig.json",
+    "lint": "tslint --format codeFrame --project ./tsconfig.json",
     "clean": "make clean",
     "build": "make build",
     "test": "jest",
