@@ -58,7 +58,7 @@ interface VNode<P> {
 
 Method `c()` is a variadic method and accepts variable number of children. Children can be any basic object like string
 or number, virtual dom node or a collection of virtual dom nodes created with functions like `map()`, `mapRange()` or
-`children()`.
+`fragment()`.
 
 Each child that doesn't have a key will be automatically assigned with an implicit key that reflects its position.
 
@@ -78,7 +78,7 @@ same position relative to other root nodes.
 
 #### unsafeHTML
 
-Method `unsafeHTML()` method is used to specify `innerHTML`, it is named unsafe because it doesn't provide any XSS protection,
+Method `unsafeHTML()` is used to specify `innerHTML`, it is named unsafe because it doesn't provide any XSS protection,
 `unsafeHTML()` value will be directly injected into an element.
 
 ### Methods available on input elements

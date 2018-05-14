@@ -1,9 +1,7 @@
 # Synthetic Events
 
-Synthetic events subsystem is using its own two-phase event dispatching algorithm.
-
-Its own event subsystem has the cost of slightly larger javascript code size, but it immediately pays off when user
-visits the page, because it significantly improves rendering performance.
+Synthetic events subsystem is using its own two-phase event dispatching algorithm. With custom event dispatching
+algorithm it is possible to create new events like "click outside", gesture and DnD events.
 
 ## Event Handler
 
