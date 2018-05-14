@@ -1,1 +1,1 @@
-[ivi](https://ivijs.github.com/ivi) [TSLint](https://palantir.github.io/tslint/) rules.
+[ivi](https://github.com/localvoid/ivi) [TSLint](https://palantir.github.io/tslint/) rules.

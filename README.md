@@ -53,29 +53,29 @@ render(
 
 #### Boilerplate
 
-- [Basic Boilerplate](https://github.com/ivijs/boilerplate/)
+- [Basic Boilerplate](https://github.com/localvoid/ivi-boilerplate/)
 
 #### Basic
 
-- [Introduction](https://github.com/ivijs/examples/tree/master/src/01_introduction/)
-- [Stateful Component](https://github.com/ivijs/examples/tree/master/src/02_stateful_component/)
-- [Events](https://github.com/ivijs/examples/tree/master/src/03_events/)
-- [Forms](https://github.com/ivijs/examples/tree/master/src/04_forms/)
-- [Collapsable](https://github.com/ivijs/examples/tree/master/src/05_collapsable/)
+- [Introduction](https://github.com/localvoid/ivi-examples/tree/master/src/01_introduction/)
+- [Stateful Component](https://github.com/localvoid/ivi-examples/tree/master/src/02_stateful_component/)
+- [Events](https://github.com/localvoid/ivi-examples/tree/master/src/03_events/)
+- [Forms](https://github.com/localvoid/ivi-examples/tree/master/src/04_forms/)
+- [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/src/05_collapsable/)
 
 #### Apps
 
-- [TodoMVC](https://github.com/ivijs/todomvc/)
+- [TodoMVC](https://github.com/localvoid/ivi-todomvc/)
 
 #### Games
 
-- [Snake](https://github.com/ivijs/examples/tree/master/src/games/snake/)
+- [Snake](https://github.com/localvoid/ivi-examples/tree/master/src/games/snake/)
 
 #### Benchmarks
 
-- [UIBench](https://github.com/ivijs/examples/tree/master/src/benchmarks/uibench/)
-- [DBMon](https://github.com/ivijs/examples/tree/master/src/benchmarks/dbmon/)
-- [10k Components](https://github.com/ivijs/examples/tree/master/src/benchmarks/10k/)
+- [UIBench](https://github.com/localvoid/ivi-examples/tree/master/src/benchmarks/uibench/)
+- [DBMon](https://github.com/localvoid/ivi-examples/tree/master/src/benchmarks/dbmon/)
+- [10k Components](https://github.com/localvoid/ivi-examples/tree/master/src/benchmarks/10k/)
 
 ## License
 
