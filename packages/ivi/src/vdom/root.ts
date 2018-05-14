@@ -1,5 +1,5 @@
 import { USER_AGENT, UserAgentFlags, NOOP, unorderedArrayDelete } from "ivi-core";
-import { nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
+import { setUpdateDOMHandler, nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
 import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
@@ -49,6 +49,7 @@ export function findRoot(container: Element): Root | undefined {
 function _update() {
   if (_pendingUpdate) {
     _pendingUpdate = false;
+    setUpdateDOMHandler(update);
     for (let i = 0; i < ROOTS.length; ++i) {
       const root = ROOTS[i];
       const container = root.container;

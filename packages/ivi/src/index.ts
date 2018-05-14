@@ -22,11 +22,3 @@ export { statefulComponent, statelessComponent, withShouldUpdate, context, conne
  */
 export { VNodeFlags } from "./vdom/flags";
 export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
-
-/**
- * Entry
- */
-import { setUpdateDOMHandler } from "ivi-scheduler";
-import { update } from "./vdom/root";
-
-setUpdateDOMHandler(update);
