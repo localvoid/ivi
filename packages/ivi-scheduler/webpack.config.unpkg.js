@@ -31,7 +31,7 @@ module.exports = {
           {
             loader: "ts-loader",
             options: {
-              configFile: "tsconfig.build.module.json",
+              configFile: "tsconfig.build.unpkg.json",
             },
           },
         ],

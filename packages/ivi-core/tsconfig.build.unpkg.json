@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.build.module.json",
+  "compilerOptions": {
+    "preserveConstEnums": true
+  }
+}
