@@ -1,4 +1,4 @@
-import { Component, VNode, statelessComponent, statefulComponent } from "ivi";
+import { Component, VNode, statelessComponent, statefulComponent, fragment } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
@@ -481,5 +481,47 @@ test(`#20`, () => {
       expect(b).toMatchSnapshot();
       expect(c).toMatchSnapshot();
     });
+  });
+});
+
+test(`stateless component should raise an exception when render function returns children collection`, () => {
+  startRender<HTMLElement>((r) => {
+    const v1 = (
+      Stateless(
+        h.div(),
+      )
+    );
+    const v2 = (
+      Stateless(
+        fragment(
+          h.div(),
+          h.div(),
+        )!,
+      )
+    );
+
+    r(v1);
+    expect(() => { r(v2); }).toThrowError("singular");
+  });
+});
+
+test(`stateful component should raise an exception when render function returns children collection`, () => {
+  startRender<HTMLElement>((r) => {
+    const v1 = (
+      Stateful(
+        h.div(),
+      )
+    );
+    const v2 = (
+      Stateful(
+        fragment(
+          h.div(),
+          h.div(),
+        )!,
+      )
+    );
+
+    r(v1);
+    expect(() => { r(v2); }).toThrowError("singular");
   });
 });

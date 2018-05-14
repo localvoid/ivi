@@ -135,7 +135,15 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
     } else if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       instance = vnode.instance as Component<any>;
       if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
-        syncVNode(parent, children, vnode.children = (instance as Component<any>).render(), context, dirtyContext);
+        syncVNode(
+          parent,
+          children,
+          vnode.children = DEBUG ?
+            shouldBeSingleVNode((instance as Component<any>).render()) :
+            /* istanbul ignore next */(instance as Component<any>).render(),
+          context,
+          dirtyContext,
+        );
         (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
         (instance as Component<any>).updated(true);
         deepUpdate = 1;
@@ -155,7 +163,15 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         } else {
           deepUpdate = 1;
           vnode.instance = selectData;
-          syncVNode(parent, children, vnode.children = connect.render(selectData), context, dirtyContext);
+          syncVNode(
+            parent,
+            children,
+            vnode.children = DEBUG ?
+              shouldBeSingleVNode(connect.render(selectData)) :
+              /* istanbul ignore next */connect.render(selectData),
+            context,
+            dirtyContext,
+          );
         }
       } else {
         if ((flags & VNodeFlags.UpdateContext) !== 0) {
@@ -304,7 +320,9 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         instance = node;
       } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
         const component = instance = new (vnode.tag as StatefulComponent<any>)(vnode.props);
-        const root = vnode.children = component.render();
+        const root = vnode.children = DEBUG ?
+          shouldBeSingleVNode(component.render()) :
+          /* istanbul ignore next */component.render();
         node = _render(parent, root, context);
       }
     } else { // ((flags & (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0)
@@ -312,12 +330,16 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         if ((flags & VNodeFlags.Connect) !== 0) {
           const connect = (vnode.tag as ConnectDescriptor<any, any, {}>);
           const selectData = instance = connect.select(null, vnode.props, context);
-          vnode.children = connect.render(selectData);
+          vnode.children = DEBUG ?
+            shouldBeSingleVNode(connect.render(selectData)) :
+            /* istanbul ignore next */connect.render(selectData);
         } else {
           context = instance = Object.assign({}, context, vnode.props);
         }
       } else {
-        vnode.children = (vnode.tag as StatelessComponent<any>).render(vnode.props);
+        vnode.children = DEBUG ?
+          shouldBeSingleVNode((vnode.tag as StatelessComponent<any>).render(vnode.props)) :
+          /* istanbul ignore next */(vnode.tag as StatelessComponent<any>).render(vnode.props);
       }
       node = _render(parent, vnode.children as VNode, context);
     }
@@ -534,7 +556,15 @@ export function syncVNode(
           ((component.flags & ComponentFlags.Dirty) !== 0) ||
           (component.shouldUpdate(oldProps, newProps) === true)
         ) {
-          syncVNode(parent, a.children as VNode, b.children = component.render(), context, dirtyContext);
+          syncVNode(
+            parent,
+            a.children as VNode,
+            b.children = DEBUG ?
+              shouldBeSingleVNode(component.render()) :
+              /* istanbul ignore next */component.render(),
+            context,
+            dirtyContext,
+          );
           component.flags &= ~ComponentFlags.Dirty;
           component.updated(true);
         } else {
@@ -555,7 +585,15 @@ export function syncVNode(
               b.children = a.children;
               dirtyCheck(parent, b.children as VNode, context, dirtyContext);
             } else {
-              syncVNode(parent, a.children as VNode, b.children = connect.render(selectData), context, dirtyContext);
+              syncVNode(
+                parent,
+                a.children as VNode,
+                b.children = DEBUG ?
+                  shouldBeSingleVNode(connect.render(selectData)) :
+                  /* istanbul ignore next */connect.render(selectData),
+                context,
+                dirtyContext,
+              );
             }
           } else {
             if (a.props !== b.props) {
@@ -571,7 +609,15 @@ export function syncVNode(
             (a.props !== b.props) &&
             ((bFlags & VNodeFlags.ShouldUpdateHint) === 0 || sc.shouldUpdate!(a.props, b.props) === true)
           ) {
-            syncVNode(parent, a.children as VNode, b.children = sc.render(b.props), context, dirtyContext);
+            syncVNode(
+              parent,
+              a.children as VNode,
+              b.children = DEBUG ?
+                shouldBeSingleVNode(sc.render(b.props)) :
+                /* istanbul ignore next */sc.render(b.props),
+              context,
+              dirtyContext,
+            );
           } else {
             b.children = a.children;
             dirtyCheck(parent, b.children as VNode, context, dirtyContext);
@@ -1080,4 +1126,11 @@ function lis(a: number[]): number[] {
   }
 
   return result;
+}
+
+function shouldBeSingleVNode<T extends VNode>(vnode: T): T {
+  if (vnode.prev !== vnode) {
+    throw new Error("Invalid render function. Render function should return singular VNode.");
+  }
+  return vnode;
 }

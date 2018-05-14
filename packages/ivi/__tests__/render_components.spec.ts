@@ -1,5 +1,5 @@
 import {
-  Component, VNode, statelessComponent, statefulComponent, getComponentInstanceFromVNode, isComponentAttached,
+  Component, VNode, statelessComponent, statefulComponent, getComponentInstanceFromVNode, isComponentAttached, fragment,
 } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
@@ -110,5 +110,29 @@ test(`stateful component should be in detached state when it is removed from the
     const c = getComponentInstanceFromVNode(v);
 
     expect(isComponentAttached(c!)).toBeFalsy();
+  });
+});
+
+test(`stateless component should raise an exception when render function returns children collection`, () => {
+  startRender<HTMLElement>((r) => {
+    const v = Stateless(
+      fragment(
+        h.div(),
+        h.div(),
+      )!,
+    );
+    expect(() => { r(v); }).toThrowError("singular");
+  });
+});
+
+test(`stateful component should raise an exception when render function returns children collection`, () => {
+  startRender<HTMLElement>((r) => {
+    const v = Stateful(
+      fragment(
+        h.div(),
+        h.div(),
+      )!,
+    );
+    expect(() => { r(v); }).toThrowError("singular");
   });
 });
