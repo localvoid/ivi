@@ -196,11 +196,11 @@ function _removeAllChildren(parent: Node, firstNode: VNode): void {
  * @param input HTMLInputElement.
  * @param value Value.
  */
-function _setInputValue(input: HTMLInputElement, value: string | boolean | null): void {
+function _setInputValue(input: HTMLInputElement, value: string | boolean): void {
   if (typeof value === "string") {
     input.value = value;
   } else {
-    input.checked = value as boolean;
+    input.checked = value;
   }
 }
 
