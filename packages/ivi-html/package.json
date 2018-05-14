@@ -1,31 +1,12 @@
 {
   "name": "ivi-html",
+  "version": "0.10.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "es2016": "dist/es2016/index.js",
   "unpkg": "dist/unpkg/ivi-html.js",
   "typings": "dist/typings/index.d.ts",
   "sideEffects": false,
-  "version": "0.10.0",
-  "description": "VNode factories for HTML elements",
-  "license": "MIT",
-  "author": {
-    "name": "Boris Kaul",
-    "email": "localvoid@gmail.com",
-    "url": "https://github.com/localvoid"
-  },
-  "keywords": [
-    "ivi"
-  ],
-  "homepage": "https://github.com/ivijs/ivi",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ivijs/ivi"
-  },
-  "bugs": {
-    "url": "https://github.com/ivijs/ivi/issues"
-  },
-  "github": "https://github.com/ivijs/ivi",
   "files": [
     "dist",
     "src",
@@ -49,5 +30,24 @@
   "devDependencies": {
     "ivi-core": "^0.10.0",
     "ivi": "^0.10.0"
-  }
+  },
+  "description": "Virtual DOM factories for HTML elements",
+  "license": "MIT",
+  "author": {
+    "name": "Boris Kaul",
+    "email": "localvoid@gmail.com",
+    "url": "https://github.com/localvoid"
+  },
+  "keywords": [
+    "ivi"
+  ],
+  "homepage": "https://github.com/localvoid/ivi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localvoid/ivi"
+  },
+  "bugs": {
+    "url": "https://github.com/localvoid/ivi/issues"
+  },
+  "github": "https://github.com/localvoid/ivi"
 }
