@@ -554,4 +554,30 @@ describe("events", () => {
       expect(mouseup.value).toBe(1);
     });
   });
+
+  test(`preventDefault method should trigger native prevent default behavior`, () => {
+    startRender<HTMLInputElement>((r) => {
+      const n = r(
+        h.input()
+          .a({ type: "checkbox" })
+          .e(Events.onClick((e) => { e.preventDefault(); })),
+      );
+
+      n.dispatchEvent(createMouseEvent("click"));
+      expect(n.checked).toBeFalsy();
+    });
+  });
+
+  test(`EventFlags.PreventDefault should trigger native prevent default behavior`, () => {
+    startRender<HTMLInputElement>((r) => {
+      const n = r(
+        h.input()
+          .a({ type: "checkbox" })
+          .e(Events.onClick((e) => Events.EventFlags.PreventDefault)),
+      );
+
+      n.dispatchEvent(createMouseEvent("click"));
+      expect(n.checked).toBeFalsy();
+    });
+  });
 });
