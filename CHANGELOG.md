@@ -1,3 +1,13 @@
+<a name="0.11.1"></a>
+## [0.11.1](https://github.com/localvoid/ivi/compare/0.11.0...0.11.1) (2018-05-15)
+
+
+### Bug Fixes
+
+* **vdom:** setup scheduler when `_update()` is invoked ([0cdf978](https://github.com/localvoid/ivi/commit/0cdf978))
+
+
+
 <a name="0.11.0"></a>
 # 0.11.0 (2018-05-14)
 
