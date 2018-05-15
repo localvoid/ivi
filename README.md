@@ -7,24 +7,45 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Declarative rendering with "Virtual DOM"
 - Components (stateless functions and stateful ES6 classes)
 - Connectors for sideways data loading
+- Implicit data propagation with contexts
 - Extensible synthetic event subsystem
 - Synchronous and deterministic syncing algorithm
 - Children reconciliation with minimum number of DOM operations
 - Fast performance
 - Test utilities
-- Compatible with [Google Closure Compiler](https://github.com/google/closure-compiler) `ADVANCED` mode.
 
-## Example
+## Library Size
+
+Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
+bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
+a **4.4Kb**.
+
+It is possible to get size even lower with [Google Closure Compiler](https://github.com/google/closure-compiler). ivi
+library has full support for compilation with Google Closure Compiler in `ADVANCED` mode.
+
+## Performance
+
+ivi is one of the fastest libraries in the [js-framework-benchmark](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html).
+
+It is quite easy to get incredible results in this benchmark just by focusing on optimizations of low-level primitives.
+But the primary goal of the ivi architecture is to reduce overhead of abstractions, and that is why it is still one of
+the fastest implementations in this benchmark even when benchmark implementation is using stateful components and
+connectors.
+
+## Quick Start
+
+The easiest way to get started with ivi is to use [this basic example code on CodePen](https://codepen.io/localvoid/pen/yjqrgj)
+or [this one on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
+
+The smallest ivi example looks like this:
 
 ```js
 import { render } from "ivi";
 import * as h from "ivi-html";
 
-const container = document.getElementById("app");
-
 render(
-  h.div().c("Hello World!"),
-  container,
+  h.h1().c("Hello World!"),
+  document.getElementById("app"),
 );
 ```
 
@@ -57,25 +78,22 @@ render(
 
 #### Basic
 
-- [Introduction](https://github.com/localvoid/ivi-examples/tree/master/src/01_introduction/)
-- [Stateful Component](https://github.com/localvoid/ivi-examples/tree/master/src/02_stateful_component/)
-- [Events](https://github.com/localvoid/ivi-examples/tree/master/src/03_events/)
-- [Forms](https://github.com/localvoid/ivi-examples/tree/master/src/04_forms/)
-- [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/src/05_collapsable/)
+- [Introduction](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction/)
+- [Stateful Component](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/02_stateful_component/)
+- [Events](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/03_events/)
+- [Forms](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/04_forms/)
+- [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_collapsable/)
 
 #### Apps
 
 - [TodoMVC](https://github.com/localvoid/ivi-todomvc/)
-
-#### Games
-
-- [Snake](https://github.com/localvoid/ivi-examples/tree/master/src/games/snake/)
+- [Snake Game](https://github.com/localvoid/ivi-examples/tree/master/packages/apps/snake/)
 
 #### Benchmarks
 
-- [UIBench](https://github.com/localvoid/ivi-examples/tree/master/src/benchmarks/uibench/)
-- [DBMon](https://github.com/localvoid/ivi-examples/tree/master/src/benchmarks/dbmon/)
-- [10k Components](https://github.com/localvoid/ivi-examples/tree/master/src/benchmarks/10k/)
+- [UIBench](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/uibench/)
+- [DBMon](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/dbmon/)
+- [10k Components](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/10k/)
 
 ## License
 
