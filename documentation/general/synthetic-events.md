@@ -37,26 +37,30 @@ interface VNode {
 
 ```ts
 import { Component, component, render } from "ivi";
-import * as Events from "ivi-events";
-import * as h from "ivi-html";
+import { onClick } from "ivi-events";
+import { div } from "ivi-html";
 
 const StatefulComponent = component(class extends Component {
-  private counter = 0;
+  private counter1 = 0;
+  private counter2 = 0;
 
-  private onClick = Events.onClick((ev) => {
-    this.counter++;
-    this.invalidate();
-  });
+  // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
+  // multiple `onClick` event handlers.
+  private events = [
+    onClick((ev) => {
+      this.counter1++;
+      this.invalidate();
+    }),
+    onClick((ev) => {
+      this.counter2++;
+      this.invalidate();
+    }),
+  ]);
 
   render() {
-    return h.div()
-      // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
-      // multiple `onClick` event handlers.
-      .e([
-        this.onClick,
-        this.onClick,
-      ])
-      .c(`Clicks: ${this.counter}`);
+    return div()
+      .e(this.events)
+      .c(`Clicks: [${this.counter1}] [${this.counter2}]`);
   }
 });
 ```

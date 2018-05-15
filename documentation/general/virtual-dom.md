@@ -3,11 +3,11 @@
 Virtual DOM API is using factory functions to instantiate nodes and method chaining to assign properties.
 
 ```ts
-import * as h from "ivi-html";
-import * as Events from "ivi-events";
+import { onClick } from "ivi-events";
+import { div } from "ivi-html";
 
-const node = h.div()
-  .e(Events.onClick((ev) => { console.log("click"); }))
+const node = div()
+  .e(onClick((ev) => { console.log("click"); }))
   .a({ id: "unique-id" });
 ```
 
@@ -65,7 +65,7 @@ Each child that doesn't have a key will be automatically assigned with an implic
 Implicit keys are used to support code patterns like this:
 
 ```ts
-h.div().c(
+div().c(
   isVisible ?
     map(entries, (entry) => A().k(entry.id)) :
     null,
@@ -103,14 +103,14 @@ function fragment(...args: Array<VNode | string | number | null>): VNode | null;
 `fragment()` is a variadic function that creates a fragment children collection.
 
 ```ts
-const Button = statelessComponent((slot) => h.div("button").c(slot));
+const Button = statelessComponent((slot) => div("button").c(slot));
 
 render(
   Button(
     fragment(
-      h.span().c("Click"),
+      span().c("Click"),
       " ",
-      h.span().c("Me"),
+      span().c("Me"),
     ),
   ),
   DOMContainer,
@@ -131,8 +131,8 @@ array.
 
 ```ts
 render(
-  h.div().c(
-    map([1, 2, 3], (item) => h.div().k(item)),
+  div().c(
+    map([1, 2, 3], (item) => div().k(item)),
   ),
   DOMContainer,
 );
@@ -145,8 +145,8 @@ provided range.
 const items = [1, 2, 3];
 
 render(
-  h.div().c(
-    mapRange(0, items.length, (i) => h.div().k(items[i])),
+  div().c(
+    mapRange(0, items.length, (i) => div().k(items[i])),
   ),
   DOMContainer,
 );

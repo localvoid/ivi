@@ -16,7 +16,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
-a **4.4Kb**.
+a **4Kb**.
 
 It is possible to get size even lower with [Google Closure Compiler](https://github.com/google/closure-compiler). ivi
 library has full support for compilation with Google Closure Compiler in `ADVANCED` mode.
@@ -39,10 +39,10 @@ The smallest ivi example looks like this:
 
 ```js
 import { render } from "ivi";
-import * as h from "ivi-html";
+import { h1 } from "ivi-html";
 
 render(
-  h.h1().c("Hello World!"),
+  h1().c("Hello World!"),
   document.getElementById("app"),
 );
 ```

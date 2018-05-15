@@ -42,7 +42,7 @@ const child = connect<number, undefined, { counter: number }>(
       counter;
   },
   (counter) => (
-    h.div().children(counter)
+    div().children(counter)
   ),
 );
 ```

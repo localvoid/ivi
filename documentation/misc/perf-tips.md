@@ -12,12 +12,12 @@ const Button = statelessComponent((active: boolean) => {
   if (active) {
     className += " active";
   }
-  return h.div(className);
+  return div(className);
 });
 ```
 
 #### Good
 
 ```ts
-const Button = statelessComponent((active: boolean) => h.div(active ? "button active" : "button"));
+const Button = statelessComponent((active: boolean) => div(active ? "button active" : "button"));
 ```

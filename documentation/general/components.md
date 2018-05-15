@@ -4,7 +4,7 @@
 
 ```ts
 const A = statelessComponent((props: string) => (
-  h.div().c(`Hello ${props}`)
+  div().c(`Hello ${props}`)
 ));
 
 render(
@@ -21,7 +21,7 @@ render(
 const A = withShouldUpdate<{ title: string }>(
   (prev, next) => prev.title !== next.title,
   statelessComponent((props) => (
-    h.div().c(`Hello ${props}`)
+    div().c(`Hello ${props}`)
   )),
 );
 
@@ -42,7 +42,7 @@ Stateful components are implemented with ES6 classes and should be extended from
 ```ts
 const A = statefulComponent(class extends Component<string> {
   render() {
-    return h.div().c(`Hello ${this.props}`);
+    return div().c(`Hello ${this.props}`);
   }
 });
 
@@ -64,7 +64,7 @@ class A extends Component<string> {
   }
 
   render() {
-    return h.div().c(`Hello ${this.internalState}`);
+    return div().c(`Hello ${this.internalState}`);
   }
 }
 ```
@@ -102,7 +102,7 @@ class Counter extends Component {
   }
 
   render() {
-    return h.div().c(`Counter: ${this.counter}`);
+    return div().c(`Counter: ${this.counter}`);
   }
 }
 ```
@@ -122,7 +122,7 @@ interface Component {
 ```ts
 class A extends Component<string> {
   render() {
-    return h.div().c(`Hello ${this.props}`);
+    return div().c(`Hello ${this.props}`);
   }
 }
 ```
@@ -148,7 +148,7 @@ class A extends Component<Props> {
   }
 
   render() {
-    return h.div().c(`Hello ${this.props.title}`);
+    return div().c(`Hello ${this.props.title}`);
   }
 }
 ```
@@ -172,7 +172,7 @@ class A extends Component<string> {
   }
 
   render() {
-    return h.div().c(`Hello ${this.internalState}`);
+    return div().c(`Hello ${this.internalState}`);
   }
 }
 ```

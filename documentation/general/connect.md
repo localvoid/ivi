@@ -43,7 +43,7 @@ const article = connect<{ content: string }, number, { articles: Map<number, str
       { content };
   },
   (props) => (
-    h.div().c(props.content)
+    div().c(props.content)
   )),
 );
 
