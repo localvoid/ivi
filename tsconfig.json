@@ -5,10 +5,12 @@
     "target": "es2016",
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": [
+    "lib": [
       "es2015",
       "es2016",
-      "dom",
+      "dom"
+    ],
+    "types": [
       "jest"
     ],
     "paths": {
