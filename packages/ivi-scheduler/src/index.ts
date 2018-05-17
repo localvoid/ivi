@@ -38,6 +38,11 @@ interface TaskList {
   tasks: Array<() => void>;
 }
 
+/**
+ * createTaskList creates a task list.
+ *
+ * @returns Task list.
+ */
 function createTaskList(): TaskList {
   return { tasks: [] };
 }

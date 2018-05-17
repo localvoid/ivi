@@ -861,8 +861,8 @@ export function syncVNode(
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
  *
  * @param parent Parent node.
- * @param a Old VNode list.
- * @param b New VNode list.
+ * @param aFirstNode Old VNode list.
+ * @param bFirstNode New VNode list.
  * @param context Current context.
  * @param dirtyContext Dirty context.
  */
