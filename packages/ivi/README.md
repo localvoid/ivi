@@ -1,14 +1,16 @@
+# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi) [![codecov](https://codecov.io/gh/localvoid/ivi/branch/master/graph/badge.svg)](https://codecov.io/gh/localvoid/ivi) [![CircleCI Status](https://circleci.com/gh/localvoid/ivi.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/localvoid/ivi) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/localvoid/ivi)
+
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
 ## Features
 
-- Declarative rendering with "Virtual DOM"
-- Components (stateless functions and stateful ES6 classes)
-- Connectors for sideways data loading
-- Implicit data propagation with contexts
-- Extensible synthetic event subsystem
+- Declarative rendering with ["Virtual DOM"](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
+- [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md) (stateless functions and stateful ES2015 classes)
+- [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md) for sideways data loading
+- Implicit data propagation with [contexts](https://github.com/localvoid/ivi/blob/master/documentation/general/context.md)
+- Extensible [synthetic event subsystem](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
 - Synchronous and deterministic syncing algorithm
-- Children reconciliation with minimum number of DOM operations
+- Children reconciliation with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Fast performance
 - Test utilities
 
@@ -16,18 +18,18 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
-a **4Kb**.
+a **4KB** (minified+compressed).
 
-It is possible to get size even lower with [Google Closure Compiler](https://github.com/google/closure-compiler). ivi
-library has full support for compilation with Google Closure Compiler in `ADVANCED` mode.
+Also, ivi library has full support for compilation with [Google Closure Compiler](https://github.com/google/closure-compiler)
+in `ADVANCED` mode. Basic example compiled with Google Closure Compiler is **3.6KB** (minified+compressed).
 
 ## Performance
 
 ivi is one of the fastest libraries in the [js-framework-benchmark](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html).
 
-It is quite easy to get incredible results in this benchmark just by focusing on optimizations of low-level primitives.
+It is quite easy to get good results in this benchmark by focusing on optimizations of low-level primitives.
 But the primary goal of the ivi architecture is to reduce overhead of abstractions, and that is why it is still one of
-the fastest implementations in this benchmark even when benchmark implementation is using stateful components and
+the fastest implementations in this benchmark even when benchmark implementation for ivi library is using stateful components and
 connectors.
 
 ## Quick Start
