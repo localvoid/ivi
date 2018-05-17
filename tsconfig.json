@@ -53,7 +53,6 @@
     }
   },
   "include": [
-    "packages/*/src/**/*.ts",
-    "packages/*/__tests__/**/*.ts"
+    "packages/*/src/**/*.ts"
   ]
 }
