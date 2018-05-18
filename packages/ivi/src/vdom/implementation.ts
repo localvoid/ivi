@@ -430,11 +430,12 @@ export function syncVNode(
   }
 
   let instance;
+  const aFlags = a.flags;
   const bFlags = b.flags;
   if (
-    (((a.flags ^ b.flags) & VNodeFlags.Syncable) === 0) &&
+    (((aFlags ^ bFlags) & VNodeFlags.Syncable) === 0) &&
     (
-      (a.flags & (
+      (aFlags & (
         VNodeFlags.ElementFactory |
         VNodeFlags.StatelessComponent |
         VNodeFlags.StatefulComponent |
@@ -449,7 +450,7 @@ export function syncVNode(
     if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
       if ((bFlags & VNodeFlags.Text) !== 0) {
         if (a.children !== b.children) {
-          (instance as Text).nodeValue = b.children as string;
+          (instance as Text).data = b.children as string;
         }
       } else { // (flags & VNodeFlags.Element)
         const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
@@ -482,7 +483,6 @@ export function syncVNode(
         const aChild = a.children;
         let bChild = b.children;
         if (aChild !== bChild) {
-          const aFlags = a.flags;
           if (aChild === null) {
             if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
               bChild = bChild as VNode;
@@ -491,7 +491,7 @@ export function syncVNode(
                 bChild = bChild.next!;
               } while (bChild !== null);
             } else if ((bFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
-              _setInputValue(instance as Element as HTMLInputElement, bChild as string | boolean);
+              _setInputValue(instance as HTMLInputElement, bChild as string | boolean);
             } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
               (instance as Element).innerHTML = bChild as string;
             }
@@ -573,17 +573,13 @@ export function syncVNode(
           }
         }
       } else { // (flags & VNodeFlags.ComponentFunction)
-        const sc = b.tag as StatelessComponent<any>;
-
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
             const connect = b.tag as ConnectDescriptor<any, any, {}>;
             const prevSelectData = instance;
-            const selectData = connect.select(prevSelectData, b.props, context);
-            b.instance = selectData;
+            const selectData = b.instance = connect.select(prevSelectData, b.props, context);
             if (prevSelectData === selectData) {
-              b.children = a.children;
-              dirtyCheck(parent, b.children as VNode, context, dirtyContext);
+              dirtyCheck(parent, b.children = a.children as VNode, context, dirtyContext);
             } else {
               syncVNode(
                 parent,
@@ -605,6 +601,7 @@ export function syncVNode(
             syncVNode(parent, a.children as VNode, b.children as VNode, context, dirtyContext);
           }
         } else {
+          const sc = b.tag as StatelessComponent<any>;
           if (
             (a.props !== b.props) &&
             ((bFlags & VNodeFlags.ShouldUpdateHint) === 0 || sc.shouldUpdate!(a.props, b.props) === true)
@@ -619,8 +616,7 @@ export function syncVNode(
               dirtyContext,
             );
           } else {
-            b.children = a.children;
-            dirtyCheck(parent, b.children as VNode, context, dirtyContext);
+            dirtyCheck(parent, b.children = a.children as VNode, context, dirtyContext);
           }
         }
       }
@@ -934,7 +930,7 @@ function _syncChildrenTrackByKeys(
     if (finished !== 3) {
       if (finished === 1) {
         // All nodes from a are synced, insert the rest from b.
-        next = bEndNode.next === null ? null : getDOMInstanceFromVNode(bEndNode.next!);
+        next = nextNode(bEndNode);
         do {
           renderVNode(parent, next, bStartNode!, context);
           bStartNode = bStartNode!.next;
@@ -952,25 +948,25 @@ function _syncChildrenTrackByKeys(
     let aInnerLength = 0;
     let bInnerLength = 0;
 
-    // Flag indicating that some node should be moved.
-    let moved = false;
+    // When pos === 1000000000, it means that one of the nodes in the wrong position.
+    let moved = 0;
 
     // Reverse indexes for keys.
-    let keyIndex: Map<any, number> | undefined;
-    let positionKeyIndex: Map<number, number> | undefined;
+    let explicitKeyIndex: Map<any, number> | undefined;
+    let implicitKeyIndex: Map<number, number> | undefined;
 
     bNode = bStartNode;
     do {
       if (bNode!.flags & VNodeFlags.Key) {
-        if (keyIndex === undefined) {
-          keyIndex = new Map<any, number>();
+        if (explicitKeyIndex === undefined) {
+          explicitKeyIndex = new Map<any, number>();
         }
-        keyIndex.set(bNode!.key, bInnerLength);
+        explicitKeyIndex.set(bNode!.key, bInnerLength);
       } else {
-        if (positionKeyIndex === undefined) {
-          positionKeyIndex = new Map<number, number>();
+        if (implicitKeyIndex === undefined) {
+          implicitKeyIndex = new Map<number, number>();
         }
-        positionKeyIndex.set(bNode!.key, bInnerLength);
+        implicitKeyIndex.set(bNode!.key, bInnerLength);
       }
       bInnerLength++;
       bNode = bNode!.next;
@@ -987,24 +983,19 @@ function _syncChildrenTrackByKeys(
     }
 
     let innerSynced = 0;
-    i = 0;
     aNode = aStartNode;
     do {
       if (aNode!.flags & VNodeFlags.Key) {
-        j = keyIndex ? keyIndex.get(aNode!.key) : undefined;
+        j = explicitKeyIndex ? explicitKeyIndex.get(aNode!.key) : undefined;
       } else {
-        j = positionKeyIndex ? positionKeyIndex.get(aNode!.key) : undefined;
+        j = implicitKeyIndex ? implicitKeyIndex.get(aNode!.key) : undefined;
       }
 
       if (j === undefined) {
         aNode!.key = null;
       } else {
         sources[j] = aInnerLength;
-        if (i > j) {
-          moved = true;
-        } else {
-          i = j;
-        }
+        moved = (moved > j) ? 1000000000 : j;
         bNode = bArray[j];
         syncVNode(parent, aNode!, bNode, context, dirtyContext);
         innerSynced++;
@@ -1031,22 +1022,20 @@ function _syncChildrenTrackByKeys(
       }
 
       // Step 3
-      if (moved) {
+      if (moved === 1000000000) {
         const seq = lis(sources);
         j = seq.length - 1;
         bNode = bEndNode;
         for (i = bInnerLength - 1; i >= 0; i--) {
-          if (sources[i] === -1) {
-            next = bNode.next === null ? null : getDOMInstanceFromVNode(bNode.next);
-            renderVNode(parent, next, bNode!, context);
+          if (sources[i] < 0) {
+            renderVNode(parent, nextNode(bNode), bNode!, context);
           } else {
             if (j < 0 || i !== seq[j]) {
-              next = bNode.next === null ? null : getDOMInstanceFromVNode(bNode.next);
               /* istanbul ignore else */
               if (DEBUG) {
-                parent.insertBefore(getDOMInstanceFromVNode(bNode)!, next);
+                parent.insertBefore(getDOMInstanceFromVNode(bNode)!, nextNode(bNode));
               } else {
-                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bNode)!, next);
+                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bNode)!, nextNode(bNode));
               }
             } else {
               j--;
@@ -1057,15 +1046,25 @@ function _syncChildrenTrackByKeys(
       } else if (innerSynced !== bInnerLength) {
         bNode = bEndNode;
         for (i = bInnerLength - 1; i >= 0; i--) {
-          if (sources[i] === -1) {
-            next = bNode.next === null ? null : getDOMInstanceFromVNode(bNode.next);
-            renderVNode(parent, next, bNode, context);
+          if (sources[i] < 0) {
+            renderVNode(parent, nextNode(bNode), bNode, context);
           }
           bNode = bNode.prev;
         }
       }
     }
   }
+}
+
+/**
+ * Retrieves a next DOM node from a virtual DOM node.
+ *
+ * @param vnode - Virtual DOM node.
+ * @returns Next DOM node.
+ */
+function nextNode(vnode: VNode): Node | null {
+  const next = vnode.next;
+  return next === null ? null : getDOMInstanceFromVNode(next);
 }
 
 /**
