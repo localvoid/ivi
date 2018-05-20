@@ -96,6 +96,7 @@ render(
 #### Apps
 
 - [TodoMVC](https://github.com/localvoid/ivi-todomvc/)
+- [ndx search demo](https://github.com/localvoid/ndx-demo/)
 - [Snake Game](https://github.com/localvoid/ivi-examples/tree/master/packages/apps/snake/)
 
 #### Benchmarks
