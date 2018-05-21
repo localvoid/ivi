@@ -16,7 +16,12 @@ export interface DispatchTarget {
   handlers: EventHandler | EventHandler[];
 }
 
-function getFlags(flags: EventFlags | void): EventFlags {
+function _dispatch(
+  handler: EventHandler,
+  dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | void) | undefined,
+  event: SyntheticEvent,
+): EventFlags {
+  const flags = (dispatch === void 0) ? handler.handler(event) : dispatch(handler, event);
   return (flags === void 0) ? 0 : flags;
 }
 
@@ -40,14 +45,12 @@ function dispatchEventToLocalEventHandlers(
   if (Array.isArray(handlers)) {
     for (let j = 0; j < handlers.length; ++j) {
       const handler = handlers[j];
-      if ((handler.flags & matchFlags) !== 0) {
-        flags |= getFlags((dispatch === void 0) ? handler.handler(event) : dispatch(handler, event));
+      if (handler.flags & matchFlags) {
+        flags |= _dispatch(handler, dispatch, event);
       }
     }
-  } else {
-    if ((handlers.flags & matchFlags) !== 0) {
-      flags = getFlags((dispatch === void 0) ? handlers.handler(event) : dispatch(handlers, event));
-    }
+  } else if (handlers.flags & matchFlags) {
+    flags = _dispatch(handlers, dispatch, event);
   }
 
   event.flags |= flags;
@@ -74,13 +77,11 @@ export function dispatchEvent(
   dispatch?: (h: EventHandler, ev: SyntheticEvent) => EventFlags | void,
 ): void {
   let i = targets.length - 1;
-  let target;
 
   // capture phase
   while (i >= 0) {
-    target = targets[i--];
-    dispatchEventToLocalEventHandlers(target, event, EventHandlerFlags.Capture, dispatch);
-    if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
+    dispatchEventToLocalEventHandlers(targets[i--], event, EventHandlerFlags.Capture, dispatch);
+    if (event.flags & SyntheticEventFlags.StoppedPropagation) {
       return;
     }
   }
@@ -90,7 +91,7 @@ export function dispatchEvent(
     event.flags |= SyntheticEventFlags.BubblePhase;
     for (i = 0; i < targets.length; ++i) {
       dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Bubble, dispatch);
-      if ((event.flags & SyntheticEventFlags.StoppedPropagation) !== 0) {
+      if (event.flags & SyntheticEventFlags.StoppedPropagation) {
         return;
       }
     }
