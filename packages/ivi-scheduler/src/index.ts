@@ -127,7 +127,7 @@ const handleVisibilityChange = catchError(() => {
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
 
-    if (newHidden === false && _animations.length > 0) {
+    if (!newHidden && (_animations.length > 0)) {
       requestNextFrame();
     }
 
@@ -140,9 +140,7 @@ const handleVisibilityChange = catchError(() => {
 });
 
 if (TARGET !== "browser" || typeof document["hidden"] !== "undefined") {
-  _isHidden = function () {
-    return document.hidden;
-  };
+  _isHidden = () => document.hidden;
   document.addEventListener("visibilitychange", handleVisibilityChange);
 } else if (typeof (document as any)["webkitHidden"] !== "undefined") {
   /**
@@ -150,16 +148,12 @@ if (TARGET !== "browser" || typeof document["hidden"] !== "undefined") {
    *
    * Android 4.4
    */
-  _isHidden = function () {
-    return (document as any)["webkitHidden"];
-  };
+  _isHidden = () => (document as any)["webkitHidden"];
   document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
 } else {
-  _isHidden = function () {
-    return true;
-  };
+  _isHidden = () => false;
 }
-if (_isHidden() === true) {
+if (_isHidden()) {
   _flags |= SchedulerFlags.Hidden;
 }
 
@@ -259,12 +253,6 @@ export function currentFrameStartTime(): number {
   return _currentFrameStartTime;
 }
 
-function _updateCurrentFrameStartTime(time?: number): void {
-  _currentFrameStartTime = (time === undefined ? performance.now() : time) / 1000;
-}
-
-_updateCurrentFrameStartTime();
-
 function _requestNextFrame(): void {
   if (_flags & SchedulerFlags.NextFramePending) {
     requestAnimationFrame(_handleNextFrame);
@@ -286,10 +274,9 @@ export function requestNextFrame(): void {
  *
  * @param t Current time.
  */
-const _handleNextFrame = catchError((time?: number) => {
+const _handleNextFrame = catchError((time: number) => {
   _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
-
-  _updateCurrentFrameStartTime(time);
+  _currentFrameStartTime = time;
 
   const frame = _nextFrame;
   _nextFrame = _currentFrame;
@@ -422,6 +409,6 @@ export function currentFrameAfter(task: () => void): void {
  */
 export function triggerNextFrame(): void {
   if (_flags & SchedulerFlags.NextFramePending) {
-    _handleNextFrame();
+    _handleNextFrame(performance.now());
   }
 }
