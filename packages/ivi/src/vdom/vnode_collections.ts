@@ -84,35 +84,33 @@ export function fragment(): VNode | null {
  * @param fn Function that produces an element for the children collection.
  */
 export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null {
-  if (array.length) {
-    let first: VNode<any> | null = null;
-    let prev: VNode<any> | null = null;
-    for (let i = 0; i < array.length; ++i) {
-      const n = fn(array[i], i);
-      if (n !== null) {
-        /* istanbul ignore else */
-        if (DEBUG) {
-          if ((n.flags & VNodeFlags.Key) === 0) {
-            throw new Error(`VNodes created with a map() function should have an explicit key`);
-          }
-          if (n.prev !== n) {
-            throw new Error(`VNodes created with a map() function should be a singular nodes`);
-          }
+  let first: VNode<any> | null = null;
+  let prev: VNode<any> | null = null;
+  for (let i = 0; i < array.length; ++i) {
+    const n = fn(array[i], i);
+    if (n !== null) {
+      /* istanbul ignore else */
+      if (DEBUG) {
+        if ((n.flags & VNodeFlags.Key) === 0) {
+          throw new Error(`VNodes created with a map() function should have an explicit key`);
         }
-        if (prev !== null) {
-          n.prev = prev;
-          prev.next = n;
-        } else {
-          first = n;
+        if (n.prev !== n) {
+          throw new Error(`VNodes created with a map() function should be a singular nodes`);
         }
-        prev = n;
       }
+      if (prev !== null) {
+        n.prev = prev;
+        prev.next = n;
+      } else {
+        first = n;
+      }
+      prev = n;
     }
-    if (first !== null) {
-      first.prev = prev!;
-      first.flags |= VNodeFlags.KeyedList;
-      return first;
-    }
+  }
+  if (first !== null) {
+    first.prev = prev!;
+    first.flags |= VNodeFlags.KeyedList;
+    return first;
   }
   return null;
 }
@@ -136,35 +134,33 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
  */
 export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null {
   const length = end - start;
-  if (length) {
-    let first: VNode<any> | null = null;
-    let prev: VNode<any> | null = null;
-    do {
-      const n = fn(start++);
-      if (n !== null) {
-        /* istanbul ignore else */
-        if (DEBUG) {
-          if ((n.flags & VNodeFlags.Key) === 0) {
-            throw new Error(`VNodes created with a mapRange() function should have an explicit key`);
-          }
-          if (n.prev !== n) {
-            throw new Error(`VNodes created with a mapRange() function should be a singular nodes`);
-          }
+  let first: VNode<any> | null = null;
+  let prev: VNode<any> | null = null;
+  while (start < length) {
+    const n = fn(start++);
+    if (n !== null) {
+      /* istanbul ignore else */
+      if (DEBUG) {
+        if ((n.flags & VNodeFlags.Key) === 0) {
+          throw new Error(`VNodes created with a mapRange() function should have an explicit key`);
         }
-        if (prev !== null) {
-          n.prev = prev;
-          prev.next = n;
-        } else {
-          first = n;
+        if (n.prev !== n) {
+          throw new Error(`VNodes created with a mapRange() function should be a singular nodes`);
         }
-        prev = n;
       }
-    } while (start < length);
-    if (first !== null) {
-      first.prev = prev!;
-      first.flags |= VNodeFlags.KeyedList;
-      return first;
+      if (prev !== null) {
+        n.prev = prev;
+        prev.next = n;
+      } else {
+        first = n;
+      }
+      prev = n;
     }
+  }
+  if (first !== null) {
+    first.prev = prev!;
+    first.flags |= VNodeFlags.KeyedList;
+    return first;
   }
   return null;
 }
