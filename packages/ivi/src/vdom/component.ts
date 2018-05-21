@@ -18,23 +18,26 @@ export interface StatefulComponent<P = undefined> {
 }
 
 /**
- * Component is a base class for stateful components.
+ * Base class for stateful components.
  *
  * Component class has a parametric type `P` to specify `props` type.
  *
- * Example:
+ * @example
  *
- *     const Hello = component(class extends Component<string> {
+ *     const Hello = statefulComponent(class extends Component<string> {
  *       render() {
- *         return h.t(`Hello ${this.props}`);
+ *         return div().c(`Hello ${this.props}`);
  *       }
  *     });
  *
- *     render(Hello("world"), document.getElementById("App")!);
+ *     render(
+ *       Hello("World!"),
+ *       document.getElementById("app")!,
+ *     );
  */
 export abstract class Component<P = undefined> {
   /**
-   * Flags, see `ComponentFlags` for details.
+   * Flags, see {@link ComponentFlags} for details.
    */
   flags: ComponentFlags;
   /**
@@ -42,24 +45,31 @@ export abstract class Component<P = undefined> {
    */
   props: P;
 
+  /**
+   * Component constructor.
+   *
+   * Components are instantiated by a virtual DOM engine.
+   *
+   * @param props - Properties
+   */
   constructor(props: P) {
     this.flags = 0;
     this.props = props;
   }
 
   /**
-   * Lifecycle method `newPropsReceived` is invoked after new props are assigned.
+   * Lifecycle method `newPropsReceived()` is invoked after new props are assigned.
    *
-   * @param oldProps Old props.
-   * @param newProps New props.
+   * @param prev - Previous properties
+   * @param next - Next properties
    */
-  newPropsReceived(oldProps: P, newProps: P): void {
+  newPropsReceived(prev: P, next: P): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
   }
 
   /**
-   * Lifecycle method `attached` is invoked when component is attached to the document.
+   * Lifecycle method `attached()` is invoked when component is attached to the document.
    */
   attached(): void {
     /* tslint:disable:no-empty */
@@ -67,7 +77,7 @@ export abstract class Component<P = undefined> {
   }
 
   /**
-   * Lifecycle method `detached` is invoked when component is detached from the document.
+   * Lifecycle method `detached()` is invoked when component is detached from the document.
    */
   detached(): void {
     /* tslint:disable:no-empty */
@@ -75,20 +85,20 @@ export abstract class Component<P = undefined> {
   }
 
   /**
-   * Lifecycle method `shouldUpdate` is used as a hint to reduce unnecessary updates.
+   * Lifecycle method `shouldUpdate()` is used as a hint to reduce unnecessary updates.
    *
-   * @param oldProps Old props.
-   * @param newProps New props.
-   * @returns `true` when changes in props should trigger update.
+   * @param prev - Previous properties
+   * @param next - Next properties
+   * @returns `true` when changes in props should trigger update
    */
-  shouldUpdate(oldProps: P, newProps: P): boolean {
-    return oldProps !== newProps;
+  shouldUpdate(prev: P, next: P): boolean {
+    return prev !== next;
   }
 
   /**
-   * Lifecycle method `updated` is invoked after update.
+   * Lifecycle method `updated()` is invoked after update.
    *
-   * @param local `true` when update was caused by local changes.
+   * @param local - Update were triggered from local changes
    */
   updated(local: boolean): void {
     /* tslint:disable:no-empty */
@@ -96,17 +106,22 @@ export abstract class Component<P = undefined> {
   }
 
   /**
-   * Lifecycle method `invalidated` is invoked after `invalidate` method is invoked.
+   * Lifecycle method `invalidated()` is invoked after `invalidate()` method is invoked.
    */
   invalidated(): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
   }
 
+  /**
+   * Lifecycle method `render()` should return virtual DOM representation.
+   *
+   * @returns Virtual DOM representation
+   */
   abstract render(): VNode;
 
   /**
-   * Invalidate view.
+   * Triggers view invalidation.
    */
   invalidate(): void {
     this.flags |= ComponentFlags.DirtyState;
@@ -118,7 +133,7 @@ export abstract class Component<P = undefined> {
 }
 
 /**
- * isComponentAttached returns `true` when component is attached.
+ * `isComponentAttached()` returns `true` when component is attached.
  *
  * @returns `true` when component is attached.
  */

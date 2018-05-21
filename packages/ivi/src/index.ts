@@ -9,7 +9,7 @@ export { KeyCode, KeyLocation, MouseButtons } from "ivi-core";
 export { StatefulComponent, StatelessComponent, Component, isComponentAttached } from "./vdom/component";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
-  VNode, Children,
+  VNode,
   getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   autofocus, stopDirtyChecking,
 } from "./vdom/vnode";

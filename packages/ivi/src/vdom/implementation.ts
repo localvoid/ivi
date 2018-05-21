@@ -17,25 +17,25 @@ import { StatefulComponent, StatelessComponent, Component } from "./component";
 import { syncDOMAttrs, syncStyle } from "./sync_dom";
 
 /**
- * Remove VNode entry point.
+ * Removes VNode.
  *
- * @param parent Parent DOM node.
- * @param node VNode element to remove.
+ * @param parent - Parent DOM node
+ * @param vnode - Virtual DOM node to remove
  */
-export function removeVNode(parent: Node, node: VNode): void {
+export function removeVNode(parent: Node, vnode: VNode): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    parent.removeChild(getDOMInstanceFromVNode(node)!);
+    parent.removeChild(getDOMInstanceFromVNode(vnode)!);
   } else {
-    nodeRemoveChild.call(parent, getDOMInstanceFromVNode(node)!);
+    nodeRemoveChild.call(parent, getDOMInstanceFromVNode(vnode)!);
   }
-  _detach(node);
+  _detach(vnode);
 }
 
 /**
  * Recursively attach all nodes.
  *
- * @param vnode VNode.
+ * @param vnode - Virtual DOM node
  */
 function _attach(vnode: VNode): void {
   const flags = vnode._f;
@@ -70,7 +70,7 @@ function _attach(vnode: VNode): void {
 /**
  * Recursively detach all nodes.
  *
- * @param vnode VNode.
+ * @param vnode - Virtual DOM node
  */
 function _detach(vnode: VNode): void {
   const flags = vnode._f;
@@ -106,10 +106,10 @@ function _detach(vnode: VNode): void {
 /**
  * Recursively perform dirty checking.
  *
- * @param parent Parent DOM Node.
- * @param vnode VNode.
- * @param context New context.
- * @param dirtyContext Dirty context.
+ * @param parent - Parent DOM Node
+ * @param vnode - VNode
+ * @param context - Current context
+ * @param dirtyContext - Context is dirty
  */
 export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): number {
   const flags = vnode._f;
@@ -190,27 +190,27 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
 /**
  * Remove all children.
  *
- * `detach` lifecycle methods will be invoked for all children and their subtrees.
+ * `detach()` lifecycle methods will be invoked for all children and their subtrees.
  *
- * @param parent Parent DOM node.
- * @param firstNode Arrays of VNodes to remove.
+ * @param parent - Parent DOM element
+ * @param firstVNode - First Virtual DOM node
  */
-function _removeAllChildren(parent: Node, firstNode: VNode): void {
+function _removeAllChildren(parent: Node, firstVNode: VNode): void {
   parent.textContent = "";
-  let node: VNode | null = firstNode;
+  let vnode: VNode | null = firstVNode;
   do {
-    _detach(node);
-    node = node._r;
-  } while (node !== null);
+    _detach(vnode);
+    vnode = vnode._r;
+  } while (vnode !== null);
 }
 
 /**
- * Set value for HTMLInputElement.
+ * Set value for `HTMLInputElement`.
  *
  * When value has a string type it is assigned to `value` property, otherwise it is assigned to `checked` property.
  *
- * @param input HTMLInputElement.
- * @param value Value.
+ * @param input - HTMLInputElement
+ * @param value - Value
  */
 function _setInputValue(input: HTMLInputElement, value: string | boolean): void {
   if (typeof value === "string") {
@@ -221,12 +221,12 @@ function _setInputValue(input: HTMLInputElement, value: string | boolean): void 
 }
 
 /**
- * Render VNode.
+ * Render virtual DOM node.
  *
- * @param parent Parent DOM Node.
- * @param vnode VNode to render.
- * @param context Current context.
- * @returns Rendered DOM Node.
+ * @param parent - Parent DOM element
+ * @param vnode - Virtual DOM node to render
+ * @param context - Current context
+ * @returns Rendered DOM Node
  */
 function _render(parent: Node, vnode: VNode, context: {}): Node {
   /* istanbul ignore else */
@@ -354,17 +354,18 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
 }
 
 /**
- * Render VNode into container and invoke `attached` lifecycle methods after VNode is inserted into container.
+ * Render virtual DOM node into container and invoke `attached()` lifecycle methods after node is inserted into
+ * container.
  *
- * It is important that `attached` methods are invoked only after DOM Nodes have been inserted into container, so it
- * goes twice through the entire vnode tree, first time when everything is rendered and the second time when `attached`
- * methods are invoked.
+ * It is important that `attached()` methods are invoked only after DOM nodes have been inserted into container, so it
+ * goes twice through the entire vnode tree, first time when everything is rendered and the second time when
+ * `attached()` methods are invoked.
  *
- * @param parent Parent DOM Node.
- * @param refChild Reference to the next Node, when it is `null` child will be inserted at the end.
- * @param vnode VNode.
- * @param context Current context.
- * @returns Rendered DOM Node.
+ * @param parent - Parent DOM element
+ * @param refChild - Reference to the next DOM node, when it is `null` child will be inserted at the end
+ * @param vnode - Virtual DOM node
+ * @param context - Current context
+ * @returns Rendered DOM Node
  */
 export function renderVNode(
   parent: Node,
@@ -384,11 +385,11 @@ export function renderVNode(
 }
 
 /**
- * Check if two nodes has equal keys.
+ * Check if two virtual DOM node has equal keys.
  *
- * @param a VNode.
- * @param b VNode.
- * @returns true if nodes has equal keys.
+ * @param a - Virtual DOM node
+ * @param b - Virtual DOM node
+ * @returns `true` when virtual DOM nodes has equal keys
  */
 function _eqKeys(a: VNode, b: VNode): boolean {
   return (
@@ -398,16 +399,16 @@ function _eqKeys(a: VNode, b: VNode): boolean {
 }
 
 /**
- * Sync two VNodes.
+ * Sync virtual DOM nodes.
  *
  * When node `a` is synced with node `b`, `a` node should be considered as destroyed, and any access to it after sync
  * is an undefined behavior.
  *
- * @param parent Parent node.
- * @param a Old VNode.
- * @param b New VNode.
- * @param context Current context.
- * @param dirtyContext Dirty context.
+ * @param parent - Parent DOM element
+ * @param a - Previous virtual DOM node
+ * @param b - Next virtual DOM node
+ * @param context - Current context
+ * @param dirtyContext - Context is dirty
  */
 export function syncVNode(
   parent: Node,
@@ -855,25 +856,25 @@ export function syncVNode(
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
  *
- * @param parent Parent node.
- * @param aFirstNode Old VNode list.
- * @param bFirstNode New VNode list.
- * @param context Current context.
- * @param dirtyContext Dirty context.
+ * @param parent - Parent DOM element
+ * @param aFirstVNode - Previous virtual DOM node
+ * @param bFirstVNode - Next virtual DOM node
+ * @param context - Current context
+ * @param dirtyContext - Context is dirty
  */
 function _syncChildrenTrackByKeys(
   parent: Node,
-  aFirstNode: VNode,
-  bFirstNode: VNode,
+  aFirstVNode: VNode,
+  bFirstVNode: VNode,
   context: {},
   dirtyContext: boolean,
 ): void {
-  let aStartNode: VNode<any> | null = aFirstNode;
-  let bStartNode: VNode<any> | null = bFirstNode;
-  let aEndNode: VNode<any> = aFirstNode._l!;
-  let bEndNode: VNode<any> = bFirstNode._l!;
-  let aNode: VNode<any> | null;
-  let bNode: VNode<any> | null;
+  let aStartVNode: VNode<any> | null = aFirstVNode;
+  let bStartVNode: VNode<any> | null = bFirstVNode;
+  let aEndVNode: VNode<any> = aFirstVNode._l!;
+  let bEndVNode: VNode<any> = bFirstVNode._l!;
+  let aVNode: VNode<any> | null;
+  let bVNode: VNode<any> | null;
   let j: number | undefined;
   let i: number = 0;
   let synced = 0;
@@ -881,18 +882,18 @@ function _syncChildrenTrackByKeys(
   // Step 1
   outer: while (true) {
     // Sync nodes with the same key at the beginning.
-    while (_eqKeys(aStartNode!, bStartNode!) === true) {
-      syncVNode(parent, aStartNode!, bStartNode!, context, dirtyContext);
+    while (_eqKeys(aStartVNode!, bStartVNode!) === true) {
+      syncVNode(parent, aStartVNode!, bStartVNode!, context, dirtyContext);
       synced++;
-      if (aStartNode === aEndNode) {
+      if (aStartVNode === aEndVNode) {
         i = 1;
       } else {
-        aStartNode = aStartNode!._r;
+        aStartVNode = aStartVNode!._r;
       }
-      if (bStartNode === bEndNode) {
+      if (bStartVNode === bEndVNode) {
         i |= 2;
       } else {
-        bStartNode = bStartNode!._r;
+        bStartVNode = bStartVNode!._r;
       }
       if (i) {
         break outer;
@@ -900,18 +901,18 @@ function _syncChildrenTrackByKeys(
     }
 
     // Sync nodes with the same key at the end.
-    while (_eqKeys(aEndNode, bEndNode) === true) {
-      syncVNode(parent, aEndNode, bEndNode, context, dirtyContext);
+    while (_eqKeys(aEndVNode, bEndVNode) === true) {
+      syncVNode(parent, aEndVNode, bEndVNode, context, dirtyContext);
       synced++;
-      if (aStartNode === aEndNode) {
+      if (aStartVNode === aEndVNode) {
         i = 1;
       } else {
-        aEndNode = aEndNode._l;
+        aEndVNode = aEndVNode._l;
       }
-      if (bStartNode === bEndNode) {
+      if (bStartVNode === bEndVNode) {
         i |= 2;
       } else {
-        bEndNode = bEndNode._l;
+        bEndVNode = bEndVNode._l;
       }
       if (i) {
         break outer;
@@ -925,19 +926,19 @@ function _syncChildrenTrackByKeys(
     if (i < 3) {
       if (i < 2) {
         // All nodes from a are synced, insert the rest from b.
-        const next = nextNode(bEndNode);
-        bEndNode = bEndNode._r!;
+        const next = nextNode(bEndVNode);
+        bEndVNode = bEndVNode._r!;
         do {
-          renderVNode(parent, next, bStartNode!, context);
-          bStartNode = bStartNode!._r;
-        } while (bStartNode !== bEndNode);
+          renderVNode(parent, next, bStartVNode!, context);
+          bStartVNode = bStartVNode!._r;
+        } while (bStartVNode !== bEndVNode);
       } else {
         // All nodes from b are synced, remove the rest from a.
-        aEndNode = aEndNode._r!;
+        aEndVNode = aEndVNode._r!;
         do {
-          removeVNode(parent, aStartNode!);
-          aStartNode = aStartNode!._r;
-        } while (aStartNode !== aEndNode);
+          removeVNode(parent, aStartVNode!);
+          aStartVNode = aStartVNode!._r;
+        } while (aStartVNode !== aEndVNode);
       }
     }
   } else { // Step 2
@@ -952,98 +953,98 @@ function _syncChildrenTrackByKeys(
     let explicitKeyIndex: Map<any, number> | undefined;
     let implicitKeyIndex: Map<number, number> | undefined;
 
-    bNode = bStartNode;
+    bVNode = bStartVNode;
     do {
-      if (bNode!._f & VNodeFlags.Key) {
+      if (bVNode!._f & VNodeFlags.Key) {
         if (explicitKeyIndex === void 0) {
           explicitKeyIndex = new Map<any, number>();
         }
-        explicitKeyIndex.set(bNode!._k, bInnerLength++);
+        explicitKeyIndex.set(bVNode!._k, bInnerLength++);
       } else {
         if (implicitKeyIndex === void 0) {
           implicitKeyIndex = new Map<number, number>();
         }
-        implicitKeyIndex.set(bNode!._k, bInnerLength++);
+        implicitKeyIndex.set(bVNode!._k, bInnerLength++);
       }
-    } while ((bNode = bNode!._r) !== bEndNode._r);
+    } while ((bVNode = bVNode!._r) !== bEndVNode._r);
 
     // Mark all nodes as inserted.
     const sources = new Array<number>(bInnerLength).fill(-1);
 
     const bArray = new Array<VNode<any>>(bInnerLength);
-    bNode = bStartNode;
+    bVNode = bStartVNode;
     for (i = 0; i < bInnerLength; i++) {
-      bArray[i] = bNode!;
-      bNode = bNode!._r;
+      bArray[i] = bVNode!;
+      bVNode = bVNode!._r;
     }
 
     let innerSynced = 0;
-    aNode = aStartNode;
-    aEndNode = aEndNode._r!;
+    aVNode = aStartVNode;
+    aEndVNode = aEndVNode._r!;
     do {
-      if (aNode!._f & VNodeFlags.Key) {
-        j = explicitKeyIndex ? explicitKeyIndex.get(aNode!._k) : void 0;
+      if (aVNode!._f & VNodeFlags.Key) {
+        j = explicitKeyIndex ? explicitKeyIndex.get(aVNode!._k) : void 0;
       } else {
-        j = implicitKeyIndex ? implicitKeyIndex.get(aNode!._k) : void 0;
+        j = implicitKeyIndex ? implicitKeyIndex.get(aVNode!._k) : void 0;
       }
 
       if (j === void 0) {
-        aNode!._k = null;
+        aVNode!._k = null;
       } else {
         moved = (moved > j) ? 1000000000 : j;
         sources[j] = aInnerLength;
-        syncVNode(parent, aNode!, bArray[j], context, dirtyContext);
+        syncVNode(parent, aVNode!, bArray[j], context, dirtyContext);
         innerSynced++;
       }
       aInnerLength++;
-    } while ((aNode = aNode!._r) !== aEndNode);
+    } while ((aVNode = aVNode!._r) !== aEndVNode);
 
     if (!synced && !innerSynced) {
       // Noone is synced, remove all children with one dom op.
-      _removeAllChildren(parent, aFirstNode);
+      _removeAllChildren(parent, aFirstVNode);
       do {
-        renderVNode(parent, null, bStartNode!, context);
-        bStartNode = bStartNode!._r;
-      } while (bStartNode !== null);
+        renderVNode(parent, null, bStartVNode!, context);
+        bStartVNode = bStartVNode!._r;
+      } while (bStartVNode !== null);
     } else {
       i = aInnerLength - innerSynced;
       while (i > 0) {
-        if (aStartNode!._k === null) {
-          removeVNode(parent, aStartNode!);
+        if (aStartVNode!._k === null) {
+          removeVNode(parent, aStartVNode!);
           i--;
         }
-        aStartNode = aStartNode!._r;
+        aStartVNode = aStartVNode!._r;
       }
 
       // Step 3
       if (moved === 1000000000) {
         const seq = lis(sources);
         j = seq.length - 1;
-        bNode = bEndNode;
+        bVNode = bEndVNode;
         for (i = bInnerLength - 1; i >= 0; i--) {
           if (sources[i] < 0) {
-            renderVNode(parent, nextNode(bNode), bNode!, context);
+            renderVNode(parent, nextNode(bVNode), bVNode!, context);
           } else {
             if (j < 0 || i !== seq[j]) {
               /* istanbul ignore else */
               if (DEBUG) {
-                parent.insertBefore(getDOMInstanceFromVNode(bNode)!, nextNode(bNode));
+                parent.insertBefore(getDOMInstanceFromVNode(bVNode)!, nextNode(bVNode));
               } else {
-                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bNode)!, nextNode(bNode));
+                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bVNode)!, nextNode(bVNode));
               }
             } else {
               j--;
             }
           }
-          bNode = bNode._l;
+          bVNode = bVNode._l;
         }
       } else if (innerSynced !== bInnerLength) {
-        bNode = bEndNode;
+        bVNode = bEndVNode;
         for (i = bInnerLength - 1; i >= 0; i--) {
           if (sources[i] < 0) {
-            renderVNode(parent, nextNode(bNode), bNode, context);
+            renderVNode(parent, nextNode(bVNode), bVNode, context);
           }
-          bNode = bNode._l;
+          bVNode = bVNode._l;
         }
       }
     }
@@ -1053,8 +1054,8 @@ function _syncChildrenTrackByKeys(
 /**
  * Retrieves a next DOM node from a virtual DOM node.
  *
- * @param vnode - Virtual DOM node.
- * @returns Next DOM node.
+ * @param vnode - Virtual DOM node
+ * @returns Next DOM node
  */
 function nextNode(vnode: VNode): Node | null {
   const next = vnode._r;
@@ -1065,10 +1066,10 @@ function nextNode(vnode: VNode): Node | null {
  * Slightly modified Longest Increased Subsequence algorithm, it ignores items that have -1 value, they're representing
  * new items.
  *
- * http://en.wikipedia.org/wiki/Longest_increasing_subsequence
+ * {@link http://en.wikipedia.org/wiki/Longest_increasing_subsequence}
  *
- * @param a Array of numbers.
- * @returns Longest increasing subsequence.
+ * @param a - Array of numbers
+ * @returns Longest increasing subsequence
  * @noinline
  */
 function lis(a: number[]): number[] {
@@ -1121,6 +1122,12 @@ function lis(a: number[]): number[] {
   return result;
 }
 
+/**
+ * Check virtual DOM node returned from a `render()` function in `DEBUG` mode.
+ *
+ * @param vnode - Virtual DOM node
+ * @return `vnode`
+ */
 function shouldBeSingleVNode<T extends VNode>(vnode: T): T {
   if (vnode._l !== vnode) {
     throw new Error("Invalid render function. Render function should return singular VNode.");

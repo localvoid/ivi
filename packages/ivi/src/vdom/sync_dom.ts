@@ -5,9 +5,9 @@ import {
 /**
  * Sync DOM styles.
  *
- * @param node HTML or SVG Element.
- * @param a Old styles.
- * @param b New styles.
+ * @param node - HTML or SVG Element
+ * @param a - Prev styles
+ * @param b - Next styles
  */
 export function syncStyle(
   node: HTMLElement | SVGElement,
@@ -41,12 +41,12 @@ export function syncStyle(
 }
 
 /**
- * Set DOM property.
+ * Set DOM attribute.
  *
- * @param node HTML or SVG Element.
- * @param svg SVG Element.
- * @param key Attribute name.
- * @param value Attribute value.
+ * @param node - HTML or SVG Element
+ * @param svg - SVG Element
+ * @param key - Attribute name
+ * @param value - Attribute value
  */
 function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): void {
   if (typeof value === "boolean") {
@@ -100,12 +100,12 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
 }
 
 /**
- * Sync DOM Attributes.
+ * Sync DOM attributes.
  *
- * @param node HTML or SVG Element.
- * @param svg SVG Element.
- * @param a Old DOM properties.
- * @param b New DOM properties.
+ * @param node - HTML or SVG Element
+ * @param svg - SVG Element
+ * @param a - Prev DOM properties
+ * @param b - Next DOM properties
  */
 export function syncDOMAttrs(
   node: Element,

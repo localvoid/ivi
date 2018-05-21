@@ -8,7 +8,9 @@ import { ConnectDescriptor } from "./connect_descriptor";
 /**
  * Virtual DOM Node.
  *
- *     const vnode = h.div("div-class-name")
+ * @example
+ *
+ *     const vnode = div("div-class-name")
  *       .a({ id: "div-id" })
  *       .e(Events.onClick((e) => console.log("click event", e)))
  *       .c("Hello");
@@ -17,15 +19,15 @@ import { ConnectDescriptor } from "./connect_descriptor";
  */
 export class VNode<P = any, N = Node> {
   /**
-   * Flags, see `VNodeFlags` for details.
+   * Flags, see {@link VNodeFlags} for details.
    */
   _f: VNodeFlags;
   /**
-   * Circular link to previous sibling node.
+   * Circular link to previous sibling node (left).
    */
   _l: VNode;
   /**
-   * Next sibling node.
+   * Next sibling node (right).
    */
   _r: VNode | null;
   /**
@@ -111,12 +113,12 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * k assigns a key.
+   * Assigns a key.
    *
    * Children reconciliation algorithm is using keys to match nodes. Key should be unique among its siblings.
    *
-   * @param key Any object that should be unique among its siblings.
-   * @returns VNode
+   * @param key - Unique key
+   * @returns this node
    */
   k(key: any): this {
     this._f |= VNodeFlags.Key;
@@ -125,10 +127,10 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * s assigns style for an Element node.
+   * Assigns style for an Element node.
    *
-   * @param style Style.
-   * @returns VNode
+   * @param style - Style
+   * @returns this node
    */
   s<U extends CSSStyleProps>(style: U | null): this {
     if (DEBUG) {
@@ -145,10 +147,10 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * e assign events for an Element node.
+   * Assign events for an Element node.
    *
-   * @param events Events.
-   * @returns VNode
+   * @param events - Events
+   * @returns this node
    */
   e(events: Array<EventHandler | null> | EventHandler | null): this {
     if (DEBUG) {
@@ -162,10 +164,10 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * a assigns DOM attributes for an Element node.
+   * Assigns DOM attributes for an Element node.
    *
-   * @param attrs DOM attributes.
-   * @returns VNode
+   * @param attrs - DOM attributes
+   * @returns this node
    */
   a(attrs: P | null): this {
     if (DEBUG) {
@@ -186,12 +188,12 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * c assigns children for an Element node.
+   * Assigns children for an Element node.
    *
-   * @param children Children can be a simple string, single VNode or recursive list of VNodes with strings and null
+   * @param children - Children can be a simple string, single VNode or recursive list of VNodes with strings and null
    *   values. It will automatically normalize recursive lists by flattening, filtering out null values and replacing
    *   strings with text nodes.
-   * @returns VNode
+   * @returns this node
    */
   c(...children: Array<VNode | string | number | null>): this;
   c(): this {
@@ -267,10 +269,10 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * unsafeHTML assigns children as an innerHTML string. It is potentially vulnerable to XSS attacks.
+   * Assigns children as an innerHTML string. It is potentially vulnerable to XSS attacks.
    *
-   * @param html innerHTML in a string format.
-   * @returns VNode
+   * @param html innerHTML in a string format
+   * @returns this node
    */
   unsafeHTML(html: string | null): this {
     if (DEBUG) {
@@ -299,10 +301,10 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * value assigns value for an HTMLInputElement and HTMLTextAreaElement elements.
+   * Assigns value for an HTMLInputElement and HTMLTextAreaElement elements.
    *
-   * @param value input value.
-   * @returns VNode
+   * @param value - Input value
+   * @returns this node
    */
   value(value: string | boolean | null): this {
     if (DEBUG) {
@@ -314,8 +316,6 @@ export class VNode<P = any, N = Node> {
     return this;
   }
 }
-
-export type Children = Array<VNode[] | VNode | string | number | null>;
 
 /**
  * getDOMInstanceFromVNode retrieves a reference to a DOM node from a VNode object.
@@ -338,12 +338,12 @@ export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T 
 /**
  * getComponentInstanceFromVNode retrieves a reference to a Component instance from a VNode object.
  *
- * @param node VNode which contains reference to a Component instance.
- * @returns null if VNode doesn't have a reference to a Component instance.
+ * @param vnode - Virtual DOM node which contains reference to a Component instance
+ * @returns `null` if `vnode` doesn't have a reference to a Component instance
  */
-export function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode): T | null {
+export function getComponentInstanceFromVNode<T extends Component<any>>(vnode: VNode): T | null {
   if (DEBUG) {
-    if ((node._f & (
+    if ((vnode._f & (
       VNodeFlags.StatelessComponent |
       VNodeFlags.StatefulComponent |
       VNodeFlags.Connect |
@@ -352,18 +352,18 @@ export function getComponentInstanceFromVNode<T extends Component<any>>(node: VN
       throw new Error("Failed to get component instance: VNode should represent a Component.");
     }
   }
-  return node._i as T | null;
+  return vnode._i as T | null;
 }
 
 /**
  * autofocus makes an element focused after instantiation.
  *
- * @param focus
- * @return VNode
+ * @param vnode - Virtual DOM node
+ * @return `vnode`
  */
-export function autofocus<N extends VNode>(node: N): N {
+export function autofocus<N extends VNode>(vnode: N): N {
   if (DEBUG) {
-    if (!(node._f & (
+    if (!(vnode._f & (
       VNodeFlags.Element |
       VNodeFlags.StatelessComponent |
       VNodeFlags.StatefulComponent |
@@ -373,25 +373,25 @@ export function autofocus<N extends VNode>(node: N): N {
       throw new Error("Failed to set autofocus, autofocus is available on element and component nodes only.");
     }
   }
-  node._f |= VNodeFlags.Autofocus;
-  return node;
+  vnode._f |= VNodeFlags.Autofocus;
+  return vnode;
 }
 
 /**
- * stopDirtyChecking stops dirty checking process when it goes through this node.
+ * stopDirtyChecking stops dirty checking process when it goes through this virtual DOM node.
  *
- * @param node VNode.
- * @returns VNode.
+ * @param vnode - Virtual DOM node
+ * @returns `vnode`
  */
-export function stopDirtyChecking<N extends VNode>(node: N): N {
-  node._f |= VNodeFlags.StopDirtyChecking;
-  return node;
+export function stopDirtyChecking<N extends VNode>(vnode: N): N {
+  vnode._f |= VNodeFlags.StopDirtyChecking;
+  return vnode;
 }
 
 /**
  * checkUniqueKeys checks that all nodes have unique keys.
  *
- * @param children Children collection.
+ * @param children - Children nodes
  */
 function checkUniqueKeys(children: VNode): void {
   let keys: Set<any> | undefined;

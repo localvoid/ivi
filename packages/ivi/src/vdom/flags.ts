@@ -60,15 +60,15 @@ export const enum VNodeFlags {
    */
   SvgElement = 1 << 13,
   /**
-   * Specialized VNode with connect functionality.
+   * Specialized VNode with connect behavior.
    */
   Connect = 1 << 14,
   /**
-   * Specialized VNode with an update context functionality.
+   * Specialized VNode with an update context behavior.
    */
   UpdateContext = 1 << 15,
   /**
-   * Stateless component is using `shouldUpdate` hook.
+   * Stateless component has custom `shouldUpdate()` hook.
    */
   ShouldUpdateHint = 1 << 16,
   /**
@@ -120,7 +120,7 @@ export const enum ComponentFlags {
    */
   Detached = 1,
   /**
-   * Component is dirty (state) and should be updated.
+   * Component has dirty state and should be updated.
    */
   DirtyState = 1 << 1,
   /**

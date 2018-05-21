@@ -6,6 +6,8 @@ import { ConnectDescriptor } from "./connect_descriptor";
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
  *
+ * @example
+ *
  *     const A = statelessComponent<{ text: string }>(
  *       (props) => h.div().c(props.text),
  *     );
@@ -15,14 +17,16 @@ import { ConnectDescriptor } from "./connect_descriptor";
  *       DOMContainer,
  *     );
  *
- * @param render render function.
- * @returns factory that produces stateless component nodes.
+ * @param render - Render function
+ * @returns factory that produces stateless component nodes
  */
 export function statelessComponent(c: () => VNode): () => VNode<undefined>;
 
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
  *
+ * @example
+ *
  *     const A = statelessComponent<{ text: string }>(
  *       (props) => h.div().c(props.text),
  *     );
@@ -32,8 +36,8 @@ export function statelessComponent(c: () => VNode): () => VNode<undefined>;
  *       DOMContainer,
  *     );
  *
- * @param render render function.
- * @returns factory that produces stateless component nodes.
+ * @param render - Render function
+ * @returns factory that produces stateless component nodes
  */
 export function statelessComponent<P>(
   render: undefined extends P ? (props?: P) => VNode<any> : (props: P) => VNode<any>,
@@ -42,6 +46,8 @@ export function statelessComponent<P>(
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
  *
+ * @example
+ *
  *     const A = statelessComponent<{ text: string }>(
  *       (props) => h.div().c(props.text),
  *     );
@@ -51,8 +57,8 @@ export function statelessComponent<P>(
  *       DOMContainer,
  *     );
  *
- * @param render render function.
- * @returns factory that produces stateless component nodes.
+ * @param render - Render function
+ * @returns factory that produces stateless component nodes
  */
 export function statelessComponent<P>(render: (props: P) => VNode<any>): (props: P) => VNode<P> {
   const d = { render, shouldUpdate: null };
@@ -77,6 +83,8 @@ export function statelessComponent<P>(render: (props: P) => VNode<any>): (props:
  * withShouldUpdate creates a virtual DOM node factory that produces nodes for stateless components with custom
  * `shouldUpdate` function to prevent unnecessary updates.
  *
+ * @example
+ *
  *     const A = withShouldUpdate<{ text: string }>(
  *       (prevProps, nextProps) => prevProps.text !== nextProps.text,
  *       statelessComponent(
@@ -89,9 +97,9 @@ export function statelessComponent<P>(render: (props: P) => VNode<any>): (props:
  *       DOMContainer,
  *     );
  *
- * @param shouldUpdate function that performs an early check that prevent unnecessary updates.
- * @param factory factory that produces stateless component nodes.
- * @returns factory that produces stateless component nodes.
+ * @param shouldUpdate - Function that performs an early check that prevent unnecessary updates
+ * @param factory - Factory that produces stateless component nodes
+ * @returns factory that produces stateless component nodes
  */
 export function withShouldUpdate<P>(
   shouldUpdate: (oldProps: P, newProps: P) => boolean,
@@ -119,6 +127,8 @@ export function withShouldUpdate<P>(
 /**
  * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
+ * @example
+ *
  *     const A = component(class extends Component<string> {
  *       onClick = Events.onClick(() => console.log(this.props));
  *
@@ -136,14 +146,16 @@ export function withShouldUpdate<P>(
  *       DOMContainer,
  *     );
  *
- * @param c stateful component.
- * @returns factory that produces stateful component nodes.
+ * @param c - Stateful component
+ * @returns factory that produces stateful component nodes
  */
 export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<undefined>;
 
 /**
  * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
+ * @example
+ *
  *     const A = component(class extends Component<string> {
  *       onClick = Events.onClick(() => console.log(this.props));
  *
@@ -161,8 +173,8 @@ export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<
  *       DOMContainer,
  *     );
  *
- * @param c stateful component.
- * @returns factory that produces stateful component nodes.
+ * @param c - Stateful component
+ * @returns factory that produces stateful component nodes
  */
 export function statefulComponent<P>(
   c: StatefulComponent<P>,
@@ -171,6 +183,8 @@ export function statefulComponent<P>(
 /**
  * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
+ * @example
+ *
  *     const A = component(class extends Component<string> {
  *       onClick = Events.onClick(() => console.log(this.props));
  *
@@ -188,8 +202,8 @@ export function statefulComponent<P>(
  *       DOMContainer,
  *     );
  *
- * @param c stateful component.
- * @returns factory that produces stateful component nodes.
+ * @param c - Stateful component
+ * @returns factory that produces stateful component nodes
  */
 export function statefulComponent<P>(
   c: StatefulComponent<P>,
@@ -214,6 +228,8 @@ export function statefulComponent<P>(
 /**
  * context creates a virtual DOM node that will modify current context.
  *
+ * @example
+ *
  *     render(
  *       context({ key: 123 },
  *         ChildComponent(),
@@ -221,9 +237,9 @@ export function statefulComponent<P>(
  *       DOMContainer,
  *     );
  *
- * @param ctx context object.
- * @param child child node.
- * @returns context node.
+ * @param ctx - Context object
+ * @param child - child Virtual DOM node
+ * @returns context node
  */
 export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
   /* istanbul ignore else */
@@ -244,6 +260,8 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
 /**
  * connect creates a virtual DOM node factory that produces connector nodes.
  *
+ * @example
+ *
  *     const Connector = connect<string, undefined, { result: string }>(
  *       (prev, props, context) => {
  *         const result = context.result;
@@ -261,9 +279,9 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
  *       DOMContainer,
  *     );
  *
- * @param select selector function.
- * @param render render function.
- * @returns factory that produces connector nodes.
+ * @param select - Selector function
+ * @param render - Render function
+ * @returns factory that produces connector nodes
  */
 export function connect<T>(
   select: (prev: T | null) => T,
@@ -273,6 +291,8 @@ export function connect<T>(
 /**
  * connect creates a virtual DOM node factory that produces connector nodes.
  *
+ * @example
+ *
  *     const Connector = connect<string, undefined, { result: string }>(
  *       (prev, props, context) => {
  *         const result = context.result;
@@ -290,9 +310,9 @@ export function connect<T>(
  *       DOMContainer,
  *     );
  *
- * @param select selector function.
- * @param render render function.
- * @returns factory that produces connector nodes.
+ * @param select - Selector function
+ * @param render - Render function
+ * @returns factory that produces connector nodes
  */
 export function connect<T, P>(
   select: undefined extends P ? (prev: T | null, props?: P) => T : (prev: T | null, props: P) => T,
@@ -302,6 +322,8 @@ export function connect<T, P>(
 /**
  * connect creates a virtual DOM node factory that produces connector nodes.
  *
+ * @example
+ *
  *     const Connector = connect<string, undefined, { result: string }>(
  *       (prev, props, context) => {
  *         const result = context.result;
@@ -319,9 +341,9 @@ export function connect<T, P>(
  *       DOMContainer,
  *     );
  *
- * @param select selector function.
- * @param render render function.
- * @returns factory that produces connector nodes.
+ * @param select - Selector function
+ * @param render - Render function
+ * @returns factory that produces connector nodes
  */
 export function connect<T, P, C>(
   select: (prev: T | null, props: P, context: C) => T,
@@ -331,6 +353,8 @@ export function connect<T, P, C>(
 /**
  * connect creates a virtual DOM node factory that produces connector nodes.
  *
+ * @example
+ *
  *     const Connector = connect<string, undefined, { result: string }>(
  *       (prev, props, context) => {
  *         const result = context.result;
@@ -348,9 +372,9 @@ export function connect<T, P, C>(
  *       DOMContainer,
  *     );
  *
- * @param select selector function.
- * @param render render function.
- * @returns factory that produces connector nodes.
+ * @param select - Selector function
+ * @param render - Render function
+ * @returns factory that produces connector nodes
  */
 export function connect<T, P, C>(
   select: (prev: T | null, props: P, context: C) => T,

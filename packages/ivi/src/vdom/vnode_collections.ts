@@ -4,6 +4,8 @@ import { VNode } from "./vnode";
 /**
  * fragment is a variadic function that creates a children collection.
  *
+ * @example
+ *
  *     const content = children(
  *       h.p().c("Paragraph 1"),
  *       h.p().c("Paragraph 2"),
@@ -17,14 +19,16 @@ import { VNode } from "./vnode";
  *       DOMContainer,
  *     );
  *
- * @param args children.
- * @returns children collection.
+ * @param args - Children
+ * @returns Virtual DOM collection
  */
 export function fragment(...args: Array<VNode | string | number | null>): VNode | null;
 
 /**
  * fragment is a variadic function that creates a children collection.
  *
+ * @example
+ *
  *     const content = children(
  *       h.p().c("Paragraph 1"),
  *       h.p().c("Paragraph 2"),
@@ -38,7 +42,7 @@ export function fragment(...args: Array<VNode | string | number | null>): VNode 
  *       DOMContainer,
  *     );
  *
- * @returns children collection.
+ * @returns Virtual DOM collection
  */
 export function fragment(): VNode | null {
   const args: Array<VNode | string | number | null> = arguments as any;
@@ -73,6 +77,8 @@ export function fragment(): VNode | null {
  * map creates a children collection with the results of calling a provided function on every element in the calling
  * array.
  *
+ * @example
+ *
  *     render(
  *       h.div().c(
  *         map([1, 2, 3], (item) => h.div().k(item)),
@@ -80,8 +86,9 @@ export function fragment(): VNode | null {
  *       DOMContainer,
  *     );
  *
- * @param items Array.
- * @param fn Function that produces an element for the children collection.
+ * @param items - Array
+ * @param fn - Function that produces an element for the children collection
+ * @returns Virtual DOM collection
  */
 export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null {
   let first: VNode<any> | null = null;
@@ -119,6 +126,8 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
  * mapRange creates a children collection with the results of calling a provided function on every number in the
  * provided range.
  *
+ * @example
+ *
  *     const items = [1, 2, 3];
  *
  *     render(
@@ -128,9 +137,10 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
  *       DOMContainer,
  *     );
  *
- * @param start Range start.
- * @param end Range end.
- * @param fn Function that produces an element for the children collection.
+ * @param start - Range start
+ * @param end - Range end
+ * @param fn - Function that produces an element for the children collection
+ * @returns Virtual DOM collection
  */
 export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null {
   const length = end - start;

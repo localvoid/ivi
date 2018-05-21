@@ -29,8 +29,8 @@ let _pendingUpdate = false;
 /**
  * Find Root node in container.
  *
- * @param container DOM Node that contains root node.
- * @returns root node or undefined when root node doesn't exist.
+ * @param container - DOM Node that contains root node
+ * @returns root node or undefined when root node doesn't exist
  */
 export function findRoot(container: Element): Root | undefined {
   for (let i = 0; i < ROOTS.length; ++i) {
@@ -99,29 +99,23 @@ function _update() {
 }
 
 /**
- * Render VNode into container.
+ * Render virtual DOM node into container.
  *
- * @param node VNode to render.
- * @param container DOM Node that will contain rendered node.
+ * @param vnode - Virtual DOM node to render
+ * @param container - DOM Node that will contain rendered node
  */
-export function render(
-  node: VNode | null,
-  container: Element,
-): void {
-  renderNextFrame(node, container);
+export function render(vnode: VNode | null, container: Element): void {
+  renderNextFrame(vnode, container);
   triggerNextFrame();
 }
 
 /**
- * Render VNode into container on the next frame.
+ * Render virtual DOM node into container on the next frame.
  *
- * @param node VNode to render.
- * @param container DOM Node that will contain rendered node.
+ * @param vnode - Virtual DOM node to render
+ * @param container - DOM Node that will contain rendered node
  */
-export function renderNextFrame(
-  node: VNode | null,
-  container: Element,
-): void {
+export function renderNextFrame(vnode: VNode | null, container: Element): void {
   /* istanbul ignore else */
   if (DEBUG) {
     if (container === document.body) {
@@ -135,13 +129,13 @@ export function renderNextFrame(
 
   const root = findRoot(container);
   if (root) {
-    root.newVNode = node;
+    root.newVNode = vnode;
     root.invalidated = true;
   } else {
     ROOTS.push({
       container: container,
       currentVNode: null,
-      newVNode: node,
+      newVNode: vnode,
       invalidated: true,
     });
   }
@@ -150,7 +144,7 @@ export function renderNextFrame(
 }
 
 /**
- * update updates dirty components.
+ * Update dirty components.
  */
 export function update() {
   updateNextFrame();
@@ -158,7 +152,7 @@ export function update() {
 }
 
 /**
- * updateNextFrame adds a task to update dirty components that will be executed at the next frame.
+ * Add a task to update dirty components that will be executed at the next frame.
  */
 export function updateNextFrame() {
   if (!_pendingUpdate) {
