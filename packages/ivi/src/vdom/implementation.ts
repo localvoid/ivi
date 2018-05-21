@@ -244,24 +244,23 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   if ((flags & VNodeFlags.Text) !== 0) {
     instance = node = document.createTextNode(vnode.children as string);
   } else {
+    const tag = vnode.tag;
     if ((flags & (VNodeFlags.Element | VNodeFlags.StatefulComponent)) !== 0) {
       if ((flags & VNodeFlags.Element) !== 0) {
         const svg = (flags & VNodeFlags.SvgElement) !== 0;
         if ((flags & VNodeFlags.ElementFactory) === 0) {
-          const tagName = vnode.tag as string;
           node = svg ?
-            document.createElementNS(SVG_NAMESPACE, tagName) :
-            document.createElement(tagName);
+            document.createElementNS(SVG_NAMESPACE, tag as string) :
+            document.createElement(tag as string);
         } else {
-          const factory = vnode.tag as VNode;
-          if (factory.instance === null) {
-            _render(parent, factory, context);
+          if ((tag as VNode).instance === null) {
+            _render(parent, (tag as VNode), context);
           }
           /* istanbul ignore else */
           if (DEBUG) {
-            node = (factory.instance as Node).cloneNode(false);
+            node = ((tag as VNode).instance as Node).cloneNode(false);
           } else {
-            node = nodeCloneNode.call(factory.instance as Node, false);
+            node = nodeCloneNode.call((tag as VNode).instance as Node, false);
           }
         }
 
@@ -319,7 +318,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
 
         instance = node;
       } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
-        const component = instance = new (vnode.tag as StatefulComponent<any>)(vnode.props);
+        const component = instance = new (tag as StatefulComponent<any>)(vnode.props);
         const root = vnode.children = DEBUG ?
           shouldBeSingleVNode(component.render()) :
           /* istanbul ignore next */component.render();
@@ -328,7 +327,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
     } else { // ((flags & (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0)
       if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
         if ((flags & VNodeFlags.Connect) !== 0) {
-          const connect = (vnode.tag as ConnectDescriptor<any, any, {}>);
+          const connect = (tag as ConnectDescriptor<any, any, {}>);
           const selectData = instance = connect.select(null, vnode.props, context);
           vnode.children = DEBUG ?
             shouldBeSingleVNode(connect.render(selectData)) :
@@ -338,8 +337,8 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         }
       } else {
         vnode.children = DEBUG ?
-          shouldBeSingleVNode((vnode.tag as StatelessComponent<any>).render(vnode.props)) :
-          /* istanbul ignore next */(vnode.tag as StatelessComponent<any>).render(vnode.props);
+          shouldBeSingleVNode((tag as StatelessComponent<any>).render(vnode.props)) :
+          /* istanbul ignore next */(tag as StatelessComponent<any>).render(vnode.props);
       }
       node = _render(parent, vnode.children as VNode, context);
     }
@@ -448,9 +447,11 @@ export function syncVNode(
     b.instance = instance = a.instance;
 
     if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
+      const aChild = a.children;
+      let bChild = b.children;
       if ((bFlags & VNodeFlags.Text) !== 0) {
-        if (a.children !== b.children) {
-          (instance as Text).data = b.children as string;
+        if (aChild !== bChild) {
+          (instance as Text).data = bChild as string;
         }
       } else { // (flags & VNodeFlags.Element)
         const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
@@ -480,8 +481,6 @@ export function syncVNode(
           setEventHandlersToDOMNode(instance as Element, b.events);
         }
 
-        const aChild = a.children;
-        let bChild = b.children;
         if (aChild !== bChild) {
           if (aChild === null) {
             if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
@@ -869,19 +868,15 @@ function _syncChildrenTrackByKeys(
   context: {},
   dirtyContext: boolean,
 ): void {
-  const aLastNode = aFirstNode.prev!;
-  const bLastNode = bFirstNode.prev!;
   let aStartNode: VNode<any> | null = aFirstNode;
   let bStartNode: VNode<any> | null = bFirstNode;
-  let aEndNode: VNode<any> = aLastNode;
-  let bEndNode: VNode<any> = bLastNode;
+  let aEndNode: VNode<any> = aFirstNode.prev!;
+  let bEndNode: VNode<any> = bFirstNode.prev!;
   let aNode: VNode<any> | null;
   let bNode: VNode<any> | null;
-  let i: number;
   let j: number | undefined;
-  let next: Node | null;
+  let i: number = 0;
   let synced = 0;
-  let finished = 0;
 
   // Step 1
   outer: while (true) {
@@ -890,16 +885,16 @@ function _syncChildrenTrackByKeys(
       syncVNode(parent, aStartNode!, bStartNode!, context, dirtyContext);
       synced++;
       if (aStartNode === aEndNode) {
-        finished |= 1;
+        i = 1;
       } else {
         aStartNode = aStartNode!.next;
       }
       if (bStartNode === bEndNode) {
-        finished |= 2;
+        i |= 2;
       } else {
         bStartNode = bStartNode!.next;
       }
-      if (finished) {
+      if (i) {
         break outer;
       }
     }
@@ -909,16 +904,16 @@ function _syncChildrenTrackByKeys(
       syncVNode(parent, aEndNode, bEndNode, context, dirtyContext);
       synced++;
       if (aStartNode === aEndNode) {
-        finished |= 1;
+        i = 1;
       } else {
         aEndNode = aEndNode.prev;
       }
       if (bStartNode === bEndNode) {
-        finished |= 2;
+        i |= 2;
       } else {
         bEndNode = bEndNode.prev;
       }
-      if (finished) {
+      if (i) {
         break outer;
       }
     }
@@ -926,21 +921,23 @@ function _syncChildrenTrackByKeys(
     break;
   }
 
-  if (finished) {
-    if (finished !== 3) {
-      if (finished === 1) {
+  if (i) {
+    if (i < 3) {
+      if (i < 2) {
         // All nodes from a are synced, insert the rest from b.
-        next = nextNode(bEndNode);
+        const next = nextNode(bEndNode);
+        bEndNode = bEndNode.next!;
         do {
           renderVNode(parent, next, bStartNode!, context);
           bStartNode = bStartNode!.next;
-        } while (bStartNode !== bEndNode.next);
+        } while (bStartNode !== bEndNode);
       } else {
         // All nodes from b are synced, remove the rest from a.
+        aEndNode = aEndNode.next!;
         do {
           removeVNode(parent, aStartNode!);
           aStartNode = aStartNode!.next;
-        } while (aStartNode !== aEndNode.next);
+        } while (aStartNode !== aEndNode);
       }
     }
   } else { // Step 2
@@ -958,24 +955,22 @@ function _syncChildrenTrackByKeys(
     bNode = bStartNode;
     do {
       if (bNode!.flags & VNodeFlags.Key) {
-        if (explicitKeyIndex === undefined) {
+        if (explicitKeyIndex === void 0) {
           explicitKeyIndex = new Map<any, number>();
         }
-        explicitKeyIndex.set(bNode!.key, bInnerLength);
+        explicitKeyIndex.set(bNode!.key, bInnerLength++);
       } else {
-        if (implicitKeyIndex === undefined) {
+        if (implicitKeyIndex === void 0) {
           implicitKeyIndex = new Map<number, number>();
         }
-        implicitKeyIndex.set(bNode!.key, bInnerLength);
+        implicitKeyIndex.set(bNode!.key, bInnerLength++);
       }
-      bInnerLength++;
-      bNode = bNode!.next;
-    } while (bNode !== bEndNode.next);
+    } while ((bNode = bNode!.next) !== bEndNode.next);
 
     // Mark all nodes as inserted.
-    const bArray = new Array<VNode<any>>(bInnerLength);
     const sources = new Array<number>(bInnerLength).fill(-1);
 
+    const bArray = new Array<VNode<any>>(bInnerLength);
     bNode = bStartNode;
     for (i = 0; i < bInnerLength; i++) {
       bArray[i] = bNode!;
@@ -984,33 +979,32 @@ function _syncChildrenTrackByKeys(
 
     let innerSynced = 0;
     aNode = aStartNode;
+    aEndNode = aEndNode.next!;
     do {
       if (aNode!.flags & VNodeFlags.Key) {
-        j = explicitKeyIndex ? explicitKeyIndex.get(aNode!.key) : undefined;
+        j = explicitKeyIndex ? explicitKeyIndex.get(aNode!.key) : void 0;
       } else {
-        j = implicitKeyIndex ? implicitKeyIndex.get(aNode!.key) : undefined;
+        j = implicitKeyIndex ? implicitKeyIndex.get(aNode!.key) : void 0;
       }
 
-      if (j === undefined) {
+      if (j === void 0) {
         aNode!.key = null;
       } else {
-        sources[j] = aInnerLength;
         moved = (moved > j) ? 1000000000 : j;
-        bNode = bArray[j];
-        syncVNode(parent, aNode!, bNode, context, dirtyContext);
+        sources[j] = aInnerLength;
+        syncVNode(parent, aNode!, bArray[j], context, dirtyContext);
         innerSynced++;
       }
       aInnerLength++;
-      aNode = aNode!.next;
-    } while (aNode !== aEndNode.next);
+    } while ((aNode = aNode!.next) !== aEndNode);
 
     if (!synced && !innerSynced) {
       // Noone is synced, remove all children with one dom op.
       _removeAllChildren(parent, aFirstNode);
-      while (bStartNode !== bEndNode.next) {
+      do {
         renderVNode(parent, null, bStartNode!, context);
         bStartNode = bStartNode!.next;
-      }
+      } while (bStartNode !== null);
     } else {
       i = aInnerLength - innerSynced;
       while (i > 0) {
