@@ -32,13 +32,21 @@ export const PASSIVE_EVENTS = (TARGET === "electron") ? true :
 /**
  * `key` property is available on KeyboardEvent instances.
  */
-export const KEYBOARD_EVENT_KEY = (TARGET === "electron") || ("key" in KeyboardEvent.prototype);
+export const KEYBOARD_EVENT_KEY = (
+  (TARGET === "electron") ||
+  (TARGET === "evergreen") ||
+  ("key" in KeyboardEvent.prototype)
+);
 
 /* istanbul ignore next */
 /**
  * `buttons` property is available on MouseEvent instances.
  */
-export const MOUSE_EVENT_BUTTONS = (TARGET === "electron") || ("buttons" in MouseEvent.prototype);
+export const MOUSE_EVENT_BUTTONS = (
+  (TARGET === "electron") ||
+  (TARGET === "evergreen") ||
+  ("buttons" in MouseEvent.prototype)
+);
 
 /* istanbul ignore next */
 /**
