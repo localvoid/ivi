@@ -4,56 +4,56 @@ import * as h from "ivi-html";
 
 test(`element flags`, () => {
   const v = h.div();
-  expect(v.flags & VNodeFlags.Element).toBeTruthy();
+  expect(v._f & VNodeFlags.Element).toBeTruthy();
 });
 
 test(`tagName`, () => {
   const v = h.div();
-  expect(v.tag).toBe("div");
+  expect(v._t).toBe("div");
 });
 
 test(`default className should be undefined`, () => {
   const v = h.div();
-  expect(v.className).toBeUndefined();
+  expect(v._cs).toBeUndefined();
 });
 
 test(`className=undefined`, () => {
   const v = h.div(undefined);
-  expect(v.className).toBeUndefined();
+  expect(v._cs).toBeUndefined();
 });
 
 test(`className="cls"`, () => {
   const v = h.div("cls");
-  expect(v.className).toBe("cls");
+  expect(v._cs).toBe("cls");
 });
 
 test(`explicit key`, () => {
   const v = h.div().k("k");
-  expect(v.flags & VNodeFlags.Key).toBeTruthy();
-  expect(v.key).toBe("k");
+  expect(v._f & VNodeFlags.Key).toBeTruthy();
+  expect(v._k).toBe("k");
 });
 
 test(`style`, () => {
   const s = { top: "10px" };
   const v = h.div().s(s);
-  expect(v.style).toBe(s);
+  expect(v._s).toBe(s);
 });
 
 test(`events`, () => {
   const s: EventHandler[] = [];
   const v = h.div().e(s);
-  expect(v.events).toBe(s);
+  expect(v._e).toBe(s);
 });
 
 test(`attributes`, () => {
   const s = {};
   const v = h.div().a(s);
-  expect(v.props).toBe(s);
+  expect(v._p).toBe(s);
 });
 
 test(`children`, () => {
   const v = h.div().c("abc");
-  expect((v.children as VNode).children as string).toBe("abc");
+  expect((v._c as VNode)._c as string).toBe("abc");
 });
 
 test(`overwriting children should raise an exception`, () => {
@@ -77,12 +77,12 @@ test(`children with duplicate keys should raise an exception`, () => {
 
 test(`unsafeHTML flags`, () => {
   const v = h.div().unsafeHTML("abc");
-  expect(v.flags & VNodeFlags.UnsafeHTML).toBeTruthy();
+  expect(v._f & VNodeFlags.UnsafeHTML).toBeTruthy();
 });
 
 test(`unsafeHTML children`, () => {
   const v = h.div().unsafeHTML("abc");
-  expect(v.children).toBe("abc");
+  expect(v._c).toBe("abc");
 });
 
 test(`assigning input value to div should raise an exception`, () => {
@@ -95,7 +95,7 @@ test(`assigning checked value to div should raise an exception`, () => {
 
 test(`autofocus`, () => {
   const e = autofocus(h.div());
-  expect(e.flags & VNodeFlags.Autofocus).toBe(VNodeFlags.Autofocus);
+  expect(e._f & VNodeFlags.Autofocus).toBe(VNodeFlags.Autofocus);
 });
 
 test(`getComponentInstanceFromVNode should raise an exception when it is invoked on a non-component node`, () => {

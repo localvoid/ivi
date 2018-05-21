@@ -40,9 +40,9 @@ test(`one node`, () => {
   const first = map([5], () => v1);
 
   expect(first).toBe(v1);
-  expect(v1.flags & VNodeFlags.KeyedList).toBeTruthy();
-  expect(v1.prev).toBe(v1);
-  expect(v1.next).toBeNull();
+  expect(v1._f & VNodeFlags.KeyedList).toBeTruthy();
+  expect(v1._l).toBe(v1);
+  expect(v1._r).toBeNull();
 });
 
 test(`two nodes`, () => {
@@ -51,11 +51,11 @@ test(`two nodes`, () => {
   const first = map([5, 6], (v) => v === 5 ? v1 : v2);
 
   expect(first).toBe(v1);
-  expect(v1.flags & VNodeFlags.KeyedList).toBeTruthy();
-  expect(v1.prev).toBe(v2);
-  expect(v1.next).toBe(v2);
-  expect(v2.prev).toBe(v1);
-  expect(v2.next).toBeNull();
+  expect(v1._f & VNodeFlags.KeyedList).toBeTruthy();
+  expect(v1._l).toBe(v2);
+  expect(v1._r).toBe(v2);
+  expect(v2._l).toBe(v1);
+  expect(v2._r).toBeNull();
 });
 
 test(`filter all nodes [5]`, () => {
@@ -73,8 +73,8 @@ test(`filter first node [5, 6]`, () => {
   const first = map([5, 6], (v) => v === 5 ? null : v1);
 
   expect(first).toBe(v1);
-  expect(v1.prev).toBe(v1);
-  expect(v1.next).toBeNull();
+  expect(v1._l).toBe(v1);
+  expect(v1._r).toBeNull();
 });
 
 test(`filter second node [5, 6]`, () => {
@@ -82,8 +82,8 @@ test(`filter second node [5, 6]`, () => {
   const first = map([5, 6], (v) => v === 6 ? null : v1);
 
   expect(first).toBe(v1);
-  expect(v1.prev).toBe(v1);
-  expect(v1.next).toBeNull();
+  expect(v1._l).toBe(v1);
+  expect(v1._r).toBeNull();
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {

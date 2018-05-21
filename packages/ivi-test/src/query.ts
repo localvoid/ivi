@@ -145,7 +145,7 @@ function createVNodeElementMatcherFactory(tagName: string, className?: string): 
 }
 
 function componentMatcherFactory(component: StatefulComponent<any>): VNodeComponentMatcher {
-  return new VNodeComponentMatcher((n: VNodeWrapper) => (n.vnode.tag === component));
+  return new VNodeComponentMatcher((n: VNodeWrapper) => (n.vnode._t === component));
 }
 
 export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper | null {

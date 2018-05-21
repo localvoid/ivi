@@ -10,15 +10,15 @@ test(`assigning unsafeHTML should raise an exception`, () => {
 
 test(`value`, () => {
   const e = h.input().value("abc");
-  expect(e.children).toBe("abc");
+  expect(e._c).toBe("abc");
 });
 
 test(`checked=true`, () => {
   const e = h.input().value(true);
-  expect(e.children).toBe(true);
+  expect(e._c).toBe(true);
 });
 
 test(`checked=false`, () => {
   const e = h.input().value(false);
-  expect(e.children).toBe(false);
+  expect(e._c).toBe(false);
 });

@@ -98,7 +98,7 @@ export function withShouldUpdate<P>(
   factory: (props: P) => VNode<P>,
 ): (props: P) => VNode<P> {
   const v = factory(null as any);
-  const d = { render: (v.tag as StatelessComponent<P>).render, shouldUpdate };
+  const d = { render: (v._t as StatelessComponent<P>).render, shouldUpdate };
   const f = function (props: P): VNode<P> {
     const n = new VNode<P>(
       VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
@@ -228,7 +228,7 @@ export function statefulComponent<P>(
 export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (child.prev !== child) {
+    if (child._l !== child) {
       throw new Error("Context node contains an invalid child. Child should be a singular VNode.");
     }
   }

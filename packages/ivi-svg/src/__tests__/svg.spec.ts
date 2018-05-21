@@ -187,7 +187,7 @@ describe("src/index.ts", () => {
       const factory = Elements[name];
       test(`${name}`, () => {
         const n = factory();
-        expect(n.tag).toBe(name);
+        expect(n._t).toBe(name);
       });
     }
   });
@@ -197,7 +197,7 @@ describe("src/index.ts", () => {
       const factory = Elements[name];
       test(`${name}`, () => {
         const n = factory("abc");
-        expect(n.className).toBe("abc");
+        expect(n._cs).toBe("abc");
       });
     }
   });
@@ -207,7 +207,7 @@ describe("src/index.ts", () => {
       const factory = Elements[name];
       test(`${name}`, () => {
         const n = factory();
-        expect((n.flags & VNodeFlags.SvgElement) !== 0).toBe(true);
+        expect((n._f & VNodeFlags.SvgElement) !== 0).toBe(true);
       });
     }
   });

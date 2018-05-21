@@ -194,10 +194,10 @@ const invalidAncestorList: { [child: string]: AncestorFlags } = {
 };
 
 function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorFlags): void {
-  const flags = vnode.flags;
+  const flags = vnode._f;
 
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
-    const tagName = ((flags & VNodeFlags.Text) !== 0) ? "$t" : vnode.tag as string;
+    const tagName = ((flags & VNodeFlags.Text) !== 0) ? "$t" : vnode._t as string;
 
     const validChildren = validChildList![parentTagName];
     if (validChildren) {
@@ -221,10 +221,10 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
     ancestorFlags |= AncestorFlagsByTagName[parentTagName];
 
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = vnode.children as VNode;
+      let child: VNode | null = vnode._c as VNode;
       do {
         visitNode(child!, parentTagName, ancestorFlags);
-        child = child.next;
+        child = child._r;
       } while (child !== null);
     }
   } else if ((flags & (
@@ -233,7 +233,7 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
-    visitNode(vnode.children as VNode, parentTagName, ancestorFlags);
+    visitNode(vnode._c as VNode, parentTagName, ancestorFlags);
   }
 }
 

@@ -148,8 +148,8 @@ const MediaElements = [
 describe("src/index.ts", () => {
   test("text", () => {
     const text = h.t("abc");
-    expect((text.flags & VNodeFlags.Text) !== 0).toBe(true);
-    expect(text.children).toBe("abc");
+    expect((text._f & VNodeFlags.Text) !== 0).toBe(true);
+    expect(text._c).toBe("abc");
   });
 
   describe("elements", () => {
@@ -158,7 +158,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          expect(n.tag).toBe(name);
+          expect(n._t).toBe(name);
         });
       }
     });
@@ -168,7 +168,7 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory("abc");
-          expect(n.className).toBe("abc");
+          expect(n._cs).toBe("abc");
         });
       }
     });
@@ -178,12 +178,12 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          if ((n.flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
-            expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+          if ((n._f & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
+            expect((n._f & VNodeFlags.VoidElement) !== 0).toBe(true);
           } else if (name in VoidElements) {
-            expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(true);
+            expect((n._f & VNodeFlags.VoidElement) !== 0).toBe(true);
           } else {
-            expect((n.flags & VNodeFlags.VoidElement) !== 0).toBe(false);
+            expect((n._f & VNodeFlags.VoidElement) !== 0).toBe(false);
           }
         });
       }
@@ -194,21 +194,21 @@ describe("src/index.ts", () => {
         const factory = Elements[name];
         test(`${name}`, () => {
           const n = factory();
-          expect((n.flags & VNodeFlags.MediaElement) !== 0).toBe(true);
+          expect((n._f & VNodeFlags.MediaElement) !== 0).toBe(true);
         });
       }
     });
 
     test("textarea", () => {
       const n = h.textarea();
-      expect((n.flags & VNodeFlags.TextAreaElement) !== 0).toBe(true);
-      expect(n.tag).toBe("textarea");
+      expect((n._f & VNodeFlags.TextAreaElement) !== 0).toBe(true);
+      expect(n._t).toBe("textarea");
     });
 
     test("input", () => {
       const n = h.input();
-      expect((n.flags & VNodeFlags.InputElement) !== 0).toBe(true);
-      expect(n.tag).toBe("input");
+      expect((n._f & VNodeFlags.InputElement) !== 0).toBe(true);
+      expect(n._t).toBe("input");
     });
   });
 });

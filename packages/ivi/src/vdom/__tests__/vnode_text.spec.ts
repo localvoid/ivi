@@ -3,24 +3,24 @@ import * as h from "ivi-html";
 
 test(`text flags`, () => {
   const t = h.t("abc");
-  expect(t.flags & VNodeFlags.Text).toBeTruthy();
+  expect(t._f & VNodeFlags.Text).toBeTruthy();
 });
 
 test(`children text`, () => {
   const t = h.t("abc");
-  expect(t.children).toBe("abc");
+  expect(t._c).toBe("abc");
 });
 
 test(`implicit key`, () => {
   const t = h.t("abc");
-  expect(t.flags & VNodeFlags.Key).toBeFalsy();
-  expect(t.key).toBe(0);
+  expect(t._f & VNodeFlags.Key).toBeFalsy();
+  expect(t._k).toBe(0);
 });
 
 test(`explicit key`, () => {
   const t = h.t("abc").k("k");
-  expect(t.flags & VNodeFlags.Key).toBeTruthy();
-  expect(t.key).toBe("k");
+  expect(t._f & VNodeFlags.Key).toBeTruthy();
+  expect(t._k).toBe("k");
 });
 
 test(`assigning attributes should raise an exception`, () => {

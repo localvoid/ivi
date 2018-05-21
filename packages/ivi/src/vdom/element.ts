@@ -19,7 +19,7 @@ import { VNode } from "./vnode";
  * @returns factory that produces elements with predefined attributes.
  */
 export function element<P, N>(proto: VNode<P, N>): (className?: string) => VNode<P, N> {
-  const flags = proto.flags | VNodeFlags.ElementFactory;
+  const flags = proto._f | VNodeFlags.ElementFactory;
   return function (className?: string) {
     return new VNode<P, N>(
       flags,

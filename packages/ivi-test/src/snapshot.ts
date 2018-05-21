@@ -141,7 +141,7 @@ function _toSnapshot(
   vnode: VNode,
   sFlags: SnapshotFlags,
 ): string {
-  const flags = vnode.flags;
+  const flags = vnode._f;
   let result = ``;
 
   if (flags & VNodeFlags.StopDirtyChecking) {
@@ -153,17 +153,17 @@ function _toSnapshot(
 
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
-      const closeTagName = vnode.tag;
+      const closeTagName = vnode._t;
       let multiline = false;
 
-      result += `${indent(il)}<${vnode.tag}`;
+      result += `${indent(il)}<${vnode._t}`;
 
-      if (vnode.className !== void 0) {
-        result += `\n${indent(il + 1)}class="${vnode.className}"`;
+      if (vnode._cs !== void 0) {
+        result += `\n${indent(il + 1)}class="${vnode._cs}"`;
         multiline = true;
       }
 
-      const attrs = vnode.props;
+      const attrs = vnode._p;
       if (attrs !== null) {
         const s = renderAttrsToSnapshot(il + 1, attrs);
         if (s !== "") {
@@ -171,7 +171,7 @@ function _toSnapshot(
         }
         result += s;
       }
-      const style = vnode.style;
+      const style = vnode._s;
       if (style !== null) {
         const s = renderStyleToSnapshot(il + 1, style);
         if (s !== "") {
@@ -180,7 +180,7 @@ function _toSnapshot(
         result += s;
       }
       if ((sFlags & SnapshotFlags.IgnoreEvents) === 0) {
-        const events = vnode.events;
+        const events = vnode._e;
         if (events !== null) {
           const s = renderEventsToSnapshot(il + 1, events);
           if (s !== "") {
@@ -191,25 +191,25 @@ function _toSnapshot(
       }
 
       let childrenString = "";
-      if (vnode.children !== null) {
+      if (vnode._c !== null) {
         if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-          let child: VNode | null = vnode.children as VNode;
+          let child: VNode | null = vnode._c as VNode;
           do {
             childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
-            child = child.next;
+            child = child._r;
           } while (child !== null);
         } else {
           if ((flags & VNodeFlags.InputElement) !== 0) {
-            if (vnode.children !== null) {
-              if (typeof vnode.children === "boolean") {
-                result += `\n${indent(il + 1)}checked="${vnode.children}"`;
+            if (vnode._c !== null) {
+              if (typeof vnode._c === "boolean") {
+                result += `\n${indent(il + 1)}checked="${vnode._c}"`;
               } else {
-                result += `\n${indent(il + 1)}value="${vnode.children}"`;
+                result += `\n${indent(il + 1)}value="${vnode._c}"`;
               }
               multiline = true;
             }
           } else { // ((flags & VNodeFlags.UnsafeHTML) !== 0)
-            childrenString = `\n${indent(il + 1)}${vnode.children}`;
+            childrenString = `\n${indent(il + 1)}${vnode._c}`;
           }
         }
       }
@@ -225,49 +225,49 @@ function _toSnapshot(
         result += `\n${indent(il)}</${closeTagName}>`;
       }
     } else {
-      result += vnode.children as string;
+      result += vnode._c as string;
     }
   } else {
     if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
       if ((sFlags & SnapshotFlags.IgnoreComponent) === 0) {
         const componentName = ((flags & VNodeFlags.StatefulComponent) !== 0) ?
-          (vnode.tag as StatefulComponent<any>).displayName :
-          (vnode.tag as StatelessComponent<any>).render.displayName;
+          (vnode._t as StatefulComponent<any>).displayName :
+          (vnode._t as StatelessComponent<any>).render.displayName;
 
-        result += (vnode.children === null) ?
+        result += (vnode._c === null) ?
           `${indent(il)}<${componentName} />` :
           (
             `${indent(il)}<${componentName}>` +
-            _toSnapshot(il + 1, vnode.children as VNode, sFlags) +
+            _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
             `${indent(il)}</${componentName}>`
           );
       } else {
-        result += _toSnapshot(il, vnode.children as VNode, sFlags);
+        result += _toSnapshot(il, vnode._c as VNode, sFlags);
       }
     } else { // ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0)
       if ((flags & VNodeFlags.Connect) !== 0) {
         if ((sFlags & SnapshotFlags.IgnoreConnect) === 0) {
-          result += (vnode.children === null) ?
+          result += (vnode._c === null) ?
             `${indent(il)}<Connect />` :
             (
               `${indent(il)}<Connect>` +
-              _toSnapshot(il + 1, vnode.children as VNode, sFlags) +
+              _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
               `\n${indent(il)}</Connect>`
             );
         } else {
-          result += _toSnapshot(il, vnode.children as VNode, sFlags);
+          result += _toSnapshot(il, vnode._c as VNode, sFlags);
         }
       } else {
         if ((sFlags & SnapshotFlags.IgnoreContext) === 0) {
-          result += (vnode.children === null) ?
+          result += (vnode._c === null) ?
             `${indent(il)}<UpdateContext />` :
             (
               `${indent(il)}<UpdateContext>` +
-              _toSnapshot(il + 1, vnode.children as VNode, sFlags) +
+              _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
               `\n${indent(il)}</UpdateContext>`
             );
         } else {
-          result += _toSnapshot(il, vnode.children as VNode, sFlags);
+          result += _toSnapshot(il, vnode._c as VNode, sFlags);
         }
       }
     }
