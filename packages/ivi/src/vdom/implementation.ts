@@ -1078,14 +1078,16 @@ function lis(a: number[]): number[] {
   result.push(0);
   let u: number;
   let v: number;
+  let j: number;
 
-  for (let i = 0, il = a.length; i < il; ++i) {
-    if (a[i] === -1) {
+  for (let i = 0; i < a.length; ++i) {
+    const k = a[i];
+    if (k === -1) {
       continue;
     }
 
-    const j = result[result.length - 1];
-    if (a[j] < a[i]) {
+    j = result[result.length - 1];
+    if (a[j] < k) {
       p[i] = j;
       result.push(i);
       continue;
@@ -1095,15 +1097,15 @@ function lis(a: number[]): number[] {
     v = result.length - 1;
 
     while (u < v) {
-      const c = ((u + v) / 2) | 0;
-      if (a[result[c]] < a[i]) {
-        u = c + 1;
+      j = ((u + v) / 2) | 0;
+      if (a[result[j]] < k) {
+        u = j + 1;
       } else {
-        v = c;
+        v = j;
       }
     }
 
-    if (a[i] < a[result[u]]) {
+    if (k < a[result[u]]) {
       if (u > 0) {
         p[i] = result[u - 1];
       }
