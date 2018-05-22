@@ -27,10 +27,10 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
-a **4KB** (minified+compressed).
+a **3.8KB** (minified+compressed).
 
 Also, ivi library has full support for compilation with [Google Closure Compiler](https://github.com/google/closure-compiler)
-in `ADVANCED` mode. Basic example compiled with Google Closure Compiler is **3.6KB** (minified+compressed).
+in `ADVANCED` mode. Basic example compiled with Google Closure Compiler is **3.5KB** (minified+compressed).
 
 ## Performance
 
@@ -38,8 +38,8 @@ ivi is one of the fastest libraries in the [js-framework-benchmark](https://rawg
 
 It is quite easy to get good results in this benchmark by focusing on optimizations of low-level primitives.
 But the primary goal of the ivi architecture is to reduce overhead of abstractions, and that is why it is still one of
-the fastest implementations in this benchmark even when benchmark implementation for ivi library is using stateful components and
-connectors.
+the fastest implementations in this benchmark even when benchmark implementation for ivi library is using stateful
+components and connectors.
 
 ## Quick Start
 
