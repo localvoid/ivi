@@ -878,12 +878,11 @@ function _syncChildrenTrackByKeys(
 ): void {
   let aEndVNode: VNode = aStartVNode!._l!;
   let bEndVNode: VNode = bStartVNode!._l!;
-  let vnode: VNode | null; // temporary vnode
   let i: number | undefined = 0;
   let step1Synced = 0;
 
   // Step 1
-  outer: while (true) {
+  outer: while (1) {
     // Sync nodes with the same key at the beginning.
     while (_eqKeys(aStartVNode!, bStartVNode!) === true) {
       syncVNode(parent, aStartVNode!, bStartVNode!, context, dirtyContext);
@@ -939,7 +938,6 @@ function _syncChildrenTrackByKeys(
         }
       } else {
         // All nodes from b are synced, remove the rest from a.
-        vnode = aEndVNode._r;
         while (1) {
           removeVNode(parent, aStartVNode!);
           if (aStartVNode === aEndVNode) {
@@ -957,25 +955,28 @@ function _syncChildrenTrackByKeys(
     // When lastPosition === 1000000000, it means that one of the nodes in the wrong position.
     let lastPosition = 0;
 
+    const bInnerArray: VNode[] = [];
     // Reverse indexes for keys.
     let explicitKeyIndex: Map<any, number> | undefined;
     let implicitKeyIndex: Map<number, number> | undefined;
     let key;
 
-    vnode = bStartVNode;
+    // Temporary vnode
+    let vnode = bStartVNode;
     while (1) {
       key = vnode!._k;
       if (vnode!._f & VNodeFlags.Key) {
         if (explicitKeyIndex === void 0) {
           explicitKeyIndex = new Map<any, number>();
         }
-        explicitKeyIndex.set(key, bInnerLength++);
+        explicitKeyIndex.set(key, bInnerLength);
       } else {
         if (implicitKeyIndex === void 0) {
           implicitKeyIndex = new Map<number, number>();
         }
-        implicitKeyIndex.set(key, bInnerLength++);
+        implicitKeyIndex.set(key, bInnerLength);
       }
+      bInnerArray[bInnerLength++] = vnode!;
       if (vnode === bEndVNode) {
         break;
       }
@@ -984,13 +985,6 @@ function _syncChildrenTrackByKeys(
 
     // Mark all nodes as inserted (-1).
     const prevPositionsForB = new Array<number>(bInnerLength).fill(-1);
-
-    const bInnerArray = new Array<VNode>(bInnerLength);
-    vnode = bStartVNode;
-    for (i = 0; i < bInnerLength; i++) {
-      bInnerArray[i] = vnode!;
-      vnode = vnode!._r;
-    }
 
     let step2Synced = 0;
     vnode = aStartVNode;
