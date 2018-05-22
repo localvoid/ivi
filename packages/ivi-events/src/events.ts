@@ -11,7 +11,7 @@ import { NativeEventSource, createNativeEventSource } from "./native_event_sourc
 import { SyntheticNativeEvent } from "./synthetic_event";
 
 /* tslint:disable:max-line-length */
-export const EVENT_SOURCE_ABORT: NativeEventSource<UIEvent> = /*#__PURE__*/createNativeEventSource<UIEvent>(NativeEventSourceFlags.Capture, "abort");
+export const EVENT_SOURCE_ABORT = /*#__PURE__*/createNativeEventSource<UIEvent>(NativeEventSourceFlags.Capture, "abort") as NativeEventSource<UIEvent>;
 export const EVENT_SOURCE_ACTIVATE = /*#__PURE__*/createNativeEventSource<UIEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "activate");
 export const EVENT_SOURCE_ARIA_REQUEST = /*#__PURE__*/createNativeEventSource<UIEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "ariarequest");
 export const EVENT_SOURCE_BEFORE_ACTIVATE = /*#__PURE__*/createNativeEventSource<UIEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforeactivate");
