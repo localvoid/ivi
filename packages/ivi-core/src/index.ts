@@ -59,7 +59,7 @@ export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
 export { shallowEqual } from "./equal";
 
-export { USER_AGENT, UserAgentFlags } from "./user_agent";
+export { IOS_UA } from "./user_agent";
 export {
   PASSIVE_EVENTS, KEYBOARD_EVENT_KEY, MOUSE_EVENT_BUTTONS, TOUCH_EVENTS, POINTER_EVENTS, INPUT_DEVICE_CAPABILITIES,
 } from "./feature_detection";

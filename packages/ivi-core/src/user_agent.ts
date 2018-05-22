@@ -7,37 +7,6 @@
 const ua = navigator.userAgent;
 
 /**
- * User Agent Flags.
+ * iOS User Agent.
  */
-export const enum UserAgentFlags {
-  /**
-   * iOS browser (iPad, iPhone, iPod).
-   */
-  iOS = 1,
-  /**
-   * iOS full screen mode.
-   */
-  iOSStandalone = 1 << 1,
-  /**
-   * Android browser.
-   */
-  Android = 1 << 2,
-}
-
-/**
- * User Agent, see `UserAgentFlags` for details.
- */
-export let USER_AGENT: UserAgentFlags = 0;
-
-/* istanbul ignore if */
-if (TARGET !== "electron") {
-  if (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window)) {
-    USER_AGENT |= ("standalone" in navigator) ?
-      UserAgentFlags.iOS | UserAgentFlags.iOSStandalone :
-      UserAgentFlags.iOS;
-  }
-
-  if (ua.indexOf("Android") > -1) {
-    USER_AGENT |= UserAgentFlags.Android;
-  }
-}
+export const IOS_UA = (TARGET !== "electron") && (/iPad|iPhone|iPod/.test(ua) && !("MSStream" in window));
