@@ -32,20 +32,20 @@ export const PASSIVE_EVENTS = (TARGET === "electron") ? true :
 /**
  * `key` property is available on KeyboardEvent instances.
  */
-export const KEYBOARD_EVENT_KEY = (
+export const KEYBOARD_EVENT_KEY = /*#__PURE__*/(
   (TARGET === "electron") ||
   (TARGET === "evergreen") ||
-  ("key" in KeyboardEvent.prototype)
+  KeyboardEvent.prototype.hasOwnProperty("key")
 );
 
 /* istanbul ignore next */
 /**
  * `buttons` property is available on MouseEvent instances.
  */
-export const MOUSE_EVENT_BUTTONS = (
+export const MOUSE_EVENT_BUTTONS = /*#__PURE__*/(
   (TARGET === "electron") ||
   (TARGET === "evergreen") ||
-  ("buttons" in MouseEvent.prototype)
+  MouseEvent.prototype.hasOwnProperty("buttons")
 );
 
 /* istanbul ignore next */
@@ -58,7 +58,7 @@ export const TOUCH_EVENTS = ("ontouchstart" in window);
 /**
  * Pointer Events support.
  */
-export const POINTER_EVENTS = (TARGET === "electron") || ("PointerEvent" in window);
+export const POINTER_EVENTS = ((TARGET === "electron") || ("PointerEvent" in window));
 
 /* istanbul ignore next */
 /**
@@ -66,4 +66,4 @@ export const POINTER_EVENTS = (TARGET === "electron") || ("PointerEvent" in wind
  *
  * http://wicg.github.io/InputDeviceCapabilities/
  */
-export const INPUT_DEVICE_CAPABILITIES = (TARGET === "electron") || ("sourceCapabilities" in UIEvent.prototype);
+export const INPUT_DEVICE_CAPABILITIES = ((TARGET === "electron") || "InputDeviceCapabilities" in window);
