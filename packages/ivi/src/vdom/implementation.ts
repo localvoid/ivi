@@ -385,20 +385,6 @@ export function renderVNode(
 }
 
 /**
- * Check if two virtual DOM node has equal keys.
- *
- * @param a - Virtual DOM node
- * @param b - Virtual DOM node
- * @returns `true` when virtual DOM nodes has equal keys
- */
-function _eqKeys(a: VNode, b: VNode): boolean {
-  return (
-    (a._k === b._k) &&
-    ((a._f ^ b._f) & VNodeFlags.Key) === 0
-  );
-}
-
-/**
  * Sync virtual DOM nodes.
  *
  * When node `a` is synced with node `b`, `a` node should be considered as destroyed, and any access to it after sync
@@ -884,7 +870,10 @@ function _syncChildrenTrackByKeys(
   // Step 1
   outer: while (1) {
     // Sync nodes with the same key at the beginning.
-    while (_eqKeys(aStartVNode!, bStartVNode!) === true) {
+    while (
+      (aStartVNode!._k === bStartVNode!._k) &&
+      (((aStartVNode!._f ^ bStartVNode!._f) & VNodeFlags.Key) === 0)
+    ) {
       syncVNode(parent, aStartVNode!, bStartVNode!, context, dirtyContext);
       step1Synced++;
       if (aStartVNode === aEndVNode) {
@@ -903,7 +892,10 @@ function _syncChildrenTrackByKeys(
     }
 
     // Sync nodes with the same key at the end.
-    while (_eqKeys(aEndVNode, bEndVNode) === true) {
+    while (
+      (aEndVNode!._k === bEndVNode!._k) &&
+      (((aEndVNode!._f ^ bEndVNode!._f) & VNodeFlags.Key) === 0)
+    ) {
       syncVNode(parent, aEndVNode, bEndVNode, context, dirtyContext);
       step1Synced++;
       if (aStartVNode === aEndVNode) {
