@@ -50,7 +50,7 @@ export const EventSourceKeyDown = /*#__PURE__*/createNativeEventSource<KeyboardE
 export const EventSourceKeyPress = /*#__PURE__*/createNativeEventSource<KeyboardEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keypress");
 export const EventSourceKeyUp = /*#__PURE__*/createNativeEventSource<KeyboardEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "keyup");
 export const EventSourceLoad = /*#__PURE__*/createNativeEventSource<Event>(NativeEventSourceFlags.Capture, "load");
-export const EventSourceLoadedSata = /*#__PURE__*/createNativeEventSource<Event>(NativeEventSourceFlags.Capture, "loadeddata");
+export const EventSourceLoadedData = /*#__PURE__*/createNativeEventSource<Event>(NativeEventSourceFlags.Capture, "loadeddata");
 export const EventSourceLoadedMetadata = /*#__PURE__*/createNativeEventSource<Event>(NativeEventSourceFlags.Capture, "loadedmetadata");
 export const EventSourceLoadStart = /*#__PURE__*/createNativeEventSource<Event>(NativeEventSourceFlags.Capture, "loadstart");
 export const EventSourceLostPointerCapture = /*#__PURE__*/createNativeEventSource<PointerEvent>(NativeEventSourceFlags.Capture, "lostpointercapture");
@@ -362,7 +362,7 @@ export function onLoadedData(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture = false,
 ): EventHandler<SyntheticNativeEvent<Event>> {
-  return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceLoadedSata.eventSource, handler, capture);
+  return createEventHandler<SyntheticNativeEvent<Event>>(EventSourceLoadedData.eventSource, handler, capture);
 }
 export function onLoadedMetadata(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,

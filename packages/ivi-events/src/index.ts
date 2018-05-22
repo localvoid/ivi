@@ -24,7 +24,7 @@ export {
   EventSourceDragEnd, EventSourceDragEnter, EventSourceDragLeave, EventSourceDragOver, EventSourceDragStart,
   EventSourceDrop, EventSourceDurationChange, EventSourceEmptied, EventSourceEncrypted, EventSourceEnded,
   EventSourceError, EventSourceFocus, EventSourceGotPointerCapture, EventSourceInput, EventSourceInvalid,
-  EventSourceKeyDown, EventSourceKeyPress, EventSourceKeyUp, EventSourceLoad, EventSourceLoadedSata,
+  EventSourceKeyDown, EventSourceKeyPress, EventSourceKeyUp, EventSourceLoad, EventSourceLoadedData,
   EventSourceLoadedMetadata, EventSourceLoadStart, EventSourceLostPointerCapture, EventSourceMouseDown,
   EventSourceMouseEnter, EventSourceMouseLeave, EventSourceMouseMove, EventSourceMouseOut, EventSourceMouseOver,
   EventSourceMouseUp, EventSourcePaste, EventSourcePause, EventSourcePlay, EventSourcePlaying,
