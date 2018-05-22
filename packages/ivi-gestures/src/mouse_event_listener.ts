@@ -1,6 +1,6 @@
 import { TOUCH_EVENTS, INPUT_DEVICE_CAPABILITIES, MOUSE_EVENT_BUTTONS, getMouseButtons } from "ivi-core";
 import {
-  SyntheticEventFlags, EventSourceMouseDown, EventSourceMouseUp, EventSourceMouseMove, SyntheticNativeEvent,
+  SyntheticEventFlags, EVENT_SOURCE_MOUSE_DOWN, EVENT_SOURCE_MOUSE_UP, EVENT_SOURCE_MOUSE_MOVE, SyntheticNativeEvent,
   addBeforeListener, removeBeforeListener,
 } from "ivi-events";
 import { GestureNativeEventSource } from "./gesture_event_source";
@@ -45,23 +45,23 @@ export function createMouseEventListener(
   let activePointer: GesturePointerEvent | null = null;
 
   function activate() {
-    addBeforeListener(EventSourceMouseDown, onDown);
-    addBeforeListener(EventSourceMouseUp, onUp);
+    addBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
+    addBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
   }
 
   function deactivate() {
-    removeBeforeListener(EventSourceMouseDown, onDown);
-    removeBeforeListener(EventSourceMouseUp, onUp);
+    removeBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
+    removeBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
   }
 
   function startMoveTracking(ev: GesturePointerEvent, target: Element) {
     activePointer = ev;
-    addBeforeListener(EventSourceMouseMove, onMove);
+    addBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
   }
 
   function stopMoveTracking(ev: GesturePointerEvent) {
     activePointer = null;
-    removeBeforeListener(EventSourceMouseMove, onMove);
+    removeBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
   }
 
   function isEventSimulatedFromTouch(ev: MouseEvent): boolean {

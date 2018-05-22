@@ -1,7 +1,7 @@
 import { INPUT_DEVICE_CAPABILITIES } from "ivi-core";
 import {
-  SyntheticEventFlags, EventSourceActiveTouchStart, EventSourceTouchEnd, EventSourceTouchCancel,
-  EventSourceActiveTouchMove, SyntheticNativeEvent,
+  SyntheticEventFlags, EVENT_SOURCE_ACTIVE_TOUCH_START, EVENT_SOURCE_TOUCH_END, EVENT_SOURCE_TOUCH_CANCEL,
+  EVENT_SOURCE_ACTIVE_TOUCH_MOVE, SyntheticNativeEvent,
   removeBeforeListener, addBeforeListener,
 } from "ivi-events";
 import { isNativeGestureAccepted } from "./arena";
@@ -113,15 +113,15 @@ export function createTouchEventListener(
   function activate() {
     mouseListener.activate();
     // touchstart should be active, otherwise touchmove can't be canceled.
-    addBeforeListener(EventSourceActiveTouchStart, onStart);
-    addBeforeListener(EventSourceTouchEnd, onEnd);
-    addBeforeListener(EventSourceTouchCancel, onCancel);
+    addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
+    addBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
+    addBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
   }
 
   function deactivate() {
-    removeBeforeListener(EventSourceActiveTouchStart, onStart);
-    removeBeforeListener(EventSourceTouchEnd, onEnd);
-    removeBeforeListener(EventSourceTouchCancel, onCancel);
+    removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
+    removeBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
+    removeBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
     mouseListener.deactivate();
   }
 
@@ -129,7 +129,7 @@ export function createTouchEventListener(
     if (ev.id === 1) {
       mouseListener.startMoveTracking(ev, target);
     } else {
-      addBeforeListener(EventSourceActiveTouchMove, onMove);
+      addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
     }
   }
 
@@ -137,7 +137,7 @@ export function createTouchEventListener(
     if (ev.id === 1) {
       mouseListener.stopMoveTracking(ev);
     } else {
-      removeBeforeListener(EventSourceActiveTouchMove, onMove);
+      removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
     }
   }
 
