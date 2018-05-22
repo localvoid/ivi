@@ -32,15 +32,12 @@ let _pendingUpdate = false;
  * @param container - DOM Node that contains root node
  * @returns root node or undefined when root node doesn't exist
  */
-export function findRoot(container: Element): Root | undefined {
-  for (let i = 0; i < ROOTS.length; ++i) {
-    const r = ROOTS[i];
-    if (r.container === container) {
-      return r;
+export function findRoot(container: Element): Root | void {
+  for (const root of ROOTS) {
+    if (root.container === container) {
+      return root;
     }
   }
-
-  return;
 }
 
 /**
