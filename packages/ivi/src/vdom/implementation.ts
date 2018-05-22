@@ -857,34 +857,37 @@ export function syncVNode(
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
  *
  * @param parent - Parent DOM element
- * @param aFirstVNode - Previous virtual DOM node
- * @param bFirstVNode - Next virtual DOM node
+ * @param aStartVNode - Previous virtual DOM node
+ * @param bStartVNode - Next virtual DOM node
  * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
 function _syncChildrenTrackByKeys(
   parent: Node,
-  aFirstVNode: VNode,
-  bFirstVNode: VNode,
+  aStartVNode: VNode,
+  bStartVNode: VNode,
+  context: {},
+  dirtyContext: boolean,
+): void;
+function _syncChildrenTrackByKeys(
+  parent: Node,
+  aStartVNode: VNode | null, // should not be null, it is a workaroud to slightly reduce code size
+  bStartVNode: VNode | null, // should not be null, it is a workaroud to slightly reduce code size
   context: {},
   dirtyContext: boolean,
 ): void {
-  let aStartVNode: VNode<any> | null = aFirstVNode;
-  let bStartVNode: VNode<any> | null = bFirstVNode;
-  let aEndVNode: VNode<any> = aFirstVNode._l!;
-  let bEndVNode: VNode<any> = bFirstVNode._l!;
-  let aVNode: VNode<any> | null;
-  let bVNode: VNode<any> | null;
-  let j: number | undefined;
-  let i: number = 0;
-  let synced = 0;
+  let aEndVNode: VNode = aStartVNode!._l!;
+  let bEndVNode: VNode = bStartVNode!._l!;
+  let vnode: VNode | null; // temporary vnode
+  let i: number | undefined = 0;
+  let step1Synced = 0;
 
   // Step 1
   outer: while (true) {
     // Sync nodes with the same key at the beginning.
     while (_eqKeys(aStartVNode!, bStartVNode!) === true) {
       syncVNode(parent, aStartVNode!, bStartVNode!, context, dirtyContext);
-      synced++;
+      step1Synced++;
       if (aStartVNode === aEndVNode) {
         i = 1;
       } else {
@@ -903,7 +906,7 @@ function _syncChildrenTrackByKeys(
     // Sync nodes with the same key at the end.
     while (_eqKeys(aEndVNode, bEndVNode) === true) {
       syncVNode(parent, aEndVNode, bEndVNode, context, dirtyContext);
-      synced++;
+      step1Synced++;
       if (aStartVNode === aEndVNode) {
         i = 1;
       } else {
@@ -927,18 +930,23 @@ function _syncChildrenTrackByKeys(
       if (i < 2) {
         // All nodes from a are synced, insert the rest from b.
         const next = nextNode(bEndVNode);
-        bEndVNode = bEndVNode._r!;
-        do {
+        while (1) {
           renderVNode(parent, next, bStartVNode!, context);
+          if (bStartVNode === bEndVNode) {
+            break;
+          }
           bStartVNode = bStartVNode!._r;
-        } while (bStartVNode !== bEndVNode);
+        }
       } else {
         // All nodes from b are synced, remove the rest from a.
-        aEndVNode = aEndVNode._r!;
-        do {
+        vnode = aEndVNode._r;
+        while (1) {
           removeVNode(parent, aStartVNode!);
+          if (aStartVNode === aEndVNode) {
+            break;
+          }
           aStartVNode = aStartVNode!._r;
-        } while (aStartVNode !== aEndVNode);
+        }
       }
     }
   } else { // Step 2
@@ -946,68 +954,78 @@ function _syncChildrenTrackByKeys(
     let aInnerLength = 0;
     let bInnerLength = 0;
 
-    // When pos === 1000000000, it means that one of the nodes in the wrong position.
-    let moved = 0;
+    // When lastPosition === 1000000000, it means that one of the nodes in the wrong position.
+    let lastPosition = 0;
 
     // Reverse indexes for keys.
     let explicitKeyIndex: Map<any, number> | undefined;
     let implicitKeyIndex: Map<number, number> | undefined;
+    let key;
 
-    bVNode = bStartVNode;
-    do {
-      if (bVNode!._f & VNodeFlags.Key) {
+    vnode = bStartVNode;
+    while (1) {
+      key = vnode!._k;
+      if (vnode!._f & VNodeFlags.Key) {
         if (explicitKeyIndex === void 0) {
           explicitKeyIndex = new Map<any, number>();
         }
-        explicitKeyIndex.set(bVNode!._k, bInnerLength++);
+        explicitKeyIndex.set(key, bInnerLength++);
       } else {
         if (implicitKeyIndex === void 0) {
           implicitKeyIndex = new Map<number, number>();
         }
-        implicitKeyIndex.set(bVNode!._k, bInnerLength++);
+        implicitKeyIndex.set(key, bInnerLength++);
       }
-    } while ((bVNode = bVNode!._r) !== bEndVNode._r);
-
-    // Mark all nodes as inserted.
-    const sources = new Array<number>(bInnerLength).fill(-1);
-
-    const bArray = new Array<VNode<any>>(bInnerLength);
-    bVNode = bStartVNode;
-    for (i = 0; i < bInnerLength; i++) {
-      bArray[i] = bVNode!;
-      bVNode = bVNode!._r;
+      if (vnode === bEndVNode) {
+        break;
+      }
+      vnode = vnode!._r;
     }
 
-    let innerSynced = 0;
-    aVNode = aStartVNode;
-    aEndVNode = aEndVNode._r!;
-    do {
-      if (aVNode!._f & VNodeFlags.Key) {
-        j = explicitKeyIndex ? explicitKeyIndex.get(aVNode!._k) : void 0;
+    // Mark all nodes as inserted (-1).
+    const prevPositionsForB = new Array<number>(bInnerLength).fill(-1);
+
+    const bInnerArray = new Array<VNode>(bInnerLength);
+    vnode = bStartVNode;
+    for (i = 0; i < bInnerLength; i++) {
+      bInnerArray[i] = vnode!;
+      vnode = vnode!._r;
+    }
+
+    let step2Synced = 0;
+    vnode = aStartVNode;
+    while (1) {
+      key = vnode!._k;
+      if (vnode!._f & VNodeFlags.Key) {
+        i = explicitKeyIndex ? explicitKeyIndex.get(key) : void 0;
       } else {
-        j = implicitKeyIndex ? implicitKeyIndex.get(aVNode!._k) : void 0;
+        i = implicitKeyIndex ? implicitKeyIndex.get(key) : void 0;
       }
 
-      if (j === void 0) {
-        aVNode!._k = null;
+      if (i === void 0) {
+        vnode!._k = null;
       } else {
-        moved = (moved > j) ? 1000000000 : j;
-        sources[j] = aInnerLength;
-        syncVNode(parent, aVNode!, bArray[j], context, dirtyContext);
-        innerSynced++;
+        lastPosition = (lastPosition > i) ? 1000000000 : i;
+        prevPositionsForB[i] = aInnerLength;
+        syncVNode(parent, vnode!, bInnerArray[i], context, dirtyContext);
+        step2Synced++;
       }
       aInnerLength++;
-    } while ((aVNode = aVNode!._r) !== aEndVNode);
+      if (vnode === aEndVNode) {
+        break;
+      }
+      vnode = vnode!._r;
+    }
 
-    if (!synced && !innerSynced) {
+    if (!step1Synced && !step2Synced) {
       // Noone is synced, remove all children with one dom op.
-      _removeAllChildren(parent, aFirstVNode);
+      _removeAllChildren(parent, aStartVNode!);
       do {
         renderVNode(parent, null, bStartVNode!, context);
         bStartVNode = bStartVNode!._r;
       } while (bStartVNode !== null);
     } else {
-      i = aInnerLength - innerSynced;
+      i = aInnerLength - step2Synced;
       while (i > 0) {
         if (aStartVNode!._k === null) {
           removeVNode(parent, aStartVNode!);
@@ -1017,34 +1035,32 @@ function _syncChildrenTrackByKeys(
       }
 
       // Step 3
-      if (moved === 1000000000) {
-        const seq = lis(sources);
-        j = seq.length - 1;
-        bVNode = bEndVNode;
-        for (i = bInnerLength - 1; i >= 0; i--) {
-          if (sources[i] < 0) {
-            renderVNode(parent, nextNode(bVNode), bVNode!, context);
+      if (lastPosition === 1000000000) {
+        const seq = lis(prevPositionsForB);
+        i = seq.length - 1;
+        while (bInnerLength > 0) {
+          if (prevPositionsForB[--bInnerLength] < 0) {
+            renderVNode(parent, nextNode(bEndVNode), bEndVNode, context);
           } else {
-            if (j < 0 || i !== seq[j]) {
+            if (i < 0 || bInnerLength !== seq[i]) {
               /* istanbul ignore else */
               if (DEBUG) {
-                parent.insertBefore(getDOMInstanceFromVNode(bVNode)!, nextNode(bVNode));
+                parent.insertBefore(getDOMInstanceFromVNode(bEndVNode)!, nextNode(bEndVNode));
               } else {
-                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bVNode)!, nextNode(bVNode));
+                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bEndVNode)!, nextNode(bEndVNode));
               }
             } else {
-              j--;
+              i--;
             }
           }
-          bVNode = bVNode._l;
+          bEndVNode = bEndVNode._l;
         }
-      } else if (innerSynced !== bInnerLength) {
-        bVNode = bEndVNode;
-        for (i = bInnerLength - 1; i >= 0; i--) {
-          if (sources[i] < 0) {
-            renderVNode(parent, nextNode(bVNode), bVNode, context);
+      } else if (step2Synced !== bInnerLength) {
+        while (bInnerLength > 0) {
+          if (prevPositionsForB[--bInnerLength] < 0) {
+            renderVNode(parent, nextNode(bEndVNode), bEndVNode, context);
           }
-          bVNode = bVNode._l;
+          bEndVNode = bEndVNode._l;
         }
       }
     }
