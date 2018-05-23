@@ -1,4 +1,4 @@
-const _errorHandlers: Array<(e: any) => void> = [];
+const ERROR_HANDLERS: Array<(e: any) => void> = [];
 
 /**
  * addErrorHandler adds an error handler for errors catched by functions decorated with `catchError()`.
@@ -6,10 +6,9 @@ const _errorHandlers: Array<(e: any) => void> = [];
  * @param handler error handler.
  */
 export function addErrorHandler(handler: (e: any) => void): void {
-  _errorHandlers.push(handler);
+  ERROR_HANDLERS.push(handler);
 }
 
-export function catchError(fn: (...args: any[]) => void): (...args: any[]) => any;
 /**
  * catchError is a decorator that catches exceptions and invokes error handlers registered with `addErrorHandler()`.
  *
@@ -18,13 +17,13 @@ export function catchError(fn: (...args: any[]) => void): (...args: any[]) => an
  * @param fn function to decorate.
  * @returns function decorated with a catchError.
  */
-export function catchError(fn: () => void): () => any {
-  return function () {
+export function catchError<T>(fn: (...args: any[]) => T): (...args: any[]) => T {
+  return (...args: any[]) => {
     try {
-      return fn.apply(null, arguments);
+      return fn(...args);
     } catch (e) {
-      for (let i = 0; i < _errorHandlers.length; ++i) {
-        _errorHandlers[i](e);
+      for (const handler of ERROR_HANDLERS) {
+        handler(e);
       }
       throw e;
     }
