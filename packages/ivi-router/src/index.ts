@@ -13,14 +13,14 @@ export function initRouter<A, T>(
 
   let path = location.pathname;
 
-  const goTo = function (nextPath: string): void {
+  const goTo = (nextPath: string) => {
     if (path !== nextPath) {
       path = nextPath;
       onChange(resolve(routes, reducer, nextPath, data));
     }
   };
 
-  window.addEventListener("popstate", function (ev) {
+  window.addEventListener("popstate", (ev) => {
     goTo(location.pathname);
   });
 
