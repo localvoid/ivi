@@ -62,7 +62,7 @@ export function statelessComponent<P>(
  */
 export function statelessComponent<P>(render: (props: P) => VNode<any>): (props: P) => VNode<P> {
   const d = { render, shouldUpdate: null };
-  const f = function (props: P): VNode<P> {
+  const f = (props: P) => {
     const n = new VNode<P>(
       VNodeFlags.StatelessComponent,
       d,
@@ -107,7 +107,7 @@ export function withShouldUpdate<P>(
 ): (props: P) => VNode<P> {
   const v = factory(null as any);
   const d = { render: (v._t as StatelessComponent<P>).render, shouldUpdate };
-  const f = function (props: P): VNode<P> {
+  const f = (props: P) => {
     const n = new VNode<P>(
       VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
       d,
@@ -208,7 +208,7 @@ export function statefulComponent<P>(
 export function statefulComponent<P>(
   c: StatefulComponent<P>,
 ): (props: P) => VNode<P> {
-  const f = function (props: P): VNode<P> {
+  const f = (props: P) => {
     const n = new VNode<P>(
       VNodeFlags.StatefulComponent,
       c,
@@ -381,7 +381,7 @@ export function connect<T, P, C>(
   render: (props: T) => VNode<any>,
 ): (props: P) => VNode<P> {
   const descriptor = { select, render };
-  const f = function (props: P): VNode<P> {
+  const f = (props: P) => {
     const n = new VNode<P>(
       VNodeFlags.Connect,
       descriptor as ConnectDescriptor<any, any, {}>,

@@ -22,13 +22,13 @@ import { VNode } from "./vnode";
  */
 export function element<P, N>(proto: VNode<P, N>): (className?: string) => VNode<P, N> {
   const flags = proto._f | VNodeFlags.ElementFactory;
-  return function (className?: string) {
-    return new VNode<P, N>(
+  return (className?: string) => (
+    new VNode<P, N>(
       flags,
       proto,
       void 0,
       className,
       null,
-    );
-  };
+    )
+  );
 }
