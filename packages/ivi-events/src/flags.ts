@@ -75,3 +75,12 @@ export const enum EventFlags {
   PreventDefault = SyntheticEventFlags.PreventedDefault,
   StopPropagation = SyntheticEventFlags.StoppedPropagation,
 }
+
+/**
+ * Prevents default behaviour for an event.
+ */
+export const PREVENT_DEFAULT = SyntheticEventFlags.PreventedDefault;
+/**
+ * Stops event propagation.
+ */
+export const STOP_PROPAGATION = SyntheticEventFlags.StoppedPropagation;

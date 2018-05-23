@@ -20,20 +20,6 @@ export class SyntheticEvent {
     this.flags = flags;
     this.timestamp = timestamp;
   }
-
-  /**
-   * Stops event propagation.
-   */
-  stopPropagation() {
-    this.flags |= SyntheticEventFlags.StoppedPropagation;
-  }
-
-  /**
-   * Prevents default behaviour for an event.
-   */
-  preventDefault() {
-    this.flags |= SyntheticEventFlags.PreventedDefault;
-  }
 }
 
 export class SyntheticNativeEvent<E extends Event> extends SyntheticEvent {

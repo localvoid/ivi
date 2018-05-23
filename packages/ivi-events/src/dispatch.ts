@@ -43,8 +43,7 @@ function dispatchEventToLocalEventHandlers(
   let flags: EventFlags = 0;
 
   if (Array.isArray(handlers)) {
-    for (let j = 0; j < handlers.length; ++j) {
-      const handler = handlers[j];
+    for (const handler of handlers) {
       if (handler.flags & matchFlags) {
         flags |= _dispatch(handler, dispatch, event);
       }
@@ -87,7 +86,7 @@ export function dispatchEvent(
   }
 
   // bubble phase
-  if (bubble === true) {
+  if (bubble) {
     event.flags |= SyntheticEventFlags.BubblePhase;
     for (i = 0; i < targets.length; ++i) {
       dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Bubble, dispatch);

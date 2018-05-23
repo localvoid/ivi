@@ -1,4 +1,4 @@
-import { SyntheticEvent, SyntheticNativeEvent, dispatchEvent, onClick } from "ivi-events";
+import { SyntheticEvent, SyntheticNativeEvent, dispatchEvent, onClick, EventFlags } from "ivi-events";
 
 test("empty dispatch target array should not raise exceptions", () => {
   expect(() => {
@@ -140,7 +140,7 @@ describe("event flow", () => {
 
     const t1 = document.createElement("div");
     const t2 = document.createElement("span");
-    const h1 = onClick((e) => { order.push(1); e.stopPropagation(); });
+    const h1 = onClick(() => (order.push(1), EventFlags.StopPropagation));
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
@@ -158,7 +158,7 @@ describe("event flow", () => {
     const t1 = document.createElement("div");
     const t2 = document.createElement("span");
     const h1 = onClick(() => { order.push(1); }, true);
-    const h2 = onClick((e) => { order.push(2); e.stopPropagation(); }, true);
+    const h2 = onClick(() => (order.push(2), EventFlags.StopPropagation), true);
 
     dispatchEvent(
       [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
@@ -175,7 +175,7 @@ describe("event flow", () => {
     const t1 = document.createElement("div");
     const t2 = document.createElement("span");
     const h1 = onClick(() => { order.push(1); });
-    const h2 = onClick((e) => { order.push(2); e.stopPropagation(); }, true);
+    const h2 = onClick(() => (order.push(2), EventFlags.StopPropagation), true);
 
     dispatchEvent(
       [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],

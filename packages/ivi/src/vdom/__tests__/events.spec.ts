@@ -560,7 +560,7 @@ describe("events", () => {
       const n = r(
         h.input()
           .a({ type: "checkbox" })
-          .e(Events.onClick((e) => { e.preventDefault(); })),
+          .e(Events.onClick(() => Events.EventFlags.PreventDefault)),
       );
 
       n.dispatchEvent(createMouseEvent("click"));

@@ -2,7 +2,9 @@ export {
   getEventTarget, getNativeEventOptions,
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./utils";
-export { NativeEventSourceFlags, EventHandlerFlags, SyntheticEventFlags, EventFlags } from "./flags";
+export {
+  NativeEventSourceFlags, EventHandlerFlags, SyntheticEventFlags, EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION,
+} from "./flags";
 export { EventSource } from "./event_source";
 export { accumulateDispatchTargets, accumulateDispatchTargetsFromElement } from "./traverse_dom";
 export { DispatchTarget, dispatchEvent } from "./dispatch";
