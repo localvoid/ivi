@@ -29,9 +29,6 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
 a **3.8KB** (minified+compressed).
 
-Also, ivi library has full support for compilation with [Google Closure Compiler](https://github.com/google/closure-compiler)
-in `ADVANCED` mode. Basic example compiled with Google Closure Compiler is **3.5KB** (minified+compressed).
-
 ## Performance
 
 ivi is one of the fastest libraries in the [js-framework-benchmark](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html).
