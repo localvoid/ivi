@@ -22,6 +22,13 @@ function _dispatch(
   event: SyntheticEvent,
 ): EventFlags {
   const flags = (dispatch === void 0) ? handler.handler(event) : dispatch(handler, event);
+  if (DEBUG) {
+    if (flags !== void 0) {
+      if (flags & ~(EventFlags.PreventDefault | EventFlags.StopPropagation)) {
+        throw new Error(`Invalid event flags: ${flags}`);
+      }
+    }
+  }
   return (flags === void 0) ? 0 : flags;
 }
 

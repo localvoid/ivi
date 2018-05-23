@@ -186,3 +186,16 @@ describe("event flow", () => {
     expect(order).toEqual([2]);
   });
 });
+
+test(`returning invalid EventFlags should raise an exception`, () => {
+  const t1 = document.createElement("div");
+  const h1 = onClick(() => (10));
+
+  expect(() => {
+    dispatchEvent(
+      [{ target: t1, handlers: h1 }],
+      new SyntheticNativeEvent<MouseEvent>(0, t1, 0, new MouseEvent("click")),
+      true,
+    );
+  }).toThrowError(`Invalid`);
+});
