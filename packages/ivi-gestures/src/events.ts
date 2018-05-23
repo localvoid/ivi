@@ -24,9 +24,9 @@ export function onPointer(
   capture?: boolean,
 ): EventHandler<GesturePointerEvent> {
   return {
-    source: GestureEventSources.Pointer.eventSource,
+    src: GestureEventSources.Pointer.eventSource,
     flags: (flags === undefined ? 0 : flags) |
-    (capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble),
+      (capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble),
     handler: fn,
     listeners: 0,
     props: null,

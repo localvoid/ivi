@@ -10,15 +10,15 @@ import { EventHandler } from "./event_handler";
  */
 export interface EventSource {
   /**
-   * addListener adds event handler to the event source.
+   * Adds event handler to the event source.
    *
-   * @param handler Event handler.
+   * @param handler - Event handler
    */
-  addListener(handler: EventHandler): void;
+  add(handler: EventHandler): void;
   /**
-   * removeListener removes event handler from the event source.
+   * Removes event handler from the event source.
    *
-   * @param handler Event handler.
+   * @param handler - Event handler
    */
-  removeListener(handler: EventHandler): void;
+  remove(handler: EventHandler): void;
 }

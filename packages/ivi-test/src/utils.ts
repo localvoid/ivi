@@ -81,12 +81,12 @@ export function containsEventHandler(
   if (eventHandlers !== null) {
     if (Array.isArray(eventHandlers)) {
       for (const h of eventHandlers) {
-        if (h !== null && h.source === eventSource) {
+        if (h !== null && h.src === eventSource) {
           return true;
         }
       }
     } else {
-      return (eventHandlers.source === eventSource);
+      return (eventHandlers.src === eventSource);
     }
   }
   return false;

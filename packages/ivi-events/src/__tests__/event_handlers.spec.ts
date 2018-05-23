@@ -38,432 +38,432 @@ function handler(ev: any): void {
 describe(`Event Source`, () => {
   test(`onAbort`, () => {
     const h = onAbort(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ABORT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ABORT.src);
   });
 
   test(`onActivate`, () => {
     const h = onActivate(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ACTIVATE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ACTIVATE.src);
   });
 
   test(`onAriaRequest`, () => {
     const h = onAriaRequest(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ARIA_REQUEST.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ARIA_REQUEST.src);
   });
 
   test(`onBeforeActivate`, () => {
     const h = onBeforeActivate(handler);
-    expect(h.source).toBe(EVENT_SOURCE_BEFORE_ACTIVATE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_BEFORE_ACTIVATE.src);
   });
 
   test(`onBeforeCopy`, () => {
     const h = onBeforeCopy(handler);
-    expect(h.source).toBe(EVENT_SOURCE_BEFORE_COPY.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_BEFORE_COPY.src);
   });
 
   test(`onBeforeCut`, () => {
     const h = onBeforeCut(handler);
-    expect(h.source).toBe(EVENT_SOURCE_BEFORE_CUT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_BEFORE_CUT.src);
   });
 
   test(`onBeforeDeactivate`, () => {
     const h = onBeforeDeactivate(handler);
-    expect(h.source).toBe(EVENT_SOURCE_BEFORE_DEACTIVATE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_BEFORE_DEACTIVATE.src);
   });
 
   test(`onBeforePaste`, () => {
     const h = onBeforePaste(handler);
-    expect(h.source).toBe(EVENT_SOURCE_BEFORE_PASTE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_BEFORE_PASTE.src);
   });
 
   test(`onBlur`, () => {
     const h = onBlur(handler);
-    expect(h.source).toBe(EVENT_SOURCE_BLUR.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_BLUR.src);
   });
 
   test(`onCanPlay`, () => {
     const h = onCanPlay(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CAN_PLAY.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CAN_PLAY.src);
   });
 
   test(`onCanPlaythrough`, () => {
     const h = onCanPlaythrough(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CAN_PLAYTHROUGH.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CAN_PLAYTHROUGH.src);
   });
 
   test(`onChange`, () => {
     const h = onChange(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CHANGE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CHANGE.src);
   });
 
   test(`onClick`, () => {
     const h = onClick(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CLICK.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CLICK.src);
   });
 
   test(`onContextMenu`, () => {
     const h = onContextMenu(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CONTEXT_MENU.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CONTEXT_MENU.src);
   });
 
   test(`onCopy`, () => {
     const h = onCopy(handler);
-    expect(h.source).toBe(EVENT_SOURCE_COPY.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_COPY.src);
   });
 
   test(`onCueChange`, () => {
     const h = onCueChange(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CUE_CHANGE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CUE_CHANGE.src);
   });
 
   test(`onCut`, () => {
     const h = onCut(handler);
-    expect(h.source).toBe(EVENT_SOURCE_CUT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_CUT.src);
   });
 
   test(`onDoubleClick`, () => {
     const h = onDoubleClick(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DOUBLE_CLICK.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DOUBLE_CLICK.src);
   });
 
   test(`onDeactivate`, () => {
     const h = onDeactivate(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DEACTIVATE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DEACTIVATE.src);
   });
 
   test(`onDrag`, () => {
     const h = onDrag(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DRAG.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DRAG.src);
   });
 
   test(`onDragEnd`, () => {
     const h = onDragEnd(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DRAG_END.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DRAG_END.src);
   });
 
   test(`onDragEnter`, () => {
     const h = onDragEnter(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DRAG_ENTER.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DRAG_ENTER.src);
   });
 
   test(`onDragLeave`, () => {
     const h = onDragLeave(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DRAG_LEAVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DRAG_LEAVE.src);
   });
 
   test(`onDragOver`, () => {
     const h = onDragOver(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DRAG_OVER.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DRAG_OVER.src);
   });
 
   test(`onDragStart`, () => {
     const h = onDragStart(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DRAG_START.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DRAG_START.src);
   });
 
   test(`onDrop`, () => {
     const h = onDrop(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DROP.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DROP.src);
   });
 
   test(`onDurationChange`, () => {
     const h = onDurationChange(handler);
-    expect(h.source).toBe(EVENT_SOURCE_DURATION_CHANGE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_DURATION_CHANGE.src);
   });
 
   test(`onEmptied`, () => {
     const h = onEmptied(handler);
-    expect(h.source).toBe(EVENT_SOURCE_EMPTIED.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_EMPTIED.src);
   });
 
   test(`onEncrypted`, () => {
     const h = onEncrypted(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ENCRYPTED.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ENCRYPTED.src);
   });
 
   test(`onEnded`, () => {
     const h = onEnded(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ENDED.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ENDED.src);
   });
 
   test(`onError`, () => {
     const h = onError(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ERROR.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ERROR.src);
   });
 
   test(`onFocus`, () => {
     const h = onFocus(handler);
-    expect(h.source).toBe(EVENT_SOURCE_FOCUS.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_FOCUS.src);
   });
 
   test(`onGotPointerCapture`, () => {
     const h = onGotPointerCapture(handler);
-    expect(h.source).toBe(EVENT_SOURCE_GOT_POINTER_CAPTURE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_GOT_POINTER_CAPTURE.src);
   });
 
   test(`onInput`, () => {
     const h = onInput(handler);
-    expect(h.source).toBe(EVENT_SOURCE_INPUT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_INPUT.src);
   });
 
   test(`onInvalid`, () => {
     const h = onInvalid(handler);
-    expect(h.source).toBe(EVENT_SOURCE_INVALID.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_INVALID.src);
   });
 
   test(`onKeyDown`, () => {
     const h = onKeyDown(handler);
-    expect(h.source).toBe(EVENT_SOURCE_KEY_DOWN.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_KEY_DOWN.src);
   });
 
   test(`onKeyPress`, () => {
     const h = onKeyPress(handler);
-    expect(h.source).toBe(EVENT_SOURCE_KEY_PRESS.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_KEY_PRESS.src);
   });
 
   test(`onKeyUp`, () => {
     const h = onKeyUp(handler);
-    expect(h.source).toBe(EVENT_SOURCE_KEY_UP.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_KEY_UP.src);
   });
 
   test(`onLoad`, () => {
     const h = onLoad(handler);
-    expect(h.source).toBe(EVENT_SOURCE_LOAD.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_LOAD.src);
   });
 
   test(`onLoadedData`, () => {
     const h = onLoadedData(handler);
-    expect(h.source).toBe(EVENT_SOURCE_LOADED_DATA.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_LOADED_DATA.src);
   });
 
   test(`onLoadedMetadata`, () => {
     const h = onLoadedMetadata(handler);
-    expect(h.source).toBe(EVENT_SOURCE_LOADED_METADATA.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_LOADED_METADATA.src);
   });
 
   test(`onLoadStart`, () => {
     const h = onLoadStart(handler);
-    expect(h.source).toBe(EVENT_SOURCE_LOAD_START.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_LOAD_START.src);
   });
 
   test(`onLostPointerCapture`, () => {
     const h = onLostPointerCapture(handler);
-    expect(h.source).toBe(EVENT_SOURCE_LOST_POINTER_CAPTURE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_LOST_POINTER_CAPTURE.src);
   });
 
   test(`onMouseDown`, () => {
     const h = onMouseDown(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_DOWN.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_DOWN.src);
   });
 
   test(`onMouseEnter`, () => {
     const h = onMouseEnter(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_ENTER.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_ENTER.src);
   });
 
   test(`onMouseLeave`, () => {
     const h = onMouseLeave(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_LEAVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_LEAVE.src);
   });
 
   test(`onMouseMove`, () => {
     const h = onMouseMove(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_MOVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_MOVE.src);
   });
 
   test(`onMouseOut`, () => {
     const h = onMouseOut(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_OUT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_OUT.src);
   });
 
   test(`onMouseOver`, () => {
     const h = onMouseOver(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_OVER.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_OVER.src);
   });
 
   test(`onMouseUp`, () => {
     const h = onMouseUp(handler);
-    expect(h.source).toBe(EVENT_SOURCE_MOUSE_UP.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_MOUSE_UP.src);
   });
 
   test(`onPaste`, () => {
     const h = onPaste(handler);
-    expect(h.source).toBe(EVENT_SOURCE_PASTE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_PASTE.src);
   });
 
   test(`onPause`, () => {
     const h = onPause(handler);
-    expect(h.source).toBe(EVENT_SOURCE_PAUSE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_PAUSE.src);
   });
 
   test(`onPlay`, () => {
     const h = onPlay(handler);
-    expect(h.source).toBe(EVENT_SOURCE_PLAY.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_PLAY.src);
   });
 
   test(`onPlaying`, () => {
     const h = onPlaying(handler);
-    expect(h.source).toBe(EVENT_SOURCE_PLAYING.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_PLAYING.src);
   });
 
   test(`onPointerCancel`, () => {
     const h = onPointerCancel(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_CANCEL.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_CANCEL.src);
   });
 
   test(`onPointerDown`, () => {
     const h = onPointerDown(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_DOWN.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_DOWN.src);
   });
 
   test(`onPointerEnter`, () => {
     const h = onPointerEnter(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_ENTER.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_ENTER.src);
   });
 
   test(`onPointerLeave`, () => {
     const h = onPointerLeave(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_LEAVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_LEAVE.src);
   });
 
   test(`onPointerMove`, () => {
     const h = onPointerMove(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_MOVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_MOVE.src);
   });
 
   test(`onPointerOut`, () => {
     const h = onPointerOut(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_OUT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_OUT.src);
   });
 
   test(`onPointerOver`, () => {
     const h = onPointerOver(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_OVER.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_OVER.src);
   });
 
   test(`onPointerUp`, () => {
     const h = onPointerUp(handler);
-    expect(h.source).toBe(EVENT_SOURCE_POINTER_UP.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_POINTER_UP.src);
   });
 
   test(`onProgress`, () => {
     const h = onProgress(handler);
-    expect(h.source).toBe(EVENT_SOURCE_PROGRESS.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_PROGRESS.src);
   });
 
   test(`onRateChange`, () => {
     const h = onRateChange(handler);
-    expect(h.source).toBe(EVENT_SOURCE_RATE_CHANGE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_RATE_CHANGE.src);
   });
 
   test(`onReset`, () => {
     const h = onReset(handler);
-    expect(h.source).toBe(EVENT_SOURCE_RESET.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_RESET.src);
   });
 
   test(`onScroll`, () => {
     const h = onScroll(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SCROLL.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SCROLL.src);
   });
 
   test(`onSeeked`, () => {
     const h = onSeeked(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SEEKED.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SEEKED.src);
   });
 
   test(`onSeeking`, () => {
     const h = onSeeking(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SEEKING.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SEEKING.src);
   });
 
   test(`onSelect`, () => {
     const h = onSelect(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SELECT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SELECT.src);
   });
 
   test(`onSelectStart`, () => {
     const h = onSelectStart(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SELECT_START.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SELECT_START.src);
   });
 
   test(`onStalled`, () => {
     const h = onStalled(handler);
-    expect(h.source).toBe(EVENT_SOURCE_STALLED.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_STALLED.src);
   });
 
   test(`onSubmit`, () => {
     const h = onSubmit(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SUBMIT.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SUBMIT.src);
   });
 
   test(`onSuspend`, () => {
     const h = onSuspend(handler);
-    expect(h.source).toBe(EVENT_SOURCE_SUSPEND.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_SUSPEND.src);
   });
 
   test(`onTimeUpdate`, () => {
     const h = onTimeUpdate(handler);
-    expect(h.source).toBe(EVENT_SOURCE_TIME_UPDATE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_TIME_UPDATE.src);
   });
 
   test(`onTouchCancel`, () => {
     const h = onTouchCancel(handler);
-    expect(h.source).toBe(EVENT_SOURCE_TOUCH_CANCEL.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_TOUCH_CANCEL.src);
   });
 
   test(`onTouchEnd`, () => {
     const h = onTouchEnd(handler);
-    expect(h.source).toBe(EVENT_SOURCE_TOUCH_END.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_TOUCH_END.src);
   });
 
   test(`onTouchMove`, () => {
     const h = onTouchMove(handler);
-    expect(h.source).toBe(EVENT_SOURCE_TOUCH_MOVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_TOUCH_MOVE.src);
   });
 
   test(`onTouchStart`, () => {
     const h = onTouchStart(handler);
-    expect(h.source).toBe(EVENT_SOURCE_TOUCH_START.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_TOUCH_START.src);
   });
 
   test(`onUnload`, () => {
     const h = onUnload(handler);
-    expect(h.source).toBe(EVENT_SOURCE_UNLOAD.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_UNLOAD.src);
   });
 
   test(`onVolumeChange`, () => {
     const h = onVolumeChange(handler);
-    expect(h.source).toBe(EVENT_SOURCE_VOLUME_CHANGE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_VOLUME_CHANGE.src);
   });
 
   test(`onWaiting`, () => {
     const h = onWaiting(handler);
-    expect(h.source).toBe(EVENT_SOURCE_WAITING.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_WAITING.src);
   });
 
   test(`onWheel`, () => {
     const h = onWheel(handler);
-    expect(h.source).toBe(EVENT_SOURCE_WHEEL.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_WHEEL.src);
   });
 
   test(`onActiveTouchEnd`, () => {
     const h = onActiveTouchEnd(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ACTIVE_TOUCH_END.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ACTIVE_TOUCH_END.src);
   });
 
   test(`onActiveTouchMove`, () => {
     const h = onActiveTouchMove(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ACTIVE_TOUCH_MOVE.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ACTIVE_TOUCH_MOVE.src);
   });
 
   test(`onActiveTouchStart`, () => {
     const h = onActiveTouchStart(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ACTIVE_TOUCH_START.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ACTIVE_TOUCH_START.src);
   });
 
   test(`onActiveWheel`, () => {
     const h = onActiveWheel(handler);
-    expect(h.source).toBe(EVENT_SOURCE_ACTIVE_WHEEL.eventSource);
+    expect(h.src).toBe(EVENT_SOURCE_ACTIVE_WHEEL.src);
   });
 });
 

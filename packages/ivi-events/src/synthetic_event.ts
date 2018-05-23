@@ -5,7 +5,7 @@ import { SyntheticEventFlags } from "./flags";
  */
 export class SyntheticEvent {
   /**
-   * See `SyntheticEventFlags` for details.
+   * See {@link SyntheticEventFlags} for details.
    */
   flags: SyntheticEventFlags;
   /**
@@ -22,9 +22,18 @@ export class SyntheticEvent {
   }
 }
 
+/**
+ * SyntheticNativeEvent is a wrapper for native events.
+ */
 export class SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
-  readonly target: any;
-  native: E;
+  /**
+   * Event target.
+   */
+  readonly target: EventTarget;
+  /**
+   * Native event.
+   */
+  readonly native: E;
 
   constructor(
     flags: SyntheticEventFlags,

@@ -10,7 +10,7 @@ function registerEventHandler(handler: EventHandler<any>): void {
   if (DEBUG) {
     handler.flags |= EventHandlerFlags.Active;
   }
-  handler.source.addListener(handler);
+  handler.src.add(handler);
 }
 
 /**
@@ -22,7 +22,7 @@ function unregisterEventHandler(handler: EventHandler<any>): void {
   if (DEBUG) {
     handler.flags &= ~EventHandlerFlags.Active;
   }
-  handler.source.removeListener(handler);
+  handler.src.remove(handler);
 }
 
 /**

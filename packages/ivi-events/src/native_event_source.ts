@@ -16,14 +16,14 @@ export interface NativeEventSource<E extends Event> {
   /**
    * Public EventSource interface.
    */
-  readonly eventSource: EventSource;
+  readonly src: EventSource;
   /**
    * Number of active dependencies.
    *
    * When there are active dependencies, event source will be activated by attaching native event listeners to the
    * document. When it goes to zero it will be deactivated, and all event listeners will be removed.
    */
-  dependencies: number;
+  deps: number;
   /**
    * Number of active listeners.
    */
@@ -36,8 +36,8 @@ export interface NativeEventSource<E extends Event> {
    * DOM event name.
    */
   readonly name: string;
-  onBeforeListeners: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
-  onAfterListeners: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
+  before: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
+  after: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
   dispatch: (() => void) | null;
 }
 
@@ -46,20 +46,20 @@ export function createNativeEventSource<E extends Event>(
   name: string,
 ): NativeEventSource<E> {
   const source: NativeEventSource<E> = {
-    eventSource: {
-      addListener: () => { ++source.listeners; incDependencies(source); },
-      removeListener: () => { --source.listeners; decDependencies(source); },
+    src: {
+      add: () => { ++source.listeners; incDependencies(source); },
+      remove: () => { --source.listeners; decDependencies(source); },
     },
-    dependencies: 0,
+    deps: 0,
     listeners: 0,
-    flags: flags,
-    name: name,
-    onBeforeListeners: null,
-    onAfterListeners: null,
+    flags,
+    name,
+    before: null,
+    after: null,
     dispatch: null,
   };
 
-  const matchEventSource = (h: EventHandler) => h.source === source.eventSource;
+  const matchEventSource = (h: EventHandler) => h.src === source.src;
 
   source.dispatch = catchError((ev: E): void => {
     const targets: DispatchTarget[] = [];
@@ -67,14 +67,14 @@ export function createNativeEventSource<E extends Event>(
       accumulateDispatchTargets(targets, getEventTarget(ev) as Element, matchEventSource);
     }
 
-    if (targets.length || source.onBeforeListeners !== null || source.onAfterListeners !== null) {
+    if (targets.length || source.before !== null || source.after !== null) {
       const syntheticEvent = new SyntheticNativeEvent<E>(0, getEventTarget(ev), ev.timeStamp, ev);
 
-      dispatchToListeners(source.onBeforeListeners, syntheticEvent);
+      dispatchToListeners(source.before, syntheticEvent);
       if (targets.length) {
         dispatchEvent(targets, syntheticEvent, (source.flags & NativeEventSourceFlags.Bubbles) !== 0);
       }
-      dispatchToListeners(source.onAfterListeners, syntheticEvent);
+      dispatchToListeners(source.after, syntheticEvent);
 
       if ((syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) !== 0) {
         ev.preventDefault();
@@ -89,7 +89,7 @@ export function addBeforeListener<E extends Event>(
   source: NativeEventSource<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  source.onBeforeListeners = append(source.onBeforeListeners, cb);
+  source.before = append(source.before, cb);
   incDependencies(source);
 }
 
@@ -97,7 +97,7 @@ export function addAfterListener<E extends Event>(
   source: NativeEventSource<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  source.onAfterListeners = append(source.onAfterListeners, cb);
+  source.after = append(source.after, cb);
   incDependencies(source);
 }
 
@@ -105,8 +105,8 @@ export function removeBeforeListener<E extends Event>(
   source: NativeEventSource<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  if (source.onBeforeListeners !== null) {
-    unorderedArrayDelete(source.onBeforeListeners, source.onBeforeListeners.indexOf(cb));
+  if (source.before !== null) {
+    unorderedArrayDelete(source.before, source.before.indexOf(cb));
     decDependencies(source);
   }
 }
@@ -115,14 +115,14 @@ export function removeAfterListener<E extends Event>(
   source: NativeEventSource<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  if (source.onAfterListeners !== null) {
-    unorderedArrayDelete(source.onAfterListeners, source.onAfterListeners.indexOf(cb));
+  if (source.after !== null) {
+    unorderedArrayDelete(source.after, source.after.indexOf(cb));
     decDependencies(source);
   }
 }
 
 function incDependencies<E extends Event>(source: NativeEventSource<E>): void {
-  if (source.dependencies++ === 0) {
+  if (source.deps++ === 0) {
     document.addEventListener(
       source.name,
       source.dispatch!,
@@ -132,7 +132,7 @@ function incDependencies<E extends Event>(source: NativeEventSource<E>): void {
 }
 
 function decDependencies<E extends Event>(source: NativeEventSource<E>): void {
-  if (--source.dependencies === 0) {
+  if (--source.deps === 0) {
     document.removeEventListener(
       source.name,
       source.dispatch!,
@@ -147,8 +147,8 @@ function dispatchToListeners<E extends Event>(
 ): void {
   if (listeners !== null) {
     const cbs = listeners.slice();
-    for (let i = 0; i < cbs.length; ++i) {
-      cbs[i](ev);
+    for (const cb of cbs) {
+      cb(ev);
     }
   }
 }

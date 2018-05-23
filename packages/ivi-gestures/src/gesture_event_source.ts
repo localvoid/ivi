@@ -34,8 +34,8 @@ export class GestureEventSource {
 
   constructor() {
     this.eventSource = {
-      addListener: this.addGestureListener,
-      removeListener: this.removeGestureListener,
+      add: this.addGestureListener,
+      remove: this.removeGestureListener,
     };
     this.dependencies = 0;
     this.pointers = [];
@@ -63,7 +63,7 @@ export class GestureEventSource {
     }
   }
 
-  private matchEventSource = (h: EventHandler) => (h.source === this.eventSource);
+  private matchEventSource = (h: EventHandler) => (h.src === this.eventSource);
 
   private dispatch = catchError((ev: GesturePointerEvent, target?: Element) => {
     const action = ev.action;

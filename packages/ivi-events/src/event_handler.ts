@@ -14,13 +14,13 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any
   /**
    * Reference to the event source that will dispatch events for this event handler.
    */
-  source: EventSource;
+  src: EventSource;
   /**
-   * See `EventHandlerFlags` for details.
+   * See {@link EventHandlerFlags} for details.
    */
   flags: EventHandlerFlags;
   /**
-   * Event Handler function call interface.
+   * Event Handler function.
    */
   handler(ev: E): EventFlags | void;
   /**
