@@ -35,7 +35,7 @@ const enum FrameTasksGroupFlags {
 }
 
 interface TaskList {
-  tasks: Array<() => void>;
+  a: Array<() => void>;
 }
 
 /**
@@ -44,14 +44,14 @@ interface TaskList {
  * @returns Task list.
  */
 function createTaskList(): TaskList {
-  return { tasks: [] };
+  return { a: [] };
 }
 
 function run(t: TaskList) {
-  const tasks = t.tasks;
-  t.tasks = [];
-  for (let i = 0; i < tasks.length; ++i) {
-    tasks[i]();
+  const tasks = t.a;
+  t.a = [];
+  for (const task of tasks) {
+    task();
   }
 }
 
@@ -65,27 +65,27 @@ interface FrameTasksGroup {
   /**
    * See `FrameTasksGroupFlags` for details.
    */
-  flags: number;
+  f: number;
   /**
    * Write DOM task queue.
    */
-  write: TaskList;
+  w: TaskList;
   /**
    * Read DOM task queue.
    */
-  read: TaskList;
+  r: TaskList;
   /**
    * Tasks that should be executed when all other frame tasks are finished.
    */
-  after: TaskList;
+  a: TaskList;
 }
 
 function createFrameTasksGroup(): FrameTasksGroup {
   return {
-    flags: 0,
-    write: createTaskList(),
-    read: createTaskList(),
-    after: createTaskList(),
+    f: 0,
+    w: createTaskList(),
+    r: createTaskList(),
+    a: createTaskList(),
   };
 }
 
@@ -106,7 +106,7 @@ let _currentFrameStartTime = 0;
 let _autofocusedElement: Element | null = null;
 
 const runMicrotasks = catchError(() => {
-  while (_microtasks.tasks.length > 0) {
+  while (_microtasks.a.length > 0) {
     run(_microtasks);
   }
 
@@ -176,7 +176,7 @@ export function scheduleMicrotask(task: () => void): void {
     _flags |= SchedulerFlags.MicrotaskPending;
     Promise.resolve().then(runMicrotasks);
   }
-  _microtasks.tasks.push(task);
+  _microtasks.a.push(task);
 }
 
 /**
@@ -189,7 +189,7 @@ export function scheduleTask(task: () => void): void {
     _flags |= SchedulerFlags.TaskPending;
     _taskChannel.port2.postMessage(0);
   }
-  _tasks.tasks.push(task);
+  _tasks.a.push(task);
 }
 
 export function isHidden(): boolean {
@@ -287,23 +287,23 @@ const _handleNextFrame = catchError((time: number) => {
   // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
   // and repeat until all read and write tasks are executed.
   do {
-    while (frame.flags & FrameTasksGroupFlags.Read) {
-      frame.flags ^= FrameTasksGroupFlags.Read;
-      run(frame.read);
+    while (frame.f & FrameTasksGroupFlags.Read) {
+      frame.f ^= FrameTasksGroupFlags.Read;
+      run(frame.r);
     }
 
-    while (frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
-      if (frame.flags & FrameTasksGroupFlags.Write) {
-        frame.flags ^= FrameTasksGroupFlags.Write;
-        run(frame.write);
+    while (frame.f & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
+      if (frame.f & FrameTasksGroupFlags.Write) {
+        frame.f ^= FrameTasksGroupFlags.Write;
+        run(frame.w);
       }
 
-      if (frame.flags & FrameTasksGroupFlags.Update) {
-        frame.flags ^= FrameTasksGroupFlags.Update;
+      if (frame.f & FrameTasksGroupFlags.Update) {
+        frame.f ^= FrameTasksGroupFlags.Update;
         _updateDOMHandler();
       }
     }
-  } while (frame.flags & (
+  } while (frame.f & (
     FrameTasksGroupFlags.Update |
     FrameTasksGroupFlags.Write |
     FrameTasksGroupFlags.Read
@@ -316,9 +316,9 @@ const _handleNextFrame = catchError((time: number) => {
   }
 
   // Perform tasks that should be executed when all DOM ops are finished.
-  while ((frame.flags & FrameTasksGroupFlags.After)) {
-    frame.flags ^= FrameTasksGroupFlags.After;
-    run(frame.after);
+  while ((frame.f & FrameTasksGroupFlags.After)) {
+    frame.f ^= FrameTasksGroupFlags.After;
+    run(frame.a);
   }
 
   if (_autofocusedElement !== null) {
@@ -334,22 +334,22 @@ const _handleNextFrame = catchError((time: number) => {
 });
 
 function addFrameTaskUpdate(frame: FrameTasksGroup): void {
-  frame.flags |= FrameTasksGroupFlags.Update;
+  frame.f |= FrameTasksGroupFlags.Update;
 }
 
 function addFrameTaskWrite(frame: FrameTasksGroup, task: () => void): void {
-  frame.flags |= FrameTasksGroupFlags.Write;
-  frame.write.tasks.push(task);
+  frame.f |= FrameTasksGroupFlags.Write;
+  frame.w.a.push(task);
 }
 
 function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
-  frame.flags |= FrameTasksGroupFlags.Read;
-  frame.read.tasks.push(task);
+  frame.f |= FrameTasksGroupFlags.Read;
+  frame.r.a.push(task);
 }
 
 function addFrameTaskAfter(frame: FrameTasksGroup, task: () => void): void {
-  frame.flags |= FrameTasksGroupFlags.After;
-  frame.after.tasks.push(task);
+  frame.f |= FrameTasksGroupFlags.After;
+  frame.a.a.push(task);
 }
 
 export function nextFrameUpdate(): void {

@@ -98,28 +98,3 @@ export function getNativeEventOptions(
   }
   return false;
 }
-
-/**
- * setEventHandlersToDOMNode assigns a event handlers to the DOM node.
- *
- * @param node DOM Node.
- * @param events Event Handlers.
- */
-export function setEventHandlersToDOMNode(
-  node: Element,
-  events: Array<EventHandler | null> | EventHandler | null,
-): void {
-  node._ev = events;
-}
-
-/**
- * getEventHandlersFromDOMNode retrieves event handlers from the DOM node.
- *
- * @param node DOM Node.
- * @returns Event Handlers.
- */
-export function getEventHandlersFromDOMNode(
-  node: Element,
-): Array<EventHandler | null> | EventHandler | undefined | null {
-  return node._ev;
-}

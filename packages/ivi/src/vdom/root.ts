@@ -24,7 +24,7 @@ export const ROOTS = [] as Root[];
  */
 const EMPTY_CONTEXT = {};
 
-let _pendingUpdate = false;
+let _pendingUpdate = 0;
 
 /**
  * Find Root node in container.
@@ -45,7 +45,7 @@ export function findRoot(container: Element): Root | void {
  */
 function _update() {
   if (_pendingUpdate) {
-    _pendingUpdate = false;
+    _pendingUpdate = 0;
     setUpdateDOMHandler(update);
     for (let i = 0; i < ROOTS.length; ++i) {
       const root = ROOTS[i];
@@ -130,7 +130,7 @@ export function renderNextFrame(vnode: VNode | null, container: Element): void {
     root.invalidated = true;
   } else {
     ROOTS.push({
-      container: container,
+      container,
       currentVNode: null,
       newVNode: vnode,
       invalidated: true,
@@ -153,7 +153,7 @@ export function update() {
  */
 export function updateNextFrame() {
   if (!_pendingUpdate) {
-    _pendingUpdate = true;
+    _pendingUpdate = 1;
     nextFrameWrite(_update);
   }
 }
