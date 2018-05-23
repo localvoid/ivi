@@ -1,6 +1,4 @@
-import {
-  Vec2, ZeroVec2, vec2, vec2DistanceSquared, vec2Distance, vec2Div, vec2Mul, vec2Sub, vec2Equal, polynomialFit,
-} from "ivi-math";
+import { Vec2, ZeroVec2, vec2, vec2DistanceSquared, vec2Distance, vec2Div, vec2Mul } from "ivi-math";
 
 export function velocityClampMagnitude(velocity: Vec2, minValue: number, maxValue: number): Vec2 {
   const valueSquared = vec2DistanceSquared(velocity);
@@ -13,27 +11,13 @@ export function velocityClampMagnitude(velocity: Vec2, minValue: number, maxValu
   return velocity;
 }
 
-export interface VelocityEstimate {
-  readonly pixelsPerSecond: Vec2;
-  readonly confidence: number;
-  readonly duration: number;
-  readonly offset: Vec2;
-}
-
 export interface PointAtTime {
   readonly time: number;
   readonly point: Vec2;
 }
 
-function velocityEstimate(pixelsPerSecond: Vec2, confidence: number, duration: number, offset: Vec2): VelocityEstimate {
-  return { pixelsPerSecond, confidence, duration, offset };
-}
-
-const ASSUME_POINTER_MOVE_STOPPED_MILLISECONDS = 40;
-const HISTORY_SIZE = 16;
-const INDEX_MASK = 0b1111;
+const HISTORY_SIZE = 20;
 const HORIZON_MILLISECONDS = 100;
-const MIN_SAMPLE_SIZE = 3;
 
 export interface VelocityTracker {
   readonly samples: Array<PointAtTime | null>;
@@ -48,26 +32,23 @@ export function createVelocityTracker(): VelocityTracker {
 }
 
 export function trackPosition(tracker: VelocityTracker, time: number, point: Vec2): void {
-  const index = (tracker.index + 1) & INDEX_MASK;
+  const index = (tracker.index + 1) % HISTORY_SIZE;
   tracker.index = index;
   tracker.samples[index] = { time, point };
 }
 
-export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | null {
+export function estimateVelocity(tracker: VelocityTracker): Vec2 | null {
   let index = tracker.index;
   const newestSample = tracker.samples[index];
   if (newestSample === null) {
-    return null;
+    return ZeroVec2;
   }
 
-  const x = [] as number[];
-  const y = [] as number[];
-  const w = [] as number[];
-  const time = [] as number[];
+  const x = [];
+  const y = [];
+  const time = [];
 
   let sampleCount = 0;
-  let previousSample = newestSample;
-  let oldestSample = newestSample;
 
   do {
     const sample = tracker.samples[index];
@@ -76,48 +57,52 @@ export function estimateVelocity(tracker: VelocityTracker): VelocityEstimate | n
     }
 
     const age = newestSample.time - sample.time;
-    const delta = Math.abs(sample.time - previousSample.time);
-    previousSample = sample;
-
-    if (age > HORIZON_MILLISECONDS || delta > ASSUME_POINTER_MOVE_STOPPED_MILLISECONDS) {
+    if (age > HORIZON_MILLISECONDS) {
       break;
     }
 
-    oldestSample = sample;
     const position = sample.point;
     x.push(position.x);
     y.push(position.y);
-    w.push(1);
     time.push(-age);
-    index = (index - 1) & INDEX_MASK;
-    ++sampleCount;
-  } while (sampleCount < HISTORY_SIZE);
+    index = index === 0 ? (HISTORY_SIZE - 1) : (index - 1);
+  } while (++sampleCount < HISTORY_SIZE);
 
-  const duration = newestSample.time - oldestSample.time;
-  const offset = vec2Sub(newestSample.point, oldestSample.point);
-
-  if (sampleCount > MIN_SAMPLE_SIZE) {
-    const xFit = polynomialFit(2, time, x, w);
-    if (xFit !== null) {
-      const yFit = polynomialFit(2, time, y, w);
-      if (yFit !== null) {
-        return velocityEstimate(
-          vec2(xFit.result[1] * 1000, yFit.result[1] * 1000),
-          xFit.confidence * yFit.confidence,
-          duration,
-          offset,
-        );
-      }
-    }
-  }
-
-  return velocityEstimate(ZeroVec2, 1, duration, offset);
+  return vec2(lsq2(time, x), lsq2(time, y));
 }
 
-export function calculateVelocity(tracker: VelocityTracker): Vec2 | null {
-  const estimate = estimateVelocity(tracker);
-  if (estimate === null || vec2Equal(estimate.pixelsPerSecond, ZeroVec2) === true) {
-    return null;
+function lsq2(x: number[], y: number[]): number {
+  const count = x.length;
+  let sxi = 0;
+  let sxiyi = 0;
+  let syi = 0;
+  let sxi2 = 0;
+  let sxi3 = 0;
+  let sxi2yi = 0;
+  let sxi4 = 0;
+  for (let i = 0; i < count; ++i) {
+    const xi = x[i];
+    const yi = y[i];
+    const xi2 = xi * xi;
+    const xi3 = xi2 * xi;
+    const xi4 = xi3 * xi;
+    const xi2yi = xi2 * yi;
+    const xiyi = xi * yi;
+    sxi += xi;
+    sxi2 += xi2;
+    sxiyi += xiyi;
+    sxi2yi += xi2yi;
+    syi += yi;
+    sxi3 += xi3;
+    sxi4 += xi4;
   }
-  return estimate.pixelsPerSecond;
+  const Sxx = sxi2 - ((sxi * sxi) / count);
+  const Sxy = sxiyi - ((sxi * syi) / count);
+  const Sxx2 = sxi3 - ((sxi * sxi2) / count);
+  const Sx2y = sxi2yi - ((sxi2 * syi) / count);
+  const Sx2x2 = sxi4 - ((sxi2 * sxi2) / count);
+  const numerator = (Sxy * Sx2x2) - (Sx2y * Sxx2);
+  const denominator = (Sxx * Sx2x2) - (Sxx2 * Sxx2);
+
+  return (denominator === 0) ? 0 : numerator / denominator;
 }
