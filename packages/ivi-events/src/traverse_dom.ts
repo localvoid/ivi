@@ -1,6 +1,5 @@
 import { EventHandler } from "./event_handler";
 import { DispatchTarget } from "./dispatch";
-import { getEventHandlersFromDOMNode } from "./utils";
 
 /**
  * accumulateDispatchTargetsFromElement accumulates matching Event Handlers in `result` array from the `target` Element.
@@ -14,34 +13,30 @@ export function accumulateDispatchTargetsFromElement(
   target: Element,
   match: (h: EventHandler) => boolean,
 ): void {
-  const events = getEventHandlersFromDOMNode(target);
-  if (events !== null && events !== undefined) {
-    let matches: EventHandler[] | EventHandler | undefined;
-    if (events instanceof Array) {
+  const events = target._ev;
+  if (events) {
+    let handlers: EventHandler[] | EventHandler | undefined;
+    if (Array.isArray(events)) {
       let count = 0;
-      for (let i = 0; i < events.length; ++i) {
-        const h = events[i];
+      for (const h of events) {
         if (h !== null && match(h) === true) {
           if (count === 0) {
-            matches = h;
+            handlers = h;
           } else if (count === 1) {
-            matches = [matches as EventHandler, h];
+            handlers = [handlers as EventHandler, h];
           } else {
-            (matches as EventHandler[]).push(h);
+            (handlers as EventHandler[]).push(h);
           }
           ++count;
         }
       }
     } else {
       if (match(events) === true) {
-        matches = events;
+        handlers = events;
       }
     }
-    if (matches !== undefined) {
-      result.push({
-        target: target,
-        handlers: matches,
-      });
+    if (handlers !== void 0) {
+      result.push({ target, handlers });
     }
   }
 }

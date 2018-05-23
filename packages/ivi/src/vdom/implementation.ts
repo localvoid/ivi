@@ -9,7 +9,7 @@ import {
   SVG_NAMESPACE, nodeRemoveChild, nodeInsertBefore, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
 } from "ivi-core";
 import { autofocus } from "ivi-scheduler";
-import { setEventHandlersToDOMNode, syncEvents, attachEvents, detachEvents } from "ivi-events";
+import { syncEvents, attachEvents, detachEvents } from "ivi-events";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -287,7 +287,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           syncStyle(node as HTMLElement, null, vnode._s);
         }
         if (vnode._e !== null) {
-          setEventHandlersToDOMNode(node as Element, vnode._e);
+          (node as Element)._ev = vnode._e;
         }
 
         let children = vnode._c;
@@ -465,7 +465,7 @@ export function syncVNode(
         }
         if (a._e !== b._e) {
           syncEvents(a._e, b._e);
-          setEventHandlersToDOMNode(instance as Element, b._e);
+          (instance as Element)._ev = b._e;
         }
 
         if (aChild !== bChild) {
