@@ -10,6 +10,13 @@ import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
 import { createMouseEventListener } from "./mouse_event_listener";
 
 /**
+ * TODO: make sure that target is always attached to the document, because touch events are always working in capture
+ *  mode and when target is removed, all events just disappear. The trick is to add a special task that is executed
+ *  after frame is updated and checks that target is attached to the document, if it were removed than we just need
+ *  set display:none and reattach it somewhere.
+ */
+
+/**
  * id 1 is reserved for mouse, and touch identifiers can start from 0.
  */
 const TOUCH_ID_OFFSET = 2;
@@ -71,7 +78,7 @@ function cancelGesturePointerEvent(
 }
 
 export function createTouchEventListener(
-  pointers: GesturePointerEvent[],
+  pointers: Map<number, GesturePointerEvent>,
   dispatch: (ev: GesturePointerEvent, target?: Element) => void,
 ): GestureNativeEventSource {
   const primaryPointers: GesturePointerEvent[] | null = INPUT_DEVICE_CAPABILITIES ? null : [];
@@ -91,21 +98,19 @@ export function createTouchEventListener(
 
   function vacuum(ev: TouchEvent) {
     const touches = ev.touches;
-    if (pointers.length >= touches.length) {
+    if (pointers.size >= touches.length) {
       const canceledPointers: GesturePointerEvent[] = [];
-      let i;
-      for (i = 0; i < pointers.length; ++i) {
-        const pointer = pointers[i];
+      pointers.forEach((pointer) => {
         const id = pointer.id;
         if (id !== 1) {
           if (findTouch(touches, id - TOUCH_ID_OFFSET) === false) {
             canceledPointers.push(pointer);
           }
         }
-      }
+      });
 
-      for (i = 0; i < canceledPointers.length; ++i) {
-        dispatch(cancelGesturePointerEvent(canceledPointers[i]));
+      for (const canceledPointer of canceledPointers) {
+        dispatch(cancelGesturePointerEvent(canceledPointer));
       }
     }
   }
@@ -177,8 +182,7 @@ export function createTouchEventListener(
 
     const touches = ev.changedTouches;
 
-    if ((pointers.length === 0) ||
-      (pointers.length === 1 && pointers[0].id === 1)) {
+    if ((pointers.size === 0) || (pointers.size === 1 && pointers.get(1) !== void 0)) {
       primaryTouch = touches[0];
     }
 

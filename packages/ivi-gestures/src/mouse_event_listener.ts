@@ -113,21 +113,11 @@ export function createMouseEventListener(
     const ev = s.native;
     if (isEventSimulatedFromTouch(ev) === false) {
       if (activePointer !== null) {
-        let pointer;
-        if (ev.which === 0) {
-          pointer = createGesturePointerEventFromMouseEvent(
-            ev,
-            GesturePointerAction.Up,
-            activePointer.buttons,
-          );
-        } else {
-          pointer = createGesturePointerEventFromMouseEvent(
-            ev,
-            GesturePointerAction.Move,
-            activePointer.buttons,
-          );
-        }
-        dispatch(pointer);
+        dispatch(createGesturePointerEventFromMouseEvent(
+          ev,
+          (ev.which === 0) ? GesturePointerAction.Up : GesturePointerAction.Move,
+          activePointer.buttons,
+        ));
       }
     }
   }
@@ -140,21 +130,11 @@ export function createMouseEventListener(
         if (!MOUSE_EVENT_BUTTONS) {
           buttons = activePointer.buttons & ~buttons;
         }
-        let pointer;
-        if (buttons === 0) {
-          pointer = createGesturePointerEventFromMouseEvent(
-            ev,
-            GesturePointerAction.Up,
-            buttons,
-          );
-        } else {
-          pointer = createGesturePointerEventFromMouseEvent(
-            ev,
-            GesturePointerAction.Move,
-            buttons,
-          );
-        }
-        dispatch(pointer);
+        dispatch(createGesturePointerEventFromMouseEvent(
+          ev,
+          (buttons === 0) ? GesturePointerAction.Up : GesturePointerAction.Move,
+          buttons,
+        ));
       }
     }
   }

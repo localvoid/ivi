@@ -11,9 +11,8 @@ import {
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventSource, EventHandler, dispatchEvent,
 } from "ivi-events";
 import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
-import { pointerListSet, pointerListDelete } from "./pointer_list";
 import {
-  arena, addRecognizerToArena, closeArena, sweepArena, cancelArena, dispatchMoveEventToRecognizers,
+  GESTURE_ARENA, addRecognizerToArena, closeArena, sweepArena, cancelArena, dispatchMoveEventToRecognizers,
   dispatchReleaseEventToRecognizers,
 } from "./arena";
 import { createMouseEventListener } from "./mouse_event_listener";
@@ -27,18 +26,18 @@ export interface GestureNativeEventSource {
 }
 
 export class GestureEventSource {
-  readonly eventSource: EventSource;
+  readonly src: EventSource;
   private dependencies: number;
-  private readonly pointers: GesturePointerEvent[];
+  private readonly pointers: Map<number, GesturePointerEvent>;
   private readonly listener: GestureNativeEventSource;
 
   constructor() {
-    this.eventSource = {
+    this.src = {
       add: this.addGestureListener,
       remove: this.removeGestureListener,
     };
     this.dependencies = 0;
-    this.pointers = [];
+    this.pointers = new Map<number, GesturePointerEvent>();
     this.listener = TOUCH_EVENTS ?
       createTouchEventListener(this.pointers, this.dispatch) :
       createMouseEventListener(this.dispatch);
@@ -63,13 +62,13 @@ export class GestureEventSource {
     }
   }
 
-  private matchEventSource = (h: EventHandler) => (h.src === this.eventSource);
+  private matchEventSource = (h: EventHandler) => (h.src === this.src);
 
   private dispatch = catchError((ev: GesturePointerEvent, target?: Element) => {
     const action = ev.action;
 
     if (action === GesturePointerAction.Down) {
-      pointerListSet(this.pointers, ev);
+      this.pointers.set(ev.id, ev);
 
       const targets: DispatchTarget[] = [];
       accumulateDispatchTargets(targets, target!, this.matchEventSource);
@@ -92,14 +91,14 @@ export class GestureEventSource {
       }
     } else {
       // Dispatch event to Gesture Recognizers.
-      if (arena.activeRecognizers > 0) {
-        if (arena.primaryPointer!.id === ev.id) {
-          arena.primaryPointer = ev;
+      if (GESTURE_ARENA.activeRecognizers > 0) {
+        if (GESTURE_ARENA.primaryPointer!.id === ev.id) {
+          GESTURE_ARENA.primaryPointer = ev;
         }
         if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
           if ((action & GesturePointerAction.Up) !== 0) {
             dispatchReleaseEventToRecognizers(ev);
-            if (arena.primaryPointer!.id === ev.id) {
+            if (GESTURE_ARENA.primaryPointer!.id === ev.id) {
               sweepArena(ev);
             }
           } else {
@@ -112,9 +111,9 @@ export class GestureEventSource {
 
       if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
         this.listener.stopMoveTracking(ev);
-        pointerListDelete(this.pointers, ev.id);
+        this.pointers.delete(ev.id);
       } else {
-        pointerListSet(this.pointers, ev);
+        this.pointers.set(ev.id, ev);
       }
     }
   });

@@ -22,81 +22,7 @@
  */
 
 import { GesturePointerEvent } from "./pointer_event";
-
-/**
- * Gesture Recognizer.
- */
-export abstract class GestureRecognizer {
-  /**
-   * Activate Gesture Recognizer.
-   *
-   * When Gesture Recognizer is activated it should return `true` value.
-   */
-  abstract activate(event: GesturePointerEvent): boolean;
-
-  /**
-   * Invoked when Gesture Recognizer is accepted.
-   */
-  abstract accepted(): void;
-
-  /**
-   * Invoked when Gesture Recognizer is rejected.
-   */
-  abstract rejected(): void;
-
-  /**
-   * Add pointer.
-   */
-  addPointer(event: GesturePointerEvent): boolean {
-    // Ignore all non-primary events by default.
-    return false;
-  }
-
-  /**
-   * Invoked when pointer is moved.
-   */
-  abstract pointerMoved(event: GesturePointerEvent): void;
-
-  /**
-   * Invoked when pointer is released.
-   */
-  abstract pointerReleased(event: GesturePointerEvent): void;
-
-  /**
-   * Dispose Gesture Recognizer.
-   */
-  abstract dispose(): void;
-
-  /**
-   * Accept Gesture Recognizer.
-   */
-  accept(): void {
-    acceptRecognizer(this);
-  }
-
-  /**
-   * Reject Gesture Recognizer.
-   */
-  reject(): void {
-    rejectRecognizer(this);
-  }
-}
-
-export abstract class NativeGestureRecognizer extends GestureRecognizer {
-  /**
-   * Native Gesture Recognizer is accepted.
-   */
-  accepted(): void {
-    arena.flags |= GestureArenaFlags.NativeGestureAccepted;
-  }
-
-  /**
-   * Native Gesture Recognizer is rejected.
-   */
-  rejected(): void {
-    arena.flags |= GestureArenaFlags.NativeGestureRejected;
-  }
-}
+import { GestureRecognizer } from "./gesture_recognizer";
 
 /**
  * Gesture Arena Flags.
@@ -140,7 +66,7 @@ export const enum GestureArenaFlags {
  * Gesture Arena is used to resolve conflicts when there are several gesture recognizers are trying to recognize a
  * gesture.
  */
-export class GestureArena {
+export interface GestureArena {
   /**
    * Flags. See `GestureArenaFlags` for details.
    */
@@ -167,21 +93,19 @@ export class GestureArena {
    * Recognizer that captured this arena.
    */
   winner: GestureRecognizer | null;
-
-  constructor() {
-    this.flags = 0;
-    this.primaryPointer = null;
-    this.holdCounter = 0;
-    this.activeRecognizers = 0;
-    this.recognizers = [];
-    this.winner = null;
-  }
 }
 
 /**
  * List of arenas that have an active pointer.
  */
-export const arena: GestureArena = new GestureArena();
+export const GESTURE_ARENA: GestureArena = {
+  flags: 0,
+  primaryPointer: null,
+  holdCounter: 0,
+  activeRecognizers: 0,
+  recognizers: [],
+  winner: null,
+};
 
 /**
  * Add Recognizer to Arena.
@@ -189,8 +113,8 @@ export const arena: GestureArena = new GestureArena();
  * @param recognizer
  */
 export function addRecognizerToArena(recognizer: GestureRecognizer): void {
-  arena.recognizers.push(recognizer);
-  ++arena.activeRecognizers;
+  GESTURE_ARENA.recognizers.push(recognizer);
+  ++GESTURE_ARENA.activeRecognizers;
 }
 
 /**
@@ -198,21 +122,21 @@ export function addRecognizerToArena(recognizer: GestureRecognizer): void {
  *
  * Arena will be resolved only when arena is closed.
  *
- * @param recognizer
+ * @param recognizer - Gesture recognizer
  */
-function acceptRecognizer(recognizer: GestureRecognizer): void {
-  if ((arena.flags & GestureArenaFlags.Resolved) === 0) {
-    if (arena.winner === null) {
-      arena.winner = recognizer;
+export function acceptGestureRecognizer(recognizer: GestureRecognizer): void {
+  if ((GESTURE_ARENA.flags & GestureArenaFlags.Resolved) === 0) {
+    if (GESTURE_ARENA.winner === null) {
+      GESTURE_ARENA.winner = recognizer;
 
       // Wait until arena is closed before resolving to make sure that other members receive cancel event.
-      if ((arena.flags & GestureArenaFlags.Closed) !== 0) {
-        arena.flags |= GestureArenaFlags.Resolved;
+      if ((GESTURE_ARENA.flags & GestureArenaFlags.Closed) !== 0) {
+        GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
 
-        for (let i = 0; i < arena.recognizers.length; ++i) {
-          const r = arena.recognizers[i];
+        for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
+          const r = GESTURE_ARENA.recognizers[i];
           if (r !== null && r !== recognizer) {
-            arena.activeRecognizers--;
+            GESTURE_ARENA.activeRecognizers--;
             r.rejected();
           }
         }
@@ -225,24 +149,24 @@ function acceptRecognizer(recognizer: GestureRecognizer): void {
 /**
  * Reject Gesture Recognizer.
  *
- * @param recognizer
+ * @param recognizer - Gesture recognizer
  */
-function rejectRecognizer(recognizer: GestureRecognizer): void {
-  const recognizers = arena.recognizers;
+export function rejectGestureRecognizer(recognizer: GestureRecognizer): void {
+  const recognizers = GESTURE_ARENA.recognizers;
 
-  arena.activeRecognizers--;
-  if (arena.winner !== recognizer) {
+  GESTURE_ARENA.activeRecognizers--;
+  if (GESTURE_ARENA.winner !== recognizer) {
     recognizers[recognizers.indexOf(recognizer)] = null;
   }
   recognizer.rejected();
 
-  if ((arena.flags & GestureArenaFlags.Resolved) === 0) {
-    if (arena.activeRecognizers === 1 && (arena.flags & GestureArenaFlags.Closed) !== 0) {
-      arena.flags |= GestureArenaFlags.Resolved;
+  if ((GESTURE_ARENA.flags & GestureArenaFlags.Resolved) === 0) {
+    if (GESTURE_ARENA.activeRecognizers === 1 && (GESTURE_ARENA.flags & GestureArenaFlags.Closed) !== 0) {
+      GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
       for (let i = 0; i < recognizers.length; ++i) {
         const r = recognizers[i];
         if (r !== null) {
-          arena.winner = r;
+          GESTURE_ARENA.winner = r;
           r.accepted();
           break;
         }
@@ -257,30 +181,30 @@ function rejectRecognizer(recognizer: GestureRecognizer): void {
  * @param arena
  */
 export function closeArena(): void {
-  const recognizers = arena.recognizers;
+  const recognizers = GESTURE_ARENA.recognizers;
   let recognizer: GestureRecognizer | null;
   let i;
-  arena.flags |= GestureArenaFlags.Closed;
+  GESTURE_ARENA.flags |= GestureArenaFlags.Closed;
 
-  if (arena.winner !== null) {
+  if (GESTURE_ARENA.winner !== null) {
     // Arena was captured before closing.
-    arena.flags |= GestureArenaFlags.Resolved;
-    recognizer = arena.winner;
+    GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
+    recognizer = GESTURE_ARENA.winner;
     for (i = 0; i < recognizers.length; ++i) {
       const r = recognizers[i];
       if (r !== null && r !== recognizer) {
-        arena.activeRecognizers--;
+        GESTURE_ARENA.activeRecognizers--;
         r.rejected();
       }
     }
     recognizer.accepted();
-  } else if (arena.activeRecognizers === 1) {
+  } else if (GESTURE_ARENA.activeRecognizers === 1) {
     // When there is just one recognizer, it automatically wins.
-    arena.flags |= GestureArenaFlags.Resolved;
+    GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
     for (i = 0; i < recognizers.length; ++i) {
       recognizer = recognizers[i];
       if (recognizer !== null) {
-        arena.winner = recognizer;
+        GESTURE_ARENA.winner = recognizer;
         recognizer.accepted();
         break;
       }
@@ -294,18 +218,18 @@ export function closeArena(): void {
  * @param event
  */
 export function sweepArena(event: GesturePointerEvent): void {
-  arena.flags |= GestureArenaFlags.PrimaryPointerReleased;
-  if ((arena.flags & (GestureArenaFlags.Held | GestureArenaFlags.Resolved)) === 0) {
-    arena.flags |= GestureArenaFlags.Resolved;
+  GESTURE_ARENA.flags |= GestureArenaFlags.PrimaryPointerReleased;
+  if ((GESTURE_ARENA.flags & (GestureArenaFlags.Held | GestureArenaFlags.Resolved)) === 0) {
+    GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
 
     let i = 0;
     let recognizer;
 
     // First non-null recognizer is accepted.
-    for (; i < arena.recognizers.length; ++i) {
-      recognizer = arena.recognizers[i];
+    for (; i < GESTURE_ARENA.recognizers.length; ++i) {
+      recognizer = GESTURE_ARENA.recognizers[i];
       if (recognizer !== null) {
-        arena.winner = recognizer;
+        GESTURE_ARENA.winner = recognizer;
         recognizer.accepted();
         recognizer.rejected();
         break;
@@ -313,10 +237,10 @@ export function sweepArena(event: GesturePointerEvent): void {
     }
 
     // Other recognizers are rejected.
-    for (; i < arena.recognizers.length; ++i) {
-      recognizer = arena.recognizers[i];
+    for (; i < GESTURE_ARENA.recognizers.length; ++i) {
+      recognizer = GESTURE_ARENA.recognizers[i];
       if (recognizer !== null) {
-        --arena.activeRecognizers;
+        --GESTURE_ARENA.activeRecognizers;
         recognizer.rejected();
       }
     }
@@ -329,13 +253,13 @@ export function sweepArena(event: GesturePointerEvent): void {
  * @param arena
  */
 export function cancelArena(): void {
-  if (arena.flags & GestureArenaFlags.Resolved) {
+  if (GESTURE_ARENA.flags & GestureArenaFlags.Resolved) {
     // If it is already resolved, other pointers are already canceled and we just need to cancel the winner.
-    arena.winner!.rejected();
+    GESTURE_ARENA.winner!.rejected();
   } else {
-    arena.flags |= GestureArenaFlags.Resolved;
-    for (let i = 0; i < arena.recognizers.length; ++i) {
-      const recognizer = arena.recognizers[i];
+    GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
+    for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
+      const recognizer = GESTURE_ARENA.recognizers[i];
       if (recognizer !== null) {
         recognizer.rejected();
       }
@@ -344,44 +268,44 @@ export function cancelArena(): void {
 }
 
 export function dispatchMoveEventToRecognizers(event: GesturePointerEvent): void {
-  if (arena.winner === null) {
-    for (let i = 0; i < arena.recognizers.length; ++i) {
-      const recognizer = arena.recognizers[i];
+  if (GESTURE_ARENA.winner === null) {
+    for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
+      const recognizer = GESTURE_ARENA.recognizers[i];
       if (recognizer !== null) {
         recognizer.pointerMoved(event);
       }
     }
   } else {
-    arena.winner.pointerMoved(event);
+    GESTURE_ARENA.winner.pointerMoved(event);
   }
 }
 
 export function dispatchReleaseEventToRecognizers(event: GesturePointerEvent): void {
-  if (arena.winner === null) {
-    for (let i = 0; i < arena.recognizers.length; ++i) {
-      const recognizer = arena.recognizers[i];
+  if (GESTURE_ARENA.winner === null) {
+    for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
+      const recognizer = GESTURE_ARENA.recognizers[i];
       if (recognizer !== null) {
         recognizer.pointerReleased(event);
       }
     }
   } else {
-    arena.winner.pointerReleased(event);
+    GESTURE_ARENA.winner.pointerReleased(event);
   }
 }
 
 export function holdArena(): void {
-  if ((arena.flags & GestureArenaFlags.PrimaryPointerReleased) === 0) {
-    arena.flags |= GestureArenaFlags.Held;
-    ++arena.holdCounter;
+  if ((GESTURE_ARENA.flags & GestureArenaFlags.PrimaryPointerReleased) === 0) {
+    GESTURE_ARENA.flags |= GestureArenaFlags.Held;
+    ++GESTURE_ARENA.holdCounter;
   }
 }
 
 export function releaseArena(): void {
-  if ((arena.flags & GestureArenaFlags.Held) !== 0) {
-    if (--arena.holdCounter === 0) {
-      arena.flags &= ~GestureArenaFlags.Held;
-      if ((arena.flags & GestureArenaFlags.PrimaryPointerReleased) !== 0) {
-        sweepArena(arena.primaryPointer!);
+  if ((GESTURE_ARENA.flags & GestureArenaFlags.Held) !== 0) {
+    if (--GESTURE_ARENA.holdCounter === 0) {
+      GESTURE_ARENA.flags &= ~GestureArenaFlags.Held;
+      if ((GESTURE_ARENA.flags & GestureArenaFlags.PrimaryPointerReleased) !== 0) {
+        sweepArena(GESTURE_ARENA.primaryPointer!);
       }
     }
   }
@@ -391,5 +315,5 @@ export function releaseArena(): void {
  * Native Gesture is accepted.
  */
 export function isNativeGestureAccepted(): boolean {
-  return (arena.flags & GestureArenaFlags.NativeGestureAccepted) !== 0;
+  return (GESTURE_ARENA.flags & GestureArenaFlags.NativeGestureAccepted) !== 0;
 }

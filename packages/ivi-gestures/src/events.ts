@@ -6,9 +6,7 @@ export const enum GestureEventFlags {
   GestureHandler = 1 << 15,
 }
 
-export const GestureEventSources = {
-  Pointer: new GestureEventSource(),
-};
+export const GESTURE_EVENT_SOURCE = new GestureEventSource();
 
 export interface GestureEventsList {
   onPointer: (
@@ -19,15 +17,13 @@ export interface GestureEventsList {
 }
 
 export function onPointer(
-  fn: (ev: GesturePointerEvent) => void,
+  handler: (ev: GesturePointerEvent) => void,
   flags?: GestureEventFlags,
-  capture?: boolean,
 ): EventHandler<GesturePointerEvent> {
   return {
-    src: GestureEventSources.Pointer.eventSource,
-    flags: (flags === undefined ? 0 : flags) |
-      (capture === true ? EventHandlerFlags.Capture : EventHandlerFlags.Bubble),
-    handler: fn,
+    src: GESTURE_EVENT_SOURCE.src,
+    flags: (flags === void 0 ? 0 : flags) | EventHandlerFlags.Bubble,
+    handler,
     listeners: 0,
     props: null,
     state: null,
