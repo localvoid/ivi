@@ -1,19 +1,19 @@
-import { Vec2, ZeroVec2, vec2, vec2DistanceSquared, vec2Distance, vec2Div, vec2Mul } from "ivi-math";
+import { V2, V2_ZERO, v2, v2DistanceSquared, v2Distance, v2Div, v2Mul } from "ivi-math";
 
-export function velocityClampMagnitude(velocity: Vec2, minValue: number, maxValue: number): Vec2 {
-  const valueSquared = vec2DistanceSquared(velocity);
+export function velocityClampMagnitude(velocity: V2, minValue: number, maxValue: number): V2 {
+  const valueSquared = v2DistanceSquared(velocity);
   if (valueSquared > maxValue * maxValue) {
-    return vec2Mul(vec2Div(velocity, vec2Distance(velocity)), maxValue);
+    return v2Mul(v2Div(velocity, v2Distance(velocity)), maxValue);
   }
   if (valueSquared < minValue * minValue) {
-    return vec2Mul(vec2Div(velocity, vec2Distance(velocity)), minValue);
+    return v2Mul(v2Div(velocity, v2Distance(velocity)), minValue);
   }
   return velocity;
 }
 
 export interface PointAtTime {
   readonly time: number;
-  readonly point: Vec2;
+  readonly point: V2;
 }
 
 const HISTORY_SIZE = 20;
@@ -31,17 +31,17 @@ export function createVelocityTracker(): VelocityTracker {
   };
 }
 
-export function trackPosition(tracker: VelocityTracker, time: number, point: Vec2): void {
+export function trackPosition(tracker: VelocityTracker, time: number, point: V2): void {
   const index = (tracker.index + 1) % HISTORY_SIZE;
   tracker.index = index;
   tracker.samples[index] = { time, point };
 }
 
-export function estimateVelocity(tracker: VelocityTracker): Vec2 | null {
+export function estimateVelocity(tracker: VelocityTracker): V2 | null {
   let index = tracker.index;
   const newestSample = tracker.samples[index];
   if (newestSample === null) {
-    return ZeroVec2;
+    return V2_ZERO;
   }
 
   const x = [];
@@ -68,7 +68,7 @@ export function estimateVelocity(tracker: VelocityTracker): Vec2 | null {
     index = index === 0 ? (HISTORY_SIZE - 1) : (index - 1);
   } while (++sampleCount < HISTORY_SIZE);
 
-  return vec2(lsq2(time, x), lsq2(time, y));
+  return v2(lsq2(time, x), lsq2(time, y));
 }
 
 function lsq2(x: number[], y: number[]): number {
