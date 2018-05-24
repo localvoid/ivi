@@ -1,3 +1,43 @@
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/localvoid/ivi/compare/0.11.1...0.12.0) (2018-05-24)
+
+
+### Code Refactoring
+
+* **events:** remove methods from synthetic events ([e6d3f1e](https://github.com/localvoid/ivi/commit/e6d3f1e))
+
+
+### Features
+
+* **events:** check returned event flags in DEBUG mode ([2fc17db](https://github.com/localvoid/ivi/commit/2fc17db))
+
+
+### Performance Improvements
+
+* **gestures:** optimize velocity tracker ([aeba6bd](https://github.com/localvoid/ivi/commit/aeba6bd))
+
+
+### BREAKING CHANGES
+
+* **events:** Synthetic event methods `preventDefault()` and `stopPropagation()` were removed.
+
+Before:
+
+```ts
+onClick((ev) => {
+  ev.preventDefault();
+  ev.stopPropagation();
+});
+```
+
+After:
+
+```ts
+onClick(() => EventFlags.PreventDefault | EventFlags.StopPropagation);
+```
+
+
+
 <a name="0.11.1"></a>
 ## [0.11.1](https://github.com/localvoid/ivi/compare/0.11.0...0.11.1) (2018-05-15)
 

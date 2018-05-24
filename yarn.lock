@@ -3405,30 +3405,6 @@ isurl@^1.0.0-alpha5:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
 
-ivi-core@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/ivi-core/-/ivi-core-0.10.0.tgz#65382638ac5a189844c3b26981a3e14ed4fb1b6b"
-
-ivi-events@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/ivi-events/-/ivi-events-0.10.0.tgz#1ab338928d3a77824d6a6534e6767eb64f84521d"
-
-ivi-html@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/ivi-html/-/ivi-html-0.10.0.tgz#e879a06326aad3bb722da12cc04a59dd80f64953"
-
-ivi-scheduler@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/ivi-scheduler/-/ivi-scheduler-0.10.0.tgz#b95cd08180195d90af9f831c3e1c3fa039c8f61d"
-
-ivi-svg@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/ivi-svg/-/ivi-svg-0.10.0.tgz#9e1249ffeae2363b1b51fa0681185de781c1954b"
-
-ivi@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/ivi/-/ivi-0.10.0.tgz#db89bad0b60fa158d14e32b2d25bd8cb9a7d0ee6"
-
 jest-changed-files@^22.2.0:
   version "22.4.3"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-22.4.3.tgz#8882181e022c38bd46a2e4d18d44d19d90a90fb2"
