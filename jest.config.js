@@ -43,7 +43,6 @@ module.exports = {
     "!packages/ivi-test-scheduler/**",
     "!packages/ivi-test/**",
     "!packages/ivi-router/**",
-    "!packages/ivi-math/**",
     "!packages/ivi-gestures/**",
     "!packages/ivi/src/dev_mode/**",
   ],
