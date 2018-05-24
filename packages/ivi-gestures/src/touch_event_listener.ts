@@ -4,10 +4,10 @@ import {
   EVENT_SOURCE_ACTIVE_TOUCH_MOVE, SyntheticNativeEvent,
   removeBeforeListener, addBeforeListener,
 } from "ivi-events";
-import { isNativeGestureAccepted } from "./arena";
-import { GestureNativeEventSource } from "./gesture_event_source";
+import { NativeEventListener } from "./gesture_event_source";
 import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
 import { createMouseEventListener } from "./mouse_event_listener";
+import { GestureArenaFlags, GESTURE_ARENA } from "./arena";
 
 /**
  * TODO: make sure that target is always attached to the document, because touch events are always working in capture
@@ -20,39 +20,6 @@ import { createMouseEventListener } from "./mouse_event_listener";
  * id 1 is reserved for mouse, and touch identifiers can start from 0.
  */
 const TOUCH_ID_OFFSET = 2;
-
-/**
- * Convert Touch into Gesture Pointer Event.
- *
- * @param ev
- * @param action
- * @param touch
- * @param buttons
- * @param isPrimary
- * @param hitTarget
- */
-function touchToGesturePointerEvent(
-  ev: TouchEvent,
-  action: GesturePointerAction,
-  touch: Touch,
-  buttons: number,
-  isPrimary: boolean,
-  hitTarget: Element | null,
-) {
-  return new GesturePointerEvent(
-    SyntheticEventFlags.Bubbles,
-    ev.timeStamp,
-    touch.identifier + TOUCH_ID_OFFSET,
-    action,
-    touch.clientX,
-    touch.clientY,
-    touch.pageX,
-    touch.pageY,
-    buttons,
-    isPrimary,
-    hitTarget,
-  );
-}
 
 /**
  * Create a cancel gesture pointer event.
@@ -80,7 +47,7 @@ function cancelGesturePointerEvent(
 export function createTouchEventListener(
   pointers: Map<number, GesturePointerEvent>,
   dispatch: (ev: GesturePointerEvent, target?: Element) => void,
-): GestureNativeEventSource {
+): NativeEventListener {
   const primaryPointers: GesturePointerEvent[] | null = INPUT_DEVICE_CAPABILITIES ? null : [];
   const mouseListener = createMouseEventListener(dispatch, primaryPointers);
 
@@ -103,7 +70,7 @@ export function createTouchEventListener(
       pointers.forEach((pointer) => {
         const id = pointer.id;
         if (id !== 1) {
-          if (findTouch(touches, id - TOUCH_ID_OFFSET) === false) {
+          if (!findTouch(touches, id - TOUCH_ID_OFFSET)) {
             canceledPointers.push(pointer);
           }
         }
@@ -112,37 +79,6 @@ export function createTouchEventListener(
       for (const canceledPointer of canceledPointers) {
         dispatch(cancelGesturePointerEvent(canceledPointer));
       }
-    }
-  }
-
-  function activate() {
-    mouseListener.activate();
-    // touchstart should be active, otherwise touchmove can't be canceled.
-    addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
-    addBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
-    addBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
-  }
-
-  function deactivate() {
-    removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
-    removeBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
-    removeBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
-    mouseListener.deactivate();
-  }
-
-  function startMoveTracking(ev: GesturePointerEvent, target: Element) {
-    if (ev.id === 1) {
-      mouseListener.startMoveTracking(ev, target);
-    } else {
-      addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
-    }
-  }
-
-  function stopMoveTracking(ev: GesturePointerEvent) {
-    if (ev.id === 1) {
-      mouseListener.stopMoveTracking(ev);
-    } else {
-      removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
     }
   }
 
@@ -167,7 +103,7 @@ export function createTouchEventListener(
   }
 
   function dedupSyntheticMouseEvents(p: GesturePointerEvent) {
-    if (!INPUT_DEVICE_CAPABILITIES && (p.isPrimary === true)) {
+    if (!INPUT_DEVICE_CAPABILITIES && p.isPrimary) {
       if (primaryPointers!.length === 0) {
         eventTimeOffset = Date.now() - p.timestamp + 2500;
         setTimeout(cleanPrimaryPointersForSyntheticMouseEvents, 2500);
@@ -215,7 +151,7 @@ export function createTouchEventListener(
         null,
       ));
     }
-    if (!isNativeGestureAccepted()) {
+    if (!(GESTURE_ARENA.flags & GestureArenaFlags.NativeGestureAccepted)) {
       ev.preventDefault();
     }
   }
@@ -263,9 +199,65 @@ export function createTouchEventListener(
   }
 
   return {
-    activate,
-    deactivate,
-    startMoveTracking,
-    stopMoveTracking,
+    activate: () => {
+      mouseListener.activate();
+      // touchstart should be active, otherwise touchmove can't be canceled.
+      addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
+      addBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
+      addBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
+    },
+    deactivate: () => {
+      removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
+      removeBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
+      removeBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
+      mouseListener.deactivate();
+    },
+    startMoveTracking: (ev: GesturePointerEvent, target: Element) => {
+      if (ev.id === 1) {
+        mouseListener.startMoveTracking(ev, target);
+      } else {
+        addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
+      }
+    },
+    stopMoveTracking: (ev: GesturePointerEvent) => {
+      if (ev.id === 1) {
+        mouseListener.stopMoveTracking(ev);
+      } else {
+        removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
+      }
+    },
   };
+}
+
+/**
+ * Convert Touch into Gesture Pointer Event.
+ *
+ * @param ev
+ * @param action
+ * @param touch
+ * @param buttons
+ * @param isPrimary
+ * @param hitTarget
+ */
+function touchToGesturePointerEvent(
+  ev: TouchEvent,
+  action: GesturePointerAction,
+  touch: Touch,
+  buttons: number,
+  isPrimary: boolean,
+  hitTarget: Element | null,
+) {
+  return new GesturePointerEvent(
+    SyntheticEventFlags.Bubbles,
+    ev.timeStamp,
+    touch.identifier + TOUCH_ID_OFFSET,
+    action,
+    touch.clientX,
+    touch.clientY,
+    touch.pageX,
+    touch.pageY,
+    buttons,
+    isPrimary,
+    hitTarget,
+  );
 }

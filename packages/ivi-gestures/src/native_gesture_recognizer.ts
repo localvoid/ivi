@@ -1,16 +1,21 @@
 import { GestureRecognizer } from "./gesture_recognizer";
 import { GestureArenaFlags, GESTURE_ARENA } from "./arena";
 
+/**
+ * Native gesture recognizers are used to recognize native gestures and cancel all concurrent recognizers. When native
+ * gesture is recognized, it will remove all active event listeners to make sure that scrolling thread doesn't need to
+ * wait for a response from an UI thread.
+ */
 export abstract class NativeGestureRecognizer extends GestureRecognizer {
   /**
-   * Native Gesture Recognizer is accepted.
+   * NativeGestureRecognizer is accepted.
    */
   accepted(): void {
     GESTURE_ARENA.flags |= GestureArenaFlags.NativeGestureAccepted;
   }
 
   /**
-   * Native Gesture Recognizer is rejected.
+   * NativeGestureRecognizer is rejected.
    */
   rejected(): void {
     GESTURE_ARENA.flags |= GestureArenaFlags.NativeGestureRejected;

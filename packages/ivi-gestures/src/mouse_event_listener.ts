@@ -3,7 +3,7 @@ import {
   SyntheticEventFlags, EVENT_SOURCE_MOUSE_DOWN, EVENT_SOURCE_MOUSE_UP, EVENT_SOURCE_MOUSE_MOVE, SyntheticNativeEvent,
   addBeforeListener, removeBeforeListener,
 } from "ivi-events";
-import { GestureNativeEventSource } from "./gesture_event_source";
+import { NativeEventListener } from "./gesture_event_source";
 import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
 
 declare global {
@@ -16,53 +16,11 @@ declare global {
   }
 }
 
-function createGesturePointerEventFromMouseEvent(
-  ev: MouseEvent,
-  action: GesturePointerAction,
-  buttons: number,
-) {
-  return new GesturePointerEvent(
-    SyntheticEventFlags.Bubbles,
-    ev.timeStamp,
-    // the mouse always has a pointerId of 1
-    1,
-    action,
-    ev.clientX,
-    ev.clientY,
-    ev.pageX,
-    ev.pageY,
-    buttons,
-    true,
-    // mouse events always perform hit target tests when they are moving
-    ev.target as Element,
-  );
-}
-
 export function createMouseEventListener(
   dispatch: (ev: GesturePointerEvent, target?: Element) => void,
   primaryPointers: GesturePointerEvent[] | null = null,
-): GestureNativeEventSource {
+): NativeEventListener {
   let activePointer: GesturePointerEvent | null = null;
-
-  function activate() {
-    addBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
-    addBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
-  }
-
-  function deactivate() {
-    removeBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
-    removeBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
-  }
-
-  function startMoveTracking(ev: GesturePointerEvent, target: Element) {
-    activePointer = ev;
-    addBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
-  }
-
-  function stopMoveTracking(ev: GesturePointerEvent) {
-    activePointer = null;
-    removeBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
-  }
 
   function isEventSimulatedFromTouch(ev: MouseEvent): boolean {
     if (TOUCH_EVENTS) {
@@ -89,7 +47,7 @@ export function createMouseEventListener(
 
   function onDown(s: SyntheticNativeEvent<MouseEvent>): void {
     const ev = s.native;
-    if (isEventSimulatedFromTouch(ev) === false) {
+    if (!isEventSimulatedFromTouch(ev)) {
       const buttons = getMouseButtons(ev);
       let pointer;
       if (activePointer === null) {
@@ -111,7 +69,7 @@ export function createMouseEventListener(
 
   function onMove(s: SyntheticNativeEvent<MouseEvent>): void {
     const ev = s.native;
-    if (isEventSimulatedFromTouch(ev) === false) {
+    if (!isEventSimulatedFromTouch(ev)) {
       if (activePointer !== null) {
         dispatch(createGesturePointerEventFromMouseEvent(
           ev,
@@ -124,7 +82,7 @@ export function createMouseEventListener(
 
   function onUp(s: SyntheticNativeEvent<MouseEvent>): void {
     const ev = s.native;
-    if (isEventSimulatedFromTouch(ev) === false) {
+    if (!isEventSimulatedFromTouch(ev)) {
       if (activePointer !== null) {
         let buttons = getMouseButtons(ev);
         if (!MOUSE_EVENT_BUTTONS) {
@@ -140,9 +98,43 @@ export function createMouseEventListener(
   }
 
   return {
-    activate,
-    deactivate,
-    startMoveTracking,
-    stopMoveTracking,
+    activate: () => {
+      addBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
+      addBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
+    },
+    deactivate: () => {
+      removeBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
+      removeBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
+    },
+    startMoveTracking: (ev: GesturePointerEvent, target: Element) => {
+      activePointer = ev;
+      addBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
+    },
+    stopMoveTracking: (ev: GesturePointerEvent) => {
+      activePointer = null;
+      removeBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
+    },
   };
+}
+
+function createGesturePointerEventFromMouseEvent(
+  ev: MouseEvent,
+  action: GesturePointerAction,
+  buttons: number,
+) {
+  return new GesturePointerEvent(
+    SyntheticEventFlags.Bubbles,
+    ev.timeStamp,
+    // the mouse always has a pointerId of 1
+    1,
+    action,
+    ev.clientX,
+    ev.clientY,
+    ev.pageX,
+    ev.pageY,
+    buttons,
+    true,
+    // mouse events always perform hit target tests when they are moving
+    ev.target as Element,
+  );
 }

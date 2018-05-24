@@ -30,14 +30,9 @@ export abstract class GestureRecognizer {
   }
 
   /**
-   * Invoked when pointer is moved.
+   * Invoked when pointer is moved or released.
    */
-  abstract pointerMoved(event: GesturePointerEvent): void;
-
-  /**
-   * Invoked when pointer is released.
-   */
-  abstract pointerReleased(event: GesturePointerEvent): void;
+  abstract handleEvent(event: GesturePointerEvent): void;
 
   /**
    * Dispose Gesture Recognizer.

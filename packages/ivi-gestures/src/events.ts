@@ -1,12 +1,12 @@
 import { EventHandlerFlags, EventHandler } from "ivi-events";
 import { GesturePointerEvent } from "./pointer_event";
-import { GestureEventSource } from "./gesture_event_source";
+import { createGestureEventSource } from "./gesture_event_source";
 
 export const enum GestureEventFlags {
   GestureHandler = 1 << 15,
 }
 
-export const GESTURE_EVENT_SOURCE = new GestureEventSource();
+export const GESTURE_EVENT_SOURCE = createGestureEventSource();
 
 export interface GestureEventsList {
   onPointer: (
@@ -21,7 +21,7 @@ export function onPointer(
   flags?: GestureEventFlags,
 ): EventHandler<GesturePointerEvent> {
   return {
-    src: GESTURE_EVENT_SOURCE.src,
+    src: GESTURE_EVENT_SOURCE,
     flags: (flags === void 0 ? 0 : flags) | EventHandlerFlags.Bubble,
     handler,
     listeners: 0,

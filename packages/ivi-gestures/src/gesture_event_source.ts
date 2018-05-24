@@ -12,66 +12,53 @@ import {
 } from "ivi-events";
 import { GesturePointerEvent, GesturePointerAction } from "./pointer_event";
 import {
-  GESTURE_ARENA, addRecognizerToArena, closeArena, sweepArena, cancelArena, dispatchMoveEventToRecognizers,
-  dispatchReleaseEventToRecognizers,
+  GESTURE_ARENA, addRecognizerToArena, closeArena, sweepArena, cancelArena, dispatchEventToRecognizers,
 } from "./arena";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
 
-export interface GestureNativeEventSource {
+export interface NativeEventListener {
   activate(): void;
   deactivate(): void;
   startMoveTracking(ev: GesturePointerEvent, target: Element): void;
   stopMoveTracking(ev: GesturePointerEvent): void;
 }
 
-export class GestureEventSource {
-  readonly src: EventSource;
-  private dependencies: number;
-  private readonly pointers: Map<number, GesturePointerEvent>;
-  private readonly listener: GestureNativeEventSource;
+export function createGestureEventSource(): EventSource {
+  let dependencies = 0;
+  const pointers = new Map<number, GesturePointerEvent>();
 
-  constructor() {
-    this.src = {
-      add: this.addGestureListener,
-      remove: this.removeGestureListener,
-    };
-    this.dependencies = 0;
-    this.pointers = new Map<number, GesturePointerEvent>();
-    this.listener = TOUCH_EVENTS ?
-      createTouchEventListener(this.pointers, this.dispatch) :
-      createMouseEventListener(this.dispatch);
-  }
-
-  private addGestureListener = (h: EventHandler) => {
-    if (this.dependencies++ === 0) {
-      this.listener.activate();
-    }
-    ++h.listeners;
-  }
-
-  private removeGestureListener = (h: EventHandler) => {
-    if (--this.dependencies === 0) {
-      this.listener.deactivate();
-    }
-    if (--h.listeners === 0) {
-      if (h.state !== null) {
-        h.state.dispose();
-        h.state = null;
+  const src = {
+    add: (h: EventHandler) => {
+      if (dependencies++ === 0) {
+        listener.activate();
       }
-    }
-  }
+      ++h.listeners;
 
-  private matchEventSource = (h: EventHandler) => (h.src === this.src);
+    },
+    remove: (h: EventHandler) => {
+      if (--dependencies === 0) {
+        listener.deactivate();
+      }
+      if (--h.listeners === 0) {
+        if (h.state !== null) {
+          h.state.dispose();
+          h.state = null;
+        }
+      }
+    },
+  };
 
-  private dispatch = catchError((ev: GesturePointerEvent, target?: Element) => {
+  const matchEventSource = (h: EventHandler) => (h.src === src);
+
+  const dispatch = catchError((ev: GesturePointerEvent, target?: Element) => {
     const action = ev.action;
 
     if (action === GesturePointerAction.Down) {
-      this.pointers.set(ev.id, ev);
+      pointers.set(ev.id, ev);
 
       const targets: DispatchTarget[] = [];
-      accumulateDispatchTargets(targets, target!, this.matchEventSource);
+      accumulateDispatchTargets(targets, target!, matchEventSource);
 
       if (targets.length > 0) {
         let capture = false;
@@ -79,13 +66,13 @@ export class GestureEventSource {
           if (h.state === null) {
             h.state = h.props(h);
           }
-          if (h.state.activate(e) === true) {
+          if (h.state.activate(e)) {
             addRecognizerToArena(h.state);
             capture = true;
           }
         });
         if (capture) {
-          this.listener.startMoveTracking(ev, target!);
+          listener.startMoveTracking(ev, target!);
           closeArena();
         }
       }
@@ -97,7 +84,7 @@ export class GestureEventSource {
         }
         if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
           if ((action & GesturePointerAction.Up) !== 0) {
-            dispatchReleaseEventToRecognizers(ev);
+            dispatchEventToRecognizers(ev);
             if (GESTURE_ARENA.primaryPointer!.id === ev.id) {
               sweepArena(ev);
             }
@@ -105,16 +92,22 @@ export class GestureEventSource {
             cancelArena();
           }
         } else {
-          dispatchMoveEventToRecognizers(ev);
+          dispatchEventToRecognizers(ev);
         }
       }
 
       if ((action & (GesturePointerAction.Up | GesturePointerAction.Cancel)) !== 0) {
-        this.listener.stopMoveTracking(ev);
-        this.pointers.delete(ev.id);
+        listener.stopMoveTracking(ev);
+        pointers.delete(ev.id);
       } else {
-        this.pointers.set(ev.id, ev);
+        pointers.set(ev.id, ev);
       }
     }
   });
+
+  const listener = TOUCH_EVENTS ?
+    createTouchEventListener(pointers, dispatch) :
+    createMouseEventListener(dispatch);
+
+  return src;
 }

@@ -11,19 +11,39 @@ export function velocityClampMagnitude(velocity: V2, minValue: number, maxValue:
   return velocity;
 }
 
+/**
+ * Position of a point at time.
+ */
 export interface PointAtTime {
+  /**
+   * Time.
+   */
   readonly time: number;
+  /**
+   * Point.
+   */
   readonly point: V2;
 }
 
 const HISTORY_SIZE = 20;
 const HORIZON_MILLISECONDS = 100;
 
+/**
+ * Velocity tracker is used to estimate pointers velocity.
+ */
 export interface VelocityTracker {
   readonly samples: Array<PointAtTime | null>;
+  /**
+   * @internal
+   */
   index: number;
 }
 
+/**
+ * Creates a {@link VelocityTracker}.
+ *
+ * @returns {@link VelocityTracker}
+ */
 export function createVelocityTracker(): VelocityTracker {
   return {
     samples: new Array<PointAtTime | null>(HISTORY_SIZE).fill(null),
@@ -31,12 +51,25 @@ export function createVelocityTracker(): VelocityTracker {
   };
 }
 
+/**
+ * Add a position to {@link VelocityTracker}.
+ *
+ * @param tracker - {@link VelocityTracker}
+ * @param time - Time
+ * @param point - Point
+ */
 export function trackPosition(tracker: VelocityTracker, time: number, point: V2): void {
   const index = (tracker.index + 1) % HISTORY_SIZE;
   tracker.index = index;
   tracker.samples[index] = { time, point };
 }
 
+/**
+ * Estimate current velocity.
+ *
+ * @param tracker - {@link VelocityTracker}
+ * @returns estimated velocity
+ */
 export function estimateVelocity(tracker: VelocityTracker): V2 | null {
   let index = tracker.index;
   const newestSample = tracker.samples[index];

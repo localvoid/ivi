@@ -231,7 +231,6 @@ export function sweepArena(event: GesturePointerEvent): void {
       if (recognizer !== null) {
         GESTURE_ARENA.winner = recognizer;
         recognizer.accepted();
-        recognizer.rejected();
         break;
       }
     }
@@ -258,8 +257,7 @@ export function cancelArena(): void {
     GESTURE_ARENA.winner!.rejected();
   } else {
     GESTURE_ARENA.flags |= GestureArenaFlags.Resolved;
-    for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
-      const recognizer = GESTURE_ARENA.recognizers[i];
+    for (const recognizer of GESTURE_ARENA.recognizers) {
       if (recognizer !== null) {
         recognizer.rejected();
       }
@@ -267,29 +265,15 @@ export function cancelArena(): void {
   }
 }
 
-export function dispatchMoveEventToRecognizers(event: GesturePointerEvent): void {
+export function dispatchEventToRecognizers(event: GesturePointerEvent): void {
   if (GESTURE_ARENA.winner === null) {
-    for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
-      const recognizer = GESTURE_ARENA.recognizers[i];
+    for (const recognizer of GESTURE_ARENA.recognizers) {
       if (recognizer !== null) {
-        recognizer.pointerMoved(event);
+        recognizer.handleEvent(event);
       }
     }
   } else {
-    GESTURE_ARENA.winner.pointerMoved(event);
-  }
-}
-
-export function dispatchReleaseEventToRecognizers(event: GesturePointerEvent): void {
-  if (GESTURE_ARENA.winner === null) {
-    for (let i = 0; i < GESTURE_ARENA.recognizers.length; ++i) {
-      const recognizer = GESTURE_ARENA.recognizers[i];
-      if (recognizer !== null) {
-        recognizer.pointerReleased(event);
-      }
-    }
-  } else {
-    GESTURE_ARENA.winner.pointerReleased(event);
+    GESTURE_ARENA.winner.handleEvent(event);
   }
 }
 
@@ -309,11 +293,4 @@ export function releaseArena(): void {
       }
     }
   }
-}
-
-/**
- * Native Gesture is accepted.
- */
-export function isNativeGestureAccepted(): boolean {
-  return (GESTURE_ARENA.flags & GestureArenaFlags.NativeGestureAccepted) !== 0;
 }
