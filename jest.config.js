@@ -13,7 +13,6 @@ module.exports = {
     "ivi-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
     "ivi-test-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
     "ivi-core": "<rootDir>/packages/ivi-core/src",
-    "ivi-events": "<rootDir>/packages/ivi-events/src",
     "ivi-gestures": "<rootDir>/packages/ivi-gestures/src",
     "ivi-html": "<rootDir>/packages/ivi-html/src",
     "ivi-svg": "<rootDir>/packages/ivi-svg/src",

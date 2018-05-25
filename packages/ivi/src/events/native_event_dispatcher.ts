@@ -1,22 +1,23 @@
 import { append, unorderedArrayDelete, catchError } from "ivi-core";
-import { getEventTarget, getNativeEventOptions } from "./utils";
-import { NativeEventSourceFlags, SyntheticEventFlags } from "./flags";
-import { SyntheticNativeEvent } from "./synthetic_event";
-import { EventSource } from "./event_source";
+import { SyntheticEventFlags, NativeEventSourceFlags } from "./flags";
+import { EventDispatcher } from "./event_dispatcher";
 import { EventHandler } from "./event_handler";
-import { accumulateDispatchTargets } from "./traverse_dom";
-import { DispatchTarget, dispatchEvent } from "./dispatch";
+import { DispatchTarget } from "./dispatch_target";
+import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
+import { dispatchEvent } from "./dispatch_event";
+import { getEventTarget, getNativeEventOptions } from "./utils";
+import { SyntheticNativeEvent } from "./synthetic_native_event";
 
 /**
  * NativeEventSource dispatches native events.
  *
  * It is using two-phase dispatching algorithm similar to native DOM events flow.
  */
-export interface NativeEventSource<E extends Event> {
+export interface NativeEventDispatcher<E extends Event> {
   /**
    * Public EventSource interface.
    */
-  readonly src: EventSource;
+  readonly src: EventDispatcher;
   /**
    * Number of active dependencies.
    *
@@ -41,11 +42,11 @@ export interface NativeEventSource<E extends Event> {
   dispatch: (() => void) | null;
 }
 
-export function createNativeEventSource<E extends Event>(
+export function createNativeEventDispatcher<E extends Event>(
   flags: NativeEventSourceFlags,
   name: string,
-): NativeEventSource<E> {
-  const source: NativeEventSource<E> = {
+): NativeEventDispatcher<E> {
+  const source: NativeEventDispatcher<E> = {
     src: {
       add: () => { ++source.listeners; incDependencies(source); },
       remove: () => { --source.listeners; decDependencies(source); },
@@ -62,13 +63,15 @@ export function createNativeEventSource<E extends Event>(
   const matchEventSource = (h: EventHandler) => h.src === source.src;
 
   source.dispatch = catchError((ev: E): void => {
+    const domTarget = getEventTarget(ev) as Element;
     const targets: DispatchTarget[] = [];
+
     if (source.listeners > 0) {
-      accumulateDispatchTargets(targets, getEventTarget(ev) as Element, matchEventSource);
+      accumulateDispatchTargets(targets, domTarget, matchEventSource);
     }
 
     if (targets.length || source.before !== null || source.after !== null) {
-      const syntheticEvent = new SyntheticNativeEvent<E>(0, getEventTarget(ev), ev.timeStamp, ev);
+      const syntheticEvent = new SyntheticNativeEvent<E>(0, domTarget, ev.timeStamp, ev);
 
       dispatchToListeners(source.before, syntheticEvent);
       if (targets.length) {
@@ -85,24 +88,24 @@ export function createNativeEventSource<E extends Event>(
   return source;
 }
 
-export function addBeforeListener<E extends Event>(
-  source: NativeEventSource<E>,
+export function beforeNativeEvent<E extends Event>(
+  source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   source.before = append(source.before, cb);
   incDependencies(source);
 }
 
-export function addAfterListener<E extends Event>(
-  source: NativeEventSource<E>,
+export function afterNativeEvent<E extends Event>(
+  source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   source.after = append(source.after, cb);
   incDependencies(source);
 }
 
-export function removeBeforeListener<E extends Event>(
-  source: NativeEventSource<E>,
+export function removeBeforeNativeEvent<E extends Event>(
+  source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   if (source.before !== null) {
@@ -111,8 +114,8 @@ export function removeBeforeListener<E extends Event>(
   }
 }
 
-export function removeAfterListener<E extends Event>(
-  source: NativeEventSource<E>,
+export function removeAfterNativeEvent<E extends Event>(
+  source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   if (source.after !== null) {
@@ -121,7 +124,7 @@ export function removeAfterListener<E extends Event>(
   }
 }
 
-function incDependencies<E extends Event>(source: NativeEventSource<E>): void {
+function incDependencies<E extends Event>(source: NativeEventDispatcher<E>): void {
   if (source.deps++ === 0) {
     document.addEventListener(
       source.name,
@@ -131,7 +134,7 @@ function incDependencies<E extends Event>(source: NativeEventSource<E>): void {
   }
 }
 
-function decDependencies<E extends Event>(source: NativeEventSource<E>): void {
+function decDependencies<E extends Event>(source: NativeEventDispatcher<E>): void {
   if (--source.deps === 0) {
     document.removeEventListener(
       source.name,

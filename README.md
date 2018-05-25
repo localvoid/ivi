@@ -7,7 +7,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 |ivi          |[![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi)                    |
 |ivi-core     |[![npm version](https://img.shields.io/npm/v/ivi-core.svg)](https://www.npmjs.com/package/ivi-core)          |
 |ivi-scheduler|[![npm version](https://img.shields.io/npm/v/ivi-scheduler.svg)](https://www.npmjs.com/package/ivi-scheduler)|
-|ivi-events   |[![npm version](https://img.shields.io/npm/v/ivi-events.svg)](https://www.npmjs.com/package/ivi-events)      |
 |ivi-html     |[![npm version](https://img.shields.io/npm/v/ivi-html.svg)](https://www.npmjs.com/package/ivi-html)          |
 |ivi-svg      |[![npm version](https://img.shields.io/npm/v/ivi-svg.svg)](https://www.npmjs.com/package/ivi-svg)            |
 
@@ -18,6 +17,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md) for sideways data loading
 - Implicit data propagation with [contexts](https://github.com/localvoid/ivi/blob/master/documentation/general/context.md)
 - Extensible [synthetic event subsystem](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
+- Attaching DOM events to component nodes
 - Synchronous and deterministic syncing algorithm
 - Children reconciliation with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Fast performance
@@ -27,7 +27,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
-a **3.8KB** (minified+compressed).
+a **3.7KB** (minified+compressed).
 
 ## Performance
 

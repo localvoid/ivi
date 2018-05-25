@@ -1,4 +1,5 @@
-import * as Events from "ivi-events";
+import { EventFlags, EventHandler, SyntheticEvent } from "ivi";
+import * as Events from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
 
@@ -13,16 +14,16 @@ function createMouseEvent(type: string): MouseEvent {
 
 export interface EventCounter {
   value: number;
-  event: Events.EventHandler<any>;
+  event: EventHandler<any>;
 }
 
 export function eventCounter(handlerFactory: (
-  handler: (ev: Events.SyntheticEvent) => void,
-  capture?: boolean) => Events.EventHandler<any>,
+  handler: (ev: SyntheticEvent) => void,
+  capture?: boolean) => EventHandler<any>,
 ): EventCounter {
   const c = {
     value: 0,
-    event: null as Events.EventHandler<any> | null,
+    event: null as EventHandler<any> | null,
   };
   c.event = handlerFactory(() => {
     c.value++;
@@ -560,7 +561,7 @@ describe("events", () => {
       const n = r(
         h.input()
           .a({ type: "checkbox" })
-          .e(Events.onClick(() => Events.EventFlags.PreventDefault)),
+          .e(Events.onClick(() => EventFlags.PreventDefault)),
       );
 
       n.dispatchEvent(createMouseEvent("click"));
@@ -573,7 +574,7 @@ describe("events", () => {
       const n = r(
         h.input()
           .a({ type: "checkbox" })
-          .e(Events.onClick((e) => Events.EventFlags.PreventDefault)),
+          .e(Events.onClick((e) => EventFlags.PreventDefault)),
       );
 
       n.dispatchEvent(createMouseEvent("click"));

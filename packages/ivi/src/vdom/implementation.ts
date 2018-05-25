@@ -9,7 +9,7 @@ import {
   SVG_NAMESPACE, nodeRemoveChild, nodeInsertBefore, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
 } from "ivi-core";
 import { autofocus } from "ivi-scheduler";
-import { syncEvents, attachEvents, detachEvents } from "ivi-events";
+import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMInstanceFromVNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -40,19 +40,12 @@ export function removeVNode(parent: Node, vnode: VNode): void {
 function _attach(vnode: VNode): void {
   const flags = vnode._f;
 
-  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ElementPropsEvents)) !== 0) {
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = vnode._c as VNode;
-      do {
-        _attach(child!);
-        child = child._r;
-      } while (child !== null);
-    }
-    if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
-      if (vnode._e !== null) {
-        attachEvents(vnode._e);
-      }
-    }
+  if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+    let child: VNode | null = vnode._c as VNode;
+    do {
+      _attach(child!);
+      child = child._r;
+    } while (child !== null);
   } else if (
     (flags & (
       VNodeFlags.StatelessComponent |
@@ -65,6 +58,12 @@ function _attach(vnode: VNode): void {
     }
     _attach(vnode._c as VNode);
   }
+
+  if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
+    if (vnode._e !== null) {
+      attachEvents(vnode._e);
+    }
+  }
 }
 
 /**
@@ -75,19 +74,12 @@ function _attach(vnode: VNode): void {
 function _detach(vnode: VNode): void {
   const flags = vnode._f;
 
-  if ((flags & (VNodeFlags.ChildrenVNode | VNodeFlags.ElementPropsEvents)) !== 0) {
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = vnode._c as VNode;
-      do {
-        _detach(child!);
-        child = child._r;
-      } while (child !== null);
-    }
-    if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
-      if (vnode._e !== null) {
-        detachEvents(vnode._e);
-      }
-    }
+  if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+    let child: VNode | null = vnode._c as VNode;
+    do {
+      _detach(child!);
+      child = child._r;
+    } while (child !== null);
   } else if ((flags & (
     VNodeFlags.StatelessComponent |
     VNodeFlags.StatefulComponent |
@@ -99,6 +91,12 @@ function _detach(vnode: VNode): void {
       const component = vnode._i as Component<any>;
       component.flags |= ComponentFlags.Detached;
       component.detached();
+    }
+  }
+
+  if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
+    if (vnode._e !== null) {
+      detachEvents(vnode._e);
     }
   }
 }
@@ -286,9 +284,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         if (vnode._s !== null) {
           syncStyle(node as HTMLElement, null, vnode._s);
         }
-        if (vnode._e !== null) {
-          (node as Element)._ev = vnode._e;
-        }
 
         let children = vnode._c;
         if (children !== null) {
@@ -432,147 +427,146 @@ export function syncVNode(
     a._k === b._k
   ) {
     b._i = instance = a._i;
+    const aChild = a._c;
+    let bChild = b._c;
 
-    if ((bFlags & (VNodeFlags.Text | VNodeFlags.Element)) !== 0) {
-      const aChild = a._c;
-      let bChild = b._c;
-      if ((bFlags & VNodeFlags.Text) !== 0) {
-        if (aChild !== bChild) {
-          (instance as Text).data = bChild as string;
-        }
-      } else { // (flags & VNodeFlags.Element)
-        const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
+    if ((bFlags & VNodeFlags.Text) !== 0) {
+      if (aChild !== bChild) {
+        (instance as Text).data = bChild as string;
+      }
+    } else {
+      if (a._e !== b._e) {
+        syncEvents(a._e, b._e);
+      }
 
-        if (a._cs !== b._cs) {
-          const className = b._cs === void 0 ? "" : b._cs;
-          if (svg === true) {
-            /* istanbul ignore else */
-            if (DEBUG) {
-              (instance as Element).setAttribute("class", className);
-            } else {
-              elementSetAttribute.call(instance, "class", className);
-            }
-          } else {
-            (instance as Element).className = className;
-          }
-        }
+      if ((bFlags & (VNodeFlags.Element | VNodeFlags.StatefulComponent)) !== 0) {
+        if ((bFlags & VNodeFlags.Element) !== 0) {
+          const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
 
-        if (a._p !== b._p) {
-          syncDOMAttrs(instance as Element, svg, a._p, b._p);
-        }
-        if (a._s !== b._s) {
-          syncStyle(instance as HTMLElement, a._s, b._s);
-        }
-        if (a._e !== b._e) {
-          syncEvents(a._e, b._e);
-          (instance as Element)._ev = b._e;
-        }
-
-        if (aChild !== bChild) {
-          if (aChild === null) {
-            if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
-              bChild = bChild as VNode;
-              do {
-                renderVNode(instance as Element, null, bChild, context);
-                bChild = bChild._r!;
-              } while (bChild !== null);
-            } else if ((bFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
-              _setInputValue(instance as HTMLInputElement, bChild as string | boolean);
-            } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
-              (instance as Element).innerHTML = bChild as string;
-            }
-          } else if (bChild === null) {
-            if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
-              _removeAllChildren(instance as Element, aChild as VNode);
-            } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
-              (instance as Element).textContent = "";
-            } else { // (bParentFlags & VNodeFlags.InputElement)
-              /**
-               * When value/checked isn't specified, we should just ignore it.
-               */
-            }
-          } else {
-            if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
-              _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
-            } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
-              (instance as Element).innerHTML = bChild as string;
-            } else { // (aParentFlags & VNodeFlags.InputElement)
-              /**
-               * Input elements has an internal state with a `value` property, so it should be checked before an
-               * assignment to prevent unnecessary events when `value` is the same as the `value` in the internal
-               * state.
-               *
-               * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning props
-               * to such elements should be treated as a one-time assignment, so it works almost like `value` attribute,
-               * except when a new value is passed down, it can override previous value when it doesn't match the
-               * previous one. There is absolutely no reasons to overcomplicate such behaviour just to make it more
-               * beatiful like it is a declarative assignment and can't be changed, because in real applications,
-               * component that controls this element will always track changes, and when it changes it will invalidate
-               * its representation, so everything will stay in-sync.
-               */
-              if (typeof bChild === "string") {
-                if ((instance as HTMLInputElement).value !== bChild) {
-                  (instance as HTMLInputElement).value = bChild;
-                }
+          if (a._cs !== b._cs) {
+            const className = b._cs === void 0 ? "" : b._cs;
+            if (svg === true) {
+              /* istanbul ignore else */
+              if (DEBUG) {
+                (instance as Element).setAttribute("class", className);
               } else {
-                (instance as HTMLInputElement).checked = bChild as boolean;
+                elementSetAttribute.call(instance, "class", className);
+              }
+            } else {
+              (instance as Element).className = className;
+            }
+          }
+
+          if (a._p !== b._p) {
+            syncDOMAttrs(instance as Element, svg, a._p, b._p);
+          }
+          if (a._s !== b._s) {
+            syncStyle(instance as HTMLElement, a._s, b._s);
+          }
+
+          if (aChild !== bChild) {
+            if (aChild === null) {
+              if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
+                bChild = bChild as VNode;
+                do {
+                  renderVNode(instance as Element, null, bChild, context);
+                  bChild = bChild._r!;
+                } while (bChild !== null);
+              } else if ((bFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
+                _setInputValue(instance as HTMLInputElement, bChild as string | boolean);
+              } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
+                (instance as Element).innerHTML = bChild as string;
+              }
+            } else if (bChild === null) {
+              if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
+                _removeAllChildren(instance as Element, aChild as VNode);
+              } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
+                (instance as Element).textContent = "";
+              } else { // (bParentFlags & VNodeFlags.InputElement)
+                /**
+                 * When value/checked isn't specified, we should just ignore it.
+                 */
+              }
+            } else {
+              if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
+                _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
+              } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
+                (instance as Element).innerHTML = bChild as string;
+              } else { // (aParentFlags & VNodeFlags.InputElement)
+                /**
+                 * Input elements has an internal state with a `value` property, so it should be checked before an
+                 * assignment to prevent unnecessary events when `value` is the same as the `value` in the internal
+                 * state.
+                 *
+                 * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning
+                 * props to such elements should be treated as a one-time assignment, so it works almost like `value`
+                 * attribute, except when a new value is passed down, it can override previous value when it doesn't
+                 * match the previous one. There is absolutely no reasons to overcomplicate such behaviour just to make
+                 * it more beatiful like it is a declarative assignment and can't be changed, because in real
+                 * applications, component that controls this element will always track changes, and when it changes it
+                 * will invalidate its representation, so everything will stay in-sync.
+                 */
+                if (typeof bChild === "string") {
+                  if ((instance as HTMLInputElement).value !== bChild) {
+                    (instance as HTMLInputElement).value = bChild;
+                  }
+                } else {
+                  (instance as HTMLInputElement).checked = bChild as boolean;
+                }
               }
             }
           }
-        }
-      }
-    } else { // (flags & VNodeFlags.Component)
-      if ((bFlags & VNodeFlags.StatefulComponent) !== 0) {
-        const component = instance as Component<any>;
-        // Update component props
-        const oldProps = a._p;
-        const newProps = b._p;
-        if (oldProps !== newProps) {
-          // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
-          // reassigned later to reduce memory usage.
-          component.newPropsReceived(oldProps, newProps);
-        }
-        // Reassign props even when they aren't changed to reduce overall memory usage.
-        //
-        // New value always stays alive because it is referenced from virtual dom tree, so instead of keeping
-        // in memory two values even when they are the same, we just always reassign it to the new value.
-        component.props = newProps;
+        } else { // VNodeFlags.StatefulComponent
+          // Update component props
+          const oldProps = a._p;
+          const newProps = b._p;
+          if (oldProps !== newProps) {
+            // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
+            // reassigned later to reduce memory usage.
+            (instance as Component<any>).newPropsReceived(oldProps, newProps);
+          }
+          // Reassign props even when they aren't changed to reduce overall memory usage.
+          //
+          // New value always stays alive because it is referenced from virtual dom tree, so instead of keeping
+          // in memory two values even when they are the same, we just always reassign it to the new value.
+          (instance as Component<any>).props = newProps;
 
-        if (
-          ((component.flags & ComponentFlags.Dirty) !== 0) ||
-          (component.shouldUpdate(oldProps, newProps) === true)
-        ) {
-          syncVNode(
-            parent,
-            a._c as VNode,
-            b._c = DEBUG ?
-              shouldBeSingleVNode(component.render()) :
-              /* istanbul ignore next */component.render(),
-            context,
-            dirtyContext,
-          );
-          component.flags &= ~ComponentFlags.Dirty;
-          component.updated(true);
-        } else {
-          if (dirtyCheck(parent, b._c = a._c as VNode, context, dirtyContext) !== 0) {
-            component.updated(false);
+          if (
+            (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) ||
+            ((instance as Component<any>).shouldUpdate(oldProps, newProps) === true)
+          ) {
+            syncVNode(
+              parent,
+              aChild as VNode,
+              b._c = DEBUG ?
+                shouldBeSingleVNode((instance as Component<any>).render()) :
+                /* istanbul ignore next */(instance as Component<any>).render(),
+              context,
+              dirtyContext,
+            );
+            (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
+            (instance as Component<any>).updated(true);
+          } else {
+            if (dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext) !== 0) {
+              (instance as Component<any>).updated(false);
+            }
           }
         }
-      } else { // (flags & VNodeFlags.ComponentFunction)
+      } else { // (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
             const connect = b._t as ConnectDescriptor<any, any, {}>;
             const prevSelectData = instance;
             const selectData = b._i = connect.select(prevSelectData, b._p, context);
             if (prevSelectData === selectData) {
-              dirtyCheck(parent, b._c = a._c as VNode, context, dirtyContext);
+              dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
             } else {
               syncVNode(
                 parent,
-                a._c as VNode,
+                aChild as VNode,
                 b._c = DEBUG ?
                   shouldBeSingleVNode(connect.render(selectData)) :
-                  /* istanbul ignore next */connect.render(selectData),
+                    /* istanbul ignore next */connect.render(selectData),
                 context,
                 dirtyContext,
               );
@@ -584,9 +578,9 @@ export function syncVNode(
             b._i = context = (dirtyContext === true) ?
               { ...context, ...b._p } :
               instance as {};
-            syncVNode(parent, a._c as VNode, b._c as VNode, context, dirtyContext);
+            syncVNode(parent, aChild as VNode, bChild as VNode, context, dirtyContext);
           }
-        } else {
+        } else { // VNodeFlags.StatelessComponent
           const sc = b._t as StatelessComponent<any>;
           if (
             (a._p !== b._p) &&
@@ -594,15 +588,15 @@ export function syncVNode(
           ) {
             syncVNode(
               parent,
-              a._c as VNode,
+              aChild as VNode,
               b._c = DEBUG ?
                 shouldBeSingleVNode(sc.render(b._p)) :
-                /* istanbul ignore next */sc.render(b._p),
+                  /* istanbul ignore next */sc.render(b._p),
               context,
               dirtyContext,
             );
           } else {
-            dirtyCheck(parent, b._c = a._c as VNode, context, dirtyContext);
+            dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
           }
         }
       }

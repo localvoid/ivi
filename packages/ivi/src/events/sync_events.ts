@@ -1,29 +1,5 @@
-import { EventHandler } from "./event_handler";
 import { EventHandlerFlags } from "./flags";
-
-/**
- * registerEventHandler is a shortcut for Event Handler registration.
- *
- * @param handler Event Handler.
- */
-function registerEventHandler(handler: EventHandler<any>): void {
-  if (DEBUG) {
-    handler.flags |= EventHandlerFlags.Active;
-  }
-  handler.src.add(handler);
-}
-
-/**
- * unregisterEventHandler is a shortcut for Event Handler unregistration.
- *
- * @param handler Event Handler.
- */
-function unregisterEventHandler(handler: EventHandler<any>): void {
-  if (DEBUG) {
-    handler.flags &= ~EventHandlerFlags.Active;
-  }
-  handler.src.remove(handler);
-}
+import { EventHandler } from "./event_handler";
 
 /**
  * syncEvents syncs event handlers and invokes EventSource callbacks when event handler is attached or detached.
@@ -122,4 +98,28 @@ export function detachEvents(events: Array<EventHandler | null> | EventHandler):
   } else {
     unregisterEventHandler(events as EventHandler);
   }
+}
+
+/**
+ * registerEventHandler is a shortcut for Event Handler registration.
+ *
+ * @param handler Event Handler.
+ */
+function registerEventHandler(handler: EventHandler<any>): void {
+  if (DEBUG) {
+    handler.flags |= EventHandlerFlags.Active;
+  }
+  handler.src.add(handler);
+}
+
+/**
+ * unregisterEventHandler is a shortcut for Event Handler unregistration.
+ *
+ * @param handler Event Handler.
+ */
+function unregisterEventHandler(handler: EventHandler<any>): void {
+  if (DEBUG) {
+    handler.flags &= ~EventHandlerFlags.Active;
+  }
+  handler.src.remove(handler);
 }

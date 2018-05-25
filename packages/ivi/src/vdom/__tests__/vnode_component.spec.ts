@@ -7,10 +7,6 @@ test(`assigning style should raise an exception`, () => {
   expect(() => Empty().s({})).toThrow(Error);
 });
 
-test(`assigning events should raise an exception`, () => {
-  expect(() => Empty().e([])).toThrow(Error);
-});
-
 test(`assigning children should raise an exception`, () => {
   expect(() => Empty().c("123")).toThrow(Error);
 });

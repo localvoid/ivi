@@ -1,32 +1,31 @@
 # Synthetic Events
 
 Synthetic events subsystem is using its own two-phase event dispatching algorithm. With custom event dispatching
-algorithm it is possible to create new events like "click outside", gesture and DnD events.
+algorithm it is possible to create new events like "click outside", gestures and DnD events.
 
 ## Event Handler
 
-Event Handler is an object that contains information about `EventDispatcher` that will be used for an event handler
-and function that will be executed when dispatcher fires an event for a target that registered an event handler.
+Event Handler is an object that contains information about `EventDispatcher` that is used for dispatching events
+and a handler function that will be executed when dispatcher fires an event.
 
-`ivi-events` module provides a collection of event handler factories for all native events. Event handler function
-factories are using camel case for their names, and all names are starting with "on" prefix.
+`ivi` package provides event handler factories for all native events.
 
 ```ts
-import * as Events from "ivi-events";
+import { onClick, onKeyDown } from "ivi-events";
 
-const click = Events.onClick((ev) => {
+const click = onClick((ev) => {
   console.log("clicked");
 });
 
-const keyDown = Events.onKeyDown((ev) => {
+const keyDown = onKeyDown((ev) => {
   console.log("Key Down");
 });
 ```
 
 ### Event Handler registration
 
-Event Handlers are declaratively registered with a Virtual DOM API. Virtual DOM nodes that represent HTML and SVG
-elements can have event handlers assigned with `e()` method.
+Event handlers are declaratively attached to virtual DOM nodes with a method `e()`. Event handlers can be attached
+to all nodes except text nodes.
 
 ```ts
 interface VNode {
@@ -36,8 +35,7 @@ interface VNode {
 ```
 
 ```ts
-import { Component, component, render } from "ivi";
-import { onClick } from "ivi-events";
+import { Component, component, render, onClick } from "ivi";
 import { div } from "ivi-html";
 
 const StatefulComponent = component(class extends Component {
@@ -63,4 +61,10 @@ const StatefulComponent = component(class extends Component {
       .c(`Clicks: [${this.counter1}] [${this.counter2}]`);
   }
 });
+
+render(
+  StatefulComponent()
+    .e(onClick(() => { console.log("event handler attached to component"); })),
+  document.getElementById("app"),
+);
 ```

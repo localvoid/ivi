@@ -3,8 +3,7 @@
 Virtual DOM API is using factory functions to instantiate nodes and method chaining to assign properties.
 
 ```ts
-import { onClick } from "ivi-events";
-import { div } from "ivi-html";
+import { div, onClick } from "ivi-html";
 
 const node = div()
   .e(onClick((ev) => { console.log("click"); }))
@@ -26,21 +25,28 @@ interface VNode<P> {
 
 Method `k()` is used to assign keys, they are used to uniquely identify virtual nodes among its siblings.
 
+### Methods available on all nodes except Text nodes
+
+```ts
+interface VNode<P> {
+  e(events: Array<EventHandler | null> | EventHandler | null): this;
+}
+```
+
+Method `e()` is used to assign events.
+
 ### Methods available on HTML, SVG, Input and Media elements
 
 ```ts
 interface VNode<P> {
   a(attrs: P): this;
   s(style: CSSStyleProps | null): this;
-  e(events: Array<EventHandler | null> | EventHandler | null): this;
 }
 ```
 
 Method `a()` is used to assign DOM attributes.
 
 Method `s()` is used to assign styles.
-
-Method `e()` is used to assign events.
 
 ### Methods available on non-void HTML and SVG elements
 

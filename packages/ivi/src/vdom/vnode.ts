@@ -1,6 +1,6 @@
 import { CSSStyleProps, NOOP } from "ivi-core";
-import { EventHandler } from "ivi-events";
 import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
+import { EventHandler } from "../events/event_handler";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent, StatefulComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
@@ -147,15 +147,15 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * Assign events for an Element node.
+   * Assign events.
    *
    * @param events - Events
    * @returns this node
    */
   e(events: Array<EventHandler | null> | EventHandler | null): this {
     if (DEBUG) {
-      if (!(this._f & VNodeFlags.Element)) {
-        throw new Error("Failed to set events, events are available on element nodes only.");
+      if ((this._f & VNodeFlags.Text)) {
+        throw new Error("Failed to set events, events aren't available on text nodes");
       }
     }
     this._f |= VNodeFlags.ElementPropsEvents;

@@ -20,9 +20,6 @@
       "ivi-core": [
         "packages/ivi-core/src"
       ],
-      "ivi-events": [
-        "packages/ivi-events/src"
-      ],
       "ivi-gestures": [
         "packages/ivi-gestures/src"
       ],

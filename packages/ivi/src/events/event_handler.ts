@@ -1,6 +1,6 @@
 import { EventHandlerFlags, EventFlags } from "./flags";
 import { SyntheticEvent } from "./synthetic_event";
-import { EventSource } from "./event_source";
+import { EventDispatcher } from "./event_dispatcher";
 
 /**
  * EventHandler.
@@ -14,7 +14,7 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any
   /**
    * Reference to the event source that will dispatch events for this event handler.
    */
-  src: EventSource;
+  src: EventDispatcher;
   /**
    * See {@link EventHandlerFlags} for details.
    */
@@ -29,6 +29,8 @@ export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any
   listeners: number;
   /**
    * Event Handler props.
+   *
+   * Gestures are using it to store factory function that instantiates gesture recognizer.
    */
   props: P;
   /**

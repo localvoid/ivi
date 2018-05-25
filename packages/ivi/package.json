@@ -26,13 +26,11 @@
   "dependencies": {},
   "peerDependencies": {
     "ivi-core": "^0.12.0",
-    "ivi-scheduler": "^0.12.0",
-    "ivi-events": "^0.12.0"
+    "ivi-scheduler": "^0.12.0"
   },
   "devDependencies": {
     "ivi-core": "^0.12.0",
-    "ivi-scheduler": "^0.12.0",
-    "ivi-events": "^0.12.0"
+    "ivi-scheduler": "^0.12.0"
   },
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
