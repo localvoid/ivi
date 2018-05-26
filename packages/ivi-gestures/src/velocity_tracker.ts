@@ -104,6 +104,12 @@ export function estimateVelocity(tracker: VelocityTracker): V2 | null {
   return v2(lsq2(time, x), lsq2(time, y));
 }
 
+/**
+ * Least-squares with a degree 2.
+ *
+ * @param x
+ * @param y
+ */
 function lsq2(x: number[], y: number[]): number {
   const count = x.length;
   let sxi = 0;

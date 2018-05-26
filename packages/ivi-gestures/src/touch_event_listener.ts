@@ -1,13 +1,13 @@
 import { INPUT_DEVICE_CAPABILITIES } from "ivi-core";
 import {
-  SyntheticEventFlags, EVENT_SOURCE_ACTIVE_TOUCH_START, EVENT_SOURCE_TOUCH_END, EVENT_SOURCE_TOUCH_CANCEL,
-  EVENT_SOURCE_ACTIVE_TOUCH_MOVE, SyntheticNativeEvent,
-  removeBeforeListener, addBeforeListener,
-} from "ivi-events";
-import { NativeEventListener } from "./gesture_event_source";
-import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+  SyntheticEventFlags, SyntheticNativeEvent,
+  EVENT_DISPATCHER_ACTIVE_TOUCH_START, EVENT_DISPATCHER_TOUCH_END, EVENT_DISPATCHER_TOUCH_CANCEL,
+  EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE,
+  removeBeforeNativeEvent, beforeNativeEvent,
+} from "ivi";
+import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_event";
+import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
-import { GestureArenaFlags, GESTURE_ARENA } from "./arena";
 
 /**
  * TODO: make sure that target is always attached to the document, because touch events are always working in capture
@@ -52,6 +52,7 @@ export function createTouchEventListener(
   const mouseListener = createMouseEventListener(dispatch, primaryPointers);
 
   let primaryTouch: Touch | null = null;
+  let currentFlags: NativeEventListenerFlags = 0;
   let eventTimeOffset = 0;
 
   function findTouch(touches: TouchList, id: number): boolean {
@@ -120,6 +121,7 @@ export function createTouchEventListener(
 
     if ((pointers.size === 0) || (pointers.size === 1 && pointers.get(1) !== void 0)) {
       primaryTouch = touches[0];
+      beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
     }
 
     for (let i = 0; i < touches.length; ++i) {
@@ -135,6 +137,7 @@ export function createTouchEventListener(
       dedupSyntheticMouseEvents(p);
       dispatch(p, touch.target as Element);
     }
+
   }
 
   function onMove(s: SyntheticNativeEvent<TouchEvent>) {
@@ -151,9 +154,7 @@ export function createTouchEventListener(
         null,
       ));
     }
-    if (!(GESTURE_ARENA.flags & GestureArenaFlags.NativeGestureAccepted)) {
-      ev.preventDefault();
-    }
+    ev.preventDefault();
   }
 
   function onEnd(s: SyntheticNativeEvent<TouchEvent>) {
@@ -176,6 +177,9 @@ export function createTouchEventListener(
         primaryTouch = null;
       }
     }
+    if (pointers.size === 0 && (currentFlags & NativeEventListenerFlags.TrackMove)) {
+      removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+    }
   }
 
   function onCancel(s: SyntheticNativeEvent<TouchEvent>) {
@@ -196,35 +200,40 @@ export function createTouchEventListener(
         primaryTouch = null;
       }
     }
+    if (pointers.size === 0 && (currentFlags & NativeEventListenerFlags.TrackMove)) {
+      removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+    }
   }
 
   return {
     activate: () => {
       mouseListener.activate();
       // touchstart should be active, otherwise touchmove can't be canceled.
-      addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
-      addBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
-      addBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
+      beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
+      beforeNativeEvent(EVENT_DISPATCHER_TOUCH_END, onEnd);
+      beforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
     },
     deactivate: () => {
-      removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_START, onStart);
-      removeBeforeListener(EVENT_SOURCE_TOUCH_END, onEnd);
-      removeBeforeListener(EVENT_SOURCE_TOUCH_CANCEL, onCancel);
+      removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
+      removeBeforeNativeEvent(EVENT_DISPATCHER_TOUCH_END, onEnd);
+      removeBeforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
       mouseListener.deactivate();
     },
-    startMoveTracking: (ev: GesturePointerEvent, target: Element) => {
-      if (ev.id === 1) {
-        mouseListener.startMoveTracking(ev, target);
-      } else {
-        addBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
+    set: (flags: NativeEventListenerFlags) => {
+      if (flags & NativeEventListenerFlags.TrackMove) {
+        if (!(currentFlags & NativeEventListenerFlags.TrackMove)) {
+          beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+        }
       }
+      currentFlags |= flags;
     },
-    stopMoveTracking: (ev: GesturePointerEvent) => {
-      if (ev.id === 1) {
-        mouseListener.stopMoveTracking(ev);
-      } else {
-        removeBeforeListener(EVENT_SOURCE_ACTIVE_TOUCH_MOVE, onMove);
+    clear: (flags: NativeEventListenerFlags) => {
+      if (flags & NativeEventListenerFlags.TrackMove) {
+        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+          removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+        }
       }
+      currentFlags &= ~flags;
     },
   };
 }

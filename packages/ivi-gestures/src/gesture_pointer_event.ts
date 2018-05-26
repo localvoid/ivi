@@ -1,4 +1,4 @@
-import { SyntheticEvent, SyntheticEventFlags } from "ivi-events";
+import { SyntheticEvent, SyntheticEventFlags } from "ivi";
 
 /**
  * Pointer actions.
@@ -111,5 +111,13 @@ export class GesturePointerEvent extends SyntheticEvent {
       this.hitTarget = document.elementFromPoint(this.x, this.y);
     }
     return this.hitTarget;
+  }
+
+  trackVelocity(): void {
+    // starts velocity tracking
+  }
+
+  getVelocity(): void {
+    // gets current velocity
   }
 }

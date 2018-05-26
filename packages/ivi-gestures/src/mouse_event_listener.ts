@@ -1,10 +1,11 @@
 import { TOUCH_EVENTS, INPUT_DEVICE_CAPABILITIES, MOUSE_EVENT_BUTTONS, getMouseButtons } from "ivi-core";
 import {
-  SyntheticEventFlags, EVENT_SOURCE_MOUSE_DOWN, EVENT_SOURCE_MOUSE_UP, EVENT_SOURCE_MOUSE_MOVE, SyntheticNativeEvent,
-  addBeforeListener, removeBeforeListener,
-} from "ivi-events";
-import { NativeEventListener } from "./gesture_event_source";
-import { GesturePointerAction, GesturePointerEvent } from "./pointer_event";
+  SyntheticEventFlags, SyntheticNativeEvent,
+  EVENT_DISPATCHER_MOUSE_DOWN, EVENT_DISPATCHER_MOUSE_UP, EVENT_DISPATCHER_MOUSE_MOVE,
+  beforeNativeEvent, removeBeforeNativeEvent,
+} from "ivi";
+import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_event";
+import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
 
 declare global {
   interface InputDeviceCapabilities {
@@ -20,6 +21,7 @@ export function createMouseEventListener(
   dispatch: (ev: GesturePointerEvent, target?: Element) => void,
   primaryPointers: GesturePointerEvent[] | null = null,
 ): NativeEventListener {
+  let currentFlags: NativeEventListenerFlags = 0;
   let activePointer: GesturePointerEvent | null = null;
 
   function isEventSimulatedFromTouch(ev: MouseEvent): boolean {
@@ -31,8 +33,7 @@ export function createMouseEventListener(
       if (primaryPointers !== null) {
         const x = ev.clientX;
         const y = ev.clientY;
-        for (let i = 0; i < primaryPointers.length; ++i) {
-          const pointer = primaryPointers[i];
+        for (const pointer of primaryPointers) {
           const dx = Math.abs(x - pointer.x);
           const dy = Math.abs(y - pointer.y);
           if (dx <= 25 && dy <= 25) {
@@ -49,21 +50,23 @@ export function createMouseEventListener(
     const ev = s.native;
     if (!isEventSimulatedFromTouch(ev)) {
       const buttons = getMouseButtons(ev);
-      let pointer;
       if (activePointer === null) {
-        pointer = createGesturePointerEventFromMouseEvent(
+        activePointer = createGesturePointerEventFromMouseEvent(
           ev,
           GesturePointerAction.Down,
           buttons,
         );
+        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+          beforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
+        }
       } else {
-        pointer = createGesturePointerEventFromMouseEvent(
+        activePointer = createGesturePointerEventFromMouseEvent(
           ev,
           GesturePointerAction.Move,
           buttons | activePointer.buttons,
         );
       }
-      dispatch(pointer, ev.target as Element);
+      dispatch(activePointer, ev.target as Element);
     }
   }
 
@@ -93,26 +96,38 @@ export function createMouseEventListener(
           (buttons === 0) ? GesturePointerAction.Up : GesturePointerAction.Move,
           buttons,
         ));
+        activePointer = null;
+        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+          removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
+        }
       }
     }
   }
 
   return {
     activate: () => {
-      addBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
-      addBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
+      beforeNativeEvent(EVENT_DISPATCHER_MOUSE_DOWN, onDown);
+      beforeNativeEvent(EVENT_DISPATCHER_MOUSE_UP, onUp);
     },
     deactivate: () => {
-      removeBeforeListener(EVENT_SOURCE_MOUSE_DOWN, onDown);
-      removeBeforeListener(EVENT_SOURCE_MOUSE_UP, onUp);
+      removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_DOWN, onDown);
+      removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_UP, onUp);
     },
-    startMoveTracking: (ev: GesturePointerEvent, target: Element) => {
-      activePointer = ev;
-      addBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
+    set: (flags: NativeEventListenerFlags) => {
+      if (flags & NativeEventListenerFlags.TrackMove) {
+        if (!(currentFlags & NativeEventListenerFlags.TrackMove)) {
+          beforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
+        }
+      }
+      currentFlags |= flags;
     },
-    stopMoveTracking: (ev: GesturePointerEvent) => {
-      activePointer = null;
-      removeBeforeListener(EVENT_SOURCE_MOUSE_MOVE, onMove);
+    clear: (flags: NativeEventListenerFlags) => {
+      if (flags & NativeEventListenerFlags.TrackMove) {
+        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+          removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
+        }
+      }
+      currentFlags &= ~flags;
     },
   };
 }

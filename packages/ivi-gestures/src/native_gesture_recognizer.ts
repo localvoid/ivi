@@ -1,5 +1,4 @@
 import { GestureRecognizer } from "./gesture_recognizer";
-import { GestureArenaFlags, GESTURE_ARENA } from "./arena";
 
 /**
  * Native gesture recognizers are used to recognize native gestures and cancel all concurrent recognizers. When native
@@ -11,13 +10,13 @@ export abstract class NativeGestureRecognizer extends GestureRecognizer {
    * NativeGestureRecognizer is accepted.
    */
   accepted(): void {
-    GESTURE_ARENA.flags |= GestureArenaFlags.NativeGestureAccepted;
+    //
   }
 
   /**
    * NativeGestureRecognizer is rejected.
    */
   rejected(): void {
-    GESTURE_ARENA.flags |= GestureArenaFlags.NativeGestureRejected;
+    //
   }
 }

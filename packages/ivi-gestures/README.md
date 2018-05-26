@@ -6,7 +6,9 @@ Instead of using raw native events for different pointers, all touch and mouse i
 gestures. Native gestures like scrolling are also implemented as gestures, so when native gesture is detected we can
 remove all event handlers to make sure that scrolling isn't waiting for responses from UI thread.
 
-It also provides extended capabilities to efficieltny solve:
+All gesture recognizers are initialized lazily, so there is no overhead when elements are rendered to the document.
+
+It also provides extended capabilities to efficiently solve:
 
 - Drag and Drop with complex use cases like long-pressure DnD inside a container with native scrolling
 - Click-outside events
