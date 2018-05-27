@@ -87,14 +87,14 @@ export const EVENT_ACTIVE_OPTIONS = PASSIVE_EVENTS ? { "passive": false } : fals
 export function getNativeEventOptions(
   flags: NativeEventSourceFlags,
 ): boolean | { capture?: boolean, passive?: boolean } {
-  if ((flags & NativeEventSourceFlags.Passive) !== 0) {
-    if ((flags & NativeEventSourceFlags.Capture) !== 0) {
+  if (flags & NativeEventSourceFlags.Passive) {
+    if (flags & NativeEventSourceFlags.Capture) {
       return EVENT_CAPTURE_PASSIVE_OPTIONS;
     }
     return EVENT_PASSIVE_OPTIONS;
   }
-  if ((flags & NativeEventSourceFlags.Capture) !== 0) {
-    return true;
+  if (flags & NativeEventSourceFlags.Capture) {
+    return EVENT_CAPTURE_ACTIVE_OPTIONS;
   }
-  return false;
+  return EVENT_ACTIVE_OPTIONS;
 }
