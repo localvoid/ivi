@@ -108,20 +108,26 @@ export function removeBeforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  if (source.before !== null) {
-    unorderedArrayDelete(source.before, source.before.indexOf(cb));
-    decDependencies(source);
+  if (DEBUG) {
+    if (source.before === null || source.before.indexOf(cb) === -1) {
+      throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
+    }
   }
+  unorderedArrayDelete(source.before!, source.before!.indexOf(cb));
+  decDependencies(source);
 }
 
 export function removeAfterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  if (source.after !== null) {
-    unorderedArrayDelete(source.after, source.after.indexOf(cb));
-    decDependencies(source);
+  if (DEBUG) {
+    if (source.after === null || source.after.indexOf(cb) === -1) {
+      throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");
+    }
   }
+  unorderedArrayDelete(source.after!, source.after!.indexOf(cb));
+  decDependencies(source);
 }
 
 function incDependencies<E extends Event>(source: NativeEventDispatcher<E>): void {
