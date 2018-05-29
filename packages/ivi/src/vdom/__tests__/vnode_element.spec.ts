@@ -1,5 +1,4 @@
-import { EventHandler } from "ivi-events";
-import { VNodeFlags, VNode, getComponentInstanceFromVNode, autofocus } from "ivi";
+import { EventHandler, VNodeFlags, VNode, getComponentInstanceFromVNode, autofocus } from "ivi";
 import * as h from "ivi-html";
 
 test(`element flags`, () => {

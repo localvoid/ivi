@@ -11,7 +11,7 @@ and a handler function that will be executed when dispatcher fires an event.
 `ivi` package provides event handler factories for all native events.
 
 ```ts
-import { onClick, onKeyDown } from "ivi-events";
+import { onClick, onKeyDown } from "ivi";
 
 const click = onClick((ev) => {
   console.log("clicked");

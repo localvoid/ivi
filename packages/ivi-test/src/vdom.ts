@@ -1,6 +1,7 @@
 import { CSSStyleProps, shallowEqual, Predicate } from "ivi-core";
-import { EventSource } from "ivi-events";
-import { VNode, VNodeFlags, Component, StatefulComponent, StatelessComponent, ConnectDescriptor } from "ivi";
+import {
+  VNode, VNodeFlags, Component, StatefulComponent, StatelessComponent, ConnectDescriptor, EventDispatcher,
+} from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
 import { SnapshotOptions, toSnapshot } from "./snapshot";
@@ -488,9 +489,9 @@ export function hasAssignedStyle(wrapper: VNodeWrapper, style: { [key: string]: 
   return (vnode._p !== null && matchKeys(vnode._s, style));
 }
 
-export function hasEventHandler(wrapper: VNodeWrapper, eventSource: EventSource): boolean {
+export function hasEventHandler(wrapper: VNodeWrapper, dispatcher: EventDispatcher): boolean {
   const vnode = wrapper.vnode;
-  return (vnode._p !== null && containsEventHandler(vnode._e, eventSource) === true);
+  return (vnode._p !== null && containsEventHandler(vnode._e, dispatcher) === true);
 }
 
 export function hasUnsafeHTML(wrapper: VNodeWrapper, html?: string): boolean {

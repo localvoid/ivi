@@ -1,6 +1,5 @@
 import { Predicate, CSSStyleProps } from "ivi-core";
-import { EventSource } from "ivi-events";
-import { StatefulComponent } from "ivi";
+import { EventDispatcher, StatefulComponent } from "ivi";
 import {
   VNodeWrapper, visitWrapped,
 
@@ -108,8 +107,8 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
     return this;
   }
 
-  hasEventHandler(eventSource: EventSource): this {
-    this.addPredicate((n: VNodeWrapper) => hasEventHandler(n, eventSource));
+  hasEventHandler(dispatcher: EventDispatcher): this {
+    this.addPredicate((n: VNodeWrapper) => hasEventHandler(n, dispatcher));
     return this;
   }
 

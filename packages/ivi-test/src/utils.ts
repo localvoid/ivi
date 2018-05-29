@@ -1,5 +1,4 @@
-import { EventHandler, EventSource } from "ivi-events";
-import { VNode, VNodeFlags } from "ivi";
+import { EventHandler, EventDispatcher, VNode, VNodeFlags } from "ivi";
 
 /**
  * containsClassName checks if className list contains a className.
@@ -70,23 +69,23 @@ export function matchKeys(
 /**
  * containsEventHandler checks if event handler list contain an event source.
  *
- * @param eventHandlers Event handlers.
- * @param eventSource Event source.
+ * @param handlers Event handlers.
+ * @param dispatcher Event source.
  * @returns true when event handlers contain an event source.
  */
 export function containsEventHandler(
-  eventHandlers: Array<EventHandler | null> | EventHandler | null,
-  eventSource: EventSource,
+  handlers: Array<EventHandler | null> | EventHandler | null,
+  dispatcher: EventDispatcher,
 ): boolean {
-  if (eventHandlers !== null) {
-    if (Array.isArray(eventHandlers)) {
-      for (const h of eventHandlers) {
-        if (h !== null && h.src === eventSource) {
+  if (handlers !== null) {
+    if (Array.isArray(handlers)) {
+      for (const h of handlers) {
+        if (h !== null && h.src === dispatcher) {
           return true;
         }
       }
     } else {
-      return (eventHandlers.src === eventSource);
+      return (handlers.src === dispatcher);
     }
   }
   return false;

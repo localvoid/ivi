@@ -1,4 +1,4 @@
-import { EVENT_SOURCE_CLICK, SyntheticEventFlags, addAfterListener } from "ivi-events";
+import { EVENT_DISPATCHER_CLICK, SyntheticEventFlags, afterNativeEvent } from "ivi";
 import { RouteMap, ResolveResult, resolve } from "routekit-resolver";
 
 export function initRouter<A, T>(
@@ -24,7 +24,7 @@ export function initRouter<A, T>(
     goTo(location.pathname);
   });
 
-  addAfterListener(EVENT_SOURCE_CLICK, (ev) => {
+  afterNativeEvent(EVENT_DISPATCHER_CLICK, (ev) => {
     if ((ev.flags & (SyntheticEventFlags.PreventedDefault | SyntheticEventFlags.StoppedPropagation)) === 0) {
       const anchor = findAnchorNode(ev.target as Element);
       if (anchor !== null) {

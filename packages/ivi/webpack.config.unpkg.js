@@ -17,7 +17,6 @@ module.exports = {
   externals: {
     "ivi-core": "iviCore",
     "ivi-scheduler": "iviScheduler",
-    "ivi-events": "Events",
   },
   module: {
     rules: [
