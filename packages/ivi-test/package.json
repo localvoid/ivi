@@ -23,19 +23,17 @@
     "dist:es2016": "../../node_modules/.bin/tsc -p ./tsconfig.build.es2016.json"
   },
   "peerDependencies": {
-    "ivi": "^0.12.0",
-    "ivi-core": "^0.12.0",
-    "ivi-html": "^0.12.0",
-    "ivi-svg": "^0.12.0",
-    "ivi-events": "^0.12.0"
+    "ivi": "^0.13.0",
+    "ivi-core": "^0.13.0",
+    "ivi-html": "^0.13.0",
+    "ivi-svg": "^0.13.0"
   },
   "dependencies": {},
   "devDependencies": {
-    "ivi": "^0.12.0",
-    "ivi-core": "^0.12.0",
-    "ivi-html": "^0.12.0",
-    "ivi-svg": "^0.12.0",
-    "ivi-events": "^0.12.0"
+    "ivi": "^0.13.0",
+    "ivi-core": "^0.13.0",
+    "ivi-html": "^0.13.0",
+    "ivi-svg": "^0.13.0"
   },
   "description": "Test utils for ivi library",
   "license": "MIT",

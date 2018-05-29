@@ -1,3 +1,24 @@
+<a name="0.13.0"></a>
+# [0.13.0](https://github.com/localvoid/ivi/compare/0.12.0...0.13.0) (2018-05-29)
+
+
+### Bug Fixes
+
+* **events:** use correct options for active events ([c25e3eb](https://github.com/localvoid/ivi/commit/c25e3eb))
+
+
+### Features
+
+* **events:** add checks in DEBUG mode when removing event listeners ([a28cde2](https://github.com/localvoid/ivi/commit/a28cde2))
+* **events:** completely redesigned synthetic events ([a0ad90d](https://github.com/localvoid/ivi/commit/a0ad90d))
+
+
+### BREAKING CHANGES
+
+* **events:** `ivi-events` package were removed, event handler factories should be imported from `ivi` package.
+
+
+
 <a name="0.12.0"></a>
 # [0.12.0](https://github.com/localvoid/ivi/compare/0.11.1...0.12.0) (2018-05-24)
 
