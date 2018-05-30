@@ -1,9 +1,48 @@
 /**
+ * Gesture Disambiguation Algorithm:
+ *
+ * When first pointer is down, event dispatcher will instantiate gesture recognizers that should receive pointer event
+ * (lazy initialization), then it will dispatch pointer event to them. Gesture recognizers in response should activate
+ * itself through a {@link GestureController} function that available on all gesture recognizers through `controller`
+ * property.
+ *
+ * Then we need to immediately reject conflicting recognizers that can't be recognized. For example, if we have two Pan
+ * recognizers, then first one will never be recognized. This step is important when we completely override native
+ * gestures, because on iOS Safari we always need to invoke `preventDefault()` on the first `TouchMove` event, otherwise
+ * it can start sending non-cancelable events.
+ *
+ * Then if there are still conflicting recognizers, we are starting to wait until recognizers will respond that they
+ * recognized a gesture.
+ *
+ * Then we need to check that other active recognizers doesn't depend on the time, so we are invoking lifecycle method
+ * `shouldWait()` and if someone needs to wait, disambiguation algorithm will wait until all awaiting recognizers either
+ * resolved or canceled.
+ *
+ * Then if there are still several conflicting resolved recognizers, we just use "last recognizer wins" strategy. This
+ * strategy works perfectly in all scenarios. If there are two Tap recognizers, innermost one will win because we are
+ * dispatching pointer events in a capture mode.
+ *
+ *
+ * Important browser quirks:
+ *
+ * Chrome doesn't send touch move events after the first one until 15px slop region is exceeded
+ * {@link https://developers.google.com/web/updates/2014/05/A-More-Compatible-Smoother-Touch}. But we need this events,
+ * so that we can use them to resolve conflicts between native and custom gestures, and the trick is to invoke
+ * `preventDefault()` on the first `TouchMove` event, then it will start sending all touch move events. The good news is
+ * that invoking `preventDefault()` on the first `TouchMove` doesn't stop native gestures from recognizing, so we can
+ * just stop listening touch move events when we were able to recognize native gesture.
+ *
+ *
+ * Additional information:
+ *
  * Getting touchy - everything you (n)ever wanted to know about touch and pointer events
- *   https://patrickhlauke.github.io/getting-touchy-presentation/
+ * {@link https://patrickhlauke.github.io/getting-touchy-presentation/}
+ *
+ * Touch Event behavior details across browsers
+ * {@link https://docs.google.com/document/d/12k_LL_Ot9GjF8zGWP9eI_3IMbSizD72susba0frg44Y}
  *
  * Issues with touch events
- *   https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU
+ * {@link https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU}
  */
 
 import { TOUCH_EVENTS, catchError } from "ivi-core";
@@ -14,12 +53,12 @@ import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_eve
 import { GestureBehavior } from "./gesture_behavior";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
-import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
-import {
-  GestureConflictResolverAction, GestureConflictResolutionStatus, GestureConflictResolver,
-} from "./gesture_conflict_resolver";
+import { GestureRecognizer, GestureRecognizerState, GestureRecognizerUpdateAction } from "./gesture_recognizer";
+import { GestureConflictResolverAction, GestureController } from "./gesture_controller";
 import { scheduleMicrotask } from "ivi-scheduler";
 import { NativeEventListenerFlags } from "./native_event_listener";
+import { debugPubDispatcherState } from "./debug";
+import { NativePanGestureRecognizer } from "./native_pan_gesture_recognizer";
 
 export function createGestureEventDispatcher(): EventDispatcher {
   let dependencies = 0;
@@ -50,99 +89,86 @@ export function createGestureEventDispatcher(): EventDispatcher {
   const pointers = new Map<number, GesturePointerEvent>();
   const recognizers: GestureRecognizer[] = [];
   const resolvedRecognizers: GestureRecognizer[] = [];
-  let resolvedRecognizer: GestureRecognizer | null = null;
-  let closed = false;
+  let acceptedRecognizer: GestureRecognizer | null = null;
+  let conflictResolverClosed = false;
   let activeRecognizersCounter = 0;
   let resolvedRecognizersCounter = 0;
-  let resolvedBehavior: GestureBehavior = 0;
+
+  if (DEBUG) {
+    debugPubDispatcherState({
+      pointers,
+      recognizers,
+      resolvedRecognizers,
+      acceptedRecognizer,
+      conflictResolverClosed,
+      activeRecognizersCounter,
+      resolvedRecognizersCounter,
+    });
+  }
 
   let pendingResolveConflicts = false;
-
-  /**
-   * Gesture conflict resolution algorithm is used to resolve conflicts when there are multiple concurrent gestures.
-   *
-   * This algorithm is using two strategies to resolve conflicts.
-   *
-   * First strategy is using a simple protocol to communicate with concurrent recognizers. It broadcasts information
-   * about different types of behavior that were recognized by all concurrent recognizers and they should decide how
-   * to respond in such situations.
-   *
-   * Examples:
-   *
-   *  [Tap, Pan]: when Tap is recognized, recognizer with a Pan behavior should respond by canceling, because taping has
-   *   a higher priority.
-   *
-   *  [Tap, MultiTap]: when Tap is recognized, MultiTap can respond by asking to wait some time, until it is certain
-   *   that there are no multi tapping behavior recognized.
-   *
-   *
-   * Second strategy is a "Last resolved recognizer wins". When first strategy is unable to resolve conflicts and there
-   * are still multiple concurrent recognizers, we just pick the last one that were resolved.
-   *
-   * Examples:
-   *
-   *  [Tap, MultiTap]: when Tap and MultiTap are resolved, MultiTap should be resolved after Tap and so MultiTap wins.
-   *
-   *  [Pan, Pan]: when two Pans are resolved, the second one will be from the deepest element in the DOM hierarchy
-   *   because they were added during capture phase of the event flow algorithm.
-   */
   const resolveConflicts = () => {
     pendingResolveConflicts = false;
-    if (!resolvedRecognizer && resolvedRecognizersCounter > 0) {
-      let wait = false;
-      if (activeRecognizersCounter > 1) {
-        for (const recognizer of recognizers) {
-          if (recognizer.state & GestureRecognizerState.Active) {
-            const resolution = recognizer.resolveConflict(resolvedBehavior);
-            if (resolution & GestureConflictResolutionStatus.Cancel) {
-              recognizer.state &= ~GestureRecognizerState.Active;
-              activeRecognizersCounter--;
-              if (recognizer.state & GestureRecognizerState.Resolved) {
-                resolvedRecognizersCounter--;
-              }
-              recognizer.rejected();
-            }
-            if (resolution & GestureConflictResolutionStatus.Wait) {
-              wait = true;
-            }
-          }
+    if (!acceptedRecognizer && resolvedRecognizersCounter > 0) {
+      let delay = 0;
+      for (let i = 0; i < recognizers.length; i++) {
+        const recognizer = recognizers[i];
+        if (recognizer.state & GestureRecognizerState.Active) {
+          delay = Math.max(delay, recognizer.shouldWait(0));
         }
       }
-
-      if (!wait || ((activeRecognizersCounter - resolvedRecognizersCounter) === 0)) {
+      if ((delay === 0) || ((activeRecognizersCounter - resolvedRecognizersCounter) === 0)) {
         let i = resolvedRecognizers.length - 1;
-        while (i-- >= 0) {
-          const recognizer = resolvedRecognizers[i];
+        while (i >= 0) {
+          const recognizer = resolvedRecognizers[i--];
           if (recognizer.state & GestureRecognizerState.Active) {
-            resolvedRecognizer = recognizer;
-            recognizer.accepted();
-            if (recognizer.behavior & GestureBehavior.Native) {
-              listener.clear(NativeEventListenerFlags.TrackMove);
+            acceptedRecognizer = recognizer;
+            recognizer.update(GestureRecognizerUpdateAction.Accepted);
+            if (recognizer instanceof NativePanGestureRecognizer) {
+              listener.clear(NativeEventListenerFlags.TrackMove | NativeEventListenerFlags.PreventDefault);
+            } else {
+              listener.set(NativeEventListenerFlags.PreventDefault);
             }
+            break;
           }
         }
         for (i = 0; i < recognizers.length; i++) {
           const recognizer = recognizers[i];
-          if ((recognizer !== resolvedRecognizer) && (recognizer.state & GestureRecognizerState.Active)) {
+          if (recognizer !== acceptedRecognizer && (recognizer.state & GestureRecognizerState.Active)) {
             activeRecognizersCounter--;
-            recognizer.rejected();
+            recognizer.state &= ~GestureRecognizerState.Active;
+            recognizer.update(GestureRecognizerUpdateAction.Rejected);
           }
         }
       }
     }
 
     if (activeRecognizersCounter === 0) {
-      listener.clear(NativeEventListenerFlags.TrackMove);
+      for (const recognizer of recognizers) {
+        recognizer.reset();
+      }
+      listener.clear(NativeEventListenerFlags.TrackMove | NativeEventListenerFlags.PreventDefault);
       recognizers.length = 0;
       resolvedRecognizers.length = 0;
-      resolvedRecognizer = null;
-      closed = false;
+      acceptedRecognizer = null;
+      conflictResolverClosed = false;
       resolvedRecognizersCounter = 0;
-      resolvedBehavior = 0;
+    }
+
+    if (DEBUG) {
+      debugPubDispatcherState({
+        pointers,
+        recognizers,
+        resolvedRecognizers,
+        acceptedRecognizer,
+        conflictResolverClosed,
+        activeRecognizersCounter,
+        resolvedRecognizersCounter,
+      });
     }
   };
 
-  const conflictResolver: GestureConflictResolver =
+  const conflictResolver: GestureController =
     (recognizer: GestureRecognizer, action: GestureConflictResolverAction) => {
       switch (action) {
         case GestureConflictResolverAction.Activate: {
@@ -153,8 +179,8 @@ export function createGestureEventDispatcher(): EventDispatcher {
           break;
         }
         case GestureConflictResolverAction.Resolve: {
+
           recognizer.state |= GestureRecognizerState.Resolved;
-          resolvedBehavior |= recognizer.behavior;
           resolvedRecognizers.push(recognizer);
           resolvedRecognizersCounter++;
           break;
@@ -165,7 +191,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
           if (recognizer.state & GestureRecognizerState.Resolved) {
             resolvedRecognizersCounter--;
           }
-          recognizer.rejected();
+          recognizer.update(GestureRecognizerUpdateAction.Rejected);
           break;
         }
         case GestureConflictResolverAction.Finish: {
@@ -199,30 +225,80 @@ export function createGestureEventDispatcher(): EventDispatcher {
       if (targets.length > 0) {
         dispatchEvent(targets, ev, false, (h: EventHandler, e: SyntheticEvent) => {
           let recognizer = h.state;
-          if (closed) {
+          if (conflictResolverClosed) {
             if (recognizer !== null && (recognizer.state & GestureRecognizerState.Active)) {
-              recognizer.handleEvent(e);
+              recognizer.update(GestureRecognizerUpdateAction.HandleEvent, e);
             }
           } else {
             if (recognizer === null) {
               h.state = recognizer = h.props(conflictResolver, h);
             }
-            recognizer.handleEvent(e);
+            recognizer.update(GestureRecognizerUpdateAction.HandleEvent, e);
           }
         });
+        if (activeRecognizersCounter) {
+          conflictResolverClosed = true;
+
+          // override recognizer actions
+          let i = recognizers.length - 1;
+          while (i > 0) {
+            const right = recognizers[i--];
+            let preventAction = right.preventAction;
+            if (preventAction !== 0) {
+              preventAction = ~preventAction;
+              let j = i;
+              while (j >= 0) {
+                const left = recognizers[j--];
+                left.resolveAction &= preventAction;
+              }
+            }
+          }
+
+          let preventDefault = true;
+          while (i < recognizers.length) {
+            const r = recognizers[i++];
+            if ((r.resolveAction & ~GestureBehavior.Native) === 0) {
+              r.state &= ~GestureRecognizerState.Active;
+              activeRecognizersCounter--;
+              if (r.state & GestureRecognizerState.Resolved) {
+                resolvedRecognizersCounter--;
+              }
+              r.update(GestureRecognizerUpdateAction.Rejected);
+            } else if (r.resolveAction & GestureBehavior.Native) {
+              // if there is native behavior, don't trigger preventDefault
+              preventDefault = false;
+            }
+          }
+
+          if (preventDefault) {
+            listener.set(NativeEventListenerFlags.PreventDefault);
+          }
+        }
       }
-    } else if (closed) {
+    } else if (conflictResolverClosed) {
       if (activeRecognizersCounter) {
-        if (resolvedRecognizer) {
-          resolvedRecognizer.handleEvent(ev);
+        if (acceptedRecognizer) {
+          acceptedRecognizer.update(GestureRecognizerUpdateAction.HandleEvent, ev);
         } else {
           for (const recognizer of recognizers) {
             if (recognizer.state & GestureRecognizerState.Active) {
-              recognizer.handleEvent(ev);
+              recognizer.update(GestureRecognizerUpdateAction.HandleEvent, ev);
             }
           }
         }
       }
+    }
+
+    if (DEBUG) {
+      debugPubDispatcherState({
+        pointers,
+        recognizers,
+        resolvedRecognizers,
+        acceptedRecognizer,
+        conflictResolverClosed,
+        activeRecognizersCounter,
+        resolvedRecognizersCounter,
+      });
     }
   });
 

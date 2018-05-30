@@ -1,5 +1,6 @@
 export const enum NativeEventListenerFlags {
   TrackMove = 1,
+  PreventDefault = 1 << 1,
 }
 
 export interface NativeEventListener {

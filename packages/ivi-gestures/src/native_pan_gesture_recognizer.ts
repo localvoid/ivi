@@ -3,72 +3,55 @@ import { GestureRecognizer, GestureRecognizerState, GestureRecognizerUpdateActio
 import { GestureBehavior } from "./gesture_behavior";
 import { GestureController } from "./gesture_controller";
 
-const enum TapConstants {
-  Delay = 300,
-}
-
-export class TapGestureRecognizer extends GestureRecognizer {
+export class NativePanGestureRecognizer extends GestureRecognizer {
   private startX = 0;
   private startY = 0;
-  private pointerId = -1;
-  private timeoutHandle = -1;
-  private timeoutHandler = () => {
-    if (this.state & GestureRecognizerState.Active) {
-      this.cancel();
-    }
-  }
+  private pointerId: number = -1;
 
   constructor(controller: GestureController) {
     super(
       controller,
-      GestureBehavior.Tap,
-      0,
+      GestureBehavior.Pan | GestureBehavior.Native,
+      GestureBehavior.Pan,
       1,
     );
   }
 
   update(action: GestureRecognizerUpdateAction, data: GesturePointerEvent) {
     if (action === GestureRecognizerUpdateAction.Accepted) {
-      clearTimeout(this.timeoutHandle);
-      this.timeoutHandle = -1;
+      if (!(this.state & GestureRecognizerState.Resolved)) {
+        this.resolve();
+      }
     } else if (action === GestureRecognizerUpdateAction.HandleEvent) {
       const evAction = data.action;
       if (evAction & GesturePointerAction.Down) {
         if (!(this.state & GestureRecognizerState.Active)) {
-          this.pointerId = data.id;
           this.startX = data.pageX;
           this.startY = data.pageY;
+          this.pointerId = data.id;
           this.activate();
-          setTimeout(this.timeoutHandler, TapConstants.Delay);
         }
       } else if (evAction & (GesturePointerAction.Move | GesturePointerAction.Up)) {
         if (this.pointerId === data.id) {
           if (evAction & GesturePointerAction.Move) {
-            if (!(this.state & GestureRecognizerState.Resolved)) {
-              let delta = Math.abs(this.startX - data.pageX);
-              if (delta >= 8) {
-                this.cancel();
+            if (!(this.state & (GestureRecognizerState.Resolved | GestureRecognizerState.Accepted))) {
+              if (Math.abs(this.startX - data.pageX) >= 8) {
+                this.resolve();
               } else {
-                delta = Math.abs(this.startY - data.pageY);
-                if (delta >= 8) {
-                  this.cancel();
+                if (Math.abs(this.startY - data.pageY) >= 8) {
+                  this.resolve();
                 }
               }
             }
           } else {
-            this.resolve();
-            this.finish();
+            if (this.state & (GestureRecognizerState.Accepted | GestureRecognizerState.Resolved)) {
+              this.finish();
+            } else {
+              this.cancel();
+            }
           }
         }
       }
-    }
-  }
-
-  reset() {
-    super.reset();
-    if (this.timeoutHandle !== -1) {
-      clearTimeout(this.timeoutHandle);
-      this.timeoutHandle = -1;
     }
   }
 }

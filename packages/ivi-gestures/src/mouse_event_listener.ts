@@ -6,6 +6,7 @@ import {
 } from "ivi";
 import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_event";
 import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
+import { debugPubMouseState } from "./debug";
 
 declare global {
   interface InputDeviceCapabilities {
@@ -22,7 +23,14 @@ export function createMouseEventListener(
   primaryPointers: GesturePointerEvent[] | null = null,
 ): NativeEventListener {
   let currentFlags: NativeEventListenerFlags = 0;
+  let moveTrackingEnabled = false;
   let activePointer: GesturePointerEvent | null = null;
+
+  if (DEBUG) {
+    debugPubMouseState({
+      currentFlags,
+    });
+  }
 
   function isEventSimulatedFromTouch(ev: MouseEvent): boolean {
     if (TOUCH_EVENTS) {
@@ -56,7 +64,8 @@ export function createMouseEventListener(
           GesturePointerAction.Down,
           buttons,
         );
-        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+        if (!moveTrackingEnabled && (currentFlags & NativeEventListenerFlags.TrackMove)) {
+          moveTrackingEnabled = true;
           beforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
         }
       } else {
@@ -67,6 +76,12 @@ export function createMouseEventListener(
         );
       }
       dispatch(activePointer, ev.target as Element);
+    }
+
+    if (DEBUG) {
+      debugPubMouseState({
+        currentFlags,
+      });
     }
   }
 
@@ -80,6 +95,12 @@ export function createMouseEventListener(
           activePointer.buttons,
         ));
       }
+    }
+
+    if (DEBUG) {
+      debugPubMouseState({
+        currentFlags,
+      });
     }
   }
 
@@ -97,10 +118,17 @@ export function createMouseEventListener(
           buttons,
         ));
         activePointer = null;
-        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+        if (moveTrackingEnabled) {
+          moveTrackingEnabled = false;
           removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
         }
       }
+    }
+
+    if (DEBUG) {
+      debugPubMouseState({
+        currentFlags,
+      });
     }
   }
 
@@ -115,19 +143,31 @@ export function createMouseEventListener(
     },
     set: (flags: NativeEventListenerFlags) => {
       if (flags & NativeEventListenerFlags.TrackMove) {
-        if (!(currentFlags & NativeEventListenerFlags.TrackMove)) {
+        if (!moveTrackingEnabled) {
+          moveTrackingEnabled = true;
           beforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
         }
       }
       currentFlags |= flags;
+      if (DEBUG) {
+        debugPubMouseState({
+          currentFlags,
+        });
+      }
     },
     clear: (flags: NativeEventListenerFlags) => {
       if (flags & NativeEventListenerFlags.TrackMove) {
-        if (currentFlags & NativeEventListenerFlags.TrackMove) {
+        if (moveTrackingEnabled) {
+          moveTrackingEnabled = false;
           removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_MOVE, onMove);
         }
       }
       currentFlags &= ~flags;
+      if (DEBUG) {
+        debugPubMouseState({
+          currentFlags,
+        });
+      }
     },
   };
 }

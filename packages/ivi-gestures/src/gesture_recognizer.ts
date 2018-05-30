@@ -1,8 +1,6 @@
 import { GesturePointerEvent } from "./gesture_pointer_event";
 import { GestureBehavior } from "./gesture_behavior";
-import {
-  GestureConflictResolutionStatus, GestureConflictResolver, GestureConflictResolverAction,
-} from "./gesture_conflict_resolver";
+import { GestureController, GestureConflictResolverAction } from "./gesture_controller";
 
 export const enum GestureRecognizerState {
   Active = 1,
@@ -10,69 +8,121 @@ export const enum GestureRecognizerState {
   Accepted = 1 << 2,
 }
 
+export const enum GestureRecognizerUpdateAction {
+  HandleEvent,
+  Accepted,
+  Rejected,
+  Disposed,
+  Time,
+}
+
 /**
  * Gesture Recognizer.
+ *
+ * Initial State => Active => Active|Resolved => Active|Resolved|Accepted
+ *                            Active|Accepted => Active|Resolved|Accepted
+ *
+ * Initial State   :: activate()
+ * Active          :: resolve() | cancel()
+ * Active|Resolved :: cancel() | finish()
  */
 export abstract class GestureRecognizer {
+  /**
+   * See {@link GestureRecognizerState} for details.
+   */
   public state: GestureRecognizerState;
-  public behavior: GestureBehavior;
+  /**
+   * Action that is required to resolve this gesture.
+   */
+  public resolveAction: GestureBehavior;
+  /**
+   * Actions that should be prevented in recognizers with lower priority.
+   */
+  public preventAction: GestureBehavior;
+  /**
+   * Minimum number of pointers to recognize this gesture.
+   */
+  public minPointers: number;
+  /**
+   * {@link GestureController}
+   */
+  private readonly controller: GestureController;
 
-  private readonly resolver: GestureConflictResolver;
-
-  constructor(resolver: GestureConflictResolver, behavior: GestureBehavior) {
-    this.resolver = resolver;
+  constructor(
+    controller: GestureController,
+    resolveAction: GestureBehavior,
+    preventAction: GestureBehavior,
+    minPointers: number,
+  ) {
     this.state = 0;
-    this.behavior = behavior;
-  }
-
-  protected activate() {
-    this.resolver(this, GestureConflictResolverAction.Activate);
-  }
-
-  protected resolve() {
-    if (this.state & GestureRecognizerState.Active) {
-      this.resolver(this, GestureConflictResolverAction.Resolve);
-    }
-  }
-
-  protected cancel() {
-    if (this.state & GestureRecognizerState.Active) {
-      this.resolver(this, GestureConflictResolverAction.Cancel);
-    }
-  }
-
-  protected finish() {
-    if (this.state & GestureRecognizerState.Active) {
-      this.resolver(this, GestureConflictResolverAction.Finish);
-    }
-    this.reset();
+    this.resolveAction = resolveAction;
+    this.preventAction = preventAction;
+    this.minPointers = minPointers;
+    this.controller = controller;
   }
 
   reset() {
     this.state = 0;
   }
 
-  resolveConflict(behavior: GestureBehavior): GestureConflictResolutionStatus {
-    return GestureConflictResolutionStatus.LastRecognizerWins;
-  }
-
-  /**
-   * Invoked when recognizer is accepted.
-   */
-  abstract accepted(): void;
-
-  /**
-   * Invoked when recognizer is rejected.
-   */
-  abstract rejected(): void;
-
-  /**
-   * Gesture pointer event handler.
-   */
-  abstract handleEvent(event: GesturePointerEvent): void;
-
   /**
    * Dispose recognizer.
    */
-  abstract dispose(): void;
+  dispose() {
+    if (this.state & GestureRecognizerState.Active) {
+      this.cancel();
+    }
+  }
+
+  shouldWait(time: number): number {
+    return 0;
+  }
+
+  abstract update(action: GestureRecognizerUpdateAction.HandleEvent, data: GesturePointerEvent): void;
+  abstract update(action: GestureRecognizerUpdateAction, data?: GesturePointerEvent | number): void;
+
+  protected activate() {
+    if (DEBUG) {
+      if (this.state & GestureRecognizerState.Active) {
+        throw new Error("Unable to activate gesture recognizer, gesture recognizer is already activated");
+      }
+      if (this.state !== 0) {
+        throw new Error("Unable to activate gesture recognizer, gesture recognizer has invalid state");
+      }
+    }
+    this.controller(this, GestureConflictResolverAction.Activate);
+  }
+
+  protected resolve() {
+    if (DEBUG) {
+      if (!(this.state & GestureRecognizerState.Active)) {
+        throw new Error("Unable to resolve gesture recognizer, gesture recognizer should be active");
+      }
+      if (this.state & GestureRecognizerState.Resolved) {
+        throw new Error("Unable to resolve gesture recognizer, gesture recognizer is already resolved");
+      }
+    }
+    this.controller(this, GestureConflictResolverAction.Resolve);
+  }
+
+  protected cancel() {
+    if (DEBUG) {
+      if (!(this.state & GestureRecognizerState.Active)) {
+        throw new Error("Unable to cancel gesture recognizer, gesture recognizer should be active");
+      }
+    }
+    this.controller(this, GestureConflictResolverAction.Cancel);
+  }
+
+  protected finish() {
+    if (DEBUG) {
+      if (!(this.state & GestureRecognizerState.Active)) {
+        throw new Error("Unable to finish gesture recognizer, gesture recognizer should be active");
+      }
+      if (!(this.state & GestureRecognizerState.Resolved)) {
+        throw new Error("Unable to finish gesture recognizer, gesture recognizer should be resolved");
+      }
+    }
+    this.controller(this, GestureConflictResolverAction.Finish);
+  }
 }
