@@ -12,6 +12,7 @@ declare global {
 
 export { Predicate } from "./types";
 export { getFunctionName } from "./function";
+export { debugSub, debugPub } from "./debug";
 export { addErrorHandler, catchError } from "./error";
 export {
   objectHasOwnProperty,
