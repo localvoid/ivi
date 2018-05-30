@@ -12,7 +12,7 @@ export {
   getDOMInstanceFromVNode, getComponentInstanceFromVNode,
   autofocus, stopDirtyChecking,
 } from "./vdom/vnode";
-export { fragment, map, mapRange } from "./vdom/vnode_collections";
+export { fragment, map, mapRange, mapIterable } from "./vdom/vnode_collections";
 export { element } from "./vdom/element";
 export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/vnode_factories";
 export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";

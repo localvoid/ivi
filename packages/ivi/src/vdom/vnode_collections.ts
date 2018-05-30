@@ -7,13 +7,13 @@ import { VNode } from "./vnode";
  * @example
  *
  *     const content = children(
- *       h.p().c("Paragraph 1"),
- *       h.p().c("Paragraph 2"),
+ *       p().c("Paragraph 1"),
+ *       p().c("Paragraph 2"),
  *     );
  *
  *     render(
- *       h.div().c(
- *         h.h1().c("Title"),
+ *       div().c(
+ *         h1().c("Title"),
  *         content,
  *       ),
  *       DOMContainer,
@@ -30,13 +30,13 @@ export function fragment(...args: Array<VNode | string | number | null>): VNode 
  * @example
  *
  *     const content = children(
- *       h.p().c("Paragraph 1"),
- *       h.p().c("Paragraph 2"),
+ *       p().c("Paragraph 1"),
+ *       p().c("Paragraph 2"),
  *     );
  *
  *     render(
- *       h.div().c(
- *         h.h1().c("Title"),
+ *       div().c(
+ *         h1().c("Title"),
  *         content,
  *       ),
  *       DOMContainer,
@@ -80,8 +80,8 @@ export function fragment(): VNode | null {
  * @example
  *
  *     render(
- *       h.div().c(
- *         map([1, 2, 3], (item) => h.div().k(item)),
+ *       div().c(
+ *         map([1, 2, 3], (item) => div().k(item)),
  *       ),
  *       DOMContainer,
  *     );
@@ -131,8 +131,8 @@ export function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode
  *     const items = [1, 2, 3];
  *
  *     render(
- *       h.div().c(
- *         mapRange(0, items.length, (i) => h.div().k(items[i])),
+ *       div().c(
+ *         mapRange(0, items.length, (i) => div().k(items[i])),
  *       ),
  *       DOMContainer,
  *     );
@@ -167,6 +167,58 @@ export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNo
       prev = n;
     }
   }
+  if (first !== null) {
+    first._l = prev!;
+    first._f |= VNodeFlags.KeyedList;
+    return first;
+  }
+  return null;
+}
+
+/**
+ * mapIterable creates a children collection with the results of calling a provided iterable until it is done.
+ *
+ * @example
+ *
+ *     const items = [1, 2, 3];
+ *
+ *     render(
+ *       div().c(mapIterable(function* () {
+ *         for (const item of items) {
+ *           yield div().k(item);
+ *         }
+ *       }())),
+ *       DOMContainer,
+ *     );
+ *
+ * @param iterable - Iterable iterator
+ * @returns Virtual DOM collection
+ */
+export function mapIterable<T>(iterable: IterableIterator<VNode<T> | null>): VNode<T> | null {
+  let first: VNode<any> | null = null;
+  let prev: VNode<any> | null = null;
+
+  for (const n of iterable) {
+    if (n !== null) {
+      /* istanbul ignore else */
+      if (DEBUG) {
+        if ((n._f & VNodeFlags.Key) === 0) {
+          throw new Error(`VNodes created with a mapIterable() function should have an explicit key`);
+        }
+        if (n._l !== n) {
+          throw new Error(`VNodes created with a mapIterable() function should be a singular nodes`);
+        }
+      }
+      if (prev !== null) {
+        n._l = prev;
+        prev._r = n;
+      } else {
+        first = n;
+      }
+      prev = n;
+    }
+  }
+
   if (first !== null) {
     first._l = prev!;
     first._f |= VNodeFlags.KeyedList;
