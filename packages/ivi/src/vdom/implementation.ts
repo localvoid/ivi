@@ -255,19 +255,20 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           }
         }
 
-        if (vnode._cs !== void 0) {
+        const className = vnode._cs;
+        if (className !== void 0 && className !== "") {
           /**
            * SVGElement.className returns `SVGAnimatedString`
            */
           if (svg === true) {
             /* istanbul ignore else */
             if (DEBUG) {
-              (node as Element).setAttribute("class", vnode._cs);
+              (node as Element).setAttribute("class", className);
             } else {
-              elementSetAttribute.call(node as Element, "class", vnode._cs);
+              elementSetAttribute.call(node as Element, "class", className);
             }
           } else {
-            (node as Element).className = vnode._cs;
+            (node as Element).className = className;
           }
         }
 
@@ -436,8 +437,9 @@ export function syncVNode(
         if ((bFlags & VNodeFlags.Element) !== 0) {
           const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
 
-          if (a._cs !== b._cs) {
-            const className = b._cs === void 0 ? "" : b._cs;
+          let className = b._cs;
+          if (a._cs !== className) {
+            className = className === void 0 ? "" : className;
             if (svg === true) {
               /* istanbul ignore else */
               if (DEBUG) {

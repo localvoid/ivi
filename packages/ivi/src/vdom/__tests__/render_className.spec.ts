@@ -22,7 +22,7 @@ describe(`HTML`, () => {
   test(`<div class="">`, () => {
     startRender<HTMLElement>((r) => {
       const n = r(h.div(""));
-      expect(n.getAttributeNode("class")).not.toBeNull();
+      expect(n.getAttributeNode("class")).toBeNull();
       expect(n.className).toBe("");
     });
   });
