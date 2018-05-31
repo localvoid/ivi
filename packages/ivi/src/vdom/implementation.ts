@@ -109,9 +109,8 @@ function _detach(vnode: VNode): void {
  * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
-export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): number {
+export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
   const flags = vnode._f;
-  let deepUpdate = 0;
   let children: VNode | null | undefined;
   let instance: Node | Component<any> | {} | undefined;
 
@@ -127,7 +126,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       instance = vnode._i as Node;
       do {
-        deepUpdate |= dirtyCheck(instance as Node, children, context, dirtyContext);
+        dirtyCheck(instance as Node, children, context, dirtyContext);
         children = children._r;
       } while (children !== null);
     } else if ((flags & VNodeFlags.StatefulComponent) !== 0) {
@@ -143,13 +142,9 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
           dirtyContext,
         );
         (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
-        (instance as Component<any>).updated(true);
-        deepUpdate = 1;
+        (instance as Component<any>).updated();
       } else {
-        deepUpdate = dirtyCheck(parent, children, context, dirtyContext);
-        if (deepUpdate !== 0) {
-          (instance as Component<any>).updated(false);
-        }
+        dirtyCheck(parent, children, context, dirtyContext);
       }
     } else { // (flags & (VNodeFlags.StatelessComponent | VNodeFlags.Connect | VNodeFlags.UpdateContext))
       if ((flags & VNodeFlags.Connect) !== 0) {
@@ -157,9 +152,8 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         instance = vnode._i as {};
         const selectData = connect.select(instance, vnode._p, context);
         if (instance === selectData) {
-          deepUpdate = dirtyCheck(parent, children, context, dirtyContext);
+          dirtyCheck(parent, children, context, dirtyContext);
         } else {
-          deepUpdate = 1;
           vnode._i = selectData;
           syncVNode(
             parent,
@@ -178,11 +172,10 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
           }
           context = vnode._i as {};
         }
-        deepUpdate = dirtyCheck(parent, children, context, dirtyContext);
+        dirtyCheck(parent, children, context, dirtyContext);
       }
     }
   }
-  return deepUpdate;
 }
 
 /**
@@ -545,11 +538,9 @@ export function syncVNode(
               dirtyContext,
             );
             (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
-            (instance as Component<any>).updated(true);
+            (instance as Component<any>).updated();
           } else {
-            if (dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext) !== 0) {
-              (instance as Component<any>).updated(false);
-            }
+            dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
           }
         }
       } else { // (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)

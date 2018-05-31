@@ -97,10 +97,8 @@ export abstract class Component<P = undefined> {
 
   /**
    * Lifecycle method `updated()` is invoked after update.
-   *
-   * @param local - Update were triggered from local changes
    */
-  updated(local: boolean): void {
+  updated(): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
   }

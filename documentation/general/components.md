@@ -203,13 +203,11 @@ top order.
 
 ```ts
 interface Component {
-  updated(local: boolean): void;
+  updated(): void;
 }
 ```
 
-`updated()` method is invoked for all parents every time component is updated or any descendant component is updated.
-`local` argument is used to distinguish between updates that was caused by updating one of the descendants or
-updates in the current component.
+`updated()` invoked every time component is updated.
 
 #### `invalidated()`
 
