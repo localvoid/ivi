@@ -1,9 +1,11 @@
-import { mapIterable, VNodeFlags, fragment } from "ivi";
+import { mapIterable, VNodeFlags, fragment, VNode } from "ivi";
 import * as h from "ivi-html";
 
 test(`null`, () => {
   expect(mapIterable(function* () {
-    yield null;
+    if (0) {
+      yield h.div();
+    }
   }())).toBeNull();
 });
 
@@ -37,34 +39,6 @@ test(`two nodes`, () => {
   expect(v2._r).toBeNull();
 });
 
-test(`first null`, () => {
-  const v1 = h.div().k(5);
-
-  const first = mapIterable(function* () {
-    yield null;
-    yield v1;
-  }());
-
-  expect(first).toBe(v1);
-  expect(v1._f & VNodeFlags.KeyedList).toBeTruthy();
-  expect(v1._l).toBe(v1);
-  expect(v1._r).toBeNull();
-});
-
-test(`second null`, () => {
-  const v1 = h.div().k(5);
-
-  const first = mapIterable(function* () {
-    yield v1;
-    yield null;
-  }());
-
-  expect(first).toBe(v1);
-  expect(v1._f & VNodeFlags.KeyedList).toBeTruthy();
-  expect(v1._l).toBe(v1);
-  expect(v1._r).toBeNull();
-});
-
 test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {
   expect(() => {
     mapIterable((function* () {
@@ -85,7 +59,7 @@ test(`raise an exception when VNode doesn't have an explicit key (second node)`,
 test(`raise an exception when function returns children collection`, () => {
   expect(() => {
     mapIterable(function* () {
-      yield fragment(h.div().k(0), h.div().k(1));
+      yield fragment(h.div().k(0), h.div().k(1)) as VNode;
     }());
   }).toThrowError("singular");
 });

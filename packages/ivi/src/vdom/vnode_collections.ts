@@ -194,29 +194,27 @@ export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNo
  * @param iterable - Iterable iterator
  * @returns Virtual DOM collection
  */
-export function mapIterable<T>(iterable: IterableIterator<VNode<T> | null>): VNode<T> | null {
+export function mapIterable<T>(iterable: IterableIterator<VNode<T>>): VNode<T> | null {
   let first: VNode<any> | null = null;
   let prev: VNode<any> | null = null;
 
   for (const n of iterable) {
-    if (n !== null) {
-      /* istanbul ignore else */
-      if (DEBUG) {
-        if ((n._f & VNodeFlags.Key) === 0) {
-          throw new Error(`VNodes created with a mapIterable() function should have an explicit key`);
-        }
-        if (n._l !== n) {
-          throw new Error(`VNodes created with a mapIterable() function should be a singular nodes`);
-        }
+    /* istanbul ignore else */
+    if (DEBUG) {
+      if ((n._f & VNodeFlags.Key) === 0) {
+        throw new Error(`VNodes created with a mapIterable() function should have an explicit key`);
       }
-      if (prev !== null) {
-        n._l = prev;
-        prev._r = n;
-      } else {
-        first = n;
+      if (n._l !== n) {
+        throw new Error(`VNodes created with a mapIterable() function should be a singular nodes`);
       }
-      prev = n;
     }
+    if (prev !== null) {
+      n._l = prev;
+      prev._r = n;
+    } else {
+      first = n;
+    }
+    prev = n;
   }
 
   if (first !== null) {
