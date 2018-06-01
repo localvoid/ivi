@@ -43,6 +43,30 @@
  *
  * Issues with touch events
  * {@link https://docs.google.com/document/d/12-HPlSIF7-ISY8TQHtuQ3IqDi-isZVI0Yzv5zwl90VU}
+ *
+ * Gesture Recognition Systems:
+ *
+ * iOS
+ * {@link https://developer.apple.com/documentation/uikit/uigesturerecognizer}
+ *
+ * Android
+ * {@link https://developer.android.com/training/gestures/}
+ *
+ * Flutter - Automatic gesture disambiguation algorithm. ivi-gestures implementation were heavily inspired by the ideas
+ * from this project, but now it is using different heuristics for gesture disambiguation.
+ * {@link https://github.com/flutter/flutter/tree/master/packages/flutter/lib/src/gestures}
+ *
+ * TouchScript - Unity. Inspired by iOS API. Amazing documentation.
+ * {@link https://github.com/TouchScript/TouchScript/wiki}
+ *
+ * Hammer.js - Most popular gesture recognition lib for the web platform. Unable to handle complex scenarios, flawed
+ * architecture.
+ * {@link https://github.com/hammerjs/hammer.js}
+ *
+ * Non-standard recognizers:
+ *
+ * Pinch-to-Zoom plus
+ * {@link https://www.youtube.com/watch?v=x-hFyzdwoL8}
  */
 
 import { TOUCH_EVENTS, catchError } from "ivi-core";
@@ -53,7 +77,7 @@ import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_eve
 import { GestureBehavior } from "./gesture_behavior";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
-import { GestureRecognizer, GestureRecognizerState, GestureRecognizerUpdateAction } from "./gesture_recognizer";
+import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
 import { GestureConflictResolverAction, GestureController } from "./gesture_controller";
 import { scheduleMicrotask } from "ivi-scheduler";
 import { NativeEventListenerFlags } from "./native_event_listener";
@@ -87,9 +111,9 @@ export function createGestureEventDispatcher(): EventDispatcher {
   const matchEventSource = (h: EventHandler) => (h.src === src);
 
   const pointers = new Map<number, GesturePointerEvent>();
-  const recognizers: GestureRecognizer[] = [];
-  const resolvedRecognizers: GestureRecognizer[] = [];
-  let acceptedRecognizer: GestureRecognizer | null = null;
+  const recognizers: GestureRecognizer<any>[] = [];
+  const resolvedRecognizers: GestureRecognizer<any>[] = [];
+  let acceptedRecognizer: GestureRecognizer<any> | null = null;
   let conflictResolverClosed = false;
   let activeRecognizersCounter = 0;
   let resolvedRecognizersCounter = 0;
@@ -110,20 +134,22 @@ export function createGestureEventDispatcher(): EventDispatcher {
   const resolveConflicts = () => {
     pendingResolveConflicts = false;
     if (!acceptedRecognizer && resolvedRecognizersCounter > 0) {
-      let delay = 0;
+      let wait = 0;
       for (let i = 0; i < recognizers.length; i++) {
         const recognizer = recognizers[i];
         if (recognizer.state & GestureRecognizerState.Active) {
-          delay = Math.max(delay, recognizer.shouldWait(0));
+          if (recognizer.shouldWait()) {
+            wait = 1;
+          }
         }
       }
-      if ((delay === 0) || ((activeRecognizersCounter - resolvedRecognizersCounter) === 0)) {
+      if (wait || ((activeRecognizersCounter - resolvedRecognizersCounter) === 0)) {
         let i = resolvedRecognizers.length - 1;
         while (i >= 0) {
           const recognizer = resolvedRecognizers[i--];
           if (recognizer.state & GestureRecognizerState.Active) {
             acceptedRecognizer = recognizer;
-            recognizer.update(GestureRecognizerUpdateAction.Accepted);
+            recognizer.accepted();
             if (recognizer instanceof NativePanGestureRecognizer) {
               listener.clear(NativeEventListenerFlags.TrackMove | NativeEventListenerFlags.PreventDefault);
             } else {
@@ -137,7 +163,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
           if (recognizer !== acceptedRecognizer && (recognizer.state & GestureRecognizerState.Active)) {
             activeRecognizersCounter--;
             recognizer.state &= ~GestureRecognizerState.Active;
-            recognizer.update(GestureRecognizerUpdateAction.Rejected);
+            recognizer.rejected();
           }
         }
       }
@@ -169,7 +195,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
   };
 
   const conflictResolver: GestureController =
-    (recognizer: GestureRecognizer, action: GestureConflictResolverAction) => {
+    (recognizer: GestureRecognizer<any>, action: GestureConflictResolverAction) => {
       switch (action) {
         case GestureConflictResolverAction.Activate: {
           recognizer.state |= GestureRecognizerState.Active;
@@ -191,7 +217,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
           if (recognizer.state & GestureRecognizerState.Resolved) {
             resolvedRecognizersCounter--;
           }
-          recognizer.update(GestureRecognizerUpdateAction.Rejected);
+          recognizer.rejected();
           break;
         }
         case GestureConflictResolverAction.Finish: {
@@ -227,13 +253,13 @@ export function createGestureEventDispatcher(): EventDispatcher {
           let recognizer = h.state;
           if (conflictResolverClosed) {
             if (recognizer !== null && (recognizer.state & GestureRecognizerState.Active)) {
-              recognizer.update(GestureRecognizerUpdateAction.HandleEvent, e);
+              recognizer.handleEvent(e);
             }
           } else {
             if (recognizer === null) {
-              h.state = recognizer = h.props(conflictResolver, h);
+              h.state = recognizer = h.props(conflictResolver, h.handler);
             }
-            recognizer.update(GestureRecognizerUpdateAction.HandleEvent, e);
+            recognizer.handleEvent(e);
           }
         });
         if (activeRecognizersCounter) {
@@ -263,7 +289,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
               if (r.state & GestureRecognizerState.Resolved) {
                 resolvedRecognizersCounter--;
               }
-              r.update(GestureRecognizerUpdateAction.Rejected);
+              r.rejected();
             } else if (r.resolveAction & GestureBehavior.Native) {
               // if there is native behavior, don't trigger preventDefault
               preventDefault = false;
@@ -278,11 +304,11 @@ export function createGestureEventDispatcher(): EventDispatcher {
     } else if (conflictResolverClosed) {
       if (activeRecognizersCounter) {
         if (acceptedRecognizer) {
-          acceptedRecognizer.update(GestureRecognizerUpdateAction.HandleEvent, ev);
+          acceptedRecognizer.handleEvent(ev);
         } else {
           for (const recognizer of recognizers) {
             if (recognizer.state & GestureRecognizerState.Active) {
-              recognizer.update(GestureRecognizerUpdateAction.HandleEvent, ev);
+              recognizer.handleEvent(ev);
             }
           }
         }

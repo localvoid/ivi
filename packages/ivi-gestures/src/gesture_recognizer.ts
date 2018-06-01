@@ -8,14 +8,6 @@ export const enum GestureRecognizerState {
   Accepted = 1 << 2,
 }
 
-export const enum GestureRecognizerUpdateAction {
-  HandleEvent,
-  Accepted,
-  Rejected,
-  Disposed,
-  Time,
-}
-
 /**
  * Gesture Recognizer.
  *
@@ -26,7 +18,7 @@ export const enum GestureRecognizerUpdateAction {
  * Active          :: resolve() | cancel()
  * Active|Resolved :: cancel() | finish()
  */
-export abstract class GestureRecognizer {
+export abstract class GestureRecognizer<T> {
   /**
    * See {@link GestureRecognizerState} for details.
    */
@@ -47,9 +39,11 @@ export abstract class GestureRecognizer {
    * {@link GestureController}
    */
   private readonly controller: GestureController;
+  protected readonly handler: (ev: T) => void;
 
   constructor(
     controller: GestureController,
+    handler: (ev: T) => void,
     resolveAction: GestureBehavior,
     preventAction: GestureBehavior,
     minPointers: number,
@@ -59,11 +53,26 @@ export abstract class GestureRecognizer {
     this.preventAction = preventAction;
     this.minPointers = minPointers;
     this.controller = controller;
+    this.handler = handler;
   }
 
   reset() {
     this.state = 0;
   }
+
+  shouldWait(): boolean {
+    return false;
+  }
+
+  accepted(): void {
+    //
+  }
+
+  rejected(): void {
+    //
+  }
+
+  abstract handleEvent(event: GesturePointerEvent): void;
 
   /**
    * Dispose recognizer.
@@ -73,13 +82,6 @@ export abstract class GestureRecognizer {
       this.cancel();
     }
   }
-
-  shouldWait(time: number): number {
-    return 0;
-  }
-
-  abstract update(action: GestureRecognizerUpdateAction.HandleEvent, data: GesturePointerEvent): void;
-  abstract update(action: GestureRecognizerUpdateAction, data?: GesturePointerEvent | number): void;
 
   protected activate() {
     if (DEBUG) {

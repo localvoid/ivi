@@ -79,9 +79,7 @@ export function createMouseEventListener(
     }
 
     if (DEBUG) {
-      debugPubMouseState({
-        currentFlags,
-      });
+      debugPubMouseState({ currentFlags });
     }
   }
 
@@ -98,9 +96,7 @@ export function createMouseEventListener(
     }
 
     if (DEBUG) {
-      debugPubMouseState({
-        currentFlags,
-      });
+      debugPubMouseState({ currentFlags });
     }
   }
 
@@ -126,9 +122,7 @@ export function createMouseEventListener(
     }
 
     if (DEBUG) {
-      debugPubMouseState({
-        currentFlags,
-      });
+      debugPubMouseState({ currentFlags });
     }
   }
 
@@ -150,9 +144,7 @@ export function createMouseEventListener(
       }
       currentFlags |= flags;
       if (DEBUG) {
-        debugPubMouseState({
-          currentFlags,
-        });
+        debugPubMouseState({ currentFlags });
       }
     },
     clear: (flags: NativeEventListenerFlags) => {
@@ -164,9 +156,7 @@ export function createMouseEventListener(
       }
       currentFlags &= ~flags;
       if (DEBUG) {
-        debugPubMouseState({
-          currentFlags,
-        });
+        debugPubMouseState({ currentFlags });
       }
     },
   };

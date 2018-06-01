@@ -7,4 +7,4 @@ export const enum GestureConflictResolverAction {
   Finish,
 }
 
-export type GestureController = (recognizer: GestureRecognizer, action: GestureConflictResolverAction) => void;
+export type GestureController = (recognizer: GestureRecognizer<any>, action: GestureConflictResolverAction) => void;

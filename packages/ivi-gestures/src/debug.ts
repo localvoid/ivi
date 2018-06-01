@@ -5,9 +5,9 @@ import { NativeEventListenerFlags } from "./native_event_listener";
 
 export interface GestureEventDispatcherState {
   pointers: Map<number, GesturePointerEvent>;
-  recognizers: GestureRecognizer[];
-  resolvedRecognizers: GestureRecognizer[];
-  acceptedRecognizer: GestureRecognizer | null;
+  recognizers: GestureRecognizer<any>[];
+  resolvedRecognizers: GestureRecognizer<any>[];
+  acceptedRecognizer: GestureRecognizer<any> | null;
   activeRecognizersCounter: number;
   resolvedRecognizersCounter: number;
   conflictResolverClosed: boolean;

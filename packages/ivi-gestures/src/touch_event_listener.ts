@@ -61,13 +61,7 @@ export function createTouchEventListener(
   let eventTimeOffset = 0;
 
   if (DEBUG) {
-    debugPubTouchState({
-      currentFlags,
-      primaryPointers,
-      primaryTouch,
-      eventTimeOffset,
-      moveTrackingEnabled,
-    });
+    debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
   }
 
   function findTouch(touches: TouchList, id: number): boolean {
@@ -117,13 +111,7 @@ export function createTouchEventListener(
       );
     }
     if (DEBUG) {
-      debugPubTouchState({
-        currentFlags,
-        primaryPointers,
-        primaryTouch,
-        eventTimeOffset,
-        moveTrackingEnabled,
-      });
+      debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
 
@@ -169,13 +157,7 @@ export function createTouchEventListener(
       }
     }
     if (DEBUG) {
-      debugPubTouchState({
-        currentFlags,
-        primaryPointers,
-        primaryTouch,
-        eventTimeOffset,
-        moveTrackingEnabled,
-      });
+      debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
 
@@ -206,13 +188,7 @@ export function createTouchEventListener(
       onCancel(s);
     }
     if (DEBUG) {
-      debugPubTouchState({
-        currentFlags,
-        primaryPointers,
-        primaryTouch,
-        eventTimeOffset,
-        moveTrackingEnabled,
-      });
+      debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
 
@@ -241,13 +217,7 @@ export function createTouchEventListener(
       removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
     }
     if (DEBUG) {
-      debugPubTouchState({
-        currentFlags,
-        primaryPointers,
-        primaryTouch,
-        eventTimeOffset,
-        moveTrackingEnabled,
-      });
+      debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
 
@@ -274,13 +244,7 @@ export function createTouchEventListener(
       removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
     }
     if (DEBUG) {
-      debugPubTouchState({
-        currentFlags,
-        primaryPointers,
-        primaryTouch,
-        eventTimeOffset,
-        moveTrackingEnabled,
-      });
+      debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
 
@@ -310,13 +274,7 @@ export function createTouchEventListener(
       }
       currentFlags |= flags;
       if (DEBUG) {
-        debugPubTouchState({
-          currentFlags,
-          primaryPointers,
-          primaryTouch,
-          eventTimeOffset,
-          moveTrackingEnabled,
-        });
+        debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
       }
     },
     clear: (flags: NativeEventListenerFlags) => {
@@ -328,13 +286,7 @@ export function createTouchEventListener(
       }
       currentFlags &= ~flags;
       if (DEBUG) {
-        debugPubTouchState({
-          currentFlags,
-          primaryPointers,
-          primaryTouch,
-          eventTimeOffset,
-          moveTrackingEnabled,
-        });
+        debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
       }
     },
   };
