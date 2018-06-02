@@ -90,7 +90,7 @@ export declare interface CSSStyleProps {
   "border-top-style"?: string | null;
   "border-top-width"?: number | string | null;
   "border-width"?: number | string | null;
-  "bottom"?: string | null;
+  "bottom"?: number | string | null;
   /**
    * "slice" | "clone"
    */
