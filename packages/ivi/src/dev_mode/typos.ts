@@ -2,8 +2,8 @@ import { CSSStyleProps } from "ivi-core";
 import { printWarn, printWarnOnce } from "./print";
 
 const DOMHTMLAttributeTypos: { [key: string]: string | ((v: any) => string | undefined) } = {
-  "autoFocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
-  "autofocus": `Typo: use "VNode.autofocus(focus: boolean)" to enable autofocus for an element.`,
+  "autoFocus": `Typo: use "autofocus(vnode)" to enable autofocus for an element.`,
+  "autofocus": `Typo: use "autofocus(vnode)" to enable autofocus for an element.`,
   "value": `Typo: use "VNode.value(value: string)" to set an input value.`,
   "checked": `Typo: use "VNode.value(checked: boolean)" to set an input checked status.`,
 };
@@ -96,9 +96,6 @@ export function checkDOMStylesForTypos(styles: CSSStyleProps): void {
       if (match !== undefined) {
         printWarnOnce(`typo.style.${styleName}`,
           `Typo: style name "${styleName}" should be "${match}".`);
-      } else if (styleName.indexOf("-") > -1) {
-        printWarnOnce(`typo.style.${styleName}`,
-          `Typo: style "${styleName}" contains a hyphen symbol.`);
       }
 
       if (typeof styleValue === "string") {
@@ -128,14 +125,12 @@ export function checkDeprecatedDOMSVGAttributes(tag: string, attrs: { [key: stri
     switch (tag) {
       case "svg":
         if (attrs.hasOwnProperty("viewport")) {
-          printWarnOnce("deprecated.svg.attribute.viewport",
-            `SVG attribute "viewport" is deprecated.`);
+          printWarnOnce("deprecated.svg.attribute.viewport", `SVG attribute "viewport" is deprecated.`);
         }
         break;
       case "view":
         if (attrs.hasOwnProperty("viewTarget")) {
-          printWarnOnce("deprecated.svg.attribute.viewTarget",
-            `SVG attribute "viewTarget" is deprecated.`);
+          printWarnOnce("deprecated.svg.attribute.viewTarget", `SVG attribute "viewTarget" is deprecated.`);
         }
         break;
     }
