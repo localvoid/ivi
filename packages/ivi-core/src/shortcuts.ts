@@ -9,3 +9,5 @@ export const nodeCloneNode = nodeProto.cloneNode;
 export const elementSetAttribute = elementProto.setAttribute;
 export const elementSetAttributeNS = elementProto.setAttributeNS;
 export const elementRemoveAttribute = elementProto.removeAttribute;
+
+export const _ = void 0;

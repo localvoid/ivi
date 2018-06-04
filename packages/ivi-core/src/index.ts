@@ -18,6 +18,7 @@ export {
   objectHasOwnProperty,
   nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
   elementSetAttributeNS,
+  _,
 } from "./shortcuts";
 
 export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";
