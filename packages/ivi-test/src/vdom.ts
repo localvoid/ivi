@@ -381,7 +381,7 @@ export class VNodeWrapper {
     return hasAssignedStyle(this, style);
   }
 
-  hasEventHandler(eventSource: EventSource): boolean {
+  hasEventHandler(eventSource: EventDispatcher): boolean {
     if (!this.isElement()) {
       throw new Error("VNodeWrapper::hasEventHandler() can only be called on element nodes");
     }

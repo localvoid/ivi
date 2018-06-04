@@ -149,7 +149,7 @@ describe("src/index.ts", () => {
   test("text", () => {
     const text = h.t("abc");
     expect((text._f & VNodeFlags.Text) !== 0).toBe(true);
-    expect(text._c).toBe("abc");
+    expect(text._p).toBe("abc");
   });
 
   describe("elements", () => {

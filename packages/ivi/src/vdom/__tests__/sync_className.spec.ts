@@ -4,7 +4,7 @@ import { startRender } from "./utils";
 
 describe("HTML", () => {
   describe(`sync className`, () => {
-    test(`null => "a"`, () => {
+    test(`undefined => "a"`, () => {
       startRender<HTMLElement>((r) => {
         r(h.div());
         const b = r(h.div("a"));
@@ -14,7 +14,7 @@ describe("HTML", () => {
       });
     });
 
-    test(`"a" => null`, () => {
+    test(`"a" => undefined`, () => {
       startRender<HTMLElement>((r) => {
         r(h.div("a"));
         const b = r(h.div());
@@ -65,7 +65,7 @@ describe("HTML", () => {
       });
     });
 
-    test(`"a b" => null`, () => {
+    test(`"a b" => undefined`, () => {
       startRender<HTMLElement>((r) => {
         r(h.div("a b"));
         const b = r(h.div());
@@ -78,7 +78,7 @@ describe("HTML", () => {
 
 describe("SVG", () => {
   describe(`sync className`, () => {
-    test(`null => "a"`, () => {
+    test(`undefined => "a"`, () => {
       startRender<SVGElement>((r) => {
         r(s.circle());
         const b = r(s.circle("a"));
@@ -87,7 +87,7 @@ describe("SVG", () => {
       });
     });
 
-    test(`"a" => null`, () => {
+    test(`"a" => undefined`, () => {
       startRender<SVGElement>((r) => {
         r(s.circle("a"));
         const b = r(s.circle());

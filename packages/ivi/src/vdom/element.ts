@@ -1,3 +1,4 @@
+import { CSSStyleProps } from "ivi-core";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 
@@ -7,7 +8,7 @@ import { VNode } from "./vnode";
  * @example
  *
  *     const DivWithIdAttribute = element(
- *       div().a({
+ *       div("", {
  *         id: "predefined-id",
  *       });
  *     );
@@ -20,15 +21,15 @@ import { VNode } from "./vnode";
  * @param proto - Virtual DOM prototype
  * @returns factory that produces elements with predefined attributes
  */
-export function element<P, N>(proto: VNode<P, N>): (className?: string) => VNode<P, N> {
+export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: P, css?: CSSStyleProps) => VNode<P, N> {
   const flags = proto._f | VNodeFlags.ElementFactory;
-  return (className?: string) => (
+  return (className?: string, attrs?: P, css?: CSSStyleProps) => (
     new VNode<P, N>(
       flags,
       proto,
-      void 0,
-      className,
-      null,
+      attrs,
+      className === void 0 ? "" : className,
+      css,
     )
   );
 }

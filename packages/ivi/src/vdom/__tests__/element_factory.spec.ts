@@ -23,11 +23,11 @@ test(`input factory`, () => {
 });
 
 test(`default className = undefined`, () => {
-  expect(divFactory()._cs).toBeUndefined();
+  expect(divFactory()._cs).toBe("");
 });
 
 test(`className = undefined`, () => {
-  expect(divFactory(undefined)._cs).toBeUndefined();
+  expect(divFactory(undefined)._cs).toBe("");
 });
 
 test(`className = "a"`, () => {

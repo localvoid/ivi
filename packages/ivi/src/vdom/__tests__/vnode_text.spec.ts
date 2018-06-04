@@ -8,7 +8,7 @@ test(`text flags`, () => {
 
 test(`children text`, () => {
   const t = h.t("abc");
-  expect(t._c).toBe("abc");
+  expect(t._p).toBe("abc");
 });
 
 test(`implicit key`, () => {
@@ -21,14 +21,6 @@ test(`explicit key`, () => {
   const t = h.t("abc").k("k");
   expect(t._f & VNodeFlags.Key).toBeTruthy();
   expect(t._k).toBe("k");
-});
-
-test(`assigning attributes should raise an exception`, () => {
-  expect(() => h.t("abc").a({} as any)).toThrow(Error);
-});
-
-test(`assigning style should raise an exception`, () => {
-  expect(() => h.t("abc").s({})).toThrow(Error);
 });
 
 test(`assigning events should raise an exception`, () => {

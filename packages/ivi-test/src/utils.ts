@@ -22,13 +22,13 @@ export function containsClassName(classNames: string, className: string): boolea
  * @returns true when properties are matching.
  */
 export function matchValues(
-  props: { [key: string]: any } | null,
-  match: { [key: string]: any } | null,
+  props: { [key: string]: any } | null | undefined,
+  match: { [key: string]: any } | null | undefined,
 ): boolean {
-  if (match !== null) {
+  if (match) {
     const keys = Object.keys(match);
     if (keys.length > 0) {
-      if (props === null) {
+      if (!props) {
         return false;
       }
       for (const key of keys) {
@@ -49,12 +49,12 @@ export function matchValues(
  * @returns true when matching properties are existing.
  */
 export function matchKeys(
-  props: { [key: string]: any } | null,
+  props: { [key: string]: any } | null | undefined,
   match: { [key: string]: boolean },
 ): boolean {
   const keys = Object.keys(match);
   if (keys.length > 0) {
-    if (props === null) {
+    if (!props) {
       return false;
     }
     for (const key of keys) {

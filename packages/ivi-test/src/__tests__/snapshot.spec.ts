@@ -15,28 +15,24 @@ describe("src/snapshot.ts", () => {
     expect(render(h.span()).toSnapshot()).toMatchSnapshot();
   });
 
-  test("<div> (null props)", () => {
-    expect(render(h.div().a(null)).toSnapshot()).toMatchSnapshot();
-  });
-
   test("<div> ({} props)", () => {
-    expect(render(h.div().a({})).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", {})).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div tabIndex='1'>", () => {
-    expect(render(h.div().a({ tabIndex: 1 })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", { tabIndex: 1 })).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div tabIndex='1' title='2'>", () => {
-    expect(render(h.div().a({ tabIndex: 1, title: "2" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", { tabIndex: 1, title: "2" })).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div data-abc='a'", () => {
-    expect(render(h.div().a({ "data-abc": "a" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", { "data-abc": "a" })).toSnapshot()).toMatchSnapshot();
   });
 
-  test("<div aria-type='button'", () => {
-    expect(render(h.div().a({ "aria-type": "button" })).toSnapshot()).toMatchSnapshot();
+  test("<div aria-type='button'>", () => {
+    expect(render(h.div("", { "aria-type": "button" })).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div class=''>", () => {
@@ -51,20 +47,16 @@ describe("src/snapshot.ts", () => {
     expect(render(h.div("a b")).toSnapshot()).toMatchSnapshot();
   });
 
-  test("<div style=null>", () => {
-    expect(render(h.div().s(null)).toSnapshot()).toMatchSnapshot();
-  });
-
   test("<div style={top: 10px}>", () => {
-    expect(render(h.div().s({ top: "10px" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", void 0, { top: "10px" })).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div style={float: 'left'}>", () => {
-    expect(render(h.div().s({ float: "left" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", void 0, { float: "left" })).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div style={top: 10px; left: 20px}>", () => {
-    expect(render(h.div().s({ top: "10px", left: "20px" })).toSnapshot()).toMatchSnapshot();
+    expect(render(h.div("", void 0, { top: "10px", left: "20px" })).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div></div> (null children)", () => {
@@ -115,15 +107,15 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<circle style={top: 10px}>", () => {
-      expect(render(s.circle().s({ top: "10px" })).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle("", void 0, { top: "10px" })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<circle xlink:href='a'>", () => {
-      expect(render(s.circle().a({ "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle("", { "xlink:href": "a" })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<circle xml:text='a'>", () => {
-      expect(render(s.circle().a({ "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
+      expect(render(s.circle("", { "xml:test": "a" })).toSnapshot()).toMatchSnapshot();
     });
   });
 
@@ -137,11 +129,11 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<input type='checkbox'>", () => {
-      expect(render(h.input().a({ type: "checkbox" })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.input("", { type: "checkbox" })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<input type='checkbox' checked='true'>", () => {
-      expect(render(h.input().a({ type: "checkbox" }).value(true)).toSnapshot()).toMatchSnapshot();
+      expect(render(h.input("", { type: "checkbox" }).value(true)).toSnapshot()).toMatchSnapshot();
     });
 
     test("<textarea>", () => {
@@ -157,11 +149,11 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<audio volume=0.5>", () => {
-      expect(render(h.audio().a({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.audio("", { volume: 0.5 })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<video volume=0.5>", () => {
-      expect(render(h.video().a({ volume: 0.5 })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.video("", { volume: 0.5 })).toSnapshot()).toMatchSnapshot();
     });
   });
 });

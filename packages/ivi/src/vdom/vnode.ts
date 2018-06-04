@@ -10,9 +10,8 @@ import { ConnectDescriptor } from "./connect_descriptor";
  *
  * @example
  *
- *     const vnode = div("div-class-name")
- *       .a({ id: "div-id" })
- *       .e(Events.onClick((e) => console.log("click event", e)))
+ *     const vnode = div("div-class-name", { id: "div-id" })
+ *       .e(onClick((e) => console.log("click event", e)))
  *       .c("Hello");
  *
  * @final
@@ -62,11 +61,11 @@ export class VNode<P = any, N = Node> {
   /**
    * Class name.
    */
-  _cs: string | undefined;
+  _cs: string;
   /**
    * Style.
    */
-  _s: CSSStyleProps | null;
+  _s: CSSStyleProps | undefined;
   /**
    * Events.
    */
@@ -88,26 +87,34 @@ export class VNode<P = any, N = Node> {
       | ConnectDescriptor<any, any, {}>
       | null,
     props: P | undefined,
-    className: string | undefined,
-    children:
-      | VNode
-      | string
-      | number
-      | boolean
-      | null,
+    className: string,
+    style: CSSStyleProps | undefined,
   ) {
     this._f = flags;
     this._l = this;
     this._r = null;
-    this._c = children;
+    this._c = null;
     this._t = tag;
     this._k = 0;
     this._p = props;
     this._i = null;
     this._cs = className;
-    this._s = null;
+    this._s = style;
     this._e = null;
     if (DEBUG) {
+      if (flags & VNodeFlags.Element) {
+        if (props) {
+          checkDOMAttributesForTypos(props);
+
+          if (flags & VNodeFlags.SvgElement) {
+            checkDeprecatedDOMSVGAttributes(tag as string, props);
+          }
+        }
+      }
+
+      if (style !== void 0) {
+        checkDOMStylesForTypos(style);
+      }
       this.factory = NOOP;
     }
   }
@@ -127,26 +134,6 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
-   * Assigns style for an Element node.
-   *
-   * @param style - Style
-   * @returns this node
-   */
-  s<U extends CSSStyleProps>(style: U | null): this {
-    if (DEBUG) {
-      if (!(this._f & VNodeFlags.Element)) {
-        throw new Error("Failed to set style, style is available on element nodes only.");
-      }
-
-      if (style !== null) {
-        checkDOMStylesForTypos(style);
-      }
-    }
-    this._s = style;
-    return this;
-  }
-
-  /**
    * Assign events.
    *
    * @param events - Events
@@ -160,30 +147,6 @@ export class VNode<P = any, N = Node> {
     }
     this._f |= VNodeFlags.ElementPropsEvents;
     this._e = events;
-    return this;
-  }
-
-  /**
-   * Assigns DOM attributes for an Element node.
-   *
-   * @param attrs - DOM attributes
-   * @returns this node
-   */
-  a(attrs: P | null): this {
-    if (DEBUG) {
-      if (!(this._f & VNodeFlags.Element)) {
-        throw new Error("Failed to set attrs, attrs are available on element nodes only.");
-      }
-
-      if (attrs) {
-        checkDOMAttributesForTypos(attrs);
-
-        if (this._f & VNodeFlags.SvgElement) {
-          checkDeprecatedDOMSVGAttributes(this._t as string, attrs);
-        }
-      }
-    }
-    this._p = attrs as P;
     return this;
   }
 
@@ -227,7 +190,7 @@ export class VNode<P = any, N = Node> {
 
       if (n !== null) {
         if (typeof n !== "object") {
-          n = new VNode<null>(VNodeFlags.Text, null, null, void 0, n);
+          n = new VNode<string | number>(VNodeFlags.Text, null, n, "", void 0);
         }
         const last = n._l;
         const flags = n._f;

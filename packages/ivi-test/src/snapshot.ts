@@ -158,13 +158,13 @@ function _toSnapshot(
 
       result += `${indent(il)}<${vnode._t}`;
 
-      if (vnode._cs !== void 0) {
+      if (vnode._cs !== "") {
         result += `\n${indent(il + 1)}class="${vnode._cs}"`;
         multiline = true;
       }
 
       const attrs = vnode._p;
-      if (attrs !== null) {
+      if (attrs !== void 0) {
         const s = renderAttrsToSnapshot(il + 1, attrs);
         if (s !== "") {
           multiline = true;
@@ -172,7 +172,7 @@ function _toSnapshot(
         result += s;
       }
       const style = vnode._s;
-      if (style !== null) {
+      if (style !== void 0) {
         const s = renderStyleToSnapshot(il + 1, style);
         if (s !== "") {
           multiline = true;
@@ -225,7 +225,7 @@ function _toSnapshot(
         result += `\n${indent(il)}</${closeTagName}>`;
       }
     } else {
-      result += vnode._c as string;
+      result += vnode._p as string;
     }
   } else {
     if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {

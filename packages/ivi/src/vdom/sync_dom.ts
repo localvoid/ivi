@@ -11,26 +11,26 @@ import {
  */
 export function syncStyle(
   node: HTMLElement | SVGElement,
-  a: CSSStyleProps | null,
-  b: CSSStyleProps | null,
+  a: CSSStyleProps | undefined,
+  b: CSSStyleProps | undefined,
 ): void {
   const style = node.style;
   let key: string;
   let bValue;
 
-  if (a === null) {
+  if (a === void 0) {
     // a is empty, insert all styles from b.
     for (key in b!) {
       bValue = (b as { [key: string]: string })[key];
-      if (bValue !== undefined) {
+      if (bValue !== void 0) {
         style.setProperty(key, bValue);
       }
     }
-  } else if (b !== null) {
+  } else if (b !== void 0) {
     for (key in b) {
       bValue = (b as { [key: string]: string })[key];
       if ((a as { [key: string]: string })[key] !== bValue) {
-        if (bValue !== undefined) {
+        if (bValue !== void 0) {
           style.setProperty(key, bValue);
         } else {
           style.removeProperty(key);
@@ -110,25 +110,25 @@ function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): 
 export function syncDOMAttrs(
   node: Element,
   svg: boolean,
-  a: { [key: string]: any } | null,
-  b: { [key: string]: any } | null,
+  a: { [key: string]: any } | undefined,
+  b: { [key: string]: any } | undefined,
 ): void {
   let key: string;
   let bValue;
 
-  if (a === null) {
+  if (a === void 0) {
     // a is empty, insert all attributes from b.
     for (key in b!) {
       bValue = b![key];
-      if (bValue !== undefined) {
+      if (bValue !== void 0) {
         setDOMAttribute(node, svg, key, bValue);
       }
     }
-  } else if (b !== null) {
+  } else if (b !== void 0) {
     for (key in b) {
       bValue = b[key];
       if (a[key] !== bValue) {
-        if (bValue !== undefined) {
+        if (bValue !== void 0) {
           setDOMAttribute(node, svg, key, bValue);
         } else {
           /* istanbul ignore else */

@@ -3,10 +3,6 @@ import * as h from "ivi-html";
 
 const Empty = statelessComponent(() => h.t(""));
 
-test(`assigning style should raise an exception`, () => {
-  expect(() => Empty().s({})).toThrow(Error);
-});
-
 test(`assigning children should raise an exception`, () => {
   expect(() => Empty().c("123")).toThrow(Error);
 });

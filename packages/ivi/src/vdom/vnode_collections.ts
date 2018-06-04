@@ -54,7 +54,7 @@ export function fragment(): VNode | null {
 
     if (n !== null) {
       if (typeof n !== "object") {
-        n = new VNode<null>(VNodeFlags.Text, null, null, void 0, n);
+        n = new VNode<string | number>(VNodeFlags.Text, null, n, "", void 0);
       }
       const last = n._l;
       if (prev !== null) {

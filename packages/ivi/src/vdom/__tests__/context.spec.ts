@@ -1,8 +1,11 @@
-import { VNode, statelessComponent, connect, context } from "ivi";
+import { VNode, statelessComponent, connect, context, withShouldUpdate } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
 
-const Static = statelessComponent<VNode>((child) => child, () => false);
+const Static = withShouldUpdate(
+  () => false,
+  statelessComponent<VNode>((child) => child),
+);
 
 const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
   (prev, props, ctx) => ({ value: ctx.value }),

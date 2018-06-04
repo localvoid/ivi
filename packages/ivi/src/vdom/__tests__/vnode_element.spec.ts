@@ -13,12 +13,12 @@ test(`tagName`, () => {
 
 test(`default className should be undefined`, () => {
   const v = h.div();
-  expect(v._cs).toBeUndefined();
+  expect(v._cs).toBe("");
 });
 
 test(`className=undefined`, () => {
   const v = h.div(undefined);
-  expect(v._cs).toBeUndefined();
+  expect(v._cs).toBe("");
 });
 
 test(`className="cls"`, () => {
@@ -34,7 +34,7 @@ test(`explicit key`, () => {
 
 test(`style`, () => {
   const s = { top: "10px" };
-  const v = h.div().s(s);
+  const v = h.div("", void 0, s);
   expect(v._s).toBe(s);
 });
 
@@ -46,13 +46,13 @@ test(`events`, () => {
 
 test(`attributes`, () => {
   const s = {};
-  const v = h.div().a(s);
+  const v = h.div("", s);
   expect(v._p).toBe(s);
 });
 
 test(`children`, () => {
   const v = h.div().c("abc");
-  expect((v._c as VNode)._c as string).toBe("abc");
+  expect((v._c as VNode)._p as string).toBe("abc");
 });
 
 test(`overwriting children should raise an exception`, () => {

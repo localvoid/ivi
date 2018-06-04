@@ -18,7 +18,7 @@ test(`"abc"`, () => {
 
   expect(first).toBeInstanceOf(VNode);
   expect(first._f & VNodeFlags.Text).toBeTruthy();
-  expect(first._c).toBe("abc");
+  expect(first._p).toBe("abc");
   expect(first._l).toBe(first);
   expect(first._r).toBeNull();
 });
@@ -28,7 +28,7 @@ test(`10`, () => {
 
   expect(first).toBeInstanceOf(VNode);
   expect(first._f & VNodeFlags.Text).toBeTruthy();
-  expect(first._c).toBe(10);
+  expect(first._p).toBe(10);
   expect(first._l).toBe(first);
   expect(first._r).toBeNull();
 });

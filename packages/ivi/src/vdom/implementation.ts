@@ -229,11 +229,12 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   }
 
   const flags = vnode._f;
+  const props = vnode._p;
   let instance: Node | Component<any> | null = null;
   let node: Node;
 
   if ((flags & VNodeFlags.Text) !== 0) {
-    instance = node = document.createTextNode(vnode._c as string);
+    instance = node = document.createTextNode(props as string);
   } else {
     const tag = vnode._t;
     if ((flags & (VNodeFlags.Element | VNodeFlags.StatefulComponent)) !== 0) {
@@ -256,7 +257,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         }
 
         const className = vnode._cs;
-        if (className !== void 0 && className !== "") {
+        if (className !== "") {
           /**
            * SVGElement.className returns `SVGAnimatedString`
            */
@@ -272,11 +273,11 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           }
         }
 
-        if (vnode._p !== null) {
-          syncDOMAttrs(node as Element, svg, null, vnode._p);
+        if (props !== void 0) {
+          syncDOMAttrs(node as Element, svg, void 0, props);
         }
-        if (vnode._s !== null) {
-          syncStyle(node as HTMLElement, null, vnode._s);
+        if (vnode._s !== void 0) {
+          syncStyle(node as HTMLElement, void 0, vnode._s);
         }
 
         let children = vnode._c;
@@ -307,7 +308,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
 
         instance = node;
       } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
-        const component = instance = new (tag as StatefulComponent<any>)(vnode._p);
+        const component = instance = new (tag as StatefulComponent<any>)(props);
         const root = vnode._c = DEBUG ?
           shouldBeSingleVNode(component.render()) :
           /* istanbul ignore next */component.render();
@@ -317,17 +318,17 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
       if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
         if ((flags & VNodeFlags.Connect) !== 0) {
           const connect = (tag as ConnectDescriptor<any, any, {}>);
-          const selectData = instance = connect.select(null, vnode._p, context);
+          const selectData = instance = connect.select(null, props, context);
           vnode._c = DEBUG ?
             shouldBeSingleVNode(connect.render(selectData)) :
             /* istanbul ignore next */connect.render(selectData);
         } else {
-          context = instance = { ...context, ...vnode._p };
+          context = instance = { ...context, ...props };
         }
       } else {
         vnode._c = DEBUG ?
-          shouldBeSingleVNode((tag as StatelessComponent<any>).render(vnode._p)) :
-          /* istanbul ignore next */(tag as StatelessComponent<any>).render(vnode._p);
+          shouldBeSingleVNode((tag as StatelessComponent<any>).render(props)) :
+          /* istanbul ignore next */(tag as StatelessComponent<any>).render(props);
       }
       node = _render(parent, vnode._c as VNode, context);
     }
@@ -420,15 +421,18 @@ export function syncVNode(
     ) &&
     a._k === b._k
   ) {
+    const aProps = a._p;
+    const bProps = b._p;
     b._i = instance = a._i;
-    const aChild = a._c;
-    let bChild = b._c;
 
     if ((bFlags & VNodeFlags.Text) !== 0) {
-      if (aChild !== bChild) {
-        (instance as Text).data = bChild as string;
+      if (aProps !== bProps) {
+        (instance as Text).data = bProps as string;
       }
     } else {
+      const aChild = a._c;
+      let bChild = b._c;
+
       if (a._e !== b._e) {
         syncEvents(a._e, b._e);
       }
@@ -437,9 +441,8 @@ export function syncVNode(
         if ((bFlags & VNodeFlags.Element) !== 0) {
           const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
 
-          let className = b._cs;
+          const className = b._cs;
           if (a._cs !== className) {
-            className = className === void 0 ? "" : className;
             if (svg === true) {
               /* istanbul ignore else */
               if (DEBUG) {
@@ -452,8 +455,8 @@ export function syncVNode(
             }
           }
 
-          if (a._p !== b._p) {
-            syncDOMAttrs(instance as Element, svg, a._p, b._p);
+          if (aProps !== bProps) {
+            syncDOMAttrs(instance as Element, svg, aProps, bProps);
           }
           if (a._s !== b._s) {
             syncStyle(instance as HTMLElement, a._s, b._s);
@@ -513,22 +516,20 @@ export function syncVNode(
           }
         } else { // VNodeFlags.StatefulComponent
           // Update component props
-          const oldProps = a._p;
-          const newProps = b._p;
-          if (oldProps !== newProps) {
+          if (aProps !== bProps) {
             // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
             // reassigned later to reduce memory usage.
-            (instance as Component<any>).newPropsReceived(oldProps, newProps);
+            (instance as Component<any>).newPropsReceived(aProps, bProps);
           }
           // Reassign props even when they aren't changed to reduce overall memory usage.
           //
           // New value always stays alive because it is referenced from virtual dom tree, so instead of keeping
           // in memory two values even when they are the same, we just always reassign it to the new value.
-          (instance as Component<any>).props = newProps;
+          (instance as Component<any>).props = bProps;
 
           if (
             (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) ||
-            ((instance as Component<any>).shouldUpdate(oldProps, newProps) === true)
+            ((instance as Component<any>).shouldUpdate(aProps, bProps) === true)
           ) {
             syncVNode(
               parent,
@@ -550,7 +551,7 @@ export function syncVNode(
           if ((bFlags & VNodeFlags.Connect) !== 0) {
             const connect = b._t as ConnectDescriptor<any, any, {}>;
             const prevSelectData = instance;
-            const selectData = b._i = connect.select(prevSelectData, b._p, context);
+            const selectData = b._i = connect.select(prevSelectData, bProps, context);
             if (prevSelectData === selectData) {
               dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
             } else {
@@ -565,26 +566,26 @@ export function syncVNode(
               );
             }
           } else {
-            if (a._p !== b._p) {
+            if (aProps !== bProps) {
               dirtyContext = true;
             }
             b._i = context = (dirtyContext === true) ?
-              { ...context, ...b._p } :
+              { ...context, ...bProps } :
               instance as {};
             syncVNode(parent, aChild as VNode, bChild as VNode, context, dirtyContext);
           }
         } else { // VNodeFlags.StatelessComponent
           const sc = b._t as StatelessComponent<any>;
           if (
-            (a._p !== b._p) &&
-            ((bFlags & VNodeFlags.ShouldUpdateHint) === 0 || sc.shouldUpdate!(a._p, b._p) === true)
+            (aProps !== bProps) &&
+            ((bFlags & VNodeFlags.ShouldUpdateHint) === 0 || sc.shouldUpdate!(aProps, bProps) === true)
           ) {
             syncVNode(
               parent,
               aChild as VNode,
               b._c = DEBUG ?
-                shouldBeSingleVNode(sc.render(b._p)) :
-                  /* istanbul ignore next */sc.render(b._p),
+                shouldBeSingleVNode(sc.render(bProps)) :
+                  /* istanbul ignore next */sc.render(bProps),
               context,
               dirtyContext,
             );

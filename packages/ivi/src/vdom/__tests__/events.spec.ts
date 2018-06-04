@@ -559,8 +559,7 @@ describe("events", () => {
   test(`preventDefault method should trigger native prevent default behavior`, () => {
     startRender<HTMLInputElement>((r) => {
       const n = r(
-        h.input()
-          .a({ type: "checkbox" })
+        h.input("", { type: "checkbox" })
           .e(Events.onClick(() => EventFlags.PreventDefault)),
       );
 
@@ -572,8 +571,7 @@ describe("events", () => {
   test(`EventFlags.PreventDefault should trigger native prevent default behavior`, () => {
     startRender<HTMLInputElement>((r) => {
       const n = r(
-        h.input()
-          .a({ type: "checkbox" })
+        h.input("", { type: "checkbox" })
           .e(Events.onClick((e) => EventFlags.PreventDefault)),
       );
 

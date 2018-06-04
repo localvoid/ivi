@@ -2,17 +2,13 @@
 
 exports[`src/snapshot.ts 'abc' 1`] = `"abc"`;
 
-exports[`src/snapshot.ts <div aria-type='button' 1`] = `
+exports[`src/snapshot.ts <div aria-type='button'> 1`] = `
 "<div
   aria-type=\\"button\\"
 />"
 `;
 
-exports[`src/snapshot.ts <div class=''> 1`] = `
-"<div
-  class=\\"\\"
-/>"
-`;
+exports[`src/snapshot.ts <div class=''> 1`] = `"<div/>"`;
 
 exports[`src/snapshot.ts <div class='a b'> 1`] = `
 "<div
@@ -57,8 +53,6 @@ exports[`src/snapshot.ts <div style={top: 10px}> 1`] = `
 />"
 `;
 
-exports[`src/snapshot.ts <div style=null> 1`] = `"<div/>"`;
-
 exports[`src/snapshot.ts <div tabIndex='1' title='2'> 1`] = `
 "<div
   tabIndex=\\"1\\"
@@ -73,8 +67,6 @@ exports[`src/snapshot.ts <div tabIndex='1'> 1`] = `
 `;
 
 exports[`src/snapshot.ts <div> ({} props) 1`] = `"<div/>"`;
-
-exports[`src/snapshot.ts <div> (null props) 1`] = `"<div/>"`;
 
 exports[`src/snapshot.ts <div> 1`] = `"<div/>"`;
 

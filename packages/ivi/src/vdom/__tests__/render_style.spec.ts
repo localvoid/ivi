@@ -3,37 +3,37 @@ import * as s from "ivi-svg";
 import { startRender } from "./utils";
 
 describe(`HTML`, () => {
-  test(`<div style=null>`, () => {
+  test(`<div style=undefined>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().s(null));
+      const n = r(h.div("", void 0, undefined));
       expect(n.style.cssText).toBe("");
     });
   });
 
   test(`<div style={ top: undefined }>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().s({ top: undefined }));
+      const n = r(h.div("", void 0, { top: undefined }));
       expect(n.style.cssText).toBe("");
     });
   });
 
   test(`<div style={ top: "10px" }>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().s({ top: "10px" }));
+      const n = r(h.div("", void 0, { top: "10px" }));
       expect(n.style.top).toBe("10px");
     });
   });
 
   test(`<div style={ float: "left" }>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().s({ float: "left" }));
+      const n = r(h.div("", void 0, { float: "left" }));
       expect(n.style.cssFloat).toBe("left");
     });
   });
 
   test(`<div style={top: "10px"; left: "20px" }>`, () => {
     startRender<HTMLElement>((r) => {
-      const n = r(h.div().s({ top: "10px", left: "20px" }));
+      const n = r(h.div("", void 0, { top: "10px", left: "20px" }));
       expect(n.style.top).toBe("10px");
       expect(n.style.left).toBe("20px");
     });
@@ -43,7 +43,7 @@ describe(`HTML`, () => {
 describe(`SVG`, () => {
   test(`<circle style={top: 10px}>`, () => {
     startRender<SVGCircleElement>((r) => {
-      const n = r(s.circle().s({ top: "10px" }));
+      const n = r(s.circle("", void 0, { top: "10px" }));
       expect(n.style.top).toBe("10px");
     });
   });

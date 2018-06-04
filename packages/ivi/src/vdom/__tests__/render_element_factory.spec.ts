@@ -33,7 +33,7 @@ test(`<div class="a"></div>`, () => {
 
 test(`<div id="123"></div>`, () => {
   startRender<HTMLElement>((r) => {
-    const e = element(h.div().a({ id: "123" }));
+    const e = element(h.div("", { id: "123" }));
     const n = r(e());
 
     expect(n.attributes.length).toBe(1);
@@ -43,7 +43,7 @@ test(`<div id="123"></div>`, () => {
 
 test(`render twice: <div id="123"></div>`, () => {
   startRender<HTMLElement>((r) => {
-    const e = element(h.div().a({ id: "123" }));
+    const e = element(h.div("", { id: "123" }));
     r(e());
     const n = r(e());
 

@@ -14,6 +14,7 @@ import {
   HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
   HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
   HTMLTrackElementProps, HTMLUListElementProps, HTMLVideoElementProps,
+  CSSStyleProps,
 } from "ivi-core";
 import { VNode, VNodeFlags } from "ivi";
 
@@ -145,1084 +146,1085 @@ const enum TagId {
  * @param content Text content.
  * @returns VNode object.
  */
-export function t(content: string | number | null): VNode<null, Text> {
-  return new VNode(VNodeFlags.Text, null, null, void 0, content);
+export function t(content: string | number): VNode<string | number, Text> {
+  return new VNode(VNodeFlags.Text, null, content, "", void 0);
 }
 
-// HTML Elements:
-export function a(className?: string): VNode<HTMLAnchorElementProps | null, HTMLAnchorElement> {
+/* tslint:disable:max-line-length */
+
+export function a(className?: string, attrs?: HTMLAnchorElementProps, css?: CSSStyleProps): VNode<HTMLAnchorElementProps | undefined, HTMLAnchorElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.A << VNodeFlags.ElementIdOffset),
     "a",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function abbr(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function abbr(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Abbr << VNodeFlags.ElementIdOffset),
     "abbr",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function acronym(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function acronym(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Acronym << VNodeFlags.ElementIdOffset),
     "acronym",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function address(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function address(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Address << VNodeFlags.ElementIdOffset),
     "address",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function area(className?: string): VNode<HTMLAreaElementProps | null, HTMLAreaElement> {
+export function area(className?: string, attrs?: HTMLAreaElementProps, css?: CSSStyleProps): VNode<HTMLAreaElementProps | undefined, HTMLAreaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Area << VNodeFlags.ElementIdOffset),
     "area",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function article(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function article(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Article << VNodeFlags.ElementIdOffset),
     "article",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function aside(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function aside(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Aside << VNodeFlags.ElementIdOffset),
     "aside",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function b(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function b(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.B << VNodeFlags.ElementIdOffset),
     "b",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function base(className?: string): VNode<HTMLBaseElementProps | null, HTMLBaseElement> {
+export function base(className?: string, attrs?: HTMLBaseElementProps, css?: CSSStyleProps): VNode<HTMLBaseElementProps | undefined, HTMLBaseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Base << VNodeFlags.ElementIdOffset),
     "base",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function basefont(className?: string): VNode<HTMLBaseFontElementProps | null, HTMLBaseFontElement> {
+export function basefont(className?: string, attrs?: HTMLBaseFontElementProps, css?: CSSStyleProps): VNode<HTMLBaseFontElementProps | undefined, HTMLBaseFontElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Basefont << VNodeFlags.ElementIdOffset),
     "basefont",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function bdo(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function bdo(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Bdo << VNodeFlags.ElementIdOffset),
     "bdo",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function big(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function big(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Big << VNodeFlags.ElementIdOffset),
     "big",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function blockquote(className?: string): VNode<HTMLQuoteElementProps | null, HTMLQuoteElement> {
+export function blockquote(className?: string, attrs?: HTMLQuoteElementProps, css?: CSSStyleProps): VNode<HTMLQuoteElementProps | undefined, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Blockquote << VNodeFlags.ElementIdOffset),
     "blockquote",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function body(className?: string): VNode<HTMLBodyElementProps | null, HTMLBodyElement> {
+export function body(className?: string, attrs?: HTMLBodyElementProps, css?: CSSStyleProps): VNode<HTMLBodyElementProps | undefined, HTMLBodyElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Body << VNodeFlags.ElementIdOffset),
     "body",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function br(className?: string): VNode<HTMLBRElementProps | null, HTMLBRElement> {
+export function br(className?: string, attrs?: HTMLBRElementProps, css?: CSSStyleProps): VNode<HTMLBRElementProps | undefined, HTMLBRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Br << VNodeFlags.ElementIdOffset),
     "br",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function button(className?: string): VNode<HTMLButtonElementProps | null, HTMLButtonElement> {
+export function button(className?: string, attrs?: HTMLButtonElementProps, css?: CSSStyleProps): VNode<HTMLButtonElementProps | undefined, HTMLButtonElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Button << VNodeFlags.ElementIdOffset),
     "button",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function canvas(className?: string): VNode<HTMLCanvasElementProps | null, HTMLCanvasElement> {
+export function canvas(className?: string, attrs?: HTMLCanvasElementProps, css?: CSSStyleProps): VNode<HTMLCanvasElementProps | undefined, HTMLCanvasElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Canvas << VNodeFlags.ElementIdOffset),
     "canvas",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function caption(className?: string): VNode<HTMLTableCaptionElementProps | null, HTMLTableCaptionElement> {
+export function caption(className?: string, attrs?: HTMLTableCaptionElementProps, css?: CSSStyleProps): VNode<HTMLTableCaptionElementProps | undefined, HTMLTableCaptionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Caption << VNodeFlags.ElementIdOffset),
     "caption",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function center(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function center(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Center << VNodeFlags.ElementIdOffset),
     "center",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function cite(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function cite(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Cite << VNodeFlags.ElementIdOffset),
     "cite",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function code(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function code(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Code << VNodeFlags.ElementIdOffset),
     "code",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function col(className?: string): VNode<HTMLTableColElementProps | null, HTMLTableColElement> {
+export function col(className?: string, attrs?: HTMLTableColElementProps, css?: CSSStyleProps): VNode<HTMLTableColElementProps | undefined, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Col << VNodeFlags.ElementIdOffset),
     "col",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function colgroup(className?: string): VNode<HTMLTableColElementProps | null, HTMLTableColElement> {
+export function colgroup(className?: string, attrs?: HTMLTableColElementProps, css?: CSSStyleProps): VNode<HTMLTableColElementProps | undefined, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Colgroup << VNodeFlags.ElementIdOffset),
     "colgroup",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function data(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function data(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Data << VNodeFlags.ElementIdOffset),
     "data",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function datalist(className?: string): VNode<HTMLDataListElementProps | null, HTMLDataListElement> {
+export function datalist(className?: string, attrs?: HTMLDataListElementProps, css?: CSSStyleProps): VNode<HTMLDataListElementProps | undefined, HTMLDataListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Datalist << VNodeFlags.ElementIdOffset),
     "datalist",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function dd(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function dd(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dd << VNodeFlags.ElementIdOffset),
     "dd",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function del(className?: string): VNode<HTMLModElementProps | null, HTMLModElement> {
+export function del(className?: string, attrs?: HTMLModElementProps, css?: CSSStyleProps): VNode<HTMLModElementProps | undefined, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Del << VNodeFlags.ElementIdOffset),
     "del",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function dfn(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function dfn(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dfn << VNodeFlags.ElementIdOffset),
     "dfn",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function dir(className?: string): VNode<HTMLDirectoryElementProps | null, HTMLDirectoryElement> {
+export function dir(className?: string, attrs?: HTMLDirectoryElementProps, css?: CSSStyleProps): VNode<HTMLDirectoryElementProps | undefined, HTMLDirectoryElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dir << VNodeFlags.ElementIdOffset),
     "dir",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function div(className?: string): VNode<HTMLDivElementProps | null, HTMLDivElement> {
+export function div(className?: string, attrs?: HTMLDivElementProps, css?: CSSStyleProps): VNode<HTMLDivElementProps | undefined, HTMLDivElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Div << VNodeFlags.ElementIdOffset),
     "div",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function dl(className?: string): VNode<HTMLDListElementProps | null, HTMLDListElement> {
+export function dl(className?: string, attrs?: HTMLDListElementProps, css?: CSSStyleProps): VNode<HTMLDListElementProps | undefined, HTMLDListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dl << VNodeFlags.ElementIdOffset),
     "dl",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function dt(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function dt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dt << VNodeFlags.ElementIdOffset),
     "dt",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function em(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function em(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Em << VNodeFlags.ElementIdOffset),
     "em",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function embed(className?: string): VNode<HTMLEmbedElementProps | null, HTMLEmbedElement> {
+export function embed(className?: string, attrs?: HTMLEmbedElementProps, css?: CSSStyleProps): VNode<HTMLEmbedElementProps | undefined, HTMLEmbedElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Embed << VNodeFlags.ElementIdOffset),
     "embed",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function fieldset(className?: string): VNode<HTMLFieldSetElementProps | null, HTMLFieldSetElement> {
+export function fieldset(className?: string, attrs?: HTMLFieldSetElementProps, css?: CSSStyleProps): VNode<HTMLFieldSetElementProps | undefined, HTMLFieldSetElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Fieldset << VNodeFlags.ElementIdOffset),
     "fieldset",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function figcaption(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function figcaption(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Figcaption << VNodeFlags.ElementIdOffset),
     "figcaption",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function figure(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function figure(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Figure << VNodeFlags.ElementIdOffset),
     "figure",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function font(className?: string): VNode<HTMLFontElementProps | null, HTMLFontElement> {
+export function font(className?: string, attrs?: HTMLFontElementProps, css?: CSSStyleProps): VNode<HTMLFontElementProps | undefined, HTMLFontElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Font << VNodeFlags.ElementIdOffset),
     "font",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function footer(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function footer(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Footer << VNodeFlags.ElementIdOffset),
     "footer",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function form(className?: string): VNode<HTMLFormElementProps | null, HTMLFormElement> {
+export function form(className?: string, attrs?: HTMLFormElementProps, css?: CSSStyleProps): VNode<HTMLFormElementProps | undefined, HTMLFormElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Form << VNodeFlags.ElementIdOffset),
     "form",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function frame(className?: string): VNode<HTMLFrameElementProps | null, HTMLFrameElement> {
+export function frame(className?: string, attrs?: HTMLFrameElementProps, css?: CSSStyleProps): VNode<HTMLFrameElementProps | undefined, HTMLFrameElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Frame << VNodeFlags.ElementIdOffset),
     "frame",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function frameset(className?: string): VNode<HTMLFrameSetElementProps | null, HTMLFrameSetElement> {
+export function frameset(className?: string, attrs?: HTMLFrameSetElementProps, css?: CSSStyleProps): VNode<HTMLFrameSetElementProps | undefined, HTMLFrameSetElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Frameset << VNodeFlags.ElementIdOffset),
     "frameset",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function h1(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
+export function h1(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H1 << VNodeFlags.ElementIdOffset),
     "h1",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function h2(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
+export function h2(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H2 << VNodeFlags.ElementIdOffset),
     "h2",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function h3(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
+export function h3(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H3 << VNodeFlags.ElementIdOffset),
     "h3",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function h4(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
+export function h4(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H4 << VNodeFlags.ElementIdOffset),
     "h4",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function h5(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
+export function h5(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H5 << VNodeFlags.ElementIdOffset),
     "h5",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function h6(className?: string): VNode<HTMLHeadingElementProps | null, HTMLHeadingElement> {
+export function h6(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H6 << VNodeFlags.ElementIdOffset),
     "h6",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function head(className?: string): VNode<HTMLHeadElementProps | null, HTMLHeadElement> {
+export function head(className?: string, attrs?: HTMLHeadElementProps, css?: CSSStyleProps): VNode<HTMLHeadElementProps | undefined, HTMLHeadElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Head << VNodeFlags.ElementIdOffset),
     "head",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function header(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function header(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Header << VNodeFlags.ElementIdOffset),
     "header",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function hgroup(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function hgroup(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Hgroup << VNodeFlags.ElementIdOffset),
     "hgroup",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function hr(className?: string): VNode<HTMLHRElementProps | null, HTMLHRElement> {
+export function hr(className?: string, attrs?: HTMLHRElementProps, css?: CSSStyleProps): VNode<HTMLHRElementProps | undefined, HTMLHRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Hr << VNodeFlags.ElementIdOffset),
     "hr",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function html(className?: string): VNode<HTMLHtmlElementProps | null, HTMLHtmlElement> {
+export function html(className?: string, attrs?: HTMLHtmlElementProps, css?: CSSStyleProps): VNode<HTMLHtmlElementProps | undefined, HTMLHtmlElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Html << VNodeFlags.ElementIdOffset),
     "html",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function i(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function i(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.I << VNodeFlags.ElementIdOffset),
     "i",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function iframe(className?: string): VNode<HTMLIFrameElementProps | null, HTMLIFrameElement> {
+export function iframe(className?: string, attrs?: HTMLIFrameElementProps, css?: CSSStyleProps): VNode<HTMLIFrameElementProps | undefined, HTMLIFrameElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Iframe << VNodeFlags.ElementIdOffset),
     "iframe",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function img(className?: string): VNode<HTMLImageElementProps | null, HTMLImageElement> {
+export function img(className?: string, attrs?: HTMLImageElementProps, css?: CSSStyleProps): VNode<HTMLImageElementProps | undefined, HTMLImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Img << VNodeFlags.ElementIdOffset),
     "img",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function ins(className?: string): VNode<HTMLModElementProps | null, HTMLModElement> {
+export function ins(className?: string, attrs?: HTMLModElementProps, css?: CSSStyleProps): VNode<HTMLModElementProps | undefined, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ins << VNodeFlags.ElementIdOffset),
     "ins",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function kbd(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function kbd(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Kbd << VNodeFlags.ElementIdOffset),
     "kbd",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function label(className?: string): VNode<HTMLLabelElementProps | null, HTMLLabelElement> {
+export function label(className?: string, attrs?: HTMLLabelElementProps, css?: CSSStyleProps): VNode<HTMLLabelElementProps | undefined, HTMLLabelElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Label << VNodeFlags.ElementIdOffset),
     "label",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function legend(className?: string): VNode<HTMLLegendElementProps | null, HTMLLegendElement> {
+export function legend(className?: string, attrs?: HTMLLegendElementProps, css?: CSSStyleProps): VNode<HTMLLegendElementProps | undefined, HTMLLegendElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Legend << VNodeFlags.ElementIdOffset),
     "legend",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function li(className?: string): VNode<HTMLLIElementProps | null, HTMLLIElement> {
+export function li(className?: string, attrs?: HTMLLIElementProps, css?: CSSStyleProps): VNode<HTMLLIElementProps | undefined, HTMLLIElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Li << VNodeFlags.ElementIdOffset),
     "li",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function link(className?: string): VNode<HTMLLinkElementProps | null, HTMLLinkElement> {
+export function link(className?: string, attrs?: HTMLLinkElementProps, css?: CSSStyleProps): VNode<HTMLLinkElementProps | undefined, HTMLLinkElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Link << VNodeFlags.ElementIdOffset),
     "link",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function listing(className?: string): VNode<HTMLPreElementProps | null, HTMLPreElement> {
+export function listing(className?: string, attrs?: HTMLPreElementProps, css?: CSSStyleProps): VNode<HTMLPreElementProps | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Listing << VNodeFlags.ElementIdOffset),
     "listing",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function main(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function main(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Main << VNodeFlags.ElementIdOffset),
     "main",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function map(className?: string): VNode<HTMLMapElementProps | null, HTMLMapElement> {
+export function map(className?: string, attrs?: HTMLMapElementProps, css?: CSSStyleProps): VNode<HTMLMapElementProps | undefined, HTMLMapElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Map << VNodeFlags.ElementIdOffset),
     "map",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function mark(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function mark(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Mark << VNodeFlags.ElementIdOffset),
     "mark",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function menu(className?: string): VNode<HTMLMenuElementProps | null, HTMLMenuElement> {
+export function menu(className?: string, attrs?: HTMLMenuElementProps, css?: CSSStyleProps): VNode<HTMLMenuElementProps | undefined, HTMLMenuElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Menu << VNodeFlags.ElementIdOffset),
     "menu",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function meta(className?: string): VNode<HTMLMetaElementProps | null, HTMLMetaElement> {
+export function meta(className?: string, attrs?: HTMLMetaElementProps, css?: CSSStyleProps): VNode<HTMLMetaElementProps | undefined, HTMLMetaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Meta << VNodeFlags.ElementIdOffset),
     "meta",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function meter(className?: string): VNode<HTMLMeterElementProps | null, HTMLMeterElement> {
+export function meter(className?: string, attrs?: HTMLMeterElementProps, css?: CSSStyleProps): VNode<HTMLMeterElementProps | undefined, HTMLMeterElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Meter << VNodeFlags.ElementIdOffset),
     "meter",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function nav(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function nav(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Nav << VNodeFlags.ElementIdOffset),
     "nav",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function nobr(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function nobr(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Nobr << VNodeFlags.ElementIdOffset),
     "nobr",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function noframes(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function noframes(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Noframes << VNodeFlags.ElementIdOffset),
     "noframes",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function noscript(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function noscript(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Noscript << VNodeFlags.ElementIdOffset),
     "noscript",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function object(className?: string): VNode<HTMLObjectElementProps | null, HTMLObjectElement> {
+export function object(className?: string, attrs?: HTMLObjectElementProps, css?: CSSStyleProps): VNode<HTMLObjectElementProps | undefined, HTMLObjectElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Object << VNodeFlags.ElementIdOffset),
     "object",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function ol(className?: string): VNode<HTMLOListElementProps | null, HTMLOListElement> {
+export function ol(className?: string, attrs?: HTMLOListElementProps, css?: CSSStyleProps): VNode<HTMLOListElementProps | undefined, HTMLOListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ol << VNodeFlags.ElementIdOffset),
     "ol",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function optgroup(className?: string): VNode<HTMLOptGroupElementProps | null, HTMLOptGroupElement> {
+export function optgroup(className?: string, attrs?: HTMLOptGroupElementProps, css?: CSSStyleProps): VNode<HTMLOptGroupElementProps | undefined, HTMLOptGroupElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Optgroup << VNodeFlags.ElementIdOffset),
     "optgroup",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function option(className?: string): VNode<HTMLOptionElementProps | null, HTMLOptionElement> {
+export function option(className?: string, attrs?: HTMLOptionElementProps, css?: CSSStyleProps): VNode<HTMLOptionElementProps | undefined, HTMLOptionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Option << VNodeFlags.ElementIdOffset),
     "option",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function p(className?: string): VNode<HTMLParagraphElementProps | null, HTMLParagraphElement> {
+export function p(className?: string, attrs?: HTMLParagraphElementProps, css?: CSSStyleProps): VNode<HTMLParagraphElementProps | undefined, HTMLParagraphElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.P << VNodeFlags.ElementIdOffset),
     "p",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function param(className?: string): VNode<HTMLParamElementProps | null, HTMLParamElement> {
+export function param(className?: string, attrs?: HTMLParamElementProps, css?: CSSStyleProps): VNode<HTMLParamElementProps | undefined, HTMLParamElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Param << VNodeFlags.ElementIdOffset),
     "param",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function picture(className?: string): VNode<HTMLPictureElementProps | null, HTMLPictureElement> {
+export function picture(className?: string, attrs?: HTMLPictureElementProps, css?: CSSStyleProps): VNode<HTMLPictureElementProps | undefined, HTMLPictureElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Picture << VNodeFlags.ElementIdOffset),
     "picture",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function plaintext(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function plaintext(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Plaintext << VNodeFlags.ElementIdOffset),
     "plaintext",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function pre(className?: string): VNode<HTMLPreElementProps | null, HTMLPreElement> {
+export function pre(className?: string, attrs?: HTMLPreElementProps, css?: CSSStyleProps): VNode<HTMLPreElementProps | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Pre << VNodeFlags.ElementIdOffset),
     "pre",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function progress(className?: string): VNode<HTMLProgressElementProps | null, HTMLProgressElement> {
+export function progress(className?: string, attrs?: HTMLProgressElementProps, css?: CSSStyleProps): VNode<HTMLProgressElementProps | undefined, HTMLProgressElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Progress << VNodeFlags.ElementIdOffset),
     "progress",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function q(className?: string): VNode<HTMLQuoteElementProps | null, HTMLQuoteElement> {
+export function q(className?: string, attrs?: HTMLQuoteElementProps, css?: CSSStyleProps): VNode<HTMLQuoteElementProps | undefined, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Q << VNodeFlags.ElementIdOffset),
     "q",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function rt(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function rt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Rt << VNodeFlags.ElementIdOffset),
     "rt",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function ruby(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function ruby(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ruby << VNodeFlags.ElementIdOffset),
     "ruby",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function s(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function s(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.S << VNodeFlags.ElementIdOffset),
     "s",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function samp(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function samp(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Samp << VNodeFlags.ElementIdOffset),
     "samp",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function script(className?: string): VNode<HTMLScriptElementProps | null, HTMLScriptElement> {
+export function script(className?: string, attrs?: HTMLScriptElementProps, css?: CSSStyleProps): VNode<HTMLScriptElementProps | undefined, HTMLScriptElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Script << VNodeFlags.ElementIdOffset),
     "script",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function section(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function section(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Section << VNodeFlags.ElementIdOffset),
     "section",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function select(className?: string): VNode<HTMLSelectElementProps | null, HTMLSelectElement> {
+export function select(className?: string, attrs?: HTMLSelectElementProps, css?: CSSStyleProps): VNode<HTMLSelectElementProps | undefined, HTMLSelectElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Select << VNodeFlags.ElementIdOffset),
     "select",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function small(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function small(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Small << VNodeFlags.ElementIdOffset),
     "small",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function source(className?: string): VNode<HTMLSourceElementProps | null, HTMLSourceElement> {
+export function source(className?: string, attrs?: HTMLSourceElementProps, css?: CSSStyleProps): VNode<HTMLSourceElementProps | undefined, HTMLSourceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Source << VNodeFlags.ElementIdOffset),
     "source",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function span(className?: string): VNode<HTMLSpanElementProps | null, HTMLSpanElement> {
+export function span(className?: string, attrs?: HTMLSpanElementProps, css?: CSSStyleProps): VNode<HTMLSpanElementProps | undefined, HTMLSpanElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Span << VNodeFlags.ElementIdOffset),
     "span",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function strike(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function strike(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Strike << VNodeFlags.ElementIdOffset),
     "strike",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function strong(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function strong(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Strong << VNodeFlags.ElementIdOffset),
     "strong",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function style(className?: string): VNode<HTMLStyleElementProps | null, HTMLStyleElement> {
+export function style(className?: string, attrs?: HTMLStyleElementProps, css?: CSSStyleProps): VNode<HTMLStyleElementProps | undefined, HTMLStyleElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Style << VNodeFlags.ElementIdOffset),
     "style",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function sub(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function sub(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Sub << VNodeFlags.ElementIdOffset),
     "sub",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function sup(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function sup(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Sup << VNodeFlags.ElementIdOffset),
     "sup",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function table(className?: string): VNode<HTMLTableElementProps | null, HTMLTableElement> {
+export function table(className?: string, attrs?: HTMLTableElementProps, css?: CSSStyleProps): VNode<HTMLTableElementProps | undefined, HTMLTableElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Table << VNodeFlags.ElementIdOffset),
     "table",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function tbody(className?: string): VNode<HTMLTableSectionElementProps | null, HTMLTableSectionElement> {
+export function tbody(className?: string, attrs?: HTMLTableSectionElementProps, css?: CSSStyleProps): VNode<HTMLTableSectionElementProps | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tbody << VNodeFlags.ElementIdOffset),
     "tbody",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function td(className?: string): VNode<HTMLTableDataCellElementProps | null, HTMLTableDataCellElement> {
+export function td(className?: string, attrs?: HTMLTableDataCellElementProps, css?: CSSStyleProps): VNode<HTMLTableDataCellElementProps | undefined, HTMLTableDataCellElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Td << VNodeFlags.ElementIdOffset),
     "td",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function template(className?: string): VNode<HTMLTemplateElementProps | null, HTMLTemplateElement> {
+export function template(className?: string, attrs?: HTMLTemplateElementProps, css?: CSSStyleProps): VNode<HTMLTemplateElementProps | undefined, HTMLTemplateElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Template << VNodeFlags.ElementIdOffset),
     "template",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function tfoot(className?: string): VNode<HTMLTableSectionElementProps | null, HTMLTableSectionElement> {
+export function tfoot(className?: string, attrs?: HTMLTableSectionElementProps, css?: CSSStyleProps): VNode<HTMLTableSectionElementProps | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tfoot << VNodeFlags.ElementIdOffset),
     "tfoot",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function th(className?: string): VNode<HTMLTableHeaderCellElementProps | null, HTMLTableHeaderCellElement> {
+export function th(className?: string, attrs?: HTMLTableHeaderCellElementProps, css?: CSSStyleProps): VNode<HTMLTableHeaderCellElementProps | undefined, HTMLTableHeaderCellElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Th << VNodeFlags.ElementIdOffset),
     "th",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function thead(className?: string): VNode<HTMLTableSectionElementProps | null, HTMLTableSectionElement> {
+export function thead(className?: string, attrs?: HTMLTableSectionElementProps, css?: CSSStyleProps): VNode<HTMLTableSectionElementProps | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Thead << VNodeFlags.ElementIdOffset),
     "thead",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function time(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function time(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Time << VNodeFlags.ElementIdOffset),
     "time",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function title(className?: string): VNode<HTMLTitleElementProps | null, HTMLTitleElement> {
+export function title(className?: string, attrs?: HTMLTitleElementProps, css?: CSSStyleProps): VNode<HTMLTitleElementProps | undefined, HTMLTitleElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Title << VNodeFlags.ElementIdOffset),
     "title",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function tr(className?: string): VNode<HTMLTableRowElementProps | null, HTMLTableRowElement> {
+export function tr(className?: string, attrs?: HTMLTableRowElementProps, css?: CSSStyleProps): VNode<HTMLTableRowElementProps | undefined, HTMLTableRowElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tr << VNodeFlags.ElementIdOffset),
     "tr",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function track(className?: string): VNode<HTMLTrackElementProps | null, HTMLTrackElement> {
+export function track(className?: string, attrs?: HTMLTrackElementProps, css?: CSSStyleProps): VNode<HTMLTrackElementProps | undefined, HTMLTrackElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Track << VNodeFlags.ElementIdOffset),
     "track",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function tt(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function tt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tt << VNodeFlags.ElementIdOffset),
     "tt",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function u(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function u(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.U << VNodeFlags.ElementIdOffset),
     "u",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function ul(className?: string): VNode<HTMLUListElementProps | null, HTMLUListElement> {
+export function ul(className?: string, attrs?: HTMLUListElementProps, css?: CSSStyleProps): VNode<HTMLUListElementProps | undefined, HTMLUListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ul << VNodeFlags.ElementIdOffset),
     "ul",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function wbr(className?: string): VNode<HTMLElementProps | null, HTMLElement> {
+export function wbr(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Wbr << VNodeFlags.ElementIdOffset),
     "wbr",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function xmp(className?: string): VNode<HTMLPreElementProps | null, HTMLPreElement> {
+export function xmp(className?: string, attrs?: HTMLPreElementProps, css?: CSSStyleProps): VNode<HTMLPreElementProps | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Xmp << VNodeFlags.ElementIdOffset),
     "xmp",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
 
 // Textarea / Input Elements:
-export function textarea(className?: string): VNode<HTMLTextAreaElementProps | null, HTMLTextAreaElement> {
+export function textarea(className?: string, attrs?: HTMLTextAreaElementProps, css?: CSSStyleProps): VNode<HTMLTextAreaElementProps | undefined, HTMLTextAreaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.TextAreaElement | (TagId.Textarea << VNodeFlags.ElementIdOffset),
     "textarea",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
-export function input(className?: string): VNode<HTMLInputElementProps | null, HTMLInputElement> {
+export function input(className?: string, attrs?: HTMLInputElementProps, css?: CSSStyleProps): VNode<HTMLInputElementProps | undefined, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.Input << VNodeFlags.ElementIdOffset),
     "input",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
 
 // Media Elements:
-export function audio(className?: string): VNode<HTMLAudioElementProps | null, HTMLAudioElement> {
+export function audio(className?: string, attrs?: HTMLAudioElementProps, css?: CSSStyleProps): VNode<HTMLAudioElementProps | undefined, HTMLAudioElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.MediaElement | (TagId.Audio << VNodeFlags.ElementIdOffset),
     "audio",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }
 
-export function video(className?: string): VNode<HTMLVideoElementProps | null, HTMLVideoElement> {
+export function video(className?: string, attrs?: HTMLVideoElementProps, css?: CSSStyleProps): VNode<HTMLVideoElementProps | undefined, HTMLVideoElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.MediaElement | (TagId.Video << VNodeFlags.ElementIdOffset),
     "video",
-    null,
-    className,
-    null,
+    attrs,
+    className === void 0 ? "" : className,
+    css,
   );
 }

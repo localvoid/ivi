@@ -9,7 +9,7 @@ import { ConnectDescriptor } from "./connect_descriptor";
  * @example
  *
  *     const A = statelessComponent<{ text: string }>(
- *       (props) => h.div().c(props.text),
+ *       (props) => div().c(props.text),
  *     );
  *
  *     render(
@@ -28,7 +28,7 @@ export function statelessComponent(c: () => VNode): () => VNode<undefined>;
  * @example
  *
  *     const A = statelessComponent<{ text: string }>(
- *       (props) => h.div().c(props.text),
+ *       (props) => div().c(props.text),
  *     );
  *
  *     render(
@@ -49,7 +49,7 @@ export function statelessComponent<P>(
  * @example
  *
  *     const A = statelessComponent<{ text: string }>(
- *       (props) => h.div().c(props.text),
+ *       (props) => div().c(props.text),
  *     );
  *
  *     render(
@@ -67,8 +67,8 @@ export function statelessComponent<P>(render: (props: P) => VNode<any>): (props:
       VNodeFlags.StatelessComponent,
       d,
       props,
+      "",
       void 0,
-      null,
     );
     /* istanbul ignore else */
     if (DEBUG) {
@@ -88,7 +88,7 @@ export function statelessComponent<P>(render: (props: P) => VNode<any>): (props:
  *     const A = withShouldUpdate<{ text: string }>(
  *       (prevProps, nextProps) => prevProps.text !== nextProps.text,
  *       statelessComponent(
- *         (props) => h.div().c(props.text),
+ *         (props) => div().c(props.text),
  *       ),
  *     );
  *
@@ -112,8 +112,8 @@ export function withShouldUpdate<P>(
       VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
       d,
       props,
+      "",
       void 0,
-      null,
     );
     /* istanbul ignore else */
     if (DEBUG) {
@@ -213,8 +213,8 @@ export function statefulComponent<P>(
       VNodeFlags.StatefulComponent,
       c,
       props,
+      "",
       void 0,
-      null,
     );
     /* istanbul ignore else */
     if (DEBUG) {
@@ -248,13 +248,15 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
       throw new Error("Context node contains an invalid child. Child should be a singular VNode.");
     }
   }
-  return new VNode<T>(
+  const n = new VNode<T>(
     VNodeFlags.UpdateContext,
     null,
     ctx,
+    "",
     void 0,
-    child,
   );
+  n._c = child;
+  return n;
 }
 
 /**
@@ -269,7 +271,7 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
  *         return (prev !== null && prev === result) ? prev :
  *           result;
  *       },
- *       (text) => h.div().c(text),
+ *       (text) => div().c(text),
  *     );
  *
  *     render(
@@ -300,7 +302,7 @@ export function connect<T>(
  *         return (prev !== null && prev === result) ? prev :
  *           result;
  *       },
- *       (text) => h.div().c(text),
+ *       (text) => div().c(text),
  *     );
  *
  *     render(
@@ -331,7 +333,7 @@ export function connect<T, P>(
  *         return (prev !== null && prev === result) ? prev :
  *           result;
  *       },
- *       (text) => h.div().c(text),
+ *       (text) => div().c(text),
  *     );
  *
  *     render(
@@ -362,7 +364,7 @@ export function connect<T, P, C>(
  *         return (prev !== null && prev === result) ? prev :
  *           result;
  *       },
- *       (text) => h.div().c(text),
+ *       (text) => div().c(text),
  *     );
  *
  *     render(
@@ -386,8 +388,8 @@ export function connect<T, P, C>(
       VNodeFlags.Connect,
       descriptor as ConnectDescriptor<any, any, {}>,
       props,
+      "",
       void 0,
-      null,
     );
     /* istanbul ignore else */
     if (DEBUG) {
