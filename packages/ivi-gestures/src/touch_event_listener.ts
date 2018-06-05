@@ -1,4 +1,4 @@
-import { INPUT_DEVICE_CAPABILITIES } from "ivi-core";
+import { INPUT_DEVICE_CAPABILITIES, NOOP } from "ivi-core";
 import {
   SyntheticEventFlags, SyntheticNativeEvent,
   EVENT_DISPATCHER_ACTIVE_TOUCH_START, EVENT_DISPATCHER_TOUCH_END, EVENT_DISPATCHER_TOUCH_CANCEL,
@@ -9,7 +9,6 @@ import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_eve
 import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { debugPubTouchState } from "./debug";
-import { scheduleMicrotask } from "ivi-scheduler";
 import { IOS_GESTURE_EVENT } from "./features";
 
 /**
@@ -136,9 +135,7 @@ export function createTouchEventListener(
         primaryTouch = touches[0];
         if (!moveTrackingEnabled && (currentFlags & NativeEventListenerFlags.TrackMove)) {
           moveTrackingEnabled = true;
-          scheduleMicrotask(() => {
-            beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
-          });
+          beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
         }
       }
 
@@ -255,8 +252,17 @@ export function createTouchEventListener(
       beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
       beforeNativeEvent(EVENT_DISPATCHER_TOUCH_END, onEnd);
       beforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
+      /**
+       * Safari just being safari: https://bugs.webkit.org/show_bug.cgi?id=182521
+       */
+      if (IOS_GESTURE_EVENT) {
+        beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, NOOP);
+      }
     },
     deactivate: () => {
+      if (IOS_GESTURE_EVENT) {
+        removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, NOOP);
+      }
       removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
       removeBeforeNativeEvent(EVENT_DISPATCHER_TOUCH_END, onEnd);
       removeBeforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
@@ -267,9 +273,7 @@ export function createTouchEventListener(
         if (!moveTrackingEnabled) {
           preventFirstMove = true;
           moveTrackingEnabled = true;
-          scheduleMicrotask(() => {
-            beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
-          });
+          beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
         }
       }
       currentFlags |= flags;

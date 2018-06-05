@@ -8,19 +8,6 @@ import { NativePanGestureRecognizer } from "./native_pan_gesture_recognizer";
 import { GestureBehavior } from "./gesture_behavior";
 import { LongPressGestureRecognizer } from "./long_press_recognizer";
 
-/**
- * Continuous:
- * - NativePan
- * - Pan
- * - Pinch
- * - Rotation
- * - Swipe
- * - LongPress
- *
- * Discrete:
- * - Tap
- */
-
 export const GESTURE_EVENT_SOURCE = /*#__PURE__*/createGestureEventDispatcher() as EventDispatcher;
 
 export function onNativePan(
@@ -58,6 +45,58 @@ export function onNativePanY(
     handler,
     listeners: 0,
     props: createNativePanYGestureRecognizer,
+    state: null,
+  };
+}
+
+export function onNativePanUp(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createNativePanUpGestureRecognizer,
+    state: null,
+  };
+}
+
+export function onNativePanDown(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createNativePanDownGestureRecognizer,
+    state: null,
+  };
+}
+
+export function onNativePanLeft(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createNativePanLeftGestureRecognizer,
+    state: null,
+  };
+}
+
+export function onNativePanRight(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createNativePanRightGestureRecognizer,
     state: null,
   };
 }
@@ -101,6 +140,19 @@ export function onPanY(
   };
 }
 
+export function onPanUp(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createPanUpGestureRecognizer,
+    state: null,
+  };
+}
+
 export function onPanDown(
   handler: (ev: GesturePointerEvent) => void,
 ): EventHandler<GesturePointerEvent> {
@@ -110,6 +162,32 @@ export function onPanDown(
     handler,
     listeners: 0,
     props: createPanDownGestureRecognizer,
+    state: null,
+  };
+}
+
+export function onPanLeft(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createPanLeftGestureRecognizer,
+    state: null,
+  };
+}
+
+export function onPanRight(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createPanRightGestureRecognizer,
     state: null,
   };
 }
@@ -152,6 +230,22 @@ function createNativePanYGestureRecognizer(resolver: GestureController, handler:
   return new NativePanGestureRecognizer(resolver, handler, GestureBehavior.PanY);
 }
 
+function createNativePanUpGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new NativePanGestureRecognizer(resolver, handler, GestureBehavior.PanUp);
+}
+
+function createNativePanDownGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new NativePanGestureRecognizer(resolver, handler, GestureBehavior.PanDown);
+}
+
+function createNativePanLeftGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new NativePanGestureRecognizer(resolver, handler, GestureBehavior.PanLeft);
+}
+
+function createNativePanRightGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new NativePanGestureRecognizer(resolver, handler, GestureBehavior.PanRight);
+}
+
 function createPanGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
   return new PanGestureRecognizer(resolver, handler, GestureBehavior.Pan);
 }
@@ -164,8 +258,20 @@ function createPanYGestureRecognizer(resolver: GestureController, handler: (ev: 
   return new PanGestureRecognizer(resolver, handler, GestureBehavior.PanY);
 }
 
+function createPanUpGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new PanGestureRecognizer(resolver, handler, GestureBehavior.PanUp);
+}
+
 function createPanDownGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
   return new PanGestureRecognizer(resolver, handler, GestureBehavior.PanDown);
+}
+
+function createPanLeftGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new PanGestureRecognizer(resolver, handler, GestureBehavior.PanLeft);
+}
+
+function createPanRightGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new PanGestureRecognizer(resolver, handler, GestureBehavior.PanRight);
 }
 
 function createTapGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {

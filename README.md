@@ -22,6 +22,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Children reconciliation with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Fast performance
 - Test utilities
+- **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
 ## Library Size
 

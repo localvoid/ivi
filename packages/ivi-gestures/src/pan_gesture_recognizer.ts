@@ -1,19 +1,50 @@
+import { SyntheticEvent, SyntheticEventFlags } from "ivi";
 import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_event";
 import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
 import { GestureBehavior } from "./gesture_behavior";
 import { GestureController } from "./gesture_controller";
+import { GestureConstants } from "./constants";
 
-export class PanGestureRecognizer extends GestureRecognizer<any> {
+export const enum PanGestureAction {
+  Start = 1,
+  Update = 1 << 1,
+  End = 1 << 2,
+  Cancel = 1 << 3,
+}
+
+export class PanGestureEvent extends SyntheticEvent {
+  readonly action: PanGestureAction;
+  readonly x0: number;
+  readonly y0: number;
+  readonly dx: number;
+  readonly dy: number;
+
+  constructor(
+    flags: SyntheticEventFlags,
+    timestamp: number,
+    action: PanGestureAction,
+    x0: number,
+    y0: number,
+    dx: number,
+    dy: number,
+  ) {
+    super(flags, timestamp);
+    this.action = action;
+    this.x0 = x0;
+    this.y0 = y0;
+    this.dx = dx;
+    this.dy = dy;
+  }
+}
+
+export class PanGestureRecognizer extends GestureRecognizer<PanGestureEvent> {
   private x0 = 0;
   private y0 = 0;
-  // dx
-  // dy
-  // vx - velocity
-  // vy
+  private dx = 0;
+  private dy = 0;
   private pointerId: number = -1;
-  // minPointers
 
-  constructor(controller: GestureController, handler: (ev: any) => void, behavior: GestureBehavior) {
+  constructor(controller: GestureController, handler: (ev: PanGestureEvent) => void, behavior: GestureBehavior) {
     super(
       controller,
       handler,
@@ -23,36 +54,40 @@ export class PanGestureRecognizer extends GestureRecognizer<any> {
     );
   }
 
-  handleEvent(data: GesturePointerEvent) {
-    if (data.action & GesturePointerAction.Down) {
+  handleEvent(event: GesturePointerEvent) {
+    if (event.action & GesturePointerAction.Down) {
       if (!(this.state & GestureRecognizerState.Active)) {
-        this.x0 = data.pageX;
-        this.y0 = data.pageY;
-        this.pointerId = data.id;
+        this.x0 = event.pageX;
+        this.y0 = event.pageY;
+        this.dx = 0;
+        this.dy = 0;
+        this.pointerId = event.id;
         this.activate();
       }
     } else {
-      if (this.pointerId === data.id) {
-        if (data.action & GesturePointerAction.Move) {
-          if (!(this.state & (GestureRecognizerState.Resolved | GestureRecognizerState.Accepted))) {
-            const dx = this.x0 - data.pageX;
-            const dy = this.y0 - data.pageY;
+      if (this.pointerId === event.id) {
+        if (event.action & GesturePointerAction.Move) {
+          this.dx = event.pageX - this.x0;
+          this.dy = event.pageY - this.y0;
+          if (!(this.state & GestureRecognizerState.Resolved)) {
             const resolveAction = this.resolveAction;
             if (
-              (((resolveAction & GestureBehavior.PanUp) && (dy >= 8))) ||
-              (((resolveAction & GestureBehavior.PanDown) && (dy <= -8))) ||
-              (((resolveAction & GestureBehavior.PanLeft) && (dx >= 8))) ||
-              (((resolveAction & GestureBehavior.PanRight) && (dx <= -8)))
+              (((resolveAction & GestureBehavior.PanUp) && (this.dy <= -GestureConstants.PanDistance))) ||
+              (((resolveAction & GestureBehavior.PanDown) && (this.dy >= GestureConstants.PanDistance))) ||
+              (((resolveAction & GestureBehavior.PanLeft) && (this.dx <= -GestureConstants.PanDistance))) ||
+              (((resolveAction & GestureBehavior.PanRight) && (this.dx >= GestureConstants.PanDistance)))
             ) {
               this.resolve();
             }
+          } else {
+            this.updated();
           }
         } else {
           if (
-            (this.state & (GestureRecognizerState.Accepted | GestureRecognizerState.Resolved)) &&
-            !(data.action & GesturePointerAction.Cancel)
+            (this.state & GestureRecognizerState.Accepted) &&
+            !(event.action & GesturePointerAction.Cancel)
           ) {
-            this.finish();
+            this.end();
           } else {
             this.cancel();
           }
@@ -62,12 +97,40 @@ export class PanGestureRecognizer extends GestureRecognizer<any> {
   }
 
   accepted() {
-    if (!(this.state & GestureRecognizerState.Resolved)) {
+    if (this.state & GestureRecognizerState.Resolved) {
+      this.started();
+    } else {
       this.resolve();
     }
   }
 
-  rejected() {
-    this.cancel();
+  resolved() {
+    if (this.state & GestureRecognizerState.Accepted) {
+      this.started();
+    }
+  }
+
+  started() {
+    this.x0 += this.dx;
+    this.y0 += this.dy;
+    this.dx = 0;
+    this.dy = 0;
+    this.emit(PanGestureAction.Start);
+  }
+
+  updated() {
+    this.emit(PanGestureAction.Update);
+  }
+
+  ended() {
+    this.emit(PanGestureAction.End);
+  }
+
+  canceled() {
+    this.emit(PanGestureAction.Cancel);
+  }
+
+  private emit(action: PanGestureAction): void {
+    this.handler(new PanGestureEvent(0, performance.now(), action, this.x0, this.y0, this.dx, this.dy));
   }
 }

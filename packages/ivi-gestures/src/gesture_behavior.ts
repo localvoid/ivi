@@ -4,9 +4,11 @@ export const enum GestureBehavior {
   PanDown = 1 << 2,
   PanLeft = 1 << 3,
   Press = 1 << 4,
-  Tap = 1 << 5,
+  Scale = 1 << 5,
+  Rotate = 1 << 7,
+  Tap = 1 << 6,
   /**
-   * Native browser gestures.
+   * Native gesture
    */
   Native = 1 << 6,
 
