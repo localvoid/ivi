@@ -21,43 +21,48 @@ export function accumulateDispatchTargets(
   for (const root of ROOTS) {
     const container = root.container;
     if (container.contains(target)) {
-      // Build an array with all parent elements.
-      const domTargets: Element[] = [];
-      while (target !== container) {
-        domTargets.push(target!);
-        target = target.parentNode! as Element;
-      }
-      // Visit virtual DOM nodes that correspond to the list of all parent elements that were extracted from `target`.
-      visitMatchingDOMTargets(result, match, root.currentVNode!, domTargets, domTargets.length - 1);
+      visitUp(result, match, target, container, root.currentVNode!);
       break;
     }
   }
 }
 
-function visitMatchingDOMTargets(
+function visitUp(
   result: DispatchTarget[],
   match: (h: EventHandler) => boolean,
+  element: Element,
+  root: Element,
   vnode: VNode,
-  nodes: Element[],
-  index: number,
-): 0 | 1 {
-  const flags = vnode._f;
-  if (flags & (VNodeFlags.Element | VNodeFlags.ElementFactory)) {
-    if (vnode._i === nodes[index]) {
-      if (index === 0) {
-        accumulateDispatchTargetsFromVNode(result, vnode, match);
-        return 1;
-      } else {
-        --index;
-        let child = vnode._c as VNode | null;
-        while (child !== null) {
-          if (visitMatchingDOMTargets(result, match, child, nodes, index)) {
-            accumulateDispatchTargetsFromVNode(result, vnode, match);
-            return 1;
-          }
-          child = child._r;
-        }
+): VNode {
+  const parent = element.parentNode! as Element;
+  if (parent !== root) {
+    vnode = visitUp(result, match, parent, root, vnode);
+
+    let child = vnode._c as VNode | null;
+    while (child !== null) {
+      const r = visitDown(result, match, element, child);
+      if (r) {
+        return r;
       }
+      child = child._r;
+    }
+  }
+
+  return visitDown(result, match, element, vnode)!;
+}
+
+function visitDown(
+  result: DispatchTarget[],
+  match: (h: EventHandler) => boolean,
+  element: Element,
+  vnode: VNode,
+): VNode | null {
+  const flags = vnode._f;
+  let r;
+  if (flags & (VNodeFlags.Element | VNodeFlags.ElementFactory)) {
+    if (vnode._i === element) {
+      accumulateDispatchTargetsFromVNode(result, vnode, match);
+      return vnode;
     }
   } else if (flags & (
     VNodeFlags.StatelessComponent |
@@ -65,13 +70,14 @@ function visitMatchingDOMTargets(
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) {
-    if (visitMatchingDOMTargets(result, match, vnode._c as VNode, nodes, index)) {
+    r = visitDown(result, match, element, vnode._c as VNode);
+    if (r) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);
-      return 1;
+      return r;
     }
   }
 
-  return 0;
+  return null;
 }
 
 /**
@@ -89,7 +95,7 @@ function accumulateDispatchTargetsFromVNode(
   const events = target._e;
   if (events) {
     let handlers: EventHandler[] | EventHandler | undefined;
-    if (Array.isArray(events)) {
+    if (events instanceof Array) {
       let count = 0;
       for (const h of events) {
         if (h !== null && match(h) === true) {
