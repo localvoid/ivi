@@ -22,6 +22,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Children reconciliation with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Fast performance
 - Test utilities
+- **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
 ## Library Size
 
@@ -31,12 +32,104 @@ a **3.7KB** (minified+compressed).
 
 ## Performance
 
-ivi is one of the fastest libraries in the [js-framework-benchmark](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html).
+Designing UI library with a focus on performance is quite hard, there are many different optimization goals and you need
+to find a balanced solution that should produce the best possible outcome for a complex application. Simple applications
+usually doesn't suffer from performance problems, so the focus should be on the architecture of complex applications.
 
-It is quite easy to get good results in this benchmark by focusing on optimizations of low-level primitives.
-But the primary goal of the ivi architecture is to reduce overhead of abstractions, and that is why it is still one of
-the fastest implementations in this benchmark even when benchmark implementation for ivi library is using stateful
-components and connectors.
+Here is a list of different optimization goals (in random order) that we should be focusing on:
+
+- Application code size
+- Library code size
+- Time to render first interactive page
+- Rendering performance
+- Updating performance
+- Memory usage
+- Garbage collection
+- Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
+- Increase probability that executed code will be JITed (usually depends on the application code size)
+
+### Performance Benchmarks
+
+Unfortunately there are no good benchmarks and all benchmarks are biased towards some type of libraries. So we need to
+understand how to read numbers from this biased benchmarks.
+
+To demonstate how to read numbers from benchmarks I'll use [the most popular benchmark](https://github.com/krausest/js-framework-benchmark).
+
+We need to look at several key characteristics and compare them with numbers from complex web applications. As an
+example of a complex application I'll use Google Mail.
+
+#### DOM Elements per Component
+
+```
+Benchmark: +Infinity
+Google Mail: ~3 (rough estimate, guessed by looking at DOM nodes in the document)
+```
+
+There are no strict requirements and everyone is free to choose how to structure their benchmark implementation, so if
+we look at many implementations that competing at the lowest numbers, almost all of them are implemented without any
+components.
+
+Good luck guessing how such libraries will behave in a real application.
+
+#### Event Handlers per DOM Element
+
+```
+Benchmark: ~0.25 without event delegation
+Google Mail: ~0.25
+```
+
+There are no strict requirements how to respond to user actions, and some implementations are using event
+delegation technique to reduce number of event handlers to 2 per 8000-80000 DOM Elements (0.00025 - 0.000025).
+
+Libraries like ivi are using synthetic events with a custom event dispatcher, so behind the scenes they are registering
+one native event handler per each event type, but it is an internal implementation detail and the key difference is that
+it doesn't break component encapsulation, components aren't leaking any information about their DOM structure.
+
+Synthetic events is another design decision that was made to improve performance of real applications by sacrificing
+performance of some other cases. But when library demonstrates good numbers in benchmarks only by breaking
+encapsulation guarantees with event delegation, is it even worth to consider such libraries for complex applications.
+
+#### Data Bindings per DOM Element
+
+```
+Benchmark: ~0.5
+Google Mail: ~2 (rough estimate, guessed by looking at DOM nodes in the document)
+```
+
+Such low number of data bindings is a huge indicator that benchmark is biased toward libraries with fine-grained direct
+data bindings.
+
+Virtual DOM libraries by design are trying to optimize for use cases when the ratio of data bindings per DOM element is
+greater or equal than 1.
+
+#### Components per Component Types
+
+It is hard to guess how many different component types are used in Google Mail, but if it is like any other complex
+application, the ratio of components per component type shouldn't be too high.
+
+Benchmark implementations with zero components are obviously have zero component types. And when you don't have
+components, you can just analyze template and generate the most optimal code for all benchmarking test cases. It is a
+perfect situation if you are building library to win in benchmarks, but in complex application the amount of the
+generated code will have a huge impact on the application code size, time to render first page and the probabilty that
+executed code will be JITed.
+
+Is it worth to generate the most optimal code to gain couple of microseconds that only noticeable in a microbenchmark?
+If you don't care about microbenchmarks, then it is much better to think how to reduce the amount of the generated code
+and the amount of different code paths.
+
+#### Complex data transformations
+
+Since there are no complex data transformation in the benchmark, it is an ideal situation for libraries with
+fine-grained direct data bindings, how hard it could be to just bind an observer to some variable and respond by
+mutating DOM nodes directly.
+
+Perfect solution for a benchmark, but in real applcations there are complex data transformation that lose all
+information about data changes, data snapshots from the server doesn't contain any information how nodes should be
+rearranged, etc.
+
+So the question is how hard it will be for libraries that unable to handle such scenarios, are they going with an easy
+solution by rerendering everything and losing all internal state, or maybe reimplement the most complex part of the
+virtual dom libraries that diffs tree structures and apply it to the data.
 
 ## Quick Start
 
