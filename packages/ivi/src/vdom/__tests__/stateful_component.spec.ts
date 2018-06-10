@@ -23,7 +23,7 @@ test(`props should be passed to constructor`, () => {
 test(`props should be passed to newPropsReceived hook`, () => {
   startRender((r) => {
     const c = statefulComponent(class extends DivComponent<number> {
-      newPropsReceived(a: number, b: number) {
+      propsChanged(a: number, b: number) {
         expect(a).toBe(1337);
         expect(b).toBe(1338);
       }

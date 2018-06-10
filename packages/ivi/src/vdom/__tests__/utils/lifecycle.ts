@@ -2,7 +2,7 @@ export interface LifecycleCounters {
   global: number;
   constructor: number;
   shouldUpdate: number;
-  newPropsReceived: number;
+  propsChanged: number;
   attached: number;
   detached: number;
   updated: number;
@@ -15,7 +15,7 @@ const LIFECYCLE_COUNTERS: LifecycleCounters = {
   global: 0,
   constructor: 0,
   shouldUpdate: 0,
-  newPropsReceived: 0,
+  propsChanged: 0,
   attached: 0,
   detached: 0,
   updated: 0,
@@ -55,7 +55,7 @@ export function checkLifecycle(
   LIFECYCLE_COUNTERS.global = 0;
   LIFECYCLE_COUNTERS.constructor = 0;
   LIFECYCLE_COUNTERS.shouldUpdate = 0;
-  LIFECYCLE_COUNTERS.newPropsReceived = 0;
+  LIFECYCLE_COUNTERS.propsChanged = 0;
   LIFECYCLE_COUNTERS.attached = 0;
   LIFECYCLE_COUNTERS.detached = 0;
   LIFECYCLE_COUNTERS.updated = 0;

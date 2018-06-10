@@ -58,12 +58,12 @@ export abstract class Component<P = undefined> {
   }
 
   /**
-   * Lifecycle method `newPropsReceived()` is invoked after new props are assigned.
+   * Lifecycle method `propsChanged()` when props are changed.
    *
    * @param prev - Previous properties
    * @param next - Next properties
    */
-  newPropsReceived(prev: P, next: P): void {
+  propsChanged(prev: P, next: P): void {
     /* tslint:disable:no-empty */
     /* tslint:enable:no-empty */
   }

@@ -515,11 +515,8 @@ export function syncVNode(
             }
           }
         } else { // VNodeFlags.StatefulComponent
-          // Update component props
           if (aProps !== bProps) {
-            // There is no reason to call `newPropsReceived` when props aren't changed, even when they are
-            // reassigned later to reduce memory usage.
-            (instance as Component<any>).newPropsReceived(aProps, bProps);
+            (instance as Component<any>).propsChanged(aProps, bProps);
           }
           // Reassign props even when they aren't changed to reduce overall memory usage.
           //
