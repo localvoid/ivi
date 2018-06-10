@@ -1,17 +1,23 @@
 # Virtual DOM
 
-Virtual DOM API is using factory functions to instantiate nodes and method chaining to assign properties.
+Virtual DOM API is using factory functions to instantiate nodes and method chaining to assign different properties.
 
 ```ts
-import { div, onClick } from "ivi-html";
+import { onClick } from "ivi";
+import { div } from "ivi-html";
 
-const node = div()
-  .e(onClick((ev) => { console.log("click"); }))
-  .a({ id: "unique-id" });
+const node = div("node-class", { id: "unique-id" })
+  .e(onClick((ev) => { console.log("click"); }));
 ```
 
 In this example, virtual DOM node is created with a `div()` function, this node will represent a `<div />` element.
-Events are assigned with a method `e()` and attributes with a method `a()`.
+Method `e()` is used to assign events.
+
+All factory functions that create DOM elements have an interface:
+
+```ts
+type VNodeElementFactory<T, N extends Element> = (className?: string, attrs?: T, style?: CSSStyleProps) => VNode<T, N>;
+```
 
 ## Chained Methods
 
@@ -34,19 +40,6 @@ interface VNode<P> {
 ```
 
 Method `e()` is used to assign events.
-
-### Methods available on HTML, SVG, Input and Media elements
-
-```ts
-interface VNode<P> {
-  a(attrs: P): this;
-  s(style: CSSStyleProps | null): this;
-}
-```
-
-Method `a()` is used to assign DOM attributes.
-
-Method `s()` is used to assign styles.
 
 ### Methods available on non-void HTML and SVG elements
 
@@ -154,6 +147,21 @@ render(
   div().c(
     mapRange(0, items.length, (i) => div().k(items[i])),
   ),
+  DOMContainer,
+);
+```
+
+`mapIterable()` creates a children collection with the results from an `Iterable` object.
+
+```ts
+const items = [1, 2, 3];
+
+render(
+  div().c(mapIterable(function* () {
+    for (const item of items) {
+      yield div().k(item);
+    }
+  }())),
   DOMContainer,
 );
 ```

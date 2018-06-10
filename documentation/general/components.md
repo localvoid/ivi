@@ -153,22 +153,22 @@ class A extends Component<Props> {
 }
 ```
 
-#### `newPropsReceived(prev, next)`
+#### `propsChanged(prev, next)`
 
 ```ts
 interface Component {
-  newPropsReceived(oldProps: P, newProps: P): void;
+  propsChanged(prev: P, next: P): void;
 }
 ```
 
-`newPropsReceived()` method is invoked when component is received a new props.
+`propsChanged()` method is invoked when component props are changed.
 
 ```ts
 class A extends Component<string> {
   private internalState = this.props + "!!";
 
-  newPropsReceived(oldProps: string, newProps: string) {
-    this.internalState = newProps + "!!";
+  propsChanged(prev: string, next: string) {
+    this.internalState = next + "!!";
   }
 
   render() {
