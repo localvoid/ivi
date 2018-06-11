@@ -1062,7 +1062,8 @@ function nextNode(vnode: VNode): Node | null {
 function lis(a: number[]): number[] {
   const p = a.slice();
   const result: number[] = [];
-  result.push(0);
+  result[0] = 0;
+  let n = 0;
   let u: number;
   let v: number;
   let j: number;
@@ -1073,15 +1074,15 @@ function lis(a: number[]): number[] {
       continue;
     }
 
-    j = result[result.length - 1];
+    j = result[n];
     if (a[j] < k) {
       p[i] = j;
-      result.push(i);
+      result[++n] = i;
       continue;
     }
 
     u = 0;
-    v = result.length - 1;
+    v = n;
 
     while (u < v) {
       j = ((u + v) / 2) | 0;
@@ -1100,11 +1101,10 @@ function lis(a: number[]): number[] {
     }
   }
 
-  u = result.length;
-  v = result[u - 1];
+  v = result[n];
 
-  while (u-- > 0) {
-    result[u] = v;
+  while (n >= 0) {
+    result[n--] = v;
     v = p[v];
   }
 
