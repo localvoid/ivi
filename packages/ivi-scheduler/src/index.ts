@@ -97,8 +97,8 @@ const _tasks = createTaskList();
 let _visibilityObservers: Array<(hidden: boolean) => void> = [];
 let _isHidden: () => boolean;
 
-const _animations: RepeatableTaskList = [];
-const _readers: RepeatableTaskList = [];
+const _beforeUpdate: RepeatableTaskList = [];
+const _afterUpdate: RepeatableTaskList = [];
 let _updateDOMHandler: () => void = NOOP;
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
@@ -126,10 +126,6 @@ const handleVisibilityChange = catchError(() => {
   const newHidden = _isHidden();
   if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
-
-    if (!newHidden && (_animations.length > 0)) {
-      requestNextFrame();
-    }
 
     const observers = _visibilityObservers;
     for (let i = 0; i < observers.length; ++i) {
@@ -218,24 +214,21 @@ export function setUpdateDOMHandler(handler: () => void): void {
 }
 
 /**
- * addAnimation adds animation to the RepeatableTaskList.
+ * Adds a task that will be executed before each update.
  *
- * @param animation Animation task.
+ * @param task - Task that will be executed before each update until it returns `false`.
  */
-export function addAnimation(animation: () => boolean | undefined): void {
-  _animations.push(animation);
-  requestNextFrame();
+export function beforeUpdate(task: () => boolean | undefined): void {
+  _beforeUpdate.push(task);
 }
 
 /**
- * addDOMReader adds DOM Reader to the RepeatableTaskList.
+ * Adds a task that will be executed after each update.
  *
- * DOM Reader will be be invoked on each frame in the read phase.
- *
- * @param reader Task that will be executed until it returns `false`.
+ * @param task - Task that will be executed after each update until it returns `false`.
  */
-export function addDOMReader(reader: () => boolean | undefined): void {
-  _readers.push(reader);
+export function afterUpdate(task: () => boolean | undefined): void {
+  _afterUpdate.push(task);
 }
 
 export function autofocus(node: Node): void {
@@ -282,7 +275,7 @@ const _handleNextFrame = catchError((time: number) => {
   _nextFrame = _currentFrame;
   _currentFrame = frame;
 
-  runRepeatableTasks(_readers);
+  runRepeatableTasks(_beforeUpdate);
 
   // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM tasks
   // and repeat until all read and write tasks are executed.
@@ -311,9 +304,7 @@ const _handleNextFrame = catchError((time: number) => {
 
   _flags ^= SchedulerFlags.CurrentFrameReady;
 
-  if (!(_flags & SchedulerFlags.Hidden)) {
-    runRepeatableTasks(_animations);
-  }
+  runRepeatableTasks(_afterUpdate);
 
   // Perform tasks that should be executed when all DOM ops are finished.
   while ((frame.f & FrameTasksGroupFlags.After)) {
@@ -324,10 +315,6 @@ const _handleNextFrame = catchError((time: number) => {
   if (_autofocusedElement !== null) {
     (_autofocusedElement as HTMLElement).focus();
     _autofocusedElement = null;
-  }
-
-  if (_animations.length) {
-    requestNextFrame();
   }
 
   ++_clock;
