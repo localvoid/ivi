@@ -10,13 +10,7 @@ import { NativeEventListener, NativeEventListenerFlags } from "./native_event_li
 import { createMouseEventListener } from "./mouse_event_listener";
 import { debugPubTouchState } from "./debug";
 import { IOS_GESTURE_EVENT } from "./features";
-
-/**
- * TODO: make sure that target is always attached to the document, because touch events are always working in capture
- *  mode and when target is removed, all events just disappear. The trick is to add a special task that is executed
- *  after frame is updated and checks that target is attached to the document, if it were removed than we just need
- *  set display:none and reattach it somewhere.
- */
+import { beforeUpdate } from "ivi-scheduler";
 
 /**
  * id 1 is reserved for mouse, and touch identifiers can start from 0.
@@ -54,7 +48,9 @@ export function createTouchEventListener(
   const mouseListener = createMouseEventListener(dispatch, primaryPointers);
 
   let primaryTouch: Touch | null = null;
+  let target: EventTarget | null = null;
   let currentFlags: NativeEventListenerFlags = 0;
+  let removeTarget = false;
   let preventFirstMove = false;
   let moveTrackingEnabled = false;
   let eventTimeOffset = 0;
@@ -133,6 +129,7 @@ export function createTouchEventListener(
 
       if ((pointers.size === 0) || (pointers.size === 1 && pointers.get(1) !== void 0)) {
         primaryTouch = touches[0];
+        target = ev.target;
         if (!moveTrackingEnabled && (currentFlags & NativeEventListenerFlags.TrackMove)) {
           moveTrackingEnabled = true;
           beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
@@ -209,9 +206,16 @@ export function createTouchEventListener(
         primaryTouch = null;
       }
     }
-    if (moveTrackingEnabled && pointers.size === 0) {
-      moveTrackingEnabled = false;
-      removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+    if (pointers.size === 0) {
+      if (removeTarget) {
+        removeTarget = false;
+        document.removeChild(target as Element);
+      }
+      target = null;
+      if (moveTrackingEnabled) {
+        moveTrackingEnabled = false;
+        removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+      }
     }
     if (DEBUG) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
@@ -236,13 +240,32 @@ export function createTouchEventListener(
         primaryTouch = null;
       }
     }
-    if (moveTrackingEnabled && pointers.size === 0) {
-      moveTrackingEnabled = false;
-      removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+    if (pointers.size === 0) {
+      if (removeTarget) {
+        removeTarget = false;
+        document.removeChild(target as Element);
+      }
+      target = null;
+      if (moveTrackingEnabled) {
+        moveTrackingEnabled = false;
+        removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
+      }
     }
     if (DEBUG) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
+  }
+
+  function onBeforeUpdate() {
+    if (target !== null) {
+      if (!document.contains(target as Element)) {
+        removeTarget = true;
+        (target as HTMLElement).style.display = "none";
+        document.appendChild(target as Element);
+      }
+      return true;
+    }
+    return false;
   }
 
   return {
@@ -252,6 +275,7 @@ export function createTouchEventListener(
       beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
       beforeNativeEvent(EVENT_DISPATCHER_TOUCH_END, onEnd);
       beforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
+      beforeUpdate(onBeforeUpdate);
       /**
        * Safari just being safari: https://bugs.webkit.org/show_bug.cgi?id=182521
        */
