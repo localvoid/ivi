@@ -130,11 +130,11 @@ export function withShouldUpdate<P>(
  * @example
  *
  *     const A = component(class extends Component<string> {
- *       onClick = Events.onClick(() => console.log(this.props));
+ *       onClick = onClick(() => console.log(this.props));
  *
  *       render() {
  *         return (
- *           h.button()
+ *           button()
  *             .e(this.onClick)
  *             .c("Click Me")
  *         );
@@ -157,11 +157,11 @@ export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<
  * @example
  *
  *     const A = component(class extends Component<string> {
- *       onClick = Events.onClick(() => console.log(this.props));
+ *       onClick = onClick(() => console.log(this.props));
  *
  *       render() {
  *         return (
- *           h.button()
+ *           button()
  *             .e(this.onClick)
  *             .c("Click Me")
  *         );
@@ -186,11 +186,11 @@ export function statefulComponent<P>(
  * @example
  *
  *     const A = component(class extends Component<string> {
- *       onClick = Events.onClick(() => console.log(this.props));
+ *       onClick = onClick(() => console.log(this.props));
  *
  *       render() {
  *         return (
- *           h.button()
+ *           button()
  *             .e(this.onClick)
  *             .c("Click Me")
  *         );

@@ -176,7 +176,7 @@ export function mapRange<T>(start: number, end: number, fn: (idx: number) => VNo
 }
 
 /**
- * mapIterable creates a children collection with the results of calling a provided iterable until it is done.
+ * mapIterable creates a children collection from an `IterableIterator` object.
  *
  * @example
  *

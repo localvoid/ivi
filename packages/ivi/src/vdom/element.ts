@@ -8,9 +8,7 @@ import { VNode } from "./vnode";
  * @example
  *
  *     const DivWithIdAttribute = element(
- *       div("", {
- *         id: "predefined-id",
- *       });
+ *       div("", { id: "predefined-id" });
  *     );
  *
  *     render(

@@ -151,7 +151,7 @@ render(
 );
 ```
 
-`mapIterable()` creates a children collection with the results from an `Iterable` object.
+`mapIterable()` creates a children collection from an `IterableIterator` object.
 
 ```ts
 const items = [1, 2, 3];
