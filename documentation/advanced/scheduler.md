@@ -21,15 +21,13 @@ is looking like this:
 4. Update dirty components.
 5. Check that `write` tasks queue is empty, otherwise go to step 3.
 6. Check that `read` tasks queue is empty, otherwise go to step 2.
-7. Execute `after` tasks until after task queue is empty.
-8. Execute `afterUpdate` tasks once per frame.
+7. Execute `afterUpdate` tasks once per frame.
 
 There are three functions to add tasks into different task queues in the current frame:
 
 ```ts
 function currentFrameRead(task: () => void): void;
 function currentFrameWrite(task: () => void): void;
-function currentFrameAfter(task: () => void): void;
 ```
 
 And three functions for the next frame:
@@ -37,7 +35,6 @@ And three functions for the next frame:
 ```ts
 function nextFrameRead(task: () => void): void;
 function nextFrameWrite(task: () => void): void;
-function nextFrameAfter(task: () => void): void;
 ```
 
 ## beforeUpdate / afterUpdate

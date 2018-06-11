@@ -28,10 +28,6 @@ const enum FrameTasksGroupFlags {
    * Group contains "read" tasks".
    */
   Read = 1 << 2,
-  /**
-   * Group contains "after" tasks.
-   */
-  After = 1 << 3,
 }
 
 /**
@@ -53,10 +49,6 @@ interface FrameTasksGroup {
    * Read DOM task queue.
    */
   read: (() => void)[] | null;
-  /**
-   * Tasks that should be executed when all other frame tasks are finished.
-   */
-  after: (() => void)[] | null;
 }
 
 function createFrameTasksGroup(): FrameTasksGroup {
@@ -64,7 +56,6 @@ function createFrameTasksGroup(): FrameTasksGroup {
     flags: 0,
     write: null,
     read: null,
-    after: null,
   };
 }
 
@@ -220,11 +211,6 @@ function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
   frame.read = append(frame.read, task);
 }
 
-function addFrameTaskAfter(frame: FrameTasksGroup, task: () => void): void {
-  frame.flags |= FrameTasksGroupFlags.After;
-  frame.after = append(frame.after, task);
-}
-
 export function nextFrameUpdate(): void {
   requestNextFrame();
   addFrameTaskUpdate(_nextFrame);
@@ -238,11 +224,6 @@ export function nextFrameWrite(task: () => void): void {
 export function nextFrameRead(task: () => void): void {
   requestNextFrame();
   addFrameTaskRead(_nextFrame, task);
-}
-
-export function nextFrameAfter(task: () => void): void {
-  requestNextFrame();
-  addFrameTaskAfter(_nextFrame, task);
 }
 
 export function currentFrameUpdate(): void {
@@ -266,14 +247,6 @@ export function currentFrameRead(task: () => void): void {
     addFrameTaskRead(_currentFrame, task);
   } else {
     nextFrameRead(task);
-  }
-}
-
-export function currentFrameAfter(task: () => void): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
-    addFrameTaskAfter(_currentFrame, task);
-  } else {
-    nextFrameAfter(task);
   }
 }
 
@@ -367,17 +340,6 @@ export function triggerNextFrame(time?: number): void {
       _flags ^= SchedulerFlags.CurrentFrameReady;
 
       runRepeatableTasks(_afterUpdate);
-
-      // Perform tasks that should be executed when all DOM ops are finished.
-      while ((frame.flags & FrameTasksGroupFlags.After) !== 0) {
-        frame.flags ^= FrameTasksGroupFlags.After;
-
-        tasks = frame.after!;
-        frame.after = null;
-        for (i = 0; i < tasks.length; ++i) {
-          tasks[i]();
-        }
-      }
 
       if (_autofocusedElement !== null) {
         (_autofocusedElement as HTMLElement).focus();

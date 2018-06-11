@@ -28,10 +28,6 @@ const enum FrameTasksGroupFlags {
    * Group contains "read" tasks".
    */
   Read = 1 << 2,
-  /**
-   * Group contains "after" tasks.
-   */
-  After = 1 << 3,
 }
 
 interface TaskList {
@@ -74,10 +70,6 @@ interface FrameTasksGroup {
    * Read DOM task queue.
    */
   r: TaskList;
-  /**
-   * Tasks that should be executed when all other frame tasks are finished.
-   */
-  a: TaskList;
 }
 
 function createFrameTasksGroup(): FrameTasksGroup {
@@ -85,7 +77,6 @@ function createFrameTasksGroup(): FrameTasksGroup {
     f: 0,
     w: createTaskList(),
     r: createTaskList(),
-    a: createTaskList(),
   };
 }
 
@@ -306,12 +297,6 @@ const _handleNextFrame = catchError((time: number) => {
 
   runRepeatableTasks(_afterUpdate);
 
-  // Perform tasks that should be executed when all DOM ops are finished.
-  while ((frame.f & FrameTasksGroupFlags.After)) {
-    frame.f ^= FrameTasksGroupFlags.After;
-    run(frame.a);
-  }
-
   if (_autofocusedElement !== null) {
     (_autofocusedElement as HTMLElement).focus();
     _autofocusedElement = null;
@@ -334,11 +319,6 @@ function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
   frame.r.a.push(task);
 }
 
-function addFrameTaskAfter(frame: FrameTasksGroup, task: () => void): void {
-  frame.f |= FrameTasksGroupFlags.After;
-  frame.a.a.push(task);
-}
-
 export function nextFrameUpdate(): void {
   requestNextFrame();
   addFrameTaskUpdate(_nextFrame);
@@ -352,11 +332,6 @@ export function nextFrameWrite(task: () => void): void {
 export function nextFrameRead(task: () => void): void {
   requestNextFrame();
   addFrameTaskRead(_nextFrame, task);
-}
-
-export function nextFrameAfter(task: () => void): void {
-  requestNextFrame();
-  addFrameTaskAfter(_nextFrame, task);
 }
 
 export function currentFrameUpdate(): void {
@@ -380,14 +355,6 @@ export function currentFrameRead(task: () => void): void {
     addFrameTaskRead(_currentFrame, task);
   } else {
     nextFrameRead(task);
-  }
-}
-
-export function currentFrameAfter(task: () => void): void {
-  if (_flags & SchedulerFlags.CurrentFrameReady) {
-    addFrameTaskAfter(_currentFrame, task);
-  } else {
-    nextFrameAfter(task);
   }
 }
 
