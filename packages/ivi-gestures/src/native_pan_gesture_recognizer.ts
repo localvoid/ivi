@@ -20,37 +20,40 @@ export class NativePanGestureRecognizer extends GestureRecognizer<any> {
   }
 
   handleEvent(event: GesturePointerEvent) {
-    if (event.action & GesturePointerAction.Down) {
-      if (!(this.state & GestureRecognizerState.Active)) {
-        this.x0 = event.pageX;
-        this.y0 = event.pageY;
-        this.pointerId = event.id;
-        this.activate();
-      }
-    } else {
-      if (this.pointerId === event.id) {
-        if (event.action & GesturePointerAction.Move) {
-          if (!(this.state & GestureRecognizerState.Resolved)) {
-            const dx = event.pageX - this.x0;
-            const dy = event.pageY - this.y0;
-            const resolveAction = this.resolveAction;
-            if (
-              (((resolveAction & GestureBehavior.PanUp) && (dy <= -GestureConstants.PanDistance))) ||
-              (((resolveAction & GestureBehavior.PanDown) && (dy >= GestureConstants.PanDistance))) ||
-              (((resolveAction & GestureBehavior.PanLeft) && (dx <= -GestureConstants.PanDistance))) ||
-              (((resolveAction & GestureBehavior.PanRight) && (dx >= GestureConstants.PanDistance)))
-            ) {
-              this.resolve();
+    const pointerId = event.id;
+    if (pointerId !== 1) { // ignore mouse events
+      const state = this.state;
+      if (event.action & GesturePointerAction.Down) {
+        if (!(state & GestureRecognizerState.Active)) {
+          this.x0 = event.pageX;
+          this.y0 = event.pageY;
+          this.pointerId = pointerId;
+          this.activate();
+        }
+      } else {
+        if (this.pointerId === pointerId) {
+          if (event.action & GesturePointerAction.Move) {
+            if (!(state & GestureRecognizerState.Resolved)) {
+              const dx = event.pageX - this.x0;
+              const dy = event.pageY - this.y0;
+              const resolveAction = this.resolveAction;
+              if (
+                (((resolveAction & GestureBehavior.PanUp) && (dy <= -GestureConstants.PanDistance))) ||
+                (((resolveAction & GestureBehavior.PanDown) && (dy >= GestureConstants.PanDistance))) ||
+                (((resolveAction & GestureBehavior.PanLeft) && (dx <= -GestureConstants.PanDistance))) ||
+                (((resolveAction & GestureBehavior.PanRight) && (dx >= GestureConstants.PanDistance)))
+              ) {
+                this.resolve();
+              }
             }
-          }
-        } else {
-          if (
-            (this.state & GestureRecognizerState.Accepted) &&
-            !(event.action & GesturePointerAction.Cancel)
-          ) {
-            this.end();
           } else {
-            this.cancel();
+            if ((state & GestureRecognizerState.Started) && !(event.action & GesturePointerAction.Cancel)) {
+              this.end();
+            } else {
+              this.cancel();
+            }
+            this.deactivate();
+            this.reset();
           }
         }
       }
@@ -58,8 +61,16 @@ export class NativePanGestureRecognizer extends GestureRecognizer<any> {
   }
 
   accepted() {
-    if (!(this.state & GestureRecognizerState.Resolved)) {
+    if (this.state & GestureRecognizerState.Resolved) {
+      this.start();
+    } else {
       this.resolve();
+    }
+  }
+
+  resolved() {
+    if (this.state & GestureRecognizerState.Accepted) {
+      this.start();
     }
   }
 }

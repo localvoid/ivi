@@ -1,12 +1,10 @@
 import { GestureRecognizer } from "./gesture_recognizer";
 
-export const enum GestureConflictResolverAction {
+export const enum GestureControllerAction {
   Activate,
+  Deactivate,
   Resolve,
   Accept,
-  Reject,
-  Cancel,
-  End,
 }
 
-export type GestureController = (recognizer: GestureRecognizer<any>, action: GestureConflictResolverAction) => void;
+export type GestureController = (recognizer: GestureRecognizer<any>, action: GestureControllerAction) => void;

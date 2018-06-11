@@ -38,6 +38,8 @@ export class TapGestureRecognizer extends GestureRecognizer<TapGestureEvent> {
   private timeoutHandler = () => {
     if (this.state & GestureRecognizerState.Active) {
       this.cancel();
+      this.deactivate();
+      this.reset();
     }
   }
 
@@ -60,23 +62,27 @@ export class TapGestureRecognizer extends GestureRecognizer<TapGestureEvent> {
 
   handleEvent(event: GesturePointerEvent) {
     const action = event.action;
+    const state = this.state;
     if (action & GesturePointerAction.Down) {
-      if (!(this.state & GestureRecognizerState.Active)) {
+      if (!(state & GestureRecognizerState.Active)) {
         this.pointerId = event.id;
         this.x0 = event.pageX;
         this.y0 = event.pageY;
         this.activate();
+        this.start();
         setTimeout(this.timeoutHandler, GestureConstants.TapDelay);
       }
     } else if (action & (GesturePointerAction.Move | GesturePointerAction.Up)) {
       if (this.pointerId === event.id) {
         if (action & GesturePointerAction.Move) {
-          if (!(this.state & GestureRecognizerState.Resolved)) {
+          if (!(state & GestureRecognizerState.Resolved)) {
             if (
               (Math.abs(this.x0 - event.pageX) >= GestureConstants.PanDistance) ||
               (Math.abs(this.y0 - event.pageY) >= GestureConstants.PanDistance)
             ) {
               this.cancel();
+              this.deactivate();
+              this.reset();
             }
           }
         } else {
@@ -86,15 +92,13 @@ export class TapGestureRecognizer extends GestureRecognizer<TapGestureEvent> {
     }
   }
 
-  activated() {
-    this.emit(TapGestureAction.PointerDown);
-  }
-
   accepted() {
     clearTimeout(this.timeoutHandle);
     this.timeoutHandle = 0;
     if (this.state & GestureRecognizerState.Resolved) {
       this.end();
+      this.deactivate();
+      this.reset();
     } else {
       this.resolve();
     }
@@ -103,7 +107,13 @@ export class TapGestureRecognizer extends GestureRecognizer<TapGestureEvent> {
   resolved() {
     if (this.state & GestureRecognizerState.Accepted) {
       this.end();
+      this.deactivate();
+      this.reset();
     }
+  }
+
+  started() {
+    this.emit(TapGestureAction.PointerDown);
   }
 
   ended() {

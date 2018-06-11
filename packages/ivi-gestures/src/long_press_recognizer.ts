@@ -87,6 +87,8 @@ export class LongPressGestureRecognizer extends GestureRecognizer<LongPressGestu
               (Math.abs(this.dy) >= GestureConstants.PanDistance)
             ) {
               this.cancel();
+              this.deactivate();
+              this.reset();
             }
           }
         } else {
@@ -98,6 +100,8 @@ export class LongPressGestureRecognizer extends GestureRecognizer<LongPressGestu
           } else {
             this.cancel();
           }
+          this.deactivate();
+          this.reset();
         }
       }
     }
@@ -109,7 +113,7 @@ export class LongPressGestureRecognizer extends GestureRecognizer<LongPressGestu
 
   accepted() {
     if (this.state & GestureRecognizerState.Resolved) {
-      this.started();
+      this.start();
     } else {
       this.resolve();
     }
@@ -117,7 +121,7 @@ export class LongPressGestureRecognizer extends GestureRecognizer<LongPressGestu
 
   resolved() {
     if (this.state & GestureRecognizerState.Accepted) {
-      this.started();
+      this.start();
     }
   }
 

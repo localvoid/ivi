@@ -2,16 +2,13 @@
 
 It is an **EXPERIMENTAL** package that provides a gesture recognition system with automatic gesture disambiguation.
 
-It solves many different problems:
+## Features
 
-- Busy UI thread should not cause any jank when native scrolling is recognized.
 - Supports use cases like Long Press DnD inside of a container with a native scrolling.
-- There is no need to explicitly specify dependencies between gesture recognizers (traditional gesture APIs), automatic
- gesture disambiguation algorithm should automatically resolve all conflicts.
-- DnD events.
-- Unified Touch and Mouse Events (Pointer events spec is useless:
- [Issue#178](https://github.com/w3c/pointerevents/issues/178),
- [Issue#216](https://github.com/w3c/pointerevents/issues/216))
+- Gesture disambiguation algorithm automatically resolve conflicts between concurrent gesture recognizers.
+- Drag and Drop events.
+- Unified Touch and Mouse Events (pointer events spec have several issues that makes them useless for some types of
+ gestures: [Issue#178](https://github.com/w3c/pointerevents/issues/178), [Issue#216](https://github.com/w3c/pointerevents/issues/216))
 
 ## Browser Compatibility
 
@@ -48,48 +45,56 @@ All native gestures are permanently blocked when there are conflicting gesture r
 - Add specialized event handlers for DnD `onDrop()`, `onDragOver()` etc.
 - Add specialized event handlers when touching outside of the element.
 
-## Gesture Disambiguation Algorithm
+## Quick Example
 
-### Quick high-level overview of the algorithm
+```ts
+const Container = statefulComponent(class extends Component {
+  private events = onNativePan();
+
+  render() {
+    return div()
+      .e(this.events)
+      .c(Child());
+  }
+});
+
+const Child = statefulComponent(class extends Component {
+  private events = onLongPress((ev) => {
+    console.log("Long Press", ev);
+  });
+
+  render() {
+    return div().e(this.events);
+  }
+});
+
+render(
+  Container(),
+  document.getElementById("app"),
+);
+```
+
+## Gesture Disambiguation Algorithm
 
 When first pointer is down, event dispatcher will instantiate gesture recognizers that should receive pointer event
 (lazy initialization), then it will dispatch pointer event to them. Gesture recognizers in response should activate
-itself with a `GestureController` function that available on all gesture recognizers at `controller` property.
+itself using a `GestureController` function that available on all gesture recognizers at `controller` property.
 
 Then we need to immediately reject conflicting recognizers that can't be recognized. For example, if we have two Pan
 recognizers, then first one will never be recognized. This step is important when we completely override native
 gestures, because on iOS Safari we always need to invoke `preventDefault()` on the first `TouchMove` event, otherwise
 it can start sending non-cancelable events.
 
-Then if there are still conflicting recognizers, we are starting to wait until recognizers will respond that they
-recognized a gesture.
+Then if there are still conflicting recognizers, we are starting to wait until gesture recognizers either recognize
+gesture or cancel themselves.
 
-Then we need to check that other active recognizers doesn't depend on the time, so we are invoking lifecycle method
-`shouldWait()` and if someone needs to wait, disambiguation algorithm will wait until all awaiting recognizers either
-resolved or canceled.
+Then we need to check that other active gesture recognizers doesn't depend on the time, so we are starting to invoke
+lifecycle method `shouldWait()` and if someone needs to wait, disambiguation algorithm will wait until all awaiting
+recognizers either resolved or canceled.
 
-Then if there are still several conflicting resolved recognizers, we just use "last recognizer wins" strategy. This
-strategy works perfectly in all scenarios. If there are two Tap recognizers, innermost one will win because we are
-dispatching pointer events in a capture mode.
-
-### Constraint-based Gesture Disambiguation
-
-This is just an idea and requires more time to research, especially how it will impact user experience, because gesture
-recognition systems in native SDKs doesn't work like this.
-
-Current gesture disambiguation algorithm starts by registering all active recognizers after the first touch down event,
-and then tries different strategies to resolve conflicts until one gesture recognizer is left. With constraint-based
-gesture disambiguation algorithm instead of canceling gesture recognizers, we can dynamically add more recognizers from
-different touch down events, set them in a pending state and switch between them as soon as their constraints are
-satisfied.
-
-For example, we can register two pan gestures: one pan gesture that require two pointers and another one with one
-pointer. With the current gesture disambiguation algorithm when we start panning with one pointer, there is no way we
-can start triggering gesture recognizer with two pointers, until we release all pointers and start panning with two
-pointers. With constraint-based gesture disambiguation algorithm when we start panning with one pointer and then
-continue panning with two pointers, it should automatically switch to pan recognizer with two pointers because
-recognizers with more pointers should have a higher priority and if we release one pointer it should go back to the
-previous recognizer.
+Then if there are still several conflicting resolved recognizers, we just use "last recognizer with highest number of
+active pointers wins" strategy. This strategy works perfectly in all scenarios. If there are two Tap recognizers,
+innermost one will win because we are dispatching pointer events in a capture mode.
 
 ## Quirks
 

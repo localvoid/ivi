@@ -55,8 +55,9 @@ export class PanGestureRecognizer extends GestureRecognizer<PanGestureEvent> {
   }
 
   handleEvent(event: GesturePointerEvent) {
+    const state = this.state;
     if (event.action & GesturePointerAction.Down) {
-      if (!(this.state & GestureRecognizerState.Active)) {
+      if (!(state & GestureRecognizerState.Active)) {
         this.x0 = event.pageX;
         this.y0 = event.pageY;
         this.dx = 0;
@@ -69,7 +70,7 @@ export class PanGestureRecognizer extends GestureRecognizer<PanGestureEvent> {
         if (event.action & GesturePointerAction.Move) {
           this.dx = event.pageX - this.x0;
           this.dy = event.pageY - this.y0;
-          if (!(this.state & GestureRecognizerState.Resolved)) {
+          if (!(state & GestureRecognizerState.Resolved)) {
             const resolveAction = this.resolveAction;
             if (
               (((resolveAction & GestureBehavior.PanUp) && (this.dy <= -GestureConstants.PanDistance))) ||
@@ -83,14 +84,13 @@ export class PanGestureRecognizer extends GestureRecognizer<PanGestureEvent> {
             this.updated();
           }
         } else {
-          if (
-            (this.state & GestureRecognizerState.Accepted) &&
-            !(event.action & GesturePointerAction.Cancel)
-          ) {
+          if ((state & GestureRecognizerState.Started) && !(event.action & GesturePointerAction.Cancel)) {
             this.end();
           } else {
             this.cancel();
           }
+          this.deactivate();
+          this.reset();
         }
       }
     }
@@ -98,7 +98,7 @@ export class PanGestureRecognizer extends GestureRecognizer<PanGestureEvent> {
 
   accepted() {
     if (this.state & GestureRecognizerState.Resolved) {
-      this.started();
+      this.start();
     } else {
       this.resolve();
     }
@@ -106,7 +106,7 @@ export class PanGestureRecognizer extends GestureRecognizer<PanGestureEvent> {
 
   resolved() {
     if (this.state & GestureRecognizerState.Accepted) {
-      this.started();
+      this.start();
     }
   }
 

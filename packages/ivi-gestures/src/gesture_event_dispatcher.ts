@@ -7,7 +7,7 @@ import { GestureBehavior } from "./gesture_behavior";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
 import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
-import { GestureConflictResolverAction, GestureController } from "./gesture_controller";
+import { GestureControllerAction, GestureController } from "./gesture_controller";
 import { scheduleMicrotask } from "ivi-scheduler";
 import { NativeEventListenerFlags } from "./native_event_listener";
 import { debugPubDispatcherState } from "./debug";
@@ -123,34 +123,32 @@ export function createGestureEventDispatcher(): EventDispatcher {
   };
 
   const conflictResolver: GestureController =
-    (recognizer: GestureRecognizer<any>, action: GestureConflictResolverAction) => {
+    (recognizer: GestureRecognizer<any>, action: GestureControllerAction) => {
       switch (action) {
-        case GestureConflictResolverAction.Activate: {
+        case GestureControllerAction.Activate: {
           listener.set(NativeEventListenerFlags.TrackMove);
           recognizers.push(recognizer);
           activeRecognizersCounter++;
           break;
         }
-        case GestureConflictResolverAction.Resolve: {
+        case GestureControllerAction.Deactivate: {
+          activeRecognizersCounter--;
+          if (recognizer.state & GestureRecognizerState.Resolved) {
+            resolvedRecognizersCounter--;
+          }
+          break;
+        }
+        case GestureControllerAction.Resolve: {
           resolvedRecognizers.push(recognizer);
           resolvedRecognizersCounter++;
           break;
         }
-        case GestureConflictResolverAction.Accept: {
+        case GestureControllerAction.Accept: {
           acceptedRecognizer = recognizer;
           if (recognizer.resolveAction & GestureBehavior.Native) {
             listener.clear(NativeEventListenerFlags.TrackMove | NativeEventListenerFlags.PreventDefault);
           } else {
             listener.set(NativeEventListenerFlags.PreventDefault);
-          }
-          break;
-        }
-        case GestureConflictResolverAction.Reject:
-        case GestureConflictResolverAction.Cancel:
-        case GestureConflictResolverAction.End: {
-          activeRecognizersCounter--;
-          if (recognizer.state & GestureRecognizerState.Resolved) {
-            resolvedRecognizersCounter--;
           }
           break;
         }
