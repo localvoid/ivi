@@ -1,18 +1,18 @@
 import {
-  SVGElementProps,
-  SVGCircleElementProps, SVGClipPathElementProps, SVGDefsElementProps, SVGDescElementProps, SVGEllipseElementProps,
-  SVGFEBlendElementProps, SVGFEColorMatrixElementProps, SVGFEComponentTransferElementProps,
-  SVGFECompositeElementProps, SVGFEConvolveMatrixElementProps, SVGFEDiffuseLightingElementProps,
-  SVGFEDisplacementMapElementProps, SVGFEDistantLightElementProps, SVGFEFloodElementProps, SVGFEFuncAElementProps,
-  SVGFEFuncBElementProps, SVGFEFuncGElementProps, SVGFEFuncRElementProps, SVGFEGaussianBlurElementProps,
-  SVGFEImageElementProps, SVGFEMergeElementProps, SVGFEMergeNodeElementProps, SVGFEMorphologyElementProps,
-  SVGFEOffsetElementProps, SVGFEPointLightElementProps, SVGFESpecularLightingElementProps, SVGFESpotLightElementProps,
-  SVGFETileElementProps, SVGFETurbulenceElementProps, SVGFilterElementProps, SVGForeignObjectElementProps,
-  SVGGElementProps, SVGImageElementProps, SVGLinearGradientElementProps, SVGLineElementProps, SVGMarkerElementProps,
-  SVGMaskElementProps, SVGMetadataElementProps, SVGPathElementProps, SVGPatternElementProps, SVGPolygonElementProps,
-  SVGPolylineElementProps, SVGRadialGradientElementProps, SVGRectElementProps, SVGStopElementProps,
-  SVGSVGElementProps, SVGSymbolElementProps, SVGTextElementProps, SVGTextPathElementProps,
-  SVGTSpanElementProps, SVGViewElementProps, SVGUseElementProps,
+  SVGElementAttrs,
+  SVGCircleElementAttrs, SVGClipPathElementAttrs, SVGDefsElementAttrs, SVGDescElementAttrs, SVGEllipseElementAttrs,
+  SVGFEBlendElementAttrs, SVGFEColorMatrixElementAttrs, SVGFEComponentTransferElementAttrs,
+  SVGFECompositeElementAttrs, SVGFEConvolveMatrixElementAttrs, SVGFEDiffuseLightingElementAttrs,
+  SVGFEDisplacementMapElementAttrs, SVGFEDistantLightElementAttrs, SVGFEFloodElementAttrs, SVGFEFuncAElementAttrs,
+  SVGFEFuncBElementAttrs, SVGFEFuncGElementAttrs, SVGFEFuncRElementAttrs, SVGFEGaussianBlurElementAttrs,
+  SVGFEImageElementAttrs, SVGFEMergeElementAttrs, SVGFEMergeNodeElementAttrs, SVGFEMorphologyElementAttrs,
+  SVGFEOffsetElementAttrs, SVGFEPointLightElementAttrs, SVGFESpecularLightingElementAttrs, SVGFESpotLightElementAttrs,
+  SVGFETileElementAttrs, SVGFETurbulenceElementAttrs, SVGFilterElementAttrs, SVGForeignObjectElementAttrs,
+  SVGGElementAttrs, SVGImageElementAttrs, SVGLinearGradientElementAttrs, SVGLineElementAttrs, SVGMarkerElementAttrs,
+  SVGMaskElementAttrs, SVGMetadataElementAttrs, SVGPathElementAttrs, SVGPatternElementAttrs, SVGPolygonElementAttrs,
+  SVGPolylineElementAttrs, SVGRadialGradientElementAttrs, SVGRectElementAttrs, SVGStopElementAttrs,
+  SVGSVGElementAttrs, SVGSymbolElementAttrs, SVGTextElementAttrs, SVGTextPathElementAttrs,
+  SVGTSpanElementAttrs, SVGViewElementAttrs, SVGUseElementAttrs,
   CSSStyleProps,
 } from "ivi-core";
 import { VNode, VNodeFlags } from "ivi";
@@ -108,7 +108,7 @@ const enum TagId {
 }
 
 /* tslint:disable:max-line-length */
-export function a(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGAElement> {
+export function a(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGAElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.A << VNodeFlags.ElementIdOffset),
     "a",
@@ -118,7 +118,7 @@ export function a(className?: string, attrs?: SVGElementProps, css?: CSSStylePro
   );
 }
 
-export function altGlyph(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function altGlyph(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AltGlyph << VNodeFlags.ElementIdOffset),
     "altGlyph",
@@ -128,7 +128,7 @@ export function altGlyph(className?: string, attrs?: SVGElementProps, css?: CSSS
   );
 }
 
-export function altGlyphDef(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function altGlyphDef(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AltGlyphDef << VNodeFlags.ElementIdOffset),
     "altGlyphDef",
@@ -138,7 +138,7 @@ export function altGlyphDef(className?: string, attrs?: SVGElementProps, css?: C
   );
 }
 
-export function altGlyphItem(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function altGlyphItem(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AltGlyphItem << VNodeFlags.ElementIdOffset),
     "altGlyphItem",
@@ -148,7 +148,7 @@ export function altGlyphItem(className?: string, attrs?: SVGElementProps, css?: 
   );
 }
 
-export function animate(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function animate(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Animate << VNodeFlags.ElementIdOffset),
     "animate",
@@ -158,7 +158,7 @@ export function animate(className?: string, attrs?: SVGElementProps, css?: CSSSt
   );
 }
 
-export function animateColor(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function animateColor(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateColor << VNodeFlags.ElementIdOffset),
     "animateColor",
@@ -168,7 +168,7 @@ export function animateColor(className?: string, attrs?: SVGElementProps, css?: 
   );
 }
 
-export function animateMotion(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function animateMotion(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateMotion << VNodeFlags.ElementIdOffset),
     "animateMotion",
@@ -178,7 +178,7 @@ export function animateMotion(className?: string, attrs?: SVGElementProps, css?:
   );
 }
 
-export function animateTransform(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function animateTransform(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateTransform << VNodeFlags.ElementIdOffset),
     "animateTransform",
@@ -188,7 +188,7 @@ export function animateTransform(className?: string, attrs?: SVGElementProps, cs
   );
 }
 
-export function circle(className?: string, attrs?: SVGCircleElementProps, css?: CSSStyleProps): VNode<SVGCircleElementProps | undefined, SVGCircleElement> {
+export function circle(className?: string, attrs?: SVGCircleElementAttrs, css?: CSSStyleProps): VNode<SVGCircleElementAttrs | undefined, SVGCircleElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Circle << VNodeFlags.ElementIdOffset),
     "circle",
@@ -198,7 +198,7 @@ export function circle(className?: string, attrs?: SVGCircleElementProps, css?: 
   );
 }
 
-export function clipPath(className?: string, attrs?: SVGClipPathElementProps, css?: CSSStyleProps): VNode<SVGClipPathElementProps | undefined, SVGClipPathElement> {
+export function clipPath(className?: string, attrs?: SVGClipPathElementAttrs, css?: CSSStyleProps): VNode<SVGClipPathElementAttrs | undefined, SVGClipPathElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ClipPath << VNodeFlags.ElementIdOffset),
     "clipPath",
@@ -208,7 +208,7 @@ export function clipPath(className?: string, attrs?: SVGClipPathElementProps, cs
   );
 }
 
-export function colorProfile(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function colorProfile(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ColorProfile << VNodeFlags.ElementIdOffset),
     "color-profile",
@@ -218,7 +218,7 @@ export function colorProfile(className?: string, attrs?: SVGElementProps, css?: 
   );
 }
 
-export function cursor(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function cursor(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Cursor << VNodeFlags.ElementIdOffset),
     "cursor",
@@ -228,7 +228,7 @@ export function cursor(className?: string, attrs?: SVGElementProps, css?: CSSSty
   );
 }
 
-export function defs(className?: string, attrs?: SVGDefsElementProps, css?: CSSStyleProps): VNode<SVGDefsElementProps | undefined, SVGDefsElement> {
+export function defs(className?: string, attrs?: SVGDefsElementAttrs, css?: CSSStyleProps): VNode<SVGDefsElementAttrs | undefined, SVGDefsElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Defs << VNodeFlags.ElementIdOffset),
     "defs",
@@ -238,7 +238,7 @@ export function defs(className?: string, attrs?: SVGDefsElementProps, css?: CSSS
   );
 }
 
-export function desc(className?: string, attrs?: SVGDescElementProps, css?: CSSStyleProps): VNode<SVGDescElementProps | undefined, SVGDescElement> {
+export function desc(className?: string, attrs?: SVGDescElementAttrs, css?: CSSStyleProps): VNode<SVGDescElementAttrs | undefined, SVGDescElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Desc << VNodeFlags.ElementIdOffset),
     "desc",
@@ -248,7 +248,7 @@ export function desc(className?: string, attrs?: SVGDescElementProps, css?: CSSS
   );
 }
 
-export function discard(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function discard(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Discard << VNodeFlags.ElementIdOffset),
     "discard",
@@ -258,7 +258,7 @@ export function discard(className?: string, attrs?: SVGElementProps, css?: CSSSt
   );
 }
 
-export function ellipse(className?: string, attrs?: SVGEllipseElementProps, css?: CSSStyleProps): VNode<SVGEllipseElementProps | undefined, SVGEllipseElement> {
+export function ellipse(className?: string, attrs?: SVGEllipseElementAttrs, css?: CSSStyleProps): VNode<SVGEllipseElementAttrs | undefined, SVGEllipseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Ellipse << VNodeFlags.ElementIdOffset),
     "ellipse",
@@ -268,7 +268,7 @@ export function ellipse(className?: string, attrs?: SVGEllipseElementProps, css?
   );
 }
 
-export function feBlend(className?: string, attrs?: SVGFEBlendElementProps, css?: CSSStyleProps): VNode<SVGFEBlendElementProps | undefined, SVGFEBlendElement> {
+export function feBlend(className?: string, attrs?: SVGFEBlendElementAttrs, css?: CSSStyleProps): VNode<SVGFEBlendElementAttrs | undefined, SVGFEBlendElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeBlend << VNodeFlags.ElementIdOffset),
     "feBlend",
@@ -278,7 +278,7 @@ export function feBlend(className?: string, attrs?: SVGFEBlendElementProps, css?
   );
 }
 
-export function feColorMatrix(className?: string, attrs?: SVGFEColorMatrixElementProps, css?: CSSStyleProps): VNode<SVGFEColorMatrixElementProps | undefined, SVGFEColorMatrixElement> {
+export function feColorMatrix(className?: string, attrs?: SVGFEColorMatrixElementAttrs, css?: CSSStyleProps): VNode<SVGFEColorMatrixElementAttrs | undefined, SVGFEColorMatrixElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeColorMatrix << VNodeFlags.ElementIdOffset),
     "feColorMatrix",
@@ -288,7 +288,7 @@ export function feColorMatrix(className?: string, attrs?: SVGFEColorMatrixElemen
   );
 }
 
-export function feComponentTransfer(className?: string, attrs?: SVGFEComponentTransferElementProps, css?: CSSStyleProps): VNode<SVGFEComponentTransferElementProps | undefined, SVGFEComponentTransferElement> {
+export function feComponentTransfer(className?: string, attrs?: SVGFEComponentTransferElementAttrs, css?: CSSStyleProps): VNode<SVGFEComponentTransferElementAttrs | undefined, SVGFEComponentTransferElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeComponentTransfer << VNodeFlags.ElementIdOffset),
     "feComponentTransfer",
@@ -298,7 +298,7 @@ export function feComponentTransfer(className?: string, attrs?: SVGFEComponentTr
   );
 }
 
-export function feComposite(className?: string, attrs?: SVGFECompositeElementProps, css?: CSSStyleProps): VNode<SVGFECompositeElementProps | undefined, SVGFECompositeElement> {
+export function feComposite(className?: string, attrs?: SVGFECompositeElementAttrs, css?: CSSStyleProps): VNode<SVGFECompositeElementAttrs | undefined, SVGFECompositeElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeComposite << VNodeFlags.ElementIdOffset),
     "feComposite",
@@ -308,7 +308,7 @@ export function feComposite(className?: string, attrs?: SVGFECompositeElementPro
   );
 }
 
-export function feConvolveMatrix(className?: string, attrs?: SVGFEConvolveMatrixElementProps, css?: CSSStyleProps): VNode<SVGFEConvolveMatrixElementProps | undefined, SVGFEConvolveMatrixElement> {
+export function feConvolveMatrix(className?: string, attrs?: SVGFEConvolveMatrixElementAttrs, css?: CSSStyleProps): VNode<SVGFEConvolveMatrixElementAttrs | undefined, SVGFEConvolveMatrixElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeConvolveMatrix << VNodeFlags.ElementIdOffset),
     "feConvolveMatrix",
@@ -318,7 +318,7 @@ export function feConvolveMatrix(className?: string, attrs?: SVGFEConvolveMatrix
   );
 }
 
-export function feDiffuseLighting(className?: string, attrs?: SVGFEDiffuseLightingElementProps, css?: CSSStyleProps): VNode<SVGFEDiffuseLightingElementProps | undefined, SVGFEDiffuseLightingElement> {
+export function feDiffuseLighting(className?: string, attrs?: SVGFEDiffuseLightingElementAttrs, css?: CSSStyleProps): VNode<SVGFEDiffuseLightingElementAttrs | undefined, SVGFEDiffuseLightingElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDiffuseLighting << VNodeFlags.ElementIdOffset),
     "feDiffuseLighting",
@@ -328,7 +328,7 @@ export function feDiffuseLighting(className?: string, attrs?: SVGFEDiffuseLighti
   );
 }
 
-export function feDisplacementMap(className?: string, attrs?: SVGFEDisplacementMapElementProps, css?: CSSStyleProps): VNode<SVGFEDisplacementMapElementProps | undefined, SVGFEDisplacementMapElement> {
+export function feDisplacementMap(className?: string, attrs?: SVGFEDisplacementMapElementAttrs, css?: CSSStyleProps): VNode<SVGFEDisplacementMapElementAttrs | undefined, SVGFEDisplacementMapElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDisplacementMap << VNodeFlags.ElementIdOffset),
     "feDisplacementMap",
@@ -338,7 +338,7 @@ export function feDisplacementMap(className?: string, attrs?: SVGFEDisplacementM
   );
 }
 
-export function feDistantLight(className?: string, attrs?: SVGFEDistantLightElementProps, css?: CSSStyleProps): VNode<SVGFEDistantLightElementProps | undefined, SVGFEDistantLightElement> {
+export function feDistantLight(className?: string, attrs?: SVGFEDistantLightElementAttrs, css?: CSSStyleProps): VNode<SVGFEDistantLightElementAttrs | undefined, SVGFEDistantLightElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDistantLight << VNodeFlags.ElementIdOffset),
     "feDistantLight",
@@ -348,7 +348,7 @@ export function feDistantLight(className?: string, attrs?: SVGFEDistantLightElem
   );
 }
 
-export function feDropShadow(className?: string, attrs?: SVGFEDisplacementMapElementProps, css?: CSSStyleProps): VNode<SVGFEDisplacementMapElementProps | undefined, SVGFEDisplacementMapElement> {
+export function feDropShadow(className?: string, attrs?: SVGFEDisplacementMapElementAttrs, css?: CSSStyleProps): VNode<SVGFEDisplacementMapElementAttrs | undefined, SVGFEDisplacementMapElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDropShadow << VNodeFlags.ElementIdOffset),
     "feDropShadow",
@@ -358,7 +358,7 @@ export function feDropShadow(className?: string, attrs?: SVGFEDisplacementMapEle
   );
 }
 
-export function feFlood(className?: string, attrs?: SVGFEFloodElementProps, css?: CSSStyleProps): VNode<SVGFEFloodElementProps | undefined, SVGFEFloodElement> {
+export function feFlood(className?: string, attrs?: SVGFEFloodElementAttrs, css?: CSSStyleProps): VNode<SVGFEFloodElementAttrs | undefined, SVGFEFloodElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFlood << VNodeFlags.ElementIdOffset),
     "feFlood",
@@ -368,7 +368,7 @@ export function feFlood(className?: string, attrs?: SVGFEFloodElementProps, css?
   );
 }
 
-export function feFuncA(className?: string, attrs?: SVGFEFuncAElementProps, css?: CSSStyleProps): VNode<SVGFEFuncAElementProps | undefined, SVGFEFuncAElement> {
+export function feFuncA(className?: string, attrs?: SVGFEFuncAElementAttrs, css?: CSSStyleProps): VNode<SVGFEFuncAElementAttrs | undefined, SVGFEFuncAElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncA << VNodeFlags.ElementIdOffset),
     "feFuncA",
@@ -378,7 +378,7 @@ export function feFuncA(className?: string, attrs?: SVGFEFuncAElementProps, css?
   );
 }
 
-export function feFuncB(className?: string, attrs?: SVGFEFuncBElementProps, css?: CSSStyleProps): VNode<SVGFEFuncBElementProps | undefined, SVGFEFuncBElement> {
+export function feFuncB(className?: string, attrs?: SVGFEFuncBElementAttrs, css?: CSSStyleProps): VNode<SVGFEFuncBElementAttrs | undefined, SVGFEFuncBElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncB << VNodeFlags.ElementIdOffset),
     "feFuncB",
@@ -388,7 +388,7 @@ export function feFuncB(className?: string, attrs?: SVGFEFuncBElementProps, css?
   );
 }
 
-export function feFuncG(className?: string, attrs?: SVGFEFuncGElementProps, css?: CSSStyleProps): VNode<SVGFEFuncGElementProps | undefined, SVGFEFuncGElement> {
+export function feFuncG(className?: string, attrs?: SVGFEFuncGElementAttrs, css?: CSSStyleProps): VNode<SVGFEFuncGElementAttrs | undefined, SVGFEFuncGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncG << VNodeFlags.ElementIdOffset),
     "feFuncG",
@@ -398,7 +398,7 @@ export function feFuncG(className?: string, attrs?: SVGFEFuncGElementProps, css?
   );
 }
 
-export function feFuncR(className?: string, attrs?: SVGFEFuncRElementProps, css?: CSSStyleProps): VNode<SVGFEFuncRElementProps | undefined, SVGFEFuncRElement> {
+export function feFuncR(className?: string, attrs?: SVGFEFuncRElementAttrs, css?: CSSStyleProps): VNode<SVGFEFuncRElementAttrs | undefined, SVGFEFuncRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncR << VNodeFlags.ElementIdOffset),
     "feFuncR",
@@ -408,7 +408,7 @@ export function feFuncR(className?: string, attrs?: SVGFEFuncRElementProps, css?
   );
 }
 
-export function feGaussianBlur(className?: string, attrs?: SVGFEGaussianBlurElementProps, css?: CSSStyleProps): VNode<SVGFEGaussianBlurElementProps | undefined, SVGFEGaussianBlurElement> {
+export function feGaussianBlur(className?: string, attrs?: SVGFEGaussianBlurElementAttrs, css?: CSSStyleProps): VNode<SVGFEGaussianBlurElementAttrs | undefined, SVGFEGaussianBlurElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeGaussianBlur << VNodeFlags.ElementIdOffset),
     "feGaussianBlur",
@@ -418,7 +418,7 @@ export function feGaussianBlur(className?: string, attrs?: SVGFEGaussianBlurElem
   );
 }
 
-export function feImage(className?: string, attrs?: SVGFEImageElementProps, css?: CSSStyleProps): VNode<SVGFEImageElementProps | undefined, SVGFEImageElement> {
+export function feImage(className?: string, attrs?: SVGFEImageElementAttrs, css?: CSSStyleProps): VNode<SVGFEImageElementAttrs | undefined, SVGFEImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeImage << VNodeFlags.ElementIdOffset),
     "feImage",
@@ -428,7 +428,7 @@ export function feImage(className?: string, attrs?: SVGFEImageElementProps, css?
   );
 }
 
-export function feMerge(className?: string, attrs?: SVGFEMergeElementProps, css?: CSSStyleProps): VNode<SVGFEMergeElementProps | undefined, SVGFEMergeElement> {
+export function feMerge(className?: string, attrs?: SVGFEMergeElementAttrs, css?: CSSStyleProps): VNode<SVGFEMergeElementAttrs | undefined, SVGFEMergeElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMerge << VNodeFlags.ElementIdOffset),
     "feMerge",
@@ -438,7 +438,7 @@ export function feMerge(className?: string, attrs?: SVGFEMergeElementProps, css?
   );
 }
 
-export function feMergeNode(className?: string, attrs?: SVGFEMergeNodeElementProps, css?: CSSStyleProps): VNode<SVGFEMergeNodeElementProps | undefined, SVGFEMergeNodeElement> {
+export function feMergeNode(className?: string, attrs?: SVGFEMergeNodeElementAttrs, css?: CSSStyleProps): VNode<SVGFEMergeNodeElementAttrs | undefined, SVGFEMergeNodeElementAttrs> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMergeNode << VNodeFlags.ElementIdOffset),
     "feMergeNode",
@@ -448,7 +448,7 @@ export function feMergeNode(className?: string, attrs?: SVGFEMergeNodeElementPro
   );
 }
 
-export function feMorphology(className?: string, attrs?: SVGFEMorphologyElementProps, css?: CSSStyleProps): VNode<SVGFEMorphologyElementProps | undefined, SVGFEMorphologyElement> {
+export function feMorphology(className?: string, attrs?: SVGFEMorphologyElementAttrs, css?: CSSStyleProps): VNode<SVGFEMorphologyElementAttrs | undefined, SVGFEMorphologyElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMorphology << VNodeFlags.ElementIdOffset),
     "feMorphology",
@@ -458,7 +458,7 @@ export function feMorphology(className?: string, attrs?: SVGFEMorphologyElementP
   );
 }
 
-export function feOffset(className?: string, attrs?: SVGFEOffsetElementProps, css?: CSSStyleProps): VNode<SVGFEOffsetElementProps | undefined, SVGFEOffsetElement> {
+export function feOffset(className?: string, attrs?: SVGFEOffsetElementAttrs, css?: CSSStyleProps): VNode<SVGFEOffsetElementAttrs | undefined, SVGFEOffsetElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeOffset << VNodeFlags.ElementIdOffset),
     "feOffset",
@@ -468,7 +468,7 @@ export function feOffset(className?: string, attrs?: SVGFEOffsetElementProps, cs
   );
 }
 
-export function fePointLight(className?: string, attrs?: SVGFEPointLightElementProps, css?: CSSStyleProps): VNode<SVGFEPointLightElementProps | undefined, SVGFEPointLightElement> {
+export function fePointLight(className?: string, attrs?: SVGFEPointLightElementAttrs, css?: CSSStyleProps): VNode<SVGFEPointLightElementAttrs | undefined, SVGFEPointLightElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FePointLight << VNodeFlags.ElementIdOffset),
     "fePointLight",
@@ -478,7 +478,7 @@ export function fePointLight(className?: string, attrs?: SVGFEPointLightElementP
   );
 }
 
-export function feSpecularLighting(className?: string, attrs?: SVGFESpecularLightingElementProps, css?: CSSStyleProps): VNode<SVGFESpecularLightingElementProps | undefined, SVGFESpecularLightingElement> {
+export function feSpecularLighting(className?: string, attrs?: SVGFESpecularLightingElementAttrs, css?: CSSStyleProps): VNode<SVGFESpecularLightingElementAttrs | undefined, SVGFESpecularLightingElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeSpecularLighting << VNodeFlags.ElementIdOffset),
     "feSpecularLighting",
@@ -488,7 +488,7 @@ export function feSpecularLighting(className?: string, attrs?: SVGFESpecularLigh
   );
 }
 
-export function feSpotLight(className?: string, attrs?: SVGFESpotLightElementProps, css?: CSSStyleProps): VNode<SVGFESpotLightElementProps | undefined, SVGFESpotLightElement> {
+export function feSpotLight(className?: string, attrs?: SVGFESpotLightElementAttrs, css?: CSSStyleProps): VNode<SVGFESpotLightElementAttrs | undefined, SVGFESpotLightElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeSpotLight << VNodeFlags.ElementIdOffset),
     "feSpotLight",
@@ -498,7 +498,7 @@ export function feSpotLight(className?: string, attrs?: SVGFESpotLightElementPro
   );
 }
 
-export function feTile(className?: string, attrs?: SVGFETileElementProps, css?: CSSStyleProps): VNode<SVGFETileElementProps | undefined, SVGFETileElement> {
+export function feTile(className?: string, attrs?: SVGFETileElementAttrs, css?: CSSStyleProps): VNode<SVGFETileElementAttrs | undefined, SVGFETileElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeTile << VNodeFlags.ElementIdOffset),
     "feTile",
@@ -508,7 +508,7 @@ export function feTile(className?: string, attrs?: SVGFETileElementProps, css?: 
   );
 }
 
-export function feTurbulence(className?: string, attrs?: SVGFETurbulenceElementProps, css?: CSSStyleProps): VNode<SVGFETurbulenceElementProps | undefined, SVGFETurbulenceElement> {
+export function feTurbulence(className?: string, attrs?: SVGFETurbulenceElementAttrs, css?: CSSStyleProps): VNode<SVGFETurbulenceElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeTurbulence << VNodeFlags.ElementIdOffset),
     "feTurbulence",
@@ -518,7 +518,7 @@ export function feTurbulence(className?: string, attrs?: SVGFETurbulenceElementP
   );
 }
 
-export function filter(className?: string, attrs?: SVGFilterElementProps, css?: CSSStyleProps): VNode<SVGFilterElementProps | undefined, SVGFilterElement> {
+export function filter(className?: string, attrs?: SVGFilterElementAttrs, css?: CSSStyleProps): VNode<SVGFilterElementAttrs | undefined, SVGFilterElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Filter << VNodeFlags.ElementIdOffset),
     "filter",
@@ -528,7 +528,7 @@ export function filter(className?: string, attrs?: SVGFilterElementProps, css?: 
   );
 }
 
-export function font(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function font(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Font << VNodeFlags.ElementIdOffset),
     "font",
@@ -538,7 +538,7 @@ export function font(className?: string, attrs?: SVGElementProps, css?: CSSStyle
   );
 }
 
-export function fontFace(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function fontFace(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFace << VNodeFlags.ElementIdOffset),
     "font-face",
@@ -548,7 +548,7 @@ export function fontFace(className?: string, attrs?: SVGElementProps, css?: CSSS
   );
 }
 
-export function fontFaceFormat(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function fontFaceFormat(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceFormat << VNodeFlags.ElementIdOffset),
     "font-face-format",
@@ -558,7 +558,7 @@ export function fontFaceFormat(className?: string, attrs?: SVGElementProps, css?
   );
 }
 
-export function fontFaceName(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function fontFaceName(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceName << VNodeFlags.ElementIdOffset),
     "font-face-name",
@@ -568,7 +568,7 @@ export function fontFaceName(className?: string, attrs?: SVGElementProps, css?: 
   );
 }
 
-export function fontFaceSrc(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function fontFaceSrc(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceSrc << VNodeFlags.ElementIdOffset),
     "font-face-src",
@@ -578,7 +578,7 @@ export function fontFaceSrc(className?: string, attrs?: SVGElementProps, css?: C
   );
 }
 
-export function fontFaceUri(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function fontFaceUri(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FontFaceUri << VNodeFlags.ElementIdOffset),
     "font-face-uri",
@@ -588,7 +588,7 @@ export function fontFaceUri(className?: string, attrs?: SVGElementProps, css?: C
   );
 }
 
-export function foreignObject(className?: string, attrs?: SVGForeignObjectElementProps, css?: CSSStyleProps): VNode<SVGForeignObjectElementProps | undefined, SVGForeignObjectElement> {
+export function foreignObject(className?: string, attrs?: SVGForeignObjectElementAttrs, css?: CSSStyleProps): VNode<SVGForeignObjectElementAttrs | undefined, SVGForeignObjectElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ForeignObject << VNodeFlags.ElementIdOffset),
     "foreignObject",
@@ -598,7 +598,7 @@ export function foreignObject(className?: string, attrs?: SVGForeignObjectElemen
   );
 }
 
-export function g(className?: string, attrs?: SVGGElementProps, css?: CSSStyleProps): VNode<SVGGElementProps | undefined, SVGGElement> {
+export function g(className?: string, attrs?: SVGGElementAttrs, css?: CSSStyleProps): VNode<SVGGElementAttrs | undefined, SVGGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.G << VNodeFlags.ElementIdOffset),
     "g",
@@ -608,7 +608,7 @@ export function g(className?: string, attrs?: SVGGElementProps, css?: CSSStylePr
   );
 }
 
-export function glyph(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function glyph(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Glyph << VNodeFlags.ElementIdOffset),
     "glyph",
@@ -618,7 +618,7 @@ export function glyph(className?: string, attrs?: SVGElementProps, css?: CSSStyl
   );
 }
 
-export function glyphRef(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function glyphRef(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.GlyphRef << VNodeFlags.ElementIdOffset),
     "glyphRef",
@@ -628,7 +628,7 @@ export function glyphRef(className?: string, attrs?: SVGElementProps, css?: CSSS
   );
 }
 
-export function hatch(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function hatch(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hatch << VNodeFlags.ElementIdOffset),
     "hatch",
@@ -638,7 +638,7 @@ export function hatch(className?: string, attrs?: SVGElementProps, css?: CSSStyl
   );
 }
 
-export function hatchpath(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function hatchpath(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hatchpath << VNodeFlags.ElementIdOffset),
     "hatchpath",
@@ -648,7 +648,7 @@ export function hatchpath(className?: string, attrs?: SVGElementProps, css?: CSS
   );
 }
 
-export function hkern(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGFETurbulenceElement> {
+export function hkern(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGFETurbulenceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hkern << VNodeFlags.ElementIdOffset),
     "hkern",
@@ -658,7 +658,7 @@ export function hkern(className?: string, attrs?: SVGElementProps, css?: CSSStyl
   );
 }
 
-export function image(className?: string, attrs?: SVGImageElementProps, css?: CSSStyleProps): VNode<SVGImageElementProps | undefined, SVGImageElement> {
+export function image(className?: string, attrs?: SVGImageElementAttrs, css?: CSSStyleProps): VNode<SVGImageElementAttrs | undefined, SVGImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Image << VNodeFlags.ElementIdOffset),
     "image",
@@ -668,7 +668,7 @@ export function image(className?: string, attrs?: SVGImageElementProps, css?: CS
   );
 }
 
-export function line(className?: string, attrs?: SVGLineElementProps, css?: CSSStyleProps): VNode<SVGLineElementProps | undefined, SVGLineElement> {
+export function line(className?: string, attrs?: SVGLineElementAttrs, css?: CSSStyleProps): VNode<SVGLineElementAttrs | undefined, SVGLineElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Line << VNodeFlags.ElementIdOffset),
     "line",
@@ -678,7 +678,7 @@ export function line(className?: string, attrs?: SVGLineElementProps, css?: CSSS
   );
 }
 
-export function linearGradient(className?: string, attrs?: SVGLinearGradientElementProps, css?: CSSStyleProps): VNode<SVGLinearGradientElementProps | undefined, SVGLinearGradientElement> {
+export function linearGradient(className?: string, attrs?: SVGLinearGradientElementAttrs, css?: CSSStyleProps): VNode<SVGLinearGradientElementAttrs | undefined, SVGLinearGradientElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.LinearGradient << VNodeFlags.ElementIdOffset),
     "linearGradient",
@@ -688,7 +688,7 @@ export function linearGradient(className?: string, attrs?: SVGLinearGradientElem
   );
 }
 
-export function marker(className?: string, attrs?: SVGMarkerElementProps, css?: CSSStyleProps): VNode<SVGMarkerElementProps | undefined, SVGMarkerElement> {
+export function marker(className?: string, attrs?: SVGMarkerElementAttrs, css?: CSSStyleProps): VNode<SVGMarkerElementAttrs | undefined, SVGMarkerElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Marker << VNodeFlags.ElementIdOffset),
     "marker",
@@ -698,7 +698,7 @@ export function marker(className?: string, attrs?: SVGMarkerElementProps, css?: 
   );
 }
 
-export function mask(className?: string, attrs?: SVGMaskElementProps, css?: CSSStyleProps): VNode<SVGMaskElementProps | undefined, SVGMaskElement> {
+export function mask(className?: string, attrs?: SVGMaskElementAttrs, css?: CSSStyleProps): VNode<SVGMaskElementAttrs | undefined, SVGMaskElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mask << VNodeFlags.ElementIdOffset),
     "mask",
@@ -708,7 +708,7 @@ export function mask(className?: string, attrs?: SVGMaskElementProps, css?: CSSS
   );
 }
 
-export function mesh(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function mesh(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mesh << VNodeFlags.ElementIdOffset),
     "mesh",
@@ -718,7 +718,7 @@ export function mesh(className?: string, attrs?: SVGElementProps, css?: CSSStyle
   );
 }
 
-export function meshgradient(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGLinearGradientElement> {
+export function meshgradient(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGLinearGradientElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshgradient << VNodeFlags.ElementIdOffset),
     "meshgradient",
@@ -728,7 +728,7 @@ export function meshgradient(className?: string, attrs?: SVGElementProps, css?: 
   );
 }
 
-export function meshpatch(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function meshpatch(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshpatch << VNodeFlags.ElementIdOffset),
     "meshpatch",
@@ -738,7 +738,7 @@ export function meshpatch(className?: string, attrs?: SVGElementProps, css?: CSS
   );
 }
 
-export function meshrow(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function meshrow(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshrow << VNodeFlags.ElementIdOffset),
     "meshrow",
@@ -748,7 +748,7 @@ export function meshrow(className?: string, attrs?: SVGElementProps, css?: CSSSt
   );
 }
 
-export function metadata(className?: string, attrs?: SVGMetadataElementProps, css?: CSSStyleProps): VNode<SVGMetadataElementProps | undefined, SVGMetadataElement> {
+export function metadata(className?: string, attrs?: SVGMetadataElementAttrs, css?: CSSStyleProps): VNode<SVGMetadataElementAttrs | undefined, SVGMetadataElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Metadata << VNodeFlags.ElementIdOffset),
     "metadata",
@@ -758,7 +758,7 @@ export function metadata(className?: string, attrs?: SVGMetadataElementProps, cs
   );
 }
 
-export function missingGlyph(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function missingGlyph(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.MissingGlyph << VNodeFlags.ElementIdOffset),
     "missing-glyph",
@@ -768,7 +768,7 @@ export function missingGlyph(className?: string, attrs?: SVGElementProps, css?: 
   );
 }
 
-export function mpath(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function mpath(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mpath << VNodeFlags.ElementIdOffset),
     "mpath",
@@ -778,7 +778,7 @@ export function mpath(className?: string, attrs?: SVGElementProps, css?: CSSStyl
   );
 }
 
-export function path(className?: string, attrs?: SVGPathElementProps, css?: CSSStyleProps): VNode<SVGPathElementProps | undefined, SVGPathElement> {
+export function path(className?: string, attrs?: SVGPathElementAttrs, css?: CSSStyleProps): VNode<SVGPathElementAttrs | undefined, SVGPathElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Path << VNodeFlags.ElementIdOffset),
     "path",
@@ -788,7 +788,7 @@ export function path(className?: string, attrs?: SVGPathElementProps, css?: CSSS
   );
 }
 
-export function pattern(className?: string, attrs?: SVGPatternElementProps, css?: CSSStyleProps): VNode<SVGPatternElementProps | undefined, SVGPatternElement> {
+export function pattern(className?: string, attrs?: SVGPatternElementAttrs, css?: CSSStyleProps): VNode<SVGPatternElementAttrs | undefined, SVGPatternElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Pattern << VNodeFlags.ElementIdOffset),
     "pattern",
@@ -798,7 +798,7 @@ export function pattern(className?: string, attrs?: SVGPatternElementProps, css?
   );
 }
 
-export function polygon(className?: string, attrs?: SVGPolygonElementProps, css?: CSSStyleProps): VNode<SVGPolygonElementProps | undefined, SVGPolygonElement> {
+export function polygon(className?: string, attrs?: SVGPolygonElementAttrs, css?: CSSStyleProps): VNode<SVGPolygonElementAttrs | undefined, SVGPolygonElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Polygon << VNodeFlags.ElementIdOffset),
     "polygon",
@@ -808,7 +808,7 @@ export function polygon(className?: string, attrs?: SVGPolygonElementProps, css?
   );
 }
 
-export function polyline(className?: string, attrs?: SVGPolylineElementProps, css?: CSSStyleProps): VNode<SVGPolylineElementProps | undefined, SVGPolylineElement> {
+export function polyline(className?: string, attrs?: SVGPolylineElementAttrs, css?: CSSStyleProps): VNode<SVGPolylineElementAttrs | undefined, SVGPolylineElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Polyline << VNodeFlags.ElementIdOffset),
     "polyline",
@@ -818,7 +818,7 @@ export function polyline(className?: string, attrs?: SVGPolylineElementProps, cs
   );
 }
 
-export function radialGradient(className?: string, attrs?: SVGRadialGradientElementProps, css?: CSSStyleProps): VNode<SVGRadialGradientElementProps | undefined, SVGRadialGradientElement> {
+export function radialGradient(className?: string, attrs?: SVGRadialGradientElementAttrs, css?: CSSStyleProps): VNode<SVGRadialGradientElementAttrs | undefined, SVGRadialGradientElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.RadialGradient << VNodeFlags.ElementIdOffset),
     "radialGradient",
@@ -828,7 +828,7 @@ export function radialGradient(className?: string, attrs?: SVGRadialGradientElem
   );
 }
 
-export function rect(className?: string, attrs?: SVGRectElementProps, css?: CSSStyleProps): VNode<SVGRectElementProps | undefined, SVGRectElement> {
+export function rect(className?: string, attrs?: SVGRectElementAttrs, css?: CSSStyleProps): VNode<SVGRectElementAttrs | undefined, SVGRectElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Rect << VNodeFlags.ElementIdOffset),
     "rect",
@@ -838,7 +838,7 @@ export function rect(className?: string, attrs?: SVGRectElementProps, css?: CSSS
   );
 }
 
-export function set(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function set(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Set << VNodeFlags.ElementIdOffset),
     "set",
@@ -848,7 +848,7 @@ export function set(className?: string, attrs?: SVGElementProps, css?: CSSStyleP
   );
 }
 
-export function solidcolor(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function solidcolor(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Solidcolor << VNodeFlags.ElementIdOffset),
     "solidcolor",
@@ -858,7 +858,7 @@ export function solidcolor(className?: string, attrs?: SVGElementProps, css?: CS
   );
 }
 
-export function stop(className?: string, attrs?: SVGStopElementProps, css?: CSSStyleProps): VNode<SVGStopElementProps | undefined, SVGStopElement> {
+export function stop(className?: string, attrs?: SVGStopElementAttrs, css?: CSSStyleProps): VNode<SVGStopElementAttrs | undefined, SVGStopElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Stop << VNodeFlags.ElementIdOffset),
     "stop",
@@ -868,7 +868,7 @@ export function stop(className?: string, attrs?: SVGStopElementProps, css?: CSSS
   );
 }
 
-export function svg(className?: string, attrs?: SVGSVGElementProps, css?: CSSStyleProps): VNode<SVGSVGElementProps | undefined, SVGSVGElement> {
+export function svg(className?: string, attrs?: SVGSVGElementAttrs, css?: CSSStyleProps): VNode<SVGSVGElementAttrs | undefined, SVGSVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Svg << VNodeFlags.ElementIdOffset),
     "svg",
@@ -878,7 +878,7 @@ export function svg(className?: string, attrs?: SVGSVGElementProps, css?: CSSSty
   );
 }
 
-export function svgSwitch(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGSwitchElement> {
+export function svgSwitch(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGSwitchElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Switch << VNodeFlags.ElementIdOffset),
     "switch",
@@ -888,7 +888,7 @@ export function svgSwitch(className?: string, attrs?: SVGElementProps, css?: CSS
   );
 }
 
-export function symbol(className?: string, attrs?: SVGSymbolElementProps, css?: CSSStyleProps): VNode<SVGSymbolElementProps | undefined, SVGSymbolElement> {
+export function symbol(className?: string, attrs?: SVGSymbolElementAttrs, css?: CSSStyleProps): VNode<SVGSymbolElementAttrs | undefined, SVGSymbolElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Symbol << VNodeFlags.ElementIdOffset),
     "symbol",
@@ -898,7 +898,7 @@ export function symbol(className?: string, attrs?: SVGSymbolElementProps, css?: 
   );
 }
 
-export function text(className?: string, attrs?: SVGTextElementProps, css?: CSSStyleProps): VNode<SVGTextElementProps | undefined, SVGTextElement> {
+export function text(className?: string, attrs?: SVGTextElementAttrs, css?: CSSStyleProps): VNode<SVGTextElementAttrs | undefined, SVGTextElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Text << VNodeFlags.ElementIdOffset),
     "text",
@@ -908,7 +908,7 @@ export function text(className?: string, attrs?: SVGTextElementProps, css?: CSSS
   );
 }
 
-export function textPath(className?: string, attrs?: SVGTextPathElementProps, css?: CSSStyleProps): VNode<SVGTextPathElementProps | undefined, SVGTextPathElement> {
+export function textPath(className?: string, attrs?: SVGTextPathElementAttrs, css?: CSSStyleProps): VNode<SVGTextPathElementAttrs | undefined, SVGTextPathElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.TextPath << VNodeFlags.ElementIdOffset),
     "textPath",
@@ -918,7 +918,7 @@ export function textPath(className?: string, attrs?: SVGTextPathElementProps, cs
   );
 }
 
-export function title(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGTitleElement> {
+export function title(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGTitleElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Title << VNodeFlags.ElementIdOffset),
     "title",
@@ -928,7 +928,7 @@ export function title(className?: string, attrs?: SVGElementProps, css?: CSSStyl
   );
 }
 
-export function tref(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function tref(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Tref << VNodeFlags.ElementIdOffset),
     "tref",
@@ -938,7 +938,7 @@ export function tref(className?: string, attrs?: SVGElementProps, css?: CSSStyle
   );
 }
 
-export function tspan(className?: string, attrs?: SVGTSpanElementProps, css?: CSSStyleProps): VNode<SVGTSpanElementProps | undefined, SVGTSpanElement> {
+export function tspan(className?: string, attrs?: SVGTSpanElementAttrs, css?: CSSStyleProps): VNode<SVGTSpanElementAttrs | undefined, SVGTSpanElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Tspan << VNodeFlags.ElementIdOffset),
     "tspan",
@@ -948,7 +948,7 @@ export function tspan(className?: string, attrs?: SVGTSpanElementProps, css?: CS
   );
 }
 
-export function use(className?: string, attrs?: SVGUseElementProps, css?: CSSStyleProps): VNode<SVGUseElementProps | undefined, SVGUseElement> {
+export function use(className?: string, attrs?: SVGUseElementAttrs, css?: CSSStyleProps): VNode<SVGUseElementAttrs | undefined, SVGUseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Use << VNodeFlags.ElementIdOffset),
     "use",
@@ -958,7 +958,7 @@ export function use(className?: string, attrs?: SVGUseElementProps, css?: CSSSty
   );
 }
 
-export function view(className?: string, attrs?: SVGViewElementProps, css?: CSSStyleProps): VNode<SVGViewElementProps | undefined, SVGViewElement> {
+export function view(className?: string, attrs?: SVGViewElementAttrs, css?: CSSStyleProps): VNode<SVGViewElementAttrs | undefined, SVGViewElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.View << VNodeFlags.ElementIdOffset),
     "view",
@@ -968,7 +968,7 @@ export function view(className?: string, attrs?: SVGViewElementProps, css?: CSSS
   );
 }
 
-export function vkern(className?: string, attrs?: SVGElementProps, css?: CSSStyleProps): VNode<SVGElementProps | undefined, SVGElement> {
+export function vkern(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleProps): VNode<SVGElementAttrs | undefined, SVGElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Vkern << VNodeFlags.ElementIdOffset),
     "vkern",

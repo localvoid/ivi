@@ -1,19 +1,19 @@
 import {
-  HTMLAnchorElementProps, HTMLElementProps, HTMLAreaElementProps, HTMLAudioElementProps,
-  HTMLBaseElementProps, HTMLBaseFontElementProps, HTMLBodyElementProps, HTMLBRElementProps, HTMLButtonElementProps,
-  HTMLCanvasElementProps, HTMLQuoteElementProps, HTMLTableCaptionElementProps, HTMLTableColElementProps,
-  HTMLDataListElementProps, HTMLModElementProps, HTMLDirectoryElementProps, HTMLDivElementProps,
-  HTMLDListElementProps, HTMLEmbedElementProps, HTMLFieldSetElementProps, HTMLFontElementProps, HTMLFormElementProps,
-  HTMLFrameElementProps, HTMLFrameSetElementProps, HTMLHeadElementProps, HTMLHeadingElementProps, HTMLHRElementProps,
-  HTMLHtmlElementProps, HTMLIFrameElementProps, HTMLImageElementProps, HTMLInputElementProps, HTMLLabelElementProps,
-  HTMLLegendElementProps, HTMLLIElementProps, HTMLLinkElementProps, HTMLMapElementProps,
-  HTMLMenuElementProps, HTMLMetaElementProps, HTMLMeterElementProps, HTMLObjectElementProps, HTMLOListElementProps,
-  HTMLOptGroupElementProps, HTMLOptionElementProps, HTMLParagraphElementProps, HTMLParamElementProps,
-  HTMLPictureElementProps, HTMLPreElementProps, HTMLProgressElementProps, HTMLScriptElementProps,
-  HTMLSelectElementProps, HTMLSourceElementProps, HTMLSpanElementProps, HTMLStyleElementProps,
-  HTMLTableDataCellElementProps, HTMLTableElementProps, HTMLTableHeaderCellElementProps, HTMLTableRowElementProps,
-  HTMLTableSectionElementProps, HTMLTemplateElementProps, HTMLTextAreaElementProps, HTMLTitleElementProps,
-  HTMLTrackElementProps, HTMLUListElementProps, HTMLVideoElementProps,
+  HTMLAnchorElementAttrs, HTMLElementAttrs, HTMLAreaElementAttrs, HTMLAudioElementAttrs,
+  HTMLBaseElementAttrs, HTMLBodyElementAttrs, HTMLBRElementAttrs, HTMLButtonElementAttrs,
+  HTMLCanvasElementAttrs, HTMLQuoteElementAttrs, HTMLTableCaptionElementAttrs, HTMLTableColElementAttrs,
+  HTMLDataListElementAttrs, HTMLModElementAttrs, HTMLDivElementAttrs,
+  HTMLDListElementAttrs, HTMLEmbedElementAttrs, HTMLFieldSetElementAttrs, HTMLFormElementAttrs,
+  HTMLHeadElementAttrs, HTMLHeadingElementAttrs, HTMLHRElementAttrs,
+  HTMLHtmlElementAttrs, HTMLIFrameElementAttrs, HTMLImageElementAttrs, HTMLInputElementAttrs, HTMLLabelElementAttrs,
+  HTMLLegendElementAttrs, HTMLLIElementAttrs, HTMLLinkElementAttrs, HTMLMapElementAttrs,
+  HTMLMenuElementAttrs, HTMLMetaElementAttrs, HTMLMeterElementAttrs, HTMLObjectElementAttrs, HTMLOListElementAttrs,
+  HTMLOptGroupElementAttrs, HTMLOptionElementAttrs, HTMLParagraphElementAttrs, HTMLParamElementAttrs,
+  HTMLPictureElementAttrs, HTMLPreElementAttrs, HTMLProgressElementAttrs, HTMLScriptElementAttrs,
+  HTMLSelectElementAttrs, HTMLSourceElementAttrs, HTMLSpanElementAttrs, HTMLStyleElementAttrs,
+  HTMLTableDataCellElementAttrs, HTMLTableElementAttrs, HTMLTableHeaderCellElementAttrs, HTMLTableRowElementAttrs,
+  HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
+  HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
   CSSStyleProps,
 } from "ivi-core";
 import { VNode, VNodeFlags } from "ivi";
@@ -152,7 +152,7 @@ export function t(content: string | number): VNode<string | number, Text> {
 
 /* tslint:disable:max-line-length */
 
-export function a(className?: string, attrs?: HTMLAnchorElementProps, css?: CSSStyleProps): VNode<HTMLAnchorElementProps | undefined, HTMLAnchorElement> {
+export function a(className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSStyleProps): VNode<HTMLAnchorElementAttrs | undefined, HTMLAnchorElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.A << VNodeFlags.ElementIdOffset),
     "a",
@@ -161,7 +161,7 @@ export function a(className?: string, attrs?: HTMLAnchorElementProps, css?: CSSS
     css,
   );
 }
-export function abbr(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function abbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Abbr << VNodeFlags.ElementIdOffset),
     "abbr",
@@ -170,7 +170,7 @@ export function abbr(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function acronym(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function acronym(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Acronym << VNodeFlags.ElementIdOffset),
     "acronym",
@@ -179,7 +179,7 @@ export function acronym(className?: string, attrs?: HTMLElementProps, css?: CSSS
     css,
   );
 }
-export function address(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function address(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Address << VNodeFlags.ElementIdOffset),
     "address",
@@ -188,7 +188,7 @@ export function address(className?: string, attrs?: HTMLElementProps, css?: CSSS
     css,
   );
 }
-export function area(className?: string, attrs?: HTMLAreaElementProps, css?: CSSStyleProps): VNode<HTMLAreaElementProps | undefined, HTMLAreaElement> {
+export function area(className?: string, attrs?: HTMLAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLAreaElementAttrs | undefined, HTMLAreaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Area << VNodeFlags.ElementIdOffset),
     "area",
@@ -197,7 +197,7 @@ export function area(className?: string, attrs?: HTMLAreaElementProps, css?: CSS
     css,
   );
 }
-export function article(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function article(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Article << VNodeFlags.ElementIdOffset),
     "article",
@@ -206,7 +206,7 @@ export function article(className?: string, attrs?: HTMLElementProps, css?: CSSS
     css,
   );
 }
-export function aside(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function aside(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Aside << VNodeFlags.ElementIdOffset),
     "aside",
@@ -215,7 +215,7 @@ export function aside(className?: string, attrs?: HTMLElementProps, css?: CSSSty
     css,
   );
 }
-export function b(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function b(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.B << VNodeFlags.ElementIdOffset),
     "b",
@@ -224,7 +224,7 @@ export function b(className?: string, attrs?: HTMLElementProps, css?: CSSStylePr
     css,
   );
 }
-export function base(className?: string, attrs?: HTMLBaseElementProps, css?: CSSStyleProps): VNode<HTMLBaseElementProps | undefined, HTMLBaseElement> {
+export function base(className?: string, attrs?: HTMLBaseElementAttrs, css?: CSSStyleProps): VNode<HTMLBaseElementAttrs | undefined, HTMLBaseElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Base << VNodeFlags.ElementIdOffset),
     "base",
@@ -233,16 +233,7 @@ export function base(className?: string, attrs?: HTMLBaseElementProps, css?: CSS
     css,
   );
 }
-export function basefont(className?: string, attrs?: HTMLBaseFontElementProps, css?: CSSStyleProps): VNode<HTMLBaseFontElementProps | undefined, HTMLBaseFontElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Basefont << VNodeFlags.ElementIdOffset),
-    "basefont",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function bdo(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function bdo(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Bdo << VNodeFlags.ElementIdOffset),
     "bdo",
@@ -251,7 +242,7 @@ export function bdo(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function big(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function big(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Big << VNodeFlags.ElementIdOffset),
     "big",
@@ -260,7 +251,7 @@ export function big(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function blockquote(className?: string, attrs?: HTMLQuoteElementProps, css?: CSSStyleProps): VNode<HTMLQuoteElementProps | undefined, HTMLQuoteElement> {
+export function blockquote(className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSStyleProps): VNode<HTMLQuoteElementAttrs | undefined, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Blockquote << VNodeFlags.ElementIdOffset),
     "blockquote",
@@ -269,7 +260,7 @@ export function blockquote(className?: string, attrs?: HTMLQuoteElementProps, cs
     css,
   );
 }
-export function body(className?: string, attrs?: HTMLBodyElementProps, css?: CSSStyleProps): VNode<HTMLBodyElementProps | undefined, HTMLBodyElement> {
+export function body(className?: string, attrs?: HTMLBodyElementAttrs, css?: CSSStyleProps): VNode<HTMLBodyElementAttrs | undefined, HTMLBodyElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Body << VNodeFlags.ElementIdOffset),
     "body",
@@ -278,7 +269,7 @@ export function body(className?: string, attrs?: HTMLBodyElementProps, css?: CSS
     css,
   );
 }
-export function br(className?: string, attrs?: HTMLBRElementProps, css?: CSSStyleProps): VNode<HTMLBRElementProps | undefined, HTMLBRElement> {
+export function br(className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyleProps): VNode<HTMLBRElementAttrs | undefined, HTMLBRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Br << VNodeFlags.ElementIdOffset),
     "br",
@@ -287,7 +278,7 @@ export function br(className?: string, attrs?: HTMLBRElementProps, css?: CSSStyl
     css,
   );
 }
-export function button(className?: string, attrs?: HTMLButtonElementProps, css?: CSSStyleProps): VNode<HTMLButtonElementProps | undefined, HTMLButtonElement> {
+export function button(className?: string, attrs?: HTMLButtonElementAttrs, css?: CSSStyleProps): VNode<HTMLButtonElementAttrs | undefined, HTMLButtonElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Button << VNodeFlags.ElementIdOffset),
     "button",
@@ -296,7 +287,7 @@ export function button(className?: string, attrs?: HTMLButtonElementProps, css?:
     css,
   );
 }
-export function canvas(className?: string, attrs?: HTMLCanvasElementProps, css?: CSSStyleProps): VNode<HTMLCanvasElementProps | undefined, HTMLCanvasElement> {
+export function canvas(className?: string, attrs?: HTMLCanvasElementAttrs, css?: CSSStyleProps): VNode<HTMLCanvasElementAttrs | undefined, HTMLCanvasElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Canvas << VNodeFlags.ElementIdOffset),
     "canvas",
@@ -305,7 +296,7 @@ export function canvas(className?: string, attrs?: HTMLCanvasElementProps, css?:
     css,
   );
 }
-export function caption(className?: string, attrs?: HTMLTableCaptionElementProps, css?: CSSStyleProps): VNode<HTMLTableCaptionElementProps | undefined, HTMLTableCaptionElement> {
+export function caption(className?: string, attrs?: HTMLTableCaptionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableCaptionElementAttrs | undefined, HTMLTableCaptionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Caption << VNodeFlags.ElementIdOffset),
     "caption",
@@ -314,7 +305,7 @@ export function caption(className?: string, attrs?: HTMLTableCaptionElementProps
     css,
   );
 }
-export function center(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function center(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Center << VNodeFlags.ElementIdOffset),
     "center",
@@ -323,7 +314,7 @@ export function center(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function cite(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function cite(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Cite << VNodeFlags.ElementIdOffset),
     "cite",
@@ -332,7 +323,7 @@ export function cite(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function code(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function code(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Code << VNodeFlags.ElementIdOffset),
     "code",
@@ -341,7 +332,7 @@ export function code(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function col(className?: string, attrs?: HTMLTableColElementProps, css?: CSSStyleProps): VNode<HTMLTableColElementProps | undefined, HTMLTableColElement> {
+export function col(className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps): VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Col << VNodeFlags.ElementIdOffset),
     "col",
@@ -350,7 +341,7 @@ export function col(className?: string, attrs?: HTMLTableColElementProps, css?: 
     css,
   );
 }
-export function colgroup(className?: string, attrs?: HTMLTableColElementProps, css?: CSSStyleProps): VNode<HTMLTableColElementProps | undefined, HTMLTableColElement> {
+export function colgroup(className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps): VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Colgroup << VNodeFlags.ElementIdOffset),
     "colgroup",
@@ -359,7 +350,7 @@ export function colgroup(className?: string, attrs?: HTMLTableColElementProps, c
     css,
   );
 }
-export function data(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function data(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Data << VNodeFlags.ElementIdOffset),
     "data",
@@ -368,7 +359,7 @@ export function data(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function datalist(className?: string, attrs?: HTMLDataListElementProps, css?: CSSStyleProps): VNode<HTMLDataListElementProps | undefined, HTMLDataListElement> {
+export function datalist(className?: string, attrs?: HTMLDataListElementAttrs, css?: CSSStyleProps): VNode<HTMLDataListElementAttrs | undefined, HTMLDataListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Datalist << VNodeFlags.ElementIdOffset),
     "datalist",
@@ -377,7 +368,7 @@ export function datalist(className?: string, attrs?: HTMLDataListElementProps, c
     css,
   );
 }
-export function dd(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function dd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dd << VNodeFlags.ElementIdOffset),
     "dd",
@@ -386,7 +377,7 @@ export function dd(className?: string, attrs?: HTMLElementProps, css?: CSSStyleP
     css,
   );
 }
-export function del(className?: string, attrs?: HTMLModElementProps, css?: CSSStyleProps): VNode<HTMLModElementProps | undefined, HTMLModElement> {
+export function del(className?: string, attrs?: HTMLModElementAttrs, css?: CSSStyleProps): VNode<HTMLModElementAttrs | undefined, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Del << VNodeFlags.ElementIdOffset),
     "del",
@@ -395,7 +386,7 @@ export function del(className?: string, attrs?: HTMLModElementProps, css?: CSSSt
     css,
   );
 }
-export function dfn(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function dfn(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dfn << VNodeFlags.ElementIdOffset),
     "dfn",
@@ -404,16 +395,7 @@ export function dfn(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function dir(className?: string, attrs?: HTMLDirectoryElementProps, css?: CSSStyleProps): VNode<HTMLDirectoryElementProps | undefined, HTMLDirectoryElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Dir << VNodeFlags.ElementIdOffset),
-    "dir",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function div(className?: string, attrs?: HTMLDivElementProps, css?: CSSStyleProps): VNode<HTMLDivElementProps | undefined, HTMLDivElement> {
+export function div(className?: string, attrs?: HTMLDivElementAttrs, css?: CSSStyleProps): VNode<HTMLDivElementAttrs | undefined, HTMLDivElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Div << VNodeFlags.ElementIdOffset),
     "div",
@@ -422,7 +404,7 @@ export function div(className?: string, attrs?: HTMLDivElementProps, css?: CSSSt
     css,
   );
 }
-export function dl(className?: string, attrs?: HTMLDListElementProps, css?: CSSStyleProps): VNode<HTMLDListElementProps | undefined, HTMLDListElement> {
+export function dl(className?: string, attrs?: HTMLDListElementAttrs, css?: CSSStyleProps): VNode<HTMLDListElementAttrs | undefined, HTMLDListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dl << VNodeFlags.ElementIdOffset),
     "dl",
@@ -431,7 +413,7 @@ export function dl(className?: string, attrs?: HTMLDListElementProps, css?: CSSS
     css,
   );
 }
-export function dt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function dt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dt << VNodeFlags.ElementIdOffset),
     "dt",
@@ -440,7 +422,7 @@ export function dt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleP
     css,
   );
 }
-export function em(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function em(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Em << VNodeFlags.ElementIdOffset),
     "em",
@@ -449,7 +431,7 @@ export function em(className?: string, attrs?: HTMLElementProps, css?: CSSStyleP
     css,
   );
 }
-export function embed(className?: string, attrs?: HTMLEmbedElementProps, css?: CSSStyleProps): VNode<HTMLEmbedElementProps | undefined, HTMLEmbedElement> {
+export function embed(className?: string, attrs?: HTMLEmbedElementAttrs, css?: CSSStyleProps): VNode<HTMLEmbedElementAttrs | undefined, HTMLEmbedElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Embed << VNodeFlags.ElementIdOffset),
     "embed",
@@ -458,7 +440,7 @@ export function embed(className?: string, attrs?: HTMLEmbedElementProps, css?: C
     css,
   );
 }
-export function fieldset(className?: string, attrs?: HTMLFieldSetElementProps, css?: CSSStyleProps): VNode<HTMLFieldSetElementProps | undefined, HTMLFieldSetElement> {
+export function fieldset(className?: string, attrs?: HTMLFieldSetElementAttrs, css?: CSSStyleProps): VNode<HTMLFieldSetElementAttrs | undefined, HTMLFieldSetElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Fieldset << VNodeFlags.ElementIdOffset),
     "fieldset",
@@ -467,7 +449,7 @@ export function fieldset(className?: string, attrs?: HTMLFieldSetElementProps, c
     css,
   );
 }
-export function figcaption(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function figcaption(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Figcaption << VNodeFlags.ElementIdOffset),
     "figcaption",
@@ -476,7 +458,7 @@ export function figcaption(className?: string, attrs?: HTMLElementProps, css?: C
     css,
   );
 }
-export function figure(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function figure(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Figure << VNodeFlags.ElementIdOffset),
     "figure",
@@ -485,16 +467,7 @@ export function figure(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function font(className?: string, attrs?: HTMLFontElementProps, css?: CSSStyleProps): VNode<HTMLFontElementProps | undefined, HTMLFontElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Font << VNodeFlags.ElementIdOffset),
-    "font",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function footer(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function footer(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Footer << VNodeFlags.ElementIdOffset),
     "footer",
@@ -503,7 +476,7 @@ export function footer(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function form(className?: string, attrs?: HTMLFormElementProps, css?: CSSStyleProps): VNode<HTMLFormElementProps | undefined, HTMLFormElement> {
+export function form(className?: string, attrs?: HTMLFormElementAttrs, css?: CSSStyleProps): VNode<HTMLFormElementAttrs | undefined, HTMLFormElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Form << VNodeFlags.ElementIdOffset),
     "form",
@@ -512,25 +485,7 @@ export function form(className?: string, attrs?: HTMLFormElementProps, css?: CSS
     css,
   );
 }
-export function frame(className?: string, attrs?: HTMLFrameElementProps, css?: CSSStyleProps): VNode<HTMLFrameElementProps | undefined, HTMLFrameElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Frame << VNodeFlags.ElementIdOffset),
-    "frame",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function frameset(className?: string, attrs?: HTMLFrameSetElementProps, css?: CSSStyleProps): VNode<HTMLFrameSetElementProps | undefined, HTMLFrameSetElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Frameset << VNodeFlags.ElementIdOffset),
-    "frameset",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function h1(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
+export function h1(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H1 << VNodeFlags.ElementIdOffset),
     "h1",
@@ -539,7 +494,7 @@ export function h1(className?: string, attrs?: HTMLHeadingElementProps, css?: CS
     css,
   );
 }
-export function h2(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
+export function h2(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H2 << VNodeFlags.ElementIdOffset),
     "h2",
@@ -548,7 +503,7 @@ export function h2(className?: string, attrs?: HTMLHeadingElementProps, css?: CS
     css,
   );
 }
-export function h3(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
+export function h3(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H3 << VNodeFlags.ElementIdOffset),
     "h3",
@@ -557,7 +512,7 @@ export function h3(className?: string, attrs?: HTMLHeadingElementProps, css?: CS
     css,
   );
 }
-export function h4(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
+export function h4(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H4 << VNodeFlags.ElementIdOffset),
     "h4",
@@ -566,7 +521,7 @@ export function h4(className?: string, attrs?: HTMLHeadingElementProps, css?: CS
     css,
   );
 }
-export function h5(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
+export function h5(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H5 << VNodeFlags.ElementIdOffset),
     "h5",
@@ -575,7 +530,7 @@ export function h5(className?: string, attrs?: HTMLHeadingElementProps, css?: CS
     css,
   );
 }
-export function h6(className?: string, attrs?: HTMLHeadingElementProps, css?: CSSStyleProps): VNode<HTMLHeadingElementProps | undefined, HTMLHeadingElement> {
+export function h6(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H6 << VNodeFlags.ElementIdOffset),
     "h6",
@@ -584,7 +539,7 @@ export function h6(className?: string, attrs?: HTMLHeadingElementProps, css?: CS
     css,
   );
 }
-export function head(className?: string, attrs?: HTMLHeadElementProps, css?: CSSStyleProps): VNode<HTMLHeadElementProps | undefined, HTMLHeadElement> {
+export function head(className?: string, attrs?: HTMLHeadElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadElementAttrs | undefined, HTMLHeadElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Head << VNodeFlags.ElementIdOffset),
     "head",
@@ -593,7 +548,7 @@ export function head(className?: string, attrs?: HTMLHeadElementProps, css?: CSS
     css,
   );
 }
-export function header(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function header(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Header << VNodeFlags.ElementIdOffset),
     "header",
@@ -602,7 +557,7 @@ export function header(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function hgroup(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function hgroup(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Hgroup << VNodeFlags.ElementIdOffset),
     "hgroup",
@@ -611,7 +566,7 @@ export function hgroup(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function hr(className?: string, attrs?: HTMLHRElementProps, css?: CSSStyleProps): VNode<HTMLHRElementProps | undefined, HTMLHRElement> {
+export function hr(className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyleProps): VNode<HTMLHRElementAttrs | undefined, HTMLHRElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Hr << VNodeFlags.ElementIdOffset),
     "hr",
@@ -620,7 +575,7 @@ export function hr(className?: string, attrs?: HTMLHRElementProps, css?: CSSStyl
     css,
   );
 }
-export function html(className?: string, attrs?: HTMLHtmlElementProps, css?: CSSStyleProps): VNode<HTMLHtmlElementProps | undefined, HTMLHtmlElement> {
+export function html(className?: string, attrs?: HTMLHtmlElementAttrs, css?: CSSStyleProps): VNode<HTMLHtmlElementAttrs | undefined, HTMLHtmlElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Html << VNodeFlags.ElementIdOffset),
     "html",
@@ -629,7 +584,7 @@ export function html(className?: string, attrs?: HTMLHtmlElementProps, css?: CSS
     css,
   );
 }
-export function i(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function i(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.I << VNodeFlags.ElementIdOffset),
     "i",
@@ -638,7 +593,7 @@ export function i(className?: string, attrs?: HTMLElementProps, css?: CSSStylePr
     css,
   );
 }
-export function iframe(className?: string, attrs?: HTMLIFrameElementProps, css?: CSSStyleProps): VNode<HTMLIFrameElementProps | undefined, HTMLIFrameElement> {
+export function iframe(className?: string, attrs?: HTMLIFrameElementAttrs, css?: CSSStyleProps): VNode<HTMLIFrameElementAttrs | undefined, HTMLIFrameElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Iframe << VNodeFlags.ElementIdOffset),
     "iframe",
@@ -647,7 +602,7 @@ export function iframe(className?: string, attrs?: HTMLIFrameElementProps, css?:
     css,
   );
 }
-export function img(className?: string, attrs?: HTMLImageElementProps, css?: CSSStyleProps): VNode<HTMLImageElementProps | undefined, HTMLImageElement> {
+export function img(className?: string, attrs?: HTMLImageElementAttrs, css?: CSSStyleProps): VNode<HTMLImageElementAttrs | undefined, HTMLImageElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Img << VNodeFlags.ElementIdOffset),
     "img",
@@ -656,7 +611,7 @@ export function img(className?: string, attrs?: HTMLImageElementProps, css?: CSS
     css,
   );
 }
-export function ins(className?: string, attrs?: HTMLModElementProps, css?: CSSStyleProps): VNode<HTMLModElementProps | undefined, HTMLModElement> {
+export function ins(className?: string, attrs?: HTMLModElementAttrs, css?: CSSStyleProps): VNode<HTMLModElementAttrs | undefined, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ins << VNodeFlags.ElementIdOffset),
     "ins",
@@ -665,7 +620,7 @@ export function ins(className?: string, attrs?: HTMLModElementProps, css?: CSSSt
     css,
   );
 }
-export function kbd(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function kbd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Kbd << VNodeFlags.ElementIdOffset),
     "kbd",
@@ -674,7 +629,7 @@ export function kbd(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function label(className?: string, attrs?: HTMLLabelElementProps, css?: CSSStyleProps): VNode<HTMLLabelElementProps | undefined, HTMLLabelElement> {
+export function label(className?: string, attrs?: HTMLLabelElementAttrs, css?: CSSStyleProps): VNode<HTMLLabelElementAttrs | undefined, HTMLLabelElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Label << VNodeFlags.ElementIdOffset),
     "label",
@@ -683,7 +638,7 @@ export function label(className?: string, attrs?: HTMLLabelElementProps, css?: C
     css,
   );
 }
-export function legend(className?: string, attrs?: HTMLLegendElementProps, css?: CSSStyleProps): VNode<HTMLLegendElementProps | undefined, HTMLLegendElement> {
+export function legend(className?: string, attrs?: HTMLLegendElementAttrs, css?: CSSStyleProps): VNode<HTMLLegendElementAttrs | undefined, HTMLLegendElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Legend << VNodeFlags.ElementIdOffset),
     "legend",
@@ -692,7 +647,7 @@ export function legend(className?: string, attrs?: HTMLLegendElementProps, css?:
     css,
   );
 }
-export function li(className?: string, attrs?: HTMLLIElementProps, css?: CSSStyleProps): VNode<HTMLLIElementProps | undefined, HTMLLIElement> {
+export function li(className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyleProps): VNode<HTMLLIElementAttrs | undefined, HTMLLIElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Li << VNodeFlags.ElementIdOffset),
     "li",
@@ -701,7 +656,7 @@ export function li(className?: string, attrs?: HTMLLIElementProps, css?: CSSStyl
     css,
   );
 }
-export function link(className?: string, attrs?: HTMLLinkElementProps, css?: CSSStyleProps): VNode<HTMLLinkElementProps | undefined, HTMLLinkElement> {
+export function link(className?: string, attrs?: HTMLLinkElementAttrs, css?: CSSStyleProps): VNode<HTMLLinkElementAttrs | undefined, HTMLLinkElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Link << VNodeFlags.ElementIdOffset),
     "link",
@@ -710,7 +665,7 @@ export function link(className?: string, attrs?: HTMLLinkElementProps, css?: CSS
     css,
   );
 }
-export function listing(className?: string, attrs?: HTMLPreElementProps, css?: CSSStyleProps): VNode<HTMLPreElementProps | undefined, HTMLPreElement> {
+export function listing(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps): VNode<HTMLPreElementAttrs | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Listing << VNodeFlags.ElementIdOffset),
     "listing",
@@ -719,7 +674,7 @@ export function listing(className?: string, attrs?: HTMLPreElementProps, css?: C
     css,
   );
 }
-export function main(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function main(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Main << VNodeFlags.ElementIdOffset),
     "main",
@@ -728,7 +683,7 @@ export function main(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function map(className?: string, attrs?: HTMLMapElementProps, css?: CSSStyleProps): VNode<HTMLMapElementProps | undefined, HTMLMapElement> {
+export function map(className?: string, attrs?: HTMLMapElementAttrs, css?: CSSStyleProps): VNode<HTMLMapElementAttrs | undefined, HTMLMapElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Map << VNodeFlags.ElementIdOffset),
     "map",
@@ -737,7 +692,7 @@ export function map(className?: string, attrs?: HTMLMapElementProps, css?: CSSSt
     css,
   );
 }
-export function mark(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function mark(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Mark << VNodeFlags.ElementIdOffset),
     "mark",
@@ -746,7 +701,7 @@ export function mark(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function menu(className?: string, attrs?: HTMLMenuElementProps, css?: CSSStyleProps): VNode<HTMLMenuElementProps | undefined, HTMLMenuElement> {
+export function menu(className?: string, attrs?: HTMLMenuElementAttrs, css?: CSSStyleProps): VNode<HTMLMenuElementAttrs | undefined, HTMLMenuElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Menu << VNodeFlags.ElementIdOffset),
     "menu",
@@ -755,7 +710,7 @@ export function menu(className?: string, attrs?: HTMLMenuElementProps, css?: CSS
     css,
   );
 }
-export function meta(className?: string, attrs?: HTMLMetaElementProps, css?: CSSStyleProps): VNode<HTMLMetaElementProps | undefined, HTMLMetaElement> {
+export function meta(className?: string, attrs?: HTMLMetaElementAttrs, css?: CSSStyleProps): VNode<HTMLMetaElementAttrs | undefined, HTMLMetaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Meta << VNodeFlags.ElementIdOffset),
     "meta",
@@ -764,7 +719,7 @@ export function meta(className?: string, attrs?: HTMLMetaElementProps, css?: CSS
     css,
   );
 }
-export function meter(className?: string, attrs?: HTMLMeterElementProps, css?: CSSStyleProps): VNode<HTMLMeterElementProps | undefined, HTMLMeterElement> {
+export function meter(className?: string, attrs?: HTMLMeterElementAttrs, css?: CSSStyleProps): VNode<HTMLMeterElementAttrs | undefined, HTMLMeterElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Meter << VNodeFlags.ElementIdOffset),
     "meter",
@@ -773,7 +728,7 @@ export function meter(className?: string, attrs?: HTMLMeterElementProps, css?: C
     css,
   );
 }
-export function nav(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function nav(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Nav << VNodeFlags.ElementIdOffset),
     "nav",
@@ -782,7 +737,7 @@ export function nav(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function nobr(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function nobr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Nobr << VNodeFlags.ElementIdOffset),
     "nobr",
@@ -791,7 +746,7 @@ export function nobr(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function noframes(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function noframes(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Noframes << VNodeFlags.ElementIdOffset),
     "noframes",
@@ -800,7 +755,7 @@ export function noframes(className?: string, attrs?: HTMLElementProps, css?: CSS
     css,
   );
 }
-export function noscript(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function noscript(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Noscript << VNodeFlags.ElementIdOffset),
     "noscript",
@@ -809,7 +764,7 @@ export function noscript(className?: string, attrs?: HTMLElementProps, css?: CSS
     css,
   );
 }
-export function object(className?: string, attrs?: HTMLObjectElementProps, css?: CSSStyleProps): VNode<HTMLObjectElementProps | undefined, HTMLObjectElement> {
+export function object(className?: string, attrs?: HTMLObjectElementAttrs, css?: CSSStyleProps): VNode<HTMLObjectElementAttrs | undefined, HTMLObjectElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Object << VNodeFlags.ElementIdOffset),
     "object",
@@ -818,7 +773,7 @@ export function object(className?: string, attrs?: HTMLObjectElementProps, css?:
     css,
   );
 }
-export function ol(className?: string, attrs?: HTMLOListElementProps, css?: CSSStyleProps): VNode<HTMLOListElementProps | undefined, HTMLOListElement> {
+export function ol(className?: string, attrs?: HTMLOListElementAttrs, css?: CSSStyleProps): VNode<HTMLOListElementAttrs | undefined, HTMLOListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ol << VNodeFlags.ElementIdOffset),
     "ol",
@@ -827,7 +782,7 @@ export function ol(className?: string, attrs?: HTMLOListElementProps, css?: CSSS
     css,
   );
 }
-export function optgroup(className?: string, attrs?: HTMLOptGroupElementProps, css?: CSSStyleProps): VNode<HTMLOptGroupElementProps | undefined, HTMLOptGroupElement> {
+export function optgroup(className?: string, attrs?: HTMLOptGroupElementAttrs, css?: CSSStyleProps): VNode<HTMLOptGroupElementAttrs | undefined, HTMLOptGroupElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Optgroup << VNodeFlags.ElementIdOffset),
     "optgroup",
@@ -836,7 +791,7 @@ export function optgroup(className?: string, attrs?: HTMLOptGroupElementProps, c
     css,
   );
 }
-export function option(className?: string, attrs?: HTMLOptionElementProps, css?: CSSStyleProps): VNode<HTMLOptionElementProps | undefined, HTMLOptionElement> {
+export function option(className?: string, attrs?: HTMLOptionElementAttrs, css?: CSSStyleProps): VNode<HTMLOptionElementAttrs | undefined, HTMLOptionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Option << VNodeFlags.ElementIdOffset),
     "option",
@@ -845,7 +800,7 @@ export function option(className?: string, attrs?: HTMLOptionElementProps, css?:
     css,
   );
 }
-export function p(className?: string, attrs?: HTMLParagraphElementProps, css?: CSSStyleProps): VNode<HTMLParagraphElementProps | undefined, HTMLParagraphElement> {
+export function p(className?: string, attrs?: HTMLParagraphElementAttrs, css?: CSSStyleProps): VNode<HTMLParagraphElementAttrs | undefined, HTMLParagraphElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.P << VNodeFlags.ElementIdOffset),
     "p",
@@ -854,7 +809,7 @@ export function p(className?: string, attrs?: HTMLParagraphElementProps, css?: C
     css,
   );
 }
-export function param(className?: string, attrs?: HTMLParamElementProps, css?: CSSStyleProps): VNode<HTMLParamElementProps | undefined, HTMLParamElement> {
+export function param(className?: string, attrs?: HTMLParamElementAttrs, css?: CSSStyleProps): VNode<HTMLParamElementAttrs | undefined, HTMLParamElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Param << VNodeFlags.ElementIdOffset),
     "param",
@@ -863,7 +818,7 @@ export function param(className?: string, attrs?: HTMLParamElementProps, css?: C
     css,
   );
 }
-export function picture(className?: string, attrs?: HTMLPictureElementProps, css?: CSSStyleProps): VNode<HTMLPictureElementProps | undefined, HTMLPictureElement> {
+export function picture(className?: string, attrs?: HTMLPictureElementAttrs, css?: CSSStyleProps): VNode<HTMLPictureElementAttrs | undefined, HTMLPictureElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Picture << VNodeFlags.ElementIdOffset),
     "picture",
@@ -872,7 +827,7 @@ export function picture(className?: string, attrs?: HTMLPictureElementProps, css
     css,
   );
 }
-export function plaintext(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function plaintext(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Plaintext << VNodeFlags.ElementIdOffset),
     "plaintext",
@@ -881,7 +836,7 @@ export function plaintext(className?: string, attrs?: HTMLElementProps, css?: CS
     css,
   );
 }
-export function pre(className?: string, attrs?: HTMLPreElementProps, css?: CSSStyleProps): VNode<HTMLPreElementProps | undefined, HTMLPreElement> {
+export function pre(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps): VNode<HTMLPreElementAttrs | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Pre << VNodeFlags.ElementIdOffset),
     "pre",
@@ -890,7 +845,7 @@ export function pre(className?: string, attrs?: HTMLPreElementProps, css?: CSSSt
     css,
   );
 }
-export function progress(className?: string, attrs?: HTMLProgressElementProps, css?: CSSStyleProps): VNode<HTMLProgressElementProps | undefined, HTMLProgressElement> {
+export function progress(className?: string, attrs?: HTMLProgressElementAttrs, css?: CSSStyleProps): VNode<HTMLProgressElementAttrs | undefined, HTMLProgressElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Progress << VNodeFlags.ElementIdOffset),
     "progress",
@@ -899,7 +854,7 @@ export function progress(className?: string, attrs?: HTMLProgressElementProps, c
     css,
   );
 }
-export function q(className?: string, attrs?: HTMLQuoteElementProps, css?: CSSStyleProps): VNode<HTMLQuoteElementProps | undefined, HTMLQuoteElement> {
+export function q(className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSStyleProps): VNode<HTMLQuoteElementAttrs | undefined, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Q << VNodeFlags.ElementIdOffset),
     "q",
@@ -908,7 +863,7 @@ export function q(className?: string, attrs?: HTMLQuoteElementProps, css?: CSSSt
     css,
   );
 }
-export function rt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function rt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Rt << VNodeFlags.ElementIdOffset),
     "rt",
@@ -917,7 +872,7 @@ export function rt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleP
     css,
   );
 }
-export function ruby(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function ruby(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ruby << VNodeFlags.ElementIdOffset),
     "ruby",
@@ -926,7 +881,7 @@ export function ruby(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function s(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function s(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.S << VNodeFlags.ElementIdOffset),
     "s",
@@ -935,7 +890,7 @@ export function s(className?: string, attrs?: HTMLElementProps, css?: CSSStylePr
     css,
   );
 }
-export function samp(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function samp(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Samp << VNodeFlags.ElementIdOffset),
     "samp",
@@ -944,7 +899,7 @@ export function samp(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function script(className?: string, attrs?: HTMLScriptElementProps, css?: CSSStyleProps): VNode<HTMLScriptElementProps | undefined, HTMLScriptElement> {
+export function script(className?: string, attrs?: HTMLScriptElementAttrs, css?: CSSStyleProps): VNode<HTMLScriptElementAttrs | undefined, HTMLScriptElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Script << VNodeFlags.ElementIdOffset),
     "script",
@@ -953,7 +908,7 @@ export function script(className?: string, attrs?: HTMLScriptElementProps, css?:
     css,
   );
 }
-export function section(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function section(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Section << VNodeFlags.ElementIdOffset),
     "section",
@@ -962,7 +917,7 @@ export function section(className?: string, attrs?: HTMLElementProps, css?: CSSS
     css,
   );
 }
-export function select(className?: string, attrs?: HTMLSelectElementProps, css?: CSSStyleProps): VNode<HTMLSelectElementProps | undefined, HTMLSelectElement> {
+export function select(className?: string, attrs?: HTMLSelectElementAttrs, css?: CSSStyleProps): VNode<HTMLSelectElementAttrs | undefined, HTMLSelectElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Select << VNodeFlags.ElementIdOffset),
     "select",
@@ -971,7 +926,7 @@ export function select(className?: string, attrs?: HTMLSelectElementProps, css?:
     css,
   );
 }
-export function small(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function small(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Small << VNodeFlags.ElementIdOffset),
     "small",
@@ -980,7 +935,7 @@ export function small(className?: string, attrs?: HTMLElementProps, css?: CSSSty
     css,
   );
 }
-export function source(className?: string, attrs?: HTMLSourceElementProps, css?: CSSStyleProps): VNode<HTMLSourceElementProps | undefined, HTMLSourceElement> {
+export function source(className?: string, attrs?: HTMLSourceElementAttrs, css?: CSSStyleProps): VNode<HTMLSourceElementAttrs | undefined, HTMLSourceElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Source << VNodeFlags.ElementIdOffset),
     "source",
@@ -989,7 +944,7 @@ export function source(className?: string, attrs?: HTMLSourceElementProps, css?:
     css,
   );
 }
-export function span(className?: string, attrs?: HTMLSpanElementProps, css?: CSSStyleProps): VNode<HTMLSpanElementProps | undefined, HTMLSpanElement> {
+export function span(className?: string, attrs?: HTMLSpanElementAttrs, css?: CSSStyleProps): VNode<HTMLSpanElementAttrs | undefined, HTMLSpanElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Span << VNodeFlags.ElementIdOffset),
     "span",
@@ -998,7 +953,7 @@ export function span(className?: string, attrs?: HTMLSpanElementProps, css?: CSS
     css,
   );
 }
-export function strike(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function strike(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Strike << VNodeFlags.ElementIdOffset),
     "strike",
@@ -1007,7 +962,7 @@ export function strike(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function strong(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function strong(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Strong << VNodeFlags.ElementIdOffset),
     "strong",
@@ -1016,7 +971,7 @@ export function strong(className?: string, attrs?: HTMLElementProps, css?: CSSSt
     css,
   );
 }
-export function style(className?: string, attrs?: HTMLStyleElementProps, css?: CSSStyleProps): VNode<HTMLStyleElementProps | undefined, HTMLStyleElement> {
+export function style(className?: string, attrs?: HTMLStyleElementAttrs, css?: CSSStyleProps): VNode<HTMLStyleElementAttrs | undefined, HTMLStyleElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Style << VNodeFlags.ElementIdOffset),
     "style",
@@ -1025,7 +980,7 @@ export function style(className?: string, attrs?: HTMLStyleElementProps, css?: C
     css,
   );
 }
-export function sub(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function sub(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Sub << VNodeFlags.ElementIdOffset),
     "sub",
@@ -1034,7 +989,7 @@ export function sub(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function sup(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function sup(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Sup << VNodeFlags.ElementIdOffset),
     "sup",
@@ -1043,7 +998,7 @@ export function sup(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function table(className?: string, attrs?: HTMLTableElementProps, css?: CSSStyleProps): VNode<HTMLTableElementProps | undefined, HTMLTableElement> {
+export function table(className?: string, attrs?: HTMLTableElementAttrs, css?: CSSStyleProps): VNode<HTMLTableElementAttrs | undefined, HTMLTableElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Table << VNodeFlags.ElementIdOffset),
     "table",
@@ -1052,7 +1007,7 @@ export function table(className?: string, attrs?: HTMLTableElementProps, css?: C
     css,
   );
 }
-export function tbody(className?: string, attrs?: HTMLTableSectionElementProps, css?: CSSStyleProps): VNode<HTMLTableSectionElementProps | undefined, HTMLTableSectionElement> {
+export function tbody(className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tbody << VNodeFlags.ElementIdOffset),
     "tbody",
@@ -1061,7 +1016,7 @@ export function tbody(className?: string, attrs?: HTMLTableSectionElementProps, 
     css,
   );
 }
-export function td(className?: string, attrs?: HTMLTableDataCellElementProps, css?: CSSStyleProps): VNode<HTMLTableDataCellElementProps | undefined, HTMLTableDataCellElement> {
+export function td(className?: string, attrs?: HTMLTableDataCellElementAttrs, css?: CSSStyleProps): VNode<HTMLTableDataCellElementAttrs | undefined, HTMLTableDataCellElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Td << VNodeFlags.ElementIdOffset),
     "td",
@@ -1070,7 +1025,7 @@ export function td(className?: string, attrs?: HTMLTableDataCellElementProps, cs
     css,
   );
 }
-export function template(className?: string, attrs?: HTMLTemplateElementProps, css?: CSSStyleProps): VNode<HTMLTemplateElementProps | undefined, HTMLTemplateElement> {
+export function template(className?: string, attrs?: HTMLTemplateElementAttrs, css?: CSSStyleProps): VNode<HTMLTemplateElementAttrs | undefined, HTMLTemplateElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Template << VNodeFlags.ElementIdOffset),
     "template",
@@ -1079,7 +1034,7 @@ export function template(className?: string, attrs?: HTMLTemplateElementProps, c
     css,
   );
 }
-export function tfoot(className?: string, attrs?: HTMLTableSectionElementProps, css?: CSSStyleProps): VNode<HTMLTableSectionElementProps | undefined, HTMLTableSectionElement> {
+export function tfoot(className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tfoot << VNodeFlags.ElementIdOffset),
     "tfoot",
@@ -1088,7 +1043,7 @@ export function tfoot(className?: string, attrs?: HTMLTableSectionElementProps, 
     css,
   );
 }
-export function th(className?: string, attrs?: HTMLTableHeaderCellElementProps, css?: CSSStyleProps): VNode<HTMLTableHeaderCellElementProps | undefined, HTMLTableHeaderCellElement> {
+export function th(className?: string, attrs?: HTMLTableHeaderCellElementAttrs, css?: CSSStyleProps): VNode<HTMLTableHeaderCellElementAttrs | undefined, HTMLTableHeaderCellElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Th << VNodeFlags.ElementIdOffset),
     "th",
@@ -1097,7 +1052,7 @@ export function th(className?: string, attrs?: HTMLTableHeaderCellElementProps, 
     css,
   );
 }
-export function thead(className?: string, attrs?: HTMLTableSectionElementProps, css?: CSSStyleProps): VNode<HTMLTableSectionElementProps | undefined, HTMLTableSectionElement> {
+export function thead(className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Thead << VNodeFlags.ElementIdOffset),
     "thead",
@@ -1106,7 +1061,7 @@ export function thead(className?: string, attrs?: HTMLTableSectionElementProps, 
     css,
   );
 }
-export function time(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function time(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Time << VNodeFlags.ElementIdOffset),
     "time",
@@ -1115,7 +1070,7 @@ export function time(className?: string, attrs?: HTMLElementProps, css?: CSSStyl
     css,
   );
 }
-export function title(className?: string, attrs?: HTMLTitleElementProps, css?: CSSStyleProps): VNode<HTMLTitleElementProps | undefined, HTMLTitleElement> {
+export function title(className?: string, attrs?: HTMLTitleElementAttrs, css?: CSSStyleProps): VNode<HTMLTitleElementAttrs | undefined, HTMLTitleElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Title << VNodeFlags.ElementIdOffset),
     "title",
@@ -1124,7 +1079,7 @@ export function title(className?: string, attrs?: HTMLTitleElementProps, css?: C
     css,
   );
 }
-export function tr(className?: string, attrs?: HTMLTableRowElementProps, css?: CSSStyleProps): VNode<HTMLTableRowElementProps | undefined, HTMLTableRowElement> {
+export function tr(className?: string, attrs?: HTMLTableRowElementAttrs, css?: CSSStyleProps): VNode<HTMLTableRowElementAttrs | undefined, HTMLTableRowElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tr << VNodeFlags.ElementIdOffset),
     "tr",
@@ -1133,7 +1088,7 @@ export function tr(className?: string, attrs?: HTMLTableRowElementProps, css?: C
     css,
   );
 }
-export function track(className?: string, attrs?: HTMLTrackElementProps, css?: CSSStyleProps): VNode<HTMLTrackElementProps | undefined, HTMLTrackElement> {
+export function track(className?: string, attrs?: HTMLTrackElementAttrs, css?: CSSStyleProps): VNode<HTMLTrackElementAttrs | undefined, HTMLTrackElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Track << VNodeFlags.ElementIdOffset),
     "track",
@@ -1142,7 +1097,7 @@ export function track(className?: string, attrs?: HTMLTrackElementProps, css?: C
     css,
   );
 }
-export function tt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function tt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tt << VNodeFlags.ElementIdOffset),
     "tt",
@@ -1151,7 +1106,7 @@ export function tt(className?: string, attrs?: HTMLElementProps, css?: CSSStyleP
     css,
   );
 }
-export function u(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function u(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.U << VNodeFlags.ElementIdOffset),
     "u",
@@ -1160,7 +1115,7 @@ export function u(className?: string, attrs?: HTMLElementProps, css?: CSSStylePr
     css,
   );
 }
-export function ul(className?: string, attrs?: HTMLUListElementProps, css?: CSSStyleProps): VNode<HTMLUListElementProps | undefined, HTMLUListElement> {
+export function ul(className?: string, attrs?: HTMLUListElementAttrs, css?: CSSStyleProps): VNode<HTMLUListElementAttrs | undefined, HTMLUListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ul << VNodeFlags.ElementIdOffset),
     "ul",
@@ -1169,7 +1124,7 @@ export function ul(className?: string, attrs?: HTMLUListElementProps, css?: CSSS
     css,
   );
 }
-export function wbr(className?: string, attrs?: HTMLElementProps, css?: CSSStyleProps): VNode<HTMLElementProps | undefined, HTMLElement> {
+export function wbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Wbr << VNodeFlags.ElementIdOffset),
     "wbr",
@@ -1178,7 +1133,7 @@ export function wbr(className?: string, attrs?: HTMLElementProps, css?: CSSStyle
     css,
   );
 }
-export function xmp(className?: string, attrs?: HTMLPreElementProps, css?: CSSStyleProps): VNode<HTMLPreElementProps | undefined, HTMLPreElement> {
+export function xmp(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps): VNode<HTMLPreElementAttrs | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Xmp << VNodeFlags.ElementIdOffset),
     "xmp",
@@ -1189,7 +1144,7 @@ export function xmp(className?: string, attrs?: HTMLPreElementProps, css?: CSSSt
 }
 
 // Textarea / Input Elements:
-export function textarea(className?: string, attrs?: HTMLTextAreaElementProps, css?: CSSStyleProps): VNode<HTMLTextAreaElementProps | undefined, HTMLTextAreaElement> {
+export function textarea(className?: string, attrs?: HTMLTextAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLTextAreaElementAttrs | undefined, HTMLTextAreaElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.TextAreaElement | (TagId.Textarea << VNodeFlags.ElementIdOffset),
     "textarea",
@@ -1198,7 +1153,7 @@ export function textarea(className?: string, attrs?: HTMLTextAreaElementProps, c
     css,
   );
 }
-export function input(className?: string, attrs?: HTMLInputElementProps, css?: CSSStyleProps): VNode<HTMLInputElementProps | undefined, HTMLInputElement> {
+export function input(className?: string, attrs?: HTMLInputElementAttrs, css?: CSSStyleProps): VNode<HTMLInputElementAttrs | undefined, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.Input << VNodeFlags.ElementIdOffset),
     "input",
@@ -1209,7 +1164,7 @@ export function input(className?: string, attrs?: HTMLInputElementProps, css?: C
 }
 
 // Media Elements:
-export function audio(className?: string, attrs?: HTMLAudioElementProps, css?: CSSStyleProps): VNode<HTMLAudioElementProps | undefined, HTMLAudioElement> {
+export function audio(className?: string, attrs?: HTMLAudioElementAttrs, css?: CSSStyleProps): VNode<HTMLAudioElementAttrs | undefined, HTMLAudioElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.MediaElement | (TagId.Audio << VNodeFlags.ElementIdOffset),
     "audio",
@@ -1219,7 +1174,7 @@ export function audio(className?: string, attrs?: HTMLAudioElementProps, css?: C
   );
 }
 
-export function video(className?: string, attrs?: HTMLVideoElementProps, css?: CSSStyleProps): VNode<HTMLVideoElementProps | undefined, HTMLVideoElement> {
+export function video(className?: string, attrs?: HTMLVideoElementAttrs, css?: CSSStyleProps): VNode<HTMLVideoElementAttrs | undefined, HTMLVideoElement> {
   return new VNode(
     VNodeFlags.Element | VNodeFlags.MediaElement | (TagId.Video << VNodeFlags.ElementIdOffset),
     "video",

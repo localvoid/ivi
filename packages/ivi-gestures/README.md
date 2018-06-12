@@ -151,6 +151,7 @@ https://wicg.github.io/InputDeviceCapabilities/
 - [Flutter](https://github.com/flutter/flutter/tree/master/packages/flutter/lib/src/gestures) - Automatic gesture
  disambiguation algorithm. `ivi-gestures` implementation were inspired by the ideas from this project, but now it is
  using completely different heuristics for gesture disambiguation.
+- [Chrome](https://www.chromium.org/developers/design-documents/aura/gesture-recognizer)
 - [TouchScript](https://github.com/TouchScript/TouchScript/wiki) - Unity3D
 - [Hammer.js](https://github.com/hammerjs/hammer.js) - Most popular gesture recognition lib for the web platform.
  Unable to handle complex scenarios, flawed architecture.

@@ -1,31 +1,7 @@
-declare global {
-  /**
-   * Adds missing displayName.
-   */
-  interface Function {
-    displayName: string;
-  }
-
-  const DEBUG: boolean;
-  const TARGET: string;
-}
-
-export { getFunctionName } from "./function";
-export { debugSub, debugPub } from "./debug";
-export { addErrorHandler, catchError } from "./error";
+export { Predicate } from "./predicate";
+export { CSSStyleProps } from "./style";
+export { AriaAttrs } from "./aria";
 export {
-  objectHasOwnProperty,
-  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
-  elementSetAttributeNS,
-  _,
-} from "./shortcuts";
-
-export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";
-export {
-  Predicate,
-
-  CSSStyleProps,
-
   HTMLAnchorElementAttrs, HTMLElementAttrs, HTMLAreaElementAttrs, HTMLAudioElementAttrs,
   HTMLBaseElementAttrs, HTMLBodyElementAttrs, HTMLBRElementAttrs, HTMLButtonElementAttrs,
   HTMLCanvasElementAttrs, HTMLQuoteElementAttrs, HTMLTableCaptionElementAttrs, HTMLTableColElementAttrs,
@@ -41,7 +17,8 @@ export {
   HTMLTableDataCellElementAttrs, HTMLTableElementAttrs, HTMLTableHeaderCellElementAttrs, HTMLTableRowElementAttrs,
   HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLUnknownElementAttrs, HTMLVideoElementAttrs, HTMLMediaElementAttrs,
-
+} from "./html";
+export {
   SVGCircleElementAttrs, SVGClipPathElementAttrs, SVGDefsElementAttrs, SVGDescElementAttrs, SVGEllipseElementAttrs,
   SVGFEBlendElementAttrs, SVGFEColorMatrixElementAttrs, SVGFEComponentTransferElementAttrs,
   SVGFECompositeElementAttrs, SVGFEConvolveMatrixElementAttrs, SVGFEDiffuseLightingElementAttrs,
@@ -55,17 +32,4 @@ export {
   SVGPolylineElementAttrs, SVGRadialGradientElementAttrs, SVGRectElementAttrs, SVGStopElementAttrs,
   SVGSVGElementAttrs, SVGSwitchElementAttrs, SVGSymbolElementAttrs, SVGTextElementAttrs, SVGTextPathElementAttrs,
   SVGTSpanElementAttrs, SVGViewElementAttrs, SVGUseElementAttrs, SVGElementAttrs,
-} from "./types";
-
-export { append, unorderedArrayDelete } from "./array";
-export { NOOP, NOOP_FALSE } from "./noop";
-export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
-export { shallowEqual } from "./equal";
-
-export { IOS_UA } from "./user_agent";
-export {
-  PASSIVE_EVENTS, KEYBOARD_EVENT_KEY, MOUSE_EVENT_BUTTONS, TOUCH_EVENTS, POINTER_EVENTS, INPUT_DEVICE_CAPABILITIES,
-} from "./feature_detection";
-
-export { getEventCharCode, getEventKey, getMouseButtons } from "./dom/input";
-export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";
+} from "./svg";
