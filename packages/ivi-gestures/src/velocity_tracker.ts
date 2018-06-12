@@ -27,6 +27,7 @@ export interface PointAtTime {
 
 const HISTORY_SIZE = 20;
 const HORIZON_MILLISECONDS = 100;
+const ASSUME_POINTER_MOVE_STOPPED = 40;
 
 /**
  * Velocity tracker is used to estimate pointers velocity.
@@ -73,6 +74,7 @@ export function trackPosition(tracker: VelocityTracker, time: number, point: V2)
 export function estimateVelocity(tracker: VelocityTracker): V2 | null {
   let index = tracker.index;
   const newestSample = tracker.samples[index];
+  let prevSample = newestSample!;
   if (newestSample === null) {
     return V2_ZERO;
   }
@@ -90,9 +92,11 @@ export function estimateVelocity(tracker: VelocityTracker): V2 | null {
     }
 
     const age = newestSample.time - sample.time;
-    if (age > HORIZON_MILLISECONDS) {
+    const delta = Math.abs(sample.time - prevSample.time);
+    if (age > HORIZON_MILLISECONDS || delta > ASSUME_POINTER_MOVE_STOPPED) {
       break;
     }
+    prevSample = sample;
 
     const position = sample.point;
     x.push(position.x);
@@ -101,7 +105,7 @@ export function estimateVelocity(tracker: VelocityTracker): V2 | null {
     index = index === 0 ? (HISTORY_SIZE - 1) : (index - 1);
   } while (++sampleCount < HISTORY_SIZE);
 
-  return v2(lsq2(time, x), lsq2(time, y));
+  return v2(lsq2(time, x) * 1000, lsq2(time, y) * 1000);
 }
 
 /**
