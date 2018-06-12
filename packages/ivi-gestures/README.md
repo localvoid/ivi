@@ -118,6 +118,20 @@ https://developers.google.com/web/updates/2014/05/A-More-Compatible-Smoother-Tou
 When native scaling gesture is recognized, touch events will have `scale` property with a value less or greater than
 `1`.
 
+### Uncancelable touch events when fling animation is active
+
+https://github.com/w3c/touch-events/issues/76
+
+### Touch events aren't dispatched when target element is removed from the document
+
+Touch events are always re-targeted to the element that were targeted during touch start event, so we need to make sure
+that this element is always attached to the document when we would like to receive touch move events.
+
+"Note that if the target element is removed from the document, events will still be targeted at it, and hence won't
+necessarily bubble up to the window or document anymore. If there is any risk of an element being removed while it is
+being touched, the best practice is to attach the touch listeners directly to the target."
+https://developer.mozilla.org/en-US/docs/Web/API/Touch/target
+
 ### Mobile Safari doesn't support `InputDeviceCapabilities`
 
 https://wicg.github.io/InputDeviceCapabilities/
