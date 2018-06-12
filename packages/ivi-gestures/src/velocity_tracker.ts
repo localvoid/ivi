@@ -110,7 +110,7 @@ export function estimateVelocity(tracker: VelocityTracker): V2 | null {
  * @param x
  * @param y
  */
-function lsq2(x: number[], y: number[]): number {
+export function lsq2(x: number[], y: number[]): number {
   const count = x.length;
   let sxi = 0;
   let sxiyi = 0;
