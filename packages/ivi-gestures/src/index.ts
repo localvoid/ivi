@@ -8,10 +8,14 @@ export { NativePanGestureRecognizer } from "./native_pan_gesture_recognizer";
 export { LongPressGestureAction, LongPressGestureEvent, LongPressGestureRecognizer } from "./long_press_recognizer";
 export { TapGestureAction, TapGestureEvent, TapGestureRecognizer } from "./tap_gesture_recognizer";
 export {
+  TransformGestureAction, TransformGestureEvent, TransformGestureRecognizer,
+} from "./transform_gesture_recognizer";
+export {
   onNativePan, onNativePanX, onNativePanY, onNativePanUp, onNativePanDown, onNativePanLeft, onNativePanRight,
   onPan, onPanX, onPanY, onPanUp, onPanDown, onPanLeft, onPanRight,
   onLongPress,
   onTap,
+  onTransform,
 } from "./gestures";
 
 export { MouseEventListenerState, TouchEventListenerState, GestureEventDispatcherState } from "./debug";

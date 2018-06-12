@@ -7,6 +7,7 @@ import { TapGestureRecognizer } from "./tap_gesture_recognizer";
 import { NativePanGestureRecognizer } from "./native_pan_gesture_recognizer";
 import { GestureBehavior } from "./gesture_behavior";
 import { LongPressGestureRecognizer } from "./long_press_recognizer";
+import { TransformGestureRecognizer } from "./transform_gesture_recognizer";
 
 export const GESTURE_EVENT_SOURCE = /*#__PURE__*/createGestureEventDispatcher() as EventDispatcher;
 
@@ -218,6 +219,19 @@ export function onLongPress(
   };
 }
 
+export function onTransform(
+  handler: (ev: GesturePointerEvent) => void,
+): EventHandler<GesturePointerEvent> {
+  return {
+    src: GESTURE_EVENT_SOURCE,
+    flags: EventHandlerFlags.Capture,
+    handler,
+    listeners: 0,
+    props: createTransformGestureRecognizer,
+    state: null,
+  };
+}
+
 function createNativePanGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
   return new NativePanGestureRecognizer(resolver, handler, GestureBehavior.Pan);
 }
@@ -280,4 +294,8 @@ function createTapGestureRecognizer(resolver: GestureController, handler: (ev: a
 
 function createLongPressGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
   return new LongPressGestureRecognizer(resolver, handler);
+}
+
+function createTransformGestureRecognizer(resolver: GestureController, handler: (ev: any) => void) {
+  return new TransformGestureRecognizer(resolver, handler);
 }
