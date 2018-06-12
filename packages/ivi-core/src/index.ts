@@ -6,6 +6,14 @@ declare global {
     displayName: string;
   }
 
+  /**
+   * Additional properties available on iOS.
+   */
+  interface TouchEvent {
+    rotation: number;
+    scale: number;
+  }
+
   const DEBUG: boolean;
   const TARGET: string;
 }
@@ -62,9 +70,9 @@ export { NOOP, NOOP_FALSE } from "./noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
 export { shallowEqual } from "./equal";
 
-export { IOS_UA } from "./user_agent";
 export {
   PASSIVE_EVENTS, KEYBOARD_EVENT_KEY, MOUSE_EVENT_BUTTONS, TOUCH_EVENTS, POINTER_EVENTS, INPUT_DEVICE_CAPABILITIES,
+  IOS_GESTURE_EVENT,
 } from "./feature_detection";
 
 export { getEventCharCode, getEventKey, getMouseButtons } from "./dom/input";

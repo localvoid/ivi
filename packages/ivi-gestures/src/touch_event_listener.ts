@@ -1,4 +1,4 @@
-import { INPUT_DEVICE_CAPABILITIES, NOOP } from "ivi-core";
+import { INPUT_DEVICE_CAPABILITIES, IOS_GESTURE_EVENT, NOOP } from "ivi-core";
 import {
   SyntheticEventFlags, SyntheticNativeEvent,
   EVENT_DISPATCHER_ACTIVE_TOUCH_START, EVENT_DISPATCHER_TOUCH_END, EVENT_DISPATCHER_TOUCH_CANCEL,
@@ -9,7 +9,6 @@ import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_eve
 import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { debugPubTouchState } from "./debug";
-import { IOS_GESTURE_EVENT } from "./features";
 import { beforeUpdate } from "ivi-scheduler";
 
 /**

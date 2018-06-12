@@ -67,3 +67,11 @@ export const POINTER_EVENTS = ((TARGET === "electron") || ("PointerEvent" in win
  * http://wicg.github.io/InputDeviceCapabilities/
  */
 export const INPUT_DEVICE_CAPABILITIES = ((TARGET === "electron") || "InputDeviceCapabilities" in window);
+
+/* istanbul ignore next */
+/**
+ * iOS proprietary GestureEvent.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/GestureEvent}
+ */
+export const IOS_GESTURE_EVENT = (TARGET !== "electron") && ("GestureEvent" in window);

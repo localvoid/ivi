@@ -1,4 +1,4 @@
-import { IOS_UA, NOOP, unorderedArrayDelete } from "ivi-core";
+import { IOS_GESTURE_EVENT, NOOP, unorderedArrayDelete } from "ivi-core";
 import { setUpdateDOMHandler, nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNode } from "./vnode";
 import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
@@ -68,7 +68,7 @@ function _update() {
              *
              * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
              */
-            if (TARGET === "browser" && IOS_UA) {
+            if (TARGET === "browser" && IOS_GESTURE_EVENT) {
               (container as HTMLElement).onclick = NOOP;
             }
           }
