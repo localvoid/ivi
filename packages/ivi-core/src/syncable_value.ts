@@ -19,3 +19,13 @@ export const SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED = {
     }
   },
 };
+
+export function PROPERTY<T>(v: T | undefined): SyncableValue<T> {
+  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED : { v, s: syncProperty };
+}
+
+function syncProperty(element: Element, key: string, prev: any, next: any) {
+  if (prev !== next) {
+    (element as any)[key] = next!;
+  }
+}
