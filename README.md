@@ -192,6 +192,7 @@ render(
 
 - [Scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
 - [TypeScript Enums](https://github.com/localvoid/ivi/blob/master/documentation/advanced/typescript-enums.md)
+- [Syncable Value](https://github.com/localvoid/ivi/blob/master/documentation/advanced/syncable-value.md)
 - [Security](https://github.com/localvoid/ivi/blob/master/documentation/advanced/security.md)
 
 ### Misc

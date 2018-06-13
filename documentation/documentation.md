@@ -12,6 +12,7 @@
 
 - [Scheduler](advanced/scheduler.md)
 - [TypeScript Enums](advanced/typescript-enums.md)
+- [Syncable Value](advanced/syncable-value.md)
 - [Security](advanced/security.md)
 
 ## Misc
