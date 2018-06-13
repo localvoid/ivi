@@ -142,36 +142,51 @@ const enum TagId {
   Video = 119,
 }
 
-const INPUT_EMPTY: SyncableValue<string> = { v: "", s: syncInputValue };
-const TEXTAREA_EMPTY: SyncableValue<string> = { v: "", s: syncTextAreaValue };
+const INPUT_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncInputValue };
+const TEXTAREA_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncTextAreaValue };
 const INPUT_CHECKED_FALSE: SyncableValue<boolean> = { v: false, s: syncInputChecked };
 const INPUT_CHECKED_TRUE: SyncableValue<boolean> = { v: true, s: syncInputChecked };
 
-function syncInputValue(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+function syncInputValue(
+  element: Element,
+  key: string,
+  prev: string | number | undefined,
+  next: string | number | undefined,
+) {
   if (prev === void 0) {
     if (next !== "") {
-      (element as HTMLInputElement).value = next!;
+      (element as HTMLInputElement).value = next as string;
     }
   } else {
     if ((element as HTMLInputElement).value !== next) {
-      (element as HTMLInputElement).value = next!;
+      (element as HTMLInputElement).value = next as string;
     }
   }
 }
 
-function syncTextAreaValue(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+function syncTextAreaValue(
+  element: Element,
+  key: string,
+  prev: string | number | undefined,
+  next: string | number | undefined,
+) {
   if (prev === void 0) {
     if (next !== "") {
-      (element as HTMLTextAreaElement).value = next!;
+      (element as HTMLTextAreaElement).value = next as string;
     }
   } else {
     if ((element as HTMLTextAreaElement).value !== next) {
-      (element as HTMLTextAreaElement).value = next!;
+      (element as HTMLTextAreaElement).value = next as string;
     }
   }
 }
 
-function syncInputChecked(element: Element, key: string, prev: boolean | undefined, next: boolean | undefined) {
+function syncInputChecked(
+  element: Element,
+  key: string,
+  prev: boolean | undefined,
+  next: boolean | undefined,
+) {
   if (prev === void 0) {
     if (next) {
       (element as HTMLInputElement).checked = next;
@@ -192,9 +207,9 @@ function syncUnsafeHTML(element: Element, key: string, prev: string | undefined,
   }
 }
 
-export function INPUT_VALUE(v: string | undefined): SyncableValue<string> {
+export function INPUT_VALUE(v: string | number | undefined): SyncableValue<string | number> {
   return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
-    v === "" ? INPUT_EMPTY : { v, s: syncInputValue };
+    v === "" ? INPUT_EMPTY_STRING : { v, s: syncInputValue };
 }
 
 export function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean> {
@@ -203,9 +218,9 @@ export function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean> {
     v ? INPUT_CHECKED_TRUE : INPUT_CHECKED_FALSE;
 }
 
-export function TEXTAREA_VALUE(v: string | undefined): SyncableValue<string> {
+export function TEXTAREA_VALUE(v: string | number | undefined): SyncableValue<string | number> {
   return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
-    v === "" ? TEXTAREA_EMPTY : { v, s: syncTextAreaValue };
+    v === "" ? TEXTAREA_EMPTY_STRING : { v, s: syncTextAreaValue };
 }
 
 export function UNSAFE_HTML(v: string | undefined): SyncableValue<string> {

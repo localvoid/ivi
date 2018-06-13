@@ -1,3 +1,5 @@
+import { SyncableValue } from "../syncable_value";
+
 /* tslint:disable:max-line-length no-empty-interface */
 
 export declare interface ElementAttrs {
@@ -8,6 +10,22 @@ export declare interface ElementAttrs {
    * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id}
    */
   id?: string | number;
+  /**
+   * innerHTML attribute is disabled, unsafeHTML attribute is used to assign innerHTML.
+   *
+   * @example
+   *
+   *   const n = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
+   */
+  innerHTML?: never;
+  /**
+   * unsafeHTML attribute is used to assign innerHTML.
+   *
+   * @example
+   *
+   *   const n = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
+   */
+  unsafeHTML?: SyncableValue<string>;
 
   [key: string]: any;
 }
@@ -662,6 +680,22 @@ export declare interface HTMLInputElementAttrs extends HTMLElementAttrs {
    * Sets or retrieves the width of the object.
    */
   width?: string;
+  /**
+   * Input checked value.
+   *
+   * @example
+   *
+   *   const n = input("", { type: "checked", value: INPUT_VALUE("abc") });
+   */
+  checked?: SyncableValue<boolean>;
+  /**
+   * Input value.
+   *
+   * @example
+   *
+   *   const n = input("", { value: INPUT_VALUE("abc") });
+   */
+  value?: SyncableValue<string | number>;
 }
 
 export declare interface HTMLUnknownElementAttrs extends HTMLElementAttrs {
@@ -1195,6 +1229,14 @@ export declare interface HTMLTextAreaElementAttrs extends HTMLElementAttrs {
    * Sets or retrieves how to handle wordwrapping in the object.
    */
   wrap?: string;
+  /**
+   * Text area value.
+   *
+   * @example
+   *
+   *   const n = textarea("", { value: TEXTAREA_VALUE("abc") });
+   */
+  value?: SyncableValue<string | number>;
 }
 
 export declare interface HTMLTitleElementAttrs extends HTMLElementAttrs {
