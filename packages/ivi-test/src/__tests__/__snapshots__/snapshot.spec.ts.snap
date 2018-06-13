@@ -136,7 +136,7 @@ exports[`src/snapshot.ts special elements <audio> 1`] = `"<audio/>"`;
 exports[`src/snapshot.ts special elements <input type='checkbox' checked='true'> 1`] = `
 "<input
   type=\\"checkbox\\"
-  syncInputChecked=\\"true\\"
+  checked=\\"true\\"
 />"
 `;
 
@@ -148,7 +148,7 @@ exports[`src/snapshot.ts special elements <input type='checkbox'> 1`] = `
 
 exports[`src/snapshot.ts special elements <input value='abc'> 1`] = `
 "<input
-  syncInputValue=\\"abc\\"
+  value=\\"abc\\"
 />"
 `;
 
@@ -158,7 +158,7 @@ exports[`src/snapshot.ts special elements <textarea> 1`] = `"<textarea/>"`;
 
 exports[`src/snapshot.ts special elements <textarea>abc</textarea> 1`] = `
 "<textarea
-  syncTextAreaValue=\\"abc\\"
+  value=\\"abc\\"
 />"
 `;
 

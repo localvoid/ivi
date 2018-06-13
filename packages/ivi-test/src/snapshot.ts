@@ -1,4 +1,3 @@
-import { getFunctionName } from "ivi-core";
 import { VNode, VNodeFlags, StatefulComponent, StatelessComponent, SyncableValue } from "ivi";
 
 export interface SnapshotOptions {
@@ -84,7 +83,7 @@ function renderAttrsToSnapshot(il: number, props: { [key: string]: any }): strin
     if (typeof value === "object") {
       value = value as SyncableValue<any>;
       if (value !== void 0) {
-        result += `\n${indent(il)}${getFunctionName(value.s)}="${value.v}"`;
+        result += `\n${indent(il)}${key}="${value.v}"`;
       }
     } else if (typeof value === "boolean") {
       if (value) {
