@@ -297,7 +297,3 @@ test(`{ mapRange(0, 2, (i) => <div key={i}></div>) }<div></div>`, () => {
   expect(v3._l).toBe(v2);
   expect(v3._r).toBeNull();
 });
-
-test(`c should raise an exception when it is invoked on a void element`, () => {
-  expect(() => h.br().c("a")).toThrowError();
-});

@@ -119,27 +119,6 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "video": h.video,
 };
 
-const VoidElements = {
-  "area": 1,
-  "base": 1,
-  "br": 1,
-  "col": 1,
-  "embed": 1,
-  "hr": 1,
-  "img": 1,
-  "link": 1,
-  "meta": 1,
-  "param": 1,
-  "source": 1,
-  "track": 1,
-  "wbr": 1,
-};
-
-const MediaElements = [
-  "audio",
-  "video",
-];
-
 describe("src/index.ts", () => {
   test("text", () => {
     const text = h.t("abc");
@@ -166,44 +145,6 @@ describe("src/index.ts", () => {
           expect(n._cs).toBe("abc");
         });
       }
-    });
-
-    describe("void elements", () => {
-      for (const name of Object.keys(Elements)) {
-        const factory = Elements[name];
-        test(`${name}`, () => {
-          const n = factory();
-          if ((n._f & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === VNodeFlags.InputElement) {
-            expect((n._f & VNodeFlags.VoidElement) !== 0).toBe(true);
-          } else if (name in VoidElements) {
-            expect((n._f & VNodeFlags.VoidElement) !== 0).toBe(true);
-          } else {
-            expect((n._f & VNodeFlags.VoidElement) !== 0).toBe(false);
-          }
-        });
-      }
-    });
-
-    describe("media elements", () => {
-      for (const name of MediaElements) {
-        const factory = Elements[name];
-        test(`${name}`, () => {
-          const n = factory();
-          expect((n._f & VNodeFlags.MediaElement) !== 0).toBe(true);
-        });
-      }
-    });
-
-    test("textarea", () => {
-      const n = h.textarea();
-      expect((n._f & VNodeFlags.TextAreaElement) !== 0).toBe(true);
-      expect(n._t).toBe("textarea");
-    });
-
-    test("input", () => {
-      const n = h.input();
-      expect((n._f & VNodeFlags.InputElement) !== 0).toBe(true);
-      expect(n._t).toBe("input");
     });
   });
 });

@@ -31,18 +31,6 @@ test(`assigning children should raise an exception`, () => {
   expect(() => h.t("abc").c("123")).toThrow(Error);
 });
 
-test(`assigning unsafeHTML should raise an exception`, () => {
-  expect(() => h.t("abc").unsafeHTML("123")).toThrow(Error);
-});
-
-test(`assigning input value should raise an exception`, () => {
-  expect(() => h.t("abc").value("123")).toThrow(Error);
-});
-
-test(`assigning checked value should raise an exception`, () => {
-  expect(() => h.t("abc").value(true)).toThrow(Error);
-});
-
 test(`assigning autofocus should raise an exception`, () => {
   expect(() => autofocus(h.t("abc"))).toThrow(Error);
 });

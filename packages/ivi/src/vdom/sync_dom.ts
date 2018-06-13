@@ -1,6 +1,4 @@
-import {
-  XML_NAMESPACE, XLINK_NAMESPACE, CSSStyleProps, elementRemoveAttribute, elementSetAttribute, elementSetAttributeNS,
-} from "ivi-core";
+import { CSSStyleProps, elementRemoveAttribute, elementSetAttribute, SyncableValue } from "ivi-core";
 
 /**
  * Sync DOM styles.
@@ -43,102 +41,53 @@ export function syncStyle(
 /**
  * Set DOM attribute.
  *
- * @param node - HTML or SVG Element
- * @param svg - SVG Element
+ * @param element - DOM Element
  * @param key - Attribute name
- * @param value - Attribute value
+ * @param prev - Previous value
+ * @param next - Next value
  */
-function setDOMAttribute(node: Element, svg: boolean, key: string, value: any): void {
-  if (typeof value === "boolean") {
-    if (value) {
-      value = "";
+function syncDOMAttr(element: Element, key: string, prev: any, next: any): void {
+  if (typeof next === "object") {
+    (next as SyncableValue<any>).s(
+      element,
+      key,
+      prev === void 0 ? void 0 : (prev as SyncableValue<any>).v,
+      (next as SyncableValue<any>).v,
+    );
+  } else if (prev !== next) {
+    if (typeof next === "boolean") {
+      next = next ? "" : void 0;
+    }
+    if (next === void 0) {
+      elementRemoveAttribute.call(element, key);
     } else {
-      return;
+      elementSetAttribute.call(element, key, next);
     }
-  }
-  if (svg === true) {
-    if (key.length > 5) {
-      if (key.charCodeAt(0) === 120 &&
-        // 58 === ":"
-        (
-          key.charCodeAt(3) === 58 || // "xml:"
-          key.charCodeAt(5) === 58    // "xlink:"
-        )
-      ) {
-        if (key.startsWith("xml:")) {
-          /**
-           * All attributes that starts with an "xml:" prefix will be assigned with XML namespace.
-           */
-          /* istanbul ignore else */
-          if (DEBUG) {
-            node.setAttributeNS(XML_NAMESPACE, key, value);
-          } else {
-            elementSetAttributeNS.call(node, XML_NAMESPACE, key, value);
-          }
-          return;
-        } else if (key.startsWith("xlink:")) {
-          /**
-           * All attributes that starts with an "xlink:" prefix will be assigned with XLINK namespace.
-           */
-          /* istanbul ignore else */
-          if (DEBUG) {
-            node.setAttributeNS(XLINK_NAMESPACE, key, value);
-          } else {
-            elementSetAttributeNS.call(node, XLINK_NAMESPACE, key, value);
-          }
-          return;
-        }
-      }
-    }
-  }
-  /* istanbul ignore else */
-  if (DEBUG) {
-    node.setAttribute(key, value);
-  } else {
-    elementSetAttribute.call(node, key, value);
   }
 }
 
 /**
  * Sync DOM attributes.
  *
- * @param node - HTML or SVG Element
- * @param svg - SVG Element
+ * @param element - DOM element
  * @param a - Prev DOM properties
  * @param b - Next DOM properties
  */
 export function syncDOMAttrs(
-  node: Element,
-  svg: boolean,
+  element: Element,
   a: { [key: string]: any } | undefined,
   b: { [key: string]: any } | undefined,
 ): void {
   let key: string;
-  let bValue;
 
   if (a === void 0) {
     // a is empty, insert all attributes from b.
     for (key in b!) {
-      bValue = b![key];
-      if (bValue !== void 0) {
-        setDOMAttribute(node, svg, key, bValue);
-      }
+      syncDOMAttr(element, key, void 0, b![key]);
     }
   } else if (b !== void 0) {
     for (key in b) {
-      bValue = b[key];
-      if (a[key] !== bValue) {
-        if (bValue !== void 0) {
-          setDOMAttribute(node, svg, key, bValue);
-        } else {
-          /* istanbul ignore else */
-          if (DEBUG) {
-            node.removeAttribute(key);
-          } else {
-            elementRemoveAttribute.call(node, key);
-          }
-        }
-      }
+      syncDOMAttr(element, key, a[key], b[key]);
     }
   }
 }

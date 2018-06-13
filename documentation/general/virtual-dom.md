@@ -49,7 +49,6 @@ children.
 ```ts
 interface VNode<P> {
   c(...children: Array<VNode<any> | string | number | null>): this;
-  unsafeHTML(html: string): this;
 }
 ```
 
@@ -74,24 +73,6 @@ div().c(
 
 In this example, when `isVisible` state is changed, syncing algorithm will not touch component `B` because it have the
 same position relative to other root nodes.
-
-#### unsafeHTML
-
-Method `unsafeHTML()` is used to specify `innerHTML`, it is named unsafe because it doesn't provide any XSS protection,
-`unsafeHTML()` value will be directly injected into an element.
-
-### Methods available on input elements
-
-`<textarea />` element works as an input element that can have a text value.
-
-```ts
-interface VNode<P> {
-  value(value: string | boolean | null): this;
-}
-```
-
-Method `value()` is used to assign a value and checked values for input elements. When value has a `string` type it is
-assigned an input `value` property, otherwise it is assigned as a `checked` property.
 
 ## Children collections
 

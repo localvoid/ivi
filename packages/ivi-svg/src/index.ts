@@ -14,8 +14,11 @@ import {
   SVGSVGElementAttrs, SVGSymbolElementAttrs, SVGTextElementAttrs, SVGTextPathElementAttrs,
   SVGTSpanElementAttrs, SVGViewElementAttrs, SVGUseElementAttrs,
   CSSStyleProps,
+
+  elementSetAttributeNS, XML_NAMESPACE, XLINK_NAMESPACE,
+  SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED,
 } from "ivi-core";
-import { VNode, VNodeFlags } from "ivi";
+import { VNode, VNodeFlags, SyncableValue } from "ivi";
 
 const enum TagId {
   A = 1,
@@ -105,6 +108,81 @@ const enum TagId {
   Use = 85,
   View = 86,
   Vkern = 87,
+}
+
+const SYNCABLE_VALUE_SET_XML_ATTR_EMPTY_STRING = {
+  v: "",
+  s: (element: Element, key: string, prev: any) => {
+    if (prev !== "") {
+      elementSetAttributeNS.call(element, XML_NAMESPACE, key, "");
+    }
+  },
+};
+
+const SYNCABLE_VALUE_SET_XLINK_ATTR_EMPTY_STRING = {
+  v: "",
+  s: (element: Element, key: string, prev: any) => {
+    if (prev !== "") {
+      elementSetAttributeNS.call(element, XLINK_NAMESPACE, key, "");
+    }
+  },
+};
+
+function syncNSAttr(
+  element: Element,
+  ns: string,
+  key: string,
+  prev: string | number | boolean | undefined,
+  next: string | number | boolean | undefined,
+) {
+  if (prev !== next) {
+    elementSetAttributeNS.call(element, ns, key, next!);
+  }
+}
+
+function syncXMLAttr(
+  element: Element,
+  key: string,
+  prev: string | number | boolean | undefined,
+  next: string | number | boolean | undefined,
+) {
+  syncNSAttr(element, XML_NAMESPACE, key, prev, next);
+}
+
+function syncXLinkAttr(
+  element: Element,
+  key: string,
+  prev: string | number | boolean | undefined,
+  next: string | number | boolean | undefined,
+) {
+  syncNSAttr(element, XLINK_NAMESPACE, key, prev, next);
+}
+
+function NS_ATTR(
+  v: string | number | boolean | undefined,
+  emptyString: SyncableValue<string | number | boolean>,
+  s: (
+    element: Element,
+    key: string,
+    prev: string | number | boolean | undefined,
+    next: string | number | boolean | undefined,
+  ) => void,
+): SyncableValue<string | number | boolean> {
+  if (typeof v === "boolean") {
+    if (v) {
+      return emptyString;
+    }
+    v = void 0;
+  }
+  return (v === void 0) ? SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED : { v, s };
+}
+
+export function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean> {
+  return NS_ATTR(v, SYNCABLE_VALUE_SET_XML_ATTR_EMPTY_STRING, syncXMLAttr);
+}
+
+export function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean> {
+  return NS_ATTR(v, SYNCABLE_VALUE_SET_XLINK_ATTR_EMPTY_STRING, syncXLinkAttr);
 }
 
 /* tslint:disable:max-line-length */

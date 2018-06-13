@@ -41,10 +41,10 @@ function _attach(vnode: VNode): void {
   const flags = vnode._f;
 
   if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-    let child: VNode | null = vnode._c as VNode;
+    let child = vnode._c;
     do {
       _attach(child!);
-      child = child._r;
+      child = child!._r;
     } while (child !== null);
   } else if (
     (flags & (
@@ -56,13 +56,11 @@ function _attach(vnode: VNode): void {
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       (vnode._i as Component<any>).attached();
     }
-    _attach(vnode._c as VNode);
+    _attach(vnode._c!);
   }
 
-  if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
-    if (vnode._e !== null) {
-      attachEvents(vnode._e);
-    }
+  if ((flags & VNodeFlags.Events) !== 0) {
+    attachEvents(vnode._e!);
   }
 }
 
@@ -75,10 +73,10 @@ function _detach(vnode: VNode): void {
   const flags = vnode._f;
 
   if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-    let child: VNode | null = vnode._c as VNode;
+    let child = vnode._c;
     do {
       _detach(child!);
-      child = child._r;
+      child = child!._r;
     } while (child !== null);
   } else if ((flags & (
     VNodeFlags.StatelessComponent |
@@ -86,7 +84,7 @@ function _detach(vnode: VNode): void {
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
-    _detach(vnode._c as VNode);
+    _detach(vnode._c!);
     if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       const component = vnode._i as Component<any>;
       component.flags |= ComponentFlags.Detached;
@@ -94,10 +92,8 @@ function _detach(vnode: VNode): void {
     }
   }
 
-  if ((flags & VNodeFlags.ElementPropsEvents) !== 0) {
-    if (vnode._e !== null) {
-      detachEvents(vnode._e);
-    }
+  if ((flags & VNodeFlags.Events) !== 0) {
+    detachEvents(vnode._e!);
   }
 }
 
@@ -122,19 +118,19 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) > 0) {
-    children = vnode._c as VNode;
+    children = vnode._c;
     if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
       instance = vnode._i as Node;
       do {
-        dirtyCheck(instance as Node, children, context, dirtyContext);
-        children = children._r;
+        dirtyCheck(instance as Node, children!, context, dirtyContext);
+        children = children!._r;
       } while (children !== null);
     } else if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       instance = vnode._i as Component<any>;
       if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
         syncVNode(
           parent,
-          children,
+          children!,
           vnode._c = DEBUG ?
             shouldBeSingleVNode((instance as Component<any>).render()) :
             /* istanbul ignore next */(instance as Component<any>).render(),
@@ -144,7 +140,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
         (instance as Component<any>).updated();
       } else {
-        dirtyCheck(parent, children, context, dirtyContext);
+        dirtyCheck(parent, children!, context, dirtyContext);
       }
     } else { // (flags & (VNodeFlags.StatelessComponent | VNodeFlags.Connect | VNodeFlags.UpdateContext))
       if ((flags & VNodeFlags.Connect) !== 0) {
@@ -152,12 +148,12 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         instance = vnode._i as {};
         const selectData = connect.select(instance, vnode._p, context);
         if (instance === selectData) {
-          dirtyCheck(parent, children, context, dirtyContext);
+          dirtyCheck(parent, children!, context, dirtyContext);
         } else {
           vnode._i = selectData;
           syncVNode(
             parent,
-            children,
+            children!,
             vnode._c = DEBUG ?
               shouldBeSingleVNode(connect.render(selectData)) :
               /* istanbul ignore next */connect.render(selectData),
@@ -172,7 +168,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
           }
           context = vnode._i as {};
         }
-        dirtyCheck(parent, children, context, dirtyContext);
+        dirtyCheck(parent, children!, context, dirtyContext);
       }
     }
   }
@@ -193,22 +189,6 @@ function _removeAllChildren(parent: Node, firstVNode: VNode): void {
     _detach(vnode);
     vnode = vnode._r;
   } while (vnode !== null);
-}
-
-/**
- * Set value for `HTMLInputElement`.
- *
- * When value has a string type it is assigned to `value` property, otherwise it is assigned to `checked` property.
- *
- * @param input - HTMLInputElement
- * @param value - Value
- */
-function _setInputValue(input: HTMLInputElement, value: string | boolean): void {
-  if (typeof value === "string") {
-    input.value = value;
-  } else {
-    input.checked = value;
-  }
 }
 
 /**
@@ -274,7 +254,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
         }
 
         if (props !== void 0) {
-          syncDOMAttrs(node as Element, svg, void 0, props);
+          syncDOMAttrs(node as Element, void 0, props);
         }
         if (vnode._s !== void 0) {
           syncStyle(node as HTMLElement, void 0, vnode._s);
@@ -282,28 +262,15 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
 
         let children = vnode._c;
         if (children !== null) {
-          if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-            children = children as VNode;
-            do {
-              /* istanbul ignore else */
-              if (DEBUG) {
-                node.insertBefore(_render(node, children, context), null);
-              } else {
-                nodeInsertBefore.call(node, _render(node, children, context), null);
-              }
-              children = children._r;
-            } while (children !== null);
-          } else if ((flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
-            /**
-             * #quirks
-             *
-             * It is important that input value is assigned after all properties. It prevents some issues with
-             * rounding, etc. `value` should be assigned after `step`, `min` and `max` properties.
-             */
-            _setInputValue(node as HTMLInputElement, children as string | boolean);
-          } else { // (flags & VNodeFlags.UnsafeHTML)
-            (node as Element).innerHTML = children as string;
-          }
+          do {
+            /* istanbul ignore else */
+            if (DEBUG) {
+              node.insertBefore(_render(node, children, context), null);
+            } else {
+              nodeInsertBefore.call(node, _render(node, children, context), null);
+            }
+            children = children._r;
+          } while (children !== null);
         }
 
         instance = node;
@@ -330,7 +297,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           shouldBeSingleVNode((tag as StatelessComponent<any>).render(props)) :
           /* istanbul ignore next */(tag as StatelessComponent<any>).render(props);
       }
-      node = _render(parent, vnode._c as VNode, context);
+      node = _render(parent, vnode._c!, context);
     }
 
     if ((flags & VNodeFlags.Autofocus) !== 0) {
@@ -439,11 +406,9 @@ export function syncVNode(
 
       if ((bFlags & (VNodeFlags.Element | VNodeFlags.StatefulComponent)) !== 0) {
         if ((bFlags & VNodeFlags.Element) !== 0) {
-          const svg = (bFlags & VNodeFlags.SvgElement) !== 0;
-
           const className = b._cs;
           if (a._cs !== className) {
-            if (svg === true) {
+            if ((bFlags & VNodeFlags.SvgElement) !== 0) {
               /* istanbul ignore else */
               if (DEBUG) {
                 (instance as Element).setAttribute("class", className);
@@ -456,7 +421,7 @@ export function syncVNode(
           }
 
           if (aProps !== bProps) {
-            syncDOMAttrs(instance as Element, svg, aProps, bProps);
+            syncDOMAttrs(instance as Element, aProps, bProps);
           }
           if (a._s !== b._s) {
             syncStyle(instance as HTMLElement, a._s, b._s);
@@ -464,54 +429,14 @@ export function syncVNode(
 
           if (aChild !== bChild) {
             if (aChild === null) {
-              if ((bFlags & VNodeFlags.ChildrenVNode) !== 0) {
-                bChild = bChild as VNode;
-                do {
-                  renderVNode(instance as Element, null, bChild, context);
-                  bChild = bChild._r!;
-                } while (bChild !== null);
-              } else if ((bFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) !== 0) {
-                _setInputValue(instance as HTMLInputElement, bChild as string | boolean);
-              } else { // (bParentFlags & VNodeFlags.UnsafeHTML)
-                (instance as Element).innerHTML = bChild as string;
-              }
+              do {
+                renderVNode(instance as Element, null, bChild!, context);
+                bChild = bChild!._r;
+              } while (bChild !== null);
             } else if (bChild === null) {
-              if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
-                _removeAllChildren(instance as Element, aChild as VNode);
-              } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
-                (instance as Element).textContent = "";
-              } else { // (bParentFlags & VNodeFlags.InputElement)
-                /**
-                 * When value/checked isn't specified, we should just ignore it.
-                 */
-              }
+              _removeAllChildren(instance as Element, aChild as VNode);
             } else {
-              if ((aFlags & VNodeFlags.ChildrenVNode) !== 0) {
-                _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
-              } else if ((aFlags & VNodeFlags.UnsafeHTML) !== 0) {
-                (instance as Element).innerHTML = bChild as string;
-              } else { // (aParentFlags & VNodeFlags.InputElement)
-                /**
-                 * Input elements has an internal state with a `value` property, so it should be checked before an
-                 * assignment to prevent unnecessary events when `value` is the same as the `value` in the internal
-                 * state.
-                 *
-                 * In general we don't want to override behaviour of DOM Elements with an internal state. Assigning
-                 * props to such elements should be treated as a one-time assignment, so it works almost like `value`
-                 * attribute, except when a new value is passed down, it can override previous value when it doesn't
-                 * match the previous one. There is absolutely no reasons to overcomplicate such behaviour just to make
-                 * it more beatiful like it is a declarative assignment and can't be changed, because in real
-                 * applications, component that controls this element will always track changes, and when it changes it
-                 * will invalidate its representation, so everything will stay in-sync.
-                 */
-                if (typeof bChild === "string") {
-                  if ((instance as HTMLInputElement).value !== bChild) {
-                    (instance as HTMLInputElement).value = bChild;
-                  }
-                } else {
-                  (instance as HTMLInputElement).checked = bChild as boolean;
-                }
-              }
+              _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
             }
           }
         } else { // VNodeFlags.StatefulComponent
@@ -540,7 +465,7 @@ export function syncVNode(
             (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
             (instance as Component<any>).updated();
           } else {
-            dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
+            dirtyCheck(parent, b._c = aChild!, context, dirtyContext);
           }
         }
       } else { // (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)
@@ -550,11 +475,11 @@ export function syncVNode(
             const prevSelectData = instance;
             const selectData = b._i = connect.select(prevSelectData, bProps, context);
             if (prevSelectData === selectData) {
-              dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
+              dirtyCheck(parent, b._c = aChild!, context, dirtyContext);
             } else {
               syncVNode(
                 parent,
-                aChild as VNode,
+                aChild!,
                 b._c = DEBUG ?
                   shouldBeSingleVNode(connect.render(selectData)) :
                     /* istanbul ignore next */connect.render(selectData),
@@ -569,7 +494,7 @@ export function syncVNode(
             b._i = context = (dirtyContext === true) ?
               { ...context, ...bProps } :
               instance as {};
-            syncVNode(parent, aChild as VNode, bChild as VNode, context, dirtyContext);
+            syncVNode(parent, aChild!, bChild!, context, dirtyContext);
           }
         } else { // VNodeFlags.StatelessComponent
           const sc = b._t as StatelessComponent<any>;
@@ -579,7 +504,7 @@ export function syncVNode(
           ) {
             syncVNode(
               parent,
-              aChild as VNode,
+              aChild!,
               b._c = DEBUG ?
                 shouldBeSingleVNode(sc.render(bProps)) :
                   /* istanbul ignore next */sc.render(bProps),
@@ -587,7 +512,7 @@ export function syncVNode(
               dirtyContext,
             );
           } else {
-            dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
+            dirtyCheck(parent, b._c = aChild!, context, dirtyContext);
           }
         }
       }
@@ -847,8 +772,8 @@ function _syncChildrenTrackByKeys(
   context: {},
   dirtyContext: boolean,
 ): void {
-  let aEndVNode: VNode = aStartVNode!._l!;
-  let bEndVNode: VNode = bStartVNode!._l!;
+  let aEndVNode = aStartVNode!._l!;
+  let bEndVNode = bStartVNode!._l!;
   let i: number | undefined = 0;
   let step1Synced = 0;
 

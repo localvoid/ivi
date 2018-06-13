@@ -1192,10 +1192,6 @@ export declare interface HTMLTextAreaElementAttrs extends HTMLElementAttrs {
    */
   status?: any;
   /**
-   * Retrieves or sets the text in the entry field of the textArea element.
-   */
-  value?: string;
-  /**
    * Sets or retrieves how to handle wordwrapping in the object.
    */
   wrap?: string;

@@ -15,8 +15,10 @@ import {
   HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
   CSSStyleProps,
+
+  SYNCABLE_VALUE_SKIP_UNDEFINED,
 } from "ivi-core";
-import { VNode, VNodeFlags } from "ivi";
+import { VNode, VNodeFlags, SyncableValue } from "ivi";
 
 const enum TagId {
   A = 1,
@@ -140,6 +142,76 @@ const enum TagId {
   Video = 119,
 }
 
+const INPUT_EMPTY: SyncableValue<string> = { v: "", s: syncInputValue };
+const TEXTAREA_EMPTY: SyncableValue<string> = { v: "", s: syncTextAreaValue };
+const INPUT_CHECKED_FALSE: SyncableValue<boolean> = { v: false, s: syncInputChecked };
+const INPUT_CHECKED_TRUE: SyncableValue<boolean> = { v: true, s: syncInputChecked };
+
+function syncInputValue(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+  if (prev === void 0) {
+    if (next !== "") {
+      (element as HTMLInputElement).value = next!;
+    }
+  } else {
+    if ((element as HTMLInputElement).value !== next) {
+      (element as HTMLInputElement).value = next!;
+    }
+  }
+}
+
+function syncTextAreaValue(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+  if (prev === void 0) {
+    if (next !== "") {
+      (element as HTMLTextAreaElement).value = next!;
+    }
+  } else {
+    if ((element as HTMLTextAreaElement).value !== next) {
+      (element as HTMLTextAreaElement).value = next!;
+    }
+  }
+}
+
+function syncInputChecked(element: Element, key: string, prev: boolean | undefined, next: boolean | undefined) {
+  if (prev === void 0) {
+    if (next) {
+      (element as HTMLInputElement).checked = next;
+    }
+  } else {
+    if ((element as HTMLInputElement).checked !== next) {
+      (element as HTMLInputElement).checked = next!;
+    }
+  }
+}
+
+function syncUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+  if (
+    (prev === void 0 && next !== "") ||
+    (prev !== next)
+  ) {
+    element.innerHTML = next!;
+  }
+}
+
+export function INPUT_VALUE(v: string | undefined): SyncableValue<string> {
+  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
+    v === "" ? INPUT_EMPTY : { v, s: syncInputValue };
+}
+
+export function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean> {
+  return (v === void 0) ?
+    SYNCABLE_VALUE_SKIP_UNDEFINED as any as SyncableValue<boolean> :
+    v ? INPUT_CHECKED_TRUE : INPUT_CHECKED_FALSE;
+}
+
+export function TEXTAREA_VALUE(v: string | undefined): SyncableValue<string> {
+  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
+    v === "" ? TEXTAREA_EMPTY : { v, s: syncTextAreaValue };
+}
+
+export function UNSAFE_HTML(v: string | undefined): SyncableValue<string> {
+  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED : { v, s: syncUnsafeHTML };
+}
+
 /**
  * Create a VNode representing a Text node.
  *
@@ -190,7 +262,7 @@ export function address(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
 }
 export function area(className?: string, attrs?: HTMLAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLAreaElementAttrs | undefined, HTMLAreaElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Area << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Area << VNodeFlags.ElementIdOffset),
     "area",
     attrs,
     className === void 0 ? "" : className,
@@ -226,7 +298,7 @@ export function b(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
 }
 export function base(className?: string, attrs?: HTMLBaseElementAttrs, css?: CSSStyleProps): VNode<HTMLBaseElementAttrs | undefined, HTMLBaseElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Base << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Base << VNodeFlags.ElementIdOffset),
     "base",
     attrs,
     className === void 0 ? "" : className,
@@ -271,7 +343,7 @@ export function body(className?: string, attrs?: HTMLBodyElementAttrs, css?: CSS
 }
 export function br(className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyleProps): VNode<HTMLBRElementAttrs | undefined, HTMLBRElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Br << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Br << VNodeFlags.ElementIdOffset),
     "br",
     attrs,
     className === void 0 ? "" : className,
@@ -334,7 +406,7 @@ export function code(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
 }
 export function col(className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps): VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Col << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Col << VNodeFlags.ElementIdOffset),
     "col",
     attrs,
     className === void 0 ? "" : className,
@@ -433,7 +505,7 @@ export function em(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
 }
 export function embed(className?: string, attrs?: HTMLEmbedElementAttrs, css?: CSSStyleProps): VNode<HTMLEmbedElementAttrs | undefined, HTMLEmbedElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Embed << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Embed << VNodeFlags.ElementIdOffset),
     "embed",
     attrs,
     className === void 0 ? "" : className,
@@ -568,7 +640,7 @@ export function hgroup(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
 }
 export function hr(className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyleProps): VNode<HTMLHRElementAttrs | undefined, HTMLHRElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Hr << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Hr << VNodeFlags.ElementIdOffset),
     "hr",
     attrs,
     className === void 0 ? "" : className,
@@ -604,7 +676,7 @@ export function iframe(className?: string, attrs?: HTMLIFrameElementAttrs, css?:
 }
 export function img(className?: string, attrs?: HTMLImageElementAttrs, css?: CSSStyleProps): VNode<HTMLImageElementAttrs | undefined, HTMLImageElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Img << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Img << VNodeFlags.ElementIdOffset),
     "img",
     attrs,
     className === void 0 ? "" : className,
@@ -658,7 +730,7 @@ export function li(className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyl
 }
 export function link(className?: string, attrs?: HTMLLinkElementAttrs, css?: CSSStyleProps): VNode<HTMLLinkElementAttrs | undefined, HTMLLinkElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Link << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Link << VNodeFlags.ElementIdOffset),
     "link",
     attrs,
     className === void 0 ? "" : className,
@@ -712,7 +784,7 @@ export function menu(className?: string, attrs?: HTMLMenuElementAttrs, css?: CSS
 }
 export function meta(className?: string, attrs?: HTMLMetaElementAttrs, css?: CSSStyleProps): VNode<HTMLMetaElementAttrs | undefined, HTMLMetaElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Meta << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Meta << VNodeFlags.ElementIdOffset),
     "meta",
     attrs,
     className === void 0 ? "" : className,
@@ -811,7 +883,7 @@ export function p(className?: string, attrs?: HTMLParagraphElementAttrs, css?: C
 }
 export function param(className?: string, attrs?: HTMLParamElementAttrs, css?: CSSStyleProps): VNode<HTMLParamElementAttrs | undefined, HTMLParamElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Param << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Param << VNodeFlags.ElementIdOffset),
     "param",
     attrs,
     className === void 0 ? "" : className,
@@ -937,7 +1009,7 @@ export function small(className?: string, attrs?: HTMLElementAttrs, css?: CSSSty
 }
 export function source(className?: string, attrs?: HTMLSourceElementAttrs, css?: CSSStyleProps): VNode<HTMLSourceElementAttrs | undefined, HTMLSourceElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Source << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Source << VNodeFlags.ElementIdOffset),
     "source",
     attrs,
     className === void 0 ? "" : className,
@@ -1090,7 +1162,7 @@ export function tr(className?: string, attrs?: HTMLTableRowElementAttrs, css?: C
 }
 export function track(className?: string, attrs?: HTMLTrackElementAttrs, css?: CSSStyleProps): VNode<HTMLTrackElementAttrs | undefined, HTMLTrackElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Track << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Track << VNodeFlags.ElementIdOffset),
     "track",
     attrs,
     className === void 0 ? "" : className,
@@ -1126,7 +1198,7 @@ export function ul(className?: string, attrs?: HTMLUListElementAttrs, css?: CSSS
 }
 export function wbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.VoidElement | (TagId.Wbr << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Wbr << VNodeFlags.ElementIdOffset),
     "wbr",
     attrs,
     className === void 0 ? "" : className,
@@ -1146,7 +1218,7 @@ export function xmp(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSSt
 // Textarea / Input Elements:
 export function textarea(className?: string, attrs?: HTMLTextAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLTextAreaElementAttrs | undefined, HTMLTextAreaElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.TextAreaElement | (TagId.Textarea << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Textarea << VNodeFlags.ElementIdOffset),
     "textarea",
     attrs,
     className === void 0 ? "" : className,
@@ -1155,7 +1227,7 @@ export function textarea(className?: string, attrs?: HTMLTextAreaElementAttrs, c
 }
 export function input(className?: string, attrs?: HTMLInputElementAttrs, css?: CSSStyleProps): VNode<HTMLInputElementAttrs | undefined, HTMLInputElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.InputElement | VNodeFlags.VoidElement | (TagId.Input << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Input << VNodeFlags.ElementIdOffset),
     "input",
     attrs,
     className === void 0 ? "" : className,
@@ -1166,7 +1238,7 @@ export function input(className?: string, attrs?: HTMLInputElementAttrs, css?: C
 // Media Elements:
 export function audio(className?: string, attrs?: HTMLAudioElementAttrs, css?: CSSStyleProps): VNode<HTMLAudioElementAttrs | undefined, HTMLAudioElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.MediaElement | (TagId.Audio << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Audio << VNodeFlags.ElementIdOffset),
     "audio",
     attrs,
     className === void 0 ? "" : className,
@@ -1176,7 +1248,7 @@ export function audio(className?: string, attrs?: HTMLAudioElementAttrs, css?: C
 
 export function video(className?: string, attrs?: HTMLVideoElementAttrs, css?: CSSStyleProps): VNode<HTMLVideoElementAttrs | undefined, HTMLVideoElement> {
   return new VNode(
-    VNodeFlags.Element | VNodeFlags.MediaElement | (TagId.Video << VNodeFlags.ElementIdOffset),
+    VNodeFlags.Element | (TagId.Video << VNodeFlags.ElementIdOffset),
     "video",
     attrs,
     className === void 0 ? "" : className,

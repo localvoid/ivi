@@ -215,10 +215,6 @@ export class VNodeWrapper {
     return (this.vnode._f & VNodeFlags.Connect) !== 0;
   }
 
-  isInputElement(): boolean {
-    return (this.vnode._f & VNodeFlags.InputElement) !== 0;
-  }
-
   getTagName(): string {
     if (!this.isElement()) {
       throw new Error("VNodeWrapper::getTagName() can only be called on element nodes");
@@ -301,13 +297,6 @@ export class VNodeWrapper {
     return innerText(this);
   }
 
-  getInputValue(): string | boolean | null {
-    if ((this.vnode._f & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === 0) {
-      throw new Error("VNodeWrapper::getInputValue() can only be called on input element nodes");
-    }
-    return this.vnode._c as string | boolean | null;
-  }
-
   hasFactory(factory: Function): boolean {
     return hasFactory(this, factory);
   }
@@ -388,22 +377,8 @@ export class VNodeWrapper {
     return hasEventHandler(this, eventSource);
   }
 
-  hasUnsafeHTML(html?: string): boolean {
-    if (!this.isElement()) {
-      throw new Error("VNodeWrapper::hasUnsafeHTML() can only be called on element nodes");
-    }
-    return hasUnsafeHTML(this, html);
-  }
-
   hasAutofocus(): boolean {
     return hasAutofocus(this);
-  }
-
-  hasInputValue(value?: string): boolean {
-    if ((this.vnode._f & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)) === 0) {
-      throw new Error("VNodeWrapper::hasInputValue() can only be called on input element nodes");
-    }
-    return hasInputValue(this, value);
   }
 
   query(matcher: VNodeMatcher): VNodeWrapper | null {
@@ -494,18 +469,8 @@ export function hasEventHandler(wrapper: VNodeWrapper, dispatcher: EventDispatch
   return (vnode._p !== null && containsEventHandler(vnode._e, dispatcher) === true);
 }
 
-export function hasUnsafeHTML(wrapper: VNodeWrapper, html?: string): boolean {
-  const vnode = wrapper.vnode;
-  return ((vnode._f & VNodeFlags.UnsafeHTML) !== 0 && (html === undefined || vnode._c === html));
-}
-
 export function hasAutofocus(wrapper: VNodeWrapper): boolean {
   return ((wrapper.vnode._f & VNodeFlags.Autofocus) !== 0);
-}
-
-export function hasInputValue(wrapper: VNodeWrapper, value?: string | boolean): boolean {
-  const vnode = wrapper.vnode;
-  return (vnode._c !== null && (value === undefined || vnode._c === value));
 }
 
 export function hasParent(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {

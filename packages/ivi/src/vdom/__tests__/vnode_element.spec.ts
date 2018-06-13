@@ -60,11 +60,6 @@ test(`overwriting children should raise an exception`, () => {
   expect(() => v.c("123")).toThrow(Error);
 });
 
-test(`overwriting children with unsafeHTML should raise an exception`, () => {
-  const e = h.div().c("abc");
-  expect(() => e.unsafeHTML("123")).toThrow(Error);
-});
-
 test(`children with duplicate keys should raise an exception`, () => {
   expect(() => (
     h.div().c(
@@ -72,24 +67,6 @@ test(`children with duplicate keys should raise an exception`, () => {
       h.t("").k("a"),
     )
   )).toThrow(Error);
-});
-
-test(`unsafeHTML flags`, () => {
-  const v = h.div().unsafeHTML("abc");
-  expect(v._f & VNodeFlags.UnsafeHTML).toBeTruthy();
-});
-
-test(`unsafeHTML children`, () => {
-  const v = h.div().unsafeHTML("abc");
-  expect(v._c).toBe("abc");
-});
-
-test(`assigning input value to div should raise an exception`, () => {
-  expect(() => h.div().value("123")).toThrow(Error);
-});
-
-test(`assigning checked value to div should raise an exception`, () => {
-  expect(() => h.div().value(true)).toThrow(Error);
 });
 
 test(`autofocus`, () => {

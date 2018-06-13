@@ -96,13 +96,9 @@ const VNodeLooseMatchFlags = 0
   | VNodeFlags.Element
   | VNodeFlags.StatelessComponent
   | VNodeFlags.StatefulComponent
-  | VNodeFlags.InputElement
-  | VNodeFlags.TextAreaElement
-  | VNodeFlags.MediaElement
   | VNodeFlags.SvgElement
   | VNodeFlags.Connect
-  | VNodeFlags.UpdateContext
-  | VNodeFlags.VoidElement;
+  | VNodeFlags.UpdateContext;
 
 /**
  * isVNodeLooseMatch performs a loose match on VNodes.

@@ -28,60 +28,40 @@ export const enum VNodeFlags {
    */
   ChildrenVNode = 1 << 5,
   /**
-   * Children property contains unsafe HTML.
-   */
-  UnsafeHTML = 1 << 6,
-  /**
    * VNode is using an explicit key.
    */
-  Key = 1 << 7,
+  Key = 1 << 6,
   /**
    * Keyed list.
    */
-  KeyedList = 1 << 8,
+  KeyedList = 1 << 7,
   /**
    * Element contains events.
    */
-  ElementPropsEvents = 1 << 9,
-  /**
-   * VNode represents an HTMLInputElement element.
-   */
-  InputElement = 1 << 10,
-  /**
-   * VNode represents a HTMLTextAreaElement.
-   */
-  TextAreaElement = 1 << 11,
-  /**
-   * VNode represents a HTMLMediaElement.
-   */
-  MediaElement = 1 << 12,
+  Events = 1 << 8,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 13,
+  SvgElement = 1 << 9,
   /**
    * Specialized VNode with connect behavior.
    */
-  Connect = 1 << 14,
+  Connect = 1 << 10,
   /**
    * Specialized VNode with an update context behavior.
    */
-  UpdateContext = 1 << 15,
+  UpdateContext = 1 << 11,
   /**
    * Stateless component has custom `shouldUpdate()` hook.
    */
-  ShouldUpdateHint = 1 << 16,
+  ShouldUpdateHint = 1 << 12,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 17,
-  /**
-   * VNode element cannot contain any children.
-   */
-  VoidElement = 1 << 18,
+  Autofocus = 1 << 13,
 
-  ElementIdMask = 255 << 19,
-  ElementIdOffset = 19,
+  ElementIdMask = 255 << 14,
+  ElementIdOffset = 14,
   /**
    * Dirty checking should be stopped at this node.
    *
@@ -101,13 +81,8 @@ export const enum VNodeFlags {
   | StatefulComponent
   | Connect
   | UpdateContext
-  | UnsafeHTML
   | Key
-  | InputElement
-  | TextAreaElement
-  | MediaElement
   | SvgElement
-  | VoidElement
   | ElementIdMask,
 }
 

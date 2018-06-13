@@ -32,7 +32,7 @@ export class VNode<P = any, N = Node> {
   /**
    * Children.
    */
-  _c: VNode | string | number | boolean | null;
+  _c: VNode | null;
   /**
    * Tag property contains details about the type of the element.
    */
@@ -145,8 +145,10 @@ export class VNode<P = any, N = Node> {
         throw new Error("Failed to set events, events aren't available on text nodes");
       }
     }
-    this._f |= VNodeFlags.ElementPropsEvents;
-    this._e = events;
+    if (events !== null) {
+      this._f |= VNodeFlags.Events;
+      this._e = events;
+    }
     return this;
   }
 
@@ -161,23 +163,11 @@ export class VNode<P = any, N = Node> {
   c(...children: Array<VNode | string | number | null>): this;
   c(): this {
     if (DEBUG) {
-      if (this._f & (VNodeFlags.ChildrenVNode | VNodeFlags.UnsafeHTML)) {
+      if (this._f & VNodeFlags.ChildrenVNode) {
         throw new Error("Failed to set children, VNode element is already having children.");
       }
       if (!(this._f & VNodeFlags.Element)) {
         throw new Error("Failed to set children, children are available on element nodes only.");
-      }
-      if (this._f & VNodeFlags.InputElement) {
-        throw new Error("Failed to set children, input elements can't have children.");
-      }
-      if (this._f & VNodeFlags.TextAreaElement) {
-        throw new Error("Failed to set children, textarea elements can't have children.");
-      }
-      if (this._f & VNodeFlags.MediaElement) {
-        throw new Error("Failed to set children, media elements can't have children.");
-      }
-      if (this._f & VNodeFlags.VoidElement) {
-        throw new Error(`Failed to set children, ${this._t} elements can't have children.`);
       }
     }
 
@@ -228,54 +218,6 @@ export class VNode<P = any, N = Node> {
       }
     }
 
-    return this;
-  }
-
-  /**
-   * Assigns children as an innerHTML string. It is potentially vulnerable to XSS attacks.
-   *
-   * @param html innerHTML in a string format
-   * @returns this node
-   */
-  unsafeHTML(html: string | null): this {
-    if (DEBUG) {
-      if (this._f & VNodeFlags.ChildrenVNode) {
-        throw new Error("Failed to set unsafeHTML, VNode element is already having children.");
-      }
-      if (!(this._f & VNodeFlags.Element)) {
-        throw new Error("Failed to set unsafeHTML, unsafeHTML is available on element nodes only.");
-      }
-      if (this._f & VNodeFlags.InputElement) {
-        throw new Error("Failed to set unsafeHTML, input elements can't have innerHTML.");
-      }
-      if (this._f & VNodeFlags.TextAreaElement) {
-        throw new Error("Failed to set unsafeHTML, textarea elements can't have innerHTML.");
-      }
-      if (this._f & VNodeFlags.MediaElement) {
-        throw new Error("Failed to set unsafeHTML, media elements can't have children.");
-      }
-      if (this._f & VNodeFlags.VoidElement) {
-        throw new Error(`Failed to set unsafeHTML, ${this._t} elements can't have children.`);
-      }
-    }
-    this._f |= VNodeFlags.UnsafeHTML;
-    this._c = html;
-    return this;
-  }
-
-  /**
-   * Assigns value for an HTMLInputElement and HTMLTextAreaElement elements.
-   *
-   * @param value - Input value
-   * @returns this node
-   */
-  value(value: string | boolean | null): this {
-    if (DEBUG) {
-      if (!(this._f & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement))) {
-        throw new Error("Failed to set value, value is available on input and textarea elements only.");
-      }
-    }
-    this._c = value;
     return this;
   }
 }

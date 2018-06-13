@@ -1,7 +1,7 @@
 /**
  * Common types and functions re-exported from ivi-core.
  */
-export { KeyCode, KeyLocation, MouseButtons, _ } from "ivi-core";
+export { KeyCode, KeyLocation, MouseButtons, SyncableValue, _ } from "ivi-core";
 
 // Virtual DOM
 export { VNodeFlags } from "./vdom/flags";

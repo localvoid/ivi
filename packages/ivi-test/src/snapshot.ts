@@ -1,4 +1,5 @@
-import { VNode, VNodeFlags, StatefulComponent, StatelessComponent } from "ivi";
+import { getFunctionName } from "ivi-core";
+import { VNode, VNodeFlags, StatefulComponent, StatelessComponent, SyncableValue } from "ivi";
 
 export interface SnapshotOptions {
   readonly ignoreEvents?: boolean;
@@ -75,12 +76,17 @@ function indent(n: number): string {
  * @param props Properties.
  * @returns Stringified properties.
  */
-function renderAttrsToSnapshot(il: number, props: { [key: string]: string }): string {
+function renderAttrsToSnapshot(il: number, props: { [key: string]: any }): string {
   let result = "";
   const keys = Object.keys(props);
   for (const key of keys) {
-    const value = props[key];
-    if (typeof value === "boolean") {
+    let value = props[key];
+    if (typeof value === "object") {
+      value = value as SyncableValue<any>;
+      if (value !== void 0) {
+        result += `\n${indent(il)}${getFunctionName(value.s)}="${value.v}"`;
+      }
+    } else if (typeof value === "boolean") {
       if (value) {
         result += `\n${indent(il)}${key}`;
       }
@@ -192,26 +198,11 @@ function _toSnapshot(
 
       let childrenString = "";
       if (vnode._c !== null) {
-        if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-          let child: VNode | null = vnode._c as VNode;
-          do {
-            childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
-            child = child._r;
-          } while (child !== null);
-        } else {
-          if ((flags & VNodeFlags.InputElement) !== 0) {
-            if (vnode._c !== null) {
-              if (typeof vnode._c === "boolean") {
-                result += `\n${indent(il + 1)}checked="${vnode._c}"`;
-              } else {
-                result += `\n${indent(il + 1)}value="${vnode._c}"`;
-              }
-              multiline = true;
-            }
-          } else { // ((flags & VNodeFlags.UnsafeHTML) !== 0)
-            childrenString = `\n${indent(il + 1)}${vnode._c}`;
-          }
-        }
+        let child: VNode | null = vnode._c as VNode;
+        do {
+          childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
+          child = child._r;
+        } while (child !== null);
       }
 
       if (multiline) {

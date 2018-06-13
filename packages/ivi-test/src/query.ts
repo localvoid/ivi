@@ -5,8 +5,7 @@ import {
 
   isElement, isElementWithClassName,
   hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasNextSibling, hasFactory, hasClassName, hasKey,
-  hasProps, hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasUnsafeHTML,
-  hasAutofocus, hasInputValue,
+  hasProps, hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasAutofocus,
   innerText,
 } from "./vdom";
 
@@ -112,11 +111,6 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
     return this;
   }
 
-  hasUnsafeHTML(html?: string): this {
-    this.addPredicate((n: VNodeWrapper) => hasUnsafeHTML(n, html));
-    return this;
-  }
-
   containsText(text: string): this {
     this.addPredicate((n: VNodeWrapper) => (innerText(n).indexOf(text) > -1));
     return this;
@@ -124,11 +118,6 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
 
   hasAutofocus(): this {
     this.addPredicate(hasAutofocus);
-    return this;
-  }
-
-  hasValue(value?: string | boolean): this {
-    this.addPredicate((n: VNodeWrapper) => hasInputValue(n, value));
     return this;
   }
 }

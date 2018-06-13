@@ -1,5 +1,7 @@
 import * as h from "ivi-html";
+import * as s from "ivi-svg";
 import { startRender } from "./utils";
+import { XML_NAMESPACE, XLINK_NAMESPACE } from "ivi-core";
 
 describe(`sync element attributes`, () => {
   test(`undefined => {}`, () => {
@@ -217,6 +219,47 @@ describe(`sync element attributes`, () => {
       expect(n.attributes).toHaveLength(2);
       expect(n.getAttribute("title")).toBe("1");
       expect(n.getAttribute("tabIndex")).toBe("1");
+    });
+  });
+
+  describe(`svg`, () => {
+    test(`{ "xml:text": "abc" } => { "xml:text": "abc" }`, () => {
+      startRender<HTMLElement>((r) => {
+        r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
+        const n = r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
+
+        expect(n.attributes).toHaveLength(1);
+        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("abc");
+      });
+    });
+
+    test(`{ "xml:text": "abc" } => { "xml:text": undefined }`, () => {
+      startRender<HTMLElement>((r) => {
+        r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
+        const n = r(s.circle("", { "xml:text": s.XML_ATTR(undefined) }));
+
+        expect(n.attributes).toHaveLength(0);
+      });
+    });
+
+    test(`{ "xml:text": true } => { "xml:text": true }`, () => {
+      startRender<HTMLElement>((r) => {
+        r(s.circle("", { "xml:text": s.XML_ATTR(true) }));
+        const n = r(s.circle("", { "xml:text": s.XML_ATTR(true) }));
+
+        expect(n.attributes).toHaveLength(1);
+        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("");
+      });
+    });
+
+    test(`{ "xlink:text": true } => { "xlink:text": true }`, () => {
+      startRender<HTMLElement>((r) => {
+        r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }));
+        const n = r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }));
+
+        expect(n.attributes).toHaveLength(1);
+        expect(n.getAttributeNS(XLINK_NAMESPACE, "text")).toBe("");
+      });
     });
   });
 });

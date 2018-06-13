@@ -3,7 +3,7 @@ import { startRender } from "./utils";
 
 test(`<div unsafeHTML="<span>abc</span>"></div>`, () => {
   startRender<HTMLElement>((r) => {
-    const v = h.div().unsafeHTML("<span>abc</span>");
+    const v = h.div("", { unsafeHTML: h.UNSAFE_HTML("<span>abc</span>") });
     const n = r(v);
 
     expect(n.childNodes.length).toBe(1);
