@@ -46,7 +46,7 @@ Here is a list of different optimization goals (in random order) that we should 
 - Memory usage
 - Garbage collection
 - Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
-- Increase probability that executed code will be JITed (usually depends on the application code size)
+- Increase probability that executed code is JITed (usually depends on the application code size)
 
 Virtual DOM is not the best possible solution if we were trying to find a solution that focuses on direct update
 performance, but small updates doesn't have any significant impact on performance, even 2x speedup that reduces time
@@ -108,18 +108,14 @@ Benchmark: ~0.25 without event delegation
 Google Mail: ~0.25
 ```
 
-There also no strict requirements how to handle user interactions, almost all libraries are attaching event handlers to
-DOM nodes and some implementations are using event delegation technique to reduce number of event handlers to 2 per
-8000-80000 DOM Elements (0.00025 - 0.000025).
+There also no strict requirements how to handle user interactions, some libraries are attaching event handlers to
+DOM nodes and some implementations are using event delegation technique to reduce number of event handlers to 1 per
+8000-80000 DOM Elements (0.000125 - 0.0000125).
 
-Libraries like React and ivi are using synthetic events with a custom event dispatcher, so behind the scenes they are
+Libraries like React and ivi are using synthetic events with custom event dispatcher, so behind the scenes they are
 registering one native event handler per each event type, but it is an internal implementation detail and the key
 difference between event delegation and synthetic events is that synthetic events doesn't break component encapsulation,
 components aren't leaking any information about their DOM structure.
-
-Synthetic events is a design decision that was made to improve performance of real applications by sacrificing
-performance of some other use cases. But when library is able to demonstrate good numbers in benchmarks only by breaking
-encapsulation guarantees with event delegation, is it even worth to consider such libraries for complex applications.
 
 #### Data Bindings per DOM Element
 
@@ -139,15 +135,14 @@ greater or equal than 1.
 It is hard to guess how many different component types are used in Google Mail, but if it is like any other complex
 application, the ratio of components per component type shouldn't be too high.
 
-Benchmark implementations with zero components are obviously have zero component types. And when they don't have
-components, they can just analyze template and generate the most optimal code for all benchmarking test cases. It is a
-perfect situation if you are building library to win in benchmarks, but in complex applications the amount of the
-generated code will have a huge impact on the application code size, time to render first page and the probabilty that
-executed code will be JITed.
+Benchmark implementations with zero components are obviously have zero component types. When there are no components,
+libraries that generate "optimal" code and don't care about the size of the generated code, and the amount of different
+code paths will have an advantage in a microbenchmark like this.
 
-Is it worth to generate the most optimal code to gain couple of microseconds that only noticeable in a microbenchmark?
-If you don't care about microbenchmarks, then it is much better to think how to reduce the amount of the generated code
-and the amount of different code paths.
+But in a complex application it maybe worthwile to reduce the amount of the generated code instead of trying to optimize
+micro updates by a couple of microseconds. Virtual DOM libraries are usually have a compact code, because they are using
+a single code path for creating and updating DOM nodes, with no additional code for destroying DOM nodes. Single code
+path has an additional advantage that it has a higher chances that this code path will be JITed earlier.
 
 #### Complex data transformations
 
@@ -156,10 +151,6 @@ fine-grained direct data bindings. Just bind an observable with DOM nodes direct
 
 But in real applcations there are complex data transformation that lose all information about data changes, servers are
 sending data snapshots that doesn't contain any information how nodes should be rearranged and many other use cases.
-
-So the question is how hard it will be to solve such problems with libraries that weren't designed to handle such
-scenarios, are they going with an easy solution by rerendering everything and losing all internal state, or maybe
-reimplement the most complex part of the virtual dom libraries that diffs tree structures and apply it to the data.
 
 ## Quick Start
 

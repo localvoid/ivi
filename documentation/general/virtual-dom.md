@@ -152,21 +152,21 @@ function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<strin
 function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
 ```
 
-`PROPERTY()` function creates a {@link SyncableValue} that assigns a property to a property name derived from the `key`
+`PROPERTY()` function creates a SyncableValue that assigns a property to a property name derived from the `key`
 of the attribute.
 
-`UNSAFE_HTML()` function creates a {@link SyncableValue} that assigns an `innerHTML` property to an Element.
+`UNSAFE_HTML()` function creates a SyncableValue that assigns an `innerHTML` property to an Element.
 
-`INPUT_VALUE()` function creates a {@link SyncableValue} that assigns a `value` property to an HTMLInputElement.
+`INPUT_VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLInputElement.
 
-`INPUT_CHECKED()` function creates a {@link SyncableValue} that assigns a `checked` property to an HTMLInputElement.
+`INPUT_CHECKED()` function creates a SyncableValue that assigns a `checked` property to an HTMLInputElement.
 
-`TEXTAREA_VALUE()` function creates a {@link SyncableValue} that assigns a `value` property to an HTMLTextAreaElement.
+`TEXTAREA_VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLTextAreaElement.
 
-`XML_ATTR()` function creates a {@link SyncableValue} that assigns an attribute from XML namespace, attribute name is
+`XML_ATTR()` function creates a SyncableValue that assigns an attribute from XML namespace, attribute name is
 derived from the `key`.
 
-`XLINK_ATTR()` function creates a {@link SyncableValue} that assigns an attribute from XLINK namespace, attribute name
+`XLINK_ATTR()` function creates a SyncableValue that assigns an attribute from XLINK namespace, attribute name
 is derived from the `key`.
 
 ## Additional functions
