@@ -1,3 +1,4 @@
+import { UNSAFE_HTML } from "ivi-core";
 import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
@@ -5,7 +6,7 @@ test(`<div> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.div());
-      const n = r(h.div("", { unsafeHTML: h.UNSAFE_HTML("<span>abc</span>") }));
+      const n = r(h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") }));
 
       expect(n).toMatchSnapshot();
       expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
@@ -16,7 +17,7 @@ test(`<div> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
 test(`<div unsafeHTML="<div>abc</div>"> => <div></div>`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
-      r(h.div("", { unsafeHTML: h.UNSAFE_HTML("<div>abc</div>") }));
+      r(h.div("", { unsafeHTML: UNSAFE_HTML("<div>abc</div>") }));
       const n = r(h.div());
 
       expect(n).toMatchSnapshot();
@@ -28,8 +29,8 @@ test(`<div unsafeHTML="<div>abc</div>"> => <div></div>`, () => {
 test(`<div unsafeHTML=""> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
-      r(h.div("", { unsafeHTML: h.UNSAFE_HTML("") }));
-      const n = r(h.div("", { unsafeHTML: h.UNSAFE_HTML("<span>abc</span>") }));
+      r(h.div("", { unsafeHTML: UNSAFE_HTML("") }));
+      const n = r(h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") }));
 
       expect(n).toMatchSnapshot();
       expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
@@ -40,8 +41,8 @@ test(`<div unsafeHTML=""> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
 test(`<div unsafeHTML="<div>abc</div>"> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
-      r(h.div("", { unsafeHTML: h.UNSAFE_HTML("<div>abc</div>") }));
-      const n = r(h.div("", { unsafeHTML: h.UNSAFE_HTML("<span>abc</span>") }));
+      r(h.div("", { unsafeHTML: UNSAFE_HTML("<div>abc</div>") }));
+      const n = r(h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") }));
 
       expect(n).toMatchSnapshot();
       expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));

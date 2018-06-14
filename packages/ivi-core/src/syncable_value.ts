@@ -75,3 +75,36 @@ function syncProperty(element: Element, key: string, prev: any, next: any) {
     (element as any)[key] = next!;
   }
 }
+
+/**
+ * UNSAFE_HTML function creates a {@link SyncableValue} that assigns an `innerHTML` property to an Element.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
+ *
+ * @param v - innerHTML value
+ * @returns {@link SyncableValue}
+ */
+export function UNSAFE_HTML(v: string | undefined): SyncableValue<string> {
+  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED : { v, s: syncUnsafeHTML };
+}
+
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link UNSAFE_HTML} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
+function syncUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+  if (
+    (prev === void 0 && next !== "") ||
+    (prev !== next)
+  ) {
+    element.innerHTML = next!;
+  }
+}
