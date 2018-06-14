@@ -1,4 +1,4 @@
-import { EventHandler, VNodeFlags, VNode, getComponent, autofocus } from "ivi";
+import { EventHandler, VNodeFlags, VNode, UNSAFE_HTML, getComponent, autofocus } from "ivi";
 import * as h from "ivi-html";
 
 test(`element flags`, () => {
@@ -60,6 +60,14 @@ test(`overwriting children should raise an exception`, () => {
   expect(() => v.c("123")).toThrow(Error);
 });
 
+test(`assigning children to void elements should raise an exception`, () => {
+  expect(() => h.input().c("abc")).toThrow(Error);
+});
+
+test(`assigning children to element with unsafeHTML should raise an exception`, () => {
+  expect(() => h.div("", { unsafeHTML: UNSAFE_HTML("<span></span>") }).c("abc")).toThrow(Error);
+});
+
 test(`children with duplicate keys should raise an exception`, () => {
   expect(() => (
     h.div().c(
@@ -74,6 +82,6 @@ test(`autofocus`, () => {
   expect(e._f & VNodeFlags.Autofocus).toBe(VNodeFlags.Autofocus);
 });
 
-test(`getComponentInstanceFromVNode should raise an exception when it is invoked on a non-component node`, () => {
+test(`getComponent should raise an exception when it is invoked on a non-component node`, () => {
   expect(() => getComponent(h.div())).toThrowError();
 });

@@ -102,6 +102,7 @@ export class VNode<P = any, N = Node> {
     this._cs = className;
     this._s = style;
     this._e = null;
+    /* istanbul ignore else */
     if (DEBUG) {
       checkVNodeConstructor(this);
       this.factory = NOOP;
@@ -129,6 +130,7 @@ export class VNode<P = any, N = Node> {
    * @returns this node
    */
   e(events: Array<EventHandler | null> | EventHandler | null): this {
+    /* istanbul ignore else */
     if (DEBUG) {
       if ((this._f & VNodeFlags.Text)) {
         throw new Error("Failed to set events, events aren't available on text nodes");
@@ -151,6 +153,7 @@ export class VNode<P = any, N = Node> {
    */
   c(...children: Array<VNode | string | number | null>): this;
   c(): this {
+    /* istanbul ignore else */
     if (DEBUG) {
       if (this._f & VNodeFlags.ChildrenVNode) {
         throw new Error("Failed to set children, VNode element is already having children");
@@ -210,6 +213,7 @@ export class VNode<P = any, N = Node> {
       first._l = prev!;
       this._f |= VNodeFlags.ChildrenVNode;
       this._c = first;
+      /* istanbul ignore else */
       if (DEBUG) {
         checkUniqueKeys(first);
       }
@@ -244,6 +248,7 @@ export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
  * @returns `null` if `vnode` doesn't have a reference to a Component instance
  */
 export function getComponent<T extends Component<any>>(vnode: VNode): T | null {
+  /* istanbul ignore else */
   if (DEBUG) {
     if ((vnode._f & (
       VNodeFlags.StatelessComponent |
@@ -264,6 +269,7 @@ export function getComponent<T extends Component<any>>(vnode: VNode): T | null {
  * @return `vnode`
  */
 export function autofocus<N extends VNode>(vnode: N): N {
+  /* istanbul ignore else */
   if (DEBUG) {
     if (!(vnode._f & (
       VNodeFlags.Element |
