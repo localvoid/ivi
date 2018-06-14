@@ -169,6 +169,12 @@ derived from the `key`.
 `XLINK_ATTR()` function creates a SyncableValue that assigns an attribute from XLINK namespace, attribute name
 is derived from the `key`.
 
+### Example
+
+```ts
+const e = input("", { type: "checked": INPUT_CHECKED(true) })
+```
+
 ## Additional functions
 
 ### Autofocus
