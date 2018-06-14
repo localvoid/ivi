@@ -9,7 +9,7 @@ export { StatefulComponent, StatelessComponent, Component, isComponentAttached }
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode,
-  getDOMInstanceFromVNode, getComponentInstanceFromVNode,
+  getDOMNode, getComponent,
   autofocus, stopDirtyChecking,
 } from "./vdom/vnode";
 export { fragment, map, mapRange, mapIterable } from "./vdom/vnode_collections";

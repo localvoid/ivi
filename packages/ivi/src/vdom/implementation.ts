@@ -11,7 +11,7 @@ import {
 import { autofocus } from "ivi-scheduler";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { VNodeFlags, ComponentFlags } from "./flags";
-import { VNode, getDOMInstanceFromVNode } from "./vnode";
+import { VNode, getDOMNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { StatefulComponent, StatelessComponent, Component } from "./component";
 import { syncDOMAttrs, syncStyle } from "./sync_dom";
@@ -25,9 +25,9 @@ import { syncDOMAttrs, syncStyle } from "./sync_dom";
 export function removeVNode(parent: Node, vnode: VNode): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    parent.removeChild(getDOMInstanceFromVNode(vnode)!);
+    parent.removeChild(getDOMNode(vnode)!);
   } else {
-    nodeRemoveChild.call(parent, getDOMInstanceFromVNode(vnode)!);
+    nodeRemoveChild.call(parent, getDOMNode(vnode)!);
   }
   _detach(vnode);
 }
@@ -521,9 +521,9 @@ export function syncVNode(
     instance = _render(parent, b, context);
     /* istanbul ignore else */
     if (DEBUG) {
-      parent.replaceChild(instance, getDOMInstanceFromVNode(a)!);
+      parent.replaceChild(instance, getDOMNode(a)!);
     } else {
-      nodeReplaceChild.call(parent, instance, getDOMInstanceFromVNode(a)!);
+      nodeReplaceChild.call(parent, instance, getDOMNode(a)!);
     }
     _detach(a);
     _attach(b);
@@ -941,9 +941,9 @@ function _syncChildrenTrackByKeys(
             if (i < 0 || bInnerLength !== seq[i]) {
               /* istanbul ignore else */
               if (DEBUG) {
-                parent.insertBefore(getDOMInstanceFromVNode(bEndVNode)!, nextNode(bEndVNode));
+                parent.insertBefore(getDOMNode(bEndVNode)!, nextNode(bEndVNode));
               } else {
-                nodeInsertBefore.call(parent, getDOMInstanceFromVNode(bEndVNode)!, nextNode(bEndVNode));
+                nodeInsertBefore.call(parent, getDOMNode(bEndVNode)!, nextNode(bEndVNode));
               }
             } else {
               i--;
@@ -971,7 +971,7 @@ function _syncChildrenTrackByKeys(
  */
 function nextNode(vnode: VNode): Node | null {
   const next = vnode._r;
-  return next === null ? null : getDOMInstanceFromVNode(next);
+  return next === null ? null : getDOMNode(next);
 }
 
 /**

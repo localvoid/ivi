@@ -1,4 +1,4 @@
-import { Component, VNode, statefulComponent, getComponentInstanceFromVNode } from "ivi";
+import { Component, VNode, statefulComponent, getComponent } from "ivi";
 import { startRender, checkDOMOps, domOps } from "./utils";
 import * as h from "ivi-html";
 
@@ -45,7 +45,7 @@ test(`<h1><A.0> => <h1><A.1> => <A.1><h1>`, () => {
         h.h1().k(0),
         a,
       ));
-      getComponentInstanceFromVNode<A>(a)!.updateState(1);
+      getComponent<A>(a)!.updateState(1);
       const n = r(h.div().c(
         ca(1).k(1),
         h.h1().k(0),
@@ -65,7 +65,7 @@ test(`<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>`, () => {
         h.h1().k(0),
         cb(a).k(1),
       ));
-      getComponentInstanceFromVNode<A>(a)!.updateState(1);
+      getComponent<A>(a)!.updateState(1);
       const n = r(h.div().c(
         cb(ca(1)).k(1),
         h.h1().k(0),
@@ -86,7 +86,7 @@ test(`<A.0><h1> => <A.1><h1> => <h1><A.1>`, () => {
         a,
         h.h1().k(0),
       ));
-      getComponentInstanceFromVNode<A>(a)!.updateState(1);
+      getComponent<A>(a)!.updateState(1);
       const n = r(h.div().c(
         h.h1().k(0),
         ca(1).k(1),
@@ -106,7 +106,7 @@ test(`<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>`, () => {
         cb(a).k(1),
         h.h1().k(0),
       ));
-      getComponentInstanceFromVNode<A>(a)!.updateState(1);
+      getComponent<A>(a)!.updateState(1);
       const n = r(h.div().c(
         h.h1().k(0),
         cb(ca(1)).k(1),

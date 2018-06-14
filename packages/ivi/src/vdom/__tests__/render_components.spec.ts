@@ -1,5 +1,5 @@
 import {
-  Component, VNode, statelessComponent, statefulComponent, getComponentInstanceFromVNode, isComponentAttached, fragment,
+  Component, VNode, statelessComponent, statefulComponent, getComponent, isComponentAttached, fragment,
 } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
@@ -94,7 +94,7 @@ test(`stateful component should be in attached state when it is rendered into th
       h.div(),
     );
     r(v);
-    const c = getComponentInstanceFromVNode(v);
+    const c = getComponent(v);
 
     expect(isComponentAttached(c!)).toBeTruthy();
   });
@@ -107,7 +107,7 @@ test(`stateful component should be in detached state when it is removed from the
     );
     r(v);
     r(h.div());
-    const c = getComponentInstanceFromVNode(v);
+    const c = getComponent(v);
 
     expect(isComponentAttached(c!)).toBeFalsy();
   });

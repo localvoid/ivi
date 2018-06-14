@@ -180,21 +180,21 @@ function autofocus(vnode: VNode): void;
 Autofocused node will receive a focus when element is instantiated. `autofocus()` is working with any node type except
 text nodes.
 
-### Retrieve DOM instance
+### Retrieve DOM instance from a virtual DOM node
 
 ```ts
-function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T | null;
+function getDOMNode<T extends Node>(node: VNode<any, T>): T | null;
 ```
 
-`getDOMInstanceFromVNode()` retrieves a closest DOM node from a virtual DOM node. This method works with any node type.
+`getDOMNode()` retrieves a closest DOM node from a virtual DOM node. This method works with any node type.
 
-### Retrieve Component instance
+### Retrieve Component instance from a virtual DOM node
 
 ```ts
-function getComponentInstanceFromVNode<T extends Component<any>>(node: VNode): T | null;
+function getComponent<T extends Component<any>>(node: VNode): T | null;
 ```
 
-`getComponentInstanceFromVNode()` retrieves a stateful component instance from a virtual DOM node.
+`getComponent()` retrieves a stateful component instance from a virtual DOM node.
 
 ## Rendering virtual DOM into a document
 

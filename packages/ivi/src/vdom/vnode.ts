@@ -223,30 +223,30 @@ export class VNode<P = any, N = Node> {
 }
 
 /**
- * getDOMInstanceFromVNode retrieves a reference to a DOM node from a VNode object.
+ * getDOMNode retrieves a reference to a DOM node from a VNode object.
  *
- * @param node VNode which contains reference to a DOM node.
+ * @param vnode - Virtual DOM node which contains reference to a DOM node.
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
-export function getDOMInstanceFromVNode<T extends Node>(node: VNode<any, T>): T | null {
-  if ((node._f & (
+export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
+  if ((vnode._f & (
     VNodeFlags.StatelessComponent |
     VNodeFlags.StatefulComponent |
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
-    return getDOMInstanceFromVNode<T>(node._c as VNode<any, T>);
+    return getDOMNode<T>(vnode._c as VNode<any, T>);
   }
-  return node._i as T;
+  return vnode._i as T;
 }
 
 /**
- * getComponentInstanceFromVNode retrieves a reference to a Component instance from a VNode object.
+ * getComponent retrieves a reference to a Component instance from a VNode object.
  *
- * @param vnode - Virtual DOM node which contains reference to a Component instance
+ * @param vnode - Virtual DOM node which contains reference to a Component instance.
  * @returns `null` if `vnode` doesn't have a reference to a Component instance
  */
-export function getComponentInstanceFromVNode<T extends Component<any>>(vnode: VNode): T | null {
+export function getComponent<T extends Component<any>>(vnode: VNode): T | null {
   if (DEBUG) {
     if ((vnode._f & (
       VNodeFlags.StatelessComponent |

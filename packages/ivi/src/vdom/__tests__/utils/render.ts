@@ -1,4 +1,4 @@
-import { VNode, render, getDOMInstanceFromVNode } from "ivi";
+import { VNode, render, getDOMNode } from "ivi";
 
 export function startRender<T extends Node>(
   fn: (render: (n: VNode) => T) => void,
@@ -10,7 +10,7 @@ export function startRender<T extends Node>(
   try {
     fn((n: VNode) => {
       render(n, container);
-      return getDOMInstanceFromVNode(n) as T;
+      return getDOMNode(n) as T;
     });
   } catch (e) {
     throw e;
