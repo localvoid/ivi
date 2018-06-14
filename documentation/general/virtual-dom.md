@@ -147,6 +147,48 @@ render(
 );
 ```
 
+## Syncable Values
+
+By default, syncing algorithm assigns all attributes with `setAttribute()` and removes them with `removeAttribute()`,
+but sometimes we need to assign properties or assign attributes from different namespaces. To solve this problems, ivi
+introduces the concept of [Syncable Values](../advanced/syncable-value.md), this values can extend the default behavior
+of the attribute syncing algorithm. It significantly reduces complexity, because we no longer need to bake in all this
+edge cases into syncing algorithm, also it gives an additional escape hatch to manipulate DOM elements directly.
+
+There are several syncable values defined in ivi packages:
+
+```ts
+// ivi
+function PROPERTY<T>(v: T | undefined): SyncableValue<T>;
+function UNSAFE_HTML(v: string | undefined): SyncableValue<string>;
+
+// ivi-html
+function INPUT_VALUE(v: string | number | undefined): SyncableValue<string | number>;
+function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean>;
+function TEXTAREA_VALUE(v: string | number | undefined): SyncableValue<string | number>;
+
+// ivi-svg
+function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
+function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
+```
+
+`PROPERTY()` function creates a {@link SyncableValue} that assigns a property to a property name derived from the `key`
+of the attribute.
+
+`UNSAFE_HTML()` function creates a {@link SyncableValue} that assigns an `innerHTML` property to an Element.
+
+`INPUT_VALUE()` function creates a {@link SyncableValue} that assigns a `value` property to an HTMLInputElement.
+
+`INPUT_CHECKED()` function creates a {@link SyncableValue} that assigns a `checked` property to an HTMLInputElement.
+
+`TEXTAREA_VALUE()` function creates a {@link SyncableValue} that assigns a `value` property to an HTMLTextAreaElement.
+
+`XML_ATTR()` function creates a {@link SyncableValue} that assigns an attribute from XML namespace, attribute name is
+derived from the `key`.
+
+`XLINK_ATTR()` function creates a {@link SyncableValue} that assigns an attribute from XLINK namespace, attribute name
+is derived from the `key`.
+
 ## Additional functions
 
 ### Autofocus
