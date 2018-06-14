@@ -2,484 +2,484 @@ export declare interface CSSStyleProps {
   /**
    * "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "stretch"
    */
-  "align-content"?: string | null;
+  "align-content"?: string;
   /**
    * "flex-start" | "flex-end" | "center" | "baseline" | "stretch"
    */
-  "align-items"?: string | null;
+  "align-items"?: string;
   /**
    * "auto" | "flex-start" | "flex-end" | "center" | "baseline" | "stretch"
    */
-  "align-self"?: string | null;
-  "alignment-baseline"?: string | null;
-  "animation"?: string | null;
-  "animation-delay"?: string | null;
+  "align-self"?: string;
+  "alignment-baseline"?: string;
+  "animation"?: string;
+  "animation-delay"?: string;
   /**
    * "normal" | "reverse" | "alternate" | "alternate-reverse"
    */
-  "animation-direction"?: string | null;
-  "animation-duration"?: string | null;
+  "animation-direction"?: string;
+  "animation-duration"?: string;
   /**
    * "none" | "forwards" | "backwards" | "both"
    */
-  "animation-fill-mode"?: string | null;
-  "animation-iteration-count"?: string | number | null;
-  "animation-name"?: string | null;
+  "animation-fill-mode"?: string;
+  "animation-iteration-count"?: string | number;
+  "animation-name"?: string;
   /**
    * "running" | "paused"
    */
-  "animation-play-state"?: string | null;
-  "animation-timing-function"?: string | null;
+  "animation-play-state"?: string;
+  "animation-timing-function"?: string;
   /**
    * "visible" | "hidden"
    */
-  "backface-visibility"?: string | null;
-  "background"?: string | null;
-  "background-attachment"?: string | null;
+  "backface-visibility"?: string;
+  "background"?: string;
+  "background-attachment"?: string;
   /**
    * "border-box" | "padding-box" | "content-box"
    */
-  "background-clip"?: string | null;
-  "background-color"?: string | null;
-  "background-image"?: string | null;
+  "background-clip"?: string;
+  "background-color"?: string;
+  "background-image"?: string;
   /**
    * "border-box" | "padding-box" | "content-box"
    */
-  "background-origin"?: string | null;
-  "background-position"?: string | null;
-  "background-position-x"?: string | null;
-  "background-position-y"?: string | null;
-  "background-repeat"?: string | null;
-  "background-size"?: string | null;
-  "baseline-shift"?: string | null;
-  "border"?: number | string | null;
-  "border-bottom"?: number | string | null;
-  "border-bottom-color"?: string | null;
-  "border-bottom-left-radius"?: number | string | null;
-  "border-bottom-right-radius"?: number | string | null;
-  "border-bottom-style"?: string | null;
-  "border-bottom-width"?: number | string | null;
+  "background-origin"?: string;
+  "background-position"?: string;
+  "background-position-x"?: string;
+  "background-position-y"?: string;
+  "background-repeat"?: string;
+  "background-size"?: string;
+  "baseline-shift"?: string;
+  "border"?: number | string;
+  "border-bottom"?: number | string;
+  "border-bottom-color"?: string;
+  "border-bottom-left-radius"?: number | string;
+  "border-bottom-right-radius"?: number | string;
+  "border-bottom-style"?: string;
+  "border-bottom-width"?: number | string;
   /**
    * "collapse" | "separate"
    */
-  "border-collapse"?: string | null;
-  "border-color"?: string | null;
-  "border-image"?: string | null;
-  "border-image-outset"?: string | null;
-  "border-image-repeat"?: string | null;
-  "border-image-slice"?: string | null;
-  "border-image-source"?: string | null;
-  "border-image-width"?: number | string | null;
-  "border-left"?: number | string | null;
-  "border-left-color"?: string | null;
-  "border-left-style"?: string | null;
-  "border-left-width"?: number | string | null;
-  "border-radius"?: number | string | null;
-  "border-right"?: number | string | null;
-  "border-right-color"?: number | string | null;
-  "border-right-style"?: number | string | null;
-  "border-right-width"?: number | string | null;
-  "border-spacing"?: number | string | null;
-  "border-style"?: string | null;
-  "border-top"?: number | string | null;
-  "border-top-color"?: string | null;
-  "border-top-left-radius"?: number | string | null;
-  "border-top-right-radius"?: number | string | null;
-  "border-top-style"?: string | null;
-  "border-top-width"?: number | string | null;
-  "border-width"?: number | string | null;
-  "bottom"?: number | string | null;
+  "border-collapse"?: string;
+  "border-color"?: string;
+  "border-image"?: string;
+  "border-image-outset"?: string;
+  "border-image-repeat"?: string;
+  "border-image-slice"?: string;
+  "border-image-source"?: string;
+  "border-image-width"?: number | string;
+  "border-left"?: number | string;
+  "border-left-color"?: string;
+  "border-left-style"?: string;
+  "border-left-width"?: number | string;
+  "border-radius"?: number | string;
+  "border-right"?: number | string;
+  "border-right-color"?: number | string;
+  "border-right-style"?: number | string;
+  "border-right-width"?: number | string;
+  "border-spacing"?: number | string;
+  "border-style"?: string;
+  "border-top"?: number | string;
+  "border-top-color"?: string;
+  "border-top-left-radius"?: number | string;
+  "border-top-right-radius"?: number | string;
+  "border-top-style"?: string;
+  "border-top-width"?: number | string;
+  "border-width"?: number | string;
+  "bottom"?: number | string;
   /**
    * "slice" | "clone"
    */
-  "box-decoration-break"?: string | null;
-  "box-shadow"?: string | null;
+  "box-decoration-break"?: string;
+  "box-shadow"?: string;
   /**
    * "content-box" | "border-box"
    */
-  "box-sizing"?: string | null;
-  "break-after"?: string | null;
-  "break-before"?: string | null;
-  "break-inside"?: string | null;
-  "caption-side"?: string | null;
+  "box-sizing"?: string;
+  "break-after"?: string;
+  "break-before"?: string;
+  "break-inside"?: string;
+  "caption-side"?: string;
   /**
    * "none" | "left" | "right" | "both" | "inline-start" | "inline-end"
    */
-  "clear"?: string | null;
-  "clip"?: string | null;
-  "clip-path"?: string | null;
-  "clip-rule"?: string | null;
-  "color"?: string | null;
-  "color-interpolation-filters"?: string | null;
-  "column-count"?: number | string | null;
-  "column-fill"?: string | null;
+  "clear"?: string;
+  "clip"?: string;
+  "clip-path"?: string;
+  "clip-rule"?: string;
+  "color"?: string;
+  "color-interpolation-filters"?: string;
+  "column-count"?: number | string;
+  "column-fill"?: string;
   "column-gap"?: any;
-  "column-rule"?: string | null;
+  "column-rule"?: string;
   "column-rule-color"?: any;
-  "column-rule-style"?: string | null;
-  "column-rule-width"?: number | string | null;
-  "column-span"?: string | null;
-  "column-width"?: number | string | null;
-  "columns"?: number | string | null;
-  "content"?: string | null;
-  "counter-increment"?: string | null;
-  "counter-reset"?: string | null;
-  "cursor"?: string | null;
+  "column-rule-style"?: string;
+  "column-rule-width"?: number | string;
+  "column-span"?: string;
+  "column-width"?: number | string;
+  "columns"?: number | string;
+  "content"?: string;
+  "counter-increment"?: string;
+  "counter-reset"?: string;
+  "cursor"?: string;
   /**
    * "ltr" | "rtl"
    */
-  "direction"?: string | null;
+  "direction"?: string;
   /**
    * "none" | "inline" | "block" | "list-item" | "inline-list-item" | "inline-block" | "inline-table" |
    * "table" | "table-cell" | "table-column" | "table-column-group" | "table-footer-group" | "table-header-group" |
    * "table-row" | "table-row-group" | "flex" | "inline-flex" | "grid" | "inline-grid" | "run-in" | "ruby" |
    * "ruby-base" | "ruby-text" | "ruby-base-container" | "ruby-text-container" | "contents"
    */
-  "display"?: string | null;
-  "dominant-baseline"?: string | null;
-  "empty-cells"?: string | null;
-  "enable-background"?: string | null;
-  "fill"?: string | null;
-  "fill-opacity"?: string | null;
-  "fill-rule"?: string | null;
-  "filter"?: string | null;
-  "flex"?: string | null;
-  "flex-basis"?: string | null;
+  "display"?: string;
+  "dominant-baseline"?: string;
+  "empty-cells"?: string;
+  "enable-background"?: string;
+  "fill"?: string;
+  "fill-opacity"?: string;
+  "fill-rule"?: string;
+  "filter"?: string;
+  "flex"?: string;
+  "flex-basis"?: string;
   /**
    * "row" | "row-reverse" | "column" | "column-reverse"
    */
-  "flex-direction"?: string | null;
-  "flex-flow"?: string | null;
-  "flex-grow"?: number | string | null;
-  "flex-shrink"?: number | string | null;
+  "flex-direction"?: string;
+  "flex-flow"?: string;
+  "flex-grow"?: number | string;
+  "flex-shrink"?: number | string;
   /**
    * "nowrap" | "wrap" | "wrap-reverse"
    */
-  "flex-wrap"?: string | null;
+  "flex-wrap"?: string;
   /**
    * "left" | "right" | "none" | "inline-start" | "inline-end"
    */
-  "float"?: string | null;
-  "flood-color"?: string | null;
-  "flood-opacity"?: number | string | null;
-  "font"?: string | null;
-  "font-family"?: string | null;
-  "font-feature-settings"?: string | null;
-  "font-size"?: number | string | null;
-  "font-size-adjust"?: string | null;
+  "float"?: string;
+  "flood-color"?: string;
+  "flood-opacity"?: number | string;
+  "font"?: string;
+  "font-family"?: string;
+  "font-feature-settings"?: string;
+  "font-size"?: number | string;
+  "font-size-adjust"?: string;
   /**
    * "normal" | "ultra-condensed" | "extra-condensed" | "condensed" | "semi-condensed" |
    * "semi-expanded" | "expanded" | "extra-expanded" | "ultra-expanded"
    */
-  "font-stretch"?: string | null;
-  "font-style"?: string | null;
-  "font-variant"?: string | null;
-  "font-weight"?: number | string | null;
-  "glyph-orientation-horizontal"?: string | null;
-  "glyph-orientation-vertical"?: string | null;
-  "height"?: number | string | null;
+  "font-stretch"?: string;
+  "font-style"?: string;
+  "font-variant"?: string;
+  "font-weight"?: number | string;
+  "glyph-orientation-horizontal"?: string;
+  "glyph-orientation-vertical"?: string;
+  "height"?: number | string;
   /**
    * "auto" | "normal" | "active" | "inactive" | "disabled"
    */
-  "ime-mode"?: string | null;
+  "ime-mode"?: string;
   /**
    * "auto" | "isolate"
    */
-  "isolation"?: string | null;
+  "isolation"?: string;
   /**
    * "flex-start" | "flex-end" | "center" | "space-between" | "space-around"
    */
-  "justify-content"?: string | null;
-  "kerning"?: string | null;
-  "left"?: number | string | null;
-  "letter-spacing"?: number | string | null;
-  "lighting-color"?: string | null;
+  "justify-content"?: string;
+  "kerning"?: string;
+  "left"?: number | string;
+  "letter-spacing"?: number | string;
+  "lighting-color"?: string;
   /**
    * "auto" | "loose" | "normal" | "strict"
    */
-  "line-break"?: string | null;
-  "line-geight"?: number | string | null;
-  "list-style"?: string | null;
-  "list-style-image"?: string | null;
-  "list-style-position"?: string | null;
-  "list-style-type"?: string | null;
-  "margin"?: number | string | null;
-  "margin-bottom"?: number | string | null;
-  "margin-left"?: number | string | null;
-  "margin-right"?: number | string | null;
-  "margin-top"?: number | string | null;
-  "marker"?: string | null;
-  "marker-end"?: string | null;
-  "marker-mid"?: string | null;
-  "marker-start"?: string | null;
-  "mask"?: string | null;
-  "max-height"?: number | string | null;
-  "max-width"?: number | string | null;
-  "min-height"?: number | string | null;
-  "min-width"?: number | string | null;
-  "-ms-content-zoom-chaining"?: string | null;
-  "-ms-content-zoom-limit"?: string | null;
+  "line-break"?: string;
+  "line-geight"?: number | string;
+  "list-style"?: string;
+  "list-style-image"?: string;
+  "list-style-position"?: string;
+  "list-style-type"?: string;
+  "margin"?: number | string;
+  "margin-bottom"?: number | string;
+  "margin-left"?: number | string;
+  "margin-right"?: number | string;
+  "margin-top"?: number | string;
+  "marker"?: string;
+  "marker-end"?: string;
+  "marker-mid"?: string;
+  "marker-start"?: string;
+  "mask"?: string;
+  "max-height"?: number | string;
+  "max-width"?: number | string;
+  "min-height"?: number | string;
+  "min-width"?: number | string;
+  "-ms-content-zoom-chaining"?: string;
+  "-ms-content-zoom-limit"?: string;
   "-ms-content-zoom-limit-max"?: any;
   "-ms-content-zoom-limit-min"?: any;
-  "-ms-content-zoom-snap"?: string | null;
-  "-ms-content-zoom-snap-points"?: string | null;
-  "-ms-content-zoom-snap-type"?: string | null;
-  "-ms-content-zooming"?: string | null;
-  "-ms-flow-from"?: string | null;
-  "-ms-flow-into"?: string | null;
-  "-ms-font-feature-settings"?: string | null;
+  "-ms-content-zoom-snap"?: string;
+  "-ms-content-zoom-snap-points"?: string;
+  "-ms-content-zoom-snap-type"?: string;
+  "-ms-content-zooming"?: string;
+  "-ms-flow-from"?: string;
+  "-ms-flow-into"?: string;
+  "-ms-font-feature-settings"?: string;
   "-ms-grid-column"?: any;
-  "-ms-grid-column-align"?: string | null;
+  "-ms-grid-column-align"?: string;
   "-ms-grid-column-span"?: any;
-  "-ms-grid-columns"?: string | null;
+  "-ms-grid-columns"?: string;
   "-ms-grid-row"?: any;
-  "-ms-grid-row-align"?: string | null;
+  "-ms-grid-row-align"?: string;
   "-ms-grid-row-span"?: any;
-  "-ms-grid-rows"?: string | null;
-  "-ms-high-contrast-adjust"?: string | null;
-  "-ms-hyphenate-limit-chars"?: string | null;
+  "-ms-grid-rows"?: string;
+  "-ms-high-contrast-adjust"?: string;
+  "-ms-hyphenate-limit-chars"?: string;
   "-ms-hyphenate-limit-lines"?: any;
   "-ms-hyphenate-limit-zone"?: any;
-  "-ms-hyphens"?: string | null;
-  "-ms-ime-align"?: string | null;
-  "-ms-overflow-style"?: string | null;
-  "-ms-scroll-chaining"?: string | null;
-  "-ms-scroll-limit"?: string | null;
+  "-ms-hyphens"?: string;
+  "-ms-ime-align"?: string;
+  "-ms-overflow-style"?: string;
+  "-ms-scroll-chaining"?: string;
+  "-ms-scroll-limit"?: string;
   "-ms-scroll-limit-x-max"?: any;
   "-ms-scroll-limit-x-min"?: any;
   "-ms-scroll-limit-y-max"?: any;
   "-ms-scroll-limit-y-min"?: any;
-  "-ms-scroll-rails"?: string | null;
-  "-ms-scroll-snap-points-x"?: string | null;
-  "-ms-scroll-snap-points-y"?: string | null;
-  "-ms-scroll-snap-type"?: string | null;
-  "-ms-scroll-snap-x"?: string | null;
-  "-ms-scroll-snap-y"?: string | null;
-  "-ms-scroll-translation"?: string | null;
-  "-ms-text-combine-horizontal"?: string | null;
+  "-ms-scroll-rails"?: string;
+  "-ms-scroll-snap-points-x"?: string;
+  "-ms-scroll-snap-points-y"?: string;
+  "-ms-scroll-snap-type"?: string;
+  "-ms-scroll-snap-x"?: string;
+  "-ms-scroll-snap-y"?: string;
+  "-ms-scroll-translation"?: string;
+  "-ms-text-combine-horizontal"?: string;
   "-ms-text-size-adjust"?: any;
-  "-ms-touch-action"?: string | null;
-  "-ms-touch-select"?: string | null;
+  "-ms-touch-action"?: string;
+  "-ms-touch-select"?: string;
   /**
    * "none" | "auto" | "text" | "all"
    */
-  "-ms-user-select"?: string | null;
+  "-ms-user-select"?: string;
   "-ms-wrap-flow"?: string;
   "-ms-wrap-margin"?: any;
   "-ms-wrap-through"?: string;
   /**
    * "fill" | "contain" | "cover" | "none" | "scale-down"
    */
-  "object-fit"?: string | null;
-  "opacity"?: number | string | null;
-  "order"?: number | string | null;
+  "object-fit"?: string;
+  "opacity"?: number | string;
+  "order"?: number | string;
   /**
    * "auto" | "portrait" | "landscape"
    */
-  "orientation"?: string | null;
-  "orphans"?: string | null;
-  "outline"?: string | null;
-  "outline-color"?: string | null;
-  "outline-style"?: string | null;
-  "outline-width"?: number | string | null;
+  "orientation"?: string;
+  "orphans"?: string;
+  "outline"?: string;
+  "outline-color"?: string;
+  "outline-style"?: string;
+  "outline-width"?: number | string;
   /**
    * "visible" | "hidden" | "scroll" | "auto"
    */
-  "overflow"?: string | null;
+  "overflow"?: string;
   /**
    * "normal" | "break-word"
    */
-  "overflow-wrap"?: string | null;
+  "overflow-wrap"?: string;
   /**
    * "visible" | "hidden" | "scroll" | "auto"
    */
-  "overflow-x"?: string | null;
+  "overflow-x"?: string;
   /**
    * "visible" | "hidden" | "scroll" | "auto"
    */
-  "overflow-y"?: string | null;
-  "padding"?: number | string | null;
-  "padding-bottom"?: number | string | null;
-  "padding-left"?: number | string | null;
-  "padding-right"?: number | string | null;
-  "padding-top"?: number | string | null;
-  "page-break-after"?: string | null;
-  "page-break-before"?: string | null;
-  "page-break-inside"?: string | null;
-  "perspective"?: number | string | null;
-  "perspective-origin"?: string | null;
+  "overflow-y"?: string;
+  "padding"?: number | string;
+  "padding-bottom"?: number | string;
+  "padding-left"?: number | string;
+  "padding-right"?: number | string;
+  "padding-top"?: number | string;
+  "page-break-after"?: string;
+  "page-break-before"?: string;
+  "page-break-inside"?: string;
+  "perspective"?: number | string;
+  "perspective-origin"?: string;
   /**
    * "auto" | "none" | "visiblePainted" | "visibleFill" | "visibleStroke" | "visible" | "painted" |
    * "fill" | "stroke" | "all" | "inherit"
    */
-  "pointer-events"?: string | null;
+  "pointer-events"?: string;
   /**
    * "static" | "relative" | "absolute" | "sticky" | "fixed"
    */
-  "position"?: string | null;
-  "quotes"?: string | null;
+  "position"?: string;
+  "quotes"?: string;
   /**
    * "none" | "both" | "horizontal" | "vertical"
    */
-  "resize"?: string | null;
-  "right"?: number | string | null;
-  "ruby-align"?: string | null;
-  "ruby-overhang"?: string | null;
-  "ruby-position"?: string | null;
-  "stop-color"?: string | null;
-  "stop-opacity"?: number | string | null;
-  "stroke"?: string | null;
-  "stroke-dasharray"?: string | null;
-  "stroke-dashoffset"?: number | string | null;
-  "stroke-linecap"?: string | null;
-  "stroke-linejoin"?: string | null;
-  "stroke-miterlimit"?: string | null;
-  "stroke-opacity"?: number | string | null;
-  "stroke-width"?: number | string | null;
-  "tab-size"?: number | string | null;
+  "resize"?: string;
+  "right"?: number | string;
+  "ruby-align"?: string;
+  "ruby-overhang"?: string;
+  "ruby-position"?: string;
+  "stop-color"?: string;
+  "stop-opacity"?: number | string;
+  "stroke"?: string;
+  "stroke-dasharray"?: string;
+  "stroke-dashoffset"?: number | string;
+  "stroke-linecap"?: string;
+  "stroke-linejoin"?: string;
+  "stroke-miterlimit"?: string;
+  "stroke-opacity"?: number | string;
+  "stroke-width"?: number | string;
+  "tab-size"?: number | string;
   /**
    * "auto" | "fixed"
    */
-  "table-layout"?: string | null;
+  "table-layout"?: string;
   /**
    * "start" | "end" | "left" | "right" | "center" | "justify" | "match-parent"
    */
-  "text-align"?: string | null;
+  "text-align"?: string;
   /**
    * "auto" | "start" | "end" | "left" | "right" | "center" | "justify"
    */
-  "text-align-last"?: string | null;
-  "text-anchor"?: string | null;
-  "text-decoration"?: string | null;
+  "text-align-last"?: string;
+  "text-anchor"?: string;
+  "text-decoration"?: string;
   /**
    * "solid" | "double" | "dotted" | "dashed" | "wavy"
    */
-  "text-decoration-style"?: string | null;
-  "text-indent"?: number | string | null;
-  "text-justify"?: string | null;
-  "text-kashida"?: string | null;
-  "text-kashida-space"?: string | null;
+  "text-decoration-style"?: string;
+  "text-indent"?: number | string;
+  "text-justify"?: string;
+  "text-kashida"?: string;
+  "text-kashida-space"?: string;
   /**
    * "mixed" | "upright" | "sideways"
    */
-  "text-orientation"?: string | null;
-  "text-overflow"?: string | null;
-  "text-shadow"?: string | null;
-  "text-transform"?: string | null;
-  "text-underline-position"?: string | null;
-  "top"?: number | string | null;
-  "touch-action"?: string | null;
-  "transform"?: string | null;
+  "text-orientation"?: string;
+  "text-overflow"?: string;
+  "text-shadow"?: string;
+  "text-transform"?: string;
+  "text-underline-position"?: string;
+  "top"?: number | string;
+  "touch-action"?: string;
+  "transform"?: string;
   /**
    * "mixed" | "upright" | "sideways"
    */
-  "transform-box"?: string | null;
-  "transform-origin"?: string | null;
-  "transform-style"?: string | null;
-  "transition"?: string | null;
-  "transition-delay"?: number | string | null;
-  "transition-duration"?: number | string | null;
-  "transition-property"?: string | null;
-  "transition-timing-function"?: string | null;
-  "unicode-bidi"?: string | null;
+  "transform-box"?: string;
+  "transform-origin"?: string;
+  "transform-style"?: string;
+  "transition"?: string;
+  "transition-delay"?: number | string;
+  "transition-duration"?: number | string;
+  "transition-property"?: string;
+  "transition-timing-function"?: string;
+  "unicode-bidi"?: string;
   /**
    * "none" | "auto" | "text" | "all"
    */
-  "user-select"?: string | null;
-  "vertical-align"?: string | null;
+  "user-select"?: string;
+  "vertical-align"?: string;
   /**
    * "visible" | "hidden" | "collapse"
    */
-  "visibility"?: string | null;
-  "-webkit-align-content"?: string | null;
-  "-webkit-align-items"?: string | null;
-  "-webkit-align-self"?: string | null;
-  "-webkit-animation"?: string | null;
-  "-webkit-animation-delay"?: string | null;
-  "-webkit-animation-direction"?: string | null;
-  "-webkit-animation-duration"?: string | null;
-  "-webkit-animation-fill-mode"?: string | null;
-  "-webkit-animation-iteration-count"?: string | null;
-  "-webkit-animation-name"?: string | null;
-  "-webkit-animation-play-state"?: string | null;
-  "-webkit-animation-timing-function"?: string | null;
-  "-webkit-appearance"?: string | null;
-  "-webkit-backface-visibility"?: string | null;
-  "-webkit-background-clip"?: string | null;
-  "-webkit-background-origin"?: string | null;
-  "-webkit-background-size"?: string | null;
-  "-webkit-border-bottom-left-radius"?: string | null;
-  "-webkit-border-bottom-right-radius"?: string | null;
-  "-webkit-border-image"?: string | null;
-  "-webkit-border-radius"?: string | null;
-  "-webkit-border-top-left-radius"?: string | null;
-  "-webkit-border-top-right-radius"?: string | null;
-  "-webkit-box-align"?: string | null;
-  "-webkit-box-direction"?: string | null;
-  "-webkit-box-flex"?: string | null;
-  "-webkit-box-ordinal-group"?: string | null;
-  "-webkit-box-orient"?: string | null;
-  "-webkit-box-pack"?: string | null;
-  "-webkit-box-sizing"?: string | null;
-  "-webkit-column-break-after"?: string | null;
-  "-webkit-column-break-before"?: string | null;
-  "-webkit-column-break-inside"?: string | null;
+  "visibility"?: string;
+  "-webkit-align-content"?: string;
+  "-webkit-align-items"?: string;
+  "-webkit-align-self"?: string;
+  "-webkit-animation"?: string;
+  "-webkit-animation-delay"?: string;
+  "-webkit-animation-direction"?: string;
+  "-webkit-animation-duration"?: string;
+  "-webkit-animation-fill-mode"?: string;
+  "-webkit-animation-iteration-count"?: string;
+  "-webkit-animation-name"?: string;
+  "-webkit-animation-play-state"?: string;
+  "-webkit-animation-timing-function"?: string;
+  "-webkit-appearance"?: string;
+  "-webkit-backface-visibility"?: string;
+  "-webkit-background-clip"?: string;
+  "-webkit-background-origin"?: string;
+  "-webkit-background-size"?: string;
+  "-webkit-border-bottom-left-radius"?: string;
+  "-webkit-border-bottom-right-radius"?: string;
+  "-webkit-border-image"?: string;
+  "-webkit-border-radius"?: string;
+  "-webkit-border-top-left-radius"?: string;
+  "-webkit-border-top-right-radius"?: string;
+  "-webkit-box-align"?: string;
+  "-webkit-box-direction"?: string;
+  "-webkit-box-flex"?: string;
+  "-webkit-box-ordinal-group"?: string;
+  "-webkit-box-orient"?: string;
+  "-webkit-box-pack"?: string;
+  "-webkit-box-sizing"?: string;
+  "-webkit-column-break-after"?: string;
+  "-webkit-column-break-before"?: string;
+  "-webkit-column-break-inside"?: string;
   "-webkit-column-count"?: any;
   "-webkit-column-gap"?: any;
-  "-webkit-column-rule"?: string | null;
+  "-webkit-column-rule"?: string;
   "-webkit-column-rule-color"?: any;
-  "-webkit-column-rule-style"?: string | null;
+  "-webkit-column-rule-style"?: string;
   "-webkit-column-rule-width"?: any;
-  "-webkit-column-span"?: string | null;
+  "-webkit-column-span"?: string;
   "-webkit-column-width"?: any;
-  "-webkit-columns"?: string | null;
-  "-webkit-filter"?: string | null;
-  "-webkit-flex"?: string | null;
-  "-webkit-flex-basis"?: string | null;
-  "-webkit-flex-direction"?: string | null;
-  "-webkit-flex-flow"?: string | null;
-  "-webkit-flex-grow"?: string | null;
-  "-webkit-flex-shrink"?: string | null;
-  "-webkit-flex-wrap"?: string | null;
-  "-webkit-justify-content"?: string | null;
-  "-webkit-order"?: string | null;
-  "-webkit-perspective"?: string | null;
-  "-webkit-perspective-origin"?: string | null;
-  "-webkit-tap-highlight-color"?: string | null;
-  "-webkit-text-fill-color"?: string | null;
+  "-webkit-columns"?: string;
+  "-webkit-filter"?: string;
+  "-webkit-flex"?: string;
+  "-webkit-flex-basis"?: string;
+  "-webkit-flex-direction"?: string;
+  "-webkit-flex-flow"?: string;
+  "-webkit-flex-grow"?: string;
+  "-webkit-flex-shrink"?: string;
+  "-webkit-flex-wrap"?: string;
+  "-webkit-justify-content"?: string;
+  "-webkit-order"?: string;
+  "-webkit-perspective"?: string;
+  "-webkit-perspective-origin"?: string;
+  "-webkit-tap-highlight-color"?: string;
+  "-webkit-text-fill-color"?: string;
   "-webkit-textSize-adjust"?: any;
-  "-webkit-transform"?: string | null;
-  "-webkit-transform-origin"?: string | null;
-  "-webkit-transform-style"?: string | null;
-  "-webkit-transition"?: string | null;
-  "-webkit-transition-delay"?: string | null;
-  "-webkit-transition-duration"?: string | null;
-  "-webkit-transition-property"?: string | null;
-  "-webkit-transition-timing-function"?: string | null;
-  "-webkit-user-modify"?: string | null;
+  "-webkit-transform"?: string;
+  "-webkit-transform-origin"?: string;
+  "-webkit-transform-style"?: string;
+  "-webkit-transition"?: string;
+  "-webkit-transition-delay"?: string;
+  "-webkit-transition-duration"?: string;
+  "-webkit-transition-property"?: string;
+  "-webkit-transition-timing-function"?: string;
+  "-webkit-user-modify"?: string;
   /**
    * "none" | "auto" | "text" | "all"
    */
-  "-webkit-user-select"?: string | null;
-  "-webkit-writing-mode"?: string | null;
+  "-webkit-user-select"?: string;
+  "-webkit-writing-mode"?: string;
   /**
    * "normal" | "pre" | "nowrap" | "pre-wrap" | "pre-line"
    */
-  "white-space"?: string | null;
-  "widows"?: number | string | null;
-  "width"?: number | string | null;
+  "white-space"?: string;
+  "widows"?: number | string;
+  "width"?: number | string;
   /**
    * "normal" | "break-all" | "keep-all"
    */
-  "word-break"?: string | null;
-  "word-spacing"?: number | string | null;
+  "word-break"?: string;
+  "word-spacing"?: number | string;
   /**
    * "normal" | "break-word"
    */
-  "word-wrap"?: string | null;
-  "writing-mode"?: string | null;
-  "z-index"?: number | string | null;
-  "zoom"?: string | null;
+  "word-wrap"?: string;
+  "writing-mode"?: string;
+  "z-index"?: number | string;
+  "zoom"?: string;
 
   [key: string]: any;
 }

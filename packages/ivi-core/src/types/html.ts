@@ -27,7 +27,7 @@ export declare interface ElementAttrs {
    */
   unsafeHTML?: SyncableValue<string>;
 
-  [key: string]: any;
+  [key: string]: string | number | boolean | SyncableValue<any> | undefined;
 }
 
 export declare interface HTMLElementAttrs extends ElementAttrs {
@@ -246,7 +246,6 @@ export declare interface HTMLMediaElementAttrs extends HTMLElementAttrs {
    * The address or URL of the a media resource that is to be considered.
    */
   src?: string;
-  srcObject?: MediaStream | null;
   /**
    * Gets or sets the volume level for audio portions of the media element.
    */

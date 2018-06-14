@@ -1,55 +1,55 @@
 export declare interface AriaAttrs {
   // Global States and Properties
-  "aria-current"?: string | null;  // state
-  "aria-details"?: string | null;
-  "aria-disabled"?: string | null; // state
-  "aria-hidden"?: string | null;   // state
-  "aria-invalid"?: string | null;  // state
-  "aria-keyshortcuts"?: string | null;
-  "aria-label"?: string | null;
-  "aria-roledescription"?: string | null;
+  "aria-current"?: string;  // state
+  "aria-details"?: string;
+  "aria-disabled"?: string; // state
+  "aria-hidden"?: string;   // state
+  "aria-invalid"?: string;  // state
+  "aria-keyshortcuts"?: string;
+  "aria-label"?: string;
+  "aria-roledescription"?: string;
   // Widget Attributes
-  "aria-autocomplete"?: string | null;
-  "aria-checked"?: string | null;
-  "aria-expanded"?: string | null;
-  "aria-haspopup"?: string | null;
-  "aria-level"?: string | null;
-  "aria-modal"?: string | null;
-  "aria-multiline"?: string | null;
-  "aria-multiselectable"?: string | null;
-  "aria-orientation"?: string | null;
-  "aria-placeholder"?: string | null;
-  "aria-pressed"?: string | null;
-  "aria-readonly"?: string | null;
-  "aria-required"?: string | null;
-  "aria-selected"?: string | null;
-  "aria-sort"?: string | null;
-  "aria-valuemax"?: string | null;
-  "aria-valuemin"?: string | null;
-  "aria-valuenow"?: string | null;
-  "aria-valuetext"?: string | null;
+  "aria-autocomplete"?: string;
+  "aria-checked"?: string;
+  "aria-expanded"?: string;
+  "aria-haspopup"?: string;
+  "aria-level"?: string;
+  "aria-modal"?: string;
+  "aria-multiline"?: string;
+  "aria-multiselectable"?: string;
+  "aria-orientation"?: string;
+  "aria-placeholder"?: string;
+  "aria-pressed"?: string;
+  "aria-readonly"?: string;
+  "aria-required"?: string;
+  "aria-selected"?: string;
+  "aria-sort"?: string;
+  "aria-valuemax"?: string;
+  "aria-valuemin"?: string;
+  "aria-valuenow"?: string;
+  "aria-valuetext"?: string;
   // Live Region Attributes
-  "aria-atomic"?: string | null;
-  "aria-busy"?: string | null;
-  "aria-live"?: string | null;
-  "aria-relevant"?: string | null;
+  "aria-atomic"?: string;
+  "aria-busy"?: string;
+  "aria-live"?: string;
+  "aria-relevant"?: string;
   // Drag-and-Drop Attributes
-  "aria-dropeffect"?: string | null;
-  "aria-grabbed"?: string | null;
+  "aria-dropeffect"?: string;
+  "aria-grabbed"?: string;
   // Relationship Attributes
-  "aria-activedescendant"?: string | null;
-  "aria-colcount"?: string | null;
-  "aria-colindex"?: string | null;
-  "aria-colspan"?: string | null;
-  "aria-controls"?: string | null;
-  "aria-describedby"?: string | null;
-  "aria-errormessage"?: string | null;
-  "aria-flowto"?: string | null;
-  "aria-labelledby"?: string | null;
-  "aria-owns"?: string | null;
-  "aria-posinset"?: string | null;
-  "aria-rowcount"?: string | null;
-  "aria-rowindex"?: string | null;
-  "aria-rowspan"?: string | null;
-  "aria-setsize"?: string | null;
+  "aria-activedescendant"?: string;
+  "aria-colcount"?: string;
+  "aria-colindex"?: string;
+  "aria-colspan"?: string;
+  "aria-controls"?: string;
+  "aria-describedby"?: string;
+  "aria-errormessage"?: string;
+  "aria-flowto"?: string;
+  "aria-labelledby"?: string;
+  "aria-owns"?: string;
+  "aria-posinset"?: string;
+  "aria-rowcount"?: string;
+  "aria-rowindex"?: string;
+  "aria-rowspan"?: string;
+  "aria-setsize"?: string;
 }

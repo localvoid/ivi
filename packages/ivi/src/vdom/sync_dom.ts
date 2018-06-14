@@ -46,13 +46,18 @@ export function syncStyle(
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncDOMAttr(element: Element, key: string, prev: any, next: any): void {
+function syncDOMAttr(
+  element: Element,
+  key: string,
+  prev: string | number | boolean | SyncableValue<any> | undefined,
+  next: string | number | boolean | SyncableValue<any> | undefined,
+): void {
   if (typeof next === "object") {
-    (next as SyncableValue<any>).s(
+    next.s(
       element,
       key,
       prev === void 0 ? void 0 : (prev as SyncableValue<any>).v,
-      (next as SyncableValue<any>).v,
+      next.v,
     );
   } else if (prev !== next) {
     if (typeof next === "boolean") {
@@ -75,8 +80,8 @@ function syncDOMAttr(element: Element, key: string, prev: any, next: any): void 
  */
 export function syncDOMAttrs(
   element: Element,
-  a: { [key: string]: any } | undefined,
-  b: { [key: string]: any } | undefined,
+  a: { [key: string]: string | number | boolean | SyncableValue<any> | undefined } | undefined,
+  b: { [key: string]: string | number | boolean | SyncableValue<any> | undefined } | undefined,
 ): void {
   let key: string;
 
