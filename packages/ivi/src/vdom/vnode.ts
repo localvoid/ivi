@@ -1,9 +1,10 @@
-import { CSSStyleProps, NOOP } from "ivi-core";
-import { checkDOMAttributesForTypos, checkDOMStylesForTypos, checkDeprecatedDOMSVGAttributes } from "../dev_mode/typos";
+import { CSSStyleProps, NOOP, objectHasOwnProperty } from "ivi-core";
+import { checkVNodeConstructor, checkUniqueKeys } from "../dev_mode/vnode";
 import { EventHandler } from "../events/event_handler";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent, StatefulComponent, Component } from "./component";
 import { ConnectDescriptor } from "./connect_descriptor";
+import { isVoidElement } from "../dev_mode/dom";
 
 /**
  * Virtual DOM Node.
@@ -102,19 +103,7 @@ export class VNode<P = any, N = Node> {
     this._s = style;
     this._e = null;
     if (DEBUG) {
-      if (flags & VNodeFlags.Element) {
-        if (props) {
-          checkDOMAttributesForTypos(props);
-
-          if (flags & VNodeFlags.SvgElement) {
-            checkDeprecatedDOMSVGAttributes(tag as string, props);
-          }
-        }
-      }
-
-      if (style !== void 0) {
-        checkDOMStylesForTypos(style);
-      }
+      checkVNodeConstructor(this);
       this.factory = NOOP;
     }
   }
@@ -164,10 +153,18 @@ export class VNode<P = any, N = Node> {
   c(): this {
     if (DEBUG) {
       if (this._f & VNodeFlags.ChildrenVNode) {
-        throw new Error("Failed to set children, VNode element is already having children.");
+        throw new Error("Failed to set children, VNode element is already having children");
       }
       if (!(this._f & VNodeFlags.Element)) {
-        throw new Error("Failed to set children, children are available on element nodes only.");
+        throw new Error("Failed to set children, children are available on element nodes only");
+      }
+      if (isVoidElement(this._t as string)) {
+        throw new Error("Failed to set children, void elements can't have any children");
+      }
+      if (this._p) {
+        if (objectHasOwnProperty.call(this._p, "unsafeHTML")) {
+          throw new Error("Failed to set children, element is using unsafeHTML attribute");
+        }
       }
     }
 
@@ -291,25 +288,4 @@ export function autofocus<N extends VNode>(vnode: N): N {
 export function stopDirtyChecking<N extends VNode>(vnode: N): N {
   vnode._f |= VNodeFlags.StopDirtyChecking;
   return vnode;
-}
-
-/**
- * checkUniqueKeys checks that all nodes have unique keys.
- *
- * @param children - Children nodes
- */
-function checkUniqueKeys(children: VNode): void {
-  let keys: Set<any> | undefined;
-  let node: VNode<any> | null = children;
-  while (node !== null) {
-    if (node._f & VNodeFlags.Key) {
-      if (keys === undefined) {
-        keys = new Set<any>();
-      } else if (keys.has(node._k)) {
-        throw new Error(`Failed to set children, invalid children list, key: "${node._k}" is used multiple times.`);
-      }
-      keys.add(node._k);
-    }
-    node = node._r;
-  }
 }
