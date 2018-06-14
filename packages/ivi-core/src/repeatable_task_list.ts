@@ -8,7 +8,7 @@ export type RepeatableTaskList = Array<() => boolean | undefined>;
 /**
  * runRepeatableTasks runs repeatable tasks.
  *
- * @param tasks repeatable tasks.
+ * @param tasks - Repeatable tasks
  */
 export function runRepeatableTasks(tasks: RepeatableTaskList): void {
   for (let i = 0; i < tasks.length; ++i) {

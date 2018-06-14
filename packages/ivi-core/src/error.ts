@@ -14,8 +14,8 @@ export function addErrorHandler(handler: (e: any) => void): void {
  *
  * @noinline
  * @throws
- * @param fn function to decorate.
- * @returns function decorated with a catchError.
+ * @param fn - Function to decorate
+ * @returns function decorated with a catchError
  */
 export function catchError<T>(fn: (...args: any[]) => T): (...args: any[]) => T {
   return (...args: any[]) => {

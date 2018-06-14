@@ -140,6 +140,14 @@ function syncNSAttr(
   }
 }
 
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link XML_ATTR} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
 function syncXMLAttr(
   element: Element,
   key: string,
@@ -149,6 +157,14 @@ function syncXMLAttr(
   syncNSAttr(element, XML_NAMESPACE, key, prev, next);
 }
 
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link XLINK_ATTR} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
 function syncXLinkAttr(
   element: Element,
   key: string,
@@ -158,6 +174,13 @@ function syncXLinkAttr(
   syncNSAttr(element, XLINK_NAMESPACE, key, prev, next);
 }
 
+/**
+ * Helper function that creates a {@link SyncableValue} for namespaced attribute.
+ *
+ * @param v - Attribute value
+ * @param emptyString - Syncable value that should be used for empty strings
+ * @param s - Synchronization function
+ */
 function NS_ATTR(
   v: string | number | boolean | undefined,
   emptyString: SyncableValue<string | number | boolean>,
@@ -177,10 +200,36 @@ function NS_ATTR(
   return (v === void 0) ? SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED : { v, s };
 }
 
+/**
+ * XML_ATTR function creates a {@link SyncableValue} that assigns an attribute from XML namespace, attribute name is
+ * derived from the `key`.
+ *
+ * `undefined` values are removed.
+ *
+ * @example
+ *
+ *   const e = circle("", { "xml:text": XML_ATTR("abc") });
+ *
+ * @param v - Value
+ * @returns {@link SyncableValue}
+ */
 export function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean> {
   return NS_ATTR(v, SYNCABLE_VALUE_SET_XML_ATTR_EMPTY_STRING, syncXMLAttr);
 }
 
+/**
+ * XLINK_ATTR function creates a {@link SyncableValue} that assigns an attribute from XLINK namespace, attribute name is
+ * derived from the `key`.
+ *
+ * `undefined` values are removed.
+ *
+ * @example
+ *
+ *   const e = circle("", { "xlink:text": XLINK_ATTR("abc") });
+ *
+ * @param v - Value
+ * @returns {@link SyncableValue}
+ */
 export function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean> {
   return NS_ATTR(v, SYNCABLE_VALUE_SET_XLINK_ATTR_EMPTY_STRING, syncXLinkAttr);
 }

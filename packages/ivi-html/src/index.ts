@@ -142,11 +142,34 @@ const enum TagId {
   Video = 119,
 }
 
+/**
+ * {@link SyncableValue} with `""` value and {@link syncInputValue} sync function.
+ */
 const INPUT_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncInputValue };
+
+/**
+ * {@link SyncableValue} with `""` value and {@link syncTextAreaValue} sync function.
+ */
 const TEXTAREA_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncTextAreaValue };
+
+/**
+ * {@link SyncableValue} with `false` value and {@link syncInputChecked} sync function.
+ */
 const INPUT_CHECKED_FALSE: SyncableValue<boolean> = { v: false, s: syncInputChecked };
+
+/**
+ * {@link SyncableValue} with `true` value and {@link syncInputChecked} sync function.
+ */
 const INPUT_CHECKED_TRUE: SyncableValue<boolean> = { v: true, s: syncInputChecked };
 
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link INPUT_VALUE} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
 function syncInputValue(
   element: Element,
   key: string,
@@ -164,6 +187,14 @@ function syncInputValue(
   }
 }
 
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link TEXTAREA_VALUE} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
 function syncTextAreaValue(
   element: Element,
   key: string,
@@ -181,6 +212,14 @@ function syncTextAreaValue(
   }
 }
 
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link INPUT_CHECKED} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
 function syncInputChecked(
   element: Element,
   key: string,
@@ -198,6 +237,14 @@ function syncInputChecked(
   }
 }
 
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link UNSAFE_HTML} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
 function syncUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string | undefined) {
   if (
     (prev === void 0 && next !== "") ||
@@ -207,22 +254,70 @@ function syncUnsafeHTML(element: Element, key: string, prev: string | undefined,
   }
 }
 
+/**
+ * INPUT_VALUE function creates a {@link SyncableValue} that assigns a `value` property to an HTMLInputElement.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = input("", { value: INPUT_VALUE("value") });
+ *
+ * @param v - Input value
+ * @returns {@link SyncableValue}
+ */
 export function INPUT_VALUE(v: string | number | undefined): SyncableValue<string | number> {
   return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
     v === "" ? INPUT_EMPTY_STRING : { v, s: syncInputValue };
 }
 
+/**
+ * INPUT_CHECKED function creates a {@link SyncableValue} that assigns a `checked` property to an HTMLInputElement.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = input("", { checked: INPUT_CHECKED(true) });
+ *
+ * @param v - Input checked value
+ * @returns {@link SyncableValue}
+ */
 export function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean> {
   return (v === void 0) ?
     SYNCABLE_VALUE_SKIP_UNDEFINED as any as SyncableValue<boolean> :
     v ? INPUT_CHECKED_TRUE : INPUT_CHECKED_FALSE;
 }
 
+/**
+ * TEXTAREA_VALUE function creates a {@link SyncableValue} that assigns a `value` property to an HTMLTextAreaElement.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = textarea("", { value: TEXTAREA_VALUE("value") });
+ *
+ * @param v - Text area value
+ * @returns {@link SyncableValue}
+ */
 export function TEXTAREA_VALUE(v: string | number | undefined): SyncableValue<string | number> {
   return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
     v === "" ? TEXTAREA_EMPTY_STRING : { v, s: syncTextAreaValue };
 }
 
+/**
+ * UNSAFE_HTML function creates a {@link SyncableValue} that assigns an `innerHTML` property to an Element.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
+ *
+ * @param v - innerHTML value
+ * @returns {@link SyncableValue}
+ */
 export function UNSAFE_HTML(v: string | undefined): SyncableValue<string> {
   return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED : { v, s: syncUnsafeHTML };
 }
