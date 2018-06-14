@@ -21,7 +21,7 @@ type VNodeElementFactory<T, N extends Element> = (className?: string, attrs?: T,
 
 ## Chained Methods
 
-### Methods available on all nodes
+### Key
 
 ```ts
 interface VNode<P> {
@@ -31,7 +31,7 @@ interface VNode<P> {
 
 Method `k()` is used to assign keys, they are used to uniquely identify virtual nodes among its siblings.
 
-### Methods available on all nodes except Text nodes
+### Events
 
 ```ts
 interface VNode<P> {
@@ -41,10 +41,7 @@ interface VNode<P> {
 
 Method `e()` is used to assign events.
 
-### Methods available on non-void HTML and SVG elements
-
-[Void element](https://developer.mozilla.org/en-US/docs/Glossary/Empty_element) is an element that **cannot** have any
-children.
+### Children
 
 ```ts
 interface VNode<P> {
@@ -52,27 +49,9 @@ interface VNode<P> {
 }
 ```
 
-#### Children
-
-Method `c()` is a variadic method and accepts variable number of children. Children can be any basic object like string
-or number, virtual dom node or a collection of virtual dom nodes created with functions like `map()`, `mapRange()` or
-`fragment()`.
-
-Each child that doesn't have a key will be automatically assigned with an implicit key that reflects its position.
-
-Implicit keys are used to support code patterns like this:
-
-```ts
-div().c(
-  isVisible ?
-    map(entries, (entry) => A().k(entry.id)) :
-    null,
-  B(),
-);
-```
-
-In this example, when `isVisible` state is changed, syncing algorithm will not touch component `B` because it have the
-same position relative to other root nodes.
+Method `c()` is a variadic method and accepts variable number of children. Children argument can be a string, number,
+virtual dom node or a collection of virtual dom nodes created with functions like `map()`, `mapRange()`, `mapIterable()`
+or `fragment()`.
 
 ## Children collections
 
@@ -99,11 +78,12 @@ render(
 
 ### Dynamic lists
 
-`map()` and `mapRange()` functions are used to generate dynamic lists with keyed elements.
+`map()`, `mapRange()` and `mapIterable()` functions are used to generate dynamic lists with keyed elements.
 
 ```ts
 function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null;
 function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null;
+function mapIterable<T>(iterable: IterableIterator<VNode<T>>): VNode<T> | null;
 ```
 
 `map()` creates a children collection with the results of calling a provided function on every element in the calling
