@@ -11,8 +11,8 @@
  *
  * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
  */
-export const PASSIVE_EVENTS = (TARGET === "electron") ? true :
-  /*#__PURE__*/(() => {
+export const PASSIVE_EVENTS = /*#__PURE__*/((TARGET === "electron") ? true :
+  (() => {
     let v = false;
     try {
       // Test via a getter in the options object to see if the passive property is accessed
@@ -26,7 +26,7 @@ export const PASSIVE_EVENTS = (TARGET === "electron") ? true :
       // ignore
     }
     return v;
-  })();
+  })());
 
 /* istanbul ignore next */
 /**
