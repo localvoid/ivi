@@ -155,7 +155,7 @@ export class VNode<P = any, N = Node> {
   c(): this {
     /* istanbul ignore else */
     if (DEBUG) {
-      if (this._f & VNodeFlags.ChildrenVNode) {
+      if (this._c !== null) {
         throw new Error("Failed to set children, VNode element is already having children");
       }
       if (!(this._f & VNodeFlags.Element)) {
@@ -211,7 +211,6 @@ export class VNode<P = any, N = Node> {
     }
     if (first !== null) {
       first._l = prev!;
-      this._f |= VNodeFlags.ChildrenVNode;
       this._c = first;
       /* istanbul ignore else */
       if (DEBUG) {

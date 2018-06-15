@@ -24,44 +24,40 @@ export const enum VNodeFlags {
    */
   StatefulComponent = 1 << 4,
   /**
-   * Children property contains a child VNode.
-   */
-  ChildrenVNode = 1 << 5,
-  /**
    * VNode is using an explicit key.
    */
-  Key = 1 << 6,
+  Key = 1 << 5,
   /**
    * Keyed list.
    */
-  KeyedList = 1 << 7,
+  KeyedList = 1 << 6,
   /**
    * Element contains events.
    */
-  Events = 1 << 8,
+  Events = 1 << 7,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 9,
+  SvgElement = 1 << 8,
   /**
    * Specialized VNode with connect behavior.
    */
-  Connect = 1 << 10,
+  Connect = 1 << 9,
   /**
    * Specialized VNode with an update context behavior.
    */
-  UpdateContext = 1 << 11,
+  UpdateContext = 1 << 10,
   /**
    * Stateless component has custom `shouldUpdate()` hook.
    */
-  ShouldUpdateHint = 1 << 12,
+  ShouldUpdateHint = 1 << 11,
   /**
    * VNode element will be automatically focused after instantiation.
    */
-  Autofocus = 1 << 13,
+  Autofocus = 1 << 12,
 
-  ElementIdMask = 255 << 14,
-  ElementIdOffset = 14,
+  ElementIdMask = 255 << 13,
+  ElementIdOffset = 13,
   /**
    * Dirty checking should be stopped at this node.
    *

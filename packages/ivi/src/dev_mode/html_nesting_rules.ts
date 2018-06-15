@@ -220,12 +220,10 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
 
     ancestorFlags |= AncestorFlagsByTagName[parentTagName];
 
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = vnode._c as VNode;
-      do {
-        visitNode(child!, parentTagName, ancestorFlags);
-        child = child._r;
-      } while (child !== null);
+    let child: VNode | null = vnode._c;
+    while (child !== null) {
+      visitNode(child, parentTagName, ancestorFlags);
+      child = child._r;
     }
   } else if ((flags & (
     VNodeFlags.StatelessComponent |

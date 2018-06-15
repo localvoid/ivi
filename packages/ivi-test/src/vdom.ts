@@ -18,15 +18,14 @@ export function visitUnwrapped(
 
   const flags = vnode._f;
   if ((flags & (
-    VNodeFlags.ChildrenVNode |
+    VNodeFlags.Element |
     VNodeFlags.StatelessComponent |
     VNodeFlags.StatefulComponent |
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
-    const children = vnode._c;
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = children as VNode;
+    let child = vnode._c;
+    if ((flags & VNodeFlags.Element) !== 0) {
       while (child !== null) {
         if (visitUnwrapped(child, vnode, context, visitor)) {
           return true;
@@ -37,9 +36,7 @@ export function visitUnwrapped(
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
         context = { ...context, ...vnode._p };
       }
-      if (children !== null) {
-        return visitUnwrapped(children as VNode, vnode, context, visitor);
-      }
+      return visitUnwrapped(child!, vnode, context, visitor);
     }
   }
 
@@ -57,16 +54,15 @@ export function visitWrapped(
   const vnode = wrapper.vnode;
   const flags = vnode._f;
   if ((flags & (
-    VNodeFlags.ChildrenVNode |
+    VNodeFlags.Element |
     VNodeFlags.StatelessComponent |
     VNodeFlags.StatefulComponent |
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
     let context = wrapper.context;
-    const children = vnode._c;
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = children as VNode;
+    let child = vnode._c;
+    if ((flags & VNodeFlags.Element) !== 0) {
       while (child !== null) {
         if (visitWrapped(new VNodeWrapper(child, wrapper, context), visitor)) {
           return true;
@@ -77,9 +73,7 @@ export function visitWrapped(
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
         context = { ...context, ...vnode._p };
       }
-      if (children !== null) {
-        return visitWrapped(new VNodeWrapper(children as VNode, wrapper, context), visitor);
-      }
+      return visitWrapped(new VNodeWrapper(child!, wrapper, context), visitor);
     }
   }
 
@@ -90,37 +84,39 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
   const flags = vnode._f;
 
   if ((flags & (
-    VNodeFlags.ChildrenVNode |
+    VNodeFlags.Element |
     VNodeFlags.StatefulComponent |
     VNodeFlags.StatelessComponent |
     VNodeFlags.UpdateContext |
     VNodeFlags.Connect
   )) !== 0) {
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-      let child: VNode | null = vnode._c as VNode;
+    if ((flags & VNodeFlags.Element) !== 0) {
+      let child = vnode._c;
       while (child !== null) {
         _virtualRender(depth, child, vnode, context);
         child = child._r;
       }
-    } else if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
-      if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-        const component = vnode._i = new (vnode._t as StatefulComponent<any>)(vnode._p);
-        vnode._c = component.render();
-      } else {
-        const component = vnode._t as StatelessComponent<any>;
-        vnode._c = component.render(vnode._p);
-      }
     } else {
-      if ((flags & VNodeFlags.UpdateContext) !== 0) {
-        vnode._i = context = { ...context, ...vnode._p };
+      if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
+        if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+          const component = vnode._i = new (vnode._t as StatefulComponent<any>)(vnode._p);
+          vnode._c = component.render();
+        } else {
+          const component = vnode._t as StatelessComponent<any>;
+          vnode._c = component.render(vnode._p);
+        }
       } else {
-        const connect = vnode._t as ConnectDescriptor<any, any, any>;
-        const next = vnode._i = connect.select(null, vnode._p, context);
-        vnode._c = connect.render(next);
+        if ((flags & VNodeFlags.UpdateContext) !== 0) {
+          vnode._i = context = { ...context, ...vnode._p };
+        } else {
+          const connect = vnode._t as ConnectDescriptor<any, any, any>;
+          const next = vnode._i = connect.select(null, vnode._p, context);
+          vnode._c = connect.render(next);
+        }
       }
-    }
-    if (depth > 1) {
-      return _virtualRender(depth - 1, vnode._c as VNode, vnode, context);
+      if (depth > 1) {
+        return _virtualRender(depth - 1, vnode._c!, vnode, context);
+      }
     }
   }
 
@@ -259,13 +255,13 @@ export class VNodeWrapper {
     }
     const flags = this.vnode._f;
     let children: VNodeWrapper[];
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+    if ((flags & VNodeFlags.Element) !== 0) {
       children = [];
-      let child: VNode | null = this.vnode._c as VNode;
-      do {
+      let child: VNode | null = this.vnode._c;
+      while (child !== null) {
         children.push(new VNodeWrapper(child, this, this.context));
         child = child._r;
-      } while (child !== null);
+      }
     } else {
       children = [];
     }

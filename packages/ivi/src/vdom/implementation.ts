@@ -39,24 +39,14 @@ export function removeVNode(parent: Node, vnode: VNode): void {
  */
 function _attach(vnode: VNode): void {
   const flags = vnode._f;
+  if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+    (vnode._i as Component<any>).attached();
+  }
 
-  if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-    let child = vnode._c;
-    do {
-      _attach(child!);
-      child = child!._r;
-    } while (child !== null);
-  } else if (
-    (flags & (
-      VNodeFlags.StatelessComponent |
-      VNodeFlags.StatefulComponent |
-      VNodeFlags.Connect |
-      VNodeFlags.UpdateContext
-    )) !== 0) {
-    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-      (vnode._i as Component<any>).attached();
-    }
-    _attach(vnode._c!);
+  let child = vnode._c;
+  while (child !== null) {
+    _attach(child);
+    child = child._r;
   }
 
   if ((flags & VNodeFlags.Events) !== 0) {
@@ -70,26 +60,17 @@ function _attach(vnode: VNode): void {
  * @param vnode - Virtual DOM node
  */
 function _detach(vnode: VNode): void {
-  const flags = vnode._f;
+  let child = vnode._c;
+  while (child !== null) {
+    _detach(child);
+    child = child._r;
+  }
 
-  if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
-    let child = vnode._c;
-    do {
-      _detach(child!);
-      child = child!._r;
-    } while (child !== null);
-  } else if ((flags & (
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.StatefulComponent |
-    VNodeFlags.Connect |
-    VNodeFlags.UpdateContext
-  )) !== 0) {
-    _detach(vnode._c!);
-    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-      const component = vnode._i as Component<any>;
-      component.flags |= ComponentFlags.Detached;
-      component.detached();
-    }
+  const flags = vnode._f;
+  if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+    const component = vnode._i as Component<any>;
+    component.flags |= ComponentFlags.Detached;
+    component.detached();
   }
 
   if ((flags & VNodeFlags.Events) !== 0) {
@@ -107,30 +88,30 @@ function _detach(vnode: VNode): void {
  */
 export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
   const flags = vnode._f;
-  let children: VNode | null | undefined;
+  let child: VNode | null | undefined;
   let instance: Node | Component<any> | {} | undefined;
 
   if ((flags & (
     VNodeFlags.StopDirtyChecking | // StopDirtyChecking will convert this value to -value
-    VNodeFlags.ChildrenVNode |
+    VNodeFlags.Element |
     VNodeFlags.StatelessComponent |
     VNodeFlags.StatefulComponent |
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) > 0) {
-    children = vnode._c;
-    if ((flags & VNodeFlags.ChildrenVNode) !== 0) {
+    child = vnode._c;
+    if ((flags & VNodeFlags.Element) !== 0) {
       instance = vnode._i as Node;
-      do {
-        dirtyCheck(instance as Node, children!, context, dirtyContext);
-        children = children!._r;
-      } while (children !== null);
+      while (child !== null) {
+        dirtyCheck(instance as Node, child, context, dirtyContext);
+        child = child._r;
+      }
     } else if ((flags & VNodeFlags.StatefulComponent) !== 0) {
       instance = vnode._i as Component<any>;
       if (((instance as Component<any>).flags & ComponentFlags.Dirty) !== 0) {
         syncVNode(
           parent,
-          children!,
+          child!,
           vnode._c = DEBUG ?
             shouldBeSingleVNode((instance as Component<any>).render()) :
             /* istanbul ignore next */(instance as Component<any>).render(),
@@ -140,7 +121,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
         (instance as Component<any>).updated();
       } else {
-        dirtyCheck(parent, children!, context, dirtyContext);
+        dirtyCheck(parent, child!, context, dirtyContext);
       }
     } else { // (flags & (VNodeFlags.StatelessComponent | VNodeFlags.Connect | VNodeFlags.UpdateContext))
       if ((flags & VNodeFlags.Connect) !== 0) {
@@ -148,12 +129,12 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
         instance = vnode._i as {};
         const selectData = connect.select(instance, vnode._p, context);
         if (instance === selectData) {
-          dirtyCheck(parent, children!, context, dirtyContext);
+          dirtyCheck(parent, child!, context, dirtyContext);
         } else {
           vnode._i = selectData;
           syncVNode(
             parent,
-            children!,
+            child!,
             vnode._c = DEBUG ?
               shouldBeSingleVNode(connect.render(selectData)) :
               /* istanbul ignore next */connect.render(selectData),
@@ -168,7 +149,7 @@ export function dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext
           }
           context = vnode._i as {};
         }
-        dirtyCheck(parent, children!, context, dirtyContext);
+        dirtyCheck(parent, child!, context, dirtyContext);
       }
     }
   }
@@ -235,6 +216,7 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
             node = nodeCloneNode.call((tag as VNode)._i as Node, false);
           }
         }
+        instance = node;
 
         const className = vnode._cs;
         if (className !== "") {
@@ -260,20 +242,16 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           syncStyle(node as HTMLElement, void 0, vnode._s);
         }
 
-        let children = vnode._c;
-        if (children !== null) {
-          do {
-            /* istanbul ignore else */
-            if (DEBUG) {
-              node.insertBefore(_render(node, children, context), null);
-            } else {
-              nodeInsertBefore.call(node, _render(node, children, context), null);
-            }
-            children = children._r;
-          } while (children !== null);
+        let child = vnode._c;
+        while (child !== null) {
+          /* istanbul ignore else */
+          if (DEBUG) {
+            node.insertBefore(_render(node, child, context), null);
+          } else {
+            nodeInsertBefore.call(node, _render(node, child, context), null);
+          }
+          child = child._r;
         }
-
-        instance = node;
       } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
         const component = instance = new (tag as StatefulComponent<any>)(props);
         const root = vnode._c = DEBUG ?
@@ -306,7 +284,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
   }
 
   vnode._i = instance;
-
   return node;
 }
 
