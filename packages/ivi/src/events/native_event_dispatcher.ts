@@ -5,7 +5,7 @@ import { EventHandler } from "./event_handler";
 import { DispatchTarget } from "./dispatch_target";
 import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
 import { dispatchEvent } from "./dispatch_event";
-import { getEventTarget, getNativeEventOptions } from "./utils";
+import { getEventTarget } from "./utils";
 import { SyntheticNativeEvent } from "./synthetic_native_event";
 
 /**
@@ -34,6 +34,10 @@ export interface NativeEventDispatcher<E extends Event> {
    */
   flags: NativeEventSourceFlags;
   /**
+   * Event handler options.
+   */
+  options: { capture?: boolean, passive?: boolean } | boolean;
+  /**
    * DOM event name.
    */
   readonly name: string;
@@ -45,6 +49,7 @@ export interface NativeEventDispatcher<E extends Event> {
 export function createNativeEventDispatcher<E extends Event>(
   flags: NativeEventSourceFlags,
   name: string,
+  options?: { capture?: boolean, passive?: boolean } | boolean,
 ): NativeEventDispatcher<E> {
   const source: NativeEventDispatcher<E> = {
     src: {
@@ -54,6 +59,7 @@ export function createNativeEventDispatcher<E extends Event>(
     deps: 0,
     listeners: 0,
     flags,
+    options: options === void 0 ? true : options,
     name,
     before: null,
     after: null,
@@ -135,7 +141,7 @@ function incDependencies<E extends Event>(source: NativeEventDispatcher<E>): voi
     document.addEventListener(
       source.name,
       source.dispatch!,
-      getNativeEventOptions(source.flags) as boolean,
+      source.options,
     );
   }
 }
@@ -145,7 +151,7 @@ function decDependencies<E extends Event>(source: NativeEventDispatcher<E>): voi
     document.removeEventListener(
       source.name,
       source.dispatch!,
-      getNativeEventOptions(source.flags) as boolean,
+      source.options,
     );
   }
 }

@@ -9,6 +9,7 @@ import { EventHandler } from "./event_handler";
 import { EventDispatcher } from "./event_dispatcher";
 import { NativeEventDispatcher, createNativeEventDispatcher } from "./native_event_dispatcher";
 import { SyntheticNativeEvent } from "./synthetic_native_event";
+import { EVENT_CAPTURE_ACTIVE_OPTIONS } from "./utils";
 
 /* tslint:disable:max-line-length */
 export const EVENT_DISPATCHER_ABORT = /*#__PURE__*/createNativeEventDispatcher<UIEvent>(NativeEventSourceFlags.Capture, "abort") as NativeEventDispatcher<UIEvent>;
@@ -94,10 +95,10 @@ export const EVENT_DISPATCHER_VOLUME_CHANGE = /*#__PURE__*/createNativeEventDisp
 export const EVENT_DISPATCHER_WAITING = /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture, "waiting");
 export const EVENT_DISPATCHER_WHEEL = /*#__PURE__*/createNativeEventDispatcher<WheelEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "wheel");
 
-export const EVENT_DISPATCHER_ACTIVE_TOUCH_END = /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchend");
-export const EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE = /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchmove");
-export const EVENT_DISPATCHER_ACTIVE_TOUCH_START = /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchstart");
-export const EVENT_DISPATCHER_ACTIVE_WHEEL = /*#__PURE__*/createNativeEventDispatcher<WheelEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "wheel");
+export const EVENT_DISPATCHER_ACTIVE_TOUCH_END = /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchend", EVENT_CAPTURE_ACTIVE_OPTIONS);
+export const EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE = /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchmove", EVENT_CAPTURE_ACTIVE_OPTIONS);
+export const EVENT_DISPATCHER_ACTIVE_TOUCH_START = /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "touchstart", EVENT_CAPTURE_ACTIVE_OPTIONS);
+export const EVENT_DISPATCHER_ACTIVE_WHEEL = /*#__PURE__*/createNativeEventDispatcher<WheelEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "wheel", EVENT_CAPTURE_ACTIVE_OPTIONS);
 
 /**
  * Helper function that creates event handlers.
