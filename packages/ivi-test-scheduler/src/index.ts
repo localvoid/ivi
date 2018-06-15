@@ -1,4 +1,4 @@
-import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete, append } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete } from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -31,42 +31,80 @@ const enum FrameTasksGroupFlags {
 }
 
 /**
- * FrameTasksGroup contains tasks for read and write DOM tasks, and tasks that should be executed after all other tasks
- * are finished.
+ * Task list.
+ */
+interface TaskList {
+  /**
+   * Tasks.
+   */
+  a: Array<() => void>;
+}
+
+/**
+ * createTaskList creates a task list.
+ *
+ * @returns Task list
+ */
+function createTaskList(): TaskList {
+  return { a: [] };
+}
+
+/**
+ * Execute tasks from the task list.
+ *
+ * @param t - Task list
+ */
+function run(t: TaskList) {
+  const tasks = t.a;
+  t.a = [];
+  for (const task of tasks) {
+    task();
+  }
+}
+
+/**
+ * FrameTasksGroup contains tasks for read and write DOM tasks.
  *
  * @final
  */
 interface FrameTasksGroup {
   /**
-   * See `FrameTasksGroupFlags` for details.
+   * See {@link FrameTasksGroupFlags} for details.
    */
-  flags: number;
+  f: number;
   /**
    * Write DOM task queue.
    */
-  write: (() => void)[] | null;
+  w: TaskList;
   /**
    * Read DOM task queue.
    */
-  read: (() => void)[] | null;
+  r: TaskList;
 }
 
+/**
+ * Creates a {@link FrameTasksGroup}.
+ *
+ * @returns {@link FrameTasksGroup}
+ */
 function createFrameTasksGroup(): FrameTasksGroup {
   return {
-    flags: 0,
-    write: null,
-    read: null,
+    f: 0,
+    w: createTaskList(),
+    r: createTaskList(),
   };
 }
 
 let _flags: SchedulerFlags = 0;
 let _clock = 0;
-let _updateDOMHandler: () => void = NOOP;
-let _microtasks: (() => void)[] = [];
-let _tasks: (() => void)[] = [];
-let _visibilityObservers: ((hidden: boolean) => void)[] = [];
+const _microtasks = createTaskList();
+const _tasks = createTaskList();
+
+let _visibilityObservers: Array<(hidden: boolean) => void> = [];
+
 let _beforeUpdate: RepeatableTaskList = [];
 let _afterUpdate: RepeatableTaskList = [];
+let _updateDOMHandler: () => void = NOOP;
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
@@ -75,8 +113,8 @@ let _autofocusedElement: Element | null = null;
 export function resetSchedulerState() {
   _flags = 0;
   _clock = 0;
-  _microtasks = [];
-  _tasks = [];
+  _microtasks.a = [];
+  _tasks.a = [];
   _beforeUpdate = [];
   _afterUpdate = [];
   _currentFrame = createFrameTasksGroup();
@@ -90,8 +128,8 @@ export function toggleVisibility(hidden: boolean): void {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
 
     const observers = _visibilityObservers;
-    for (let i = 0; i < observers.length; ++i) {
-      observers[i](hidden);
+    for (const observer of observers) {
+      observer(hidden);
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
   }
@@ -115,7 +153,7 @@ export function scheduleMicrotask(task: () => void): void {
   if ((_flags & SchedulerFlags.MicrotaskPending) === 0) {
     _flags |= SchedulerFlags.MicrotaskPending;
   }
-  _microtasks.push(task);
+  _microtasks.a.push(task);
 }
 
 /**
@@ -127,7 +165,7 @@ export function scheduleTask(task: () => void): void {
   if ((_flags & SchedulerFlags.TaskPending) === 0) {
     _flags |= SchedulerFlags.TaskPending;
   }
-  _tasks.push(task);
+  _tasks.a.push(task);
 }
 
 export function isHidden(): boolean {
@@ -173,6 +211,11 @@ export function afterUpdate(task: () => boolean | undefined): void {
   _afterUpdate.push(task);
 }
 
+/**
+ * Set autofocused element.
+ *
+ * @param node - DOM node
+ */
 export function autofocus(node: Node): void {
   if (node instanceof Element) {
     _autofocusedElement = node;
@@ -198,17 +241,17 @@ export function requestNextFrame(): void {
 }
 
 function addFrameTaskUpdate(frame: FrameTasksGroup): void {
-  frame.flags |= FrameTasksGroupFlags.Update;
+  frame.f |= FrameTasksGroupFlags.Update;
 }
 
 function addFrameTaskWrite(frame: FrameTasksGroup, task: () => void): void {
-  frame.flags |= FrameTasksGroupFlags.Write;
-  frame.write = append(frame.write, task);
+  frame.f |= FrameTasksGroupFlags.Write;
+  frame.w.a.push(task);
 }
 
 function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
-  frame.flags |= FrameTasksGroupFlags.Read;
-  frame.read = append(frame.read, task);
+  frame.f |= FrameTasksGroupFlags.Read;
+  frame.r.a.push(task);
 }
 
 export function nextFrameUpdate(): void {
@@ -252,12 +295,8 @@ export function currentFrameRead(task: () => void): void {
 
 export function runMicrotasks(): void {
   if ((_flags & SchedulerFlags.MicrotaskPending) !== 0) {
-    while (_microtasks.length > 0) {
-      const tasks = _microtasks;
-      _microtasks = [];
-      for (let i = 0; i < tasks.length; ++i) {
-        tasks[i]();
-      }
+    while (_microtasks.a.length > 0) {
+      run(_microtasks);
     }
 
     _flags ^= SchedulerFlags.MicrotaskPending;
@@ -268,15 +307,14 @@ export function runMicrotasks(): void {
 export function runTasks(): void {
   if ((_flags & SchedulerFlags.TaskPending) !== 0) {
     _flags ^= SchedulerFlags.TaskPending;
-    const tasks = _tasks;
-    _tasks = [];
-    for (let i = 0; i < tasks.length; ++i) {
-      tasks[i]();
-    }
+    run(_tasks);
     ++_clock;
   }
 }
 
+/**
+ * Triggers next tick.
+ */
 export function triggerNextTick(): void {
   runMicrotasks();
   runTasks();
@@ -294,9 +332,6 @@ export function triggerNextFrame(time?: number): void {
         _currentFrameStartTime = time / 1000;
       }
 
-      let tasks: (() => void)[];
-      let i: number;
-
       const frame = _nextFrame;
       _nextFrame = _currentFrame;
       _currentFrame = frame;
@@ -306,36 +341,27 @@ export function triggerNextFrame(time?: number): void {
       // Perform read/write batching. Start with executing read DOM tasks, then update components, execute write DOM
       // tasks and repeat until all read and write tasks are executed.
       do {
-        while ((frame.flags & FrameTasksGroupFlags.Read) !== 0) {
-          frame.flags ^= FrameTasksGroupFlags.Read;
-          tasks = frame.read!;
-          frame.read = null;
-
-          for (i = 0; i < tasks.length; ++i) {
-            tasks[i]();
-          }
+        while (frame.f & FrameTasksGroupFlags.Read) {
+          frame.f ^= FrameTasksGroupFlags.Read;
+          run(frame.r);
         }
 
-        while ((frame.flags & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) !== 0) {
-          if ((frame.flags & FrameTasksGroupFlags.Write) !== 0) {
-            frame.flags ^= FrameTasksGroupFlags.Write;
-            tasks = frame.write!;
-            frame.write = null;
-            for (i = 0; i < tasks.length; ++i) {
-              tasks[i]();
-            }
+        while (frame.f & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
+          if (frame.f & FrameTasksGroupFlags.Write) {
+            frame.f ^= FrameTasksGroupFlags.Write;
+            run(frame.w);
           }
 
-          if ((frame.flags & FrameTasksGroupFlags.Update) !== 0) {
-            frame.flags ^= FrameTasksGroupFlags.Update;
+          if (frame.f & FrameTasksGroupFlags.Update) {
+            frame.f ^= FrameTasksGroupFlags.Update;
             _updateDOMHandler();
           }
         }
-      } while ((frame.flags & (
+      } while (frame.f & (
         FrameTasksGroupFlags.Update |
         FrameTasksGroupFlags.Write |
         FrameTasksGroupFlags.Read
-      )) !== 0);
+      ));
 
       _flags ^= SchedulerFlags.CurrentFrameReady;
 

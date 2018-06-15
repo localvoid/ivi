@@ -30,19 +30,30 @@ const enum FrameTasksGroupFlags {
   Read = 1 << 2,
 }
 
+/**
+ * Task list.
+ */
 interface TaskList {
+  /**
+   * Tasks.
+   */
   a: Array<() => void>;
 }
 
 /**
  * createTaskList creates a task list.
  *
- * @returns Task list.
+ * @returns Task list
  */
 function createTaskList(): TaskList {
   return { a: [] };
 }
 
+/**
+ * Execute tasks from the task list.
+ *
+ * @param t - Task list
+ */
 function run(t: TaskList) {
   const tasks = t.a;
   t.a = [];
@@ -52,14 +63,13 @@ function run(t: TaskList) {
 }
 
 /**
- * FrameTasksGroup contains tasks for read and write DOM tasks, and tasks that should be executed after all other tasks
- * are finished.
+ * FrameTasksGroup contains tasks for read and write DOM tasks.
  *
  * @final
  */
 interface FrameTasksGroup {
   /**
-   * See `FrameTasksGroupFlags` for details.
+   * See {@link FrameTasksGroupFlags} for details.
    */
   f: number;
   /**
@@ -72,6 +82,11 @@ interface FrameTasksGroup {
   r: TaskList;
 }
 
+/**
+ * Creates a {@link FrameTasksGroup}.
+ *
+ * @returns {@link FrameTasksGroup}
+ */
 function createFrameTasksGroup(): FrameTasksGroup {
   return {
     f: 0,
@@ -119,8 +134,8 @@ const handleVisibilityChange = catchError(() => {
     _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
 
     const observers = _visibilityObservers;
-    for (let i = 0; i < observers.length; ++i) {
-      observers[i](newHidden);
+    for (const observer of observers) {
+      observer(newHidden);
     }
     _flags ^= SchedulerFlags.VisibilityObserversCOW;
   }
@@ -222,6 +237,11 @@ export function afterUpdate(task: () => boolean | undefined): void {
   _afterUpdate.push(task);
 }
 
+/**
+ * Set autofocused element.
+ *
+ * @param node - DOM node
+ */
 export function autofocus(node: Node): void {
   if (node instanceof Element) {
     _autofocusedElement = node;
@@ -237,6 +257,9 @@ export function currentFrameStartTime(): number {
   return _currentFrameStartTime;
 }
 
+/**
+ * requestNextFrame triggers next frame tasks execution.
+ */
 function _requestNextFrame(): void {
   if (_flags & SchedulerFlags.NextFramePending) {
     requestAnimationFrame(_handleNextFrame);
