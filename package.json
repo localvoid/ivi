@@ -19,20 +19,19 @@
     }
   },
   "devDependencies": {
-    "@types/jest": "^23.0.0",
-    "@types/node": "^10.3.0",
+    "@types/jest": "^23.1.0",
+    "@types/node": "^10.3.3",
     "codecov": "^3.0.2",
-    "husky": "^1.0.0-rc.8",
+    "husky": "^1.0.0-rc.9",
     "jest": "^23.1.0",
     "routekit-resolver": "^0.4.1",
     "source-map-loader": "^0.2.3",
     "ts-jest": "^22.4.6",
-    "ts-loader": "^4.3.1",
-    "ts-node": "^6.0.5",
+    "ts-loader": "^4.4.1",
     "tslib": "^1.9.2",
     "tslint": "^5.10.0",
-    "typescript": "^2.9.1",
-    "webpack": "^4.10.2",
-    "webpack-cli": "^3.0.1"
+    "typescript": "^2.9.2",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.6"
   }
 }
