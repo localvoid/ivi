@@ -21,7 +21,7 @@ export function accumulateDispatchTargets(
   for (const root of ROOTS) {
     const container = root.container;
     if (container.contains(target)) {
-      visitUp(result, match, target, container, root.currentVNode!);
+      visitUp(result, match, target, container, root.current!);
       break;
     }
   }

@@ -94,13 +94,9 @@ export const enum ComponentFlags {
    * Component has dirty state and should be updated.
    */
   DirtyState = 1 << 1,
-  /**
-   * Component is animated.
-   */
-  Animated = 1 << 2,
 
   /**
    * Component is dirty and should be updated.
    */
-  Dirty = DirtyState | Animated,
+  Dirty = DirtyState,
 }

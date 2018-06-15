@@ -6,8 +6,22 @@ import { VNode } from "./vnode";
  * Stateless Component descriptor.
  */
 export interface StatelessComponent<P = undefined> {
-  render: (props: P) => VNode;
-  shouldUpdate: ((oldProps: P, newProps: P) => boolean) | null;
+  /**
+   * Lifecycle hook `render()` should return virtual DOM representation or the component.
+   *
+   * @param props - Properties
+   * @returns Virtual DOM representation
+   */
+  render(props: P): VNode;
+
+  /**
+   * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.
+   *
+   * @param prev - Previous properties
+   * @param next - Next properties
+   * @returns `true` when changes in props should trigger update
+   */
+  shouldUpdate: ((prev: P, next: P) => boolean) | null;
 }
 
 /**
@@ -112,7 +126,7 @@ export abstract class Component<P = undefined> {
   }
 
   /**
-   * Lifecycle method `render()` should return virtual DOM representation.
+   * Lifecycle method `render()` should return virtual DOM representation of the component.
    *
    * @returns Virtual DOM representation
    */
@@ -124,9 +138,7 @@ export abstract class Component<P = undefined> {
   invalidate(): void {
     this.flags |= ComponentFlags.DirtyState;
     this.invalidated();
-    if ((this.flags & ComponentFlags.Detached) === 0) {
-      currentFrameUpdate();
-    }
+    currentFrameUpdate();
   }
 }
 

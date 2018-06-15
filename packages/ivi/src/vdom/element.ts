@@ -3,13 +3,11 @@ import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 
 /**
- * `element()` creates a virtual DOM node factory that produces elements with predefined attributes.
+ * `element()` creates a virtual DOM node factory that produces elements with predefined attributes and styles.
  *
  * @example
  *
- *     const DivWithIdAttribute = element(
- *       div("", { id: "predefined-id" });
- *     );
+ *     const DivWithIdAttribute = element(div("", { id: "predefined-id" }));
  *
  *     render(
  *       DivWithIdAttribute(),
