@@ -1,11 +1,10 @@
-import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, NOOP } from "ivi-core";
 
 /**
  * Scheduler flags.
  */
 const enum SchedulerFlags {
   Hidden = 1,
-  VisibilityObserversCOW = 1 << 1,
   MicrotaskPending = 1 << 2,
   TaskPending = 1 << 3,
   NextFramePending = 1 << 4,
@@ -100,8 +99,6 @@ let _clock = 0;
 const _microtasks = createTaskList();
 const _tasks = createTaskList();
 
-let _visibilityObservers: Array<(hidden: boolean) => void> = [];
-
 let _beforeUpdate: RepeatableTaskList = [];
 let _afterUpdate: RepeatableTaskList = [];
 let _updateDOMHandler: () => void = NOOP;
@@ -121,18 +118,6 @@ export function resetSchedulerState() {
   _nextFrame = createFrameTasksGroup();
   _currentFrameStartTime = 0;
   _autofocusedElement = null;
-}
-
-export function toggleVisibility(hidden: boolean): void {
-  if (((_flags & SchedulerFlags.Hidden) !== 0) !== hidden) {
-    _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
-
-    const observers = _visibilityObservers;
-    for (const observer of observers) {
-      observer(hidden);
-    }
-    _flags ^= SchedulerFlags.VisibilityObserversCOW;
-  }
 }
 
 /**
@@ -170,23 +155,6 @@ export function scheduleTask(task: () => void): void {
 
 export function isHidden(): boolean {
   return (_flags & SchedulerFlags.Hidden) !== 0;
-}
-
-export function addVisibilityObserver(observer: (visible: boolean) => void): void {
-  if ((_flags & SchedulerFlags.VisibilityObserversCOW) !== 0) {
-    _visibilityObservers = _visibilityObservers.slice();
-  }
-  _visibilityObservers.push(observer);
-}
-
-export function removeVisibilityObserver(observer: (visible: boolean) => void): void {
-  if ((_flags & SchedulerFlags.VisibilityObserversCOW) !== 0) {
-    _visibilityObservers = _visibilityObservers.slice();
-  }
-  const index = _visibilityObservers.indexOf(observer);
-  if (index > -1) {
-    unorderedArrayDelete(_visibilityObservers, index);
-  }
 }
 
 export function setUpdateDOMHandler(handler: () => void): void {

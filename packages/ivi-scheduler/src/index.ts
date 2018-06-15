@@ -1,15 +1,14 @@
-import { RepeatableTaskList, runRepeatableTasks, NOOP, unorderedArrayDelete, catchError } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, NOOP, catchError } from "ivi-core";
 
 /**
  * Scheduler flags.
  */
 const enum SchedulerFlags {
   Hidden = 1,
-  VisibilityObserversCOW = 1 << 1,
-  MicrotaskPending = 1 << 2,
-  TaskPending = 1 << 3,
-  NextFramePending = 1 << 4,
-  CurrentFrameReady = 1 << 5,
+  MicrotaskPending = 1 << 1,
+  TaskPending = 1 << 2,
+  NextFramePending = 1 << 3,
+  CurrentFrameReady = 1 << 4,
 }
 
 /**
@@ -100,9 +99,6 @@ let _clock = 0;
 const _microtasks = createTaskList();
 const _tasks = createTaskList();
 
-let _visibilityObservers: Array<(hidden: boolean) => void> = [];
-let _isHidden: () => boolean;
-
 const _beforeUpdate: RepeatableTaskList = [];
 const _afterUpdate: RepeatableTaskList = [];
 let _updateDOMHandler: () => void = NOOP;
@@ -121,43 +117,15 @@ const runMicrotasks = catchError(() => {
 });
 
 // Task scheduler based on MessageChannel
-const _taskChannel = new MessageChannel();
-_taskChannel.port1.onmessage = catchError((ev: MessageEvent) => {
-  _flags ^= SchedulerFlags.TaskPending;
-  run(_tasks);
-  ++_clock;
-});
-
-const handleVisibilityChange = catchError(() => {
-  const newHidden = _isHidden();
-  if (((_flags & SchedulerFlags.Hidden) !== 0) !== newHidden) {
-    _flags ^= SchedulerFlags.Hidden | SchedulerFlags.VisibilityObserversCOW;
-
-    const observers = _visibilityObservers;
-    for (const observer of observers) {
-      observer(newHidden);
-    }
-    _flags ^= SchedulerFlags.VisibilityObserversCOW;
-  }
-});
-
-if (TARGET !== "browser" || typeof document["hidden"] !== "undefined") {
-  _isHidden = () => document.hidden;
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-} else if (typeof (document as any)["webkitHidden"] !== "undefined") {
-  /**
-   * #quirks
-   *
-   * Android 4.4
-   */
-  _isHidden = () => (document as any)["webkitHidden"];
-  document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
-} else {
-  _isHidden = () => false;
-}
-if (_isHidden()) {
-  _flags |= SchedulerFlags.Hidden;
-}
+const _taskChannel = /* #__PURE__ */(() => {
+  const c = new MessageChannel();
+  c.port1.onmessage = catchError((ev: MessageEvent) => {
+    _flags ^= SchedulerFlags.TaskPending;
+    run(_tasks);
+    ++_clock;
+  });
+  return c;
+})();
 
 /**
  * clock returns monotonically increasing clock value.
@@ -196,23 +164,6 @@ export function scheduleTask(task: () => void): void {
 
 export function isHidden(): boolean {
   return (_flags & SchedulerFlags.Hidden) !== 0;
-}
-
-export function addVisibilityObserver(observer: (visible: boolean) => void): void {
-  if (_flags & SchedulerFlags.VisibilityObserversCOW) {
-    _visibilityObservers = _visibilityObservers.slice();
-  }
-  _visibilityObservers.push(observer);
-}
-
-export function removeVisibilityObserver(observer: (visible: boolean) => void): void {
-  if (_flags & SchedulerFlags.VisibilityObserversCOW) {
-    _visibilityObservers = _visibilityObservers.slice();
-  }
-  const index = _visibilityObservers.indexOf(observer);
-  if (index > -1) {
-    unorderedArrayDelete(_visibilityObservers, index);
-  }
 }
 
 export function setUpdateDOMHandler(handler: () => void): void {
