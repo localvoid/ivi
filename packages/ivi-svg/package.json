@@ -1,6 +1,6 @@
 {
   "name": "ivi-svg",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "es2016": "dist/es2016/index.js",
@@ -25,12 +25,12 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.13.0",
-    "ivi": "^0.13.0"
+    "ivi-core": "^0.14.0",
+    "ivi": "^0.14.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.13.0",
-    "ivi": "^0.13.0"
+    "ivi-core": "^0.14.0",
+    "ivi": "^0.14.0"
   },
   "description": "Virtual DOM factories for SVG elements",
   "license": "MIT",

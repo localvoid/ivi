@@ -1,3 +1,103 @@
+<a name="0.14.0"></a>
+# [0.14.0](https://github.com/localvoid/ivi/compare/0.13.0...0.14.0) (2018-06-16)
+
+
+### Bug Fixes
+
+* **events:** fix incorrect imports `ivi-events` => `events` ([368c387](https://github.com/localvoid/ivi/commit/368c387))
+* **gestures:** fixes browser quirk with TouchMove events ([9fedf9e](https://github.com/localvoid/ivi/commit/9fedf9e))
+* **test:** fix rendering attrs to snapshot (syncable values) ([9f1de27](https://github.com/localvoid/ivi/commit/9f1de27))
+* **types:** support number types for css property "bottom" ([4ff9486](https://github.com/localvoid/ivi/commit/4ff9486))
+* **vdom:** remove obsoleted checks in DEBUG mode ([4274d57](https://github.com/localvoid/ivi/commit/4274d57))
+
+
+### Code Refactoring
+
+* **vdom:** rename `newPropsReceived()` to `propsChanged()` ([6434f5a](https://github.com/localvoid/ivi/commit/6434f5a))
+
+
+### Features
+
+* **core:** add underscore `_` as an alias to `undefined` ([35834f4](https://github.com/localvoid/ivi/commit/35834f4))
+* **debug:** add DEBUG pubsub to expose internal state ([466aba2](https://github.com/localvoid/ivi/commit/466aba2))
+* **gestures:** add multitouch transform gesture recognizer ([28991fe](https://github.com/localvoid/ivi/commit/28991fe))
+* **gestures:** change gesture recognizers lifecycle ([af2b86a](https://github.com/localvoid/ivi/commit/af2b86a))
+* **gestures:** fix bugs, add more gesture recognizers ([a63b27f](https://github.com/localvoid/ivi/commit/a63b27f))
+* **gestures:** fully working gesture events prototype ([b310dcf](https://github.com/localvoid/ivi/commit/b310dcf))
+* **scheduler:** add `beforeUpdate` / `afterUpdate` repeatable tasks ([f599405](https://github.com/localvoid/ivi/commit/f599405))
+* **scheduler:** remove frame task queue `after` ([d3c4f72](https://github.com/localvoid/ivi/commit/d3c4f72))
+* **scheduler:** remove visibility observers ([d816fda](https://github.com/localvoid/ivi/commit/d816fda))
+* **types:** add types for specialized properties in attribute lists ([69cc9a2](https://github.com/localvoid/ivi/commit/69cc9a2))
+* **vdom:** add `mapIterable()` to support iterable objects ([c09c5cb](https://github.com/localvoid/ivi/commit/c09c5cb))
+* improve dev mode checks ([4e7db28](https://github.com/localvoid/ivi/commit/4e7db28))
+* **vdom:** add universal syncable value `PROPERTY()` ([111c309](https://github.com/localvoid/ivi/commit/111c309))
+* **vdom:** don't trigger `updated()` for all parents ([5c75401](https://github.com/localvoid/ivi/commit/5c75401))
+* **vdom:** new attribute syncing algorithm ([564957d](https://github.com/localvoid/ivi/commit/564957d))
+* **vdom:** remove support for null nodes returned from `mapIterable()` ([e3c88a5](https://github.com/localvoid/ivi/commit/e3c88a5))
+* **vdom:** rename instance getters ([bbcf255](https://github.com/localvoid/ivi/commit/bbcf255))
+* **vdom:** replace VNode methods `a()` and `s()` with factory args ([4f00a52](https://github.com/localvoid/ivi/commit/4f00a52))
+* remove factories for obsolete elements, improve types for attrs ([c2b9173](https://github.com/localvoid/ivi/commit/c2b9173))
+* rename INPUT_VALUE() and INPUT_CHECKED() to VALUE() and CHECKED() ([943a414](https://github.com/localvoid/ivi/commit/943a414))
+
+
+### Performance Improvements
+
+* **events:** improve event dispatcher algorithm ([352287a](https://github.com/localvoid/ivi/commit/352287a))
+
+
+### BREAKING CHANGES
+
+* **vdom:** `getDOMInstanceFromVNode()` and `getComponentInstanceFromVNode()` were renamed to `getDOMNode()` and
+`getComponent()`
+* **vdom:** `VNode` methods `value()` and `unsafeHTML()` were removed.
+
+Before:
+
+```ts
+input("", { type: "checked" }).value(true);
+use("", { "xlink:href": "sprite.svg#a" });
+div().unsafeHTML("abc");
+```
+
+After:
+
+```ts
+input("", { type: "checked", checked: INPUT_CHECKED(true) });
+use("", { "xlink:href": XLINK_ATTR("sprite.svg#a") });
+div("", { innerHTML: "abc" });
+```
+
+* **scheduler:** `currentFrameAfter()` and `nextFrameAfter()` functions were removed.
+* **scheduler:** DOM reader and animation tasks were replaced with `beforeUpdate()` and `afterUpdate()` task lists.
+* **vdom:** Component lifecycle method `newPropsReceived()` renamed to `propsChanged()`.
+* **vdom:** VNode methods `a()` and `s()` were replaced with optional arguments for all element factory functions.
+
+Before:
+
+```ts
+div("className").a({ id: "ID" }).s({ color: "red" });
+```
+
+After:
+
+```ts
+div("className", { id: "ID" }, { color: "red" });
+```
+
+* **vdom:** `updated()` lifecycle is now triggered only for components that were updated. Parent components won't be
+receiving any information that their children were updated.
+
+Initially it was implemented to solve use cases with jumping scroll
+positions when children layout is modified. But there is a better way,
+scheduler allows to register repeatable tasks that will be invoked
+before any rendering to read from the DOM, and after all rendering is
+done, this hooks solve this use case perfectly. And since I don't know
+about any use cases that would require such behavior, it would be better
+to reduce API surface. All major frameworks doesn't support such
+behavior.
+
+
+
 <a name="0.13.0"></a>
 # [0.13.0](https://github.com/localvoid/ivi/compare/0.12.0...0.13.0) (2018-05-29)
 

@@ -24,14 +24,14 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.13.0",
+    "ivi-core": "^0.14.0",
     "ivi-math": "^0.0.1",
-    "ivi-scheduler": "^0.13.0"
+    "ivi-scheduler": "^0.14.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.13.0",
+    "ivi-core": "^0.14.0",
     "ivi-math": "^0.0.1",
-    "ivi-scheduler": "^0.13.0"
+    "ivi-scheduler": "^0.14.0"
   },
   "description": "Gesture and DnD events for ivi library",
   "license": "MIT",
