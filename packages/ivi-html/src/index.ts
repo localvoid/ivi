@@ -143,34 +143,29 @@ const enum TagId {
 }
 
 /**
- * {@link SyncableValue} with `""` value and {@link syncInputValue} sync function.
+ * {@link SyncableValue} with `""` value and {@link syncValue} sync function.
  */
-const INPUT_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncInputValue };
+const VALUE_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncValue };
 
 /**
- * {@link SyncableValue} with `""` value and {@link syncTextAreaValue} sync function.
+ * {@link SyncableValue} with `false` value and {@link syncChecked} sync function.
  */
-const TEXTAREA_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncTextAreaValue };
+const CHECKED_FALSE: SyncableValue<boolean> = { v: false, s: syncChecked };
 
 /**
- * {@link SyncableValue} with `false` value and {@link syncInputChecked} sync function.
+ * {@link SyncableValue} with `true` value and {@link syncChecked} sync function.
  */
-const INPUT_CHECKED_FALSE: SyncableValue<boolean> = { v: false, s: syncInputChecked };
+const CHECKED_TRUE: SyncableValue<boolean> = { v: true, s: syncChecked };
 
 /**
- * {@link SyncableValue} with `true` value and {@link syncInputChecked} sync function.
- */
-const INPUT_CHECKED_TRUE: SyncableValue<boolean> = { v: true, s: syncInputChecked };
-
-/**
- * Synchronization function for {@link SyncableValue} created with {@link INPUT_VALUE} function.
+ * Synchronization function for {@link SyncableValue} created with {@link VALUE} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncInputValue(
+function syncValue(
   element: Element,
   key: string,
   prev: string | number | undefined,
@@ -178,49 +173,24 @@ function syncInputValue(
 ) {
   if (prev === void 0) {
     if (next !== "") {
-      (element as HTMLInputElement).value = next as string;
+      (element as HTMLInputElement | HTMLTextAreaElement).value = next as string;
     }
   } else {
-    if ((element as HTMLInputElement).value !== next) {
-      (element as HTMLInputElement).value = next as string;
+    if ((element as HTMLInputElement | HTMLTextAreaElement).value !== next) {
+      (element as HTMLInputElement | HTMLTextAreaElement).value = next as string;
     }
   }
 }
 
 /**
- * Synchronization function for {@link SyncableValue} created with {@link TEXTAREA_VALUE} function.
+ * Synchronization function for {@link SyncableValue} created with {@link CHECKED} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncTextAreaValue(
-  element: Element,
-  key: string,
-  prev: string | number | undefined,
-  next: string | number | undefined,
-) {
-  if (prev === void 0) {
-    if (next !== "") {
-      (element as HTMLTextAreaElement).value = next as string;
-    }
-  } else {
-    if ((element as HTMLTextAreaElement).value !== next) {
-      (element as HTMLTextAreaElement).value = next as string;
-    }
-  }
-}
-
-/**
- * Synchronization function for {@link SyncableValue} created with {@link INPUT_CHECKED} function.
- *
- * @param element - Target element
- * @param key - Attribute key
- * @param prev - Previous value
- * @param next - Next value
- */
-function syncInputChecked(
+function syncChecked(
   element: Element,
   key: string,
   prev: boolean | undefined,
@@ -238,55 +208,42 @@ function syncInputChecked(
 }
 
 /**
- * INPUT_VALUE function creates a {@link SyncableValue} that assigns a `value` property to an HTMLInputElement.
+ * VALUE function creates a {@link SyncableValue} that assigns a `value` property to an HTMLInputElement or
+ * HTMLTextAreaElement.
  *
  * `undefined` values are ignored.
  *
  * @example
  *
- *   const e = input("", { value: INPUT_VALUE("value") });
+ *   const e = input("", { value: VALUE("value") });
  *
- * @param v - Input value
+ * @param v - Value
  * @returns {@link SyncableValue}
  */
-export function INPUT_VALUE(v: string | number | undefined): SyncableValue<string | number> {
-  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
-    v === "" ? INPUT_EMPTY_STRING : { v, s: syncInputValue };
+export function VALUE(v: string | number | undefined): SyncableValue<string | number> {
+  return (v === void 0) ?
+    SYNCABLE_VALUE_SKIP_UNDEFINED :
+    v === "" ?
+      VALUE_EMPTY_STRING :
+      { v, s: syncValue };
 }
 
 /**
- * INPUT_CHECKED function creates a {@link SyncableValue} that assigns a `checked` property to an HTMLInputElement.
+ * CHECKED function creates a {@link SyncableValue} that assigns a `checked` property to an HTMLInputElement.
  *
  * `undefined` values are ignored.
  *
  * @example
  *
- *   const e = input("", { checked: INPUT_CHECKED(true) });
+ *   const e = input("", { checked: CHECKED(true) });
  *
- * @param v - Input checked value
+ * @param v - Checked value
  * @returns {@link SyncableValue}
  */
-export function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean> {
+export function CHECKED(v: boolean | undefined): SyncableValue<boolean> {
   return (v === void 0) ?
     SYNCABLE_VALUE_SKIP_UNDEFINED as any as SyncableValue<boolean> :
-    v ? INPUT_CHECKED_TRUE : INPUT_CHECKED_FALSE;
-}
-
-/**
- * TEXTAREA_VALUE function creates a {@link SyncableValue} that assigns a `value` property to an HTMLTextAreaElement.
- *
- * `undefined` values are ignored.
- *
- * @example
- *
- *   const e = textarea("", { value: TEXTAREA_VALUE("value") });
- *
- * @param v - Text area value
- * @returns {@link SyncableValue}
- */
-export function TEXTAREA_VALUE(v: string | number | undefined): SyncableValue<string | number> {
-  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED :
-    v === "" ? TEXTAREA_EMPTY_STRING : { v, s: syncTextAreaValue };
+    v ? CHECKED_TRUE : CHECKED_FALSE;
 }
 
 /**

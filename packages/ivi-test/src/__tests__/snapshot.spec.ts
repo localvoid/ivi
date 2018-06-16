@@ -125,7 +125,7 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<input value='abc'>", () => {
-      expect(render(h.input("", { value: h.INPUT_VALUE("abc") })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.input("", { value: h.VALUE("abc") })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<input type='checkbox'>", () => {
@@ -133,7 +133,7 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<input type='checkbox' checked='true'>", () => {
-      expect(render(h.input("", { type: "checkbox", checked: h.INPUT_CHECKED(true) })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.input("", { type: "checkbox", checked: h.CHECKED(true) })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<textarea>", () => {
@@ -141,7 +141,7 @@ describe("src/snapshot.ts", () => {
     });
 
     test("<textarea>abc</textarea>", () => {
-      expect(render(h.textarea("", { value: h.TEXTAREA_VALUE("abc") })).toSnapshot()).toMatchSnapshot();
+      expect(render(h.textarea("", { value: h.VALUE("abc") })).toSnapshot()).toMatchSnapshot();
     });
 
     test("<audio>", () => {

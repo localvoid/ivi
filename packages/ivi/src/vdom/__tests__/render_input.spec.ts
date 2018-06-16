@@ -12,7 +12,7 @@ test(`<input>`, () => {
 
 test(`<input value="abc">`, () => {
   startRender<HTMLInputElement>((r) => {
-    const n = r(h.input("", { value: h.INPUT_VALUE("abc") }));
+    const n = r(h.input("", { value: h.VALUE("abc") }));
 
     expect(n.value).toBe("abc");
   });
@@ -29,7 +29,7 @@ test(`<input type="checkbox">`, () => {
 
 test(`<input type="checkbox" checked="false">`, () => {
   startRender<HTMLInputElement>((r) => {
-    const n = r(h.input("", { type: "checkbox", checked: h.INPUT_CHECKED(false) }));
+    const n = r(h.input("", { type: "checkbox", checked: h.CHECKED(false) }));
 
     expect(n.checked).toBe(false);
   });
@@ -37,7 +37,7 @@ test(`<input type="checkbox" checked="false">`, () => {
 
 test(`<input type="checkbox" checked="true">`, () => {
   startRender<HTMLInputElement>((r) => {
-    const n = r(h.input("", { type: "checkbox", checked: h.INPUT_CHECKED(true) }));
+    const n = r(h.input("", { type: "checkbox", checked: h.CHECKED(true) }));
 
     expect(n.checked).toBe(true);
   });

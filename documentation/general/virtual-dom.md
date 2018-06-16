@@ -143,9 +143,8 @@ function PROPERTY<T>(v: T | undefined): SyncableValue<T>;
 function UNSAFE_HTML(v: string | undefined): SyncableValue<string>;
 
 // ivi-html
-function INPUT_VALUE(v: string | number | undefined): SyncableValue<string | number>;
-function INPUT_CHECKED(v: boolean | undefined): SyncableValue<boolean>;
-function TEXTAREA_VALUE(v: string | number | undefined): SyncableValue<string | number>;
+function VALUE(v: string | number | undefined): SyncableValue<string | number>;
+function CHECKED(v: boolean | undefined): SyncableValue<boolean>;
 
 // ivi-svg
 function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
@@ -157,11 +156,9 @@ of the attribute.
 
 `UNSAFE_HTML()` function creates a SyncableValue that assigns an `innerHTML` property to an Element.
 
-`INPUT_VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLInputElement.
+`VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLInputElement or HTMLTextAreaElement.
 
-`INPUT_CHECKED()` function creates a SyncableValue that assigns a `checked` property to an HTMLInputElement.
-
-`TEXTAREA_VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLTextAreaElement.
+`CHECKED()` function creates a SyncableValue that assigns a `checked` property to an HTMLInputElement.
 
 `XML_ATTR()` function creates a SyncableValue that assigns an attribute from XML namespace, attribute name is
 derived from the `key`.
@@ -172,7 +169,9 @@ is derived from the `key`.
 ### Example
 
 ```ts
-const e = input("", { type: "checked": INPUT_CHECKED(true) })
+import { input, CHECKED } from "ivi-html";
+
+const e = input("", { type: "checked": CHECKED(true) })
 ```
 
 ## Additional functions

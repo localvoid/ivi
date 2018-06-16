@@ -14,9 +14,9 @@ export interface SyncableValue<P> {
 #### Example
 
 ```ts
-import { input, INPUT_CHECKED } from "ivi-html";
+import { input, CHECKED } from "ivi-html";
 
-const e = input("", { type: "checked", checked: INPUT_CHECKED(true) });
+const e = input("", { type: "checked", checked: CHECKED(true) });
 ```
 
 In this example we are using special syncable value created with `INPUT_CHECKED()` function that will assign a checked
