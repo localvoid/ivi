@@ -338,7 +338,7 @@ function touchToGesturePointerEvent(
   hitTarget: Element | null,
 ) {
   return new GesturePointerEvent(
-    SyntheticEventFlags.Bubbles,
+    0,
     ev.timeStamp,
     touch.identifier + TOUCH_ID_OFFSET,
     action,

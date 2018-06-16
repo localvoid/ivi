@@ -46,6 +46,14 @@ export interface NativeEventDispatcher<E extends Event> {
   dispatch: (() => void) | null;
 }
 
+/**
+ * Creates a native event dispatcher.
+ *
+ * @param flags - See {@link NativeEventSourceFlags} for details.
+ * @param name - Event name
+ * @param options - Event handler options
+ * @returns {@link NativeEventDispatcher} instance
+ */
 export function createNativeEventDispatcher<E extends Event>(
   flags: NativeEventSourceFlags,
   name: string,
@@ -160,7 +168,7 @@ function dispatchToListeners<E extends Event>(
   listeners: Array<(ev: SyntheticNativeEvent<E>) => void> | null,
   ev: SyntheticNativeEvent<E>,
 ): void {
-  if (listeners !== null) {
+  if (listeners) {
     const cbs = listeners.slice();
     for (const cb of cbs) {
       cb(ev);

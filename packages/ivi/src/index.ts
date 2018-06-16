@@ -22,7 +22,7 @@ export {
   EventHandlerFlags, SyntheticEventFlags, EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION, NativeEventSourceFlags,
 } from "./events/flags";
 export {
-  getEventTarget, getNativeEventOptions,
+  getEventTarget,
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./events/utils";
 export { SyntheticEvent } from "./events/synthetic_event";

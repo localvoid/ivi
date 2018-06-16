@@ -30,24 +30,6 @@ export const enum SyntheticEventFlags {
    * Propagation is stopped.
    */
   StoppedPropagation = 1 << 1,
-
-  /**
-   * Event can bubble up through the DOM.
-   */
-  Bubbles = 1 << 2,
-  /**
-   * Event is cancelable.
-   */
-  Cancelable = 1 << 3,
-  /**
-   * Event was initiated by the browser.
-   */
-  IsTrusted = 1 << 4,
-
-  /**
-   * Event at bubbling phase.
-   */
-  BubblePhase = 1 << 5,
 }
 
 export const enum EventFlags {

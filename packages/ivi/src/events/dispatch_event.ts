@@ -23,11 +23,11 @@ export function dispatchEvent(
   bubble: boolean,
   dispatch?: (h: EventHandler, ev: SyntheticEvent) => EventFlags | void,
 ): void {
-  let i = targets.length - 1;
+  let i = targets.length;
 
   // capture phase
-  while (i >= 0) {
-    dispatchEventToLocalEventHandlers(targets[i--], event, EventHandlerFlags.Capture, dispatch);
+  while (--i >= 0) {
+    dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Capture, dispatch);
     if (event.flags & SyntheticEventFlags.StoppedPropagation) {
       return;
     }
@@ -35,8 +35,7 @@ export function dispatchEvent(
 
   // bubble phase
   if (bubble) {
-    event.flags |= SyntheticEventFlags.BubblePhase;
-    for (i = 0; i < targets.length; ++i) {
+    while (++i < targets.length) {
       dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Bubble, dispatch);
       if (event.flags & SyntheticEventFlags.StoppedPropagation) {
         return;
@@ -62,7 +61,7 @@ function dispatchEventToLocalEventHandlers(
   const handlers = target.handlers;
   let flags: EventFlags = 0;
 
-  if (Array.isArray(handlers)) {
+  if (handlers instanceof Array) {
     for (const handler of handlers) {
       if (handler.flags & matchFlags) {
         flags |= _dispatch(handler, dispatch, event);

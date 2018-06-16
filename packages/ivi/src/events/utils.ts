@@ -1,15 +1,4 @@
 import { PASSIVE_EVENTS } from "ivi-core";
-import { NativeEventSourceFlags } from "./flags";
-import { EventHandler } from "./event_handler";
-
-/**
- * Extends Element interface with a special property that is used to assign synthetic event handlers list.
- */
-declare global {
-  interface Element {
-    _ev: Array<EventHandler | null> | EventHandler | null | undefined;
-  }
-}
 
 /* istanbul ignore next */
 /**
@@ -73,28 +62,3 @@ export const EVENT_PASSIVE_OPTIONS = PASSIVE_EVENTS ? { "passive": true } : fals
  * `{ passive: false }` object that should be used as a 3rd parameter for `addEventListener` method.
  */
 export const EVENT_ACTIVE_OPTIONS = PASSIVE_EVENTS ? { "passive": false } : false;
-
-/* istanbul ignore next */
-/**
- * getNativeEventOptions converts `NativeEventSourceFlags` to event options that can be used as a 3rd parameter
- * for `addEventListener` method.
- *
- * #quirks
- *
- * @param flags See `NativeEventSourceFlags` for details.
- * @returns Option object that can be used as a 3rd parameter for `addEventListener` method.
- */
-export function getNativeEventOptions(
-  flags: NativeEventSourceFlags,
-): boolean | { capture?: boolean, passive?: boolean } {
-  if (flags & NativeEventSourceFlags.Passive) {
-    if (flags & NativeEventSourceFlags.Capture) {
-      return EVENT_CAPTURE_PASSIVE_OPTIONS;
-    }
-    return EVENT_PASSIVE_OPTIONS;
-  }
-  if (flags & NativeEventSourceFlags.Capture) {
-    return EVENT_CAPTURE_ACTIVE_OPTIONS;
-  }
-  return EVENT_ACTIVE_OPTIONS;
-}

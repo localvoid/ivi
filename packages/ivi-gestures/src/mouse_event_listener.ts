@@ -1,6 +1,6 @@
 import { TOUCH_EVENTS, INPUT_DEVICE_CAPABILITIES, MOUSE_EVENT_BUTTONS, getMouseButtons } from "ivi-core";
 import {
-  SyntheticEventFlags, SyntheticNativeEvent,
+  SyntheticNativeEvent,
   EVENT_DISPATCHER_MOUSE_DOWN, EVENT_DISPATCHER_MOUSE_UP, EVENT_DISPATCHER_MOUSE_MOVE,
   beforeNativeEvent, removeBeforeNativeEvent,
 } from "ivi";
@@ -168,7 +168,7 @@ function createGesturePointerEventFromMouseEvent(
   buttons: number,
 ) {
   return new GesturePointerEvent(
-    SyntheticEventFlags.Bubbles,
+    0,
     ev.timeStamp,
     // the mouse always has a pointerId of 1
     1,

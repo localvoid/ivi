@@ -38,7 +38,7 @@ function visitUp(
   if (parent !== root) {
     vnode = visitUp(result, match, parent, root, vnode);
 
-    let child = vnode._c as VNode | null;
+    let child = vnode._c;
     while (child !== null) {
       const r = visitDown(result, match, element, child);
       if (r) {
@@ -59,7 +59,7 @@ function visitDown(
 ): VNode | null {
   const flags = vnode._f;
   let r;
-  if (flags & (VNodeFlags.Element | VNodeFlags.ElementFactory)) {
+  if (flags & VNodeFlags.Element) {
     if (vnode._i === element) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);
       return vnode;
@@ -70,7 +70,7 @@ function visitDown(
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) {
-    r = visitDown(result, match, element, vnode._c as VNode);
+    r = visitDown(result, match, element, vnode._c!);
     if (r) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);
       return r;
