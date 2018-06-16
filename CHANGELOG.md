@@ -62,9 +62,9 @@ div().unsafeHTML("abc");
 After:
 
 ```ts
-input("", { type: "checked", checked: INPUT_CHECKED(true) });
+input("", { type: "checked", checked: CHECKED(true) });
 use("", { "xlink:href": XLINK_ATTR("sprite.svg#a") });
-div("", { innerHTML: "abc" });
+div("", { unsafeHTML: UNSAFE_HTML("abc") });
 ```
 
 * **scheduler:** `currentFrameAfter()` and `nextFrameAfter()` functions were removed.
