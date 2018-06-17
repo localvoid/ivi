@@ -108,3 +108,42 @@ function syncUnsafeHTML(element: Element, key: string, prev: string | undefined,
     element.innerHTML = next!;
   }
 }
+
+/**
+ * EVENT function creates a {@link SyncableValue} that assigns a native event handler derived from the `key` attribute
+ * to an Element.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = div("", { click: EVENT((ev) => { console.log(ev) }); });
+ *
+ * @param v - Event handler
+ * @returns {@link SyncableValue}
+ */
+export function EVENT(v: (ev: Event) => void): SyncableValue<(ev: Event) => void> {
+  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED : { v, s: syncEvent };
+}
+
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link EVENT} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
+function syncEvent(
+  element: Element,
+  key: string,
+  prev: (ev: Event) => void | undefined,
+  next: (ev: Event) => void | undefined,
+) {
+  if (prev !== next) {
+    if (prev !== void 0) {
+      element.removeEventListener(key, prev);
+    }
+    element.addEventListener(key, next);
+  }
+}

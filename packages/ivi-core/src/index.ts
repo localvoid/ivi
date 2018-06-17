@@ -30,7 +30,7 @@ export {
 export {
   SyncableValue,
   SYNCABLE_VALUE_SKIP_UNDEFINED, SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED,
-  PROPERTY, UNSAFE_HTML,
+  PROPERTY, UNSAFE_HTML, EVENT,
 } from "./syncable_value";
 
 export { SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE, KeyCode, KeyLocation, KeyName, MouseButtons } from "./const";
