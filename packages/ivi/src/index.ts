@@ -16,7 +16,7 @@ export {
 export { fragment, map, mapRange, mapIterable } from "./vdom/vnode_collections";
 export { element } from "./vdom/element";
 export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/vnode_factories";
-export { render, renderNextFrame, update, updateNextFrame } from "./vdom/root";
+export { invalidate, dirtyCheck, render } from "./vdom/root";
 
 // Events
 export {

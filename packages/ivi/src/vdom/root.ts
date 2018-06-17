@@ -1,7 +1,6 @@
 import { IOS_GESTURE_EVENT, NOOP, unorderedArrayDelete } from "ivi-core";
-import { setUpdateDOMHandler, nextFrameWrite, triggerNextFrame } from "ivi-scheduler";
 import { VNode } from "./vnode";
-import { renderVNode, syncVNode, removeVNode, dirtyCheck } from "./implementation";
+import { _render, _sync, _remove, _dirtyCheck } from "./implementation";
 import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
 
 /**
@@ -28,13 +27,6 @@ export interface Root {
 export const ROOTS = [] as Root[];
 
 /**
- * Empty Context object.
- */
-const EMPTY_CONTEXT = {};
-
-let _pendingUpdate = 0;
-
-/**
  * Find Root node in container.
  *
  * @param container - DOM Node that contains root node
@@ -48,13 +40,36 @@ export function findRoot(container: Element): Root | void {
   }
 }
 
+let _invalidate = dirtyCheck;
+
+export function setupScheduler(invalidateFn: () => void) {
+  _invalidate = invalidateFn;
+}
+
+export function invalidate(): void {
+  _invalidate();
+}
+
 /**
- * Update root nodes.
+ * Empty Context object.
  */
-function _update() {
-  if (_pendingUpdate) {
-    _pendingUpdate = 0;
-    setUpdateDOMHandler(update);
+const EMPTY_CONTEXT = {};
+
+/**
+ * Dirty flags:
+ *
+ * 1 << 0 - Running dirty check
+ * 1 << 1 - Pending dirty check
+ */
+let _dirty = 0;
+
+/**
+ * Performs a dirty checking.
+ */
+export function dirtyCheck() {
+  _dirty |= 2;
+  while (_dirty === 2) {
+    _dirty >>= 1;
     for (let i = 0; i < ROOTS.length; ++i) {
       const root = ROOTS[i];
       const container = root.container;
@@ -64,9 +79,9 @@ function _update() {
 
       if (next) {
         if (prev) {
-          syncVNode(container, prev, next, EMPTY_CONTEXT, false);
+          _sync(container, prev, next, EMPTY_CONTEXT, false);
         } else {
-          renderVNode(container, null, next, EMPTY_CONTEXT);
+          _render(container, null, next, EMPTY_CONTEXT);
           /* istanbul ignore if */
           /**
            * Fix for the Mouse Event bubbling on iOS devices.
@@ -82,11 +97,11 @@ function _update() {
         root.current = next;
       } else if (prev) {
         if (next === null) {
-          removeVNode(container, prev);
+          _remove(container, prev);
           unorderedArrayDelete(ROOTS, ROOTS.indexOf(root));
           --i;
         } else {
-          dirtyCheck(container, prev, EMPTY_CONTEXT, false);
+          _dirtyCheck(container, prev, EMPTY_CONTEXT, false);
         }
       }
 
@@ -97,34 +112,24 @@ function _update() {
         }
       }
     }
+    _dirty ^= 1;
   }
 }
 
 /**
- * Render virtual DOM node into container.
- *
- * @param vnode - Virtual DOM node to render
- * @param container - DOM Node that will contain rendered node
- */
-export function render(vnode: VNode | null, container: Element): void {
-  renderNextFrame(vnode, container);
-  triggerNextFrame();
-}
-
-/**
- * Render virtual DOM node into container on the next frame.
+ * Render virtual DOM node into the container.
  *
  * @param next - Virtual DOM node to render
  * @param container - DOM Node that will contain rendered node
  */
-export function renderNextFrame(next: VNode | null, container: Element): void {
+export function render(next: VNode | null, container: Element): void {
   /* istanbul ignore else */
   if (DEBUG) {
     /**
      * Rendering into the <body> element is disabled to make it possible to fix iOS quirk with click events.
      */
     if (container === document.body) {
-      throw new Error("Rendering in the <body> aren't allowed");
+      throw new Error("Rendering into the <body> element aren't allowed");
     }
     if (!document.body.contains(container)) {
       throw new Error("Container element should be attached to the document");
@@ -138,23 +143,14 @@ export function renderNextFrame(next: VNode | null, container: Element): void {
     ROOTS.push({ container, next, current: null });
   }
 
-  updateNextFrame();
-}
-
-/**
- * Update dirty components.
- */
-export function update() {
-  updateNextFrame();
-  triggerNextFrame();
-}
-
-/**
- * Add a task to update dirty components that will be executed at the next frame.
- */
-export function updateNextFrame() {
-  if (!_pendingUpdate) {
-    _pendingUpdate = 1;
-    nextFrameWrite(_update);
+  if (DEBUG) {
+    try {
+      invalidate();
+    } catch (e) {
+      _dirty = 0;
+      throw e;
+    }
+  } else {
+    invalidate();
   }
 }

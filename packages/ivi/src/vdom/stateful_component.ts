@@ -1,6 +1,6 @@
-import { currentFrameUpdate } from "ivi-scheduler";
 import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
+import { invalidate } from "./root";
 
 /**
  * Stateful Component class interface.
@@ -116,7 +116,7 @@ export abstract class Component<P = undefined> {
   invalidate(): void {
     this.flags |= ComponentFlags.DirtyState;
     this.invalidated();
-    currentFrameUpdate();
+    invalidate();
   }
 }
 

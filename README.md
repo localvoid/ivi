@@ -26,9 +26,12 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 ## Library Size
 
+ivi has a tree shakeable API, so it can scale from simple widgets embedded into the page to complex desktop
+applications.
+
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
-a **3.4KB** (minified+compressed).
+a **2.9KB** (minified+compressed).
 
 ## Performance
 
