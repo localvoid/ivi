@@ -5,7 +5,8 @@ export { KeyCode, KeyLocation, MouseButtons, SyncableValue, PROPERTY, UNSAFE_HTM
 
 // Virtual DOM
 export { VNodeFlags } from "./vdom/flags";
-export { StatefulComponent, StatelessComponent, Component, isComponentAttached } from "./vdom/component";
+export { StatelessComponent } from "./vdom/stateless_component";
+export { StatefulComponent, Component, isComponentAttached } from "./vdom/stateful_component";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode,

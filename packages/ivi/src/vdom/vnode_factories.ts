@@ -1,5 +1,6 @@
 import { VNodeFlags } from "./flags";
-import { StatefulComponent, StatelessComponent } from "./component";
+import { StatelessComponent } from "./stateless_component";
+import { StatefulComponent } from "./stateful_component";
 import { VNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 

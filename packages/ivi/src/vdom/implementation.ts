@@ -13,7 +13,8 @@ import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
-import { StatefulComponent, StatelessComponent, Component } from "./component";
+import { StatelessComponent } from "./stateless_component";
+import { StatefulComponent, Component } from "./stateful_component";
 import { syncDOMAttrs, syncStyle } from "./sync_dom";
 
 /**
