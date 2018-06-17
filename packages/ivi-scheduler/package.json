@@ -25,10 +25,12 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.14.0"
+    "ivi-core": "^0.14.0",
+    "ivi": "^0.14.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.14.0"
+    "ivi-core": "^0.14.0",
+    "ivi": "^0.14.0"
   },
   "description": "Task scheduler for ivi library",
   "license": "MIT",

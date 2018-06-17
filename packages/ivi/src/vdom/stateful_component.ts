@@ -1,6 +1,7 @@
 import { ComponentFlags } from "./flags";
 import { VNode } from "./vnode";
-import { invalidate } from "./root";
+import { InvalidateFlags } from "./invalidate";
+import { invalidate } from "./scheduler";
 
 /**
  * Stateful Component class interface.
@@ -113,10 +114,10 @@ export abstract class Component<P = undefined> {
   /**
    * Triggers view invalidation.
    */
-  invalidate(): void {
+  invalidate(flags?: InvalidateFlags): void {
     this.flags |= ComponentFlags.DirtyState;
     this.invalidated();
-    invalidate();
+    invalidate(flags);
   }
 }
 

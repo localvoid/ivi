@@ -1,6 +1,8 @@
 import {
-  RepeatableTaskList, runRepeatableTasks, NOOP, catchError, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED,
+  RepeatableTaskList, runRepeatableTasks, catchError, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED,
 } from "ivi-core";
+import { dirtyCheck } from "ivi";
+import { InvalidateFlags } from "../../ivi/src/vdom/invalidate";
 
 /**
  * Scheduler flags.
@@ -20,7 +22,7 @@ const enum FrameTasksGroupFlags {
   /**
    * Group contains update task.
    */
-  Update = 1,
+  DirtyCheck = 1,
   /**
    * Group contains "write" tasks.
    */
@@ -103,7 +105,6 @@ const _tasks = createTaskList();
 
 const _beforeUpdate: RepeatableTaskList = [];
 const _afterUpdate: RepeatableTaskList = [];
-let _updateDOMHandler: () => void = NOOP;
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
@@ -166,10 +167,6 @@ export function scheduleTask(task: () => void): void {
 
 export function isHidden(): boolean {
   return (_flags & SchedulerFlags.Hidden) !== 0;
-}
-
-export function setUpdateDOMHandler(handler: () => void): void {
-  _updateDOMHandler = handler;
 }
 
 /**
@@ -252,19 +249,19 @@ const _handleNextFrame = catchError((time: number) => {
       run(frame.r);
     }
 
-    while (frame.f & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
+    while (frame.f & (FrameTasksGroupFlags.DirtyCheck | FrameTasksGroupFlags.Write)) {
       if (frame.f & FrameTasksGroupFlags.Write) {
         frame.f ^= FrameTasksGroupFlags.Write;
         run(frame.w);
       }
 
-      if (frame.f & FrameTasksGroupFlags.Update) {
-        frame.f ^= FrameTasksGroupFlags.Update;
-        _updateDOMHandler();
+      if (frame.f & FrameTasksGroupFlags.DirtyCheck) {
+        frame.f ^= FrameTasksGroupFlags.DirtyCheck;
+        dirtyCheck();
       }
     }
   } while (frame.f & (
-    FrameTasksGroupFlags.Update |
+    FrameTasksGroupFlags.DirtyCheck |
     FrameTasksGroupFlags.Write |
     FrameTasksGroupFlags.Read
   ));
@@ -281,10 +278,6 @@ const _handleNextFrame = catchError((time: number) => {
   ++_clock;
 });
 
-function addFrameTaskUpdate(frame: FrameTasksGroup): void {
-  frame.f |= FrameTasksGroupFlags.Update;
-}
-
 function addFrameTaskWrite(frame: FrameTasksGroup, task: () => void): void {
   frame.f |= FrameTasksGroupFlags.Write;
   frame.w.a.push(task);
@@ -295,29 +288,51 @@ function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
   frame.r.a.push(task);
 }
 
-export function nextFrameUpdate(): void {
+/**
+ * Adds a dirty check task to the next frame.
+ */
+export function nextFrameDirtyCheck(): void {
+  _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
   requestNextFrame();
-  addFrameTaskUpdate(_nextFrame);
 }
 
+/**
+ * Adds a write DOM task to the next frame.
+ *
+ * @param task - Write DOM task
+ */
 export function nextFrameWrite(task: () => void): void {
   requestNextFrame();
   addFrameTaskWrite(_nextFrame, task);
 }
 
+/**
+ * Adds a read DOM task to the next frame.
+ *
+ * @param task - Read DOM task
+ */
 export function nextFrameRead(task: () => void): void {
   requestNextFrame();
   addFrameTaskRead(_nextFrame, task);
 }
 
-export function currentFrameUpdate(): void {
+/**
+ * Adds a dirty check task to the current frame.
+ */
+export function currentFrameDirtyCheck(): void {
   if (_flags & SchedulerFlags.CurrentFrameReady) {
-    addFrameTaskUpdate(_currentFrame);
+    _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
+    _handleNextFrame(performance.now());
   } else {
-    nextFrameUpdate();
+    nextFrameDirtyCheck();
   }
 }
 
+/**
+ * Adds a write DOM task to the current frame.
+ *
+ * @param task - Write DOM task
+ */
 export function currentFrameWrite(task: () => void): void {
   if (_flags & SchedulerFlags.CurrentFrameReady) {
     addFrameTaskWrite(_currentFrame, task);
@@ -326,6 +341,11 @@ export function currentFrameWrite(task: () => void): void {
   }
 }
 
+/**
+ * Adds a read DOM task to the current frame.
+ *
+ * @param task - Read DOM task
+ */
 export function currentFrameRead(task: () => void): void {
   if (_flags & SchedulerFlags.CurrentFrameReady) {
     addFrameTaskRead(_currentFrame, task);
@@ -335,11 +355,34 @@ export function currentFrameRead(task: () => void): void {
 }
 
 /**
- * triggerNextFrame triggers an update for the next frame.
+ * Invalidate function.
+ *
+ * @example
+ *
+ *   import { setupScheduler } from "ivi";
+ *   import { invalidate } from "ivi-scheduler";
+ *
+ *   setupScheduler(invalidate);
  */
-export function triggerNextFrame(): void {
-  if (_flags & SchedulerFlags.NextFramePending) {
-    _handleNextFrame(performance.now());
+export function invalidate() {
+  currentFrameDirtyCheck();
+}
+
+/**
+ * Invalidate function that triggers dirty check on the next frame.
+ *
+ * @example
+ *
+ *   import { setupScheduler } from "ivi";
+ *   import { invalidateNextFrame } from "ivi-scheduler";
+ *
+ *   setupScheduler(invalidateNextFrame);
+ */
+export function invalidateNextFrame(flags?: InvalidateFlags) {
+  if (flags !== void 0 && (flags & InvalidateFlags.RequestSyncUpdate)) {
+    currentFrameDirtyCheck();
+  } else {
+    nextFrameDirtyCheck();
   }
 }
 

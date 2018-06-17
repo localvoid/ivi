@@ -30,8 +30,8 @@ ivi has a tree shakeable API, so it can scale from simple widgets embedded into 
 applications.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
-bundled with [webpack](https://webpack.js.org/) and minified with [uglify](https://github.com/mishoo/UglifyJS2) is just
-a **2.9KB** (minified+compressed).
+bundled with [Rollup](https://github.com/rollup/rollup) and minified with
+[uglify(terser)](https://github.com/fabiosantoscode/terser) is just a **2.5KB** (minified+compressed).
 
 ## Performance
 

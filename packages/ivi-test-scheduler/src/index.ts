@@ -1,4 +1,5 @@
-import { RepeatableTaskList, runRepeatableTasks, NOOP, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED } from "ivi-core";
+import { RepeatableTaskList, runRepeatableTasks, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED } from "ivi-core";
+import { dirtyCheck } from "ivi";
 
 /**
  * Scheduler flags.
@@ -18,7 +19,7 @@ const enum FrameTasksGroupFlags {
   /**
    * Group contains update task.
    */
-  Update = 1,
+  DirtyCheck = 1,
   /**
    * Group contains "write" tasks.
    */
@@ -101,7 +102,6 @@ const _tasks = createTaskList();
 
 let _beforeUpdate: RepeatableTaskList = [];
 let _afterUpdate: RepeatableTaskList = [];
-let _updateDOMHandler: () => void = NOOP;
 let _currentFrame = createFrameTasksGroup();
 let _nextFrame = createFrameTasksGroup();
 let _currentFrameStartTime = 0;
@@ -157,10 +157,6 @@ export function isHidden(): boolean {
   return (_flags & SchedulerFlags.Hidden) !== 0;
 }
 
-export function setUpdateDOMHandler(handler: () => void): void {
-  _updateDOMHandler = handler;
-}
-
 /**
  * Adds a task that will be executed before each update.
  *
@@ -208,10 +204,6 @@ export function requestNextFrame(): void {
   }
 }
 
-function addFrameTaskUpdate(frame: FrameTasksGroup): void {
-  frame.f |= FrameTasksGroupFlags.Update;
-}
-
 function addFrameTaskWrite(frame: FrameTasksGroup, task: () => void): void {
   frame.f |= FrameTasksGroupFlags.Write;
   frame.w.a.push(task);
@@ -222,29 +214,51 @@ function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
   frame.r.a.push(task);
 }
 
-export function nextFrameUpdate(): void {
+/**
+ * Adds a dirty check task to the next frame.
+ */
+export function nextFrameDirtyCheck(): void {
   requestNextFrame();
-  addFrameTaskUpdate(_nextFrame);
+  _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
 }
 
+/**
+ * Adds a write DOM task to the next frame.
+ *
+ * @param task - Write DOM task
+ */
 export function nextFrameWrite(task: () => void): void {
   requestNextFrame();
   addFrameTaskWrite(_nextFrame, task);
 }
 
+/**
+ * Adds a read DOM task to the next frame.
+ *
+ * @param task - Read DOM task
+ */
 export function nextFrameRead(task: () => void): void {
   requestNextFrame();
   addFrameTaskRead(_nextFrame, task);
 }
 
-export function currentFrameUpdate(): void {
+/**
+ * Adds a dirty check task to the current frame.
+ */
+export function currentFrameDirtyCheck(): void {
   if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
-    addFrameTaskUpdate(_currentFrame);
+    _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
+    triggerNextFrame(performance.now());
   } else {
-    nextFrameUpdate();
+    nextFrameDirtyCheck();
   }
 }
 
+/**
+ * Adds a write DOM task to the current frame.
+ *
+ * @param task - Write DOM task
+ */
 export function currentFrameWrite(task: () => void): void {
   if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
     addFrameTaskWrite(_currentFrame, task);
@@ -253,6 +267,11 @@ export function currentFrameWrite(task: () => void): void {
   }
 }
 
+/**
+ * Adds a read DOM task to the current frame.
+ *
+ * @param task - Read DOM task
+ */
 export function currentFrameRead(task: () => void): void {
   if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
     addFrameTaskRead(_currentFrame, task);
@@ -314,19 +333,19 @@ export function triggerNextFrame(time?: number): void {
           run(frame.r);
         }
 
-        while (frame.f & (FrameTasksGroupFlags.Update | FrameTasksGroupFlags.Write)) {
+        while (frame.f & (FrameTasksGroupFlags.DirtyCheck | FrameTasksGroupFlags.Write)) {
           if (frame.f & FrameTasksGroupFlags.Write) {
             frame.f ^= FrameTasksGroupFlags.Write;
             run(frame.w);
           }
 
-          if (frame.f & FrameTasksGroupFlags.Update) {
-            frame.f ^= FrameTasksGroupFlags.Update;
-            _updateDOMHandler();
+          if (frame.f & FrameTasksGroupFlags.DirtyCheck) {
+            frame.f ^= FrameTasksGroupFlags.DirtyCheck;
+            dirtyCheck();
           }
         }
       } while (frame.f & (
-        FrameTasksGroupFlags.Update |
+        FrameTasksGroupFlags.DirtyCheck |
         FrameTasksGroupFlags.Write |
         FrameTasksGroupFlags.Read
       ));
