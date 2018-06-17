@@ -152,9 +152,6 @@ function _toSnapshot(
   if (flags & VNodeFlags.StopDirtyChecking) {
     result += `${indent(il++)}<stopDirtyChecking>`;
   }
-  if (flags & VNodeFlags.Autofocus) {
-    result += `${indent(il++)}<autofocus>`;
-  }
 
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
@@ -263,9 +260,6 @@ function _toSnapshot(
     }
   }
 
-  if (flags & VNodeFlags.Autofocus) {
-    result += `${indent(--il)}</autofocus>`;
-  }
   if (flags & VNodeFlags.StopDirtyChecking) {
     result += `${indent(--il)}</stopDirtyChecking>`;
   }

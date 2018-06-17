@@ -26,6 +26,15 @@ export declare interface ElementAttrs {
    *   const n = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
    */
   unsafeHTML?: SyncableValue<string>;
+  /**
+   * Provides a way to direct a user to a specific field when element is instantiated. This can provide both direction
+   * and convenience for a user, reducing the need to click or tab to a field.
+   *
+   * @example
+   *
+   *   const n = input("", { autofocus: AUTOFOCUS(true) });
+   */
+  autofocus?: SyncableValue<boolean>;
 
   [key: string]: string | number | boolean | SyncableValue<any> | undefined;
 }
@@ -1026,12 +1035,6 @@ export declare interface HTMLScriptElementAttrs extends HTMLElementAttrs {
 }
 
 export declare interface HTMLSelectElementAttrs extends HTMLElementAttrs {
-  /**
-   * Provides a way to direct a user to a specific field when a document loads. This can provide both direction and
-   * convenience for a user, reducing the need to click or tab to a field when a page opens. This attribute is true
-   * when present on an element, and false when missing.
-   */
-  autofocus?: boolean;
   disabled?: boolean;
   /**
    * Sets or retrieves the number of objects in a collection.
@@ -1167,12 +1170,6 @@ export declare interface HTMLTemplateElementAttrs extends HTMLElementAttrs {
 }
 
 export declare interface HTMLTextAreaElementAttrs extends HTMLElementAttrs {
-  /**
-   * Provides a way to direct a user to a specific field when a document loads. This can provide both direction and
-   * convenience for a user, reducing the need to click or tab to a field when a page opens. This attribute is true
-   * when present on an element, and false when missing.
-   */
-  autofocus?: boolean;
   /**
    * Sets or retrieves the width of the object.
    */

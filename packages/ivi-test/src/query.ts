@@ -5,8 +5,7 @@ import {
 
   isElement, isElementWithClassName,
   hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasNextSibling, hasFactory, hasClassName, hasKey,
-  hasProps, hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, hasAutofocus,
-  innerText,
+  hasProps, hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, innerText,
 } from "./vdom";
 
 function and<T>(a: Predicate<T>, b: Predicate<T>): Predicate<T> {
@@ -113,11 +112,6 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
 
   containsText(text: string): this {
     this.addPredicate((n: VNodeWrapper) => (innerText(n).indexOf(text) > -1));
-    return this;
-  }
-
-  hasAutofocus(): this {
-    this.addPredicate(hasAutofocus);
     return this;
   }
 }

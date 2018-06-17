@@ -8,7 +8,6 @@
 import {
   SVG_NAMESPACE, nodeRemoveChild, nodeInsertBefore, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
 } from "ivi-core";
-import { autofocus } from "ivi-scheduler";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMNode } from "./vnode";
@@ -277,10 +276,6 @@ function _render(parent: Node, vnode: VNode, context: {}): Node {
           /* istanbul ignore next */(tag as StatelessComponent<any>).render(props);
       }
       node = _render(parent, vnode._c!, context);
-    }
-
-    if ((flags & VNodeFlags.Autofocus) !== 0) {
-      autofocus(node as Element);
     }
   }
 

@@ -11,7 +11,7 @@ export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
   VNode,
   getDOMNode, getComponent,
-  autofocus, stopDirtyChecking,
+  stopDirtyChecking,
 } from "./vdom/vnode";
 export { fragment, map, mapRange, mapIterable } from "./vdom/vnode_collections";
 export { element } from "./vdom/element";

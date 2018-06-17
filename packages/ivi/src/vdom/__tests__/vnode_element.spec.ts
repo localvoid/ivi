@@ -1,4 +1,4 @@
-import { EventHandler, VNodeFlags, VNode, UNSAFE_HTML, getComponent, autofocus } from "ivi";
+import { EventHandler, VNodeFlags, VNode, UNSAFE_HTML, getComponent } from "ivi";
 import * as h from "ivi-html";
 
 test(`element flags`, () => {
@@ -75,11 +75,6 @@ test(`children with duplicate keys should raise an exception`, () => {
       h.t("").k("a"),
     )
   )).toThrow(Error);
-});
-
-test(`autofocus`, () => {
-  const e = autofocus(h.div());
-  expect(e._f & VNodeFlags.Autofocus).toBe(VNodeFlags.Autofocus);
 });
 
 test(`getComponent should raise an exception when it is invoked on a non-component node`, () => {

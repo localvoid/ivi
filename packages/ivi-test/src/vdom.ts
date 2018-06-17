@@ -373,10 +373,6 @@ export class VNodeWrapper {
     return hasEventHandler(this, eventSource);
   }
 
-  hasAutofocus(): boolean {
-    return hasAutofocus(this);
-  }
-
   query(matcher: VNodeMatcher): VNodeWrapper | null {
     return query(this, matcher.match);
   }
@@ -463,10 +459,6 @@ export function hasAssignedStyle(wrapper: VNodeWrapper, style: { [key: string]: 
 export function hasEventHandler(wrapper: VNodeWrapper, dispatcher: EventDispatcher): boolean {
   const vnode = wrapper.vnode;
   return (vnode._p !== null && containsEventHandler(vnode._e, dispatcher) === true);
-}
-
-export function hasAutofocus(wrapper: VNodeWrapper): boolean {
-  return ((wrapper.vnode._f & VNodeFlags.Autofocus) !== 0);
 }
 
 export function hasParent(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {

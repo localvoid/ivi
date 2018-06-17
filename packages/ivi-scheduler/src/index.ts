@@ -1,4 +1,6 @@
-import { RepeatableTaskList, runRepeatableTasks, NOOP, catchError } from "ivi-core";
+import {
+  RepeatableTaskList, runRepeatableTasks, NOOP, catchError, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED,
+} from "ivi-core";
 
 /**
  * Scheduler flags.
@@ -339,4 +341,51 @@ export function triggerNextFrame(): void {
   if (_flags & SchedulerFlags.NextFramePending) {
     _handleNextFrame(performance.now());
   }
+}
+
+/**
+ * Synchronization function for {@link SyncableValue} created with {@link AUTOFOCUS} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
+function syncAutofocus(
+  element: Element,
+  key: string,
+  prev: boolean | undefined,
+  next: boolean | undefined,
+) {
+  if (prev === void 0 && next) {
+    autofocus(element);
+  }
+}
+
+/**
+ * {@link SyncableValue} with `false` value and {@link syncChecked} sync function.
+ */
+const AUTOFOCUS_FALSE: SyncableValue<boolean> = { v: false, s: syncAutofocus };
+
+/**
+ * {@link SyncableValue} with `true` value and {@link syncChecked} sync function.
+ */
+const AUTOFOCUS_TRUE: SyncableValue<boolean> = { v: true, s: syncAutofocus };
+
+/**
+ * AUTOFOCUS function creates a {@link SyncableValue} that sets autofocus on an element.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = input("", { autofocus: AUTOFOCUS(true) });
+ *
+ * @param v - Autofocus state
+ * @returns {@link SyncableValue}
+ */
+export function AUTOFOCUS(v: boolean | undefined): SyncableValue<boolean> {
+  return (v === void 0) ?
+    SYNCABLE_VALUE_SKIP_UNDEFINED as any as SyncableValue<boolean> :
+    v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;
 }

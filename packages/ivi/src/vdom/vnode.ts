@@ -263,29 +263,6 @@ export function getComponent<T extends Component<any>>(vnode: VNode): T | null {
 }
 
 /**
- * autofocus makes an element focused after instantiation.
- *
- * @param vnode - Virtual DOM node
- * @return `vnode`
- */
-export function autofocus<N extends VNode>(vnode: N): N {
-  /* istanbul ignore else */
-  if (DEBUG) {
-    if (!(vnode._f & (
-      VNodeFlags.Element |
-      VNodeFlags.StatelessComponent |
-      VNodeFlags.StatefulComponent |
-      VNodeFlags.Connect |
-      VNodeFlags.UpdateContext
-    ))) {
-      throw new Error("Failed to set autofocus, autofocus is available on element and component nodes only.");
-    }
-  }
-  vnode._f |= VNodeFlags.Autofocus;
-  return vnode;
-}
-
-/**
  * stopDirtyChecking stops dirty checking process when it goes through this virtual DOM node.
  *
  * @param vnode - Virtual DOM node

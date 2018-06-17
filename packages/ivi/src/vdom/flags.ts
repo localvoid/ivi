@@ -51,13 +51,9 @@ export const enum VNodeFlags {
    * Stateless component has custom `shouldUpdate()` hook.
    */
   ShouldUpdateHint = 1 << 11,
-  /**
-   * VNode element will be automatically focused after instantiation.
-   */
-  Autofocus = 1 << 12,
 
-  ElementIdMask = 255 << 13,
-  ElementIdOffset = 13,
+  ElementIdMask = 255 << 12,
+  ElementIdOffset = 12,
   /**
    * Dirty checking should be stopped at this node.
    *
