@@ -1,6 +1,7 @@
 import { connect, context, stopDirtyChecking } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
+import { invalidate } from "../scheduler";
 
 test(`identical node should trigger dirty checking`, () => {
   startRender((r) => {
@@ -101,5 +102,24 @@ test(`update inner context during dirty checking`, () => {
     r(v);
 
     expect(innerTest).toBe(1);
+  });
+});
+
+test(`triggering dirty checking during render should rerun dirty checking`, () => {
+  startRender((r) => {
+    let i = 0;
+    const c = connect<null>(
+      () => {
+        if (i++ === 0) {
+          invalidate();
+        }
+        return null;
+      },
+      () => h.div(),
+    );
+
+    r(c());
+
+    expect(i).toBe(2);
   });
 });
