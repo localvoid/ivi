@@ -1,5 +1,5 @@
 import { RepeatableTaskList, runRepeatableTasks, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED } from "ivi-core";
-import { dirtyCheck } from "ivi";
+import { dirtyCheck, InvalidateFlags } from "ivi";
 
 /**
  * Scheduler flags.
@@ -363,6 +363,38 @@ export function triggerNextFrame(time?: number): void {
     }
   } catch (e) {
     throw e;
+  }
+}
+
+/**
+ * Invalidate handler function.
+ *
+ * @example
+ *
+ *   import { setupScheduler } from "ivi";
+ *   import { invalidate } from "ivi-scheduler";
+ *
+ *   setupScheduler(invalidate);
+ */
+export function invalidateHandler() {
+  currentFrameDirtyCheck();
+}
+
+/**
+ * Invalidate handler function that triggers dirty check on the next frame.
+ *
+ * @example
+ *
+ *   import { setupScheduler } from "ivi";
+ *   import { invalidateNextFrame } from "ivi-scheduler";
+ *
+ *   setupScheduler(invalidateNextFrame);
+ */
+export function invalidateHandlerNextFrame(flags?: InvalidateFlags) {
+  if (flags !== void 0 && (flags & InvalidateFlags.RequestSyncUpdate)) {
+    currentFrameDirtyCheck();
+  } else {
+    nextFrameDirtyCheck();
   }
 }
 

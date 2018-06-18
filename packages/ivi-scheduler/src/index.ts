@@ -355,7 +355,7 @@ export function currentFrameRead(task: () => void): void {
 }
 
 /**
- * Invalidate function.
+ * Invalidate handler function.
  *
  * @example
  *
@@ -364,12 +364,12 @@ export function currentFrameRead(task: () => void): void {
  *
  *   setupScheduler(invalidate);
  */
-export function invalidate() {
+export function invalidateHandler() {
   currentFrameDirtyCheck();
 }
 
 /**
- * Invalidate function that triggers dirty check on the next frame.
+ * Invalidate handler function that triggers dirty check on the next frame.
  *
  * @example
  *
@@ -378,7 +378,7 @@ export function invalidate() {
  *
  *   setupScheduler(invalidateNextFrame);
  */
-export function invalidateNextFrame(flags?: InvalidateFlags) {
+export function invalidateHandlerNextFrame(flags?: InvalidateFlags) {
   if (flags !== void 0 && (flags & InvalidateFlags.RequestSyncUpdate)) {
     currentFrameDirtyCheck();
   } else {

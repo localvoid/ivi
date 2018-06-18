@@ -1,8 +1,9 @@
-import { VNode, render, getDOMNode } from "ivi";
+import { VNode, render, getDOMNode, setupScheduler, invalidateHandler } from "ivi";
 
 export function startRender<T extends Node>(
   fn: (render: (n: VNode) => T) => void,
 ): void {
+  setupScheduler(invalidateHandler);
   const container = document.createElement("div");
   container.setAttribute("test-container", "");
   document.body.appendChild(container);
@@ -12,8 +13,6 @@ export function startRender<T extends Node>(
       render(n, container);
       return getDOMNode(n) as T;
     });
-  } catch (e) {
-    throw e;
   } finally {
     try {
       render(null, container);

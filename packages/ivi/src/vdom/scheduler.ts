@@ -1,4 +1,4 @@
-import { IOS_GESTURE_EVENT, NOOP, unorderedArrayDelete } from "ivi-core";
+import { IOS_GESTURE_EVENT, NOOP, unorderedArrayDelete, catchError } from "ivi-core";
 import { InvalidateFlags, InvalidateFunction } from "./invalidate";
 import { VNode } from "./vnode";
 import { _render, _sync, _remove, _dirtyCheck } from "./implementation";
@@ -8,23 +8,7 @@ import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
 /**
  * Invalidate function.
  */
-let _invalidate: InvalidateFunction = dirtyCheck;
-
-/**
- * Set up scheduler.
- *
- * @param invalidateFn - Invalidate function
- */
-export function setupScheduler(invalidateFn: InvalidateFunction): void {
-  _invalidate = invalidateFn;
-}
-
-/**
- * Invalidate view.
- */
-export function invalidate(flags?: InvalidateFlags): void {
-  _invalidate(flags);
-}
+let _invalidate: InvalidateFunction = NOOP;
 
 /**
  * Empty Context object.
@@ -40,55 +24,97 @@ const EMPTY_CONTEXT = {};
 let _dirty = 0;
 
 /**
- * Performs a dirty checking.
+ * Basic synchronous invalidation handler.
  */
-export function dirtyCheck() {
+export const invalidateHandler = catchError(() => {
   _dirty |= 2;
   while (_dirty === 2) {
     _dirty >>= 1;
-    for (let i = 0; i < ROOTS.length; ++i) {
-      const root = ROOTS[i];
-      const container = root.container;
-      const prev = root.current;
-      const next = root.next;
-      root.next = void 0;
+    /* istanbul ignore else */
+    if (DEBUG) {
+      /**
+       * Ugly workaround for tests that throw exceptions.
+       *
+       * TODO: in production we should freeze all current roots, reset internal state and make sure that error handlers
+       *   can generate error UIs.
+       */
+      try {
+        dirtyCheck();
+      } finally {
+        _dirty ^= 1;
+      }
+    } else {
+      dirtyCheck();
+      _dirty ^= 1;
+    }
+  }
+});
 
-      if (next) {
-        if (prev) {
-          _sync(container, prev, next, EMPTY_CONTEXT, false);
-        } else {
-          _render(container, null, next, EMPTY_CONTEXT);
-          /* istanbul ignore if */
-          /**
-           * Fix for the Mouse Event bubbling on iOS devices.
-           *
-           * #quirks
-           *
-           * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-           */
-          if (TARGET === "browser" && IOS_GESTURE_EVENT) {
-            (container as HTMLElement).onclick = NOOP;
-          }
-        }
-        root.current = next;
-      } else if (prev) {
-        if (next === null) {
-          _remove(container, prev);
-          unorderedArrayDelete(ROOTS, ROOTS.indexOf(root));
-          --i;
-        } else {
-          _dirtyCheck(container, prev, EMPTY_CONTEXT, false);
+/**
+ * Set up scheduler.
+ *
+ * @example
+ *
+ *   import { setupScheduler, invalidateHandler } from "ivi";
+ *
+ *   setupScheduler(invalidateHandler);
+ *
+ * @param invalidateFn - Invalidate handler
+ */
+export function setupScheduler(invalidateFn: InvalidateFunction): void {
+  _invalidate = invalidateFn;
+}
+
+/**
+ * Invalidate view.
+ */
+export function invalidate(flags?: InvalidateFlags): void {
+  _invalidate(flags);
+}
+
+/**
+ * Performs a dirty checking.
+ */
+export function dirtyCheck() {
+  for (let i = 0; i < ROOTS.length; ++i) {
+    const root = ROOTS[i];
+    const { container, current, next } = root;
+    root.next = void 0;
+
+    if (next) {
+      if (current) {
+        _sync(container, current, next, EMPTY_CONTEXT, false);
+      } else {
+        _render(container, null, next, EMPTY_CONTEXT);
+        /* istanbul ignore if */
+        /**
+         * Fix for the Mouse Event bubbling on iOS devices.
+         *
+         * #quirks
+         *
+         * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+         */
+        if (TARGET === "browser" && IOS_GESTURE_EVENT) {
+          (container as HTMLElement).onclick = NOOP;
         }
       }
-
-      /* istanbul ignore else */
-      if (DEBUG) {
-        if (root.current) {
-          checkNestingViolations(container, root.current);
-        }
+      root.current = next;
+    } else if (current) {
+      if (next === null) {
+        _remove(container, current);
+        unorderedArrayDelete(ROOTS, ROOTS.indexOf(root));
+        --i;
+      } else {
+        _dirtyCheck(container, current, EMPTY_CONTEXT, false);
       }
     }
-    _dirty ^= 1;
+
+    /* istanbul ignore else */
+    if (DEBUG) {
+      if (root.current) {
+        checkNestingViolations(container, root.current);
+      }
+    }
   }
 }
 
@@ -119,14 +145,5 @@ export function render(next: VNode | null, container: Element): void {
     ROOTS.push({ container, next, current: null });
   }
 
-  if (DEBUG) {
-    try {
-      invalidate();
-    } catch (e) {
-      _dirty = 0;
-      throw e;
-    }
-  } else {
-    invalidate();
-  }
+  invalidate();
 }

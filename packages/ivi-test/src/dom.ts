@@ -1,4 +1,4 @@
-import { VNode, render, update } from "ivi";
+import { VNode, render, invalidate, setupScheduler, invalidateHandler } from "ivi";
 import { triggerNextTick, triggerNextFrame } from "ivi-test-scheduler";
 import { VNodeWrapper } from "./vdom";
 
@@ -6,7 +6,9 @@ import { VNodeWrapper } from "./vdom";
  * DOMRenderer is a helper object for testing Virtual DOM in a real DOM.
  */
 export class DOMRenderer {
-  constructor(private container: HTMLDivElement) { }
+  constructor(private container: HTMLDivElement) {
+    setupScheduler(invalidateHandler);
+  }
 
   /**
    * reset resets current state.
@@ -27,10 +29,10 @@ export class DOMRenderer {
   }
 
   /**
-   * update triggers update in a scheduler.
+   * invalidate triggers update in a scheduler.
    */
-  update(): void {
-    update();
+  invalidate(): void {
+    invalidate();
   }
 
   /**
