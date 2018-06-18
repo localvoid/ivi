@@ -16,7 +16,8 @@ export {
 export { fragment, map, mapRange, mapIterable } from "./vdom/vnode_collections";
 export { element } from "./vdom/element";
 export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/vnode_factories";
-export { invalidate, dirtyCheck, render } from "./vdom/scheduler";
+export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
+export { setupScheduler, invalidateHandler, invalidate, dirtyCheck, render } from "./vdom/scheduler";
 
 // Events
 export {
