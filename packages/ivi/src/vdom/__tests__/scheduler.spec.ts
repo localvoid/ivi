@@ -1,37 +1,51 @@
-import { setupScheduler, invalidate, InvalidateFlags } from "ivi";
+import { InvalidateFlags } from "ivi";
 
-test(`custom invalidator`, () => {
-  let i = 0;
-  setupScheduler((f) => {
-    i++;
+describe(`scheduler`, () => {
+  /* tslint:disable:whitespace */
+  let ivi: typeof import("ivi");
+
+  beforeEach(async () => {
+    jest.resetModules();
+    ivi = await import("ivi");
   });
-  invalidate();
 
-  expect(i).toBe(1);
-});
-
-test(`custom invalidator should receive undefined flags`, () => {
-  let i = 0;
-  let flags;
-  setupScheduler((f) => {
-    i++;
-    flags = f;
+  test(`raise an exception when scheduler isn't configured`, () => {
+    expect(() => { ivi.invalidate(); }).toThrowError("Scheduler");
   });
-  invalidate();
 
-  expect(i).toBe(1);
-  expect(flags).toBe(undefined);
-});
+  test(`custom invalidator`, () => {
+    let i = 0;
+    ivi.setupScheduler((f) => {
+      i++;
+    });
+    ivi.invalidate();
 
-test(`custom invalidator should receive RequestSyncUpdate flags`, () => {
-  let i = 0;
-  let flags;
-  setupScheduler((f) => {
-    i++;
-    flags = f;
+    expect(i).toBe(1);
   });
-  invalidate(InvalidateFlags.RequestSyncUpdate);
 
-  expect(i).toBe(1);
-  expect(flags).toBe(InvalidateFlags.RequestSyncUpdate);
+  test(`custom invalidator should receive undefined flags`, () => {
+    let i = 0;
+    let flags;
+    ivi.setupScheduler((f) => {
+      i++;
+      flags = f;
+    });
+    ivi.invalidate();
+
+    expect(i).toBe(1);
+    expect(flags).toBe(undefined);
+  });
+
+  test(`custom invalidator should receive RequestSyncUpdate flags`, () => {
+    let i = 0;
+    let flags;
+    ivi.setupScheduler((f) => {
+      i++;
+      flags = f;
+    });
+    ivi.invalidate(InvalidateFlags.RequestSyncUpdate);
+
+    expect(i).toBe(1);
+    expect(flags).toBe(InvalidateFlags.RequestSyncUpdate);
+  });
 });
