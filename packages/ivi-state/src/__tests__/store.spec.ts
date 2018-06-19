@@ -7,7 +7,7 @@ describe("src/store.ts", function () {
       (state: any) => state,
       () => undefined,
     );
-    expect(store.getState().a).toBe(1);
+    expect(store.state.a).toBe(1);
   });
 
   test("should not trigger onUpdate when state isn't changed", function () {
@@ -39,8 +39,8 @@ describe("src/store.ts", function () {
       () => { return; },
     );
     store.dispatch(0);
-    expect(store.getState().a).toBe(1);
-    expect(store.getState().b).toBe(3);
+    expect(store.state.a).toBe(1);
+    expect(store.state.b).toBe(3);
   });
 
   test("should pass action to reducer", function () {
@@ -50,6 +50,6 @@ describe("src/store.ts", function () {
       () => { return; },
     );
     store.dispatch(1);
-    expect(store.getState().a).toBe(1);
+    expect(store.state.a).toBe(1);
   });
 });
