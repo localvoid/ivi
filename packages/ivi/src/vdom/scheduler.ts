@@ -8,7 +8,7 @@ import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
 /**
  * Invalidate function.
  */
-let _invalidate: InvalidateFunction = NOOP;
+let _invalidate: InvalidateFunction;
 
 /**
  * Empty Context object.
@@ -54,6 +54,11 @@ export function setupScheduler(invalidateFn: InvalidateFunction): void {
  * Invalidate view.
  */
 export function invalidate(flags?: InvalidateFlags): void {
+  if (DEBUG) {
+    if (_invalidate === void 0) {
+      throw new Error(`Scheduler hasn't been configured`);
+    }
+  }
   _invalidate(flags);
 }
 
