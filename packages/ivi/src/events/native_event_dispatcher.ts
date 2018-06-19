@@ -5,7 +5,6 @@ import { EventHandler } from "./event_handler";
 import { DispatchTarget } from "./dispatch_target";
 import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
 import { dispatchEvent } from "./dispatch_event";
-import { getEventTarget } from "./utils";
 import { SyntheticNativeEvent } from "./synthetic_native_event";
 
 /**
@@ -77,15 +76,15 @@ export function createNativeEventDispatcher<E extends Event>(
   const matchEventSource = (h: EventHandler) => h.src === source.src;
 
   source.dispatch = catchError((ev: E): void => {
-    const domTarget = getEventTarget(ev) as Element;
+    const target = ev.target as Element;
     const targets: DispatchTarget[] = [];
 
-    if (source.listeners > 0) {
-      accumulateDispatchTargets(targets, domTarget, matchEventSource);
+    if (source.listeners) {
+      accumulateDispatchTargets(targets, target, matchEventSource);
     }
 
-    if (targets.length || source.before !== null || source.after !== null) {
-      const syntheticEvent = new SyntheticNativeEvent<E>(0, domTarget, ev.timeStamp, ev);
+    if (targets.length || source.before || source.after) {
+      const syntheticEvent = new SyntheticNativeEvent<E>(0, target, ev.timeStamp, ev);
 
       dispatchToListeners(source.before, syntheticEvent);
       if (targets.length) {
@@ -93,7 +92,7 @@ export function createNativeEventDispatcher<E extends Event>(
       }
       dispatchToListeners(source.after, syntheticEvent);
 
-      if ((syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) !== 0) {
+      if (syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) {
         ev.preventDefault();
       }
     }
@@ -122,6 +121,7 @@ export function removeBeforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
+  /* istanbul ignore else */
   if (DEBUG) {
     if (source.before === null || source.before.indexOf(cb) === -1) {
       throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
@@ -135,6 +135,7 @@ export function removeAfterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
+  /* istanbul ignore else */
   if (DEBUG) {
     if (source.after === null || source.after.indexOf(cb) === -1) {
       throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");

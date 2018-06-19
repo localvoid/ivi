@@ -106,6 +106,7 @@ export function detachEvents(events: Array<EventHandler | null> | EventHandler):
  * @param handler Event Handler.
  */
 function registerEventHandler(handler: EventHandler<any>): void {
+  /* istanbul ignore else */
   if (DEBUG) {
     handler.flags |= EventHandlerFlags.Active;
   }
@@ -118,6 +119,7 @@ function registerEventHandler(handler: EventHandler<any>): void {
  * @param handler Event Handler.
  */
 function unregisterEventHandler(handler: EventHandler<any>): void {
+  /* istanbul ignore else */
   if (DEBUG) {
     handler.flags &= ~EventHandlerFlags.Active;
   }

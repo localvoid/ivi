@@ -80,6 +80,7 @@ function _dispatch(
   event: SyntheticEvent,
 ): EventFlags {
   const flags = (dispatch === void 0) ? handler.handler(event) : dispatch(handler, event);
+  /* istanbul ignore else */
   if (DEBUG) {
     if (flags !== void 0) {
       if (flags & ~(EventFlags.PreventDefault | EventFlags.StopPropagation)) {

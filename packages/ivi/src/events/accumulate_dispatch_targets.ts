@@ -17,11 +17,9 @@ export function accumulateDispatchTargets(
   target: Element,
   match: (h: EventHandler) => boolean,
 ): void {
-  // Find a root element that contains a `target` node.
-  for (const root of ROOTS) {
-    const container = root.container;
+  for (const { container, current } of ROOTS) {
     if (container.contains(target)) {
-      visitUp(result, match, target, container, root.current!);
+      visitUp(result, match, target, container, current!);
       break;
     }
   }
