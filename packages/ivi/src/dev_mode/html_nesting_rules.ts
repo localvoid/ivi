@@ -33,7 +33,7 @@ export const enum AncestorFlags {
 /**
  * AncestorFlags associated with a `tagName`.
  */
-export const AncestorFlagsByTagName: { [tagName: string]: AncestorFlags } = {
+const ANCESTOR_FLAGS_BY_TAG_NAME: { [tagName: string]: AncestorFlags } = {
   "select": AncestorFlags.Select,
   "optgroup": AncestorFlags.OptGroup,
   "option": AncestorFlags.Option,
@@ -113,14 +113,12 @@ function ancestorFlagsToTagNames(aFlags: AncestorFlags): string[] {
  * @returns Ancestor Flags.
  */
 function calculateAncestorFlags(element: Element | null): AncestorFlags {
-  if (DEBUG) {
-    let result = 0;
-    while (element !== null && (element !== document.body)) {
-      result |= AncestorFlagsByTagName[element.tagName.toLowerCase()];
-      element = element.parentElement;
-    }
-    return result;
+  let result = 0;
+  while (element !== null && (element !== document.body)) {
+    result |= ANCESTOR_FLAGS_BY_TAG_NAME[element.tagName.toLowerCase()];
+    element = element.parentElement;
   }
+  return result;
 
   return 0;
 }
@@ -128,24 +126,25 @@ function calculateAncestorFlags(element: Element | null): AncestorFlags {
 /**
  * List of child elements that allowed in `parent` elements.
  */
-const validChildList: { [parent: string]: string[] } | undefined = DEBUG ? {
-  "select": ["option", "optgroup", "$t"],
-  "optgroup": ["option", "$t"],
-  "option": ["$t"],
-  "tr": ["th", "td", "style", "script", "template"],
-  "tbody": ["tr", "style", "script", "template"],
-  "colgroup": ["col", "template"],
-  "table": ["caption", "colgroup", "tbody", "tfoot", "thead", "style", "script", "template"],
-} : undefined;
-if (DEBUG) {
-  validChildList!["thead"] = validChildList!["tbody"];
-  validChildList!["tfoot"] = validChildList!["tbody"];
-}
+const VALID_CHILDREN: { [parent: string]: string[] } = /*#__PURE__*/(() => {
+  const r: { [parent: string]: string[] } = {
+    "select": ["option", "optgroup", "$t"],
+    "optgroup": ["option", "$t"],
+    "option": ["$t"],
+    "tr": ["th", "td", "style", "script", "template"],
+    "tbody": ["tr", "style", "script", "template"],
+    "colgroup": ["col", "template"],
+    "table": ["caption", "colgroup", "tbody", "tfoot", "thead", "style", "script", "template"],
+  };
+  r["thead"] = r["tbody"];
+  r["tfoot"] = r["tbody"];
+  return r;
+})();
 
 /**
  * List of invalid ancestors for `child` elements.
  */
-const invalidAncestorList: { [child: string]: AncestorFlags } = {
+const INVALID_ANCESTOR_LIST: { [child: string]: AncestorFlags } = {
   "address": AncestorFlags.Paragraph,
   "article": AncestorFlags.Paragraph,
   "aside": AncestorFlags.Paragraph,
@@ -199,7 +198,7 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
   if ((flags & (VNodeFlags.Element | VNodeFlags.Text)) !== 0) {
     const tagName = ((flags & VNodeFlags.Text) !== 0) ? "$t" : vnode._t as string;
 
-    const validChildren = validChildList![parentTagName];
+    const validChildren = VALID_CHILDREN[parentTagName];
     if (validChildren) {
       for (const validTagName of validChildren) {
         if (tagName === validTagName) {
@@ -211,16 +210,16 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
     }
 
     if (tagName !== "$t") {
-      const invalidAncestorFlags = invalidAncestorList[tagName];
+      const invalidAncestorFlags = INVALID_ANCESTOR_LIST[tagName];
       if (invalidAncestorFlags !== undefined && ((ancestorFlags & invalidAncestorFlags) !== 0)) {
         throw Error(`HTML child nesting rule violation: <${tagName}> element has invalid ` +
           `ancestor [${ancestorFlagsToTagNames(invalidAncestorFlags).join(", ")}].\n`);
       }
     }
 
-    ancestorFlags |= AncestorFlagsByTagName[parentTagName];
+    ancestorFlags |= ANCESTOR_FLAGS_BY_TAG_NAME[parentTagName];
 
-    let child: VNode | null = vnode._c;
+    let child = vnode._c;
     while (child !== null) {
       visitNode(child, parentTagName, ancestorFlags);
       child = child._r;
@@ -231,7 +230,7 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
-    visitNode(vnode._c as VNode, parentTagName, ancestorFlags);
+    visitNode(vnode._c!, parentTagName, ancestorFlags);
   }
 }
 
@@ -241,7 +240,9 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
  * @throws Error when child nesting rules are violated.
  */
 export function checkNestingViolations(parent: Element, root: VNode): void {
-  const parentTagName = (parent as Element).tagName.toLowerCase();
-  const ancestorFlags = calculateAncestorFlags(parent as Element);
-  visitNode(root, parentTagName, ancestorFlags);
+  visitNode(
+    root,
+    parent.tagName.toLowerCase(),
+    calculateAncestorFlags(parent),
+  );
 }
