@@ -1,4 +1,4 @@
-import { VNode } from "ivi";
+import { VNode, VNodeFlags } from "ivi";
 import * as h from "ivi-html";
 
 const Elements: { [name: string]: (className?: string) => VNode<any> } = {
@@ -137,6 +137,17 @@ describe("HTML elemenets", () => {
         const n = factory("abc");
         expect(n._cs).toBe("abc");
       });
+    }
+  });
+
+  test(`unique tag id`, () => {
+    const index = new Map<number, string>();
+    for (const name of Object.keys(Elements)) {
+      const factory = Elements[name];
+      const n = factory();
+      const tagId = (n._f & VNodeFlags.ElementIdMask);
+      expect(index.get(tagId)).toBeUndefined();
+      index.set(tagId, n._t as string);
     }
   });
 });

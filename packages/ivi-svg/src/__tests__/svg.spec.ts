@@ -211,4 +211,15 @@ describe("src/index.ts", () => {
       });
     }
   });
+
+  test(`unique tag id`, () => {
+    const index = new Map<number, string>();
+    for (const name of Object.keys(Elements)) {
+      const factory = Elements[name];
+      const n = factory();
+      const tagId = (n._f & VNodeFlags.ElementIdMask);
+      expect(index.get(tagId)).toBeUndefined();
+      index.set(tagId, n._t as string);
+    }
+  });
 });
