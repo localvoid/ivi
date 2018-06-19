@@ -117,11 +117,10 @@ export function UNSAFE_HTML(v: string | undefined): SyncableValue<string> {
  * @param next - Next value
  */
 function syncUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string) {
-  if (
-    (prev !== next) ||
-    (prev === void 0 && next !== "")
-  ) {
-    element.innerHTML = next!;
+  if (prev !== next) {
+    if (prev !== void 0 || next !== "") {
+      element.innerHTML = next!;
+    }
   }
 }
 
