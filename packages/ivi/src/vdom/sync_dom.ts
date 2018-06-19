@@ -52,21 +52,23 @@ function syncDOMAttr(
   prev: string | number | boolean | SyncableValue<any> | undefined,
   next: string | number | boolean | SyncableValue<any> | undefined,
 ): void {
-  if (typeof next === "object") {
-    next.s(
-      element,
-      key,
-      prev === void 0 ? void 0 : (prev as SyncableValue<any>).v,
-      next.v,
-    );
-  } else if (prev !== next) {
-    if (typeof next === "boolean") {
-      next = next ? "" : void 0;
-    }
-    if (next === void 0) {
-      elementRemoveAttribute.call(element, key);
+  if (prev !== next) {
+    if (typeof next === "object") {
+      next.s(
+        element,
+        key,
+        prev === void 0 ? void 0 : (prev as SyncableValue<any>).v,
+        next.v,
+      );
     } else {
-      elementSetAttribute.call(element, key, next);
+      if (typeof next === "boolean") {
+        next = next ? "" : void 0;
+      }
+      if (next === void 0) {
+        elementRemoveAttribute.call(element, key);
+      } else {
+        elementSetAttribute.call(element, key, next);
+      }
     }
   }
 }
