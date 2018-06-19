@@ -1,12 +1,6 @@
-/**
- * DO NOT MOVE THIS FUNCTIONS TO SEPARATE MODULES!
- *
- * There are so many circular dependencies between functions in this module, so just leave it all here instead of
- * creating many circular dependencies between JS modules.
- */
-
 import {
-  SVG_NAMESPACE, nodeRemoveChild, nodeInsertBefore, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
+  CSSStyleProps, SyncableValue, SVG_NAMESPACE,
+  nodeRemoveChild, nodeInsertBefore, elementRemoveAttribute, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
 } from "ivi-core";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { VNodeFlags, ComponentFlags } from "./flags";
@@ -14,7 +8,6 @@ import { VNode, getDOMNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
 import { StatelessComponent } from "./stateless_component";
 import { StatefulComponent, Component } from "./stateful_component";
-import { syncDOMAttrs, syncStyle } from "./sync_dom";
 
 /**
  * Removes VNode.
@@ -161,14 +154,14 @@ export function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContex
  * `detach()` lifecycle methods will be invoked for all children and their subtrees.
  *
  * @param parent - Parent DOM element
- * @param firstVNode - First Virtual DOM node
+ * @param vnode - First Virtual DOM node
  */
-function _removeAllChildren(parent: Node, firstVNode: VNode): void {
+function _removeAllChildren(parent: Node, vnode: VNode): void;
+function _removeAllChildren(parent: Node, vnode: VNode | null): void {
   parent.textContent = "";
-  let vnode: VNode | null = firstVNode;
   do {
-    _detach(vnode);
-    vnode = vnode._r;
+    _detach(vnode!);
+    vnode = vnode!._r;
   } while (vnode !== null);
 }
 
@@ -236,7 +229,7 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
         }
 
         if (props !== void 0) {
-          syncDOMAttrs(node as Element, void 0, props);
+          syncAttrs(node as Element, void 0, props);
         }
         if (vnode._s !== void 0) {
           syncStyle(node as HTMLElement, void 0, vnode._s);
@@ -394,7 +387,7 @@ export function _sync(
           }
 
           if (aProps !== bProps) {
-            syncDOMAttrs(instance as Element, aProps, bProps);
+            syncAttrs(instance as Element, aProps, bProps);
           }
           if (a._s !== b._s) {
             syncStyle(instance as HTMLElement, a._s, b._s);
@@ -407,9 +400,9 @@ export function _sync(
                 bChild = bChild!._r;
               } while (bChild !== null);
             } else if (bChild === null) {
-              _removeAllChildren(instance as Element, aChild as VNode);
+              _removeAllChildren(instance as Element, aChild!);
             } else {
-              _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
+              _syncChildrenTrackByKeys(instance as Element, aChild!, bChild!, context, dirtyContext);
             }
           }
         } else { // VNodeFlags.StatefulComponent
@@ -428,7 +421,7 @@ export function _sync(
           ) {
             _sync(
               parent,
-              aChild as VNode,
+              aChild!,
               b._c = DEBUG ?
                 shouldBeSingleVNode((instance as Component<any>).render()) :
                 /* istanbul ignore next */(instance as Component<any>).render(),
@@ -1007,6 +1000,105 @@ function lis(a: number[]): number[] {
   }
 
   return result;
+}
+
+/**
+ * Sync DOM styles.
+ *
+ * @param node - HTML or SVG Element
+ * @param a - Prev styles
+ * @param b - Next styles
+ */
+function syncStyle(
+  node: HTMLElement | SVGElement,
+  a: CSSStyleProps | undefined,
+  b: CSSStyleProps | undefined,
+): void {
+  const style = node.style;
+  let key: string;
+  let bValue;
+
+  if (a === void 0) {
+    // a is empty, insert all styles from b.
+    for (key in b!) {
+      bValue = (b as { [key: string]: string })[key];
+      if (bValue !== void 0) {
+        style.setProperty(key, bValue);
+      }
+    }
+  } else if (b !== void 0) {
+    for (key in b) {
+      bValue = (b as { [key: string]: string })[key];
+      if ((a as { [key: string]: string })[key] !== bValue) {
+        if (bValue !== void 0) {
+          style.setProperty(key, bValue);
+        } else {
+          style.removeProperty(key);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Set DOM attribute.
+ *
+ * @param element - DOM Element
+ * @param key - Attribute name
+ * @param prev - Previous value
+ * @param next - Next value
+ */
+function syncAttr(
+  element: Element,
+  key: string,
+  prev: string | number | boolean | SyncableValue<any> | undefined,
+  next: string | number | boolean | SyncableValue<any> | undefined,
+): void {
+  if (prev !== next) {
+    if (typeof next === "object") {
+      next.s(
+        element,
+        key,
+        prev === void 0 ? void 0 : (prev as SyncableValue<any>).v,
+        next.v,
+      );
+    } else {
+      if (typeof next === "boolean") {
+        next = next ? "" : void 0;
+      }
+      if (next === void 0) {
+        elementRemoveAttribute.call(element, key);
+      } else {
+        elementSetAttribute.call(element, key, next);
+      }
+    }
+  }
+}
+
+/**
+ * Sync DOM attributes.
+ *
+ * @param element - DOM element
+ * @param a - Prev DOM properties
+ * @param b - Next DOM properties
+ */
+function syncAttrs(
+  element: Element,
+  a: { [key: string]: string | number | boolean | SyncableValue<any> | undefined } | undefined,
+  b: { [key: string]: string | number | boolean | SyncableValue<any> | undefined } | undefined,
+): void {
+  let key: string;
+
+  if (a === void 0) {
+    // a is empty, insert all attributes from b.
+    for (key in b!) {
+      syncAttr(element, key, void 0, b![key]);
+    }
+  } else if (b !== void 0) {
+    for (key in b) {
+      syncAttr(element, key, a[key], b[key]);
+    }
+  }
 }
 
 /**

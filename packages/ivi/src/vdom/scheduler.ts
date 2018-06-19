@@ -1,7 +1,7 @@
 import { IOS_GESTURE_EVENT, NOOP, unorderedArrayDelete, catchError } from "ivi-core";
 import { InvalidateFlags, InvalidateFunction } from "./invalidate";
 import { VNode } from "./vnode";
-import { _render, _sync, _remove, _dirtyCheck } from "./implementation";
+import { _render, _sync, _remove, _dirtyCheck } from "./sync";
 import { ROOTS, findRoot } from "./root";
 import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
 
@@ -25,6 +25,12 @@ let _dirty = 0;
 
 /**
  * Basic synchronous invalidation handler.
+ *
+ * @example
+ *
+ *   import { setupScheduler, invalidateHandler } from "ivi";
+ *
+ *   setupScheduler(invalidateHandler);
  */
 export const invalidateHandler = catchError(() => {
   _dirty |= 2;

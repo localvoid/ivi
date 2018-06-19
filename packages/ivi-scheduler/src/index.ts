@@ -359,9 +359,9 @@ export function currentFrameRead(task: () => void): void {
  * @example
  *
  *   import { setupScheduler } from "ivi";
- *   import { invalidate } from "ivi-scheduler";
+ *   import { invalidateHandler } from "ivi-scheduler";
  *
- *   setupScheduler(invalidate);
+ *   setupScheduler(invalidateHandler);
  */
 export function invalidateHandler() {
   currentFrameDirtyCheck();
@@ -373,9 +373,9 @@ export function invalidateHandler() {
  * @example
  *
  *   import { setupScheduler } from "ivi";
- *   import { invalidateNextFrame } from "ivi-scheduler";
+ *   import { invalidateHandlerNextFrame } from "ivi-scheduler";
  *
- *   setupScheduler(invalidateNextFrame);
+ *   setupScheduler(invalidateHandlerNextFrame);
  */
 export function invalidateHandlerNextFrame(flags?: InvalidateFlags) {
   if (flags !== void 0 && (flags & InvalidateFlags.RequestSyncUpdate)) {
