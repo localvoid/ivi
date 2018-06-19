@@ -5,11 +5,11 @@ import {
   EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE,
   removeBeforeNativeEvent, beforeNativeEvent,
 } from "ivi";
+import { beforeUpdate } from "ivi-scheduler";
 import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_event";
 import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { debugPubTouchState } from "./debug";
-import { beforeUpdate } from "ivi-scheduler";
 
 /**
  * id 1 is reserved for mouse, and touch identifiers can start from 0.

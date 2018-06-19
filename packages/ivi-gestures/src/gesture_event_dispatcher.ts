@@ -2,13 +2,13 @@ import { TOUCH_EVENTS, catchError } from "ivi-core";
 import {
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventDispatcher, EventHandler, dispatchEvent,
 } from "ivi";
+import { scheduleMicrotask } from "ivi-scheduler";
 import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_event";
 import { GestureBehavior } from "./gesture_behavior";
 import { createMouseEventListener } from "./mouse_event_listener";
 import { createTouchEventListener } from "./touch_event_listener";
 import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
 import { GestureControllerAction, GestureController } from "./gesture_controller";
-import { scheduleMicrotask } from "ivi-scheduler";
 import { NativeEventListenerFlags } from "./native_event_listener";
 import { debugPubDispatcherState } from "./debug";
 

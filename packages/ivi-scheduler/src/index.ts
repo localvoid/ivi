@@ -1,8 +1,7 @@
 import {
   RepeatableTaskList, runRepeatableTasks, catchError, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED,
 } from "ivi-core";
-import { dirtyCheck } from "ivi";
-import { InvalidateFlags } from "../../ivi/src/vdom/invalidate";
+import { InvalidateFlags, dirtyCheck } from "ivi";
 
 /**
  * Scheduler flags.
