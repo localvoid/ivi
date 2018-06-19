@@ -181,7 +181,7 @@ export class VNode<P = any, N = Node> {
 
       if (n !== null) {
         if (typeof n !== "object") {
-          n = new VNode<string | number>(VNodeFlags.Text, null, n, "", void 0);
+          n = t(n);
         }
         const last = n._l;
         const flags = n._f;
@@ -221,6 +221,16 @@ export class VNode<P = any, N = Node> {
 
     return this;
   }
+}
+
+/**
+ * Create a VNode representing a Text node.
+ *
+ * @param content Text content.
+ * @returns VNode object.
+ */
+export function t(content: string | number): VNode<string | number, Text> {
+  return new VNode(VNodeFlags.Text, null, content, "", void 0);
 }
 
 /**

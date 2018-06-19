@@ -246,18 +246,7 @@ export function CHECKED(v: boolean | undefined): SyncableValue<boolean> {
     v ? CHECKED_TRUE : CHECKED_FALSE;
 }
 
-/**
- * Create a VNode representing a Text node.
- *
- * @param content Text content.
- * @returns VNode object.
- */
-export function t(content: string | number): VNode<string | number, Text> {
-  return new VNode(VNodeFlags.Text, null, content, "", void 0);
-}
-
 /* tslint:disable:max-line-length */
-
 export function a(className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSStyleProps): VNode<HTMLAnchorElementAttrs | undefined, HTMLAnchorElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.A << VNodeFlags.ElementIdOffset),

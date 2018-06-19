@@ -1,3 +1,4 @@
+import { t } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
@@ -5,17 +6,17 @@ test(`#1`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.div().c(
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("c").k(1),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("c").k(1),
+        t("d"),
       ));
       const b = r(h.div().c(
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("c").k(1),
-        h.t("e").k(2),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("c").k(1),
+        t("e").k(2),
+        t("d"),
       ));
 
       expect(b).toMatchSnapshot();
@@ -28,15 +29,15 @@ test(`#2`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.div().c(
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("c").k(1),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("c").k(1),
+        t("d"),
       ));
       const b = r(h.div().c(
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("d"),
       ));
 
       expect(b).toMatchSnapshot();
@@ -49,16 +50,16 @@ test(`#3`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.div().c(
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("c").k(1),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("c").k(1),
+        t("d"),
       ));
       const b = r(h.div().c(
-        h.t("a"),
-        h.t("c").k(1),
-        h.t("b").k(0),
-        h.t("d"),
+        t("a"),
+        t("c").k(1),
+        t("b").k(0),
+        t("d"),
       ));
 
       expect(b).toMatchSnapshot();
@@ -71,18 +72,18 @@ test(`#4`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.div().c(
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("e"),
-        h.t("c").k(1),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("e"),
+        t("c").k(1),
+        t("d"),
       ));
       const b = r(h.div().c(
-        h.t("a"),
-        h.t("c").k(1),
-        h.t("e"),
-        h.t("b").k(0),
-        h.t("d"),
+        t("a"),
+        t("c").k(1),
+        t("e"),
+        t("b").k(0),
+        t("d"),
       ));
 
       expect(b).toMatchSnapshot();
@@ -95,15 +96,15 @@ test(`#5`, () => {
   startRender((r) => {
     checkDOMOps((c) => {
       r(h.div().c(
-        h.t("a").k(0),
-        h.t("b"),
-        h.t("c"),
-        h.t("d").k(1),
+        t("a").k(0),
+        t("b"),
+        t("c"),
+        t("d").k(1),
       ));
       const b = r(h.div().c(
         null,
-        h.t("b"),
-        h.t("c"),
+        t("b"),
+        t("c"),
         null,
       ));
 
@@ -118,15 +119,15 @@ test(`#6`, () => {
     checkDOMOps((c) => {
       r(h.div().c(
         null,
-        h.t("b"),
-        h.t("c"),
+        t("b"),
+        t("c"),
         null,
       ));
       const b = r(h.div().c(
-        h.t("a").k(0),
-        h.t("b"),
-        h.t("c"),
-        h.t("d").k(1),
+        t("a").k(0),
+        t("b"),
+        t("c"),
+        t("d").k(1),
       ));
 
       expect(b).toMatchSnapshot();
@@ -140,23 +141,23 @@ test(`#7`, () => {
     checkDOMOps((c) => {
       r(h.div().c(
         null,
-        h.t("b"),
-        h.t("c"),
+        t("b"),
+        t("c"),
         null,
       ));
       const b = r(h.div().c(
-        h.t("a").k(0),
-        h.t("b"),
-        h.t("c"),
-        h.t("d").k(1),
-        h.t("e").k(2),
-        h.t("f").k(3),
-        h.t("g").k(4),
-        h.t("h").k(5),
-        h.t("i").k(6),
-        h.t("j").k(7),
-        h.t("k").k(8),
-        h.t("l").k(9),
+        t("a").k(0),
+        t("b"),
+        t("c"),
+        t("d").k(1),
+        t("e").k(2),
+        t("f").k(3),
+        t("g").k(4),
+        t("h").k(5),
+        t("i").k(6),
+        t("j").k(7),
+        t("k").k(8),
+        t("l").k(9),
       ));
 
       expect(b).toMatchSnapshot();
@@ -170,19 +171,19 @@ test(`#8`, () => {
     checkDOMOps((c) => {
       r(h.div().c(
         h.div(),
-        h.t("a"),
-        h.t("b").k(0),
-        h.t("e"),
-        h.t("c").k(1),
-        h.t("d"),
+        t("a"),
+        t("b").k(0),
+        t("e"),
+        t("c").k(1),
+        t("d"),
         h.div(),
       ));
       const b = r(h.div().c(
-        h.t("a"),
-        h.t("c").k(1),
-        h.t("e"),
-        h.t("b").k(0),
-        h.t("d"),
+        t("a"),
+        t("c").k(1),
+        t("e"),
+        t("b").k(0),
+        t("d"),
       ));
 
       expect(b).toMatchSnapshot();

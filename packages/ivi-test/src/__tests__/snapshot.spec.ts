@@ -1,10 +1,11 @@
+import { t } from "ivi";
 import { virtualRender as render } from "ivi-test";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
 
 describe("src/snapshot.ts", () => {
   test("'abc'", () => {
-    expect(render(h.t("abc")).toSnapshot()).toMatchSnapshot();
+    expect(render(t("abc")).toSnapshot()).toMatchSnapshot();
   });
 
   test("<div>", () => {

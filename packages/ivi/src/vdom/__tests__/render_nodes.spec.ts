@@ -1,5 +1,5 @@
 import { SVG_NAMESPACE } from "ivi-core";
-import { render } from "ivi";
+import { render, t } from "ivi";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
 import { startRender } from "./utils";
@@ -7,7 +7,7 @@ import { startRender } from "./utils";
 describe(`TextNode`, () => {
   test(`"abc"`, () => {
     startRender((r) => {
-      const n = r(h.t("abc"));
+      const n = r(t("abc"));
 
       expect(n.nodeValue).toBe("abc");
     });

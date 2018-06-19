@@ -1,5 +1,5 @@
 import { VNodeFlags } from "./flags";
-import { VNode } from "./vnode";
+import { VNode, t } from "./vnode";
 
 /**
  * fragment is a variadic function that creates a children collection.
@@ -54,7 +54,7 @@ export function fragment(): VNode | null {
 
     if (n !== null) {
       if (typeof n !== "object") {
-        n = new VNode<string | number>(VNodeFlags.Text, null, n, "", void 0);
+        n = t(n);
       }
       const last = n._l;
       if (prev !== null) {

@@ -1,4 +1,4 @@
-import { EventHandler, VNodeFlags, VNode, UNSAFE_HTML, getComponent } from "ivi";
+import { EventHandler, VNodeFlags, VNode, t, UNSAFE_HTML, getComponent } from "ivi";
 import * as h from "ivi-html";
 
 test(`element flags`, () => {
@@ -71,8 +71,8 @@ test(`assigning children to element with unsafeHTML should raise an exception`, 
 test(`children with duplicate keys should raise an exception`, () => {
   expect(() => (
     h.div().c(
-      h.t("").k("a"),
-      h.t("").k("a"),
+      t("").k("a"),
+      t("").k("a"),
     )
   )).toThrow(Error);
 });

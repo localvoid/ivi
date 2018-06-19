@@ -1,4 +1,4 @@
-import { Component, VNode, statelessComponent, withShouldUpdate, statefulComponent } from "ivi";
+import { Component, VNode, t, statelessComponent, withShouldUpdate, statefulComponent } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkLifecycle, lifecycleTouch } from "./utils";
 
@@ -130,13 +130,13 @@ function Lifecycle(
     }
     return LifecycleTester({
       id: id,
-      child: h.t(""),
+      child: t(""),
       hooks: p1 as ComponentHooks<LifecycleTesterProps>,
     });
   }
   return LifecycleTester({
     id: id,
-    child: h.t(""),
+    child: t(""),
     hooks: {},
   });
 }

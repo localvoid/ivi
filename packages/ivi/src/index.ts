@@ -9,7 +9,7 @@ export { StatelessComponent } from "./vdom/stateless_component";
 export { StatefulComponent, Component, isComponentAttached } from "./vdom/stateful_component";
 export { ConnectDescriptor } from "./vdom/connect_descriptor";
 export {
-  VNode,
+  VNode, t,
   getDOMNode, getComponent,
   stopDirtyChecking,
 } from "./vdom/vnode";

@@ -1,5 +1,4 @@
-import { VNode, statelessComponent, connect, context, withShouldUpdate } from "ivi";
-import * as h from "ivi-html";
+import { VNode, t, statelessComponent, connect, context, withShouldUpdate } from "ivi";
 import { startRender } from "./utils";
 
 const Static = withShouldUpdate(
@@ -9,7 +8,7 @@ const Static = withShouldUpdate(
 
 const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
   (prev, props, ctx) => ({ value: ctx.value }),
-  (props) => h.t(props.value),
+  (props) => t(props.value),
 );
 
 test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {

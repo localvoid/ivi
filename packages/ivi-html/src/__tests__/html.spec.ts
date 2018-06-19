@@ -119,32 +119,24 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
   "video": h.video,
 };
 
-describe("src/index.ts", () => {
-  test("text", () => {
-    const text = h.t("abc");
-    expect((text._f & VNodeFlags.Text) !== 0).toBe(true);
-    expect(text._p).toBe("abc");
+describe("HTML elemenets", () => {
+  describe("tag name", () => {
+    for (const name of Object.keys(Elements)) {
+      const factory = Elements[name];
+      test(`${name}`, () => {
+        const n = factory();
+        expect(n._t).toBe(name);
+      });
+    }
   });
 
-  describe("elements", () => {
-    describe("tag name", () => {
-      for (const name of Object.keys(Elements)) {
-        const factory = Elements[name];
-        test(`${name}`, () => {
-          const n = factory();
-          expect(n._t).toBe(name);
-        });
-      }
-    });
-
-    describe("class name", () => {
-      for (const name of Object.keys(Elements)) {
-        const factory = Elements[name];
-        test(`${name}`, () => {
-          const n = factory("abc");
-          expect(n._cs).toBe("abc");
-        });
-      }
-    });
+  describe("class name", () => {
+    for (const name of Object.keys(Elements)) {
+      const factory = Elements[name];
+      test(`${name}`, () => {
+        const n = factory("abc");
+        expect(n._cs).toBe("abc");
+      });
+    }
   });
 });
