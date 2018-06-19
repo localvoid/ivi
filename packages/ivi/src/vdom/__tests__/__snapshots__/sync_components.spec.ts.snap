@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`#1 1`] = `<div />`;
+exports[`sync components #1 1`] = `<div />`;
 
-exports[`#1 2`] = `
+exports[`sync components #1 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -14,9 +14,9 @@ Object {
 }
 `;
 
-exports[`#2 1`] = `<div />`;
+exports[`sync components #2 1`] = `<div />`;
 
-exports[`#2 2`] = `
+exports[`sync components #2 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -28,9 +28,9 @@ Object {
 }
 `;
 
-exports[`#3 1`] = `<div />`;
+exports[`sync components #3 1`] = `<div />`;
 
-exports[`#3 2`] = `
+exports[`sync components #3 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -42,9 +42,9 @@ Object {
 }
 `;
 
-exports[`#4 1`] = `<span />`;
+exports[`sync components #4 1`] = `<span />`;
 
-exports[`#4 2`] = `
+exports[`sync components #4 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -56,9 +56,9 @@ Object {
 }
 `;
 
-exports[`#5 1`] = `<div />`;
+exports[`sync components #5 1`] = `<div />`;
 
-exports[`#5 2`] = `
+exports[`sync components #5 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -70,9 +70,9 @@ Object {
 }
 `;
 
-exports[`#6 1`] = `<span />`;
+exports[`sync components #6 1`] = `<span />`;
 
-exports[`#6 2`] = `
+exports[`sync components #6 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -84,9 +84,9 @@ Object {
 }
 `;
 
-exports[`#7 1`] = `<div />`;
+exports[`sync components #7 1`] = `<div />`;
 
-exports[`#7 2`] = `
+exports[`sync components #7 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -98,9 +98,9 @@ Object {
 }
 `;
 
-exports[`#8 1`] = `<div />`;
+exports[`sync components #8 1`] = `<div />`;
 
-exports[`#8 2`] = `
+exports[`sync components #8 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -112,9 +112,9 @@ Object {
 }
 `;
 
-exports[`#9 1`] = `<div />`;
+exports[`sync components #9 1`] = `<div />`;
 
-exports[`#9 2`] = `
+exports[`sync components #9 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -126,9 +126,9 @@ Object {
 }
 `;
 
-exports[`#10 1`] = `<div />`;
+exports[`sync components #10 1`] = `<div />`;
 
-exports[`#10 2`] = `
+exports[`sync components #10 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -140,9 +140,9 @@ Object {
 }
 `;
 
-exports[`#11 1`] = `<div />`;
+exports[`sync components #11 1`] = `<div />`;
 
-exports[`#11 2`] = `
+exports[`sync components #11 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -154,9 +154,9 @@ Object {
 }
 `;
 
-exports[`#12 1`] = `<span />`;
+exports[`sync components #12 1`] = `<span />`;
 
-exports[`#12 2`] = `
+exports[`sync components #12 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -168,9 +168,9 @@ Object {
 }
 `;
 
-exports[`#13 1`] = `<div />`;
+exports[`sync components #13 1`] = `<div />`;
 
-exports[`#13 2`] = `
+exports[`sync components #13 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -182,9 +182,9 @@ Object {
 }
 `;
 
-exports[`#14 1`] = `<span />`;
+exports[`sync components #14 1`] = `<span />`;
 
-exports[`#14 2`] = `
+exports[`sync components #14 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -196,9 +196,9 @@ Object {
 }
 `;
 
-exports[`#15 1`] = `<div />`;
+exports[`sync components #15 1`] = `<div />`;
 
-exports[`#15 2`] = `
+exports[`sync components #15 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -210,11 +210,11 @@ Object {
 }
 `;
 
-exports[`#16 1`] = `<div />`;
+exports[`sync components #16 1`] = `<div />`;
 
-exports[`#17 1`] = `<div />`;
+exports[`sync components #17 1`] = `<div />`;
 
-exports[`#17 2`] = `
+exports[`sync components #17 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -226,9 +226,9 @@ Object {
 }
 `;
 
-exports[`#18 1`] = `<div />`;
+exports[`sync components #18 1`] = `<div />`;
 
-exports[`#18 2`] = `
+exports[`sync components #18 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -240,9 +240,9 @@ Object {
 }
 `;
 
-exports[`#19 1`] = `<div />`;
+exports[`sync components #19 1`] = `<div />`;
 
-exports[`#19 2`] = `
+exports[`sync components #19 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -254,9 +254,9 @@ Object {
 }
 `;
 
-exports[`#20 1`] = `<div />`;
+exports[`sync components #20 1`] = `<div />`;
 
-exports[`#20 2`] = `
+exports[`sync components #20 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,

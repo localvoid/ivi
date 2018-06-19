@@ -1,125 +1,135 @@
-import { connect, context, stopDirtyChecking } from "ivi";
-import * as h from "ivi-html";
-import { startRender } from "./utils";
-import { invalidate } from "../scheduler";
+describe(`dirty checking`, () => {
+  /* tslint:disable:whitespace */
+  let ivi: typeof import("ivi");
+  let html: typeof import("ivi-html");
+  let utils: typeof import("./utils");
+  /* tslint:enable:whitespace */
 
-test(`identical node should trigger dirty checking`, () => {
-  startRender((r) => {
-    let triggered = 0;
-    const c = connect(
-      () => (triggered++),
-      () => h.div(),
-    );
-
-    const v = (
-      h.div().c(
-        c(),
-      )
-    );
-
-    r(v);
-    r(v);
-
-    expect(triggered).toBe(2);
+  beforeEach(async () => {
+    jest.resetModules();
+    ivi = await import("ivi");
+    html = await import("ivi-html");
+    utils = await import("./utils");
   });
-});
 
-test(`stopDirtyChecking should stop dirty checking`, () => {
-  startRender((r) => {
-    let triggered = 0;
-    const c = connect(
-      () => (triggered++),
-      () => h.div(),
-    );
+  test(`identical node should trigger dirty checking`, () => {
+    utils.startRender((r) => {
+      let triggered = 0;
+      const c = ivi.connect(
+        () => (triggered++),
+        () => html.div(),
+      );
 
-    const v = (
-      h.div().c(
-        stopDirtyChecking(
+      const v = (
+        html.div().c(
           c(),
-        ),
-      )
-    );
+        )
+      );
 
-    r(v);
-    r(v);
+      r(v);
+      r(v);
 
-    expect(triggered).toBe(1);
+      expect(triggered).toBe(2);
+    });
   });
-});
 
-test(`update context during dirty checking`, () => {
-  startRender((r) => {
-    let innerTest = -1;
-    let outerTest = -1;
-    const c = connect<number, undefined, { outer: number, inner: number }>(
-      (prev, _, { outer, inner }) => (innerTest = inner, outerTest = outer),
-      () => h.div(),
-    );
+  test(`ivi.stopDirtyChecking should stop dirty checking`, () => {
+    utils.startRender((r) => {
+      let triggered = 0;
+      const c = ivi.connect(
+        () => (triggered++),
+        () => html.div(),
+      );
 
-    const v = (
-      h.div().c(
-        context({ inner: 10 },
-          c(),
-        ),
-      )
-    );
+      const v = (
+        html.div().c(
+          ivi.stopDirtyChecking(
+            c(),
+          ),
+        )
+      );
 
-    r(context({ outer: 0, inner: 0 }, v));
+      r(v);
+      r(v);
 
-    expect(outerTest).toBe(0);
-    expect(innerTest).toBe(10);
-
-    r(context({ outer: 1, inner: 1 }, v));
-
-    expect(outerTest).toBe(1);
-    expect(innerTest).toBe(10);
+      expect(triggered).toBe(1);
+    });
   });
-});
 
-test(`update inner context during dirty checking`, () => {
-  startRender((r) => {
-    let i = 0;
-    let innerTest = -1;
-    const c = connect<number, undefined, { inner: number }>(
-      (prev, _, { inner }) => (innerTest = inner),
-      () => h.div(),
-    );
-    const incContext = connect(
-      () => i++,
-      (p) => context({ inner: p }, c()),
-    );
+  test(`update ivi.context during dirty checking`, () => {
+    utils.startRender((r) => {
+      let innerTest = -1;
+      let outerTest = -1;
+      const c = ivi.connect<number, undefined, { outer: number, inner: number }>(
+        (prev, _, { outer, inner }) => (innerTest = inner, outerTest = outer),
+        () => html.div(),
+      );
 
-    const v = (
-      h.div().c(
-        incContext(),
-      )
-    );
+      const v = (
+        html.div().c(
+          ivi.context({ inner: 10 },
+            c(),
+          ),
+        )
+      );
 
-    r(v);
+      r(ivi.context({ outer: 0, inner: 0 }, v));
 
-    expect(innerTest).toBe(0);
+      expect(outerTest).toBe(0);
+      expect(innerTest).toBe(10);
 
-    r(v);
+      r(ivi.context({ outer: 1, inner: 1 }, v));
 
-    expect(innerTest).toBe(1);
+      expect(outerTest).toBe(1);
+      expect(innerTest).toBe(10);
+    });
   });
-});
 
-test(`triggering dirty checking during render should rerun dirty checking`, () => {
-  startRender((r) => {
-    let i = 0;
-    const c = connect<null>(
-      () => {
-        if (i++ === 0) {
-          invalidate();
-        }
-        return null;
-      },
-      () => h.div(),
-    );
+  test(`update inner ivi.context during dirty checking`, () => {
+    utils.startRender((r) => {
+      let i = 0;
+      let innerTest = -1;
+      const C = ivi.connect<number, undefined, { inner: number }>(
+        (prev, _, { inner }) => (innerTest = inner),
+        () => html.div(),
+      );
+      const Context = ivi.connect(
+        () => i++,
+        (p) => ivi.context({ inner: p }, C()),
+      );
 
-    r(c());
+      const v = (
+        html.div().c(
+          Context(),
+        )
+      );
 
-    expect(i).toBe(2);
+      r(v);
+
+      expect(innerTest).toBe(0);
+
+      r(v);
+
+      expect(innerTest).toBe(1);
+    });
+  });
+
+  test(`triggering dirty checking during render should rerun dirty checking`, () => {
+    utils.startRender((r) => {
+      let i = 0;
+      const c = ivi.connect<null>(
+        () => {
+          if (i++ === 0) {
+            ivi.invalidate();
+          }
+          return null;
+        },
+        () => html.div(),
+      );
+
+      r(c());
+
+      expect(i).toBe(2);
+    });
   });
 });

@@ -30,23 +30,8 @@ export const invalidateHandler = catchError(() => {
   _dirty |= 2;
   while (_dirty === 2) {
     _dirty >>= 1;
-    /* istanbul ignore else */
-    if (DEBUG) {
-      /**
-       * Ugly workaround for tests that throw exceptions.
-       *
-       * TODO: in production we should freeze all current roots, reset internal state and make sure that error handlers
-       *   can generate error UIs.
-       */
-      try {
-        dirtyCheck();
-      } finally {
-        _dirty ^= 1;
-      }
-    } else {
-      dirtyCheck();
-      _dirty ^= 1;
-    }
+    dirtyCheck();
+    _dirty ^= 1;
   }
 });
 
