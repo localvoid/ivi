@@ -46,6 +46,22 @@ export const SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED = {
 };
 
 /**
+ * {@link SyncableValue} with `undefined` value and sync functions that removes `key` event.
+ */
+export const SYNCABLE_VALUE_REMOVE_EVENT_UNDEFINED = {
+  v: void 0,
+  s: (
+    element: Element,
+    key: string,
+    prev: ((ev: Event) => void) | undefined,
+  ) => {
+    if (prev !== void 0) {
+      element.removeEventListener(key, prev);
+    }
+  },
+};
+
+/**
  * PROPERTY function creates a {@link SyncableValue} that assigns a property to a property name derived from the `key`
  * of the attribute.
  *
@@ -100,10 +116,10 @@ export function UNSAFE_HTML(v: string | undefined): SyncableValue<string> {
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string | undefined) {
+function syncUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string) {
   if (
-    (prev === void 0 && next !== "") ||
-    (prev !== next)
+    (prev !== next) ||
+    (prev === void 0 && next !== "")
   ) {
     element.innerHTML = next!;
   }
@@ -113,7 +129,7 @@ function syncUnsafeHTML(element: Element, key: string, prev: string | undefined,
  * EVENT function creates a {@link SyncableValue} that assigns a native event handler derived from the `key` attribute
  * to an Element.
  *
- * `undefined` values are ignored.
+ * `undefined` values remove event listener.
  *
  * @example
  *
@@ -122,8 +138,8 @@ function syncUnsafeHTML(element: Element, key: string, prev: string | undefined,
  * @param v - Event handler
  * @returns {@link SyncableValue}
  */
-export function EVENT(v: (ev: Event) => void): SyncableValue<(ev: Event) => void> {
-  return (v === void 0) ? SYNCABLE_VALUE_SKIP_UNDEFINED : { v, s: syncEvent };
+export function EVENT(v: ((ev: Event) => void) | undefined): SyncableValue<(ev: Event) => void> {
+  return (v === void 0) ? SYNCABLE_VALUE_REMOVE_EVENT_UNDEFINED : { v, s: syncEvent };
 }
 
 /**
@@ -137,8 +153,8 @@ export function EVENT(v: (ev: Event) => void): SyncableValue<(ev: Event) => void
 function syncEvent(
   element: Element,
   key: string,
-  prev: (ev: Event) => void | undefined,
-  next: (ev: Event) => void | undefined,
+  prev: ((ev: Event) => void) | undefined,
+  next: ((ev: Event) => void),
 ) {
   if (prev !== next) {
     if (prev !== void 0) {
