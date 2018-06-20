@@ -18,9 +18,8 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Implicit data propagation with [contexts](https://github.com/localvoid/ivi/blob/master/documentation/general/context.md)
 - Extensible [synthetic event subsystem](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
 - Attaching DOM events to component nodes
-- Synchronous and deterministic syncing algorithm
-- Children reconciliation with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
-- Fast performance
+- Synchronous and deterministic syncing algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
+- Optional [scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
@@ -31,7 +30,7 @@ applications.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[uglify(terser)](https://github.com/fabiosantoscode/terser) is just a **2.5KB** (minified+compressed).
+[uglify(terser)](https://github.com/fabiosantoscode/terser) is just a **2.6KB** (minified+compressed).
 
 ## Performance
 
@@ -123,7 +122,7 @@ components aren't leaking any information about their DOM structure.
 #### Data Bindings per DOM Element
 
 ```
-Benchmark: ~0.5
+Benchmark: ~0.375
 Google Mail: ~2 (rough estimate, guessed by looking at DOM nodes in the document)
 ```
 
@@ -150,7 +149,7 @@ path has an additional advantage that it has a higher chances that this code pat
 #### Complex data transformations
 
 Since there are no complex data transformation in the benchmark, it is an ideal situation for libraries with
-fine-grained direct data bindings. Just bind an observable with DOM nodes directly and all problems solved.
+fine-grained direct data bindings. Just bind an observable value to DOM nodes directly and all problems are solved.
 
 But in real applcations there are complex data transformation that lose all information about data changes, servers are
 sending data snapshots that doesn't contain any information how nodes should be rearranged and many other use cases.
@@ -163,8 +162,10 @@ or [this one on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
 The smallest ivi example looks like this:
 
 ```js
-import { render } from "ivi";
+import { setupScheduler, invalidateHandler, render } from "ivi";
 import { h1 } from "ivi-html";
+
+setupScheduler(invalidateHandler);
 
 render(
   h1().c("Hello World!"),

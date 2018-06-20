@@ -201,23 +201,25 @@ function getComponent<T extends Component<any>>(node: VNode): T | null;
 
 `getComponent()` retrieves a stateful component instance from a virtual DOM node.
 
+## Invalidating View
+
+```ts
+const enum InvalidateFlags {
+  /**
+   * Forces synchronous update.
+   */
+  RequestSyncUpdate = 1,
+}
+
+function invalidate(flags?: InvalidateFlags);
+```
+
+`invalidate()` function triggers invalidate handler that performs a dirty checking.
+
 ## Rendering virtual DOM into a document
 
 ```ts
-function render(node: VNode<any> | null, container: Element): void;
-function renderNextFrame(node: VNode<any> | null, container: Element): void;
+function render(node: VNode<any> | null, container: Element, flags?: InvalidateFlags): void;
 ```
 
-`render()` and `renderNextFrame()` functions are used to render virtual DOM nodes into the document.
-
-When rendering virtual DOM nodes, `container` element should be always attached to the document.
-
-## Dirty checking
-
-```ts
-function update();
-function updateNextFrame();
-```
-
-`update()` and `updateNextFrame()` triggers a dirty checking. Dirty checking algorithm will check all connectors for
-changes and update all invalidated components.
+`render()` assigns a new virtual DOM root node to the `container` and invalidates the view.

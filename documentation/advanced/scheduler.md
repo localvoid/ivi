@@ -1,5 +1,20 @@
 # Scheduler
 
+`isi-scheduler` is an optional dependency that provides useful utilities to work with an event loop.
+
+## Setting Up Scheduler
+
+```ts
+import { setupScheduler } from "ivi";
+import { invalidateHandlerNextFrame } from "ivi-scheduler";
+
+setupScheduler(invalidateHandlerNextFrame);
+```
+
+By default, `ivi` is using a simple invalidate handler that synchronously performs a dirty checking when `invalidate()`
+function is invoked. `ivi-scheduler` has a much more advanced invalidate handler that uses frame tasks groups to execute
+different tasks.
+
 ## Microtasks and Tasks
 
 Scheduler provides functions to add callbacks to different
@@ -18,7 +33,7 @@ is looking like this:
 1. Execute `beforeUpdate` tasks once per frame.
 2. Execute `read` tasks until read task queue is empty.
 3. Execute `write` tasks until write task queue is empty.
-4. Update dirty components.
+4. Run dirty checking.
 5. Check that `write` tasks queue is empty, otherwise go to step 3.
 6. Check that `read` tasks queue is empty, otherwise go to step 2.
 7. Execute `afterUpdate` tasks once per frame.
