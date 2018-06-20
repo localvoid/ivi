@@ -120,8 +120,9 @@ export function dirtyCheck() {
  *
  * @param next - Virtual DOM node to render
  * @param container - DOM Node that will contain rendered node
+ * @param flags - See {@link InvalidateFlags} for details
  */
-export function render(next: VNode | null, container: Element): void {
+export function render(next: VNode | null, container: Element, flags?: InvalidateFlags): void {
   /* istanbul ignore else */
   if (DEBUG) {
     /**
@@ -142,5 +143,5 @@ export function render(next: VNode | null, container: Element): void {
     ROOTS.push({ container, next, current: null });
   }
 
-  invalidate();
+  invalidate(flags);
 }
