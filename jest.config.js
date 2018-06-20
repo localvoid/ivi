@@ -10,7 +10,7 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    "ivi-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
+    "ivi-scheduler": "<rootDir>/packages/ivi-scheduler/src/",
     "ivi-test-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
     "ivi-core": "<rootDir>/packages/ivi-core/src",
     "ivi-gestures": "<rootDir>/packages/ivi-gestures/src",
