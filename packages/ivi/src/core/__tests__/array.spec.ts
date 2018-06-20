@@ -1,4 +1,4 @@
-import { append, unorderedArrayDelete } from "ivi-core";
+import { append, unorderedArrayDelete } from "ivi";
 
 describe("array", () => {
   describe("append", () => {

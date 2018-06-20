@@ -1,8 +1,10 @@
 import {
-  CSSStyleProps, SyncableValue, SVG_NAMESPACE,
   nodeRemoveChild, nodeInsertBefore, elementRemoveAttribute, elementSetAttribute, nodeCloneNode, nodeReplaceChild,
-} from "ivi-core";
+} from "../core/shortcuts";
+import { SVG_NAMESPACE } from "../dom/namespaces";
+import { CSSStyleProps } from "../dom/style";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
+import { SyncableValue } from "./syncable_value";
 import { VNodeFlags, ComponentFlags } from "./flags";
 import { VNode, getDOMNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";

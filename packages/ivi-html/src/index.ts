@@ -17,8 +17,9 @@ import {
   CSSStyleProps,
 
   SYNCABLE_VALUE_SKIP_UNDEFINED,
-} from "ivi-core";
-import { VNode, VNodeFlags, SyncableValue } from "ivi";
+
+  VNode, VNodeFlags, SyncableValue,
+} from "ivi";
 
 const enum TagId {
   A = 1,

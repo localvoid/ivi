@@ -1,4 +1,4 @@
-import { nodeDepth, firstLeaf, nextSibling } from "ivi-core";
+import { nodeDepth, firstLeaf, nextSibling } from "ivi";
 
 describe("DOM", () => {
   const a = document.createElement("div");

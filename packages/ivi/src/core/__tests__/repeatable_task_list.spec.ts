@@ -1,4 +1,4 @@
-import { runRepeatableTasks } from "ivi-core";
+import { runRepeatableTasks } from "ivi";
 
 describe("RepeatableTaskList", () => {
   test("run one task", () => {

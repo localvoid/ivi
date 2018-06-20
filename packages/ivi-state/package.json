@@ -23,12 +23,11 @@
     "dist:es2016": "../../node_modules/.bin/tsc -p ./tsconfig.build.es2016.json",
     "dist:unpkg": "../../node_modules/.bin/webpack --config ./webpack.config.unpkg.js"
   },
-  "dependencies": {},
   "peerDependencies": {
-    "ivi-core": "^0.14.0"
+    "ivi": "^0.14.0"
   },
   "devDependencies": {
-    "ivi-core": "^0.14.0"
+    "ivi": "^0.14.0"
   },
   "description": "Basic application state management library for ivi",
   "license": "MIT",

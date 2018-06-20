@@ -17,8 +17,9 @@ import {
 
   elementSetAttributeNS, XML_NAMESPACE, XLINK_NAMESPACE,
   SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED,
-} from "ivi-core";
-import { VNode, VNodeFlags, SyncableValue } from "ivi";
+
+  VNode, VNodeFlags, SyncableValue,
+} from "ivi";
 
 const enum TagId {
   A = 1,

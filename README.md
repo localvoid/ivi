@@ -5,7 +5,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 |Package      |NPM version                                                                                                  |
 |-------------|-------------------------------------------------------------------------------------------------------------|
 |ivi          |[![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi)                    |
-|ivi-core     |[![npm version](https://img.shields.io/npm/v/ivi-core.svg)](https://www.npmjs.com/package/ivi-core)          |
 |ivi-scheduler|[![npm version](https://img.shields.io/npm/v/ivi-scheduler.svg)](https://www.npmjs.com/package/ivi-scheduler)|
 |ivi-html     |[![npm version](https://img.shields.io/npm/v/ivi-html.svg)](https://www.npmjs.com/package/ivi-html)          |
 |ivi-svg      |[![npm version](https://img.shields.io/npm/v/ivi-svg.svg)](https://www.npmjs.com/package/ivi-svg)            |

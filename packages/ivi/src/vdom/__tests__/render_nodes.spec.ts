@@ -1,5 +1,4 @@
-import { SVG_NAMESPACE } from "ivi-core";
-import { render, t } from "ivi";
+import { SVG_NAMESPACE, render, t } from "ivi";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
 import { startRender } from "./utils";

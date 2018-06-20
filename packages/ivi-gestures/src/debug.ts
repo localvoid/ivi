@@ -1,4 +1,4 @@
-import { debugPub } from "ivi-core";
+import { debugPub } from "ivi";
 import { GesturePointerEvent } from "./gesture_pointer_event";
 import { GestureRecognizer } from "./gesture_recognizer";
 import { NativeEventListenerFlags } from "./native_event_listener";

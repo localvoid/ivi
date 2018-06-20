@@ -1,4 +1,4 @@
-import { CSSStyleProps } from "ivi-core";
+import { CSSStyleProps } from "../dom/style";
 import { VNodeFlags } from "./flags";
 import { VNode } from "./vnode";
 

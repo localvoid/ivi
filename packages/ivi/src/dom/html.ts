@@ -1,4 +1,4 @@
-import { SyncableValue } from "../syncable_value";
+import { SyncableValue } from "../vdom/syncable_value";
 
 /* tslint:disable:max-line-length no-empty-interface */
 

@@ -17,9 +17,6 @@
       "ivi": [
         "packages/ivi/src"
       ],
-      "ivi-core": [
-        "packages/ivi-core/src"
-      ],
       "ivi-gestures": [
         "packages/ivi-gestures/src"
       ],

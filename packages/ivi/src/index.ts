@@ -1,9 +1,94 @@
-/**
- * Common types and functions re-exported from ivi-core.
- */
-export { KeyCode, KeyLocation, MouseButtons, SyncableValue, PROPERTY, UNSAFE_HTML, EVENT, _ } from "ivi-core";
+declare global {
+  /**
+   * Adds missing displayName.
+   */
+  interface Function {
+    displayName: string;
+  }
+
+  /**
+   * Additional properties available on iOS.
+   */
+  interface TouchEvent {
+    rotation: number;
+    scale: number;
+  }
+
+  const DEBUG: boolean;
+  const TARGET: string;
+}
+
+// Core
+export {
+  PASSIVE_EVENTS, KEYBOARD_EVENT_KEY, MOUSE_EVENT_BUTTONS, TOUCH_EVENTS, POINTER_EVENTS, INPUT_DEVICE_CAPABILITIES,
+  IOS_GESTURE_EVENT,
+} from "./core/feature_detection";
+export { Predicate } from "./core/predicate";
+export { getFunctionName } from "./core/function";
+export { addErrorHandler, catchError } from "./core/error";
+export {
+  objectHasOwnProperty,
+  nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
+  elementSetAttributeNS,
+  _,
+} from "./core/shortcuts";
+export { append, unorderedArrayDelete } from "./core/array";
+export { NOOP, NOOP_FALSE } from "./core/noop";
+export { RepeatableTaskList, runRepeatableTasks } from "./core/repeatable_task_list";
+export { shallowEqual } from "./core/equal";
+
+// DOM
+export {
+  SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE,
+} from "./dom/namespaces";
+export { CSSStyleProps } from "./dom/style";
+export {
+  HTMLAnchorElementAttrs, HTMLElementAttrs, HTMLAreaElementAttrs, HTMLAudioElementAttrs,
+  HTMLBaseElementAttrs, HTMLBodyElementAttrs, HTMLBRElementAttrs, HTMLButtonElementAttrs,
+  HTMLCanvasElementAttrs, HTMLQuoteElementAttrs, HTMLTableCaptionElementAttrs, HTMLTableColElementAttrs,
+  HTMLDataListElementAttrs, HTMLModElementAttrs, HTMLDivElementAttrs,
+  HTMLDListElementAttrs, HTMLEmbedElementAttrs, HTMLFieldSetElementAttrs, HTMLFormElementAttrs,
+  HTMLHeadElementAttrs, HTMLHeadingElementAttrs, HTMLHRElementAttrs,
+  HTMLHtmlElementAttrs, HTMLIFrameElementAttrs, HTMLImageElementAttrs, HTMLInputElementAttrs, HTMLLabelElementAttrs,
+  HTMLLegendElementAttrs, HTMLLIElementAttrs, HTMLLinkElementAttrs, HTMLMapElementAttrs,
+  HTMLMenuElementAttrs, HTMLMetaElementAttrs, HTMLMeterElementAttrs, HTMLObjectElementAttrs, HTMLOListElementAttrs,
+  HTMLOptGroupElementAttrs, HTMLOptionElementAttrs, HTMLParagraphElementAttrs, HTMLParamElementAttrs,
+  HTMLPictureElementAttrs, HTMLPreElementAttrs, HTMLProgressElementAttrs, HTMLScriptElementAttrs,
+  HTMLSelectElementAttrs, HTMLSourceElementAttrs, HTMLSpanElementAttrs, HTMLStyleElementAttrs,
+  HTMLTableDataCellElementAttrs, HTMLTableElementAttrs, HTMLTableHeaderCellElementAttrs, HTMLTableRowElementAttrs,
+  HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
+  HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLUnknownElementAttrs, HTMLVideoElementAttrs, HTMLMediaElementAttrs,
+} from "./dom/html";
+export {
+  SVGCircleElementAttrs, SVGClipPathElementAttrs, SVGDefsElementAttrs, SVGDescElementAttrs, SVGEllipseElementAttrs,
+  SVGFEBlendElementAttrs, SVGFEColorMatrixElementAttrs, SVGFEComponentTransferElementAttrs,
+  SVGFECompositeElementAttrs, SVGFEConvolveMatrixElementAttrs, SVGFEDiffuseLightingElementAttrs,
+  SVGFEDisplacementMapElementAttrs, SVGFEDistantLightElementAttrs, SVGFEFloodElementAttrs, SVGFEFuncAElementAttrs,
+  SVGFEFuncBElementAttrs, SVGFEFuncGElementAttrs, SVGFEFuncRElementAttrs, SVGFEGaussianBlurElementAttrs,
+  SVGFEImageElementAttrs, SVGFEMergeElementAttrs, SVGFEMergeNodeElementAttrs, SVGFEMorphologyElementAttrs,
+  SVGFEOffsetElementAttrs, SVGFEPointLightElementAttrs, SVGFESpecularLightingElementAttrs, SVGFESpotLightElementAttrs,
+  SVGFETileElementAttrs, SVGFETurbulenceElementAttrs, SVGFilterElementAttrs, SVGForeignObjectElementAttrs,
+  SVGGElementAttrs, SVGImageElementAttrs, SVGLinearGradientElementAttrs, SVGLineElementAttrs, SVGMarkerElementAttrs,
+  SVGMaskElementAttrs, SVGMetadataElementAttrs, SVGPathElementAttrs, SVGPatternElementAttrs, SVGPolygonElementAttrs,
+  SVGPolylineElementAttrs, SVGRadialGradientElementAttrs, SVGRectElementAttrs, SVGStopElementAttrs,
+  SVGSVGElementAttrs, SVGSwitchElementAttrs, SVGSymbolElementAttrs, SVGTextElementAttrs, SVGTextPathElementAttrs,
+  SVGTSpanElementAttrs, SVGViewElementAttrs, SVGUseElementAttrs, SVGElementAttrs,
+} from "./dom/svg";
+export {
+  KeyCode, KeyLocation, KeyName, MouseButtons,
+  getEventCharCode, getEventKey, getMouseButtons,
+} from "./dom/input";
+export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";
+
+// Debug
+export { debugSub, debugPub } from "./debug/pubsub";
 
 // Virtual DOM
+export {
+  SyncableValue,
+  SYNCABLE_VALUE_SKIP_UNDEFINED, SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED, SYNCABLE_VALUE_REMOVE_EVENT_UNDEFINED,
+  PROPERTY, UNSAFE_HTML, EVENT,
+} from "./vdom/syncable_value";
 export { VNodeFlags } from "./vdom/flags";
 export { StatelessComponent } from "./vdom/stateless_component";
 export { StatefulComponent, Component, isComponentAttached } from "./vdom/stateful_component";

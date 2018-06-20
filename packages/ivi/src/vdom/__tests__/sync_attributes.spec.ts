@@ -1,7 +1,7 @@
+import { XML_NAMESPACE, XLINK_NAMESPACE } from "ivi";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
 import { startRender } from "./utils";
-import { XML_NAMESPACE, XLINK_NAMESPACE } from "ivi-core";
 
 describe(`sync element attributes`, () => {
   test(`undefined => {}`, () => {

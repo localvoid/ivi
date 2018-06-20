@@ -1,5 +1,5 @@
-import { NOOP } from "./noop";
-import { elementRemoveAttribute } from "./shortcuts";
+import { NOOP } from "../core/noop";
+import { elementRemoveAttribute } from "../core/shortcuts";
 
 /**
  * Syncable values are providing an escape hatch for synchronization algorithm and open possibilities for applying any

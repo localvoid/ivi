@@ -1,5 +1,5 @@
-import { TOUCH_EVENTS, catchError } from "ivi-core";
 import {
+  TOUCH_EVENTS, catchError,
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventDispatcher, EventHandler, dispatchEvent,
 } from "ivi";
 import { scheduleMicrotask } from "ivi-scheduler";

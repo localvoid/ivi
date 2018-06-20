@@ -1,6 +1,5 @@
-import { unorderedArrayDelete } from "ivi-core";
 import { V2, v2, V2_ZERO, v2Sub, v2Distance } from "ivi-math";
-import { SyntheticEvent, SyntheticEventFlags } from "ivi";
+import { unorderedArrayDelete, SyntheticEvent, SyntheticEventFlags } from "ivi";
 import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_event";
 import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
 import { GestureController } from "./gesture_controller";

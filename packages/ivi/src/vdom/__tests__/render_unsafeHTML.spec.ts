@@ -1,4 +1,4 @@
-import { UNSAFE_HTML } from "ivi-core";
+import { UNSAFE_HTML } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
 

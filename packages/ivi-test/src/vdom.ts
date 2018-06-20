@@ -1,5 +1,5 @@
-import { CSSStyleProps, shallowEqual, Predicate } from "ivi-core";
 import {
+  CSSStyleProps, shallowEqual, Predicate,
   VNode, VNodeFlags, Component, StatefulComponent, StatelessComponent, ConnectDescriptor, EventDispatcher,
 } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";

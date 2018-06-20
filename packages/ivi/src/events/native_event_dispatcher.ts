@@ -1,4 +1,5 @@
-import { append, unorderedArrayDelete, catchError } from "ivi-core";
+import { append, unorderedArrayDelete } from "../core/array";
+import { catchError } from "../core/error";
 import { SyntheticEventFlags, NativeEventSourceFlags } from "./flags";
 import { EventDispatcher } from "./event_dispatcher";
 import { EventHandler } from "./event_handler";

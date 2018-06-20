@@ -1,9 +1,12 @@
-import { IOS_GESTURE_EVENT, NOOP, unorderedArrayDelete, catchError } from "ivi-core";
+import { IOS_GESTURE_EVENT } from "../core/feature_detection";
+import { NOOP } from "../core/noop";
+import { unorderedArrayDelete } from "../core/array";
+import { catchError } from "../core/error";
+import { checkNestingViolations } from "../debug/html_nesting_rules";
 import { InvalidateFlags, InvalidateFunction } from "./invalidate";
 import { VNode } from "./vnode";
 import { _render, _sync, _remove, _dirtyCheck } from "./sync";
 import { ROOTS, findRoot } from "./root";
-import { checkNestingViolations } from "../dev_mode/html_nesting_rules";
 
 /**
  * Invalidate function.

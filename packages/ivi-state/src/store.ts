@@ -1,4 +1,4 @@
-import { catchError } from "ivi-core";
+import { catchError } from "ivi";
 
 export interface Store<T, U> {
   state: T;

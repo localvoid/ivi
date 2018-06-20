@@ -1,11 +1,13 @@
-import { CSSStyleProps, NOOP, objectHasOwnProperty } from "ivi-core";
-import { checkVNodeConstructor, checkUniqueKeys } from "../dev_mode/vnode";
+import { NOOP } from "../core/noop";
+import { objectHasOwnProperty } from "../core/shortcuts";
+import { CSSStyleProps } from "../dom/style";
+import { isVoidElement } from "../debug/dom";
+import { checkVNodeConstructor, checkUniqueKeys } from "../debug/vnode";
 import { EventHandler } from "../events/event_handler";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent } from "./stateless_component";
 import { StatefulComponent, Component } from "./stateful_component";
 import { ConnectDescriptor } from "./connect_descriptor";
-import { isVoidElement } from "../dev_mode/dom";
 
 /**
  * Virtual DOM Node.

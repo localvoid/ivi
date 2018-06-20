@@ -1,4 +1,4 @@
-import { getFunctionName } from "ivi-core";
+import { getFunctionName } from "ivi";
 
 function wrap(fn: Function): Function {
   return fn;

@@ -1,4 +1,4 @@
-import { NOOP, NOOP_FALSE } from "ivi-core";
+import { NOOP, NOOP_FALSE } from "ivi";
 
 describe("NOOP", () => {
   test("NOOP => undefined", () => {

@@ -1,4 +1,4 @@
-import { PASSIVE_EVENTS } from "ivi-core";
+import { PASSIVE_EVENTS } from "../core/feature_detection";
 
 /* istanbul ignore next */
 /**

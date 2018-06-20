@@ -1,6 +1,6 @@
 import {
   PROPERTY, EVENT, SYNCABLE_VALUE_SKIP_UNDEFINED, SYNCABLE_VALUE_REMOVE_EVENT_UNDEFINED, UNSAFE_HTML,
-} from "../syncable_value";
+} from "ivi";
 
 describe(`Syncable Value`, () => {
   describe(`PROPERTY()`, () => {

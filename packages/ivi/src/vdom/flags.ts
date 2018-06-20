@@ -1,4 +1,3 @@
-
 /**
  * VNode flags.
  */

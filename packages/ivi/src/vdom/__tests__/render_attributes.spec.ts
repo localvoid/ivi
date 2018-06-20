@@ -1,4 +1,4 @@
-import { XML_NAMESPACE, XLINK_NAMESPACE } from "ivi-core";
+import { XML_NAMESPACE, XLINK_NAMESPACE } from "ivi";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
 import { startRender } from "./utils";

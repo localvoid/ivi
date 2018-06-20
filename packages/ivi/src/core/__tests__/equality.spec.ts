@@ -1,4 +1,4 @@
-import { shallowEqual } from "ivi-core";
+import { shallowEqual } from "ivi";
 
 describe("equality", () => {
   describe("isPropsNotShallowEqual", () => {

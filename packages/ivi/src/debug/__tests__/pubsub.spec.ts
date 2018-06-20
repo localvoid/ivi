@@ -1,4 +1,4 @@
-import { debugPub, debugSub } from "ivi-core";
+import { debugPub, debugSub } from "ivi";
 
 let value1 = "";
 let value2 = "";

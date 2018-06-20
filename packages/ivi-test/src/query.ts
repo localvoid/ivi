@@ -1,5 +1,4 @@
-import { Predicate, CSSStyleProps } from "ivi-core";
-import { EventDispatcher, StatefulComponent } from "ivi";
+import { Predicate, CSSStyleProps, EventDispatcher, StatefulComponent } from "ivi";
 import {
   VNodeWrapper, visitWrapped,
 

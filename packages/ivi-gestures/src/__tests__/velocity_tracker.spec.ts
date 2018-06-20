@@ -1,5 +1,5 @@
-import { createVelocityTracker, trackPosition, estimateVelocity } from "../velocity_tracker";
 import { v2 } from "ivi-math";
+import { createVelocityTracker, trackPosition, estimateVelocity } from "../velocity_tracker";
 
 function p(time: number, x: number, y: number) {
   return { time, point: v2(x, y) };

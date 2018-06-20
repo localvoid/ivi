@@ -1,4 +1,4 @@
-import { addErrorHandler, catchError } from "../error";
+import { addErrorHandler, catchError } from "ivi";
 
 const handler = jest.fn();
 addErrorHandler(handler);
