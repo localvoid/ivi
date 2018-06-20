@@ -42,7 +42,6 @@ module.exports = {
     "!packages/ivi-test/**",
     "!packages/ivi-router/**",
     "!packages/ivi-gestures/**",
-    "!packages/ivi/src/dev_mode/**",
   ],
   coveragePathIgnorePatterns: ["/__tests__/", "/node_modules/"],
   cacheDirectory: ".jest/cache",
