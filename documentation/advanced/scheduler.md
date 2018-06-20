@@ -6,12 +6,12 @@
 
 ```ts
 import { setupScheduler } from "ivi";
-import { invalidateHandlerNextFrame } from "ivi-scheduler";
+import { invalidateHandler } from "ivi-scheduler";
 
-setupScheduler(invalidateHandlerNextFrame);
+setupScheduler(invalidateHandler);
 ```
 
-By default, `ivi` is using a simple invalidate handler that synchronously performs a dirty checking when `invalidate()`
+By default, `ivi` is using a simple invalidate handler that synchronously performs dirty checking when `invalidate()`
 function is invoked. `ivi-scheduler` has a much more advanced invalidate handler that uses frame tasks groups to execute
 different tasks.
 

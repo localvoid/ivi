@@ -11,7 +11,7 @@ const enum SchedulerFlags {
   MicrotaskPending = 1 << 2,
   TaskPending = 1 << 3,
   NextFramePending = 1 << 4,
-  CurrentFrameReady = 1 << 5,
+  CurrentFrameRunning = 1 << 5,
 }
 
 /**
@@ -217,14 +217,6 @@ function addFrameTaskRead(frame: FrameTasksGroup, task: () => void): void {
 }
 
 /**
- * Adds a dirty check task to the next frame.
- */
-export function nextFrameDirtyCheck(): void {
-  requestNextFrame();
-  _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
-}
-
-/**
  * Adds a write DOM task to the next frame.
  *
  * @param task - Write DOM task
@@ -245,24 +237,12 @@ export function nextFrameRead(task: () => void): void {
 }
 
 /**
- * Adds a dirty check task to the current frame.
- */
-export function currentFrameDirtyCheck(): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
-    _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
-    triggerNextFrame(performance.now());
-  } else {
-    nextFrameDirtyCheck();
-  }
-}
-
-/**
  * Adds a write DOM task to the current frame.
  *
  * @param task - Write DOM task
  */
 export function currentFrameWrite(task: () => void): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
+  if ((_flags & SchedulerFlags.CurrentFrameRunning) !== 0) {
     addFrameTaskWrite(_currentFrame, task);
   } else {
     nextFrameWrite(task);
@@ -275,7 +255,7 @@ export function currentFrameWrite(task: () => void): void {
  * @param task - Read DOM task
  */
 export function currentFrameRead(task: () => void): void {
-  if ((_flags & SchedulerFlags.CurrentFrameReady) !== 0) {
+  if ((_flags & SchedulerFlags.CurrentFrameRunning) !== 0) {
     addFrameTaskRead(_currentFrame, task);
   } else {
     nextFrameRead(task);
@@ -315,7 +295,7 @@ export function triggerNextTick(): void {
 export function triggerNextFrame(time?: number): void {
   try {
     if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
-      _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameReady;
+      _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.CurrentFrameRunning;
 
       if (time !== undefined) {
         _currentFrameStartTime = time / 1000;
@@ -352,7 +332,7 @@ export function triggerNextFrame(time?: number): void {
         FrameTasksGroupFlags.Read
       ));
 
-      _flags ^= SchedulerFlags.CurrentFrameReady;
+      _flags ^= SchedulerFlags.CurrentFrameRunning;
 
       runRepeatableTasks(_afterUpdate);
 
@@ -369,7 +349,7 @@ export function triggerNextFrame(time?: number): void {
 }
 
 /**
- * Invalidate handler function.
+ * Invalidate handler function that triggers dirty check on the next frame.
  *
  * @example
  *
@@ -378,25 +358,16 @@ export function triggerNextFrame(time?: number): void {
  *
  *   setupScheduler(invalidateHandler);
  */
-export function invalidateHandler() {
-  currentFrameDirtyCheck();
-}
-
-/**
- * Invalidate handler function that triggers dirty check on the next frame.
- *
- * @example
- *
- *   import { setupScheduler } from "ivi";
- *   import { invalidateHandlerNextFrame } from "ivi-scheduler";
- *
- *   setupScheduler(invalidateHandlerNextFrame);
- */
-export function invalidateHandlerNextFrame(flags?: InvalidateFlags) {
-  if (flags !== void 0 && (flags & InvalidateFlags.RequestSyncUpdate)) {
-    currentFrameDirtyCheck();
+export function invalidateHandler(flags?: InvalidateFlags) {
+  if (_flags & SchedulerFlags.CurrentFrameRunning) {
+    _currentFrame.f |= FrameTasksGroupFlags.DirtyCheck;
   } else {
-    nextFrameDirtyCheck();
+    _nextFrame.f |= FrameTasksGroupFlags.DirtyCheck;
+    if (flags !== void 0 && (flags & InvalidateFlags.RequestSyncUpdate)) {
+      triggerNextFrame(performance.now());
+    } else {
+      requestNextFrame();
+    }
   }
 }
 
