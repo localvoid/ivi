@@ -23,10 +23,10 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "ivi": "^0.14.0"
+    "ivi": "^0.15.0"
   },
   "devDependencies": {
-    "ivi": "^0.14.0"
+    "ivi": "^0.15.0"
   },
   "description": "ivi router",
   "license": "MIT",

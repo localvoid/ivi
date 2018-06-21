@@ -1,3 +1,28 @@
+<a name="0.15.0"></a>
+# [0.15.0](https://github.com/localvoid/ivi/compare/0.14.0...0.15.0) (2018-06-21)
+
+
+### Bug Fixes
+
+* **vdom:** add missing exports ([4ab29a9](https://github.com/localvoid/ivi/commit/4ab29a9))
+
+
+### Features
+
+* **scheduler:** add optional argument `flags` to `render()` function ([6be1314](https://github.com/localvoid/ivi/commit/6be1314))
+* **scheduler:** fail early when scheduler hasn't been configured ([1eeb3b2](https://github.com/localvoid/ivi/commit/1eeb3b2))
+* **scheduler:** improve invalidate functions ([8f5a328](https://github.com/localvoid/ivi/commit/8f5a328))
+* **scheduler:** make default invalidate handler NOOP ([ec6a479](https://github.com/localvoid/ivi/commit/ec6a479))
+* **scheduler:** remove obsolete function `isHidden()` ([23ab024](https://github.com/localvoid/ivi/commit/23ab024))
+* **state:** simplify store implementation ([79c31a2](https://github.com/localvoid/ivi/commit/79c31a2))
+* **vdom:** add support for removing events in `EVENT()` ([437e4ce](https://github.com/localvoid/ivi/commit/437e4ce))
+* **vdom:** add syncable value `AUTOFOCUS()` ([18460e7](https://github.com/localvoid/ivi/commit/18460e7))
+* **vdom:** add syncable value `EVENT()` ([2546f8e](https://github.com/localvoid/ivi/commit/2546f8e))
+* **vdom:** move text node factory `t()` from html package to ivi ([d53d8e9](https://github.com/localvoid/ivi/commit/d53d8e9))
+* **vdom:** remove direct dependency with a complex scheduler ([34807fd](https://github.com/localvoid/ivi/commit/34807fd))
+
+
+
 <a name="0.14.0"></a>
 # [0.14.0](https://github.com/localvoid/ivi/compare/0.13.0...0.14.0) (2018-06-16)
 

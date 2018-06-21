@@ -23,10 +23,10 @@
     "dist:es2016": "../../node_modules/.bin/tsc -p ./tsconfig.build.es2016.json"
   },
   "peerDependencies": {
-    "ivi": "^0.14.0"
+    "ivi": "^0.15.0"
   },
   "devDependencies": {
-    "ivi": "^0.14.0"
+    "ivi": "^0.15.0"
   },
   "description": "Test scheduler for ivi library",
   "license": "MIT",

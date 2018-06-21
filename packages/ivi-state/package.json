@@ -1,6 +1,6 @@
 {
   "name": "ivi-state",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "es2016": "dist/es2016/index.js",
@@ -24,10 +24,10 @@
     "dist:unpkg": "../../node_modules/.bin/webpack --config ./webpack.config.unpkg.js"
   },
   "peerDependencies": {
-    "ivi": "^0.14.0"
+    "ivi": "^0.15.0"
   },
   "devDependencies": {
-    "ivi": "^0.14.0"
+    "ivi": "^0.15.0"
   },
   "description": "Basic application state management library for ivi",
   "license": "MIT",
