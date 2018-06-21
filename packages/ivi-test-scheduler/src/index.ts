@@ -7,11 +7,10 @@ import {
  * Scheduler flags.
  */
 const enum SchedulerFlags {
-  Hidden = 1,
-  MicrotaskPending = 1 << 2,
-  TaskPending = 1 << 3,
-  NextFramePending = 1 << 4,
-  CurrentFrameRunning = 1 << 5,
+  MicrotaskPending = 1,
+  TaskPending = 1 << 1,
+  NextFramePending = 1 << 2,
+  CurrentFrameRunning = 1 << 3,
 }
 
 /**
@@ -153,10 +152,6 @@ export function scheduleTask(task: () => void): void {
     _flags |= SchedulerFlags.TaskPending;
   }
   _tasks.a.push(task);
-}
-
-export function isHidden(): boolean {
-  return (_flags & SchedulerFlags.Hidden) !== 0;
 }
 
 /**

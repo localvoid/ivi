@@ -7,11 +7,10 @@ import {
  * Scheduler flags.
  */
 const enum SchedulerFlags {
-  Hidden = 1,
-  MicrotaskPending = 1 << 1,
-  TaskPending = 1 << 2,
-  NextFramePending = 1 << 3,
-  CurrentFrameRunning = 1 << 4,
+  MicrotaskPending = 1,
+  TaskPending = 1 << 1,
+  NextFramePending = 1 << 2,
+  CurrentFrameRunning = 1 << 3,
 }
 
 /**
@@ -162,10 +161,6 @@ export function scheduleTask(task: () => void): void {
     _taskChannel.port2.postMessage(0);
   }
   _tasks.a.push(task);
-}
-
-export function isHidden(): boolean {
-  return (_flags & SchedulerFlags.Hidden) !== 0;
 }
 
 /**
