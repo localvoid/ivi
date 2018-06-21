@@ -98,7 +98,8 @@ export {
   getDOMNode, getComponent,
   stopDirtyChecking,
 } from "./vdom/vnode";
-export { fragment, map, mapRange, mapIterable } from "./vdom/vnode_collections";
+export { fragment } from "./vdom/fragment";
+export { map, mapRange, mapIterable } from "./vdom/map";
 export { element } from "./vdom/element";
 export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/vnode_factories";
 export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
