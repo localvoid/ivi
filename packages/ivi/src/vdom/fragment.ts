@@ -5,7 +5,7 @@ import { VNode, t } from "./vnode";
  *
  * @example
  *
- *     const content = children(
+ *     const content = fragment(
  *       p().c("Paragraph 1"),
  *       p().c("Paragraph 2"),
  *     );
@@ -28,7 +28,7 @@ export function fragment(...args: Array<VNode | string | number | null>): VNode 
  *
  * @example
  *
- *     const content = children(
+ *     const content = fragment(
  *       p().c("Paragraph 1"),
  *       p().c("Paragraph 2"),
  *     );

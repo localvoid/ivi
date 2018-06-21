@@ -2,13 +2,11 @@ import {
   HTMLAnchorElementAttrs, HTMLElementAttrs, HTMLAreaElementAttrs, HTMLAudioElementAttrs,
   HTMLBaseElementAttrs, HTMLBodyElementAttrs, HTMLBRElementAttrs, HTMLButtonElementAttrs,
   HTMLCanvasElementAttrs, HTMLQuoteElementAttrs, HTMLTableCaptionElementAttrs, HTMLTableColElementAttrs,
-  HTMLDataListElementAttrs, HTMLModElementAttrs, HTMLDivElementAttrs,
-  HTMLDListElementAttrs, HTMLEmbedElementAttrs, HTMLFieldSetElementAttrs, HTMLFormElementAttrs,
-  HTMLHeadElementAttrs, HTMLHeadingElementAttrs, HTMLHRElementAttrs,
-  HTMLHtmlElementAttrs, HTMLIFrameElementAttrs, HTMLImageElementAttrs, HTMLInputElementAttrs, HTMLLabelElementAttrs,
-  HTMLLegendElementAttrs, HTMLLIElementAttrs, HTMLLinkElementAttrs, HTMLMapElementAttrs,
-  HTMLMenuElementAttrs, HTMLMetaElementAttrs, HTMLMeterElementAttrs, HTMLObjectElementAttrs, HTMLOListElementAttrs,
-  HTMLOptGroupElementAttrs, HTMLOptionElementAttrs, HTMLParagraphElementAttrs, HTMLParamElementAttrs,
+  HTMLModElementAttrs, HTMLDivElementAttrs, HTMLDListElementAttrs, HTMLFieldSetElementAttrs, HTMLFormElementAttrs,
+  HTMLHeadElementAttrs, HTMLHeadingElementAttrs, HTMLHRElementAttrs, HTMLHtmlElementAttrs, HTMLIFrameElementAttrs,
+  HTMLImageElementAttrs, HTMLInputElementAttrs, HTMLLabelElementAttrs, HTMLLegendElementAttrs, HTMLLIElementAttrs,
+  HTMLLinkElementAttrs, HTMLMapElementAttrs, HTMLMenuElementAttrs, HTMLMetaElementAttrs, HTMLMeterElementAttrs,
+  HTMLOListElementAttrs, HTMLOptGroupElementAttrs, HTMLOptionElementAttrs, HTMLParagraphElementAttrs,
   HTMLPictureElementAttrs, HTMLPreElementAttrs, HTMLProgressElementAttrs, HTMLScriptElementAttrs,
   HTMLSelectElementAttrs, HTMLSourceElementAttrs, HTMLSpanElementAttrs, HTMLStyleElementAttrs,
   HTMLTableDataCellElementAttrs, HTMLTableElementAttrs, HTMLTableHeaderCellElementAttrs, HTMLTableRowElementAttrs,
@@ -24,123 +22,107 @@ import {
 const enum TagId {
   A = 1,
   Abbr = 2,
-  Acronym = 3,
-  Address = 4,
-  Area = 5,
-  Article = 6,
-  Aside = 7,
-  B = 8,
-  Base = 9,
-  Basefont = 10,
-  Bdo = 11,
-  Big = 12,
-  Blockquote = 13,
-  Body = 14,
-  Br = 15,
-  Button = 16,
-  Canvas = 17,
-  Caption = 18,
-  Center = 19,
-  Cite = 20,
-  Code = 21,
-  Col = 22,
-  Colgroup = 23,
-  Data = 24,
-  Datalist = 25,
-  Dd = 26,
-  Del = 27,
-  Dfn = 28,
-  Dir = 29,
-  Div = 30,
-  Dl = 31,
-  Dt = 32,
-  Em = 33,
-  Embed = 34,
-  Fieldset = 35,
-  Figcaption = 36,
-  Figure = 37,
-  Font = 38,
-  Footer = 39,
-  Form = 40,
-  Frame = 41,
-  Frameset = 42,
-  H1 = 43,
-  H2 = 44,
-  H3 = 45,
-  H4 = 46,
-  H5 = 47,
-  H6 = 48,
-  Head = 49,
-  Header = 50,
-  Hgroup = 51,
-  Hr = 52,
-  Html = 53,
-  I = 54,
-  Iframe = 55,
-  Img = 56,
-  Input = 57,
-  Ins = 58,
-  Kbd = 59,
-  Label = 60,
-  Legend = 61,
-  Li = 62,
-  Link = 63,
-  Listing = 64,
-  Main = 65,
-  Map = 66,
-  Mark = 67,
-  Menu = 68,
-  Meta = 69,
-  Meter = 70,
-  Nav = 71,
-  Nobr = 72,
-  Noframes = 73,
-  Noscript = 74,
-  Object = 75,
-  Ol = 76,
-  Optgroup = 77,
-  Option = 78,
-  P = 79,
-  Param = 80,
-  Picture = 81,
-  Plaintext = 82,
-  Pre = 83,
-  Progress = 84,
-  Q = 85,
-  Rt = 86,
-  Ruby = 87,
-  S = 88,
-  Samp = 89,
-  Script = 90,
-  Section = 91,
-  Select = 92,
-  Small = 93,
-  Source = 94,
-  Span = 95,
-  Strike = 96,
-  Strong = 97,
-  Style = 98,
-  Sub = 99,
-  Sup = 100,
-  Table = 101,
-  Tbody = 102,
-  Td = 103,
-  Template = 104,
-  Textarea = 105,
-  Tfoot = 106,
-  Th = 107,
-  Thead = 108,
-  Time = 109,
-  Title = 110,
-  Tr = 111,
-  Track = 112,
-  Tt = 113,
-  U = 114,
-  Ul = 115,
-  Wbr = 116,
-  Xmp = 117,
-  Audio = 118,
-  Video = 119,
+  Address = 3,
+  Area = 4,
+  Article = 5,
+  Aside = 6,
+  B = 7,
+  Base = 8,
+  Basefont = 9,
+  Bdo = 10,
+  Blockquote = 11,
+  Body = 12,
+  Br = 13,
+  Button = 14,
+  Canvas = 15,
+  Caption = 16,
+  Cite = 17,
+  Code = 18,
+  Col = 19,
+  Colgroup = 20,
+  Dd = 21,
+  Del = 22,
+  Dfn = 23,
+  Dir = 24,
+  Div = 25,
+  Dl = 26,
+  Dt = 27,
+  Em = 28,
+  Fieldset = 29,
+  Figcaption = 30,
+  Figure = 31,
+  Font = 32,
+  Footer = 33,
+  Form = 34,
+  Frame = 35,
+  Frameset = 36,
+  H1 = 37,
+  H2 = 38,
+  H3 = 39,
+  H4 = 40,
+  H5 = 41,
+  H6 = 42,
+  Head = 43,
+  Header = 44,
+  Hgroup = 45,
+  Hr = 46,
+  Html = 47,
+  I = 48,
+  Iframe = 49,
+  Img = 50,
+  Input = 51,
+  Ins = 52,
+  Kbd = 53,
+  Label = 54,
+  Legend = 55,
+  Li = 56,
+  Link = 57,
+  Main = 58,
+  Map = 59,
+  Mark = 60,
+  Menu = 61,
+  Meta = 62,
+  Meter = 63,
+  Nav = 64,
+  Noscript = 65,
+  Ol = 66,
+  Optgroup = 67,
+  Option = 68,
+  P = 69,
+  Picture = 70,
+  Pre = 71,
+  Progress = 72,
+  Q = 73,
+  Rt = 74,
+  Ruby = 75,
+  S = 76,
+  Samp = 77,
+  Script = 78,
+  Section = 79,
+  Select = 80,
+  Source = 81,
+  Span = 82,
+  Strong = 83,
+  Style = 84,
+  Sub = 85,
+  Sup = 86,
+  Table = 87,
+  Tbody = 88,
+  Td = 89,
+  Template = 90,
+  Textarea = 91,
+  Tfoot = 92,
+  Th = 93,
+  Thead = 94,
+  Time = 95,
+  Title = 96,
+  Tr = 97,
+  Track = 98,
+  U = 99,
+  Ul = 100,
+  Wbr = 101,
+  Audio = 102,
+  Video = 103,
 }
 
 /**
@@ -248,6 +230,26 @@ export function CHECKED(v: boolean | undefined): SyncableValue<boolean> {
 }
 
 /* tslint:disable:max-line-length */
+/**
+ * Creates Virtual DOM HTML element <>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <>
+ */
+/**
+ * Creates Virtual DOM HTML element <a>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <a>
+ */
 export function a(className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSStyleProps): VNode<HTMLAnchorElementAttrs | undefined, HTMLAnchorElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.A << VNodeFlags.ElementIdOffset),
@@ -257,6 +259,17 @@ export function a(className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <abbr>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <abbr>
+ */
 export function abbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Abbr << VNodeFlags.ElementIdOffset),
@@ -266,15 +279,17 @@ export function abbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
-export function acronym(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Acronym << VNodeFlags.ElementIdOffset),
-    "acronym",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <address>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <address>
+ */
 export function address(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Address << VNodeFlags.ElementIdOffset),
@@ -284,15 +299,17 @@ export function address(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
     css,
   );
 }
-export function area(className?: string, attrs?: HTMLAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLAreaElementAttrs | undefined, HTMLAreaElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Area << VNodeFlags.ElementIdOffset),
-    "area",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <article>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <article>
+ */
 export function article(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Article << VNodeFlags.ElementIdOffset),
@@ -302,6 +319,17 @@ export function article(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <aside>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <aside>
+ */
 export function aside(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Aside << VNodeFlags.ElementIdOffset),
@@ -311,6 +339,17 @@ export function aside(className?: string, attrs?: HTMLElementAttrs, css?: CSSSty
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <b>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/b}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <b>
+ */
 export function b(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.B << VNodeFlags.ElementIdOffset),
@@ -320,6 +359,17 @@ export function b(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <base>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <base>
+ */
 export function base(className?: string, attrs?: HTMLBaseElementAttrs, css?: CSSStyleProps): VNode<HTMLBaseElementAttrs | undefined, HTMLBaseElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Base << VNodeFlags.ElementIdOffset),
@@ -329,6 +379,17 @@ export function base(className?: string, attrs?: HTMLBaseElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <bdo>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdo}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <bdo>
+ */
 export function bdo(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Bdo << VNodeFlags.ElementIdOffset),
@@ -338,15 +399,17 @@ export function bdo(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
-export function big(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Big << VNodeFlags.ElementIdOffset),
-    "big",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <blockquote>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <blockquote>
+ */
 export function blockquote(className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSStyleProps): VNode<HTMLQuoteElementAttrs | undefined, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Blockquote << VNodeFlags.ElementIdOffset),
@@ -356,6 +419,17 @@ export function blockquote(className?: string, attrs?: HTMLQuoteElementAttrs, cs
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <body>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <body>
+ */
 export function body(className?: string, attrs?: HTMLBodyElementAttrs, css?: CSSStyleProps): VNode<HTMLBodyElementAttrs | undefined, HTMLBodyElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Body << VNodeFlags.ElementIdOffset),
@@ -365,6 +439,17 @@ export function body(className?: string, attrs?: HTMLBodyElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <br>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <br>
+ */
 export function br(className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyleProps): VNode<HTMLBRElementAttrs | undefined, HTMLBRElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Br << VNodeFlags.ElementIdOffset),
@@ -374,6 +459,17 @@ export function br(className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <button>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <button>
+ */
 export function button(className?: string, attrs?: HTMLButtonElementAttrs, css?: CSSStyleProps): VNode<HTMLButtonElementAttrs | undefined, HTMLButtonElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Button << VNodeFlags.ElementIdOffset),
@@ -383,6 +479,17 @@ export function button(className?: string, attrs?: HTMLButtonElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <canvas>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <canvas>
+ */
 export function canvas(className?: string, attrs?: HTMLCanvasElementAttrs, css?: CSSStyleProps): VNode<HTMLCanvasElementAttrs | undefined, HTMLCanvasElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Canvas << VNodeFlags.ElementIdOffset),
@@ -392,6 +499,17 @@ export function canvas(className?: string, attrs?: HTMLCanvasElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <caption>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <caption>
+ */
 export function caption(className?: string, attrs?: HTMLTableCaptionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableCaptionElementAttrs | undefined, HTMLTableCaptionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Caption << VNodeFlags.ElementIdOffset),
@@ -401,15 +519,17 @@ export function caption(className?: string, attrs?: HTMLTableCaptionElementAttrs
     css,
   );
 }
-export function center(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Center << VNodeFlags.ElementIdOffset),
-    "center",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <cite>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/cite}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <cite>
+ */
 export function cite(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Cite << VNodeFlags.ElementIdOffset),
@@ -419,6 +539,17 @@ export function cite(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <code>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <code>
+ */
 export function code(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Code << VNodeFlags.ElementIdOffset),
@@ -428,6 +559,17 @@ export function code(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <col>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <col>
+ */
 export function col(className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps): VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Col << VNodeFlags.ElementIdOffset),
@@ -437,6 +579,17 @@ export function col(className?: string, attrs?: HTMLTableColElementAttrs, css?: 
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <colgroup>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <colgroup>
+ */
 export function colgroup(className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps): VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Colgroup << VNodeFlags.ElementIdOffset),
@@ -446,33 +599,17 @@ export function colgroup(className?: string, attrs?: HTMLTableColElementAttrs, c
     css,
   );
 }
-export function data(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Data << VNodeFlags.ElementIdOffset),
-    "data",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function datalist(className?: string, attrs?: HTMLDataListElementAttrs, css?: CSSStyleProps): VNode<HTMLDataListElementAttrs | undefined, HTMLDataListElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Datalist << VNodeFlags.ElementIdOffset),
-    "datalist",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function dd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Dd << VNodeFlags.ElementIdOffset),
-    "dd",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <del>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <del>
+ */
 export function del(className?: string, attrs?: HTMLModElementAttrs, css?: CSSStyleProps): VNode<HTMLModElementAttrs | undefined, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Del << VNodeFlags.ElementIdOffset),
@@ -482,6 +619,17 @@ export function del(className?: string, attrs?: HTMLModElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <dfn>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dfn}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <dfn>
+ */
 export function dfn(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dfn << VNodeFlags.ElementIdOffset),
@@ -491,6 +639,17 @@ export function dfn(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <div>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <div>
+ */
 export function div(className?: string, attrs?: HTMLDivElementAttrs, css?: CSSStyleProps): VNode<HTMLDivElementAttrs | undefined, HTMLDivElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Div << VNodeFlags.ElementIdOffset),
@@ -500,6 +659,37 @@ export function div(className?: string, attrs?: HTMLDivElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <dd>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <dd>
+ */
+export function dd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
+  return new VNode(
+    VNodeFlags.Element | (TagId.Dd << VNodeFlags.ElementIdOffset),
+    "dd",
+    attrs,
+    className === void 0 ? "" : className,
+    css,
+  );
+}
+
+/**
+ * Creates Virtual DOM HTML element <dl>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <dl>
+ */
 export function dl(className?: string, attrs?: HTMLDListElementAttrs, css?: CSSStyleProps): VNode<HTMLDListElementAttrs | undefined, HTMLDListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dl << VNodeFlags.ElementIdOffset),
@@ -509,6 +699,17 @@ export function dl(className?: string, attrs?: HTMLDListElementAttrs, css?: CSSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <dt>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <dt>
+ */
 export function dt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Dt << VNodeFlags.ElementIdOffset),
@@ -518,6 +719,17 @@ export function dt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <em>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <em>
+ */
 export function em(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Em << VNodeFlags.ElementIdOffset),
@@ -527,15 +739,17 @@ export function em(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     css,
   );
 }
-export function embed(className?: string, attrs?: HTMLEmbedElementAttrs, css?: CSSStyleProps): VNode<HTMLEmbedElementAttrs | undefined, HTMLEmbedElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Embed << VNodeFlags.ElementIdOffset),
-    "embed",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <fieldset>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <fieldset>
+ */
 export function fieldset(className?: string, attrs?: HTMLFieldSetElementAttrs, css?: CSSStyleProps): VNode<HTMLFieldSetElementAttrs | undefined, HTMLFieldSetElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Fieldset << VNodeFlags.ElementIdOffset),
@@ -545,6 +759,17 @@ export function fieldset(className?: string, attrs?: HTMLFieldSetElementAttrs, c
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <figcaption>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <figcaption>
+ */
 export function figcaption(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Figcaption << VNodeFlags.ElementIdOffset),
@@ -554,6 +779,17 @@ export function figcaption(className?: string, attrs?: HTMLElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <figure>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <figure>
+ */
 export function figure(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Figure << VNodeFlags.ElementIdOffset),
@@ -563,6 +799,17 @@ export function figure(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <footer>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <footer>
+ */
 export function footer(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Footer << VNodeFlags.ElementIdOffset),
@@ -572,6 +819,17 @@ export function footer(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <form>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <form>
+ */
 export function form(className?: string, attrs?: HTMLFormElementAttrs, css?: CSSStyleProps): VNode<HTMLFormElementAttrs | undefined, HTMLFormElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Form << VNodeFlags.ElementIdOffset),
@@ -581,6 +839,17 @@ export function form(className?: string, attrs?: HTMLFormElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <h1>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h1}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <h1>
+ */
 export function h1(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H1 << VNodeFlags.ElementIdOffset),
@@ -590,6 +859,17 @@ export function h1(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <h2>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h2}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <h2>
+ */
 export function h2(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H2 << VNodeFlags.ElementIdOffset),
@@ -599,6 +879,17 @@ export function h2(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <h3>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h3}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <h3>
+ */
 export function h3(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H3 << VNodeFlags.ElementIdOffset),
@@ -608,6 +899,17 @@ export function h3(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <h4>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h4}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <h4>
+ */
 export function h4(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H4 << VNodeFlags.ElementIdOffset),
@@ -617,6 +919,17 @@ export function h4(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <h5>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h5}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <h5>
+ */
 export function h5(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H5 << VNodeFlags.ElementIdOffset),
@@ -626,6 +939,17 @@ export function h5(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <h6>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h6}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <h6>
+ */
 export function h6(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.H6 << VNodeFlags.ElementIdOffset),
@@ -635,6 +959,17 @@ export function h6(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <head>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <head>
+ */
 export function head(className?: string, attrs?: HTMLHeadElementAttrs, css?: CSSStyleProps): VNode<HTMLHeadElementAttrs | undefined, HTMLHeadElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Head << VNodeFlags.ElementIdOffset),
@@ -644,6 +979,17 @@ export function head(className?: string, attrs?: HTMLHeadElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <header>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <header>
+ */
 export function header(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Header << VNodeFlags.ElementIdOffset),
@@ -653,6 +999,17 @@ export function header(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <hgroup>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <hgroup>
+ */
 export function hgroup(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Hgroup << VNodeFlags.ElementIdOffset),
@@ -662,6 +1019,17 @@ export function hgroup(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <hr>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <hr>
+ */
 export function hr(className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyleProps): VNode<HTMLHRElementAttrs | undefined, HTMLHRElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Hr << VNodeFlags.ElementIdOffset),
@@ -671,6 +1039,17 @@ export function hr(className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <html>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <html>
+ */
 export function html(className?: string, attrs?: HTMLHtmlElementAttrs, css?: CSSStyleProps): VNode<HTMLHtmlElementAttrs | undefined, HTMLHtmlElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Html << VNodeFlags.ElementIdOffset),
@@ -680,6 +1059,17 @@ export function html(className?: string, attrs?: HTMLHtmlElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <i>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <i>
+ */
 export function i(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.I << VNodeFlags.ElementIdOffset),
@@ -689,6 +1079,17 @@ export function i(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <iframe>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <iframe>
+ */
 export function iframe(className?: string, attrs?: HTMLIFrameElementAttrs, css?: CSSStyleProps): VNode<HTMLIFrameElementAttrs | undefined, HTMLIFrameElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Iframe << VNodeFlags.ElementIdOffset),
@@ -698,6 +1099,17 @@ export function iframe(className?: string, attrs?: HTMLIFrameElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <img>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <img>
+ */
 export function img(className?: string, attrs?: HTMLImageElementAttrs, css?: CSSStyleProps): VNode<HTMLImageElementAttrs | undefined, HTMLImageElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Img << VNodeFlags.ElementIdOffset),
@@ -707,6 +1119,57 @@ export function img(className?: string, attrs?: HTMLImageElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <area>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <area>
+ */
+export function imgArea(className?: string, attrs?: HTMLAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLAreaElementAttrs | undefined, HTMLAreaElement> {
+  return new VNode(
+    VNodeFlags.Element | (TagId.Area << VNodeFlags.ElementIdOffset),
+    "area",
+    attrs,
+    className === void 0 ? "" : className,
+    css,
+  );
+}
+
+/**
+ * Creates Virtual DOM HTML element <map>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <map>
+ */
+export function imgMap(className?: string, attrs?: HTMLMapElementAttrs, css?: CSSStyleProps): VNode<HTMLMapElementAttrs | undefined, HTMLMapElement> {
+  return new VNode(
+    VNodeFlags.Element | (TagId.Map << VNodeFlags.ElementIdOffset),
+    "map",
+    attrs,
+    className === void 0 ? "" : className,
+    css,
+  );
+}
+
+/**
+ * Creates Virtual DOM HTML element <ins>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <ins>
+ */
 export function ins(className?: string, attrs?: HTMLModElementAttrs, css?: CSSStyleProps): VNode<HTMLModElementAttrs | undefined, HTMLModElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ins << VNodeFlags.ElementIdOffset),
@@ -716,6 +1179,17 @@ export function ins(className?: string, attrs?: HTMLModElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <kbd>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <kbd>
+ */
 export function kbd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Kbd << VNodeFlags.ElementIdOffset),
@@ -725,6 +1199,17 @@ export function kbd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <label>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <label>
+ */
 export function label(className?: string, attrs?: HTMLLabelElementAttrs, css?: CSSStyleProps): VNode<HTMLLabelElementAttrs | undefined, HTMLLabelElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Label << VNodeFlags.ElementIdOffset),
@@ -734,6 +1219,17 @@ export function label(className?: string, attrs?: HTMLLabelElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <legend>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <legend>
+ */
 export function legend(className?: string, attrs?: HTMLLegendElementAttrs, css?: CSSStyleProps): VNode<HTMLLegendElementAttrs | undefined, HTMLLegendElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Legend << VNodeFlags.ElementIdOffset),
@@ -743,6 +1239,17 @@ export function legend(className?: string, attrs?: HTMLLegendElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <li>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <li>
+ */
 export function li(className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyleProps): VNode<HTMLLIElementAttrs | undefined, HTMLLIElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Li << VNodeFlags.ElementIdOffset),
@@ -752,6 +1259,17 @@ export function li(className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <link>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <link>
+ */
 export function link(className?: string, attrs?: HTMLLinkElementAttrs, css?: CSSStyleProps): VNode<HTMLLinkElementAttrs | undefined, HTMLLinkElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Link << VNodeFlags.ElementIdOffset),
@@ -761,15 +1279,17 @@ export function link(className?: string, attrs?: HTMLLinkElementAttrs, css?: CSS
     css,
   );
 }
-export function listing(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps): VNode<HTMLPreElementAttrs | undefined, HTMLPreElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Listing << VNodeFlags.ElementIdOffset),
-    "listing",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <main>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <main>
+ */
 export function main(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Main << VNodeFlags.ElementIdOffset),
@@ -779,15 +1299,17 @@ export function main(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
-export function map(className?: string, attrs?: HTMLMapElementAttrs, css?: CSSStyleProps): VNode<HTMLMapElementAttrs | undefined, HTMLMapElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Map << VNodeFlags.ElementIdOffset),
-    "map",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <mark>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <mark>
+ */
 export function mark(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Mark << VNodeFlags.ElementIdOffset),
@@ -797,6 +1319,17 @@ export function mark(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <menu>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <menu>
+ */
 export function menu(className?: string, attrs?: HTMLMenuElementAttrs, css?: CSSStyleProps): VNode<HTMLMenuElementAttrs | undefined, HTMLMenuElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Menu << VNodeFlags.ElementIdOffset),
@@ -806,6 +1339,17 @@ export function menu(className?: string, attrs?: HTMLMenuElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <meta>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <meta>
+ */
 export function meta(className?: string, attrs?: HTMLMetaElementAttrs, css?: CSSStyleProps): VNode<HTMLMetaElementAttrs | undefined, HTMLMetaElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Meta << VNodeFlags.ElementIdOffset),
@@ -815,6 +1359,17 @@ export function meta(className?: string, attrs?: HTMLMetaElementAttrs, css?: CSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <meter>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <meter>
+ */
 export function meter(className?: string, attrs?: HTMLMeterElementAttrs, css?: CSSStyleProps): VNode<HTMLMeterElementAttrs | undefined, HTMLMeterElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Meter << VNodeFlags.ElementIdOffset),
@@ -824,6 +1379,17 @@ export function meter(className?: string, attrs?: HTMLMeterElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <nav>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <nav>
+ */
 export function nav(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Nav << VNodeFlags.ElementIdOffset),
@@ -833,24 +1399,17 @@ export function nav(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
-export function nobr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Nobr << VNodeFlags.ElementIdOffset),
-    "nobr",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
-export function noframes(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Noframes << VNodeFlags.ElementIdOffset),
-    "noframes",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <noscript>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <noscript>
+ */
 export function noscript(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Noscript << VNodeFlags.ElementIdOffset),
@@ -860,15 +1419,17 @@ export function noscript(className?: string, attrs?: HTMLElementAttrs, css?: CSS
     css,
   );
 }
-export function object(className?: string, attrs?: HTMLObjectElementAttrs, css?: CSSStyleProps): VNode<HTMLObjectElementAttrs | undefined, HTMLObjectElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Object << VNodeFlags.ElementIdOffset),
-    "object",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <ol>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <ol>
+ */
 export function ol(className?: string, attrs?: HTMLOListElementAttrs, css?: CSSStyleProps): VNode<HTMLOListElementAttrs | undefined, HTMLOListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ol << VNodeFlags.ElementIdOffset),
@@ -878,6 +1439,17 @@ export function ol(className?: string, attrs?: HTMLOListElementAttrs, css?: CSSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <optgroup>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <optgroup>
+ */
 export function optgroup(className?: string, attrs?: HTMLOptGroupElementAttrs, css?: CSSStyleProps): VNode<HTMLOptGroupElementAttrs | undefined, HTMLOptGroupElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Optgroup << VNodeFlags.ElementIdOffset),
@@ -887,6 +1459,17 @@ export function optgroup(className?: string, attrs?: HTMLOptGroupElementAttrs, c
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <option>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <option>
+ */
 export function option(className?: string, attrs?: HTMLOptionElementAttrs, css?: CSSStyleProps): VNode<HTMLOptionElementAttrs | undefined, HTMLOptionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Option << VNodeFlags.ElementIdOffset),
@@ -896,6 +1479,17 @@ export function option(className?: string, attrs?: HTMLOptionElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <p>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <p>
+ */
 export function p(className?: string, attrs?: HTMLParagraphElementAttrs, css?: CSSStyleProps): VNode<HTMLParagraphElementAttrs | undefined, HTMLParagraphElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.P << VNodeFlags.ElementIdOffset),
@@ -905,15 +1499,17 @@ export function p(className?: string, attrs?: HTMLParagraphElementAttrs, css?: C
     css,
   );
 }
-export function param(className?: string, attrs?: HTMLParamElementAttrs, css?: CSSStyleProps): VNode<HTMLParamElementAttrs | undefined, HTMLParamElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Param << VNodeFlags.ElementIdOffset),
-    "param",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <picture>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <picture>
+ */
 export function picture(className?: string, attrs?: HTMLPictureElementAttrs, css?: CSSStyleProps): VNode<HTMLPictureElementAttrs | undefined, HTMLPictureElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Picture << VNodeFlags.ElementIdOffset),
@@ -923,15 +1519,17 @@ export function picture(className?: string, attrs?: HTMLPictureElementAttrs, css
     css,
   );
 }
-export function plaintext(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Plaintext << VNodeFlags.ElementIdOffset),
-    "plaintext",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <pre>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <pre>
+ */
 export function pre(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps): VNode<HTMLPreElementAttrs | undefined, HTMLPreElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Pre << VNodeFlags.ElementIdOffset),
@@ -941,6 +1539,17 @@ export function pre(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <progress>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <progress>
+ */
 export function progress(className?: string, attrs?: HTMLProgressElementAttrs, css?: CSSStyleProps): VNode<HTMLProgressElementAttrs | undefined, HTMLProgressElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Progress << VNodeFlags.ElementIdOffset),
@@ -950,6 +1559,17 @@ export function progress(className?: string, attrs?: HTMLProgressElementAttrs, c
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <q>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <q>
+ */
 export function q(className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSStyleProps): VNode<HTMLQuoteElementAttrs | undefined, HTMLQuoteElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Q << VNodeFlags.ElementIdOffset),
@@ -959,6 +1579,17 @@ export function q(className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <rt>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <rt>
+ */
 export function rt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Rt << VNodeFlags.ElementIdOffset),
@@ -968,6 +1599,17 @@ export function rt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <ruby>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <ruby>
+ */
 export function ruby(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ruby << VNodeFlags.ElementIdOffset),
@@ -977,6 +1619,17 @@ export function ruby(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <s>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <s>
+ */
 export function s(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.S << VNodeFlags.ElementIdOffset),
@@ -986,6 +1639,17 @@ export function s(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <samp>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <samp>
+ */
 export function samp(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Samp << VNodeFlags.ElementIdOffset),
@@ -995,6 +1659,17 @@ export function samp(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <script>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <script>
+ */
 export function script(className?: string, attrs?: HTMLScriptElementAttrs, css?: CSSStyleProps): VNode<HTMLScriptElementAttrs | undefined, HTMLScriptElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Script << VNodeFlags.ElementIdOffset),
@@ -1004,6 +1679,17 @@ export function script(className?: string, attrs?: HTMLScriptElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <section>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <section>
+ */
 export function section(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Section << VNodeFlags.ElementIdOffset),
@@ -1013,6 +1699,17 @@ export function section(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <select>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <select>
+ */
 export function select(className?: string, attrs?: HTMLSelectElementAttrs, css?: CSSStyleProps): VNode<HTMLSelectElementAttrs | undefined, HTMLSelectElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Select << VNodeFlags.ElementIdOffset),
@@ -1022,15 +1719,17 @@ export function select(className?: string, attrs?: HTMLSelectElementAttrs, css?:
     css,
   );
 }
-export function small(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Small << VNodeFlags.ElementIdOffset),
-    "small",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <source>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <source>
+ */
 export function source(className?: string, attrs?: HTMLSourceElementAttrs, css?: CSSStyleProps): VNode<HTMLSourceElementAttrs | undefined, HTMLSourceElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Source << VNodeFlags.ElementIdOffset),
@@ -1040,6 +1739,17 @@ export function source(className?: string, attrs?: HTMLSourceElementAttrs, css?:
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <span>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <span>
+ */
 export function span(className?: string, attrs?: HTMLSpanElementAttrs, css?: CSSStyleProps): VNode<HTMLSpanElementAttrs | undefined, HTMLSpanElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Span << VNodeFlags.ElementIdOffset),
@@ -1049,15 +1759,17 @@ export function span(className?: string, attrs?: HTMLSpanElementAttrs, css?: CSS
     css,
   );
 }
-export function strike(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Strike << VNodeFlags.ElementIdOffset),
-    "strike",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <strong>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <strong>
+ */
 export function strong(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Strong << VNodeFlags.ElementIdOffset),
@@ -1067,6 +1779,17 @@ export function strong(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <style>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <style>
+ */
 export function style(className?: string, attrs?: HTMLStyleElementAttrs, css?: CSSStyleProps): VNode<HTMLStyleElementAttrs | undefined, HTMLStyleElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Style << VNodeFlags.ElementIdOffset),
@@ -1076,6 +1799,17 @@ export function style(className?: string, attrs?: HTMLStyleElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <sub>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <sub>
+ */
 export function sub(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Sub << VNodeFlags.ElementIdOffset),
@@ -1085,6 +1819,17 @@ export function sub(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <sup>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <sup>
+ */
 export function sup(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Sup << VNodeFlags.ElementIdOffset),
@@ -1094,6 +1839,17 @@ export function sup(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <table>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <table>
+ */
 export function table(className?: string, attrs?: HTMLTableElementAttrs, css?: CSSStyleProps): VNode<HTMLTableElementAttrs | undefined, HTMLTableElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Table << VNodeFlags.ElementIdOffset),
@@ -1103,6 +1859,17 @@ export function table(className?: string, attrs?: HTMLTableElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <tbody>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <tbody>
+ */
 export function tbody(className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tbody << VNodeFlags.ElementIdOffset),
@@ -1112,6 +1879,17 @@ export function tbody(className?: string, attrs?: HTMLTableSectionElementAttrs, 
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <td>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <td>
+ */
 export function td(className?: string, attrs?: HTMLTableDataCellElementAttrs, css?: CSSStyleProps): VNode<HTMLTableDataCellElementAttrs | undefined, HTMLTableDataCellElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Td << VNodeFlags.ElementIdOffset),
@@ -1121,6 +1899,17 @@ export function td(className?: string, attrs?: HTMLTableDataCellElementAttrs, cs
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <template>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <template>
+ */
 export function template(className?: string, attrs?: HTMLTemplateElementAttrs, css?: CSSStyleProps): VNode<HTMLTemplateElementAttrs | undefined, HTMLTemplateElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Template << VNodeFlags.ElementIdOffset),
@@ -1130,6 +1919,17 @@ export function template(className?: string, attrs?: HTMLTemplateElementAttrs, c
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <tfoot>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <tfoot>
+ */
 export function tfoot(className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tfoot << VNodeFlags.ElementIdOffset),
@@ -1139,6 +1939,17 @@ export function tfoot(className?: string, attrs?: HTMLTableSectionElementAttrs, 
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <th>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <th>
+ */
 export function th(className?: string, attrs?: HTMLTableHeaderCellElementAttrs, css?: CSSStyleProps): VNode<HTMLTableHeaderCellElementAttrs | undefined, HTMLTableHeaderCellElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Th << VNodeFlags.ElementIdOffset),
@@ -1148,6 +1959,17 @@ export function th(className?: string, attrs?: HTMLTableHeaderCellElementAttrs, 
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <thead>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <thead>
+ */
 export function thead(className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps): VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Thead << VNodeFlags.ElementIdOffset),
@@ -1157,6 +1979,17 @@ export function thead(className?: string, attrs?: HTMLTableSectionElementAttrs, 
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <time>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <time>
+ */
 export function time(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Time << VNodeFlags.ElementIdOffset),
@@ -1166,6 +1999,17 @@ export function time(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <title>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <title>
+ */
 export function title(className?: string, attrs?: HTMLTitleElementAttrs, css?: CSSStyleProps): VNode<HTMLTitleElementAttrs | undefined, HTMLTitleElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Title << VNodeFlags.ElementIdOffset),
@@ -1175,6 +2019,17 @@ export function title(className?: string, attrs?: HTMLTitleElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <tr>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <tr>
+ */
 export function tr(className?: string, attrs?: HTMLTableRowElementAttrs, css?: CSSStyleProps): VNode<HTMLTableRowElementAttrs | undefined, HTMLTableRowElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Tr << VNodeFlags.ElementIdOffset),
@@ -1184,6 +2039,17 @@ export function tr(className?: string, attrs?: HTMLTableRowElementAttrs, css?: C
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <track>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <track>
+ */
 export function track(className?: string, attrs?: HTMLTrackElementAttrs, css?: CSSStyleProps): VNode<HTMLTrackElementAttrs | undefined, HTMLTrackElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Track << VNodeFlags.ElementIdOffset),
@@ -1193,15 +2059,17 @@ export function track(className?: string, attrs?: HTMLTrackElementAttrs, css?: C
     css,
   );
 }
-export function tt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Tt << VNodeFlags.ElementIdOffset),
-    "tt",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
+
+/**
+ * Creates Virtual DOM HTML element <u>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <u>
+ */
 export function u(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.U << VNodeFlags.ElementIdOffset),
@@ -1211,6 +2079,17 @@ export function u(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <ul>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <ul>
+ */
 export function ul(className?: string, attrs?: HTMLUListElementAttrs, css?: CSSStyleProps): VNode<HTMLUListElementAttrs | undefined, HTMLUListElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Ul << VNodeFlags.ElementIdOffset),
@@ -1220,6 +2099,17 @@ export function ul(className?: string, attrs?: HTMLUListElementAttrs, css?: CSSS
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <wbr>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <wbr>
+ */
 export function wbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps): VNode<HTMLElementAttrs | undefined, HTMLElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Wbr << VNodeFlags.ElementIdOffset),
@@ -1229,17 +2119,17 @@ export function wbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     css,
   );
 }
-export function xmp(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps): VNode<HTMLPreElementAttrs | undefined, HTMLPreElement> {
-  return new VNode(
-    VNodeFlags.Element | (TagId.Xmp << VNodeFlags.ElementIdOffset),
-    "xmp",
-    attrs,
-    className === void 0 ? "" : className,
-    css,
-  );
-}
 
-// Textarea / Input Elements:
+/**
+ * Creates Virtual DOM HTML element <textarea>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <textarea>
+ */
 export function textarea(className?: string, attrs?: HTMLTextAreaElementAttrs, css?: CSSStyleProps): VNode<HTMLTextAreaElementAttrs | undefined, HTMLTextAreaElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Textarea << VNodeFlags.ElementIdOffset),
@@ -1249,6 +2139,17 @@ export function textarea(className?: string, attrs?: HTMLTextAreaElementAttrs, c
     css,
   );
 }
+
+/**
+ * Creates Virtual DOM HTML element <input>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <input>
+ */
 export function input(className?: string, attrs?: HTMLInputElementAttrs, css?: CSSStyleProps): VNode<HTMLInputElementAttrs | undefined, HTMLInputElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Input << VNodeFlags.ElementIdOffset),
@@ -1259,7 +2160,16 @@ export function input(className?: string, attrs?: HTMLInputElementAttrs, css?: C
   );
 }
 
-// Media Elements:
+/**
+ * Creates Virtual DOM HTML element <audio>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <audio>
+ */
 export function audio(className?: string, attrs?: HTMLAudioElementAttrs, css?: CSSStyleProps): VNode<HTMLAudioElementAttrs | undefined, HTMLAudioElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Audio << VNodeFlags.ElementIdOffset),
@@ -1270,6 +2180,16 @@ export function audio(className?: string, attrs?: HTMLAudioElementAttrs, css?: C
   );
 }
 
+/**
+ * Creates Virtual DOM HTML element <video>.
+ *
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video}
+ *
+ * @param className - Class name
+ * @param attrs - Attributes
+ * @param css - Styles
+ * @returns Virtual DOM HTML element <video>
+ */
 export function video(className?: string, attrs?: HTMLVideoElementAttrs, css?: CSSStyleProps): VNode<HTMLVideoElementAttrs | undefined, HTMLVideoElement> {
   return new VNode(
     VNodeFlags.Element | (TagId.Video << VNodeFlags.ElementIdOffset),

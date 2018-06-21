@@ -351,9 +351,6 @@ export declare interface HTMLTableColElementAttrs extends HTMLElementAttrs {
   span?: number;
 }
 
-export declare interface HTMLDataListElementAttrs extends HTMLElementAttrs {
-}
-
 export declare interface HTMLModElementAttrs extends HTMLElementAttrs {
   /**
    * Sets or retrieves reference information about the object.
@@ -369,29 +366,6 @@ export declare interface HTMLDivElementAttrs extends HTMLElementAttrs {
 }
 
 export declare interface HTMLDListElementAttrs extends HTMLElementAttrs {
-}
-
-export declare interface HTMLEmbedElementAttrs extends HTMLElementAttrs {
-  /**
-   * Sets or retrieves the height of the object.
-   */
-  height?: string;
-  /**
-   * Sets or retrieves the name of the object.
-   */
-  name?: string;
-  /**
-   * Sets or retrieves a URL to be loaded by the object.
-   */
-  src?: string;
-  /**
-   * The MIME type to use to select the plug-in to instantiate.
-   */
-  type?: string;
-  /**
-   * Sets or retrieves the width of the object.
-   */
-  width?: string;
 }
 
 export declare interface HTMLFieldSetElementAttrs extends HTMLElementAttrs {
@@ -877,30 +851,6 @@ export declare interface HTMLOListElementAttrs extends HTMLElementAttrs {
   start?: number;
 }
 
-export declare interface HTMLObjectElementAttrs extends HTMLElementAttrs {
-  /**
-   * Sets or retrieves a text alternative to the graphic.
-   */
-  alt?: string;
-  /**
-   * Sets or retrieves the URL that references the data of the object.
-   */
-  data?: string;
-  /**
-   * Sets or retrieves the height of the object.
-   */
-  height?: string;
-  name?: string;
-  /**
-   * Sets or retrieves the MIME type of the object.
-   */
-  type?: string;
-  /**
-   * Sets or retrieves the width of the object.
-   */
-  width?: string;
-}
-
 export declare interface HTMLOptGroupElementAttrs extends HTMLElementAttrs {
   /**
    * Sets or retrieves the status of an option.
@@ -951,25 +901,6 @@ export declare interface HTMLParagraphElementAttrs extends HTMLElementAttrs {
    */
   align?: string;
   clear?: string;
-}
-
-export declare interface HTMLParamElementAttrs extends HTMLElementAttrs {
-  /**
-   * Sets or retrieves the name of an input parameter for an element.
-   */
-  name?: string;
-  /**
-   * Sets or retrieves the content type of the resource designated by the value attribute.
-   */
-  type?: string;
-  /**
-   * Sets or retrieves the value of an input parameter for an element.
-   */
-  value?: string;
-  /**
-   * Sets or retrieves the data type of the value attribute.
-   */
-  valueType?: string;
 }
 
 export declare interface HTMLPictureElementAttrs extends HTMLElementAttrs {

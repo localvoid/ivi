@@ -46,13 +46,11 @@ export {
   HTMLAnchorElementAttrs, HTMLElementAttrs, HTMLAreaElementAttrs, HTMLAudioElementAttrs,
   HTMLBaseElementAttrs, HTMLBodyElementAttrs, HTMLBRElementAttrs, HTMLButtonElementAttrs,
   HTMLCanvasElementAttrs, HTMLQuoteElementAttrs, HTMLTableCaptionElementAttrs, HTMLTableColElementAttrs,
-  HTMLDataListElementAttrs, HTMLModElementAttrs, HTMLDivElementAttrs,
-  HTMLDListElementAttrs, HTMLEmbedElementAttrs, HTMLFieldSetElementAttrs, HTMLFormElementAttrs,
-  HTMLHeadElementAttrs, HTMLHeadingElementAttrs, HTMLHRElementAttrs,
-  HTMLHtmlElementAttrs, HTMLIFrameElementAttrs, HTMLImageElementAttrs, HTMLInputElementAttrs, HTMLLabelElementAttrs,
-  HTMLLegendElementAttrs, HTMLLIElementAttrs, HTMLLinkElementAttrs, HTMLMapElementAttrs,
-  HTMLMenuElementAttrs, HTMLMetaElementAttrs, HTMLMeterElementAttrs, HTMLObjectElementAttrs, HTMLOListElementAttrs,
-  HTMLOptGroupElementAttrs, HTMLOptionElementAttrs, HTMLParagraphElementAttrs, HTMLParamElementAttrs,
+  HTMLModElementAttrs, HTMLDivElementAttrs, HTMLDListElementAttrs, HTMLFieldSetElementAttrs, HTMLFormElementAttrs,
+  HTMLHeadElementAttrs, HTMLHeadingElementAttrs, HTMLHRElementAttrs, HTMLHtmlElementAttrs, HTMLIFrameElementAttrs,
+  HTMLImageElementAttrs, HTMLInputElementAttrs, HTMLLabelElementAttrs, HTMLLegendElementAttrs, HTMLLIElementAttrs,
+  HTMLLinkElementAttrs, HTMLMapElementAttrs, HTMLMenuElementAttrs, HTMLMetaElementAttrs, HTMLMeterElementAttrs,
+  HTMLOListElementAttrs, HTMLOptGroupElementAttrs, HTMLOptionElementAttrs, HTMLParagraphElementAttrs,
   HTMLPictureElementAttrs, HTMLPreElementAttrs, HTMLProgressElementAttrs, HTMLScriptElementAttrs,
   HTMLSelectElementAttrs, HTMLSourceElementAttrs, HTMLSpanElementAttrs, HTMLStyleElementAttrs,
   HTMLTableDataCellElementAttrs, HTMLTableElementAttrs, HTMLTableHeaderCellElementAttrs, HTMLTableRowElementAttrs,
@@ -101,7 +99,7 @@ export {
 export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
 export { element } from "./vdom/element";
-export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/vnode_factories";
+export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/factories";
 export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
 export { setupScheduler, invalidateHandler, invalidate, dirtyCheck, render } from "./vdom/scheduler";
 
