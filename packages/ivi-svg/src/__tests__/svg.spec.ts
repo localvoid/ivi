@@ -1,7 +1,7 @@
 import { VNode, VNodeFlags } from "ivi";
 import * as s from "ivi-svg";
 
-const Elements: { [name: string]: (className?: string) => VNode<any> } = {
+const ELEMENTS: { [name: string]: (className?: string, attrs?: {}, style?: {}) => VNode<any> } = {
   "a": s.a,
   "animate": s.animate,
   "animateColor": s.animateColor,
@@ -75,8 +75,8 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
 
 describe("SVG Elements", () => {
   describe("tag name", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       test(`${name}`, () => {
         const n = factory();
         expect(n._t).toBe(name);
@@ -85,8 +85,8 @@ describe("SVG Elements", () => {
   });
 
   describe("class name", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       test(`${name}`, () => {
         const n = factory("abc");
         expect(n._cs).toBe("abc");
@@ -94,9 +94,31 @@ describe("SVG Elements", () => {
     }
   });
 
+  describe("attributes", () => {
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
+      const ATTRS = {};
+      test(`${name}`, () => {
+        const n = factory("", ATTRS);
+        expect(n._p).toBe(ATTRS);
+      });
+    }
+  });
+
+  describe("styles", () => {
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
+      const STYLES = {};
+      test(`${name}`, () => {
+        const n = factory("", void 0, STYLES);
+        expect(n._s).toBe(STYLES);
+      });
+    }
+  });
+
   describe("svg flag", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       test(`${name}`, () => {
         const n = factory();
         expect((n._f & VNodeFlags.SvgElement) !== 0).toBe(true);
@@ -106,8 +128,8 @@ describe("SVG Elements", () => {
 
   test(`unique tag id`, () => {
     const index = new Map<number, string>();
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       const n = factory();
       const tagId = (n._f & VNodeFlags.ElementIdMask);
       expect(index.get(tagId)).toBeUndefined();

@@ -61,8 +61,8 @@ export function createNativeEventDispatcher<E extends Event>(
 ): NativeEventDispatcher<E> {
   const source: NativeEventDispatcher<E> = {
     src: {
-      add: () => { ++source.listeners; incDependencies(source); },
-      remove: () => { --source.listeners; decDependencies(source); },
+      add() { ++source.listeners; incDependencies(source); },
+      remove() { --source.listeners; decDependencies(source); },
     },
     deps: 0,
     listeners: 0,

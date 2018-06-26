@@ -13,7 +13,7 @@ export function createStore<T, U>(
   reducer = catchError(reducer);
   const store = {
     state,
-    dispatch: (action: U) => {
+    dispatch(action: U) {
       const newState = reducer(store.state, action);
       if (store.state !== newState) {
         store.state = newState;

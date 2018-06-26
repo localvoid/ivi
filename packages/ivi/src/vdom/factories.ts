@@ -320,7 +320,7 @@ export function connect<T>(
 export function connect<T, P>(
   select: undefined extends P ? (prev: T | null, props?: P) => T : (prev: T | null, props: P) => T,
   render: (props: T) => VNode<any>,
-): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? () => VNode<P> : (props: P) => VNode<P>;
 
 /**
  * connect creates a virtual DOM node factory that produces connector nodes.

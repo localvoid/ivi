@@ -268,7 +268,7 @@ export function createTouchEventListener(
   }
 
   return {
-    activate: () => {
+    activate() {
       mouseListener.activate();
       // touchstart should be active, otherwise touchmove can't be canceled.
       beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
@@ -282,7 +282,7 @@ export function createTouchEventListener(
         beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, NOOP);
       }
     },
-    deactivate: () => {
+    deactivate() {
       if (IOS_GESTURE_EVENT) {
         removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, NOOP);
       }
@@ -291,7 +291,7 @@ export function createTouchEventListener(
       removeBeforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
       mouseListener.deactivate();
     },
-    set: (flags: NativeEventListenerFlags) => {
+    set(flags: NativeEventListenerFlags) {
       if (flags & NativeEventListenerFlags.TrackMove) {
         if (!moveTrackingEnabled) {
           preventFirstMove = true;
@@ -304,7 +304,7 @@ export function createTouchEventListener(
         debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
       }
     },
-    clear: (flags: NativeEventListenerFlags) => {
+    clear(flags: NativeEventListenerFlags) {
       if (flags & NativeEventListenerFlags.TrackMove) {
         if (moveTrackingEnabled) {
           moveTrackingEnabled = false;

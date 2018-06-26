@@ -127,15 +127,15 @@ export function createMouseEventListener(
   }
 
   return {
-    activate: () => {
+    activate() {
       beforeNativeEvent(EVENT_DISPATCHER_MOUSE_DOWN, onDown);
       beforeNativeEvent(EVENT_DISPATCHER_MOUSE_UP, onUp);
     },
-    deactivate: () => {
+    deactivate() {
       removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_DOWN, onDown);
       removeBeforeNativeEvent(EVENT_DISPATCHER_MOUSE_UP, onUp);
     },
-    set: (flags: NativeEventListenerFlags) => {
+    set(flags: NativeEventListenerFlags) {
       if (flags & NativeEventListenerFlags.TrackMove) {
         if (!moveTrackingEnabled) {
           moveTrackingEnabled = true;
@@ -147,7 +147,7 @@ export function createMouseEventListener(
         debugPubMouseState({ currentFlags });
       }
     },
-    clear: (flags: NativeEventListenerFlags) => {
+    clear(flags: NativeEventListenerFlags) {
       if (flags & NativeEventListenerFlags.TrackMove) {
         if (moveTrackingEnabled) {
           moveTrackingEnabled = false;

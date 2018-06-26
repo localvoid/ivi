@@ -16,14 +16,14 @@ export function createGestureEventDispatcher(): EventDispatcher {
   let dependencies = 0;
 
   const src = {
-    add: (h: EventHandler) => {
+    add(h: EventHandler) {
       if (dependencies++ === 0) {
         listener.activate();
       }
       ++h.listeners;
 
     },
-    remove: (h: EventHandler) => {
+    remove(h: EventHandler) {
       if (--dependencies === 0) {
         listener.deactivate();
       }

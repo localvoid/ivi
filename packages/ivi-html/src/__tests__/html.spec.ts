@@ -1,7 +1,7 @@
 import { VNode, VNodeFlags } from "ivi";
 import * as h from "ivi-html";
 
-const Elements: { [name: string]: (className?: string) => VNode<any> } = {
+const ELEMENTS: { [name: string]: (className?: string, attrs?: {}, style?: {}) => VNode<any> } = {
   "a": h.a,
   "abbr": h.abbr,
   "address": h.address,
@@ -104,8 +104,8 @@ const Elements: { [name: string]: (className?: string) => VNode<any> } = {
 
 describe("HTML elemenets", () => {
   describe("tag name", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       test(`${name}`, () => {
         const n = factory();
         expect(n._t).toBe(name);
@@ -114,8 +114,8 @@ describe("HTML elemenets", () => {
   });
 
   describe("class name", () => {
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       test(`${name}`, () => {
         const n = factory("abc");
         expect(n._cs).toBe("abc");
@@ -123,10 +123,32 @@ describe("HTML elemenets", () => {
     }
   });
 
+  describe("attributes", () => {
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
+      const ATTRS = {};
+      test(`${name}`, () => {
+        const n = factory("", ATTRS);
+        expect(n._p).toBe(ATTRS);
+      });
+    }
+  });
+
+  describe("styles", () => {
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
+      const STYLES = {};
+      test(`${name}`, () => {
+        const n = factory("", void 0, STYLES);
+        expect(n._s).toBe(STYLES);
+      });
+    }
+  });
+
   test(`unique tag id`, () => {
     const index = new Map<number, string>();
-    for (const name of Object.keys(Elements)) {
-      const factory = Elements[name];
+    for (const name of Object.keys(ELEMENTS)) {
+      const factory = ELEMENTS[name];
       const n = factory();
       const tagId = (n._f & VNodeFlags.ElementIdMask);
       expect(index.get(tagId)).toBeUndefined();
