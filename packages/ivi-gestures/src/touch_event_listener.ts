@@ -208,7 +208,7 @@ export function createTouchEventListener(
     if (pointers.size === 0) {
       if (removeTarget) {
         removeTarget = false;
-        document.documentElement.removeChild(target as Element);
+        document.documentElement!.removeChild(target as Element);
       }
       target = null;
       if (moveTrackingEnabled) {
@@ -242,7 +242,7 @@ export function createTouchEventListener(
     if (pointers.size === 0) {
       if (removeTarget) {
         removeTarget = false;
-        document.documentElement.removeChild(target as Element);
+        document.documentElement!.removeChild(target as Element);
       }
       target = null;
       if (moveTrackingEnabled) {
@@ -260,7 +260,7 @@ export function createTouchEventListener(
       if (!document.contains(target as Element)) {
         removeTarget = true;
         (target as HTMLElement).style.display = "none";
-        document.documentElement.appendChild(target as Element);
+        document.documentElement!.appendChild(target as Element);
       }
       return true;
     }

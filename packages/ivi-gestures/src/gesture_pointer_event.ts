@@ -106,7 +106,7 @@ export class GesturePointerEvent extends SyntheticEvent {
    *
    * @returns hit target
    */
-  findHitTarget(): Element {
+  findHitTarget(): Element | null {
     if (this.hitTarget === null) {
       this.hitTarget = document.elementFromPoint(this.x, this.y);
     }
