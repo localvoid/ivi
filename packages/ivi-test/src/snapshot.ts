@@ -160,7 +160,7 @@ function _toSnapshot(
 
       result += `${indent(il)}<${vnode._t}`;
 
-      if (vnode._cs !== "") {
+      if (vnode._cs) {
         result += `\n${indent(il + 1)}class="${vnode._cs}"`;
         multiline = true;
       }

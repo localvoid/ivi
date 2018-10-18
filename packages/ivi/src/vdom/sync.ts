@@ -232,7 +232,7 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
         instance = node;
 
         const className = vnode._cs;
-        if (className !== "") {
+        if (className) {
           /**
            * SVGElement.className returns `SVGAnimatedString`
            */
@@ -396,8 +396,11 @@ export function _sync(
 
       if ((bFlags & (VNodeFlags.Element | VNodeFlags.StatefulComponent)) !== 0) {
         if ((bFlags & VNodeFlags.Element) !== 0) {
-          const className = b._cs;
+          let className = b._cs;
           if (a._cs !== className) {
+            if (className === void 0) {
+              className = "";
+            }
             if ((bFlags & VNodeFlags.SvgElement) !== 0) {
               /* istanbul ignore else */
               if (DEBUG) {

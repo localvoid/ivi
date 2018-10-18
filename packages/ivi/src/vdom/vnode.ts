@@ -65,7 +65,7 @@ export class VNode<P = any, N = Node> {
   /**
    * Class name.
    */
-  _cs: string;
+  _cs: string | undefined;
   /**
    * Style.
    */
@@ -91,7 +91,7 @@ export class VNode<P = any, N = Node> {
       | ConnectDescriptor<any, any, {}>
       | null,
     props: P | undefined,
-    className: string,
+    className: string | undefined,
     style: CSSStyleProps | undefined,
   ) {
     this._f = flags;

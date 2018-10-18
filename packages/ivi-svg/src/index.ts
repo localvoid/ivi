@@ -233,7 +233,7 @@ export function a(className?: string, attrs?: SVGElementAttrs, css?: CSSStylePro
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.A << VNodeFlags.ElementIdOffset),
     "a",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -253,7 +253,7 @@ export function animate(className?: string, attrs?: SVGElementAttrs, css?: CSSSt
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Animate << VNodeFlags.ElementIdOffset),
     "animate",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -273,7 +273,7 @@ export function animateColor(className?: string, attrs?: SVGElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateColor << VNodeFlags.ElementIdOffset),
     "animateColor",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -293,7 +293,7 @@ export function animateMotion(className?: string, attrs?: SVGElementAttrs, css?:
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateMotion << VNodeFlags.ElementIdOffset),
     "animateMotion",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -313,7 +313,7 @@ export function animateTransform(className?: string, attrs?: SVGElementAttrs, cs
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.AnimateTransform << VNodeFlags.ElementIdOffset),
     "animateTransform",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -333,7 +333,7 @@ export function circle(className?: string, attrs?: SVGCircleElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Circle << VNodeFlags.ElementIdOffset),
     "circle",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -353,7 +353,7 @@ export function clipPath(className?: string, attrs?: SVGClipPathElementAttrs, cs
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ClipPath << VNodeFlags.ElementIdOffset),
     "clipPath",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -373,7 +373,7 @@ export function defs(className?: string, attrs?: SVGDefsElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Defs << VNodeFlags.ElementIdOffset),
     "defs",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -393,7 +393,7 @@ export function desc(className?: string, attrs?: SVGDescElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Desc << VNodeFlags.ElementIdOffset),
     "desc",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -413,7 +413,7 @@ export function discard(className?: string, attrs?: SVGElementAttrs, css?: CSSSt
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Discard << VNodeFlags.ElementIdOffset),
     "discard",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -433,7 +433,7 @@ export function ellipse(className?: string, attrs?: SVGEllipseElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Ellipse << VNodeFlags.ElementIdOffset),
     "ellipse",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -453,7 +453,7 @@ export function feBlend(className?: string, attrs?: SVGFEBlendElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeBlend << VNodeFlags.ElementIdOffset),
     "feBlend",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -473,7 +473,7 @@ export function feColorMatrix(className?: string, attrs?: SVGFEColorMatrixElemen
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeColorMatrix << VNodeFlags.ElementIdOffset),
     "feColorMatrix",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -493,7 +493,7 @@ export function feComponentTransfer(className?: string, attrs?: SVGFEComponentTr
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeComponentTransfer << VNodeFlags.ElementIdOffset),
     "feComponentTransfer",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -513,7 +513,7 @@ export function feComposite(className?: string, attrs?: SVGFECompositeElementAtt
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeComposite << VNodeFlags.ElementIdOffset),
     "feComposite",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -533,7 +533,7 @@ export function feConvolveMatrix(className?: string, attrs?: SVGFEConvolveMatrix
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeConvolveMatrix << VNodeFlags.ElementIdOffset),
     "feConvolveMatrix",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -553,7 +553,7 @@ export function feDiffuseLighting(className?: string, attrs?: SVGFEDiffuseLighti
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDiffuseLighting << VNodeFlags.ElementIdOffset),
     "feDiffuseLighting",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -573,7 +573,7 @@ export function feDisplacementMap(className?: string, attrs?: SVGFEDisplacementM
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDisplacementMap << VNodeFlags.ElementIdOffset),
     "feDisplacementMap",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -593,7 +593,7 @@ export function feDistantLight(className?: string, attrs?: SVGFEDistantLightElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDistantLight << VNodeFlags.ElementIdOffset),
     "feDistantLight",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -613,7 +613,7 @@ export function feDropShadow(className?: string, attrs?: SVGFEDisplacementMapEle
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeDropShadow << VNodeFlags.ElementIdOffset),
     "feDropShadow",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -633,7 +633,7 @@ export function feFlood(className?: string, attrs?: SVGFEFloodElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFlood << VNodeFlags.ElementIdOffset),
     "feFlood",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -653,7 +653,7 @@ export function feFuncA(className?: string, attrs?: SVGFEFuncAElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncA << VNodeFlags.ElementIdOffset),
     "feFuncA",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -673,7 +673,7 @@ export function feFuncB(className?: string, attrs?: SVGFEFuncBElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncB << VNodeFlags.ElementIdOffset),
     "feFuncB",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -693,7 +693,7 @@ export function feFuncG(className?: string, attrs?: SVGFEFuncGElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncG << VNodeFlags.ElementIdOffset),
     "feFuncG",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -713,7 +713,7 @@ export function feFuncR(className?: string, attrs?: SVGFEFuncRElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeFuncR << VNodeFlags.ElementIdOffset),
     "feFuncR",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -733,7 +733,7 @@ export function feGaussianBlur(className?: string, attrs?: SVGFEGaussianBlurElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeGaussianBlur << VNodeFlags.ElementIdOffset),
     "feGaussianBlur",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -753,7 +753,7 @@ export function feImage(className?: string, attrs?: SVGFEImageElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeImage << VNodeFlags.ElementIdOffset),
     "feImage",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -773,7 +773,7 @@ export function feMerge(className?: string, attrs?: SVGFEMergeElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMerge << VNodeFlags.ElementIdOffset),
     "feMerge",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -793,7 +793,7 @@ export function feMergeNode(className?: string, attrs?: SVGFEMergeNodeElementAtt
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMergeNode << VNodeFlags.ElementIdOffset),
     "feMergeNode",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -813,7 +813,7 @@ export function feMorphology(className?: string, attrs?: SVGFEMorphologyElementA
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeMorphology << VNodeFlags.ElementIdOffset),
     "feMorphology",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -833,7 +833,7 @@ export function feOffset(className?: string, attrs?: SVGFEOffsetElementAttrs, cs
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeOffset << VNodeFlags.ElementIdOffset),
     "feOffset",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -853,7 +853,7 @@ export function fePointLight(className?: string, attrs?: SVGFEPointLightElementA
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FePointLight << VNodeFlags.ElementIdOffset),
     "fePointLight",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -873,7 +873,7 @@ export function feSpecularLighting(className?: string, attrs?: SVGFESpecularLigh
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeSpecularLighting << VNodeFlags.ElementIdOffset),
     "feSpecularLighting",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -893,7 +893,7 @@ export function feSpotLight(className?: string, attrs?: SVGFESpotLightElementAtt
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeSpotLight << VNodeFlags.ElementIdOffset),
     "feSpotLight",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -913,7 +913,7 @@ export function feTile(className?: string, attrs?: SVGFETileElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeTile << VNodeFlags.ElementIdOffset),
     "feTile",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -933,7 +933,7 @@ export function feTurbulence(className?: string, attrs?: SVGFETurbulenceElementA
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.FeTurbulence << VNodeFlags.ElementIdOffset),
     "feTurbulence",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -953,7 +953,7 @@ export function filter(className?: string, attrs?: SVGFilterElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Filter << VNodeFlags.ElementIdOffset),
     "filter",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -973,7 +973,7 @@ export function foreignObject(className?: string, attrs?: SVGForeignObjectElemen
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.ForeignObject << VNodeFlags.ElementIdOffset),
     "foreignObject",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -993,7 +993,7 @@ export function g(className?: string, attrs?: SVGGElementAttrs, css?: CSSStylePr
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.G << VNodeFlags.ElementIdOffset),
     "g",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1013,7 +1013,7 @@ export function hatch(className?: string, attrs?: SVGElementAttrs, css?: CSSStyl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hatch << VNodeFlags.ElementIdOffset),
     "hatch",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1033,7 +1033,7 @@ export function hatchpath(className?: string, attrs?: SVGElementAttrs, css?: CSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Hatchpath << VNodeFlags.ElementIdOffset),
     "hatchpath",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1053,7 +1053,7 @@ export function image(className?: string, attrs?: SVGImageElementAttrs, css?: CS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Image << VNodeFlags.ElementIdOffset),
     "image",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1073,7 +1073,7 @@ export function line(className?: string, attrs?: SVGLineElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Line << VNodeFlags.ElementIdOffset),
     "line",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1093,7 +1093,7 @@ export function linearGradient(className?: string, attrs?: SVGLinearGradientElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.LinearGradient << VNodeFlags.ElementIdOffset),
     "linearGradient",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1113,7 +1113,7 @@ export function marker(className?: string, attrs?: SVGMarkerElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Marker << VNodeFlags.ElementIdOffset),
     "marker",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1133,7 +1133,7 @@ export function mask(className?: string, attrs?: SVGMaskElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mask << VNodeFlags.ElementIdOffset),
     "mask",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1153,7 +1153,7 @@ export function mesh(className?: string, attrs?: SVGElementAttrs, css?: CSSStyle
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mesh << VNodeFlags.ElementIdOffset),
     "mesh",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1173,7 +1173,7 @@ export function meshgradient(className?: string, attrs?: SVGElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshgradient << VNodeFlags.ElementIdOffset),
     "meshgradient",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1193,7 +1193,7 @@ export function meshpatch(className?: string, attrs?: SVGElementAttrs, css?: CSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshpatch << VNodeFlags.ElementIdOffset),
     "meshpatch",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1213,7 +1213,7 @@ export function meshrow(className?: string, attrs?: SVGElementAttrs, css?: CSSSt
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Meshrow << VNodeFlags.ElementIdOffset),
     "meshrow",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1233,7 +1233,7 @@ export function metadata(className?: string, attrs?: SVGMetadataElementAttrs, cs
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Metadata << VNodeFlags.ElementIdOffset),
     "metadata",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1253,7 +1253,7 @@ export function mpath(className?: string, attrs?: SVGElementAttrs, css?: CSSStyl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Mpath << VNodeFlags.ElementIdOffset),
     "mpath",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1273,7 +1273,7 @@ export function path(className?: string, attrs?: SVGPathElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Path << VNodeFlags.ElementIdOffset),
     "path",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1293,7 +1293,7 @@ export function pattern(className?: string, attrs?: SVGPatternElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Pattern << VNodeFlags.ElementIdOffset),
     "pattern",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1313,7 +1313,7 @@ export function polygon(className?: string, attrs?: SVGPolygonElementAttrs, css?
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Polygon << VNodeFlags.ElementIdOffset),
     "polygon",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1333,7 +1333,7 @@ export function polyline(className?: string, attrs?: SVGPolylineElementAttrs, cs
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Polyline << VNodeFlags.ElementIdOffset),
     "polyline",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1353,7 +1353,7 @@ export function radialGradient(className?: string, attrs?: SVGRadialGradientElem
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.RadialGradient << VNodeFlags.ElementIdOffset),
     "radialGradient",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1373,7 +1373,7 @@ export function rect(className?: string, attrs?: SVGRectElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Rect << VNodeFlags.ElementIdOffset),
     "rect",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1393,7 +1393,7 @@ export function set(className?: string, attrs?: SVGElementAttrs, css?: CSSStyleP
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Set << VNodeFlags.ElementIdOffset),
     "set",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1413,7 +1413,7 @@ export function solidcolor(className?: string, attrs?: SVGElementAttrs, css?: CS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Solidcolor << VNodeFlags.ElementIdOffset),
     "solidcolor",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1433,7 +1433,7 @@ export function stop(className?: string, attrs?: SVGStopElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Stop << VNodeFlags.ElementIdOffset),
     "stop",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1453,7 +1453,7 @@ export function svg(className?: string, attrs?: SVGSVGElementAttrs, css?: CSSSty
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Svg << VNodeFlags.ElementIdOffset),
     "svg",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1473,7 +1473,7 @@ export function symbol(className?: string, attrs?: SVGSymbolElementAttrs, css?: 
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Symbol << VNodeFlags.ElementIdOffset),
     "symbol",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1493,7 +1493,7 @@ export function text(className?: string, attrs?: SVGTextElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Text << VNodeFlags.ElementIdOffset),
     "text",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1513,7 +1513,7 @@ export function textPath(className?: string, attrs?: SVGTextPathElementAttrs, cs
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.TextPath << VNodeFlags.ElementIdOffset),
     "textPath",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1533,7 +1533,7 @@ export function title(className?: string, attrs?: SVGElementAttrs, css?: CSSStyl
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Title << VNodeFlags.ElementIdOffset),
     "title",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1553,7 +1553,7 @@ export function tspan(className?: string, attrs?: SVGTSpanElementAttrs, css?: CS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Tspan << VNodeFlags.ElementIdOffset),
     "tspan",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1573,7 +1573,7 @@ export function use(className?: string, attrs?: SVGUseElementAttrs, css?: CSSSty
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.Use << VNodeFlags.ElementIdOffset),
     "use",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1593,7 +1593,7 @@ export function view(className?: string, attrs?: SVGViewElementAttrs, css?: CSSS
     VNodeFlags.Element | VNodeFlags.SvgElement | (TagId.View << VNodeFlags.ElementIdOffset),
     "view",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }

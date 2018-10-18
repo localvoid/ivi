@@ -13,12 +13,12 @@ test(`tagName`, () => {
 
 test(`default className should be undefined`, () => {
   const v = h.div();
-  expect(v._cs).toBe("");
+  expect(v._cs).toBe(undefined);
 });
 
 test(`className=undefined`, () => {
   const v = h.div(undefined);
-  expect(v._cs).toBe("");
+  expect(v._cs).toBe(undefined);
 });
 
 test(`className="cls"`, () => {

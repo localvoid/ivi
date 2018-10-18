@@ -240,7 +240,7 @@ export function a(className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.A << VNodeFlags.ElementIdOffset),
     "a",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -260,7 +260,7 @@ export function abbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Abbr << VNodeFlags.ElementIdOffset),
     "abbr",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -280,7 +280,7 @@ export function address(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.Address << VNodeFlags.ElementIdOffset),
     "address",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -300,7 +300,7 @@ export function article(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.Article << VNodeFlags.ElementIdOffset),
     "article",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -320,7 +320,7 @@ export function aside(className?: string, attrs?: HTMLElementAttrs, css?: CSSSty
     VNodeFlags.Element | (TagId.Aside << VNodeFlags.ElementIdOffset),
     "aside",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -340,7 +340,7 @@ export function b(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     VNodeFlags.Element | (TagId.B << VNodeFlags.ElementIdOffset),
     "b",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -360,7 +360,7 @@ export function base(className?: string, attrs?: HTMLBaseElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Base << VNodeFlags.ElementIdOffset),
     "base",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -380,7 +380,7 @@ export function bdo(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Bdo << VNodeFlags.ElementIdOffset),
     "bdo",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -400,7 +400,7 @@ export function blockquote(className?: string, attrs?: HTMLQuoteElementAttrs, cs
     VNodeFlags.Element | (TagId.Blockquote << VNodeFlags.ElementIdOffset),
     "blockquote",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -420,7 +420,7 @@ export function body(className?: string, attrs?: HTMLBodyElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Body << VNodeFlags.ElementIdOffset),
     "body",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -440,7 +440,7 @@ export function br(className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Br << VNodeFlags.ElementIdOffset),
     "br",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -460,7 +460,7 @@ export function button(className?: string, attrs?: HTMLButtonElementAttrs, css?:
     VNodeFlags.Element | (TagId.Button << VNodeFlags.ElementIdOffset),
     "button",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -480,7 +480,7 @@ export function canvas(className?: string, attrs?: HTMLCanvasElementAttrs, css?:
     VNodeFlags.Element | (TagId.Canvas << VNodeFlags.ElementIdOffset),
     "canvas",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -500,7 +500,7 @@ export function caption(className?: string, attrs?: HTMLTableCaptionElementAttrs
     VNodeFlags.Element | (TagId.Caption << VNodeFlags.ElementIdOffset),
     "caption",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -520,7 +520,7 @@ export function cite(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Cite << VNodeFlags.ElementIdOffset),
     "cite",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -540,7 +540,7 @@ export function code(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Code << VNodeFlags.ElementIdOffset),
     "code",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -560,7 +560,7 @@ export function col(className?: string, attrs?: HTMLTableColElementAttrs, css?: 
     VNodeFlags.Element | (TagId.Col << VNodeFlags.ElementIdOffset),
     "col",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -580,7 +580,7 @@ export function colgroup(className?: string, attrs?: HTMLTableColElementAttrs, c
     VNodeFlags.Element | (TagId.Colgroup << VNodeFlags.ElementIdOffset),
     "colgroup",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -600,7 +600,7 @@ export function del(className?: string, attrs?: HTMLModElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Del << VNodeFlags.ElementIdOffset),
     "del",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -620,7 +620,7 @@ export function dfn(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Dfn << VNodeFlags.ElementIdOffset),
     "dfn",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -640,7 +640,7 @@ export function div(className?: string, attrs?: HTMLDivElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Div << VNodeFlags.ElementIdOffset),
     "div",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -660,7 +660,7 @@ export function dd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     VNodeFlags.Element | (TagId.Dd << VNodeFlags.ElementIdOffset),
     "dd",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -680,7 +680,7 @@ export function dl(className?: string, attrs?: HTMLDListElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.Dl << VNodeFlags.ElementIdOffset),
     "dl",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -700,7 +700,7 @@ export function dt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     VNodeFlags.Element | (TagId.Dt << VNodeFlags.ElementIdOffset),
     "dt",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -720,7 +720,7 @@ export function em(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     VNodeFlags.Element | (TagId.Em << VNodeFlags.ElementIdOffset),
     "em",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -740,7 +740,7 @@ export function fieldset(className?: string, attrs?: HTMLFieldSetElementAttrs, c
     VNodeFlags.Element | (TagId.Fieldset << VNodeFlags.ElementIdOffset),
     "fieldset",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -760,7 +760,7 @@ export function figcaption(className?: string, attrs?: HTMLElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Figcaption << VNodeFlags.ElementIdOffset),
     "figcaption",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -780,7 +780,7 @@ export function figure(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Figure << VNodeFlags.ElementIdOffset),
     "figure",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -800,7 +800,7 @@ export function footer(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Footer << VNodeFlags.ElementIdOffset),
     "footer",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -820,7 +820,7 @@ export function form(className?: string, attrs?: HTMLFormElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Form << VNodeFlags.ElementIdOffset),
     "form",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -840,7 +840,7 @@ export function h1(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.H1 << VNodeFlags.ElementIdOffset),
     "h1",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -860,7 +860,7 @@ export function h2(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.H2 << VNodeFlags.ElementIdOffset),
     "h2",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -880,7 +880,7 @@ export function h3(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.H3 << VNodeFlags.ElementIdOffset),
     "h3",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -900,7 +900,7 @@ export function h4(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.H4 << VNodeFlags.ElementIdOffset),
     "h4",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -920,7 +920,7 @@ export function h5(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.H5 << VNodeFlags.ElementIdOffset),
     "h5",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -940,7 +940,7 @@ export function h6(className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.H6 << VNodeFlags.ElementIdOffset),
     "h6",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -960,7 +960,7 @@ export function head(className?: string, attrs?: HTMLHeadElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Head << VNodeFlags.ElementIdOffset),
     "head",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -980,7 +980,7 @@ export function header(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Header << VNodeFlags.ElementIdOffset),
     "header",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1000,7 +1000,7 @@ export function hgroup(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Hgroup << VNodeFlags.ElementIdOffset),
     "hgroup",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1020,7 +1020,7 @@ export function hr(className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Hr << VNodeFlags.ElementIdOffset),
     "hr",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1040,7 +1040,7 @@ export function html(className?: string, attrs?: HTMLHtmlElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Html << VNodeFlags.ElementIdOffset),
     "html",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1060,7 +1060,7 @@ export function i(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     VNodeFlags.Element | (TagId.I << VNodeFlags.ElementIdOffset),
     "i",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1080,7 +1080,7 @@ export function iframe(className?: string, attrs?: HTMLIFrameElementAttrs, css?:
     VNodeFlags.Element | (TagId.Iframe << VNodeFlags.ElementIdOffset),
     "iframe",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1100,7 +1100,7 @@ export function img(className?: string, attrs?: HTMLImageElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Img << VNodeFlags.ElementIdOffset),
     "img",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1120,7 +1120,7 @@ export function imgArea(className?: string, attrs?: HTMLAreaElementAttrs, css?: 
     VNodeFlags.Element | (TagId.Area << VNodeFlags.ElementIdOffset),
     "area",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1140,7 +1140,7 @@ export function imgMap(className?: string, attrs?: HTMLMapElementAttrs, css?: CS
     VNodeFlags.Element | (TagId.Map << VNodeFlags.ElementIdOffset),
     "map",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1160,7 +1160,7 @@ export function ins(className?: string, attrs?: HTMLModElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Ins << VNodeFlags.ElementIdOffset),
     "ins",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1180,7 +1180,7 @@ export function kbd(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Kbd << VNodeFlags.ElementIdOffset),
     "kbd",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1200,7 +1200,7 @@ export function label(className?: string, attrs?: HTMLLabelElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Label << VNodeFlags.ElementIdOffset),
     "label",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1220,7 +1220,7 @@ export function legend(className?: string, attrs?: HTMLLegendElementAttrs, css?:
     VNodeFlags.Element | (TagId.Legend << VNodeFlags.ElementIdOffset),
     "legend",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1240,7 +1240,7 @@ export function li(className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Li << VNodeFlags.ElementIdOffset),
     "li",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1260,7 +1260,7 @@ export function link(className?: string, attrs?: HTMLLinkElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Link << VNodeFlags.ElementIdOffset),
     "link",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1280,7 +1280,7 @@ export function main(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Main << VNodeFlags.ElementIdOffset),
     "main",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1300,7 +1300,7 @@ export function mark(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Mark << VNodeFlags.ElementIdOffset),
     "mark",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1320,7 +1320,7 @@ export function menu(className?: string, attrs?: HTMLMenuElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Menu << VNodeFlags.ElementIdOffset),
     "menu",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1340,7 +1340,7 @@ export function meta(className?: string, attrs?: HTMLMetaElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Meta << VNodeFlags.ElementIdOffset),
     "meta",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1360,7 +1360,7 @@ export function meter(className?: string, attrs?: HTMLMeterElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Meter << VNodeFlags.ElementIdOffset),
     "meter",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1380,7 +1380,7 @@ export function nav(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Nav << VNodeFlags.ElementIdOffset),
     "nav",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1400,7 +1400,7 @@ export function noscript(className?: string, attrs?: HTMLElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Noscript << VNodeFlags.ElementIdOffset),
     "noscript",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1420,7 +1420,7 @@ export function ol(className?: string, attrs?: HTMLOListElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.Ol << VNodeFlags.ElementIdOffset),
     "ol",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1440,7 +1440,7 @@ export function optgroup(className?: string, attrs?: HTMLOptGroupElementAttrs, c
     VNodeFlags.Element | (TagId.Optgroup << VNodeFlags.ElementIdOffset),
     "optgroup",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1460,7 +1460,7 @@ export function option(className?: string, attrs?: HTMLOptionElementAttrs, css?:
     VNodeFlags.Element | (TagId.Option << VNodeFlags.ElementIdOffset),
     "option",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1480,7 +1480,7 @@ export function p(className?: string, attrs?: HTMLParagraphElementAttrs, css?: C
     VNodeFlags.Element | (TagId.P << VNodeFlags.ElementIdOffset),
     "p",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1500,7 +1500,7 @@ export function picture(className?: string, attrs?: HTMLPictureElementAttrs, css
     VNodeFlags.Element | (TagId.Picture << VNodeFlags.ElementIdOffset),
     "picture",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1520,7 +1520,7 @@ export function pre(className?: string, attrs?: HTMLPreElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Pre << VNodeFlags.ElementIdOffset),
     "pre",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1540,7 +1540,7 @@ export function progress(className?: string, attrs?: HTMLProgressElementAttrs, c
     VNodeFlags.Element | (TagId.Progress << VNodeFlags.ElementIdOffset),
     "progress",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1560,7 +1560,7 @@ export function q(className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Q << VNodeFlags.ElementIdOffset),
     "q",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1580,7 +1580,7 @@ export function rt(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
     VNodeFlags.Element | (TagId.Rt << VNodeFlags.ElementIdOffset),
     "rt",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1600,7 +1600,7 @@ export function ruby(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Ruby << VNodeFlags.ElementIdOffset),
     "ruby",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1620,7 +1620,7 @@ export function s(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     VNodeFlags.Element | (TagId.S << VNodeFlags.ElementIdOffset),
     "s",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1640,7 +1640,7 @@ export function samp(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Samp << VNodeFlags.ElementIdOffset),
     "samp",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1660,7 +1660,7 @@ export function script(className?: string, attrs?: HTMLScriptElementAttrs, css?:
     VNodeFlags.Element | (TagId.Script << VNodeFlags.ElementIdOffset),
     "script",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1680,7 +1680,7 @@ export function section(className?: string, attrs?: HTMLElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.Section << VNodeFlags.ElementIdOffset),
     "section",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1700,7 +1700,7 @@ export function select(className?: string, attrs?: HTMLSelectElementAttrs, css?:
     VNodeFlags.Element | (TagId.Select << VNodeFlags.ElementIdOffset),
     "select",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1720,7 +1720,7 @@ export function source(className?: string, attrs?: HTMLSourceElementAttrs, css?:
     VNodeFlags.Element | (TagId.Source << VNodeFlags.ElementIdOffset),
     "source",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1740,7 +1740,7 @@ export function span(className?: string, attrs?: HTMLSpanElementAttrs, css?: CSS
     VNodeFlags.Element | (TagId.Span << VNodeFlags.ElementIdOffset),
     "span",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1760,7 +1760,7 @@ export function strong(className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
     VNodeFlags.Element | (TagId.Strong << VNodeFlags.ElementIdOffset),
     "strong",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1780,7 +1780,7 @@ export function style(className?: string, attrs?: HTMLStyleElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Style << VNodeFlags.ElementIdOffset),
     "style",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1800,7 +1800,7 @@ export function sub(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Sub << VNodeFlags.ElementIdOffset),
     "sub",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1820,7 +1820,7 @@ export function sup(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Sup << VNodeFlags.ElementIdOffset),
     "sup",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1840,7 +1840,7 @@ export function table(className?: string, attrs?: HTMLTableElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Table << VNodeFlags.ElementIdOffset),
     "table",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1860,7 +1860,7 @@ export function tbody(className?: string, attrs?: HTMLTableSectionElementAttrs, 
     VNodeFlags.Element | (TagId.Tbody << VNodeFlags.ElementIdOffset),
     "tbody",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1880,7 +1880,7 @@ export function td(className?: string, attrs?: HTMLTableDataCellElementAttrs, cs
     VNodeFlags.Element | (TagId.Td << VNodeFlags.ElementIdOffset),
     "td",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1900,7 +1900,7 @@ export function template(className?: string, attrs?: HTMLTemplateElementAttrs, c
     VNodeFlags.Element | (TagId.Template << VNodeFlags.ElementIdOffset),
     "template",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1920,7 +1920,7 @@ export function tfoot(className?: string, attrs?: HTMLTableSectionElementAttrs, 
     VNodeFlags.Element | (TagId.Tfoot << VNodeFlags.ElementIdOffset),
     "tfoot",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1940,7 +1940,7 @@ export function th(className?: string, attrs?: HTMLTableHeaderCellElementAttrs, 
     VNodeFlags.Element | (TagId.Th << VNodeFlags.ElementIdOffset),
     "th",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1960,7 +1960,7 @@ export function thead(className?: string, attrs?: HTMLTableSectionElementAttrs, 
     VNodeFlags.Element | (TagId.Thead << VNodeFlags.ElementIdOffset),
     "thead",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -1980,7 +1980,7 @@ export function time(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
     VNodeFlags.Element | (TagId.Time << VNodeFlags.ElementIdOffset),
     "time",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2000,7 +2000,7 @@ export function title(className?: string, attrs?: HTMLTitleElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Title << VNodeFlags.ElementIdOffset),
     "title",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2020,7 +2020,7 @@ export function tr(className?: string, attrs?: HTMLTableRowElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Tr << VNodeFlags.ElementIdOffset),
     "tr",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2040,7 +2040,7 @@ export function track(className?: string, attrs?: HTMLTrackElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Track << VNodeFlags.ElementIdOffset),
     "track",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2060,7 +2060,7 @@ export function u(className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
     VNodeFlags.Element | (TagId.U << VNodeFlags.ElementIdOffset),
     "u",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2080,7 +2080,7 @@ export function ul(className?: string, attrs?: HTMLUListElementAttrs, css?: CSSS
     VNodeFlags.Element | (TagId.Ul << VNodeFlags.ElementIdOffset),
     "ul",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2100,7 +2100,7 @@ export function wbr(className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
     VNodeFlags.Element | (TagId.Wbr << VNodeFlags.ElementIdOffset),
     "wbr",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2120,7 +2120,7 @@ export function textarea(className?: string, attrs?: HTMLTextAreaElementAttrs, c
     VNodeFlags.Element | (TagId.Textarea << VNodeFlags.ElementIdOffset),
     "textarea",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2140,7 +2140,7 @@ export function input(className?: string, attrs?: HTMLInputElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Input << VNodeFlags.ElementIdOffset),
     "input",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2160,7 +2160,7 @@ export function audio(className?: string, attrs?: HTMLAudioElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Audio << VNodeFlags.ElementIdOffset),
     "audio",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
@@ -2180,7 +2180,7 @@ export function video(className?: string, attrs?: HTMLVideoElementAttrs, css?: C
     VNodeFlags.Element | (TagId.Video << VNodeFlags.ElementIdOffset),
     "video",
     attrs,
-    className === void 0 ? "" : className,
+    className,
     css,
   );
 }
