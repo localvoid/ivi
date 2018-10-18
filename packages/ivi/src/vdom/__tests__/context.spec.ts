@@ -3,16 +3,16 @@ import { startRender } from "./utils";
 
 const Static = withShouldUpdate(
   () => false,
-  statelessComponent<VNode>((child) => child),
+  statelessComponent<VNode>(child => child),
 );
 
 const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
   (prev, props, ctx) => ({ value: ctx.value }),
-  (props) => t(props.value),
+  props => t(props.value),
 );
 
 test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {
-  startRender((r) => {
+  startRender(r => {
     const v = (
       context({ value: 10 },
         ContextTestPrinterConnector(),
@@ -25,7 +25,7 @@ test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () 
 });
 
 test(`Sync context value`, () => {
-  startRender((r) => {
+  startRender(r => {
     const v1 = (
       context({ value: 10 },
         ContextTestPrinterConnector(),
@@ -44,7 +44,7 @@ test(`Sync context value`, () => {
 });
 
 test(`Sync context value inside component with shouldUpdate=false`, () => {
-  startRender((r) => {
+  startRender(r => {
     const v1 = (
       context({ value: 10 },
         Static(

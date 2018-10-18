@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<div>""</div> => <div>"abc"</div> 1`] = `
+<div>
+  abc
+</div>
+`;
+
+exports[`<div>"abc"</div> => <div>""</div> 1`] = `
+<div>
+  
+</div>
+`;
+
+exports[`<div>"abc"</div> => <div>""</div> 2`] = `<div />`;
+
+exports[`<div></div> => <div>"abc"</div> 1`] = `
+<div>
+  abc
+</div>
+`;

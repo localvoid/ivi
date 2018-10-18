@@ -2,8 +2,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps } from "./utils";
 
 test(`<input> => <input type="checkbox">`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input());
       const n = r(h.input("", { type: "checkbox" }));
 
@@ -14,8 +14,8 @@ test(`<input> => <input type="checkbox">`, () => {
 });
 
 test(`<input> => <input value="cde">`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input());
       const n = r(h.input("", { value: h.VALUE("cde") }));
 
@@ -26,8 +26,8 @@ test(`<input> => <input value="cde">`, () => {
 });
 
 test(`<input value="abc"> => <input value="cde">`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input("", { value: h.VALUE("abc") }));
       const n = r(h.input("", { value: h.VALUE("cde") }));
 
@@ -38,8 +38,8 @@ test(`<input value="abc"> => <input value="cde">`, () => {
 });
 
 test(`<input value="abc"> => <input>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input("", { value: h.VALUE("abc") }));
       const n = r(h.input());
 
@@ -50,8 +50,8 @@ test(`<input value="abc"> => <input>`, () => {
 });
 
 test(`<input type="checkbox"> => <input type="checkbox" checked=true>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input("", { type: "checkbox" }));
       const n = r(h.input("", { type: "checkbox", checked: h.CHECKED(true) }));
 
@@ -62,8 +62,8 @@ test(`<input type="checkbox"> => <input type="checkbox" checked=true>`, () => {
 });
 
 test(`<input type="checkbox" checked=true> => <input type="checkbox" checked=false>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input("", { type: "checkbox", checked: h.CHECKED(true) }));
       const n = r(h.input("", { type: "checkbox", checked: h.CHECKED(false) }));
 
@@ -74,8 +74,8 @@ test(`<input type="checkbox" checked=true> => <input type="checkbox" checked=fal
 });
 
 test(`<input type="checkbox" checked=true> => <input type="checkbox">`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.input("", { type: "checkbox", checked: h.CHECKED(true) }));
       const n = r(h.input("", { type: "checkbox" }));
 

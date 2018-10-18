@@ -71,7 +71,7 @@ export function createTouchEventListener(
     const touches = ev.touches;
     if (pointers.size >= touches.length) {
       const canceledPointers: GesturePointerEvent[] = [];
-      pointers.forEach((pointer) => {
+      pointers.forEach(pointer => {
         const id = pointer.id;
         if (id !== 1) {
           if (!findTouch(touches, id - TOUCH_ID_OFFSET)) {

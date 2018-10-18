@@ -5,7 +5,7 @@ import { startRender } from "./utils";
 
 describe(`sync element attributes`, () => {
   test(`undefined => {}`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div("", {}));
 
@@ -14,7 +14,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{} => undefined`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {}));
       const n = r(h.div());
 
@@ -23,7 +23,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{} => {}`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {}));
       const n = r(h.div("", {}));
 
@@ -32,7 +32,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`undefined => { title: "1" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div("", { title: "1" }));
 
@@ -42,7 +42,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{} => { title: "1" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {}));
       const n = r(h.div("", { title: "1" }));
 
@@ -52,7 +52,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1" } => { title: "2" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", { title: "1" }));
       const n = r(h.div("", { title: "2" }));
 
@@ -61,7 +61,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1" } => { title: undefined }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", { title: "1" }));
       const n = r(h.div("", { title: undefined }));
 
@@ -70,7 +70,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ bool: false } => { bool: true }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", { bool: false }));
       const n = r(h.div("", { bool: true }));
 
@@ -80,7 +80,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{} => { title: "2", tabIndex: 2 }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {}));
       const n = r(h.div("", {
         title: "2",
@@ -94,7 +94,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1" } => { title: "2", tabIndex: 2 }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
       }));
@@ -110,7 +110,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "2", tabIndex: 2 }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -127,7 +127,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "1", tabIndex: 1 }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -144,7 +144,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "2" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -160,7 +160,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "2", lang: "en" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -178,7 +178,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { lang: "en" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -195,7 +195,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => {}`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -209,7 +209,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{ title: "1", tabIndex: 1 } => undefined`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", {
         title: "1",
         tabIndex: 1,
@@ -224,7 +224,7 @@ describe(`sync element attributes`, () => {
 
   describe(`svg`, () => {
     test(`{ "xml:text": "abc" } => { "xml:text": "abc" }`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
         const n = r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
 
@@ -234,7 +234,7 @@ describe(`sync element attributes`, () => {
     });
 
     test(`{ "xml:text": "abc" } => { "xml:text": undefined }`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
         const n = r(s.circle("", { "xml:text": s.XML_ATTR(undefined) }));
 
@@ -243,7 +243,7 @@ describe(`sync element attributes`, () => {
     });
 
     test(`{ "xml:text": true } => { "xml:text": true }`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR(true) }));
         const n = r(s.circle("", { "xml:text": s.XML_ATTR(true) }));
 
@@ -253,7 +253,7 @@ describe(`sync element attributes`, () => {
     });
 
     test(`{ "xlink:text": true } => { "xlink:text": true }`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }));
         const n = r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }));
 

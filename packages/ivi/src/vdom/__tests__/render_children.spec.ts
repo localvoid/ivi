@@ -2,8 +2,8 @@ import { startRender, checkDOMOps } from "./utils";
 import * as h from "ivi-html";
 
 test(`<div>{ null }</div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const n = r(h.div().c(null));
 
       expect(n).toMatchSnapshot();
@@ -13,8 +13,8 @@ test(`<div>{ null }</div>`, () => {
 });
 
 test(`<div>"abc"</div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = h.div().c("abc");
       const n = r(v);
 
@@ -25,8 +25,8 @@ test(`<div>"abc"</div>`, () => {
 });
 
 test(`<div>10</div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = h.div().c(10);
       const n = r(v);
 
@@ -37,8 +37,8 @@ test(`<div>10</div>`, () => {
 });
 
 test(`<div><span></span></div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = (
         h.div().c(
           h.span(),
@@ -53,8 +53,8 @@ test(`<div><span></span></div>`, () => {
 });
 
 test(`<div><span></span><strong></strong></div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = (
         h.div().c(
           h.span(),
@@ -70,8 +70,8 @@ test(`<div><span></span><strong></strong></div>`, () => {
 });
 
 test(`<div><div></div>{ null }<span></span></div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = (
         h.div().c(
           h.div(),
@@ -88,8 +88,8 @@ test(`<div><div></div>{ null }<span></span></div>`, () => {
 });
 
 test(`<div><div></div>"abc"<span></span></div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = (
         h.div().c(
           h.div(),
@@ -106,8 +106,8 @@ test(`<div><div></div>"abc"<span></span></div>`, () => {
 });
 
 test(`<div><div></div>123<span></span></div>`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = (
         h.div().c(
           h.div(),
@@ -124,8 +124,8 @@ test(`<div><div></div>123<span></span></div>`, () => {
 });
 
 test(`complex tree #1`, () => {
-  checkDOMOps((c) => {
-    startRender((r) => {
+  checkDOMOps(c => {
+    startRender(r => {
       const v = (
         h.div().c(
           h.div().c("hello"),
@@ -148,7 +148,7 @@ test(`complex tree #1`, () => {
 });
 
 test(`raise an exception when VNode is used multiple times`, () => {
-  startRender((r) => {
+  startRender(r => {
     const v1 = h.div();
     const v2 = h.div().c(v1);
     r(v1);

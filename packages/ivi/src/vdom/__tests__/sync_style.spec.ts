@@ -3,7 +3,7 @@ import { startRender } from "./utils";
 
 describe(`sync element style`, () => {
   test(`{} => null`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {}));
       const n = r(h.div());
 
@@ -12,7 +12,7 @@ describe(`sync element style`, () => {
   });
 
   test(`undefined => {}`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div("", void 0, {}));
 
@@ -21,7 +21,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{} => {}`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {}));
       const n = r(h.div("", void 0, {}));
 
@@ -30,7 +30,7 @@ describe(`sync element style`, () => {
   });
 
   test(`undefined => { top: "10px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div("", void 0, { top: "10px" }));
 
@@ -40,7 +40,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{} => { top: "10px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {}));
       const n = r(h.div("", void 0, { top: "10px" }));
 
@@ -50,7 +50,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "10px" } => { top: undefined }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, { top: "10px" }));
       const n = r(h.div("", void 0, { top: undefined }));
 
@@ -59,7 +59,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "10px" } => { top: "10px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, { top: "10px" }));
       const n = r(h.div("", void 0, { top: "10px" }));
 
@@ -69,7 +69,7 @@ describe(`sync element style`, () => {
   });
 
   test(`undefined => { top: "10px", left: "20px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div("", void 0, {
         top: "10px",
@@ -83,7 +83,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px" } => undefined`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, { top: "1px" }));
       const n = r(h.div());
 
@@ -93,7 +93,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => undefined`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {
         top: "1px",
         left: "1px",
@@ -107,7 +107,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px" } => { top: "10px", left: "20px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, { top: "1px" }));
       const n = r(h.div("", void 0, {
         top: "10px",
@@ -121,7 +121,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { top: "10px", left: "20px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {
         top: "1px",
         left: "1px",
@@ -138,7 +138,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { top: "10px", left: "20px", right: "30px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {
         top: "1px",
         left: "1px",
@@ -157,7 +157,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { top: "10px", right: "30px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {
         top: "1px",
         left: "1px",
@@ -175,7 +175,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { right: "30px" }`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       r(h.div("", void 0, {
         top: "1px",
         left: "1px",

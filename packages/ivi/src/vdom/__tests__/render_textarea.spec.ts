@@ -2,7 +2,7 @@ import * as h from "ivi-html";
 import { startRender } from "./utils";
 
 test(`<textarea>`, () => {
-  startRender<HTMLTextAreaElement>((r) => {
+  startRender<HTMLTextAreaElement>(r => {
     const n = r(h.textarea());
 
     expect(n.tagName.toLowerCase()).toBe("textarea");
@@ -10,7 +10,7 @@ test(`<textarea>`, () => {
 });
 
 test(`<textarea>abc</textarea>`, () => {
-  startRender<HTMLTextAreaElement>((r) => {
+  startRender<HTMLTextAreaElement>(r => {
     const n = r(h.textarea("", { value: h.VALUE("abc") }));
 
     expect(n.value).toBe("abc");

@@ -2,8 +2,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
 test(`<div></div> => <div><div></div><div></div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div()
       );
@@ -24,8 +24,8 @@ test(`<div></div> => <div><div></div><div></div></div>`, () => {
 });
 
 test(`<div><div></div><div></div></div> => <div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div(),
@@ -46,8 +46,8 @@ test(`<div><div></div><div></div></div> => <div></div>`, () => {
 });
 
 test(`<div>123</div> => <div><h1></h1><h2></h2></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(123)
       );
@@ -68,8 +68,8 @@ test(`<div>123</div> => <div><h1></h1><h2></h2></div>`, () => {
 });
 
 test(`<div><h1></h1><h2></h2></div> => <div>123</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.h1(),
@@ -90,8 +90,8 @@ test(`<div><h1></h1><h2></h2></div> => <div>123</div>`, () => {
 });
 
 test(`<div><h1></h1><h2></h2></div> => <div><div></div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.h1(),
@@ -114,8 +114,8 @@ test(`<div><h1></h1><h2></h2></div> => <div><div></div></div>`, () => {
 });
 
 test(`<div><h1></h1></div> => <div><h2></h2></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.h1(),
@@ -137,8 +137,8 @@ test(`<div><h1></h1></div> => <div><h2></h2></div>`, () => {
 });
 
 test(`<div><div></div></div> => <div><h1></h1><h2></h2></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div(),

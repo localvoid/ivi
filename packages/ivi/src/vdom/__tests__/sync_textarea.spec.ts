@@ -2,8 +2,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
 test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
-  startRender<HTMLTextAreaElement>((r) => {
-    checkDOMOps((c) => {
+  startRender<HTMLTextAreaElement>(r => {
+    checkDOMOps(c => {
       r(h.textarea());
       const b = r(h.textarea("", { value: h.VALUE("cde") }));
 
@@ -15,8 +15,8 @@ test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
 });
 
 test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
-  startRender<HTMLTextAreaElement>((r) => {
-    checkDOMOps((c) => {
+  startRender<HTMLTextAreaElement>(r => {
+    checkDOMOps(c => {
       r(h.textarea("", { value: h.VALUE("abc") }));
       const b = r(h.textarea("", { value: h.VALUE("cde") }));
 
@@ -28,8 +28,8 @@ test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
 });
 
 test(`<textarea>abc</textarea> => <textarea></textarea>`, () => {
-  startRender<HTMLTextAreaElement>((r) => {
-    checkDOMOps((c) => {
+  startRender<HTMLTextAreaElement>(r => {
+    checkDOMOps(c => {
       r(h.textarea("", { value: h.VALUE("abc") }));
       const b = r(h.textarea());
 

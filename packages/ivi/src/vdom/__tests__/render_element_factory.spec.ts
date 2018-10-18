@@ -3,7 +3,7 @@ import * as h from "ivi-html";
 import { startRender } from "./utils";
 
 test(`<div></div>`, () => {
-  startRender<HTMLElement>((r) => {
+  startRender<HTMLElement>(r => {
     const e = element(h.div());
     const n = r(e());
 
@@ -12,7 +12,7 @@ test(`<div></div>`, () => {
 });
 
 test(`predefined className: <div class="a"></div>`, () => {
-  startRender<HTMLElement>((r) => {
+  startRender<HTMLElement>(r => {
     const e = element(h.div("a"));
     const n = r(e());
 
@@ -22,7 +22,7 @@ test(`predefined className: <div class="a"></div>`, () => {
 });
 
 test(`<div class="a"></div>`, () => {
-  startRender<HTMLElement>((r) => {
+  startRender<HTMLElement>(r => {
     const e = element(h.div());
     const n = r(e("a"));
 
@@ -32,7 +32,7 @@ test(`<div class="a"></div>`, () => {
 });
 
 test(`<div id="123"></div>`, () => {
-  startRender<HTMLElement>((r) => {
+  startRender<HTMLElement>(r => {
     const e = element(h.div("", { id: "123" }));
     const n = r(e());
 
@@ -42,7 +42,7 @@ test(`<div id="123"></div>`, () => {
 });
 
 test(`render twice: <div id="123"></div>`, () => {
-  startRender<HTMLElement>((r) => {
+  startRender<HTMLElement>(r => {
     const e = element(h.div("", { id: "123" }));
     r(e());
     const n = r(e());

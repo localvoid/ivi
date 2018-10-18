@@ -15,7 +15,7 @@ test(`negative range (5, 3)`, () => {
 
 test(`check indexes (0, 2)`, () => {
   let j = 0;
-  mapRange(0, 2, (i) => {
+  mapRange(0, 2, i => {
     expect(i).toBe(j++);
     return h.div().k(i);
   });
@@ -23,7 +23,7 @@ test(`check indexes (0, 2)`, () => {
 
 test(`check indexes (2, 4)`, () => {
   let j = 2;
-  mapRange(2, 4, (i) => {
+  mapRange(2, 4, i => {
     expect(i).toBe(j++);
     return h.div().k(i);
   });
@@ -42,7 +42,7 @@ test(`one node`, () => {
 test(`two nodes`, () => {
   const v1 = h.div().k(5);
   const v2 = h.div().k(6);
-  const first = mapRange(0, 2, (i) => i === 0 ? v1 : v2);
+  const first = mapRange(0, 2, i => i === 0 ? v1 : v2);
 
   expect(first).toBe(v1);
   expect(v1._f & VNodeFlags.KeyedList).toBeTruthy();
@@ -53,11 +53,11 @@ test(`two nodes`, () => {
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (first node)`, () => {
-  expect(() => { mapRange(0, 1, (v) => h.div()); }).toThrowError("key");
+  expect(() => { mapRange(0, 1, v => h.div()); }).toThrowError("key");
 });
 
 test(`raise an exception when VNode doesn't have an explicit key (second node)`, () => {
-  expect(() => { mapRange(0, 2, (v) => v === 0 ? h.div().k(0) : h.div()); }).toThrowError("key");
+  expect(() => { mapRange(0, 2, v => v === 0 ? h.div().k(0) : h.div()); }).toThrowError("key");
 });
 
 test(`raise an exception when function returns children collection`, () => {

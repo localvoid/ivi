@@ -34,14 +34,23 @@ export function _remove(parent: Node, vnode: VNode): void {
  */
 function _attach(vnode: VNode): void {
   const flags = vnode._f;
-  if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-    (vnode._i as Component<any>).attached();
-  }
 
-  let child = vnode._c;
-  while (child !== null) {
-    _attach(child);
-    child = child._r;
+  if ((flags & (
+    VNodeFlags.Children |
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
+    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+      (vnode._i as Component<any>).attached();
+    }
+
+    let child = vnode._c as VNode | null;
+    while (child !== null) {
+      _attach(child);
+      child = child._r;
+    }
   }
 
   if ((flags & VNodeFlags.Events) !== 0) {
@@ -55,17 +64,26 @@ function _attach(vnode: VNode): void {
  * @param vnode - Virtual DOM node
  */
 function _detach(vnode: VNode): void {
-  let child = vnode._c;
-  while (child !== null) {
-    _detach(child);
-    child = child._r;
-  }
-
   const flags = vnode._f;
-  if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-    const component = vnode._i as Component<any>;
-    component.flags |= ComponentFlags.Detached;
-    component.detached();
+
+  if ((flags & (
+    VNodeFlags.Children |
+    VNodeFlags.StatelessComponent |
+    VNodeFlags.StatefulComponent |
+    VNodeFlags.Connect |
+    VNodeFlags.UpdateContext
+  )) !== 0) {
+    let child = vnode._c as VNode | null;
+    while (child !== null) {
+      _detach(child);
+      child = child._r;
+    }
+
+    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+      const component = vnode._i as Component<any>;
+      component.flags |= ComponentFlags.Detached;
+      component.detached();
+    }
   }
 
   if ((flags & VNodeFlags.Events) !== 0) {
@@ -88,14 +106,14 @@ export function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContex
 
   if ((flags & (
     VNodeFlags.StopDirtyChecking | // StopDirtyChecking will convert this value to -value
-    VNodeFlags.Element |
+    VNodeFlags.Children |
     VNodeFlags.StatelessComponent |
     VNodeFlags.StatefulComponent |
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) > 0) {
-    child = vnode._c;
-    if ((flags & VNodeFlags.Element) !== 0) {
+    child = vnode._c as VNode | null;
+    if ((flags & VNodeFlags.Children) !== 0) {
       instance = vnode._i as Node;
       while (child !== null) {
         _dirtyCheck(instance as Node, child, context, dirtyContext);
@@ -237,15 +255,19 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
           syncStyle(node as HTMLElement, void 0, vnode._s);
         }
 
-        let child = vnode._c;
-        while (child !== null) {
-          /* istanbul ignore else */
-          if (DEBUG) {
-            node.insertBefore(_instantiate(node, child, context), null);
-          } else {
-            nodeInsertBefore.call(node, _instantiate(node, child, context), null);
+        if ((flags & VNodeFlags.Children) !== 0) {
+          let child = vnode._c as VNode | null;
+          while (child !== null) {
+            /* istanbul ignore else */
+            if (DEBUG) {
+              node.insertBefore(_instantiate(node, child, context), null);
+            } else {
+              nodeInsertBefore.call(node, _instantiate(node, child, context), null);
+            }
+            child = child._r;
           }
-          child = child._r;
+        } else if ((flags & VNodeFlags.TextContent) !== 0 && vnode._c !== "") {
+          node.textContent = vnode._c as string;
         }
       } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
         const component = instance = new (tag as StatefulComponent<any>)(props);
@@ -270,7 +292,7 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
           shouldBeSingleVNode((tag as StatelessComponent<any>).render(props)) :
           /* istanbul ignore next */(tag as StatelessComponent<any>).render(props);
       }
-      node = _instantiate(parent, vnode._c!, context);
+      node = _instantiate(parent, vnode._c as VNode, context);
     }
   }
 
@@ -396,15 +418,24 @@ export function _sync(
           }
 
           if (aChild !== bChild) {
-            if (aChild === null) {
-              do {
-                _render(instance as Element, null, bChild!, context);
-                bChild = bChild!._r;
-              } while (bChild !== null);
-            } else if (bChild === null) {
-              _removeAllChildren(instance as Element, aChild!);
+            if ((aFlags & VNodeFlags.TextContent) === 0) {
+              if (aChild === null) {
+                do {
+                  _render(instance as Element, null, bChild as VNode, context);
+                  bChild = (bChild as VNode)._r;
+                } while (bChild !== null);
+              } else if (bChild === null) {
+                _removeAllChildren(instance as Element, aChild as VNode);
+              } else {
+                _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
+              }
             } else {
-              _syncChildrenTrackByKeys(instance as Element, aChild!, bChild!, context, dirtyContext);
+              const textNode = (instance as Element).firstChild as Text | null;
+              if (textNode !== null) {
+                textNode.nodeValue = bChild as string;
+              } else {
+                (instance as Element).textContent = bChild as string;
+              }
             }
           }
         } else { // VNodeFlags.StatefulComponent
@@ -423,7 +454,7 @@ export function _sync(
           ) {
             _sync(
               parent,
-              aChild!,
+              aChild as VNode,
               b._c = DEBUG ?
                 shouldBeSingleVNode((instance as Component<any>).render()) :
                 /* istanbul ignore next */(instance as Component<any>).render(),
@@ -433,7 +464,7 @@ export function _sync(
             (instance as Component<any>).flags &= ~ComponentFlags.Dirty;
             (instance as Component<any>).updated();
           } else {
-            _dirtyCheck(parent, b._c = aChild!, context, dirtyContext);
+            _dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
           }
         }
       } else { // (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)
@@ -443,11 +474,11 @@ export function _sync(
             const prevSelectData = instance;
             const selectData = b._i = connect.select(prevSelectData, bProps, context);
             if (prevSelectData === selectData) {
-              _dirtyCheck(parent, b._c = aChild!, context, dirtyContext);
+              _dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
             } else {
               _sync(
                 parent,
-                aChild!,
+                aChild as VNode,
                 b._c = DEBUG ?
                   shouldBeSingleVNode(connect.render(selectData)) :
                     /* istanbul ignore next */connect.render(selectData),
@@ -462,7 +493,7 @@ export function _sync(
             b._i = context = (dirtyContext === true) ?
               { ...context, ...bProps } :
               instance as {};
-            _sync(parent, aChild!, bChild!, context, dirtyContext);
+            _sync(parent, aChild as VNode, bChild as VNode, context, dirtyContext);
           }
         } else { // VNodeFlags.StatelessComponent
           const sc = b._t as StatelessComponent<any>;
@@ -472,7 +503,7 @@ export function _sync(
           ) {
             _sync(
               parent,
-              aChild!,
+              aChild as VNode,
               b._c = DEBUG ?
                 shouldBeSingleVNode(sc.render(bProps)) :
                   /* istanbul ignore next */sc.render(bProps),
@@ -480,7 +511,7 @@ export function _sync(
               dirtyContext,
             );
           } else {
-            _dirtyCheck(parent, b._c = aChild!, context, dirtyContext);
+            _dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
           }
         }
       }

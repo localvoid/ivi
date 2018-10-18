@@ -10,8 +10,8 @@ import { EventHandler, EventDispatcher, VNode, VNodeFlags } from "ivi";
 export function containsClassName(classNames: string, className: string): boolean {
   return classNames
     .split(" ")
-    .map((c) => c.trim())
-    .some((c) => c === className);
+    .map(c => c.trim())
+    .some(c => c === className);
 }
 
 /**

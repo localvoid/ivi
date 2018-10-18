@@ -211,7 +211,7 @@ test(`{ children(<div></div><div></div>) }<div></div>`, () => {
 test(`{ mapRange(0, 2, (i) => <div key={i}></div>) }`, () => {
   const v1 = h.div().k("a");
   const v2 = h.div().k("b");
-  const v = h.div().c(mapRange(0, 2, (i) => i === 0 ? v1 : v2));
+  const v = h.div().c(mapRange(0, 2, i => i === 0 ? v1 : v2));
 
   expect(v._c).toBe(v1);
   expect(v1._f & VNodeFlags.Key).toBeTruthy();
@@ -227,7 +227,7 @@ test(`{ mapRange(0, 2, (i) => <div key={i}></div>) }`, () => {
 test(`{ null }{ mapRange(0, 2, (i) => <div key={i}></div>) }`, () => {
   const v1 = h.div().k("a");
   const v2 = h.div().k("b");
-  const v = h.div().c(null, mapRange(0, 2, (i) => i === 0 ? v1 : v2));
+  const v = h.div().c(null, mapRange(0, 2, i => i === 0 ? v1 : v2));
 
   expect(v._c).toBe(v1);
   expect(v1._f & VNodeFlags.Key).toBeTruthy();
@@ -244,7 +244,7 @@ test(`<div></div>{ mapRange(0, 2, (i) => <div key={i}></div>) }`, () => {
   const v1 = h.div();
   const v2 = h.div().k("a");
   const v3 = h.div().k("b");
-  const v = h.div().c(v1, mapRange(0, 2, (i) => i === 0 ? v2 : v3));
+  const v = h.div().c(v1, mapRange(0, 2, i => i === 0 ? v2 : v3));
 
   expect(v._c).toBe(v1);
   expect(v1._f & VNodeFlags.Key).toBeFalsy();
@@ -265,7 +265,7 @@ test(`{ mapRange(0, 2, (i) => <div key={i}></div>) }<div></div>`, () => {
   const v1 = h.div().k("a");
   const v2 = h.div().k("b");
   const v3 = h.div();
-  const v = h.div().c(mapRange(0, 2, (i) => i === 0 ? v1 : v2), v3);
+  const v = h.div().c(mapRange(0, 2, i => i === 0 ? v1 : v2), v3);
 
   expect(v._c).toBe(v1);
   expect(v1._f & VNodeFlags.Key).toBeTruthy();

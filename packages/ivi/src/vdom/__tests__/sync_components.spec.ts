@@ -13,8 +13,8 @@ describe(`sync components`, () => {
   });
 
   test(`#1`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           html.span()
         );
@@ -34,8 +34,8 @@ describe(`sync components`, () => {
   });
 
   test(`#2`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             html.div(),
@@ -56,8 +56,8 @@ describe(`sync components`, () => {
   });
 
   test(`#3`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           html.div()
         );
@@ -78,8 +78,8 @@ describe(`sync components`, () => {
   });
 
   test(`#4`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             html.div(),
@@ -99,8 +99,8 @@ describe(`sync components`, () => {
   });
 
   test(`#5`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             html.div(),
@@ -123,8 +123,8 @@ describe(`sync components`, () => {
   });
 
   test(`#6`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             utils.Stateful(
@@ -146,8 +146,8 @@ describe(`sync components`, () => {
   });
 
   test(`#7`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           html.span()
         );
@@ -169,8 +169,8 @@ describe(`sync components`, () => {
   });
 
   test(`#8`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             utils.Stateful(
@@ -197,8 +197,8 @@ describe(`sync components`, () => {
   });
 
   test(`#9`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           html.span()
         );
@@ -218,8 +218,8 @@ describe(`sync components`, () => {
   });
 
   test(`#10`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             html.div(),
@@ -240,8 +240,8 @@ describe(`sync components`, () => {
   });
 
   test(`#11`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           html.div()
         );
@@ -262,8 +262,8 @@ describe(`sync components`, () => {
   });
 
   test(`#12`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             html.div(),
@@ -283,8 +283,8 @@ describe(`sync components`, () => {
   });
 
   test(`#13`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             html.div(),
@@ -307,8 +307,8 @@ describe(`sync components`, () => {
   });
 
   test(`#14`, () => {
-    utils.startRender((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             utils.Stateless(
@@ -330,8 +330,8 @@ describe(`sync components`, () => {
   });
 
   test(`#15`, () => {
-    utils.startRender<HTMLElement>((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender<HTMLElement>(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           html.span()
         );
@@ -353,8 +353,8 @@ describe(`sync components`, () => {
   });
 
   test(`#16`, () => {
-    utils.startRender<HTMLElement>((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender<HTMLElement>(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             utils.Stateless(
@@ -381,8 +381,8 @@ describe(`sync components`, () => {
   });
 
   test(`#17`, () => {
-    utils.startRender<HTMLElement>((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender<HTMLElement>(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             html.div(),
@@ -405,8 +405,8 @@ describe(`sync components`, () => {
   });
 
   test(`#18`, () => {
-    utils.startRender<HTMLElement>((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender<HTMLElement>(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             html.div(),
@@ -429,8 +429,8 @@ describe(`sync components`, () => {
   });
 
   test(`#19`, () => {
-    utils.startRender<HTMLElement>((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender<HTMLElement>(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateful(
             utils.Stateful(
@@ -457,8 +457,8 @@ describe(`sync components`, () => {
   });
 
   test(`#20`, () => {
-    utils.startRender<HTMLElement>((r) => {
-      utils.checkDOMOps((c) => {
+    utils.startRender<HTMLElement>(r => {
+      utils.checkDOMOps(c => {
         const v1 = (
           utils.Stateless(
             utils.Stateless(
@@ -485,7 +485,7 @@ describe(`sync components`, () => {
   });
 
   test(`stateless component should raise an exception when render function returns children collection`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v1 = (
         utils.Stateless(
           html.div(),
@@ -506,7 +506,7 @@ describe(`sync components`, () => {
   });
 
   test(`stateful component should raise an exception when render function returns children collection`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v1 = (
         utils.Stateful(
           html.div(),

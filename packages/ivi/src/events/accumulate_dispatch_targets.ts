@@ -36,13 +36,21 @@ function visitUp(
   if (parent !== root) {
     vnode = visitUp(result, match, parent, root, vnode);
 
-    let child = vnode._c;
-    while (child !== null) {
-      const r = visitDown(result, match, element, child);
-      if (r) {
-        return r;
+    if ((vnode._f & (
+      VNodeFlags.Children |
+      VNodeFlags.StatelessComponent |
+      VNodeFlags.StatefulComponent |
+      VNodeFlags.Connect |
+      VNodeFlags.UpdateContext
+    )) !== 0) {
+      let child = vnode._c;
+      while (child !== null) {
+        const r = visitDown(result, match, element, child as VNode);
+        if (r) {
+          return r;
+        }
+        child = (child as VNode)._r;
       }
-      child = child._r;
     }
   }
 
@@ -68,7 +76,7 @@ function visitDown(
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) {
-    r = visitDown(result, match, element, vnode._c!);
+    r = visitDown(result, match, element, vnode._c as VNode);
     if (r) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);
       return r;

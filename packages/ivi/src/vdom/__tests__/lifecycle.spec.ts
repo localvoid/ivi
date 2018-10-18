@@ -4,7 +4,7 @@ import { startRender, checkLifecycle, lifecycleTouch } from "./utils";
 
 const Static = withShouldUpdate(
   () => false,
-  statelessComponent<VNode>((child) => child),
+  statelessComponent<VNode>(child => child),
 );
 
 interface ComponentHooks<P> {
@@ -142,8 +142,8 @@ function Lifecycle(
 }
 
 test(`<C><div></C>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(Lifecycle("1", h.div()));
 
       expect(c("1", "constructor")).toBe(0);
@@ -161,8 +161,8 @@ test(`<C><div></C>`, () => {
 });
 
 test(`<C><div></C> => <div>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(Lifecycle("1", h.div()));
       render(h.div());
 
@@ -181,8 +181,8 @@ test(`<C><div></C> => <div>`, () => {
 });
 
 test(`<div> => <C><div></C>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(h.div());
       render(Lifecycle("1", h.div()));
 
@@ -201,8 +201,8 @@ test(`<div> => <C><div></C>`, () => {
 });
 
 test(`<div></div> => <div><C><div></C></div>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(h.div());
       render(h.div().c(Lifecycle("1", h.div())));
 
@@ -221,8 +221,8 @@ test(`<div></div> => <div><C><div></C></div>`, () => {
 });
 
 test(`<div><C><div></C></div> => <div></div>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(h.div().c(Lifecycle("1", h.div())));
       render(h.div());
 
@@ -241,8 +241,8 @@ test(`<div><C><div></C></div> => <div></div>`, () => {
 });
 
 test(`<C><C><div></C></C>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(Lifecycle("1", Lifecycle("2", h.div())));
 
       expect(c("1", "constructor")).toBe(0);
@@ -270,8 +270,8 @@ test(`<C><C><div></C></C>`, () => {
 });
 
 test(`<C><C><div></C></C> => <div>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(Lifecycle("1", Lifecycle("2", h.div())));
       render(h.div());
 
@@ -300,8 +300,8 @@ test(`<C><C><div></C></C> => <div>`, () => {
 });
 
 test(`<C><div></C> => <C><div></C>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(Lifecycle("1", h.div()));
       render(Lifecycle("1", h.div()));
 
@@ -322,8 +322,8 @@ test(`<C><div></C> => <C><div></C>`, () => {
 });
 
 test(`<S><C><div></C></S> => <S><C><div></C></S>`, () => {
-  startRender((render) => {
-    checkLifecycle((c) => {
+  startRender(render => {
+    checkLifecycle(c => {
       render(Static(Lifecycle("1", h.div())));
       render(Static(Lifecycle("1", h.div())));
 

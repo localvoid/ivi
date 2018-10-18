@@ -5,7 +5,7 @@ import { startRender } from "./utils";
 
 describe(`TextNode`, () => {
   test(`"abc"`, () => {
-    startRender((r) => {
+    startRender(r => {
       const n = r(t("abc"));
 
       expect(n.nodeValue).toBe("abc");
@@ -15,7 +15,7 @@ describe(`TextNode`, () => {
 
 describe(`HTML`, () => {
   test(`<div>`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       const n = r(h.div());
 
       expect(n.tagName.toLowerCase()).toBe("div");
@@ -23,7 +23,7 @@ describe(`HTML`, () => {
   });
 
   test(`<span>`, () => {
-    startRender<HTMLElement>((r) => {
+    startRender<HTMLElement>(r => {
       const n = r(h.span());
 
       expect(n.tagName.toLowerCase()).toBe("span");
@@ -33,7 +33,7 @@ describe(`HTML`, () => {
 
 describe(`SVG`, () => {
   test(`<circle>`, () => {
-    startRender<SVGCircleElement>((r) => {
+    startRender<SVGCircleElement>(r => {
       const n = r(s.circle());
 
       expect(n.tagName.toLowerCase()).toBe("circle");

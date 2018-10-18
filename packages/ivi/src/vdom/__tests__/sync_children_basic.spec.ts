@@ -2,8 +2,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
 test(`<div></div> => <div>"abc"</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div());
       const n = r(h.div().c("abc"));
 
@@ -14,8 +14,8 @@ test(`<div></div> => <div>"abc"</div>`, () => {
 });
 
 test(`<div></div> => <div>10</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div());
       const n = r(h.div().c(10));
 
@@ -26,8 +26,8 @@ test(`<div></div> => <div>10</div>`, () => {
 });
 
 test(`<div>"abc"</div> => <div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c("abc"));
       const n = r(h.div());
 
@@ -38,8 +38,8 @@ test(`<div>"abc"</div> => <div></div>`, () => {
 });
 
 test(`<div>10</div> => <div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(10));
       const n = r(h.div());
 
@@ -50,8 +50,8 @@ test(`<div>10</div> => <div></div>`, () => {
 });
 
 test(`<div>"abc"</div> => <div>"abc"</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c("abc"));
       const n = r(h.div().c("abc"));
 
@@ -62,8 +62,8 @@ test(`<div>"abc"</div> => <div>"abc"</div>`, () => {
 });
 
 test(`<div>10</div> => <div>10</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(10));
       const n = r(h.div().c(10));
 
@@ -74,8 +74,8 @@ test(`<div>10</div> => <div>10</div>`, () => {
 });
 
 test(`<div>"abc"</div> => <div>"cde"</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c("abc"));
       const n = r(h.div().c("cde"));
 
@@ -86,8 +86,8 @@ test(`<div>"abc"</div> => <div>"cde"</div>`, () => {
 });
 
 test(`<div>""</div> => <div>"cde"</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(""));
       const n = r(h.div().c("cde"));
 
@@ -98,8 +98,8 @@ test(`<div>""</div> => <div>"cde"</div>`, () => {
 });
 
 test(`<div>"abc"</div> => <div>10</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c("abc"));
       const n = r(h.div().c(10));
 
@@ -110,8 +110,8 @@ test(`<div>"abc"</div> => <div>10</div>`, () => {
 });
 
 test(`<div>10</div> => <div>"abc"</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(10));
       const n = r(h.div().c("abc"));
 
@@ -122,8 +122,8 @@ test(`<div>10</div> => <div>"abc"</div>`, () => {
 });
 
 test(`<div>{ null }</div> => <div><div></div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div());
       const n = r(h.div().c(h.div())) as HTMLElement;
 
@@ -134,8 +134,8 @@ test(`<div>{ null }</div> => <div><div></div></div>`, () => {
 });
 
 test(`<div><div></div></div> => <div>{ null }</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(h.div()));
       const n = r(h.div().c(null));
 
@@ -146,8 +146,8 @@ test(`<div><div></div></div> => <div>{ null }</div>`, () => {
 });
 
 test(`<div><div></div> => <div>"cde"</div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(h.div()));
       const n = r(h.div().c("cde"));
 
@@ -158,8 +158,8 @@ test(`<div><div></div> => <div>"cde"</div>`, () => {
 });
 
 test(`<div>"cde"</div> => <div><div></div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c("cde"));
       const n = r(h.div().c(h.div()));
 
@@ -170,8 +170,8 @@ test(`<div>"cde"</div> => <div><div></div></div>`, () => {
 });
 
 test(`<div></div> => <div><div></div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div());
       const n = r(h.div().c(h.div()));
 
@@ -182,8 +182,8 @@ test(`<div></div> => <div><div></div></div>`, () => {
 });
 
 test(`<div><div></div></div> => <div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(h.div()));
       const n = r(h.div());
 
@@ -194,7 +194,7 @@ test(`<div><div></div></div> => <div></div>`, () => {
 });
 
 test(`raise an exception when VNode is used multiple times`, () => {
-  startRender((r) => {
+  startRender(r => {
     const v1 = h.div();
     const v2 = h.div();
     r(v1);

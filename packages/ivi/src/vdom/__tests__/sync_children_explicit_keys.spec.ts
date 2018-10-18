@@ -2,8 +2,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps } from "./utils";
 
 test(`#1`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -25,8 +25,8 @@ test(`#1`, () => {
 });
 
 test(`#2`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -52,8 +52,8 @@ test(`#2`, () => {
 });
 
 test(`#3`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div()
       );
@@ -73,8 +73,8 @@ test(`#3`, () => {
 });
 
 test(`#4`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div(),
@@ -97,8 +97,8 @@ test(`#4`, () => {
 });
 
 test(`#5`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div(),
@@ -124,8 +124,8 @@ test(`#5`, () => {
 });
 
 test(`#6`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -147,8 +147,8 @@ test(`#6`, () => {
 });
 
 test(`#7`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -171,8 +171,8 @@ test(`#7`, () => {
 });
 
 test(`#8`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -195,8 +195,8 @@ test(`#8`, () => {
 });
 
 test(`#9`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -220,8 +220,8 @@ test(`#9`, () => {
 });
 
 test(`#10`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -245,8 +245,8 @@ test(`#10`, () => {
 });
 
 test(`#11`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -273,8 +273,8 @@ test(`#11`, () => {
 });
 
 test(`#12`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -301,8 +301,8 @@ test(`#12`, () => {
 });
 
 test(`#13`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -326,8 +326,8 @@ test(`#13`, () => {
 });
 
 test(`#14`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -353,8 +353,8 @@ test(`#14`, () => {
 });
 
 test(`#15`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(999).c(999),
@@ -380,8 +380,8 @@ test(`#15`, () => {
 });
 
 test(`#16`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -406,8 +406,8 @@ test(`#16`, () => {
 });
 
 test(`#17`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -432,8 +432,8 @@ test(`#17`, () => {
 });
 
 test(`#18`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -458,8 +458,8 @@ test(`#18`, () => {
 });
 
 test(`#19`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -485,8 +485,8 @@ test(`#19`, () => {
 });
 
 test(`#20`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -512,8 +512,8 @@ test(`#20`, () => {
 });
 
 test(`#21`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -539,8 +539,8 @@ test(`#21`, () => {
 });
 
 test(`#22`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -567,8 +567,8 @@ test(`#22`, () => {
 });
 
 test(`#23`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -598,8 +598,8 @@ test(`#23`, () => {
 });
 
 test(`#24`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -625,8 +625,8 @@ test(`#24`, () => {
 });
 
 test(`#25`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -652,8 +652,8 @@ test(`#25`, () => {
 });
 
 test(`#26`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -681,8 +681,8 @@ test(`#26`, () => {
 });
 
 test(`#27`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -710,8 +710,8 @@ test(`#27`, () => {
 });
 
 test(`#28`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -745,8 +745,8 @@ test(`#28`, () => {
 });
 
 test(`#29`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -780,8 +780,8 @@ test(`#29`, () => {
 });
 
 test(`#30`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -815,8 +815,8 @@ test(`#30`, () => {
 });
 
 test(`#30`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -850,8 +850,8 @@ test(`#30`, () => {
 });
 
 test(`#31`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -885,8 +885,8 @@ test(`#31`, () => {
 });
 
 test(`#32`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -920,8 +920,8 @@ test(`#32`, () => {
 });
 
 test(`#33`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(998).c(998),
@@ -955,8 +955,8 @@ test(`#33`, () => {
 });
 
 test(`#34`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -977,8 +977,8 @@ test(`#34`, () => {
 });
 
 test(`#35`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1001,8 +1001,8 @@ test(`#35`, () => {
 });
 
 test(`#36`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1025,8 +1025,8 @@ test(`#36`, () => {
 });
 
 test(`#37`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1051,8 +1051,8 @@ test(`#37`, () => {
 });
 
 test(`#38`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1077,8 +1077,8 @@ test(`#38`, () => {
 });
 
 test(`#39`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1103,8 +1103,8 @@ test(`#39`, () => {
 });
 
 test(`#40`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1133,8 +1133,8 @@ test(`#40`, () => {
 });
 
 test(`#41`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1163,8 +1163,8 @@ test(`#41`, () => {
 });
 
 test(`#42`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1193,8 +1193,8 @@ test(`#42`, () => {
 });
 
 test(`#43`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1216,8 +1216,8 @@ test(`#43`, () => {
 });
 
 test(`#44`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1241,8 +1241,8 @@ test(`#44`, () => {
 });
 
 test(`#45`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1266,8 +1266,8 @@ test(`#45`, () => {
 });
 
 test(`#46`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1293,8 +1293,8 @@ test(`#46`, () => {
 });
 
 test(`#47`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1320,8 +1320,8 @@ test(`#47`, () => {
 });
 
 test(`#48`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1347,8 +1347,8 @@ test(`#48`, () => {
 });
 
 test(`#49`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1378,8 +1378,8 @@ test(`#49`, () => {
 });
 
 test(`#50`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1409,8 +1409,8 @@ test(`#50`, () => {
 });
 
 test(`#51`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -1440,8 +1440,8 @@ test(`#51`, () => {
 });
 
 test(`#52`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1479,8 +1479,8 @@ test(`#52`, () => {
 });
 
 test(`#53`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1518,8 +1518,8 @@ test(`#53`, () => {
 });
 
 test(`#54`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1557,8 +1557,8 @@ test(`#54`, () => {
 });
 
 test(`#55`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1596,8 +1596,8 @@ test(`#55`, () => {
 });
 
 test(`#56`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1635,8 +1635,8 @@ test(`#56`, () => {
 });
 
 test(`#57`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1660,8 +1660,8 @@ test(`#57`, () => {
 });
 
 test(`#58`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1689,8 +1689,8 @@ test(`#58`, () => {
 });
 
 test(`#59`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1720,8 +1720,8 @@ test(`#59`, () => {
 });
 
 test(`#60`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1751,8 +1751,8 @@ test(`#60`, () => {
 });
 
 test(`#61`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1782,8 +1782,8 @@ test(`#61`, () => {
 });
 
 test(`#62`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1813,8 +1813,8 @@ test(`#62`, () => {
 });
 
 test(`#63`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1844,8 +1844,8 @@ test(`#63`, () => {
 });
 
 test(`#64`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1875,8 +1875,8 @@ test(`#64`, () => {
 });
 
 test(`#65`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1906,8 +1906,8 @@ test(`#65`, () => {
 });
 
 test(`#66`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1941,8 +1941,8 @@ test(`#66`, () => {
 });
 
 test(`#67`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -1976,8 +1976,8 @@ test(`#67`, () => {
 });
 
 test(`#68`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2011,8 +2011,8 @@ test(`#68`, () => {
 });
 
 test(`#69`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2046,8 +2046,8 @@ test(`#69`, () => {
 });
 
 test(`#70`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2087,8 +2087,8 @@ test(`#70`, () => {
 });
 
 test(`#71`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2128,8 +2128,8 @@ test(`#71`, () => {
 });
 
 test(`#72`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2154,8 +2154,8 @@ test(`#72`, () => {
 });
 
 test(`#73`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2180,8 +2180,8 @@ test(`#73`, () => {
 });
 
 test(`#74`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2208,8 +2208,8 @@ test(`#74`, () => {
 });
 
 test(`#75`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2236,8 +2236,8 @@ test(`#75`, () => {
 });
 
 test(`#76`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2264,8 +2264,8 @@ test(`#76`, () => {
 });
 
 test(`#77`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2292,8 +2292,8 @@ test(`#77`, () => {
 });
 
 test(`#78`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2324,8 +2324,8 @@ test(`#78`, () => {
 });
 
 test(`#79`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2357,8 +2357,8 @@ test(`#79`, () => {
 });
 
 test(`#80`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2391,8 +2391,8 @@ test(`#80`, () => {
 });
 
 test(`#81`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2417,8 +2417,8 @@ test(`#81`, () => {
 });
 
 test(`#82`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(2).c(2),
@@ -2443,8 +2443,8 @@ test(`#82`, () => {
 });
 
 test(`#83`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(7).c(7),
@@ -2481,8 +2481,8 @@ test(`#83`, () => {
 });
 
 test(`#84`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(7).c(7),
@@ -2519,8 +2519,8 @@ test(`#84`, () => {
 });
 
 test(`#85`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(7).c(7),
@@ -2557,8 +2557,8 @@ test(`#85`, () => {
 });
 
 test(`#86`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(7).c(7),
@@ -2594,8 +2594,8 @@ test(`#86`, () => {
 });
 
 test(`#87`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(7).c(7),
@@ -2630,8 +2630,8 @@ test(`#87`, () => {
 });
 
 test(`#88`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2653,8 +2653,8 @@ test(`#88`, () => {
 });
 
 test(`#89`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2677,8 +2677,8 @@ test(`#89`, () => {
 });
 
 test(`#90`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2701,8 +2701,8 @@ test(`#90`, () => {
 });
 
 test(`#91`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2726,8 +2726,8 @@ test(`#91`, () => {
 });
 
 test(`#92`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2751,8 +2751,8 @@ test(`#92`, () => {
 });
 
 test(`#93`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2778,8 +2778,8 @@ test(`#93`, () => {
 });
 
 test(`#94`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2805,8 +2805,8 @@ test(`#94`, () => {
 });
 
 test(`#95`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2838,8 +2838,8 @@ test(`#95`, () => {
 });
 
 test(`#96`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2871,8 +2871,8 @@ test(`#96`, () => {
 });
 
 test(`#97`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2902,8 +2902,8 @@ test(`#97`, () => {
 });
 
 test(`#98`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2929,8 +2929,8 @@ test(`#98`, () => {
 });
 
 test(`#99`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -2956,8 +2956,8 @@ test(`#99`, () => {
 });
 
 test(`#100`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -2983,8 +2983,8 @@ test(`#100`, () => {
 });
 
 test(`#101`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(1),
@@ -3010,8 +3010,8 @@ test(`#101`, () => {
 });
 
 test(`#102`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3043,8 +3043,8 @@ test(`#102`, () => {
 });
 
 test(`#103`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3076,8 +3076,8 @@ test(`#103`, () => {
 });
 
 test(`#104`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3108,8 +3108,8 @@ test(`#104`, () => {
 });
 
 test(`#105`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3140,8 +3140,8 @@ test(`#105`, () => {
 });
 
 test(`#106`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(
@@ -3165,8 +3165,8 @@ test(`#106`, () => {
 });
 
 test(`#107`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3192,8 +3192,8 @@ test(`#107`, () => {
 });
 
 test(`#108`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3219,8 +3219,8 @@ test(`#108`, () => {
 });
 
 test(`#109`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3252,8 +3252,8 @@ test(`#109`, () => {
 });
 
 test(`#110`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3285,8 +3285,8 @@ test(`#110`, () => {
 });
 
 test(`#111`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(
@@ -3324,8 +3324,8 @@ test(`#111`, () => {
 });
 
 test(`#112`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(1).c(
@@ -3357,8 +3357,8 @@ test(`#112`, () => {
 });
 
 test(`#113`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),
@@ -3396,8 +3396,8 @@ test(`#113`, () => {
 });
 
 test(`#114`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const v1 = (
         h.div().c(
           h.div().k(0).c(0),

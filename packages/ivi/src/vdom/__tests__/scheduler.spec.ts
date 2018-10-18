@@ -15,7 +15,7 @@ describe(`scheduler`, () => {
 
   test(`custom invalidator`, () => {
     let i = 0;
-    ivi.setupScheduler((f) => {
+    ivi.setupScheduler(f => {
       i++;
     });
     ivi.invalidate();
@@ -26,7 +26,7 @@ describe(`scheduler`, () => {
   test(`custom invalidator should receive undefined flags`, () => {
     let i = 0;
     let flags;
-    ivi.setupScheduler((f) => {
+    ivi.setupScheduler(f => {
       i++;
       flags = f;
     });
@@ -39,7 +39,7 @@ describe(`scheduler`, () => {
   test(`custom invalidator should receive RequestSyncUpdate flags`, () => {
     let i = 0;
     let flags;
-    ivi.setupScheduler((f) => {
+    ivi.setupScheduler(f => {
       i++;
       flags = f;
     });

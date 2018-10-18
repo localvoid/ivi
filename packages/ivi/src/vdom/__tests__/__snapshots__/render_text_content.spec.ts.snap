@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<div>""</div> 1`] = `<div />`;
+
+exports[`<div>""</div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`<div>"abc"</div> 1`] = `
+<div>
+  abc
+</div>
+`;
+
+exports[`<div>"abc"</div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;
+
+exports[`<div>10</div> 1`] = `
+<div>
+  10
+</div>
+`;
+
+exports[`<div>10</div> 2`] = `
+Object {
+  "appendChild": 1,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`;

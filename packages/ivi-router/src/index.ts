@@ -20,11 +20,11 @@ export function initRouter<A, T>(
     }
   };
 
-  window.addEventListener("popstate", (ev) => {
+  window.addEventListener("popstate", ev => {
     goTo(location.pathname);
   });
 
-  afterNativeEvent(EVENT_DISPATCHER_CLICK, (ev) => {
+  afterNativeEvent(EVENT_DISPATCHER_CLICK, ev => {
     if ((ev.flags & (SyntheticEventFlags.PreventedDefault | SyntheticEventFlags.StoppedPropagation)) === 0) {
       const anchor = findAnchorNode(ev.target as Element);
       if (anchor !== null) {

@@ -26,17 +26,19 @@ export function visitUnwrapped(
   )) !== 0) {
     let child = vnode._c;
     if ((flags & VNodeFlags.Element) !== 0) {
-      while (child !== null) {
-        if (visitUnwrapped(child, vnode, context, visitor)) {
-          return true;
+      if ((flags & VNodeFlags.Children) !== 0) {
+        while (child !== null) {
+          if (visitUnwrapped(child as VNode, vnode, context, visitor)) {
+            return true;
+          }
+          child = (child as VNode)._r;
         }
-        child = child._r;
       }
     } else {
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
         context = { ...context, ...vnode._p };
       }
-      return visitUnwrapped(child!, vnode, context, visitor);
+      return visitUnwrapped(child as VNode, vnode, context, visitor);
     }
   }
 
@@ -63,17 +65,19 @@ export function visitWrapped(
     let context = wrapper.context;
     let child = vnode._c;
     if ((flags & VNodeFlags.Element) !== 0) {
-      while (child !== null) {
-        if (visitWrapped(new VNodeWrapper(child, wrapper, context), visitor)) {
-          return true;
+      if ((flags & VNodeFlags.Children) !== 0) {
+        while (child !== null) {
+          if (visitWrapped(new VNodeWrapper(child as VNode, wrapper, context), visitor)) {
+            return true;
+          }
+          child = (child as VNode)._r;
         }
-        child = child._r;
       }
     } else {
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
         context = { ...context, ...vnode._p };
       }
-      return visitWrapped(new VNodeWrapper(child!, wrapper, context), visitor);
+      return visitWrapped(new VNodeWrapper(child as VNode, wrapper, context), visitor);
     }
   }
 
@@ -91,10 +95,12 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
     VNodeFlags.Connect
   )) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
-      let child = vnode._c;
-      while (child !== null) {
-        _virtualRender(depth, child, vnode, context);
-        child = child._r;
+      if ((flags & VNodeFlags.Children) !== 0) {
+        let child = vnode._c;
+        while (child !== null) {
+          _virtualRender(depth, child as VNode, vnode, context);
+          child = (child as VNode)._r;
+        }
       }
     } else {
       if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
@@ -115,7 +121,7 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
         }
       }
       if (depth > 1) {
-        return _virtualRender(depth - 1, vnode._c!, vnode, context);
+        return _virtualRender(depth - 1, vnode._c as VNode, vnode, context);
       }
     }
   }
@@ -136,7 +142,7 @@ export class VNodeListWrapper {
   }
 
   filter(matcher: VNodeMatcher): VNodeListWrapper {
-    return new VNodeListWrapper(this.items.filter((i) => matcher.match(i)));
+    return new VNodeListWrapper(this.items.filter(i => matcher.match(i)));
   }
 
   forEach(fn: (n: VNodeWrapper, i: number) => void): void {
@@ -254,16 +260,15 @@ export class VNodeWrapper {
       throw new Error("VNodeWrapper::getChildren() can only be called on element nodes");
     }
     const flags = this.vnode._f;
-    let children: VNodeWrapper[];
+    const children: VNodeWrapper[] = [];
     if ((flags & VNodeFlags.Element) !== 0) {
-      children = [];
-      let child: VNode | null = this.vnode._c;
-      while (child !== null) {
-        children.push(new VNodeWrapper(child, this, this.context));
-        child = child._r;
+      if ((flags & VNodeFlags.Children) !== 0) {
+        let child = this.vnode._c as VNode | null;
+        while (child !== null) {
+          children.push(new VNodeWrapper(child, this, this.context));
+          child = child._r;
+        }
       }
-    } else {
-      children = [];
     }
     return new VNodeListWrapper(children);
   }
@@ -478,7 +483,7 @@ export function hasDirectParent(wrapper: VNodeWrapper, predicate: Predicate<VNod
 }
 
 export function hasChild(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
-  return visitWrapped(wrapper, (n) => (wrapper !== n && predicate(n)));
+  return visitWrapped(wrapper, n => (wrapper !== n && predicate(n)));
 }
 
 export function hasSibling(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {
@@ -513,8 +518,7 @@ export function innerText(wrapper: VNodeWrapper): string {
   visitUnwrapped(
     wrapper.vnode,
     wrapper.parent === null ? null : wrapper.parent.vnode,
-    wrapper.context,
-    (vnode) => {
+    wrapper.context, vnode => {
       if ((vnode._f & VNodeFlags.Text) !== 0) {
         result += vnode._c;
       }

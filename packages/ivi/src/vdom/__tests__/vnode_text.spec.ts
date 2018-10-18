@@ -27,6 +27,10 @@ describe(`Text node`, () => {
     expect(() => t("abc").e([])).toThrow(Error);
   });
 
+  test(`assigning text content should raise an exception`, () => {
+    expect(() => t("abc").t("123")).toThrow(Error);
+  });
+
   test(`assigning children should raise an exception`, () => {
     expect(() => t("abc").c("123")).toThrow(Error);
   });

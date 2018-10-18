@@ -131,7 +131,7 @@ function componentMatcherFactory(component: StatefulComponent<any>): VNodeCompon
 
 export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper | null {
   let result: VNodeWrapper | null = null;
-  visitWrapped(wrapper, (n) => {
+  visitWrapped(wrapper, n => {
     if (wrapper !== n && predicate(n) === true) {
       result = n;
       return true;
@@ -143,7 +143,7 @@ export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>)
 
 export function queryAll(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper[] {
   const result: VNodeWrapper[] = [];
-  visitWrapped(wrapper, (n) => {
+  visitWrapped(wrapper, n => {
     if (wrapper !== n && predicate(n) === true) {
       result.push(n);
     }

@@ -13,7 +13,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`identical node should trigger dirty checking`, () => {
-    utils.startRender((r) => {
+    utils.startRender(r => {
       let triggered = 0;
       const c = ivi.connect(
         () => (triggered++),
@@ -34,7 +34,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`ivi.stopDirtyChecking should stop dirty checking`, () => {
-    utils.startRender((r) => {
+    utils.startRender(r => {
       let triggered = 0;
       const c = ivi.connect(
         () => (triggered++),
@@ -57,7 +57,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`update ivi.context during dirty checking`, () => {
-    utils.startRender((r) => {
+    utils.startRender(r => {
       let innerTest = -1;
       let outerTest = -1;
       const c = ivi.connect<number, undefined, { outer: number, inner: number }>(
@@ -86,7 +86,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`update inner ivi.context during dirty checking`, () => {
-    utils.startRender((r) => {
+    utils.startRender(r => {
       let i = 0;
       let innerTest = -1;
       const C = ivi.connect<number, undefined, { inner: number }>(
@@ -94,8 +94,7 @@ describe(`dirty checking`, () => {
         () => html.div(),
       );
       const Context = ivi.connect(
-        () => i++,
-        (p) => ivi.context({ inner: p }, C()),
+        () => i++, p => ivi.context({ inner: p }, C()),
       );
 
       const v = (
@@ -115,7 +114,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`triggering dirty checking during render should rerun dirty checking`, () => {
-    utils.startRender((r) => {
+    utils.startRender(r => {
       let i = 0;
       const c = ivi.connect<null>(
         () => {

@@ -3,7 +3,7 @@ import * as h from "ivi-html";
 import { startRender } from "./utils";
 
 test(`<div unsafeHTML="<span>abc</span>"></div>`, () => {
-  startRender<HTMLElement>((r) => {
+  startRender<HTMLElement>(r => {
     const v = h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") });
     const n = r(v);
 

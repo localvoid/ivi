@@ -2,8 +2,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
 test(`<audio> => <video>`, () => {
-  startRender<HTMLMediaElement>((r) => {
-    checkDOMOps((c) => {
+  startRender<HTMLMediaElement>(r => {
+    checkDOMOps(c => {
       r(h.audio());
       const b = r(h.video());
 

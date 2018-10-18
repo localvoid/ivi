@@ -23,36 +23,44 @@ export const enum VNodeFlags {
    */
   StatefulComponent = 1 << 4,
   /**
+   * VNode contains children nodes.
+   */
+  Children = 1 << 5,
+  /**
+   * VNode contains a text content.
+   */
+  TextContent = 1 << 6,
+  /**
    * VNode is using an explicit key.
    */
-  Key = 1 << 5,
+  Key = 1 << 7,
   /**
    * Keyed list.
    */
-  KeyedList = 1 << 6,
+  KeyedList = 1 << 8,
   /**
    * Element contains events.
    */
-  Events = 1 << 7,
+  Events = 1 << 9,
   /**
    * VNode is an SVGElement.
    */
-  SvgElement = 1 << 8,
+  SvgElement = 1 << 10,
   /**
    * Specialized VNode with connect behavior.
    */
-  Connect = 1 << 9,
+  Connect = 1 << 11,
   /**
    * Specialized VNode with an update context behavior.
    */
-  UpdateContext = 1 << 10,
+  UpdateContext = 1 << 12,
   /**
    * Stateless component has custom `shouldUpdate()` hook.
    */
-  ShouldUpdateHint = 1 << 11,
+  ShouldUpdateHint = 1 << 13,
 
-  ElementIdMask = 255 << 12,
-  ElementIdOffset = 12,
+  ElementIdMask = 255 << 14,
+  ElementIdOffset = 14,
   /**
    * Dirty checking should be stopped at this node.
    *
@@ -72,6 +80,7 @@ export const enum VNodeFlags {
   | StatefulComponent
   | Connect
   | UpdateContext
+  | TextContent
   | Key
   | SvgElement
   | ElementIdMask,

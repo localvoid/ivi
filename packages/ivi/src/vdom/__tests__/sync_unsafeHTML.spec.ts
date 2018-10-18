@@ -3,8 +3,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
 test(`<div> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div());
       const n = r(h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") }));
 
@@ -15,8 +15,8 @@ test(`<div> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
 });
 
 test(`<div unsafeHTML="<div>abc</div>"> => <div></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div("", { unsafeHTML: UNSAFE_HTML("<div>abc</div>") }));
       const n = r(h.div());
 
@@ -27,8 +27,8 @@ test(`<div unsafeHTML="<div>abc</div>"> => <div></div>`, () => {
 });
 
 test(`<div unsafeHTML=""> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div("", { unsafeHTML: UNSAFE_HTML("") }));
       const n = r(h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") }));
 
@@ -39,8 +39,8 @@ test(`<div unsafeHTML=""> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
 });
 
 test(`<div unsafeHTML="<div>abc</div>"> => <div unsafeHTML="<span>abc</span>"></div>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div("", { unsafeHTML: UNSAFE_HTML("<div>abc</div>") }));
       const n = r(h.div("", { unsafeHTML: UNSAFE_HTML("<span>abc</span>") }));
 

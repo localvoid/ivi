@@ -16,14 +16,14 @@ test(`should return value when executed`, () => {
 
 test(`previous value should be null`, () => {
   let p;
-  computedQuery((prev) => (p = prev, 0)).get();
+  computedQuery(prev => (p = prev, 0)).get();
   expect(p).toBeNull();
 });
 
 test(`previous value should be cached`, () => {
   let p;
 
-  const v = computedQuery((prev) => (p = prev, { a: 1337 }));
+  const v = computedQuery(prev => (p = prev, { a: 1337 }));
   const a = v.get();
   v.get();
 
@@ -33,7 +33,7 @@ test(`previous value should be cached`, () => {
 test(`should reset previous value`, () => {
   let p;
 
-  const v = computedQuery((prev) => (p = prev, { a: 1337 }));
+  const v = computedQuery(prev => (p = prev, { a: 1337 }));
   v.get();
   v.reset();
   v.get();

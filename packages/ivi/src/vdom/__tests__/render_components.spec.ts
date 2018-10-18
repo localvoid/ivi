@@ -13,7 +13,7 @@ describe(`render components`, () => {
   });
 
   test(`<Stateless><div></div></Stateless>`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateless(
         html.div(),
       );
@@ -24,7 +24,7 @@ describe(`render components`, () => {
   });
 
   test(`<Stateless><Stateless><div></div></Stateless></Stateless>`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateless(
         utils.Stateless(
           html.div(),
@@ -37,7 +37,7 @@ describe(`render components`, () => {
   });
 
   test(`<Stateful><div></div></Stateful>`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
         html.div(),
       );
@@ -48,7 +48,7 @@ describe(`render components`, () => {
   });
 
   test(`<Stateful><Stateful><div></div></Stateful></Stateful>`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
         utils.Stateful(
           html.div(),
@@ -61,7 +61,7 @@ describe(`render components`, () => {
   });
 
   test(`<Stateless><Stateful><div></div></Stateful></Stateless>`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateless(
         utils.Stateful(
           html.div(),
@@ -74,7 +74,7 @@ describe(`render components`, () => {
   });
 
   test(`<Stateful><Stateless><div></div></Stateless></Stateful>`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
         utils.Stateless(
           html.div(),
@@ -87,7 +87,7 @@ describe(`render components`, () => {
   });
 
   test(`stateful component should be in attached state when it is rendered into the document`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
         html.div(),
       );
@@ -99,7 +99,7 @@ describe(`render components`, () => {
   });
 
   test(`stateful component should be in detached state when it is removed from the document`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
         html.div(),
       );
@@ -112,7 +112,7 @@ describe(`render components`, () => {
   });
 
   test(`stateless component should raise an exception when render function returns children collection`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateless(
         ivi.fragment(
           html.div(),
@@ -124,7 +124,7 @@ describe(`render components`, () => {
   });
 
   test(`stateful component should raise an exception when render function returns children collection`, () => {
-    utils.startRender<HTMLElement>((r) => {
+    utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
         ivi.fragment(
           html.div(),

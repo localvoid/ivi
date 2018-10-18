@@ -36,7 +36,7 @@ export class VNode<P = any, N = Node> {
   /**
    * Children.
    */
-  _c: VNode | null;
+  _c: VNode | string | number | null;
   /**
    * Tag property contains details about the type of the element.
    */
@@ -147,6 +147,35 @@ export class VNode<P = any, N = Node> {
   }
 
   /**
+   * Assigns a text content for ane Element node.
+   *
+   * @param text - Text content.
+   * @returns this node
+   */
+  t(text: string | number): this {
+    /* istanbul ignore else */
+    if (DEBUG) {
+      if (this._c !== null) {
+        throw new Error("Failed to set text content, VNode element is already having children");
+      }
+      if (!(this._f & VNodeFlags.Element)) {
+        throw new Error("Failed to set text content, text content is available on element nodes only");
+      }
+      if (isVoidElement(this._t as string)) {
+        throw new Error("Failed to set text content, void elements can't have any children");
+      }
+      if (this._p) {
+        if (objectHasOwnProperty.call(this._p, "unsafeHTML")) {
+          throw new Error("Failed to set text content, element is using unsafeHTML attribute");
+        }
+      }
+    }
+    this._f |= VNodeFlags.StopDirtyChecking | VNodeFlags.TextContent;
+    this._c = text;
+    return this;
+  }
+
+  /**
    * Assigns children for an Element node.
    *
    * @param children - Children can be a simple string, single VNode or recursive list of VNodes with strings and null
@@ -214,6 +243,7 @@ export class VNode<P = any, N = Node> {
     }
     if (first !== null) {
       first._l = prev!;
+      this._f |= VNodeFlags.Children;
       this._c = first;
       /* istanbul ignore else */
       if (DEBUG) {

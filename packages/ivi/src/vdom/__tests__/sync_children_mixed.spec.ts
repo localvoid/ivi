@@ -3,8 +3,8 @@ import * as h from "ivi-html";
 import { startRender, checkDOMOps, domOps } from "./utils";
 
 test(`#1`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         t("a"),
         t("b").k(0),
@@ -26,8 +26,8 @@ test(`#1`, () => {
 });
 
 test(`#2`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         t("a"),
         t("b").k(0),
@@ -47,8 +47,8 @@ test(`#2`, () => {
 });
 
 test(`#3`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         t("a"),
         t("b").k(0),
@@ -69,8 +69,8 @@ test(`#3`, () => {
 });
 
 test(`#4`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         t("a"),
         t("b").k(0),
@@ -93,8 +93,8 @@ test(`#4`, () => {
 });
 
 test(`#5`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         t("a").k(0),
         t("b"),
@@ -115,8 +115,8 @@ test(`#5`, () => {
 });
 
 test(`#6`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         null,
         t("b"),
@@ -137,8 +137,8 @@ test(`#6`, () => {
 });
 
 test(`#7`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         null,
         t("b"),
@@ -167,8 +167,8 @@ test(`#7`, () => {
 });
 
 test(`#8`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       r(h.div().c(
         h.div(),
         t("a"),

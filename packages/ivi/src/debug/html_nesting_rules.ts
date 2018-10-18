@@ -219,10 +219,12 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
 
     ancestorFlags |= ANCESTOR_FLAGS_BY_TAG_NAME[parentTagName];
 
-    let child = vnode._c;
-    while (child !== null) {
-      visitNode(child, parentTagName, ancestorFlags);
-      child = child._r;
+    if ((flags & VNodeFlags.Children) !== 0) {
+      let child = vnode._c as VNode | null;
+      while (child !== null) {
+        visitNode(child, parentTagName, ancestorFlags);
+        child = child._r;
+      }
     }
   } else if ((flags & (
     VNodeFlags.StatelessComponent |
@@ -230,7 +232,7 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
-    visitNode(vnode._c!, parentTagName, ancestorFlags);
+    visitNode(vnode._c as VNode, parentTagName, ancestorFlags);
   }
 }
 

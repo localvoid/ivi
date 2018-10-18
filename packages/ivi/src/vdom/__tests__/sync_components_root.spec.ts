@@ -38,8 +38,8 @@ const ca = statefulComponent(A);
 const cb = statefulComponent(B);
 
 test(`<h1><A.0> => <h1><A.1> => <A.1><h1>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const a = ca(0).k(1);
       r(h.div().c(
         h.h1().k(0),
@@ -58,8 +58,8 @@ test(`<h1><A.0> => <h1><A.1> => <A.1><h1>`, () => {
 });
 
 test(`<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const a = ca(0);
       r(h.div().c(
         h.h1().k(0),
@@ -79,8 +79,8 @@ test(`<h1><B><A.0></B> => <h1><B><A.1></B> => <B><A.1></B><h1>`, () => {
 
 // same tests in the opposite direction
 test(`<A.0><h1> => <A.1><h1> => <h1><A.1>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const a = ca(0).k(1);
       r(h.div().c(
         a,
@@ -99,8 +99,8 @@ test(`<A.0><h1> => <A.1><h1> => <h1><A.1>`, () => {
 });
 
 test(`<B><A.0></B><h1> => <B><A.1></B><h1> => <h1><B><A.1></B>`, () => {
-  startRender((r) => {
-    checkDOMOps((c) => {
+  startRender(r => {
+    checkDOMOps(c => {
       const a = ca(0);
       r(h.div().c(
         cb(a).k(1),

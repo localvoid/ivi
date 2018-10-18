@@ -5,7 +5,7 @@ import { startRender } from "./utils";
 describe("HTML", () => {
   describe(`sync className`, () => {
     test(`undefined => "a"`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div());
         const b = r(h.div("a"));
 
@@ -15,7 +15,7 @@ describe("HTML", () => {
     });
 
     test(`"a" => undefined`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div("a"));
         const b = r(h.div());
 
@@ -24,7 +24,7 @@ describe("HTML", () => {
     });
 
     test(`"a" => "a"`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div("a"));
         const b = r(h.div("a"));
 
@@ -34,7 +34,7 @@ describe("HTML", () => {
     });
 
     test(`"a b" => "a"`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div("a"));
         const b = r(h.div("a"));
 
@@ -44,7 +44,7 @@ describe("HTML", () => {
     });
 
     test(`"a" => "a b"`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div("a"));
         const b = r(h.div("a b"));
 
@@ -55,7 +55,7 @@ describe("HTML", () => {
     });
 
     test(`null => "a b"`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div());
         const b = r(h.div("a b"));
 
@@ -66,7 +66,7 @@ describe("HTML", () => {
     });
 
     test(`"a b" => undefined`, () => {
-      startRender<HTMLElement>((r) => {
+      startRender<HTMLElement>(r => {
         r(h.div("a b"));
         const b = r(h.div());
 
@@ -79,7 +79,7 @@ describe("HTML", () => {
 describe("SVG", () => {
   describe(`sync className`, () => {
     test(`undefined => "a"`, () => {
-      startRender<SVGElement>((r) => {
+      startRender<SVGElement>(r => {
         r(s.circle());
         const b = r(s.circle("a"));
 
@@ -88,7 +88,7 @@ describe("SVG", () => {
     });
 
     test(`"a" => undefined`, () => {
-      startRender<SVGElement>((r) => {
+      startRender<SVGElement>(r => {
         r(s.circle("a"));
         const b = r(s.circle());
 
@@ -97,7 +97,7 @@ describe("SVG", () => {
     });
 
     test(`"a" => "a"`, () => {
-      startRender<SVGElement>((r) => {
+      startRender<SVGElement>(r => {
         r(s.circle("a"));
         const b = r(s.circle("a"));
 
