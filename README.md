@@ -14,9 +14,9 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Declarative rendering with ["Virtual DOM"](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
 - [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md) (stateless functions and stateful ES2015 classes)
 - [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md) for sideways data loading
-- Implicit data propagation with [contexts](https://github.com/localvoid/ivi/blob/master/documentation/general/context.md)
+- Implicit data propagation with [contexts](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md)
 - Extensible [synthetic event subsystem](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
-- Attaching DOM events to component nodes
+- DOM events on Component nodes
 - Synchronous and deterministic syncing algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Optional [scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
 - Test utilities
@@ -29,7 +29,7 @@ applications.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[uglify(terser)](https://github.com/fabiosantoscode/terser) is just a **2.6KB** (minified+compressed).
+[uglify(terser)](https://github.com/fabiosantoscode/terser) is just a **2.7KB** (minified+compressed).
 
 ## Performance
 
@@ -83,7 +83,7 @@ Google Mail: ~4000
 ```
 
 In some test cases of this benchmark there is an insane amount of DOM elements. Usually when there are so many DOM
-elements is involved, recalc style, reflow, etc will be so slow, so it doesn't matter how fast is UI library,
+elements in the document, recalc style, reflow, etc will be so slow, so it doesn't matter how fast is UI library,
 application will be completely unusable.
 
 Libraries that are using algorithms and data structures that can easily scale to any number of DOM elements will
@@ -180,7 +180,6 @@ render(
 - [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md)
 - [Synthetic Events](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
 - [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md)
-- [Context](https://github.com/localvoid/ivi/blob/master/documentation/general/context.md)
 
 ### Advanced
 

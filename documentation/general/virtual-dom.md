@@ -41,6 +41,16 @@ interface VNode<P> {
 
 Method `e()` is used to assign events.
 
+### Text Content
+
+```ts
+interface VNode<P> {
+  t(text: string | number): this;
+}
+```
+
+Method `t()` assigns a text content to a virtual dom node.
+
 ### Children
 
 ```ts
@@ -149,6 +159,9 @@ function CHECKED(v: boolean | undefined): SyncableValue<boolean>;
 // ivi-svg
 function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
 function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
+
+// ivi-scheduler
+function AUTOFOCUS(v: boolean | undefined): SyncableValue<boolean>;
 ```
 
 `PROPERTY()` function creates a SyncableValue that assigns a property to a property name derived from the `key`
@@ -166,6 +179,9 @@ derived from the `key`.
 `XLINK_ATTR()` function creates a SyncableValue that assigns an attribute from XLINK namespace, attribute name
 is derived from the `key`.
 
+`AUTOFOCUS()` function creates a SyncableValue that triggers focus when value is synced from `undefined` or `false` to
+`true`.
+
 ### Example
 
 ```ts
@@ -175,15 +191,6 @@ const e = input("", { type: "checked": CHECKED(true) })
 ```
 
 ## Additional functions
-
-### Autofocus
-
-```ts
-function autofocus(vnode: VNode): void;
-```
-
-Autofocused node will receive a focus when element is instantiated. `autofocus()` is working with any node type except
-text nodes.
 
 ### Retrieve DOM instance from a virtual DOM node
 
@@ -214,7 +221,7 @@ const enum InvalidateFlags {
 function invalidate(flags?: InvalidateFlags);
 ```
 
-`invalidate()` function triggers invalidate handler that performs a dirty checking.
+`invalidate()` function triggers invalidate handler that performs dirty checking.
 
 ## Rendering virtual DOM into a document
 

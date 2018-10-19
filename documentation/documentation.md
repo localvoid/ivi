@@ -6,7 +6,6 @@
 - [Components](general/components.md)
 - [Synthetic Events](general/synthetic-events.md)
 - [Connectors](general/connect.md)
-- [Context](general/context.md)
 
 ## Advanced
 

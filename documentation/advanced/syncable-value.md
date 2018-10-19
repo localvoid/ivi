@@ -19,7 +19,7 @@ import { input, CHECKED } from "ivi-html";
 const e = input("", { type: "checked", checked: CHECKED(true) });
 ```
 
-In this example we are using special syncable value created with `INPUT_CHECKED()` function that will assign a checked
+In this example we are using special syncable value created with `CHECKED()` function that will assign a checked
 property on the input element.
 
 ## Creating Custom Syncable Values
@@ -46,7 +46,7 @@ export function CUSTOM_VALUE(v: number | undefined): SyncableValue<number> {
 ```
 
 Now we need to create a function that will be used to instantiate `SyncableValue` objects. In this function we are
-using predefined `SYNCABLE_VALUE_SKIP_UNDEFINED` syncable value to ignore synchronization when the value `undefined`,
+using predefined `SYNCABLE_VALUE_SKIP_UNDEFINED` syncable value to ignore synchronization when the value is `undefined`,
 otherwise we are creating a `SyncableValue` object with the value `v` and synchronization function `syncCustomValue`.
 
 ### Predefined Syncable Values
