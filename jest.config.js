@@ -6,7 +6,7 @@ module.exports = {
     "DEBUG": true,
     "TARGET": "browser",
     "ts-jest": {
-      "tsConfigFile": "tsconfig.json",
+      "tsConfig": "tsconfig.json",
     },
   },
   moduleNameMapper: {
