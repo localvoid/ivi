@@ -194,11 +194,15 @@ function _toSnapshot(
 
       let childrenString = "";
       if (vnode._c !== null) {
-        let child: VNode | null = vnode._c as VNode;
-        do {
-          childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
-          child = child._r;
-        } while (child !== null);
+        if ((flags & VNodeFlags.Children) !== 0) {
+          let child: VNode | null = vnode._c as VNode;
+          do {
+            childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
+            child = child._r;
+          } while (child !== null);
+        } else if ((flags & VNodeFlags.TextContent) !== 0) {
+          childrenString = `\n${indent(il + 1)}${vnode._c}`;
+        }
       }
 
       if (multiline) {

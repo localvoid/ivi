@@ -378,6 +378,13 @@ export class VNodeWrapper {
     return hasEventHandler(this, eventSource);
   }
 
+  hasTextContent(text: string | number): boolean {
+    if (!this.isElement()) {
+      throw new Error("VNodeWrapper::hasTextContent() can only be called on element nodes");
+    }
+    return hasTextContent(this, text);
+  }
+
   query(matcher: VNodeMatcher): VNodeWrapper | null {
     return query(this, matcher.match);
   }
@@ -464,6 +471,11 @@ export function hasAssignedStyle(wrapper: VNodeWrapper, style: { [key: string]: 
 export function hasEventHandler(wrapper: VNodeWrapper, dispatcher: EventDispatcher): boolean {
   const vnode = wrapper.vnode;
   return (vnode._p !== null && containsEventHandler(vnode._e, dispatcher) === true);
+}
+
+export function hasTextContent(wrapper: VNodeWrapper, text: string | number): boolean {
+  const vnode = wrapper.vnode;
+  return (((vnode._f & VNodeFlags.TextContent) !== 0) && vnode._c === text);
 }
 
 export function hasParent(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): boolean {

@@ -5,6 +5,7 @@ import {
   isElement, isElementWithClassName,
   hasParent, hasDirectParent, hasChild, hasSibling, hasPrevSibling, hasNextSibling, hasFactory, hasClassName, hasKey,
   hasProps, hasExactProps, hasAssignedProps, hasStyle, hasExactStyle, hasAssignedStyle, hasEventHandler, innerText,
+  hasTextContent,
 } from "./vdom";
 
 function and<T>(a: Predicate<T>, b: Predicate<T>): Predicate<T> {
@@ -106,6 +107,11 @@ export class VNodeElementMatcher extends Matcher<VNodeWrapper> {
 
   hasEventHandler(dispatcher: EventDispatcher): this {
     this.addPredicate((n: VNodeWrapper) => hasEventHandler(n, dispatcher));
+    return this;
+  }
+
+  hasTextContent(text: string | number): this {
+    this.addPredicate((n: VNodeWrapper) => hasTextContent(n, text));
     return this;
   }
 
