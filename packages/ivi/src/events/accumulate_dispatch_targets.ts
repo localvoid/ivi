@@ -30,19 +30,20 @@ function visitUp(
   match: (h: EventHandler) => boolean,
   element: Element,
   root: Element,
-  vnode: VNode,
-): VNode {
+  vnode: VNode | null,
+): VNode | null {
   const parent = element.parentNode! as Element;
   if (parent !== root) {
     vnode = visitUp(result, match, parent, root, vnode);
 
-    if ((vnode._f & (
-      VNodeFlags.Children |
-      VNodeFlags.StatelessComponent |
-      VNodeFlags.StatefulComponent |
-      VNodeFlags.Connect |
-      VNodeFlags.UpdateContext
-    )) !== 0) {
+    if (vnode !== null &&
+      (vnode._f & (
+        VNodeFlags.Children |
+        VNodeFlags.StatelessComponent |
+        VNodeFlags.StatefulComponent |
+        VNodeFlags.Connect |
+        VNodeFlags.UpdateContext
+      )) !== 0) {
       let child = vnode._c;
       while (child !== null) {
         const r = visitDown(result, match, element, child as VNode);
@@ -52,9 +53,10 @@ function visitUp(
         child = (child as VNode)._r;
       }
     }
+    return null;
   }
 
-  return visitDown(result, match, element, vnode)!;
+  return visitDown(result, match, element, vnode!);
 }
 
 function visitDown(
