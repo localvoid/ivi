@@ -270,20 +270,23 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
           node.textContent = vnode._c as string;
         }
       } else { // ((flags & VNodeFlags.StatefulComponent) !== 0)
-        const component = instance = new (tag as StatefulComponent<any>)(props);
-        const root = vnode._c = DEBUG ?
-          shouldBeSingleVNode(component.render()) :
-          /* istanbul ignore next */component.render();
-        node = _instantiate(parent, root, context);
+        instance = new (tag as StatefulComponent<any>)(props);
+        node = _instantiate(
+          parent,
+          vnode._c = DEBUG ?
+            shouldBeSingleVNode(instance.render()) :
+          /* istanbul ignore next */instance.render(),
+          context,
+        );
       }
     } else { // ((flags & (VNodeFlags.StatelessComponent | VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0)
       if ((flags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
         if ((flags & VNodeFlags.Connect) !== 0) {
           const connect = (tag as ConnectDescriptor<any, any, {}>);
-          const selectData = instance = connect.select(null, props, context);
+          instance = connect.select(null, props, context);
           vnode._c = DEBUG ?
-            shouldBeSingleVNode(connect.render(selectData)) :
-            /* istanbul ignore next */connect.render(selectData);
+            shouldBeSingleVNode(connect.render(instance)) :
+            /* istanbul ignore next */connect.render(instance);
         } else {
           context = instance = { ...context, ...props };
         }
@@ -474,9 +477,8 @@ export function _sync(
         if ((bFlags & (VNodeFlags.UpdateContext | VNodeFlags.Connect)) !== 0) {
           if ((bFlags & VNodeFlags.Connect) !== 0) {
             const connect = b._t as ConnectDescriptor<any, any, {}>;
-            const prevSelectData = instance;
-            const selectData = b._i = connect.select(prevSelectData, bProps, context);
-            if (prevSelectData === selectData) {
+            const selectData = b._i = connect.select(instance, bProps, context);
+            if (instance === selectData) {
               _dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
             } else {
               _sync(
@@ -795,6 +797,7 @@ function _syncChildrenTrackByKeys(
       }
       if (bStartVNode === bEndVNode) {
         i |= 2;
+        break outer;
       } else {
         bStartVNode = bStartVNode!._r;
       }
@@ -817,6 +820,7 @@ function _syncChildrenTrackByKeys(
       }
       if (bStartVNode === bEndVNode) {
         i |= 2;
+        break outer;
       } else {
         bEndVNode = bEndVNode._l;
       }
@@ -894,11 +898,9 @@ function _syncChildrenTrackByKeys(
     vnode = aStartVNode;
     while (1) {
       key = vnode!._k;
-      if (vnode!._f & VNodeFlags.Key) {
-        i = explicitKeyIndex ? explicitKeyIndex.get(key) : void 0;
-      } else {
-        i = implicitKeyIndex ? implicitKeyIndex.get(key) : void 0;
-      }
+      i = (vnode!._f & VNodeFlags.Key) !== 0 ?
+        explicitKeyIndex === void 0 ? void 0 : explicitKeyIndex.get(key) :
+        implicitKeyIndex === void 0 ? void 0 : implicitKeyIndex.get(key);
 
       if (i === void 0) {
         vnode!._k = null;
