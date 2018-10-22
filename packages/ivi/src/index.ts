@@ -98,8 +98,7 @@ export {
 } from "./vdom/vnode";
 export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
-export { element } from "./vdom/element";
-export { statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/factories";
+export { element, statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/factories";
 export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
 export { setupScheduler, invalidateHandler, invalidate, dirtyCheck, render } from "./vdom/scheduler";
 

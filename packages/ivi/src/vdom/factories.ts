@@ -1,8 +1,37 @@
+import { CSSStyleProps } from "../dom/style";
 import { VNodeFlags } from "./flags";
 import { StatelessComponent } from "./stateless_component";
 import { StatefulComponent } from "./stateful_component";
 import { VNode } from "./vnode";
 import { ConnectDescriptor } from "./connect_descriptor";
+
+/**
+ * `element()` creates a virtual DOM node factory that produces elements with predefined attributes and styles.
+ *
+ * @example
+ *
+ *     const DivWithIdAttribute = element(div("", { id: "predefined-id" }));
+ *
+ *     render(
+ *       DivWithIdAttribute(),
+ *       document.getElementById("app")!,
+ *     );
+ *
+ * @param proto - Virtual DOM prototype
+ * @returns factory that produces elements with predefined attributes
+ */
+export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: P, css?: CSSStyleProps) => VNode<P, N> {
+  const flags = proto._f | VNodeFlags.ElementFactory;
+  return (className?: string, attrs?: P, css?: CSSStyleProps) => (
+    new VNode<P, N>(
+      flags,
+      proto,
+      attrs,
+      className,
+      css,
+    )
+  );
+}
 
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
