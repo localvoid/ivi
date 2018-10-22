@@ -155,8 +155,7 @@ sending data snapshots that doesn't contain any information how nodes should be 
 
 ## Quick Start
 
-The easiest way to get started with ivi is to use [this basic example code on CodePen](https://codepen.io/localvoid/pen/yjqrgj)
-or [this one on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
+The easiest way to get started with ivi is to use [this basic example on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
 
 The smallest ivi example looks like this:
 
