@@ -24,7 +24,7 @@ export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: 
       flags,
       proto,
       attrs,
-      className === void 0 ? "" : className,
+      className,
       css,
     )
   );
