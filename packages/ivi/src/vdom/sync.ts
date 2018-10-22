@@ -224,9 +224,9 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
           }
           /* istanbul ignore else */
           if (DEBUG) {
-            node = ((tag as VNode)._i as Node).cloneNode(false);
+            node = ((tag as VNode)._i as Node).cloneNode(true);
           } else {
-            node = nodeCloneNode.call((tag as VNode)._i as Node, false);
+            node = nodeCloneNode.call((tag as VNode)._i as Node, true);
           }
         }
         instance = node;
