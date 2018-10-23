@@ -64,10 +64,7 @@
     "object-literal-shorthand": false,
     "switch-default": false,
     "variable-name": false,
-    "arrow-parens": [
-      true,
-      "ban-single-arg-parens"
-    ],
+    "arrow-parens": false,
     "space-before-function-paren": [
       true,
       {
