@@ -1,3 +1,21 @@
+<a name="0.16.0"></a>
+# [0.16.0](https://github.com/localvoid/ivi/compare/0.15.0...0.16.0) (2018-10-23)
+
+
+### Bug Fixes
+
+* **events:** ignore non-vdom nodes when dispatching events ([5904715](https://github.com/localvoid/ivi/commit/5904715))
+
+
+### Features
+
+* **package:** deprecate unpkg modules ([27e8379](https://github.com/localvoid/ivi/commit/27e8379))
+* **test:** add support for text content ([d1b02ca](https://github.com/localvoid/ivi/commit/d1b02ca))
+* **vdom:** bring back optimization for singular text nodes ([b39555d](https://github.com/localvoid/ivi/commit/b39555d))
+* **vdom:** clone subtree for prerendered elements ([2f9bfb3](https://github.com/localvoid/ivi/commit/2f9bfb3))
+
+
+
 <a name="0.15.0"></a>
 # [0.15.0](https://github.com/localvoid/ivi/compare/0.14.0...0.15.0) (2018-06-21)
 
