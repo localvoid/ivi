@@ -1,9 +1,44 @@
 import { CSSStyleProps } from "../dom/style";
 import { VNodeFlags } from "./flags";
-import { StatelessComponent } from "./stateless_component";
-import { StatefulComponent } from "./stateful_component";
+import { ComponentDescriptor, ComponentHandle } from "./component";
 import { VNode } from "./vnode";
-import { ConnectDescriptor } from "./connect_descriptor";
+
+function _apply<P>(
+  d: ComponentDescriptor<P>,
+  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
+): ComponentDescriptor<P> {
+  for (let i = 0; i < options.length; i++) {
+    d = options[i](d);
+  }
+  return d;
+}
+
+function _createDescriptor<P>(
+  render: ((h: ComponentHandle<P>) => (props: P) => VNode) | ((props: P) => VNode),
+  shouldUpdate: null | ((prev: P, next: P) => boolean),
+  select: null | Function,
+): ComponentDescriptor<P> {
+  return { render, shouldUpdate, select };
+}
+
+/**
+ * withShouldUpdate creates a function that assigns a `shouldUpdate` options to `ComponentDescriptor`.
+ *
+ * @example
+ *
+ *     const A = statelessComponent<{ text: string }>(
+ *       ({ text }) => div().c(text),
+ *       withShouldUpdate((prev, next) => prev.text !== next.text),
+ *     );
+ *
+ * @param shouldUpdate - Function that performs an early check that prevent unnecessary updates
+ * @returns function that assigns a `shouldUpdate` option
+ */
+export function withShouldUpdate<P>(
+  shouldUpdate: (oldProps: P, newProps: P) => boolean,
+): (d: ComponentDescriptor<P>) => ComponentDescriptor<P> {
+  return (d) => (d.shouldUpdate = shouldUpdate, d);
+}
 
 /**
  * `element()` creates a virtual DOM node factory that produces elements with predefined attributes and styles.
@@ -23,13 +58,7 @@ import { ConnectDescriptor } from "./connect_descriptor";
 export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: P, css?: CSSStyleProps) => VNode<P, N> {
   const flags = proto._f | VNodeFlags.ElementFactory;
   return (className?: string, attrs?: P, css?: CSSStyleProps) => (
-    new VNode<P, N>(
-      flags,
-      proto,
-      attrs,
-      className,
-      css,
-    )
+    new VNode<P, N>(flags, proto, attrs, className, css)
   );
 }
 
@@ -50,7 +79,10 @@ export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: 
  * @param render - Render function
  * @returns factory that produces stateless component nodes
  */
-export function statelessComponent(c: () => VNode): () => VNode<undefined>;
+export function component(
+  c: () => VNode,
+  ...options: Array<(d: ComponentDescriptor<undefined>) => ComponentDescriptor<undefined>>
+): () => VNode<undefined>;
 
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
@@ -69,8 +101,9 @@ export function statelessComponent(c: () => VNode): () => VNode<undefined>;
  * @param render - Render function
  * @returns factory that produces stateless component nodes
  */
-export function statelessComponent<P>(
+export function component<P>(
   render: undefined extends P ? (props?: P) => VNode<any> : (props: P) => VNode<any>,
+  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
@@ -90,61 +123,13 @@ export function statelessComponent<P>(
  * @param render - Render function
  * @returns factory that produces stateless component nodes
  */
-export function statelessComponent<P>(render: (props: P) => VNode<any>): (props: P) => VNode<P> {
-  const d = { render, shouldUpdate: null };
-  const f = (props: P) => {
-    const n = new VNode<P>(
-      VNodeFlags.StatelessComponent,
-      d,
-      props,
-      "",
-      void 0,
-    );
-    /* istanbul ignore else */
-    if (DEBUG) {
-      n.factory = f;
-    }
-    return n;
-  };
-  return f;
-}
-
-/**
- * withShouldUpdate creates a virtual DOM node factory that produces nodes for stateless components with custom
- * `shouldUpdate` function to prevent unnecessary updates.
- *
- * @example
- *
- *     const A = withShouldUpdate<{ text: string }>(
- *       (prevProps, nextProps) => prevProps.text !== nextProps.text,
- *       statelessComponent(
- *         (props) => div().c(props.text),
- *       ),
- *     );
- *
- *     render(
- *       A({ text: "Hello" }),
- *       DOMContainer,
- *     );
- *
- * @param shouldUpdate - Function that performs an early check that prevent unnecessary updates
- * @param factory - Factory that produces stateless component nodes
- * @returns factory that produces stateless component nodes
- */
-export function withShouldUpdate<P>(
-  shouldUpdate: (oldProps: P, newProps: P) => boolean,
-  factory: (props: P) => VNode<P>,
+export function component<P>(
+  render: (props: P) => VNode<any>,
+  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
 ): (props: P) => VNode<P> {
-  const v = factory(null as any);
-  const d = { render: (v._t as StatelessComponent<P>).render, shouldUpdate };
+  const d = _apply(_createDescriptor(render, null, null), ...options);
   const f = (props: P) => {
-    const n = new VNode<P>(
-      VNodeFlags.StatelessComponent | VNodeFlags.ShouldUpdateHint,
-      d,
-      props,
-      "",
-      void 0,
-    );
+    const n = new VNode<P>(VNodeFlags.Component, d, props, "", void 0);
     /* istanbul ignore else */
     if (DEBUG) {
       n.factory = f;
@@ -159,47 +144,46 @@ export function withShouldUpdate<P>(
  *
  * @example
  *
- *     const A = component(class extends Component<string> {
- *       onClick = onClick(() => console.log(this.props));
+ *     const A = statefulComponent<string>(() => {
+ *       const click = onClick((ev, text) => console.log(text));
  *
- *       render() {
- *         return (
- *           button()
- *             .e(this.onClick)
- *             .c("Click Me")
- *         );
- *       }
+ *       return (text) => (
+ *         button()
+ *           .e(click(text))
+ *           .t("Click Me")
+ *       );
  *     });
  *
  *     render(
- *       A("clicked"),
+ *       A("click me"),
  *       DOMContainer,
  *     );
  *
  * @param c - Stateful component
  * @returns factory that produces stateful component nodes
  */
-export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<undefined>;
+export function statefulComponent(
+  render: (h: ComponentHandle<undefined>) => () => VNode,
+  ...options: Array<(d: ComponentDescriptor<undefined>) => ComponentDescriptor<undefined>>
+): () => VNode<undefined>;
 
 /**
  * statefulComponent creates a virtual DOM node factory that produces nodes for stateful components.
  *
  * @example
  *
- *     const A = component(class extends Component<string> {
- *       onClick = onClick(() => console.log(this.props));
+ *     const A = statefulComponent<string>(() => {
+ *       const click = onClick((ev, text) => console.log(text));
  *
- *       render() {
- *         return (
- *           button()
- *             .e(this.onClick)
- *             .c("Click Me")
- *         );
- *       }
+ *       return (text) => (
+ *         button()
+ *           .e(click(text))
+ *           .t("Click Me")
+ *       );
  *     });
  *
  *     render(
- *       A("clicked"),
+ *       A("click me"),
  *       DOMContainer,
  *     );
  *
@@ -207,7 +191,8 @@ export function statefulComponent(c: StatefulComponent<undefined>): () => VNode<
  * @returns factory that produces stateful component nodes
  */
 export function statefulComponent<P>(
-  c: StatefulComponent<P>,
+  render: (h: ComponentHandle<P>) => (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
@@ -215,37 +200,157 @@ export function statefulComponent<P>(
  *
  * @example
  *
- *     const A = component(class extends Component<string> {
- *       onClick = onClick(() => console.log(this.props));
+ *     const A = statefulComponent<string>(() => {
+ *       const click = onClick((ev, text) => console.log(text));
  *
- *       render() {
- *         return (
- *           button()
- *             .e(this.onClick)
- *             .c("Click Me")
- *         );
- *       }
+ *       return (text) => (
+ *         button()
+ *           .e(click(text))
+ *           .t("Click Me")
+ *       );
  *     });
  *
  *     render(
- *       A("clicked"),
+ *       A("click me"),
  *       DOMContainer,
  *     );
  *
- * @param c - Stateful component
+ * @param render - Stateful component
  * @returns factory that produces stateful component nodes
  */
 export function statefulComponent<P>(
-  c: StatefulComponent<P>,
+  render: (h: ComponentHandle<P>) => (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
 ): (props: P) => VNode<P> {
+  const d = _apply(_createDescriptor(render, null, null), ...options);
   const f = (props: P) => {
-    const n = new VNode<P>(
-      VNodeFlags.StatefulComponent,
-      c,
-      props,
-      "",
-      void 0,
-    );
+    const n = new VNode<P>(VNodeFlags.Component | VNodeFlags.StatefulComponent, d, props, "", void 0);
+    /* istanbul ignore else */
+    if (DEBUG) {
+      n.factory = f;
+    }
+    return n;
+  };
+  return f;
+}
+
+/**
+ * connect creates a virtual DOM node factory that produces connector nodes.
+ *
+ * @example
+ *
+ *     const Connector = connect<string, undefined, { result: string }>(
+ *       (prev, props, context) => {
+ *         const result = context.result;
+ *
+ *         return (prev !== null && prev === result) ? prev :
+ *           result;
+ *       },
+ *       (text) => div().c(text),
+ *     );
+ *
+ *     render(
+ *       context({ result: "text" },
+ *         Connector(),
+ *       ),
+ *       DOMContainer,
+ *     );
+ *
+ * @param select - Selector function
+ * @param render - Render function
+ * @returns factory that produces connector nodes
+ */
+export function connect<T>(
+  select: (prev: T | null) => T,
+  componentFactory: (props: T) => VNode,
+): () => VNode<undefined>;
+
+/**
+ * connect creates a virtual DOM node factory that produces connector nodes.
+ *
+ * @example
+ *
+ *     const Connector = connect<string, undefined, { result: string }>(
+ *       (_prev, _props, context) => context.result,
+ *       statelessComponent<string>((text) => div().c(text)),
+ *     );
+ *
+ *     render(
+ *       context({ result: "text" },
+ *         Connector(),
+ *       ),
+ *       DOMContainer,
+ *     );
+ *
+ * @param select - Selector function
+ * @param componentFactory - Component factory
+ * @returns factory that produces connector nodes
+ */
+export function connect<T, P>(
+  select: undefined extends P ? (prev: T | null, props?: P) => T : (prev: T | null, props: P) => T,
+  componentFactory: (props: T) => VNode,
+): undefined extends P ? () => VNode<P> : (props: P) => VNode<P>;
+
+/**
+ * connect creates a virtual DOM node factory that produces connector nodes.
+ *
+ * @example
+ *
+ *     const Connector = connect<string, undefined, { result: string }>(
+ *       (_prev, _props, context) => context.result,
+ *       statelessComponent<string>((text) => div().c(text)),
+ *     );
+ *
+ *     render(
+ *       context({ result: "text" },
+ *         Connector(),
+ *       ),
+ *       DOMContainer,
+ *     );
+ *
+ * @param select - Selector function
+ * @param componentFactory - Component factory
+ * @returns factory that produces connector nodes
+ */
+export function connect<T, P, C>(
+  select: (prev: T | null, props: P, context: C) => T,
+  componentFactory: (props: T) => VNode,
+): undefined extends P ? () => VNode<P> : (props: P) => VNode<P>;
+
+/**
+ * connect creates a virtual DOM node factory that produces connector nodes.
+ *
+ * @example
+ *
+ *     const Connector = connect<string, undefined, { result: string }>(
+ *       (_prev, _props, context) => context.result,
+ *       statelessComponent<string>((text) => div().c(text)),
+ *     );
+ *
+ *     render(
+ *       context({ result: "text" },
+ *         Connector(),
+ *       ),
+ *       DOMContainer,
+ *     );
+ *
+ * @param select - Selector function
+ * @param componentFactory - Component factory
+ * @returns factory that produces connector nodes
+ */
+export function connect<T, P, C>(
+  select: (prev: T | null, props: P, context: C) => T,
+  componentFactory: (props: T) => VNode<T>,
+): (props: P) => VNode<P> {
+  const vnode = componentFactory(undefined as any);
+  const flags = vnode._f | VNodeFlags.Connect;
+  const descriptor = _createDescriptor(
+    (vnode._t as ComponentDescriptor<T>).render,
+    (vnode._t as ComponentDescriptor<T>).shouldUpdate,
+    select,
+  );
+  const f = (props: P) => {
+    const n = new VNode<P>(flags, descriptor, props, "", void 0);
     /* istanbul ignore else */
     if (DEBUG) {
       n.factory = f;
@@ -287,145 +392,4 @@ export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
   );
   n._c = child;
   return n;
-}
-
-/**
- * connect creates a virtual DOM node factory that produces connector nodes.
- *
- * @example
- *
- *     const Connector = connect<string, undefined, { result: string }>(
- *       (prev, props, context) => {
- *         const result = context.result;
- *
- *         return (prev !== null && prev === result) ? prev :
- *           result;
- *       },
- *       (text) => div().c(text),
- *     );
- *
- *     render(
- *       context({ result: "text" },
- *         Connector(),
- *       ),
- *       DOMContainer,
- *     );
- *
- * @param select - Selector function
- * @param render - Render function
- * @returns factory that produces connector nodes
- */
-export function connect<T>(
-  select: (prev: T | null) => T,
-  render: (props: T) => VNode<any>,
-): () => VNode<undefined>;
-
-/**
- * connect creates a virtual DOM node factory that produces connector nodes.
- *
- * @example
- *
- *     const Connector = connect<string, undefined, { result: string }>(
- *       (prev, props, context) => {
- *         const result = context.result;
- *
- *         return (prev !== null && prev === result) ? prev :
- *           result;
- *       },
- *       (text) => div().c(text),
- *     );
- *
- *     render(
- *       context({ result: "text" },
- *         Connector(),
- *       ),
- *       DOMContainer,
- *     );
- *
- * @param select - Selector function
- * @param render - Render function
- * @returns factory that produces connector nodes
- */
-export function connect<T, P>(
-  select: undefined extends P ? (prev: T | null, props?: P) => T : (prev: T | null, props: P) => T,
-  render: (props: T) => VNode<any>,
-): undefined extends P ? () => VNode<P> : (props: P) => VNode<P>;
-
-/**
- * connect creates a virtual DOM node factory that produces connector nodes.
- *
- * @example
- *
- *     const Connector = connect<string, undefined, { result: string }>(
- *       (prev, props, context) => {
- *         const result = context.result;
- *
- *         return (prev !== null && prev === result) ? prev :
- *           result;
- *       },
- *       (text) => div().c(text),
- *     );
- *
- *     render(
- *       context({ result: "text" },
- *         Connector(),
- *       ),
- *       DOMContainer,
- *     );
- *
- * @param select - Selector function
- * @param render - Render function
- * @returns factory that produces connector nodes
- */
-export function connect<T, P, C>(
-  select: (prev: T | null, props: P, context: C) => T,
-  render: (props: T) => VNode<any>,
-): undefined extends P ? () => VNode<P> : (props: P) => VNode<P>;
-
-/**
- * connect creates a virtual DOM node factory that produces connector nodes.
- *
- * @example
- *
- *     const Connector = connect<string, undefined, { result: string }>(
- *       (prev, props, context) => {
- *         const result = context.result;
- *
- *         return (prev !== null && prev === result) ? prev :
- *           result;
- *       },
- *       (text) => div().c(text),
- *     );
- *
- *     render(
- *       context({ result: "text" },
- *         Connector(),
- *       ),
- *       DOMContainer,
- *     );
- *
- * @param select - Selector function
- * @param render - Render function
- * @returns factory that produces connector nodes
- */
-export function connect<T, P, C>(
-  select: (prev: T | null, props: P, context: C) => T,
-  render: (props: T) => VNode<any>,
-): (props: P) => VNode<P> {
-  const descriptor = { select, render };
-  const f = (props: P) => {
-    const n = new VNode<P>(
-      VNodeFlags.Connect,
-      descriptor as ConnectDescriptor<any, any, {}>,
-      props,
-      "",
-      void 0,
-    );
-    /* istanbul ignore else */
-    if (DEBUG) {
-      n.factory = f;
-    }
-    return n;
-  };
-  return f;
 }

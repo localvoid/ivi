@@ -7,11 +7,12 @@ import { InvalidateFlags, InvalidateFunction } from "./invalidate";
 import { VNode } from "./vnode";
 import { _render, _sync, _remove, _dirtyCheck } from "./sync";
 import { ROOTS, findRoot } from "./root";
+import { ComponentHandle } from "./component";
 
 /**
  * Invalidate function.
  */
-let _invalidate: InvalidateFunction;
+let _update: InvalidateFunction;
 
 /**
  * Empty Context object.
@@ -35,7 +36,7 @@ let _dirty = 0;
  *
  *   setupScheduler(invalidateHandler);
  */
-export const invalidateHandler = catchError(() => {
+export const updateHandler = catchError(() => {
   _dirty |= 2;
   while (_dirty === 2) {
     _dirty >>= 1;
@@ -49,27 +50,47 @@ export const invalidateHandler = catchError(() => {
  *
  * @example
  *
- *   import { setupScheduler, invalidateHandler } from "ivi";
+ *   import { setupScheduler, updateHandler } from "ivi";
  *
- *   setupScheduler(invalidateHandler);
+ *   setupScheduler(updateHandler);
  *
- * @param invalidateFn - Invalidate handler
+ * @param updateFn - Update handler
  */
-export function setupScheduler(invalidateFn: InvalidateFunction): void {
-  _invalidate = invalidateFn;
+export function setupScheduler(updateFn: InvalidateFunction): void {
+  _update = updateFn;
 }
 
 /**
  * Invalidate view.
  */
-export function invalidate(flags?: InvalidateFlags): void {
+export function update(flags?: InvalidateFlags): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (_invalidate === void 0) {
+    if (_update === void 0) {
       throw new Error(`Scheduler hasn't been configured`);
     }
   }
-  _invalidate(flags);
+  _update(flags);
+}
+
+/**
+ * Invalidate component.
+ */
+export function invalidate<P>(h: ComponentHandle<P>, flags?: InvalidateFlags): void {
+  /* istanbul ignore else */
+  if (DEBUG) {
+    if (_update === void 0) {
+      throw new Error(`Scheduler hasn't been configured`);
+    }
+  }
+  h.dirty = true;
+  _update(flags);
+}
+
+const EFFECT_QUEUE = [] as Array<() => void>;
+
+export function effect(fn: () => void): void {
+  EFFECT_QUEUE.push(fn);
 }
 
 /**
@@ -116,6 +137,14 @@ export function dirtyCheck() {
       }
     }
   }
+
+  const tasks = EFFECT_QUEUE;
+  if (tasks.length > 0) {
+    for (let i = 0; i < tasks.length; i++) {
+      tasks[i]();
+    }
+    EFFECT_QUEUE.length = 0;
+  }
 }
 
 /**
@@ -146,5 +175,5 @@ export function render(next: VNode | null, container: Element, flags?: Invalidat
     ROOTS.push({ container, next, current: null });
   }
 
-  invalidate(flags);
+  update(flags);
 }

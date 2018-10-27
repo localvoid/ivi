@@ -37,13 +37,7 @@ function visitUp(
     vnode = visitUp(result, match, parent, root, vnode);
 
     if (vnode !== null &&
-      (vnode._f & (
-        VNodeFlags.Children |
-        VNodeFlags.StatelessComponent |
-        VNodeFlags.StatefulComponent |
-        VNodeFlags.Connect |
-        VNodeFlags.UpdateContext
-      )) !== 0) {
+      (vnode._f & (VNodeFlags.Children | VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
       let child = vnode._c;
       while (child !== null) {
         const r = visitDown(result, match, element, child as VNode);
@@ -72,12 +66,7 @@ function visitDown(
       accumulateDispatchTargetsFromVNode(result, vnode, match);
       return vnode;
     }
-  } else if (flags & (
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.StatefulComponent |
-    VNodeFlags.Connect |
-    VNodeFlags.UpdateContext
-  )) {
+  } else if (flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) {
     r = visitDown(result, match, element, vnode._c as VNode);
     if (r) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);

@@ -5,9 +5,7 @@ import { isVoidElement } from "../debug/dom";
 import { checkVNodeConstructor, checkUniqueKeys } from "../debug/vnode";
 import { EventHandler } from "../events/event_handler";
 import { VNodeFlags } from "./flags";
-import { StatelessComponent } from "./stateless_component";
-import { StatefulComponent, Component } from "./stateful_component";
-import { ConnectDescriptor } from "./connect_descriptor";
+import { ComponentDescriptor, ComponentHandle, ConnectorState } from "./component";
 
 /**
  * Virtual DOM Node.
@@ -40,13 +38,7 @@ export class VNode<P = any, N = Node> {
   /**
    * Tag property contains details about the type of the element.
    */
-  _t:
-    | string
-    | VNode
-    | StatefulComponent<any>
-    | StatelessComponent<any>
-    | ConnectDescriptor<any, any, {}>
-    | null;
+  _t: string | VNode | ComponentDescriptor | null;
   /**
    * Children syncing algorithm is using key property to match nodes. Key should be unique among its siblings.
    */
@@ -61,15 +53,15 @@ export class VNode<P = any, N = Node> {
    * It will be available after virtual node is created or synced. Each time VNode is synced, reference will be
    * transferred from the old VNode to the new one.
    */
-  _i: N | Component<any> | {} | null;
+  _i: N | ComponentHandle<P> | {} | null;
+  /**
+   * Connector State / Style.
+   */
+  _s: ConnectorState | CSSStyleProps | undefined;
   /**
    * Class name.
    */
   _cs: string | undefined;
-  /**
-   * Style.
-   */
-  _s: CSSStyleProps | undefined;
   /**
    * Events.
    */
@@ -83,16 +75,10 @@ export class VNode<P = any, N = Node> {
 
   constructor(
     flags: number,
-    tag:
-      | string
-      | VNode
-      | StatelessComponent<P>
-      | StatefulComponent<P>
-      | ConnectDescriptor<any, any, {}>
-      | null,
+    tag: string | VNode | ComponentDescriptor<any> | null,
     props: P | undefined,
     className: string | undefined,
-    style: CSSStyleProps | undefined,
+    state: ConnectorState | CSSStyleProps | undefined,
   ) {
     this._f = flags;
     this._l = this;
@@ -102,8 +88,8 @@ export class VNode<P = any, N = Node> {
     this._k = 0;
     this._p = props;
     this._i = null;
+    this._s = state;
     this._cs = className;
-    this._s = style;
     this._e = null;
     /* istanbul ignore else */
     if (DEBUG) {
@@ -273,8 +259,7 @@ export function t(content: string | number): VNode<string | number, Text> {
  */
 export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
   if ((vnode._f & (
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.StatefulComponent |
+    VNodeFlags.Component |
     VNodeFlags.Connect |
     VNodeFlags.UpdateContext
   )) !== 0) {
@@ -289,12 +274,11 @@ export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
  * @param vnode - Virtual DOM node which contains reference to a Component instance.
  * @returns `null` if `vnode` doesn't have a reference to a Component instance
  */
-export function getComponent<T extends Component<any>>(vnode: VNode): T | null {
+export function getComponent<T extends ComponentHandle<any>>(vnode: VNode): T | null {
   /* istanbul ignore else */
   if (DEBUG) {
     if ((vnode._f & (
-      VNodeFlags.StatelessComponent |
-      VNodeFlags.StatefulComponent |
+      VNodeFlags.Component |
       VNodeFlags.Connect |
       VNodeFlags.UpdateContext
     )) === 0) {

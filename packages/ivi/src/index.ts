@@ -88,9 +88,9 @@ export {
   PROPERTY, UNSAFE_HTML, EVENT,
 } from "./vdom/syncable_value";
 export { VNodeFlags } from "./vdom/flags";
-export { StatelessComponent } from "./vdom/stateless_component";
-export { StatefulComponent, Component, isComponentAttached } from "./vdom/stateful_component";
-export { ConnectDescriptor } from "./vdom/connect_descriptor";
+export {
+  ComponentDescriptor, StatelessComponentDescriptor, StatefulComponentDescriptor, ConnectedDescriptor, detached,
+} from "./vdom/component";
 export {
   VNode, t,
   getDOMNode, getComponent,
@@ -98,9 +98,9 @@ export {
 } from "./vdom/vnode";
 export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
-export { element, statefulComponent, statelessComponent, withShouldUpdate, context, connect } from "./vdom/factories";
+export { element, statefulComponent, component, withShouldUpdate, context, connect } from "./vdom/factories";
 export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
-export { setupScheduler, invalidateHandler, invalidate, dirtyCheck, render } from "./vdom/scheduler";
+export { setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect } from "./vdom/scheduler";
 
 // Events
 export {

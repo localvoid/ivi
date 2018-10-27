@@ -2,26 +2,18 @@ export interface LifecycleCounters {
   global: number;
   constructor: number;
   shouldUpdate: number;
-  propsChanged: number;
-  attached: number;
+  effect: number;
   detached: number;
-  updated: number;
-  invalidated: number;
   render: number;
-  shouldAugment: number;
 }
 
 const LIFECYCLE_COUNTERS: LifecycleCounters = {
   global: 0,
   constructor: 0,
   shouldUpdate: 0,
-  propsChanged: 0,
-  attached: 0,
+  effect: 0,
   detached: 0,
-  updated: 0,
-  invalidated: 0,
   render: 0,
-  shouldAugment: 0,
 };
 
 let LIFECYCLE_DATA: Map<string, number> | undefined;
@@ -50,18 +42,15 @@ export function lifecycleGet(id: string, name: keyof LifecycleCounters, global =
 export function checkLifecycle(
   fn: (
     get: (id: string, name: keyof LifecycleCounters, global?: boolean) => number,
-  ) => void): void {
+  ) => void,
+): void {
   LIFECYCLE_DATA = new Map<string, number>();
   LIFECYCLE_COUNTERS.global = 0;
   LIFECYCLE_COUNTERS.constructor = 0;
   LIFECYCLE_COUNTERS.shouldUpdate = 0;
-  LIFECYCLE_COUNTERS.propsChanged = 0;
-  LIFECYCLE_COUNTERS.attached = 0;
+  LIFECYCLE_COUNTERS.effect = 0;
   LIFECYCLE_COUNTERS.detached = 0;
-  LIFECYCLE_COUNTERS.updated = 0;
-  LIFECYCLE_COUNTERS.invalidated = 0;
   LIFECYCLE_COUNTERS.render = 0;
-  LIFECYCLE_COUNTERS.shouldAugment = 0;
   fn(lifecycleGet);
   LIFECYCLE_DATA = undefined;
 }

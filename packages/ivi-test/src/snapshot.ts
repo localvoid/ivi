@@ -1,4 +1,4 @@
-import { VNode, VNodeFlags, StatefulComponent, StatelessComponent, SyncableValue } from "ivi";
+import { VNode, VNodeFlags, SyncableValue } from "ivi";
 
 export interface SnapshotOptions {
   readonly ignoreEvents?: boolean;
@@ -219,11 +219,9 @@ function _toSnapshot(
       result += vnode._p as string;
     }
   } else {
-    if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
+    if ((flags & VNodeFlags.Component) !== 0) {
       if ((sFlags & SnapshotFlags.IgnoreComponent) === 0) {
-        const componentName = ((flags & VNodeFlags.StatefulComponent) !== 0) ?
-          (vnode._t as StatefulComponent<any>).displayName :
-          (vnode._t as StatelessComponent<any>).render.displayName;
+        const componentName = ((flags & VNodeFlags.StatefulComponent) !== 0);
 
         result += (vnode._c === null) ?
           `${indent(il)}<${componentName} />` :
@@ -235,31 +233,17 @@ function _toSnapshot(
       } else {
         result += _toSnapshot(il, vnode._c as VNode, sFlags);
       }
-    } else { // ((flags & (VNodeFlags.Connect | VNodeFlags.UpdateContext)) !== 0)
-      if ((flags & VNodeFlags.Connect) !== 0) {
-        if ((sFlags & SnapshotFlags.IgnoreConnect) === 0) {
-          result += (vnode._c === null) ?
-            `${indent(il)}<Connect />` :
-            (
-              `${indent(il)}<Connect>` +
-              _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
-              `\n${indent(il)}</Connect>`
-            );
-        } else {
-          result += _toSnapshot(il, vnode._c as VNode, sFlags);
-        }
+    } else { // ((flags & VNodeFlags.UpdateContext) !== 0)
+      if ((sFlags & SnapshotFlags.IgnoreContext) === 0) {
+        result += (vnode._c === null) ?
+          `${indent(il)}<UpdateContext />` :
+          (
+            `${indent(il)}<UpdateContext>` +
+            _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
+            `\n${indent(il)}</UpdateContext>`
+          );
       } else {
-        if ((sFlags & SnapshotFlags.IgnoreContext) === 0) {
-          result += (vnode._c === null) ?
-            `${indent(il)}<UpdateContext />` :
-            (
-              `${indent(il)}<UpdateContext>` +
-              _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
-              `\n${indent(il)}</UpdateContext>`
-            );
-        } else {
-          result += _toSnapshot(il, vnode._c as VNode, sFlags);
-        }
+        result += _toSnapshot(il, vnode._c as VNode, sFlags);
       }
     }
   }

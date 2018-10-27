@@ -17,7 +17,7 @@ describe(`dirty checking`, () => {
       let triggered = 0;
       const c = ivi.connect(
         () => (triggered++),
-        () => html.div(),
+        ivi.component(() => html.div()),
       );
 
       const v = (
@@ -38,7 +38,7 @@ describe(`dirty checking`, () => {
       let triggered = 0;
       const c = ivi.connect(
         () => (triggered++),
-        () => html.div(),
+        ivi.component(() => html.div()),
       );
 
       const v = (
@@ -62,7 +62,7 @@ describe(`dirty checking`, () => {
       let outerTest = -1;
       const c = ivi.connect<number, undefined, { outer: number, inner: number }>(
         (prev, _, { outer, inner }) => (innerTest = inner, outerTest = outer),
-        () => html.div(),
+        ivi.component(() => html.div()),
       );
 
       const v = (
@@ -91,10 +91,11 @@ describe(`dirty checking`, () => {
       let innerTest = -1;
       const C = ivi.connect<number, undefined, { inner: number }>(
         (prev, _, { inner }) => (innerTest = inner),
-        () => html.div(),
+        ivi.component(() => html.div()),
       );
       const Context = ivi.connect(
-        () => i++, p => ivi.context({ inner: p }, C()),
+        () => i++,
+        ivi.component<number>((p) => ivi.context({ inner: p }, C())),
       );
 
       const v = (
@@ -119,11 +120,11 @@ describe(`dirty checking`, () => {
       const c = ivi.connect<null>(
         () => {
           if (i++ === 0) {
-            ivi.invalidate();
+            ivi.update();
           }
           return null;
         },
-        () => html.div(),
+        ivi.component(() => html.div()),
       );
 
       r(c());

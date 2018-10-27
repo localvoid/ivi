@@ -226,12 +226,7 @@ function visitNode(vnode: VNode, parentTagName: string, ancestorFlags: AncestorF
         child = child._r;
       }
     }
-  } else if ((flags & (
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.StatefulComponent |
-    VNodeFlags.Connect |
-    VNodeFlags.UpdateContext
-  )) !== 0) {
+  } else if ((flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
     visitNode(vnode._c as VNode, parentTagName, ancestorFlags);
   }
 }

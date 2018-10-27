@@ -86,31 +86,6 @@ describe(`render components`, () => {
     });
   });
 
-  test(`stateful component should be in attached state when it is rendered into the document`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateful(
-        html.div(),
-      );
-      r(v);
-      const c = ivi.getComponent(v);
-
-      expect(ivi.isComponentAttached(c!)).toBeTruthy();
-    });
-  });
-
-  test(`stateful component should be in detached state when it is removed from the document`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateful(
-        html.div(),
-      );
-      r(v);
-      r(html.div());
-      const c = ivi.getComponent(v);
-
-      expect(ivi.isComponentAttached(c!)).toBeFalsy();
-    });
-  });
-
   test(`stateless component should raise an exception when render function returns children collection`, () => {
     utils.startRender<HTMLElement>(r => {
       const v = utils.Stateless(

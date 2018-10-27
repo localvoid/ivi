@@ -94,7 +94,7 @@ export function containsEventHandler(
 const VNodeLooseMatchFlags = 0
   | VNodeFlags.Text
   | VNodeFlags.Element
-  | VNodeFlags.StatelessComponent
+  | VNodeFlags.Component
   | VNodeFlags.StatefulComponent
   | VNodeFlags.SvgElement
   | VNodeFlags.Connect

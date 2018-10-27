@@ -65,6 +65,12 @@
     "switch-default": false,
     "variable-name": false,
     "arrow-parens": false,
+    "trailing-comma": [
+      true,
+      {
+        "esSpecCompliant": true
+      }
+    ],
     "space-before-function-paren": [
       true,
       {

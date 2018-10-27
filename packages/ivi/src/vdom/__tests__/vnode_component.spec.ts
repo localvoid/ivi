@@ -1,6 +1,6 @@
-import { statelessComponent, t } from "ivi";
+import { component, t } from "ivi";
 
-const Empty = statelessComponent(() => t(""));
+const Empty = component(() => t(""));
 
 test(`assigning children should raise an exception`, () => {
   expect(() => Empty().c("123")).toThrow(Error);

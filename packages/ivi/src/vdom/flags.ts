@@ -15,9 +15,9 @@ export const enum VNodeFlags {
    */
   ElementFactory = 1 << 2,
   /**
-   * VNode represents a stateless component.
+   * VNode represents a component.
    */
-  StatelessComponent = 1 << 3,
+  Component = 1 << 3,
   /**
    * VNode represents a stateful component.
    */
@@ -54,13 +54,9 @@ export const enum VNodeFlags {
    * Specialized VNode with an update context behavior.
    */
   UpdateContext = 1 << 12,
-  /**
-   * Stateless component has custom `shouldUpdate()` hook.
-   */
-  ShouldUpdateHint = 1 << 13,
 
-  ElementIdMask = 255 << 14,
-  ElementIdOffset = 14,
+  ElementIdMask = 255 << 13,
+  ElementIdOffset = 13,
   /**
    * Dirty checking should be stopped at this node.
    *
@@ -76,7 +72,7 @@ export const enum VNodeFlags {
   | Text
   | Element
   | ElementFactory
-  | StatelessComponent
+  | Component
   | StatefulComponent
   | Connect
   | UpdateContext
@@ -84,23 +80,4 @@ export const enum VNodeFlags {
   | Key
   | SvgElement
   | ElementIdMask,
-}
-
-/**
- * Component flags.
- */
-export const enum ComponentFlags {
-  /**
-   * Component is detached from the document.
-   */
-  Detached = 1,
-  /**
-   * Component has dirty state and should be updated.
-   */
-  DirtyState = 1 << 1,
-
-  /**
-   * Component is dirty and should be updated.
-   */
-  Dirty = DirtyState,
 }

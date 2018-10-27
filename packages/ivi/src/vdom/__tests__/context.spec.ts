@@ -1,14 +1,9 @@
-import { VNode, t, statelessComponent, connect, context, withShouldUpdate } from "ivi";
-import { startRender } from "./utils";
-
-const Static = withShouldUpdate(
-  () => false,
-  statelessComponent<VNode>(child => child),
-);
+import { t, component, connect, context } from "ivi";
+import { startRender, Static } from "./utils";
 
 const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
   (prev, props, ctx) => ({ value: ctx.value }),
-  props => t(props.value),
+  component<{ value: string }>(({ value }) => t(value)),
 );
 
 test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {

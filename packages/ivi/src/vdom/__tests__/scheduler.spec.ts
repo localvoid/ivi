@@ -10,7 +10,7 @@ describe(`scheduler`, () => {
   });
 
   test(`raise an exception when scheduler isn't configured`, () => {
-    expect(() => { ivi.invalidate(); }).toThrowError("Scheduler");
+    expect(() => { ivi.update(); }).toThrowError("Scheduler");
   });
 
   test(`custom invalidator`, () => {
@@ -18,7 +18,7 @@ describe(`scheduler`, () => {
     ivi.setupScheduler(f => {
       i++;
     });
-    ivi.invalidate();
+    ivi.update();
 
     expect(i).toBe(1);
   });
@@ -30,7 +30,7 @@ describe(`scheduler`, () => {
       i++;
       flags = f;
     });
-    ivi.invalidate();
+    ivi.update();
 
     expect(i).toBe(1);
     expect(flags).toBe(undefined);
@@ -43,7 +43,7 @@ describe(`scheduler`, () => {
       i++;
       flags = f;
     });
-    ivi.invalidate(InvalidateFlags.RequestSyncUpdate);
+    ivi.update(InvalidateFlags.RequestSyncUpdate);
 
     expect(i).toBe(1);
     expect(flags).toBe(InvalidateFlags.RequestSyncUpdate);

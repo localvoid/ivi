@@ -1,9 +1,9 @@
-import { VNode, render, getDOMNode, setupScheduler, invalidateHandler } from "ivi";
+import { VNode, render, getDOMNode, setupScheduler, updateHandler } from "ivi";
 
 export function startRender<T extends Node>(
   fn: (render: (n: VNode) => T) => void,
 ): void {
-  setupScheduler(invalidateHandler);
+  setupScheduler(updateHandler);
   const container = document.createElement("div");
   container.setAttribute("test-container", "");
   document.body.appendChild(container);

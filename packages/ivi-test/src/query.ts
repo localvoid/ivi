@@ -1,4 +1,4 @@
-import { Predicate, CSSStyleProps, EventDispatcher, StatefulComponent } from "ivi";
+import { Predicate, CSSStyleProps, EventDispatcher } from "ivi";
 import {
   VNodeWrapper, visitWrapped,
 
@@ -129,10 +129,6 @@ function createVNodeElementMatcherFactory(tagName: string, className?: string): 
     return () => new VNodeElementMatcher((n: VNodeWrapper) => isElementWithClassName(n, tagName, className));
   }
   return () => new VNodeElementMatcher((n: VNodeWrapper) => isElement(n, tagName));
-}
-
-function componentMatcherFactory(component: StatefulComponent<any>): VNodeComponentMatcher {
-  return new VNodeComponentMatcher((n: VNodeWrapper) => (n.vnode._t === component));
 }
 
 export function query(wrapper: VNodeWrapper, predicate: Predicate<VNodeWrapper>): VNodeWrapper | null {
@@ -341,7 +337,4 @@ export const q = {
   tspan: createVNodeElementMatcherFactory("tspan"),
   use: createVNodeElementMatcherFactory("use"),
   view: createVNodeElementMatcherFactory("view"),
-
-  // Components:
-  component: componentMatcherFactory,
 };

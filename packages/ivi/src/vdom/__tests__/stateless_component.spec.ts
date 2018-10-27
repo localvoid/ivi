@@ -1,11 +1,11 @@
-import { statelessComponent, withShouldUpdate } from "ivi";
+import { component, withShouldUpdate } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
 
 test(`props should be passed to render hook`, () => {
   startRender(r => {
     let a = -1;
-    const c = statelessComponent<number>(props => {
+    const c = component<number>(props => {
       a = props;
       return h.div().c(props);
     },
@@ -22,14 +22,13 @@ test(`props should be passed to shouldUpdate hook`, () => {
     let a = -1;
     let b = -1;
 
-    const c = withShouldUpdate<number>(
-      (oldProps, newProps) => {
-        a = oldProps;
-        b = newProps;
+    const c = component<number>(
+      (props) => h.div().c(props),
+      withShouldUpdate((prev, next) => {
+        a = prev;
+        b = next;
         return true;
-      },
-      statelessComponent<number>(props => h.div().c(props),
-      ),
+      }),
     );
 
     r(c(1337));

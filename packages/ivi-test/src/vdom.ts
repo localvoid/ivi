@@ -1,6 +1,6 @@
 import {
   CSSStyleProps, shallowEqual, Predicate,
-  VNode, VNodeFlags, Component, StatefulComponent, StatelessComponent, ConnectDescriptor, EventDispatcher,
+  VNode, VNodeFlags, EventDispatcher, StatelessComponentDescriptor, StatefulComponentDescriptor, ConnectedDescriptor,
 } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
@@ -17,13 +17,7 @@ export function visitUnwrapped(
   }
 
   const flags = vnode._f;
-  if ((flags & (
-    VNodeFlags.Element |
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.StatefulComponent |
-    VNodeFlags.Connect |
-    VNodeFlags.UpdateContext
-  )) !== 0) {
+  if ((flags & (VNodeFlags.Element | VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
     let child = vnode._c;
     if ((flags & VNodeFlags.Element) !== 0) {
       if ((flags & VNodeFlags.Children) !== 0) {
@@ -55,13 +49,7 @@ export function visitWrapped(
 
   const vnode = wrapper.vnode;
   const flags = vnode._f;
-  if ((flags & (
-    VNodeFlags.Element |
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.StatefulComponent |
-    VNodeFlags.Connect |
-    VNodeFlags.UpdateContext
-  )) !== 0) {
+  if ((flags & (VNodeFlags.Element | VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
     let context = wrapper.context;
     let child = vnode._c;
     if ((flags & VNodeFlags.Element) !== 0) {
@@ -87,13 +75,7 @@ export function visitWrapped(
 function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, context: {}): boolean {
   const flags = vnode._f;
 
-  if ((flags & (
-    VNodeFlags.Element |
-    VNodeFlags.StatefulComponent |
-    VNodeFlags.StatelessComponent |
-    VNodeFlags.UpdateContext |
-    VNodeFlags.Connect
-  )) !== 0) {
+  if ((flags & (VNodeFlags.Element | VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
     if ((flags & VNodeFlags.Element) !== 0) {
       if ((flags & VNodeFlags.Children) !== 0) {
         let child = vnode._c;
@@ -103,22 +85,22 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
         }
       }
     } else {
-      if ((flags & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0) {
+      if ((flags & VNodeFlags.Component) !== 0) {
+        let props = vnode._p;
+        if ((flags & VNodeFlags.Connect) !== 0) {
+          const connect = vnode._t as ConnectedDescriptor;
+          vnode._s = props = connect.select(null, props, context);
+        }
         if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-          const component = vnode._i = new (vnode._t as StatefulComponent<any>)(vnode._p);
-          vnode._c = component.render();
+          const component = vnode._i = { dirty: false, render: null, detached: null };
+          const render = (vnode._t as StatefulComponentDescriptor).render(component);
+          vnode._c = render(props);
         } else {
-          const component = vnode._t as StatelessComponent<any>;
-          vnode._c = component.render(vnode._p);
+          const component = vnode._t as StatelessComponentDescriptor<any>;
+          vnode._c = component.render(props);
         }
-      } else {
-        if ((flags & VNodeFlags.UpdateContext) !== 0) {
-          vnode._i = context = { ...context, ...vnode._p };
-        } else {
-          const connect = vnode._t as ConnectDescriptor<any, any, any>;
-          const next = vnode._i = connect.select(null, vnode._p, context);
-          vnode._c = connect.render(next);
-        }
+      } else { // UpdateContext
+        vnode._i = context = { ...context, ...vnode._p };
       }
       if (depth > 1) {
         return _virtualRender(depth - 1, vnode._c as VNode, vnode, context);
@@ -198,7 +180,7 @@ export class VNodeWrapper {
   }
 
   isComponent(): boolean {
-    return (this.vnode._f & (VNodeFlags.StatefulComponent | VNodeFlags.StatelessComponent)) !== 0;
+    return (this.vnode._f & VNodeFlags.Component) !== 0;
   }
 
   isStatefulComponent(): boolean {
@@ -206,7 +188,7 @@ export class VNodeWrapper {
   }
 
   isStatelessComponent(): boolean {
-    return (this.vnode._f & VNodeFlags.StatelessComponent) !== 0;
+    return (this.vnode._f & VNodeFlags.StatefulComponent) === 0;
   }
 
   isContext(): boolean {
@@ -227,16 +209,6 @@ export class VNodeWrapper {
   getDOMInstance<P extends Node>(): P {
     if (!this.isText() && !this.isElement()) {
       throw new Error("VNodeWrapper::getDOMInstance() can only be called on DOM nodes");
-    }
-    if (this.vnode._i === null) {
-      throw new Error("Virtual DOM node is not instantiated");
-    }
-    return this.vnode._i as P;
-  }
-
-  getComponentInstance<P extends Component<any>>(): P {
-    if (!this.isStatefulComponent()) {
-      throw new Error("VNodeWrapper::getComponentInstance() can only be called on stateful components");
     }
     if (this.vnode._i === null) {
       throw new Error("Virtual DOM node is not instantiated");
