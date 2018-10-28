@@ -1,14 +1,12 @@
-import { statefulComponent } from "ivi";
+import { component } from "ivi";
 import * as h from "ivi-html";
 import { startRender } from "./utils";
 import { withShouldUpdate } from "../factories";
 
 test(`props should be passed to shouldUpdate hook`, () => {
   startRender(r => {
-    const c = statefulComponent<number>(
-      (hnd) => {
-        return () => h.div();
-      },
+    const c = component<number>(
+      () => () => h.div(),
       withShouldUpdate((prev, next) => {
         expect(prev).toBe(1337);
         expect(next).toBe(1338);

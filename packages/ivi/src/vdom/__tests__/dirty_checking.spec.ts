@@ -15,10 +15,10 @@ describe(`dirty checking`, () => {
   test(`identical node should trigger dirty checking`, () => {
     utils.startRender(r => {
       let triggered = 0;
-      const c = ivi.connect(
-        () => (triggered++),
-        ivi.component(() => html.div()),
-      );
+      const c = ivi.component((h) => {
+        const s = ivi.useSelect(h, () => (triggered++));
+        return () => (s(), html.div());
+      });
 
       const v = (
         html.div().c(
@@ -36,10 +36,10 @@ describe(`dirty checking`, () => {
   test(`ivi.stopDirtyChecking should stop dirty checking`, () => {
     utils.startRender(r => {
       let triggered = 0;
-      const c = ivi.connect(
-        () => (triggered++),
-        ivi.component(() => html.div()),
-      );
+      const c = ivi.component((h) => {
+        const s = ivi.useSelect(h, () => (triggered++));
+        return () => (s(), html.div());
+      });
 
       const v = (
         html.div().c(
@@ -60,10 +60,12 @@ describe(`dirty checking`, () => {
     utils.startRender(r => {
       let innerTest = -1;
       let outerTest = -1;
-      const c = ivi.connect<number, undefined, { outer: number, inner: number }>(
-        (prev, _, { outer, inner }) => (innerTest = inner, outerTest = outer),
-        ivi.component(() => html.div()),
-      );
+      const c = ivi.component((h) => {
+        const s = ivi.useSelect<number, undefined, { outer: number, inner: number }>(h,
+          (prev, _, { outer, inner }) => (innerTest = inner, outerTest = outer),
+        );
+        return () => (s(), html.div());
+      });
 
       const v = (
         html.div().c(
@@ -89,14 +91,17 @@ describe(`dirty checking`, () => {
     utils.startRender(r => {
       let i = 0;
       let innerTest = -1;
-      const C = ivi.connect<number, undefined, { inner: number }>(
-        (prev, _, { inner }) => (innerTest = inner),
-        ivi.component(() => html.div()),
-      );
-      const Context = ivi.connect(
-        () => i++,
-        ivi.component<number>((p) => ivi.context({ inner: p }, C())),
-      );
+      const C = ivi.component((h) => {
+        const s = ivi.useSelect<number, undefined, { inner: number }>(h,
+          (prev, _, { inner }) => (innerTest = inner),
+        );
+        return () => (s(), html.div());
+      });
+
+      const Context = ivi.component((h) => {
+        const p = ivi.useSelect<number>(h, () => i++);
+        return () => ivi.context({ inner: p() }, C());
+      });
 
       const v = (
         html.div().c(
@@ -117,15 +122,15 @@ describe(`dirty checking`, () => {
   test(`triggering dirty checking during render should rerun dirty checking`, () => {
     utils.startRender(r => {
       let i = 0;
-      const c = ivi.connect<null>(
-        () => {
+      const c = ivi.component((h) => {
+        const s = ivi.useSelect(h, () => {
           if (i++ === 0) {
             ivi.update();
           }
           return null;
-        },
-        ivi.component(() => html.div()),
-      );
+        });
+        return () => (s(), html.div());
+      });
 
       r(c());
 

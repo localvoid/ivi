@@ -95,9 +95,7 @@ const VNodeLooseMatchFlags = 0
   | VNodeFlags.Text
   | VNodeFlags.Element
   | VNodeFlags.Component
-  | VNodeFlags.StatefulComponent
   | VNodeFlags.SvgElement
-  | VNodeFlags.Connect
   | VNodeFlags.UpdateContext;
 
 /**

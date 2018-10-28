@@ -1,12 +1,12 @@
-import { VNode, statefulComponent } from "ivi";
+import { VNode, component } from "ivi";
 import * as h from "ivi-html";
 import { startRender, Static, checkLifecycle, lifecycleTouch } from "./utils";
 import { effect } from "../scheduler";
 import { withShouldUpdate } from "../factories";
-import { detached } from "../component";
+import { useDetached } from "../hooks";
 
 function createLifecycleTester(id: string) {
-  return statefulComponent<VNode>(
+  return component<VNode>(
     (hnd) => {
       lifecycleTouch(id, "constructor");
 
@@ -14,7 +14,7 @@ function createLifecycleTester(id: string) {
         lifecycleTouch(id, "effect");
       });
 
-      detached(hnd, () => {
+      useDetached(hnd, () => {
         lifecycleTouch(id, "detached");
       });
 

@@ -89,7 +89,7 @@ export {
 } from "./vdom/syncable_value";
 export { VNodeFlags } from "./vdom/flags";
 export {
-  ComponentDescriptor, StatelessComponentDescriptor, StatefulComponentDescriptor, ConnectedDescriptor, detached,
+  ComponentDescriptor,
 } from "./vdom/component";
 export {
   VNode, t,
@@ -98,9 +98,10 @@ export {
 } from "./vdom/vnode";
 export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
-export { element, statefulComponent, component, withShouldUpdate, context, connect } from "./vdom/factories";
+export { element, component, withShouldUpdate, context } from "./vdom/factories";
 export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
 export { setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect } from "./vdom/scheduler";
+export { useDetached, useSelect } from "./vdom/hooks";
 
 // Events
 export {

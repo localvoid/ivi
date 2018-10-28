@@ -7,10 +7,12 @@ import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { SyncableValue } from "./syncable_value";
 import { VNodeFlags } from "./flags";
 import { VNode, getDOMNode } from "./vnode";
-import {
-  StatefulComponentDescriptor, StatelessComponentDescriptor, ConnectedDescriptor, ComponentHandle, ComponentDescriptor,
-  ConnectorState,
-} from "./component";
+import { ComponentDescriptor, ComponentHandle } from "./component";
+
+let _currentContext: {} | null = null;
+export function currentContext(): {} | null {
+  return _currentContext;
+}
 
 /**
  * Removes VNode.
@@ -43,7 +45,7 @@ function _detach(vnode: VNode): void {
       child = child._r;
     }
 
-    if ((flags & VNodeFlags.StatefulComponent) !== 0) {
+    if ((flags & VNodeFlags.Component) !== 0) {
       const hookList = (vnode._i as ComponentHandle).detached;
       if (hookList !== null) {
         if (typeof hookList === "function") {
@@ -73,7 +75,7 @@ function _detach(vnode: VNode): void {
 export function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
   const flags = vnode._f;
   let child: VNode | null | undefined;
-  let instance: Node | ComponentHandle | {} | undefined;
+  let instance: Node | ComponentHandle | undefined;
 
   if ((flags & (
     VNodeFlags.StopDirtyChecking | // StopDirtyChecking will convert this value to -value
@@ -90,42 +92,29 @@ export function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContex
       }
     } else {
       if ((flags & VNodeFlags.Component) !== 0) {
-        let dirty = false;
-        const descriptor = vnode._t as ComponentDescriptor;
-        instance = vnode._i as ComponentHandle | {};
-        let props = vnode._p;
-        if ((flags & VNodeFlags.Connect) !== 0) {
-          const prevSelectState = vnode._s as ConnectorState;
-          const nextSelectState = (descriptor as ConnectedDescriptor).select(prevSelectState, props, context);
-          if (prevSelectState !== nextSelectState) {
-            dirty = true;
-            vnode._s = props = nextSelectState;
+        instance = vnode._i as ComponentHandle;
+        const selectors = instance.select;
+        if (selectors !== null) {
+          if (typeof selectors === "function") {
+            selectors(context);
+          } else {
+            for (let i = 0; i < selectors.length; i++) {
+              selectors[i](context);
+            }
           }
         }
-        if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-          if (dirty || (instance as ComponentHandle).dirty) {
-            _sync(
-              parent,
-              child!,
-              vnode._c = DEBUG ?
-                shouldBeSingleVNode((instance as ComponentHandle).render!(props)) :
-                /* istanbul ignore next */(instance as ComponentHandle).render!(props),
-              context,
-              dirtyContext,
-            );
-            (instance as ComponentHandle).dirty = false;
-            return;
-          }
-        } else if (dirty) {
+        if (instance.dirty === true) {
+          _currentContext = context;
           _sync(
             parent,
             child!,
             vnode._c = DEBUG ?
-              shouldBeSingleVNode((descriptor as StatelessComponentDescriptor).render(props)) :
-            /* istanbul ignore next */(descriptor as StatelessComponentDescriptor).render(props),
+              shouldBeSingleVNode((instance as ComponentHandle).render!(vnode._p)) :
+              /* istanbul ignore next */(instance as ComponentHandle).render!(vnode._p),
             context,
             dirtyContext,
           );
+          (instance as ComponentHandle).dirty = false;
           return;
         }
       } else { // (flags & VNodeFlags.UpdateContext)
@@ -174,7 +163,7 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
   }
 
   const flags = vnode._f;
-  let props = vnode._p;
+  const props = vnode._p;
   let instance: Node | ComponentHandle | null = null;
   let node: Node;
 
@@ -240,21 +229,13 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
     } else { // ((flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0)
       let root;
       if ((flags & VNodeFlags.Component) !== 0) {
-        if ((flags & VNodeFlags.Connect) !== 0) {
-          vnode._s = props = (tag as ConnectedDescriptor).select(null, props, context);
-        }
-        if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-          instance = { dirty: false, render: null, detached: null };
-          const render = (tag as StatefulComponentDescriptor).render(instance);
-          instance.render = render;
-          root = DEBUG ?
-            shouldBeSingleVNode(render(props)) :
+        instance = { dirty: false, render: null, select: null, detached: null };
+        _currentContext = context;
+        const render = (tag as ComponentDescriptor).c(instance);
+        instance.render = render;
+        root = DEBUG ?
+          shouldBeSingleVNode(render(props)) :
             /* istanbul ignore next */render(props);
-        } else {
-          root = DEBUG ?
-            shouldBeSingleVNode((tag as StatelessComponentDescriptor).render(props)) :
-            /* istanbul ignore next */(tag as StatelessComponentDescriptor).render(props);
-        }
       } else {
         context = instance = { ...context, ...props };
         root = vnode._c;
@@ -332,18 +313,11 @@ export function _sync(
   const bFlags = b._f;
   if (
     (((aFlags ^ bFlags) & VNodeFlags.Syncable) === 0) &&
-    (
-      (aFlags & (
-        VNodeFlags.ElementFactory |
-        VNodeFlags.Component |
-        VNodeFlags.Connect
-      )) === 0 ||
-      a._t === b._t
-    ) &&
-    a._k === b._k
+    ((aFlags & (VNodeFlags.ElementFactory | VNodeFlags.Component)) === 0 || a._t === b._t) &&
+    (a._k === b._k)
   ) {
-    let aProps = a._p;
-    let bProps = b._p;
+    const aProps = a._p;
+    const bProps = b._p;
     b._i = instance = a._i;
 
     if ((bFlags & VNodeFlags.Text) !== 0) {
@@ -407,45 +381,30 @@ export function _sync(
       } else { // (VNodeFlags.Component | VNodeFlags.UpdateContext | VNodeFlags.Connect)
         if ((bFlags & VNodeFlags.Component) !== 0) {
           const descriptor = b._t as ComponentDescriptor;
-          if ((bFlags & VNodeFlags.Connect) !== 0) {
-            aProps = a._s;
-            b._s = bProps = (descriptor as ConnectedDescriptor).select(aProps, bProps, context);
-          }
+          instance = instance as ComponentHandle;
 
-          const dirty = (
-            (aProps !== bProps) &&
-            (descriptor.shouldUpdate === null || descriptor.shouldUpdate(aProps, bProps) === true)
-          ) ? true : false;
-
-          if ((bFlags & VNodeFlags.StatefulComponent) !== 0) {
-            if (dirty || (instance as ComponentHandle).dirty) {
-              _sync(
-                parent,
-                aChild as VNode,
-                b._c = DEBUG ?
-                  shouldBeSingleVNode((instance as ComponentHandle).render!(bProps)) :
-                  /* istanbul ignore next */(instance as ComponentHandle).render!(bProps),
-                context,
-                dirtyContext,
-              );
-              (instance as ComponentHandle).dirty = false;
-              return;
-            }
-          } else { // ((bFlags & VNodeFlags.StatefulComponent) === 0)
-            if (dirty) {
-              _sync(
-                parent,
-                aChild as VNode,
-                b._c = DEBUG ?
-                  shouldBeSingleVNode((descriptor as StatelessComponentDescriptor).render(bProps)) :
-                  /* istanbul ignore next */(descriptor as StatelessComponentDescriptor).render(bProps),
-                context,
-                dirtyContext,
-              );
-              return;
-            }
+          if (
+            (instance.dirty === true) ||
+            (
+              (aProps !== bProps) &&
+              (descriptor.shouldUpdate === null || descriptor.shouldUpdate(aProps, bProps) === true)
+            )
+          ) {
+            _currentContext = context;
+            _sync(
+              parent,
+              aChild as VNode,
+              b._c = DEBUG ?
+                shouldBeSingleVNode(instance.render!(bProps)) :
+                /* istanbul ignore next */instance.render!(bProps),
+              context,
+              dirtyContext,
+            );
+            (instance as ComponentHandle).dirty = false;
+          } else {
+            b._c = aChild as VNode;
+            _dirtyCheck(parent, b, context, dirtyContext);
           }
-          _dirtyCheck(parent, b._c = aChild as VNode, context, dirtyContext);
         } else { // ((bFlags & VNodeFlags.UpdateContext) !== 0)
           if (aProps !== bProps) {
             dirtyContext = true;

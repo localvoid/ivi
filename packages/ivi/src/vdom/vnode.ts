@@ -5,7 +5,7 @@ import { isVoidElement } from "../debug/dom";
 import { checkVNodeConstructor, checkUniqueKeys } from "../debug/vnode";
 import { EventHandler } from "../events/event_handler";
 import { VNodeFlags } from "./flags";
-import { ComponentDescriptor, ComponentHandle, ConnectorState } from "./component";
+import { ComponentDescriptor, ComponentHandle } from "./component";
 
 /**
  * Virtual DOM Node.
@@ -55,9 +55,9 @@ export class VNode<P = any, N = Node> {
    */
   _i: N | ComponentHandle<P> | {} | null;
   /**
-   * Connector State / Style.
+   * Style.
    */
-  _s: ConnectorState | CSSStyleProps | undefined;
+  _s: CSSStyleProps | undefined;
   /**
    * Class name.
    */
@@ -78,7 +78,7 @@ export class VNode<P = any, N = Node> {
     tag: string | VNode | ComponentDescriptor<any> | null,
     props: P | undefined,
     className: string | undefined,
-    state: ConnectorState | CSSStyleProps | undefined,
+    style: CSSStyleProps | undefined,
   ) {
     this._f = flags;
     this._l = this;
@@ -88,7 +88,7 @@ export class VNode<P = any, N = Node> {
     this._k = 0;
     this._p = props;
     this._i = null;
-    this._s = state;
+    this._s = style;
     this._cs = className;
     this._e = null;
     /* istanbul ignore else */
@@ -258,11 +258,7 @@ export function t(content: string | number): VNode<string | number, Text> {
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
 export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
-  if ((vnode._f & (
-    VNodeFlags.Component |
-    VNodeFlags.Connect |
-    VNodeFlags.UpdateContext
-  )) !== 0) {
+  if ((vnode._f & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
     return getDOMNode<T>(vnode._c as VNode<any, T>);
   }
   return vnode._i as T;
@@ -277,11 +273,7 @@ export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
 export function getComponent<T extends ComponentHandle<any>>(vnode: VNode): T | null {
   /* istanbul ignore else */
   if (DEBUG) {
-    if ((vnode._f & (
-      VNodeFlags.Component |
-      VNodeFlags.Connect |
-      VNodeFlags.UpdateContext
-    )) === 0) {
+    if ((vnode._f & (VNodeFlags.Component | VNodeFlags.UpdateContext)) === 0) {
       throw new Error("Failed to get component instance: VNode should represent a Component.");
     }
   }

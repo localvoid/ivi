@@ -12,30 +12,6 @@ describe(`render components`, () => {
     utils = await import("./utils");
   });
 
-  test(`<Stateless><div></div></Stateless>`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateless(
-        html.div(),
-      );
-      const n = r(v);
-
-      expect(n.tagName.toLowerCase()).toBe("div");
-    });
-  });
-
-  test(`<Stateless><Stateless><div></div></Stateless></Stateless>`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateless(
-        utils.Stateless(
-          html.div(),
-        ),
-      );
-      const n = r(v);
-
-      expect(n.tagName.toLowerCase()).toBe("div");
-    });
-  });
-
   test(`<Stateful><div></div></Stateful>`, () => {
     utils.startRender<HTMLElement>(r => {
       const v = utils.Stateful(
@@ -57,44 +33,6 @@ describe(`render components`, () => {
       const n = r(v);
 
       expect(n.tagName.toLowerCase()).toBe("div");
-    });
-  });
-
-  test(`<Stateless><Stateful><div></div></Stateful></Stateless>`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateless(
-        utils.Stateful(
-          html.div(),
-        ),
-      );
-      const n = r(v);
-
-      expect(n.tagName.toLowerCase()).toBe("div");
-    });
-  });
-
-  test(`<Stateful><Stateless><div></div></Stateless></Stateful>`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateful(
-        utils.Stateless(
-          html.div(),
-        ),
-      );
-      const n = r(v);
-
-      expect(n.tagName.toLowerCase()).toBe("div");
-    });
-  });
-
-  test(`stateless component should raise an exception when render function returns children collection`, () => {
-    utils.startRender<HTMLElement>(r => {
-      const v = utils.Stateless(
-        ivi.fragment(
-          html.div(),
-          html.div(),
-        )!,
-      );
-      expect(() => { r(v); }).toThrowError("singular");
     });
   });
 

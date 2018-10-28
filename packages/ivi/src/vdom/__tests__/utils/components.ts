@@ -1,5 +1,4 @@
-import { VNode, component, statefulComponent, withShouldUpdate } from "ivi";
+import { VNode, component, withShouldUpdate } from "ivi";
 
-export const Stateless = component<VNode>(child => child);
-export const Stateful = statefulComponent<VNode>((h) => (child) => child);
-export const Static = component<VNode>(child => child, withShouldUpdate(() => false));
+export const Stateful = component<VNode>(() => (child) => child);
+export const Static = component<VNode>(() => (child) => child, withShouldUpdate(() => false));

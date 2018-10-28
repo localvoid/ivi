@@ -1,4 +1,4 @@
-import { VNode, VNodeFlags, SyncableValue } from "ivi";
+import { VNode, VNodeFlags, SyncableValue, ComponentDescriptor } from "ivi";
 
 export interface SnapshotOptions {
   readonly ignoreEvents?: boolean;
@@ -221,7 +221,7 @@ function _toSnapshot(
   } else {
     if ((flags & VNodeFlags.Component) !== 0) {
       if ((sFlags & SnapshotFlags.IgnoreComponent) === 0) {
-        const componentName = ((flags & VNodeFlags.StatefulComponent) !== 0);
+        const componentName = (vnode._t as ComponentDescriptor).c;
 
         result += (vnode._c === null) ?
           `${indent(il)}<${componentName} />` :

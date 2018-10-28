@@ -1,6 +1,6 @@
 import {
   CSSStyleProps, shallowEqual, Predicate,
-  VNode, VNodeFlags, EventDispatcher, StatelessComponentDescriptor, StatefulComponentDescriptor, ConnectedDescriptor,
+  VNode, VNodeFlags, EventDispatcher, ComponentDescriptor,
 } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
@@ -86,19 +86,9 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
       }
     } else {
       if ((flags & VNodeFlags.Component) !== 0) {
-        let props = vnode._p;
-        if ((flags & VNodeFlags.Connect) !== 0) {
-          const connect = vnode._t as ConnectedDescriptor;
-          vnode._s = props = connect.select(null, props, context);
-        }
-        if ((flags & VNodeFlags.StatefulComponent) !== 0) {
-          const component = vnode._i = { dirty: false, render: null, detached: null };
-          const render = (vnode._t as StatefulComponentDescriptor).render(component);
-          vnode._c = render(props);
-        } else {
-          const component = vnode._t as StatelessComponentDescriptor<any>;
-          vnode._c = component.render(props);
-        }
+        const component = vnode._i = { dirty: false, render: null, select: null, detached: null };
+        const render = (vnode._t as ComponentDescriptor).c(component);
+        vnode._c = render(vnode._p);
       } else { // UpdateContext
         vnode._i = context = { ...context, ...vnode._p };
       }
@@ -183,20 +173,8 @@ export class VNodeWrapper {
     return (this.vnode._f & VNodeFlags.Component) !== 0;
   }
 
-  isStatefulComponent(): boolean {
-    return (this.vnode._f & VNodeFlags.StatefulComponent) !== 0;
-  }
-
-  isStatelessComponent(): boolean {
-    return (this.vnode._f & VNodeFlags.StatefulComponent) === 0;
-  }
-
   isContext(): boolean {
     return (this.vnode._f & VNodeFlags.UpdateContext) !== 0;
-  }
-
-  isConnect(): boolean {
-    return (this.vnode._f & VNodeFlags.Connect) !== 0;
   }
 
   getTagName(): string {

@@ -1,16 +1,16 @@
-import { t, component, connect, context } from "ivi";
+import { t, component, useSelect, context } from "ivi";
 import { startRender, Static } from "./utils";
 
-const ContextTestPrinterConnector = connect<{ value: string }, undefined, { value: string }>(
-  (prev, props, ctx) => ({ value: ctx.value }),
-  component<{ value: string }>(({ value }) => t(value)),
-);
+const ContextTestPrinter = component((h) => {
+  const selector = useSelect<string, undefined, { value: string }>(h, (prev, props, ctx) => ctx.value);
+  return () => t(selector());
+});
 
 test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {
   startRender(r => {
     const v = (
       context({ value: 10 },
-        ContextTestPrinterConnector(),
+        ContextTestPrinter(),
       )
     );
     const n = r(v);
@@ -23,12 +23,12 @@ test(`Sync context value`, () => {
   startRender(r => {
     const v1 = (
       context({ value: 10 },
-        ContextTestPrinterConnector(),
+        ContextTestPrinter(),
       )
     );
     const v2 = (
       context({ value: 20 },
-        ContextTestPrinterConnector(),
+        ContextTestPrinter(),
       )
     );
     r(v1);
@@ -43,14 +43,14 @@ test(`Sync context value inside component with shouldUpdate=false`, () => {
     const v1 = (
       context({ value: 10 },
         Static(
-          ContextTestPrinterConnector(),
+          ContextTestPrinter(),
         ),
       )
     );
     const v2 = (
       context({ value: 20 },
         Static(
-          ContextTestPrinterConnector(),
+          ContextTestPrinter(),
         ),
       )
     );
