@@ -12,9 +12,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 ## Features
 
 - Declarative rendering with ["Virtual DOM"](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
-- [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md) (stateless functions and stateful ES2015 classes)
-- [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md) for sideways data loading
-- Implicit data propagation with [contexts](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md)
+- [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md)
 - Extensible [synthetic event subsystem](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
 - DOM events on Component nodes
 - Synchronous and deterministic syncing algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
@@ -178,7 +176,6 @@ render(
 - [Virtual DOM](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
 - [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md)
 - [Synthetic Events](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
-- [Connectors](https://github.com/localvoid/ivi/blob/master/documentation/general/connect.md)
 
 ### Advanced
 

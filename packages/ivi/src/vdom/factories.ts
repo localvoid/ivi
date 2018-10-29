@@ -1,26 +1,6 @@
 import { CSSStyleProps } from "../dom/style";
-import { VNodeFlags } from "./flags";
-import { ComponentDescriptor, ComponentHandle } from "./component";
-import { VNode } from "./vnode";
-
-/**
- * withShouldUpdate creates a function that assigns a `shouldUpdate` options to a `ComponentDescriptor`.
- *
- * @example
- *
- *     const A = component<{ text: string }>(
- *       () => ({ text }) => div().c(text),
- *       withShouldUpdate((prev, next) => prev.text !== next.text),
- *     );
- *
- * @param shouldUpdate - Function that performs an early check that prevent unnecessary updates
- * @returns function that assigns a `shouldUpdate` option
- */
-export function withShouldUpdate<P>(
-  shouldUpdate: (oldProps: P, newProps: P) => boolean,
-): (d: ComponentDescriptor<P>) => ComponentDescriptor<P> {
-  return (d) => (d.shouldUpdate = shouldUpdate, d);
-}
+import { ComponentDescriptor, Component } from "./component";
+import { VNodeFlags, VNode } from "./vnode";
 
 /**
  * `element()` creates a virtual DOM node factory that produces elements with predefined attributes and styles.
@@ -50,9 +30,11 @@ export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: 
  * @example
  *
  *     const A = component<string>(() => {
- *       const click = onClick((ev) => console.log(text));
+ *       let _text;
+ *       const click = onClick((ev) => console.log(_text));
  *
  *       return (text) => (
+ *         _text = text,
  *         button()
  *           .e(click(text))
  *           .t("Click Me")
@@ -64,8 +46,8 @@ export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: 
  * @returns factory that produces component nodes
  */
 export function component(
-  c: (h: ComponentHandle<undefined>) => () => VNode,
-  ...options: Array<(d: ComponentDescriptor<undefined>) => ComponentDescriptor<undefined>>
+  c: (c: Component<undefined>) => () => VNode,
+  ...options: Array<(d: ComponentDescriptor<undefined>) => void>
 ): () => VNode<undefined>;
 
 /**
@@ -74,9 +56,11 @@ export function component(
  * @example
  *
  *     const A = component<string>(() => {
- *       const click = onClick((ev) => console.log(text));
+ *       let _text;
+ *       const click = onClick((ev) => console.log(_text));
  *
  *       return (text) => (
+ *         _text = text,
  *         button()
  *           .e(click(text))
  *           .t("Click Me")
@@ -88,8 +72,8 @@ export function component(
  * @returns factory that produces component nodes
  */
 export function component<P>(
-  c: (h: ComponentHandle<P>) => (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
+  c: (c: Component<P>) => (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => void>
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
@@ -98,9 +82,11 @@ export function component<P>(
  * @example
  *
  *     const A = component<string>(() => {
- *       const click = onClick((ev) => console.log(text));
+ *       let _text;
+ *       const click = onClick((ev) => console.log(_text));
  *
  *       return (text) => (
+ *         _text = text,
  *         button()
  *           .e(click(text))
  *           .t("Click Me")
@@ -112,10 +98,10 @@ export function component<P>(
  * @returns factory that produces component nodes
  */
 export function component<P>(
-  c: (h: ComponentHandle<P>) => (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => ComponentDescriptor<P>>
+  c: (c: Component<P>) => (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => void>
 ): (props: P) => VNode<P> {
-  const d = { c, shouldUpdate: null };
+  const d: ComponentDescriptor<P> = { c, shouldUpdate: null };
   for (let i = 0; i < options.length; i++) {
     options[i](d);
   }
@@ -128,6 +114,81 @@ export function component<P>(
     return n;
   };
   return f;
+}
+
+/**
+ * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
+ *
+ * @example
+ *
+ *     const A = statelessComponent<string>(() => {
+ *       return (text) => div().t(text);
+ *     });
+ *
+ * @param update - Update function.
+ * @param options - Component options.
+ * @returns factory that produces stateless component nodes
+ */
+export function statelessComponent(
+  update: () => VNode,
+  ...options: Array<(d: ComponentDescriptor<undefined>) => void>
+): () => VNode<undefined>;
+
+/**
+ * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
+ *
+ * @example
+ *
+ *     const A = statelessComponent<string>(() => {
+ *       return (text) => div().t(text);
+ *     });
+ *
+ * @param update - Update function.
+ * @param options - Component options.
+ * @returns factory that produces stateless component nodes
+ */
+export function statelessComponent<P>(
+  update: (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => void>
+): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
+
+/**
+ * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
+ *
+ * @example
+ *
+ *     const A = statelessComponent<string>(() => {
+ *       return (text) => div().t(text);
+ *     });
+ *
+ * @param update - Update function.
+ * @param options - Component options.
+ * @returns factory that produces stateless component nodes
+ */
+export function statelessComponent<P>(
+  update: (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => void>
+): (props: P) => VNode<P> {
+  return component(() => update, ...options);
+}
+
+/**
+ * withShouldUpdate creates a function that assigns a `shouldUpdate` options to a `ComponentDescriptor`.
+ *
+ * @example
+ *
+ *     const A = component<{ text: string }>(
+ *       () => ({ text }) => div().c(text),
+ *       withShouldUpdate((prev, next) => prev.text !== next.text),
+ *     );
+ *
+ * @param shouldUpdate - Function that performs an early check that prevent unnecessary updates
+ * @returns function that assigns a `shouldUpdate` option
+ */
+export function withShouldUpdate<P>(
+  shouldUpdate: (oldProps: P, newProps: P) => boolean,
+): (d: ComponentDescriptor<P>) => void {
+  return (d) => { d.shouldUpdate = shouldUpdate; };
 }
 
 /**

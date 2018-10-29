@@ -11,4 +11,4 @@ export const enum InvalidateFlags {
 /**
  * Invalidate function.
  */
-export type InvalidateFunction = (flags?: InvalidateFlags) => void;
+export type UpdateFunction = (flags?: InvalidateFlags) => void;

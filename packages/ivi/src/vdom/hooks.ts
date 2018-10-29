@@ -1,5 +1,5 @@
-import { ComponentHandle, DetachedHook } from "./component";
-import { currentContext } from "./sync";
+import { Component } from "./component";
+import { getContext } from "./context";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -23,12 +23,12 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  *       return (id) => div().t(selector(id));
  *     });
  *
- * @param h - ComponentHandle.
+ * @param c - ComponentHandle.
  * @param selector - Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T>(
-  h: ComponentHandle,
+  c: Component,
   selector: (prev: T | undefined) => T,
 ): () => T;
 
@@ -43,12 +43,12 @@ export function useSelect<T>(
  *       return (id) => div().t(selector(id));
  *     });
  *
- * @param h - ComponentHandle.
+ * @param c - ComponentHandle.
  * @param selector - Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T, P>(
-  h: ComponentHandle,
+  c: Component,
   selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | null, props: P) => T,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -63,12 +63,12 @@ export function useSelect<T, P>(
  *       return (id) => div().t(selector(id));
  *     });
  *
- * @param h - ComponentHandle.
+ * @param c - ComponentHandle.
  * @param selector - Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T, P, C>(
-  h: ComponentHandle,
+  c: Component,
   selector: (prev: T | undefined, props: P, context: C) => T,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -83,31 +83,37 @@ export function useSelect<T, P, C>(
  *       return (id) => div().t(selector(id));
  *     });
  *
- * @param h - ComponentHandle.
+ * @param c - ComponentHandle.
  * @param selector - Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T, P, C extends {}>(
-  h: ComponentHandle,
+  c: Component,
   selector: (prev: T | undefined, props: P, context: C) => T,
 ): (props: P) => T {
-  let prev: T | undefined;
-  let props: P;
+  const prevSelector = c.select;
+  let prevState: T | undefined;
+  let prevProps: P;
 
-  return (p: P) => {
-    props = p;
-    if (prev === void 0) {
-      h.select = addHook(h.select, (context: {}) => {
-        const next = selector(prev, props, context as C);
-        if (prev !== next) {
-          h.dirty = true;
-        }
-        prev = next;
-      });
-
-      return prev = selector(void 0, p, currentContext() as C);
+  c.select = (context: {}) => {
+    if (prevSelector !== null) {
+      prevSelector(context);
     }
-    return prev;
+    if (prevState !== void 0) {
+      const nextState = selector(prevState, prevProps, context as C);
+      if (prevState !== nextState) {
+        c.dirty = true;
+      }
+      prevState = nextState;
+    }
+  };
+
+  return (nextProps: P) => {
+    prevProps = nextProps;
+    if (prevState === void 0) {
+      return prevState = selector(void 0, nextProps, getContext() as C);
+    }
+    return prevState;
   };
 }
 
@@ -124,9 +130,9 @@ export function useSelect<T, P, C extends {}>(
  *       return () => div();
  *     });
  *
- * @param h - ComponentHandle.
+ * @param c - ComponentHandle.
  * @param hook - Detached hook.
  */
-export function useDetached(h: ComponentHandle, hook: DetachedHook): void {
-  h.detached = addHook(h.detached, hook);
+export function useDetached(c: Component, hook: () => void): void {
+  c.detached = addHook(c.detached, hook);
 }

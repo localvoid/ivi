@@ -1,220 +1,98 @@
 # Components
 
-## Stateless Component
-
 ```ts
-const A = statelessComponent((props: string) => (
-  div().c(`Hello ${props}`)
-));
+function component(
+  c: (c: Component<undefined>) => () => VNode,
+  ...options: Array<(d: ComponentDescriptor<undefined>) => void>
+): () => VNode<undefined>;
 
-render(
-  A("World!"),
-  DOMContainer,
-);
+function component<P>(
+  c: (c: Component<P>) => (props: P) => VNode,
+  ...options: Array<(d: ComponentDescriptor<P>) => void>
+): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 ```
 
-### `shouldUpdate` hint
-
-`shouldUpdate` hint is used as an early hint that can prevent unnecessary updates.
+`component()` function creates a factory function that will instantiate virtual DOM nodes for the component.
 
 ```ts
-const A = withShouldUpdate<{ title: string }>(
-  (prev, next) => prev.title !== next.title,
-  statelessComponent((props) => (
-    div().c(`Hello ${props}`)
-  )),
-);
+import { component, invalidate, effect, render } from "ivi";
 
-render(
-  A({ title: "World!" }),
-  DOMContainer,
-);
-```
+const Counter = component<number>((c) => {
+  let i = 0;
+  const timer = effect<number>(c, (delay) => {
+    const tid = setInterval(() => {
+      i++;
+      invalidate(c);
+    }, delay);
+    return () => { clearInterval(tid); };
+  });
 
-`withShouldUpdate()` creates a virtual DOM node factory that produces nodes for stateless components with custom
-`shouldUpdate` function to prevent unnecessary updates.
+  (delay) => (
+    timer(delay),
 
-## Stateful Component
-
-Stateful components are implemented with ES6 classes and should be extended from the base component class
-`Component<P>`. Base class has a parametric type `P` that specifies props type.
-
-```ts
-const A = statefulComponent(class extends Component<string> {
-  render() {
-    return div().c(`Hello ${this.props}`);
-  }
+    div().t(i),
+  );
 });
+```
 
-render(
-  A("World!"),
-  DOMContainer,
+### Options
+
+`withShouldUpdate()` is used as a hint that can prevent unnecessary updates.
+
+```ts
+const A = component(
+  () => ({ title }) => div().t(`Hello ${title}`),
+  withShouldUpdate((prev, next) => prev.title !== next.title,
 );
 ```
 
-### Constructor
+## API
 
 ```ts
-class A extends Component<string> {
-  private internalState: string;
-
-  constructor(props: string) {
-    super(props);
-    this.internalState = this.props;
-  }
-
-  render() {
-    return div().c(`Hello ${this.internalState}`);
-  }
-}
+function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void;
 ```
 
-### Properties
+`invalidate()` marks component as dirty and triggers an update.
+
+### Hooks
 
 ```ts
-interface Component<P = undefined> {
-  props: P;
-}
+function useDetached(c: Component, hook: () => void): void;
 ```
 
-### Methods
-
-#### `invalidate()`
+`useDetached()` creates a hook that will be invoked when component is detached from the document.
 
 ```ts
-interface Component {
-  invalidate(): void;
-}
+function useSelect<T>(
+  c: Component,
+  selector: (prev: T | undefined) => T,
+): () => T;
+function useSelect<T, P>(
+  c: Component,
+  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | null, props: P) => T,
+): undefined extends P ? () => T : (props: P) => T;
+function useSelect<T, P, C>(
+  c: Component,
+  selector: (prev: T | undefined, props: P, context: C) => T,
+): undefined extends P ? () => T : (props: P) => T;
 ```
 
-`invalidate()` method invalidates view. This method should be invoked when internal state changes should trigger a
-modification of the current view.
+`useSelect()` creates a selector hook.
+
+Selectors are used for sideways data loading.
+
+Essentially it is a some form of dirty checking. Each time ivi performs a dirty checking, all selectors will pull data
+from external sources.
+
+To improve performance, selectors should use memoization and reuse previous values.
 
 ```ts
-class Counter extends Component {
-  private counter = 0;
+const Pixel = component<number>((c) => {
+  const getColor = useSelect<string, number, { colors: string[] }>(
+    c,
+    (prev, i, { colors }) => colors[i],
+  );
 
-  attached() {
-    setInterval(() => {
-      this.counter++;
-      this.invalidate();
-    }, 1000);
-  }
-
-  render() {
-    return div().c(`Counter: ${this.counter}`);
-  }
-}
+  return (i) => span("pixel", _, { "background": getColor(i) });
+});
 ```
-
-### Lifecycle methods
-
-#### `render()`
-
-```ts
-interface Component {
-  render(): VNode<any>;
-}
-```
-
-`render()` method is used to produce a component representation with a virtual DOM.
-
-```ts
-class A extends Component<string> {
-  render() {
-    return div().c(`Hello ${this.props}`);
-  }
-}
-```
-
-#### `shouldUpdate(prev, next)`
-
-```ts
-interface Component {
-  shouldUpdate(prev: P, next: P): boolean;
-}
-```
-
-Lifecycle method `shouldUpdate` is used as a hint to reduce unnecessary updates.
-
-```ts
-interface Props {
-  title: string;
-}
-
-class A extends Component<Props> {
-  shouldUpdate(prev: Props, next: Props) {
-    return prev.title !== next.title;
-  }
-
-  render() {
-    return div().c(`Hello ${this.props.title}`);
-  }
-}
-```
-
-#### `propsChanged(prev, next)`
-
-```ts
-interface Component {
-  propsChanged(prev: P, next: P): void;
-}
-```
-
-`propsChanged()` method is invoked when component props are changed.
-
-```ts
-class A extends Component<string> {
-  private internalState = this.props + "!!";
-
-  propsChanged(prev: string, next: string) {
-    this.internalState = next + "!!";
-  }
-
-  render() {
-    return div().c(`Hello ${this.internalState}`);
-  }
-}
-```
-
-#### `attached()`
-
-```ts
-interface Component {
-  attached(): void;
-}
-```
-
-`attached()` method is invoked when component is attached to the document. Attached methods are invoked in top to
-bottom order.
-
-#### `detached()`
-
-```ts
-interface Component {
-  detached(): void;
-}
-```
-
-`detached()` method is invoked when component is detached from the document. Detached methods are invoked in bottom to
-top order.
-
-#### `updated()`
-
-```ts
-interface Component {
-  updated(): void;
-}
-```
-
-`updated()` invoked every time component is updated.
-
-#### `invalidated()`
-
-```ts
-interface Component {
-  invalidated(): void;
-}
-```
-
-`invalidated()` method is invoked when component is invalidated.

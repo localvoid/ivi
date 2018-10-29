@@ -1,12 +1,25 @@
 import { VNode } from "./vnode";
 
-export type DetachedHook = () => void;
-
-export interface ComponentHandle<P = any> {
+/**
+ * Component instance.
+ */
+export interface Component<P = any> {
+  /**
+   * dirty flag indicates that component should be updated.
+   */
   dirty: boolean;
-  render: null | ((props: P) => VNode);
-  select: null | ((context: {}) => void) | ((context: {}) => void)[];
-  detached: null | DetachedHook | DetachedHook[];
+  /**
+   * Update function.
+   */
+  update: null | ((props: P) => VNode);
+  /**
+   * Selector hooks.
+   */
+  select: null | ((context: {}) => void);
+  /**
+   * Detached hooks.
+   */
+  detached: null | (() => void) | (() => void)[];
 }
 
 /**
@@ -16,10 +29,10 @@ export interface ComponentDescriptor<P = any> {
   /**
    * Lifecycle hook `c()`.
    *
-   * @param h - Component handle.
-   * @returns render function
+   * @param c - Component instance.
+   * @returns update function
    */
-  c(h: ComponentHandle<P>): (props: P) => VNode;
+  c(c: Component<P>): (props: P) => VNode;
 
   /**
    * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.

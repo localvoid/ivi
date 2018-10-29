@@ -344,16 +344,16 @@ export function triggerNextFrame(time?: number): void {
 }
 
 /**
- * Invalidate handler function that triggers dirty check on the next frame.
+ * Update handler function that triggers dirty check on the next frame.
  *
  * @example
  *
  *   import { setupScheduler } from "ivi";
- *   import { invalidateHandler } from "ivi-scheduler";
+ *   import { updateHandler } from "ivi-scheduler";
  *
- *   setupScheduler(invalidateHandler);
+ *   setupScheduler(updateHandler);
  */
-export function invalidateHandler(flags?: InvalidateFlags) {
+export function updateHandler(flags?: InvalidateFlags) {
   if (_flags & SchedulerFlags.CurrentFrameRunning) {
     _currentFrame.f |= FrameTasksGroupFlags.DirtyCheck;
   } else {

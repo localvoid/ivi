@@ -6,9 +6,9 @@
 
 ```ts
 import { setupScheduler } from "ivi";
-import { invalidateHandler } from "ivi-scheduler";
+import { updateHandler } from "ivi-scheduler";
 
-setupScheduler(invalidateHandler);
+setupScheduler(updateHandler);
 ```
 
 By default, `ivi` is using a simple invalidate handler that synchronously performs dirty checking when `invalidate()`

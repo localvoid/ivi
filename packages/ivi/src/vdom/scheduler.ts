@@ -3,21 +3,16 @@ import { NOOP } from "../core/noop";
 import { unorderedArrayDelete } from "../core/array";
 import { catchError } from "../core/error";
 import { checkNestingViolations } from "../debug/html_nesting_rules";
-import { InvalidateFlags, InvalidateFunction } from "./invalidate";
+import { InvalidateFlags, UpdateFunction } from "./invalidate";
 import { VNode } from "./vnode";
 import { _render, _sync, _remove, _dirtyCheck } from "./sync";
 import { ROOTS, findRoot } from "./root";
-import { ComponentHandle } from "./component";
+import { Component } from "./component";
 
 /**
- * Invalidate function.
+ * Update function.
  */
-let _update: InvalidateFunction;
-
-/**
- * Empty Context object.
- */
-const EMPTY_CONTEXT = {};
+let _update: UpdateFunction;
 
 /**
  * Dirty flags:
@@ -56,7 +51,7 @@ export const updateHandler = catchError(() => {
  *
  * @param updateFn - Update handler
  */
-export function setupScheduler(updateFn: InvalidateFunction): void {
+export function setupScheduler(updateFn: UpdateFunction): void {
   _update = updateFn;
 }
 
@@ -75,22 +70,33 @@ export function update(flags?: InvalidateFlags): void {
 
 /**
  * Invalidate component.
+ *
+ * @param c - Component instance
+ * @param flags - See {@link InvalidateFlags} for details.
  */
-export function invalidate<P>(h: ComponentHandle<P>, flags?: InvalidateFlags): void {
+export function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void {
   /* istanbul ignore else */
   if (DEBUG) {
     if (_update === void 0) {
       throw new Error(`Scheduler hasn't been configured`);
     }
   }
-  h.dirty = true;
+  c.dirty = true;
   _update(flags);
 }
 
-const EFFECT_QUEUE = [] as Array<() => void>;
+/**
+ * Side effect queue.
+ */
+const _effects = [] as Array<() => void>;
 
+/**
+ * effect adds a function to the side effect queue. Side effect queue is flushed after dirty checking.
+ *
+ * @param fn - Function.
+ */
 export function effect(fn: () => void): void {
-  EFFECT_QUEUE.push(fn);
+  _effects.push(fn);
 }
 
 /**
@@ -104,9 +110,9 @@ export function dirtyCheck() {
 
     if (next) {
       if (current) {
-        _sync(container, current, next, EMPTY_CONTEXT, false);
+        _sync(container, current, next, false);
       } else {
-        _render(container, null, next, EMPTY_CONTEXT);
+        _render(container, null, next);
         /* istanbul ignore if */
         /**
          * Fix for the Mouse Event bubbling on iOS devices.
@@ -126,7 +132,7 @@ export function dirtyCheck() {
         unorderedArrayDelete(ROOTS, ROOTS.indexOf(root));
         --i;
       } else {
-        _dirtyCheck(container, current, EMPTY_CONTEXT, false);
+        _dirtyCheck(container, current, false);
       }
     }
 
@@ -138,12 +144,12 @@ export function dirtyCheck() {
     }
   }
 
-  const tasks = EFFECT_QUEUE;
+  const tasks = _effects;
   if (tasks.length > 0) {
     for (let i = 0; i < tasks.length; i++) {
       tasks[i]();
     }
-    EFFECT_QUEUE.length = 0;
+    _effects.length = 0;
   }
 }
 

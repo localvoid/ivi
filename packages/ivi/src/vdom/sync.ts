@@ -5,14 +5,9 @@ import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
 import { SyncableValue } from "./syncable_value";
-import { VNodeFlags } from "./flags";
-import { VNode, getDOMNode } from "./vnode";
-import { ComponentDescriptor, ComponentHandle } from "./component";
-
-let _currentContext: {} | null = null;
-export function currentContext(): {} | null {
-  return _currentContext;
-}
+import { VNodeFlags, VNode, getDOMNode } from "./vnode";
+import { ComponentDescriptor, Component } from "./component";
+import { setContext, getContext, restoreContext } from "./context";
 
 /**
  * Removes VNode.
@@ -46,7 +41,7 @@ function _detach(vnode: VNode): void {
     }
 
     if ((flags & VNodeFlags.Component) !== 0) {
-      const hookList = (vnode._i as ComponentHandle).detached;
+      const hookList = (vnode._i as Component).detached;
       if (hookList !== null) {
         if (typeof hookList === "function") {
           hookList();
@@ -72,58 +67,45 @@ function _detach(vnode: VNode): void {
  * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
-export function _dirtyCheck(parent: Node, vnode: VNode, context: {}, dirtyContext: boolean): void {
+export function _dirtyCheck(parent: Node, vnode: VNode, dirtyContext: boolean): void {
   const flags = vnode._f;
-  let child: VNode | null | undefined;
-  let instance: Node | ComponentHandle | undefined;
 
   if ((flags & (
     VNodeFlags.StopDirtyChecking | // StopDirtyChecking will convert this value to -value
-    VNodeFlags.Children |
-    VNodeFlags.Component |
-    VNodeFlags.UpdateContext
+    VNodeFlags.Children | VNodeFlags.Component | VNodeFlags.UpdateContext
   )) > 0) {
-    child = vnode._c as VNode | null;
+    const instance = vnode._i as Node | Component;
+    let child = vnode._c as VNode | null;
     if ((flags & VNodeFlags.Children) !== 0) {
-      instance = vnode._i as Node;
       while (child !== null) {
-        _dirtyCheck(instance as Node, child, context, dirtyContext);
+        _dirtyCheck(instance as Node, child, dirtyContext);
         child = child._r;
       }
-    } else {
-      if ((flags & VNodeFlags.Component) !== 0) {
-        instance = vnode._i as ComponentHandle;
-        const selectors = instance.select;
-        if (selectors !== null) {
-          if (typeof selectors === "function") {
-            selectors(context);
-          } else {
-            for (let i = 0; i < selectors.length; i++) {
-              selectors[i](context);
-            }
-          }
-        }
-        if (instance.dirty === true) {
-          _currentContext = context;
-          _sync(
-            parent,
-            child!,
-            vnode._c = DEBUG ?
-              shouldBeSingleVNode((instance as ComponentHandle).render!(vnode._p)) :
-              /* istanbul ignore next */(instance as ComponentHandle).render!(vnode._p),
-            context,
-            dirtyContext,
-          );
-          (instance as ComponentHandle).dirty = false;
-          return;
-        }
-      } else { // (flags & VNodeFlags.UpdateContext)
-        if (dirtyContext === true) {
-          vnode._i = { ...context, ...vnode._p };
-        }
-        context = vnode._i as {};
+    } else if ((flags & VNodeFlags.Component) !== 0) {
+      const selector = (instance as Component).select;
+      if (selector !== null) {
+        selector(getContext());
       }
-      _dirtyCheck(parent, child!, context, dirtyContext);
+      if ((instance as Component).dirty === true) {
+        _sync(
+          parent,
+          child!,
+          vnode._c = DEBUG ?
+            shouldBeSingleVNode((instance as Component).update!(vnode._p)) :
+              /* istanbul ignore next */(instance as Component).update!(vnode._p),
+          dirtyContext,
+        );
+        (instance as Component).dirty = false;
+      } else {
+        _dirtyCheck(parent, child!, dirtyContext);
+      }
+    } else { // (flags & VNodeFlags.UpdateContext)
+      if (dirtyContext === true) {
+        vnode._i = { ...getContext(), ...vnode._p };
+      }
+      const prevContext = setContext(vnode._i as {});
+      _dirtyCheck(parent, child!, dirtyContext);
+      restoreContext(prevContext);
     }
   }
 }
@@ -153,7 +135,7 @@ function _removeAllChildren(parent: Node, vnode: VNode | null): void {
  * @param context - Current context
  * @returns Rendered DOM Node
  */
-function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
+function _instantiate(parent: Node, vnode: VNode): Node {
   /* istanbul ignore else */
   if (DEBUG) {
     if (vnode._i !== null) {
@@ -164,7 +146,7 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
 
   const flags = vnode._f;
   const props = vnode._p;
-  let instance: Node | ComponentHandle | null = null;
+  let instance: Node | Component | null = null;
   let node: Node;
 
   if ((flags & VNodeFlags.Text) !== 0) {
@@ -182,7 +164,7 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
           document.createElement(tag as string);
       } else {
         if ((tag as VNode)._i === null) {
-          _instantiate(parent, (tag as VNode), context);
+          _instantiate(parent, (tag as VNode));
         }
         /* istanbul ignore else */
         if (DEBUG) {
@@ -220,28 +202,26 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
       if ((flags & VNodeFlags.Children) !== 0) {
         let child = vnode._c as VNode | null;
         while (child !== null) {
-          _render(node, null, child, context);
+          _render(node, null, child);
           child = child._r;
         }
       } else if ((flags & VNodeFlags.TextContent) !== 0 && vnode._c !== "") {
         node.textContent = vnode._c as string;
       }
-    } else { // ((flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0)
-      let root;
-      if ((flags & VNodeFlags.Component) !== 0) {
-        instance = { dirty: false, render: null, select: null, detached: null };
-        _currentContext = context;
-        const render = (tag as ComponentDescriptor).c(instance);
-        instance.render = render;
-        root = DEBUG ?
+    } else if ((flags & VNodeFlags.Component) !== 0) {
+      instance = { dirty: false, update: null, select: null, detached: null };
+      const render = (tag as ComponentDescriptor).c(instance);
+      instance.update = render;
+      node = _instantiate(
+        parent,
+        vnode._c = DEBUG ?
           shouldBeSingleVNode(render(props)) :
-            /* istanbul ignore next */render(props);
-      } else {
-        context = instance = { ...context, ...props };
-        root = vnode._c;
-      }
-      vnode._c = root;
-      node = _instantiate(parent, root as VNode, context);
+            /* istanbul ignore next */render(props),
+      );
+    } else {
+      const prevContext = setContext(instance = { ...getContext(), ...props });
+      node = _instantiate(parent, vnode._c as VNode);
+      restoreContext(prevContext);
     }
   }
 
@@ -260,20 +240,14 @@ function _instantiate(parent: Node, vnode: VNode, context: {}): Node {
  * @param parent - Parent DOM element
  * @param refChild - Reference to the next DOM node, when it is `null` child will be inserted at the end
  * @param vnode - Virtual DOM node
- * @param context - Current context
  * @returns Rendered DOM Node
  */
-export function _render(
-  parent: Node,
-  refChild: Node | null,
-  vnode: VNode,
-  context: {},
-): void {
+export function _render(parent: Node, refChild: Node | null, vnode: VNode): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    parent.insertBefore(_instantiate(parent, vnode, context), refChild);
+    parent.insertBefore(_instantiate(parent, vnode), refChild);
   } else {
-    nodeInsertBefore.call(parent, _instantiate(parent, vnode, context), refChild);
+    nodeInsertBefore.call(parent, _instantiate(parent, vnode), refChild);
   }
 }
 
@@ -289,15 +263,9 @@ export function _render(
  * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
-export function _sync(
-  parent: Node,
-  a: VNode,
-  b: VNode,
-  context: {},
-  dirtyContext: boolean,
-): void {
+export function _sync(parent: Node, a: VNode, b: VNode, dirtyContext: boolean): void {
   if (a === b) {
-    _dirtyCheck(parent, b, context, dirtyContext);
+    _dirtyCheck(parent, b, dirtyContext);
     return;
   }
 
@@ -361,13 +329,13 @@ export function _sync(
           if ((aFlags & VNodeFlags.TextContent) === 0) {
             if (aChild === null) {
               do {
-                _render(instance as Element, null, bChild as VNode, context);
+                _render(instance as Element, null, bChild as VNode);
                 bChild = (bChild as VNode)._r;
               } while (bChild !== null);
             } else if (bChild === null) {
               _removeAllChildren(instance as Element, aChild as VNode);
             } else {
-              _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, context, dirtyContext);
+              _syncChildrenTrackByKeys(instance as Element, aChild as VNode, bChild as VNode, dirtyContext);
             }
           } else {
             const textNode = (instance as Element).firstChild as Text | null;
@@ -378,51 +346,48 @@ export function _sync(
             }
           }
         }
-      } else { // (VNodeFlags.Component | VNodeFlags.UpdateContext | VNodeFlags.Connect)
+      } else { // (VNodeFlags.Component | VNodeFlags.UpdateContext)
         if ((bFlags & VNodeFlags.Component) !== 0) {
           const descriptor = b._t as ComponentDescriptor;
-          instance = instance as ComponentHandle;
 
           if (
-            (instance.dirty === true) ||
+            ((instance as Component).dirty === true) ||
             (
               (aProps !== bProps) &&
               (descriptor.shouldUpdate === null || descriptor.shouldUpdate(aProps, bProps) === true)
             )
           ) {
-            _currentContext = context;
             _sync(
               parent,
               aChild as VNode,
               b._c = DEBUG ?
-                shouldBeSingleVNode(instance.render!(bProps)) :
-                /* istanbul ignore next */instance.render!(bProps),
-              context,
+                shouldBeSingleVNode((instance as Component).update!(bProps)) :
+                /* istanbul ignore next */(instance as Component).update!(bProps),
               dirtyContext,
             );
-            (instance as ComponentHandle).dirty = false;
+            (instance as Component).dirty = false;
           } else {
             b._c = aChild as VNode;
-            _dirtyCheck(parent, b, context, dirtyContext);
+            _dirtyCheck(parent, b, dirtyContext);
           }
         } else { // ((bFlags & VNodeFlags.UpdateContext) !== 0)
-          if (aProps !== bProps) {
+          if (aProps !== bProps || dirtyContext === true) {
+            instance = { ...getContext(), ...bProps };
             dirtyContext = true;
           }
-          b._i = context = (dirtyContext === true) ?
-            { ...context, ...bProps } :
-            instance as {};
-          _sync(parent, aChild as VNode, bChild as VNode, context, dirtyContext);
+          b._i = instance as {};
+          const context = setContext(instance);
+          _sync(parent, aChild as VNode, bChild as VNode, dirtyContext);
+          restoreContext(context);
         }
       }
     }
   } else {
-    instance = _instantiate(parent, b, context);
     /* istanbul ignore else */
     if (DEBUG) {
-      parent.replaceChild(instance, getDOMNode(a)!);
+      parent.replaceChild(_instantiate(parent, b), getDOMNode(a)!);
     } else {
-      nodeReplaceChild.call(parent, instance, getDOMNode(a)!);
+      nodeReplaceChild.call(parent, _instantiate(parent, b), getDOMNode(a)!);
     }
     _detach(a);
   }
@@ -653,21 +618,18 @@ export function _sync(
  * @param parent - Parent DOM element
  * @param aStartVNode - Previous virtual DOM node
  * @param bStartVNode - Next virtual DOM node
- * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
 function _syncChildrenTrackByKeys(
   parent: Node,
   aStartVNode: VNode,
   bStartVNode: VNode,
-  context: {},
   dirtyContext: boolean,
 ): void;
 function _syncChildrenTrackByKeys(
   parent: Node,
   aStartVNode: VNode | null, // should not be null, it is a workaroud to slightly reduce code size
   bStartVNode: VNode | null, // should not be null, it is a workaroud to slightly reduce code size
-  context: {},
   dirtyContext: boolean,
 ): void {
   let aEndVNode = aStartVNode!._l!;
@@ -682,7 +644,7 @@ function _syncChildrenTrackByKeys(
       (aStartVNode!._k === bStartVNode!._k) &&
       (((aStartVNode!._f ^ bStartVNode!._f) & VNodeFlags.Key) === 0)
     ) {
-      _sync(parent, aStartVNode!, bStartVNode!, context, dirtyContext);
+      _sync(parent, aStartVNode!, bStartVNode!, dirtyContext);
       step1Synced++;
       if (aStartVNode === aEndVNode) {
         i = 1;
@@ -705,7 +667,7 @@ function _syncChildrenTrackByKeys(
       (aEndVNode!._k === bEndVNode!._k) &&
       (((aEndVNode!._f ^ bEndVNode!._f) & VNodeFlags.Key) === 0)
     ) {
-      _sync(parent, aEndVNode, bEndVNode, context, dirtyContext);
+      _sync(parent, aEndVNode, bEndVNode, dirtyContext);
       step1Synced++;
       if (aStartVNode === aEndVNode) {
         i = 1;
@@ -732,7 +694,7 @@ function _syncChildrenTrackByKeys(
         // All nodes from a are synced, insert the rest from b.
         const next = nextNode(bEndVNode);
         while (1) {
-          _render(parent, next, bStartVNode!, context);
+          _render(parent, next, bStartVNode!);
           if (bStartVNode === bEndVNode) {
             break;
           }
@@ -801,7 +763,7 @@ function _syncChildrenTrackByKeys(
       } else {
         lastPosition = (lastPosition > i) ? 1000000000 : i;
         prevPositionsForB[i] = aInnerLength;
-        _sync(parent, vnode!, bInnerArray[i], context, dirtyContext);
+        _sync(parent, vnode!, bInnerArray[i], dirtyContext);
         step2Synced++;
       }
       aInnerLength++;
@@ -815,7 +777,7 @@ function _syncChildrenTrackByKeys(
       // Noone is synced, remove all children with one dom op.
       _removeAllChildren(parent, aStartVNode!);
       do {
-        _render(parent, null, bStartVNode!, context);
+        _render(parent, null, bStartVNode!);
         bStartVNode = bStartVNode!._r;
       } while (bStartVNode !== null);
     } else {
@@ -834,7 +796,7 @@ function _syncChildrenTrackByKeys(
         i = seq.length - 1;
         while (bInnerLength > 0) {
           if (prevPositionsForB[--bInnerLength] < 0) {
-            _render(parent, nextNode(bEndVNode), bEndVNode, context);
+            _render(parent, nextNode(bEndVNode), bEndVNode);
           } else {
             if (i < 0 || bInnerLength !== seq[i]) {
               /* istanbul ignore else */
@@ -852,7 +814,7 @@ function _syncChildrenTrackByKeys(
       } else if (step2Synced !== bInnerLength) {
         while (bInnerLength > 0) {
           if (prevPositionsForB[--bInnerLength] < 0) {
-            _render(parent, nextNode(bEndVNode), bEndVNode, context);
+            _render(parent, nextNode(bEndVNode), bEndVNode);
           }
           bEndVNode = bEndVNode._l;
         }

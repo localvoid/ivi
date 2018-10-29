@@ -1,6 +1,7 @@
 import {
   CSSStyleProps, shallowEqual, Predicate,
   VNode, VNodeFlags, EventDispatcher, ComponentDescriptor,
+  setContext, restoreContext,
 } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
 import { VNodeMatcher, query, queryAll, closest } from "./query";
@@ -86,9 +87,11 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
       }
     } else {
       if ((flags & VNodeFlags.Component) !== 0) {
-        const component = vnode._i = { dirty: false, render: null, select: null, detached: null };
+        const component = vnode._i = { dirty: false, update: null, select: null, detached: null };
         const render = (vnode._t as ComponentDescriptor).c(component);
+        const prevContext = setContext(context);
         vnode._c = render(vnode._p);
+        restoreContext(prevContext);
       } else { // UpdateContext
         vnode._i = context = { ...context, ...vnode._p };
       }

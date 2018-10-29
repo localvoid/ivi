@@ -82,24 +82,24 @@ export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";
 export { debugSub, debugPub } from "./debug/pubsub";
 
 // Virtual DOM
+export { setContext, restoreContext, getContext } from "./vdom/context";
 export {
   SyncableValue,
   SYNCABLE_VALUE_SKIP_UNDEFINED, SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED, SYNCABLE_VALUE_REMOVE_EVENT_UNDEFINED,
   PROPERTY, UNSAFE_HTML, EVENT,
 } from "./vdom/syncable_value";
-export { VNodeFlags } from "./vdom/flags";
 export {
   ComponentDescriptor,
 } from "./vdom/component";
 export {
-  VNode, t,
+  VNodeFlags, VNode, t,
   getDOMNode, getComponent,
   stopDirtyChecking,
 } from "./vdom/vnode";
 export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
-export { element, component, withShouldUpdate, context } from "./vdom/factories";
-export { InvalidateFlags, InvalidateFunction } from "./vdom/invalidate";
+export { element, component, statelessComponent, withShouldUpdate, context } from "./vdom/factories";
+export { InvalidateFlags, UpdateFunction } from "./vdom/invalidate";
 export { setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect } from "./vdom/scheduler";
 export { useDetached, useSelect } from "./vdom/hooks";
 

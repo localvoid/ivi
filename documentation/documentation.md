@@ -5,7 +5,6 @@
 - [Virtual DOM](general/virtual-dom.md)
 - [Components](general/components.md)
 - [Synthetic Events](general/synthetic-events.md)
-- [Connectors](general/connect.md)
 
 ## Advanced
 
