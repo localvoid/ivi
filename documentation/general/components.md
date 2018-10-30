@@ -21,12 +21,11 @@ effects and returns a Virtual DOM.
 ```ts
 function component(
   c: (c: Component<undefined>) => () => VNode,
-  ...options: Array<(d: ComponentDescriptor<undefined>) => void>
 ): () => VNode<undefined>;
 
 function component<P>(
   c: (c: Component<P>) => (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => void>
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 ```
 
@@ -37,7 +36,7 @@ import { component, invalidate, effect, render } from "ivi";
 
 const Counter = component<number>((c) => {
   let i = 0;
-  const timer = effect<number>(c, (delay) => {
+  const timer = useEffect<number>(c, (delay) => {
     const tid = setInterval(() => {
       i++;
       invalidate(c);
@@ -45,7 +44,7 @@ const Counter = component<number>((c) => {
     return () => { clearInterval(tid); };
   });
 
-  (delay) => (
+  return (delay) => (
     timer(delay),
 
     div().t(i),
@@ -53,20 +52,9 @@ const Counter = component<number>((c) => {
 });
 ```
 
-#### Options
-
-`withShouldUpdate()` is used as a hint that can prevent unnecessary updates.
-
-```ts
-const A = component(
-  () => ({ title }) => div().t(`Hello ${title}`),
-  withShouldUpdate((prev, next) => prev.title !== next.title,
-);
-```
-
 ### Hooks
 
-##### `useEffect()`
+#### `useEffect()`
 
 ```ts
 function useEffect<P>(
@@ -79,7 +67,7 @@ function useEffect<P>(
 `useEffect()` lets you perform side effects, it replaces `componentDidMount()`, `componentWillUnmount()` and
 `componentDidUpdate()` methods of a class-based components API.
 
-##### `useSelect()`
+#### `useSelect()`
 
 ```ts
 function useSelect<T>(
@@ -101,12 +89,7 @@ function useSelect<T, P, C>(
 
 `useSelect()` creates a selector hook.
 
-Selectors are used for sideways data loading.
-
-Essentially it is a some form of dirty checking. Each time ivi performs a dirty checking, all selectors will pull data
-from external sources.
-
-To improve performance, selectors should use memoization and reuse previous values.
+Selectors are used for sideways data loading and accessing current context.
 
 ```ts
 const Pixel = component<number>((c) => {
@@ -118,7 +101,7 @@ const Pixel = component<number>((c) => {
 });
 ```
 
-##### `useDetached()`
+#### `useDetached()`
 
 ```ts
 function useDetached(c: Component, hook: () => void): void;
@@ -128,7 +111,7 @@ function useDetached(c: Component, hook: () => void): void;
 
 ### Additional Functions
 
-##### `invalidate()`
+#### `invalidate()`
 
 ```ts
 function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void;

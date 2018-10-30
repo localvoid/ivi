@@ -350,7 +350,7 @@ export function _sync(parent: Node, a: VNode, b: VNode, dirtyContext: boolean): 
             ((instance as Component).dirty === true) ||
             (
               (aProps !== bProps) &&
-              (descriptor.shouldUpdate === null || descriptor.shouldUpdate(aProps, bProps) === true)
+              (descriptor.shouldUpdate === void 0 || descriptor.shouldUpdate(aProps, bProps) === true)
             )
           ) {
             _sync(

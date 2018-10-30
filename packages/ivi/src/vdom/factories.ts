@@ -42,12 +42,11 @@ export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: 
  *     });
  *
  * @param c - Component function.
- * @param options - Component options.
+ * @param shouldUpdate - `shouldUpdate` function.
  * @returns factory that produces component nodes
  */
 export function component(
   c: (c: Component<undefined>) => () => VNode,
-  ...options: Array<(d: ComponentDescriptor<undefined>) => void>
 ): () => VNode<undefined>;
 
 /**
@@ -68,12 +67,12 @@ export function component(
  *     });
  *
  * @param c - Component function.
- * @param options - Component options.
+ * @param shouldUpdate - `shouldUpdate` function.
  * @returns factory that produces component nodes
  */
 export function component<P>(
   c: (c: Component<P>) => (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => void>
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
@@ -94,17 +93,14 @@ export function component<P>(
  *     });
  *
  * @param c - Component function.
- * @param options - Component options.
+ * @param shouldUpdate - `shouldUpdate` function.
  * @returns factory that produces component nodes
  */
 export function component<P>(
   c: (c: Component<P>) => (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => void>
+  shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => VNode<P> {
-  const d: ComponentDescriptor<P> = { c, shouldUpdate: null };
-  for (let i = 0; i < options.length; i++) {
-    options[i](d);
-  }
+  const d: ComponentDescriptor<P> = { c, shouldUpdate };
   const f = (props: P) => {
     const n = new VNode<P>(VNodeFlags.Component, d, props, "", void 0);
     /* istanbul ignore else */
@@ -126,12 +122,11 @@ export function component<P>(
  *     });
  *
  * @param update - Update function.
- * @param options - Component options.
+ * @param shouldUpdate - `shouldUpdate` function.
  * @returns factory that produces stateless component nodes
  */
 export function statelessComponent(
   update: () => VNode,
-  ...options: Array<(d: ComponentDescriptor<undefined>) => void>
 ): () => VNode<undefined>;
 
 /**
@@ -144,12 +139,12 @@ export function statelessComponent(
  *     });
  *
  * @param update - Update function.
- * @param options - Component options.
+ * @param shouldUpdate - `shouldUpdate` function.
  * @returns factory that produces stateless component nodes
  */
 export function statelessComponent<P>(
   update: (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => void>
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
 
 /**
@@ -162,33 +157,14 @@ export function statelessComponent<P>(
  *     });
  *
  * @param update - Update function.
- * @param options - Component options.
+ * @param shouldUpdate - `shouldUpdate` function.
  * @returns factory that produces stateless component nodes
  */
 export function statelessComponent<P>(
   update: (props: P) => VNode,
-  ...options: Array<(d: ComponentDescriptor<P>) => void>
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => VNode<P> {
-  return component(() => update, ...options);
-}
-
-/**
- * withShouldUpdate creates a function that assigns a `shouldUpdate` options to a `ComponentDescriptor`.
- *
- * @example
- *
- *     const A = component<{ text: string }>(
- *       () => ({ text }) => div().c(text),
- *       withShouldUpdate((prev, next) => prev.text !== next.text),
- *     );
- *
- * @param shouldUpdate - Function that performs an early check that prevent unnecessary updates
- * @returns function that assigns a `shouldUpdate` option
- */
-export function withShouldUpdate<P>(
-  shouldUpdate: (oldProps: P, newProps: P) => boolean,
-): (d: ComponentDescriptor<P>) => void {
-  return (d) => { d.shouldUpdate = shouldUpdate; };
+  return component(() => update, shouldUpdate);
 }
 
 /**

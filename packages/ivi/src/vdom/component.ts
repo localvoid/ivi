@@ -41,5 +41,5 @@ export interface ComponentDescriptor<P = any> {
    * @param next - Next properties
    * @returns `true` when changes in props should trigger update
    */
-  shouldUpdate: null | ((prev: P, next: P) => boolean);
+  shouldUpdate: undefined | ((prev: P, next: P) => boolean);
 }

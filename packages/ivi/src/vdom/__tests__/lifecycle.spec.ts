@@ -1,9 +1,6 @@
-import { VNode, component } from "ivi";
+import { VNode, component, useDetached, effect } from "ivi";
 import * as h from "ivi-html";
 import { startRender, Static, checkLifecycle, lifecycleTouch } from "./utils";
-import { effect } from "../scheduler";
-import { withShouldUpdate } from "../factories";
-import { useDetached } from "../hooks";
 
 function createLifecycleTester(id: string) {
   return component<VNode>(
@@ -23,10 +20,10 @@ function createLifecycleTester(id: string) {
         return child;
       };
     },
-    withShouldUpdate((prev, next) => {
+    (prev, next) => {
       lifecycleTouch(id, "shouldUpdate");
       return true;
-    }),
+    },
   );
 }
 
