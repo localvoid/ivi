@@ -83,19 +83,15 @@ export function _dirtyCheck(parent: Node, vnode: VNode, dirtyContext: boolean): 
       }
     } else if ((flags & VNodeFlags.Component) !== 0) {
       const selector = (instance as Component).select;
-      if (selector !== null) {
-        selector(getContext());
-      }
-      if ((instance as Component).dirty === true) {
+      if (selector !== null && selector(getContext()) === true) {
         _sync(
           parent,
           child!,
           vnode._c = DEBUG ?
             shouldBeSingleVNode((instance as Component).update!(vnode._p)) :
-              /* istanbul ignore next */(instance as Component).update!(vnode._p),
+                /* istanbul ignore next */(instance as Component).update!(vnode._p),
           dirtyContext,
         );
-        (instance as Component).dirty = false;
       } else {
         _dirtyCheck(parent, child!, dirtyContext);
       }

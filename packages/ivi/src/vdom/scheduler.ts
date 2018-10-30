@@ -99,6 +99,11 @@ export function effect(fn: () => void): void {
   _effects.push(fn);
 }
 
+let _dirtyCheckCounter = 1;
+export function dirtyCheckCounter(): number {
+  return _dirtyCheckCounter;
+}
+
 /**
  * Performs a dirty checking.
  */
@@ -151,6 +156,8 @@ export function dirtyCheck() {
     }
     _effects.length = 0;
   }
+
+  _dirtyCheckCounter++;
 }
 
 /**

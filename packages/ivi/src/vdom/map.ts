@@ -1,5 +1,4 @@
-import { VNodeFlags } from "./flags";
-import { VNode } from "./vnode";
+import { VNodeFlags, VNode } from "./vnode";
 
 /**
  * map creates a children collection with the results of calling a provided function on every element in the calling

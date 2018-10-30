@@ -15,7 +15,7 @@ export interface Component<P = any> {
   /**
    * Selector hooks.
    */
-  select: null | ((context: {}) => void);
+  select: null | ((context: {}) => boolean);
   /**
    * Detached hooks.
    */

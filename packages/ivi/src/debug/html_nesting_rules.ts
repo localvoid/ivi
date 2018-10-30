@@ -1,5 +1,4 @@
-import { VNodeFlags } from "../vdom/flags";
-import { VNode } from "../vdom/vnode";
+import { VNodeFlags, VNode } from "../vdom/vnode";
 
 /**
  * HTML nesting rules.
