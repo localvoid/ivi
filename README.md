@@ -11,9 +11,9 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 ## Features
 
-- Declarative rendering with ["Virtual DOM"](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
-- [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md)
-- Extensible [synthetic event subsystem](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
+- Declarative rendering with "Virtual DOM"
+- Components
+- Extensible synthetic event subsystem
 - DOM events on Component nodes
 - Synchronous and deterministic syncing algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Optional [scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
@@ -22,12 +22,195 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 ## Library Size
 
-ivi has a tree shakeable API, so it can scale from simple widgets embedded into the page to complex desktop
-applications.
+ivi has a tree shakeable API, so it can scale from simple widgets to complex desktop applications.
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[uglify(terser)](https://github.com/fabiosantoscode/terser) is just a **2.7KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.6KB** (minified+compressed).
+
+## Quick Start
+
+### Hello World
+
+The easiest way to get started with ivi is to use [this basic example on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
+
+The smallest ivi example looks like this:
+
+```js
+import { setupScheduler, updateHandler, render } from "ivi";
+import { h1 } from "ivi-html";
+
+setupScheduler(updateHandler);
+
+render(
+  h1().t("Hello World!"),
+  document.getElementById("app"),
+);
+```
+
+Since ivi has a tree shakeable API, all dependencies should be imported explicity, even the basic scheduler
+implementation. We don't want any unused code to be a part of the final bundle when we decide to use a full-featured
+scheduler implementation.
+
+```js
+setupScheduler(updateHandler);
+```
+
+All ivi applications should start by setting up a scheduler implementation. In this code we are using `updateHandler`
+from the basic scheduler. Basic scheduler is implemented in the `ivi` package.
+
+```js
+render(
+  h1().t("Hello World!"),
+  document.getElementById("app"),
+);
+```
+
+`render()` function has a standard interface that is used in many Virtual DOM libraries. First argument is used to
+specify a Virtual DOM to render, and the second one is a DOM node that will be used as a container.
+
+Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes and builder pattern to assign
+properties. There are different cons and pros for this API compared to JSX.
+
+Factory functions for HTML elements are declared in the `ivi-html` package, `h1()` function will instantiate a Virtual
+DOM node for a `<h1>` element. Method `t()` is used to assign a text content.
+
+### Stateful Components
+
+Components API were heavily influenced by the new [React hooks API](https://reactjs.org/docs/hooks-intro.html).
+
+There are several differences in the ivi API that solve major flaws in the React hooks API design:
+
+- [Weird hooks rules](https://reactjs.org/docs/hooks-rules.html)
+- Excessive memory allocations each time component is updated
+- [Memory leaking](https://codesandbox.io/s/lz61v39r7) caused by
+[closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
+
+All components has a simple interface `(component) => (props) => VDOM`.
+
+Outer function is used to store internal state, creating dataflow pipelines and attaching hooks. It is important that
+outer function doesn't have any access to the `props` to prevent unexpected "memory leaks". `component` is an opaque
+object, it is used as a first argument for almost all component functions like `invalidate()`, `useEffect()` etc.
+
+Internal "update" function passes input data through dataflow pipelines and returns a Virtual DOM.
+
+API is slightly different from the React hooks API, but it has the same properties and the most important one is
+composability.
+
+```js
+import { setupScheduler, updateHandler, component, invalidate, render } from "ivi";
+import { h1 } from "ivi-html";
+
+setupScheduler(updateHandler);
+
+const Counter = component((c) => {
+  let counter = 0;
+
+  const ticker = useEffect((interval) => {
+    const id = setInterval(() => {
+      counter++;
+      invalidate(c);
+    }, interval);
+    return () => clearInterval(id);
+  });
+
+  return (interval) => (
+    ticker(interval),
+
+    div().t(`Counter: ${counter}`),
+  );
+});
+
+render(
+  Counter(1000),
+  document.getElementById("app"),
+);
+```
+
+As always, first thing that we need to do in the ivi application is to setup a scheduler with `setupScheduler()`
+function.
+
+```js
+const Counter = component((c) => {
+  let counter = 0;
+  // ...
+  return () => vdom;
+});
+```
+
+`component()` function creates Virtual DOM factory functions for component nodes. All component factory functions has an
+interface `Factory(props)`.
+
+Stateful components should have an interface `(component) => (props) => vdom`. In the outer function we are declaring
+internal state `counter`, it just a plain javascript.
+
+```js
+  const ticker = useEffect((interval) => {
+    // ...
+    return () => cleanup;
+  });
+```
+
+`useEffect()` creates a function that will be used to perform side effects. Side effect functions can optionally return
+a cleanup function, it will be automatically invoked when component is unmounted from the document or when input
+properties are modified.
+
+```js
+  const ticker = useEffect((interval) => {
+    const id = setInterval(() => {
+      counter++;
+      invalidate(c);
+    }, interval);
+    return () => clearInterval(id);
+  });
+```
+
+Side effect function `ticker()` registers a timer function that is periodically invoked and increments `counter` from
+the internal state. When internal state is modified, we need to trigger an update for the component. To trigger an
+update, we are using `invalidate()` function. Invalidate function will mark component as dirty and enqueue a task for
+dirty checking.
+
+Periodic timers registered with `setInterval()` function should be unregistered when they are no longer used. To
+unregister periodic timer we are creating a cleanup function and returning it in the `ticker()` function.
+
+```js
+  return (interval) => (
+    ticker(interval),
+
+    div().t(`Counter: ${counter}`),
+  );
+```
+
+The final step for a component is to create an "update" function, it should pass input data through dataflow pipelines
+and return a Virtual DOM. Update function will be invoked when component is invalidated or component properties are
+modified.
+
+## Architecture
+
+Virtual DOM in ivi is implemented as a synchronous and deterministic single pass algorithm. The difference between
+single pass and two pass algorithms is that we don't generate "patch" objects and instead of that we immediately
+apply all detected changes.
+
+Reconciliation algorithm always starts working from the root nodes in dirty checking mode. In dirty checking mode
+it just checks selectors and looks for dirty components. This approach makes it easy to implement contexts, selectors,
+update priorities and significantly reduces code complexity.
+
+All data structures are optimized to make sure that they are using as least memory as possible, [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) with [different "hacks"](https://github.com/localvoid/ivi/blob/029adbd368acebca2501d59503c65bf34c0d2411/packages/ivi/src/vdom/sync.ts#L74) are
+used everywhere in the code. All frequently accessed data structures always using the same shape, almost all call sites
+in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html). Frequently used
+DOM attributes are stored directly on the Virtual DOM nodes.
+
+Virtual DOM nodes are storing children in circular linked lists instead of the traditional approach with arrays. With
+circular linked lists, passing children as props doesn't require any memory copies, children normalization and imlicit
+key assignment is super cheap, there are less special cases in the children reconciliation algorithm.
+
+Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
+cases. It is using [LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm to find the
+minimum number of DOM operations.
+
+Synthetic events implementation doesn't store any references to Virtual DOM node on the DOM nodes. Event dispatcher
+implements two-phase event flow and goes through Virtual DOM tree. It allows attaching DOM events not just on elements,
+but also on components.
 
 ## Performance
 
@@ -59,7 +242,8 @@ benchmarks are biased towards some type of libraries. So we need to understand h
 benchmarks.
 
 To explain why benchmarks are biased I'll use [the most popular benchmark](https://github.com/krausest/js-framework-benchmark).
-It contains implementations for many different libraries and ivi is among the fastest libraries in this benchmark, even
+It contains implementations for many different libraries and ivi is
+[among the fastest libraries](https://krausest.github.io/js-framework-benchmark/current.html) in this benchmark, even
 when benchmark is biased towards libraries that use direct data bindings to connect observable data with DOM elements.
 
 There are several key characteristics and we need to compare them with numbers from complex web applications:
@@ -151,43 +335,240 @@ fine-grained direct data bindings. Just bind an observable value to DOM nodes di
 But in real applcations there are complex data transformation that lose all information about data changes, servers are
 sending data snapshots that doesn't contain any information how nodes should be rearranged and many other use cases.
 
-## Quick Start
+## Documentation
 
-The easiest way to get started with ivi is to use [this basic example on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
+### Virtual DOM
 
-The smallest ivi example looks like this:
+Virtual DOM API is using factory functions to instantiate nodes and builder pattern to assign properties.
 
-```js
-import { setupScheduler, invalidateHandler, render } from "ivi";
-import { h1 } from "ivi-html";
+```ts
+import { onClick } from "ivi";
+import { div } from "ivi-html";
 
-setupScheduler(invalidateHandler);
+const node = div("node-class", { id: "unique-id" })
+  .e(onClick((ev) => { console.log("click"); }));
+```
+
+In this example, virtual DOM node is created with a `div()` function, this node will represent a `<div />` element.
+Method `e()` is used to assign events.
+
+All factory functions that create DOM elements have an interface:
+
+```ts
+type VNodeElementFactory<T, N extends Element> = (className?: string, attrs?: T, style?: CSSStyleProps) => VNode<T, N>;
+```
+
+#### Methods
+
+##### Key
+
+```ts
+interface VNode<P> {
+  k(key: any): this;
+}
+```
+
+Method `k()` is used to assign keys, they are used to uniquely identify virtual nodes among its siblings.
+
+##### Events
+
+```ts
+interface VNode<P> {
+  e(events: Array<EventHandler | null> | EventHandler | null): this;
+}
+```
+
+Method `e()` is used to assign events.
+
+##### Text Content
+
+```ts
+interface VNode<P> {
+  t(text: string | number): this;
+}
+```
+
+Method `t()` assigns a text content to a virtual dom node.
+
+##### Children
+
+```ts
+interface VNode<P> {
+  c(...children: Array<VNode<any> | string | number | null>): this;
+}
+```
+
+Method `c()` is a variadic method and accepts variable number of children. Children argument can be a string, number,
+virtual dom node or a collection of virtual dom nodes created with functions like `map()`, `mapRange()`, `mapIterable()`
+or `fragment()`.
+
+#### Children collections
+
+```ts
+function fragment(...args: Array<VNode | string | number | null>): VNode | null;
+```
+
+`fragment()` is a variadic function that creates a fragment children collection.
+
+```ts
+const Button = statelessComponent((slot) => div("button").c(slot));
 
 render(
-  h1().c("Hello World!"),
-  document.getElementById("app"),
+  Button(
+    fragment(
+      span().c("Click"),
+      " ",
+      span().c("Me"),
+    ),
+  ),
+  DOMContainer,
 );
 ```
 
-## Documentation
+#### Dynamic lists
 
-### General
+`map()`, `mapRange()` and `mapIterable()` functions are used to generate dynamic lists with keyed elements.
 
-- [Virtual DOM](https://github.com/localvoid/ivi/blob/master/documentation/general/virtual-dom.md)
-- [Components](https://github.com/localvoid/ivi/blob/master/documentation/general/components.md)
-- [Synthetic Events](https://github.com/localvoid/ivi/blob/master/documentation/general/synthetic-events.md)
+```ts
+function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null;
+function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null;
+function mapIterable<T>(iterable: IterableIterator<VNode<T>>): VNode<T> | null;
+```
 
-### Advanced
+`map()` creates a children collection with the results of calling a provided function on every element in the calling
+array.
 
-- [Scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
-- [TypeScript Enums](https://github.com/localvoid/ivi/blob/master/documentation/advanced/typescript-enums.md)
-- [Syncable Value](https://github.com/localvoid/ivi/blob/master/documentation/advanced/syncable-value.md)
-- [Security](https://github.com/localvoid/ivi/blob/master/documentation/advanced/security.md)
+```ts
+render(
+  div().c(
+    map([1, 2, 3], (item) => div().k(item)),
+  ),
+  DOMContainer,
+);
+```
 
-### Misc
+`mapRange()` creates a children collection with the results of calling a provided function on every number in the
+provided range.
 
-- [Performance Tips](https://github.com/localvoid/ivi/blob/master/documentation/misc/perf-tips.md)
-- [Children Reconciliation](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
+```ts
+const items = [1, 2, 3];
+
+render(
+  div().c(
+    mapRange(0, items.length, (i) => div().k(items[i])),
+  ),
+  DOMContainer,
+);
+```
+
+`mapIterable()` creates a children collection from an `IterableIterator` object.
+
+```ts
+const items = [1, 2, 3];
+
+render(
+  div().c(mapIterable(function* () {
+    for (const item of items) {
+      yield div().k(item);
+    }
+  }())),
+  DOMContainer,
+);
+```
+
+#### Syncable Values
+
+By default, syncing algorithm assigns all attributes with `setAttribute()` and removes them with `removeAttribute()`,
+but sometimes we need to assign properties or assign attributes from different namespaces. To solve this problems, ivi
+introduces the concept of [Syncable Values](../advanced/syncable-value.md), this values can extend the default behavior
+of the attribute syncing algorithm. It significantly reduces complexity, because we no longer need to bake in all this
+edge cases into syncing algorithm, also it gives an additional escape hatch to manipulate DOM elements directly.
+
+There are several syncable values defined in ivi packages:
+
+```ts
+// ivi
+function PROPERTY<T>(v: T | undefined): SyncableValue<T>;
+function UNSAFE_HTML(v: string | undefined): SyncableValue<string>;
+
+// ivi-html
+function VALUE(v: string | number | undefined): SyncableValue<string | number>;
+function CHECKED(v: boolean | undefined): SyncableValue<boolean>;
+
+// ivi-svg
+function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
+function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
+
+// ivi-scheduler
+function AUTOFOCUS(v: boolean | undefined): SyncableValue<boolean>;
+```
+
+`PROPERTY()` function creates a SyncableValue that assigns a property to a property name derived from the `key`
+of the attribute.
+
+`UNSAFE_HTML()` function creates a SyncableValue that assigns an `innerHTML` property to an Element.
+
+`VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLInputElement or HTMLTextAreaElement.
+
+`CHECKED()` function creates a SyncableValue that assigns a `checked` property to an HTMLInputElement.
+
+`XML_ATTR()` function creates a SyncableValue that assigns an attribute from XML namespace, attribute name is
+derived from the `key`.
+
+`XLINK_ATTR()` function creates a SyncableValue that assigns an attribute from XLINK namespace, attribute name
+is derived from the `key`.
+
+`AUTOFOCUS()` function creates a SyncableValue that triggers focus when value is synced from `undefined` or `false` to
+`true`.
+
+##### Example
+
+```ts
+import { input, CHECKED } from "ivi-html";
+
+const e = input("", { type: "checked": CHECKED(true) })
+```
+
+#### Additional functions
+
+##### Retrieve DOM instance from a virtual DOM node
+
+```ts
+function getDOMNode<T extends Node>(node: VNode<any, T>): T | null;
+```
+
+`getDOMNode()` retrieves a closest DOM node from a virtual DOM node. This method works with any node type.
+
+##### Retrieve Component instance from a virtual DOM node
+
+```ts
+function getComponent<T extends Component<any>>(node: VNode): T | null;
+```
+
+`getComponent()` retrieves a component instance from a virtual DOM node.
+
+##### Trigger an update
+
+```ts
+const enum InvalidateFlags {
+  /**
+   * Forces synchronous update.
+   */
+  RequestSyncUpdate = 1,
+}
+
+function update(flags?: InvalidateFlags);
+```
+
+`update()` function triggers update handler that performs dirty checking.
+
+##### Rendering virtual DOM into a document
+
+```ts
+function render(node: VNode<any> | null, container: Element, flags?: InvalidateFlags): void;
+```
+
+`render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
 
 ### Examples and demo applications
 

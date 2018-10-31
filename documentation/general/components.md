@@ -126,6 +126,7 @@ function useFriendStatus(c) {
 
   function handleStatusChange(status) {
     isOnline = status.isOnline;
+    invalidate(c);
   }
 
   const subscribe = useEffect(c, (friendID) => (
