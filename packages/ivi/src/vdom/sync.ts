@@ -83,7 +83,7 @@ export function _dirtyCheck(parent: Node, vnode: VNode, dirtyContext: boolean): 
       }
     } else if ((flags & VNodeFlags.Component) !== 0) {
       const selector = (instance as Component).select;
-      if (selector !== null && selector(getContext()) === true) {
+      if (((instance as Component).dirty === true) || (selector !== null && selector(getContext()) === true)) {
         _sync(
           parent,
           child!,

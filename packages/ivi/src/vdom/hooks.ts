@@ -55,7 +55,7 @@ export function useSelect<T>(
  */
 export function useSelect<T, P>(
   c: Component,
-  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | null, props: P) => T,
+  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | undefined, props: P) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -104,7 +104,7 @@ export function useSelect<T, P, C extends {}>(
 ): (props: P) => T {
   const prevSelector = c.select;
   let lastChecked = 0;
-  let prevState: T;
+  let prevState: T | undefined;
   let prevProps: P;
 
   c.select = (context: {}) => {
@@ -124,14 +124,16 @@ export function useSelect<T, P, C extends {}>(
 
   return (nextProps: P) => {
     if (
-      lastChecked < dirtyCheckCounter() ||
-      (shouldUpdate !== void 0 && shouldUpdate(prevProps, nextProps) === true) ||
-      prevProps !== nextProps
+      (prevState !== void 0) &&
+      ((shouldUpdate !== void 0 && shouldUpdate(prevProps, nextProps) === true) || (prevProps !== nextProps))
     ) {
+      prevState = void 0;
+    }
+    if (prevState === void 0 || lastChecked < dirtyCheckCounter()) {
       prevState = selector(prevState, nextProps, getContext() as C);
     }
     prevProps = nextProps;
-    return prevState;
+    return prevState!;
   };
 }
 

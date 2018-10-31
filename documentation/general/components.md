@@ -4,9 +4,10 @@ Components API were heavily influenced by the new [React hooks API](https://gith
 
 There are several differences in the ivi API that solve major flaws in the React hooks API design:
 
-- [Weird rules](https://reactjs.org/docs/hooks-rules.html) for hooks
+- [Weird hooks rules](https://reactjs.org/docs/hooks-rules.html)
 - Excessive memory allocations each time component is updated
-- Memory leaking caused by [closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
+- [Memory leaking](https://codesandbox.io/s/lz61v39r7) caused by
+[closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
 
 Instead of relying on some internal magic, we are using closures to store internal state. Components have a simple
 interface `(component) => (props) => VDOM`. Outer function is used for storing internal state, creating data
@@ -36,7 +37,7 @@ import { component, invalidate, effect, render } from "ivi";
 
 const Counter = component<number>((c) => {
   let i = 0;
-  const timer = useEffect<number>(c, (delay) => {
+  const $timer = useEffect<number>(c, (delay) => {
     const tid = setInterval(() => {
       i++;
       invalidate(c);
@@ -45,7 +46,7 @@ const Counter = component<number>((c) => {
   });
 
   return (delay) => (
-    timer(delay),
+    $timer(delay),
 
     div().t(i),
   );
@@ -77,7 +78,7 @@ function useSelect<T>(
 ): () => T;
 function useSelect<T, P>(
   c: Component,
-  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | null, props: P) => T,
+  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | undefined, props: P) => T,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 function useSelect<T, P, C>(
@@ -91,13 +92,11 @@ function useSelect<T, P, C>(
 
 Selectors are used for sideways data loading and accessing current context.
 
-```ts
-const Pixel = component<number>((c) => {
-  const getColor = useSelect<string, number, { colors: string[] }>(c,
-    (prev, i, { colors }) => colors[i],
-  );
+```js
+const Pixel = component((c) => {
+  const $color = useSelect(c, (prev, i, { colors }) => colors[i]);
 
-  return (i) => span("pixel", _, { "background": getColor(i) });
+  return (i) => span("pixel", _, { "background": $color(i) });
 });
 ```
 
@@ -118,3 +117,54 @@ function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void;
 ```
 
 `invalidate()` marks component as dirty and triggers an update.
+
+### Using a Custom Hook
+
+```js
+function useFriendStatus(c) {
+  let isOnline = null;
+
+  function handleStatusChange(status) {
+    isOnline = status.isOnline;
+  }
+
+  const subscribe = useEffect(c, (friendID) => (
+    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange),
+    () => { ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange); }
+  ));
+
+  return (friendID) => {
+    subscribe(friendID);
+    return isOnline;
+  };
+}
+
+const FriendStatus = component((c) => {
+  const $isOnline = useFriendStatus(c);
+
+  return (props) => {
+    const isOnline = $isOnline(props.friend.id);
+
+    if (isOnline === null) {
+      return t("Loading...");
+    }
+    return t(isOnline ? "Online" : "Offline");
+  };
+});
+```
+
+#### Pass Information Between Hooks
+
+```js
+const EntryList = component((c) => {
+  const $filter = useSelect(c, () => query().filter());
+  const $entriesByFilterType = useSelect(c, (prev, filter) => (query().entriesByFilterType(filter).result));
+
+  return () => {
+    const filter = $filter();
+    const entries = $entriesByFilterType(filter);
+
+    return ul("", { id: "todo-list" }).c(map(entries, (e) => EntryField(e).k(e.value.id)));
+  };
+});
+```
