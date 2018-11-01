@@ -14,8 +14,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Declarative rendering with "Virtual DOM"
 - Components
 - Extensible synthetic event subsystem
-- DOM events on Component nodes
-- Synchronous and deterministic syncing algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
+- Synchronous and deterministic update algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
 - Optional [scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
@@ -69,13 +68,14 @@ render(
 `render()` function has a standard interface that is used in many Virtual DOM libraries. First argument is used to
 specify a Virtual DOM to render, and the second one is a DOM node that will be used as a container.
 
-Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes and builder pattern to assign
-properties. There are different cons and pros for this API compared to JSX.
+Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes and
+[method chaining](https://en.wikipedia.org/wiki/Method_chaining) to assign properties. There are different pros and cons
+for this API compared to JSX.
 
-Factory functions for HTML elements are declared in the `ivi-html` package, `h1()` function will instantiate a Virtual
-DOM node for a `<h1>` element. Method `t()` is used to assign a text content.
+Factory functions for HTML elements are declared in the `ivi-html` package. `h1()` function will instantiate a Virtual
+DOM node for a `<h1>` element, and method `t()` is used to assign a text content.
 
-### Stateful Components
+### Components
 
 Components API were heavily influenced by the new [React hooks API](https://reactjs.org/docs/hooks-intro.html).
 
@@ -83,14 +83,15 @@ There are several differences in the ivi API that solve major flaws in the React
 
 - [Weird hooks rules](https://reactjs.org/docs/hooks-rules.html)
 - Excessive memory allocations each time component is updated
-- [Memory leaking](https://codesandbox.io/s/lz61v39r7) caused by
+- ["Memory leaking"](https://codesandbox.io/s/lz61v39r7) caused by
 [closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
 
-All components has a simple interface `(component) => (props) => VDOM`.
+All components has an interface `(component) => (props) => VDOM`.
 
-Outer function is used to store internal state, creating dataflow pipelines and attaching hooks. It is important that
-outer function doesn't have any access to the `props` to prevent unexpected "memory leaks". `component` is an opaque
-object, it is used as a first argument for almost all component functions like `invalidate()`, `useEffect()` etc.
+Outer function is used to store internal state, creating dataflow pipelines and attaching hooks and should return an
+"update" function. It is important that outer function doesn't have any access to the `props` to prevent unexpected
+"memory leaks". `component` is an opaque object, it is used as a first argument for almost all component functions like
+`invalidate()`, `useEffect()` etc.
 
 Internal "update" function passes input data through dataflow pipelines and returns a Virtual DOM.
 
@@ -141,8 +142,7 @@ const Counter = component((c) => {
 `component()` function creates Virtual DOM factory functions for component nodes. All component factory functions has an
 interface `Factory(props)`.
 
-Stateful components should have an interface `(component) => (props) => vdom`. In the outer function we are declaring
-internal state `counter`, it just a plain javascript.
+In the outer function we are declaring internal state `counter`.
 
 ```js
   const ticker = useEffect((interval) => {
@@ -153,7 +153,7 @@ internal state `counter`, it just a plain javascript.
 
 `useEffect()` creates a function that will be used to perform side effects. Side effect functions can optionally return
 a cleanup function, it will be automatically invoked when component is unmounted from the document or when input
-properties are modified.
+property `interval` is modified.
 
 ```js
   const ticker = useEffect((interval) => {
@@ -171,7 +171,7 @@ update, we are using `invalidate()` function. Invalidate function will mark comp
 dirty checking.
 
 Periodic timers registered with `setInterval()` function should be unregistered when they are no longer used. To
-unregister periodic timer we are creating a cleanup function and returning it in the `ticker()` function.
+unregister periodic timer we are creating and returning a cleanup function `() => clearInterval(id)`.
 
 ```js
   return (interval) => (
@@ -191,26 +191,31 @@ Virtual DOM in ivi is implemented as a synchronous and deterministic single pass
 single pass and two pass algorithms is that we don't generate "patch" objects and instead of that we immediately
 apply all detected changes.
 
-Reconciliation algorithm always starts working from the root nodes in dirty checking mode. In dirty checking mode
+One of the major ideas that heavily influenced the design of the reconciliation algorithm in ivi were that instead of
+optimizing for an infinitely large number of DOM nodes, it is better to optimize for real world use cases. Optimizing
+for a large number of DOM nodes doesn't make any sense, because when there is an insane number of DOM nodes in the
+document, recalc style, reflow, etc will be so slow, so that application will be completely unusable. That is why
+reconciliation algorithm always starts working from the root nodes in dirty checking mode. In dirty checking mode
 it just checks selectors and looks for dirty components. This approach makes it easy to implement contexts, selectors,
 update priorities and significantly reduces code complexity.
 
-All data structures are optimized to make sure that they are using as least memory as possible, [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) with [different "hacks"](https://github.com/localvoid/ivi/blob/029adbd368acebca2501d59503c65bf34c0d2411/packages/ivi/src/vdom/sync.ts#L74) are
+All data structures are optimized to make sure that they are using as least memory as possible, [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) with different ["hacks"](https://github.com/localvoid/ivi/blob/029adbd368acebca2501d59503c65bf34c0d2411/packages/ivi/src/vdom/sync.ts#L74) are
 used everywhere in the code. All frequently accessed data structures always using the same shape, almost all call sites
 in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html). Frequently used
 DOM attributes are stored directly on the Virtual DOM nodes.
 
 Virtual DOM nodes are storing children in circular linked lists instead of the traditional approach with arrays. With
-circular linked lists, passing children as props doesn't require any memory copies, children normalization and imlicit
-key assignment is super cheap, there are less special cases in the children reconciliation algorithm.
+circular linked lists, passing children as props to components or simple functions doesn't require any memory copies,
+children normalization and imlicit key assignment is super cheap, there are less special cases in the children
+reconciliation algorithm.
 
 Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
-cases. It is using [LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm to find the
-minimum number of DOM operations.
+cases. To find the minimum number of DOM operations when nodes are rearranged it is using a
+[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm.
 
-Synthetic events implementation doesn't store any references to Virtual DOM node on the DOM nodes. Event dispatcher
-implements two-phase event flow and goes through Virtual DOM tree. It allows attaching DOM events not just on elements,
-but also on components.
+Synthetic events are usually implemented by storing references to Virtual DOM nodes on the DOM nodes, ivi is using a
+different approach that doesn't require storing any data on the DOM nodes. Event dispatcher implements two-phase event
+flow and goes through Virtual DOM tree. It allows us to attach DOM events not just on elements, but also on components.
 
 ## Performance
 
@@ -339,7 +344,8 @@ sending data snapshots that doesn't contain any information how nodes should be 
 
 ### Virtual DOM
 
-Virtual DOM API is using factory functions to instantiate nodes and builder pattern to assign properties.
+Virtual DOM API is using factory functions to instantiate Virtual DOM nodes and
+[method chaining](https://en.wikipedia.org/wiki/Method_chaining) to assign properties.
 
 ```ts
 import { onClick } from "ivi";
@@ -360,43 +366,20 @@ type VNodeElementFactory<T, N extends Element> = (className?: string, attrs?: T,
 
 #### Methods
 
-##### Key
-
 ```ts
 interface VNode<P> {
   k(key: any): this;
+  e(events: Array<EventHandler | null> | EventHandler | null): this;
+  t(text: string | number): this;
+  c(...children: Array<VNode<any> | string | number | null>): this;
 }
 ```
 
 Method `k()` is used to assign keys, they are used to uniquely identify virtual nodes among its siblings.
 
-##### Events
-
-```ts
-interface VNode<P> {
-  e(events: Array<EventHandler | null> | EventHandler | null): this;
-}
-```
-
 Method `e()` is used to assign events.
 
-##### Text Content
-
-```ts
-interface VNode<P> {
-  t(text: string | number): this;
-}
-```
-
 Method `t()` assigns a text content to a virtual dom node.
-
-##### Children
-
-```ts
-interface VNode<P> {
-  c(...children: Array<VNode<any> | string | number | null>): this;
-}
-```
 
 Method `c()` is a variadic method and accepts variable number of children. Children argument can be a string, number,
 virtual dom node or a collection of virtual dom nodes created with functions like `map()`, `mapRange()`, `mapIterable()`
@@ -411,7 +394,9 @@ function fragment(...args: Array<VNode | string | number | null>): VNode | null;
 `fragment()` is a variadic function that creates a fragment children collection.
 
 ```ts
-const Button = statelessComponent((slot) => div("button").c(slot));
+function Button(slot) {
+  return div("button").c(slot);
+}
 
 render(
   Button(
@@ -427,13 +412,13 @@ render(
 
 #### Dynamic lists
 
-`map()`, `mapRange()` and `mapIterable()` functions are used to generate dynamic lists with keyed elements.
-
 ```ts
 function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null;
 function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null;
 function mapIterable<T>(iterable: IterableIterator<VNode<T>>): VNode<T> | null;
 ```
+
+`map()`, `mapRange()` and `mapIterable()` functions are used to generate dynamic lists with keyed elements.
 
 `map()` creates a children collection with the results of calling a provided function on every element in the calling
 array.
@@ -569,6 +554,145 @@ function render(node: VNode<any> | null, container: Element, flags?: InvalidateF
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
+
+### Components
+
+#### Virtual DOM node factory
+
+```ts
+function component(
+  c: (c: Component<undefined>) => () => VNode,
+): () => VNode<undefined>;
+
+function component<P>(
+  c: (c: Component<P>) => (props: P) => VNode,
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
+```
+
+`component()` function creates a factory function that will instantiate virtual DOM nodes for the component.
+
+```ts
+import { component } from "ivi";
+
+const Hello = component<string>(() => (text) = div().t(`Hello ${text}`));
+```
+
+#### Hooks
+
+##### `useEffect()`
+
+```ts
+function useEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+
+`useEffect()` lets you perform side effects, it replaces `componentDidMount()`, `componentWillUnmount()` and
+`componentDidUpdate()` methods of a class-based components API.
+
+##### `useSelect()`
+
+```ts
+function useSelect<T>(
+  c: Component,
+  selector: (prev: T | undefined) => T,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): () => T;
+function useSelect<T, P>(
+  c: Component,
+  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | undefined, props: P) => T,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): undefined extends P ? () => T : (props: P) => T;
+function useSelect<T, P, C>(
+  c: Component,
+  selector: (prev: T | undefined, props: P, context: C) => T,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): undefined extends P ? () => T : (props: P) => T;
+```
+
+`useSelect()` creates a selector hook.
+
+Selectors are used for sideways data loading and accessing current context.
+
+```js
+const Pixel = component((c) => {
+  const getColor = useSelect(c, (prev, i, { colors }) => colors[i]);
+
+  return (i) => span("pixel", _, { "background": getColor(i) });
+});
+```
+
+##### `useDetached()`
+
+```ts
+function useDetached(c: Component, hook: () => void): void;
+```
+
+`useDetached()` creates a hook that will be invoked when component is detached from the document.
+
+#### Additional Functions
+
+##### `invalidate()`
+
+```ts
+function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void;
+```
+
+`invalidate()` marks component as dirty and triggers an update.
+
+#### Using a Custom Hook
+
+```js
+function useFriendStatus(c) {
+  let isOnline = null;
+
+  function handleStatusChange(status) {
+    isOnline = status.isOnline;
+    invalidate(c);
+  }
+
+  const subscribe = useEffect(c, (friendID) => (
+    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange),
+    () => { ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange); }
+  ));
+
+  return (friendID) => {
+    subscribe(friendID);
+    return isOnline;
+  };
+}
+
+const FriendStatus = component((c) => {
+  const getFriendStatus = useFriendStatus(c);
+
+  return (props) => {
+    const isOnline = getFriendStatus(props.friend.id);
+
+    if (isOnline === null) {
+      return t("Loading...");
+    }
+    return t(isOnline ? "Online" : "Offline");
+  };
+});
+```
+
+##### Pass Information Between Hooks
+
+```js
+const EntryList = component((c) => {
+  const getFilter = useSelect(c, () => query().filter());
+  const getEntriesByFilterType = useSelect(c, (prev, filter) => (query().entriesByFilterType(filter).result));
+
+  return () => (
+    ul("", { id: "todo-list" }).c(
+      map(getEntriesByFilterType(getFilter()), (e) => EntryField(e).k(e.value.id))
+    )
+  );
+});
+```
 
 ### Examples and demo applications
 
