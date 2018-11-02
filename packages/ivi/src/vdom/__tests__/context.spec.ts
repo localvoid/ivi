@@ -2,7 +2,7 @@ import { t, component, useSelect, context } from "ivi";
 import { startRender, Static } from "./utils";
 
 const ContextTestPrinter = component((h) => {
-  const selector = useSelect<string, undefined, { value: string }>(h, (prev, props, ctx) => ctx.value);
+  const selector = useSelect<string, undefined, { value: string }>(h, (props, ctx) => ctx.value);
   return () => t(selector());
 });
 

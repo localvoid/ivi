@@ -62,7 +62,7 @@ describe(`dirty checking`, () => {
       let outerTest = -1;
       const c = ivi.component((h) => {
         const s = ivi.useSelect<number, undefined, { outer: number, inner: number }>(h,
-          (prev, _, { outer, inner }) => (innerTest = inner, outerTest = outer),
+          (_, { outer, inner }) => (innerTest = inner, outerTest = outer),
         );
         return () => (s(), html.div());
       });
@@ -93,7 +93,7 @@ describe(`dirty checking`, () => {
       let innerTest = -1;
       const C = ivi.component((h) => {
         const s = ivi.useSelect<number, undefined, { inner: number }>(h,
-          (prev, _, { inner }) => (innerTest = inner),
+          (_, { inner }) => (innerTest = inner),
         );
         return () => (s(), html.div());
       });

@@ -598,18 +598,17 @@ function useEffect<P>(
 ```ts
 function useSelect<T>(
   c: Component,
-  selector: (prev: T | undefined) => T,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  selector: (props?: undefined, context?: undefined, prev?: T | undefined) => T,
 ): () => T;
 function useSelect<T, P>(
   c: Component,
-  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | undefined, props: P) => T,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  selector: (props: P, context?: undefined, prev?: T | undefined) => T,
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 function useSelect<T, P, C>(
   c: Component,
-  selector: (prev: T | undefined, props: P, context: C) => T,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  selector: (props: P, context: C, prev?: T | undefined) => T,
+  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 ```
 
@@ -619,7 +618,7 @@ Selectors are used for sideways data loading and accessing current context.
 
 ```js
 const Pixel = component((c) => {
-  const getColor = useSelect(c, (prev, i, { colors }) => colors[i]);
+  const getColor = useSelect(c, (i, { colors }) => colors[i]);
 
   return (i) => span("pixel", _, { "background": getColor(i) });
 });
@@ -684,7 +683,7 @@ const FriendStatus = component((c) => {
 ```js
 const EntryList = component((c) => {
   const getFilter = useSelect(c, () => query().filter());
-  const getEntriesByFilterType = useSelect(c, (prev, filter) => (query().entriesByFilterType(filter).result));
+  const getEntriesByFilterType = useSelect(c, (filter) => (query().entriesByFilterType(filter).result));
 
   return () => (
     ul("", { id: "todo-list" }).c(

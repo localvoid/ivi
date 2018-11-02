@@ -21,7 +21,7 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  *
  *     const C = component<number>((h) => {
  *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (prev, id, context) => context.data[id],
+ *         (id, context) => context.data[id],
  *       );
  *
  *       return (id) => div().t(selector(id));
@@ -33,7 +33,7 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  */
 export function useSelect<T>(
   c: Component,
-  selector: (prev: T | undefined) => T,
+  selector: (props?: undefined, context?: undefined, prev?: T | undefined) => T,
 ): () => T;
 
 /**
@@ -43,7 +43,7 @@ export function useSelect<T>(
  *
  *     const C = component<number>((h) => {
  *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (prev, id, context) => context.data[id],
+ *         (id, context) => context.data[id],
  *       );
  *
  *       return (id) => div().t(selector(id));
@@ -55,7 +55,7 @@ export function useSelect<T>(
  */
 export function useSelect<T, P>(
   c: Component,
-  selector: undefined extends P ? (prev: T | undefined, props?: P) => T : (prev: T | undefined, props: P) => T,
+  selector: (props: P, context?: undefined, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -66,7 +66,7 @@ export function useSelect<T, P>(
  *
  *     const C = component<number>((h) => {
  *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (prev, id, context) => context.data[id],
+ *         (id, context) => context.data[id],
  *       );
  *
  *       return (id) => div().t(selector(id));
@@ -78,7 +78,7 @@ export function useSelect<T, P>(
  */
 export function useSelect<T, P, C>(
   c: Component,
-  selector: (prev: T | undefined, props: P, context: C) => T,
+  selector: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -88,7 +88,9 @@ export function useSelect<T, P, C>(
  * @example
  *
  *     const C = component<number>((c) => {
- *       const selector = useSelect<string, number, { data: string[] }>(c, (prev, id, context) => context.data[id]);
+ *       const selector = useSelect<string, number, { data: string[] }>(c,
+ *         (id, context) => context.data[id],
+ *       );
  *
  *       return (id) => div().t(selector(id));
  *     });
@@ -99,7 +101,7 @@ export function useSelect<T, P, C>(
  */
 export function useSelect<T, P, C extends {}>(
   c: Component,
-  selector: (prev: T | undefined, props: P, context: C) => T,
+  selector: (props: P, context: C, prev: T | undefined) => T,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
   const prevSelector = c.select;
@@ -112,7 +114,7 @@ export function useSelect<T, P, C extends {}>(
       return true;
     }
     if (prevState !== void 0) {
-      const nextState = selector(prevState, prevProps, context as C);
+      const nextState = selector(prevProps, context as C, prevState);
       lastChecked = dirtyCheckCounter();
       if (prevState !== nextState) {
         prevState = nextState;
@@ -130,7 +132,7 @@ export function useSelect<T, P, C extends {}>(
       prevState = void 0;
     }
     if (prevState === void 0 || lastChecked < dirtyCheckCounter()) {
-      prevState = selector(prevState, nextProps, getContext() as C);
+      prevState = selector(nextProps, getContext() as C, prevState);
     }
     prevProps = nextProps;
     return prevState!;
