@@ -4,7 +4,7 @@ import {
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { syncEvents, attachEvents, detachEvents } from "../events/sync_events";
-import { SyncableValue } from "./syncable_value";
+import { AttributeDirective } from "./attribute_directive";
 import { VNodeFlags, VNode, getDOMNode } from "./vnode";
 import { ComponentDescriptor, Component } from "./component";
 import { setContext, getContext, restoreContext } from "./context";
@@ -941,15 +941,15 @@ function syncStyle(
 function syncAttr(
   element: Element,
   key: string,
-  prev: string | number | boolean | SyncableValue<any> | undefined,
-  next: string | number | boolean | SyncableValue<any> | undefined,
+  prev: string | number | boolean | AttributeDirective<any> | undefined,
+  next: string | number | boolean | AttributeDirective<any> | undefined,
 ): void {
   if (prev !== next) {
     if (typeof next === "object") {
-      next.s(
+      next.u(
         element,
         key,
-        prev === void 0 ? void 0 : (prev as SyncableValue<any>).v,
+        prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
         next.v,
       );
     } else {
@@ -974,8 +974,8 @@ function syncAttr(
  */
 function syncAttrs(
   element: Element,
-  a: { [key: string]: string | number | boolean | SyncableValue<any> | undefined } | undefined,
-  b: { [key: string]: string | number | boolean | SyncableValue<any> | undefined } | undefined,
+  a: { [key: string]: string | number | boolean | AttributeDirective<any> | undefined } | undefined,
+  b: { [key: string]: string | number | boolean | AttributeDirective<any> | undefined } | undefined,
 ): void {
   let key: string;
 

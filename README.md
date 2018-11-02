@@ -461,50 +461,52 @@ render(
 );
 ```
 
-#### Syncable Values
+#### Attribute Directives
 
-By default, syncing algorithm assigns all attributes with `setAttribute()` and removes them with `removeAttribute()`,
-but sometimes we need to assign properties or assign attributes from different namespaces. To solve this problems, ivi
-introduces the concept of [Syncable Values](../advanced/syncable-value.md), this values can extend the default behavior
-of the attribute syncing algorithm. It significantly reduces complexity, because we no longer need to bake in all this
-edge cases into syncing algorithm, also it gives an additional escape hatch to manipulate DOM elements directly.
+By default, reconciliation algorithm assigns all attributes with `setAttribute()` and removes them with
+`removeAttribute()` functions, but sometimes we need to assign properties or assign attributes from different
+namespaces. To solve this problems, ivi introduces the concept of Attribute Directives, this values can extend the
+default behavior of the attributes reconciliation algorithm. It significantly reduces code complexity, because we no
+longer need to bake in all this edge cases into reconciliation algorithm. Also it gives an additional escape hatch to
+manipulate DOM elements directly.
 
-There are several syncable values defined in ivi packages:
+There are several attribute directives defined in ivi packages:
 
 ```ts
 // ivi
-function PROPERTY<T>(v: T | undefined): SyncableValue<T>;
-function UNSAFE_HTML(v: string | undefined): SyncableValue<string>;
+function PROPERTY<T>(v: T | undefined): AttributeDirective<T>;
+function UNSAFE_HTML(v: string | undefined): AttributeDirective<string>;
 
 // ivi-html
-function VALUE(v: string | number | undefined): SyncableValue<string | number>;
-function CHECKED(v: boolean | undefined): SyncableValue<boolean>;
+function VALUE(v: string | number | undefined): AttributeDirective<string | number>;
+function CHECKED(v: boolean | undefined): AttributeDirective<boolean>;
 
 // ivi-svg
-function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
-function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean>;
+function XML_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
+function XLINK_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
 
 // ivi-scheduler
-function AUTOFOCUS(v: boolean | undefined): SyncableValue<boolean>;
+function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean>;
 ```
 
-`PROPERTY()` function creates a SyncableValue that assigns a property to a property name derived from the `key`
+`PROPERTY()` function creates an `AttributeDirective` that assigns a property to a property name derived from the `key`
 of the attribute.
 
-`UNSAFE_HTML()` function creates a SyncableValue that assigns an `innerHTML` property to an Element.
+`UNSAFE_HTML()` function creates an `AttributeDirective` that assigns an `innerHTML` property to an Element.
 
-`VALUE()` function creates a SyncableValue that assigns a `value` property to an HTMLInputElement or HTMLTextAreaElement.
+`VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement or
+HTMLTextAreaElement.
 
-`CHECKED()` function creates a SyncableValue that assigns a `checked` property to an HTMLInputElement.
+`CHECKED()` function creates an `AttributeDirective` that assigns a `checked` property to an HTMLInputElement.
 
-`XML_ATTR()` function creates a SyncableValue that assigns an attribute from XML namespace, attribute name is
+`XML_ATTR()` function creates an `AttributeDirective` that assigns an attribute from XML namespace, attribute name is
 derived from the `key`.
 
-`XLINK_ATTR()` function creates a SyncableValue that assigns an attribute from XLINK namespace, attribute name
+`XLINK_ATTR()` function creates an `AttributeDirective` that assigns an attribute from XLINK namespace, attribute name
 is derived from the `key`.
 
-`AUTOFOCUS()` function creates a SyncableValue that triggers focus when value is synced from `undefined` or `false` to
-`true`.
+`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is synced from `undefined` or
+`false` to `true`.
 
 ##### Example
 
@@ -513,6 +515,52 @@ import { input, CHECKED } from "ivi-html";
 
 const e = input("", { type: "checked": CHECKED(true) })
 ```
+
+##### Custom Attribute Directives
+
+```ts
+export interface AttributeDirective<P> {
+  v: P | undefined;
+  s: (element: Element, key: string, prev: P | undefined, next: P | undefined) => void;
+}
+```
+
+```ts
+function updateCustomValue(element: Element, key: string, prev: number | undefined, next: number | undefined) {
+  if (prev !== next) {
+    (element as any)._custom = next;
+  }
+}
+```
+
+First thing that we need to do is to create an update function. Update function has 4 arguments: `element` will contain
+a target DOM element, `key` is an attribute name that was used to assign this value, `prev` is a previous value and
+`next` is the current value.
+
+In this function we are just checking that the value is changed, and if it is changed, we are assigning it to the
+`_custom` property.
+
+```ts
+export function CUSTOM_VALUE(v: number | undefined): AttributeDirective<number> {
+  return (v === undefined) ? ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: syncCustomValue };
+}
+```
+
+Now we need to create a function that will be used to instantiate `AttributeDirective` objects. In this function we are
+using predefined `ATTRIBUTE_VALUE_SKIP_UNDEFINED` attribute directive to ignore updates when the value is `undefined`,
+otherwise we are creating a new `AttributeDirective` object with the value `v` and update function `updateCustomValue`.
+
+###### Predefined Attribute Directives
+
+```ts
+const ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED: AttributeDirective<any>;
+const ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED: AttributeDirective<any>;
+```
+
+`ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED` has `undefined` value with `NOOP` synchronization function.
+
+`ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED` has `undefined` value and it will remove `key` attribute from the DOM
+element.
 
 #### Additional functions
 

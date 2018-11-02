@@ -2,15 +2,12 @@
 
 ## General
 
-- [Virtual DOM](general/virtual-dom.md)
-- [Components](general/components.md)
 - [Synthetic Events](general/synthetic-events.md)
 
 ## Advanced
 
 - [Scheduler](advanced/scheduler.md)
 - [TypeScript Enums](advanced/typescript-enums.md)
-- [Syncable Value](advanced/syncable-value.md)
 - [Security](advanced/security.md)
 
 ## Misc

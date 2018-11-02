@@ -1,4 +1,4 @@
-import { SyncableValue } from "../vdom/syncable_value";
+import { AttributeDirective } from "../vdom/attribute_directive";
 
 /* tslint:disable:max-line-length no-empty-interface */
 
@@ -25,7 +25,7 @@ export declare interface ElementAttrs {
    *
    *   const n = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
    */
-  unsafeHTML?: SyncableValue<string>;
+  unsafeHTML?: AttributeDirective<string>;
   /**
    * Provides a way to direct a user to a specific field when element is instantiated. This can provide both direction
    * and convenience for a user, reducing the need to click or tab to a field.
@@ -34,9 +34,9 @@ export declare interface ElementAttrs {
    *
    *   const n = input("", { autofocus: AUTOFOCUS(true) });
    */
-  autofocus?: SyncableValue<boolean>;
+  autofocus?: AttributeDirective<boolean>;
 
-  [key: string]: string | number | boolean | SyncableValue<any> | undefined;
+  [key: string]: string | number | boolean | AttributeDirective<any> | undefined;
 }
 
 export declare interface HTMLElementAttrs extends ElementAttrs {
@@ -669,7 +669,7 @@ export declare interface HTMLInputElementAttrs extends HTMLElementAttrs {
    *
    *   const n = input("", { type: "checked", value: INPUT_VALUE("abc") });
    */
-  checked?: SyncableValue<boolean>;
+  checked?: AttributeDirective<boolean>;
   /**
    * Input value.
    *
@@ -677,7 +677,7 @@ export declare interface HTMLInputElementAttrs extends HTMLElementAttrs {
    *
    *   const n = input("", { value: INPUT_VALUE("abc") });
    */
-  value?: SyncableValue<string | number>;
+  value?: AttributeDirective<string | number>;
 }
 
 export declare interface HTMLUnknownElementAttrs extends HTMLElementAttrs {
@@ -1163,7 +1163,7 @@ export declare interface HTMLTextAreaElementAttrs extends HTMLElementAttrs {
    *
    *   const n = textarea("", { value: TEXTAREA_VALUE("abc") });
    */
-  value?: SyncableValue<string | number>;
+  value?: AttributeDirective<string | number>;
 }
 
 export declare interface HTMLTitleElementAttrs extends HTMLElementAttrs {

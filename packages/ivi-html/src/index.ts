@@ -14,9 +14,9 @@ import {
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
   CSSStyleProps,
 
-  SYNCABLE_VALUE_SKIP_UNDEFINED,
+  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
 
-  VNode, VNodeFlags, SyncableValue,
+  VNode, VNodeFlags, AttributeDirective,
 } from "ivi";
 
 const enum TagId {
@@ -121,29 +121,29 @@ const enum TagId {
 }
 
 /**
- * {@link SyncableValue} with `""` value and {@link syncValue} sync function.
+ * {@link AttributeDirective} with `""` value and {@link updateValue} sync function.
  */
-const VALUE_EMPTY_STRING: SyncableValue<string | number> = { v: "", s: syncValue };
+const VALUE_EMPTY_STRING: AttributeDirective<string | number> = { v: "", u: updateValue };
 
 /**
- * {@link SyncableValue} with `false` value and {@link syncChecked} sync function.
+ * {@link AttributeDirective} with `false` value and {@link updateChecked} sync function.
  */
-const CHECKED_FALSE: SyncableValue<boolean> = { v: false, s: syncChecked };
+const CHECKED_FALSE: AttributeDirective<boolean> = { v: false, u: updateChecked };
 
 /**
- * {@link SyncableValue} with `true` value and {@link syncChecked} sync function.
+ * {@link AttributeDirective} with `true` value and {@link updateChecked} sync function.
  */
-const CHECKED_TRUE: SyncableValue<boolean> = { v: true, s: syncChecked };
+const CHECKED_TRUE: AttributeDirective<boolean> = { v: true, u: updateChecked };
 
 /**
- * Synchronization function for {@link SyncableValue} created with {@link VALUE} function.
+ * Synchronization function for {@link AttributeDirective} created with {@link VALUE} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncValue(
+function updateValue(
   element: Element,
   key: string,
   prev: string | number | undefined,
@@ -161,14 +161,14 @@ function syncValue(
 }
 
 /**
- * Synchronization function for {@link SyncableValue} created with {@link CHECKED} function.
+ * Synchronization function for {@link AttributeDirective} created with {@link CHECKED} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncChecked(
+function updateChecked(
   element: Element,
   key: string,
   prev: boolean | undefined,
@@ -186,7 +186,7 @@ function syncChecked(
 }
 
 /**
- * VALUE function creates a {@link SyncableValue} that assigns a `value` property to an HTMLInputElement or
+ * VALUE function creates a {@link AttributeDirective} that assigns a `value` property to an HTMLInputElement or
  * HTMLTextAreaElement.
  *
  * `undefined` values are ignored.
@@ -196,18 +196,18 @@ function syncChecked(
  *   const e = input("", { value: VALUE("value") });
  *
  * @param v - Value
- * @returns {@link SyncableValue}
+ * @returns {@link AttributeDirective}
  */
-export function VALUE(v: string | number | undefined): SyncableValue<string | number> {
+export function VALUE(v: string | number | undefined): AttributeDirective<string | number> {
   return (v === void 0) ?
-    SYNCABLE_VALUE_SKIP_UNDEFINED :
+    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED :
     v === "" ?
       VALUE_EMPTY_STRING :
-      { v, s: syncValue };
+      { v, u: updateValue };
 }
 
 /**
- * CHECKED function creates a {@link SyncableValue} that assigns a `checked` property to an HTMLInputElement.
+ * CHECKED function creates a {@link AttributeDirective} that assigns a `checked` property to an HTMLInputElement.
  *
  * `undefined` values are ignored.
  *
@@ -216,11 +216,11 @@ export function VALUE(v: string | number | undefined): SyncableValue<string | nu
  *   const e = input("", { checked: CHECKED(true) });
  *
  * @param v - Checked value
- * @returns {@link SyncableValue}
+ * @returns {@link AttributeDirective}
  */
-export function CHECKED(v: boolean | undefined): SyncableValue<boolean> {
+export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
   return (v === void 0) ?
-    SYNCABLE_VALUE_SKIP_UNDEFINED as any as SyncableValue<boolean> :
+    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
     v ? CHECKED_TRUE : CHECKED_FALSE;
 }
 

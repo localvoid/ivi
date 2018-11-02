@@ -1,4 +1,4 @@
-import { VNode, VNodeFlags, SyncableValue, ComponentDescriptor } from "ivi";
+import { VNode, VNodeFlags, AttributeDirective, ComponentDescriptor } from "ivi";
 
 export interface SnapshotOptions {
   readonly ignoreEvents?: boolean;
@@ -81,7 +81,7 @@ function renderAttrsToSnapshot(il: number, props: { [key: string]: any }): strin
   for (const key of keys) {
     let value = props[key];
     if (typeof value === "object") {
-      value = value as SyncableValue<any>;
+      value = value as AttributeDirective<any>;
       if (value !== void 0) {
         result += `\n${indent(il)}${key}="${value.v}"`;
       }

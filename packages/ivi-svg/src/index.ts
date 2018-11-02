@@ -16,9 +16,9 @@ import {
   CSSStyleProps,
 
   elementSetAttributeNS, XML_NAMESPACE, XLINK_NAMESPACE,
-  SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED,
+  ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,
 
-  VNode, VNodeFlags, SyncableValue,
+  VNode, VNodeFlags, AttributeDirective,
 } from "ivi";
 
 const enum TagId {
@@ -93,25 +93,25 @@ const enum TagId {
   View = 69,
 }
 
-const SYNCABLE_VALUE_SET_XML_ATTR_EMPTY_STRING = {
+const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING = {
   v: "",
-  s: (element: Element, key: string, prev: any) => {
+  u: (element: Element, key: string, prev: any) => {
     if (prev !== "") {
       elementSetAttributeNS.call(element, XML_NAMESPACE, key, "");
     }
   },
 };
 
-const SYNCABLE_VALUE_SET_XLINK_ATTR_EMPTY_STRING = {
+const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_STRING = {
   v: "",
-  s: (element: Element, key: string, prev: any) => {
+  u: (element: Element, key: string, prev: any) => {
     if (prev !== "") {
       elementSetAttributeNS.call(element, XLINK_NAMESPACE, key, "");
     }
   },
 };
 
-function syncNSAttr(
+function updateNSAttr(
   element: Element,
   ns: string,
   key: string,
@@ -124,68 +124,68 @@ function syncNSAttr(
 }
 
 /**
- * Synchronization function for {@link SyncableValue} created with {@link XML_ATTR} function.
+ * Update function for an {@link AttributeDirective} created with {@link XML_ATTR} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncXMLAttr(
+function updateXMLAttr(
   element: Element,
   key: string,
   prev: string | number | boolean | undefined,
   next: string | number | boolean | undefined,
 ) {
-  syncNSAttr(element, XML_NAMESPACE, key, prev, next);
+  updateNSAttr(element, XML_NAMESPACE, key, prev, next);
 }
 
 /**
- * Synchronization function for {@link SyncableValue} created with {@link XLINK_ATTR} function.
+ * Update function for an {@link AttributeDirective} created with {@link XLINK_ATTR} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncXLinkAttr(
+function updateXLinkAttr(
   element: Element,
   key: string,
   prev: string | number | boolean | undefined,
   next: string | number | boolean | undefined,
 ) {
-  syncNSAttr(element, XLINK_NAMESPACE, key, prev, next);
+  updateNSAttr(element, XLINK_NAMESPACE, key, prev, next);
 }
 
 /**
- * Helper function that creates a {@link SyncableValue} for namespaced attribute.
+ * Helper function that creates a {@link AttributeDirective} for namespaced attribute.
  *
  * @param v - Attribute value
- * @param emptyString - Syncable value that should be used for empty strings
+ * @param emptyString - Attribute directive that should be used for empty strings
  * @param s - Synchronization function
  */
 function NS_ATTR(
   v: string | number | boolean | undefined,
-  emptyString: SyncableValue<string | number | boolean>,
-  s: (
+  emptyString: AttributeDirective<string | number | boolean>,
+  u: (
     element: Element,
     key: string,
     prev: string | number | boolean | undefined,
     next: string | number | boolean | undefined,
   ) => void,
-): SyncableValue<string | number | boolean> {
+): AttributeDirective<string | number | boolean> {
   if (typeof v === "boolean") {
     if (v) {
       return emptyString;
     }
     v = void 0;
   }
-  return (v === void 0) ? SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED : { v, s };
+  return (v === void 0) ? ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED : { v, u };
 }
 
 /**
- * XML_ATTR function creates a {@link SyncableValue} that assigns an attribute from XML namespace, attribute name is
- * derived from the `key`.
+ * XML_ATTR function creates an {@link AttributeDirective} that assigns an attribute from XML namespace, attribute name
+ * is derived from the `key`.
  *
  * `undefined` values are removed.
  *
@@ -194,15 +194,15 @@ function NS_ATTR(
  *   const e = circle("", { "xml:text": XML_ATTR("abc") });
  *
  * @param v - Value
- * @returns {@link SyncableValue}
+ * @returns {@link AttributeDirective}
  */
-export function XML_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean> {
-  return NS_ATTR(v, SYNCABLE_VALUE_SET_XML_ATTR_EMPTY_STRING, syncXMLAttr);
+export function XML_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean> {
+  return NS_ATTR(v, ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING, updateXMLAttr);
 }
 
 /**
- * XLINK_ATTR function creates a {@link SyncableValue} that assigns an attribute from XLINK namespace, attribute name is
- * derived from the `key`.
+ * XLINK_ATTR function creates an {@link AttributeDirective} that assigns an attribute from XLINK namespace, attribute
+ * name is derived from the `key`.
  *
  * `undefined` values are removed.
  *
@@ -211,10 +211,10 @@ export function XML_ATTR(v: string | number | boolean | undefined): SyncableValu
  *   const e = circle("", { "xlink:text": XLINK_ATTR("abc") });
  *
  * @param v - Value
- * @returns {@link SyncableValue}
+ * @returns {@link AttributeDirective}
  */
-export function XLINK_ATTR(v: string | number | boolean | undefined): SyncableValue<string | number | boolean> {
-  return NS_ATTR(v, SYNCABLE_VALUE_SET_XLINK_ATTR_EMPTY_STRING, syncXLinkAttr);
+export function XLINK_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean> {
+  return NS_ATTR(v, ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_STRING, updateXLinkAttr);
 }
 
 /* tslint:disable:max-line-length */

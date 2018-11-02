@@ -84,10 +84,11 @@ export { debugSub, debugPub } from "./debug/pubsub";
 // Virtual DOM
 export { setContext, restoreContext, getContext } from "./vdom/context";
 export {
-  SyncableValue,
-  SYNCABLE_VALUE_SKIP_UNDEFINED, SYNCABLE_VALUE_REMOVE_ATTR_UNDEFINED, SYNCABLE_VALUE_REMOVE_EVENT_UNDEFINED,
+  AttributeDirective,
+  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED, ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,
+  ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED,
   PROPERTY, UNSAFE_HTML, EVENT,
-} from "./vdom/syncable_value";
+} from "./vdom/attribute_directive";
 export {
   ComponentDescriptor,
 } from "./vdom/component";

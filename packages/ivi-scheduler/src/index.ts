@@ -1,5 +1,5 @@
 import {
-  RepeatableTaskList, runRepeatableTasks, catchError, SyncableValue, SYNCABLE_VALUE_SKIP_UNDEFINED,
+  RepeatableTaskList, runRepeatableTasks, catchError, AttributeDirective, ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
   InvalidateFlags, dirtyCheck,
 } from "ivi";
 
@@ -352,14 +352,14 @@ export function updateHandler(flags?: InvalidateFlags) {
 }
 
 /**
- * Synchronization function for {@link SyncableValue} created with {@link AUTOFOCUS} function.
+ * Synchronization function for {@link AttributeDirective} created with {@link AUTOFOCUS} function.
  *
  * @param element - Target element
  * @param key - Attribute key
  * @param prev - Previous value
  * @param next - Next value
  */
-function syncAutofocus(
+function updateAutofocus(
   element: Element,
   key: string,
   prev: boolean | undefined,
@@ -371,17 +371,17 @@ function syncAutofocus(
 }
 
 /**
- * {@link SyncableValue} with `false` value and {@link syncChecked} sync function.
+ * {@link AttributeDirective} with `false` value and {@link updateAutofocus} sync function.
  */
-const AUTOFOCUS_FALSE: SyncableValue<boolean> = { v: false, s: syncAutofocus };
+const AUTOFOCUS_FALSE: AttributeDirective<boolean> = { v: false, u: updateAutofocus };
 
 /**
- * {@link SyncableValue} with `true` value and {@link syncChecked} sync function.
+ * {@link AttributeDirective} with `true` value and {@link updateAutofocus} sync function.
  */
-const AUTOFOCUS_TRUE: SyncableValue<boolean> = { v: true, s: syncAutofocus };
+const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocus };
 
 /**
- * AUTOFOCUS function creates a {@link SyncableValue} that sets autofocus on an element.
+ * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
  *
  * `undefined` values are ignored.
  *
@@ -390,10 +390,10 @@ const AUTOFOCUS_TRUE: SyncableValue<boolean> = { v: true, s: syncAutofocus };
  *   const e = input("", { autofocus: AUTOFOCUS(true) });
  *
  * @param v - Autofocus state
- * @returns {@link SyncableValue}
+ * @returns {@link AttributeDirective}
  */
-export function AUTOFOCUS(v: boolean | undefined): SyncableValue<boolean> {
+export function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean> {
   return (v === void 0) ?
-    SYNCABLE_VALUE_SKIP_UNDEFINED as any as SyncableValue<boolean> :
+    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
     v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;
 }
