@@ -89,9 +89,7 @@ export {
   ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED,
   PROPERTY, UNSAFE_HTML, EVENT,
 } from "./vdom/attribute_directive";
-export {
-  ComponentDescriptor,
-} from "./vdom/component";
+export { Component, ComponentDescriptor } from "./vdom/component";
 export {
   VNodeFlags, VNode, t,
   getDOMNode, getComponent,
@@ -103,6 +101,7 @@ export { element, component, statelessComponent, context } from "./vdom/factorie
 export { InvalidateFlags, UpdateFunction } from "./vdom/invalidate";
 export { setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect } from "./vdom/scheduler";
 export { useDetached, useSelect, useEffect } from "./vdom/hooks";
+export { selector } from "./vdom/utils";
 
 // Events
 export {
