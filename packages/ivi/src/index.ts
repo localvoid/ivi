@@ -99,9 +99,11 @@ export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
 export { element, component, statelessComponent, context } from "./vdom/factories";
 export { InvalidateFlags, UpdateFunction } from "./vdom/invalidate";
-export { setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect } from "./vdom/scheduler";
+export {
+  setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect, dirtyCheckCounter,
+} from "./vdom/scheduler";
 export { useDetached, useSelect, useEffect } from "./vdom/hooks";
-export { selector } from "./vdom/utils";
+export { selector, mutation } from "./vdom/utils";
 
 // Events
 export {
