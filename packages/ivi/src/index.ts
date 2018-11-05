@@ -33,9 +33,10 @@ export {
   _,
 } from "./core/shortcuts";
 export { append, unorderedArrayDelete } from "./core/array";
-export { NOOP, NOOP_FALSE } from "./core/noop";
+export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./core/noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./core/repeatable_task_list";
 export { shallowEqual } from "./core/equal";
+export { mut } from "./core/utils";
 
 // DOM
 export {
@@ -103,7 +104,7 @@ export {
   Scheduler, setupScheduler, BASIC_SCHEDULER, update, dirtyCheck, render, invalidate, effect, dirtyCheckCounter, dirty,
 } from "./vdom/scheduler";
 export { useDetached, useSelect, useEffect } from "./vdom/hooks";
-export { selector, mutation } from "./vdom/utils";
+export { selector } from "./vdom/utils";
 
 // Events
 export {

@@ -73,9 +73,8 @@ export const ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED = {
  * @param v - Property value
  * @returns {@link AttributeDirective}
  */
-export function PROPERTY<T>(v: T | undefined): AttributeDirective<T> {
-  return (v === void 0) ? ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: updateProperty };
-}
+export const PROPERTY = <T>(v: T | undefined): AttributeDirective<T> => (v === void 0) ?
+  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: updateProperty };
 
 /**
  * Update function for an {@link AttributeDirective} created with a {@link PROPERTY} function.
@@ -103,9 +102,8 @@ function updateProperty(element: Element, key: string, prev: any, next: any) {
  * @param v - innerHTML value
  * @returns {@link AttributeDirective}
  */
-export function UNSAFE_HTML(v: string | undefined): AttributeDirective<string> {
-  return (v === void 0) ? ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: updateUnsafeHTML };
-}
+export const UNSAFE_HTML = (v: string | undefined): AttributeDirective<string> => (v === void 0) ?
+  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: updateUnsafeHTML };
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
@@ -136,9 +134,8 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * @param v - Event handler
  * @returns {@link AttributeDirective}
  */
-export function EVENT(v: ((ev: Event) => void) | undefined): AttributeDirective<(ev: Event) => void> {
-  return (v === void 0) ? ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED : { v, u: updateEvent };
-}
+export const EVENT = (v: ((ev: Event) => void) | undefined): AttributeDirective<(ev: Event) => void> => (v === void 0) ?
+  ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED : { v, u: updateEvent };
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link EVENT} function.

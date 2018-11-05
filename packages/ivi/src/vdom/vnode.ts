@@ -320,9 +320,8 @@ export class VNode<P = any, N = Node> {
  * @param content Text content.
  * @returns VNode object.
  */
-export function t(content: string | number): VNode<string | number, Text> {
-  return new VNode(VNodeFlags.Text, null, content, "", void 0);
-}
+export const t = (content: string | number): VNode<string | number, Text> =>
+  new VNode(VNodeFlags.Text, null, content, "", void 0);
 
 /**
  * getDOMNode retrieves a reference to a DOM node from a VNode object.
@@ -330,9 +329,9 @@ export function t(content: string | number): VNode<string | number, Text> {
  * @param vnode - Virtual DOM node which contains reference to a DOM node.
  * @returns null if VNode doesn't have a reference to a DOM node.
  */
-export function getDOMNode<T extends Node>(vnode: VNode<any, T>): T | null {
+export function getDOMNode<T extends Node>(vnode: VNode): T | null {
   if ((vnode._f & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
-    return getDOMNode<T>(vnode._c as VNode<any, T>);
+    return getDOMNode<T>(vnode._c as VNode);
   }
   return vnode._i as T;
 }

@@ -17,14 +17,13 @@ export function addErrorHandler(handler: (e: any) => void): void {
  * @param fn - Function to decorate
  * @returns function decorated with a catchError
  */
-export function catchError<T>(fn: (...args: any[]) => T): (...args: any[]) => T {
-  return (...args: any[]) => {
+export function catchError<T>(fn: (...args: any[]) => T): (...args: any[]) => T;
+export function catchError<T>(fn: () => T): (...args: any[]) => T {
+  return function () {
     try {
-      return fn(...args);
+      return fn.apply(void 0, arguments);
     } catch (e) {
-      for (const handler of ERROR_HANDLERS) {
-        handler(e);
-      }
+      ERROR_HANDLERS.forEach((h) => { h(e); });
       throw e;
     }
   };

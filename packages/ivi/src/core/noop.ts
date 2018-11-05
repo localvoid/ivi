@@ -1,16 +1,18 @@
 /**
  * NOOP function.
  */
-export function NOOP(): void {
-  /* tslint:disable:no-empty */
-  /* tslint:enable:no-empty */
-}
+export const NOOP = () => { /**/ };
 
 /**
  * NOOP_FALSE function always returns `false` value.
  *
  * @returns `false` value.
  */
-export function NOOP_FALSE(): boolean {
-  return false;
-}
+export const NOOP_FALSE = () => false;
+
+/**
+ * NOOP_TRUE function always returns `true` value.
+ *
+ * @returns `true` value.
+ */
+export const NOOP_TRUE = () => true;

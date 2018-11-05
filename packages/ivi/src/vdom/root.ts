@@ -24,15 +24,9 @@ export interface Root {
 export const ROOTS = [] as Root[];
 
 /**
- * Find Root node in container.
+ * Find root node of a container.
  *
  * @param container - DOM Node that contains root node
  * @returns root node or undefined when root node doesn't exist
  */
-export function findRoot(container: Element): Root | void {
-  for (const root of ROOTS) {
-    if (root.container === container) {
-      return root;
-    }
-  }
-}
+export const findRoot = (container: Element) => ROOTS.find((r) => r.container === container);

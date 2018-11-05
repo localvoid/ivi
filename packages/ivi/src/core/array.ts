@@ -5,13 +5,7 @@
  * @param item - Item
  * @returns Array
  */
-export function append<T>(array: T[] | null, item: T): T[] {
-  if (array === null) {
-    return [item];
-  }
-  array.push(item);
-  return array;
-}
+export const append = <T>(array: T[] | null, item: T) => array === null ? [item] : (array.push(item), array);
 
 /**
  * unorderedArrayDelete deletes element from an array with O(1) complexity.

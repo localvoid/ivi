@@ -4,6 +4,4 @@
  * @param fn - Function
  * @returns Function name
  */
-export function getFunctionName(fn: Function): string {
-  return fn.displayName || fn.name || "(anonymous function)";
-}
+export const getFunctionName = (fn: Function) => fn.displayName || fn.name || "(anonymous function)";
