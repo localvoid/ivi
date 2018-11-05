@@ -44,7 +44,11 @@ export function selector<T, P, C>(
  *     const EntryView = component<Entry>((c) => {
  *       const dirtyCheckEntry = useEntry(c);
  *
- *       return (entry) => div().t(entry.title);
+ *       return (entry) => (
+ *         dirtyCheckEntry(entry),
+ *
+ *         div().t(entry.title)
+ *       )
  *     });
  *
  * @param s - Selector function.

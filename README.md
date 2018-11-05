@@ -88,8 +88,8 @@ There are several differences in the ivi API that solve major flaws in the React
 
 All components has an interface `(component) => (props) => VDOM`.
 
-Outer function is used to store internal state, creating dataflow pipelines and attaching hooks and should return an
-"update" function. It is important that outer function doesn't have any access to the `props` to prevent unexpected
+Outer function is used to store internal state, creating dataflow pipelines, attaching hooks and creating an "update"
+function. It is important that outer function doesn't have any access to the `props` to prevent unexpected
 "memory leaks". `component` is an opaque object, it is used as a first argument for almost all component functions like
 `invalidate()`, `useEffect()` etc.
 
@@ -204,9 +204,9 @@ used everywhere in the code. All frequently accessed data structures always usin
 in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html). Frequently used
 DOM attributes are stored directly on the Virtual DOM nodes.
 
-Virtual DOM nodes are storing children in circular linked lists instead of the traditional approach with arrays. With
-circular linked lists, passing children as props to components or simple functions doesn't require any memory copies,
-children normalization and imlicit key assignment is super cheap, there are less special cases in the children
+Virtual DOM nodes are storing children nodes in a circular linked lists instead of the traditional approach with arrays.
+With circular linked lists, passing children as props to components or simple functions doesn't require any memory
+copies, children normalization and imlicit key assignment is super cheap, there are less special cases in the children
 reconciliation algorithm.
 
 Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
