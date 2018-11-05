@@ -36,10 +36,10 @@ The easiest way to get started with ivi is to use [this basic example on CodeSan
 The smallest ivi example looks like this:
 
 ```js
-import { setupScheduler, updateHandler, render } from "ivi";
+import { setupScheduler, BASIC_SCHEDULER, render } from "ivi";
 import { h1 } from "ivi-html";
 
-setupScheduler(updateHandler);
+setupScheduler(BASIC_SCHEDULER);
 
 render(
   h1().t("Hello World!"),
@@ -52,11 +52,11 @@ implementation. We don't want any unused code to be a part of the final bundle w
 scheduler implementation.
 
 ```js
-setupScheduler(updateHandler);
+setupScheduler(BASIC_SCHEDULER);
 ```
 
-All ivi applications should start by setting up a scheduler implementation. In this code we are using `updateHandler`
-from the basic scheduler. Basic scheduler is implemented in the `ivi` package.
+All ivi applications should start by setting up a scheduler implementation. In this example we are using
+`BASIC_SCHEDULER` from the `ivi` package.
 
 ```js
 render(
@@ -99,10 +99,10 @@ API is slightly different from the React hooks API, but it has the same properti
 composability.
 
 ```js
-import { setupScheduler, updateHandler, component, invalidate, render } from "ivi";
+import { setupScheduler, BASIC_SCHEDULER, component, invalidate, render } from "ivi";
 import { h1 } from "ivi-html";
 
-setupScheduler(updateHandler);
+setupScheduler(BASIC_SCHEDULER);
 
 const Counter = component((c) => {
   let counter = 0;

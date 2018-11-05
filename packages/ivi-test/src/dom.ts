@@ -1,4 +1,4 @@
-import { VNode, render, update, setupScheduler, updateHandler } from "ivi";
+import { VNode, render, update, setupScheduler, BASIC_SCHEDULER } from "ivi";
 import { triggerNextTick, triggerNextFrame } from "ivi-test-scheduler";
 import { VNodeWrapper } from "./vdom";
 
@@ -7,7 +7,7 @@ import { VNodeWrapper } from "./vdom";
  */
 export class DOMRenderer {
   constructor(private container: HTMLDivElement) {
-    setupScheduler(updateHandler);
+    setupScheduler(BASIC_SCHEDULER);
   }
 
   /**

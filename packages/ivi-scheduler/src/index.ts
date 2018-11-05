@@ -1,5 +1,5 @@
 import {
-  RepeatableTaskList, runRepeatableTasks, catchError, AttributeDirective, ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
+  Scheduler, RepeatableTaskList, runRepeatableTasks, catchError, AttributeDirective, ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
   InvalidateFlags, dirtyCheck,
 } from "ivi";
 
@@ -330,15 +330,8 @@ export function currentFrameRead(task: () => void): void {
 
 /**
  * Update handler function that triggers dirty check on the next frame.
- *
- * @example
- *
- *   import { setupScheduler } from "ivi";
- *   import { updateHandler } from "ivi-scheduler";
- *
- *   setupScheduler(updateHandler);
  */
-export function updateHandler(flags?: InvalidateFlags) {
+function updateHandler(flags?: InvalidateFlags) {
   if (_flags & SchedulerFlags.CurrentFrameRunning) {
     _currentFrame.f |= FrameTasksGroupFlags.DirtyCheck;
   } else {
@@ -350,6 +343,18 @@ export function updateHandler(flags?: InvalidateFlags) {
     }
   }
 }
+
+/**
+ * Scheduler implementation that triggers dirty check on the next frame.
+ *
+ * @example
+ *
+ *   import { setupScheduler } from "ivi";
+ *   import { SCHEDULER } from "ivi-scheduler";
+ *
+ *   setupScheduler(SCHEDULER);
+ */
+export const SCHEDULER: Scheduler = { updateHandler };
 
 /**
  * Synchronization function for {@link AttributeDirective} created with {@link AUTOFOCUS} function.

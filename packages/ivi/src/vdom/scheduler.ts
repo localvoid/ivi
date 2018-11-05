@@ -23,15 +23,9 @@ let _update: UpdateFunction;
 let _dirty = 0;
 
 /**
- * Basic synchronous invalidation handler.
- *
- * @example
- *
- *   import { setupScheduler, invalidateHandler } from "ivi";
- *
- *   setupScheduler(invalidateHandler);
+ * Synchronous update handler for a basic scheduler.
  */
-export const updateHandler = catchError(() => {
+const updateHandler = catchError(() => {
   _dirty |= 2;
   while (_dirty === 2) {
     _dirty >>= 1;
@@ -41,18 +35,36 @@ export const updateHandler = catchError(() => {
 });
 
 /**
+ * Scheduler interface.
+ */
+export interface Scheduler {
+  updateHandler: (flags?: InvalidateFlags) => void;
+}
+
+/**
+ * Basic scheduler implementation.
+ *
+ * @example
+ *
+ *   import { setupScheduler, BASIC_SCHEDULER } from "ivi";
+ *
+ *   setupScheduler(BASIC_SCHEDULER);
+ */
+export const BASIC_SCHEDULER = { updateHandler };
+
+/**
  * Set up scheduler.
  *
  * @example
  *
- *   import { setupScheduler, updateHandler } from "ivi";
+ *   import { setupScheduler, BASIC_SCHEDULER } from "ivi";
  *
- *   setupScheduler(updateHandler);
+ *   setupScheduler(BASIC_SCHEDULER);
  *
- * @param updateFn - Update handler
+ * @param scheduler - Scheduler implementation
  */
-export function setupScheduler(updateFn: UpdateFunction): void {
-  _update = updateFn;
+export function setupScheduler(scheduler: Scheduler): void {
+  _update = scheduler.updateHandler;
 }
 
 /**
