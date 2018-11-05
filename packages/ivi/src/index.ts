@@ -100,7 +100,7 @@ export { map, mapRange, mapIterable } from "./vdom/map";
 export { element, component, statelessComponent, context } from "./vdom/factories";
 export { InvalidateFlags, UpdateFunction } from "./vdom/invalidate";
 export {
-  setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect, dirtyCheckCounter,
+  setupScheduler, updateHandler, update, dirtyCheck, render, invalidate, effect, dirtyCheckCounter, dirty,
 } from "./vdom/scheduler";
 export { useDetached, useSelect, useEffect } from "./vdom/hooks";
 export { selector, mutation } from "./vdom/utils";

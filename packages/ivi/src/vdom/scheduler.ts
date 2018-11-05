@@ -104,6 +104,11 @@ export function dirtyCheckCounter(): number {
   return _dirtyCheckCounter;
 }
 
+// TODO: it should enqueue dirty checking task
+export function dirty(): number {
+  return _dirtyCheckCounter;
+}
+
 /**
  * Performs a dirty checking.
  */
