@@ -1,7 +1,7 @@
 import { EMPTY_OBJECT } from "../core/empty_object";
 import { Component } from "./component";
 import { getContext } from "./context";
-import { dirtyCheckCounter } from "./scheduler";
+import { dirtyCheckCounter, effect } from "./scheduler";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -205,7 +205,7 @@ export function useEffect<P>(
       if (reset !== void 0) {
         reset();
       }
-      reset = hook(nextProps);
+      effect(() => { reset = hook(nextProps); });
 
       if (reset !== void 0 && !detached) {
         detached = true;
