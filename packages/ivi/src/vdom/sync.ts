@@ -260,11 +260,6 @@ export function _render(parent: Node, refChild: Node | null, vnode: VNode): void
  * @param dirtyContext - Context is dirty
  */
 export function _sync(parent: Node, a: VNode, b: VNode, dirtyContext: boolean): void {
-  if (a === b) {
-    _dirtyCheck(parent, b, dirtyContext);
-    return;
-  }
-
   /* istanbul ignore else */
   if (DEBUG) {
     if (b._i !== null) {

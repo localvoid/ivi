@@ -12,27 +12,6 @@ describe(`dirty checking`, () => {
     utils = await import("./utils");
   });
 
-  test(`identical node should trigger dirty checking`, () => {
-    utils.startRender(r => {
-      let triggered = 0;
-      const c = ivi.component((h) => {
-        const s = ivi.useSelect(h, () => (triggered++));
-        return () => (s(), html.div());
-      });
-
-      const v = (
-        html.div().c(
-          c(),
-        )
-      );
-
-      r(v);
-      r(v);
-
-      expect(triggered).toBe(2);
-    });
-  });
-
   test(`ivi.stopDirtyChecking should stop dirty checking`, () => {
     utils.startRender(r => {
       let triggered = 0;
@@ -41,16 +20,12 @@ describe(`dirty checking`, () => {
         return () => (s(), html.div());
       });
 
-      const v = (
-        html.div().c(
-          ivi.stopDirtyChecking(
-            c(),
-          ),
-        )
+      const v = () => utils.Static(
+        ivi.stopDirtyChecking(c()),
       );
 
-      r(v);
-      r(v);
+      r(v());
+      r(v());
 
       expect(triggered).toBe(1);
     });
@@ -67,20 +42,16 @@ describe(`dirty checking`, () => {
         return () => (s(), html.div());
       });
 
-      const v = (
-        html.div().c(
-          ivi.context({ inner: 10 },
-            c(),
-          ),
-        )
+      const v = () => utils.Static(
+        ivi.context({ inner: 10 }, c()),
       );
 
-      r(ivi.context({ outer: 0, inner: 0 }, v));
+      r(ivi.context({ outer: 0, inner: 0 }, v()));
 
       expect(outerTest).toBe(0);
       expect(innerTest).toBe(10);
 
-      r(ivi.context({ outer: 1, inner: 1 }, v));
+      r(ivi.context({ outer: 1, inner: 1 }, v()));
 
       expect(outerTest).toBe(1);
       expect(innerTest).toBe(10);
@@ -103,17 +74,13 @@ describe(`dirty checking`, () => {
         return () => ivi.context({ inner: p() }, C());
       });
 
-      const v = (
-        html.div().c(
-          Context(),
-        )
-      );
+      const v = () => utils.Static(Context());
 
-      r(v);
+      r(v());
 
       expect(innerTest).toBe(0);
 
-      r(v);
+      r(v());
 
       expect(innerTest).toBe(1);
     });
