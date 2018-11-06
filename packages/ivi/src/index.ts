@@ -36,7 +36,6 @@ export { append, unorderedArrayDelete } from "./core/array";
 export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./core/noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./core/repeatable_task_list";
 export { shallowEqual } from "./core/equal";
-export { mut } from "./core/utils";
 
 // DOM
 export {
