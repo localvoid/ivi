@@ -14,10 +14,10 @@ test(`should return value when executed`, () => {
   expect(computedQuery(() => ({ a: 1337 })).get()).toEqual({ a: 1337 });
 });
 
-test(`previous value should be null`, () => {
+test(`previous value should be undefined`, () => {
   let p;
   computedQuery(prev => (p = prev, 0)).get();
-  expect(p).toBeNull();
+  expect(p).toBeUndefined();
 });
 
 test(`previous value should be cached`, () => {
@@ -38,5 +38,5 @@ test(`should reset previous value`, () => {
   v.reset();
   v.get();
 
-  expect(p).toBeNull();
+  expect(p).toBeUndefined();
 });

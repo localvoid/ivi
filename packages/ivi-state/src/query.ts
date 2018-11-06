@@ -8,19 +8,21 @@ export interface QueryResult<T> {
   readonly result: T;
 }
 
+export interface Query<T> {
+  get(): T;
+  reset(): void;
+}
+
 /**
  * cachedQuery creates a query that will cache its results.
  *
  * @param fn Query function.
  * @returns Cached query.
  */
-export function cachedQuery<T>(fn: () => T): { get: () => QueryResult<T>, reset: () => void } {
-  let result: QueryResult<T> | null = null;
-  return {
-    get: () => result === null ? result = { result: fn() } : result,
-    reset: () => { result = null; },
-  };
-}
+export const cachedQuery = <T>(fn: () => T, result?: QueryResult<T>): Query<QueryResult<T>> => ({
+  get: () => result === void 0 ? result = { result: fn() } : result,
+  reset: () => { result = void 0; },
+});
 
 /**
  * computedQuery creates a query that can use previous result to determine when it needs to reevaluate its
@@ -29,10 +31,7 @@ export function cachedQuery<T>(fn: () => T): { get: () => QueryResult<T>, reset:
  * @param fn Query function.
  * @returns Computed query.
  */
-export function computedQuery<T>(fn: (prev: T | null) => T): { get: () => T, reset: () => void } {
-  let prev: T | null = null;
-  return {
-    get: () => prev = fn(prev),
-    reset: () => { prev = null; },
-  };
-}
+export const computedQuery = <T>(fn: (prev: T | undefined) => T, prev?: T): Query<T> => ({
+  get: () => prev = fn(prev),
+  reset: () => { prev = void 0; },
+});
