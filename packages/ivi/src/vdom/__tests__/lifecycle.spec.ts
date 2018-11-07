@@ -1,4 +1,4 @@
-import { VNode, component, useDetached, effect } from "ivi";
+import { VNode, component, useDetached, scheduleMutationEffect } from "ivi";
 import * as h from "ivi-html";
 import { startRender, Static, checkLifecycle, lifecycleTouch } from "./utils";
 
@@ -7,7 +7,7 @@ function createLifecycleTester(id: string) {
     (hnd) => {
       lifecycleTouch(id, "constructor");
 
-      effect(() => {
+      scheduleMutationEffect(() => {
         lifecycleTouch(id, "effect");
       });
 

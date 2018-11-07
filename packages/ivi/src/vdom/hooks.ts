@@ -1,7 +1,7 @@
 import { EMPTY_OBJECT } from "../core/empty_object";
 import { Component } from "./component";
 import { getContext } from "./context";
-import { dirtyCheckCounter, effect } from "./scheduler";
+import { clock, scheduleMicrotask } from "../scheduler";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -115,7 +115,7 @@ export function useSelect<T, P, C extends {}>(
     }
     if (prevState !== void 0) {
       const nextState = selector(prevProps, context as C, prevState);
-      lastChecked = dirtyCheckCounter();
+      lastChecked = clock();
       if (prevState !== nextState) {
         prevState = nextState;
         return true;
@@ -131,7 +131,7 @@ export function useSelect<T, P, C extends {}>(
     ) {
       prevState = void 0;
     }
-    if (prevState === void 0 || lastChecked < dirtyCheckCounter()) {
+    if (prevState === void 0 || lastChecked < clock()) {
       prevState = selector(nextProps, getContext() as C, prevState);
     }
     prevProps = nextProps;
@@ -205,7 +205,7 @@ export function useEffect<P>(
       if (reset !== void 0) {
         reset();
       }
-      effect(() => { reset = hook(nextProps); });
+      scheduleMicrotask(() => { reset = hook(nextProps); });
 
       if (reset !== void 0 && !detached) {
         detached = true;

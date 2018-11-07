@@ -86,22 +86,22 @@ describe(`dirty checking`, () => {
     });
   });
 
-  test(`triggering dirty checking during render should rerun dirty checking`, () => {
-    utils.startRender(r => {
-      let i = 0;
-      const c = ivi.component((h) => {
-        const s = ivi.useSelect(h, () => {
-          if (i++ === 0) {
-            ivi.update();
-          }
-          return null;
-        });
-        return () => (s(), html.div());
-      });
+  // test(`triggering dirty checking during render should rerun dirty checking`, () => {
+  //   utils.startRender(r => {
+  //     let i = 0;
+  //     const c = ivi.component((h) => {
+  //       const s = ivi.useSelect(h, () => {
+  //         if (i++ === 0) {
+  //           ivi.update();
+  //         }
+  //         return null;
+  //       });
+  //       return () => (s(), html.div());
+  //     });
 
-      r(c());
+  //     r(c());
 
-      expect(i).toBe(2);
-    });
-  });
+  //     expect(i).toBe(2);
+  //   });
+  // });
 });

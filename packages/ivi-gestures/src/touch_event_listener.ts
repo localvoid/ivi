@@ -3,9 +3,8 @@ import {
   SyntheticEventFlags, SyntheticNativeEvent,
   EVENT_DISPATCHER_ACTIVE_TOUCH_START, EVENT_DISPATCHER_TOUCH_END, EVENT_DISPATCHER_TOUCH_CANCEL,
   EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE,
-  removeBeforeNativeEvent, beforeNativeEvent,
+  removeBeforeNativeEvent, beforeNativeEvent, beforeMutations,
 } from "ivi";
-import { beforeUpdate } from "ivi-scheduler";
 import { GesturePointerAction, GesturePointerEvent } from "./gesture_pointer_event";
 import { NativeEventListener, NativeEventListenerFlags } from "./native_event_listener";
 import { createMouseEventListener } from "./mouse_event_listener";
@@ -274,7 +273,7 @@ export function createTouchEventListener(
       beforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_START, onStart);
       beforeNativeEvent(EVENT_DISPATCHER_TOUCH_END, onEnd);
       beforeNativeEvent(EVENT_DISPATCHER_TOUCH_CANCEL, onCancel);
-      beforeUpdate(onBeforeUpdate);
+      beforeMutations(onBeforeUpdate);
       /**
        * Safari just being safari: https://bugs.webkit.org/show_bug.cgi?id=182521
        */

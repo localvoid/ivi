@@ -12,19 +12,19 @@ build: build_ivi build_ivi_html build_ivi_svg build_ivi_state build_ivi_math bui
 changelog:
 	conventional-changelog -p angular -i CHANGELOG.md -s ; $(info $(M) generating CHANGELOG.md)
 
-# ivi
-clean_ivi: ; $(info $(M) cleaning ivi)
-	$Q cd packages/ivi && yarn clean
-
-build_ivi: clean_ivi ; $(info $(M) building ivi)
-	$Q cd packages/ivi && yarn dist
-
 # ivi-scheduler
 clean_ivi_scheduler: ; $(info $(M) cleaning ivi-scheduler)
 	$Q cd packages/ivi-scheduler && yarn clean
 
-build_ivi_scheduler: clean_ivi_scheduler build_ivi ; $(info $(M) building ivi-scheduler)
+build_ivi_scheduler: clean_ivi_scheduler ; $(info $(M) building ivi-scheduler)
 	$Q cd packages/ivi-scheduler && yarn dist
+
+# ivi
+clean_ivi: ; $(info $(M) cleaning ivi)
+	$Q cd packages/ivi && yarn clean
+
+build_ivi: clean_ivi build_ivi_scheduler ; $(info $(M) building ivi)
+	$Q cd packages/ivi && yarn dist
 
 # ivi-html
 clean_ivi_html: ; $(info $(M) cleaning ivi-html)

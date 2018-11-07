@@ -98,12 +98,17 @@ export {
 export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
 export { element, component, statelessComponent, context } from "./vdom/factories";
-export { InvalidateFlags, UpdateFunction } from "./vdom/invalidate";
-export {
-  Scheduler, setupScheduler, BASIC_SCHEDULER, update, dirtyCheck, render, invalidate, effect, dirtyCheckCounter, dirty,
-} from "./vdom/scheduler";
+export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect } from "./vdom/hooks";
 export { selector } from "./vdom/utils";
+
+// Scheduler
+export {
+  UpdateFlags, withSchedulerTick, withNextFrame, update, render, invalidate, requestNextFrame,
+  scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect,
+  beforeMutations, afterMutations,
+  frameStartTime, clock, dirty,
+} from "./scheduler";
 
 // Events
 export {

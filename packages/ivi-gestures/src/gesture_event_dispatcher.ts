@@ -1,8 +1,8 @@
 import {
   TOUCH_EVENTS, catchError,
   DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventDispatcher, EventHandler, dispatchEvent,
+  scheduleMicrotask,
 } from "ivi";
-import { scheduleMicrotask } from "ivi-scheduler";
 import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_event";
 import { GestureBehavior } from "./gesture_behavior";
 import { createMouseEventListener } from "./mouse_event_listener";

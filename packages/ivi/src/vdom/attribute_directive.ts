@@ -1,5 +1,6 @@
 import { NOOP } from "../core/noop";
 import { elementRemoveAttribute } from "../core/shortcuts";
+import { scheduleMutationEffect } from "../scheduler";
 
 /**
  * Attribute directives are used to extend reconciliation algorithm.
@@ -157,4 +158,51 @@ function updateEvent(
     }
     element.addEventListener(key, next);
   }
+}
+
+/**
+ * Synchronization function for {@link AttributeDirective} created with {@link AUTOFOCUS} function.
+ *
+ * @param element - Target element
+ * @param key - Attribute key
+ * @param prev - Previous value
+ * @param next - Next value
+ */
+function updateAutofocus(
+  element: Element,
+  key: string,
+  prev: boolean | undefined,
+  next: boolean | undefined,
+) {
+  if (prev === void 0 && next) {
+    scheduleMutationEffect(() => { (element as HTMLElement).focus(); });
+  }
+}
+
+/**
+ * {@link AttributeDirective} with `false` value and {@link updateAutofocus} sync function.
+ */
+const AUTOFOCUS_FALSE: AttributeDirective<boolean> = { v: false, u: updateAutofocus };
+
+/**
+ * {@link AttributeDirective} with `true` value and {@link updateAutofocus} sync function.
+ */
+const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocus };
+
+/**
+ * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
+ *
+ * `undefined` values are ignored.
+ *
+ * @example
+ *
+ *   const e = input("", { autofocus: AUTOFOCUS(true) });
+ *
+ * @param v - Autofocus state
+ * @returns {@link AttributeDirective}
+ */
+export function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean> {
+  return (v === void 0) ?
+    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
+    v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;
 }

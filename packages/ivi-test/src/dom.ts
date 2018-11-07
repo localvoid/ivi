@@ -1,20 +1,17 @@
-import { VNode, render, update, setupScheduler, BASIC_SCHEDULER } from "ivi";
-import { triggerNextTick, triggerNextFrame } from "ivi-test-scheduler";
+import { VNode, render, update, withNextFrame } from "ivi";
 import { VNodeWrapper } from "./vdom";
 
 /**
  * DOMRenderer is a helper object for testing Virtual DOM in a real DOM.
  */
 export class DOMRenderer {
-  constructor(private container: HTMLDivElement) {
-    setupScheduler(BASIC_SCHEDULER);
-  }
+  constructor(private container: HTMLDivElement) { }
 
   /**
    * reset resets current state.
    */
   reset = () => {
-    render(null, this.container);
+    withNextFrame(() => { render(null, this.container); })();
   }
 
   /**
@@ -24,7 +21,7 @@ export class DOMRenderer {
    * @returns VNodeWrapper object.
    */
   render(vnode: VNode): VNodeWrapper {
-    render(vnode, this.container);
+    withNextFrame(() => { render(vnode, this.container); })();
     return new VNodeWrapper(vnode, null, {});
   }
 
@@ -32,23 +29,7 @@ export class DOMRenderer {
    * update triggers update in a scheduler.
    */
   update(): void {
-    update();
-  }
-
-  /**
-   * nextTick triggers next tick in a scheduler and execute all microtasks, tasks and frame updates.
-   */
-  nextTick(): void {
-    triggerNextTick();
-  }
-
-  /**
-   * nextFrame triggers next frame in a scheduler and executes all frame updates.
-   *
-   * @param time Current time.
-   */
-  nextFrame(time?: number): void {
-    triggerNextFrame(time);
+    withNextFrame(() => { update(); })();
   }
 }
 

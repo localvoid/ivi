@@ -1,5 +1,5 @@
 import { append, unorderedArrayDelete } from "../core/array";
-import { catchError } from "../core/error";
+import { withSchedulerTick } from "../scheduler";
 import { SyntheticEventFlags, NativeEventSourceFlags } from "./flags";
 import { EventDispatcher } from "./event_dispatcher";
 import { EventHandler } from "./event_handler";
@@ -43,7 +43,7 @@ export interface NativeEventDispatcher<E extends Event> {
   readonly name: string;
   before: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
   after: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
-  dispatch: (() => void) | null;
+  dispatch: ((ev: E) => void) | null;
 }
 
 /**
@@ -76,7 +76,7 @@ export function createNativeEventDispatcher<E extends Event>(
 
   const matchEventSource = (h: EventHandler) => h.src === source.src;
 
-  source.dispatch = catchError((ev: E): void => {
+  source.dispatch = withSchedulerTick((ev: E): void => {
     const target = ev.target as Element;
     const targets: DispatchTarget[] = [];
 
@@ -150,7 +150,7 @@ function incDependencies<E extends Event>(source: NativeEventDispatcher<E>): voi
   if (source.deps++ === 0) {
     document.addEventListener(
       source.name,
-      source.dispatch!,
+      source.dispatch! as EventListenerOrEventListenerObject,
       source.options,
     );
   }
@@ -160,7 +160,7 @@ function decDependencies<E extends Event>(source: NativeEventDispatcher<E>): voi
   if (--source.deps === 0) {
     document.removeEventListener(
       source.name,
-      source.dispatch!,
+      source.dispatch! as EventListenerOrEventListenerObject,
       source.options,
     );
   }

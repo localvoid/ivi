@@ -3,7 +3,7 @@ import { unorderedArrayDelete } from "./array";
 /**
  * RepeatableTaskList is a data structure for tasks that will be repeated until they return `true` value.
  */
-export type RepeatableTaskList = Array<() => boolean | undefined>;
+export type RepeatableTaskList = Array<() => boolean | void>;
 
 /**
  * runRepeatableTasks runs repeatable tasks.

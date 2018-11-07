@@ -5,7 +5,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 |Package      |NPM version                                                                                                  |
 |-------------|-------------------------------------------------------------------------------------------------------------|
 |ivi          |[![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi)                    |
-|ivi-scheduler|[![npm version](https://img.shields.io/npm/v/ivi-scheduler.svg)](https://www.npmjs.com/package/ivi-scheduler)|
 |ivi-html     |[![npm version](https://img.shields.io/npm/v/ivi-html.svg)](https://www.npmjs.com/package/ivi-html)          |
 |ivi-svg      |[![npm version](https://img.shields.io/npm/v/ivi-svg.svg)](https://www.npmjs.com/package/ivi-svg)            |
 
@@ -15,7 +14,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Components
 - Extensible synthetic event subsystem
 - Synchronous and deterministic update algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
-- Optional [scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
@@ -25,7 +23,7 @@ ivi has a tree shakeable API, so it can scale from simple widgets to complex des
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.6KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.7KB** (minified+compressed).
 
 ## Quick Start
 
@@ -36,29 +34,9 @@ The easiest way to get started with ivi is to use [this basic example on CodeSan
 The smallest ivi example looks like this:
 
 ```js
-import { setupScheduler, BASIC_SCHEDULER, render } from "ivi";
+import { render } from "ivi";
 import { h1 } from "ivi-html";
 
-setupScheduler(BASIC_SCHEDULER);
-
-render(
-  h1().t("Hello World!"),
-  document.getElementById("app"),
-);
-```
-
-Since ivi has a tree shakeable API, all dependencies should be imported explicity, even the basic scheduler
-implementation. We don't want any unused code to be a part of the final bundle when we decide to use a full-featured
-scheduler implementation.
-
-```js
-setupScheduler(BASIC_SCHEDULER);
-```
-
-All ivi applications should start by setting up a scheduler implementation. In this example we are using
-`BASIC_SCHEDULER` from the `ivi` package.
-
-```js
 render(
   h1().t("Hello World!"),
   document.getElementById("app"),
@@ -99,10 +77,8 @@ API is slightly different from the React hooks API, but it has the same properti
 composability.
 
 ```js
-import { setupScheduler, BASIC_SCHEDULER, component, invalidate, render } from "ivi";
+import { component, invalidate, render } from "ivi";
 import { h1 } from "ivi-html";
-
-setupScheduler(BASIC_SCHEDULER);
 
 const Counter = component((c) => {
   let counter = 0;
@@ -127,9 +103,6 @@ render(
   document.getElementById("app"),
 );
 ```
-
-As always, first thing that we need to do in the ivi application is to setup a scheduler with `setupScheduler()`
-function.
 
 ```js
 const Counter = component((c) => {
@@ -400,11 +373,7 @@ function Button(slot) {
 
 render(
   Button(
-    fragment(
-      span().c("Click"),
-      " ",
-      span().c("Me"),
-    ),
+    fragment(span().t("Click"), " ", span().t("Me")),
   ),
   DOMContainer,
 );
@@ -476,6 +445,7 @@ There are several attribute directives defined in ivi packages:
 // ivi
 function PROPERTY<T>(v: T | undefined): AttributeDirective<T>;
 function UNSAFE_HTML(v: string | undefined): AttributeDirective<string>;
+function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean>;
 
 // ivi-html
 function VALUE(v: string | number | undefined): AttributeDirective<string | number>;
@@ -484,15 +454,15 @@ function CHECKED(v: boolean | undefined): AttributeDirective<boolean>;
 // ivi-svg
 function XML_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
 function XLINK_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
-
-// ivi-scheduler
-function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean>;
 ```
 
 `PROPERTY()` function creates an `AttributeDirective` that assigns a property to a property name derived from the `key`
 of the attribute.
 
 `UNSAFE_HTML()` function creates an `AttributeDirective` that assigns an `innerHTML` property to an Element.
+
+`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is synced from `undefined` or
+`false` to `true`.
 
 `VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement or
 HTMLTextAreaElement.
@@ -504,9 +474,6 @@ derived from the `key`.
 
 `XLINK_ATTR()` function creates an `AttributeDirective` that assigns an attribute from XLINK namespace, attribute name
 is derived from the `key`.
-
-`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is synced from `undefined` or
-`false` to `true`.
 
 ##### Example
 
