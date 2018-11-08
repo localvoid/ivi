@@ -23,8 +23,9 @@ const enum SchedulerFlags {
   Running = 1,
   TickPending = 1 << 1,
   NextFramePending = 1 << 2,
-  FrameUpdate = 1 << 3,
-  DirtyCheck = 1 << 4,
+  NextSyncFramePending = 1 << 3,
+  UpdatingFrame = 1 << 4,
+  DirtyCheckPending = 1 << 5,
 }
 
 /**
@@ -112,23 +113,26 @@ export const frameStartTime = () => _frameStartTime;
 
 export const withNextFrame = (fn: (time?: number) => void) => (
   withSchedulerTick((time?: number) => {
+    _flags |= SchedulerFlags.UpdatingFrame;
     fn(time);
 
     if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
-      _flags ^= SchedulerFlags.NextFramePending | SchedulerFlags.FrameUpdate;
       _frameStartTime = time === void 0 ? performance.now() : time;
 
       runRepeatableTasks(_beforeMutations);
-      if ((_flags & SchedulerFlags.DirtyCheck) !== 0) {
-        _flags ^= SchedulerFlags.DirtyCheck;
+      if ((_flags & SchedulerFlags.DirtyCheckPending) !== 0) {
         dirtyCheck();
       }
       run(_mutationEffects);
       runRepeatableTasks(_afterMutations);
       run(_domLayoutEffects);
-
-      _flags ^= SchedulerFlags.FrameUpdate;
     }
+    _flags &= ~(
+      SchedulerFlags.UpdatingFrame |
+      SchedulerFlags.NextFramePending |
+      SchedulerFlags.NextSyncFramePending |
+      SchedulerFlags.DirtyCheckPending
+    );
   })
 );
 
@@ -142,10 +146,21 @@ const _handleNextFrame = withNextFrame(NOOP);
 /**
  * requestNextFrame triggers next frame tasks execution.
  */
-export function requestNextFrame(): void {
-  if ((_flags & SchedulerFlags.NextFramePending) === 0) {
-    _flags |= SchedulerFlags.TickPending | SchedulerFlags.NextFramePending;
-    rAF(_handleNextFrame);
+export function requestNextFrame(flags?: UpdateFlags): void {
+  if (
+    (flags !== void 0) &&
+    ((flags & UpdateFlags.RequestSyncUpdate) !== 0) &&
+    ((_flags & SchedulerFlags.NextSyncFramePending) === 0)
+  ) {
+    _flags |= SchedulerFlags.NextFramePending | SchedulerFlags.NextSyncFramePending;
+    if ((_flags & SchedulerFlags.UpdatingFrame) === 0) {
+      scheduleMicrotask(_handleNextFrame);
+    }
+  } else if ((_flags & SchedulerFlags.NextFramePending) === 0) {
+    _flags |= SchedulerFlags.NextFramePending;
+    if ((_flags & SchedulerFlags.UpdatingFrame) === 0) {
+      rAF(_handleNextFrame);
+    }
   }
 }
 
@@ -154,11 +169,9 @@ export function requestNextFrame(): void {
  *
  * @param fn - Write DOM task
  */
-export function scheduleMutationEffect(fn: () => void): void {
+export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): void {
   _mutationEffects.v.push(fn);
-  if ((_flags & SchedulerFlags.FrameUpdate) === 0) {
-    requestNextFrame();
-  }
+  requestNextFrame(flags);
 }
 
 /**
@@ -166,20 +179,14 @@ export function scheduleMutationEffect(fn: () => void): void {
  *
  * @param fn - Read DOM task
  */
-export function scheduleLayoutEffect(fn: () => void): void {
+export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void {
   _domLayoutEffects.v.push(fn);
-  if ((_flags & SchedulerFlags.FrameUpdate) === 0) {
-    requestNextFrame();
-  }
+  requestNextFrame(flags);
 }
 
-export function update(flags?: UpdateFlags) {
-  _flags |= SchedulerFlags.DirtyCheck;
-  if (flags !== void 0 && ((flags & UpdateFlags.RequestSyncUpdate) !== 0)) {
-    scheduleMicrotask(_handleNextFrame);
-  } else {
-    requestNextFrame();
-  }
+export function requestDirtyCheck(flags?: UpdateFlags) {
+  _flags |= SchedulerFlags.DirtyCheckPending;
+  requestNextFrame(flags);
 }
 
 /**
@@ -189,11 +196,11 @@ export function update(flags?: UpdateFlags) {
  * @param flags - See {@link InvalidateFlags} for details.
  */
 export function invalidate<P>(c: Component<P>, flags?: UpdateFlags): void {
-  update(flags);
   c.dirty = true;
+  requestDirtyCheck(flags);
 }
 
-export const dirty = (flags?: UpdateFlags) => (update(flags), _clock);
+export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock);
 
 /**
  * Render virtual DOM node into the container.
@@ -223,5 +230,5 @@ export function render(next: VNode | null, container: Element, flags?: UpdateFla
     ROOTS.push({ container, next, current: null });
   }
 
-  update(flags);
+  requestDirtyCheck(flags);
 }
