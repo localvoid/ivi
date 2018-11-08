@@ -57,9 +57,9 @@ DOM node for a `<h1>` element, and method `t()` is used to assign a text content
 
 Components API were heavily influenced by the new [React hooks API](https://reactjs.org/docs/hooks-intro.html).
 
-There are several differences in the ivi API that solve major flaws in the React hooks API design:
+There are several differences in the ivi API that solve some flaws in the React hooks API design:
 
-- [Weird hooks rules](https://reactjs.org/docs/hooks-rules.html)
+- [Hooks rules](https://reactjs.org/docs/hooks-rules.html)
 - Excessive memory allocations each time component is updated
 - ["Memory leaking"](https://codesandbox.io/s/lz61v39r7) caused by
 [closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
@@ -607,6 +607,30 @@ function useEffect<P>(
 
 `useEffect()` lets you perform side effects, it replaces `componentDidMount()`, `componentWillUnmount()` and
 `componentDidUpdate()` methods of a class-based components API.
+
+##### `useMutationEffect()`
+
+```ts
+function useMutationEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+
+`useMutationEffect()` lets you perform DOM mutation side effects.
+
+##### `useLayoutEffect()`
+
+```ts
+function useLayoutEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+
+`useLayoutEffect()` lets you perform DOM layout side effects.
 
 ##### `useSelect()`
 
