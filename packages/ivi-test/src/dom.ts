@@ -1,4 +1,4 @@
-import { VNode, render, update, withNextFrame } from "ivi";
+import { VNode, render, requestDirtyCheck, withNextFrame } from "ivi";
 import { VNodeWrapper } from "./vdom";
 
 /**
@@ -26,10 +26,10 @@ export class DOMRenderer {
   }
 
   /**
-   * update triggers update in a scheduler.
+   * dirtyCheck triggers dirty checking.
    */
-  update(): void {
-    withNextFrame(() => { update(); })();
+  dirtyCheck(): void {
+    withNextFrame(() => { requestDirtyCheck(); })();
   }
 }
 
