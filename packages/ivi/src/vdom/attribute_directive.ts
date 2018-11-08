@@ -201,8 +201,6 @@ const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocu
  * @param v - Autofocus state
  * @returns {@link AttributeDirective}
  */
-export function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean> {
-  return (v === void 0) ?
-    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
-    v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;
-}
+export const AUTOFOCUS = (v: boolean | undefined): AttributeDirective<boolean> => (v === void 0) ?
+  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
+  v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;

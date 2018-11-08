@@ -87,7 +87,7 @@ export {
   AttributeDirective,
   ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED, ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,
   ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED,
-  PROPERTY, UNSAFE_HTML, EVENT,
+  PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
 export { Component, ComponentDescriptor } from "./vdom/component";
 export {
@@ -99,12 +99,12 @@ export { fragment } from "./vdom/fragment";
 export { map, mapRange, mapIterable } from "./vdom/map";
 export { element, component, statelessComponent, context } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
-export { useDetached, useSelect, useEffect } from "./vdom/hooks";
+export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { selector } from "./vdom/utils";
 
 // Scheduler
 export {
-  UpdateFlags, withSchedulerTick, withNextFrame, update, render, invalidate, requestNextFrame,
+  UpdateFlags, withSchedulerTick, withNextFrame, requestDirtyCheck, render, invalidate, requestNextFrame,
   scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect,
   beforeMutations, afterMutations,
   frameStartTime, clock, dirty,

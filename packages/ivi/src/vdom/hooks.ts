@@ -1,7 +1,7 @@
 import { EMPTY_OBJECT } from "../core/empty_object";
 import { Component } from "./component";
 import { getContext } from "./context";
-import { clock, scheduleMicrotask } from "../scheduler";
+import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -159,6 +159,110 @@ export function useDetached(c: Component, hook: () => void): void {
   c.detached = addHook(c.detached, hook);
 }
 
+function withEffect<P>(fn: (effect: () => void) => void): (
+  c: Component,
+  hook: (props?: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+) => (props: P) => void {
+  return (c, hook, shouldUpdate) => {
+    let reset: (() => void) | void;
+    let prevProps: P | undefined = EMPTY_OBJECT as P;
+    let detached = false;
+
+    return (nextProps: P) => {
+      if (
+        prevProps === EMPTY_OBJECT ||
+        (shouldUpdate !== void 0 && shouldUpdate(prevProps as P, nextProps) === true) ||
+        prevProps !== nextProps
+      ) {
+        prevProps = nextProps;
+        if (reset !== void 0) {
+          reset();
+        }
+        fn(() => { reset = hook(nextProps); });
+
+        if (reset !== void 0 && !detached) {
+          detached = true;
+          useDetached(c, () => {
+            if (reset !== void 0) {
+              reset();
+            }
+          });
+        }
+      }
+    };
+  };
+}
+
+const _useEffect = /*#__PURE__*/withEffect<any>(scheduleMicrotask);
+const _useMutationEffect = /*#__PURE__*/withEffect<any>(scheduleMutationEffect);
+const _useLayoutEffect = /*#__PURE__*/withEffect<any>(scheduleLayoutEffect);
+
+/**
+ * useEffect creates a side effect hook.
+ *
+ * @example
+ *
+ *     const Counter = component<number>((c) => {
+ *       let i = 0;
+ *       const timer = useEffect<number>(c, (delay) => {
+ *         const tid = setInterval(() => {
+ *           i++;
+ *           invalidate(c);
+ *         }, delay);
+ *         return () => { clearInterval(tid); };
+ *       });
+ *
+ *       return (delay) => (
+ *         timer(delay),
+ *
+ *         div().t(i),
+ *       );
+ *     });
+ *
+ * @param c - Component instance.
+ * @param hook - Side effect function.
+ * @param shouldUpdate - Should update function.
+ * @returns side effect hook
+ */
+export function useEffect(
+  c: Component,
+  hook: () => (() => void) | void,
+): () => void;
+
+/**
+ * useEffect creates a side effect hook.
+ *
+ * @example
+ *
+ *     const Counter = component<number>((c) => {
+ *       let i = 0;
+ *       const timer = useEffect<number>(c, (delay) => {
+ *         const tid = setInterval(() => {
+ *           i++;
+ *           invalidate(c);
+ *         }, delay);
+ *         return () => { clearInterval(tid); };
+ *       });
+ *
+ *       return (delay) => (
+ *         timer(delay),
+ *
+ *         div().t(i),
+ *       );
+ *     });
+ *
+ * @param c - Component instance.
+ * @param hook - Side effect function.
+ * @param shouldUpdate - Should update function.
+ * @returns side effect hook
+ */
+export function useEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+
 /**
  * useEffect creates a side effect hook.
  *
@@ -191,30 +295,39 @@ export function useEffect<P>(
   hook: (props: P) => (() => void) | void,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => void {
-  let reset: (() => void) | void;
-  let prevProps: P | undefined = EMPTY_OBJECT as P;
-  let detached = false;
+  return _useEffect(c, hook, shouldUpdate);
+}
 
-  return (nextProps: P) => {
-    if (
-      prevProps === EMPTY_OBJECT ||
-      (shouldUpdate !== void 0 && shouldUpdate(prevProps as P, nextProps) === true) ||
-      prevProps !== nextProps
-    ) {
-      prevProps = nextProps;
-      if (reset !== void 0) {
-        reset();
-      }
-      scheduleMicrotask(() => { reset = hook(nextProps); });
+export function useMutationEffect(
+  c: Component,
+  hook: () => (() => void) | void,
+): () => void;
+export function useMutationEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+export function useMutationEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void {
+  return _useMutationEffect(c, hook, shouldUpdate);
+}
 
-      if (reset !== void 0 && !detached) {
-        detached = true;
-        useDetached(c, () => {
-          if (reset !== void 0) {
-            reset();
-          }
-        });
-      }
-    }
-  };
+export function useLayoutEffect(
+  c: Component,
+  hook: () => (() => void) | void,
+): () => void;
+export function useLayoutEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+export function useLayoutEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void {
+  return _useLayoutEffect(c, hook, shouldUpdate);
 }
