@@ -16,7 +16,8 @@ export function accumulateDispatchTargets(
   target: Element,
   match: (h: EventHandler) => boolean,
 ): void {
-  for (const { container, current } of ROOTS) {
+  for (let i = 0; i < ROOTS.length; i++) {
+    const { container, current } = ROOTS[i];
     if (container.contains(target)) {
       visitUp(result, match, target, container, current!);
       break;
@@ -60,12 +61,12 @@ function visitDown(
 ): VNode | null {
   const flags = vnode._f;
   let r;
-  if (flags & VNodeFlags.Element) {
+  if ((flags & VNodeFlags.Element) !== 0) {
     if (vnode._i === element) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);
       return vnode;
     }
-  } else if (flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) {
+  } else if ((flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
     r = visitDown(result, match, element, vnode._c as VNode);
     if (r) {
       accumulateDispatchTargetsFromVNode(result, vnode, match);
@@ -89,11 +90,12 @@ function accumulateDispatchTargetsFromVNode(
   match: (h: EventHandler) => boolean,
 ): void {
   const events = target._e;
-  if (events) {
+  if (events !== null) {
     let handlers: EventHandler[] | EventHandler | undefined;
     if (events instanceof Array) {
       let count = 0;
-      for (const h of events) {
+      for (let i = 0; i < events.length; i++) {
+        const h = events[i];
         if (h !== null && match(h) === true) {
           if (count === 0) {
             handlers = h;
