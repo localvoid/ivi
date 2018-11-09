@@ -19,7 +19,7 @@ export interface Component<P = any> {
   /**
    * Detached hooks.
    */
-  detached: null | (() => void) | (() => void)[];
+  detached: null | ((detached?: boolean) => void) | ((detached?: boolean) => void)[];
 }
 
 /**

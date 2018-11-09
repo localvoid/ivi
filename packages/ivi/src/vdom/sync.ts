@@ -47,7 +47,7 @@ function _detach(vnode: VNode): void {
           hookList();
         } else {
           for (let i = 0; i < hookList.length; i++) {
-            hookList[i]();
+            hookList[i](true);
           }
         }
       }

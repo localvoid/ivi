@@ -106,18 +106,18 @@ export function useSelect<T, P, C extends {}>(
 ): (props: P) => T {
   const prevSelector = c.select;
   let lastChecked = 0;
-  let prevState: T | undefined;
-  let prevProps: P;
+  let state: T | undefined;
+  let props: P;
 
   c.select = (context: {}) => {
     if (prevSelector !== null && prevSelector(context) === true) {
       return true;
     }
-    if (prevState !== void 0) {
-      const nextState = selector(prevProps, context as C, prevState);
+    if (state !== void 0) {
+      const nextState = selector(props, context as C, state);
       lastChecked = clock();
-      if (prevState !== nextState) {
-        prevState = nextState;
+      if (state !== nextState) {
+        state = nextState;
         return true;
       }
     }
@@ -126,16 +126,16 @@ export function useSelect<T, P, C extends {}>(
 
   return (nextProps: P) => {
     if (
-      (prevState !== void 0) &&
-      ((shouldUpdate !== void 0 && shouldUpdate(prevProps, nextProps) === true) || (prevProps !== nextProps))
+      (state !== void 0) &&
+      ((shouldUpdate !== void 0 && shouldUpdate(props, nextProps) === true) || (props !== nextProps))
     ) {
-      prevState = void 0;
+      state = void 0;
     }
-    if (prevState === void 0 || lastChecked < clock()) {
-      prevState = selector(nextProps, getContext() as C, prevState);
+    if (state === void 0 || lastChecked < clock()) {
+      state = selector(nextProps, getContext() as C, state);
     }
-    prevProps = nextProps;
-    return prevState!;
+    props = nextProps;
+    return state;
   };
 }
 
@@ -166,29 +166,29 @@ function withEffect<P>(fn: (effect: () => void) => void): (
 ) => (props: P) => void {
   return (c, hook, shouldUpdate) => {
     let reset: (() => void) | void;
-    let prevProps: P | undefined = EMPTY_OBJECT as P;
+    let props: P | undefined = EMPTY_OBJECT as P;
     let detached = false;
+    const handler = (d?: boolean) => {
+      if (reset !== void 0) {
+        reset();
+      }
+      if (d !== true) {
+        reset = hook(props);
+        if (reset !== void 0 && !detached) {
+          detached = true;
+          useDetached(c, handler);
+        }
+      }
+    };
 
     return (nextProps: P) => {
       if (
-        prevProps === EMPTY_OBJECT ||
-        (shouldUpdate !== void 0 && shouldUpdate(prevProps as P, nextProps) === true) ||
-        prevProps !== nextProps
+        props === EMPTY_OBJECT ||
+        (shouldUpdate !== void 0 && shouldUpdate(props as P, nextProps) === true) ||
+        props !== nextProps
       ) {
-        prevProps = nextProps;
-        if (reset !== void 0) {
-          reset();
-        }
-        fn(() => { reset = hook(nextProps); });
-
-        if (reset !== void 0 && !detached) {
-          detached = true;
-          useDetached(c, () => {
-            if (reset !== void 0) {
-              reset();
-            }
-          });
-        }
+        props = nextProps;
+        fn(handler);
       }
     };
   };
