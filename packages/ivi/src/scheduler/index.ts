@@ -75,7 +75,7 @@ function run(t: TaskList) {
 }
 
 let _flags: SchedulerFlags = 0;
-let _clock = 0;
+let _clock = 1;
 const _microtasks = createTaskList();
 const _mutationEffects = createTaskList();
 const _domLayoutEffects = createTaskList();
