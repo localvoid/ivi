@@ -24,6 +24,7 @@ export {
   IOS_GESTURE_EVENT,
 } from "./core/feature_detection";
 export { Predicate } from "./core/predicate";
+export { EMPTY_OBJECT } from "./core/empty_object";
 export { getFunctionName } from "./core/function";
 export { addErrorHandler, catchError } from "./core/error";
 export {
