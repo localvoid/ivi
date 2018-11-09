@@ -128,7 +128,7 @@ export function removeBeforeNativeEvent<E extends Event>(
       throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
     }
   }
-  unorderedArrayDelete(source.before!, source.before!.indexOf(cb));
+  unorderedArrayDelete(source.before!, cb);
   decDependencies(source);
 }
 
@@ -142,7 +142,7 @@ export function removeAfterNativeEvent<E extends Event>(
       throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");
     }
   }
-  unorderedArrayDelete(source.after!, source.after!.indexOf(cb));
+  unorderedArrayDelete(source.after!, cb);
   decDependencies(source);
 }
 

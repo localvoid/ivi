@@ -1,5 +1,5 @@
 import { V2, v2, V2_ZERO, v2Sub, v2Distance } from "ivi-math";
-import { unorderedArrayDelete, SyntheticEvent, SyntheticEventFlags } from "ivi";
+import { unorderedArrayDeleteByIndex, SyntheticEvent, SyntheticEventFlags } from "ivi";
 import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_event";
 import { GestureRecognizer, GestureRecognizerState } from "./gesture_recognizer";
 import { GestureController } from "./gesture_controller";
@@ -116,7 +116,7 @@ export class TransformGestureRecognizer extends GestureRecognizer<TransformGestu
               this.update();
             }
           } else {
-            unorderedArrayDelete(pointers, idx);
+            unorderedArrayDeleteByIndex(pointers, idx);
             if ((state & GestureRecognizerState.Started) && !(event.action & GesturePointerAction.Cancel)) {
               this.end();
             } else {

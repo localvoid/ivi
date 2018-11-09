@@ -32,7 +32,7 @@ export {
   elementSetAttributeNS,
   _,
 } from "./core/shortcuts";
-export { append, unorderedArrayDelete } from "./core/array";
+export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete } from "./core/array";
 export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./core/noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./core/repeatable_task_list";
 export { shallowEqual } from "./core/equal";

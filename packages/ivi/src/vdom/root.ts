@@ -66,7 +66,7 @@ export function dirtyCheck() {
     } else if (current) {
       if (next === null) {
         _remove(container, current);
-        unorderedArrayDelete(ROOTS, ROOTS.indexOf(root));
+        unorderedArrayDelete(ROOTS, root);
         --i;
       } else {
         _dirtyCheck(container, current, false);
