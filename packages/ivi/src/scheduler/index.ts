@@ -20,11 +20,29 @@ export const enum UpdateFlags {
  * Scheduler flags.
  */
 const enum SchedulerFlags {
+  /**
+   * Running inside of a scheduler context.
+   */
   Running = 1,
+  /**
+   * Scheduler tick is pending for an execution.
+   */
   TickPending = 1 << 1,
+  /**
+   * Frame update is pending for an execution.
+   */
   NextFramePending = 1 << 2,
+  /**
+   * Sync Frame update is pending for an execution.
+   */
   NextSyncFramePending = 1 << 3,
+  /**
+   * Running inside of a frame update context.
+   */
   UpdatingFrame = 1 << 4,
+  /**
+   * Dirty checking is pending for an execution.
+   */
   DirtyCheckPending = 1 << 5,
 }
 
@@ -65,6 +83,12 @@ const _beforeMutations = [] as RepeatableTaskList;
 const _afterMutations = [] as RepeatableTaskList;
 let _frameStartTime = 0;
 
+/**
+ * withSchedulerTick wraps `inner` function into a scheduler context execution.
+ *
+ * @param inner - Inner function.
+ * @returns function that will be executed in a scheduler context.
+ */
 export const withSchedulerTick = <T extends any[]>(inner: (...args: T) => void) => (
   catchError(function () {
     _flags |= SchedulerFlags.Running;
@@ -74,6 +98,7 @@ export const withSchedulerTick = <T extends any[]>(inner: (...args: T) => void) 
     ++_clock;
   })
 ) as (...args: T) => void;
+
 const runMicrotasks = withSchedulerTick(NOOP);
 
 /**
@@ -86,7 +111,7 @@ export const clock = () => _clock;
 /**
  * scheduleMicrotask adds task to the microtask queue.
  *
- * @param task Microtask.
+ * @param task - Microtask.
  */
 export function scheduleMicrotask(task: () => void): void {
   _microtasks.v.push(task);
@@ -96,10 +121,20 @@ export function scheduleMicrotask(task: () => void): void {
   }
 }
 
+/**
+ * beforeMutations adds a hook that will be executed before DOM mutations.
+ *
+ * @param fn - hook.
+ */
 export function beforeMutations(fn: () => boolean | void): void {
   _beforeMutations.push(fn);
 }
 
+/**
+ * afterMutations adds a hook that will be executed after DOM mutations.
+ *
+ * @param fn - hook.
+ */
 export function afterMutations(fn: () => boolean | void): void {
   _afterMutations.push(fn);
 }
@@ -111,10 +146,16 @@ export function afterMutations(fn: () => boolean | void): void {
  */
 export const frameStartTime = () => _frameStartTime;
 
-export const withNextFrame = (fn: (time?: number) => void) => (
+/**
+ * withNextFrame wraps `inner` function into a scheduler frame update context.
+ *
+ * @param inner - Inner function.
+ * @returns function that will be executed in a frame update context.
+ */
+export const withNextFrame = (inner: (time?: number) => void) => (
   withSchedulerTick((time?: number) => {
     _flags |= SchedulerFlags.UpdatingFrame;
-    fn(time);
+    inner(time);
 
     if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
       _frameStartTime = time === void 0 ? performance.now() : time;
@@ -144,7 +185,7 @@ export const withNextFrame = (fn: (time?: number) => void) => (
 const _handleNextFrame = withNextFrame(NOOP);
 
 /**
- * requestNextFrame triggers next frame tasks execution.
+ * requestNextFrame requests an update for next frame.
  */
 export function requestNextFrame(flags?: UpdateFlags): void {
   if (
@@ -193,13 +234,19 @@ export function requestDirtyCheck(flags?: UpdateFlags) {
  * Invalidate component.
  *
  * @param c - Component instance
- * @param flags - See {@link InvalidateFlags} for details.
+ * @param flags - See {@link UpdateFlags} for details.
  */
 export function invalidate<P>(c: Component<P>, flags?: UpdateFlags): void {
   c.dirty = true;
   requestDirtyCheck(flags);
 }
 
+/**
+ * dirty requests a dirty checking and returns current monotonic clock value.
+ *
+ * @param flags - See {@link UpdateFlags} for details.
+ * @returns current monotonic clock value.
+ */
 export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock);
 
 /**
@@ -207,7 +254,7 @@ export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock)
  *
  * @param next - Virtual DOM node to render
  * @param container - DOM Node that will contain rendered node
- * @param flags - See {@link InvalidateFlags} for details
+ * @param flags - See {@link UpdateFlags} for details
  */
 export function render(next: VNode | null, container: Element, flags?: UpdateFlags): void {
   /* istanbul ignore else */

@@ -41,8 +41,17 @@ export interface NativeEventDispatcher<E extends Event> {
    * DOM event name.
    */
   readonly name: string;
+  /**
+   * Hooks that will be executed before dispatching an event.
+   */
   before: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
+  /**
+   * Hooks that will be executed after dispatching an event.
+   */
   after: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
+  /**
+   * Event dispatcher.
+   */
   dispatch: ((ev: E) => void) | null;
 }
 
@@ -102,6 +111,12 @@ export function createNativeEventDispatcher<E extends Event>(
   return source;
 }
 
+/**
+ * beforeNativeEvent attaches a hook that will be executed before dispatching an event.
+ *
+ * @param source - Event dispatcher source.
+ * @param cb - Hook
+ */
 export function beforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
@@ -110,6 +125,12 @@ export function beforeNativeEvent<E extends Event>(
   incDependencies(source);
 }
 
+/**
+ * afterNativeEvent attaches a hook that will be executed after dispatching an event.
+ *
+ * @param source - Event dispatcher source.
+ * @param cb - Hook
+ */
 export function afterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
@@ -118,13 +139,19 @@ export function afterNativeEvent<E extends Event>(
   incDependencies(source);
 }
 
+/**
+ * removeBeforeNativeEvent removes a hook that is executed before dispatching an event.
+ *
+ * @param source - Event dispatcher source.
+ * @param cb - Hook
+ */
 export function removeBeforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (source.before === null || source.before.indexOf(cb) === -1) {
+    if (source.before === null) {
       throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
     }
   }
@@ -132,13 +159,19 @@ export function removeBeforeNativeEvent<E extends Event>(
   decDependencies(source);
 }
 
+/**
+ * removeAfterNativeEvent removes a hook that is executed after dispatching an event.
+ *
+ * @param source - Event dispatcher source.
+ * @param cb - Hook
+ */
 export function removeAfterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (source.after === null || source.after.indexOf(cb) === -1) {
+    if (source.after === null) {
       throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");
     }
   }
@@ -170,10 +203,10 @@ function dispatchToListeners<E extends Event>(
   listeners: Array<(ev: SyntheticNativeEvent<E>) => void> | null,
   ev: SyntheticNativeEvent<E>,
 ): void {
-  if (listeners) {
+  if (listeners !== null) {
     const cbs = listeners.slice();
-    for (const cb of cbs) {
-      cb(ev);
+    for (let i = 0; i < cbs.length; i++) {
+      cbs[i](ev);
     }
   }
 }

@@ -4,8 +4,8 @@ import { VNodeFlags, VNode } from "../vdom/vnode";
 import { ROOTS } from "../vdom/root";
 
 /**
- * accumulateDispatchTargets traverses the DOM tree from the `target` Element to the document top and accumulates
- * matching Event Handlers in `result` array.
+ * accumulateDispatchTargets traverses the DOM tree from the `target` Element to the document top, then goes down
+ * through Virtual DOM tree and accumulates matching Event Handlers in `result` array.
  *
  * @param result Accumulated Dispatch Targets.
  * @param target Target DOM Element.
@@ -78,10 +78,11 @@ function visitDown(
 }
 
 /**
- * accumulateDispatchTargetsFromElement accumulates matching Event Handlers in `result` array from the `target` Element.
+ * accumulateDispatchTargetsFromElement accumulates matching Event Handlers in `result` array from the `target`
+ * Virtual DOM Element.
  *
  * @param result Accumulated Dispatch Targets.
- * @param target Target Element.
+ * @param target Target Virtual DOM Element.
  * @param match Matching function.
  */
 function accumulateDispatchTargetsFromVNode(

@@ -281,7 +281,7 @@ components aren't leaking any information about their DOM structure.
 #### Data Bindings per DOM Element
 
 ```
-Benchmark: ~0.375
+Benchmark: ~0.25 (some implementations are using workarounds to reduce it to 0.125)
 Google Mail: ~2 (rough estimate, guessed by looking at DOM nodes in the document)
 ```
 
@@ -461,7 +461,7 @@ of the attribute.
 
 `UNSAFE_HTML()` function creates an `AttributeDirective` that assigns an `innerHTML` property to an Element.
 
-`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is synced from `undefined` or
+`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is updated from `undefined` or
 `false` to `true`.
 
 `VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement or
@@ -480,7 +480,7 @@ is derived from the `key`.
 ```ts
 import { input, CHECKED } from "ivi-html";
 
-const e = input("", { type: "checked": CHECKED(true) })
+const e = input("", { type: "checked", checked: CHECKED(true) })
 ```
 
 ##### Custom Attribute Directives
@@ -550,22 +550,22 @@ function getComponent<T extends Component<any>>(node: VNode): T | null;
 ##### Trigger an update
 
 ```ts
-const enum InvalidateFlags {
+const enum UpdateFlags {
   /**
    * Forces synchronous update.
    */
   RequestSyncUpdate = 1,
 }
 
-function update(flags?: InvalidateFlags);
+function requestDirtyCheck(flags?: UpdateFlags);
 ```
 
-`update()` function triggers update handler that performs dirty checking.
+`requestDirtyCheck()` function requests a dirty checking.
 
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: VNode<any> | null, container: Element, flags?: InvalidateFlags): void;
+function render(node: VNode<any> | null, container: Element, flags?: UpdateFlags): void;
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
@@ -676,7 +676,7 @@ function useDetached(c: Component, hook: () => void): void;
 ##### `invalidate()`
 
 ```ts
-function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void;
+function invalidate(c: Component, flags?: UpdateFlags): void;
 ```
 
 `invalidate()` marks component as dirty and triggers an update.
