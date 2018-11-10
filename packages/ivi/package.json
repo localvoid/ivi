@@ -19,10 +19,7 @@
     "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
-  "peerDependencies": {
-    "ivi-scheduler": "^0.17.0-alpha.0"
-  },
-  "devDependencies": {
+  "dependencies": {
     "ivi-scheduler": "^0.17.0-alpha.0"
   },
   "description": "Javascript (TypeScript) library for building web user interfaces.",
