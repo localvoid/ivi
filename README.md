@@ -13,7 +13,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Declarative rendering with "Virtual DOM"
 - Components
 - Extensible synthetic event subsystem
-- Synchronous and deterministic update algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
+- Synchronous and deterministic update algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
@@ -23,7 +23,7 @@ ivi has a tree shakeable API, so it can scale from simple widgets to complex des
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.7KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.8KB** (minified+compressed).
 
 ## Quick Start
 
@@ -731,6 +731,82 @@ const EntryList = component((c) => {
   );
 });
 ```
+
+### Synthetic Events
+
+Synthetic events subsystem is using its own two-phase event dispatching algorithm. With custom event dispatching
+algorithm it is possible to create new events like "click outside", gestures and DnD events.
+
+#### Event Handler
+
+Event Handler is an object that contains information about `EventDispatcher` that is used for dispatching events
+and a handler function that will be executed when dispatcher fires an event.
+
+`ivi` package provides event handler factories for all native events.
+
+```ts
+import { onClick, onKeyDown } from "ivi";
+
+const click = onClick((ev) => { console.log("clicked"); });
+const keyDown = onKeyDown((ev) => { console.log("Key Down"); });
+```
+
+#### Example
+
+```ts
+import { component, render, onClick } from "ivi";
+import { div } from "ivi-html";
+
+const C = component((c) => {
+  let counter1 = 0;
+  let counter2 = 0;
+
+  // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
+  // multiple `onClick` event handlers.
+  const events = [
+    onClick((ev) => {
+      counter1++;
+      invalidate(c);
+    }),
+    onClick((ev) => {
+      counter2++;
+      invalidate(c);
+    }),
+  ]);
+
+  return () => div().e(this.events).c(`Clicks: [${this.counter1}] [${this.counter2}]`);
+});
+
+render(
+  C().e(onClick(() => { console.log("event handler attached to component"); })),
+  document.getElementById("app"),
+);
+```
+
+### Children Reconciliation
+
+Children reconciliation algorithm in ivi works in almost exactly the same way as
+[React Reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
+
+The key difference is that ivi algorithm tries to find a minimum number of DOM operations when rearranging children
+nodes.
+
+Finding a minimum number of DOM operations is not just about performance, it is also about preserving internal state
+of DOM nodes. Moving DOM nodes isn't always a side-effect free operation, it may restart animations, drop focus, reset
+scrollbar positions, stop video playback, collapse IME etc.
+
+#### Defined Behaviour
+
+This is the behaviour that you can rely on when thinking how syncing algorithm will update children lists.
+
+- Inserted nodes won't cause any nodes to move.
+- Removed nodes won't cause any nodes to move.
+- Moved nodes will be rearranged in a correct positions with a minimum number of DOM operations.
+
+#### Undefined Behaviour
+
+Moved nodes can be rearranged in any way. `[ab] => [ba]` transformation can move node `a` or node `b`. Applications
+shouldn't rely on this behaviour.
 
 ### Examples and demo applications
 
