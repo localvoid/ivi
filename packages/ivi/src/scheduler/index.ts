@@ -2,6 +2,7 @@ import { sMT, rAF } from "ivi-scheduler";
 import { runRepeatableTasks, RepeatableTaskList } from "../core/repeatable_task_list";
 import { NOOP } from "../core/noop";
 import { catchError } from "../core/error";
+import { printWarn } from "../debug/print";
 import { VNode } from "../vdom/vnode";
 import { Component } from "../vdom/component";
 import { ROOTS, findRoot, dirtyCheck } from "../vdom/root";
@@ -46,6 +47,12 @@ const enum SchedulerFlags {
   DirtyCheckPending = 1 << 5,
 }
 
+const enum SchedulerDebugFlags {
+  DirtyCheckingFinished = 1,
+  MutationsFinished = 1 << 1,
+  LayoutFinished = 1 << 2,
+}
+
 /**
  * Task list.
  */
@@ -75,6 +82,11 @@ function run(t: TaskList) {
 }
 
 let _flags: SchedulerFlags = 0;
+let _debugFlags: SchedulerDebugFlags;
+/** istanbul ignore else */
+if (DEBUG) {
+  _debugFlags = 0;
+}
 let _clock = 1;
 const _microtasks = createTaskList();
 const _mutationEffects = createTaskList();
@@ -164,9 +176,21 @@ export const withNextFrame = (inner: (time?: number) => void) => (
       if ((_flags & SchedulerFlags.DirtyCheckPending) !== 0) {
         dirtyCheck();
       }
+      /** istanbul ignore else */
+      if (DEBUG) {
+        _debugFlags |= SchedulerDebugFlags.DirtyCheckingFinished;
+      }
       run(_mutationEffects);
+      /** istanbul ignore else */
+      if (DEBUG) {
+        _debugFlags |= SchedulerDebugFlags.MutationsFinished;
+      }
       runRepeatableTasks(_afterMutations);
       run(_domLayoutEffects);
+      /** istanbul ignore else */
+      if (DEBUG) {
+        _debugFlags |= SchedulerDebugFlags.LayoutFinished;
+      }
     }
     _flags &= ~(
       SchedulerFlags.UpdatingFrame |
@@ -174,6 +198,14 @@ export const withNextFrame = (inner: (time?: number) => void) => (
       SchedulerFlags.NextSyncFramePending |
       SchedulerFlags.DirtyCheckPending
     );
+    /** istanbul ignore else */
+    if (DEBUG) {
+      _debugFlags &= ~(
+        SchedulerDebugFlags.DirtyCheckingFinished |
+        SchedulerDebugFlags.MutationsFinished |
+        SchedulerDebugFlags.LayoutFinished
+      );
+    }
   })
 );
 
@@ -211,6 +243,14 @@ export function requestNextFrame(flags?: UpdateFlags): void {
  * @param fn - Write DOM task
  */
 export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): void {
+  /** istanbul ignore else */
+  if (DEBUG) {
+    if (_flags & SchedulerFlags.UpdatingFrame) {
+      if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
+        printWarn("Mutation effect is scheduled after mutations were finished");
+      }
+    }
+  }
   _mutationEffects.v.push(fn);
   requestNextFrame(flags);
 }
@@ -221,11 +261,27 @@ export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): voi
  * @param fn - Read DOM task
  */
 export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void {
+  /** istanbul ignore else */
+  if (DEBUG) {
+    if (_flags & SchedulerFlags.UpdatingFrame) {
+      if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
+        printWarn("Layout effect is scheduled after layout were finished");
+      }
+    }
+  }
   _domLayoutEffects.v.push(fn);
   requestNextFrame(flags);
 }
 
 export function requestDirtyCheck(flags?: UpdateFlags) {
+  /** istanbul ignore else */
+  if (DEBUG) {
+    if (_flags & SchedulerFlags.UpdatingFrame) {
+      if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
+        printWarn("Dirty checking is scheduled after dirty checking were finished");
+      }
+    }
+  }
   _flags |= SchedulerFlags.DirtyCheckPending;
   requestNextFrame(flags);
 }
