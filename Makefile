@@ -9,9 +9,6 @@ clean: clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_state clean_ivi_math cle
 
 build: build_ivi build_ivi_html build_ivi_svg build_ivi_state build_ivi_math build_ivi_gestures
 
-changelog:
-	conventional-changelog -p angular -i CHANGELOG.md -s ; $(info $(M) generating CHANGELOG.md)
-
 # ivi-scheduler
 clean_ivi_scheduler: ; $(info $(M) cleaning ivi-scheduler)
 	$Q cd packages/ivi-scheduler && yarn clean

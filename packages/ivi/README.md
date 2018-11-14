@@ -5,7 +5,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 |Package      |NPM version                                                                                                  |
 |-------------|-------------------------------------------------------------------------------------------------------------|
 |ivi          |[![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi)                    |
-|ivi-scheduler|[![npm version](https://img.shields.io/npm/v/ivi-scheduler.svg)](https://www.npmjs.com/package/ivi-scheduler)|
 |ivi-html     |[![npm version](https://img.shields.io/npm/v/ivi-html.svg)](https://www.npmjs.com/package/ivi-html)          |
 |ivi-svg      |[![npm version](https://img.shields.io/npm/v/ivi-svg.svg)](https://www.npmjs.com/package/ivi-svg)            |
 
@@ -14,8 +13,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Declarative rendering with "Virtual DOM"
 - Components
 - Extensible synthetic event subsystem
-- Synchronous and deterministic update algorithm with [minimum number of DOM operations](https://github.com/localvoid/ivi/blob/master/documentation/misc/children-reconciliation.md)
-- Optional [scheduler](https://github.com/localvoid/ivi/blob/master/documentation/advanced/scheduler.md)
+- Synchronous and deterministic update algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
@@ -25,7 +23,9 @@ ivi has a tree shakeable API, so it can scale from simple widgets to complex des
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.6KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.8KB** (minified+compressed).
+
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KB** (minified+compressed).
 
 ## Quick Start
 
@@ -36,29 +36,9 @@ The easiest way to get started with ivi is to use [this basic example on CodeSan
 The smallest ivi example looks like this:
 
 ```js
-import { setupScheduler, BASIC_SCHEDULER, render } from "ivi";
+import { render } from "ivi";
 import { h1 } from "ivi-html";
 
-setupScheduler(BASIC_SCHEDULER);
-
-render(
-  h1().t("Hello World!"),
-  document.getElementById("app"),
-);
-```
-
-Since ivi has a tree shakeable API, all dependencies should be imported explicity, even the basic scheduler
-implementation. We don't want any unused code to be a part of the final bundle when we decide to use a full-featured
-scheduler implementation.
-
-```js
-setupScheduler(BASIC_SCHEDULER);
-```
-
-All ivi applications should start by setting up a scheduler implementation. In this example we are using
-`BASIC_SCHEDULER` from the `ivi` package.
-
-```js
 render(
   h1().t("Hello World!"),
   document.getElementById("app"),
@@ -79,9 +59,9 @@ DOM node for a `<h1>` element, and method `t()` is used to assign a text content
 
 Components API were heavily influenced by the new [React hooks API](https://reactjs.org/docs/hooks-intro.html).
 
-There are several differences in the ivi API that solve major flaws in the React hooks API design:
+There are several differences in the ivi API that solve some flaws in the React hooks API design:
 
-- [Weird hooks rules](https://reactjs.org/docs/hooks-rules.html)
+- [Hooks rules](https://reactjs.org/docs/hooks-rules.html)
 - Excessive memory allocations each time component is updated
 - ["Memory leaking"](https://codesandbox.io/s/lz61v39r7) caused by
 [closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
@@ -99,10 +79,8 @@ API is slightly different from the React hooks API, but it has the same properti
 composability.
 
 ```js
-import { setupScheduler, BASIC_SCHEDULER, component, invalidate, render } from "ivi";
+import { component, invalidate, render } from "ivi";
 import { h1 } from "ivi-html";
-
-setupScheduler(BASIC_SCHEDULER);
 
 const Counter = component((c) => {
   let counter = 0;
@@ -127,9 +105,6 @@ render(
   document.getElementById("app"),
 );
 ```
-
-As always, first thing that we need to do in the ivi application is to setup a scheduler with `setupScheduler()`
-function.
 
 ```js
 const Counter = component((c) => {
@@ -308,7 +283,7 @@ components aren't leaking any information about their DOM structure.
 #### Data Bindings per DOM Element
 
 ```
-Benchmark: ~0.375
+Benchmark: ~0.25 (some implementations are using workarounds to reduce it to 0.125)
 Google Mail: ~2 (rough estimate, guessed by looking at DOM nodes in the document)
 ```
 
@@ -400,11 +375,7 @@ function Button(slot) {
 
 render(
   Button(
-    fragment(
-      span().c("Click"),
-      " ",
-      span().c("Me"),
-    ),
+    fragment(span().t("Click"), " ", span().t("Me")),
   ),
   DOMContainer,
 );
@@ -476,6 +447,7 @@ There are several attribute directives defined in ivi packages:
 // ivi
 function PROPERTY<T>(v: T | undefined): AttributeDirective<T>;
 function UNSAFE_HTML(v: string | undefined): AttributeDirective<string>;
+function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean>;
 
 // ivi-html
 function VALUE(v: string | number | undefined): AttributeDirective<string | number>;
@@ -484,15 +456,15 @@ function CHECKED(v: boolean | undefined): AttributeDirective<boolean>;
 // ivi-svg
 function XML_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
 function XLINK_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
-
-// ivi-scheduler
-function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean>;
 ```
 
 `PROPERTY()` function creates an `AttributeDirective` that assigns a property to a property name derived from the `key`
 of the attribute.
 
 `UNSAFE_HTML()` function creates an `AttributeDirective` that assigns an `innerHTML` property to an Element.
+
+`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is updated from `undefined` or
+`false` to `true`.
 
 `VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement or
 HTMLTextAreaElement.
@@ -505,15 +477,12 @@ derived from the `key`.
 `XLINK_ATTR()` function creates an `AttributeDirective` that assigns an attribute from XLINK namespace, attribute name
 is derived from the `key`.
 
-`AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is synced from `undefined` or
-`false` to `true`.
-
 ##### Example
 
 ```ts
 import { input, CHECKED } from "ivi-html";
 
-const e = input("", { type: "checked": CHECKED(true) })
+const e = input("", { type: "checked", checked: CHECKED(true) })
 ```
 
 ##### Custom Attribute Directives
@@ -583,22 +552,22 @@ function getComponent<T extends Component<any>>(node: VNode): T | null;
 ##### Trigger an update
 
 ```ts
-const enum InvalidateFlags {
+const enum UpdateFlags {
   /**
    * Forces synchronous update.
    */
   RequestSyncUpdate = 1,
 }
 
-function update(flags?: InvalidateFlags);
+function requestDirtyCheck(flags?: UpdateFlags);
 ```
 
-`update()` function triggers update handler that performs dirty checking.
+`requestDirtyCheck()` function requests a dirty checking.
 
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: VNode<any> | null, container: Element, flags?: InvalidateFlags): void;
+function render(node: VNode<any> | null, container: Element, flags?: UpdateFlags): void;
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
@@ -640,6 +609,30 @@ function useEffect<P>(
 
 `useEffect()` lets you perform side effects, it replaces `componentDidMount()`, `componentWillUnmount()` and
 `componentDidUpdate()` methods of a class-based components API.
+
+##### `useMutationEffect()`
+
+```ts
+function useMutationEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+
+`useMutationEffect()` lets you perform DOM mutation side effects.
+
+##### `useLayoutEffect()`
+
+```ts
+function useLayoutEffect<P>(
+  c: Component,
+  hook: (props: P) => (() => void) | void,
+  shouldUpdate?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+
+`useLayoutEffect()` lets you perform DOM layout side effects.
 
 ##### `useSelect()`
 
@@ -685,7 +678,7 @@ function useDetached(c: Component, hook: () => void): void;
 ##### `invalidate()`
 
 ```ts
-function invalidate<P>(c: Component<P>, flags?: InvalidateFlags): void;
+function invalidate(c: Component, flags?: UpdateFlags): void;
 ```
 
 `invalidate()` marks component as dirty and triggers an update.
@@ -740,6 +733,82 @@ const EntryList = component((c) => {
   );
 });
 ```
+
+### Synthetic Events
+
+Synthetic events subsystem is using its own two-phase event dispatching algorithm. With custom event dispatching
+algorithm it is possible to create new events like "click outside", gestures and DnD events.
+
+#### Event Handler
+
+Event Handler is an object that contains information about `EventDispatcher` that is used for dispatching events
+and a handler function that will be executed when dispatcher fires an event.
+
+`ivi` package provides event handler factories for all native events.
+
+```ts
+import { onClick, onKeyDown } from "ivi";
+
+const click = onClick((ev) => { console.log("clicked"); });
+const keyDown = onKeyDown((ev) => { console.log("Key Down"); });
+```
+
+#### Example
+
+```ts
+import { component, render, onClick } from "ivi";
+import { div } from "ivi-html";
+
+const C = component((c) => {
+  let counter1 = 0;
+  let counter2 = 0;
+
+  // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
+  // multiple `onClick` event handlers.
+  const events = [
+    onClick((ev) => {
+      counter1++;
+      invalidate(c);
+    }),
+    onClick((ev) => {
+      counter2++;
+      invalidate(c);
+    }),
+  ]);
+
+  return () => div().e(this.events).c(`Clicks: [${this.counter1}] [${this.counter2}]`);
+});
+
+render(
+  C().e(onClick(() => { console.log("event handler attached to component"); })),
+  document.getElementById("app"),
+);
+```
+
+### Children Reconciliation
+
+Children reconciliation algorithm in ivi works in almost exactly the same way as
+[React Reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
+
+The key difference is that ivi algorithm tries to find a minimum number of DOM operations when rearranging children
+nodes.
+
+Finding a minimum number of DOM operations is not just about performance, it is also about preserving internal state
+of DOM nodes. Moving DOM nodes isn't always a side-effect free operation, it may restart animations, drop focus, reset
+scrollbar positions, stop video playback, collapse IME etc.
+
+#### Defined Behaviour
+
+This is the behaviour that you can rely on when thinking how syncing algorithm will update children lists.
+
+- Inserted nodes won't cause any nodes to move.
+- Removed nodes won't cause any nodes to move.
+- Moved nodes will be rearranged in a correct positions with a minimum number of DOM operations.
+
+#### Undefined Behaviour
+
+Moved nodes can be rearranged in any way. `[ab] => [ba]` transformation can move node `a` or node `b`. Applications
+shouldn't rely on this behaviour.
 
 ### Examples and demo applications
 

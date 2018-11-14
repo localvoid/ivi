@@ -25,6 +25,8 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **2.8KB** (minified+compressed).
 
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KB** (minified+compressed).
+
 ## Quick Start
 
 ### Hello World
