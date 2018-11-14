@@ -1,43 +1,74 @@
 import { EVENT_DISPATCHER_CLICK, SyntheticEventFlags, afterNativeEvent } from "ivi";
-import { RouteMap, ResolveResult, resolve } from "routekit-resolver";
+import { RouteMap, resolve } from "routekit-resolver";
 
-export function initRouter<A, T>(
+export interface Router<T> {
+  state: T;
+  vars: string[];
+  nav(path: string): void;
+}
+
+export function setupRouter<T>(
   baseURL: string,
-  routes: RouteMap<T>,
-  reducer: (a: A, b: T) => A,
-  data: A,
-  onChange: (result: ResolveResult<A> | null) => void,
-): void {
+  map: RouteMap<T>,
+  notFoundState: T,
+  onChange: (router: Router<T>) => void,
+): Router<T> {
   const location = window.location;
   const history = window.history;
+  let router: Router<T>;
+  let path = "";
 
-  let path = location.pathname;
-
-  const goTo = (nextPath: string) => {
-    if (path !== nextPath) {
-      path = nextPath;
-      onChange(resolve(routes, reducer, nextPath, data));
+  const update = (nextPath: string) => {
+    path = nextPath;
+    const result = resolve(map, path);
+    if (result === null) {
+      router.state = notFoundState;
+      router.vars = [];
+    } else {
+      router.state = result.state;
+      router.vars = result.vars;
     }
   };
 
-  window.addEventListener("popstate", ev => {
-    goTo(location.pathname);
+  const nav = (nextPath: string) => {
+    if (path !== nextPath) {
+      // iOS Safari limits to 100 pushState calls
+      try {
+        history.pushState(null, "", nextPath);
+      } catch (e) { /**/ }
+      update(nextPath);
+      onChange(router);
+    }
+  };
+
+  router = { state: notFoundState, vars: [], nav };
+  update(location.pathname);
+
+  window.addEventListener("popstate", () => {
+    update(location.pathname);
+    onChange(router);
   });
 
-  afterNativeEvent(EVENT_DISPATCHER_CLICK, ev => {
-    if ((ev.flags & (SyntheticEventFlags.PreventedDefault | SyntheticEventFlags.StoppedPropagation)) === 0) {
+  afterNativeEvent(EVENT_DISPATCHER_CLICK, (ev) => {
+    const native = ev.native;
+    if (
+      ((ev.flags & (SyntheticEventFlags.PreventedDefault | SyntheticEventFlags.StoppedPropagation)) === 0) &&
+      native.button === 0 &&
+      !(native.metaKey || native.altKey || native.ctrlKey || native.shiftKey)
+    ) {
       const anchor = findAnchorNode(ev.target as Element);
       if (anchor !== null) {
         const href = anchor.href;
         if (href.startsWith(baseURL)) {
+          ev.flags |= SyntheticEventFlags.PreventedDefault;
           history.pushState(null, "", href);
-          goTo(anchor.pathname);
+          nav(anchor.pathname);
         }
       }
     }
   });
 
-  onChange(resolve(routes, reducer, path, data));
+  return router;
 }
 
 function findAnchorNode(element: Element): HTMLAnchorElement | null {
@@ -49,4 +80,43 @@ function findAnchorNode(element: Element): HTMLAnchorElement | null {
   } while (element !== null);
 
   return null;
+}
+
+export function setupHashRouter<T>(
+  map: RouteMap<T>,
+  notFoundState: T,
+  onChange: (router: Router<T>) => void,
+): Router<T> {
+  const location = window.location;
+  let router: Router<T>;
+  let path = "";
+
+  const update = () => {
+    path = decodeURIComponent(location.hash);
+    path = (path.length > 1) ? path.slice(1) : "/";
+    const result = resolve(map, path);
+    if (result === null) {
+      router.state = notFoundState;
+      router.vars = [];
+    } else {
+      router.state = result.state;
+      router.vars = result.vars;
+    }
+  };
+
+  const nav = (nextPath: string) => {
+    if (path !== nextPath) {
+      location.hash = nextPath;
+    }
+  };
+
+  router = { state: notFoundState, vars: [], nav };
+  update();
+
+  window.addEventListener("hashchange", () => {
+    update();
+    onChange(router);
+  });
+
+  return router;
 }
