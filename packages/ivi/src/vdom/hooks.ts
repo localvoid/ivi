@@ -194,10 +194,6 @@ function withEffect<P>(fn: (effect: () => void) => void): (
   };
 }
 
-const _useEffect = /*#__PURE__*/withEffect<any>(scheduleMicrotask);
-const _useMutationEffect = /*#__PURE__*/withEffect<any>(scheduleMutationEffect);
-const _useLayoutEffect = /*#__PURE__*/withEffect<any>(scheduleLayoutEffect);
-
 /**
  * useEffect creates a side effect hook.
  *
@@ -225,109 +221,20 @@ const _useLayoutEffect = /*#__PURE__*/withEffect<any>(scheduleLayoutEffect);
  * @param shouldUpdate - Should update function.
  * @returns side effect hook
  */
-export function useEffect(
+export const useEffect: <T>(
   c: Component,
-  hook: () => (() => void) | void,
-): () => void;
+  hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
+  shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
+) => (props: T) => void = /*#__PURE__*/withEffect<any>(scheduleMicrotask);
 
-/**
- * useEffect creates a side effect hook.
- *
- * @example
- *
- *     const Counter = component<number>((c) => {
- *       let i = 0;
- *       const timer = useEffect<number>(c, (delay) => {
- *         const tid = setInterval(() => {
- *           i++;
- *           invalidate(c);
- *         }, delay);
- *         return () => { clearInterval(tid); };
- *       });
- *
- *       return (delay) => (
- *         timer(delay),
- *
- *         div().t(i),
- *       );
- *     });
- *
- * @param c - Component instance.
- * @param hook - Side effect function.
- * @param shouldUpdate - Should update function.
- * @returns side effect hook
- */
-export function useEffect<P>(
+export const useMutationEffect: <T>(
   c: Component,
-  hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => void;
+  hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
+  shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
+) => (props: T) => void = /*#__PURE__*/withEffect<any>(scheduleMutationEffect);
 
-/**
- * useEffect creates a side effect hook.
- *
- * @example
- *
- *     const Counter = component<number>((c) => {
- *       let i = 0;
- *       const timer = useEffect<number>(c, (delay) => {
- *         const tid = setInterval(() => {
- *           i++;
- *           invalidate(c);
- *         }, delay);
- *         return () => { clearInterval(tid); };
- *       });
- *
- *       return (delay) => (
- *         timer(delay),
- *
- *         div().t(i),
- *       );
- *     });
- *
- * @param c - Component instance.
- * @param hook - Side effect function.
- * @param shouldUpdate - Should update function.
- * @returns side effect hook
- */
-export function useEffect<P>(
+export const useLayoutEffect: <T>(
   c: Component,
-  hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => void {
-  return _useEffect(c, hook, shouldUpdate);
-}
-
-export function useMutationEffect(
-  c: Component,
-  hook: () => (() => void) | void,
-): () => void;
-export function useMutationEffect<P>(
-  c: Component,
-  hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => void;
-export function useMutationEffect<P>(
-  c: Component,
-  hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => void {
-  return _useMutationEffect(c, hook, shouldUpdate);
-}
-
-export function useLayoutEffect(
-  c: Component,
-  hook: () => (() => void) | void,
-): () => void;
-export function useLayoutEffect<P>(
-  c: Component,
-  hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => void;
-export function useLayoutEffect<P>(
-  c: Component,
-  hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => void {
-  return _useLayoutEffect(c, hook, shouldUpdate);
-}
+  hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
+  shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
+) => (props: T) => void = /*#__PURE__*/withEffect<any>(scheduleLayoutEffect);
