@@ -64,7 +64,6 @@ function _detach(vnode: VNode): void {
  *
  * @param parent - Parent DOM Node
  * @param vnode - VNode
- * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
 export function _dirtyCheck(parent: Node, vnode: VNode, dirtyContext: boolean): void {
@@ -126,12 +125,10 @@ function _removeAllChildren(parent: Node, vnode: VNode | null): void {
 /**
  * Render virtual DOM node.
  *
- * @param parent - Parent DOM element
  * @param vnode - Virtual DOM node to render
- * @param context - Current context
  * @returns Rendered DOM Node
  */
-function _instantiate(parent: Node, vnode: VNode): Node {
+function _instantiate(vnode: VNode): Node {
   /* istanbul ignore else */
   if (DEBUG) {
     if (vnode._i !== null) {
@@ -160,7 +157,7 @@ function _instantiate(parent: Node, vnode: VNode): Node {
           document.createElement(tag as string);
       } else {
         if ((tag as VNode)._i === null) {
-          _instantiate(parent, (tag as VNode));
+          _instantiate((tag as VNode));
         }
         /* istanbul ignore else */
         if (DEBUG) {
@@ -209,14 +206,13 @@ function _instantiate(parent: Node, vnode: VNode): Node {
       const render = (tag as ComponentDescriptor).c(instance);
       instance.update = render;
       node = _instantiate(
-        parent,
         vnode._c = DEBUG ?
           shouldBeSingleVNode(render(props)) :
             /* istanbul ignore next */render(props),
       );
     } else {
       const prevContext = setContext(instance = { ...getContext(), ...props });
-      node = _instantiate(parent, vnode._c as VNode);
+      node = _instantiate(vnode._c as VNode);
       restoreContext(prevContext);
     }
   }
@@ -226,12 +222,7 @@ function _instantiate(parent: Node, vnode: VNode): Node {
 }
 
 /**
- * Render virtual DOM node into container and invoke `attached()` lifecycle methods after node is inserted into
- * container.
- *
- * It is important that `attached()` methods are invoked only after DOM nodes have been inserted into container, so it
- * goes twice through the entire vnode tree, first time when everything is rendered and the second time when
- * `attached()` methods are invoked.
+ * Render virtual DOM node into container.
  *
  * @param parent - Parent DOM element
  * @param refChild - Reference to the next DOM node, when it is `null` child will be inserted at the end
@@ -241,9 +232,9 @@ function _instantiate(parent: Node, vnode: VNode): Node {
 export function _render(parent: Node, refChild: Node | null, vnode: VNode): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    parent.insertBefore(_instantiate(parent, vnode), refChild);
+    parent.insertBefore(_instantiate(vnode), refChild);
   } else {
-    nodeInsertBefore.call(parent, _instantiate(parent, vnode), refChild);
+    nodeInsertBefore.call(parent, _instantiate(vnode), refChild);
   }
 }
 
@@ -256,7 +247,6 @@ export function _render(parent: Node, refChild: Node | null, vnode: VNode): void
  * @param parent - Parent DOM element
  * @param a - Previous virtual DOM node
  * @param b - Next virtual DOM node
- * @param context - Current context
  * @param dirtyContext - Context is dirty
  */
 export function _sync(parent: Node, a: VNode, b: VNode, dirtyContext: boolean): void {
@@ -381,9 +371,9 @@ export function _sync(parent: Node, a: VNode, b: VNode, dirtyContext: boolean): 
   } else {
     /* istanbul ignore else */
     if (DEBUG) {
-      parent.replaceChild(_instantiate(parent, b), getDOMNode(a)!);
+      parent.replaceChild(_instantiate(b), getDOMNode(a)!);
     } else {
-      nodeReplaceChild.call(parent, _instantiate(parent, b), getDOMNode(a)!);
+      nodeReplaceChild.call(parent, _instantiate(b), getDOMNode(a)!);
     }
     _detach(a);
   }
