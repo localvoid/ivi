@@ -776,7 +776,7 @@ const C = component((c) => {
     }),
   ]);
 
-  return () => div().e(this.events).c(`Clicks: [${this.counter1}] [${this.counter2}]`);
+  return () => div().e(events).c(`Clicks: [${counter1}] [${counter2}]`);
 });
 
 render(

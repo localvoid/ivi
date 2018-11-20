@@ -1,42 +1,43 @@
-import { EventHandlerFlags, EventFlags } from "./flags";
+import { EventFlags } from "./flags";
 import { SyntheticEvent } from "./synthetic_event";
-import { EventDispatcher } from "./event_dispatcher";
 
 /**
- * EventHandler.
- *
- * EventHandler objects should always have exactly the same shape as described in this interface to make sure that
- * all call sites that accessing this callbacks are monomorphic.
- *
- * @final
+ * EventHandlerFlags.
  */
-export interface EventHandler<E extends SyntheticEvent = SyntheticEvent, P = any, S = any> {
+export const enum EventHandlerFlags {
+  /**
+   * Capture flag that indicates that events of this type will be dispatched to the registered listener before
+   * being dispatched to any EventTarget beneath it in the DOM tree.
+   */
+  Capture = 1,
+  /**
+   * Bubbles flag indicating that the events of this type will be dispatched to the registered listener in the
+   * bubbling phase.
+   */
+  Bubble = 1 << 1,
+}
+
+export interface EventHandlerDescriptor {
   /**
    * Reference to the event source that will dispatch events for this event handler.
    */
-  src: EventDispatcher;
+  readonly src: any;
   /**
    * See {@link EventHandlerFlags} for details.
    */
-  flags: EventHandlerFlags;
+  readonly flags: EventHandlerFlags;
+}
+
+/**
+ * Event Handler.
+ */
+export interface EventHandler<E extends SyntheticEvent = any> {
+  /**
+   * Event Handler Descriptor.
+   */
+  readonly d: EventHandlerDescriptor;
   /**
    * Event Handler function.
    */
-  handler(ev: E): EventFlags | void;
-  /**
-   * Number of active listeners.
-   */
-  listeners: number;
-  /**
-   * Event Handler props.
-   *
-   * Gestures are using it to store factory function that instantiates gesture recognizer.
-   */
-  props: P;
-  /**
-   * Event Handler state.
-   *
-   * Internal state that can be used to store gesture recognizers state.
-   */
-  state: S | null;
+  readonly h: (ev: E) => EventFlags | void;
 }

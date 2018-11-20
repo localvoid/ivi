@@ -1,27 +1,55 @@
-import { CSSStyleProps } from "../dom/style";
-import { ComponentDescriptor, Component } from "./component";
-import { VNodeFlags, VNode } from "./vnode";
+// import { CSSStyleProps } from "../dom/style";
+import { NodeFlags } from "./node_flags";
+import { OpNode, OpChildren, ElementData, createOpNode, createOpType } from "./operations";
+import { StateNode } from "./state";
+
+function element<T, U>(tag: string, svg: boolean) {
+  const type = createOpType(
+    svg === true ? (NodeFlags.Element | NodeFlags.Svg) : NodeFlags.Element,
+    tag,
+  );
+  return (
+    className?: string,
+    attrs?: {},
+    children: OpChildren = null,
+  ) => (
+      createOpNode<ElementData>(type, { className, attrs, children })
+    );
+}
+
+export const htmlElement: <T, U>(tag: string) => (
+  className?: string,
+  attrs?: {},
+  children?: OpChildren,
+) => OpNode<ElementData<T>> = (tag: string) => element(tag, false);
+export const svgElement: <T, U>(tag: string) => (
+  className?: string,
+  attrs?: {},
+  children?: OpChildren,
+) => OpNode<ElementData<T>> = (tag: string) => element(tag, true);
 
 /**
- * `element()` creates a virtual DOM node factory that produces elements with predefined attributes and styles.
+ * `element()` creates a factory that produces elements with predefined attributes.
  *
  * @example
  *
- *     const DivWithIdAttribute = element(div("", { id: "predefined-id" }));
+ *     const DivWithIdAttribute = element(div(_, { id: "predefined-id" }));
  *
  *     render(
- *       DivWithIdAttribute(),
+ *       DivWithIdAttribute("class-name", { title: "Title" }, "Hello World"),
  *       document.getElementById("app")!,
  *     );
  *
- * @param proto - Virtual DOM prototype
+ * @param proto - Element prototype
  * @returns factory that produces elements with predefined attributes
  */
-export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: P, css?: CSSStyleProps) => VNode<P, N> {
-  const flags = proto._f | VNodeFlags.ElementFactory;
-  return (className?: string, attrs?: P, css?: CSSStyleProps) => (
-    new VNode<P, N>(flags, proto, attrs, className, css)
-  );
+export function elementProto<P>(proto: OpNode<P>) {
+  const type = createOpType(proto.type.flags | NodeFlags.ElementProto, { node: null, proto });
+  return (
+    className?: string,
+    attrs?: {},
+    children: OpChildren = null,
+  ) => createOpNode<ElementData>(type, { className, attrs, children });
 }
 
 /**
@@ -46,8 +74,8 @@ export function element<P, N>(proto: VNode<P, N>): (className?: string, attrs?: 
  * @returns factory that produces component nodes
  */
 export function component(
-  c: (c: Component<undefined>) => () => VNode,
-): () => VNode<undefined>;
+  c: (c: StateNode) => () => OpNode,
+): () => OpNode<undefined>;
 
 /**
  * component creates a virtual DOM node factory that produces nodes for components.
@@ -71,9 +99,9 @@ export function component(
  * @returns factory that produces component nodes
  */
 export function component<P>(
-  c: (c: Component<P>) => (props: P) => VNode,
+  c: (c: StateNode) => (props: P) => OpNode,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
  * component creates a virtual DOM node factory that produces nodes for components.
@@ -97,19 +125,11 @@ export function component<P>(
  * @returns factory that produces component nodes
  */
 export function component<P>(
-  c: (c: Component<P>) => (props: P) => VNode,
+  c: (c: StateNode) => (props: P) => OpNode,
   shouldUpdate?: (prev: P, next: P) => boolean,
-): (props: P) => VNode<P> {
-  const d: ComponentDescriptor<P> = { c, shouldUpdate };
-  const f = (props: P) => {
-    const n = new VNode<P>(VNodeFlags.Component, d, props, "", void 0);
-    /* istanbul ignore else */
-    if (DEBUG) {
-      n.factory = f;
-    }
-    return n;
-  };
-  return f;
+): (props: P) => OpNode<P> {
+  const type = createOpType(NodeFlags.Component, { c, shouldUpdate });
+  return (props: P) => createOpNode(type, props);
 }
 
 /**
@@ -126,8 +146,8 @@ export function component<P>(
  * @returns factory that produces stateless component nodes
  */
 export function statelessComponent(
-  update: () => VNode,
-): () => VNode<undefined>;
+  update: () => OpNode,
+): () => OpNode<undefined>;
 
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
@@ -143,9 +163,9 @@ export function statelessComponent(
  * @returns factory that produces stateless component nodes
  */
 export function statelessComponent<P>(
-  update: (props: P) => VNode,
+  update: (props: P) => OpNode,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
  * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
@@ -161,9 +181,9 @@ export function statelessComponent<P>(
  * @returns factory that produces stateless component nodes
  */
 export function statelessComponent<P>(
-  update: (props: P) => VNode,
+  update: (props: P) => OpNode,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (props: P) => VNode<P> {
+): (props: P) => OpNode<P> {
   return component(() => update, shouldUpdate);
 }
 
@@ -183,20 +203,20 @@ export function statelessComponent<P>(
  * @param child - child Virtual DOM node
  * @returns context node
  */
-export function context<T = {}>(ctx: T, child: VNode): VNode<T> {
-  /* istanbul ignore else */
-  if (DEBUG) {
-    if (child._l !== child) {
-      throw new Error("Context node contains an invalid child. Child should be a singular VNode.");
-    }
-  }
-  const n = new VNode<T>(
-    VNodeFlags.UpdateContext,
-    null,
-    ctx,
-    "",
-    void 0,
-  );
-  n._c = child;
-  return n;
-}
+// export function context<T = {}>(ctx: T, child: OpNode): OpNode<T> {
+//   /* istanbul ignore else */
+//   if (DEBUG) {
+//     if (child._l !== child) {
+//       throw new Error("Context node contains an invalid child. Child should be a singular VNode.");
+//     }
+//   }
+//   const n = new OpNode<T>(
+//     VNodeFlags.UpdateContext,
+//     null,
+//     ctx,
+//     "",
+//     void 0,
+//   );
+//   n._c = child;
+//   return n;
+// }

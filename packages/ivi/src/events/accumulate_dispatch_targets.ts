@@ -1,7 +1,9 @@
 import { DispatchTarget } from "./dispatch_target";
 import { EventHandler } from "./event_handler";
-import { VNodeFlags, VNode } from "../vdom/vnode";
+import { NodeFlags } from "../vdom/node_flags";
+import { StateNode } from "../vdom/state";
 import { ROOTS } from "../vdom/root";
+import { OpNode, OpData } from "../vdom/operations";
 
 /**
  * accumulateDispatchTargets traverses the DOM tree from the `target` Element to the document top, then goes down
@@ -17,9 +19,11 @@ export function accumulateDispatchTargets(
   match: (h: EventHandler) => boolean,
 ): void {
   for (let i = 0; i < ROOTS.length; i++) {
-    const { container, current } = ROOTS[i];
+    const { container, state } = ROOTS[i];
     if (container.contains(target)) {
-      visitUp(result, match, target, container, current!);
+      if (container !== target) {
+        visitUp(result, match, target, container, state!);
+      }
       break;
     }
   }
@@ -30,47 +34,49 @@ function visitUp(
   match: (h: EventHandler) => boolean,
   element: Element,
   root: Element,
-  vnode: VNode | null,
-): VNode | null {
-  const parent = element.parentNode! as Element;
-  if (parent !== root) {
-    vnode = visitUp(result, match, parent, root, vnode);
-
-    if (vnode !== null &&
-      (vnode._f & (VNodeFlags.Children | VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
-      let child = vnode._c;
-      while (child !== null) {
-        const r = visitDown(result, match, element, child as VNode);
-        if (r) {
-          return r;
-        }
-        child = (child as VNode)._r;
-      }
-    }
-    return null;
-  }
-
-  return visitDown(result, match, element, vnode!);
+  stateNode: StateNode | null,
+): StateNode | null {
+  const parentElement = element.parentNode! as Element;
+  return (parentElement === root || (stateNode = visitUp(result, match, parentElement, root, stateNode)) !== null) ?
+    visitDown(result, match, element, stateNode!) :
+    null;
 }
 
 function visitDown(
   result: DispatchTarget[],
   match: (h: EventHandler) => boolean,
   element: Element,
-  vnode: VNode,
-): VNode | null {
-  const flags = vnode._f;
+  stateNode: StateNode,
+): StateNode | null {
+  const { flags, children } = stateNode;
+  let i;
   let r;
-  if ((flags & VNodeFlags.Element) !== 0) {
-    if (vnode._i === element) {
-      accumulateDispatchTargetsFromVNode(result, vnode, match);
-      return vnode;
+  if ((flags & NodeFlags.Element) !== 0) {
+    if (stateNode.state === element) {
+      return stateNode;
     }
-  } else if ((flags & (VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
-    r = visitDown(result, match, element, vnode._c as VNode);
-    if (r) {
-      accumulateDispatchTargetsFromVNode(result, vnode, match);
+    if ((flags & NodeFlags.MultipleChildren) !== 0) {
+      i = (children as Array<StateNode | null>).length;
+      while (--i >= 0) {
+        if ((r = visitDown(result, match, element, (children as StateNode[])[i])) !== null) {
+          return r;
+        }
+      }
+    } else if (children !== null) {
+      return visitDown(result, match, element, children as StateNode);
+    }
+  } else if ((flags & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
+    if ((r = visitDown(result, match, element, stateNode.children as StateNode)) !== null) {
+      if ((flags & NodeFlags.Events) !== 0) {
+        accumulateDispatchTargetsFromEventsOpNode(result, stateNode, match);
+      }
       return r;
+    }
+  } else if ((flags & NodeFlags.TrackByKey) !== 0) {
+    for (i = 0; i < (children as StateNode[]).length; i++) {
+      if ((r = visitDown(result, match, element, (children as StateNode[])[i])) !== null) {
+        return r;
+      }
     }
   }
 
@@ -85,12 +91,12 @@ function visitDown(
  * @param target Target Virtual DOM Element.
  * @param match Matching function.
  */
-function accumulateDispatchTargetsFromVNode(
+function accumulateDispatchTargetsFromEventsOpNode(
   result: DispatchTarget[],
-  target: VNode,
+  target: StateNode,
   match: (h: EventHandler) => boolean,
 ): void {
-  const events = target._e;
+  const events = (target.op as OpNode<OpData>).data.data;
   if (events !== null) {
     let handlers: EventHandler[] | EventHandler | undefined;
     if (events instanceof Array) {
@@ -108,10 +114,8 @@ function accumulateDispatchTargetsFromVNode(
           ++count;
         }
       }
-    } else {
-      if (match(events) === true) {
-        handlers = events;
-      }
+    } else if (match(events) === true) {
+      handlers = events;
     }
     if (handlers !== void 0) {
       result.push({ target, handlers });

@@ -1,4 +1,4 @@
-import { VNode, VNodeFlags, AttributeDirective, ComponentDescriptor } from "ivi";
+import { OpNode, VNodeFlags, AttributeDirective, ComponentDescriptor } from "ivi";
 
 export interface SnapshotOptions {
   readonly ignoreEvents?: boolean;
@@ -26,7 +26,7 @@ const enum SnapshotFlags {
  * @param flags See `SnapshotFlags` for details.
  * @returns Snapshot string.
  */
-export function toSnapshot(vnode: VNode, options?: SnapshotOptions): string {
+export function toSnapshot(vnode: OpNode, options?: SnapshotOptions): string {
   let flags = SnapshotFlags.DefaultFlags;
   if (options) {
     options = {
@@ -143,7 +143,7 @@ function renderEventsToSnapshot(il: number, events: { [key: string]: any }): str
  */
 function _toSnapshot(
   il: number,
-  vnode: VNode,
+  vnode: OpNode,
   sFlags: SnapshotFlags,
 ): string {
   const flags = vnode._f;
@@ -195,7 +195,7 @@ function _toSnapshot(
       let childrenString = "";
       if (vnode._c !== null) {
         if ((flags & VNodeFlags.Children) !== 0) {
-          let child: VNode | null = vnode._c as VNode;
+          let child: OpNode | null = vnode._c as OpNode;
           do {
             childrenString += `\n${_toSnapshot(il + 1, child, sFlags)}`;
             child = child._r;
@@ -227,11 +227,11 @@ function _toSnapshot(
           `${indent(il)}<${componentName} />` :
           (
             `${indent(il)}<${componentName}>` +
-            _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
+            _toSnapshot(il + 1, vnode._c as OpNode, sFlags) +
             `${indent(il)}</${componentName}>`
           );
       } else {
-        result += _toSnapshot(il, vnode._c as VNode, sFlags);
+        result += _toSnapshot(il, vnode._c as OpNode, sFlags);
       }
     } else { // ((flags & VNodeFlags.UpdateContext) !== 0)
       if ((sFlags & SnapshotFlags.IgnoreContext) === 0) {
@@ -239,11 +239,11 @@ function _toSnapshot(
           `${indent(il)}<UpdateContext />` :
           (
             `${indent(il)}<UpdateContext>` +
-            _toSnapshot(il + 1, vnode._c as VNode, sFlags) +
+            _toSnapshot(il + 1, vnode._c as OpNode, sFlags) +
             `\n${indent(il)}</UpdateContext>`
           );
       } else {
-        result += _toSnapshot(il, vnode._c as VNode, sFlags);
+        result += _toSnapshot(il, vnode._c as OpNode, sFlags);
       }
     }
   }

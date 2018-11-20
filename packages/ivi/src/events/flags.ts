@@ -1,24 +1,4 @@
 /**
- * EventHandlerFlags.
- */
-export const enum EventHandlerFlags {
-  /**
-   * Capture flag that indicates that events of this type will be dispatched to the registered listener before
-   * being dispatched to any EventTarget beneath it in the DOM tree.
-   */
-  Capture = 1,
-  /**
-   * Bubbles flag indicating that the events of this type will be dispatched to the registered listener in the
-   * bubbling phase.
-   */
-  Bubble = 1 << 1,
-  /**
-   * Active flag indicates that Event Handler is activated. Available only in Dev Mode.
-   */
-  Active = 1 << 2,
-}
-
-/**
  * SyntheticEventFlags.
  */
 export const enum SyntheticEventFlags {

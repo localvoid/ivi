@@ -1,16 +1,16 @@
-import { VNode, render, getDOMNode, withNextFrame } from "ivi";
+import { OpNode, render, withNextFrame } from "ivi";
 
-export function startRender<T extends Node>(
-  fn: (render: (n: VNode) => T) => void,
+export function startRender<T extends ChildNode>(
+  fn: (render: (n: OpNode | string | number | null) => T) => void,
 ): void {
   const container = document.createElement("div");
   container.setAttribute("test-container", "");
   document.body.appendChild(container);
 
   try {
-    fn((n: VNode) => {
+    fn((n: OpNode | string | number | null) => {
       withNextFrame(() => { render(n, container); })();
-      return getDOMNode(n) as T;
+      return container.firstChild as T;
     });
   } finally {
     try {

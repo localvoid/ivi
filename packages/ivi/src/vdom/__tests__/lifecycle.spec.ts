@@ -1,9 +1,9 @@
-import { VNode, component, useDetached, useEffect, useMutationEffect, useLayoutEffect } from "ivi";
+import { OpNode, _, component, useDetached, useEffect, useMutationEffect, useLayoutEffect } from "ivi";
 import * as h from "ivi-html";
 import { startRender, Static, checkLifecycle, lifecycleTouch } from "./utils";
 
 function createLifecycleTester(id: string) {
-  return component<VNode>(
+  return component<OpNode>(
     (c) => {
       lifecycleTouch(id, "constructor");
 
@@ -95,7 +95,7 @@ test(`<div></div> => <div><C><div></C></div>`, () => {
   startRender(render => {
     checkLifecycle(c => {
       render(h.div());
-      render(h.div().c(createLifecycleTester("1")(h.div())));
+      render(h.div(_, _, createLifecycleTester("1")(h.div())));
 
       expect(c("1", "constructor")).toBe(0);
       expect(c("1", "render")).toBe(1);
@@ -112,7 +112,7 @@ test(`<div></div> => <div><C><div></C></div>`, () => {
 test(`<div><C><div></C></div> => <div></div>`, () => {
   startRender(render => {
     checkLifecycle(c => {
-      render(h.div().c(createLifecycleTester("1")(h.div())));
+      render(h.div(_, _, createLifecycleTester("1")(h.div())));
       render(h.div());
 
       expect(c("1", "constructor")).toBe(0);

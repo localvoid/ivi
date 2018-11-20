@@ -1,5 +1,5 @@
 import { CSSStyleProps } from "../dom/style";
-import { VNodeFlags, VNode } from "../vdom/vnode";
+import { OpNode, Key } from "../vdom/operations";
 import { printWarn, printWarnOnce } from "./print";
 
 /**
@@ -7,7 +7,7 @@ import { printWarn, printWarnOnce } from "./print";
  *
  * @param styles - Styles.
  */
-function checkStyles(styles: CSSStyleProps): void {
+function checkStyle(styles: CSSStyleProps): void {
   for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
     const styleValue = styles[styleName];
 
@@ -81,22 +81,16 @@ function checkHTMLAttributes(tag: string, attrs: { [key: string]: any }): void {
   }
 }
 
-export function checkVNodeConstructor(vnode: VNode): void {
-  const flags = vnode._f;
-
-  if (flags & VNodeFlags.Element) {
-    const type = vnode._t;
-    const props = vnode._p;
-    const style = vnode._s;
-    if (props) {
-      if (flags & VNodeFlags.SvgElement) {
-        checkSVGAttributes(type as string, props);
-      } else {
-        checkHTMLAttributes(type as string, props);
-      }
+export function checkElement(tag: string, attrs: any, svg: boolean): void {
+  if (attrs) {
+    if (svg) {
+      checkSVGAttributes(tag, attrs);
+    } else {
+      checkHTMLAttributes(tag, attrs);
     }
+    const style = attrs.style;
     if (style) {
-      checkStyles(style);
+      checkStyle(style);
     }
   }
 }
@@ -104,20 +98,15 @@ export function checkVNodeConstructor(vnode: VNode): void {
 /**
  * checkUniqueKeys checks that all nodes have unique keys.
  *
- * @param children - Children nodes
+ * @param items - Keyed operations
  */
-export function checkUniqueKeys(children: VNode): void {
-  let keys: Set<any> | undefined;
-  let node: VNode<any> | null = children;
-  while (node !== null) {
-    if (node._f & VNodeFlags.Key) {
-      if (keys === undefined) {
-        keys = new Set<any>();
-      } else if (keys.has(node._k)) {
-        throw new Error(`Failed to set children, invalid children list, key: "${node._k}" is used multiple times.`);
-      }
-      keys.add(node._k);
+export function checkUniqueKeys(items: Key<any, OpNode>[]): void {
+  const keys = new Set<any>();
+  for (let i = 0; i < items.length; i++) {
+    const key = items[i].k;
+    if (keys.has(key)) {
+      throw new Error(`Invalid children list, key: "${key}" is used multiple times.`);
     }
-    node = node._r;
+    keys.add(key);
   }
 }

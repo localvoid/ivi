@@ -12,113 +12,11 @@ import {
   HTMLTableDataCellElementAttrs, HTMLTableElementAttrs, HTMLTableHeaderCellElementAttrs, HTMLTableRowElementAttrs,
   HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
-  CSSStyleProps,
 
   ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
 
-  VNode, VNodeFlags, AttributeDirective,
+  AttributeDirective, htmlElement,
 } from "ivi";
-
-const enum TagId {
-  A = 1,
-  Abbr = 2,
-  Address = 3,
-  Area = 4,
-  Article = 5,
-  Aside = 6,
-  B = 7,
-  Base = 8,
-  Bdo = 9,
-  Blockquote = 10,
-  Body = 11,
-  Br = 12,
-  Button = 13,
-  Canvas = 14,
-  Caption = 15,
-  Cite = 16,
-  Code = 17,
-  Col = 18,
-  Colgroup = 19,
-  Dd = 20,
-  Del = 21,
-  Dfn = 22,
-  Div = 23,
-  Dl = 24,
-  Dt = 25,
-  Em = 26,
-  Fieldset = 27,
-  Figcaption = 28,
-  Figure = 29,
-  Footer = 30,
-  Form = 31,
-  H1 = 32,
-  H2 = 33,
-  H3 = 34,
-  H4 = 35,
-  H5 = 36,
-  H6 = 37,
-  Head = 38,
-  Header = 39,
-  Hgroup = 40,
-  Hr = 41,
-  Html = 42,
-  I = 43,
-  Iframe = 44,
-  Img = 45,
-  Input = 46,
-  Ins = 47,
-  Kbd = 48,
-  Label = 49,
-  Legend = 50,
-  Li = 51,
-  Link = 52,
-  Main = 53,
-  Map = 54,
-  Mark = 55,
-  Menu = 56,
-  Meta = 57,
-  Meter = 58,
-  Nav = 59,
-  Noscript = 60,
-  Ol = 61,
-  Optgroup = 62,
-  Option = 63,
-  P = 64,
-  Picture = 65,
-  Pre = 66,
-  Progress = 67,
-  Q = 68,
-  Rt = 69,
-  Ruby = 70,
-  S = 71,
-  Samp = 72,
-  Script = 73,
-  Section = 74,
-  Select = 75,
-  Source = 76,
-  Span = 77,
-  Strong = 78,
-  Style = 79,
-  Sub = 80,
-  Sup = 81,
-  Table = 82,
-  Tbody = 83,
-  Td = 84,
-  Template = 85,
-  Textarea = 86,
-  Tfoot = 87,
-  Th = 88,
-  Thead = 89,
-  Time = 90,
-  Title = 91,
-  Tr = 92,
-  Track = 93,
-  U = 94,
-  Ul = 95,
-  Wbr = 96,
-  Audio = 97,
-  Video = 98,
-}
 
 /**
  * {@link AttributeDirective} with `""` value and {@link updateValue} sync function.
@@ -224,7 +122,6 @@ export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
     v ? CHECKED_TRUE : CHECKED_FALSE;
 }
 
-/* tslint:disable:max-line-length */
 /**
  * Creates Virtual DOM HTML element <a>.
  *
@@ -235,15 +132,7 @@ export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
  * @param css - Styles
  * @returns Virtual DOM HTML element <a>
  */
-export const a = (className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLAnchorElementAttrs | undefined, HTMLAnchorElement>(
-    VNodeFlags.Element | (TagId.A << VNodeFlags.ElementIdOffset),
-    "a",
-    attrs,
-    className,
-    css,
-  )
-);
+export const a = htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
 
 /**
  * Creates Virtual DOM HTML element <abbr>.
@@ -255,15 +144,7 @@ export const a = (className?: string, attrs?: HTMLAnchorElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <abbr>
  */
-export const abbr = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Abbr << VNodeFlags.ElementIdOffset),
-    "abbr",
-    attrs,
-    className,
-    css,
-  )
-);
+export const abbr = htmlElement<HTMLElementAttrs, HTMLElement>("abbr");
 
 /**
  * Creates Virtual DOM HTML element <address>.
@@ -275,15 +156,7 @@ export const abbr = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <address>
  */
-export const address = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Address << VNodeFlags.ElementIdOffset),
-    "address",
-    attrs,
-    className,
-    css,
-  )
-);
+export const address = htmlElement<HTMLElementAttrs, HTMLElement>("address");
 
 /**
  * Creates Virtual DOM HTML element <article>.
@@ -295,15 +168,7 @@ export const address = (className?: string, attrs?: HTMLElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <article>
  */
-export const article = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Article << VNodeFlags.ElementIdOffset),
-    "article",
-    attrs,
-    className,
-    css,
-  )
-);
+export const article = htmlElement<HTMLElementAttrs, HTMLElement>("article");
 
 /**
  * Creates Virtual DOM HTML element <aside>.
@@ -315,15 +180,7 @@ export const article = (className?: string, attrs?: HTMLElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <aside>
  */
-export const aside = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Aside << VNodeFlags.ElementIdOffset),
-    "aside",
-    attrs,
-    className,
-    css,
-  )
-);
+export const aside = htmlElement<HTMLElementAttrs, HTMLElement>("aside");
 
 /**
  * Creates Virtual DOM HTML element <b>.
@@ -335,15 +192,7 @@ export const aside = (className?: string, attrs?: HTMLElementAttrs, css?: CSSSty
  * @param css - Styles
  * @returns Virtual DOM HTML element <b>
  */
-export const b = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.B << VNodeFlags.ElementIdOffset),
-    "b",
-    attrs,
-    className,
-    css,
-  )
-);
+export const b = htmlElement<HTMLElementAttrs, HTMLElement>("b");
 
 /**
  * Creates Virtual DOM HTML element <base>.
@@ -355,15 +204,7 @@ export const b = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
  * @param css - Styles
  * @returns Virtual DOM HTML element <base>
  */
-export const base = (className?: string, attrs?: HTMLBaseElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLBaseElementAttrs | undefined, HTMLBaseElement>(
-    VNodeFlags.Element | (TagId.Base << VNodeFlags.ElementIdOffset),
-    "base",
-    attrs,
-    className,
-    css,
-  )
-);
+export const base = htmlElement<HTMLBaseElementAttrs, HTMLBaseElement>("base");
 
 /**
  * Creates Virtual DOM HTML element <bdo>.
@@ -375,15 +216,7 @@ export const base = (className?: string, attrs?: HTMLBaseElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <bdo>
  */
-export const bdo = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Bdo << VNodeFlags.ElementIdOffset),
-    "bdo",
-    attrs,
-    className,
-    css,
-  )
-);
+export const bdo = htmlElement<HTMLElementAttrs, HTMLElement>("bdo");
 
 /**
  * Creates Virtual DOM HTML element <blockquote>.
@@ -395,15 +228,7 @@ export const bdo = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <blockquote>
  */
-export const blockquote = (className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLQuoteElementAttrs | undefined, HTMLQuoteElement>(
-    VNodeFlags.Element | (TagId.Blockquote << VNodeFlags.ElementIdOffset),
-    "blockquote",
-    attrs,
-    className,
-    css,
-  )
-);
+export const blockquote = htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("blockquote");
 
 /**
  * Creates Virtual DOM HTML element <body>.
@@ -415,15 +240,7 @@ export const blockquote = (className?: string, attrs?: HTMLQuoteElementAttrs, cs
  * @param css - Styles
  * @returns Virtual DOM HTML element <body>
  */
-export const body = (className?: string, attrs?: HTMLBodyElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLBodyElementAttrs | undefined, HTMLBodyElement>(
-    VNodeFlags.Element | (TagId.Body << VNodeFlags.ElementIdOffset),
-    "body",
-    attrs,
-    className,
-    css,
-  )
-);
+export const body = htmlElement<HTMLBodyElementAttrs, HTMLBodyElement>("body");
 
 /**
  * Creates Virtual DOM HTML element <br>.
@@ -435,15 +252,7 @@ export const body = (className?: string, attrs?: HTMLBodyElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <br>
  */
-export const br = (className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLBRElementAttrs | undefined, HTMLBRElement>(
-    VNodeFlags.Element | (TagId.Br << VNodeFlags.ElementIdOffset),
-    "br",
-    attrs,
-    className,
-    css,
-  )
-);
+export const br = htmlElement<HTMLBRElementAttrs, HTMLBRElement>("br");
 
 /**
  * Creates Virtual DOM HTML element <button>.
@@ -455,15 +264,7 @@ export const br = (className?: string, attrs?: HTMLBRElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <button>
  */
-export const button = (className?: string, attrs?: HTMLButtonElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLButtonElementAttrs | undefined, HTMLButtonElement>(
-    VNodeFlags.Element | (TagId.Button << VNodeFlags.ElementIdOffset),
-    "button",
-    attrs,
-    className,
-    css,
-  )
-);
+export const button = htmlElement<HTMLButtonElementAttrs, HTMLButtonElement>("button");
 
 /**
  * Creates Virtual DOM HTML element <canvas>.
@@ -475,15 +276,7 @@ export const button = (className?: string, attrs?: HTMLButtonElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <canvas>
  */
-export const canvas = (className?: string, attrs?: HTMLCanvasElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLCanvasElementAttrs | undefined, HTMLCanvasElement>(
-    VNodeFlags.Element | (TagId.Canvas << VNodeFlags.ElementIdOffset),
-    "canvas",
-    attrs,
-    className,
-    css,
-  )
-);
+export const canvas = htmlElement<HTMLCanvasElementAttrs, HTMLCanvasElement>("canvas");
 
 /**
  * Creates Virtual DOM HTML element <caption>.
@@ -495,15 +288,7 @@ export const canvas = (className?: string, attrs?: HTMLCanvasElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <caption>
  */
-export const caption = (className?: string, attrs?: HTMLTableCaptionElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableCaptionElementAttrs | undefined, HTMLTableCaptionElement>(
-    VNodeFlags.Element | (TagId.Caption << VNodeFlags.ElementIdOffset),
-    "caption",
-    attrs,
-    className,
-    css,
-  )
-);
+export const caption = htmlElement<HTMLTableCaptionElementAttrs, HTMLTableCaptionElement>("caption");
 
 /**
  * Creates Virtual DOM HTML element <cite>.
@@ -515,15 +300,7 @@ export const caption = (className?: string, attrs?: HTMLTableCaptionElementAttrs
  * @param css - Styles
  * @returns Virtual DOM HTML element <cite>
  */
-export const cite = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Cite << VNodeFlags.ElementIdOffset),
-    "cite",
-    attrs,
-    className,
-    css,
-  )
-);
+export const cite = htmlElement<HTMLElementAttrs, HTMLElement>("cite");
 
 /**
  * Creates Virtual DOM HTML element <code>.
@@ -535,15 +312,7 @@ export const cite = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <code>
  */
-export const code = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Code << VNodeFlags.ElementIdOffset),
-    "code",
-    attrs,
-    className,
-    css,
-  )
-);
+export const code = htmlElement<HTMLElementAttrs, HTMLElement>("code");
 
 /**
  * Creates Virtual DOM HTML element <col>.
@@ -555,15 +324,7 @@ export const code = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <col>
  */
-export const col = (className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement>(
-    VNodeFlags.Element | (TagId.Col << VNodeFlags.ElementIdOffset),
-    "col",
-    attrs,
-    className,
-    css,
-  )
-);
+export const col = htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("col");
 
 /**
  * Creates Virtual DOM HTML element <colgroup>.
@@ -575,15 +336,7 @@ export const col = (className?: string, attrs?: HTMLTableColElementAttrs, css?: 
  * @param css - Styles
  * @returns Virtual DOM HTML element <colgroup>
  */
-export const colgroup = (className?: string, attrs?: HTMLTableColElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableColElementAttrs | undefined, HTMLTableColElement>(
-    VNodeFlags.Element | (TagId.Colgroup << VNodeFlags.ElementIdOffset),
-    "colgroup",
-    attrs,
-    className,
-    css,
-  )
-);
+export const colgroup = htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("colgroup");
 
 /**
  * Creates Virtual DOM HTML element <del>.
@@ -595,15 +348,7 @@ export const colgroup = (className?: string, attrs?: HTMLTableColElementAttrs, c
  * @param css - Styles
  * @returns Virtual DOM HTML element <del>
  */
-export const del = (className?: string, attrs?: HTMLModElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLModElementAttrs | undefined, HTMLModElement>(
-    VNodeFlags.Element | (TagId.Del << VNodeFlags.ElementIdOffset),
-    "del",
-    attrs,
-    className,
-    css,
-  )
-);
+export const del = htmlElement<HTMLModElementAttrs, HTMLModElement>("del");
 
 /**
  * Creates Virtual DOM HTML element <dfn>.
@@ -615,15 +360,7 @@ export const del = (className?: string, attrs?: HTMLModElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <dfn>
  */
-export const dfn = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Dfn << VNodeFlags.ElementIdOffset),
-    "dfn",
-    attrs,
-    className,
-    css,
-  )
-);
+export const dfn = htmlElement<HTMLElementAttrs, HTMLElement>("dfn");
 
 /**
  * Creates Virtual DOM HTML element <div>.
@@ -635,15 +372,7 @@ export const dfn = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <div>
  */
-export const div = (className?: string, attrs?: HTMLDivElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLDivElementAttrs | undefined, HTMLDivElement>(
-    VNodeFlags.Element | (TagId.Div << VNodeFlags.ElementIdOffset),
-    "div",
-    attrs,
-    className,
-    css,
-  )
-);
+export const div = htmlElement<HTMLDivElementAttrs, HTMLDivElement>("div");
 
 /**
  * Creates Virtual DOM HTML element <dd>.
@@ -655,15 +384,7 @@ export const div = (className?: string, attrs?: HTMLDivElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <dd>
  */
-export const dd = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Dd << VNodeFlags.ElementIdOffset),
-    "dd",
-    attrs,
-    className,
-    css,
-  )
-);
+export const dd = htmlElement<HTMLElementAttrs, HTMLElement>("dd");
 
 /**
  * Creates Virtual DOM HTML element <dl>.
@@ -675,15 +396,7 @@ export const dd = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
  * @param css - Styles
  * @returns Virtual DOM HTML element <dl>
  */
-export const dl = (className?: string, attrs?: HTMLDListElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLDListElementAttrs | undefined, HTMLDListElement>(
-    VNodeFlags.Element | (TagId.Dl << VNodeFlags.ElementIdOffset),
-    "dl",
-    attrs,
-    className,
-    css,
-  )
-);
+export const dl = htmlElement<HTMLDListElementAttrs, HTMLDListElement>("dl");
 
 /**
  * Creates Virtual DOM HTML element <dt>.
@@ -695,15 +408,7 @@ export const dl = (className?: string, attrs?: HTMLDListElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <dt>
  */
-export const dt = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Dt << VNodeFlags.ElementIdOffset),
-    "dt",
-    attrs,
-    className,
-    css,
-  )
-);
+export const dt = htmlElement<HTMLElementAttrs, HTMLElement>("dt");
 
 /**
  * Creates Virtual DOM HTML element <em>.
@@ -715,15 +420,7 @@ export const dt = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
  * @param css - Styles
  * @returns Virtual DOM HTML element <em>
  */
-export const em = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Em << VNodeFlags.ElementIdOffset),
-    "em",
-    attrs,
-    className,
-    css,
-  )
-);
+export const em = htmlElement<HTMLElementAttrs, HTMLElement>("em");
 
 /**
  * Creates Virtual DOM HTML element <fieldset>.
@@ -735,15 +432,7 @@ export const em = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
  * @param css - Styles
  * @returns Virtual DOM HTML element <fieldset>
  */
-export const fieldset = (className?: string, attrs?: HTMLFieldSetElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLFieldSetElementAttrs | undefined, HTMLFieldSetElement>(
-    VNodeFlags.Element | (TagId.Fieldset << VNodeFlags.ElementIdOffset),
-    "fieldset",
-    attrs,
-    className,
-    css,
-  )
-);
+export const fieldset = htmlElement<HTMLFieldSetElementAttrs, HTMLFieldSetElement>("fieldset");
 
 /**
  * Creates Virtual DOM HTML element <figcaption>.
@@ -755,15 +444,7 @@ export const fieldset = (className?: string, attrs?: HTMLFieldSetElementAttrs, c
  * @param css - Styles
  * @returns Virtual DOM HTML element <figcaption>
  */
-export const figcaption = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Figcaption << VNodeFlags.ElementIdOffset),
-    "figcaption",
-    attrs,
-    className,
-    css,
-  )
-);
+export const figcaption = htmlElement<HTMLElementAttrs, HTMLElement>("figcaption");
 
 /**
  * Creates Virtual DOM HTML element <figure>.
@@ -775,15 +456,7 @@ export const figcaption = (className?: string, attrs?: HTMLElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <figure>
  */
-export const figure = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Figure << VNodeFlags.ElementIdOffset),
-    "figure",
-    attrs,
-    className,
-    css,
-  )
-);
+export const figure = htmlElement<HTMLElementAttrs, HTMLElement>("figure");
 
 /**
  * Creates Virtual DOM HTML element <footer>.
@@ -795,15 +468,7 @@ export const figure = (className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <footer>
  */
-export const footer = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Footer << VNodeFlags.ElementIdOffset),
-    "footer",
-    attrs,
-    className,
-    css,
-  )
-);
+export const footer = htmlElement<HTMLElementAttrs, HTMLElement>("footer");
 
 /**
  * Creates Virtual DOM HTML element <form>.
@@ -815,15 +480,7 @@ export const footer = (className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <form>
  */
-export const form = (className?: string, attrs?: HTMLFormElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLFormElementAttrs | undefined, HTMLFormElement>(
-    VNodeFlags.Element | (TagId.Form << VNodeFlags.ElementIdOffset),
-    "form",
-    attrs,
-    className,
-    css,
-  )
-);
+export const form = htmlElement<HTMLFormElementAttrs, HTMLFormElement>("form");
 
 /**
  * Creates Virtual DOM HTML element <h1>.
@@ -835,15 +492,7 @@ export const form = (className?: string, attrs?: HTMLFormElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <h1>
  */
-export const h1 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement>(
-    VNodeFlags.Element | (TagId.H1 << VNodeFlags.ElementIdOffset),
-    "h1",
-    attrs,
-    className,
-    css,
-  )
-);
+export const h1 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1");
 
 /**
  * Creates Virtual DOM HTML element <h2>.
@@ -855,15 +504,7 @@ export const h1 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <h2>
  */
-export const h2 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement>(
-    VNodeFlags.Element | (TagId.H2 << VNodeFlags.ElementIdOffset),
-    "h2",
-    attrs,
-    className,
-    css,
-  )
-);
+export const h2 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2");
 
 /**
  * Creates Virtual DOM HTML element <h3>.
@@ -875,15 +516,7 @@ export const h2 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <h3>
  */
-export const h3 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement>(
-    VNodeFlags.Element | (TagId.H3 << VNodeFlags.ElementIdOffset),
-    "h3",
-    attrs,
-    className,
-    css,
-  )
-);
+export const h3 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3");
 
 /**
  * Creates Virtual DOM HTML element <h4>.
@@ -895,15 +528,7 @@ export const h3 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <h4>
  */
-export const h4 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement>(
-    VNodeFlags.Element | (TagId.H4 << VNodeFlags.ElementIdOffset),
-    "h4",
-    attrs,
-    className,
-    css,
-  )
-);
+export const h4 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4");
 
 /**
  * Creates Virtual DOM HTML element <h5>.
@@ -915,15 +540,7 @@ export const h4 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <h5>
  */
-export const h5 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement>(
-    VNodeFlags.Element | (TagId.H5 << VNodeFlags.ElementIdOffset),
-    "h5",
-    attrs,
-    className,
-    css,
-  )
-);
+export const h5 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5");
 
 /**
  * Creates Virtual DOM HTML element <h6>.
@@ -935,15 +552,7 @@ export const h5 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <h6>
  */
-export const h6 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadingElementAttrs | undefined, HTMLHeadingElement>(
-    VNodeFlags.Element | (TagId.H6 << VNodeFlags.ElementIdOffset),
-    "h6",
-    attrs,
-    className,
-    css,
-  )
-);
+export const h6 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6");
 
 /**
  * Creates Virtual DOM HTML element <head>.
@@ -955,15 +564,7 @@ export const h6 = (className?: string, attrs?: HTMLHeadingElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <head>
  */
-export const head = (className?: string, attrs?: HTMLHeadElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHeadElementAttrs | undefined, HTMLHeadElement>(
-    VNodeFlags.Element | (TagId.Head << VNodeFlags.ElementIdOffset),
-    "head",
-    attrs,
-    className,
-    css,
-  )
-);
+export const head = htmlElement<HTMLHeadElementAttrs, HTMLHeadElement>("head");
 
 /**
  * Creates Virtual DOM HTML element <header>.
@@ -975,15 +576,7 @@ export const head = (className?: string, attrs?: HTMLHeadElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <header>
  */
-export const header = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Header << VNodeFlags.ElementIdOffset),
-    "header",
-    attrs,
-    className,
-    css,
-  )
-);
+export const header = htmlElement<HTMLElementAttrs, HTMLElement>("header");
 
 /**
  * Creates Virtual DOM HTML element <hgroup>.
@@ -995,15 +588,7 @@ export const header = (className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <hgroup>
  */
-export const hgroup = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Hgroup << VNodeFlags.ElementIdOffset),
-    "hgroup",
-    attrs,
-    className,
-    css,
-  )
-);
+export const hgroup = htmlElement<HTMLElementAttrs, HTMLElement>("hgroup");
 
 /**
  * Creates Virtual DOM HTML element <hr>.
@@ -1015,15 +600,7 @@ export const hgroup = (className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <hr>
  */
-export const hr = (className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHRElementAttrs | undefined, HTMLHRElement>(
-    VNodeFlags.Element | (TagId.Hr << VNodeFlags.ElementIdOffset),
-    "hr",
-    attrs,
-    className,
-    css,
-  )
-);
+export const hr = htmlElement<HTMLHRElementAttrs, HTMLHRElement>("hr");
 
 /**
  * Creates Virtual DOM HTML element <html>.
@@ -1035,15 +612,7 @@ export const hr = (className?: string, attrs?: HTMLHRElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <html>
  */
-export const html = (className?: string, attrs?: HTMLHtmlElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLHtmlElementAttrs | undefined, HTMLHtmlElement>(
-    VNodeFlags.Element | (TagId.Html << VNodeFlags.ElementIdOffset),
-    "html",
-    attrs,
-    className,
-    css,
-  )
-);
+export const html = htmlElement<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
 
 /**
  * Creates Virtual DOM HTML element <i>.
@@ -1055,15 +624,7 @@ export const html = (className?: string, attrs?: HTMLHtmlElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <i>
  */
-export const i = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.I << VNodeFlags.ElementIdOffset),
-    "i",
-    attrs,
-    className,
-    css,
-  )
-);
+export const i = htmlElement<HTMLElementAttrs, HTMLElement>("i");
 
 /**
  * Creates Virtual DOM HTML element <iframe>.
@@ -1075,15 +636,7 @@ export const i = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
  * @param css - Styles
  * @returns Virtual DOM HTML element <iframe>
  */
-export const iframe = (className?: string, attrs?: HTMLIFrameElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLIFrameElementAttrs | undefined, HTMLIFrameElement>(
-    VNodeFlags.Element | (TagId.Iframe << VNodeFlags.ElementIdOffset),
-    "iframe",
-    attrs,
-    className,
-    css,
-  )
-);
+export const iframe = htmlElement<HTMLIFrameElementAttrs, HTMLIFrameElement>("iframe");
 
 /**
  * Creates Virtual DOM HTML element <img>.
@@ -1095,15 +648,7 @@ export const iframe = (className?: string, attrs?: HTMLIFrameElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <img>
  */
-export const img = (className?: string, attrs?: HTMLImageElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLImageElementAttrs | undefined, HTMLImageElement>(
-    VNodeFlags.Element | (TagId.Img << VNodeFlags.ElementIdOffset),
-    "img",
-    attrs,
-    className,
-    css,
-  )
-);
+export const img = htmlElement<HTMLImageElementAttrs, HTMLImageElement>("img");
 
 /**
  * Creates Virtual DOM HTML element <area>.
@@ -1115,15 +660,7 @@ export const img = (className?: string, attrs?: HTMLImageElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <area>
  */
-export const imgArea = (className?: string, attrs?: HTMLAreaElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLAreaElementAttrs | undefined, HTMLAreaElement>(
-    VNodeFlags.Element | (TagId.Area << VNodeFlags.ElementIdOffset),
-    "area",
-    attrs,
-    className,
-    css,
-  )
-);
+export const imgArea = htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area");
 
 /**
  * Creates Virtual DOM HTML element <map>.
@@ -1135,15 +672,7 @@ export const imgArea = (className?: string, attrs?: HTMLAreaElementAttrs, css?: 
  * @param css - Styles
  * @returns Virtual DOM HTML element <map>
  */
-export const imgMap = (className?: string, attrs?: HTMLMapElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLMapElementAttrs | undefined, HTMLMapElement>(
-    VNodeFlags.Element | (TagId.Map << VNodeFlags.ElementIdOffset),
-    "map",
-    attrs,
-    className,
-    css,
-  )
-);
+export const imgMap = htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
 
 /**
  * Creates Virtual DOM HTML element <ins>.
@@ -1155,15 +684,7 @@ export const imgMap = (className?: string, attrs?: HTMLMapElementAttrs, css?: CS
  * @param css - Styles
  * @returns Virtual DOM HTML element <ins>
  */
-export const ins = (className?: string, attrs?: HTMLModElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLModElementAttrs | undefined, HTMLModElement>(
-    VNodeFlags.Element | (TagId.Ins << VNodeFlags.ElementIdOffset),
-    "ins",
-    attrs,
-    className,
-    css,
-  )
-);
+export const ins = htmlElement<HTMLModElementAttrs, HTMLModElement>("ins");
 
 /**
  * Creates Virtual DOM HTML element <kbd>.
@@ -1175,15 +696,7 @@ export const ins = (className?: string, attrs?: HTMLModElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <kbd>
  */
-export const kbd = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Kbd << VNodeFlags.ElementIdOffset),
-    "kbd",
-    attrs,
-    className,
-    css,
-  )
-);
+export const kbd = htmlElement<HTMLElementAttrs, HTMLElement>("kbd");
 
 /**
  * Creates Virtual DOM HTML element <label>.
@@ -1195,15 +708,7 @@ export const kbd = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <label>
  */
-export const label = (className?: string, attrs?: HTMLLabelElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLLabelElementAttrs | undefined, HTMLLabelElement>(
-    VNodeFlags.Element | (TagId.Label << VNodeFlags.ElementIdOffset),
-    "label",
-    attrs,
-    className,
-    css,
-  )
-);
+export const label = htmlElement<HTMLLabelElementAttrs, HTMLLabelElement>("label");
 
 /**
  * Creates Virtual DOM HTML element <legend>.
@@ -1215,15 +720,7 @@ export const label = (className?: string, attrs?: HTMLLabelElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <legend>
  */
-export const legend = (className?: string, attrs?: HTMLLegendElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLLegendElementAttrs | undefined, HTMLLegendElement>(
-    VNodeFlags.Element | (TagId.Legend << VNodeFlags.ElementIdOffset),
-    "legend",
-    attrs,
-    className,
-    css,
-  )
-);
+export const legend = htmlElement<HTMLLegendElementAttrs, HTMLLegendElement>("legend");
 
 /**
  * Creates Virtual DOM HTML element <li>.
@@ -1235,15 +732,7 @@ export const legend = (className?: string, attrs?: HTMLLegendElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <li>
  */
-export const li = (className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLLIElementAttrs | undefined, HTMLLIElement>(
-    VNodeFlags.Element | (TagId.Li << VNodeFlags.ElementIdOffset),
-    "li",
-    attrs,
-    className,
-    css,
-  )
-);
+export const li = htmlElement<HTMLLIElementAttrs, HTMLLIElement>("li");
 
 /**
  * Creates Virtual DOM HTML element <link>.
@@ -1255,15 +744,7 @@ export const li = (className?: string, attrs?: HTMLLIElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <link>
  */
-export const link = (className?: string, attrs?: HTMLLinkElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLLinkElementAttrs | undefined, HTMLLinkElement>(
-    VNodeFlags.Element | (TagId.Link << VNodeFlags.ElementIdOffset),
-    "link",
-    attrs,
-    className,
-    css,
-  )
-);
+export const link = htmlElement<HTMLLinkElementAttrs, HTMLLinkElement>("link");
 
 /**
  * Creates Virtual DOM HTML element <main>.
@@ -1275,15 +756,7 @@ export const link = (className?: string, attrs?: HTMLLinkElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <main>
  */
-export const main = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Main << VNodeFlags.ElementIdOffset),
-    "main",
-    attrs,
-    className,
-    css,
-  )
-);
+export const main = htmlElement<HTMLElementAttrs, HTMLElement>("main");
 
 /**
  * Creates Virtual DOM HTML element <mark>.
@@ -1295,15 +768,7 @@ export const main = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <mark>
  */
-export const mark = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Mark << VNodeFlags.ElementIdOffset),
-    "mark",
-    attrs,
-    className,
-    css,
-  )
-);
+export const mark = htmlElement<HTMLElementAttrs, HTMLElement>("mark");
 
 /**
  * Creates Virtual DOM HTML element <menu>.
@@ -1315,15 +780,7 @@ export const mark = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <menu>
  */
-export const menu = (className?: string, attrs?: HTMLMenuElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLMenuElementAttrs | undefined, HTMLMenuElement>(
-    VNodeFlags.Element | (TagId.Menu << VNodeFlags.ElementIdOffset),
-    "menu",
-    attrs,
-    className,
-    css,
-  )
-);
+export const menu = htmlElement<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
 
 /**
  * Creates Virtual DOM HTML element <meta>.
@@ -1335,15 +792,7 @@ export const menu = (className?: string, attrs?: HTMLMenuElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <meta>
  */
-export const meta = (className?: string, attrs?: HTMLMetaElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLMetaElementAttrs | undefined, HTMLMetaElement>(
-    VNodeFlags.Element | (TagId.Meta << VNodeFlags.ElementIdOffset),
-    "meta",
-    attrs,
-    className,
-    css,
-  )
-);
+export const meta = htmlElement<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
 
 /**
  * Creates Virtual DOM HTML element <meter>.
@@ -1355,15 +804,7 @@ export const meta = (className?: string, attrs?: HTMLMetaElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <meter>
  */
-export const meter = (className?: string, attrs?: HTMLMeterElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLMeterElementAttrs | undefined, HTMLMeterElement>(
-    VNodeFlags.Element | (TagId.Meter << VNodeFlags.ElementIdOffset),
-    "meter",
-    attrs,
-    className,
-    css,
-  )
-);
+export const meter = htmlElement<HTMLMeterElementAttrs, HTMLMeterElement>("meter");
 
 /**
  * Creates Virtual DOM HTML element <nav>.
@@ -1375,15 +816,7 @@ export const meter = (className?: string, attrs?: HTMLMeterElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <nav>
  */
-export const nav = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Nav << VNodeFlags.ElementIdOffset),
-    "nav",
-    attrs,
-    className,
-    css,
-  )
-);
+export const nav = htmlElement<HTMLElementAttrs, HTMLElement>("nav");
 
 /**
  * Creates Virtual DOM HTML element <noscript>.
@@ -1395,15 +828,7 @@ export const nav = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <noscript>
  */
-export const noscript = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Noscript << VNodeFlags.ElementIdOffset),
-    "noscript",
-    attrs,
-    className,
-    css,
-  )
-);
+export const noscript = htmlElement<HTMLElementAttrs, HTMLElement>("noscript");
 
 /**
  * Creates Virtual DOM HTML element <ol>.
@@ -1415,15 +840,7 @@ export const noscript = (className?: string, attrs?: HTMLElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <ol>
  */
-export const ol = (className?: string, attrs?: HTMLOListElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLOListElementAttrs | undefined, HTMLOListElement>(
-    VNodeFlags.Element | (TagId.Ol << VNodeFlags.ElementIdOffset),
-    "ol",
-    attrs,
-    className,
-    css,
-  )
-);
+export const ol = htmlElement<HTMLOListElementAttrs, HTMLOListElement>("ol");
 
 /**
  * Creates Virtual DOM HTML element <optgroup>.
@@ -1435,15 +852,7 @@ export const ol = (className?: string, attrs?: HTMLOListElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <optgroup>
  */
-export const optgroup = (className?: string, attrs?: HTMLOptGroupElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLOptGroupElementAttrs | undefined, HTMLOptGroupElement>(
-    VNodeFlags.Element | (TagId.Optgroup << VNodeFlags.ElementIdOffset),
-    "optgroup",
-    attrs,
-    className,
-    css,
-  )
-);
+export const optgroup = htmlElement<HTMLOptGroupElementAttrs, HTMLOptGroupElement>("optgroup");
 
 /**
  * Creates Virtual DOM HTML element <option>.
@@ -1455,15 +864,7 @@ export const optgroup = (className?: string, attrs?: HTMLOptGroupElementAttrs, c
  * @param css - Styles
  * @returns Virtual DOM HTML element <option>
  */
-export const option = (className?: string, attrs?: HTMLOptionElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLOptionElementAttrs | undefined, HTMLOptionElement>(
-    VNodeFlags.Element | (TagId.Option << VNodeFlags.ElementIdOffset),
-    "option",
-    attrs,
-    className,
-    css,
-  )
-);
+export const option = htmlElement<HTMLOptionElementAttrs, HTMLOptionElement>("option");
 
 /**
  * Creates Virtual DOM HTML element <p>.
@@ -1475,15 +876,7 @@ export const option = (className?: string, attrs?: HTMLOptionElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <p>
  */
-export const p = (className?: string, attrs?: HTMLParagraphElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLParagraphElementAttrs | undefined, HTMLParagraphElement>(
-    VNodeFlags.Element | (TagId.P << VNodeFlags.ElementIdOffset),
-    "p",
-    attrs,
-    className,
-    css,
-  )
-);
+export const p = htmlElement<HTMLParagraphElementAttrs, HTMLParagraphElement>("p");
 
 /**
  * Creates Virtual DOM HTML element <picture>.
@@ -1495,15 +888,7 @@ export const p = (className?: string, attrs?: HTMLParagraphElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <picture>
  */
-export const picture = (className?: string, attrs?: HTMLPictureElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLPictureElementAttrs | undefined, HTMLPictureElement>(
-    VNodeFlags.Element | (TagId.Picture << VNodeFlags.ElementIdOffset),
-    "picture",
-    attrs,
-    className,
-    css,
-  )
-);
+export const picture = htmlElement<HTMLPictureElementAttrs, HTMLPictureElement>("picture");
 
 /**
  * Creates Virtual DOM HTML element <pre>.
@@ -1515,15 +900,7 @@ export const picture = (className?: string, attrs?: HTMLPictureElementAttrs, css
  * @param css - Styles
  * @returns Virtual DOM HTML element <pre>
  */
-export const pre = (className?: string, attrs?: HTMLPreElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLPreElementAttrs | undefined, HTMLPreElement>(
-    VNodeFlags.Element | (TagId.Pre << VNodeFlags.ElementIdOffset),
-    "pre",
-    attrs,
-    className,
-    css,
-  )
-);
+export const pre = htmlElement<HTMLPreElementAttrs, HTMLPreElement>("pre");
 
 /**
  * Creates Virtual DOM HTML element <progress>.
@@ -1535,15 +912,7 @@ export const pre = (className?: string, attrs?: HTMLPreElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <progress>
  */
-export const progress = (className?: string, attrs?: HTMLProgressElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLProgressElementAttrs | undefined, HTMLProgressElement>(
-    VNodeFlags.Element | (TagId.Progress << VNodeFlags.ElementIdOffset),
-    "progress",
-    attrs,
-    className,
-    css,
-  )
-);
+export const progress = htmlElement<HTMLProgressElementAttrs, HTMLProgressElement>("progress");
 
 /**
  * Creates Virtual DOM HTML element <q>.
@@ -1555,15 +924,7 @@ export const progress = (className?: string, attrs?: HTMLProgressElementAttrs, c
  * @param css - Styles
  * @returns Virtual DOM HTML element <q>
  */
-export const q = (className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLQuoteElementAttrs | undefined, HTMLQuoteElement>(
-    VNodeFlags.Element | (TagId.Q << VNodeFlags.ElementIdOffset),
-    "q",
-    attrs,
-    className,
-    css,
-  )
-);
+export const q = htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
 
 /**
  * Creates Virtual DOM HTML element <rt>.
@@ -1575,15 +936,7 @@ export const q = (className?: string, attrs?: HTMLQuoteElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <rt>
  */
-export const rt = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Rt << VNodeFlags.ElementIdOffset),
-    "rt",
-    attrs,
-    className,
-    css,
-  )
-);
+export const rt = htmlElement<HTMLElementAttrs, HTMLElement>("rt");
 
 /**
  * Creates Virtual DOM HTML element <ruby>.
@@ -1595,15 +948,7 @@ export const rt = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleP
  * @param css - Styles
  * @returns Virtual DOM HTML element <ruby>
  */
-export const ruby = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Ruby << VNodeFlags.ElementIdOffset),
-    "ruby",
-    attrs,
-    className,
-    css,
-  )
-);
+export const ruby = htmlElement<HTMLElementAttrs, HTMLElement>("ruby");
 
 /**
  * Creates Virtual DOM HTML element <s>.
@@ -1615,15 +960,7 @@ export const ruby = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <s>
  */
-export const s = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.S << VNodeFlags.ElementIdOffset),
-    "s",
-    attrs,
-    className,
-    css,
-  )
-);
+export const s = htmlElement<HTMLElementAttrs, HTMLElement>("s");
 
 /**
  * Creates Virtual DOM HTML element <samp>.
@@ -1635,15 +972,7 @@ export const s = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
  * @param css - Styles
  * @returns Virtual DOM HTML element <samp>
  */
-export const samp = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Samp << VNodeFlags.ElementIdOffset),
-    "samp",
-    attrs,
-    className,
-    css,
-  )
-);
+export const samp = htmlElement<HTMLElementAttrs, HTMLElement>("samp");
 
 /**
  * Creates Virtual DOM HTML element <script>.
@@ -1655,15 +984,7 @@ export const samp = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <script>
  */
-export const script = (className?: string, attrs?: HTMLScriptElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLScriptElementAttrs | undefined, HTMLScriptElement>(
-    VNodeFlags.Element | (TagId.Script << VNodeFlags.ElementIdOffset),
-    "script",
-    attrs,
-    className,
-    css,
-  )
-);
+export const script = htmlElement<HTMLScriptElementAttrs, HTMLScriptElement>("script");
 
 /**
  * Creates Virtual DOM HTML element <section>.
@@ -1675,15 +996,7 @@ export const script = (className?: string, attrs?: HTMLScriptElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <section>
  */
-export const section = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Section << VNodeFlags.ElementIdOffset),
-    "section",
-    attrs,
-    className,
-    css,
-  )
-);
+export const section = htmlElement<HTMLElementAttrs, HTMLElement>("section");
 
 /**
  * Creates Virtual DOM HTML element <select>.
@@ -1695,15 +1008,7 @@ export const section = (className?: string, attrs?: HTMLElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <select>
  */
-export const select = (className?: string, attrs?: HTMLSelectElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLSelectElementAttrs | undefined, HTMLSelectElement>(
-    VNodeFlags.Element | (TagId.Select << VNodeFlags.ElementIdOffset),
-    "select",
-    attrs,
-    className,
-    css,
-  )
-);
+export const select = htmlElement<HTMLSelectElementAttrs, HTMLSelectElement>("select");
 
 /**
  * Creates Virtual DOM HTML element <source>.
@@ -1715,15 +1020,7 @@ export const select = (className?: string, attrs?: HTMLSelectElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <source>
  */
-export const source = (className?: string, attrs?: HTMLSourceElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLSourceElementAttrs | undefined, HTMLSourceElement>(
-    VNodeFlags.Element | (TagId.Source << VNodeFlags.ElementIdOffset),
-    "source",
-    attrs,
-    className,
-    css,
-  )
-);
+export const source = htmlElement<HTMLSourceElementAttrs, HTMLSourceElement>("source");
 
 /**
  * Creates Virtual DOM HTML element <span>.
@@ -1735,15 +1032,7 @@ export const source = (className?: string, attrs?: HTMLSourceElementAttrs, css?:
  * @param css - Styles
  * @returns Virtual DOM HTML element <span>
  */
-export const span = (className?: string, attrs?: HTMLSpanElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLSpanElementAttrs | undefined, HTMLSpanElement>(
-    VNodeFlags.Element | (TagId.Span << VNodeFlags.ElementIdOffset),
-    "span",
-    attrs,
-    className,
-    css,
-  )
-);
+export const span = htmlElement<HTMLSpanElementAttrs, HTMLSpanElement>("span");
 
 /**
  * Creates Virtual DOM HTML element <strong>.
@@ -1755,15 +1044,7 @@ export const span = (className?: string, attrs?: HTMLSpanElementAttrs, css?: CSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <strong>
  */
-export const strong = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Strong << VNodeFlags.ElementIdOffset),
-    "strong",
-    attrs,
-    className,
-    css,
-  )
-);
+export const strong = htmlElement<HTMLElementAttrs, HTMLElement>("strong");
 
 /**
  * Creates Virtual DOM HTML element <style>.
@@ -1775,15 +1056,7 @@ export const strong = (className?: string, attrs?: HTMLElementAttrs, css?: CSSSt
  * @param css - Styles
  * @returns Virtual DOM HTML element <style>
  */
-export const style = (className?: string, attrs?: HTMLStyleElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLStyleElementAttrs | undefined, HTMLStyleElement>(
-    VNodeFlags.Element | (TagId.Style << VNodeFlags.ElementIdOffset),
-    "style",
-    attrs,
-    className,
-    css,
-  )
-);
+export const style = htmlElement<HTMLStyleElementAttrs, HTMLStyleElement>("style");
 
 /**
  * Creates Virtual DOM HTML element <sub>.
@@ -1795,15 +1068,7 @@ export const style = (className?: string, attrs?: HTMLStyleElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <sub>
  */
-export const sub = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Sub << VNodeFlags.ElementIdOffset),
-    "sub",
-    attrs,
-    className,
-    css,
-  )
-);
+export const sub = htmlElement<HTMLElementAttrs, HTMLElement>("sub");
 
 /**
  * Creates Virtual DOM HTML element <sup>.
@@ -1815,15 +1080,7 @@ export const sub = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <sup>
  */
-export const sup = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Sup << VNodeFlags.ElementIdOffset),
-    "sup",
-    attrs,
-    className,
-    css,
-  )
-);
+export const sup = htmlElement<HTMLElementAttrs, HTMLElement>("sup");
 
 /**
  * Creates Virtual DOM HTML element <table>.
@@ -1835,15 +1092,7 @@ export const sup = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <table>
  */
-export const table = (className?: string, attrs?: HTMLTableElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableElementAttrs | undefined, HTMLTableElement>(
-    VNodeFlags.Element | (TagId.Table << VNodeFlags.ElementIdOffset),
-    "table",
-    attrs,
-    className,
-    css,
-  )
-);
+export const table = htmlElement<HTMLTableElementAttrs, HTMLTableElement>("table");
 
 /**
  * Creates Virtual DOM HTML element <tbody>.
@@ -1855,15 +1104,7 @@ export const table = (className?: string, attrs?: HTMLTableElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <tbody>
  */
-export const tbody = (className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement>(
-    VNodeFlags.Element | (TagId.Tbody << VNodeFlags.ElementIdOffset),
-    "tbody",
-    attrs,
-    className,
-    css,
-  )
-);
+export const tbody = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tbody");
 
 /**
  * Creates Virtual DOM HTML element <td>.
@@ -1875,15 +1116,7 @@ export const tbody = (className?: string, attrs?: HTMLTableSectionElementAttrs, 
  * @param css - Styles
  * @returns Virtual DOM HTML element <td>
  */
-export const td = (className?: string, attrs?: HTMLTableDataCellElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableDataCellElementAttrs | undefined, HTMLTableDataCellElement>(
-    VNodeFlags.Element | (TagId.Td << VNodeFlags.ElementIdOffset),
-    "td",
-    attrs,
-    className,
-    css,
-  )
-);
+export const td = htmlElement<HTMLTableDataCellElementAttrs, HTMLTableDataCellElement>("td");
 
 /**
  * Creates Virtual DOM HTML element <template>.
@@ -1895,15 +1128,7 @@ export const td = (className?: string, attrs?: HTMLTableDataCellElementAttrs, cs
  * @param css - Styles
  * @returns Virtual DOM HTML element <template>
  */
-export const template = (className?: string, attrs?: HTMLTemplateElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTemplateElementAttrs | undefined, HTMLTemplateElement>(
-    VNodeFlags.Element | (TagId.Template << VNodeFlags.ElementIdOffset),
-    "template",
-    attrs,
-    className,
-    css,
-  )
-);
+export const template = htmlElement<HTMLTemplateElementAttrs, HTMLTemplateElement>("template");
 
 /**
  * Creates Virtual DOM HTML element <tfoot>.
@@ -1915,15 +1140,7 @@ export const template = (className?: string, attrs?: HTMLTemplateElementAttrs, c
  * @param css - Styles
  * @returns Virtual DOM HTML element <tfoot>
  */
-export const tfoot = (className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement>(
-    VNodeFlags.Element | (TagId.Tfoot << VNodeFlags.ElementIdOffset),
-    "tfoot",
-    attrs,
-    className,
-    css,
-  )
-);
+export const tfoot = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tfoot");
 
 /**
  * Creates Virtual DOM HTML element <th>.
@@ -1935,15 +1152,7 @@ export const tfoot = (className?: string, attrs?: HTMLTableSectionElementAttrs, 
  * @param css - Styles
  * @returns Virtual DOM HTML element <th>
  */
-export const th = (className?: string, attrs?: HTMLTableHeaderCellElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableHeaderCellElementAttrs | undefined, HTMLTableHeaderCellElement>(
-    VNodeFlags.Element | (TagId.Th << VNodeFlags.ElementIdOffset),
-    "th",
-    attrs,
-    className,
-    css,
-  )
-);
+export const th = htmlElement<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCellElement>("th");
 
 /**
  * Creates Virtual DOM HTML element <thead>.
@@ -1955,15 +1164,7 @@ export const th = (className?: string, attrs?: HTMLTableHeaderCellElementAttrs, 
  * @param css - Styles
  * @returns Virtual DOM HTML element <thead>
  */
-export const thead = (className?: string, attrs?: HTMLTableSectionElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableSectionElementAttrs | undefined, HTMLTableSectionElement>(
-    VNodeFlags.Element | (TagId.Thead << VNodeFlags.ElementIdOffset),
-    "thead",
-    attrs,
-    className,
-    css,
-  )
-);
+export const thead = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("thead");
 
 /**
  * Creates Virtual DOM HTML element <time>.
@@ -1975,15 +1176,7 @@ export const thead = (className?: string, attrs?: HTMLTableSectionElementAttrs, 
  * @param css - Styles
  * @returns Virtual DOM HTML element <time>
  */
-export const time = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Time << VNodeFlags.ElementIdOffset),
-    "time",
-    attrs,
-    className,
-    css,
-  )
-);
+export const time = htmlElement<HTMLElementAttrs, HTMLElement>("time");
 
 /**
  * Creates Virtual DOM HTML element <title>.
@@ -1995,15 +1188,7 @@ export const time = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyl
  * @param css - Styles
  * @returns Virtual DOM HTML element <title>
  */
-export const title = (className?: string, attrs?: HTMLTitleElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTitleElementAttrs | undefined, HTMLTitleElement>(
-    VNodeFlags.Element | (TagId.Title << VNodeFlags.ElementIdOffset),
-    "title",
-    attrs,
-    className,
-    css,
-  )
-);
+export const title = htmlElement<HTMLTitleElementAttrs, HTMLTitleElement>("title");
 
 /**
  * Creates Virtual DOM HTML element <tr>.
@@ -2015,15 +1200,7 @@ export const title = (className?: string, attrs?: HTMLTitleElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <tr>
  */
-export const tr = (className?: string, attrs?: HTMLTableRowElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTableRowElementAttrs | undefined, HTMLTableRowElement>(
-    VNodeFlags.Element | (TagId.Tr << VNodeFlags.ElementIdOffset),
-    "tr",
-    attrs,
-    className,
-    css,
-  )
-);
+export const tr = htmlElement<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr");
 
 /**
  * Creates Virtual DOM HTML element <track>.
@@ -2035,15 +1212,7 @@ export const tr = (className?: string, attrs?: HTMLTableRowElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <track>
  */
-export const track = (className?: string, attrs?: HTMLTrackElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTrackElementAttrs | undefined, HTMLTrackElement>(
-    VNodeFlags.Element | (TagId.Track << VNodeFlags.ElementIdOffset),
-    "track",
-    attrs,
-    className,
-    css,
-  )
-);
+export const track = htmlElement<HTMLTrackElementAttrs, HTMLTrackElement>("track");
 
 /**
  * Creates Virtual DOM HTML element <u>.
@@ -2055,15 +1224,7 @@ export const track = (className?: string, attrs?: HTMLTrackElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <u>
  */
-export const u = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.U << VNodeFlags.ElementIdOffset),
-    "u",
-    attrs,
-    className,
-    css,
-  )
-);
+export const u = htmlElement<HTMLElementAttrs, HTMLElement>("u");
 
 /**
  * Creates Virtual DOM HTML element <ul>.
@@ -2075,15 +1236,7 @@ export const u = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStylePr
  * @param css - Styles
  * @returns Virtual DOM HTML element <ul>
  */
-export const ul = (className?: string, attrs?: HTMLUListElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLUListElementAttrs | undefined, HTMLUListElement>(
-    VNodeFlags.Element | (TagId.Ul << VNodeFlags.ElementIdOffset),
-    "ul",
-    attrs,
-    className,
-    css,
-  )
-);
+export const ul = htmlElement<HTMLUListElementAttrs, HTMLUListElement>("ul");
 
 /**
  * Creates Virtual DOM HTML element <wbr>.
@@ -2095,15 +1248,7 @@ export const ul = (className?: string, attrs?: HTMLUListElementAttrs, css?: CSSS
  * @param css - Styles
  * @returns Virtual DOM HTML element <wbr>
  */
-export const wbr = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLElementAttrs | undefined, HTMLElement>(
-    VNodeFlags.Element | (TagId.Wbr << VNodeFlags.ElementIdOffset),
-    "wbr",
-    attrs,
-    className,
-    css,
-  )
-);
+export const wbr = htmlElement<HTMLElementAttrs, HTMLElement>("wbr");
 
 /**
  * Creates Virtual DOM HTML element <textarea>.
@@ -2115,15 +1260,7 @@ export const wbr = (className?: string, attrs?: HTMLElementAttrs, css?: CSSStyle
  * @param css - Styles
  * @returns Virtual DOM HTML element <textarea>
  */
-export const textarea = (className?: string, attrs?: HTMLTextAreaElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLTextAreaElementAttrs | undefined, HTMLTextAreaElement>(
-    VNodeFlags.Element | (TagId.Textarea << VNodeFlags.ElementIdOffset),
-    "textarea",
-    attrs,
-    className,
-    css,
-  )
-);
+export const textarea = htmlElement<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea");
 
 /**
  * Creates Virtual DOM HTML element <input>.
@@ -2135,15 +1272,7 @@ export const textarea = (className?: string, attrs?: HTMLTextAreaElementAttrs, c
  * @param css - Styles
  * @returns Virtual DOM HTML element <input>
  */
-export const input = (className?: string, attrs?: HTMLInputElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLInputElementAttrs | undefined, HTMLInputElement>(
-    VNodeFlags.Element | (TagId.Input << VNodeFlags.ElementIdOffset),
-    "input",
-    attrs,
-    className,
-    css,
-  )
-);
+export const input = htmlElement<HTMLInputElementAttrs, HTMLInputElement>("input");
 
 /**
  * Creates Virtual DOM HTML element <audio>.
@@ -2155,15 +1284,7 @@ export const input = (className?: string, attrs?: HTMLInputElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <audio>
  */
-export const audio = (className?: string, attrs?: HTMLAudioElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLAudioElementAttrs | undefined, HTMLAudioElement>(
-    VNodeFlags.Element | (TagId.Audio << VNodeFlags.ElementIdOffset),
-    "audio",
-    attrs,
-    className,
-    css,
-  )
-);
+export const audio = htmlElement<HTMLAudioElementAttrs, HTMLAudioElement>("audio");
 
 /**
  * Creates Virtual DOM HTML element <video>.
@@ -2175,12 +1296,4 @@ export const audio = (className?: string, attrs?: HTMLAudioElementAttrs, css?: C
  * @param css - Styles
  * @returns Virtual DOM HTML element <video>
  */
-export const video = (className?: string, attrs?: HTMLVideoElementAttrs, css?: CSSStyleProps) => (
-  new VNode<HTMLVideoElementAttrs | undefined, HTMLVideoElement>(
-    VNodeFlags.Element | (TagId.Video << VNodeFlags.ElementIdOffset),
-    "video",
-    attrs,
-    className,
-    css,
-  )
-);
+export const video = htmlElement<HTMLVideoElementAttrs, HTMLVideoElement>("video");

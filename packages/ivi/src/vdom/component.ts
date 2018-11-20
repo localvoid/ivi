@@ -1,25 +1,22 @@
-import { VNode } from "./vnode";
+import { OpNode } from "./operations";
+import { StateNode } from "./state";
 
 /**
- * Component instance.
+ * Component state.
  */
-export interface Component<P = any> {
-  /**
-   * dirty flag indicates that component should be updated.
-   */
-  dirty: boolean;
+export interface ComponentHooks<T = any> {
   /**
    * Update function.
    */
-  update: null | ((props: P) => VNode);
+  update: null | ((props: T) => OpNode);
   /**
    * Selector hooks.
    */
-  select: null | ((context: {}) => boolean);
+  dirtyCheck: null | ((context: {}) => boolean);
   /**
    * Detached hooks.
    */
-  detached: null | ((detached?: boolean) => void) | ((detached?: boolean) => void)[];
+  unmount: null | ((detached?: boolean) => void) | ((detached?: boolean) => void)[];
 }
 
 /**
@@ -29,10 +26,10 @@ export interface ComponentDescriptor<P = any> {
   /**
    * Lifecycle hook `c()`.
    *
-   * @param c - Component instance.
+   * @param state - Component state.
    * @returns update function
    */
-  c(c: Component<P>): (props: P) => VNode;
+  c(state: StateNode): (props: P) => OpNode;
 
   /**
    * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.

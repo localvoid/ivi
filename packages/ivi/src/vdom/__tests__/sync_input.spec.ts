@@ -8,8 +8,22 @@ test(`<input> => <input type="checkbox">`, () => {
       r(h.input());
       const n = r(h.input(_, { type: "checkbox" }));
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`
+<input
+  type="checkbox"
+/>
+`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -20,8 +34,18 @@ test(`<input> => <input value="cde">`, () => {
       r(h.input());
       const n = r(h.input(_, { value: h.VALUE("cde") }));
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`<input />`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -32,8 +56,18 @@ test(`<input value="abc"> => <input value="cde">`, () => {
       r(h.input(_, { value: h.VALUE("abc") }));
       const n = r(h.input(_, { value: h.VALUE("cde") }));
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`<input />`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -44,8 +78,18 @@ test(`<input value="abc"> => <input>`, () => {
       r(h.input(_, { value: h.VALUE("abc") }));
       const n = r(h.input());
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`<input />`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -56,8 +100,22 @@ test(`<input type="checkbox"> => <input type="checkbox" checked=true>`, () => {
       r(h.input(_, { type: "checkbox" }));
       const n = r(h.input(_, { type: "checkbox", checked: h.CHECKED(true) }));
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`
+<input
+  type="checkbox"
+/>
+`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -68,8 +126,22 @@ test(`<input type="checkbox" checked=true> => <input type="checkbox" checked=fal
       r(h.input(_, { type: "checkbox", checked: h.CHECKED(true) }));
       const n = r(h.input(_, { type: "checkbox", checked: h.CHECKED(false) }));
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`
+<input
+  type="checkbox"
+/>
+`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -80,8 +152,22 @@ test(`<input type="checkbox" checked=true> => <input type="checkbox">`, () => {
       r(h.input(_, { type: "checkbox", checked: h.CHECKED(true) }));
       const n = r(h.input(_, { type: "checkbox" }));
 
-      expect(n).toMatchSnapshot();
-      expect(c).toMatchSnapshot();
+      expect(n).toMatchInlineSnapshot(`
+<input
+  type="checkbox"
+/>
+`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });

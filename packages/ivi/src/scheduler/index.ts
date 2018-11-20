@@ -3,8 +3,9 @@ import { runRepeatableTasks, RepeatableTaskList } from "../core/repeatable_task_
 import { NOOP } from "../core/noop";
 import { catchError } from "../core/error";
 import { printWarn } from "../debug/print";
-import { VNode } from "../vdom/vnode";
-import { Component } from "../vdom/component";
+import { NodeFlags } from "../vdom/node_flags";
+import { OpNode } from "../vdom/operations";
+import { StateNode } from "../vdom/state";
 import { ROOTS, findRoot, dirtyCheck } from "../vdom/root";
 
 /**
@@ -292,8 +293,8 @@ export function requestDirtyCheck(flags?: UpdateFlags) {
  * @param c - Component instance
  * @param flags - See {@link UpdateFlags} for details.
  */
-export function invalidate<P>(c: Component<P>, flags?: UpdateFlags): void {
-  c.dirty = true;
+export function invalidate(c: StateNode, flags?: UpdateFlags): void {
+  c.flags |= NodeFlags.Dirty;
   requestDirtyCheck(flags);
 }
 
@@ -312,7 +313,7 @@ export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock)
  * @param container - DOM Node that will contain rendered node
  * @param flags - See {@link UpdateFlags} for details
  */
-export function render(next: VNode | null, container: Element, flags?: UpdateFlags): void {
+export function render(next: OpNode | string | number | null, container: Element, flags?: UpdateFlags): void {
   /* istanbul ignore else */
   if (DEBUG) {
     /**
@@ -330,7 +331,7 @@ export function render(next: VNode | null, container: Element, flags?: UpdateFla
   if (root) {
     root.next = next;
   } else {
-    ROOTS.push({ container, next, current: null });
+    ROOTS.push({ container, next, state: null });
   }
 
   requestDirtyCheck(flags);

@@ -1,5 +1,5 @@
 import * as h from "ivi-html";
-import { startRender, checkDOMOps, domOps } from "./utils";
+import { startRender, checkDOMOps } from "./utils";
 
 test(`<audio> => <video>`, () => {
   startRender<HTMLMediaElement>(r => {
@@ -8,7 +8,17 @@ test(`<audio> => <video>`, () => {
       const b = r(h.video());
 
       expect(b.tagName.toLowerCase()).toBe("video");
-      expect(c).toEqual(domOps(2, 0, 0, 0, 1, 1, 0));
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 2,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });

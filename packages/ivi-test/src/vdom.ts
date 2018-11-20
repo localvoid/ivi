@@ -1,6 +1,6 @@
 import {
   CSSStyleProps, shallowEqual, Predicate,
-  VNode, VNodeFlags, EventDispatcher, ComponentDescriptor,
+  OpNode, VNodeFlags, EventDispatcher, ComponentDescriptor,
   setContext, restoreContext,
 } from "ivi";
 import { containsClassName, containsEventHandler, matchValues, matchKeys } from "./utils";
@@ -8,10 +8,10 @@ import { VNodeMatcher, query, queryAll, closest } from "./query";
 import { SnapshotOptions, toSnapshot } from "./snapshot";
 
 export function visitUnwrapped(
-  vnode: VNode,
-  parent: VNode | null,
+  vnode: OpNode,
+  parent: OpNode | null,
   context: {},
-  visitor: (vnode: VNode, parent: VNode | null, context: {}) => boolean,
+  visitor: (vnode: OpNode, parent: OpNode | null, context: {}) => boolean,
 ): boolean {
   if (visitor(vnode, parent, context) === true) {
     return true;
@@ -23,17 +23,17 @@ export function visitUnwrapped(
     if ((flags & VNodeFlags.Element) !== 0) {
       if ((flags & VNodeFlags.Children) !== 0) {
         while (child !== null) {
-          if (visitUnwrapped(child as VNode, vnode, context, visitor)) {
+          if (visitUnwrapped(child as OpNode, vnode, context, visitor)) {
             return true;
           }
-          child = (child as VNode)._r;
+          child = (child as OpNode)._r;
         }
       }
     } else {
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
         context = { ...context, ...vnode._p };
       }
-      return visitUnwrapped(child as VNode, vnode, context, visitor);
+      return visitUnwrapped(child as OpNode, vnode, context, visitor);
     }
   }
 
@@ -56,24 +56,24 @@ export function visitWrapped(
     if ((flags & VNodeFlags.Element) !== 0) {
       if ((flags & VNodeFlags.Children) !== 0) {
         while (child !== null) {
-          if (visitWrapped(new VNodeWrapper(child as VNode, wrapper, context), visitor)) {
+          if (visitWrapped(new VNodeWrapper(child as OpNode, wrapper, context), visitor)) {
             return true;
           }
-          child = (child as VNode)._r;
+          child = (child as OpNode)._r;
         }
       }
     } else {
       if ((flags & VNodeFlags.UpdateContext) !== 0) {
         context = { ...context, ...vnode._p };
       }
-      return visitWrapped(new VNodeWrapper(child as VNode, wrapper, context), visitor);
+      return visitWrapped(new VNodeWrapper(child as OpNode, wrapper, context), visitor);
     }
   }
 
   return false;
 }
 
-function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, context: {}): boolean {
+function _virtualRender(depth: number, vnode: OpNode, parent: OpNode | null, context: {}): boolean {
   const flags = vnode._f;
 
   if ((flags & (VNodeFlags.Element | VNodeFlags.Component | VNodeFlags.UpdateContext)) !== 0) {
@@ -81,8 +81,8 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
       if ((flags & VNodeFlags.Children) !== 0) {
         let child = vnode._c;
         while (child !== null) {
-          _virtualRender(depth, child as VNode, vnode, context);
-          child = (child as VNode)._r;
+          _virtualRender(depth, child as OpNode, vnode, context);
+          child = (child as OpNode)._r;
         }
       }
     } else {
@@ -96,7 +96,7 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
         vnode._i = context = { ...context, ...vnode._p };
       }
       if (depth > 1) {
-        return _virtualRender(depth - 1, vnode._c as VNode, vnode, context);
+        return _virtualRender(depth - 1, vnode._c as OpNode, vnode, context);
       }
     }
   }
@@ -104,7 +104,7 @@ function _virtualRender(depth: number, vnode: VNode, parent: VNode | null, conte
   return false;
 }
 
-export function virtualRender(root: VNode, context: {} = {}, depth = Number.MAX_SAFE_INTEGER): VNodeWrapper {
+export function virtualRender(root: OpNode, context: {} = {}, depth = Number.MAX_SAFE_INTEGER): VNodeWrapper {
   visitUnwrapped(root, null, context, (v, p, c) => _virtualRender(depth, v, p, c));
   return new VNodeWrapper(root, null, context);
 }
@@ -155,7 +155,7 @@ export class VNodeListWrapper {
 
 export class VNodeWrapper {
   constructor(
-    public readonly vnode: VNode,
+    public readonly vnode: OpNode,
     public readonly parent: VNodeWrapper | null,
     public readonly context: {},
   ) { }
@@ -216,7 +216,7 @@ export class VNodeWrapper {
     const children: VNodeWrapper[] = [];
     if ((flags & VNodeFlags.Element) !== 0) {
       if ((flags & VNodeFlags.Children) !== 0) {
-        let child = this.vnode._c as VNode | null;
+        let child = this.vnode._c as OpNode | null;
         while (child !== null) {
           children.push(new VNodeWrapper(child, this, this.context));
           child = child._r;

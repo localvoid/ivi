@@ -1,4 +1,4 @@
-import { EventHandler, EventDispatcher, VNode, VNodeFlags } from "ivi";
+import { EventHandler, EventDispatcher, OpNode, VNodeFlags } from "ivi";
 
 /**
  * containsClassName checks if className list contains a className.
@@ -105,7 +105,7 @@ const VNodeLooseMatchFlags = 0
  * @param b VNode.
  * @returns true when VNode are loosely matching.
  */
-export function isVNodeLooseMatch(a: VNode, b: VNode): boolean {
+export function isVNodeLooseMatch(a: OpNode, b: OpNode): boolean {
   const aFlags = a._f;
   const bFlags = b._f;
   if (((aFlags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {

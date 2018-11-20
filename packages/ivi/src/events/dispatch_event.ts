@@ -1,6 +1,6 @@
-import { EventHandlerFlags, EventFlags, SyntheticEventFlags } from "./flags";
+import { EventFlags, SyntheticEventFlags } from "./flags";
 import { DispatchTarget } from "./dispatch_target";
-import { EventHandler } from "./event_handler";
+import { EventHandlerFlags, EventHandler } from "./event_handler";
 import { SyntheticEvent } from "./synthetic_event";
 
 /**
@@ -63,11 +63,11 @@ function dispatchEventToLocalEventHandlers(
 
   if (handlers instanceof Array) {
     for (const handler of handlers) {
-      if (handler.flags & matchFlags) {
+      if (handler.d.flags & matchFlags) {
         flags |= _dispatch(handler, dispatch, event);
       }
     }
-  } else if (handlers.flags & matchFlags) {
+  } else if (handlers.d.flags & matchFlags) {
     flags = _dispatch(handlers, dispatch, event);
   }
 
@@ -79,7 +79,7 @@ function _dispatch(
   dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | void) | undefined,
   event: SyntheticEvent,
 ): EventFlags {
-  const flags = (dispatch === void 0) ? handler.handler(event) : dispatch(handler, event);
+  const flags = (dispatch === void 0) ? handler.h(event) : dispatch(handler, event);
   /* istanbul ignore else */
   if (DEBUG) {
     if (flags !== void 0) {

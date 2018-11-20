@@ -90,15 +90,13 @@ export {
   ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED,
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
-export { Component, ComponentDescriptor } from "./vdom/component";
+export { ComponentHooks, ComponentDescriptor } from "./vdom/component";
 export {
-  VNodeFlags, VNode, t,
-  getDOMNode, getComponent,
-  stopDirtyChecking,
-} from "./vdom/vnode";
-export { fragment } from "./vdom/fragment";
-export { map, mapRange, mapIterable } from "./vdom/map";
-export { element, component, statelessComponent, context } from "./vdom/factories";
+  OpType, OpNode, ElementData, OpData, EventsData, RefData, ContextData, Key,
+  createOpType, createOpNode,
+  Events, Ref, Context, TrackByKey, key
+} from "./vdom/operations";
+export { htmlElement, svgElement, elementProto, component, statelessComponent } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { selector } from "./vdom/utils";
@@ -113,15 +111,14 @@ export {
 
 // Events
 export {
-  EventHandlerFlags, SyntheticEventFlags, EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION, NativeEventSourceFlags,
+  SyntheticEventFlags, EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION, NativeEventSourceFlags,
 } from "./events/flags";
 export {
   getEventTarget,
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./events/utils";
 export { SyntheticEvent } from "./events/synthetic_event";
-export { EventDispatcher } from "./events/event_dispatcher";
-export { EventHandler } from "./events/event_handler";
+export { EventHandlerFlags, EventHandler } from "./events/event_handler";
 export { DispatchTarget } from "./events/dispatch_target";
 export { accumulateDispatchTargets } from "./events/accumulate_dispatch_targets";
 export { dispatchEvent } from "./events/dispatch_event";

@@ -2,8 +2,9 @@ import { IOS_GESTURE_EVENT } from "../core/feature_detection";
 import { NOOP } from "../core/noop";
 import { unorderedArrayDelete } from "../core/array";
 import { checkNestingViolations } from "../debug/html_nesting_rules";
-import { VNode } from "./vnode";
-import { _render, _sync, _remove, _dirtyCheck } from "./sync";
+import { OpNode } from "./operations";
+import { StateNode } from "./state";
+import { _mount, _update, _unmount, _dirtyCheck, _resetState } from "./reconciler";
 
 /**
  * Root.
@@ -16,11 +17,11 @@ export interface Root {
   /**
    * Next virtual DOM node.
    */
-  next: VNode | null | undefined;
+  next: OpNode | string | number | null | undefined;
   /**
    * Current virtual DOM node.
    */
-  current: VNode | null;
+  state: StateNode | null;
 }
 
 /**
@@ -42,14 +43,15 @@ export const findRoot = (container: Element) => ROOTS.find((r) => r.container ==
 export function dirtyCheck() {
   for (let i = 0; i < ROOTS.length; ++i) {
     const root = ROOTS[i];
-    const { container, current, next } = root;
+    const { container, state, next } = root;
     root.next = void 0;
+    _resetState();
 
     if (next) {
-      if (current) {
-        _sync(container, current, next, false);
+      if (state) {
+        root.state = _update(container, state, next);
       } else {
-        _render(container, null, next);
+        root.state = _mount(container, next);
         /* istanbul ignore if */
         /**
          * Fix for the Mouse Event bubbling on iOS devices.
@@ -62,21 +64,20 @@ export function dirtyCheck() {
           (container as HTMLElement).onclick = NOOP;
         }
       }
-      root.current = next;
-    } else if (current) {
+    } else if (state) {
       if (next === null) {
-        _remove(container, current);
+        _unmount(container, state);
         unorderedArrayDelete(ROOTS, root);
         --i;
       } else {
-        _dirtyCheck(container, current, false);
+        _dirtyCheck(container, state);
       }
     }
 
     /* istanbul ignore else */
     if (DEBUG) {
-      if (root.current) {
-        checkNestingViolations(container, root.current);
+      if (root.state) {
+        checkNestingViolations(container, root.state);
       }
     }
   }

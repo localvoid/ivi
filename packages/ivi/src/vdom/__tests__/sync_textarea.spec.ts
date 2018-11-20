@@ -1,5 +1,5 @@
 import * as h from "ivi-html";
-import { startRender, checkDOMOps, domOps } from "./utils";
+import { startRender, checkDOMOps } from "./utils";
 
 test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
   startRender<HTMLTextAreaElement>(r => {
@@ -9,7 +9,17 @@ test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
       expect(b.value).toBe("cde");
-      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -22,7 +32,17 @@ test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
       expect(b.value).toBe("cde");
-      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });
@@ -35,7 +55,17 @@ test(`<textarea>abc</textarea> => <textarea></textarea>`, () => {
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
       expect(b.value).toBe("abc");
-      expect(c).toEqual(domOps(1, 0, 0, 0, 1, 0, 0));
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
     });
   });
 });

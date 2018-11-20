@@ -1,4 +1,4 @@
-import { VNode, render, requestDirtyCheck, withNextFrame } from "ivi";
+import { OpNode, render, requestDirtyCheck, withNextFrame } from "ivi";
 import { VNodeWrapper } from "./vdom";
 
 /**
@@ -20,7 +20,7 @@ export class DOMRenderer {
    * @param vnode VNode.
    * @returns VNodeWrapper object.
    */
-  render(vnode: VNode): VNodeWrapper {
+  render(vnode: OpNode): VNodeWrapper {
     withNextFrame(() => { render(vnode, this.container); })();
     return new VNodeWrapper(vnode, null, {});
   }

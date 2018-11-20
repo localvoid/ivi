@@ -8,18 +8,6 @@ export interface DOMOpsCounter {
   removeChild: number;
 }
 
-export function domOps(
-  createElement: number,
-  createElementNS: number,
-  createTextNode: number,
-  appendChild: number,
-  insertBefore: number,
-  replaceChild: number,
-  removeChild: number,
-): DOMOpsCounter {
-  return { createElement, createElementNS, createTextNode, appendChild, insertBefore, replaceChild, removeChild };
-}
-
 export function resetDOMCounter(counter: DOMOpsCounter): void {
   counter.createElement = 0;
   counter.createElementNS = 0;
