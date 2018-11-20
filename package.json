@@ -14,7 +14,9 @@
     "test:coverage": "jest --coverage"
   },
   "husky": {
-    "hooks": {}
+    "hooks": {
+      "pre-commit": "yarn lint && yarn test"
+    }
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",

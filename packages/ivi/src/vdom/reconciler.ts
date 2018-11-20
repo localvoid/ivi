@@ -92,7 +92,7 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
       _dirtyCheck(parentElement, stateNode.children as StateNode);
     } else {
       if (_dirtyContext === true) {
-        stateNode.state = { ...getContext(), ...(stateNode.op as OpNode).data };
+        stateNode.state = { ...getContext(), ...(stateNode.op as OpNode<ContextData>).data.data };
       }
       const prevContext = setContext(stateNode.state as {});
       _dirtyCheck(parentElement, stateNode.children as StateNode);
@@ -248,15 +248,17 @@ function _mountObject(
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | opFlags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else if ((opFlags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
-    if ((opFlags & NodeFlags.Ref) !== 0) {
-      opData.data.v = stateNode;
-    }
     const deepStateFlags = _pushDeepState();
     if ((opFlags & NodeFlags.Context) !== 0) {
-      const prevContext = setContext(stateNode.state = { ...getContext(), ...opData.data });
-      stateNode.state = _mount(parentElement, opData.child);
+      const prevContext = setContext(
+        stateNode.state = { ...getContext(), ...(opData as OpData<ContextData>).data },
+      );
+      stateNode.children = _mount(parentElement, (opData as OpData<ContextData>).child);
       restoreContext(prevContext);
     } else {
+      if ((opFlags & NodeFlags.Ref) !== 0) {
+        opData.data.v = stateNode;
+      }
       stateNode.children = _mount(parentElement, opData.child);
     }
     stateNode.flags = _popDeepState(deepStateFlags, opFlags);

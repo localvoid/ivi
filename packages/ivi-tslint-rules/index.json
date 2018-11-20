@@ -65,6 +65,10 @@
     "switch-default": false,
     "variable-name": false,
     "arrow-parens": false,
+    "no-trailing-whitespace": [
+      true,
+      "ignore-template-strings"
+    ],
     "trailing-comma": [
       true,
       {

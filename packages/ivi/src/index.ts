@@ -83,6 +83,7 @@ export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";
 export { debugSub, debugPub } from "./debug/pubsub";
 
 // Virtual DOM
+export { NodeFlags } from "./vdom/node_flags";
 export { setContext, restoreContext, getContext } from "./vdom/context";
 export {
   AttributeDirective,
@@ -90,6 +91,7 @@ export {
   ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED,
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
+export { ElementProtoDescriptor } from "./vdom/element_proto";
 export { ComponentHooks, ComponentDescriptor } from "./vdom/component";
 export {
   OpType, OpNode, ElementData, OpData, EventsData, RefData, ContextData, Key,
