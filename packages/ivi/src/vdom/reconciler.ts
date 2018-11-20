@@ -13,6 +13,7 @@ let _index!: number;
 let _deepStateFlags!: NodeFlags;
 let _dirtyContext!: boolean;
 let _moveNode!: boolean;
+let _singleChild!: boolean;
 
 export function _resetState(): void {
   _nextNode = null;
@@ -20,6 +21,7 @@ export function _resetState(): void {
   _deepStateFlags = 0;
   _dirtyContext = false;
   _moveNode = false;
+  _singleChild = false;
 }
 
 function _pushDeepState(): NodeFlags {
@@ -79,7 +81,9 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
             }
           }
         } else {
+          _singleChild = true;
           _dirtyCheck(domNode as Element, children as StateNode);
+          _singleChild = false;
         }
       }
       _nextNode = domNode;
@@ -383,6 +387,7 @@ export function _update(
             nextChildren as RecursiveOpChildrenArray,
           );
         } else {
+          _singleChild = true;
           stateNode.children = stateChildren === null ?
             _mount(
               state as Element,
@@ -393,6 +398,7 @@ export function _update(
               stateChildren as StateNode,
               nextChildren as string | OpNode,
             );
+          _singleChild = false;
         }
       }
       stateNode.flags = _popDeepState(deepStateFlags, stateNode.flags);
@@ -431,8 +437,15 @@ export function _update(
   if ((stateFlags & NodeFlags.TrackByKey) !== 0) {
     const nextChildren = ((nextOp as OpNode).data as Key<any, OpNode>[]);
     if (nextChildren.length === 0) {
-      for (let i = 0; i < (stateChildren as StateNode[]).length; i++) {
-        _unmount(parentElement, (stateChildren as StateNode[])[i]);
+      if (_singleChild === true) {
+        parentElement.textContent = "";
+        for (let i = 0; i < (stateChildren as StateNode[]).length; i++) {
+          _unmountWalk((stateChildren as StateNode[])[i]);
+        }
+      } else {
+        for (let i = 0; i < (stateChildren as StateNode[]).length; i++) {
+          _unmount(parentElement, (stateChildren as StateNode[])[i]);
+        }
       }
       stateNode.children = [];
     } else if ((stateChildren as StateNode[]).length === 0) {
@@ -746,7 +759,6 @@ function updateChildrenTrackByKeys(
   let i: number;
   let j: number | undefined;
   let stateNode: StateNode;
-  let keyedOpNode: Key<any, OpNode>;
 
   // Step 1
   outer: while (true) {
@@ -787,6 +799,7 @@ function updateChildrenTrackByKeys(
   } else { // Step 2
     const aLength = aEnd - start + 1;
     const bLength = bEnd - start + 1;
+    const nullableState = state as Array<StateNode | null>;
 
     // Mark all nodes as inserted.
     const sources = new Array(bLength);
@@ -804,30 +817,41 @@ function updateChildrenTrackByKeys(
       keyIndex.set(b[j].k, j);
     }
 
-    for (i = start; i <= aEnd; ++i) {
-      keyedOpNode = a[i];
-      stateNode = state[i];
-
-      if (updated < bLength) {
-        j = keyIndex.get(keyedOpNode.k);
-        if (j !== void 0) {
-          pos = (pos > j) ? 1000000 : j;
-          ++updated;
-          sources[j - start] = i;
-          result[j] = stateNode;
-          continue;
-        }
+    for (i = start; i <= aEnd && updated < bLength; ++i) {
+      j = keyIndex.get(a[i].k);
+      if (j !== void 0) {
+        pos = (pos > j) ? 1000000 : j;
+        ++updated;
+        sources[j - start] = i;
+        result[j] = state[i];
+        nullableState[i] = null;
       }
-      _unmount(parentElement, stateNode);
     }
 
     if (aLength === a.length && updated === 0) {
       // Noone is synced.
+      if (_singleChild === true) {
+        parentElement.textContent = "";
+        for (i = start; i <= aEnd; i++) {
+          _unmountWalk(state[i]);
+        }
+      } else {
+        for (i = start; i <= aEnd; i++) {
+          _unmount(parentElement, state[i]);
+        }
+      }
       while (bEnd >= 0) {
         result[bEnd] = _mount(parentElement, b[bEnd--].v);
       }
     } else {
       // Step 3
+      for (i = start; i <= aEnd; i++) {
+        stateNode = state[i];
+        if (stateNode !== null) {
+          _unmount(parentElement, stateNode);
+        }
+      }
+
       let opNode;
       if (pos === 1000000) {
         const seq = lis(sources);
