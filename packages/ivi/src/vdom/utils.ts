@@ -14,12 +14,12 @@ import { useSelect } from "./hooks";
  *     const EntryView = component<Entry>((c) => {
  *       const getEntryTitle = useEntryTitle(c);
  *
- *       return (entry) => div().t(getEntryTitle(entry));
+ *       return (entry) => div(_, _, getEntryTitle(entry));
  *     });
  *
- * @param s - Selector function.
- * @param shouldUpdate - Should update function.
- * @returns selector factory.
+ * @param s Selector function.
+ * @param shouldUpdate Should update function.
+ * @returns Selector factory.
  */
 export function selector<T>(
   s: () => T,
@@ -38,12 +38,12 @@ export function selector<T>(
  *     const EntryView = component<Entry>((c) => {
  *       const getEntryTitle = useEntryTitle(c);
  *
- *       return (entry) => div().t(getEntryTitle(entry));
+ *       return (entry) => div(_, _, getEntryTitle(entry));
  *     });
  *
- * @param s - Selector function.
- * @param shouldUpdate - Should update function.
- * @returns selector factory.
+ * @param s Selector function.
+ * @param shouldUpdate Should update function.
+ * @returns Selector factory.
  */
 export function selector<T, P>(
   s: (props: P, context: undefined, prev?: T | undefined) => T,
@@ -63,12 +63,12 @@ export function selector<T, P>(
  *     const EntryView = component<Entry>((c) => {
  *       const getEntryTitle = useEntryTitle(c);
  *
- *       return (entry) => div().t(getEntryTitle(entry));
+ *       return (entry) => div(_, _, getEntryTitle(entry));
  *     });
  *
- * @param s - Selector function.
- * @param shouldUpdate - Should update function.
- * @returns selector factory.
+ * @param s Selector function.
+ * @param shouldUpdate Should update function.
+ * @returns Selector factory.
  */
 export function selector<T, P, C>(
   s: (props: P, context: C, prev?: T | undefined) => T,
@@ -88,12 +88,12 @@ export function selector<T, P, C>(
  *     const EntryView = component<Entry>((c) => {
  *       const getEntryTitle = useEntryTitle(c);
  *
- *       return (entry) => div().t(getEntryTitle(entry));
+ *       return (entry) => div(_, _, getEntryTitle(entry));
  *     });
  *
- * @param s - Selector function.
- * @param shouldUpdate - Should update function.
- * @returns selector factory.
+ * @param s Selector function.
+ * @param shouldUpdate Should update function.
+ * @returns Selector factory.
  */
 export function selector<T, P, C>(
   s: (props: P, context: C, prev?: T | undefined) => T,

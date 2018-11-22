@@ -26,11 +26,11 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  *         (id, context) => context.data[id],
  *       );
  *
- *       return (id) => div().t(selector(id));
+ *       return (id) => div(_, _, selector(id));
  *     });
  *
- * @param stateNode - Component instance.
- * @param selector - Selector function.
+ * @param stateNode Component instance.
+ * @param selector Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T>(
@@ -48,11 +48,11 @@ export function useSelect<T>(
  *         (id, context) => context.data[id],
  *       );
  *
- *       return (id) => div().t(selector(id));
+ *       return (id) => div(_, _, selector(id));
  *     });
  *
- * @param stateNode - Component instance.
- * @param selector - Selector function.
+ * @param stateNode Component instance.
+ * @param selector Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T, P>(
@@ -71,11 +71,11 @@ export function useSelect<T, P>(
  *         (id, context) => context.data[id],
  *       );
  *
- *       return (id) => div().t(selector(id));
+ *       return (id) => div(_, _, selector(id));
  *     });
  *
- * @param stateNode - Component instance.
- * @param selector - Selector function.
+ * @param stateNode Component instance.
+ * @param selector Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T, P, C>(
@@ -94,11 +94,11 @@ export function useSelect<T, P, C>(
  *         (id, context) => context.data[id],
  *       );
  *
- *       return (id) => div().t(selector(id));
+ *       return (id) => div(_, _, selector(id));
  *     });
  *
- * @param c - Component instance.
- * @param selector - Selector function.
+ * @param stateNode Component instance.
+ * @param selector Selector function.
  * @returns Selector hook.
  */
 export function useSelect<T, P, C extends {}>(
@@ -154,8 +154,8 @@ export function useSelect<T, P, C extends {}>(
  *       return () => div();
  *     });
  *
- * @param stateNode - Component instance.
- * @param hook - Detached hook.
+ * @param stateNode Component instance.
+ * @param hook Detached hook.
  */
 export function useDetached(stateNode: StateNode, hook: () => void): void {
   stateNode.flags |= NodeFlags.Unmount;
@@ -216,14 +216,14 @@ function withEffect<P>(fn: (effect: () => void) => void): (
  *       return (delay) => (
  *         timer(delay),
  *
- *         div().t(i),
+ *         div(_, _, i),
  *       );
  *     });
  *
- * @param c - Component instance.
- * @param hook - Side effect function.
- * @param shouldUpdate - Should update function.
- * @returns side effect hook
+ * @param stateNode Component instance.
+ * @param hook Side effect function.
+ * @param shouldUpdate Should update function.
+ * @returns Side effect hook
  */
 export const useEffect: <T = undefined>(
   stateNode: StateNode,
@@ -231,12 +231,28 @@ export const useEffect: <T = undefined>(
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = /*#__PURE__*/withEffect(scheduleMicrotask) as any;
 
+/**
+ * useMutationEffect creates a DOM mutation effect hook.
+ *
+ * @param stateNode Component instance.
+ * @param hook DOM mutation function.
+ * @param shouldUpdate Should update function.
+ * @returns Side effect hook
+ */
 export const useMutationEffect: <T = undefined>(
   stateNode: StateNode,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = /*#__PURE__*/withEffect(scheduleMutationEffect) as any;
 
+/**
+ * useLayoutEffect creates a DOM layout effect hook.
+ *
+ * @param stateNode Component instance.
+ * @param hook DOM layout function.
+ * @param shouldUpdate Should update function.
+ * @returns Side effect hook
+ */
 export const useLayoutEffect: <T = undefined>(
   stateNode: StateNode,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,

@@ -17,11 +17,24 @@ function element<T, U>(tag: string, svg: boolean) {
     );
 }
 
+/**
+ * htmlElement create a HTML element operation factories.
+ *
+ * @param tag HTML element tag name.
+ * @returns HTML element operation factory.
+ */
 export const htmlElement: <T, U>(tag: string) => (
   className?: string,
   attrs?: {},
   children?: OpChildren,
 ) => OpNode<ElementData<T>> = (tag: string) => element(tag, false);
+
+/**
+ * htmlElement create a SVG element operation factories.
+ *
+ * @param tag SVG element tag name.
+ * @returns SVG element operation factory.
+ */
 export const svgElement: <T, U>(tag: string) => (
   className?: string,
   attrs?: {},
@@ -29,7 +42,7 @@ export const svgElement: <T, U>(tag: string) => (
 ) => OpNode<ElementData<T>> = (tag: string) => element(tag, true);
 
 /**
- * `element()` creates a factory that produces elements with predefined attributes.
+ * `elementProto()` creates a factory that produces elements with predefined attributes.
  *
  * @example
  *
@@ -40,8 +53,8 @@ export const svgElement: <T, U>(tag: string) => (
  *       document.getElementById("app")!,
  *     );
  *
- * @param proto - Element prototype
- * @returns factory that produces elements with predefined attributes
+ * @param proto Element prototype.
+ * @returns Factory that produces elements with predefined attributes.
  */
 export function elementProto<P>(proto: OpNode<ElementData<P>>) {
   if (DEBUG) {
@@ -74,9 +87,9 @@ export function elementProto<P>(proto: OpNode<ElementData<P>>) {
  *       );
  *     });
  *
- * @param c - Component function.
- * @param shouldUpdate - `shouldUpdate` function.
- * @returns factory that produces component nodes
+ * @param c Component function.
+ * @param shouldUpdate `shouldUpdate` function.
+ * @returns Factory that produces component nodes.
  */
 export function component(
   c: (c: StateNode) => () => OpNode | string | number | null,
@@ -99,9 +112,9 @@ export function component(
  *       );
  *     });
  *
- * @param c - Component function.
- * @param shouldUpdate - `shouldUpdate` function.
- * @returns factory that produces component nodes
+ * @param c Component function.
+ * @param shouldUpdate `shouldUpdate` function.
+ * @returns Factory that produces component nodes.
  */
 export function component<P>(
   c: (c: StateNode) => (props: P) => OpNode | string | number | null,
@@ -125,9 +138,9 @@ export function component<P>(
  *       );
  *     });
  *
- * @param c - Component function.
- * @param shouldUpdate - `shouldUpdate` function.
- * @returns factory that produces component nodes
+ * @param c Component function.
+ * @param shouldUpdate `shouldUpdate` function.
+ * @returns Factory that produces component nodes.
  */
 export function component<P>(
   c: (c: StateNode) => (props: P) => OpNode | string | number | null,
@@ -144,9 +157,9 @@ export function component<P>(
  *
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
- * @param update - Update function.
- * @param shouldUpdate - `shouldUpdate` function.
- * @returns factory that produces stateless component nodes
+ * @param update Update function.
+ * @param shouldUpdate `shouldUpdate` function.
+ * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent(
   update: () => OpNode | string | number | null,
@@ -159,9 +172,9 @@ export function statelessComponent(
  *
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
- * @param update - Update function.
- * @param shouldUpdate - `shouldUpdate` function.
- * @returns factory that produces stateless component nodes
+ * @param update Update function.
+ * @param shouldUpdate `shouldUpdate` function.
+ * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   update: (props: P) => OpNode | string | number | null,
@@ -175,9 +188,9 @@ export function statelessComponent<P>(
  *
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
- * @param update - Update function.
- * @param shouldUpdate - `shouldUpdate` function.
- * @returns factory that produces stateless component nodes
+ * @param update Update function.
+ * @param shouldUpdate `shouldUpdate` function.
+ * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   update: (props: P) => OpNode | string | number | null,
