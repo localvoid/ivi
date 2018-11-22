@@ -12,6 +12,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 - Declarative rendering with "Virtual DOM"
 - Components
+- Immutable "Virtual DOM"
 - Extensible synthetic event subsystem
 - Synchronous and deterministic update algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Test utilities
@@ -23,9 +24,9 @@ ivi has a tree shakeable API, so it can scale from simple widgets to complex des
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.8KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **3KB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.5KB** (minified+compressed).
 
 ## Quick Start
 
@@ -36,11 +37,11 @@ The easiest way to get started with ivi is to use [this basic example on CodeSan
 The smallest ivi example looks like this:
 
 ```js
-import { render } from "ivi";
+import { _, render } from "ivi";
 import { h1 } from "ivi-html";
 
 render(
-  h1().t("Hello World!"),
+  h1(_, _, "Hello World!"),
   document.getElementById("app"),
 );
 ```
@@ -48,12 +49,13 @@ render(
 `render()` function has a standard interface that is used in many Virtual DOM libraries. First argument is used to
 specify a Virtual DOM to render, and the second one is a DOM node that will be used as a container.
 
-Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes and
-[method chaining](https://en.wikipedia.org/wiki/Method_chaining) to assign properties. There are different pros and cons
-for this API compared to JSX.
+Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes.
 
-Factory functions for HTML elements are declared in the `ivi-html` package. `h1()` function will instantiate a Virtual
-DOM node for a `<h1>` element, and method `t()` is used to assign a text content.
+Factory functions for HTML elements are declared in the `ivi-html` package. All HTML element factories have an interface
+`<T>(className?: string, attrs?: T, children?: OpNodeChildren) => OpNode`. `h1()` function will instantiate a Virtual
+DOM node for a `<h1>` element.
+
+`_` is a shortcut for an `undefined` value.
 
 ### Components
 
@@ -79,7 +81,7 @@ API is slightly different from the React hooks API, but it has the same properti
 composability.
 
 ```js
-import { component, invalidate, render } from "ivi";
+import { _, component, invalidate, render } from "ivi";
 import { h1 } from "ivi-html";
 
 const Counter = component((c) => {
@@ -96,7 +98,7 @@ const Counter = component((c) => {
   return (interval) => (
     ticker(interval),
 
-    div().t(`Counter: ${counter}`),
+    div(_, _, `Counter: ${counter}`),
   );
 });
 
@@ -152,7 +154,7 @@ unregister periodic timer we are creating and returning a cleanup function `() =
   return (interval) => (
     ticker(interval),
 
-    div().t(`Counter: ${counter}`),
+    div(_, _, `Counter: ${counter}`),
   );
 ```
 
@@ -178,11 +180,6 @@ All data structures are optimized to make sure that they are using as least memo
 used everywhere in the code. All frequently accessed data structures always using the same shape, almost all call sites
 in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html). Frequently used
 DOM attributes are stored directly on the Virtual DOM nodes.
-
-Virtual DOM nodes are storing children nodes in a circular linked lists instead of the traditional approach with arrays.
-With circular linked lists, passing children as props to components or simple functions doesn't require any memory
-copies, children normalization and imlicit key assignment is super cheap, there are less special cases in the children
-reconciliation algorithm.
 
 Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
 cases. To find the minimum number of DOM operations when nodes are rearranged it is using a
@@ -319,118 +316,56 @@ sending data snapshots that doesn't contain any information how nodes should be 
 
 ### Virtual DOM
 
-Virtual DOM API is using factory functions to instantiate Virtual DOM nodes and
-[method chaining](https://en.wikipedia.org/wiki/Method_chaining) to assign properties.
+Virtual DOM API is using factory functions to instantiate Virtual DOM nodes:
 
 ```ts
-import { onClick } from "ivi";
+import { Events, onClick } from "ivi";
 import { div } from "ivi-html";
 
-const node = div("node-class", { id: "unique-id" })
-  .e(onClick((ev) => { console.log("click"); }));
+const node = (
+  Events(onClick((ev) => { console.log("click"); }),
+    div("node-class", { id: "unique-id" }),
+  )
+);
 ```
-
-In this example, virtual DOM node is created with a `div()` function, this node will represent a `<div />` element.
-Method `e()` is used to assign events.
 
 All factory functions that create DOM elements have an interface:
 
 ```ts
-type VNodeElementFactory<T, N extends Element> = (className?: string, attrs?: T, style?: CSSStyleProps) => VNode<T, N>;
+type ElementFactory<T> = (className?: string, attrs?: T, children?: OpNodeChildren) => OpNode<T>;
 ```
 
-#### Methods
+#### Events
 
 ```ts
-interface VNode<P> {
-  k(key: any): this;
-  e(events: Array<EventHandler | null> | EventHandler | null): this;
-  t(text: string | number): this;
-  c(...children: Array<VNode<any> | string | number | null>): this;
-}
+function Events(data: EventHandler | Array<EventHandler | null> | null, child: OpNode): OpNode<EventsData>;
 ```
 
-Method `k()` is used to assign keys, they are used to uniquely identify virtual nodes among its siblings.
+`Events()` node is used to attach event handlers.
 
-Method `e()` is used to assign events.
-
-Method `t()` assigns a text content to a virtual dom node.
-
-Method `c()` is a variadic method and accepts variable number of children. Children argument can be a string, number,
-virtual dom node or a collection of virtual dom nodes created with functions like `map()`, `mapRange()`, `mapIterable()`
-or `fragment()`.
-
-#### Children collections
+#### Ref
 
 ```ts
-function fragment(...args: Array<VNode | string | number | null>): VNode | null;
+function Ref(data: Ref<StateNode>, child: OpNode): OpNode<RefData>;
 ```
 
-`fragment()` is a variadic function that creates a fragment children collection.
+`Ref()` node is used to capture reference to an instance.
+
+#### Context
 
 ```ts
-function Button(slot) {
-  return div("button").c(slot);
-}
-
-render(
-  Button(
-    fragment(span().t("Click"), " ", span().t("Me")),
-  ),
-  DOMContainer,
-);
+function Context(data: {}, child: OpNode): OpNode<ContextData>;
 ```
 
-#### Dynamic lists
+`Context()` node is used to assign context.
+
+#### TrackByKey
 
 ```ts
-function map<T, U>(array: Array<T>, fn: (item: T, index: number) => VNode<U> | null): VNode<U> | null;
-function mapRange<T>(start: number, end: number, fn: (idx: number) => VNode<T> | null): VNode<T> | null;
-function mapIterable<T>(iterable: IterableIterator<VNode<T>>): VNode<T> | null;
+function TrackByKey(items: Key<any, OpNode | number | string>[]): OpNode<Key<any, OpNode | number | string>[]>;
 ```
 
-`map()`, `mapRange()` and `mapIterable()` functions are used to generate dynamic lists with keyed elements.
-
-`map()` creates a children collection with the results of calling a provided function on every element in the calling
-array.
-
-```ts
-render(
-  div().c(
-    map([1, 2, 3], (item) => div().k(item)),
-  ),
-  DOMContainer,
-);
-```
-
-`mapRange()` creates a children collection with the results of calling a provided function on every number in the
-provided range.
-
-```ts
-const items = [1, 2, 3];
-
-render(
-  div().c(
-    mapRange(0, items.length, (i) => div().k(items[i])),
-  ),
-  DOMContainer,
-);
-```
-
-`mapIterable()` creates a children collection from an `IterableIterator` object.
-
-```ts
-const items = [1, 2, 3];
-
-render(
-  div().c(mapIterable(function* () {
-    for (const item of items) {
-      yield div().k(item);
-    }
-  }())),
-  DOMContainer,
-);
-```
+`TrackByKey()` node is used for dynamic children lists.
 
 #### Attribute Directives
 
@@ -533,22 +468,6 @@ element.
 
 #### Additional functions
 
-##### Retrieve DOM instance from a virtual DOM node
-
-```ts
-function getDOMNode<T extends Node>(node: VNode<any, T>): T | null;
-```
-
-`getDOMNode()` retrieves a closest DOM node from a virtual DOM node. This method works with any node type.
-
-##### Retrieve Component instance from a virtual DOM node
-
-```ts
-function getComponent<T extends Component<any>>(node: VNode): T | null;
-```
-
-`getComponent()` retrieves a component instance from a virtual DOM node.
-
 ##### Trigger an update
 
 ```ts
@@ -567,7 +486,7 @@ function requestDirtyCheck(flags?: UpdateFlags);
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: VNode<any> | null, container: Element, flags?: UpdateFlags): void;
+function render(node: OpNode<any> | null, container: Element, flags?: UpdateFlags): void;
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
@@ -578,21 +497,22 @@ function render(node: VNode<any> | null, container: Element, flags?: UpdateFlags
 
 ```ts
 function component(
-  c: (c: Component<undefined>) => () => VNode,
-): () => VNode<undefined>;
+  c: (c: Component<undefined>) => () => OpNode,
+): () => OpNode<undefined>;
 
 function component<P>(
-  c: (c: Component<P>) => (props: P) => VNode,
+  c: (c: Component<P>) => (props: P) => OpNode,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => VNode<P> : (props: P) => VNode<P>;
+): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 ```
 
 `component()` function creates a factory function that will instantiate virtual DOM nodes for the component.
 
 ```ts
-import { component } from "ivi";
+import { _, component } from "ivi";
+import { div } from "ivi-html";
 
-const Hello = component<string>(() => (text) = div().t(`Hello ${text}`));
+const Hello = component<string>(() => (text) = div(_, _, `Hello ${text}`));
 ```
 
 #### Hooks
@@ -601,7 +521,7 @@ const Hello = component<string>(() => (text) = div().t(`Hello ${text}`));
 
 ```ts
 function useEffect<P>(
-  c: Component,
+  c: StateNode,
   hook: (props: P) => (() => void) | void,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
@@ -614,7 +534,7 @@ function useEffect<P>(
 
 ```ts
 function useMutationEffect<P>(
-  c: Component,
+  c: StateNode,
   hook: (props: P) => (() => void) | void,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
@@ -626,7 +546,7 @@ function useMutationEffect<P>(
 
 ```ts
 function useLayoutEffect<P>(
-  c: Component,
+  c: StateNode,
   hook: (props: P) => (() => void) | void,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
@@ -638,16 +558,16 @@ function useLayoutEffect<P>(
 
 ```ts
 function useSelect<T>(
-  c: Component,
+  c: StateNode,
   selector: (props?: undefined, context?: undefined, prev?: T | undefined) => T,
 ): () => T;
 function useSelect<T, P>(
-  c: Component,
+  c: StateNode,
   selector: (props: P, context?: undefined, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 function useSelect<T, P, C>(
-  c: Component,
+  c: StateNode,
   selector: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
@@ -661,7 +581,7 @@ Selectors are used for sideways data loading and accessing current context.
 const Pixel = component((c) => {
   const getColor = useSelect(c, (i, { colors }) => colors[i]);
 
-  return (i) => span("pixel", _, { "background": getColor(i) });
+  return (i) => span("pixel", { style: { background: getColor(i) }});
 });
 ```
 
@@ -712,9 +632,9 @@ const FriendStatus = component((c) => {
     const isOnline = getFriendStatus(props.friend.id);
 
     if (isOnline === null) {
-      return t("Loading...");
+      return "Loading...";
     }
-    return t(isOnline ? "Online" : "Offline");
+    return isOnline ? "Online" : "Offline";
   };
 });
 ```
@@ -727,8 +647,8 @@ const EntryList = component((c) => {
   const getEntriesByFilterType = useSelect(c, (filter) => (query().entriesByFilterType(filter).result));
 
   return () => (
-    ul("", { id: "todo-list" }).c(
-      map(getEntriesByFilterType(getFilter()), (e) => EntryField(e).k(e.value.id))
+    ul("", { id: "todo-list" },
+      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.value.id, EntryField(e)))),
     )
   );
 });
@@ -756,7 +676,7 @@ const keyDown = onKeyDown((ev) => { console.log("Key Down"); });
 #### Example
 
 ```ts
-import { component, render, onClick } from "ivi";
+import { _, component, render, Events, onClick } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
@@ -776,11 +696,17 @@ const C = component((c) => {
     }),
   ]);
 
-  return () => div().e(events).c(`Clicks: [${counter1}] [${counter2}]`);
+  return () => (
+    Events(events,
+      div(_, _, `Clicks: [${counter1}] [${counter2}]`),
+    )
+  );
 });
 
 render(
-  C().e(onClick(() => { console.log("event handler attached to component"); })),
+  Events(onClick(() => { console.log("event handler attached to component"); }),
+    C(),
+  ),
   document.getElementById("app"),
 );
 ```
