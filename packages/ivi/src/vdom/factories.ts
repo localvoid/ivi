@@ -184,7 +184,8 @@ export function statelessComponent<P>(
   update: (props: P) => OpNode,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  return component(() => update, shouldUpdate);
+  const type = createOpType(NodeFlags.Component, { c: () => update, shouldUpdate });
+  return (props: P) => createOpNode(type, props);
 }
 
 /**
