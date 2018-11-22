@@ -8,7 +8,7 @@ export interface ComponentHooks<T = any> {
   /**
    * Update function.
    */
-  update: null | ((props: T) => OpNode);
+  update: null | ((props: T) => OpNode | string | number | null);
   /**
    * Selector hooks.
    */
@@ -29,7 +29,7 @@ export interface ComponentDescriptor<P = any> {
    * @param state - Component state.
    * @returns update function
    */
-  c(state: StateNode): (props: P) => OpNode;
+  c(state: StateNode): (props: P) => OpNode | string | number | null;
 
   /**
    * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.
