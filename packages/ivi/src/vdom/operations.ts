@@ -15,10 +15,10 @@ export const createOpType = (
   descriptor: ComponentDescriptor | ElementProtoDescriptor | string | null,
 ): OpType => ({ flags, descriptor });
 
-const EVENTS = createOpType(NodeFlags.Events, null);
-const REF = createOpType(NodeFlags.Ref, null);
-const CONTEXT = createOpType(NodeFlags.Context, null);
-const TRACK_BY_KEY = createOpType(NodeFlags.TrackByKey | NodeFlags.MultipleChildren, null);
+export const EVENTS = createOpType(NodeFlags.Events, null);
+export const REF = createOpType(NodeFlags.Ref, null);
+export const CONTEXT = createOpType(NodeFlags.Context, null);
+export const TRACK_BY_KEY = createOpType(NodeFlags.TrackByKey | NodeFlags.MultipleChildren, null);
 
 export interface OpNode<T = any> {
   readonly type: OpType;

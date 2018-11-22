@@ -2,7 +2,7 @@ import { NodeFlags } from "./node_flags";
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { AttributeDirective } from "./attribute_directive";
-import { OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData } from "./operations";
+import { OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData, TRACK_BY_KEY } from "./operations";
 import { StateNode, createStateNode, getDOMNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks } from "./component";
@@ -248,7 +248,13 @@ function _mountObject(
     stateNode.state = hooks;
     const update = hooks.update = (op.type.descriptor as ComponentDescriptor).c(stateNode);
     const deepStateFlags = _pushDeepState();
-    stateNode.children = _mount(parentElement, update(opData));
+    const root = update(opData);
+    if (DEBUG) {
+      if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {
+        throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
+      }
+    }
+    stateNode.children = _mount(parentElement, root);
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | opFlags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else if ((opFlags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
@@ -427,10 +433,17 @@ export function _update(
       )
     ) {
       deepStateFlags = _pushDeepState();
+      const root = (stateNode.state as ComponentHooks).update!(nextProps);
+      if (DEBUG) {
+        if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {
+          throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
+        }
+      }
+
       stateNode.children = _update(
         parentElement,
         stateChildren as StateNode,
-        (stateNode.state as ComponentHooks).update!(nextProps),
+        root,
       );
       stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | _deepStateFlags;
       _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
