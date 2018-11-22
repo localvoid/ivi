@@ -380,6 +380,13 @@ export function _update(
       if (prevData.children !== nextChildren) {
         _nextNode = null;
         if ((stateFlags & NodeFlags.MultipleChildren) !== 0) {
+          if (DEBUG) {
+            checkElementChildrenShape(
+              prevData.children as RecursiveOpChildrenArray,
+              nextChildren as RecursiveOpChildrenArray,
+            );
+          }
+
           _index = 0;
           _updateChildren(
             state as Element,
@@ -1055,6 +1062,22 @@ function _updateAttrs(
   } else if (b !== void 0) {
     for (key in b) {
       _updateAttr(element, key, a[key], b[key]);
+    }
+  }
+}
+
+function checkElementChildrenShape(a: RecursiveOpChildrenArray, b: RecursiveOpChildrenArray) {
+  if (a.length !== b.length) {
+    throw new Error(`Invalid element, children array has a dynamic shape`);
+  }
+  for (let i = 0; i < a.length; i++) {
+    const ai = a[i];
+    const bi = b[i];
+    if (ai instanceof Array) {
+      if (!(bi instanceof Array)) {
+        throw new Error(`Invalid element, children array has a dynamic shape`);
+      }
+      checkElementChildrenShape(ai, bi);
     }
   }
 }
