@@ -128,7 +128,7 @@ export function component<P>(
   c: (c: StateNode) => (props: P) => OpNode,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component, { c, shouldUpdate });
+  const type = createOpType(NodeFlags.Component | NodeFlags.DirtyCheck, { c, shouldUpdate });
   return (props: P) => createOpNode(type, props);
 }
 

@@ -45,7 +45,7 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     const deepState = _pushDeepState();
     if (
       ((flags & NodeFlags.Dirty) !== 0) ||
-      ((flags & NodeFlags.DirtyCheck) !== 0 && hooks.dirtyCheck!(getContext()) === true)
+      (hooks.dirtyCheck !== null && hooks.dirtyCheck(getContext()) === true)
     ) {
       stateNode.children = _update(
         parentElement,

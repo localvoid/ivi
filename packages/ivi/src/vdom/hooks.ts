@@ -107,7 +107,6 @@ export function useSelect<T, P, C extends {}>(
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
   const prevSelector = (stateNode.state as ComponentHooks).dirtyCheck;
-  stateNode.flags |= NodeFlags.DirtyCheck;
   let lastChecked = 0;
   let state: T | undefined;
   let props: P;
