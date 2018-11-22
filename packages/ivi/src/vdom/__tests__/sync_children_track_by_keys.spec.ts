@@ -1237,7 +1237,7 @@ test(`#59`, () => {
   startRender(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
-      const v2 = k(0, 2, 3, 0);
+      const v2 = k(0, 2, 3, 1);
 
       r(v1);
       const n = r(v2);
@@ -1247,7 +1247,7 @@ test(`#59`, () => {
   0
   2
   3
-  0
+  1
 </div>
 `);
       expect(c).toMatchInlineSnapshot(`
@@ -1255,9 +1255,9 @@ Object {
   "appendChild": 0,
   "createElement": 1,
   "createElementNS": 0,
-  "createTextNode": 5,
+  "createTextNode": 4,
   "insertBefore": 6,
-  "removeChild": 1,
+  "removeChild": 0,
   "replaceChild": 0,
 }
 `);

@@ -43,7 +43,12 @@ export const svgElement: <T, U>(tag: string) => (
  * @param proto - Element prototype
  * @returns factory that produces elements with predefined attributes
  */
-export function elementProto<P>(proto: OpNode<P>) {
+export function elementProto<P>(proto: OpNode<ElementData<P>>) {
+  if (DEBUG) {
+    if (proto.data.children !== null) {
+      throw new Error(`Invalid OpNode, element prototypes can't have any children`);
+    }
+  }
   const type = createOpType(proto.type.flags | NodeFlags.ElementProto, { node: null, proto });
   return (
     className?: string,
@@ -53,19 +58,19 @@ export function elementProto<P>(proto: OpNode<P>) {
 }
 
 /**
- * component creates a virtual DOM node factory that produces nodes for components.
+ * component creates an OpNode factory that produces nodes for components.
  *
  * @example
  *
  *     const A = component<string>(() => {
  *       let _text;
- *       const click = onClick((ev) => console.log(_text));
+ *       const click = onClick(() => { console.log(_text); });
  *
  *       return (text) => (
  *         _text = text,
- *         button()
- *           .e(click(text))
- *           .t("Click Me")
+ *         Events(click,
+ *           button(_, _, "Click Me"),
+ *         )
  *       );
  *     });
  *
@@ -78,19 +83,19 @@ export function component(
 ): () => OpNode<undefined>;
 
 /**
- * component creates a virtual DOM node factory that produces nodes for components.
+ * component creates an OpNode factory that produces nodes for components.
  *
  * @example
  *
  *     const A = component<string>(() => {
  *       let _text;
- *       const click = onClick((ev) => console.log(_text));
+ *       const click = onClick(() => { console.log(_text); });
  *
  *       return (text) => (
  *         _text = text,
- *         button()
- *           .e(click(text))
- *           .t("Click Me")
+ *         Events(click,
+ *           button(_, _, "Click Me"),
+ *         )
  *       );
  *     });
  *
@@ -104,19 +109,19 @@ export function component<P>(
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
- * component creates a virtual DOM node factory that produces nodes for components.
+ * component creates an OpNode factory that produces nodes for components.
  *
  * @example
  *
  *     const A = component<string>(() => {
  *       let _text;
- *       const click = onClick((ev) => console.log(_text));
+ *       const click = onClick(() => { console.log(_text); });
  *
  *       return (text) => (
  *         _text = text,
- *         button()
- *           .e(click(text))
- *           .t("Click Me")
+ *         Events(click,
+ *           button(_, _, "Click Me"),
+ *         )
  *       );
  *     });
  *
@@ -133,13 +138,11 @@ export function component<P>(
 }
 
 /**
- * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
+ * statelessComponent creates an OpNode factory that produces nodes for stateless components.
  *
  * @example
  *
- *     const A = statelessComponent<string>(() => {
- *       return (text) => div().t(text);
- *     });
+ *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update - Update function.
  * @param shouldUpdate - `shouldUpdate` function.
@@ -150,13 +153,11 @@ export function statelessComponent(
 ): () => OpNode<undefined>;
 
 /**
- * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
+ * statelessComponent creates an OpNode factory that produces nodes for stateless components.
  *
  * @example
  *
- *     const A = statelessComponent<string>(() => {
- *       return (text) => div().t(text);
- *     });
+ *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update - Update function.
  * @param shouldUpdate - `shouldUpdate` function.
@@ -168,13 +169,11 @@ export function statelessComponent<P>(
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
- * statelessComponent creates a virtual DOM node factory that produces nodes for stateless components.
+ * statelessComponent creates an OpNode factory that produces nodes for stateless components.
  *
  * @example
  *
- *     const A = statelessComponent<string>(() => {
- *       return (text) => div().t(text);
- *     });
+ *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update - Update function.
  * @param shouldUpdate - `shouldUpdate` function.
@@ -187,37 +186,3 @@ export function statelessComponent<P>(
   const type = createOpType(NodeFlags.Component, { c: () => update, shouldUpdate });
   return (props: P) => createOpNode(type, props);
 }
-
-/**
- * context creates a virtual DOM node that will modify current context.
- *
- * @example
- *
- *     render(
- *       context({ key: 123 },
- *         ChildComponent(),
- *       ),
- *       DOMContainer,
- *     );
- *
- * @param ctx - Context object
- * @param child - child Virtual DOM node
- * @returns context node
- */
-// export function context<T = {}>(ctx: T, child: OpNode): OpNode<T> {
-//   /* istanbul ignore else */
-//   if (DEBUG) {
-//     if (child._l !== child) {
-//       throw new Error("Context node contains an invalid child. Child should be a singular VNode.");
-//     }
-//   }
-//   const n = new OpNode<T>(
-//     VNodeFlags.UpdateContext,
-//     null,
-//     ctx,
-//     "",
-//     void 0,
-//   );
-//   n._c = child;
-//   return n;
-// }

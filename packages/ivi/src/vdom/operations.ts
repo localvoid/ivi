@@ -1,3 +1,4 @@
+import { Box } from "../core/box";
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
 import { StateNode } from "./state";
@@ -40,22 +41,60 @@ export interface OpData<T = any> {
   readonly child: OpNode;
 }
 
-export interface Ref<T> {
-  v: T;
-}
-
 export type EventsData = OpData<EventHandler | Array<EventHandler | null> | null>;
-export type RefData = OpData<Ref<StateNode>>;
+export type RefData = OpData<Box<StateNode>>;
 export type ContextData = OpData<{}>;
 
-export const Events = (
-  data: EventHandler | Array<EventHandler | null> | null, child: OpNode,
-): OpNode<EventsData> => (
-    createOpNode(EVENTS, { data, child })
-  );
+export const Events = DEBUG ?
+  (
+    data: EventHandler | Array<EventHandler | null> | null,
+    child: OpNode,
+  ): OpNode<EventsData> => {
+    if (child.type === TRACK_BY_KEY) {
+      throw new Error(`Invalid child OpNode, Events can't have TrackByKey as a child`);
+    }
+    return createOpNode(EVENTS, { data, child });
+  } :
+  (
+    data: EventHandler | Array<EventHandler | null> | null,
+    child: OpNode,
+  ): OpNode<EventsData> => (
+      createOpNode(EVENTS, { data, child })
+    );
 
-export const Ref = (data: Ref<StateNode>, child: OpNode): OpNode<RefData> => createOpNode(REF, { data, child });
-export const Context = (data: {}, child: OpNode): OpNode<ContextData> => createOpNode(CONTEXT, { data, child });
+export const Ref = DEBUG ?
+  (data: Box<StateNode>, child: OpNode): OpNode<RefData> => {
+    if (child.type === TRACK_BY_KEY) {
+      throw new Error(`Invalid child OpNode, Ref can't have TrackByKey as a child`);
+    }
+    return createOpNode(REF, { data, child });
+  } :
+  (data: Box<StateNode>, child: OpNode): OpNode<RefData> => createOpNode(REF, { data, child });
+
+/**
+ * Context creates a context OpNode that will modify current context.
+ *
+ * @example
+ *
+ *     render(
+ *       Context({ key: 123 },
+ *         ChildComponent(),
+ *       ),
+ *       DOMContainer,
+ *     );
+ *
+ * @param ctx - Context object
+ * @param child - child OpNode
+ * @returns context OpNode
+ */
+export const Context = DEBUG ?
+  (data: {}, child: OpNode): OpNode<ContextData> => {
+    if (child.type === TRACK_BY_KEY) {
+      throw new Error(`Invalid child OpNode, Context can't have TrackByKey as a child`);
+    }
+    return createOpNode(CONTEXT, { data, child });
+  } :
+  (data: {}, child: OpNode): OpNode<ContextData> => createOpNode(CONTEXT, { data, child });
 
 export interface Key<K, V> {
   readonly k: K;
@@ -63,4 +102,21 @@ export interface Key<K, V> {
 }
 export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
 
-export const TrackByKey = (items: Key<any, OpNode | number | string>[]) => createOpNode(TRACK_BY_KEY, items);
+export const TrackByKey = DEBUG ?
+  <T>(items: Key<T, OpNode | number | string>[]) => {
+    if (DEBUG) {
+      const keys = new Set<T>();
+      for (let i = 0; i < items.length; i++) {
+        const { k, v } = items[i];
+        if (keys.has(k)) {
+          throw new Error(`Invalid key, found duplicated key: ${k}`);
+        }
+        keys.add(k);
+        if (typeof v === "object" && v.type === TRACK_BY_KEY) {
+          throw new Error(`Invalid child OpNode, TrackByKey can't have TrackByKey children`);
+        }
+      }
+    }
+    return createOpNode(TRACK_BY_KEY, items);
+  } :
+  <T>(items: Key<T, OpNode | number | string>[]) => createOpNode(TRACK_BY_KEY, items);
