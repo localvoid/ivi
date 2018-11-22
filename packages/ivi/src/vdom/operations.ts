@@ -124,7 +124,7 @@ export type EventsData = OpData<EventHandler | Array<EventHandler | null> | null
 /**
  * Operation data for Ref operations.
  */
-export type RefData = OpData<Box<StateNode>>;
+export type RefData = OpData<Box<StateNode | null>>;
 
 /**
  * Operation data for Context operations.
@@ -147,7 +147,7 @@ export type ContextData = OpData<{}>;
  * @param child Child operation.
  * @returns Event handler OpNode.
  */
-export const Events = DEBUG ?
+export const Events = /* istanbul ignore else */ DEBUG ?
   (
     data: EventHandler | Array<EventHandler | null> | null,
     child: OpNode | string | number | null,
@@ -184,9 +184,9 @@ export const Events = DEBUG ?
  * @param child Child operation.
  * @returns Ref OpNode.
  */
-export const Ref = DEBUG ?
+export const Ref = /* istanbul ignore else */ DEBUG ?
   (
-    data: Box<StateNode>,
+    data: Box<StateNode | null>,
     child: OpNode | string | number | null,
   ): OpNode<RefData> => {
     if (child !== null && typeof child === "object" && child.type === TRACK_BY_KEY) {
@@ -195,7 +195,7 @@ export const Ref = DEBUG ?
     return createOpNode(REF, { data, child });
   } :
   (
-    data: Box<StateNode>,
+    data: Box<StateNode | null>,
     child: OpNode | string | number | null,
   ): OpNode<RefData> => createOpNode(REF, { data, child });
 
@@ -215,7 +215,7 @@ export const Ref = DEBUG ?
  * @param child Child operation.
  * @returns Context OpNode.
  */
-export const Context = DEBUG ?
+export const Context = /* istanbul ignore else */ DEBUG ?
   (data: {}, child: OpNode | string | number | null): OpNode<ContextData> => {
     if (child !== null && typeof child === "object" && child.type === TRACK_BY_KEY) {
       throw new Error(`Invalid child OpNode, Context can't have TrackByKey as a child`);
@@ -263,6 +263,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  */
 export const TrackByKey = DEBUG ?
   <T>(items: Key<T, OpNode | number | string>[]) => {
+    /* istanbul ignore else */
     if (DEBUG) {
       const keys = new Set<T>();
       for (let i = 0; i < items.length; i++) {
