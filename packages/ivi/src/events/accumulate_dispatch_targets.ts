@@ -46,8 +46,11 @@ function visitDown(
   result: DispatchTarget[],
   match: (h: EventHandler) => boolean,
   element: Element,
-  stateNode: StateNode,
+  stateNode: StateNode | null,
 ): StateNode | null {
+  if (stateNode === null) {
+    return null;
+  }
   const { flags, children } = stateNode;
   let i;
   let r;
