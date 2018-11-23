@@ -40,12 +40,13 @@ export const createStateNode = (op: OpNode | string | number): StateNode => (
  * @param node State node.
  * @return DOM node.
  */
-export function getDOMNode(node: StateNode | null): Node | null {
-  if (node === null) {
-    return null;
-  }
+export function getDOMNode(node: StateNode): Node | null {
   if ((node.flags & (NodeFlags.Element | NodeFlags.Text)) === 0) {
-    return getDOMNode(node.children as StateNode);
+    const c = node.children;
+    if (c === null) {
+      return null;
+    }
+    return getDOMNode(c as StateNode);
   }
   return node.state as Node;
 }
