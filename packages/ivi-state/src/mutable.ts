@@ -34,13 +34,13 @@ export type Mutable<T> = {
  * @returns mutate function.
  */
 export const mut = <T, U extends any[], V>(
-  dirty: (v: T, flags?: V) => void,
-  m: (v: T, ...args: U) => void | V,
+  dirty: (v: T, flags: V) => void,
+  m: (v: T, ...args: U) => V,
 ) => (
     function () {
       const a = arguments;
       dirty(a[0], m.apply(void 0, a));
-    } as (v: T, ...args: U) => void | V
+    } as (v: T, ...args: U) => void
   );
 
 /**
@@ -62,10 +62,10 @@ export const mut = <T, U extends any[], V>(
  * @returns piped function
  */
 export const pipe = <U extends any[], V>(
-  to: (ret?: V) => void,
-  from: (...args: U) => void | V,
+  to: (ret: V) => void,
+  from: (...args: U) => V,
 ) => (
     function () {
       to(from.apply(void 0, arguments));
-    } as (...args: U) => void | V
+    } as (...args: U) => void
   );
