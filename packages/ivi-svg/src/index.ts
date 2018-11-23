@@ -155,7 +155,7 @@ export function XLINK_ATTR(v: string | number | boolean | undefined): AttributeD
  * @param css - Styles
  * @returns Virtual DOM SVG element <a>
  */
-export const a = svgElement<SVGElementAttrs, SVGAElement>("a");
+export const a = /*#__PURE__*/svgElement<SVGElementAttrs, SVGAElement>("a");
 
 /**
  * Creates Virtual DOM SVG element <animate>.
@@ -167,7 +167,7 @@ export const a = svgElement<SVGElementAttrs, SVGAElement>("a");
  * @param css - Styles
  * @returns Virtual DOM SVG element <animate>
  */
-export const animate = svgElement<SVGElementAttrs, SVGElement>("animate");
+export const animate = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animate");
 
 /**
  * Creates Virtual DOM SVG element <animateColor>.
@@ -179,7 +179,7 @@ export const animate = svgElement<SVGElementAttrs, SVGElement>("animate");
  * @param css - Styles
  * @returns Virtual DOM SVG element <animateColor>
  */
-export const animateColor = svgElement<SVGElementAttrs, SVGElement>("animateColor");
+export const animateColor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateColor");
 
 /**
  * Creates Virtual DOM SVG element <animateMotion>.
@@ -191,7 +191,7 @@ export const animateColor = svgElement<SVGElementAttrs, SVGElement>("animateColo
  * @param css - Styles
  * @returns Virtual DOM SVG element <animateMotion>
  */
-export const animateMotion = svgElement<SVGElementAttrs, SVGElement>("animateMotion");
+export const animateMotion = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateMotion");
 
 /**
  * Creates Virtual DOM SVG element <animateTransform>.
@@ -203,7 +203,7 @@ export const animateMotion = svgElement<SVGElementAttrs, SVGElement>("animateMot
  * @param css - Styles
  * @returns Virtual DOM SVG element <animateTransform>
  */
-export const animateTransform = svgElement<SVGElementAttrs, SVGElement>("animateTransform");
+export const animateTransform = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateTransform");
 
 /**
  * Creates Virtual DOM SVG element <circle>.
@@ -215,7 +215,7 @@ export const animateTransform = svgElement<SVGElementAttrs, SVGElement>("animate
  * @param css - Styles
  * @returns Virtual DOM SVG element <circle>
  */
-export const circle = svgElement<SVGCircleElementAttrs, SVGCircleElement>("circle");
+export const circle = /*#__PURE__*/svgElement<SVGCircleElementAttrs, SVGCircleElement>("circle");
 
 /**
  * Creates Virtual DOM SVG element <clipPath>.
@@ -227,7 +227,7 @@ export const circle = svgElement<SVGCircleElementAttrs, SVGCircleElement>("circl
  * @param css - Styles
  * @returns Virtual DOM SVG element <clipPath>
  */
-export const clipPath = svgElement<SVGClipPathElementAttrs, SVGClipPathElement>("clipPath");
+export const clipPath = /*#__PURE__*/svgElement<SVGClipPathElementAttrs, SVGClipPathElement>("clipPath");
 
 /**
  * Creates Virtual DOM SVG element <defs>.
@@ -239,7 +239,7 @@ export const clipPath = svgElement<SVGClipPathElementAttrs, SVGClipPathElement>(
  * @param css - Styles
  * @returns Virtual DOM SVG element <defs>
  */
-export const defs = svgElement<SVGDefsElementAttrs, SVGDefsElement>("defs");
+export const defs = /*#__PURE__*/svgElement<SVGDefsElementAttrs, SVGDefsElement>("defs");
 
 /**
  * Creates Virtual DOM SVG element <desc>.
@@ -251,7 +251,7 @@ export const defs = svgElement<SVGDefsElementAttrs, SVGDefsElement>("defs");
  * @param css - Styles
  * @returns Virtual DOM SVG element <desc>
  */
-export const desc = svgElement<SVGDescElementAttrs, SVGDescElement>("desc");
+export const desc = /*#__PURE__*/svgElement<SVGDescElementAttrs, SVGDescElement>("desc");
 
 /**
  * Creates Virtual DOM SVG element <discard>.
@@ -263,7 +263,7 @@ export const desc = svgElement<SVGDescElementAttrs, SVGDescElement>("desc");
  * @param css - Styles
  * @returns Virtual DOM SVG element <discard>
  */
-export const discard = svgElement<SVGElementAttrs, SVGElement>("discard");
+export const discard = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("discard");
 
 /**
  * Creates Virtual DOM SVG element <ellipse>.
@@ -275,7 +275,7 @@ export const discard = svgElement<SVGElementAttrs, SVGElement>("discard");
  * @param css - Styles
  * @returns Virtual DOM SVG element <ellipse>
  */
-export const ellipse = svgElement<SVGEllipseElementAttrs, SVGEllipseElement>("ellipse");
+export const ellipse = /*#__PURE__*/svgElement<SVGEllipseElementAttrs, SVGEllipseElement>("ellipse");
 
 /**
  * Creates Virtual DOM SVG element <feBlend>.
@@ -287,7 +287,7 @@ export const ellipse = svgElement<SVGEllipseElementAttrs, SVGEllipseElement>("el
  * @param css - Styles
  * @returns Virtual DOM SVG element <feBlend>
  */
-export const feBlend = svgElement<SVGFEBlendElementAttrs, SVGFEBlendElement>("feBlend");
+export const feBlend = /*#__PURE__*/svgElement<SVGFEBlendElementAttrs, SVGFEBlendElement>("feBlend");
 
 /**
  * Creates Virtual DOM SVG element <feColorMatrix>.
@@ -299,7 +299,7 @@ export const feBlend = svgElement<SVGFEBlendElementAttrs, SVGFEBlendElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feColorMatrix>
  */
-export const feColorMatrix = svgElement<SVGFEColorMatrixElementAttrs, SVGFEColorMatrixElement>("feColorMatrix");
+export const feColorMatrix = /*#__PURE__*/svgElement<SVGFEColorMatrixElementAttrs, SVGFEColorMatrixElement>("feColorMatrix");
 
 /**
  * Creates Virtual DOM SVG element <feComponentTransfer>.
@@ -311,7 +311,7 @@ export const feColorMatrix = svgElement<SVGFEColorMatrixElementAttrs, SVGFEColor
  * @param css - Styles
  * @returns Virtual DOM SVG element <feComponentTransfer>
  */
-export const feComponentTransfer = svgElement<SVGFEComponentTransferElementAttrs, SVGFEComponentTransferElement>("feComponentTransfer");
+export const feComponentTransfer = /*#__PURE__*/svgElement<SVGFEComponentTransferElementAttrs, SVGFEComponentTransferElement>("feComponentTransfer");
 
 /**
  * Creates Virtual DOM SVG element <feComposite>.
@@ -323,7 +323,7 @@ export const feComponentTransfer = svgElement<SVGFEComponentTransferElementAttrs
  * @param css - Styles
  * @returns Virtual DOM SVG element <feComposite>
  */
-export const feComposite = svgElement<SVGFECompositeElementAttrs, SVGFECompositeElement>("feComposite");
+export const feComposite = /*#__PURE__*/svgElement<SVGFECompositeElementAttrs, SVGFECompositeElement>("feComposite");
 
 /**
  * Creates Virtual DOM SVG element <feConvolveMatrix>.
@@ -335,7 +335,7 @@ export const feComposite = svgElement<SVGFECompositeElementAttrs, SVGFEComposite
  * @param css - Styles
  * @returns Virtual DOM SVG element <feConvolveMatrix>
  */
-export const feConvolveMatrix = svgElement<SVGFEConvolveMatrixElementAttrs, SVGFEConvolveMatrixElement>("feConvolveMatrix");
+export const feConvolveMatrix = /*#__PURE__*/svgElement<SVGFEConvolveMatrixElementAttrs, SVGFEConvolveMatrixElement>("feConvolveMatrix");
 
 /**
  * Creates Virtual DOM SVG element <feDiffuseLighting>.
@@ -347,7 +347,7 @@ export const feConvolveMatrix = svgElement<SVGFEConvolveMatrixElementAttrs, SVGF
  * @param css - Styles
  * @returns Virtual DOM SVG element <feDiffuseLighting>
  */
-export const feDiffuseLighting = svgElement<SVGFEDiffuseLightingElementAttrs, SVGFEDiffuseLightingElement>("feDiffuseLighting");
+export const feDiffuseLighting = /*#__PURE__*/svgElement<SVGFEDiffuseLightingElementAttrs, SVGFEDiffuseLightingElement>("feDiffuseLighting");
 
 /**
  * Creates Virtual DOM SVG element <feDisplacementMap>.
@@ -359,7 +359,7 @@ export const feDiffuseLighting = svgElement<SVGFEDiffuseLightingElementAttrs, SV
  * @param css - Styles
  * @returns Virtual DOM SVG element <feDisplacementMap>
  */
-export const feDisplacementMap = svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDisplacementMap");
+export const feDisplacementMap = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDisplacementMap");
 
 /**
  * Creates Virtual DOM SVG element <feDistantLight>.
@@ -371,7 +371,7 @@ export const feDisplacementMap = svgElement<SVGFEDisplacementMapElementAttrs, SV
  * @param css - Styles
  * @returns Virtual DOM SVG element <feDistantLight>
  */
-export const feDistantLight = svgElement<SVGFEDistantLightElementAttrs, SVGFEDistantLightElement>("feDistantLight");
+export const feDistantLight = /*#__PURE__*/svgElement<SVGFEDistantLightElementAttrs, SVGFEDistantLightElement>("feDistantLight");
 
 /**
  * Creates Virtual DOM SVG element <feDropShadow>.
@@ -383,7 +383,7 @@ export const feDistantLight = svgElement<SVGFEDistantLightElementAttrs, SVGFEDis
  * @param css - Styles
  * @returns Virtual DOM SVG element <feDropShadow>
  */
-export const feDropShadow = svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDropShadow");
+export const feDropShadow = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDropShadow");
 
 /**
  * Creates Virtual DOM SVG element <feFlood>.
@@ -395,7 +395,7 @@ export const feDropShadow = svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDi
  * @param css - Styles
  * @returns Virtual DOM SVG element <feFlood>
  */
-export const feFlood = svgElement<SVGFEFloodElementAttrs, SVGFEFloodElement>("feFlood");
+export const feFlood = /*#__PURE__*/svgElement<SVGFEFloodElementAttrs, SVGFEFloodElement>("feFlood");
 
 /**
  * Creates Virtual DOM SVG element <feFuncA>.
@@ -407,7 +407,7 @@ export const feFlood = svgElement<SVGFEFloodElementAttrs, SVGFEFloodElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feFuncA>
  */
-export const feFuncA = svgElement<SVGFEFuncAElementAttrs, SVGFEFuncAElement>("feFuncA");
+export const feFuncA = /*#__PURE__*/svgElement<SVGFEFuncAElementAttrs, SVGFEFuncAElement>("feFuncA");
 
 /**
  * Creates Virtual DOM SVG element <feFuncB>.
@@ -419,7 +419,7 @@ export const feFuncA = svgElement<SVGFEFuncAElementAttrs, SVGFEFuncAElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feFuncB>
  */
-export const feFuncB = svgElement<SVGFEFuncBElementAttrs, SVGFEFuncBElement>("feFuncB");
+export const feFuncB = /*#__PURE__*/svgElement<SVGFEFuncBElementAttrs, SVGFEFuncBElement>("feFuncB");
 
 /**
  * Creates Virtual DOM SVG element <feFuncG>.
@@ -431,7 +431,7 @@ export const feFuncB = svgElement<SVGFEFuncBElementAttrs, SVGFEFuncBElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feFuncG>
  */
-export const feFuncG = svgElement<SVGFEFuncGElementAttrs, SVGFEFuncGElement>("feFuncG");
+export const feFuncG = /*#__PURE__*/svgElement<SVGFEFuncGElementAttrs, SVGFEFuncGElement>("feFuncG");
 
 /**
  * Creates Virtual DOM SVG element <feFuncR>.
@@ -443,7 +443,7 @@ export const feFuncG = svgElement<SVGFEFuncGElementAttrs, SVGFEFuncGElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feFuncR>
  */
-export const feFuncR = svgElement<SVGFEFuncRElementAttrs, SVGFEFuncRElement>("feFuncR");
+export const feFuncR = /*#__PURE__*/svgElement<SVGFEFuncRElementAttrs, SVGFEFuncRElement>("feFuncR");
 
 /**
  * Creates Virtual DOM SVG element <feGaussianBlur>.
@@ -455,7 +455,7 @@ export const feFuncR = svgElement<SVGFEFuncRElementAttrs, SVGFEFuncRElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feGaussianBlur>
  */
-export const feGaussianBlur = svgElement<SVGFEGaussianBlurElementAttrs, SVGFEGaussianBlurElement>("feGaussianBlur");
+export const feGaussianBlur = /*#__PURE__*/svgElement<SVGFEGaussianBlurElementAttrs, SVGFEGaussianBlurElement>("feGaussianBlur");
 
 /**
  * Creates Virtual DOM SVG element <feImage>.
@@ -467,7 +467,7 @@ export const feGaussianBlur = svgElement<SVGFEGaussianBlurElementAttrs, SVGFEGau
  * @param css - Styles
  * @returns Virtual DOM SVG element <feImage>
  */
-export const feImage = svgElement<SVGFEImageElementAttrs, SVGFEImageElement>("feImage");
+export const feImage = /*#__PURE__*/svgElement<SVGFEImageElementAttrs, SVGFEImageElement>("feImage");
 
 /**
  * Creates Virtual DOM SVG element <feMerge>.
@@ -479,7 +479,7 @@ export const feImage = svgElement<SVGFEImageElementAttrs, SVGFEImageElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feMerge>
  */
-export const feMerge = svgElement<SVGFEMergeElementAttrs, SVGFEMergeElement>("feMerge");
+export const feMerge = /*#__PURE__*/svgElement<SVGFEMergeElementAttrs, SVGFEMergeElement>("feMerge");
 
 /**
  * Creates Virtual DOM SVG element <feMergeNode>.
@@ -491,7 +491,7 @@ export const feMerge = svgElement<SVGFEMergeElementAttrs, SVGFEMergeElement>("fe
  * @param css - Styles
  * @returns Virtual DOM SVG element <feMergeNode>
  */
-export const feMergeNode = svgElement<SVGFEMergeNodeElementAttrs, SVGFEMergeNodeElementAttrs>("feMergeNode");
+export const feMergeNode = /*#__PURE__*/svgElement<SVGFEMergeNodeElementAttrs, SVGFEMergeNodeElementAttrs>("feMergeNode");
 
 /**
  * Creates Virtual DOM SVG element <feMorphology>.
@@ -503,7 +503,7 @@ export const feMergeNode = svgElement<SVGFEMergeNodeElementAttrs, SVGFEMergeNode
  * @param css - Styles
  * @returns Virtual DOM SVG element <feMorphology>
  */
-export const feMorphology = svgElement<SVGFEMorphologyElementAttrs, SVGFEMorphologyElement>("feMorphology");
+export const feMorphology = /*#__PURE__*/svgElement<SVGFEMorphologyElementAttrs, SVGFEMorphologyElement>("feMorphology");
 
 /**
  * Creates Virtual DOM SVG element <feOffset>.
@@ -515,7 +515,7 @@ export const feMorphology = svgElement<SVGFEMorphologyElementAttrs, SVGFEMorphol
  * @param css - Styles
  * @returns Virtual DOM SVG element <feOffset>
  */
-export const feOffset = svgElement<SVGFEOffsetElementAttrs, SVGFEOffsetElement>("feOffset");
+export const feOffset = /*#__PURE__*/svgElement<SVGFEOffsetElementAttrs, SVGFEOffsetElement>("feOffset");
 
 /**
  * Creates Virtual DOM SVG element <fePointLight>.
@@ -527,7 +527,7 @@ export const feOffset = svgElement<SVGFEOffsetElementAttrs, SVGFEOffsetElement>(
  * @param css - Styles
  * @returns Virtual DOM SVG element <fePointLight>
  */
-export const fePointLight = svgElement<SVGFEPointLightElementAttrs, SVGFEPointLightElement>("fePointLight");
+export const fePointLight = /*#__PURE__*/svgElement<SVGFEPointLightElementAttrs, SVGFEPointLightElement>("fePointLight");
 
 /**
  * Creates Virtual DOM SVG element <feSpecularLighting>.
@@ -539,7 +539,7 @@ export const fePointLight = svgElement<SVGFEPointLightElementAttrs, SVGFEPointLi
  * @param css - Styles
  * @returns Virtual DOM SVG element <feSpecularLighting>
  */
-export const feSpecularLighting = svgElement<SVGFESpecularLightingElementAttrs, SVGFESpecularLightingElement>("feSpecularLighting");
+export const feSpecularLighting = /*#__PURE__*/svgElement<SVGFESpecularLightingElementAttrs, SVGFESpecularLightingElement>("feSpecularLighting");
 
 /**
  * Creates Virtual DOM SVG element <feSpotLight>.
@@ -551,7 +551,7 @@ export const feSpecularLighting = svgElement<SVGFESpecularLightingElementAttrs, 
  * @param css - Styles
  * @returns Virtual DOM SVG element <feSpotLight>
  */
-export const feSpotLight = svgElement<SVGFESpotLightElementAttrs, SVGFESpotLightElement>("feSpotLight");
+export const feSpotLight = /*#__PURE__*/svgElement<SVGFESpotLightElementAttrs, SVGFESpotLightElement>("feSpotLight");
 
 /**
  * Creates Virtual DOM SVG element <feTile>.
@@ -563,7 +563,7 @@ export const feSpotLight = svgElement<SVGFESpotLightElementAttrs, SVGFESpotLight
  * @param css - Styles
  * @returns Virtual DOM SVG element <feTile>
  */
-export const feTile = svgElement<SVGFETileElementAttrs, SVGFETileElement>("feTile");
+export const feTile = /*#__PURE__*/svgElement<SVGFETileElementAttrs, SVGFETileElement>("feTile");
 
 /**
  * Creates Virtual DOM SVG element <feTurbulence>.
@@ -575,7 +575,7 @@ export const feTile = svgElement<SVGFETileElementAttrs, SVGFETileElement>("feTil
  * @param css - Styles
  * @returns Virtual DOM SVG element <feTurbulence>
  */
-export const feTurbulence = svgElement<SVGFETurbulenceElementAttrs, SVGFETurbulenceElement>("feTurbulence");
+export const feTurbulence = /*#__PURE__*/svgElement<SVGFETurbulenceElementAttrs, SVGFETurbulenceElement>("feTurbulence");
 
 /**
  * Creates Virtual DOM SVG element <filter>.
@@ -587,7 +587,7 @@ export const feTurbulence = svgElement<SVGFETurbulenceElementAttrs, SVGFETurbule
  * @param css - Styles
  * @returns Virtual DOM SVG element <filter>
  */
-export const filter = svgElement<SVGFilterElementAttrs, SVGFilterElement>("filter");
+export const filter = /*#__PURE__*/svgElement<SVGFilterElementAttrs, SVGFilterElement>("filter");
 
 /**
  * Creates Virtual DOM SVG element <foreignObject>.
@@ -599,7 +599,7 @@ export const filter = svgElement<SVGFilterElementAttrs, SVGFilterElement>("filte
  * @param css - Styles
  * @returns Virtual DOM SVG element <foreignObject>
  */
-export const foreignObject = svgElement<SVGForeignObjectElementAttrs, SVGForeignObjectElement>("foreignObject");
+export const foreignObject = /*#__PURE__*/svgElement<SVGForeignObjectElementAttrs, SVGForeignObjectElement>("foreignObject");
 
 /**
  * Creates Virtual DOM SVG element <g>.
@@ -611,7 +611,7 @@ export const foreignObject = svgElement<SVGForeignObjectElementAttrs, SVGForeign
  * @param css - Styles
  * @returns Virtual DOM SVG element <g>
  */
-export const g = svgElement<SVGGElementAttrs, SVGGElement>("g");
+export const g = /*#__PURE__*/svgElement<SVGGElementAttrs, SVGGElement>("g");
 
 /**
  * Creates Virtual DOM SVG element <hatch>.
@@ -623,7 +623,7 @@ export const g = svgElement<SVGGElementAttrs, SVGGElement>("g");
  * @param css - Styles
  * @returns Virtual DOM SVG element <hatch>
  */
-export const hatch = svgElement<SVGElementAttrs, SVGElement>("hatch");
+export const hatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatch");
 
 /**
  * Creates Virtual DOM SVG element <hatchpath>.
@@ -635,7 +635,7 @@ export const hatch = svgElement<SVGElementAttrs, SVGElement>("hatch");
  * @param css - Styles
  * @returns Virtual DOM SVG element <hatchpath>
  */
-export const hatchpath = svgElement<SVGElementAttrs, SVGElement>("hatchpath");
+export const hatchpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatchpath");
 
 /**
  * Creates Virtual DOM SVG element <image>.
@@ -647,7 +647,7 @@ export const hatchpath = svgElement<SVGElementAttrs, SVGElement>("hatchpath");
  * @param css - Styles
  * @returns Virtual DOM SVG element <image>
  */
-export const image = svgElement<SVGImageElementAttrs, SVGImageElement>("image");
+export const image = /*#__PURE__*/svgElement<SVGImageElementAttrs, SVGImageElement>("image");
 
 /**
  * Creates Virtual DOM SVG element <line>.
@@ -659,7 +659,7 @@ export const image = svgElement<SVGImageElementAttrs, SVGImageElement>("image");
  * @param css - Styles
  * @returns Virtual DOM SVG element <line>
  */
-export const line = svgElement<SVGLineElementAttrs, SVGLineElement>("line");
+export const line = /*#__PURE__*/svgElement<SVGLineElementAttrs, SVGLineElement>("line");
 
 /**
  * Creates Virtual DOM SVG element <linearGradient>.
@@ -671,7 +671,7 @@ export const line = svgElement<SVGLineElementAttrs, SVGLineElement>("line");
  * @param css - Styles
  * @returns Virtual DOM SVG element <linearGradient>
  */
-export const linearGradient = svgElement<SVGLinearGradientElementAttrs, SVGLinearGradientElement>("linearGradient");
+export const linearGradient = /*#__PURE__*/svgElement<SVGLinearGradientElementAttrs, SVGLinearGradientElement>("linearGradient");
 
 /**
  * Creates Virtual DOM SVG element <marker>.
@@ -683,7 +683,7 @@ export const linearGradient = svgElement<SVGLinearGradientElementAttrs, SVGLinea
  * @param css - Styles
  * @returns Virtual DOM SVG element <marker>
  */
-export const marker = svgElement<SVGMarkerElementAttrs, SVGMarkerElement>("marker");
+export const marker = /*#__PURE__*/svgElement<SVGMarkerElementAttrs, SVGMarkerElement>("marker");
 
 /**
  * Creates Virtual DOM SVG element <mask>.
@@ -695,7 +695,7 @@ export const marker = svgElement<SVGMarkerElementAttrs, SVGMarkerElement>("marke
  * @param css - Styles
  * @returns Virtual DOM SVG element <mask>
  */
-export const mask = svgElement<SVGMaskElementAttrs, SVGMaskElement>("mask");
+export const mask = /*#__PURE__*/svgElement<SVGMaskElementAttrs, SVGMaskElement>("mask");
 
 /**
  * Creates Virtual DOM SVG element <mesh>.
@@ -707,7 +707,7 @@ export const mask = svgElement<SVGMaskElementAttrs, SVGMaskElement>("mask");
  * @param css - Styles
  * @returns Virtual DOM SVG element <mesh>
  */
-export const mesh = svgElement<SVGElementAttrs, SVGElement>("mesh");
+export const mesh = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mesh");
 
 /**
  * Creates Virtual DOM SVG element <meshgradient>.
@@ -719,7 +719,7 @@ export const mesh = svgElement<SVGElementAttrs, SVGElement>("mesh");
  * @param css - Styles
  * @returns Virtual DOM SVG element <meshgradient>
  */
-export const meshgradient = svgElement<SVGElementAttrs, SVGLinearGradientElement>("meshgradient");
+export const meshgradient = /*#__PURE__*/svgElement<SVGElementAttrs, SVGLinearGradientElement>("meshgradient");
 
 /**
  * Creates Virtual DOM SVG element <meshpatch>.
@@ -731,7 +731,7 @@ export const meshgradient = svgElement<SVGElementAttrs, SVGLinearGradientElement
  * @param css - Styles
  * @returns Virtual DOM SVG element <meshpatch>
  */
-export const meshpatch = svgElement<SVGElementAttrs, SVGElement>("meshpatch");
+export const meshpatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("meshpatch");
 
 /**
  * Creates Virtual DOM SVG element <meshrow>.
@@ -743,7 +743,7 @@ export const meshpatch = svgElement<SVGElementAttrs, SVGElement>("meshpatch");
  * @param css - Styles
  * @returns Virtual DOM SVG element <meshrow>
  */
-export const meshrow = svgElement<SVGElementAttrs, SVGElement>("meshrow");
+export const meshrow = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("meshrow");
 
 /**
  * Creates Virtual DOM SVG element <metadata>.
@@ -755,7 +755,7 @@ export const meshrow = svgElement<SVGElementAttrs, SVGElement>("meshrow");
  * @param css - Styles
  * @returns Virtual DOM SVG element <metadata>
  */
-export const metadata = svgElement<SVGMetadataElementAttrs, SVGMetadataElement>("metadata");
+export const metadata = /*#__PURE__*/svgElement<SVGMetadataElementAttrs, SVGMetadataElement>("metadata");
 
 /**
  * Creates Virtual DOM SVG element <mpath>.
@@ -767,7 +767,7 @@ export const metadata = svgElement<SVGMetadataElementAttrs, SVGMetadataElement>(
  * @param css - Styles
  * @returns Virtual DOM SVG element <mpath>
  */
-export const mpath = svgElement<SVGElementAttrs, SVGElement>("mpath");
+export const mpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mpath");
 
 /**
  * Creates Virtual DOM SVG element <path>.
@@ -779,7 +779,7 @@ export const mpath = svgElement<SVGElementAttrs, SVGElement>("mpath");
  * @param css - Styles
  * @returns Virtual DOM SVG element <path>
  */
-export const path = svgElement<SVGPathElementAttrs, SVGPathElement>("path");
+export const path = /*#__PURE__*/svgElement<SVGPathElementAttrs, SVGPathElement>("path");
 
 /**
  * Creates Virtual DOM SVG element <pattern>.
@@ -791,7 +791,7 @@ export const path = svgElement<SVGPathElementAttrs, SVGPathElement>("path");
  * @param css - Styles
  * @returns Virtual DOM SVG element <pattern>
  */
-export const pattern = svgElement<SVGPatternElementAttrs, SVGPatternElement>("pattern");
+export const pattern = /*#__PURE__*/svgElement<SVGPatternElementAttrs, SVGPatternElement>("pattern");
 
 /**
  * Creates Virtual DOM SVG element <polygon>.
@@ -803,7 +803,7 @@ export const pattern = svgElement<SVGPatternElementAttrs, SVGPatternElement>("pa
  * @param css - Styles
  * @returns Virtual DOM SVG element <polygon>
  */
-export const polygon = svgElement<SVGPolygonElementAttrs, SVGPolygonElement>("polygon");
+export const polygon = /*#__PURE__*/svgElement<SVGPolygonElementAttrs, SVGPolygonElement>("polygon");
 
 /**
  * Creates Virtual DOM SVG element <polyline>.
@@ -815,7 +815,7 @@ export const polygon = svgElement<SVGPolygonElementAttrs, SVGPolygonElement>("po
  * @param css - Styles
  * @returns Virtual DOM SVG element <polyline>
  */
-export const polyline = svgElement<SVGPolylineElementAttrs, SVGPolylineElement>("polyline");
+export const polyline = /*#__PURE__*/svgElement<SVGPolylineElementAttrs, SVGPolylineElement>("polyline");
 
 /**
  * Creates Virtual DOM SVG element <radialGradient>.
@@ -827,7 +827,7 @@ export const polyline = svgElement<SVGPolylineElementAttrs, SVGPolylineElement>(
  * @param css - Styles
  * @returns Virtual DOM SVG element <radialGradient>
  */
-export const radialGradient = svgElement<SVGRadialGradientElementAttrs, SVGRadialGradientElement>("radialGradient");
+export const radialGradient = /*#__PURE__*/svgElement<SVGRadialGradientElementAttrs, SVGRadialGradientElement>("radialGradient");
 
 /**
  * Creates Virtual DOM SVG element <rect>.
@@ -839,7 +839,7 @@ export const radialGradient = svgElement<SVGRadialGradientElementAttrs, SVGRadia
  * @param css - Styles
  * @returns Virtual DOM SVG element <rect>
  */
-export const rect = svgElement<SVGRectElementAttrs, SVGRectElement>("rect");
+export const rect = /*#__PURE__*/svgElement<SVGRectElementAttrs, SVGRectElement>("rect");
 
 /**
  * Creates Virtual DOM SVG element <set>.
@@ -851,7 +851,7 @@ export const rect = svgElement<SVGRectElementAttrs, SVGRectElement>("rect");
  * @param css - Styles
  * @returns Virtual DOM SVG element <set>
  */
-export const set = svgElement<SVGElementAttrs, SVGElement>("set");
+export const set = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("set");
 
 /**
  * Creates Virtual DOM SVG element <solidcolor>.
@@ -863,7 +863,7 @@ export const set = svgElement<SVGElementAttrs, SVGElement>("set");
  * @param css - Styles
  * @returns Virtual DOM SVG element <solidcolor>
  */
-export const solidcolor = svgElement<SVGElementAttrs, SVGElement>("solidcolor");
+export const solidcolor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("solidcolor");
 
 /**
  * Creates Virtual DOM SVG element <stop>.
@@ -875,7 +875,7 @@ export const solidcolor = svgElement<SVGElementAttrs, SVGElement>("solidcolor");
  * @param css - Styles
  * @returns Virtual DOM SVG element <stop>
  */
-export const stop = svgElement<SVGStopElementAttrs, SVGStopElement>("stop");
+export const stop = /*#__PURE__*/svgElement<SVGStopElementAttrs, SVGStopElement>("stop");
 
 /**
  * Creates Virtual DOM SVG element <svg>.
@@ -887,7 +887,7 @@ export const stop = svgElement<SVGStopElementAttrs, SVGStopElement>("stop");
  * @param css - Styles
  * @returns Virtual DOM SVG element <svg>
  */
-export const svg = svgElement<SVGSVGElementAttrs, SVGSVGElement>("svg");
+export const svg = /*#__PURE__*/svgElement<SVGSVGElementAttrs, SVGSVGElement>("svg");
 
 /**
  * Creates Virtual DOM SVG element <symbol>.
@@ -899,7 +899,7 @@ export const svg = svgElement<SVGSVGElementAttrs, SVGSVGElement>("svg");
  * @param css - Styles
  * @returns Virtual DOM SVG element <symbol>
  */
-export const symbol = svgElement<SVGSymbolElementAttrs, SVGSymbolElement>("symbol");
+export const symbol = /*#__PURE__*/svgElement<SVGSymbolElementAttrs, SVGSymbolElement>("symbol");
 
 /**
  * Creates Virtual DOM SVG element <text>.
@@ -911,7 +911,7 @@ export const symbol = svgElement<SVGSymbolElementAttrs, SVGSymbolElement>("symbo
  * @param css - Styles
  * @returns Virtual DOM SVG element <text>
  */
-export const text = svgElement<SVGTextElementAttrs, SVGTextElement>("text");
+export const text = /*#__PURE__*/svgElement<SVGTextElementAttrs, SVGTextElement>("text");
 
 /**
  * Creates Virtual DOM SVG element <textPath>.
@@ -923,7 +923,7 @@ export const text = svgElement<SVGTextElementAttrs, SVGTextElement>("text");
  * @param css - Styles
  * @returns Virtual DOM SVG element <textPath>
  */
-export const textPath = svgElement<SVGTextPathElementAttrs, SVGTextPathElement>("textPath");
+export const textPath = /*#__PURE__*/svgElement<SVGTextPathElementAttrs, SVGTextPathElement>("textPath");
 
 /**
  * Creates Virtual DOM SVG element <title>.
@@ -935,7 +935,7 @@ export const textPath = svgElement<SVGTextPathElementAttrs, SVGTextPathElement>(
  * @param css - Styles
  * @returns Virtual DOM SVG element <title>
  */
-export const title = svgElement<SVGElementAttrs, SVGTitleElement>("title");
+export const title = /*#__PURE__*/svgElement<SVGElementAttrs, SVGTitleElement>("title");
 
 /**
  * Creates Virtual DOM SVG element <tspan>.
@@ -947,7 +947,7 @@ export const title = svgElement<SVGElementAttrs, SVGTitleElement>("title");
  * @param css - Styles
  * @returns Virtual DOM SVG element <tspan>
  */
-export const tspan = svgElement<SVGTSpanElementAttrs, SVGTSpanElement>("tspan");
+export const tspan = /*#__PURE__*/svgElement<SVGTSpanElementAttrs, SVGTSpanElement>("tspan");
 
 /**
  * Creates Virtual DOM SVG element <use>.
@@ -959,7 +959,7 @@ export const tspan = svgElement<SVGTSpanElementAttrs, SVGTSpanElement>("tspan");
  * @param css - Styles
  * @returns Virtual DOM SVG element <use>
  */
-export const use = svgElement<SVGUseElementAttrs, SVGUseElement>("use");
+export const use = /*#__PURE__*/svgElement<SVGUseElementAttrs, SVGUseElement>("use");
 
 /**
  * Creates Virtual DOM SVG element <view>.
@@ -971,4 +971,4 @@ export const use = svgElement<SVGUseElementAttrs, SVGUseElement>("use");
  * @param css - Styles
  * @returns Virtual DOM SVG element <view>
  */
-export const view = svgElement<SVGViewElementAttrs, SVGViewElement>("view");
+export const view = /*#__PURE__*/svgElement<SVGViewElementAttrs, SVGViewElement>("view");

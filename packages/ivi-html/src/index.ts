@@ -132,7 +132,7 @@ export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
  * @param css - Styles
  * @returns Virtual DOM HTML element <a>
  */
-export const a = htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
+export const a = /*#__PURE__*/htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
 
 /**
  * Creates Virtual DOM HTML element <abbr>.
@@ -144,7 +144,7 @@ export const a = htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
  * @param css - Styles
  * @returns Virtual DOM HTML element <abbr>
  */
-export const abbr = htmlElement<HTMLElementAttrs, HTMLElement>("abbr");
+export const abbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("abbr");
 
 /**
  * Creates Virtual DOM HTML element <address>.
@@ -156,7 +156,7 @@ export const abbr = htmlElement<HTMLElementAttrs, HTMLElement>("abbr");
  * @param css - Styles
  * @returns Virtual DOM HTML element <address>
  */
-export const address = htmlElement<HTMLElementAttrs, HTMLElement>("address");
+export const address = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("address");
 
 /**
  * Creates Virtual DOM HTML element <article>.
@@ -168,7 +168,7 @@ export const address = htmlElement<HTMLElementAttrs, HTMLElement>("address");
  * @param css - Styles
  * @returns Virtual DOM HTML element <article>
  */
-export const article = htmlElement<HTMLElementAttrs, HTMLElement>("article");
+export const article = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("article");
 
 /**
  * Creates Virtual DOM HTML element <aside>.
@@ -180,7 +180,7 @@ export const article = htmlElement<HTMLElementAttrs, HTMLElement>("article");
  * @param css - Styles
  * @returns Virtual DOM HTML element <aside>
  */
-export const aside = htmlElement<HTMLElementAttrs, HTMLElement>("aside");
+export const aside = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("aside");
 
 /**
  * Creates Virtual DOM HTML element <b>.
@@ -192,7 +192,7 @@ export const aside = htmlElement<HTMLElementAttrs, HTMLElement>("aside");
  * @param css - Styles
  * @returns Virtual DOM HTML element <b>
  */
-export const b = htmlElement<HTMLElementAttrs, HTMLElement>("b");
+export const b = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("b");
 
 /**
  * Creates Virtual DOM HTML element <base>.
@@ -204,7 +204,7 @@ export const b = htmlElement<HTMLElementAttrs, HTMLElement>("b");
  * @param css - Styles
  * @returns Virtual DOM HTML element <base>
  */
-export const base = htmlElement<HTMLBaseElementAttrs, HTMLBaseElement>("base");
+export const base = /*#__PURE__*/htmlElement<HTMLBaseElementAttrs, HTMLBaseElement>("base");
 
 /**
  * Creates Virtual DOM HTML element <bdo>.
@@ -216,7 +216,7 @@ export const base = htmlElement<HTMLBaseElementAttrs, HTMLBaseElement>("base");
  * @param css - Styles
  * @returns Virtual DOM HTML element <bdo>
  */
-export const bdo = htmlElement<HTMLElementAttrs, HTMLElement>("bdo");
+export const bdo = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("bdo");
 
 /**
  * Creates Virtual DOM HTML element <blockquote>.
@@ -228,7 +228,7 @@ export const bdo = htmlElement<HTMLElementAttrs, HTMLElement>("bdo");
  * @param css - Styles
  * @returns Virtual DOM HTML element <blockquote>
  */
-export const blockquote = htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("blockquote");
+export const blockquote = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("blockquote");
 
 /**
  * Creates Virtual DOM HTML element <body>.
@@ -240,7 +240,7 @@ export const blockquote = htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("
  * @param css - Styles
  * @returns Virtual DOM HTML element <body>
  */
-export const body = htmlElement<HTMLBodyElementAttrs, HTMLBodyElement>("body");
+export const body = /*#__PURE__*/htmlElement<HTMLBodyElementAttrs, HTMLBodyElement>("body");
 
 /**
  * Creates Virtual DOM HTML element <br>.
@@ -252,7 +252,7 @@ export const body = htmlElement<HTMLBodyElementAttrs, HTMLBodyElement>("body");
  * @param css - Styles
  * @returns Virtual DOM HTML element <br>
  */
-export const br = htmlElement<HTMLBRElementAttrs, HTMLBRElement>("br");
+export const br = /*#__PURE__*/htmlElement<HTMLBRElementAttrs, HTMLBRElement>("br");
 
 /**
  * Creates Virtual DOM HTML element <button>.
@@ -264,7 +264,7 @@ export const br = htmlElement<HTMLBRElementAttrs, HTMLBRElement>("br");
  * @param css - Styles
  * @returns Virtual DOM HTML element <button>
  */
-export const button = htmlElement<HTMLButtonElementAttrs, HTMLButtonElement>("button");
+export const button = /*#__PURE__*/htmlElement<HTMLButtonElementAttrs, HTMLButtonElement>("button");
 
 /**
  * Creates Virtual DOM HTML element <canvas>.
@@ -276,7 +276,7 @@ export const button = htmlElement<HTMLButtonElementAttrs, HTMLButtonElement>("bu
  * @param css - Styles
  * @returns Virtual DOM HTML element <canvas>
  */
-export const canvas = htmlElement<HTMLCanvasElementAttrs, HTMLCanvasElement>("canvas");
+export const canvas = /*#__PURE__*/htmlElement<HTMLCanvasElementAttrs, HTMLCanvasElement>("canvas");
 
 /**
  * Creates Virtual DOM HTML element <caption>.
@@ -288,7 +288,7 @@ export const canvas = htmlElement<HTMLCanvasElementAttrs, HTMLCanvasElement>("ca
  * @param css - Styles
  * @returns Virtual DOM HTML element <caption>
  */
-export const caption = htmlElement<HTMLTableCaptionElementAttrs, HTMLTableCaptionElement>("caption");
+export const caption = /*#__PURE__*/htmlElement<HTMLTableCaptionElementAttrs, HTMLTableCaptionElement>("caption");
 
 /**
  * Creates Virtual DOM HTML element <cite>.
@@ -300,7 +300,7 @@ export const caption = htmlElement<HTMLTableCaptionElementAttrs, HTMLTableCaptio
  * @param css - Styles
  * @returns Virtual DOM HTML element <cite>
  */
-export const cite = htmlElement<HTMLElementAttrs, HTMLElement>("cite");
+export const cite = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("cite");
 
 /**
  * Creates Virtual DOM HTML element <code>.
@@ -312,7 +312,7 @@ export const cite = htmlElement<HTMLElementAttrs, HTMLElement>("cite");
  * @param css - Styles
  * @returns Virtual DOM HTML element <code>
  */
-export const code = htmlElement<HTMLElementAttrs, HTMLElement>("code");
+export const code = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("code");
 
 /**
  * Creates Virtual DOM HTML element <col>.
@@ -324,7 +324,7 @@ export const code = htmlElement<HTMLElementAttrs, HTMLElement>("code");
  * @param css - Styles
  * @returns Virtual DOM HTML element <col>
  */
-export const col = htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("col");
+export const col = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("col");
 
 /**
  * Creates Virtual DOM HTML element <colgroup>.
@@ -336,7 +336,7 @@ export const col = htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("c
  * @param css - Styles
  * @returns Virtual DOM HTML element <colgroup>
  */
-export const colgroup = htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("colgroup");
+export const colgroup = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("colgroup");
 
 /**
  * Creates Virtual DOM HTML element <del>.
@@ -348,7 +348,7 @@ export const colgroup = htmlElement<HTMLTableColElementAttrs, HTMLTableColElemen
  * @param css - Styles
  * @returns Virtual DOM HTML element <del>
  */
-export const del = htmlElement<HTMLModElementAttrs, HTMLModElement>("del");
+export const del = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>("del");
 
 /**
  * Creates Virtual DOM HTML element <dfn>.
@@ -360,7 +360,7 @@ export const del = htmlElement<HTMLModElementAttrs, HTMLModElement>("del");
  * @param css - Styles
  * @returns Virtual DOM HTML element <dfn>
  */
-export const dfn = htmlElement<HTMLElementAttrs, HTMLElement>("dfn");
+export const dfn = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dfn");
 
 /**
  * Creates Virtual DOM HTML element <div>.
@@ -372,7 +372,7 @@ export const dfn = htmlElement<HTMLElementAttrs, HTMLElement>("dfn");
  * @param css - Styles
  * @returns Virtual DOM HTML element <div>
  */
-export const div = htmlElement<HTMLDivElementAttrs, HTMLDivElement>("div");
+export const div = /*#__PURE__*/htmlElement<HTMLDivElementAttrs, HTMLDivElement>("div");
 
 /**
  * Creates Virtual DOM HTML element <dd>.
@@ -384,7 +384,7 @@ export const div = htmlElement<HTMLDivElementAttrs, HTMLDivElement>("div");
  * @param css - Styles
  * @returns Virtual DOM HTML element <dd>
  */
-export const dd = htmlElement<HTMLElementAttrs, HTMLElement>("dd");
+export const dd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dd");
 
 /**
  * Creates Virtual DOM HTML element <dl>.
@@ -396,7 +396,7 @@ export const dd = htmlElement<HTMLElementAttrs, HTMLElement>("dd");
  * @param css - Styles
  * @returns Virtual DOM HTML element <dl>
  */
-export const dl = htmlElement<HTMLDListElementAttrs, HTMLDListElement>("dl");
+export const dl = /*#__PURE__*/htmlElement<HTMLDListElementAttrs, HTMLDListElement>("dl");
 
 /**
  * Creates Virtual DOM HTML element <dt>.
@@ -408,7 +408,7 @@ export const dl = htmlElement<HTMLDListElementAttrs, HTMLDListElement>("dl");
  * @param css - Styles
  * @returns Virtual DOM HTML element <dt>
  */
-export const dt = htmlElement<HTMLElementAttrs, HTMLElement>("dt");
+export const dt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dt");
 
 /**
  * Creates Virtual DOM HTML element <em>.
@@ -420,7 +420,7 @@ export const dt = htmlElement<HTMLElementAttrs, HTMLElement>("dt");
  * @param css - Styles
  * @returns Virtual DOM HTML element <em>
  */
-export const em = htmlElement<HTMLElementAttrs, HTMLElement>("em");
+export const em = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("em");
 
 /**
  * Creates Virtual DOM HTML element <fieldset>.
@@ -432,7 +432,7 @@ export const em = htmlElement<HTMLElementAttrs, HTMLElement>("em");
  * @param css - Styles
  * @returns Virtual DOM HTML element <fieldset>
  */
-export const fieldset = htmlElement<HTMLFieldSetElementAttrs, HTMLFieldSetElement>("fieldset");
+export const fieldset = /*#__PURE__*/htmlElement<HTMLFieldSetElementAttrs, HTMLFieldSetElement>("fieldset");
 
 /**
  * Creates Virtual DOM HTML element <figcaption>.
@@ -444,7 +444,7 @@ export const fieldset = htmlElement<HTMLFieldSetElementAttrs, HTMLFieldSetElemen
  * @param css - Styles
  * @returns Virtual DOM HTML element <figcaption>
  */
-export const figcaption = htmlElement<HTMLElementAttrs, HTMLElement>("figcaption");
+export const figcaption = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("figcaption");
 
 /**
  * Creates Virtual DOM HTML element <figure>.
@@ -456,7 +456,7 @@ export const figcaption = htmlElement<HTMLElementAttrs, HTMLElement>("figcaption
  * @param css - Styles
  * @returns Virtual DOM HTML element <figure>
  */
-export const figure = htmlElement<HTMLElementAttrs, HTMLElement>("figure");
+export const figure = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("figure");
 
 /**
  * Creates Virtual DOM HTML element <footer>.
@@ -468,7 +468,7 @@ export const figure = htmlElement<HTMLElementAttrs, HTMLElement>("figure");
  * @param css - Styles
  * @returns Virtual DOM HTML element <footer>
  */
-export const footer = htmlElement<HTMLElementAttrs, HTMLElement>("footer");
+export const footer = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("footer");
 
 /**
  * Creates Virtual DOM HTML element <form>.
@@ -480,7 +480,7 @@ export const footer = htmlElement<HTMLElementAttrs, HTMLElement>("footer");
  * @param css - Styles
  * @returns Virtual DOM HTML element <form>
  */
-export const form = htmlElement<HTMLFormElementAttrs, HTMLFormElement>("form");
+export const form = /*#__PURE__*/htmlElement<HTMLFormElementAttrs, HTMLFormElement>("form");
 
 /**
  * Creates Virtual DOM HTML element <h1>.
@@ -492,7 +492,7 @@ export const form = htmlElement<HTMLFormElementAttrs, HTMLFormElement>("form");
  * @param css - Styles
  * @returns Virtual DOM HTML element <h1>
  */
-export const h1 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1");
+export const h1 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1");
 
 /**
  * Creates Virtual DOM HTML element <h2>.
@@ -504,7 +504,7 @@ export const h1 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1")
  * @param css - Styles
  * @returns Virtual DOM HTML element <h2>
  */
-export const h2 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2");
+export const h2 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2");
 
 /**
  * Creates Virtual DOM HTML element <h3>.
@@ -516,7 +516,7 @@ export const h2 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2")
  * @param css - Styles
  * @returns Virtual DOM HTML element <h3>
  */
-export const h3 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3");
+export const h3 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3");
 
 /**
  * Creates Virtual DOM HTML element <h4>.
@@ -528,7 +528,7 @@ export const h3 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3")
  * @param css - Styles
  * @returns Virtual DOM HTML element <h4>
  */
-export const h4 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4");
+export const h4 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4");
 
 /**
  * Creates Virtual DOM HTML element <h5>.
@@ -540,7 +540,7 @@ export const h4 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4")
  * @param css - Styles
  * @returns Virtual DOM HTML element <h5>
  */
-export const h5 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5");
+export const h5 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5");
 
 /**
  * Creates Virtual DOM HTML element <h6>.
@@ -552,7 +552,7 @@ export const h5 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5")
  * @param css - Styles
  * @returns Virtual DOM HTML element <h6>
  */
-export const h6 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6");
+export const h6 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6");
 
 /**
  * Creates Virtual DOM HTML element <head>.
@@ -564,7 +564,7 @@ export const h6 = htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6")
  * @param css - Styles
  * @returns Virtual DOM HTML element <head>
  */
-export const head = htmlElement<HTMLHeadElementAttrs, HTMLHeadElement>("head");
+export const head = /*#__PURE__*/htmlElement<HTMLHeadElementAttrs, HTMLHeadElement>("head");
 
 /**
  * Creates Virtual DOM HTML element <header>.
@@ -576,7 +576,7 @@ export const head = htmlElement<HTMLHeadElementAttrs, HTMLHeadElement>("head");
  * @param css - Styles
  * @returns Virtual DOM HTML element <header>
  */
-export const header = htmlElement<HTMLElementAttrs, HTMLElement>("header");
+export const header = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("header");
 
 /**
  * Creates Virtual DOM HTML element <hgroup>.
@@ -588,7 +588,7 @@ export const header = htmlElement<HTMLElementAttrs, HTMLElement>("header");
  * @param css - Styles
  * @returns Virtual DOM HTML element <hgroup>
  */
-export const hgroup = htmlElement<HTMLElementAttrs, HTMLElement>("hgroup");
+export const hgroup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("hgroup");
 
 /**
  * Creates Virtual DOM HTML element <hr>.
@@ -600,7 +600,7 @@ export const hgroup = htmlElement<HTMLElementAttrs, HTMLElement>("hgroup");
  * @param css - Styles
  * @returns Virtual DOM HTML element <hr>
  */
-export const hr = htmlElement<HTMLHRElementAttrs, HTMLHRElement>("hr");
+export const hr = /*#__PURE__*/htmlElement<HTMLHRElementAttrs, HTMLHRElement>("hr");
 
 /**
  * Creates Virtual DOM HTML element <html>.
@@ -612,7 +612,7 @@ export const hr = htmlElement<HTMLHRElementAttrs, HTMLHRElement>("hr");
  * @param css - Styles
  * @returns Virtual DOM HTML element <html>
  */
-export const html = htmlElement<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
+export const html = /*#__PURE__*/htmlElement<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
 
 /**
  * Creates Virtual DOM HTML element <i>.
@@ -624,7 +624,7 @@ export const html = htmlElement<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
  * @param css - Styles
  * @returns Virtual DOM HTML element <i>
  */
-export const i = htmlElement<HTMLElementAttrs, HTMLElement>("i");
+export const i = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("i");
 
 /**
  * Creates Virtual DOM HTML element <iframe>.
@@ -636,7 +636,7 @@ export const i = htmlElement<HTMLElementAttrs, HTMLElement>("i");
  * @param css - Styles
  * @returns Virtual DOM HTML element <iframe>
  */
-export const iframe = htmlElement<HTMLIFrameElementAttrs, HTMLIFrameElement>("iframe");
+export const iframe = /*#__PURE__*/htmlElement<HTMLIFrameElementAttrs, HTMLIFrameElement>("iframe");
 
 /**
  * Creates Virtual DOM HTML element <img>.
@@ -648,7 +648,7 @@ export const iframe = htmlElement<HTMLIFrameElementAttrs, HTMLIFrameElement>("if
  * @param css - Styles
  * @returns Virtual DOM HTML element <img>
  */
-export const img = htmlElement<HTMLImageElementAttrs, HTMLImageElement>("img");
+export const img = /*#__PURE__*/htmlElement<HTMLImageElementAttrs, HTMLImageElement>("img");
 
 /**
  * Creates Virtual DOM HTML element <area>.
@@ -660,7 +660,7 @@ export const img = htmlElement<HTMLImageElementAttrs, HTMLImageElement>("img");
  * @param css - Styles
  * @returns Virtual DOM HTML element <area>
  */
-export const imgArea = htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area");
+export const imgArea = /*#__PURE__*/htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area");
 
 /**
  * Creates Virtual DOM HTML element <map>.
@@ -672,7 +672,7 @@ export const imgArea = htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area"
  * @param css - Styles
  * @returns Virtual DOM HTML element <map>
  */
-export const imgMap = htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
+export const imgMap = /*#__PURE__*/htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
 
 /**
  * Creates Virtual DOM HTML element <ins>.
@@ -684,7 +684,7 @@ export const imgMap = htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
  * @param css - Styles
  * @returns Virtual DOM HTML element <ins>
  */
-export const ins = htmlElement<HTMLModElementAttrs, HTMLModElement>("ins");
+export const ins = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>("ins");
 
 /**
  * Creates Virtual DOM HTML element <kbd>.
@@ -696,7 +696,7 @@ export const ins = htmlElement<HTMLModElementAttrs, HTMLModElement>("ins");
  * @param css - Styles
  * @returns Virtual DOM HTML element <kbd>
  */
-export const kbd = htmlElement<HTMLElementAttrs, HTMLElement>("kbd");
+export const kbd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("kbd");
 
 /**
  * Creates Virtual DOM HTML element <label>.
@@ -708,7 +708,7 @@ export const kbd = htmlElement<HTMLElementAttrs, HTMLElement>("kbd");
  * @param css - Styles
  * @returns Virtual DOM HTML element <label>
  */
-export const label = htmlElement<HTMLLabelElementAttrs, HTMLLabelElement>("label");
+export const label = /*#__PURE__*/htmlElement<HTMLLabelElementAttrs, HTMLLabelElement>("label");
 
 /**
  * Creates Virtual DOM HTML element <legend>.
@@ -720,7 +720,7 @@ export const label = htmlElement<HTMLLabelElementAttrs, HTMLLabelElement>("label
  * @param css - Styles
  * @returns Virtual DOM HTML element <legend>
  */
-export const legend = htmlElement<HTMLLegendElementAttrs, HTMLLegendElement>("legend");
+export const legend = /*#__PURE__*/htmlElement<HTMLLegendElementAttrs, HTMLLegendElement>("legend");
 
 /**
  * Creates Virtual DOM HTML element <li>.
@@ -732,7 +732,7 @@ export const legend = htmlElement<HTMLLegendElementAttrs, HTMLLegendElement>("le
  * @param css - Styles
  * @returns Virtual DOM HTML element <li>
  */
-export const li = htmlElement<HTMLLIElementAttrs, HTMLLIElement>("li");
+export const li = /*#__PURE__*/htmlElement<HTMLLIElementAttrs, HTMLLIElement>("li");
 
 /**
  * Creates Virtual DOM HTML element <link>.
@@ -744,7 +744,7 @@ export const li = htmlElement<HTMLLIElementAttrs, HTMLLIElement>("li");
  * @param css - Styles
  * @returns Virtual DOM HTML element <link>
  */
-export const link = htmlElement<HTMLLinkElementAttrs, HTMLLinkElement>("link");
+export const link = /*#__PURE__*/htmlElement<HTMLLinkElementAttrs, HTMLLinkElement>("link");
 
 /**
  * Creates Virtual DOM HTML element <main>.
@@ -756,7 +756,7 @@ export const link = htmlElement<HTMLLinkElementAttrs, HTMLLinkElement>("link");
  * @param css - Styles
  * @returns Virtual DOM HTML element <main>
  */
-export const main = htmlElement<HTMLElementAttrs, HTMLElement>("main");
+export const main = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("main");
 
 /**
  * Creates Virtual DOM HTML element <mark>.
@@ -768,7 +768,7 @@ export const main = htmlElement<HTMLElementAttrs, HTMLElement>("main");
  * @param css - Styles
  * @returns Virtual DOM HTML element <mark>
  */
-export const mark = htmlElement<HTMLElementAttrs, HTMLElement>("mark");
+export const mark = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("mark");
 
 /**
  * Creates Virtual DOM HTML element <menu>.
@@ -780,7 +780,7 @@ export const mark = htmlElement<HTMLElementAttrs, HTMLElement>("mark");
  * @param css - Styles
  * @returns Virtual DOM HTML element <menu>
  */
-export const menu = htmlElement<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
+export const menu = /*#__PURE__*/htmlElement<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
 
 /**
  * Creates Virtual DOM HTML element <meta>.
@@ -792,7 +792,7 @@ export const menu = htmlElement<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
  * @param css - Styles
  * @returns Virtual DOM HTML element <meta>
  */
-export const meta = htmlElement<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
+export const meta = /*#__PURE__*/htmlElement<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
 
 /**
  * Creates Virtual DOM HTML element <meter>.
@@ -804,7 +804,7 @@ export const meta = htmlElement<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
  * @param css - Styles
  * @returns Virtual DOM HTML element <meter>
  */
-export const meter = htmlElement<HTMLMeterElementAttrs, HTMLMeterElement>("meter");
+export const meter = /*#__PURE__*/htmlElement<HTMLMeterElementAttrs, HTMLMeterElement>("meter");
 
 /**
  * Creates Virtual DOM HTML element <nav>.
@@ -816,7 +816,7 @@ export const meter = htmlElement<HTMLMeterElementAttrs, HTMLMeterElement>("meter
  * @param css - Styles
  * @returns Virtual DOM HTML element <nav>
  */
-export const nav = htmlElement<HTMLElementAttrs, HTMLElement>("nav");
+export const nav = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("nav");
 
 /**
  * Creates Virtual DOM HTML element <noscript>.
@@ -828,7 +828,7 @@ export const nav = htmlElement<HTMLElementAttrs, HTMLElement>("nav");
  * @param css - Styles
  * @returns Virtual DOM HTML element <noscript>
  */
-export const noscript = htmlElement<HTMLElementAttrs, HTMLElement>("noscript");
+export const noscript = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("noscript");
 
 /**
  * Creates Virtual DOM HTML element <ol>.
@@ -840,7 +840,7 @@ export const noscript = htmlElement<HTMLElementAttrs, HTMLElement>("noscript");
  * @param css - Styles
  * @returns Virtual DOM HTML element <ol>
  */
-export const ol = htmlElement<HTMLOListElementAttrs, HTMLOListElement>("ol");
+export const ol = /*#__PURE__*/htmlElement<HTMLOListElementAttrs, HTMLOListElement>("ol");
 
 /**
  * Creates Virtual DOM HTML element <optgroup>.
@@ -852,7 +852,7 @@ export const ol = htmlElement<HTMLOListElementAttrs, HTMLOListElement>("ol");
  * @param css - Styles
  * @returns Virtual DOM HTML element <optgroup>
  */
-export const optgroup = htmlElement<HTMLOptGroupElementAttrs, HTMLOptGroupElement>("optgroup");
+export const optgroup = /*#__PURE__*/htmlElement<HTMLOptGroupElementAttrs, HTMLOptGroupElement>("optgroup");
 
 /**
  * Creates Virtual DOM HTML element <option>.
@@ -864,7 +864,7 @@ export const optgroup = htmlElement<HTMLOptGroupElementAttrs, HTMLOptGroupElemen
  * @param css - Styles
  * @returns Virtual DOM HTML element <option>
  */
-export const option = htmlElement<HTMLOptionElementAttrs, HTMLOptionElement>("option");
+export const option = /*#__PURE__*/htmlElement<HTMLOptionElementAttrs, HTMLOptionElement>("option");
 
 /**
  * Creates Virtual DOM HTML element <p>.
@@ -876,7 +876,7 @@ export const option = htmlElement<HTMLOptionElementAttrs, HTMLOptionElement>("op
  * @param css - Styles
  * @returns Virtual DOM HTML element <p>
  */
-export const p = htmlElement<HTMLParagraphElementAttrs, HTMLParagraphElement>("p");
+export const p = /*#__PURE__*/htmlElement<HTMLParagraphElementAttrs, HTMLParagraphElement>("p");
 
 /**
  * Creates Virtual DOM HTML element <picture>.
@@ -888,7 +888,7 @@ export const p = htmlElement<HTMLParagraphElementAttrs, HTMLParagraphElement>("p
  * @param css - Styles
  * @returns Virtual DOM HTML element <picture>
  */
-export const picture = htmlElement<HTMLPictureElementAttrs, HTMLPictureElement>("picture");
+export const picture = /*#__PURE__*/htmlElement<HTMLPictureElementAttrs, HTMLPictureElement>("picture");
 
 /**
  * Creates Virtual DOM HTML element <pre>.
@@ -900,7 +900,7 @@ export const picture = htmlElement<HTMLPictureElementAttrs, HTMLPictureElement>(
  * @param css - Styles
  * @returns Virtual DOM HTML element <pre>
  */
-export const pre = htmlElement<HTMLPreElementAttrs, HTMLPreElement>("pre");
+export const pre = /*#__PURE__*/htmlElement<HTMLPreElementAttrs, HTMLPreElement>("pre");
 
 /**
  * Creates Virtual DOM HTML element <progress>.
@@ -912,7 +912,7 @@ export const pre = htmlElement<HTMLPreElementAttrs, HTMLPreElement>("pre");
  * @param css - Styles
  * @returns Virtual DOM HTML element <progress>
  */
-export const progress = htmlElement<HTMLProgressElementAttrs, HTMLProgressElement>("progress");
+export const progress = /*#__PURE__*/htmlElement<HTMLProgressElementAttrs, HTMLProgressElement>("progress");
 
 /**
  * Creates Virtual DOM HTML element <q>.
@@ -924,7 +924,7 @@ export const progress = htmlElement<HTMLProgressElementAttrs, HTMLProgressElemen
  * @param css - Styles
  * @returns Virtual DOM HTML element <q>
  */
-export const q = htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
+export const q = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
 
 /**
  * Creates Virtual DOM HTML element <rt>.
@@ -936,7 +936,7 @@ export const q = htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
  * @param css - Styles
  * @returns Virtual DOM HTML element <rt>
  */
-export const rt = htmlElement<HTMLElementAttrs, HTMLElement>("rt");
+export const rt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("rt");
 
 /**
  * Creates Virtual DOM HTML element <ruby>.
@@ -948,7 +948,7 @@ export const rt = htmlElement<HTMLElementAttrs, HTMLElement>("rt");
  * @param css - Styles
  * @returns Virtual DOM HTML element <ruby>
  */
-export const ruby = htmlElement<HTMLElementAttrs, HTMLElement>("ruby");
+export const ruby = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("ruby");
 
 /**
  * Creates Virtual DOM HTML element <s>.
@@ -960,7 +960,7 @@ export const ruby = htmlElement<HTMLElementAttrs, HTMLElement>("ruby");
  * @param css - Styles
  * @returns Virtual DOM HTML element <s>
  */
-export const s = htmlElement<HTMLElementAttrs, HTMLElement>("s");
+export const s = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("s");
 
 /**
  * Creates Virtual DOM HTML element <samp>.
@@ -972,7 +972,7 @@ export const s = htmlElement<HTMLElementAttrs, HTMLElement>("s");
  * @param css - Styles
  * @returns Virtual DOM HTML element <samp>
  */
-export const samp = htmlElement<HTMLElementAttrs, HTMLElement>("samp");
+export const samp = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("samp");
 
 /**
  * Creates Virtual DOM HTML element <script>.
@@ -984,7 +984,7 @@ export const samp = htmlElement<HTMLElementAttrs, HTMLElement>("samp");
  * @param css - Styles
  * @returns Virtual DOM HTML element <script>
  */
-export const script = htmlElement<HTMLScriptElementAttrs, HTMLScriptElement>("script");
+export const script = /*#__PURE__*/htmlElement<HTMLScriptElementAttrs, HTMLScriptElement>("script");
 
 /**
  * Creates Virtual DOM HTML element <section>.
@@ -996,7 +996,7 @@ export const script = htmlElement<HTMLScriptElementAttrs, HTMLScriptElement>("sc
  * @param css - Styles
  * @returns Virtual DOM HTML element <section>
  */
-export const section = htmlElement<HTMLElementAttrs, HTMLElement>("section");
+export const section = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("section");
 
 /**
  * Creates Virtual DOM HTML element <select>.
@@ -1008,7 +1008,7 @@ export const section = htmlElement<HTMLElementAttrs, HTMLElement>("section");
  * @param css - Styles
  * @returns Virtual DOM HTML element <select>
  */
-export const select = htmlElement<HTMLSelectElementAttrs, HTMLSelectElement>("select");
+export const select = /*#__PURE__*/htmlElement<HTMLSelectElementAttrs, HTMLSelectElement>("select");
 
 /**
  * Creates Virtual DOM HTML element <source>.
@@ -1020,7 +1020,7 @@ export const select = htmlElement<HTMLSelectElementAttrs, HTMLSelectElement>("se
  * @param css - Styles
  * @returns Virtual DOM HTML element <source>
  */
-export const source = htmlElement<HTMLSourceElementAttrs, HTMLSourceElement>("source");
+export const source = /*#__PURE__*/htmlElement<HTMLSourceElementAttrs, HTMLSourceElement>("source");
 
 /**
  * Creates Virtual DOM HTML element <span>.
@@ -1032,7 +1032,7 @@ export const source = htmlElement<HTMLSourceElementAttrs, HTMLSourceElement>("so
  * @param css - Styles
  * @returns Virtual DOM HTML element <span>
  */
-export const span = htmlElement<HTMLSpanElementAttrs, HTMLSpanElement>("span");
+export const span = /*#__PURE__*/htmlElement<HTMLSpanElementAttrs, HTMLSpanElement>("span");
 
 /**
  * Creates Virtual DOM HTML element <strong>.
@@ -1044,7 +1044,7 @@ export const span = htmlElement<HTMLSpanElementAttrs, HTMLSpanElement>("span");
  * @param css - Styles
  * @returns Virtual DOM HTML element <strong>
  */
-export const strong = htmlElement<HTMLElementAttrs, HTMLElement>("strong");
+export const strong = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("strong");
 
 /**
  * Creates Virtual DOM HTML element <style>.
@@ -1056,7 +1056,7 @@ export const strong = htmlElement<HTMLElementAttrs, HTMLElement>("strong");
  * @param css - Styles
  * @returns Virtual DOM HTML element <style>
  */
-export const style = htmlElement<HTMLStyleElementAttrs, HTMLStyleElement>("style");
+export const style = /*#__PURE__*/htmlElement<HTMLStyleElementAttrs, HTMLStyleElement>("style");
 
 /**
  * Creates Virtual DOM HTML element <sub>.
@@ -1068,7 +1068,7 @@ export const style = htmlElement<HTMLStyleElementAttrs, HTMLStyleElement>("style
  * @param css - Styles
  * @returns Virtual DOM HTML element <sub>
  */
-export const sub = htmlElement<HTMLElementAttrs, HTMLElement>("sub");
+export const sub = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sub");
 
 /**
  * Creates Virtual DOM HTML element <sup>.
@@ -1080,7 +1080,7 @@ export const sub = htmlElement<HTMLElementAttrs, HTMLElement>("sub");
  * @param css - Styles
  * @returns Virtual DOM HTML element <sup>
  */
-export const sup = htmlElement<HTMLElementAttrs, HTMLElement>("sup");
+export const sup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sup");
 
 /**
  * Creates Virtual DOM HTML element <table>.
@@ -1092,7 +1092,7 @@ export const sup = htmlElement<HTMLElementAttrs, HTMLElement>("sup");
  * @param css - Styles
  * @returns Virtual DOM HTML element <table>
  */
-export const table = htmlElement<HTMLTableElementAttrs, HTMLTableElement>("table");
+export const table = /*#__PURE__*/htmlElement<HTMLTableElementAttrs, HTMLTableElement>("table");
 
 /**
  * Creates Virtual DOM HTML element <tbody>.
@@ -1104,7 +1104,7 @@ export const table = htmlElement<HTMLTableElementAttrs, HTMLTableElement>("table
  * @param css - Styles
  * @returns Virtual DOM HTML element <tbody>
  */
-export const tbody = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tbody");
+export const tbody = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tbody");
 
 /**
  * Creates Virtual DOM HTML element <td>.
@@ -1116,7 +1116,7 @@ export const tbody = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionE
  * @param css - Styles
  * @returns Virtual DOM HTML element <td>
  */
-export const td = htmlElement<HTMLTableDataCellElementAttrs, HTMLTableDataCellElement>("td");
+export const td = /*#__PURE__*/htmlElement<HTMLTableDataCellElementAttrs, HTMLTableDataCellElement>("td");
 
 /**
  * Creates Virtual DOM HTML element <template>.
@@ -1128,7 +1128,7 @@ export const td = htmlElement<HTMLTableDataCellElementAttrs, HTMLTableDataCellEl
  * @param css - Styles
  * @returns Virtual DOM HTML element <template>
  */
-export const template = htmlElement<HTMLTemplateElementAttrs, HTMLTemplateElement>("template");
+export const template = /*#__PURE__*/htmlElement<HTMLTemplateElementAttrs, HTMLTemplateElement>("template");
 
 /**
  * Creates Virtual DOM HTML element <tfoot>.
@@ -1140,7 +1140,7 @@ export const template = htmlElement<HTMLTemplateElementAttrs, HTMLTemplateElemen
  * @param css - Styles
  * @returns Virtual DOM HTML element <tfoot>
  */
-export const tfoot = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tfoot");
+export const tfoot = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tfoot");
 
 /**
  * Creates Virtual DOM HTML element <th>.
@@ -1152,7 +1152,7 @@ export const tfoot = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionE
  * @param css - Styles
  * @returns Virtual DOM HTML element <th>
  */
-export const th = htmlElement<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCellElement>("th");
+export const th = /*#__PURE__*/htmlElement<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCellElement>("th");
 
 /**
  * Creates Virtual DOM HTML element <thead>.
@@ -1164,7 +1164,7 @@ export const th = htmlElement<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCe
  * @param css - Styles
  * @returns Virtual DOM HTML element <thead>
  */
-export const thead = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("thead");
+export const thead = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("thead");
 
 /**
  * Creates Virtual DOM HTML element <time>.
@@ -1176,7 +1176,7 @@ export const thead = htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionE
  * @param css - Styles
  * @returns Virtual DOM HTML element <time>
  */
-export const time = htmlElement<HTMLElementAttrs, HTMLElement>("time");
+export const time = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("time");
 
 /**
  * Creates Virtual DOM HTML element <title>.
@@ -1188,7 +1188,7 @@ export const time = htmlElement<HTMLElementAttrs, HTMLElement>("time");
  * @param css - Styles
  * @returns Virtual DOM HTML element <title>
  */
-export const title = htmlElement<HTMLTitleElementAttrs, HTMLTitleElement>("title");
+export const title = /*#__PURE__*/htmlElement<HTMLTitleElementAttrs, HTMLTitleElement>("title");
 
 /**
  * Creates Virtual DOM HTML element <tr>.
@@ -1200,7 +1200,7 @@ export const title = htmlElement<HTMLTitleElementAttrs, HTMLTitleElement>("title
  * @param css - Styles
  * @returns Virtual DOM HTML element <tr>
  */
-export const tr = htmlElement<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr");
+export const tr = /*#__PURE__*/htmlElement<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr");
 
 /**
  * Creates Virtual DOM HTML element <track>.
@@ -1212,7 +1212,7 @@ export const tr = htmlElement<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr
  * @param css - Styles
  * @returns Virtual DOM HTML element <track>
  */
-export const track = htmlElement<HTMLTrackElementAttrs, HTMLTrackElement>("track");
+export const track = /*#__PURE__*/htmlElement<HTMLTrackElementAttrs, HTMLTrackElement>("track");
 
 /**
  * Creates Virtual DOM HTML element <u>.
@@ -1224,7 +1224,7 @@ export const track = htmlElement<HTMLTrackElementAttrs, HTMLTrackElement>("track
  * @param css - Styles
  * @returns Virtual DOM HTML element <u>
  */
-export const u = htmlElement<HTMLElementAttrs, HTMLElement>("u");
+export const u = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("u");
 
 /**
  * Creates Virtual DOM HTML element <ul>.
@@ -1236,7 +1236,7 @@ export const u = htmlElement<HTMLElementAttrs, HTMLElement>("u");
  * @param css - Styles
  * @returns Virtual DOM HTML element <ul>
  */
-export const ul = htmlElement<HTMLUListElementAttrs, HTMLUListElement>("ul");
+export const ul = /*#__PURE__*/htmlElement<HTMLUListElementAttrs, HTMLUListElement>("ul");
 
 /**
  * Creates Virtual DOM HTML element <wbr>.
@@ -1248,7 +1248,7 @@ export const ul = htmlElement<HTMLUListElementAttrs, HTMLUListElement>("ul");
  * @param css - Styles
  * @returns Virtual DOM HTML element <wbr>
  */
-export const wbr = htmlElement<HTMLElementAttrs, HTMLElement>("wbr");
+export const wbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("wbr");
 
 /**
  * Creates Virtual DOM HTML element <textarea>.
@@ -1260,7 +1260,7 @@ export const wbr = htmlElement<HTMLElementAttrs, HTMLElement>("wbr");
  * @param css - Styles
  * @returns Virtual DOM HTML element <textarea>
  */
-export const textarea = htmlElement<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea");
+export const textarea = /*#__PURE__*/htmlElement<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea");
 
 /**
  * Creates Virtual DOM HTML element <input>.
@@ -1272,7 +1272,7 @@ export const textarea = htmlElement<HTMLTextAreaElementAttrs, HTMLTextAreaElemen
  * @param css - Styles
  * @returns Virtual DOM HTML element <input>
  */
-export const input = htmlElement<HTMLInputElementAttrs, HTMLInputElement>("input");
+export const input = /*#__PURE__*/htmlElement<HTMLInputElementAttrs, HTMLInputElement>("input");
 
 /**
  * Creates Virtual DOM HTML element <audio>.
@@ -1284,7 +1284,7 @@ export const input = htmlElement<HTMLInputElementAttrs, HTMLInputElement>("input
  * @param css - Styles
  * @returns Virtual DOM HTML element <audio>
  */
-export const audio = htmlElement<HTMLAudioElementAttrs, HTMLAudioElement>("audio");
+export const audio = /*#__PURE__*/htmlElement<HTMLAudioElementAttrs, HTMLAudioElement>("audio");
 
 /**
  * Creates Virtual DOM HTML element <video>.
@@ -1296,4 +1296,4 @@ export const audio = htmlElement<HTMLAudioElementAttrs, HTMLAudioElement>("audio
  * @param css - Styles
  * @returns Virtual DOM HTML element <video>
  */
-export const video = htmlElement<HTMLVideoElementAttrs, HTMLVideoElement>("video");
+export const video = /*#__PURE__*/htmlElement<HTMLVideoElementAttrs, HTMLVideoElement>("video");

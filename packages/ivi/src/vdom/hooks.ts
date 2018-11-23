@@ -229,7 +229,7 @@ export const useEffect: <T = undefined>(
   stateNode: StateNode,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = /*#__PURE__*/withEffect(scheduleMicrotask) as any;
+) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
 
 /**
  * useMutationEffect creates a DOM mutation effect hook.
@@ -243,7 +243,7 @@ export const useMutationEffect: <T = undefined>(
   stateNode: StateNode,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = /*#__PURE__*/withEffect(scheduleMutationEffect) as any;
+) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
 
 /**
  * useLayoutEffect creates a DOM layout effect hook.
@@ -257,4 +257,4 @@ export const useLayoutEffect: <T = undefined>(
   stateNode: StateNode,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = /*#__PURE__*/withEffect(scheduleLayoutEffect) as any;
+) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
