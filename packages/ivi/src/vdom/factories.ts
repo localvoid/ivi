@@ -57,6 +57,7 @@ export const svgElement: <T, U>(tag: string) => (
  * @returns Factory that produces elements with predefined attributes.
  */
 export function elementProto<P>(proto: OpNode<ElementData<P>>) {
+  /* istanbul ignore else */
   if (DEBUG) {
     if (proto.data.children !== null) {
       throw new Error(`Invalid OpNode, element prototypes can't have any children`);

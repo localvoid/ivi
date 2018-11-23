@@ -1,4 +1,4 @@
-import { NodeFlags, ElementProtoDescriptor, elementProto } from "ivi";
+import { _, NodeFlags, ElementProtoDescriptor, elementProto } from "ivi";
 import * as h from "ivi-html";
 
 const div = h.div();
@@ -19,5 +19,9 @@ describe("Element proto", () => {
 
   test(`className = "a"`, () => {
     expect(divProto("a").data.className).toBe("a");
+  });
+
+  test(`should throw an error when element proto has children`, () => {
+    expect(() => elementProto(h.div(_, _, h.div()))).toThrowError("children");
   });
 });

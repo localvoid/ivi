@@ -250,6 +250,7 @@ function _mountObject(
     const update = hooks.update = (op.type.descriptor as ComponentDescriptor).c(stateNode);
     const deepStateFlags = _pushDeepState();
     const root = update(opData);
+    /* istanbul ignore else */
     if (DEBUG) {
       if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {
         throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
@@ -386,14 +387,24 @@ export function _update(
       deepStateFlags = _pushDeepState();
       if (prevData.children !== nextChildren) {
         _nextNode = null;
-        if ((stateFlags & NodeFlags.MultipleChildren) !== 0) {
-          if (DEBUG) {
-            checkElementChildrenShape(
-              prevData.children as RecursiveOpChildrenArray,
-              nextChildren as RecursiveOpChildrenArray,
-            );
+        /* istanbul ignore else */
+        if (DEBUG) {
+          if ((stateFlags & NodeFlags.MultipleChildren) !== 0) {
+            if (nextChildren !== null && nextChildren instanceof Array) {
+              checkElementChildrenShape(
+                prevData.children as RecursiveOpChildrenArray,
+                nextChildren as RecursiveOpChildrenArray,
+              );
+            } else {
+              throw new Error("Invalid element, children array has a dynamic shape");
+            }
+          } else {
+            if (nextChildren !== null && nextChildren instanceof Array) {
+              throw new Error("Invalid element, children array has a dynamic shape");
+            }
           }
-
+        }
+        if ((stateFlags & NodeFlags.MultipleChildren) !== 0) {
           _index = 0;
           _updateChildren(
             state as Element,
@@ -435,6 +446,7 @@ export function _update(
     ) {
       deepStateFlags = _pushDeepState();
       const root = (stateNode.state as ComponentHooks).update!(nextProps);
+      /* istanbul ignore else */
       if (DEBUG) {
         if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {
           throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
@@ -1139,6 +1151,8 @@ function checkElementChildrenShape(a: RecursiveOpChildrenArray, b: RecursiveOpCh
         throw new Error(`Invalid element, children array has a dynamic shape`);
       }
       checkElementChildrenShape(ai, bi);
+    } else if (bi instanceof Array) {
+      throw new Error(`Invalid element, children array has a dynamic shape`);
     }
   }
 }

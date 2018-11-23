@@ -1,4 +1,4 @@
-import { OpNode, component } from "ivi";
+import { OpNode, component, statelessComponent } from "ivi";
 
 export const Stateful = component<OpNode>(() => (child) => child);
-export const Static = component<OpNode>(() => (child) => child, () => false);
+export const Static = statelessComponent<OpNode>((child) => child, () => false);
