@@ -57,11 +57,13 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
       _dirtyCheck(parentElement, children as StateNode);
     } else {
       const domNode = getDOMNode(stateNode);
-      if (_moveNode === true) {
-        _moveNode = false;
-        parentElement.insertBefore(domNode, _nextNode);
+      if (domNode !== null) {
+        if (_moveNode === true) {
+          _moveNode = false;
+          parentElement.insertBefore(domNode, _nextNode);
+        }
+        _nextNode = domNode;
       }
-      _nextNode = domNode;
     }
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | _deepStateFlags;
     _deepStateFlags |= deepState | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
@@ -106,11 +108,13 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     stateNode.flags = _popDeepState(deepState, stateNode.flags);
   } else {
     const domNode = getDOMNode(stateNode);
-    if (_moveNode === true) {
-      _moveNode = false;
-      parentElement.insertBefore(domNode, _nextNode);
+    if (domNode !== null) {
+      if (_moveNode === true) {
+        _moveNode = false;
+        parentElement.insertBefore(domNode, _nextNode);
+      }
+      _nextNode = domNode;
     }
-    _nextNode = domNode;
   }
 }
 
@@ -150,13 +154,20 @@ function _unmountWalk(stateNode: StateNode): void {
 }
 
 export function _unmount(parentElement: Element, stateNode: StateNode): void {
+  let c;
   if ((stateNode.flags & NodeFlags.TrackByKey) !== 0) {
     const children = stateNode.children as StateNode[];
     for (let i = 0; i < children.length; i++) {
-      parentElement.removeChild(getDOMNode(children[i]));
+      c = getDOMNode(children[i]);
+      if (c !== null) {
+        parentElement.removeChild(c);
+      }
     }
   } else {
-    parentElement.removeChild(getDOMNode(stateNode));
+    c = getDOMNode(stateNode);
+    if (c !== null) {
+      parentElement.removeChild(c);
+    }
   }
   _unmountWalk(stateNode);
 }
