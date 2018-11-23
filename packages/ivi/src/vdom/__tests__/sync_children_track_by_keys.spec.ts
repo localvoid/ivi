@@ -1,7 +1,7 @@
 import { _, TrackByKey, key } from "ivi";
 import * as h from "ivi-html";
-import { startRender, checkDOMOps } from "./utils";
-import {} from "../operations";
+import { startRender, checkDOMOps, Stateless } from "./utils";
+import { } from "../operations";
 
 const i = (n: number) => key(n, n);
 const k = (...is: number[]) => h.div(_, _, TrackByKey(is.map(i)));
@@ -2738,6 +2738,46 @@ Object {
   "replaceChild": 0,
 }
 `);
+    });
+  });
+});
+
+describe(`Components`, () => {
+  test(`move component nodes`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([key(0, Stateless(h.h1())), key(1, Stateless(h.h2()))])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([key(1, Stateless(h.h2())), key(0, Stateless(h.h1()))])
+        );
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  <h2 />
+  <h1 />
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
     });
   });
 });

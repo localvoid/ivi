@@ -1,8 +1,32 @@
-import { _ } from "ivi";
+import { _, TrackByKey, key } from "ivi";
 import * as h from "ivi-html";
 import { startRender, checkDOMOps, Stateful } from "./utils";
 
 describe(`update children lists with holes`, () => {
+  test(`single child from null to null`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [null]);
+        const v2 = h.div(_, _, [null]);
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`<div />`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
   test(`single child from null to 1`, () => {
     startRender(r => {
       checkDOMOps(c => {
@@ -381,6 +405,79 @@ Object {
   "createTextNode": 2,
   "insertBefore": 3,
   "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move stateful component and replace root from 2 to null`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([key(1, Stateful(1)), key(2, Stateful(2))])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([key(2, Stateful(null)), key(1, Stateful(1))])
+        );
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move stateful component and replace root from null to 2`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([key(1, Stateful(1)), key(2, Stateful(null))])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([key(2, Stateful(2)), key(1, Stateful(1))])
+        );
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  2
+  1
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 0,
   "replaceChild": 0,
 }
 `);

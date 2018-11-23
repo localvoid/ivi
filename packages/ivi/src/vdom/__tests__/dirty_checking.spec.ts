@@ -12,6 +12,22 @@ describe(`dirty checking`, () => {
     utils = await import("./utils");
   });
 
+  test(`dirtyCheck() should start dirty checking`, () => {
+    utils.startRender(r => {
+      let triggered = 0;
+      const c = ivi.component((h) => {
+        const s = ivi.useSelect(h, () => (triggered++));
+        return () => (s(), html.div());
+      });
+
+      const v = utils.Static(c());
+      r(v);
+      ivi.withNextFrame(ivi.dirtyCheck)();
+
+      expect(triggered).toBe(2);
+    });
+  });
+
   test(`identical vnodes should start dirty checking`, () => {
     utils.startRender(r => {
       let triggered = 0;
@@ -93,6 +109,24 @@ describe(`dirty checking`, () => {
       r(v());
 
       expect(innerTest).toBe(1);
+    });
+  });
+
+  test(`selector factory`, () => {
+    utils.startRender(r => {
+      let triggered = 0;
+      const useTriggered = ivi.selector(() => triggered++);
+      const c = ivi.component((h) => {
+        const s = useTriggered(h);
+        return () => (s(), html.div());
+      });
+
+      const v = utils.Static(c());
+
+      r(v);
+      r(v);
+
+      expect(triggered).toBe(2);
     });
   });
 });
