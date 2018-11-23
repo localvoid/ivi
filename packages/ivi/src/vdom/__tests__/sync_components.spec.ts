@@ -1,11 +1,13 @@
 describe(`sync components`, () => {
   /* tslint:disable:whitespace */
+  let ivi: typeof import("ivi");
   let html: typeof import("ivi-html");
   let utils: typeof import("./utils");
   /* tslint:enable:whitespace */
 
   beforeEach(async () => {
     jest.resetModules();
+    ivi = await import("ivi");
     html = await import("ivi-html");
     utils = await import("./utils");
   });
@@ -211,6 +213,45 @@ Object {
 }
 `);
       });
+    });
+  });
+
+  test(`null root to a div in a stateful component`, () => {
+    utils.startRender<HTMLElement>(r => {
+      const v1 = utils.Stateful(null);
+      r(v1);
+      const v2 = utils.Stateful(html.div());
+      const n = r(v2);
+      expect(n).toMatchInlineSnapshot(`<div />`);
+    });
+  });
+
+  test(`div to a null root in a stateful component`, () => {
+    utils.startRender<HTMLElement>(r => {
+      const v1 = utils.Stateful(html.div());
+      r(v1);
+      const v2 = utils.Stateful(null);
+      const n = r(v2);
+
+      expect(n).toBeNull();
+    });
+  });
+
+  test(`should throw an error when TrackByKey is a root node of stateful component`, () => {
+    utils.startRender<HTMLElement>(r => {
+      const v1 = utils.Stateful(null);
+      r(v1);
+      const v2 = utils.Stateful(ivi.TrackByKey([]));
+      expect(() => r(v2)).toThrowError("TrackByKey");
+    });
+  });
+
+  test(`should throw an error when TrackByKey is a root node of stateless component`, () => {
+    utils.startRender<HTMLElement>(r => {
+      const v1 = utils.Stateless(null);
+      r(v1);
+      const v2 = utils.Stateless(ivi.TrackByKey([]));
+      expect(() => r(v2)).toThrowError("TrackByKey");
     });
   });
 });

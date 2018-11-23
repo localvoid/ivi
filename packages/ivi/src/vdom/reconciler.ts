@@ -340,12 +340,17 @@ export function _mount(
  */
 export function _update(
   parentElement: Element,
-  stateNode: StateNode,
+  stateNode: StateNode | null,
   nextOp: OpNode | string | number | null,
 ): StateNode | null {
-  if (nextOp === null) { // null ops should be only inside of an element children lists
-    _unmount(parentElement, stateNode);
+  if (nextOp === null) {
+    if (stateNode !== null) {
+      _unmount(parentElement, stateNode);
+    }
     return null;
+  }
+  if (stateNode === null) {
+    return _mount(parentElement, nextOp);
   }
   const prevOp = stateNode.op;
   if (prevOp === nextOp) {
