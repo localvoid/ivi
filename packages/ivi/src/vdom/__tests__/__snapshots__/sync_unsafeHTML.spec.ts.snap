@@ -16,13 +16,7 @@ exports[`<div unsafeHTML="<div>abc</div>"> => <div unsafeHTML="<span>abc</span>"
 </div>
 `;
 
-exports[`<div unsafeHTML="<div>abc</div>"> => <div></div> 1`] = `
-<div>
-  <div>
-    abc
-  </div>
-</div>
-`;
+exports[`<div unsafeHTML="<div>abc</div>"> => <div></div> 1`] = `<div />`;
 
 exports[`<div> => <div unsafeHTML="<span>abc</span>"></div> 1`] = `
 <div>

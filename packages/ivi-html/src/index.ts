@@ -51,7 +51,7 @@ function updateValue(
     if (next !== "") {
       (element as HTMLInputElement | HTMLTextAreaElement).value = next as string;
     }
-  } else {
+  } else if (next !== void 0) {
     if ((element as HTMLInputElement | HTMLTextAreaElement).value !== next) {
       (element as HTMLInputElement | HTMLTextAreaElement).value = next as string;
     }
@@ -76,7 +76,7 @@ function updateChecked(
     if (next) {
       (element as HTMLInputElement).checked = next;
     }
-  } else {
+  } else if (next !== void 0) {
     if ((element as HTMLInputElement).checked !== next) {
       (element as HTMLInputElement).checked = next!;
     }

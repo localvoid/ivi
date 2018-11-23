@@ -86,7 +86,7 @@ export const PROPERTY = <T>(v: T | undefined): AttributeDirective<T> => (v === v
  * @param next - Next value
  */
 function updateProperty(element: Element, key: string, prev: any, next: any) {
-  if (prev !== next) {
+  if (prev !== next && next !== void 0) {
     (element as any)[key] = next!;
   }
 }
@@ -114,9 +114,11 @@ export const UNSAFE_HTML = (v: string | undefined): AttributeDirective<string> =
  * @param prev - Previous value
  * @param next - Next value
  */
-function updateUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string) {
+function updateUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string | undefined) {
   if (prev !== next) {
-    if (prev !== void 0 || next !== "") {
+    if (next === void 0) {
+      element.innerHTML = "";
+    } else if (prev !== void 0 || next !== "") {
       element.innerHTML = next!;
     }
   }

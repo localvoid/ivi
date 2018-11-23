@@ -1,6 +1,7 @@
-import { NodeFlags } from "./node_flags";
+import { objectHasOwnProperty } from "../core/shortcuts";
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
+import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
 import { OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData, TRACK_BY_KEY } from "./operations";
 import { StateNode, createStateNode, getDOMNode } from "./state";
@@ -1000,15 +1001,35 @@ function updateStyle(
         style.setProperty(key, bValue);
       }
     }
-  } else if (b !== void 0) {
-    for (key in b) {
-      bValue = (b as { [key: string]: string })[key];
-      if ((a as { [key: string]: string })[key] !== bValue) {
+  } else if (b === void 0) {
+    // b is empty, remove all styles from a
+    for (key in a) {
+      style.removeProperty(key);
+    }
+  } else {
+    let matchCount = 0;
+    for (key in a) {
+      bValue = void 0;
+      if (objectHasOwnProperty.call(b, key) === true) {
+        bValue = b[key];
+        matchCount++;
+      }
+      const aValue = a[key];
+      if (aValue !== bValue) {
         if (bValue !== void 0) {
           style.setProperty(key, bValue);
         } else {
           style.removeProperty(key);
         }
+      }
+    }
+
+    const keys = Object.keys(b);
+    for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
+      if (objectHasOwnProperty.call(a, key) === false) {
+        style.setProperty(key, b[key]);
+        ++matchCount;
       }
     }
   }
@@ -1028,14 +1049,21 @@ function _updateAttr(
   prev: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
   next: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
 ): void {
-  if (prev !== next) {
-    if (key !== "style") {
-      if (typeof next === "object") {
-        next.u(
+  if (key !== "style") {
+    if (typeof next === "object") {
+      next.u(
+        element,
+        key,
+        prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
+        next.v,
+      );
+    } else if (prev !== next) {
+      if (typeof prev === "object") {
+        prev.u(
           element,
           key,
-          prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
-          next.v,
+          (prev as AttributeDirective<any>).v,
+          void 0,
         );
       } else {
         if (typeof next === "boolean") {
@@ -1047,9 +1075,9 @@ function _updateAttr(
           element.setAttribute(key, next as string);
         }
       }
-    } else {
-      updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
     }
+  } else if (prev !== next) {
+    updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
   }
 }
 
@@ -1062,8 +1090,8 @@ function _updateAttr(
  */
 function _updateAttrs(
   element: Element,
-  a: { [key: string]: string | number | boolean | AttributeDirective<any> | undefined } | undefined,
-  b: { [key: string]: string | number | boolean | AttributeDirective<any> | undefined } | undefined,
+  a: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
+  b: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
 ): void {
   let key: string;
 
@@ -1072,9 +1100,29 @@ function _updateAttrs(
     for (key in b!) {
       _updateAttr(element, key, void 0, b![key]);
     }
-  } else if (b !== void 0) {
-    for (key in b) {
-      _updateAttr(element, key, a[key], b[key]);
+  } else if (b === void 0) {
+    // b is empty, remove all attributes from a.
+    for (key in a) {
+      _updateAttr(element, key, a[key], void 0);
+    }
+  } else {
+    let matchCount = 0;
+    for (key in a) {
+      let bValue: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined = void 0;
+      if (objectHasOwnProperty.call(b, key) === true) {
+        bValue = b[key];
+        matchCount++;
+      }
+      _updateAttr(element, key, a[key], bValue);
+    }
+
+    const keys = Object.keys(b);
+    for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
+      if (objectHasOwnProperty.call(a, key) === false) {
+        _updateAttr(element, key, void 0, b[key]);
+        ++matchCount;
+      }
     }
   }
 }
