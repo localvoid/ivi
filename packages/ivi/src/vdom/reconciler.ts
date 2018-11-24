@@ -1,4 +1,6 @@
-import { objectHasOwnProperty } from "../core/shortcuts";
+import {
+  objectHasOwnProperty, nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, elementRemoveAttribute,
+} from "../core/shortcuts";
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
@@ -60,7 +62,12 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
       if (domNode !== null) {
         if (_moveNode === true) {
           _moveNode = false;
-          parentElement.insertBefore(domNode, _nextNode);
+          /* istanbul ignore else */
+          if (DEBUG) {
+            parentElement.insertBefore(domNode, _nextNode);
+          } else {
+            nodeInsertBefore.call(parentElement, domNode, _nextNode);
+          }
         }
         _nextNode = domNode;
       }
@@ -73,7 +80,12 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
       const domNode = stateNode.state as Node;
       if (_moveNode === true) {
         _moveNode = false;
-        parentElement.insertBefore(domNode, _nextNode);
+        /* istanbul ignore else */
+        if (DEBUG) {
+          parentElement.insertBefore(domNode, _nextNode);
+        } else {
+          nodeInsertBefore.call(parentElement, domNode, _nextNode);
+        }
       }
       if (children !== null) {
         if ((flags & NodeFlags.MultipleChildren) !== 0) {
@@ -111,7 +123,12 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     if (domNode !== null) {
       if (_moveNode === true) {
         _moveNode = false;
-        parentElement.insertBefore(domNode, _nextNode);
+        /* istanbul ignore else */
+        if (DEBUG) {
+          parentElement.insertBefore(domNode, _nextNode);
+        } else {
+          nodeInsertBefore.call(parentElement, domNode, _nextNode);
+        }
       }
       _nextNode = domNode;
     }
@@ -160,13 +177,23 @@ export function _unmount(parentElement: Element, stateNode: StateNode): void {
     for (let i = 0; i < children.length; i++) {
       c = getDOMNode(children[i]);
       if (c !== null) {
-        parentElement.removeChild(c);
+        /* istanbul ignore else */
+        if (DEBUG) {
+          parentElement.removeChild(c);
+        } else {
+          nodeRemoveChild.call(parentElement, c);
+        }
       }
     }
   } else {
     c = getDOMNode(stateNode);
     if (c !== null) {
-      parentElement.removeChild(c);
+      /* istanbul ignore else */
+      if (DEBUG) {
+        parentElement.removeChild(c);
+      } else {
+        nodeRemoveChild.call(parentElement, c);
+      }
     }
   }
   _unmountWalk(stateNode);
@@ -178,7 +205,12 @@ function _mountText(
   op: string | number,
 ) {
   const node = document.createTextNode(op as string);
-  parentElement.insertBefore(node, _nextNode);
+  /* istanbul ignore else */
+  if (DEBUG) {
+    parentElement.insertBefore(node, _nextNode);
+  } else {
+    nodeInsertBefore.call(parentElement, node, _nextNode);
+  }
   _nextNode = node;
   stateNode.state = node;
   stateNode.flags = NodeFlags.Text;
@@ -199,7 +231,12 @@ function _createElement(node: Element | undefined, op: OpNode): Element {
      * SVGElement.className returns `SVGAnimatedString`
      */
     if (svg) {
-      (node as SVGElement).setAttribute("class", className);
+      /* istanbul ignore else */
+      if (DEBUG) {
+        (node as SVGElement).setAttribute("class", className);
+      } else {
+        elementSetAttribute.call(node, "class", className);
+      }
     } else {
       (node as HTMLElement).className = className;
     }
@@ -231,7 +268,12 @@ function _mountObject(
           (descriptor as ElementProtoDescriptor).proto,
         );
       }
-      node = (descriptor as ElementProtoDescriptor).node!.cloneNode(false) as Element;
+      /* istanbul ignore else */
+      if (DEBUG) {
+        node = (descriptor as ElementProtoDescriptor).node!.cloneNode(false) as Element;
+      } else {
+        node = nodeCloneNode.call((descriptor as ElementProtoDescriptor).node, false) as Element;
+      }
     }
     node = _createElement(node, op);
 
@@ -250,7 +292,12 @@ function _mountObject(
       }
       stateFlags = _popDeepState(deepStateFlags, stateFlags);
     }
-    parentElement.insertBefore(node, nextNode);
+    /* istanbul ignore else */
+    if (DEBUG) {
+      parentElement.insertBefore(node, nextNode);
+    } else {
+      nodeInsertBefore.call(parentElement, node, nextNode);
+    }
     stateNode.flags = stateFlags;
     stateNode.children = childrenState;
     stateNode.state = node;
@@ -375,7 +422,12 @@ export function _update(
   if ((stateFlags & (NodeFlags.Text | NodeFlags.Element)) !== 0) {
     if (_moveNode === true) {
       _moveNode = false;
-      parentElement.insertBefore(state as Node, _nextNode);
+      /* istanbul ignore else */
+      if (DEBUG) {
+        parentElement.insertBefore(state as Node, _nextNode);
+      } else {
+        nodeInsertBefore.call(parentElement, state, _nextNode);
+      }
     }
     if ((stateFlags & NodeFlags.Text) !== 0) {
       (state as Node).nodeValue = nextOp as string;
@@ -389,7 +441,12 @@ export function _update(
           nextClassName = "";
         }
         if ((stateFlags & NodeFlags.Svg) !== 0) {
-          (state as Element).setAttribute("class", nextClassName);
+          /* istanbul ignore else */
+          if (DEBUG) {
+            (state as Element).setAttribute("class", nextClassName);
+          } else {
+            elementSetAttribute.call(state, "class", nextClassName);
+          }
         } else {
           (state as Element).className = nextClassName;
         }
@@ -486,14 +543,15 @@ export function _update(
   if ((stateFlags & NodeFlags.TrackByKey) !== 0) {
     const nextChildren = ((nextOp as OpNode).data as Key<any, OpNode>[]);
     if (nextChildren.length === 0) {
+      let i = 0;
       if (_singleChild === true) {
         parentElement.textContent = "";
-        for (let i = 0; i < (stateChildren as StateNode[]).length; i++) {
-          _unmountWalk((stateChildren as StateNode[])[i]);
+        while (i < (stateChildren as StateNode[]).length) {
+          _unmountWalk((stateChildren as StateNode[])[i++]);
         }
       } else {
-        for (let i = 0; i < (stateChildren as StateNode[]).length; i++) {
-          _unmount(parentElement, (stateChildren as StateNode[])[i]);
+        while (i < (stateChildren as StateNode[]).length) {
+          _unmount(parentElement, (stateChildren as StateNode[])[i++]);
         }
       }
       stateNode.children = [];
@@ -1098,9 +1156,19 @@ function _updateAttr(
           next = next ? "" : void 0;
         }
         if (next === void 0) {
-          element.removeAttribute(key);
+          /* istanbul ignore else */
+          if (DEBUG) {
+            element.removeAttribute(key);
+          } else {
+            elementRemoveAttribute.call(element, key);
+          }
         } else {
-          element.setAttribute(key, next as string);
+          /* istanbul ignore else */
+          if (DEBUG) {
+            element.setAttribute(key, next as string);
+          } else {
+            elementSetAttribute.call(element, key, next);
+          }
         }
       }
     }
