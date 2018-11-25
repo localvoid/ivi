@@ -15,16 +15,13 @@ let _nextNode!: Node | null;
 let _index!: number;
 let _deepStateFlags!: NodeFlags;
 let _dirtyContext!: boolean;
-let _moveNode!: boolean;
-let _singleChild!: boolean;
+let _moveNode = false;
+let _singleChild = false;
 
 export function _resetState(): void {
   _nextNode = null;
-  _index = 0;
   _deepStateFlags = 0;
   _dirtyContext = false;
-  _moveNode = false;
-  _singleChild = false;
 }
 
 function _pushDeepState(): NodeFlags {
@@ -41,11 +38,13 @@ function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
 
 export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void {
   const { flags, children } = stateNode;
+  let domNode;
+  let deepState;
   let i;
 
   if ((flags & NodeFlags.Component) !== 0) {
     const hooks = stateNode.state as ComponentHooks;
-    const deepState = _pushDeepState();
+    deepState = _pushDeepState();
     if (
       ((flags & NodeFlags.Dirty) !== 0) ||
       (hooks.dirtyCheck !== null && hooks.dirtyCheck(getContext()) === true)
@@ -58,7 +57,7 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
       _dirtyCheck(parentElement, children as StateNode);
     } else {
-      const domNode = getDOMNode(stateNode);
+      domNode = getDOMNode(stateNode);
       if (domNode !== null) {
         if (_moveNode === true) {
           _moveNode = false;
@@ -75,9 +74,9 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | _deepStateFlags;
     _deepStateFlags |= deepState | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
-    const deepState = _pushDeepState();
+    deepState = _pushDeepState();
     if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-      const domNode = stateNode.state as Node;
+      domNode = stateNode.state as Node;
       if (_moveNode === true) {
         _moveNode = false;
         /* istanbul ignore else */
@@ -119,7 +118,7 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     }
     stateNode.flags = _popDeepState(deepState, stateNode.flags);
   } else {
-    const domNode = getDOMNode(stateNode);
+    domNode = getDOMNode(stateNode);
     if (domNode !== null) {
       if (_moveNode === true) {
         _moveNode = false;
@@ -199,6 +198,20 @@ export function _unmount(parentElement: Element, stateNode: StateNode): void {
   _unmountWalk(stateNode);
 }
 
+function _unmountChildren(parentElement: Element, childrenState: StateNode[]): void {
+  let i = 0;
+  if (_singleChild === true) {
+    parentElement.textContent = "";
+    while (i < childrenState.length) {
+      _unmountWalk(childrenState[i++]);
+    }
+  } else {
+    while (i < childrenState.length) {
+      _unmount(parentElement, childrenState[i++]);
+    }
+  }
+}
+
 function _mountText(
   parentElement: Element,
   stateNode: StateNode,
@@ -216,16 +229,17 @@ function _mountText(
   stateNode.flags = NodeFlags.Text;
 }
 
-function _createElement(node: Element | undefined, op: OpNode): Element {
+function _createElement(node: Element | undefined, op: OpNode<ElementData>): Element {
   const opType = op.type;
   const svg = (opType.flags & NodeFlags.Svg) !== 0;
   if (node === void 0) {
+    const tagName = opType.descriptor as string;
     node = svg ?
-      document.createElementNS(SVG_NAMESPACE, opType.descriptor as string) :
-      document.createElement(opType.descriptor as string);
+      document.createElementNS(SVG_NAMESPACE, tagName) :
+      document.createElement(tagName);
   }
 
-  const { className, attrs } = op.data as ElementData;
+  const { className, attrs } = op.data;
   if (className) {
     /**
      * SVGElement.className returns `SVGAnimatedString`
@@ -805,21 +819,11 @@ function updateChildrenTrackByKeys(
   const childrenState = stateNode.children as StateNode[];
   const result = Array(b.length);
   stateNode.children = result;
-  let start = 0;
   let i: number;
 
   if (b.length === 0) {
     if (childrenState.length > 0) {
-      if (_singleChild === true) {
-        parentElement.textContent = "";
-        while (start < childrenState.length) {
-          _unmountWalk(childrenState[start++]);
-        }
-      } else {
-        while (start < childrenState.length) {
-          _unmount(parentElement, childrenState[start++]);
-        }
-      }
+      _unmountChildren(parentElement, childrenState);
     }
   } else if (childrenState.length === 0) {
     i = b.length;
@@ -833,6 +837,7 @@ function updateChildrenTrackByKeys(
     let bEnd = b.length - 1;
     let aEndNode = a[aEnd];
     let bEndNode = b[bEnd];
+    let start = 0;
     let j: number | undefined;
     let sNode: StateNode;
 
@@ -906,16 +911,7 @@ function updateChildrenTrackByKeys(
 
       if (aLength === a.length && updated === 0) {
         // Noone is synced.
-        if (_singleChild === true) {
-          parentElement.textContent = "";
-          for (i = start; i <= aEnd; i++) {
-            _unmountWalk(childrenState[i]);
-          }
-        } else {
-          for (i = start; i <= aEnd; i++) {
-            _unmount(parentElement, childrenState[i]);
-          }
-        }
+        _unmountChildren(parentElement, childrenState);
         while (bEnd >= 0) {
           result[bEnd] = _mount(parentElement, null, b[bEnd--].v);
         }
