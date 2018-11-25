@@ -288,7 +288,7 @@ function _mountObject(
         stateFlags |= NodeFlags.MultipleChildren;
         _mountChildren(node, children, childrenState = []);
       } else {
-        childrenState = _mount(node, children);
+        childrenState = _mount(node, null, children);
       }
       stateFlags = _popDeepState(deepStateFlags, stateFlags);
     }
@@ -314,7 +314,7 @@ function _mountObject(
         throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
       }
     }
-    stateNode.children = _mount(parentElement, root);
+    stateNode.children = _mount(parentElement, null, root);
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | opFlags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else if ((opFlags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
@@ -323,22 +323,22 @@ function _mountObject(
       const prevContext = setContext(
         stateNode.state = { ...getContext(), ...(opData as OpData<ContextData>).data },
       );
-      stateNode.children = _mount(parentElement, (opData as OpData<ContextData>).child);
+      stateNode.children = _mount(parentElement, null, (opData as OpData<ContextData>).child);
       restoreContext(prevContext);
     } else {
       if ((opFlags & NodeFlags.Ref) !== 0) {
         opData.data.v = stateNode;
       }
-      stateNode.children = _mount(parentElement, opData.child);
+      stateNode.children = _mount(parentElement, null, opData.child);
     }
     stateNode.flags = _popDeepState(deepStateFlags, opFlags);
   } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
     const items = opData as Key<any, OpNode>[];
-    const result = new Array(items.length);
+    const result = Array(items.length);
     let i = items.length;
     const deepStateFlags = _pushDeepState();
     while (--i >= 0) {
-      result[i] = _mount(parentElement, items[i].v);
+      result[i] = _mount(parentElement, null, items[i].v);
     }
     stateNode.flags = _popDeepState(deepStateFlags, opFlags);
     stateNode.children = result;
@@ -356,17 +356,20 @@ function _mountChildren(
     if (c instanceof Array) {
       _mountChildren(parentElement, c, result);
     } else {
-      result.push(_mount(parentElement, c));
+      result.push(_mount(parentElement, null, c));
     }
   }
 }
 
 export function _mount(
   parentElement: Element,
+  stateNode: StateNode | null,
   op: OpNode | string | number | null,
 ): StateNode | null {
   if (op !== null) {
-    const stateNode = createStateNode(op);
+    if (stateNode === null) {
+      stateNode = createStateNode(op);
+    }
     if (typeof op === "object") {
       _mountObject(parentElement, stateNode, op);
     } else {
@@ -397,7 +400,7 @@ export function _update(
     return null;
   }
   if (stateNode === null) {
-    return _mount(parentElement, nextOp);
+    return _mount(parentElement, stateNode, nextOp);
   }
   const prevOp = stateNode.op;
   if (prevOp === nextOp) {
@@ -411,7 +414,7 @@ export function _update(
   ) {
     // prevOp can't be === null (stateNode === null)
     _unmount(parentElement, stateNode);
-    return _mount(parentElement, nextOp);
+    return _mount(parentElement, null, nextOp);
   }
 
   const stateFlags = stateNode.flags;
@@ -489,6 +492,7 @@ export function _update(
           stateNode.children = stateChildren === null ?
             _mount(
               state as Element,
+              null,
               nextChildren as string | OpNode,
             ) :
             _update(
@@ -541,30 +545,12 @@ export function _update(
 
   deepStateFlags = _pushDeepState();
   if ((stateFlags & NodeFlags.TrackByKey) !== 0) {
-    const nextChildren = ((nextOp as OpNode).data as Key<any, OpNode>[]);
-    if (nextChildren.length === 0) {
-      let i = 0;
-      if (_singleChild === true) {
-        parentElement.textContent = "";
-        while (i < (stateChildren as StateNode[]).length) {
-          _unmountWalk((stateChildren as StateNode[])[i++]);
-        }
-      } else {
-        while (i < (stateChildren as StateNode[]).length) {
-          _unmount(parentElement, (stateChildren as StateNode[])[i++]);
-        }
-      }
-      stateNode.children = [];
-    } else if ((stateChildren as StateNode[]).length === 0) {
-      return _mount(parentElement, nextOp)!;
-    } else {
-      stateNode.children = updateChildrenTrackByKeys(
-        parentElement,
-        stateNode.children! as StateNode[],
-        (prevOp as OpNode).data as Key<any, OpNode>[],
-        nextChildren,
-      );
-    }
+    updateChildrenTrackByKeys(
+      parentElement,
+      stateNode,
+      (prevOp as OpNode<Key<any, OpNode>[]>).data,
+      (nextOp as OpNode<Key<any, OpNode>[]>).data,
+    );
   } else if ((stateFlags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
     stateNode.children = _update(
       parentElement,
@@ -615,7 +601,7 @@ function _updateChildren(
     } else {
       const stateNode = a[i];
       a[i] = (stateNode === null) ?
-        _mount(parentElement, nextOp) :
+        _mount(parentElement, null, nextOp) :
         _update(parentElement, stateNode, nextOp);
       _index = ++i;
     }
@@ -844,161 +830,182 @@ function _updateChildren(
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
  *
- * @param parentElement - Parent DOM element
- * @param state - Stateful nodes
- * @param a - Previous operations
- * @param b - Next operations
+ * @param parentElement Parent DOM element.
+ * @param stateNode TrackByKey state.
+ * @param a Previous operations.
+ * @param b Next operations.
  */
 function updateChildrenTrackByKeys(
   parentElement: Element,
-  state: StateNode[],
+  stateNode: StateNode,
   a: Key<any, OpNode>[],
   b: Key<any, OpNode>[],
-): StateNode[] {
-  const result = new Array(b.length);
-  let aStartNode = a[0];
-  let bStartNode = b[0];
+): void {
+  const childrenState = stateNode.children as StateNode[];
+  const result = Array(b.length);
+  stateNode.children = result;
   let start = 0;
-  let aEnd = a.length - 1;
-  let bEnd = b.length - 1;
-  let aEndNode = a[aEnd];
-  let bEndNode = b[bEnd];
   let i: number;
-  let j: number | undefined;
-  let stateNode: StateNode;
 
-  // Step 1
-  outer: while (true) {
-    // Sync nodes with the same key at the end.
-    while (aEndNode.k === bEndNode.k) {
-      result[bEnd] = _update(parentElement, state[aEnd--], bEndNode.v);
-      if (start > --bEnd || start > aEnd) {
-        break outer;
-      }
-      aEndNode = a[aEnd];
-      bEndNode = b[bEnd];
-    }
-
-    // Sync nodes with the same key at the beginning.
-    while (aStartNode.k === bStartNode.k) {
-      // delayed update (all updates should be performed from right-to-left)
-      if (++start > aEnd || start > bEnd) {
-        break outer;
-      }
-      aStartNode = a[start];
-      bStartNode = b[start];
-    }
-
-    break;
-  }
-
-  if (start > aEnd) {
-    // All nodes from a are synced, insert the rest from b.
-    while (bEnd >= start) {
-      result[bEnd] = _mount(parentElement, b[bEnd--].v);
-    }
-  } else if (start > bEnd) {
-    // All nodes from b are synced, remove the rest from a.
-    i = start;
-    do {
-      _unmount(parentElement, state[i++]);
-    } while (i <= aEnd);
-  } else { // Step 2
-    const aLength = aEnd - start + 1;
-    const bLength = bEnd - start + 1;
-    const nullableState = state as Array<StateNode | null>;
-
-    // Mark all nodes as inserted.
-    const sources = new Array(bLength);
-    for (i = 0; i < bLength; ++i) {
-      sources[i] = -1;
-    }
-
-    // When pos === 1000000, it means that one of the nodes in the wrong position.
-    let pos = 0;
-    let updated = 0;
-
-    const keyIndex = new Map<any, number>();
-    // Build an index that maps keys to their locations in the new children list.
-    for (j = start; j <= bEnd; ++j) {
-      keyIndex.set(b[j].k, j);
-    }
-
-    for (i = start; i <= aEnd && updated < bLength; ++i) {
-      j = keyIndex.get(a[i].k);
-      if (j !== void 0) {
-        pos = (pos > j) ? 1000000 : j;
-        ++updated;
-        sources[j - start] = i;
-        result[j] = state[i];
-        nullableState[i] = null;
-      }
-    }
-
-    if (aLength === a.length && updated === 0) {
-      // Noone is synced.
+  if (b.length === 0) {
+    if (childrenState.length > 0) {
       if (_singleChild === true) {
         parentElement.textContent = "";
-        for (i = start; i <= aEnd; i++) {
-          _unmountWalk(state[i]);
+        while (start < childrenState.length) {
+          _unmountWalk(childrenState[start++]);
         }
       } else {
-        for (i = start; i <= aEnd; i++) {
-          _unmount(parentElement, state[i]);
-        }
-      }
-      while (bEnd >= 0) {
-        result[bEnd] = _mount(parentElement, b[bEnd--].v);
-      }
-    } else {
-      // Step 3
-      for (i = start; i <= aEnd; i++) {
-        stateNode = state[i];
-        if (stateNode !== null) {
-          _unmount(parentElement, stateNode);
-        }
-      }
-
-      let opNode;
-      if (pos === 1000000) {
-        const seq = lis(sources);
-        j = seq.length - 1;
-        i = bLength;
-        while (--i >= 0) {
-          pos = start + i;
-          opNode = b[pos].v;
-          if (sources[i] === -1) {
-            result[pos] = _mount(parentElement, opNode);
-          } else {
-            stateNode = result[pos];
-            if (j < 0 || i !== seq[j]) {
-              _moveNode = true;
-            } else {
-              --j;
-            }
-            result[pos] = _update(parentElement, stateNode, opNode);
-            _moveNode = false;
-          }
-        }
-      } else {
-        i = bLength;
-        while (--i >= 0) {
-          pos = start + i;
-          opNode = b[pos].v;
-          result[pos] = (sources[i] === -1) ?
-            _mount(parentElement, opNode) :
-            _update(parentElement, result[pos], opNode);
+        while (start < childrenState.length) {
+          _unmount(parentElement, childrenState[start++]);
         }
       }
     }
-  }
+  } else if (childrenState.length === 0) {
+    i = b.length;
+    while (--i >= 0) {
+      result[i] = _mount(parentElement, null, b[i].v);
+    }
+  } else {
+    let aStartNode = a[0];
+    let bStartNode = b[0];
+    let aEnd = a.length - 1;
+    let bEnd = b.length - 1;
+    let aEndNode = a[aEnd];
+    let bEndNode = b[bEnd];
+    let j: number | undefined;
+    let sNode: StateNode;
 
-  // update nodes from Step 1 (prefix only)
-  while (--start >= 0) {
-    result[start] = _update(parentElement, state[start], b[start].v);
-  }
+    // Step 1
+    outer: while (true) {
+      // Sync nodes with the same key at the end.
+      while (aEndNode.k === bEndNode.k) {
+        result[bEnd] = _update(parentElement, childrenState[aEnd--], bEndNode.v);
+        if (start > --bEnd || start > aEnd) {
+          break outer;
+        }
+        aEndNode = a[aEnd];
+        bEndNode = b[bEnd];
+      }
 
-  return result;
+      // Sync nodes with the same key at the beginning.
+      while (aStartNode.k === bStartNode.k) {
+        // delayed update (all updates should be performed from right-to-left)
+        if (++start > aEnd || start > bEnd) {
+          break outer;
+        }
+        aStartNode = a[start];
+        bStartNode = b[start];
+      }
+
+      break;
+    }
+
+    if (start > aEnd) {
+      // All nodes from a are synced, insert the rest from b.
+      while (bEnd >= start) {
+        result[bEnd] = _mount(parentElement, null, b[bEnd--].v);
+      }
+    } else if (start > bEnd) {
+      // All nodes from b are synced, remove the rest from a.
+      i = start;
+      do {
+        _unmount(parentElement, childrenState[i++]);
+      } while (i <= aEnd);
+    } else { // Step 2
+      const aLength = aEnd - start + 1;
+      const bLength = bEnd - start + 1;
+      const nullableState = childrenState as Array<StateNode | null>;
+
+      // Mark all nodes as inserted.
+      const sources = Array(bLength);
+      for (i = 0; i < bLength; ++i) {
+        sources[i] = -1;
+      }
+
+      // When pos === 1000000, it means that one of the nodes in the wrong position.
+      let pos = 0;
+      let updated = 0;
+
+      const keyIndex = new Map<any, number>();
+      // Build an index that maps keys to their locations in the new children list.
+      for (j = start; j <= bEnd; ++j) {
+        keyIndex.set(b[j].k, j);
+      }
+
+      for (i = start; i <= aEnd && updated < bLength; ++i) {
+        j = keyIndex.get(a[i].k);
+        if (j !== void 0) {
+          pos = (pos > j) ? 1000000 : j;
+          ++updated;
+          sources[j - start] = i;
+          result[j] = childrenState[i];
+          nullableState[i] = null;
+        }
+      }
+
+      if (aLength === a.length && updated === 0) {
+        // Noone is synced.
+        if (_singleChild === true) {
+          parentElement.textContent = "";
+          for (i = start; i <= aEnd; i++) {
+            _unmountWalk(childrenState[i]);
+          }
+        } else {
+          for (i = start; i <= aEnd; i++) {
+            _unmount(parentElement, childrenState[i]);
+          }
+        }
+        while (bEnd >= 0) {
+          result[bEnd] = _mount(parentElement, null, b[bEnd--].v);
+        }
+      } else {
+        // Step 3
+        for (i = start; i <= aEnd; i++) {
+          sNode = childrenState[i];
+          if (sNode !== null) {
+            _unmount(parentElement, sNode);
+          }
+        }
+
+        let opNode;
+        if (pos === 1000000) {
+          const seq = lis(sources);
+          j = seq.length - 1;
+          i = bLength;
+          while (--i >= 0) {
+            pos = start + i;
+            opNode = b[pos].v;
+            if (sources[i] === -1) {
+              result[pos] = _mount(parentElement, null, opNode);
+            } else {
+              sNode = result[pos];
+              if (j < 0 || i !== seq[j]) {
+                _moveNode = true;
+              } else {
+                --j;
+              }
+              result[pos] = _update(parentElement, sNode, opNode);
+              _moveNode = false;
+            }
+          }
+        } else {
+          i = bLength;
+          while (--i >= 0) {
+            pos = start + i;
+            opNode = b[pos].v;
+            result[pos] = (sources[i] === -1) ?
+              _mount(parentElement, null, opNode) :
+              _update(parentElement, result[pos], opNode);
+          }
+        }
+      }
+    }
+
+    // update nodes from Step 1 (prefix only)
+    while (--start >= 0) {
+      result[start] = _update(parentElement, childrenState[start], b[start].v);
+    }
+  }
 }
 
 /**

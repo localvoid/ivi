@@ -51,7 +51,7 @@ export function dirtyCheck() {
       if (state) {
         root.state = _update(container, state, next);
       } else {
-        root.state = _mount(container, next);
+        root.state = _mount(container, null, next);
         /* istanbul ignore if */
         /**
          * Fix for the Mouse Event bubbling on iOS devices.

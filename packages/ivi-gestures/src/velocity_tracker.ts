@@ -47,7 +47,7 @@ export interface VelocityTracker {
  */
 export function createVelocityTracker(): VelocityTracker {
   return {
-    samples: new Array<PointAtTime | null>(HISTORY_SIZE).fill(null),
+    samples: Array<PointAtTime | null>(HISTORY_SIZE).fill(null),
     index: 0,
   };
 }
