@@ -1,6 +1,6 @@
 import { NOOP } from "../core/noop";
 import { elementRemoveAttribute } from "../core/shortcuts";
-import { scheduleMutationEffect } from "../scheduler";
+import { scheduleLayoutEffect } from "../scheduler";
 
 /**
  * Attribute directives are used to extend reconciliation algorithm.
@@ -177,7 +177,7 @@ function updateAutofocus(
   next: boolean | undefined,
 ) {
   if (prev === void 0 && next) {
-    scheduleMutationEffect(() => { (element as HTMLElement).focus(); });
+    scheduleLayoutEffect(() => { (element as HTMLElement).focus(); });
   }
 }
 
