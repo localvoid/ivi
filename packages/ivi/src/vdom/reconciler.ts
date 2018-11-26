@@ -172,18 +172,7 @@ function _unmountWalk(stateNode: StateNode): void {
 export function _unmount(parentElement: Element, stateNode: StateNode): void {
   let n;
   if ((stateNode.flags & NodeFlags.TrackByKey) !== 0) {
-    const children = stateNode.children as Array<StateNode | null>;
-    for (let i = 0; i < children.length; i++) {
-      const c = children[i];
-      if (c !== null && (n = getDOMNode(c)) !== null) {
-        /* istanbul ignore else */
-        if (DEBUG) {
-          parentElement.removeChild(n);
-        } else {
-          nodeRemoveChild.call(parentElement, n);
-        }
-      }
-    }
+    _unmountTrackByKeysChildren(parentElement, stateNode.children as StateNode[]);
   } else {
     if ((n = getDOMNode(stateNode)) !== null) {
       /* istanbul ignore else */
@@ -193,11 +182,11 @@ export function _unmount(parentElement: Element, stateNode: StateNode): void {
         nodeRemoveChild.call(parentElement, n);
       }
     }
+    _unmountWalk(stateNode);
   }
-  _unmountWalk(stateNode);
 }
 
-function _unmountChildren(parentElement: Element, childrenState: StateNode[]): void {
+function _unmountTrackByKeysChildren(parentElement: Element, childrenState: StateNode[]): void {
   let i = 0;
   if (_singleChild === true) {
     parentElement.textContent = "";
@@ -284,7 +273,7 @@ function _mountObject(
         throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
       }
     }
-    stateNode.children = _mount(parentElement, null, root);
+    stateNode.children = _mount(parentElement, root);
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | opFlags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else {
@@ -318,7 +307,7 @@ function _mountObject(
           stateNode.flags |= NodeFlags.MultipleChildren;
           _mountChildren(node, children, childrenState = []);
         } else {
-          childrenState = _mount(node, null, children);
+          childrenState = _mount(node, children);
         }
       }
       /* istanbul ignore else */
@@ -335,20 +324,20 @@ function _mountObject(
         const prevContext = setContext(
           stateNode.state = { ...getContext(), ...(opData as OpData<ContextData>).data },
         );
-        stateNode.children = _mount(parentElement, null, (opData as OpData<ContextData>).child);
+        stateNode.children = _mount(parentElement, (opData as OpData<ContextData>).child);
         restoreContext(prevContext);
       } else {
         if ((opFlags & NodeFlags.Ref) !== 0) {
           opData.data.v = stateNode;
         }
-        stateNode.children = _mount(parentElement, null, opData.child);
+        stateNode.children = _mount(parentElement, opData.child);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
       let i = (opData as Key<any, OpNode>[]).length;
       const result = Array(i);
       stateNode.children = result;
       while (--i >= 0) {
-        result[i] = _mount(parentElement, null, (opData as Key<any, OpNode>[])[i].v);
+        result[i] = _mount(parentElement, (opData as Key<any, OpNode>[])[i].v);
       }
     }
     stateNode.flags = _popDeepState(deepStateFlags, stateNode.flags | opFlags);
@@ -366,20 +355,17 @@ function _mountChildren(
     if (c instanceof Array) {
       _mountChildren(parentElement, c, result);
     } else {
-      result.push(_mount(parentElement, null, c));
+      result.push(_mount(parentElement, c));
     }
   }
 }
 
 export function _mount(
   parentElement: Element,
-  stateNode: StateNode | null,
   op: OpNode | string | number | null,
 ): StateNode | null {
   if (op !== null) {
-    if (stateNode === null) {
-      stateNode = createStateNode(op);
-    }
+    const stateNode = createStateNode(op);
     if (typeof op === "object") {
       _mountObject(parentElement, stateNode, op);
     } else {
@@ -410,22 +396,22 @@ export function _update(
     return null;
   }
   if (stateNode === null) {
-    return _mount(parentElement, stateNode, nextOp);
+    return _mount(parentElement, nextOp);
   }
   const prevOp = stateNode.op;
   if (prevOp === nextOp) {
     _dirtyCheck(parentElement, stateNode);
     return stateNode;
   }
-  stateNode.op = nextOp;
   if (
     (typeof prevOp !== typeof nextOp) ||
     (typeof prevOp === "object" && prevOp.type !== (nextOp as OpNode).type)
   ) {
     // prevOp can't be === null (stateNode === null)
     _unmount(parentElement, stateNode);
-    return _mount(parentElement, null, nextOp);
+    return _mount(parentElement, nextOp);
   }
+  stateNode.op = nextOp;
 
   const stateFlags = stateNode.flags;
   const state = stateNode.state;
@@ -525,7 +511,7 @@ export function _update(
           } else {
             _singleChild = true;
             stateNode.children = stateChildren === null ?
-              _mount(state as Element, null, nextChildren) :
+              _mount(state as Element, nextChildren) :
               _update(state as Element, stateChildren as StateNode, nextChildren);
             _singleChild = false;
           }
@@ -575,7 +561,7 @@ function _updateChildren(
     } else {
       const stateNode = a[i];
       a[i] = (stateNode === null) ?
-        _mount(parentElement, null, nextOp) :
+        _mount(parentElement, nextOp) :
         _update(parentElement, stateNode, nextOp);
       _index = ++i;
     }
@@ -822,12 +808,12 @@ function updateChildrenTrackByKeys(
 
   if (b.length === 0) {
     if (childrenState.length > 0) {
-      _unmountChildren(parentElement, childrenState);
+      _unmountTrackByKeysChildren(parentElement, childrenState);
     }
   } else if (childrenState.length === 0) {
     i = b.length;
     while (--i >= 0) {
-      result[i] = _mount(parentElement, null, b[i].v);
+      result[i] = _mount(parentElement, b[i].v);
     }
   } else {
     let aStartNode = a[0];
@@ -838,7 +824,7 @@ function updateChildrenTrackByKeys(
     let bEndNode = b[bEnd];
     let start = 0;
     let j: number | undefined;
-    let sNode: StateNode;
+    let sNode: StateNode | null;
 
     // Step 1
     outer: while (true) {
@@ -868,13 +854,14 @@ function updateChildrenTrackByKeys(
     if (start > aEnd) {
       // All nodes from a are synced, insert the rest from b.
       while (bEnd >= start) {
-        result[bEnd] = _mount(parentElement, null, b[bEnd--].v);
+        result[bEnd] = _mount(parentElement, b[bEnd--].v);
       }
     } else if (start > bEnd) {
       // All nodes from b are synced, remove the rest from a.
       i = start;
       do {
-        _unmount(parentElement, childrenState[i++]);
+        sNode = childrenState[i++];
+        _unmount(parentElement, sNode);
       } while (i <= aEnd);
     } else { // Step 2
       const aLength = aEnd - start + 1;
@@ -910,9 +897,9 @@ function updateChildrenTrackByKeys(
 
       if (aLength === a.length && updated === 0) {
         // Noone is synced.
-        _unmountChildren(parentElement, childrenState);
+        _unmountTrackByKeysChildren(parentElement, childrenState);
         while (bEnd >= 0) {
-          result[bEnd] = _mount(parentElement, null, b[bEnd--].v);
+          result[bEnd] = _mount(parentElement, b[bEnd--].v);
         }
       } else {
         // Step 3
@@ -932,7 +919,7 @@ function updateChildrenTrackByKeys(
             pos = start + i;
             opNode = b[pos].v;
             if (sources[i] === -1) {
-              result[pos] = _mount(parentElement, null, opNode);
+              result[pos] = _mount(parentElement, opNode);
             } else {
               sNode = result[pos];
               if (j < 0 || i !== seq[j]) {
@@ -950,7 +937,7 @@ function updateChildrenTrackByKeys(
             pos = start + i;
             opNode = b[pos].v;
             result[pos] = (sources[i] === -1) ?
-              _mount(parentElement, null, opNode) :
+              _mount(parentElement, opNode) :
               _update(parentElement, result[pos], opNode);
           }
         }

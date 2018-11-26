@@ -262,7 +262,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  * @returns Track by key OpNode.
  */
 export const TrackByKey = DEBUG ?
-  <T>(items: Key<T, OpNode | number | string | null>[]) => {
+  <T>(items: Key<T, OpNode | number | string>[]) => {
     /* istanbul ignore else */
     if (DEBUG) {
       const keys = new Set<T>();
@@ -279,4 +279,4 @@ export const TrackByKey = DEBUG ?
     }
     return createOpNode(TRACK_BY_KEY, items);
   } :
-  <T>(items: Key<T, OpNode | number | string | null>[]) => createOpNode(TRACK_BY_KEY, items);
+  <T>(items: Key<T, OpNode | number | string>[]) => createOpNode(TRACK_BY_KEY, items);
