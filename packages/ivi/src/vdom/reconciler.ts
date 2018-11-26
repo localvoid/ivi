@@ -170,28 +170,27 @@ function _unmountWalk(stateNode: StateNode): void {
 }
 
 export function _unmount(parentElement: Element, stateNode: StateNode): void {
-  let c;
+  let n;
   if ((stateNode.flags & NodeFlags.TrackByKey) !== 0) {
-    const children = stateNode.children as StateNode[];
+    const children = stateNode.children as Array<StateNode | null>;
     for (let i = 0; i < children.length; i++) {
-      c = getDOMNode(children[i]);
-      if (c !== null) {
+      const c = children[i];
+      if (c !== null && (n = getDOMNode(c)) !== null) {
         /* istanbul ignore else */
         if (DEBUG) {
-          parentElement.removeChild(c);
+          parentElement.removeChild(n);
         } else {
-          nodeRemoveChild.call(parentElement, c);
+          nodeRemoveChild.call(parentElement, n);
         }
       }
     }
   } else {
-    c = getDOMNode(stateNode);
-    if (c !== null) {
+    if ((n = getDOMNode(stateNode)) !== null) {
       /* istanbul ignore else */
       if (DEBUG) {
-        parentElement.removeChild(c);
+        parentElement.removeChild(n);
       } else {
-        nodeRemoveChild.call(parentElement, c);
+        nodeRemoveChild.call(parentElement, n);
       }
     }
   }

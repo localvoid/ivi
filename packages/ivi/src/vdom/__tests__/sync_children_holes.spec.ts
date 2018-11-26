@@ -484,4 +484,88 @@ Object {
       });
     });
   });
+
+  test(`TrackByKey nodes mixed with basic nodes should be removed`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [1, TrackByKey([key(0, 0)])]);
+        const v2 = h.div(_, _, [1, null]);
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`TrackByKey null nodes mixed with basic nodes should be removed when TrackByKey is removed`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [1, TrackByKey([key(2, 2)])]);
+        const v2 = h.div(_, _, [1, null]);
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`TrackByKey null nodes mixed with basic nodes should be removed when TrackByKey has an empty array`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [1, TrackByKey([key(2, 2)])]);
+        const v2 = h.div(_, _, [1, TrackByKey([])]);
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
 });

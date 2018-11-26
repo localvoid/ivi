@@ -262,7 +262,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  * @returns Track by key OpNode.
  */
 export const TrackByKey = DEBUG ?
-  <T>(items: Key<T, OpNode | number | string>[]) => {
+  <T>(items: Key<T, OpNode | number | string | null>[]) => {
     /* istanbul ignore else */
     if (DEBUG) {
       const keys = new Set<T>();
@@ -272,11 +272,11 @@ export const TrackByKey = DEBUG ?
           throw new Error(`Invalid key, found duplicated key: ${k}`);
         }
         keys.add(k);
-        if (typeof v === "object" && v.type === TRACK_BY_KEY) {
+        if (typeof v === "object" && v !== null && v.type === TRACK_BY_KEY) {
           throw new Error(`Invalid child OpNode, TrackByKey can't have TrackByKey children`);
         }
       }
     }
     return createOpNode(TRACK_BY_KEY, items);
   } :
-  <T>(items: Key<T, OpNode | number | string>[]) => createOpNode(TRACK_BY_KEY, items);
+  <T>(items: Key<T, OpNode | number | string | null>[]) => createOpNode(TRACK_BY_KEY, items);
