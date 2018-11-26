@@ -99,6 +99,7 @@ export {
   createOpType, createOpNode,
   Events, Ref, Context, TrackByKey, key
 } from "./vdom/operations";
+export { StateNode } from "./vdom/state";
 export { htmlElement, svgElement, elementProto, component, statelessComponent } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
@@ -125,7 +126,7 @@ export { EventHandlerFlags, EventHandler } from "./events/event_handler";
 export { DispatchTarget } from "./events/dispatch_target";
 export { accumulateDispatchTargets } from "./events/accumulate_dispatch_targets";
 export { dispatchEvent } from "./events/dispatch_event";
-export { SyntheticNativeEvent } from "./events/synthetic_native_event";
+export { SyntheticNativeEvent, createNativeEvent } from "./events/synthetic_native_event";
 export {
   NativeEventDispatcher, createNativeEventDispatcher,
   beforeNativeEvent, afterNativeEvent,

@@ -1,10 +1,15 @@
-import { _, SyntheticEvent, SyntheticNativeEvent, dispatchEvent, onClick, EventFlags } from "ivi";
+import { _, StateNode, createNativeEvent, dispatchEvent, onClick, EventFlags } from "ivi";
+import { SyntheticEventFlags } from "../flags";
+
+function createEvent(flags: SyntheticEventFlags, timestamp: number, node: StateNode | null) {
+  return { flags, timestamp, node };
+}
 
 test("empty dispatch target array should not raise exceptions", () => {
   expect(() => {
     dispatchEvent(
       [],
-      new SyntheticEvent(0, 0),
+      createEvent(0, 0, null),
       true,
     );
   }).not.toThrow();
@@ -14,7 +19,7 @@ test("empty dispatch target array should not invoke custom dispatch function", (
   let invoked = false;
   dispatchEvent(
     [],
-    new SyntheticEvent(0, 0),
+    createEvent(0, 0, null),
     true,
     () => { invoked = true; },
   );
@@ -25,12 +30,12 @@ test("empty dispatch target array should not invoke custom dispatch function", (
 test("dispatch onClick", () => {
   let invoked = 0;
 
-  const target = document.createElement("div");
-  const h = onClick(() => { invoked++; });
+  const target = {};
+  const handlers = onClick(() => { invoked++; });
 
   dispatchEvent(
-    [{ target: target, handlers: h }],
-    new SyntheticNativeEvent<MouseEvent>(0, target, 0, new MouseEvent("click")),
+    [{ target, handlers }],
+    createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
     true,
   );
 
@@ -40,12 +45,12 @@ test("dispatch onClick", () => {
 test("dispatch to adjacent onClick handlers", () => {
   let invoked = 0;
 
-  const target = document.createElement("div");
+  const target = {};
   const h = onClick(() => { invoked++; });
 
   dispatchEvent(
-    [{ target: target, handlers: [h, h] }],
-    new SyntheticNativeEvent<MouseEvent>(0, target, 0, new MouseEvent("click")),
+    [{ target, handlers: [h, h] }],
+    createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
     true,
   );
 
@@ -55,12 +60,12 @@ test("dispatch to adjacent onClick handlers", () => {
 test("dispatch to several onClick handlers", () => {
   let invoked = 0;
 
-  const target = document.createElement("div");
+  const target = {};
   const h = onClick(() => { invoked++; });
 
   dispatchEvent(
-    [{ target: target, handlers: h }, { target: target, handlers: h }],
-    new SyntheticNativeEvent<MouseEvent>(0, target, 0, new MouseEvent("click")),
+    [{ target, handlers: h }, { target, handlers: h }],
+    createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
     true,
   );
 
@@ -71,13 +76,13 @@ describe("event flow", () => {
   test("adjacent handlers should be invoked from left to right", () => {
     const order: number[] = [];
 
-    const target = document.createElement("span");
+    const target = {};
     const h1 = onClick(() => { order.push(1); });
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
-      [{ target: target, handlers: [h1, h2] }],
-      new SyntheticNativeEvent<MouseEvent>(0, target, 0, new MouseEvent("click")),
+      [{ target, handlers: [h1, h2] }],
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -87,14 +92,12 @@ describe("event flow", () => {
   test("bubbling phase should execute handlers from left to right (bottom-to-up)", () => {
     const order: number[] = [];
 
-    const t1 = document.createElement("span");
-    const t2 = document.createElement("div");
     const h1 = onClick(() => { order.push(1); });
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
-      [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t2, 0, new MouseEvent("click")),
+      [{ target: {}, handlers: h1 }, { target: {}, handlers: h2 }],
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -104,14 +107,12 @@ describe("event flow", () => {
   test("capture phase should execute handlers from right to left (top-to-bottom)", () => {
     const order: number[] = [];
 
-    const t1 = document.createElement("span");
-    const t2 = document.createElement("div");
     const h1 = onClick(() => { order.push(1); }, true);
     const h2 = onClick(() => { order.push(2); }, true);
 
     dispatchEvent(
-      [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t2, 0, new MouseEvent("click")),
+      [{ target: {}, handlers: h1 }, { target: {}, handlers: h2 }],
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -121,14 +122,12 @@ describe("event flow", () => {
   test("capture phase should be executed before bubbling", () => {
     const order: number[] = [];
 
-    const t1 = document.createElement("span");
-    const t2 = document.createElement("div");
     const h1 = onClick(() => { order.push(1); });
     const h2 = onClick(() => { order.push(2); }, true);
 
     dispatchEvent(
-      [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t2, 0, new MouseEvent("click")),
+      [{ target: {}, handlers: h1 }, { target: {}, handlers: h2 }],
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -138,14 +137,14 @@ describe("event flow", () => {
   test("bubbling phase should be stopped with stopPropagation()", () => {
     const order: number[] = [];
 
-    const t1 = document.createElement("div");
-    const t2 = document.createElement("span");
+    const t1 = {};
+    const t2 = {};
     const h1 = onClick(() => (order.push(1), EventFlags.StopPropagation));
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
       [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t2, 0, new MouseEvent("click")),
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -155,14 +154,14 @@ describe("event flow", () => {
   test("capture phase should be stopped with stopPropagation()", () => {
     const order: number[] = [];
 
-    const t1 = document.createElement("div");
-    const t2 = document.createElement("span");
+    const t1 = {};
+    const t2 = {};
     const h1 = onClick(() => { order.push(1); }, true);
     const h2 = onClick(() => (order.push(2), EventFlags.StopPropagation), true);
 
     dispatchEvent(
       [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t2, 0, new MouseEvent("click")),
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -172,14 +171,14 @@ describe("event flow", () => {
   test("bubbling phase should be stopped with stopPropagation() from capture phase", () => {
     const order: number[] = [];
 
-    const t1 = document.createElement("div");
-    const t2 = document.createElement("span");
+    const t1 = {};
+    const t2 = {};
     const h1 = onClick(() => { order.push(1); });
     const h2 = onClick(() => (order.push(2), EventFlags.StopPropagation), true);
 
     dispatchEvent(
       [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t2, 0, new MouseEvent("click")),
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
 
@@ -188,13 +187,13 @@ describe("event flow", () => {
 });
 
 test(`returning invalid EventFlags should raise an exception`, () => {
-  const t1 = document.createElement("div");
+  const t1 = {};
   const h1 = onClick(() => (10));
 
   expect(() => {
     dispatchEvent(
       [{ target: t1, handlers: h1 }],
-      new SyntheticNativeEvent<MouseEvent>(0, t1, 0, new MouseEvent("click")),
+      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
   }).toThrowError(`Invalid`);

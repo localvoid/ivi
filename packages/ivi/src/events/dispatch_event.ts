@@ -1,3 +1,4 @@
+import { StateNode } from "../vdom/state";
 import { EventFlags, SyntheticEventFlags } from "./flags";
 import { DispatchTarget } from "./dispatch_target";
 import { EventHandlerFlags, EventHandler } from "./event_handler";
@@ -60,9 +61,10 @@ function dispatchEventToLocalEventHandlers(
 ): void {
   const handlers = target.handlers;
   let flags: EventFlags = 0;
-
+  event.node = target.target as StateNode;
   if (handlers instanceof Array) {
-    for (const handler of handlers) {
+    for (let i = 0; i < handlers.length; ++i) {
+      const handler = handlers[i];
       if (handler.d.flags & matchFlags) {
         flags |= _dispatch(handler, dispatch, event);
       }

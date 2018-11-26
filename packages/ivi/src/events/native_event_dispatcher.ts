@@ -5,7 +5,7 @@ import { EventHandler } from "./event_handler";
 import { DispatchTarget } from "./dispatch_target";
 import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
 import { dispatchEvent } from "./dispatch_event";
-import { SyntheticNativeEvent } from "./synthetic_native_event";
+import { SyntheticNativeEvent, createNativeEvent } from "./synthetic_native_event";
 
 /**
  * NativeEventSource dispatches native events.
@@ -65,7 +65,7 @@ export function createNativeEventDispatcher<E extends Event>(
     accumulateDispatchTargets(targets, target, matchEventSource);
 
     if (targets.length || source.before || source.after) {
-      const syntheticEvent = new SyntheticNativeEvent<E>(0, target, ev.timeStamp, ev as E);
+      const syntheticEvent = createNativeEvent(0, ev.timeStamp, null, ev as E);
 
       dispatchToListeners(source.before, syntheticEvent);
       if (targets.length) {
@@ -151,6 +151,7 @@ function dispatchToListeners<E extends Event>(
   ev: SyntheticNativeEvent<E>,
 ): void {
   if (listeners !== null) {
+    ev.node = null;
     const cbs = listeners.slice();
     for (let i = 0; i < cbs.length; i++) {
       cbs[i](ev);

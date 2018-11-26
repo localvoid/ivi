@@ -1,9 +1,10 @@
 import { SyntheticEventFlags } from "./flags";
+import { StateNode } from "../vdom/state";
 
 /**
- * SyntheticEvent is a base class for all synthetic events.
+ * SyntheticEvent is an interface that should be supported by all synthetic events.
  */
-export class SyntheticEvent {
+export interface SyntheticEvent {
   /**
    * See {@link SyntheticEventFlags} for details.
    */
@@ -12,12 +13,8 @@ export class SyntheticEvent {
    * Timestamp when event was created.
    */
   readonly timestamp: number;
-
-  constructor(
-    flags: SyntheticEventFlags,
-    timestamp: number,
-  ) {
-    this.flags = flags;
-    this.timestamp = timestamp;
-  }
+  /**
+   * State node.
+   */
+  node: StateNode | null;
 }

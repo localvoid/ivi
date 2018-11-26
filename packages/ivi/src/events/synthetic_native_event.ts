@@ -1,27 +1,22 @@
 import { SyntheticEventFlags } from "./flags";
 import { SyntheticEvent } from "./synthetic_event";
+import { StateNode } from "../vdom/state";
 
 /**
  * SyntheticNativeEvent is a wrapper for native events.
  */
-export class SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
-  /**
-   * Event target.
-   */
-  readonly target: EventTarget;
-  /**
-   * Native event.
-   */
+export interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
   readonly native: E;
+}
 
-  constructor(
-    flags: SyntheticEventFlags,
-    target: EventTarget,
-    timestamp: number,
-    native: E,
-  ) {
-    super(flags, timestamp);
-    this.target = target;
-    this.native = native;
-  }
+/**
+ * createNativeEvent creates a wrapper for a native event.
+ */
+export function createNativeEvent<E extends Event>(
+  flags: SyntheticEventFlags,
+  timestamp: number,
+  node: StateNode | null,
+  native: E,
+): SyntheticNativeEvent<E> {
+  return { flags, timestamp, node, native };
 }
