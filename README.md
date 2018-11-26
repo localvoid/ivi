@@ -24,9 +24,9 @@ ivi has a tree shakeable API, so it can scale from simple widgets to complex des
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **3KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.5KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.7KB** (minified+compressed).
 
 ## Quick Start
 
@@ -51,8 +51,7 @@ specify a Virtual DOM to render, and the second one is a DOM node that will be u
 
 Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes.
 
-Factory functions for HTML elements are declared in the `ivi-html` package. All HTML element factories have an interface
-`<T>(className?: string, attrs?: T, children?: OpNodeChildren) => OpNode`. `h1()` function will instantiate a Virtual
+Factory functions for HTML elements are declared in the `ivi-html` package. `h1()` function will instantiate a Virtual
 DOM node for a `<h1>` element.
 
 `_` is a shortcut for an `undefined` value.
@@ -61,7 +60,8 @@ DOM node for a `<h1>` element.
 
 Components API were heavily influenced by the new [React hooks API](https://reactjs.org/docs/hooks-intro.html).
 
-There are several differences in the ivi API that solve some flaws in the React hooks API design:
+There are several differences in the ivi API because we don't need to support concurrent rendering, and because of it we
+could try to solve some flaws in the React hooks API design:
 
 - [Hooks rules](https://reactjs.org/docs/hooks-rules.html)
 - Excessive memory allocations each time component is updated
@@ -76,9 +76,6 @@ function. It is important that outer function doesn't have any access to the `pr
 `invalidate()`, `useEffect()` etc.
 
 Internal "update" function passes input data through dataflow pipelines and returns a Virtual DOM.
-
-API is slightly different from the React hooks API, but it has the same properties and the most important one is
-composability.
 
 ```js
 import { _, component, invalidate, render } from "ivi";
@@ -178,8 +175,7 @@ update priorities and significantly reduces code complexity.
 
 All data structures are optimized to make sure that they are using as least memory as possible, [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) with different ["hacks"](https://github.com/localvoid/ivi/blob/029adbd368acebca2501d59503c65bf34c0d2411/packages/ivi/src/vdom/sync.ts#L74) are
 used everywhere in the code. All frequently accessed data structures always using the same shape, almost all call sites
-in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html). Frequently used
-DOM attributes are stored directly on the Virtual DOM nodes.
+in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
 cases. To find the minimum number of DOM operations when nodes are rearranged it is using a
@@ -207,7 +203,7 @@ Here is a list of different optimization goals (in random order) that we should 
 - Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
 - Increase probability that executed code is JITed (usually depends on the application code size)
 
-Virtual DOM is not the best possible solution if we were trying to find a solution that focuses on direct update
+Virtual DOM is not the best possible solution if we were trying to find a solution that focuses on small updates
 performance, but small updates doesn't have any significant impact on performance, even 2x speedup that reduces time
 from 0.1ms to 0.05ms will be hardly noticeable. Virtual DOM trades update performance to improve performance in many
 other areas.
@@ -316,23 +312,30 @@ sending data snapshots that doesn't contain any information how nodes should be 
 
 ### Virtual DOM
 
-Virtual DOM API is using factory functions to instantiate Virtual DOM nodes:
+Virtual DOM in ivi has some major differences from other implementations. Refs, keys, events are implemented as a
+special nodes instead of attributes. Using special nodes gives an additional flexibility: simple stateless components
+doesn't require creating virtual dom nodes, DOM events can be attached to components.
 
-```ts
-import { Events, onClick } from "ivi";
-import { div } from "ivi-html";
-
-const node = (
-  Events(onClick((ev) => { console.log("click"); }),
-    div("node-class", { id: "unique-id" }),
-  )
-);
-```
+#### Element Factories
 
 All factory functions that create DOM elements have an interface:
 
 ```ts
 type ElementFactory<T> = (className?: string, attrs?: T, children?: OpNodeChildren) => OpNode<T>;
+```
+
+`ivi-html` package contains factories for HTML elements.
+
+`ivi-svg` package contains factoris for SVG elements.
+
+```ts
+import { _, render } from "ivi";
+import { div } from "ivi-html";
+
+render(
+  div(_, _, "Hello World"),
+  document.getElementById("app")!,
+);
 ```
 
 #### Events
@@ -343,6 +346,18 @@ function Events(data: EventHandler | Array<EventHandler | null> | null, child: O
 
 `Events()` node is used to attach event handlers.
 
+```ts
+import { _, Events, onClick, render } from "ivi";
+import { button } from "ivi-html";
+
+render(
+  Events(onClick((ev) => { console.log("click"); }),
+    button(_, _, "Click Me"),
+  ),
+  document.getElementById("app")!,
+);
+```
+
 #### Ref
 
 ```ts
@@ -350,6 +365,22 @@ function Ref(data: Ref<StateNode>, child: OpNode): OpNode<RefData>;
 ```
 
 `Ref()` node is used to capture reference to an instance.
+
+```ts
+import { _, box, Ref, getDOMNode, render } from "ivi";
+import { div } from "ivi-html";
+
+const _ref = box;
+render(
+  Ref(_ref,
+    div(_, _, "Hello World"),
+  ),
+  document.getElementById("app")!,
+);
+
+getDOMNode(_ref.v);
+// => <HTMLDivElement>
+```
 
 #### Context
 
@@ -359,6 +390,24 @@ function Context(data: {}, child: OpNode): OpNode<ContextData>;
 
 `Context()` node is used to assign context.
 
+```ts
+import { _, Context, component, render } from "ivi";
+import { div } from "ivi-html";
+
+const C = component((c) => {
+  const getContextValue = useSelect<undefined, { key: string }>((props, ctx) => ctx.key);
+
+  return () => div(_, _, getContextValue());
+});
+
+render(
+  Context({ key: "value" },
+    C(),
+  ),
+  document.getElementById("app")!,
+);
+```
+
 #### TrackByKey
 
 ```ts
@@ -366,6 +415,21 @@ function TrackByKey(items: Key<any, OpNode | number | string>[]): OpNode<Key<any
 ```
 
 `TrackByKey()` node is used for dynamic children lists.
+
+```ts
+import { _, TrackByKey, key, render } from "ivi";
+import { div, span } from "ivi-html";
+
+const items = [1, 2, 3];
+
+render(
+  div(_, _,
+    TrackByKeys(items.map((i) => key(i, span(_, _, i)))),
+  ),
+  document.getElementById("app")!,
+);
+```
+
 
 #### Attribute Directives
 
