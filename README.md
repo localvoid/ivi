@@ -370,7 +370,7 @@ function Ref(data: Ref<StateNode>, child: OpNode): OpNode<RefData>;
 import { _, box, Ref, getDOMNode, render } from "ivi";
 import { div } from "ivi-html";
 
-const _ref = box;
+const _ref = box<Node | null>(null);
 render(
   Ref(_ref,
     div(_, _, "Hello World"),
@@ -424,7 +424,7 @@ const items = [1, 2, 3];
 
 render(
   div(_, _,
-    TrackByKeys(items.map((i) => key(i, span(_, _, i)))),
+    TrackByKey(items.map((i) => key(i, span(_, _, i)))),
   ),
   document.getElementById("app")!,
 );
