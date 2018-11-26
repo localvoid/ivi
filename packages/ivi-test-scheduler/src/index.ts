@@ -1,2 +1,2 @@
-export const rAF = (fn: (time?: number) => void) => { /**/ };
-export const sMT = (fn: () => void) => { /**/ };
+export function rAF(cb: (time?: number) => void): void { /**/ }
+export function sMT(cb: () => void): void { /**/ }
