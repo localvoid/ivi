@@ -123,1177 +123,1177 @@ export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
 }
 
 /**
- * Creates Virtual DOM HTML element <a>.
+ * Creates OpNode HTML element <a>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <a>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <a>
  */
 export const a = /*#__PURE__*/htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
 
 /**
- * Creates Virtual DOM HTML element <abbr>.
+ * Creates OpNode HTML element <abbr>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <abbr>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <abbr>
  */
 export const abbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("abbr");
 
 /**
- * Creates Virtual DOM HTML element <address>.
+ * Creates OpNode HTML element <address>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <address>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <address>
  */
 export const address = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("address");
 
 /**
- * Creates Virtual DOM HTML element <article>.
+ * Creates OpNode HTML element <article>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <article>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <article>
  */
 export const article = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("article");
 
 /**
- * Creates Virtual DOM HTML element <aside>.
+ * Creates OpNode HTML element <aside>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <aside>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <aside>
  */
 export const aside = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("aside");
 
 /**
- * Creates Virtual DOM HTML element <b>.
+ * Creates OpNode HTML element <b>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/b}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <b>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <b>
  */
 export const b = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("b");
 
 /**
- * Creates Virtual DOM HTML element <base>.
+ * Creates OpNode HTML element <base>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <base>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <base>
  */
 export const base = /*#__PURE__*/htmlElement<HTMLBaseElementAttrs, HTMLBaseElement>("base");
 
 /**
- * Creates Virtual DOM HTML element <bdo>.
+ * Creates OpNode HTML element <bdo>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdo}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <bdo>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <bdo>
  */
 export const bdo = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("bdo");
 
 /**
- * Creates Virtual DOM HTML element <blockquote>.
+ * Creates OpNode HTML element <blockquote>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <blockquote>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <blockquote>
  */
 export const blockquote = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("blockquote");
 
 /**
- * Creates Virtual DOM HTML element <body>.
+ * Creates OpNode HTML element <body>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <body>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <body>
  */
 export const body = /*#__PURE__*/htmlElement<HTMLBodyElementAttrs, HTMLBodyElement>("body");
 
 /**
- * Creates Virtual DOM HTML element <br>.
+ * Creates OpNode HTML element <br>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <br>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <br>
  */
 export const br = /*#__PURE__*/htmlElement<HTMLBRElementAttrs, HTMLBRElement>("br");
 
 /**
- * Creates Virtual DOM HTML element <button>.
+ * Creates OpNode HTML element <button>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <button>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <button>
  */
 export const button = /*#__PURE__*/htmlElement<HTMLButtonElementAttrs, HTMLButtonElement>("button");
 
 /**
- * Creates Virtual DOM HTML element <canvas>.
+ * Creates OpNode HTML element <canvas>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <canvas>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <canvas>
  */
 export const canvas = /*#__PURE__*/htmlElement<HTMLCanvasElementAttrs, HTMLCanvasElement>("canvas");
 
 /**
- * Creates Virtual DOM HTML element <caption>.
+ * Creates OpNode HTML element <caption>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <caption>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <caption>
  */
 export const caption = /*#__PURE__*/htmlElement<HTMLTableCaptionElementAttrs, HTMLTableCaptionElement>("caption");
 
 /**
- * Creates Virtual DOM HTML element <cite>.
+ * Creates OpNode HTML element <cite>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/cite}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <cite>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <cite>
  */
 export const cite = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("cite");
 
 /**
- * Creates Virtual DOM HTML element <code>.
+ * Creates OpNode HTML element <code>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <code>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <code>
  */
 export const code = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("code");
 
 /**
- * Creates Virtual DOM HTML element <col>.
+ * Creates OpNode HTML element <col>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <col>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <col>
  */
 export const col = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("col");
 
 /**
- * Creates Virtual DOM HTML element <colgroup>.
+ * Creates OpNode HTML element <colgroup>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <colgroup>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <colgroup>
  */
 export const colgroup = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("colgroup");
 
 /**
- * Creates Virtual DOM HTML element <del>.
+ * Creates OpNode HTML element <del>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <del>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <del>
  */
 export const del = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>("del");
 
 /**
- * Creates Virtual DOM HTML element <dfn>.
+ * Creates OpNode HTML element <dfn>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dfn}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <dfn>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <dfn>
  */
 export const dfn = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dfn");
 
 /**
- * Creates Virtual DOM HTML element <div>.
+ * Creates OpNode HTML element <div>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <div>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <div>
  */
 export const div = /*#__PURE__*/htmlElement<HTMLDivElementAttrs, HTMLDivElement>("div");
 
 /**
- * Creates Virtual DOM HTML element <dd>.
+ * Creates OpNode HTML element <dd>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <dd>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <dd>
  */
 export const dd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dd");
 
 /**
- * Creates Virtual DOM HTML element <dl>.
+ * Creates OpNode HTML element <dl>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <dl>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <dl>
  */
 export const dl = /*#__PURE__*/htmlElement<HTMLDListElementAttrs, HTMLDListElement>("dl");
 
 /**
- * Creates Virtual DOM HTML element <dt>.
+ * Creates OpNode HTML element <dt>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <dt>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <dt>
  */
 export const dt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dt");
 
 /**
- * Creates Virtual DOM HTML element <em>.
+ * Creates OpNode HTML element <em>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <em>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <em>
  */
 export const em = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("em");
 
 /**
- * Creates Virtual DOM HTML element <fieldset>.
+ * Creates OpNode HTML element <fieldset>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <fieldset>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <fieldset>
  */
 export const fieldset = /*#__PURE__*/htmlElement<HTMLFieldSetElementAttrs, HTMLFieldSetElement>("fieldset");
 
 /**
- * Creates Virtual DOM HTML element <figcaption>.
+ * Creates OpNode HTML element <figcaption>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <figcaption>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <figcaption>
  */
 export const figcaption = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("figcaption");
 
 /**
- * Creates Virtual DOM HTML element <figure>.
+ * Creates OpNode HTML element <figure>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <figure>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <figure>
  */
 export const figure = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("figure");
 
 /**
- * Creates Virtual DOM HTML element <footer>.
+ * Creates OpNode HTML element <footer>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <footer>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <footer>
  */
 export const footer = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("footer");
 
 /**
- * Creates Virtual DOM HTML element <form>.
+ * Creates OpNode HTML element <form>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <form>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <form>
  */
 export const form = /*#__PURE__*/htmlElement<HTMLFormElementAttrs, HTMLFormElement>("form");
 
 /**
- * Creates Virtual DOM HTML element <h1>.
+ * Creates OpNode HTML element <h1>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h1}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <h1>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <h1>
  */
 export const h1 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1");
 
 /**
- * Creates Virtual DOM HTML element <h2>.
+ * Creates OpNode HTML element <h2>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h2}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <h2>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <h2>
  */
 export const h2 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2");
 
 /**
- * Creates Virtual DOM HTML element <h3>.
+ * Creates OpNode HTML element <h3>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h3}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <h3>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <h3>
  */
 export const h3 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3");
 
 /**
- * Creates Virtual DOM HTML element <h4>.
+ * Creates OpNode HTML element <h4>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h4}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <h4>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <h4>
  */
 export const h4 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4");
 
 /**
- * Creates Virtual DOM HTML element <h5>.
+ * Creates OpNode HTML element <h5>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h5}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <h5>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <h5>
  */
 export const h5 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5");
 
 /**
- * Creates Virtual DOM HTML element <h6>.
+ * Creates OpNode HTML element <h6>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h6}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <h6>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <h6>
  */
 export const h6 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6");
 
 /**
- * Creates Virtual DOM HTML element <head>.
+ * Creates OpNode HTML element <head>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <head>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <head>
  */
 export const head = /*#__PURE__*/htmlElement<HTMLHeadElementAttrs, HTMLHeadElement>("head");
 
 /**
- * Creates Virtual DOM HTML element <header>.
+ * Creates OpNode HTML element <header>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <header>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <header>
  */
 export const header = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("header");
 
 /**
- * Creates Virtual DOM HTML element <hgroup>.
+ * Creates OpNode HTML element <hgroup>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <hgroup>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <hgroup>
  */
 export const hgroup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("hgroup");
 
 /**
- * Creates Virtual DOM HTML element <hr>.
+ * Creates OpNode HTML element <hr>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <hr>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <hr>
  */
 export const hr = /*#__PURE__*/htmlElement<HTMLHRElementAttrs, HTMLHRElement>("hr");
 
 /**
- * Creates Virtual DOM HTML element <html>.
+ * Creates OpNode HTML element <html>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <html>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <html>
  */
 export const html = /*#__PURE__*/htmlElement<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
 
 /**
- * Creates Virtual DOM HTML element <i>.
+ * Creates OpNode HTML element <i>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <i>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <i>
  */
 export const i = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("i");
 
 /**
- * Creates Virtual DOM HTML element <iframe>.
+ * Creates OpNode HTML element <iframe>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <iframe>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <iframe>
  */
 export const iframe = /*#__PURE__*/htmlElement<HTMLIFrameElementAttrs, HTMLIFrameElement>("iframe");
 
 /**
- * Creates Virtual DOM HTML element <img>.
+ * Creates OpNode HTML element <img>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <img>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <img>
  */
 export const img = /*#__PURE__*/htmlElement<HTMLImageElementAttrs, HTMLImageElement>("img");
 
 /**
- * Creates Virtual DOM HTML element <area>.
+ * Creates OpNode HTML element <area>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <area>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <area>
  */
-export const imgArea = /*#__PURE__*/htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area");
+export const area = /*#__PURE__*/htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area");
 
 /**
- * Creates Virtual DOM HTML element <map>.
+ * Creates OpNode HTML element <map>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <map>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <map>
  */
-export const imgMap = /*#__PURE__*/htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
+export const map = /*#__PURE__*/htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
 
 /**
- * Creates Virtual DOM HTML element <ins>.
+ * Creates OpNode HTML element <ins>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <ins>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <ins>
  */
 export const ins = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>("ins");
 
 /**
- * Creates Virtual DOM HTML element <kbd>.
+ * Creates OpNode HTML element <kbd>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <kbd>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <kbd>
  */
 export const kbd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("kbd");
 
 /**
- * Creates Virtual DOM HTML element <label>.
+ * Creates OpNode HTML element <label>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <label>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <label>
  */
 export const label = /*#__PURE__*/htmlElement<HTMLLabelElementAttrs, HTMLLabelElement>("label");
 
 /**
- * Creates Virtual DOM HTML element <legend>.
+ * Creates OpNode HTML element <legend>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <legend>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <legend>
  */
 export const legend = /*#__PURE__*/htmlElement<HTMLLegendElementAttrs, HTMLLegendElement>("legend");
 
 /**
- * Creates Virtual DOM HTML element <li>.
+ * Creates OpNode HTML element <li>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <li>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <li>
  */
 export const li = /*#__PURE__*/htmlElement<HTMLLIElementAttrs, HTMLLIElement>("li");
 
 /**
- * Creates Virtual DOM HTML element <link>.
+ * Creates OpNode HTML element <link>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <link>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <link>
  */
 export const link = /*#__PURE__*/htmlElement<HTMLLinkElementAttrs, HTMLLinkElement>("link");
 
 /**
- * Creates Virtual DOM HTML element <main>.
+ * Creates OpNode HTML element <main>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <main>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <main>
  */
 export const main = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("main");
 
 /**
- * Creates Virtual DOM HTML element <mark>.
+ * Creates OpNode HTML element <mark>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <mark>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <mark>
  */
 export const mark = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("mark");
 
 /**
- * Creates Virtual DOM HTML element <menu>.
+ * Creates OpNode HTML element <menu>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <menu>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <menu>
  */
 export const menu = /*#__PURE__*/htmlElement<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
 
 /**
- * Creates Virtual DOM HTML element <meta>.
+ * Creates OpNode HTML element <meta>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <meta>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <meta>
  */
 export const meta = /*#__PURE__*/htmlElement<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
 
 /**
- * Creates Virtual DOM HTML element <meter>.
+ * Creates OpNode HTML element <meter>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <meter>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <meter>
  */
 export const meter = /*#__PURE__*/htmlElement<HTMLMeterElementAttrs, HTMLMeterElement>("meter");
 
 /**
- * Creates Virtual DOM HTML element <nav>.
+ * Creates OpNode HTML element <nav>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <nav>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <nav>
  */
 export const nav = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("nav");
 
 /**
- * Creates Virtual DOM HTML element <noscript>.
+ * Creates OpNode HTML element <noscript>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <noscript>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <noscript>
  */
 export const noscript = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("noscript");
 
 /**
- * Creates Virtual DOM HTML element <ol>.
+ * Creates OpNode HTML element <ol>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <ol>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <ol>
  */
 export const ol = /*#__PURE__*/htmlElement<HTMLOListElementAttrs, HTMLOListElement>("ol");
 
 /**
- * Creates Virtual DOM HTML element <optgroup>.
+ * Creates OpNode HTML element <optgroup>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <optgroup>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <optgroup>
  */
 export const optgroup = /*#__PURE__*/htmlElement<HTMLOptGroupElementAttrs, HTMLOptGroupElement>("optgroup");
 
 /**
- * Creates Virtual DOM HTML element <option>.
+ * Creates OpNode HTML element <option>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <option>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <option>
  */
 export const option = /*#__PURE__*/htmlElement<HTMLOptionElementAttrs, HTMLOptionElement>("option");
 
 /**
- * Creates Virtual DOM HTML element <p>.
+ * Creates OpNode HTML element <p>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <p>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <p>
  */
 export const p = /*#__PURE__*/htmlElement<HTMLParagraphElementAttrs, HTMLParagraphElement>("p");
 
 /**
- * Creates Virtual DOM HTML element <picture>.
+ * Creates OpNode HTML element <picture>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <picture>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <picture>
  */
 export const picture = /*#__PURE__*/htmlElement<HTMLPictureElementAttrs, HTMLPictureElement>("picture");
 
 /**
- * Creates Virtual DOM HTML element <pre>.
+ * Creates OpNode HTML element <pre>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <pre>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <pre>
  */
 export const pre = /*#__PURE__*/htmlElement<HTMLPreElementAttrs, HTMLPreElement>("pre");
 
 /**
- * Creates Virtual DOM HTML element <progress>.
+ * Creates OpNode HTML element <progress>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <progress>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <progress>
  */
 export const progress = /*#__PURE__*/htmlElement<HTMLProgressElementAttrs, HTMLProgressElement>("progress");
 
 /**
- * Creates Virtual DOM HTML element <q>.
+ * Creates OpNode HTML element <q>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <q>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <q>
  */
 export const q = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
 
 /**
- * Creates Virtual DOM HTML element <rt>.
+ * Creates OpNode HTML element <rt>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <rt>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <rt>
  */
 export const rt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("rt");
 
 /**
- * Creates Virtual DOM HTML element <ruby>.
+ * Creates OpNode HTML element <ruby>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <ruby>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <ruby>
  */
 export const ruby = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("ruby");
 
 /**
- * Creates Virtual DOM HTML element <s>.
+ * Creates OpNode HTML element <s>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <s>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <s>
  */
 export const s = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("s");
 
 /**
- * Creates Virtual DOM HTML element <samp>.
+ * Creates OpNode HTML element <samp>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <samp>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <samp>
  */
 export const samp = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("samp");
 
 /**
- * Creates Virtual DOM HTML element <script>.
+ * Creates OpNode HTML element <script>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <script>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <script>
  */
 export const script = /*#__PURE__*/htmlElement<HTMLScriptElementAttrs, HTMLScriptElement>("script");
 
 /**
- * Creates Virtual DOM HTML element <section>.
+ * Creates OpNode HTML element <section>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <section>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <section>
  */
 export const section = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("section");
 
 /**
- * Creates Virtual DOM HTML element <select>.
+ * Creates OpNode HTML element <select>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <select>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <select>
  */
 export const select = /*#__PURE__*/htmlElement<HTMLSelectElementAttrs, HTMLSelectElement>("select");
 
 /**
- * Creates Virtual DOM HTML element <source>.
+ * Creates OpNode HTML element <source>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <source>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <source>
  */
 export const source = /*#__PURE__*/htmlElement<HTMLSourceElementAttrs, HTMLSourceElement>("source");
 
 /**
- * Creates Virtual DOM HTML element <span>.
+ * Creates OpNode HTML element <span>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <span>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <span>
  */
 export const span = /*#__PURE__*/htmlElement<HTMLSpanElementAttrs, HTMLSpanElement>("span");
 
 /**
- * Creates Virtual DOM HTML element <strong>.
+ * Creates OpNode HTML element <strong>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <strong>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <strong>
  */
 export const strong = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("strong");
 
 /**
- * Creates Virtual DOM HTML element <style>.
+ * Creates OpNode HTML element <style>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <style>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <style>
  */
 export const style = /*#__PURE__*/htmlElement<HTMLStyleElementAttrs, HTMLStyleElement>("style");
 
 /**
- * Creates Virtual DOM HTML element <sub>.
+ * Creates OpNode HTML element <sub>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <sub>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <sub>
  */
 export const sub = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sub");
 
 /**
- * Creates Virtual DOM HTML element <sup>.
+ * Creates OpNode HTML element <sup>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <sup>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <sup>
  */
 export const sup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sup");
 
 /**
- * Creates Virtual DOM HTML element <table>.
+ * Creates OpNode HTML element <table>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <table>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <table>
  */
 export const table = /*#__PURE__*/htmlElement<HTMLTableElementAttrs, HTMLTableElement>("table");
 
 /**
- * Creates Virtual DOM HTML element <tbody>.
+ * Creates OpNode HTML element <tbody>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <tbody>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <tbody>
  */
 export const tbody = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tbody");
 
 /**
- * Creates Virtual DOM HTML element <td>.
+ * Creates OpNode HTML element <td>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <td>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <td>
  */
 export const td = /*#__PURE__*/htmlElement<HTMLTableDataCellElementAttrs, HTMLTableDataCellElement>("td");
 
 /**
- * Creates Virtual DOM HTML element <template>.
+ * Creates OpNode HTML element <template>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <template>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <template>
  */
 export const template = /*#__PURE__*/htmlElement<HTMLTemplateElementAttrs, HTMLTemplateElement>("template");
 
 /**
- * Creates Virtual DOM HTML element <tfoot>.
+ * Creates OpNode HTML element <tfoot>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <tfoot>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <tfoot>
  */
 export const tfoot = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tfoot");
 
 /**
- * Creates Virtual DOM HTML element <th>.
+ * Creates OpNode HTML element <th>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <th>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <th>
  */
 export const th = /*#__PURE__*/htmlElement<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCellElement>("th");
 
 /**
- * Creates Virtual DOM HTML element <thead>.
+ * Creates OpNode HTML element <thead>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <thead>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <thead>
  */
 export const thead = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("thead");
 
 /**
- * Creates Virtual DOM HTML element <time>.
+ * Creates OpNode HTML element <time>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <time>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <time>
  */
 export const time = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("time");
 
 /**
- * Creates Virtual DOM HTML element <title>.
+ * Creates OpNode HTML element <title>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <title>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <title>
  */
 export const title = /*#__PURE__*/htmlElement<HTMLTitleElementAttrs, HTMLTitleElement>("title");
 
 /**
- * Creates Virtual DOM HTML element <tr>.
+ * Creates OpNode HTML element <tr>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <tr>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <tr>
  */
 export const tr = /*#__PURE__*/htmlElement<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr");
 
 /**
- * Creates Virtual DOM HTML element <track>.
+ * Creates OpNode HTML element <track>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <track>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <track>
  */
 export const track = /*#__PURE__*/htmlElement<HTMLTrackElementAttrs, HTMLTrackElement>("track");
 
 /**
- * Creates Virtual DOM HTML element <u>.
+ * Creates OpNode HTML element <u>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <u>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <u>
  */
 export const u = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("u");
 
 /**
- * Creates Virtual DOM HTML element <ul>.
+ * Creates OpNode HTML element <ul>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <ul>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <ul>
  */
 export const ul = /*#__PURE__*/htmlElement<HTMLUListElementAttrs, HTMLUListElement>("ul");
 
 /**
- * Creates Virtual DOM HTML element <wbr>.
+ * Creates OpNode HTML element <wbr>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <wbr>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <wbr>
  */
 export const wbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("wbr");
 
 /**
- * Creates Virtual DOM HTML element <textarea>.
+ * Creates OpNode HTML element <textarea>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <textarea>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <textarea>
  */
 export const textarea = /*#__PURE__*/htmlElement<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea");
 
 /**
- * Creates Virtual DOM HTML element <input>.
+ * Creates OpNode HTML element <input>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <input>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <input>
  */
 export const input = /*#__PURE__*/htmlElement<HTMLInputElementAttrs, HTMLInputElement>("input");
 
 /**
- * Creates Virtual DOM HTML element <audio>.
+ * Creates OpNode HTML element <audio>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <audio>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <audio>
  */
 export const audio = /*#__PURE__*/htmlElement<HTMLAudioElementAttrs, HTMLAudioElement>("audio");
 
 /**
- * Creates Virtual DOM HTML element <video>.
+ * Creates OpNode HTML element <video>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM HTML element <video>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode HTML element <video>
  */
 export const video = /*#__PURE__*/htmlElement<HTMLVideoElementAttrs, HTMLVideoElement>("video");

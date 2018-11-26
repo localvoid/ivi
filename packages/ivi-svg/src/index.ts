@@ -146,829 +146,829 @@ export function XLINK_ATTR(v: string | number | boolean | undefined): AttributeD
 
 /* tslint:disable:max-line-length */
 /**
- * Creates Virtual DOM SVG element <a>.
+ * Creates OpNode SVG element <a>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/a}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <a>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <a>
  */
 export const a = /*#__PURE__*/svgElement<SVGElementAttrs, SVGAElement>("a");
 
 /**
- * Creates Virtual DOM SVG element <animate>.
+ * Creates OpNode SVG element <animate>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <animate>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <animate>
  */
 export const animate = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animate");
 
 /**
- * Creates Virtual DOM SVG element <animateColor>.
+ * Creates OpNode SVG element <animateColor>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateColor}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <animateColor>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <animateColor>
  */
 export const animateColor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateColor");
 
 /**
- * Creates Virtual DOM SVG element <animateMotion>.
+ * Creates OpNode SVG element <animateMotion>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <animateMotion>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <animateMotion>
  */
 export const animateMotion = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateMotion");
 
 /**
- * Creates Virtual DOM SVG element <animateTransform>.
+ * Creates OpNode SVG element <animateTransform>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateTransform}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <animateTransform>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <animateTransform>
  */
 export const animateTransform = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateTransform");
 
 /**
- * Creates Virtual DOM SVG element <circle>.
+ * Creates OpNode SVG element <circle>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <circle>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <circle>
  */
 export const circle = /*#__PURE__*/svgElement<SVGCircleElementAttrs, SVGCircleElement>("circle");
 
 /**
- * Creates Virtual DOM SVG element <clipPath>.
+ * Creates OpNode SVG element <clipPath>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <clipPath>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <clipPath>
  */
 export const clipPath = /*#__PURE__*/svgElement<SVGClipPathElementAttrs, SVGClipPathElement>("clipPath");
 
 /**
- * Creates Virtual DOM SVG element <defs>.
+ * Creates OpNode SVG element <defs>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <defs>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <defs>
  */
 export const defs = /*#__PURE__*/svgElement<SVGDefsElementAttrs, SVGDefsElement>("defs");
 
 /**
- * Creates Virtual DOM SVG element <desc>.
+ * Creates OpNode SVG element <desc>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <desc>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <desc>
  */
 export const desc = /*#__PURE__*/svgElement<SVGDescElementAttrs, SVGDescElement>("desc");
 
 /**
- * Creates Virtual DOM SVG element <discard>.
+ * Creates OpNode SVG element <discard>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/discard}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <discard>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <discard>
  */
 export const discard = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("discard");
 
 /**
- * Creates Virtual DOM SVG element <ellipse>.
+ * Creates OpNode SVG element <ellipse>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/ellipse}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <ellipse>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <ellipse>
  */
 export const ellipse = /*#__PURE__*/svgElement<SVGEllipseElementAttrs, SVGEllipseElement>("ellipse");
 
 /**
- * Creates Virtual DOM SVG element <feBlend>.
+ * Creates OpNode SVG element <feBlend>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feBlend}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feBlend>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feBlend>
  */
 export const feBlend = /*#__PURE__*/svgElement<SVGFEBlendElementAttrs, SVGFEBlendElement>("feBlend");
 
 /**
- * Creates Virtual DOM SVG element <feColorMatrix>.
+ * Creates OpNode SVG element <feColorMatrix>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feColorMatrix>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feColorMatrix>
  */
 export const feColorMatrix = /*#__PURE__*/svgElement<SVGFEColorMatrixElementAttrs, SVGFEColorMatrixElement>("feColorMatrix");
 
 /**
- * Creates Virtual DOM SVG element <feComponentTransfer>.
+ * Creates OpNode SVG element <feComponentTransfer>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComponentTransfer}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feComponentTransfer>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feComponentTransfer>
  */
 export const feComponentTransfer = /*#__PURE__*/svgElement<SVGFEComponentTransferElementAttrs, SVGFEComponentTransferElement>("feComponentTransfer");
 
 /**
- * Creates Virtual DOM SVG element <feComposite>.
+ * Creates OpNode SVG element <feComposite>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feComposite>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feComposite>
  */
 export const feComposite = /*#__PURE__*/svgElement<SVGFECompositeElementAttrs, SVGFECompositeElement>("feComposite");
 
 /**
- * Creates Virtual DOM SVG element <feConvolveMatrix>.
+ * Creates OpNode SVG element <feConvolveMatrix>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feConvolveMatrix}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feConvolveMatrix>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feConvolveMatrix>
  */
 export const feConvolveMatrix = /*#__PURE__*/svgElement<SVGFEConvolveMatrixElementAttrs, SVGFEConvolveMatrixElement>("feConvolveMatrix");
 
 /**
- * Creates Virtual DOM SVG element <feDiffuseLighting>.
+ * Creates OpNode SVG element <feDiffuseLighting>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDiffuseLighting}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feDiffuseLighting>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feDiffuseLighting>
  */
 export const feDiffuseLighting = /*#__PURE__*/svgElement<SVGFEDiffuseLightingElementAttrs, SVGFEDiffuseLightingElement>("feDiffuseLighting");
 
 /**
- * Creates Virtual DOM SVG element <feDisplacementMap>.
+ * Creates OpNode SVG element <feDisplacementMap>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feDisplacementMap>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feDisplacementMap>
  */
 export const feDisplacementMap = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDisplacementMap");
 
 /**
- * Creates Virtual DOM SVG element <feDistantLight>.
+ * Creates OpNode SVG element <feDistantLight>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDistantLight}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feDistantLight>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feDistantLight>
  */
 export const feDistantLight = /*#__PURE__*/svgElement<SVGFEDistantLightElementAttrs, SVGFEDistantLightElement>("feDistantLight");
 
 /**
- * Creates Virtual DOM SVG element <feDropShadow>.
+ * Creates OpNode SVG element <feDropShadow>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feDropShadow>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feDropShadow>
  */
 export const feDropShadow = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDropShadow");
 
 /**
- * Creates Virtual DOM SVG element <feFlood>.
+ * Creates OpNode SVG element <feFlood>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFlood}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feFlood>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feFlood>
  */
 export const feFlood = /*#__PURE__*/svgElement<SVGFEFloodElementAttrs, SVGFEFloodElement>("feFlood");
 
 /**
- * Creates Virtual DOM SVG element <feFuncA>.
+ * Creates OpNode SVG element <feFuncA>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncA}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feFuncA>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feFuncA>
  */
 export const feFuncA = /*#__PURE__*/svgElement<SVGFEFuncAElementAttrs, SVGFEFuncAElement>("feFuncA");
 
 /**
- * Creates Virtual DOM SVG element <feFuncB>.
+ * Creates OpNode SVG element <feFuncB>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncB}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feFuncB>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feFuncB>
  */
 export const feFuncB = /*#__PURE__*/svgElement<SVGFEFuncBElementAttrs, SVGFEFuncBElement>("feFuncB");
 
 /**
- * Creates Virtual DOM SVG element <feFuncG>.
+ * Creates OpNode SVG element <feFuncG>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncG}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feFuncG>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feFuncG>
  */
 export const feFuncG = /*#__PURE__*/svgElement<SVGFEFuncGElementAttrs, SVGFEFuncGElement>("feFuncG");
 
 /**
- * Creates Virtual DOM SVG element <feFuncR>.
+ * Creates OpNode SVG element <feFuncR>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncR}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feFuncR>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feFuncR>
  */
 export const feFuncR = /*#__PURE__*/svgElement<SVGFEFuncRElementAttrs, SVGFEFuncRElement>("feFuncR");
 
 /**
- * Creates Virtual DOM SVG element <feGaussianBlur>.
+ * Creates OpNode SVG element <feGaussianBlur>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feGaussianBlur>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feGaussianBlur>
  */
 export const feGaussianBlur = /*#__PURE__*/svgElement<SVGFEGaussianBlurElementAttrs, SVGFEGaussianBlurElement>("feGaussianBlur");
 
 /**
- * Creates Virtual DOM SVG element <feImage>.
+ * Creates OpNode SVG element <feImage>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feImage}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feImage>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feImage>
  */
 export const feImage = /*#__PURE__*/svgElement<SVGFEImageElementAttrs, SVGFEImageElement>("feImage");
 
 /**
- * Creates Virtual DOM SVG element <feMerge>.
+ * Creates OpNode SVG element <feMerge>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMerge}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feMerge>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feMerge>
  */
 export const feMerge = /*#__PURE__*/svgElement<SVGFEMergeElementAttrs, SVGFEMergeElement>("feMerge");
 
 /**
- * Creates Virtual DOM SVG element <feMergeNode>.
+ * Creates OpNode SVG element <feMergeNode>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMergeNode}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feMergeNode>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feMergeNode>
  */
 export const feMergeNode = /*#__PURE__*/svgElement<SVGFEMergeNodeElementAttrs, SVGFEMergeNodeElementAttrs>("feMergeNode");
 
 /**
- * Creates Virtual DOM SVG element <feMorphology>.
+ * Creates OpNode SVG element <feMorphology>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMorphology}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feMorphology>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feMorphology>
  */
 export const feMorphology = /*#__PURE__*/svgElement<SVGFEMorphologyElementAttrs, SVGFEMorphologyElement>("feMorphology");
 
 /**
- * Creates Virtual DOM SVG element <feOffset>.
+ * Creates OpNode SVG element <feOffset>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feOffset}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feOffset>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feOffset>
  */
 export const feOffset = /*#__PURE__*/svgElement<SVGFEOffsetElementAttrs, SVGFEOffsetElement>("feOffset");
 
 /**
- * Creates Virtual DOM SVG element <fePointLight>.
+ * Creates OpNode SVG element <fePointLight>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/fePointLight}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <fePointLight>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <fePointLight>
  */
 export const fePointLight = /*#__PURE__*/svgElement<SVGFEPointLightElementAttrs, SVGFEPointLightElement>("fePointLight");
 
 /**
- * Creates Virtual DOM SVG element <feSpecularLighting>.
+ * Creates OpNode SVG element <feSpecularLighting>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpecularLighting}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feSpecularLighting>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feSpecularLighting>
  */
 export const feSpecularLighting = /*#__PURE__*/svgElement<SVGFESpecularLightingElementAttrs, SVGFESpecularLightingElement>("feSpecularLighting");
 
 /**
- * Creates Virtual DOM SVG element <feSpotLight>.
+ * Creates OpNode SVG element <feSpotLight>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpotLight}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feSpotLight>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feSpotLight>
  */
 export const feSpotLight = /*#__PURE__*/svgElement<SVGFESpotLightElementAttrs, SVGFESpotLightElement>("feSpotLight");
 
 /**
- * Creates Virtual DOM SVG element <feTile>.
+ * Creates OpNode SVG element <feTile>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTile}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feTile>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feTile>
  */
 export const feTile = /*#__PURE__*/svgElement<SVGFETileElementAttrs, SVGFETileElement>("feTile");
 
 /**
- * Creates Virtual DOM SVG element <feTurbulence>.
+ * Creates OpNode SVG element <feTurbulence>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <feTurbulence>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <feTurbulence>
  */
 export const feTurbulence = /*#__PURE__*/svgElement<SVGFETurbulenceElementAttrs, SVGFETurbulenceElement>("feTurbulence");
 
 /**
- * Creates Virtual DOM SVG element <filter>.
+ * Creates OpNode SVG element <filter>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <filter>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <filter>
  */
 export const filter = /*#__PURE__*/svgElement<SVGFilterElementAttrs, SVGFilterElement>("filter");
 
 /**
- * Creates Virtual DOM SVG element <foreignObject>.
+ * Creates OpNode SVG element <foreignObject>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <foreignObject>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <foreignObject>
  */
 export const foreignObject = /*#__PURE__*/svgElement<SVGForeignObjectElementAttrs, SVGForeignObjectElement>("foreignObject");
 
 /**
- * Creates Virtual DOM SVG element <g>.
+ * Creates OpNode SVG element <g>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <g>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <g>
  */
 export const g = /*#__PURE__*/svgElement<SVGGElementAttrs, SVGGElement>("g");
 
 /**
- * Creates Virtual DOM SVG element <hatch>.
+ * Creates OpNode SVG element <hatch>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/hatch}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <hatch>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <hatch>
  */
 export const hatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatch");
 
 /**
- * Creates Virtual DOM SVG element <hatchpath>.
+ * Creates OpNode SVG element <hatchpath>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/hatchpath}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <hatchpath>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <hatchpath>
  */
 export const hatchpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatchpath");
 
 /**
- * Creates Virtual DOM SVG element <image>.
+ * Creates OpNode SVG element <image>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <image>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <image>
  */
 export const image = /*#__PURE__*/svgElement<SVGImageElementAttrs, SVGImageElement>("image");
 
 /**
- * Creates Virtual DOM SVG element <line>.
+ * Creates OpNode SVG element <line>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <line>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <line>
  */
 export const line = /*#__PURE__*/svgElement<SVGLineElementAttrs, SVGLineElement>("line");
 
 /**
- * Creates Virtual DOM SVG element <linearGradient>.
+ * Creates OpNode SVG element <linearGradient>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <linearGradient>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <linearGradient>
  */
 export const linearGradient = /*#__PURE__*/svgElement<SVGLinearGradientElementAttrs, SVGLinearGradientElement>("linearGradient");
 
 /**
- * Creates Virtual DOM SVG element <marker>.
+ * Creates OpNode SVG element <marker>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <marker>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <marker>
  */
 export const marker = /*#__PURE__*/svgElement<SVGMarkerElementAttrs, SVGMarkerElement>("marker");
 
 /**
- * Creates Virtual DOM SVG element <mask>.
+ * Creates OpNode SVG element <mask>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mask}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <mask>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <mask>
  */
 export const mask = /*#__PURE__*/svgElement<SVGMaskElementAttrs, SVGMaskElement>("mask");
 
 /**
- * Creates Virtual DOM SVG element <mesh>.
+ * Creates OpNode SVG element <mesh>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mesh}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <mesh>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <mesh>
  */
 export const mesh = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mesh");
 
 /**
- * Creates Virtual DOM SVG element <meshgradient>.
+ * Creates OpNode SVG element <meshgradient>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/meshgradient}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <meshgradient>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <meshgradient>
  */
 export const meshgradient = /*#__PURE__*/svgElement<SVGElementAttrs, SVGLinearGradientElement>("meshgradient");
 
 /**
- * Creates Virtual DOM SVG element <meshpatch>.
+ * Creates OpNode SVG element <meshpatch>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/meshpatch}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <meshpatch>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <meshpatch>
  */
 export const meshpatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("meshpatch");
 
 /**
- * Creates Virtual DOM SVG element <meshrow>.
+ * Creates OpNode SVG element <meshrow>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/meshrow}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <meshrow>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <meshrow>
  */
 export const meshrow = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("meshrow");
 
 /**
- * Creates Virtual DOM SVG element <metadata>.
+ * Creates OpNode SVG element <metadata>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/metadata}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <metadata>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <metadata>
  */
 export const metadata = /*#__PURE__*/svgElement<SVGMetadataElementAttrs, SVGMetadataElement>("metadata");
 
 /**
- * Creates Virtual DOM SVG element <mpath>.
+ * Creates OpNode SVG element <mpath>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mpath}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <mpath>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <mpath>
  */
 export const mpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mpath");
 
 /**
- * Creates Virtual DOM SVG element <path>.
+ * Creates OpNode SVG element <path>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <path>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <path>
  */
 export const path = /*#__PURE__*/svgElement<SVGPathElementAttrs, SVGPathElement>("path");
 
 /**
- * Creates Virtual DOM SVG element <pattern>.
+ * Creates OpNode SVG element <pattern>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <pattern>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <pattern>
  */
 export const pattern = /*#__PURE__*/svgElement<SVGPatternElementAttrs, SVGPatternElement>("pattern");
 
 /**
- * Creates Virtual DOM SVG element <polygon>.
+ * Creates OpNode SVG element <polygon>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polygon}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <polygon>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <polygon>
  */
 export const polygon = /*#__PURE__*/svgElement<SVGPolygonElementAttrs, SVGPolygonElement>("polygon");
 
 /**
- * Creates Virtual DOM SVG element <polyline>.
+ * Creates OpNode SVG element <polyline>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <polyline>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <polyline>
  */
 export const polyline = /*#__PURE__*/svgElement<SVGPolylineElementAttrs, SVGPolylineElement>("polyline");
 
 /**
- * Creates Virtual DOM SVG element <radialGradient>.
+ * Creates OpNode SVG element <radialGradient>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <radialGradient>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <radialGradient>
  */
 export const radialGradient = /*#__PURE__*/svgElement<SVGRadialGradientElementAttrs, SVGRadialGradientElement>("radialGradient");
 
 /**
- * Creates Virtual DOM SVG element <rect>.
+ * Creates OpNode SVG element <rect>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <rect>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <rect>
  */
 export const rect = /*#__PURE__*/svgElement<SVGRectElementAttrs, SVGRectElement>("rect");
 
 /**
- * Creates Virtual DOM SVG element <set>.
+ * Creates OpNode SVG element <set>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/set}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <set>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <set>
  */
 export const set = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("set");
 
 /**
- * Creates Virtual DOM SVG element <solidcolor>.
+ * Creates OpNode SVG element <solidcolor>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/solidcolor}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <solidcolor>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <solidcolor>
  */
 export const solidcolor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("solidcolor");
 
 /**
- * Creates Virtual DOM SVG element <stop>.
+ * Creates OpNode SVG element <stop>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <stop>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <stop>
  */
 export const stop = /*#__PURE__*/svgElement<SVGStopElementAttrs, SVGStopElement>("stop");
 
 /**
- * Creates Virtual DOM SVG element <svg>.
+ * Creates OpNode SVG element <svg>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/svg}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <svg>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <svg>
  */
 export const svg = /*#__PURE__*/svgElement<SVGSVGElementAttrs, SVGSVGElement>("svg");
 
 /**
- * Creates Virtual DOM SVG element <symbol>.
+ * Creates OpNode SVG element <symbol>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <symbol>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <symbol>
  */
 export const symbol = /*#__PURE__*/svgElement<SVGSymbolElementAttrs, SVGSymbolElement>("symbol");
 
 /**
- * Creates Virtual DOM SVG element <text>.
+ * Creates OpNode SVG element <text>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <text>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <text>
  */
 export const text = /*#__PURE__*/svgElement<SVGTextElementAttrs, SVGTextElement>("text");
 
 /**
- * Creates Virtual DOM SVG element <textPath>.
+ * Creates OpNode SVG element <textPath>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <textPath>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <textPath>
  */
 export const textPath = /*#__PURE__*/svgElement<SVGTextPathElementAttrs, SVGTextPathElement>("textPath");
 
 /**
- * Creates Virtual DOM SVG element <title>.
+ * Creates OpNode SVG element <title>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/title}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <title>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <title>
  */
 export const title = /*#__PURE__*/svgElement<SVGElementAttrs, SVGTitleElement>("title");
 
 /**
- * Creates Virtual DOM SVG element <tspan>.
+ * Creates OpNode SVG element <tspan>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/tspan}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <tspan>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <tspan>
  */
 export const tspan = /*#__PURE__*/svgElement<SVGTSpanElementAttrs, SVGTSpanElement>("tspan");
 
 /**
- * Creates Virtual DOM SVG element <use>.
+ * Creates OpNode SVG element <use>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <use>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <use>
  */
 export const use = /*#__PURE__*/svgElement<SVGUseElementAttrs, SVGUseElement>("use");
 
 /**
- * Creates Virtual DOM SVG element <view>.
+ * Creates OpNode SVG element <view>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/view}
  *
- * @param className - Class name
- * @param attrs - Attributes
- * @param css - Styles
- * @returns Virtual DOM SVG element <view>
+ * @param className Class name.
+ * @param attrs Attributes.
+ * @param children Children nodes.
+ * @returns OpNode SVG element <view>
  */
 export const view = /*#__PURE__*/svgElement<SVGViewElementAttrs, SVGViewElement>("view");
