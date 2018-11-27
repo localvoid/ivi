@@ -1,7 +1,7 @@
 import { _, TrackByKey, key } from "ivi";
 import * as h from "ivi-html";
-import { startRender, checkDOMOps, Stateless } from "./utils";
-import { } from "../operations";
+import { startRender, checkDOMOps, Stateless, Static, Stateful } from "./utils";
+import {} from "../operations";
 
 const i = (n: number) => key(n, n);
 const k = (...is: number[]) => h.div(_, _, TrackByKey(is.map(i)));
@@ -2773,6 +2773,129 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move static component nodes`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([key(0, Static(h.h1())), key(1, Static(h.h2()))])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([key(1, Static(h.h2())), key(0, Static(h.h1()))])
+        );
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  <h2 />
+  <h1 />
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move static component node with null root`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([key(0, Static(h.h1())), key(1, Static(null))])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([key(1, Static(null)), key(0, Static(h.h1()))])
+        );
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  <h1 />
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 2,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move static component nodes with nested components`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([
+            key(0, Stateless(Static(h.div(_, _, Stateful(0))))),
+            key(1, Stateless(Static(h.div(_, _, Stateful(1)))))
+          ])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([
+            key(1, Stateless(Static(h.div(_, _, Stateful(1))))),
+            key(0, Stateless(Static(h.div(_, _, Stateful(0)))))
+          ])
+        );
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    0
+  </div>
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 6,
   "removeChild": 0,
   "replaceChild": 0,
 }
