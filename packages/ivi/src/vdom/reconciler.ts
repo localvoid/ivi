@@ -379,20 +379,15 @@ export function _mount(
   return null;
 }
 
-function _hasDifferentTypes(a: OpChildren, b: OpChildren): boolean {
-  if (typeof a !== typeof b) {
+function _hasDifferentTypes(a: OpNode | RecursiveOpChildrenArray, b: OpChildren): boolean {
+  if (typeof b !== "object") {
     return true;
-  }
-  if (typeof a === "object") {
-    if (a instanceof Array) { // TODO: better check stateNode flags
-      if (!(b instanceof Array)) {
-        return true;
-      }
-    } else if (b instanceof Array) {
-      return true;
-    } else if (a!.type !== (b as OpNode).type) {
+  } else if (a instanceof Array) {
+    if (!(b instanceof Array)) {
       return true;
     }
+  } else if (b instanceof Array || a.type !== b!.type) {
+    return true;
   }
   return false;
 }
@@ -422,28 +417,54 @@ export function _update(
     return _mount(parentElement, nextOp);
   }
   const prevOp = stateNode.op;
-  if (prevOp === nextOp) {
-    _dirtyCheck(parentElement, stateNode, moveNode, singleChild);
-    return stateNode;
-  }
-  if (_hasDifferentTypes(prevOp, nextOp) === true) {
-    // prevOp can't be === null (stateNode === null)
-    _unmount(parentElement, stateNode, singleChild);
-    return _mount(parentElement, nextOp);
-  }
-  stateNode.op = nextOp;
-
   const stateFlags = stateNode.flags;
   const state = stateNode.state;
-  let deepStateFlags;
 
   if ((stateFlags & NodeFlags.Text) !== 0) {
-    (state as Node).nodeValue = nextOp as string;
+    if (typeof nextOp !== "object") {
+      stateNode.op = nextOp;
+      if (prevOp !== nextOp) {
+        (state as Node).nodeValue = nextOp as string;
+      }
+      if (moveNode === true) {
+        /* istanbul ignore else */
+        if (DEBUG) {
+          parentElement.insertBefore(state as Node, _nextNode);
+        } else {
+          nodeInsertBefore.call(parentElement, state as Node, _nextNode);
+        }
+      }
+      _nextNode = state as Node;
+    } else {
+      /* istanbul ignore else */
+      if (DEBUG) {
+        parentElement.removeChild(state as Node);
+      } else {
+        nodeRemoveChild.call(parentElement, state as Node);
+      }
+      return _mount(parentElement, nextOp);
+    }
   } else {
+    if (prevOp === nextOp) {
+      _dirtyCheck(parentElement, stateNode, moveNode, singleChild);
+      return stateNode;
+    }
+    if (_hasDifferentTypes(
+      prevOp as OpNode | RecursiveOpChildrenArray,
+      nextOp as OpNode | RecursiveOpChildrenArray,
+    ) === true) {
+      // prevOp can't be === null (stateNode === null)
+      _unmount(parentElement, stateNode, singleChild);
+      return _mount(parentElement, nextOp);
+    }
+    stateNode.op = nextOp;
     const stateChildren = stateNode.children;
+    let deepStateFlags;
+    let prevData;
+    let nextData;
     if ((stateFlags & NodeFlags.Component) !== 0) {
-      const prevData = (prevOp as OpNode).data;
-      const nextData = (nextOp as OpNode).data;
+      prevData = (prevOp as OpNode).data;
+      nextData = (nextOp as OpNode).data;
       const descriptor = ((nextOp as OpNode).type.descriptor as StatelessComponentDescriptor | ComponentDescriptor);
       if (
         ((stateFlags & NodeFlags.Dirty) !== 0) ||
@@ -471,8 +492,8 @@ export function _update(
     } else {
       deepStateFlags = _pushDeepState();
       if ((stateFlags & NodeFlags.Element) !== 0) {
-        const prevData = (prevOp as OpNode).data;
-        const nextData = (nextOp as OpNode).data;
+        prevData = (prevOp as OpNode).data;
+        nextData = (nextOp as OpNode).data;
         if (moveNode === true) {
           /* istanbul ignore else */
           if (DEBUG) {
@@ -512,7 +533,16 @@ export function _update(
         _nextNode = state as Node;
       } else if ((stateFlags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((stateFlags & NodeFlags.Fragment) !== 0) {
-          _updateFragment(parentElement, stateNode, nextOp as RecursiveOpChildrenArray, moveNode);
+          let i = (nextOp as RecursiveOpChildrenArray).length;
+          while (--i >= 0) {
+            (stateChildren as Array<StateNode | null>)[i] =
+              _update(
+                parentElement,
+                (stateChildren as Array<StateNode | null>)[i],
+                (nextOp as RecursiveOpChildrenArray)[i],
+                moveNode,
+                false);
+          }
         } else {
           _updateChildrenTrackByKeys(
             parentElement,
@@ -524,7 +554,7 @@ export function _update(
           );
         }
       } else if ((stateFlags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-        const nextData = (nextOp as OpNode).data;
+        nextData = (nextOp as OpNode).data;
         stateNode.children = _update(
           parentElement,
           stateChildren as StateNode,
@@ -533,8 +563,8 @@ export function _update(
           singleChild,
         );
       } else { // if ((stateFlags & NodeFlags.Context) !== 0) {
-        const prevData = (prevOp as OpNode).data;
-        const nextData = (nextOp as OpNode).data;
+        prevData = (prevOp as OpNode).data;
+        nextData = (nextOp as OpNode).data;
         const dirtyContext = _dirtyContext;
         if (prevData.data !== nextData.data || _dirtyContext === true) {
           stateNode.state = { ...getContext(), ...nextData.data };
@@ -550,26 +580,6 @@ export function _update(
   }
 
   return stateNode;
-}
-
-/**
- * Update children list with a static shape.
- *
- * @param parentElement - Parent DOM Element
- * @param a - Stateful nodes
- * @param b - Next children operations
- */
-function _updateFragment(
-  parentElement: Element,
-  stateNode: StateNode,
-  b: RecursiveOpChildrenArray,
-  moveNode: boolean,
-): void {
-  const children = stateNode.children as Array<StateNode | null>;
-  let i = b.length;
-  while (--i >= 0) {
-    children[i] = _update(parentElement, children[i], b[i], moveNode, false);
-  }
 }
 
 /**

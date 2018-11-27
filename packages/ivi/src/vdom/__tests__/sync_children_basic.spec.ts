@@ -218,9 +218,9 @@ Object {
   "appendChild": 0,
   "createElement": 1,
   "createElementNS": 0,
-  "createTextNode": 2,
-  "insertBefore": 3,
-  "removeChild": 1,
+  "createTextNode": 1,
+  "insertBefore": 2,
+  "removeChild": 0,
   "replaceChild": 0,
 }
 `);
@@ -244,9 +244,9 @@ Object {
   "appendChild": 0,
   "createElement": 1,
   "createElementNS": 0,
-  "createTextNode": 2,
-  "insertBefore": 3,
-  "removeChild": 1,
+  "createTextNode": 1,
+  "insertBefore": 2,
+  "removeChild": 0,
   "replaceChild": 0,
 }
 `);
