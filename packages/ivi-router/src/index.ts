@@ -56,7 +56,7 @@ export function setupRouter<T>(
       native.button === 0 &&
       !(native.metaKey || native.altKey || native.ctrlKey || native.shiftKey)
     ) {
-      const anchor = findAnchorNode(ev.target as Element);
+      const anchor = findAnchorNode(ev.native.target as Element);
       if (anchor !== null) {
         const href = anchor.href;
         if (href.startsWith(baseURL)) {
