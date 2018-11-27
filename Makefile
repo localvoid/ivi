@@ -5,9 +5,9 @@ M = $(shell printf "\033[34;1m▶\033[0m")
 
 all: build
 
-clean: clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_state clean_ivi_math clean_ivi_gestures
+clean: clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_state
 
-build: build_ivi build_ivi_html build_ivi_svg build_ivi_state build_ivi_math build_ivi_gestures
+build: build_ivi build_ivi_html build_ivi_svg build_ivi_state
 
 # ivi-scheduler
 clean_ivi_scheduler: ; $(info $(M) cleaning ivi-scheduler)
@@ -43,17 +43,3 @@ clean_ivi_state: ; $(info $(M) cleaning ivi-state)
 
 build_ivi_state: clean_ivi_state build_ivi ; $(info $(M) building ivi-state)
 	$Q cd packages/ivi-state && yarn dist
-
-# ivi-math
-clean_ivi_math: ; $(info $(M) cleaning ivi-math)
-	$Q cd packages/ivi-math && yarn clean
-
-build_ivi_math: clean_ivi_math ; $(info $(M) building ivi-math)
-	$Q cd packages/ivi-math && yarn dist
-
-# ivi-gestures
-clean_ivi_gestures: ; $(info $(M) cleaning ivi-gestures)
-	$Q cd packages/ivi-gestures && yarn clean
-
-build_ivi_gestures: clean_ivi_gestures build_ivi build_ivi_scheduler ; $(info $(M) building ivi-gestures)
-	$Q cd packages/ivi-gestures && yarn dist

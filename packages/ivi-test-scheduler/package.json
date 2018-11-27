@@ -21,10 +21,10 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "peerDependencies": {
-    "ivi": "^0.17.0"
+    "ivi": "^0.18.0"
   },
   "devDependencies": {
-    "ivi": "^0.17.0"
+    "ivi": "^0.18.0"
   },
   "description": "Test scheduler for ivi library",
   "license": "MIT",

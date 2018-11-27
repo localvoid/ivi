@@ -1,6 +1,6 @@
 {
   "name": "ivi-html",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",
@@ -20,10 +20,10 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "peerDependencies": {
-    "ivi": "^0.17.0"
+    "ivi": "^0.18.0"
   },
   "devDependencies": {
-    "ivi": "^0.17.0"
+    "ivi": "^0.18.0"
   },
   "description": "Virtual DOM factories for HTML elements",
   "license": "MIT",
