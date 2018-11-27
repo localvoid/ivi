@@ -1203,21 +1203,3 @@ function _updateAttrs(
     }
   }
 }
-
-// function checkElementChildrenShape(a: RecursiveOpChildrenArray, b: RecursiveOpChildrenArray) {
-//   if (a.length !== b.length) {
-//     throw new Error(`Invalid element, children array has a dynamic shape`);
-//   }
-//   for (let i = 0; i < a.length; i++) {
-//     const ai = a[i];
-//     const bi = b[i];
-//     if (ai instanceof Array) {
-//       if (!(bi instanceof Array)) {
-//         throw new Error(`Invalid element, children array has a dynamic shape`);
-//       }
-//       checkElementChildrenShape(ai, bi);
-//     } else if (bi instanceof Array) {
-//       throw new Error(`Invalid element, children array has a dynamic shape`);
-//     }
-//   }
-// }
