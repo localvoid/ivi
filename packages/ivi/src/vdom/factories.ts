@@ -147,7 +147,7 @@ export function component<P>(
   c: (c: StateNode) => (props: P) => OpNode | string | number | null,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component | NodeFlags.DirtyCheck, { c, shouldUpdate });
+  const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, shouldUpdate });
   return (props: P) => createOpNode(type, props);
 }
 
@@ -189,14 +189,14 @@ export function statelessComponent<P>(
  *
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
- * @param update Update function.
+ * @param c Update function.
  * @param shouldUpdate `shouldUpdate` function.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
-  update: (props: P) => OpNode | string | number | null,
+  c: (props: P) => OpNode | string | number | null,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component, { c: () => update, shouldUpdate });
+  const type = createOpType(NodeFlags.Component, { c, shouldUpdate });
   return (props: P) => createOpNode(type, props);
 }

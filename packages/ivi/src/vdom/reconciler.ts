@@ -8,7 +8,7 @@ import { AttributeDirective } from "./attribute_directive";
 import { OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData, TRACK_BY_KEY } from "./operations";
 import { StateNode, createStateNode, getDOMNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
-import { ComponentDescriptor, ComponentHooks } from "./component";
+import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
 import { getContext, setContext, restoreContext } from "./context";
 
 let _nextNode!: Node | null;
@@ -46,8 +46,10 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     const hooks = stateNode.state as ComponentHooks;
     deepState = _pushDeepState();
     if (
-      ((flags & NodeFlags.Dirty) !== 0) ||
-      (hooks.dirtyCheck !== null && hooks.dirtyCheck(getContext()) === true)
+      ((flags & NodeFlags.Stateful) !== 0) && (
+        ((flags & NodeFlags.Dirty) !== 0) ||
+        (hooks.dirtyCheck !== null && hooks.dirtyCheck(getContext()) === true)
+      )
     ) {
       stateNode.children = _update(
         parentElement,
@@ -154,7 +156,7 @@ function _unmountWalk(stateNode: StateNode): void {
     }
   }
 
-  if ((flags & NodeFlags.Component) !== 0) {
+  if ((flags & NodeFlags.Unmount) !== 0) {
     const hooks = (stateNode.state as ComponentHooks);
     const unmountHooks = hooks.unmount;
     if (unmountHooks !== null) {
@@ -263,9 +265,13 @@ function _mountObject(
 
   if ((opFlags & NodeFlags.Component) !== 0) {
     deepStateFlags = _pushDeepState();
-    const hooks: ComponentHooks = { update: null, dirtyCheck: null, unmount: null };
-    stateNode.state = hooks;
-    const update = hooks.update = (op.type.descriptor as ComponentDescriptor).c(stateNode);
+    let update;
+    if ((opFlags & NodeFlags.Stateful) !== 0) {
+      const hooks: ComponentHooks = stateNode.state = { update: null, dirtyCheck: null, unmount: null };
+      update = hooks.update = (op.type.descriptor as ComponentDescriptor).c(stateNode);
+    } else {
+      update = (op.type.descriptor as StatelessComponentDescriptor).c;
+    }
     const root = update(opData);
     /* istanbul ignore else */
     if (DEBUG) {
@@ -424,7 +430,7 @@ export function _update(
     const prevData = (prevOp as OpNode).data;
     const nextData = (nextOp as OpNode).data;
     if ((stateFlags & NodeFlags.Component) !== 0) {
-      const descriptor = ((nextOp as OpNode).type.descriptor as ComponentDescriptor);
+      const descriptor = ((nextOp as OpNode).type.descriptor as StatelessComponentDescriptor | ComponentDescriptor);
       if (
         ((stateFlags & NodeFlags.Dirty) !== 0) ||
         (
@@ -433,7 +439,9 @@ export function _update(
         )
       ) {
         deepStateFlags = _pushDeepState();
-        const root = (stateNode.state as ComponentHooks).update!(nextData);
+        const root = ((stateFlags & NodeFlags.Stateful) !== 0) ?
+          (stateNode.state as ComponentHooks).update!(nextData) :
+          (descriptor as StatelessComponentDescriptor).c(nextData);
         /* istanbul ignore else */
         if (DEBUG) {
           if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {

@@ -18,16 +18,18 @@ export const enum NodeFlags {
   ElementProto = 1 << 6,
   // Ref node.
   Ref = 1 << 7,
+  // Stateful Component
+  Stateful = 1 << 8,
   // Svg Element.
-  Svg = 1 << 8,
+  Svg = 1 << 9,
   // Element has multiple children operations.
-  MultipleChildren = 1 << 9,
+  MultipleChildren = 1 << 10,
   // Component is dirty.
-  Dirty = 1 << 10,
+  Dirty = 1 << 11,
   // Node requires dirty checking.
-  DirtyCheck = 1 << 11,
+  DirtyCheck = 1 << 12,
   // Node requires unmounting.
-  Unmount = 1 << 12,
+  Unmount = 1 << 13,
 
   // Flags that should be preserved before updating.
   SelfFlags = Text
@@ -39,6 +41,7 @@ export const enum NodeFlags {
   | Context
   | ElementProto
   | Ref
+  | Stateful
   | Svg
   | MultipleChildren
   // | Dirty // Dirty flag should be erased after update.
