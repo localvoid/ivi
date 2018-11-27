@@ -93,7 +93,7 @@ export function elementProto<P>(proto: OpNode<ElementData<P>>) {
  * @returns Factory that produces component nodes.
  */
 export function component(
-  c: (c: StateNode) => () => OpNode | string | number | null,
+  c: (c: StateNode) => () => OpChildren,
 ): () => OpNode<undefined>;
 
 /**
@@ -118,7 +118,7 @@ export function component(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: StateNode) => (props: P) => OpNode | string | number | null,
+  c: (c: StateNode) => (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
@@ -144,7 +144,7 @@ export function component<P>(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: StateNode) => (props: P) => OpNode | string | number | null,
+  c: (c: StateNode) => (props: P) => OpChildren,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
   const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, shouldUpdate });
@@ -163,7 +163,7 @@ export function component<P>(
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent(
-  update: () => OpNode | string | number | null,
+  update: () => OpChildren,
 ): () => OpNode<undefined>;
 
 /**
@@ -178,7 +178,7 @@ export function statelessComponent(
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
-  update: (props: P) => OpNode | string | number | null,
+  update: (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
@@ -194,7 +194,7 @@ export function statelessComponent<P>(
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
-  c: (props: P) => OpNode | string | number | null,
+  c: (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
   const type = createOpType(NodeFlags.Component, { c, shouldUpdate });

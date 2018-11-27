@@ -128,7 +128,8 @@ function _moveNodes(parentElement: Element, stateNode: StateNode) {
   } else {
     const children = stateNode.children;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-      for (let i = 0; i < (children as Array<StateNode | null>).length; i++) {
+      let i = (children as Array<StateNode | null>).length;
+      while (--i >= 0) {
         const c = (children as Array<StateNode | null>)[i];
         if (c !== null) {
           _moveNodes(parentElement, c);

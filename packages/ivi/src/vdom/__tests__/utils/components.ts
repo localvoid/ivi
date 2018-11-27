@@ -1,5 +1,5 @@
-import { OpNode, component, statelessComponent } from "ivi";
+import { OpChildren, component, statelessComponent } from "ivi";
 
-export const Stateful = component<OpNode | string | number | null>(() => (child) => child);
-export const Stateless = statelessComponent<OpNode | string | number | null>((child) => child);
-export const Static = statelessComponent<OpNode | string | number | null>((child) => child, () => false);
+export const Stateful = component<OpChildren>(() => (child) => child);
+export const Stateless = statelessComponent<OpChildren>((child) => child);
+export const Static = statelessComponent<OpChildren>((child) => child, () => false);

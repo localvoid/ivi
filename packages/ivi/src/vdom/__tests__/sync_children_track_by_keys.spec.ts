@@ -2903,4 +2903,122 @@ Object {
       });
     });
   });
+
+  test(`move fragments`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, TrackByKey([key(0, [1, 2]), key(1, [3, 4])]));
+        const v2 = h.div(_, _, TrackByKey([key(1, [3, 4]), key(0, [1, 2])]));
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  3
+  4
+  1
+  2
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move fragments wrapped into static components`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([key(0, Static([1, 2])), key(1, Static([3, 4]))])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([key(1, Static([3, 4])), key(0, Static([1, 2]))])
+        );
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  3
+  4
+  1
+  2
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 7,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`move TrackByKey nodes`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(
+          _,
+          _,
+          TrackByKey([
+            key(0, TrackByKey([key(0, 0), key(1, 1)])),
+            key(1, TrackByKey([key(0, 3), key(1, 4)]))
+          ])
+        );
+        const v2 = h.div(
+          _,
+          _,
+          TrackByKey([
+            key(1, TrackByKey([key(1, 4), key(0, 3)])),
+            key(0, TrackByKey([key(1, 1), key(0, 0)]))
+          ])
+        );
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  4
+  3
+  1
+  0
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "insertBefore": 8,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
 });
