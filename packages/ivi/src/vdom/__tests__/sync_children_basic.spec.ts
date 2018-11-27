@@ -402,56 +402,177 @@ Object {
   });
 });
 
-// test(`should throw error when children shape is different (different length)`, () => {
-//   startRender(r => {
-//     checkDOMOps(c => {
-//       r(h.div(_, _, [h.div(), h.div()]));
-//       expect(() => r(h.div(_, _, [h.div()]))).toThrowError("children");
-//     });
-//   });
-// });
+describe(`fragments`, () => {
+  test(`different fragment length, 2 to 1`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [0, 1]);
+        const v2 = h.div(_, _, [2]);
 
-// test(`should throw error when children shape is different (different deep array length)`, () => {
-//   startRender(r => {
-//     checkDOMOps(c => {
-//       r(h.div(_, _, [h.div(), [h.div()]]));
-//       expect(() => r(h.div(_, _, [h.div(), [h.div(), h.div()]]))).toThrowError("children");
-//     });
-//   });
-// });
+        r(v1);
+        const n = r(v2);
 
-// test(`should throw error when children shape is different (deep array to non-array)`, () => {
-//   startRender(r => {
-//     checkDOMOps(c => {
-//       r(h.div(_, _, [h.div(), [h.div()]]));
-//       expect(() => r(h.div(_, _, [h.div(), h.div()]))).toThrowError("children");
-//     });
-//   });
-// });
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  2
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
 
-// test(`should throw error when children shape is different (deep non-array to array)`, () => {
-//   startRender(r => {
-//     checkDOMOps(c => {
-//       r(h.div(_, _, [h.div(), h.div()]));
-//       expect(() => r(h.div(_, _, [h.div(), [h.div()]]))).toThrowError("children");
-//     });
-//   });
-// });
+  test(`different fragment length, 1 to 2`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [0]);
+        const v2 = h.div(_, _, [1, 2]);
 
-// test(`should throw error when children shape is different (array to non-array)`, () => {
-//   startRender(r => {
-//     checkDOMOps(c => {
-//       r(h.div(_, _, [h.div()]));
-//       expect(() => r(h.div(_, _, h.div()))).toThrowError("children");
-//     });
-//   });
-// });
+        r(v1);
+        const n = r(v2);
 
-// test(`should throw error when children shape is different (non-array to array)`, () => {
-//   startRender(r => {
-//     checkDOMOps(c => {
-//       r(h.div(_, _, h.div()));
-//       expect(() => r(h.div(_, _, [h.div()]))).toThrowError("children");
-//     });
-//   });
-// });
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+  2
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`from null to fragment`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, null);
+        const v2 = h.div(_, _, [1, 2]);
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+  2
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`from fragment to null`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [1, 2]);
+        const v2 = h.div(_, _, null);
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`<div />`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 3,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`from div to fragment`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, h.div());
+        const v2 = h.div(_, _, [1, 2]);
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  1
+  2
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 4,
+  "removeChild": 1,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+
+  test(`from fragment to div`, () => {
+    startRender(r => {
+      checkDOMOps(c => {
+        const v1 = h.div(_, _, [1, 2]);
+        const v2 = h.div(_, _, h.div());
+
+        r(v1);
+        const n = r(v2);
+
+        expect(n).toMatchInlineSnapshot(`
+<div>
+  <div />
+</div>
+`);
+        expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "insertBefore": 4,
+  "removeChild": 0,
+  "replaceChild": 0,
+}
+`);
+      });
+    });
+  });
+});

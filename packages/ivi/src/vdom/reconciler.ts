@@ -535,14 +535,19 @@ export function _update(
       } else if ((stateFlags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((stateFlags & NodeFlags.Fragment) !== 0) {
           let i = (nextOp as RecursiveOpChildrenArray).length;
-          while (--i >= 0) {
-            (stateChildren as Array<StateNode | null>)[i] =
-              _update(
-                parentElement,
-                (stateChildren as Array<StateNode | null>)[i],
-                (nextOp as RecursiveOpChildrenArray)[i],
-                moveNode,
-                false);
+          if ((stateChildren as Array<StateNode | null>).length === i) {
+            while (--i >= 0) {
+              (stateChildren as Array<StateNode | null>)[i] =
+                _update(
+                  parentElement,
+                  (stateChildren as Array<StateNode | null>)[i],
+                  (nextOp as RecursiveOpChildrenArray)[i],
+                  moveNode,
+                  false);
+            }
+          } else {
+            _unmount(parentElement, stateNode, singleChild);
+            _mountFragment(parentElement, stateNode, nextOp as RecursiveOpChildrenArray);
           }
         } else {
           _updateChildrenTrackByKeys(
