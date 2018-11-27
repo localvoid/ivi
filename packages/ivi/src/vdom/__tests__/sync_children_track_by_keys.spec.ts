@@ -177,7 +177,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
 }
 `);
@@ -778,7 +778,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
 }
 `);
@@ -951,7 +951,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
-  "removeChild": 0,
+  "removeChild": 2,
   "replaceChild": 0,
 }
 `);
@@ -2194,7 +2194,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
 }
 `);
@@ -2224,7 +2224,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
 }
 `);
@@ -2253,7 +2253,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
-  "removeChild": 0,
+  "removeChild": 2,
   "replaceChild": 0,
 }
 `);
@@ -2344,7 +2344,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 6,
   "insertBefore": 7,
-  "removeChild": 0,
+  "removeChild": 3,
   "replaceChild": 0,
 }
 `);
@@ -2409,7 +2409,7 @@ Object {
   "createElementNS": 0,
   "createTextNode": 12,
   "insertBefore": 13,
-  "removeChild": 0,
+  "removeChild": 6,
   "replaceChild": 0,
 }
 `);

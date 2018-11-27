@@ -49,7 +49,7 @@ export function dirtyCheck() {
 
     if (next) {
       if (state) {
-        root.state = _update(container, state, next);
+        root.state = _update(container, state, next, false);
       } else {
         root.state = _mount(container, next);
         /* istanbul ignore if */
@@ -70,7 +70,7 @@ export function dirtyCheck() {
         unorderedArrayDelete(ROOTS, root);
         --i;
       } else {
-        _dirtyCheck(container, state);
+        _dirtyCheck(container, state, false);
       }
     }
 

@@ -402,56 +402,56 @@ Object {
   });
 });
 
-test(`should throw error when children shape is different (different length)`, () => {
-  startRender(r => {
-    checkDOMOps(c => {
-      r(h.div(_, _, [h.div(), h.div()]));
-      expect(() => r(h.div(_, _, [h.div()]))).toThrowError("children");
-    });
-  });
-});
+// test(`should throw error when children shape is different (different length)`, () => {
+//   startRender(r => {
+//     checkDOMOps(c => {
+//       r(h.div(_, _, [h.div(), h.div()]));
+//       expect(() => r(h.div(_, _, [h.div()]))).toThrowError("children");
+//     });
+//   });
+// });
 
-test(`should throw error when children shape is different (different deep array length)`, () => {
-  startRender(r => {
-    checkDOMOps(c => {
-      r(h.div(_, _, [h.div(), [h.div()]]));
-      expect(() => r(h.div(_, _, [h.div(), [h.div(), h.div()]]))).toThrowError("children");
-    });
-  });
-});
+// test(`should throw error when children shape is different (different deep array length)`, () => {
+//   startRender(r => {
+//     checkDOMOps(c => {
+//       r(h.div(_, _, [h.div(), [h.div()]]));
+//       expect(() => r(h.div(_, _, [h.div(), [h.div(), h.div()]]))).toThrowError("children");
+//     });
+//   });
+// });
 
-test(`should throw error when children shape is different (deep array to non-array)`, () => {
-  startRender(r => {
-    checkDOMOps(c => {
-      r(h.div(_, _, [h.div(), [h.div()]]));
-      expect(() => r(h.div(_, _, [h.div(), h.div()]))).toThrowError("children");
-    });
-  });
-});
+// test(`should throw error when children shape is different (deep array to non-array)`, () => {
+//   startRender(r => {
+//     checkDOMOps(c => {
+//       r(h.div(_, _, [h.div(), [h.div()]]));
+//       expect(() => r(h.div(_, _, [h.div(), h.div()]))).toThrowError("children");
+//     });
+//   });
+// });
 
-test(`should throw error when children shape is different (deep non-array to array)`, () => {
-  startRender(r => {
-    checkDOMOps(c => {
-      r(h.div(_, _, [h.div(), h.div()]));
-      expect(() => r(h.div(_, _, [h.div(), [h.div()]]))).toThrowError("children");
-    });
-  });
-});
+// test(`should throw error when children shape is different (deep non-array to array)`, () => {
+//   startRender(r => {
+//     checkDOMOps(c => {
+//       r(h.div(_, _, [h.div(), h.div()]));
+//       expect(() => r(h.div(_, _, [h.div(), [h.div()]]))).toThrowError("children");
+//     });
+//   });
+// });
 
-test(`should throw error when children shape is different (array to non-array)`, () => {
-  startRender(r => {
-    checkDOMOps(c => {
-      r(h.div(_, _, [h.div()]));
-      expect(() => r(h.div(_, _, h.div()))).toThrowError("children");
-    });
-  });
-});
+// test(`should throw error when children shape is different (array to non-array)`, () => {
+//   startRender(r => {
+//     checkDOMOps(c => {
+//       r(h.div(_, _, [h.div()]));
+//       expect(() => r(h.div(_, _, h.div()))).toThrowError("children");
+//     });
+//   });
+// });
 
-test(`should throw error when children shape is different (non-array to array)`, () => {
-  startRender(r => {
-    checkDOMOps(c => {
-      r(h.div(_, _, h.div()));
-      expect(() => r(h.div(_, _, [h.div()]))).toThrowError("children");
-    });
-  });
-});
+// test(`should throw error when children shape is different (non-array to array)`, () => {
+//   startRender(r => {
+//     checkDOMOps(c => {
+//       r(h.div(_, _, h.div()));
+//       expect(() => r(h.div(_, _, [h.div()]))).toThrowError("children");
+//     });
+//   });
+// });

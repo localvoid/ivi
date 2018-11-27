@@ -5,18 +5,17 @@ import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
-import { OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData, TRACK_BY_KEY } from "./operations";
+import {
+  OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData, OpChildren,
+} from "./operations";
 import { StateNode, createStateNode, getDOMNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
 import { getContext, setContext, restoreContext } from "./context";
 
 let _nextNode!: Node | null;
-let _index!: number;
 let _deepStateFlags!: NodeFlags;
 let _dirtyContext!: boolean;
-let _moveNode = false;
-let _singleChild = false;
 
 export function _resetState(): void {
   _nextNode = null;
@@ -36,7 +35,7 @@ function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
   return r;
 }
 
-export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void {
+export function _dirtyCheck(parentElement: Element, stateNode: StateNode, moveNode: boolean): void {
   const { flags, children } = stateNode;
   let domNode;
   let deepState;
@@ -55,22 +54,15 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
         parentElement,
         children as StateNode,
         hooks.update!((stateNode.op as OpNode).data),
+        moveNode,
       );
     } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
-      _dirtyCheck(parentElement, children as StateNode);
+      _dirtyCheck(parentElement, children as StateNode, moveNode);
     } else {
-      domNode = getDOMNode(stateNode);
-      if (domNode !== null) {
-        if (_moveNode === true) {
-          _moveNode = false;
-          /* istanbul ignore else */
-          if (DEBUG) {
-            parentElement.insertBefore(domNode, _nextNode);
-          } else {
-            nodeInsertBefore.call(parentElement, domNode, _nextNode);
-          }
-        }
-        _nextNode = domNode;
+      if (moveNode) {
+        _moveNodes(parentElement, stateNode);
+      } else {
+        _nextNode = getDOMNode(stateNode);
       }
     }
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | _deepStateFlags;
@@ -79,8 +71,7 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
     deepState = _pushDeepState();
     if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
       domNode = stateNode.state as Node;
-      if (_moveNode === true) {
-        _moveNode = false;
+      if (moveNode === true) {
         /* istanbul ignore else */
         if (DEBUG) {
           parentElement.insertBefore(domNode, _nextNode);
@@ -89,49 +80,56 @@ export function _dirtyCheck(parentElement: Element, stateNode: StateNode): void 
         }
       }
       if (children !== null) {
-        if ((flags & NodeFlags.MultipleChildren) !== 0) {
-          for (i = 0; i < (children as Array<StateNode | null>).length; i++) {
-            const c = (children as Array<StateNode | null>)[i];
-            if (c !== null) {
-              _dirtyCheck(domNode as Element, c);
-            }
-          }
-        } else {
-          _singleChild = true;
-          _dirtyCheck(domNode as Element, children as StateNode);
-          _singleChild = false;
-        }
+        _dirtyCheck(domNode as Element, children as StateNode, false);
       }
       _nextNode = domNode;
-    } else if ((flags & NodeFlags.TrackByKey) !== 0) {
+    } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       i = (children as Array<StateNode>).length;
       while (--i >= 0) {
-        _dirtyCheck(parentElement, (children as Array<StateNode>)[i]);
+        _dirtyCheck(parentElement, (children as Array<StateNode>)[i], moveNode);
       }
     } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-      _dirtyCheck(parentElement, stateNode.children as StateNode);
+      _dirtyCheck(parentElement, stateNode.children as StateNode, moveNode);
     } else {
       if (_dirtyContext === true) {
         stateNode.state = { ...getContext(), ...(stateNode.op as OpNode<ContextData>).data.data };
       }
       const prevContext = setContext(stateNode.state as {});
-      _dirtyCheck(parentElement, stateNode.children as StateNode);
+      _dirtyCheck(parentElement, stateNode.children as StateNode, moveNode);
       restoreContext(prevContext);
     }
     stateNode.flags = _popDeepState(deepState, stateNode.flags);
   } else {
-    domNode = getDOMNode(stateNode);
-    if (domNode !== null) {
-      if (_moveNode === true) {
-        _moveNode = false;
-        /* istanbul ignore else */
-        if (DEBUG) {
-          parentElement.insertBefore(domNode, _nextNode);
-        } else {
-          nodeInsertBefore.call(parentElement, domNode, _nextNode);
+    if (moveNode) {
+      _moveNodes(parentElement, stateNode);
+    } else {
+      _nextNode = getDOMNode(stateNode);
+    }
+  }
+}
+
+function _moveNodes(parentElement: Element, stateNode: StateNode) {
+  const flags = stateNode.flags;
+  if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+    const domNode = stateNode.state as Node;
+    /* istanbul ignore else */
+    if (DEBUG) {
+      parentElement.insertBefore(domNode, _nextNode);
+    } else {
+      nodeInsertBefore.call(parentElement, domNode, _nextNode);
+    }
+    _nextNode = domNode;
+  } else {
+    const children = stateNode.children;
+    if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+      for (let i = 0; i < (children as Array<StateNode | null>).length; i++) {
+        const c = (children as Array<StateNode | null>)[i];
+        if (c !== null) {
+          _moveNodes(parentElement, c);
         }
       }
-      _nextNode = domNode;
+    } else if (children !== null) {
+      _moveNodes(parentElement, children as StateNode);
     }
   }
 }
@@ -143,7 +141,7 @@ function _unmountWalk(stateNode: StateNode): void {
   if ((flags & NodeFlags.DeepStateUnmount) !== 0) {
     const children = stateNode.children;
     if (children !== null) {
-      if ((flags & NodeFlags.MultipleChildren) !== 0) {
+      if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         for (i = 0; i < (children as Array<StateNode | null>).length; i++) {
           const c = (children as Array<StateNode | null>)[i];
           if (typeof c === "object" && c !== null) {
@@ -171,35 +169,35 @@ function _unmountWalk(stateNode: StateNode): void {
   }
 }
 
-export function _unmount(parentElement: Element, stateNode: StateNode): void {
-  let n;
-  if ((stateNode.flags & NodeFlags.TrackByKey) !== 0) {
-    _unmountTrackByKeysChildren(parentElement, stateNode.children as StateNode[]);
-  } else {
-    if ((n = getDOMNode(stateNode)) !== null) {
-      /* istanbul ignore else */
-      if (DEBUG) {
-        parentElement.removeChild(n);
-      } else {
-        nodeRemoveChild.call(parentElement, n);
+function _unmountRemove(parentElement: Element, stateNode: StateNode): void {
+  const flags = stateNode.flags;
+
+  if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+    const domNode = stateNode.state as Node;
+    if (DEBUG) {
+      parentElement.removeChild(domNode);
+    } else {
+      nodeRemoveChild.call(parentElement, domNode);
+    }
+  } else if ((flags & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
+    const children = stateNode.children as Array<StateNode | null>;
+    for (let i = 0; i < children.length; ++i) {
+      const c = children[i];
+      if (c !== null) {
+        _unmountRemove(parentElement, c);
       }
     }
-    _unmountWalk(stateNode);
+  } else {
+    const children = stateNode.children as StateNode | null;
+    if (children !== null) {
+      _unmountRemove(parentElement, children);
+    }
   }
 }
 
-function _unmountTrackByKeysChildren(parentElement: Element, childrenState: StateNode[]): void {
-  let i = 0;
-  if (_singleChild === true) {
-    parentElement.textContent = "";
-    while (i < childrenState.length) {
-      _unmountWalk(childrenState[i++]);
-    }
-  } else {
-    while (i < childrenState.length) {
-      _unmount(parentElement, childrenState[i++]);
-    }
-  }
+export function _unmount(parentElement: Element, stateNode: StateNode): void {
+  _unmountRemove(parentElement, stateNode);
+  _unmountWalk(stateNode);
 }
 
 function _mountText(
@@ -273,12 +271,6 @@ function _mountObject(
       update = (op.type.descriptor as StatelessComponentDescriptor).c;
     }
     const root = update(opData);
-    /* istanbul ignore else */
-    if (DEBUG) {
-      if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {
-        throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
-      }
-    }
     stateNode.children = _mount(parentElement, root);
     stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | opFlags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
@@ -302,19 +294,13 @@ function _mountObject(
           node = nodeCloneNode.call(node, false) as Element;
         }
       }
-      node = _createElement(node, op);
+      stateNode.state = node = _createElement(node, op);
 
-      let childrenState: StateNode | Array<StateNode | null> | null = null;
       const children = opData.children;
       const nextNode = _nextNode;
       _nextNode = null;
       if (children !== null) {
-        if (children instanceof Array) {
-          stateNode.flags |= NodeFlags.MultipleChildren;
-          _mountChildren(node, children, childrenState = []);
-        } else {
-          childrenState = _mount(node, children);
-        }
+        stateNode.children = _mount(node, children);
       }
       /* istanbul ignore else */
       if (DEBUG) {
@@ -322,21 +308,19 @@ function _mountObject(
       } else {
         nodeInsertBefore.call(parentElement, node, nextNode);
       }
-      stateNode.children = childrenState;
-      stateNode.state = node;
       _nextNode = node;
     } else if ((opFlags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
       if ((opFlags & NodeFlags.Context) !== 0) {
         const prevContext = setContext(
           stateNode.state = { ...getContext(), ...(opData as OpData<ContextData>).data },
         );
-        stateNode.children = _mount(parentElement, (opData as OpData<ContextData>).child);
+        stateNode.children = _mount(parentElement, (opData as OpData<ContextData>).children);
         restoreContext(prevContext);
       } else {
         if ((opFlags & NodeFlags.Ref) !== 0) {
           opData.data.v = stateNode;
         }
-        stateNode.children = _mount(parentElement, opData.child);
+        stateNode.children = _mount(parentElement, (opData as OpData<ContextData>).children);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
       let i = (opData as Key<any, OpNode>[]).length;
@@ -350,36 +334,57 @@ function _mountObject(
   }
 }
 
-function _mountChildren(
+function _mountFragment(
   parentElement: Element,
-  children: RecursiveOpChildrenArray,
-  result: Array<StateNode | null>,
+  stateNode: StateNode,
+  childrenOps: RecursiveOpChildrenArray,
 ): void {
-  let j = children.length;
-  while (--j >= 0) {
-    const c = children[j];
-    if (c instanceof Array) {
-      _mountChildren(parentElement, c, result);
-    } else {
-      result.push(_mount(parentElement, c));
-    }
+  const deepStateFlags = _pushDeepState();
+  let i = childrenOps.length;
+  const newChildren = Array(i);
+  while (--i >= 0) {
+    newChildren[i] = _mount(parentElement, childrenOps[i]);
   }
+  stateNode.children = newChildren;
+  stateNode.flags = _popDeepState(deepStateFlags, NodeFlags.Fragment);
 }
 
 export function _mount(
   parentElement: Element,
-  op: OpNode | string | number | null,
+  op: OpChildren,
 ): StateNode | null {
   if (op !== null) {
     const stateNode = createStateNode(op);
     if (typeof op === "object") {
-      _mountObject(parentElement, stateNode, op);
+      if (op instanceof Array) {
+        _mountFragment(parentElement, stateNode, op);
+      } else {
+        _mountObject(parentElement, stateNode, op);
+      }
     } else {
       _mountText(parentElement, stateNode, op);
     }
     return stateNode;
   }
   return null;
+}
+
+function _hasDifferentTypes(a: OpChildren, b: OpChildren): boolean {
+  if (typeof a !== typeof b) {
+    return true;
+  }
+  if (typeof a === "object") {
+    if (a instanceof Array) { // TODO: better check stateNode flags
+      if (!(b instanceof Array)) {
+        return true;
+      }
+    } else if (b instanceof Array) {
+      return true;
+    } else if (a!.type !== (b as OpNode).type) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -393,7 +398,8 @@ export function _mount(
 export function _update(
   parentElement: Element,
   stateNode: StateNode | null,
-  nextOp: OpNode | string | number | null,
+  nextOp: OpChildren,
+  moveNode: boolean,
 ): StateNode | null {
   if (nextOp === null) {
     if (stateNode !== null) {
@@ -406,13 +412,10 @@ export function _update(
   }
   const prevOp = stateNode.op;
   if (prevOp === nextOp) {
-    _dirtyCheck(parentElement, stateNode);
+    _dirtyCheck(parentElement, stateNode, moveNode);
     return stateNode;
   }
-  if (
-    (typeof prevOp !== typeof nextOp) ||
-    (typeof prevOp === "object" && prevOp.type !== (nextOp as OpNode).type)
-  ) {
+  if (_hasDifferentTypes(prevOp, nextOp) === true) {
     // prevOp can't be === null (stateNode === null)
     _unmount(parentElement, stateNode);
     return _mount(parentElement, nextOp);
@@ -427,9 +430,9 @@ export function _update(
     (state as Node).nodeValue = nextOp as string;
   } else {
     const stateChildren = stateNode.children;
-    const prevData = (prevOp as OpNode).data;
-    const nextData = (nextOp as OpNode).data;
     if ((stateFlags & NodeFlags.Component) !== 0) {
+      const prevData = (prevOp as OpNode).data;
+      const nextData = (nextOp as OpNode).data;
       const descriptor = ((nextOp as OpNode).type.descriptor as StatelessComponentDescriptor | ComponentDescriptor);
       if (
         ((stateFlags & NodeFlags.Dirty) !== 0) ||
@@ -442,28 +445,23 @@ export function _update(
         const root = ((stateFlags & NodeFlags.Stateful) !== 0) ?
           (stateNode.state as ComponentHooks).update!(nextData) :
           (descriptor as StatelessComponentDescriptor).c(nextData);
-        /* istanbul ignore else */
-        if (DEBUG) {
-          if (root !== null && typeof root === "object" && root.type === TRACK_BY_KEY) {
-            throw new Error(`Invalid root OpNode, Component can't have TrackByKey as a child`);
-          }
-        }
-
         stateNode.children = _update(
           parentElement,
           stateChildren as StateNode,
           root,
+          moveNode,
         );
         stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | _deepStateFlags;
         _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
       } else {
-        _dirtyCheck(parentElement, stateNode);
+        _dirtyCheck(parentElement, stateNode, moveNode);
       }
     } else {
       deepStateFlags = _pushDeepState();
       if ((stateFlags & NodeFlags.Element) !== 0) {
-        if (_moveNode === true) {
-          _moveNode = false;
+        const prevData = (prevOp as OpNode).data;
+        const nextData = (nextOp as OpNode).data;
+        if (moveNode === true) {
           /* istanbul ignore else */
           if (DEBUG) {
             parentElement.insertBefore(state as Node, _nextNode);
@@ -496,48 +494,35 @@ export function _update(
         const nextChildren = nextData.children;
         if (prevData.children !== nextChildren) {
           _nextNode = null;
-          /* istanbul ignore else */
-          if (DEBUG) {
-            if ((stateFlags & NodeFlags.MultipleChildren) !== 0) {
-              if (nextChildren !== null && nextChildren instanceof Array) {
-                checkElementChildrenShape(
-                  prevData.children as RecursiveOpChildrenArray,
-                  nextChildren as RecursiveOpChildrenArray,
-                );
-              } else {
-                throw new Error("Invalid element, children array has a dynamic shape");
-              }
-            } else {
-              if (nextChildren !== null && nextChildren instanceof Array) {
-                throw new Error("Invalid element, children array has a dynamic shape");
-              }
-            }
-          }
-          if ((stateFlags & NodeFlags.MultipleChildren) !== 0) {
-            _index = 0;
-            _updateChildren(state as Element, stateChildren as Array<StateNode | null>, nextChildren);
-          } else {
-            _singleChild = true;
-            stateNode.children = stateChildren === null ?
-              _mount(state as Element, nextChildren) :
-              _update(state as Element, stateChildren as StateNode, nextChildren);
-            _singleChild = false;
-          }
+          stateNode.children = _update(state as Element, stateChildren as StateNode, nextChildren, false);
         }
 
         _nextNode = state as Node;
-      } else if ((stateFlags & NodeFlags.TrackByKey) !== 0) {
-        updateChildrenTrackByKeys(parentElement, stateNode, prevData, nextData);
+      } else if ((stateFlags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+        if ((stateFlags & NodeFlags.Fragment) !== 0) {
+          _updateFragment(parentElement, stateNode, nextOp as RecursiveOpChildrenArray, moveNode);
+        } else {
+          _updateChildrenTrackByKeys(
+            parentElement,
+            stateNode,
+            (prevOp as OpNode).data,
+            (nextOp as OpNode).data,
+            moveNode,
+          );
+        }
       } else if ((stateFlags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-        stateNode.children = _update(parentElement, stateChildren as StateNode, nextData.child);
+        const nextData = (nextOp as OpNode).data;
+        stateNode.children = _update(parentElement, stateChildren as StateNode, nextData.children, moveNode);
       } else { // if ((stateFlags & NodeFlags.Context) !== 0) {
+        const prevData = (prevOp as OpNode).data;
+        const nextData = (nextOp as OpNode).data;
         const dirtyContext = _dirtyContext;
         if (prevData.data !== nextData.data || _dirtyContext === true) {
           stateNode.state = { ...getContext(), ...nextData.data };
           _dirtyContext = true;
         }
         const context = setContext(stateNode.state as {});
-        _update(parentElement, stateChildren as StateNode, nextData.child);
+        _update(parentElement, stateChildren as StateNode, nextData.children, moveNode);
         restoreContext(context);
         _dirtyContext = dirtyContext;
       }
@@ -555,24 +540,16 @@ export function _update(
  * @param a - Stateful nodes
  * @param b - Next children operations
  */
-function _updateChildren(
+function _updateFragment(
   parentElement: Element,
-  a: Array<StateNode | null>,
+  stateNode: StateNode,
   b: RecursiveOpChildrenArray,
+  moveNode: boolean,
 ): void {
-  let j = b.length;
-  while (--j >= 0) {
-    let i = _index;
-    const nextOp = b[j];
-    if (nextOp instanceof Array) {
-      _updateChildren(parentElement, a, nextOp);
-    } else {
-      const stateNode = a[i];
-      a[i] = (stateNode === null) ?
-        _mount(parentElement, nextOp) :
-        _update(parentElement, stateNode, nextOp);
-      _index = ++i;
-    }
+  const children = stateNode.children as Array<StateNode | null>;
+  let i = b.length;
+  while (--i >= 0) {
+    children[i] = _update(parentElement, children[i], b[i], moveNode);
   }
 }
 
@@ -803,20 +780,20 @@ function _updateChildren(
  * @param a Previous operations.
  * @param b Next operations.
  */
-function updateChildrenTrackByKeys(
+function _updateChildrenTrackByKeys(
   parentElement: Element,
   stateNode: StateNode,
   a: Key<any, OpNode>[],
   b: Key<any, OpNode>[],
+  moveNode: boolean,
 ): void {
   const childrenState = stateNode.children as StateNode[];
   const result = Array(b.length);
-  stateNode.children = result;
   let i: number;
 
   if (b.length === 0) {
     if (childrenState.length > 0) {
-      _unmountTrackByKeysChildren(parentElement, childrenState);
+      _unmount(parentElement, stateNode);
     }
   } else if (childrenState.length === 0) {
     i = b.length;
@@ -838,7 +815,7 @@ function updateChildrenTrackByKeys(
     outer: while (true) {
       // Sync nodes with the same key at the end.
       while (aEndNode.k === bEndNode.k) {
-        result[bEnd] = _update(parentElement, childrenState[aEnd--], bEndNode.v);
+        result[bEnd] = _update(parentElement, childrenState[aEnd--], bEndNode.v, moveNode);
         if (start > --bEnd || start > aEnd) {
           break outer;
         }
@@ -868,8 +845,7 @@ function updateChildrenTrackByKeys(
       // All nodes from b are synced, remove the rest from a.
       i = start;
       do {
-        sNode = childrenState[i++];
-        _unmount(parentElement, sNode);
+        _unmount(parentElement, childrenState[i++]);
       } while (i <= aEnd);
     } else { // Step 2
       const aLength = aEnd - start + 1;
@@ -905,7 +881,7 @@ function updateChildrenTrackByKeys(
 
       if (aLength === a.length && updated === 0) {
         // Noone is synced.
-        _unmountTrackByKeysChildren(parentElement, childrenState);
+        _unmount(parentElement, stateNode);
         while (bEnd >= 0) {
           result[bEnd] = _mount(parentElement, b[bEnd--].v);
         }
@@ -920,23 +896,33 @@ function updateChildrenTrackByKeys(
 
         let opNode;
         if (pos === 1000000) {
-          const seq = lis(sources);
-          j = seq.length - 1;
-          i = bLength;
-          while (--i >= 0) {
-            pos = start + i;
-            opNode = b[pos].v;
-            if (sources[i] === -1) {
-              result[pos] = _mount(parentElement, opNode);
-            } else {
-              sNode = result[pos];
-              if (j < 0 || i !== seq[j]) {
-                _moveNode = true;
+          if (moveNode === true) {
+            while (--i >= 0) {
+              pos = start + i;
+              opNode = b[pos].v;
+              result[pos] = (sources[i] === -1) ?
+                _mount(parentElement, opNode) :
+                _update(parentElement, result[pos], opNode, moveNode);
+            }
+          } else {
+            const seq = lis(sources);
+            j = seq.length - 1;
+            i = bLength;
+            while (--i >= 0) {
+              pos = start + i;
+              opNode = b[pos].v;
+              if (sources[i] === -1) {
+                result[pos] = _mount(parentElement, opNode);
               } else {
-                --j;
+                sNode = result[pos];
+                if (j < 0 || i !== seq[j]) {
+                  moveNode = true;
+                } else {
+                  --j;
+                }
+                result[pos] = _update(parentElement, sNode, opNode, moveNode);
+                moveNode = false;
               }
-              result[pos] = _update(parentElement, sNode, opNode);
-              _moveNode = false;
             }
           }
         } else {
@@ -946,7 +932,7 @@ function updateChildrenTrackByKeys(
             opNode = b[pos].v;
             result[pos] = (sources[i] === -1) ?
               _mount(parentElement, opNode) :
-              _update(parentElement, result[pos], opNode);
+              _update(parentElement, result[pos], opNode, moveNode);
           }
         }
       }
@@ -954,9 +940,10 @@ function updateChildrenTrackByKeys(
 
     // update nodes from Step 1 (prefix only)
     while (--start >= 0) {
-      result[start] = _update(parentElement, childrenState[start], b[start].v);
+      result[start] = _update(parentElement, childrenState[start], b[start].v, moveNode);
     }
   }
+  stateNode.children = result;
 }
 
 /**
@@ -1181,20 +1168,20 @@ function _updateAttrs(
   }
 }
 
-function checkElementChildrenShape(a: RecursiveOpChildrenArray, b: RecursiveOpChildrenArray) {
-  if (a.length !== b.length) {
-    throw new Error(`Invalid element, children array has a dynamic shape`);
-  }
-  for (let i = 0; i < a.length; i++) {
-    const ai = a[i];
-    const bi = b[i];
-    if (ai instanceof Array) {
-      if (!(bi instanceof Array)) {
-        throw new Error(`Invalid element, children array has a dynamic shape`);
-      }
-      checkElementChildrenShape(ai, bi);
-    } else if (bi instanceof Array) {
-      throw new Error(`Invalid element, children array has a dynamic shape`);
-    }
-  }
-}
+// function checkElementChildrenShape(a: RecursiveOpChildrenArray, b: RecursiveOpChildrenArray) {
+//   if (a.length !== b.length) {
+//     throw new Error(`Invalid element, children array has a dynamic shape`);
+//   }
+//   for (let i = 0; i < a.length; i++) {
+//     const ai = a[i];
+//     const bi = b[i];
+//     if (ai instanceof Array) {
+//       if (!(bi instanceof Array)) {
+//         throw new Error(`Invalid element, children array has a dynamic shape`);
+//       }
+//       checkElementChildrenShape(ai, bi);
+//     } else if (bi instanceof Array) {
+//       throw new Error(`Invalid element, children array has a dynamic shape`);
+//     }
+//   }
+// }

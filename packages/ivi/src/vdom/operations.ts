@@ -49,7 +49,7 @@ export const CONTEXT = createOpType(NodeFlags.Context, null);
 /**
  * OpType for TrackByKey nodes.
  */
-export const TRACK_BY_KEY = createOpType(NodeFlags.TrackByKey | NodeFlags.MultipleChildren, null);
+export const TRACK_BY_KEY = createOpType(NodeFlags.TrackByKey, null);
 
 /**
  * Operation node.
@@ -113,7 +113,7 @@ export interface OpData<T = any> {
   /**
    * Child operation.
    */
-  readonly child: OpNode | string | number | null;
+  readonly children: OpChildren;
 }
 
 /**
@@ -144,25 +144,13 @@ export type ContextData = OpData<{}>;
  *     );
  *
  * @param data Event handlers.
- * @param child Child operation.
+ * @param children Child operation.
  * @returns Event handler OpNode.
  */
-export const Events = /* istanbul ignore else */ DEBUG ?
-  (
-    data: EventHandler | Array<EventHandler | null> | null,
-    child: OpNode | string | number | null,
-  ): OpNode<EventsData> => {
-    if (child !== null && typeof child === "object" && child.type === TRACK_BY_KEY) {
-      throw new Error(`Invalid child OpNode, Events can't have TrackByKey as a child`);
-    }
-    return createOpNode(EVENTS, { data, child });
-  } :
-  (
-    data: EventHandler | Array<EventHandler | null> | null,
-    child: OpNode | string | number | null,
-  ): OpNode<EventsData> => (
-      createOpNode(EVENTS, { data, child })
-    );
+export const Events = (
+  data: EventHandler | Array<EventHandler | null> | null,
+  children: OpChildren,
+): OpNode<EventsData> => createOpNode(EVENTS, { data, children });
 
 /**
  * Operation factory for ref nodes.
@@ -181,23 +169,13 @@ export const Events = /* istanbul ignore else */ DEBUG ?
  *     getDOMNode(_ref);
  *
  * @param data Boxed value.
- * @param child Child operation.
+ * @param children Child operation.
  * @returns Ref OpNode.
  */
-export const Ref = /* istanbul ignore else */ DEBUG ?
-  (
-    data: Box<StateNode | null>,
-    child: OpNode | string | number | null,
-  ): OpNode<RefData> => {
-    if (child !== null && typeof child === "object" && child.type === TRACK_BY_KEY) {
-      throw new Error(`Invalid child OpNode, Ref can't have TrackByKey as a child`);
-    }
-    return createOpNode(REF, { data, child });
-  } :
-  (
-    data: Box<StateNode | null>,
-    child: OpNode | string | number | null,
-  ): OpNode<RefData> => createOpNode(REF, { data, child });
+export const Ref = (
+  data: Box<StateNode | null>,
+  children: OpChildren,
+): OpNode<RefData> => createOpNode(REF, { data, children });
 
 /**
  * Operation factory for context nodes.
@@ -212,17 +190,13 @@ export const Ref = /* istanbul ignore else */ DEBUG ?
  *     );
  *
  * @param data Context object.
- * @param child Child operation.
+ * @param children Child operation.
  * @returns Context OpNode.
  */
-export const Context = /* istanbul ignore else */ DEBUG ?
-  (data: {}, child: OpNode | string | number | null): OpNode<ContextData> => {
-    if (child !== null && typeof child === "object" && child.type === TRACK_BY_KEY) {
-      throw new Error(`Invalid child OpNode, Context can't have TrackByKey as a child`);
-    }
-    return createOpNode(CONTEXT, { data, child });
-  } :
-  (data: {}, child: OpNode | string | number | null): OpNode<ContextData> => createOpNode(CONTEXT, { data, child });
+export const Context = (
+  data: {},
+  children: OpChildren,
+): OpNode<ContextData> => createOpNode(CONTEXT, { data, children });
 
 /**
  * Key is an object that is used by TrackByKey operations to track operations.
@@ -262,21 +236,18 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  * @returns Track by key OpNode.
  */
 export const TrackByKey = DEBUG ?
-  <T>(items: Key<T, OpNode | number | string>[]) => {
+  <T>(items: Key<T, OpChildren>[]) => {
     /* istanbul ignore else */
     if (DEBUG) {
       const keys = new Set<T>();
       for (let i = 0; i < items.length; i++) {
-        const { k, v } = items[i];
+        const { k } = items[i];
         if (keys.has(k)) {
           throw new Error(`Invalid key, found duplicated key: ${k}`);
         }
         keys.add(k);
-        if (typeof v === "object" && v !== null && v.type === TRACK_BY_KEY) {
-          throw new Error(`Invalid child OpNode, TrackByKey can't have TrackByKey children`);
-        }
       }
     }
     return createOpNode(TRACK_BY_KEY, items);
   } :
-  <T>(items: Key<T, OpNode | number | string>[]) => createOpNode(TRACK_BY_KEY, items);
+  <T>(items: Key<T, OpChildren>[]) => createOpNode(TRACK_BY_KEY, items);

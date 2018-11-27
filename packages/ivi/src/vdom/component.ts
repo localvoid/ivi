@@ -1,4 +1,4 @@
-import { OpNode } from "./operations";
+import { OpChildren } from "./operations";
 import { StateNode } from "./state";
 
 /**
@@ -8,7 +8,7 @@ export interface ComponentHooks<T = any> {
   /**
    * Update function.
    */
-  update: null | ((props: T) => OpNode | string | number | null);
+  update: null | ((props: T) => OpChildren);
   /**
    * Selector hooks.
    */
@@ -29,7 +29,7 @@ export interface ComponentDescriptor<P = any> {
    * @param state Component state.
    * @returns update function.
    */
-  c(state: StateNode): (props: P) => OpNode | string | number | null;
+  c(state: StateNode): (props: P) => OpChildren;
 
   /**
    * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.
@@ -51,7 +51,7 @@ export interface StatelessComponentDescriptor<P = any> {
    * @param props Component props.
    * @returns OpNode.
    */
-  c(props: P): OpNode | string | number | null;
+  c(props: P): OpChildren;
 
   /**
    * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.

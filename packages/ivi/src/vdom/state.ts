@@ -1,5 +1,5 @@
 import { NodeFlags } from "./node_flags";
-import { OpNode } from "./operations";
+import { OpChildren } from "./operations";
 import { ComponentHooks } from "./component";
 
 /**
@@ -9,7 +9,7 @@ export interface StateNode {
   /**
    * Operation.
    */
-  op: OpNode | string | number;
+  op: OpChildren;
   /**
    * See {@link NodeFlags} for details.
    */
@@ -30,7 +30,7 @@ export interface StateNode {
  * @param op Operation.
  * @returns {@link StateNode} instance.
  */
-export const createStateNode = (op: OpNode | string | number): StateNode => (
+export const createStateNode = (op: OpChildren): StateNode => (
   { op, flags: 0, children: null, state: null }
 );
 
@@ -41,12 +41,25 @@ export const createStateNode = (op: OpNode | string | number): StateNode => (
  * @return DOM node.
  */
 export function getDOMNode(node: StateNode): Node | null {
-  if ((node.flags & (NodeFlags.Element | NodeFlags.Text)) === 0) {
-    const c = node.children;
-    if (c === null) {
+  const flags = node.flags;
+  if ((flags & (NodeFlags.Element | NodeFlags.Text)) === 0) {
+    const children = node.children;
+    if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+      for (let i = 0; i < (children as Array<StateNode | null>).length; i++) {
+        const cs = (children as Array<StateNode | null>)[i];
+        if (cs !== null) {
+          const c = getDOMNode(cs);
+          if (c !== null) {
+            return c;
+          }
+        }
+      }
       return null;
     }
-    return getDOMNode(c as StateNode);
+    if (children === null) {
+      return null;
+    }
+    return getDOMNode(children as StateNode);
   }
   return node.state as Node;
 }

@@ -52,20 +52,12 @@ function visitDown(
     return null;
   }
   const { flags, children } = stateNode;
-  let i;
   let r;
   if ((flags & NodeFlags.Element) !== 0) {
     if (stateNode.state === element) {
       return stateNode;
     }
-    if ((flags & NodeFlags.MultipleChildren) !== 0) {
-      i = (children as Array<StateNode | null>).length;
-      while (--i >= 0) {
-        if ((r = visitDown(result, match, element, (children as StateNode[])[i])) !== null) {
-          return r;
-        }
-      }
-    } else if (children !== null) {
+    if (children !== null) {
       return visitDown(result, match, element, children as StateNode);
     }
   } else if ((flags & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
@@ -75,8 +67,8 @@ function visitDown(
       }
       return r;
     }
-  } else if ((flags & NodeFlags.TrackByKey) !== 0) {
-    for (i = 0; i < (children as StateNode[]).length; i++) {
+  } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+    for (let i = 0; i < (children as StateNode[]).length; i++) {
       if ((r = visitDown(result, match, element, (children as StateNode[])[i])) !== null) {
         return r;
       }
