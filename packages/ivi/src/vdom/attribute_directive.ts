@@ -1,5 +1,5 @@
-import { NOOP } from "../core/noop";
-import { elementRemoveAttribute } from "../core/shortcuts";
+import { NOOP } from "ivi-shared";
+import { elementRemoveAttribute } from "../dom/shortcuts";
 import { scheduleLayoutEffect } from "../scheduler";
 
 /**

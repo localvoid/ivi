@@ -1,4 +1,4 @@
-import { MOUSE_EVENT_BUTTONS } from "../core/feature_detection";
+import { MOUSE_EVENT_BUTTONS } from "./feature_detection";
 
 /**
  * KeyboardEvent keyCode values.

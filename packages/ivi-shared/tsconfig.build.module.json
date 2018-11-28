@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "es2015",
+    "outDir": "dist/module",
+    "downlevelIteration": true
+  }
+}

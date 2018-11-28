@@ -40,8 +40,3 @@ export const elementSetAttributeNS = elementProto.setAttributeNS;
  * Shortcut for an `Element.prototype.removeAttribute`.
  */
 export const elementRemoveAttribute = elementProto.removeAttribute;
-
-/**
- * Shortcut for an `undefined` value.
- */
-export const _ = void 0;

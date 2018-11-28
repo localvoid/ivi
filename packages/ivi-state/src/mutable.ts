@@ -1,4 +1,3 @@
-
 /**
  * Mutable type.
  */

@@ -1,5 +1,5 @@
 {
-  "name": "ivi-state",
+  "name": "ivi-shared",
   "version": "0.18.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
@@ -19,13 +19,8 @@
     "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
-  "peerDependencies": {
-    "ivi-shared": "^0.18.0"
-  },
-  "devDependencies": {
-    "ivi-shared": "^0.18.0"
-  },
-  "description": "Basic application state management library for ivi",
+  "dependencies": {},
+  "description": "Shared code for ivi library.",
   "license": "MIT",
   "author": {
     "name": "Boris Kaul",

@@ -1,45 +1,22 @@
-declare global {
-  /**
-   * Adds missing displayName.
-   */
-  interface Function {
-    displayName: string;
-  }
+// Shared
+export {
+  _, Predicate, Box, box, EMPTY_OBJECT, getFunctionName, addErrorHandler, catchError,
+  NOOP, NOOP_FALSE, NOOP_TRUE,
+  append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
+  RepeatableTaskList, runRepeatableTasks,
+  shallowEqual,
+} from "ivi-shared";
 
-  /**
-   * Additional properties available on iOS.
-   */
-  interface TouchEvent {
-    rotation: number;
-    scale: number;
-  }
-
-  const DEBUG: boolean;
-  const TARGET: string;
-}
-
-// Core
+// DOM
 export {
   PASSIVE_EVENTS, KEYBOARD_EVENT_KEY, MOUSE_EVENT_BUTTONS, TOUCH_EVENTS, POINTER_EVENTS, INPUT_DEVICE_CAPABILITIES,
   IOS_GESTURE_EVENT,
-} from "./core/feature_detection";
-export { Predicate } from "./core/predicate";
-export { Box, box } from "./core/box";
-export { EMPTY_OBJECT } from "./core/empty_object";
-export { getFunctionName } from "./core/function";
-export { addErrorHandler, catchError } from "./core/error";
+} from "./dom/feature_detection";
 export {
   objectHasOwnProperty,
   nodeInsertBefore, nodeRemoveChild, nodeReplaceChild, nodeCloneNode, elementRemoveAttribute, elementSetAttribute,
   elementSetAttributeNS,
-  _,
-} from "./core/shortcuts";
-export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete } from "./core/array";
-export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./core/noop";
-export { RepeatableTaskList, runRepeatableTasks } from "./core/repeatable_task_list";
-export { shallowEqual } from "./core/equal";
-
-// DOM
+} from "./dom/shortcuts";
 export {
   SVG_NAMESPACE, XLINK_NAMESPACE, XML_NAMESPACE,
 } from "./dom/namespaces";
@@ -78,7 +55,6 @@ export {
   KeyCode, KeyLocation, KeyName, MouseButtons,
   getEventCharCode, getEventKey, getMouseButtons,
 } from "./dom/input";
-export { firstLeaf, nextSibling, nodeDepth } from "./dom/traverse";
 
 // Debug
 export { debugSub, debugPub } from "./debug/pubsub";

@@ -1,4 +1,4 @@
-import { Box } from "../core/box";
+import { Box } from "ivi-shared";
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
 import { OpNodeState } from "./state";

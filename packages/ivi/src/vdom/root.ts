@@ -1,6 +1,5 @@
-import { IOS_GESTURE_EVENT } from "../core/feature_detection";
-import { NOOP } from "../core/noop";
-import { unorderedArrayDelete } from "../core/array";
+import { NOOP, unorderedArrayDelete } from "ivi-shared";
+import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { checkNestingViolations } from "../debug/html_nesting_rules";
 import { OpNode } from "./operations";
 import { OpNodeState } from "./state";

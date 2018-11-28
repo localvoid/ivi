@@ -1,4 +1,4 @@
-import { PASSIVE_EVENTS } from "../core/feature_detection";
+import { PASSIVE_EVENTS } from "../dom/feature_detection";
 
 /* istanbul ignore next */
 /**

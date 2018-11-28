@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT } from "../core/empty_object";
+import { EMPTY_OBJECT } from "ivi-shared";
 import { NodeFlags } from "./node_flags";
 import { ComponentHooks } from "./component";
 import { getContext } from "./context";

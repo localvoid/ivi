@@ -1,7 +1,5 @@
+import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList } from "ivi-shared";
 import { sMT, rAF } from "ivi-scheduler";
-import { runRepeatableTasks, RepeatableTaskList } from "../core/repeatable_task_list";
-import { NOOP } from "../core/noop";
-import { catchError } from "../core/error";
 import { printWarn } from "../debug/print";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpNode } from "../vdom/operations";

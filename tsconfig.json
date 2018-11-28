@@ -29,6 +29,9 @@
       "ivi-router": [
         "packages/ivi-router/src"
       ],
+      "ivi-shared": [
+        "packages/ivi-shared/src"
+      ],
       "ivi-svg": [
         "packages/ivi-svg/src"
       ],

@@ -1,6 +1,6 @@
 import {
   objectHasOwnProperty, nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, elementRemoveAttribute,
-} from "../core/shortcuts";
+} from "../dom/shortcuts";
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
