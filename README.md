@@ -385,7 +385,7 @@ function Ref(data: Ref<StateNode>, children: OpChildren): OpNode<RefData>;
 `Ref()` node is used to capture reference to an instance.
 
 ```ts
-import { _, box, Ref, getDOMNode, render } from "ivi";
+import { _, box, Ref, findDOMNode, render } from "ivi";
 import { div } from "ivi-html";
 
 const _ref = box<Node | null>(null);
@@ -396,7 +396,7 @@ render(
   document.getElementById("app")!,
 );
 
-getDOMNode(_ref.v);
+findDOMNode(_ref);
 // => <HTMLDivElement>
 ```
 

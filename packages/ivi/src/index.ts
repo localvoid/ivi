@@ -79,7 +79,7 @@ export { OpNodeState, createStateNode } from "./vdom/state";
 export { htmlElement, svgElement, elementProto, component, statelessComponent } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
-export { selector } from "./vdom/utils";
+export { selector, findDOMNode } from "./vdom/utils";
 export { getDOMNode } from "./vdom/reconciler";
 
 // Scheduler

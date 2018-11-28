@@ -1,5 +1,7 @@
 import { OpNodeState } from "./state";
 import { useSelect } from "./hooks";
+import { getDOMNode } from "./reconciler";
+import { Box } from "ivi-shared";
 
 /**
  * selector creates a selector factory.
@@ -101,3 +103,13 @@ export function selector<T, P, C>(
 ): (c: OpNodeState) => undefined extends P ? () => T : (props: P) => T {
   return (stateNode: OpNodeState) => useSelect(stateNode, s, shouldUpdate);
 }
+
+/**
+ * findDOMNode finds a closest DOM node.
+ *
+ * @param box Boxed op node state.
+ * @returns DOM Node or a `null` value.
+ */
+export const findDOMNode = <T extends Node>(
+  box: Box<OpNodeState | null>,
+) => box.v === null ? null : getDOMNode(box.v) as T;
