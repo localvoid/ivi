@@ -69,13 +69,13 @@ export {
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
 export { ElementProtoDescriptor } from "./vdom/element_proto";
-export { ComponentHooks, ComponentDescriptor } from "./vdom/component";
+export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor } from "./vdom/component";
 export {
-  OpType, OpNode, OpChildren, ElementData, OpData, EventsData, RefData, ContextData, Key,
+  OpType, OpNode, OpChildren, RecursiveOpChildrenArray, ElementData, OpData, EventsData, RefData, ContextData, Key,
   createOpType, createOpNode,
   Events, Ref, Context, TrackByKey, key
 } from "./vdom/operations";
-export { OpNodeState } from "./vdom/state";
+export { OpNodeState, createStateNode } from "./vdom/state";
 export { htmlElement, svgElement, elementProto, component, statelessComponent } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";

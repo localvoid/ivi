@@ -32,6 +32,9 @@
       "ivi-shared": [
         "packages/ivi-shared/src"
       ],
+      "ivi-ssr": [
+        "packages/ivi-ssr/src"
+      ],
       "ivi-svg": [
         "packages/ivi-svg/src"
       ],
