@@ -15,7 +15,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - [Fragments](#fragments)
 - [Components](#components)
 - Extensible synthetic event subsystem
-- Synchronous and deterministic update algorithm with [minimum number of DOM operations](#children-reconciliation)
+- Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
@@ -795,11 +795,22 @@ render(
 
 ### Children Reconciliation
 
-Children reconciliation algorithm in ivi works in almost exactly the same way as
-[React Reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
+Children reconciliation algorithm in ivi works in a slightly different way than
+[React children reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
 
-The key difference is that ivi algorithm tries to find a minimum number of DOM operations when rearranging children
-nodes.
+There are two types of children lists: static fragments (basic arrays) and dynamic children lists (`TrackByKey()`
+nodes).
+
+Static fragments can't have variable number of nodes, to remove node from a static fragment it should be
+replaced with a hole `null`. When fragments length is changed, previous fragment will be completely destroyed and new
+one instantiated, in majority of use cases this heuristics is way much better than appending/removing nodes at the end.
+Static fragments can have deeply nested fragments or dynamic children lists and each fragment is used as a completely
+separate entity.
+
+Dynamic children lists are wrapped in a `TrackByKey()` nodes, each node in dynamic children list should be wrapped in a
+`Key` object that should contain unique key. Dynamic children list algorithm is using a
+[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm to find a minimum number of DOM
+operations.
 
 Finding a minimum number of DOM operations is not just about performance, it is also about preserving internal state
 of DOM nodes. Moving DOM nodes isn't always a side-effect free operation, it may restart animations, drop focus, reset
