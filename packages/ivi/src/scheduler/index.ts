@@ -82,7 +82,7 @@ function run(t: TaskList) {
 
 let _flags: SchedulerFlags = 0;
 let _debugFlags: SchedulerDebugFlags;
-/** istanbul ignore else */
+/* istanbul ignore else */
 if (DEBUG) {
   _debugFlags = 0;
 }
@@ -175,18 +175,18 @@ export const withNextFrame = (inner: (time?: number) => void) => (
       if ((_flags & SchedulerFlags.DirtyCheckPending) !== 0) {
         dirtyCheck();
       }
-      /** istanbul ignore else */
+      /* istanbul ignore else */
       if (DEBUG) {
         _debugFlags |= SchedulerDebugFlags.DirtyCheckingFinished;
       }
       run(_mutationEffects);
-      /** istanbul ignore else */
+      /* istanbul ignore else */
       if (DEBUG) {
         _debugFlags |= SchedulerDebugFlags.MutationsFinished;
       }
       runRepeatableTasks(_afterMutations);
       run(_domLayoutEffects);
-      /** istanbul ignore else */
+      /* istanbul ignore else */
       if (DEBUG) {
         _debugFlags |= SchedulerDebugFlags.LayoutFinished;
       }
@@ -197,7 +197,7 @@ export const withNextFrame = (inner: (time?: number) => void) => (
       SchedulerFlags.NextSyncFramePending |
       SchedulerFlags.DirtyCheckPending
     );
-    /** istanbul ignore else */
+    /* istanbul ignore else */
     if (DEBUG) {
       _debugFlags &= ~(
         SchedulerDebugFlags.DirtyCheckingFinished |
@@ -242,7 +242,7 @@ export function requestNextFrame(flags?: UpdateFlags): void {
  * @param fn - Write DOM task
  */
 export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): void {
-  /** istanbul ignore else */
+  /* istanbul ignore else */
   if (DEBUG) {
     if (_flags & SchedulerFlags.UpdatingFrame) {
       if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
@@ -260,7 +260,7 @@ export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): voi
  * @param fn - Read DOM task
  */
 export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void {
-  /** istanbul ignore else */
+  /* istanbul ignore else */
   if (DEBUG) {
     if (_flags & SchedulerFlags.UpdatingFrame) {
       if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
@@ -273,7 +273,7 @@ export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void 
 }
 
 export function requestDirtyCheck(flags?: UpdateFlags) {
-  /** istanbul ignore else */
+  /* istanbul ignore else */
   if (DEBUG) {
     if (_flags & SchedulerFlags.UpdatingFrame) {
       if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {

@@ -111,7 +111,7 @@ export interface OpData<T = any> {
    */
   readonly data: T;
   /**
-   * Child operation.
+   * Children operation nodes.
    */
   readonly children: OpChildren;
 }
@@ -144,7 +144,7 @@ export type ContextData = OpData<{}>;
  *     );
  *
  * @param data Event handlers.
- * @param children Child operation.
+ * @param children Children operation nodes.
  * @returns Event handler OpNode.
  */
 export const Events = (
@@ -157,7 +157,7 @@ export const Events = (
  *
  * @example
  *
- *     const _ref = box();
+ *     const _ref = box<OpNodeState | null>(null);
  *
  *     render(
  *       Ref(_ref,
@@ -166,10 +166,10 @@ export const Events = (
  *       DOMContainer,
  *     );
  *
- *     getDOMNode(_ref);
+ *     findDOMNode(_ref);
  *
  * @param data Boxed value.
- * @param children Child operation.
+ * @param children Children operation nodes.
  * @returns Ref OpNode.
  */
 export const Ref = (
@@ -190,7 +190,7 @@ export const Ref = (
  *     );
  *
  * @param data Context object.
- * @param children Child operation.
+ * @param children Children operation nodes.
  * @returns Context OpNode.
  */
 export const Context = (
@@ -237,17 +237,14 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  */
 export const TrackByKey = DEBUG ?
   <T>(items: Key<T, OpChildren>[]) => {
-    /* istanbul ignore else */
-    if (DEBUG) {
-      const keys = new Set<T>();
-      for (let i = 0; i < items.length; i++) {
-        const { k } = items[i];
-        if (keys.has(k)) {
-          throw new Error(`Invalid key, found duplicated key: ${k}`);
-        }
-        keys.add(k);
+    const keys = new Set<T>();
+    for (let i = 0; i < items.length; i++) {
+      const { k } = items[i];
+      if (keys.has(k)) {
+        throw new Error(`Invalid key, found duplicated key: ${k}`);
       }
+      keys.add(k);
     }
     return createOpNode(TRACK_BY_KEY, items);
   } :
-  <T>(items: Key<T, OpChildren>[]) => createOpNode(TRACK_BY_KEY, items);
+  /* istanbul ignore next */ <T>(items: Key<T, OpChildren>[]) => createOpNode(TRACK_BY_KEY, items);

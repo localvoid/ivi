@@ -1,5 +1,6 @@
 import {
   PROPERTY, EVENT, ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED, ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED, UNSAFE_HTML,
+  AUTOFOCUS, withNextFrame,
 } from "ivi";
 
 describe(`Attribute Directive`, () => {
@@ -82,6 +83,45 @@ describe(`Attribute Directive`, () => {
       p.u(e, "unsafeHTML", void 0, "");
 
       expect(set.mock.calls.length).toBe(0);
+    });
+  });
+
+  describe(`AUTOFOCUS()`, () => {
+    test(`undefined should return ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED`, () => {
+      expect(AUTOFOCUS(undefined)).toBe(ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED);
+    });
+
+    test(`true value`, () => {
+      expect(AUTOFOCUS(true).v).toBe(true);
+    });
+
+    test(`false value`, () => {
+      expect(AUTOFOCUS(false).v).toBe(false);
+    });
+
+    test(`assign AUTOFOCUS`, () => {
+      const a = document.createElement("input");
+      const p = AUTOFOCUS(true);
+      withNextFrame(() => {
+        p.u(a, "autofocus", void 0, p.v);
+      })();
+
+      expect(document.activeElement).toBe(a);
+    });
+
+    test(`update AUTOFOCUS`, () => {
+      const a = document.createElement("input");
+      const b = document.createElement("input");
+      const p = AUTOFOCUS(true);
+      withNextFrame(() => {
+        p.u(a, "autofocus", void 0, true);
+      })();
+      b.focus();
+      withNextFrame(() => {
+        p.u(a, "autofocus", true, true);
+      })();
+
+      expect(document.activeElement).toBe(b);
     });
   });
 
