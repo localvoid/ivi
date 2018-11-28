@@ -47,12 +47,9 @@ export function getDOMNode(node: OpNodeState): Node | null {
     const children = node.children;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       for (let i = 0; i < (children as Array<OpNodeState | null>).length; i++) {
-        const cs = (children as Array<OpNodeState | null>)[i];
-        if (cs !== null) {
-          const c = getDOMNode(cs);
-          if (c !== null) {
-            return c;
-          }
+        const c = (children as Array<OpNodeState | null>)[i];
+        if (c !== null) {
+          return getDOMNode(c);
         }
       }
       return null;
@@ -72,7 +69,7 @@ export function _dirtyCheck(
   singleChild: boolean,
 ): void {
   const { flags, children } = stateNode;
-  let domNode;
+  let node;
   let deepState;
   let i;
 
@@ -106,23 +103,25 @@ export function _dirtyCheck(
   } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
     deepState = _pushDeepState();
     if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-      domNode = stateNode.state as Node;
+      node = stateNode.state as Node;
       if (moveNode === true) {
         /* istanbul ignore else */
         if (DEBUG) {
-          parentElement.insertBefore(domNode, _nextNode);
+          parentElement.insertBefore(node, _nextNode);
         } else {
-          nodeInsertBefore.call(parentElement, domNode, _nextNode);
+          nodeInsertBefore.call(parentElement, node, _nextNode);
         }
       }
       if (children !== null) {
-        _dirtyCheck(domNode as Element, children as OpNodeState, false, true);
+        _dirtyCheck(node as Element, children as OpNodeState, false, true);
       }
-      _nextNode = domNode;
+      _nextNode = node;
     } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-      i = (children as Array<OpNodeState>).length;
+      i = (children as Array<OpNodeState | null>).length;
       while (--i >= 0) {
-        _dirtyCheck(parentElement, (children as Array<OpNodeState>)[i], moveNode, false);
+        if ((node = (children as Array<OpNodeState | null>)[i]) !== null) {
+          _dirtyCheck(parentElement, node, moveNode, false);
+        }
       }
     } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
       _dirtyCheck(parentElement, stateNode.children as OpNodeState, moveNode, singleChild);
