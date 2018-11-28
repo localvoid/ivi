@@ -11,8 +11,9 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 ## Features
 
 - Declarative rendering with "Virtual DOM"
-- Components
-- Immutable "Virtual DOM"
+- [Immutable](#immutable-virtual-dom) "Virtual DOM"
+- [Fragments](#fragments)
+- [Components](#components)
 - Extensible synthetic event subsystem
 - Synchronous and deterministic update algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Test utilities
@@ -313,15 +314,27 @@ sending data snapshots that doesn't contain any information how nodes should be 
 ### Virtual DOM
 
 Virtual DOM in ivi has some major differences from other implementations. Refs, keys, events are implemented as a
-special nodes instead of attributes. Using special nodes gives an additional flexibility: simple stateless components
-doesn't require creating virtual dom nodes, DOM events can be attached to components.
+special nodes instead of attributes. Using special nodes instead of attributes improves composition patterns, simple
+stateless components can be implemented as a basic immediately executed functions, DOM events can be attached to
+components, fragments or any other node.
+
+#### Immutable Virtual DOM
+
+When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
+efficiently implement it otherwise, since that time many other virtual dom libraries just copied this terrible idea, and
+now it is [everywhere](https://vuejs.org/v2/guide/render-function.html#Constraints). Some libraries are using different
+workarounds to hide that they are using mutable virtual dom nodes, but this workarounds has hidden costs when mutable
+nodes are passed around.
+
+ivi is using immutable virtual dom like React does, and it is still has an extremely fast reconciler, there are no any
+hidden costs, zero normalization passes, nothing gets copied when dealing with edge cases.
 
 #### Element Factories
 
 All factory functions that create DOM elements have an interface:
 
 ```ts
-type ElementFactory<T> = (className?: string, attrs?: T, children?: OpNodeChildren) => OpNode<T>;
+type ElementFactory<T> = (className?: string, attrs?: T, children?: OpChildren) => OpNode<T>;
 ```
 
 `ivi-html` package contains factories for HTML elements.
@@ -338,10 +351,15 @@ render(
 );
 ```
 
+#### Fragments
+
+All virtual dom nodes and component root nodes can have any number of children nodes. Fragments and dynamic children
+lists can be deeply nested. All dynamic children lists are using their own key namespaces to prevent key collisions.
+
 #### Events
 
 ```ts
-function Events(data: EventHandler | Array<EventHandler | null> | null, child: OpNode): OpNode<EventsData>;
+function Events(data: EventHandler | Array<EventHandler | null> | null, children: OpChildren): OpNode<EventsData>;
 ```
 
 `Events()` node is used to attach event handlers.
@@ -361,7 +379,7 @@ render(
 #### Ref
 
 ```ts
-function Ref(data: Ref<StateNode>, child: OpNode): OpNode<RefData>;
+function Ref(data: Ref<StateNode>, children: OpChildren): OpNode<RefData>;
 ```
 
 `Ref()` node is used to capture reference to an instance.
@@ -385,7 +403,7 @@ getDOMNode(_ref.v);
 #### Context
 
 ```ts
-function Context(data: {}, child: OpNode): OpNode<ContextData>;
+function Context(data: {}, children: OpChildren): OpNode<ContextData>;
 ```
 
 `Context()` node is used to assign context.
@@ -411,7 +429,7 @@ render(
 #### TrackByKey
 
 ```ts
-function TrackByKey(items: Key<any, OpNode | number | string>[]): OpNode<Key<any, OpNode | number | string>[]>;
+function TrackByKey(items: Key<any, OpChildren>[]): OpNode<Key<any, OpChildren>[]>;
 ```
 
 `TrackByKey()` node is used for dynamic children lists.
@@ -550,7 +568,7 @@ function requestDirtyCheck(flags?: UpdateFlags);
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: OpNode<any> | null, container: Element, flags?: UpdateFlags): void;
+function render(node: OpNode | null, container: Element, flags?: UpdateFlags): void;
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
@@ -561,11 +579,11 @@ function render(node: OpNode<any> | null, container: Element, flags?: UpdateFlag
 
 ```ts
 function component(
-  c: (c: Component<undefined>) => () => OpNode,
+  c: (c: Component<undefined>) => () => OpChildren,
 ): () => OpNode<undefined>;
 
 function component<P>(
-  c: (c: Component<P>) => (props: P) => OpNode,
+  c: (c: Component<P>) => (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 ```
