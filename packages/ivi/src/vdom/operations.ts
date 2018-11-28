@@ -1,7 +1,7 @@
 import { Box } from "../core/box";
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
-import { StateNode } from "./state";
+import { OpNodeState } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "./component";
 
@@ -124,7 +124,7 @@ export type EventsData = OpData<EventHandler | Array<EventHandler | null> | null
 /**
  * Operation data for Ref operations.
  */
-export type RefData = OpData<Box<StateNode | null>>;
+export type RefData = OpData<Box<OpNodeState | null>>;
 
 /**
  * Operation data for Context operations.
@@ -173,7 +173,7 @@ export const Events = (
  * @returns Ref OpNode.
  */
 export const Ref = (
-  data: Box<StateNode | null>,
+  data: Box<OpNodeState | null>,
   children: OpChildren,
 ): OpNode<RefData> => createOpNode(REF, { data, children });
 

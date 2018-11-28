@@ -1,4 +1,4 @@
-import { StateNode } from "./state";
+import { OpNodeState } from "./state";
 import { useSelect } from "./hooks";
 
 /**
@@ -23,7 +23,7 @@ import { useSelect } from "./hooks";
  */
 export function selector<T>(
   s: () => T,
-): (stateNode: StateNode) => () => T;
+): (stateNode: OpNodeState) => () => T;
 
 /**
  * selector creates a selector factory.
@@ -48,7 +48,7 @@ export function selector<T>(
 export function selector<T, P>(
   s: (props: P, context: undefined, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (stateNode: StateNode) => undefined extends P ? () => T : (props: P) => T;
+): (stateNode: OpNodeState) => undefined extends P ? () => T : (props: P) => T;
 
 /**
  * selector creates a selector factory.
@@ -73,7 +73,7 @@ export function selector<T, P>(
 export function selector<T, P, C>(
   s: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (stateNode: StateNode) => undefined extends P ? () => T : (props: P) => T;
+): (stateNode: OpNodeState) => undefined extends P ? () => T : (props: P) => T;
 
 /**
  * selector creates a selector factory.
@@ -98,6 +98,6 @@ export function selector<T, P, C>(
 export function selector<T, P, C>(
   s: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (c: StateNode) => undefined extends P ? () => T : (props: P) => T {
-  return (stateNode: StateNode) => useSelect(stateNode, s, shouldUpdate);
+): (c: OpNodeState) => undefined extends P ? () => T : (props: P) => T {
+  return (stateNode: OpNodeState) => useSelect(stateNode, s, shouldUpdate);
 }

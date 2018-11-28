@@ -5,7 +5,7 @@ import { catchError } from "../core/error";
 import { printWarn } from "../debug/print";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpNode } from "../vdom/operations";
-import { StateNode } from "../vdom/state";
+import { OpNodeState } from "../vdom/state";
 import { ROOTS, findRoot, dirtyCheck } from "../vdom/root";
 
 /**
@@ -293,7 +293,7 @@ export function requestDirtyCheck(flags?: UpdateFlags) {
  * @param c - Component instance
  * @param flags - See {@link UpdateFlags} for details.
  */
-export function invalidate(c: StateNode, flags?: UpdateFlags): void {
+export function invalidate(c: OpNodeState, flags?: UpdateFlags): void {
   c.flags |= NodeFlags.Dirty;
   requestDirtyCheck(flags);
 }

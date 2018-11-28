@@ -3,7 +3,7 @@ import { NOOP } from "../core/noop";
 import { unorderedArrayDelete } from "../core/array";
 import { checkNestingViolations } from "../debug/html_nesting_rules";
 import { OpNode } from "./operations";
-import { StateNode } from "./state";
+import { OpNodeState } from "./state";
 import { _mount, _update, _unmount, _dirtyCheck, _resetState } from "./reconciler";
 
 /**
@@ -21,7 +21,7 @@ export interface Root {
   /**
    * Current virtual DOM node.
    */
-  state: StateNode | null;
+  state: OpNodeState | null;
 }
 
 /**

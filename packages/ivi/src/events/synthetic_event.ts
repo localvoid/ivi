@@ -1,5 +1,5 @@
 import { SyntheticEventFlags } from "./flags";
-import { StateNode } from "../vdom/state";
+import { OpNodeState } from "../vdom/state";
 
 /**
  * SyntheticEvent is an interface that should be supported by all synthetic events.
@@ -16,5 +16,5 @@ export interface SyntheticEvent {
   /**
    * State node.
    */
-  node: StateNode | null;
+  node: OpNodeState | null;
 }

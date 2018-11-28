@@ -1,5 +1,5 @@
 // import { NodeFlags } from "../vdom/common";
-import { StateNode } from "../vdom/state";
+import { OpNodeState } from "../vdom/state";
 
 // /**
 //  * HTML nesting rules.
@@ -236,7 +236,7 @@ import { StateNode } from "../vdom/state";
  *
  * @throws Error when child nesting rules are violated.
  */
-export function checkNestingViolations(parent: Element, root: StateNode): void {
+export function checkNestingViolations(parent: Element, root: OpNodeState): void {
   // visitNode(
   //   root,
   //   parent.tagName.toLowerCase(),

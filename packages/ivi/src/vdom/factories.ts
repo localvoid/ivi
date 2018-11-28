@@ -1,7 +1,7 @@
 // import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { OpNode, OpChildren, ElementData, createOpNode, createOpType } from "./operations";
-import { StateNode } from "./state";
+import { OpNodeState } from "./state";
 
 function element<T, U>(tag: string, svg: boolean) {
   const type = createOpType(
@@ -93,7 +93,7 @@ export function elementProto<P>(proto: OpNode<ElementData<P>>) {
  * @returns Factory that produces component nodes.
  */
 export function component(
-  c: (c: StateNode) => () => OpChildren,
+  c: (c: OpNodeState) => () => OpChildren,
 ): () => OpNode<undefined>;
 
 /**
@@ -118,7 +118,7 @@ export function component(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: StateNode) => (props: P) => OpChildren,
+  c: (c: OpNodeState) => (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
@@ -144,7 +144,7 @@ export function component<P>(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: StateNode) => (props: P) => OpChildren,
+  c: (c: OpNodeState) => (props: P) => OpChildren,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
   const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, shouldUpdate });
