@@ -1,5 +1,4 @@
 import { OpNode, render, requestDirtyCheck, withNextFrame } from "ivi";
-import { VNodeWrapper } from "./vdom";
 
 /**
  * DOMRenderer is a helper object for testing Virtual DOM in a real DOM.
@@ -18,11 +17,11 @@ export class DOMRenderer {
    * render renders a VNode in a test container and returns a VNodeWrapper object.
    *
    * @param vnode VNode.
-   * @returns VNodeWrapper object.
+   * @returns Container object.
    */
-  render(vnode: OpNode): VNodeWrapper {
+  render(vnode: OpNode): Element {
     withNextFrame(() => { render(vnode, this.container); })();
-    return new VNodeWrapper(vnode, null, {});
+    return this.container;
   }
 
   /**
@@ -40,7 +39,7 @@ export class DOMRenderer {
  */
 export function createDOMRenderer(): DOMRenderer {
   const container = document.createElement("div");
-  container.className = "ivi-test-container";
+  container.id = "ivi-test-container";
   document.body.appendChild(container);
 
   return new DOMRenderer(container);

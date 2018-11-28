@@ -1,4 +1,4 @@
-export { SnapshotOptions, toSnapshot } from "./snapshot";
-export { VNodeWrapper, VNodeListWrapper, visitUnwrapped, visitWrapped, virtualRender } from "./vdom";
-export { Matcher, VNodeMatcher, VNodeElementMatcher, VNodeComponentMatcher, q, query, queryAll } from "./query";
+export {
+  visitOpNodes, isOpText, isOpObject, isOpFragment, isOpElement, isOpComponent, isOpContext,
+} from "./operations";
 export { DOMRenderer, createDOMRenderer } from "./dom";

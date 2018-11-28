@@ -1,4 +1,4 @@
-import { EventHandler, EventDispatcher, OpNode, VNodeFlags } from "ivi";
+import { EventHandler } from "ivi";
 
 /**
  * containsClassName checks if className list contains a className.
@@ -75,54 +75,19 @@ export function matchKeys(
  */
 export function containsEventHandler(
   handlers: Array<EventHandler | null> | EventHandler | null,
-  dispatcher: EventDispatcher,
+  dispatcher: any,
 ): boolean {
   if (handlers !== null) {
-    if (Array.isArray(handlers)) {
-      for (const h of handlers) {
-        if (h !== null && h.src === dispatcher) {
+    if (handlers instanceof Array) {
+      for (let i = 0; i < handlers.length; ++i) {
+        const h = handlers[i];
+        if (h !== null && h === dispatcher) {
           return true;
         }
       }
     } else {
-      return (handlers.src === dispatcher);
+      return (handlers === dispatcher);
     }
   }
   return false;
-}
-
-const VNodeLooseMatchFlags = 0
-  | VNodeFlags.Text
-  | VNodeFlags.Element
-  | VNodeFlags.Component
-  | VNodeFlags.SvgElement
-  | VNodeFlags.UpdateContext;
-
-/**
- * isVNodeLooseMatch performs a loose match on VNodes.
- *
- * @param a VNode.
- * @param b VNode.
- * @returns true when VNode are loosely matching.
- */
-export function isVNodeLooseMatch(a: OpNode, b: OpNode): boolean {
-  const aFlags = a._f;
-  const bFlags = b._f;
-  if (((aFlags ^ bFlags) & VNodeLooseMatchFlags) !== 0) {
-    return false;
-  }
-
-  if (a._t !== b._t) {
-    return false;
-  }
-
-  if ((bFlags & VNodeFlags.Element) !== 0) {
-    if (!matchValues(a._p, b._p)) {
-      return false;
-    }
-    if (!matchValues(a._s, b._s)) {
-      return false;
-    }
-  }
-  return true;
 }
