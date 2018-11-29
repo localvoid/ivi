@@ -1,11 +1,11 @@
-import { OpNode, NodeFlags, OpChildren, RecursiveOpChildrenArray, ElementData, ContextData, Key } from "ivi";
+import { OpNode, NodeFlags, Op, OpArray, ElementData, ContextData, Key } from "ivi";
 
 export function visitOpNodes(
-  op: OpChildren,
-  parent: OpChildren,
+  op: Op,
+  parent: Op,
   key: any,
   context: {},
-  visitor: (vnode: OpChildren, parent: OpChildren, key: any, context: {}) => boolean,
+  visitor: (vnode: Op, parent: Op, key: any, context: {}) => boolean,
 ): boolean {
   if (visitor(op, parent, key, context) === true) {
     return true;
@@ -23,7 +23,7 @@ export function visitOpNodes(
       if ((flags & NodeFlags.Element) !== 0) {
         return visitOpNodes(op.data.children, op, void 0, context, visitor);
       } else if ((flags & NodeFlags.TrackByKey) !== 0) {
-        const children = (op as OpNode<Key<any, OpChildren>[]>).data;
+        const children = (op as OpNode<Key<any, Op>[]>).data;
         for (let i = 0; i < children.length; i++) {
           const k = children[i];
           if (visitOpNodes(k.v, op, k.k, context, visitor)) {
@@ -41,26 +41,26 @@ export function visitOpNodes(
   return false;
 }
 
-export function isOpText(op: OpChildren): op is string | number {
+export function isOpText(op: Op): op is string | number {
   return (typeof op === "string" || typeof op === "number");
 }
 
-export function isOpObject(op: OpChildren): op is OpNode | RecursiveOpChildrenArray {
+export function isOpObject(op: Op): op is OpNode | OpArray {
   return (typeof op === "object" && op !== null);
 }
 
-export function isOpFragment(op: OpChildren): op is RecursiveOpChildrenArray {
+export function isOpFragment(op: Op): op is OpArray {
   return isOpObject(op) && op instanceof Array;
 }
 
-export function isOpElement(op: OpChildren): op is OpNode<ElementData> {
+export function isOpElement(op: Op): op is OpNode<ElementData> {
   return isOpObject(op) && !isOpFragment(op) && (op.type.flags & NodeFlags.Element) !== 0;
 }
 
-export function isOpComponent<T = any>(op: OpChildren): op is OpNode<T> {
+export function isOpComponent<T = any>(op: Op): op is OpNode<T> {
   return isOpObject(op) && !isOpFragment(op) && (op.type.flags & NodeFlags.Component) !== 0;
 }
 
-export function isOpContext(op: OpChildren): op is OpNode<ContextData> {
+export function isOpContext(op: Op): op is OpNode<ContextData> {
   return isOpObject(op) && !isOpFragment(op) && (op.type.flags & NodeFlags.Component) !== 0;
 }

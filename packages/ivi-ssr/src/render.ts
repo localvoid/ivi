@@ -1,5 +1,5 @@
 import {
-  NodeFlags, OpNode, OpChildren, RecursiveOpChildrenArray, ElementData,
+  NodeFlags, OpNode, Op, OpArray, ElementData,
   ComponentDescriptor, StatelessComponentDescriptor,
   ElementProtoDescriptor, ContextData, Key,
   createStateNode,
@@ -102,7 +102,7 @@ function renderText(text: string | number): string {
   return text.toString();
 }
 
-function renderFragment(children: RecursiveOpChildrenArray): string {
+function renderFragment(children: OpArray): string {
   let result = "";
   for (let i = 0; i < children.length; ++i) {
     result += renderToString(children[i]);
@@ -138,7 +138,7 @@ function renderObject(op: OpNode): string {
   }
 
   result = "";
-  const children = (op.data as Key<any, OpChildren>[]);
+  const children = (op.data as Key<any, Op>[]);
   for (let i = 0; i < children.length; ++i) {
     result += renderToString(children[i].v);
   }
@@ -152,7 +152,7 @@ function renderObject(op: OpNode): string {
  * @param context Current context.
  * @returns Rendering results.
  */
-export function renderToString(op: OpChildren): string {
+export function renderToString(op: Op): string {
   if (op !== null) {
     if (typeof op === "object") {
       if (op instanceof Array) {

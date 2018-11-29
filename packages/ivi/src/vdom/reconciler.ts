@@ -6,7 +6,7 @@ import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
 import {
-  OpNode, ElementData, RecursiveOpChildrenArray, Key, OpData, ContextData, OpChildren, EventsData, RefData,
+  OpNode, ElementData, OpArray, Key, OpData, ContextData, Op, EventsData, RefData,
 } from "./operations";
 import { OpNodeState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
@@ -406,7 +406,7 @@ function _mountObject(
 function _mountFragment(
   parentElement: Element,
   stateNode: OpNodeState,
-  childrenOps: RecursiveOpChildrenArray,
+  childrenOps: OpArray,
 ): void {
   const deepStateFlags = _pushDeepState();
   let i = childrenOps.length;
@@ -420,7 +420,7 @@ function _mountFragment(
 
 export function _mount(
   parentElement: Element,
-  op: OpChildren,
+  op: Op,
 ): OpNodeState | null {
   if (op !== null) {
     const stateNode = createStateNode(op);
@@ -439,8 +439,8 @@ export function _mount(
 }
 
 function _hasDifferentType(
-  a: OpNode | RecursiveOpChildrenArray,
-  b: OpNode | string | number | RecursiveOpChildrenArray,
+  a: OpNode | OpArray,
+  b: OpNode | string | number | OpArray,
 ): boolean {
   if (typeof b !== "object") {
     return true;
@@ -467,7 +467,7 @@ function _hasDifferentType(
 export function _update(
   parentElement: Element,
   nodeState: OpNodeState | null,
-  nextOp: OpChildren,
+  nextOp: Op,
   moveNode: boolean,
   singleChild: boolean,
 ): OpNodeState | null {
@@ -515,7 +515,7 @@ export function _update(
       _dirtyCheck(parentElement, nodeState, moveNode, singleChild);
       return nodeState;
     }
-    if (_hasDifferentType(op as OpNode | RecursiveOpChildrenArray, nextOp) === true) {
+    if (_hasDifferentType(op as OpNode | OpArray, nextOp) === true) {
       _unmount(parentElement, nodeState, singleChild);
       return _mount(parentElement, nextOp);
     }
@@ -600,7 +600,7 @@ export function _update(
         _nextNode = state as Node;
       } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((flags & NodeFlags.Fragment) !== 0) {
-          let i = (nextOp as RecursiveOpChildrenArray).length;
+          let i = (nextOp as OpArray).length;
           // When there is a different length for statically positioned elements, it is much more likely that internal
           // elements should have a different internal state, so it is better to destroy previous state and instantiate
           // a new one. This heuristics is slightly different from React, but it should be better at handling some
@@ -611,13 +611,13 @@ export function _update(
                 _update(
                   parentElement,
                   (nodeStateChildren as Array<OpNodeState | null>)[i],
-                  (nextOp as RecursiveOpChildrenArray)[i],
+                  (nextOp as OpArray)[i],
                   moveNode,
                   false);
             }
           } else {
             _unmount(parentElement, nodeState, singleChild);
-            _mountFragment(parentElement, nodeState, nextOp as RecursiveOpChildrenArray);
+            _mountFragment(parentElement, nodeState, nextOp as OpArray);
           }
         } else {
           _updateChildrenTrackByKeys(

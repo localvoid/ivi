@@ -1,6 +1,6 @@
 // import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
-import { OpNode, OpChildren, ElementData, createOpNode, createOpType } from "./operations";
+import { OpNode, Op, ElementData, createOpNode, createOpType } from "./operations";
 import { OpNodeState } from "./state";
 
 function element<T, U>(tag: string, svg: boolean) {
@@ -11,7 +11,7 @@ function element<T, U>(tag: string, svg: boolean) {
   return (
     className?: string,
     attrs?: {},
-    children: OpChildren = null,
+    children: Op = null,
   ) => (
       createOpNode<ElementData>(type, { className, attrs, children })
     );
@@ -26,7 +26,7 @@ function element<T, U>(tag: string, svg: boolean) {
 export const htmlElement: <T, U>(tag: string) => (
   className?: string,
   attrs?: {},
-  children?: OpChildren,
+  children?: Op,
 ) => OpNode<ElementData<T>> = (tag: string) => element(tag, false);
 
 /**
@@ -38,7 +38,7 @@ export const htmlElement: <T, U>(tag: string) => (
 export const svgElement: <T, U>(tag: string) => (
   className?: string,
   attrs?: {},
-  children?: OpChildren,
+  children?: Op,
 ) => OpNode<ElementData<T>> = (tag: string) => element(tag, true);
 
 /**
@@ -67,7 +67,7 @@ export function elementProto<P>(proto: OpNode<ElementData<P>>) {
   return (
     className?: string,
     attrs?: {},
-    children: OpChildren = null,
+    children: Op = null,
   ) => createOpNode<ElementData>(type, { className, attrs, children });
 }
 
@@ -93,7 +93,7 @@ export function elementProto<P>(proto: OpNode<ElementData<P>>) {
  * @returns Factory that produces component nodes.
  */
 export function component(
-  c: (c: OpNodeState) => () => OpChildren,
+  c: (c: OpNodeState) => () => Op,
 ): () => OpNode<undefined>;
 
 /**
@@ -118,7 +118,7 @@ export function component(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: OpNodeState) => (props: P) => OpChildren,
+  c: (c: OpNodeState) => (props: P) => Op,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
@@ -144,7 +144,7 @@ export function component<P>(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: OpNodeState) => (props: P) => OpChildren,
+  c: (c: OpNodeState) => (props: P) => Op,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
   const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, shouldUpdate });
@@ -163,7 +163,7 @@ export function component<P>(
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent(
-  update: () => OpChildren,
+  update: () => Op,
 ): () => OpNode<undefined>;
 
 /**
@@ -178,7 +178,7 @@ export function statelessComponent(
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
-  update: (props: P) => OpChildren,
+  update: (props: P) => Op,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
@@ -194,7 +194,7 @@ export function statelessComponent<P>(
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
-  c: (props: P) => OpChildren,
+  c: (props: P) => Op,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
   const type = createOpType(NodeFlags.Component, { c, shouldUpdate });

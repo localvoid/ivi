@@ -1,5 +1,5 @@
 import { NodeFlags } from "./node_flags";
-import { OpChildren } from "./operations";
+import { Op } from "./operations";
 import { ComponentHooks } from "./component";
 
 /**
@@ -9,7 +9,7 @@ export interface OpNodeState {
   /**
    * Operation.
    */
-  op: OpChildren;
+  op: Op;
   /**
    * See {@link NodeFlags} for details.
    */
@@ -30,6 +30,6 @@ export interface OpNodeState {
  * @param op Operation.
  * @returns {@link StateNode} instance.
  */
-export const createStateNode = (op: OpChildren): OpNodeState => (
+export const createStateNode = (op: Op): OpNodeState => (
   { op, flags: 0, children: null, state: null }
 );

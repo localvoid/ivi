@@ -89,18 +89,18 @@ export interface ElementData<T = any> {
   /**
    * Children operations.
    */
-  readonly children: OpChildren;
+  readonly children: Op;
 }
 
 /**
- * Children operations supported by element nodes.
+ * Operation.
  */
-export type OpChildren = string | number | OpNode | RecursiveOpChildrenArray | null;
+export type Op = string | number | OpNode | OpArray | null;
 
 /**
- * Recursive children array operations supported by element nodes.
+ * Recursive operation array.
  */
-export interface RecursiveOpChildrenArray extends Array<OpChildren> { }
+export interface OpArray extends Array<Op> { }
 
 /**
  * Generic operation data for simple operations.
@@ -113,7 +113,7 @@ export interface OpData<T = any> {
   /**
    * Children operation nodes.
    */
-  readonly children: OpChildren;
+  readonly children: Op;
 }
 
 /**
@@ -149,7 +149,7 @@ export type ContextData = OpData<{}>;
  */
 export const Events = (
   data: EventHandler | Array<EventHandler | null> | null,
-  children: OpChildren,
+  children: Op,
 ): OpNode<EventsData> => createOpNode(EVENTS, { data, children });
 
 /**
@@ -174,7 +174,7 @@ export const Events = (
  */
 export const Ref = (
   data: Box<OpNodeState | null>,
-  children: OpChildren,
+  children: Op,
 ): OpNode<RefData> => createOpNode(REF, { data, children });
 
 /**
@@ -195,7 +195,7 @@ export const Ref = (
  */
 export const Context = (
   data: {},
-  children: OpChildren,
+  children: Op,
 ): OpNode<ContextData> => createOpNode(CONTEXT, { data, children });
 
 /**
@@ -236,7 +236,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  * @returns Track by key OpNode.
  */
 export const TrackByKey = DEBUG ?
-  <T>(items: Key<T, OpChildren>[]) => {
+  <T>(items: Key<T, Op>[]) => {
     const keys = new Set<T>();
     for (let i = 0; i < items.length; i++) {
       const { k } = items[i];
@@ -247,4 +247,4 @@ export const TrackByKey = DEBUG ?
     }
     return createOpNode(TRACK_BY_KEY, items);
   } :
-  /* istanbul ignore next */ <T>(items: Key<T, OpChildren>[]) => createOpNode(TRACK_BY_KEY, items);
+  /* istanbul ignore next */ <T>(items: Key<T, Op>[]) => createOpNode(TRACK_BY_KEY, items);
