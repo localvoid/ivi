@@ -1,4 +1,4 @@
-import { EventHandlerFlags, EventHandler, EventDispatcher } from "ivi";
+import { EventHandlerFlags, EventHandlerNode, EventDispatcher } from "ivi";
 import { GesturePointerEvent } from "./gesture_pointer_event";
 import { createGestureEventDispatcher } from "./gesture_event_dispatcher";
 import { GestureController } from "./gesture_controller";
@@ -13,7 +13,7 @@ export const GESTURE_EVENT_SOURCE = /*#__PURE__*/createGestureEventDispatcher() 
 
 export function onNativePan(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -26,7 +26,7 @@ export function onNativePan(
 
 export function onNativePanX(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -39,7 +39,7 @@ export function onNativePanX(
 
 export function onNativePanY(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -52,7 +52,7 @@ export function onNativePanY(
 
 export function onNativePanUp(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -65,7 +65,7 @@ export function onNativePanUp(
 
 export function onNativePanDown(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -78,7 +78,7 @@ export function onNativePanDown(
 
 export function onNativePanLeft(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -91,7 +91,7 @@ export function onNativePanLeft(
 
 export function onNativePanRight(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -104,7 +104,7 @@ export function onNativePanRight(
 
 export function onPan(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -117,7 +117,7 @@ export function onPan(
 
 export function onPanX(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -130,7 +130,7 @@ export function onPanX(
 
 export function onPanY(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -143,7 +143,7 @@ export function onPanY(
 
 export function onPanUp(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -156,7 +156,7 @@ export function onPanUp(
 
 export function onPanDown(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -169,7 +169,7 @@ export function onPanDown(
 
 export function onPanLeft(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -182,7 +182,7 @@ export function onPanLeft(
 
 export function onPanRight(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -195,7 +195,7 @@ export function onPanRight(
 
 export function onTap(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -208,7 +208,7 @@ export function onTap(
 
 export function onLongPress(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,
@@ -221,7 +221,7 @@ export function onLongPress(
 
 export function onTransform(
   handler: (ev: GesturePointerEvent) => void,
-): EventHandler<GesturePointerEvent> {
+): EventHandlerNode<GesturePointerEvent> {
   return {
     src: GESTURE_EVENT_SOURCE,
     flags: EventHandlerFlags.Capture,

@@ -1,7 +1,7 @@
 import { append, unorderedArrayDelete } from "ivi-shared";
 import { withSchedulerTick } from "../scheduler";
 import { SyntheticEventFlags, NativeEventSourceFlags } from "./flags";
-import { EventHandler } from "./event_handler";
+import { EventHandlerNode } from "./event_handler";
 import { DispatchTarget } from "./dispatch_target";
 import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
 import { dispatchEvent } from "./dispatch_event";
@@ -37,7 +37,7 @@ export function createNativeEventDispatcher<E extends Event>(
   options: { capture?: boolean, passive?: boolean } | boolean = true,
 ): NativeEventDispatcher<E> {
   const source: NativeEventDispatcher<E> = { a: null, b: null };
-  const matchEventSource = (h: EventHandler) => h.d.src === source;
+  const matchEventSource = (h: EventHandlerNode) => h.d.src === source;
 
   document.addEventListener(name, withSchedulerTick((ev: Event): void => {
     const target = ev.target as Element;

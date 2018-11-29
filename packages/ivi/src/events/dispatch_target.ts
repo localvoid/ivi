@@ -1,4 +1,4 @@
-import { EventHandler } from "./event_handler";
+import { EventHandlerNode } from "./event_handler";
 
 /**
  * DispatchTarget.
@@ -11,5 +11,5 @@ export interface DispatchTarget {
   /**
    * Matched Event Handlers.
    */
-  h: EventHandler | EventHandler[];
+  h: EventHandlerNode | EventHandlerNode[];
 }

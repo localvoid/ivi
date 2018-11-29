@@ -31,7 +31,7 @@ export interface EventHandlerDescriptor {
 /**
  * Event Handler.
  */
-export interface EventHandler<E extends SyntheticEvent = any> {
+export interface EventHandlerNode<E extends SyntheticEvent = any> {
   /**
    * Event Handler Descriptor.
    */
@@ -41,3 +41,5 @@ export interface EventHandler<E extends SyntheticEvent = any> {
    */
   readonly h: (ev: E) => EventFlags | void;
 }
+
+export type EventHandler = EventHandlerNode | Array<EventHandlerNode | null> | null;

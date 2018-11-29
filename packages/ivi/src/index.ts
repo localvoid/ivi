@@ -101,7 +101,7 @@ export {
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./events/utils";
 export { SyntheticEvent } from "./events/synthetic_event";
-export { EventHandlerFlags, EventHandler } from "./events/event_handler";
+export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/event_handler";
 export { DispatchTarget } from "./events/dispatch_target";
 export { accumulateDispatchTargets } from "./events/accumulate_dispatch_targets";
 export { dispatchEvent } from "./events/dispatch_event";

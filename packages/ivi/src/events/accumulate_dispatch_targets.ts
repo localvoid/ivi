@@ -1,9 +1,9 @@
 import { DispatchTarget } from "./dispatch_target";
-import { EventHandler } from "./event_handler";
+import { EventHandlerNode } from "./event_handler";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpState } from "../vdom/state";
 import { ROOTS } from "../vdom/root";
-import { OpNode, OpData } from "../vdom/operations";
+import { OpNode, EventsData } from "../vdom/operations";
 
 /**
  * accumulateDispatchTargets traverses the DOM tree from the `target` Element to the document top, then goes down
@@ -16,7 +16,7 @@ import { OpNode, OpData } from "../vdom/operations";
 export function accumulateDispatchTargets(
   result: DispatchTarget[],
   target: Element,
-  match: (h: EventHandler) => boolean,
+  match: (h: EventHandlerNode) => boolean,
 ): void {
   for (let i = 0; i < ROOTS.length; i++) {
     const { container, state } = ROOTS[i];
@@ -31,7 +31,7 @@ export function accumulateDispatchTargets(
 
 function visitUp(
   result: DispatchTarget[],
-  match: (h: EventHandler) => boolean,
+  match: (h: EventHandlerNode) => boolean,
   element: Element,
   root: Element,
   stateNode: OpState | null,
@@ -44,7 +44,7 @@ function visitUp(
 
 function visitDown(
   result: DispatchTarget[],
-  match: (h: EventHandler) => boolean,
+  match: (h: EventHandlerNode) => boolean,
   element: Element,
   stateNode: OpState | null,
 ): OpState | null {
@@ -89,11 +89,11 @@ function visitDown(
 function accumulateDispatchTargetsFromEventsOpNode(
   result: DispatchTarget[],
   t: OpState,
-  match: (h: EventHandler) => boolean,
+  match: (h: EventHandlerNode) => boolean,
 ): void {
-  const events = (t.o as OpNode<OpData>).d.v;
+  const events = (t.o as OpNode<EventsData>).d.v;
   if (events !== null) {
-    let h: EventHandler[] | EventHandler | undefined;
+    let h: EventHandlerNode[] | EventHandlerNode | undefined;
     if (events instanceof Array) {
       let count = 0;
       for (let i = 0; i < events.length; i++) {
@@ -102,9 +102,9 @@ function accumulateDispatchTargetsFromEventsOpNode(
           if (count === 0) {
             h = ev;
           } else if (count === 1) {
-            h = [h as EventHandler, ev];
+            h = [h as EventHandlerNode, ev];
           } else {
-            (h as EventHandler[]).push(ev);
+            (h as EventHandlerNode[]).push(ev);
           }
           ++count;
         }

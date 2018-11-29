@@ -1,7 +1,7 @@
 import { OpState } from "../vdom/state";
 import { EventFlags, SyntheticEventFlags } from "./flags";
 import { DispatchTarget } from "./dispatch_target";
-import { EventHandlerFlags, EventHandler } from "./event_handler";
+import { EventHandlerFlags, EventHandlerNode } from "./event_handler";
 import { SyntheticEvent } from "./synthetic_event";
 
 /**
@@ -22,7 +22,7 @@ export function dispatchEvent(
   targets: DispatchTarget[],
   event: SyntheticEvent,
   bubble: boolean,
-  dispatch?: (h: EventHandler, ev: SyntheticEvent) => EventFlags | void,
+  dispatch?: (h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void,
 ): void {
   let i = targets.length;
 
@@ -57,7 +57,7 @@ function dispatchEventToLocalEventHandlers(
   target: DispatchTarget,
   event: SyntheticEvent,
   matchFlags: EventHandlerFlags,
-  dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | void) | undefined,
+  dispatch: ((h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void) | undefined,
 ): void {
   const handlers = target.h;
   let flags: EventFlags = 0;
@@ -77,8 +77,8 @@ function dispatchEventToLocalEventHandlers(
 }
 
 function _dispatch(
-  handler: EventHandler,
-  dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | void) | undefined,
+  handler: EventHandlerNode,
+  dispatch: ((h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void) | undefined,
   event: SyntheticEvent,
 ): EventFlags {
   const flags = (dispatch === void 0) ? handler.h(event) : dispatch(handler, event);

@@ -1,4 +1,4 @@
-import { EventHandler } from "ivi";
+import { EventHandlerNode } from "ivi";
 
 /**
  * containsClassName checks if className list contains a className.
@@ -74,7 +74,7 @@ export function matchKeys(
  * @returns true when event handlers contain an event source.
  */
 export function containsEventHandler(
-  handlers: Array<EventHandler | null> | EventHandler | null,
+  handlers: Array<EventHandlerNode | null> | EventHandlerNode | null,
   dispatcher: any,
 ): boolean {
   if (handlers !== null) {

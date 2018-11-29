@@ -119,7 +119,7 @@ export interface OpData<T = any> {
 /**
  * Operation data for Events operations.
  */
-export type EventsData = OpData<EventHandler | Array<EventHandler | null> | null>;
+export type EventsData = OpData<EventHandler>;
 
 /**
  * Operation data for Ref operations.
@@ -148,7 +148,7 @@ export type ContextData = OpData<{}>;
  * @returns Events handler operation.
  */
 export const Events = (
-  v: EventHandler | Array<EventHandler | null> | null,
+  v: EventHandler,
   c: Op,
 ): OpNode<EventsData> => createOpNode(EVENTS, { v, c });
 
@@ -172,10 +172,7 @@ export const Events = (
  * @param c Children operation nodes.
  * @returns Ref operation.
  */
-export const Ref = (
-  v: Box<OpState | null>,
-  c: Op,
-): OpNode<RefData> => createOpNode(REF, { v, c });
+export const Ref = (v: Box<OpState | null>, c: Op): OpNode<RefData> => createOpNode(REF, { v, c });
 
 /**
  * Operation factory for context nodes.
@@ -193,10 +190,7 @@ export const Ref = (
  * @param c Children operation nodes.
  * @returns Context operation.
  */
-export const Context = (
-  v: {},
-  c: Op,
-): OpNode<ContextData> => createOpNode(CONTEXT, { v, c });
+export const Context = (v: {}, c: Op): OpNode<ContextData> => createOpNode(CONTEXT, { v, c });
 
 /**
  * Key is an object that is used by TrackByKey operations to track operations.

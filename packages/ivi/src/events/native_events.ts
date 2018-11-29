@@ -5,7 +5,7 @@
  */
 
 import { EventFlags, NativeEventSourceFlags } from "./flags";
-import { EventHandler, EventHandlerFlags } from "./event_handler";
+import { EventHandlerNode, EventHandlerFlags } from "./event_handler";
 import { NativeEventDispatcher, createNativeEventDispatcher } from "./native_event_dispatcher";
 import { SyntheticNativeEvent } from "./synthetic_native_event";
 import { EVENT_CAPTURE_ACTIVE_OPTIONS } from "./utils";
@@ -106,7 +106,7 @@ export const EVENT_DISPATCHER_ACTIVE_WHEEL = /*#__PURE__*/createNativeEventDispa
 export function createNativeEventHandler(src: NativeEventDispatcher<any>): (
   h: (ev: SyntheticNativeEvent<any>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<any> {
+) => EventHandlerNode<any> {
   const bubbleDescriptor = { src, flags: EventHandlerFlags.Bubble };
   const captureDescriptor = { src, flags: EventHandlerFlags.Capture };
   return (h, capture) => ({
@@ -118,331 +118,331 @@ export function createNativeEventHandler(src: NativeEventDispatcher<any>): (
 export const onAbort: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ABORT));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ABORT));
 export const onActivate: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVATE));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVATE));
 export const onAriaRequest: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ARIA_REQUEST));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ARIA_REQUEST));
 export const onBeforeActivate: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_ACTIVATE));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_ACTIVATE));
 export const onBeforeCopy: <P>(
   handler: (ev: SyntheticNativeEvent<ClipboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_COPY));
+) => EventHandlerNode<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_COPY));
 export const onBeforeCut: <P>(
   handler: (ev: SyntheticNativeEvent<ClipboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_CUT));
+) => EventHandlerNode<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_CUT));
 export const onBeforeDeactivate: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_DEACTIVATE));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_DEACTIVATE));
 export const onBeforePaste: <P>(
   handler: (ev: SyntheticNativeEvent<ClipboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_PASTE));
+) => EventHandlerNode<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_PASTE));
 export const onBlur: <P>(
   handler: (ev: SyntheticNativeEvent<FocusEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<FocusEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BLUR));
+) => EventHandlerNode<SyntheticNativeEvent<FocusEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BLUR));
 export const onCanPlay: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CAN_PLAY));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CAN_PLAY));
 export const onCanPlaythrough: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CAN_PLAYTHROUGH));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CAN_PLAYTHROUGH));
 export const onChange: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CHANGE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CHANGE));
 export const onClick: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CLICK));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CLICK));
 export const onContextMenu: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CONTEXT_MENU));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CONTEXT_MENU));
 export const onCopy: <P>(
   handler: (ev: SyntheticNativeEvent<ClipboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_COPY));
+) => EventHandlerNode<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_COPY));
 export const onCueChange: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CUE_CHANGE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CUE_CHANGE));
 export const onCut: <P>(
   handler: (ev: SyntheticNativeEvent<ClipboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CUT));
+) => EventHandlerNode<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_CUT));
 export const onDoubleClick: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DOUBLE_CLICK));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DOUBLE_CLICK));
 export const onDeactivate: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DEACTIVATE));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DEACTIVATE));
 export const onDrag: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG));
 export const onDragEnd: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_END));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_END));
 export const onDragEnter: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_ENTER));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_ENTER));
 export const onDragLeave: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_LEAVE));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_LEAVE));
 export const onDragOver: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_OVER));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_OVER));
 export const onDragStart: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_START));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DRAG_START));
 export const onDrop: <P>(
   handler: (ev: SyntheticNativeEvent<DragEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DROP));
+) => EventHandlerNode<SyntheticNativeEvent<DragEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DROP));
 export const onDurationChange: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DURATION_CHANGE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_DURATION_CHANGE));
 export const onEmptied: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_EMPTIED));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_EMPTIED));
 export const onEncrypted: <P>(
   handler: (ev: SyntheticNativeEvent<MediaEncryptedEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MediaEncryptedEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ENCRYPTED));
+) => EventHandlerNode<SyntheticNativeEvent<MediaEncryptedEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ENCRYPTED));
 export const onEnded: <P>(
   handler: (ev: SyntheticNativeEvent<MediaStreamErrorEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MediaStreamErrorEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ENDED));
+) => EventHandlerNode<SyntheticNativeEvent<MediaStreamErrorEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ENDED));
 export const onError: <P>(
   handler: (ev: SyntheticNativeEvent<ErrorEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ErrorEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ERROR));
+) => EventHandlerNode<SyntheticNativeEvent<ErrorEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ERROR));
 export const onFocus: <P>(
   handler: (ev: SyntheticNativeEvent<FocusEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<FocusEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_FOCUS));
+) => EventHandlerNode<SyntheticNativeEvent<FocusEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_FOCUS));
 export const onGotPointerCapture: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_GOT_POINTER_CAPTURE));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_GOT_POINTER_CAPTURE));
 export const onInput: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_INPUT));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_INPUT));
 export const onInvalid: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_INVALID));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_INVALID));
 export const onKeyDown: <P>(
   handler: (ev: SyntheticNativeEvent<KeyboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<KeyboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_KEY_DOWN));
+) => EventHandlerNode<SyntheticNativeEvent<KeyboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_KEY_DOWN));
 export const onKeyPress: <P>(
   handler: (ev: SyntheticNativeEvent<KeyboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<KeyboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_KEY_PRESS));
+) => EventHandlerNode<SyntheticNativeEvent<KeyboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_KEY_PRESS));
 export const onKeyUp: <P>(
   handler: (ev: SyntheticNativeEvent<KeyboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<KeyboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_KEY_UP));
+) => EventHandlerNode<SyntheticNativeEvent<KeyboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_KEY_UP));
 export const onLoad: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOAD));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOAD));
 export const onLoadedData: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOADED_DATA));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOADED_DATA));
 export const onLoadedMetadata: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOADED_METADATA));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOADED_METADATA));
 export const onLoadStart: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOAD_START));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOAD_START));
 export const onLostPointerCapture: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOST_POINTER_CAPTURE));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_LOST_POINTER_CAPTURE));
 export const onMouseDown: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_DOWN));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_DOWN));
 export const onMouseMove: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_MOVE));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_MOVE));
 export const onMouseOut: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_OUT));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_OUT));
 export const onMouseOver: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_OVER));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_OVER));
 export const onMouseUp: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_UP));
+) => EventHandlerNode<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_UP));
 export const onPaste: <P>(
   handler: (ev: SyntheticNativeEvent<ClipboardEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PASTE));
+) => EventHandlerNode<SyntheticNativeEvent<ClipboardEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PASTE));
 export const onPause: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PAUSE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PAUSE));
 export const onPlay: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PLAY));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PLAY));
 export const onPlaying: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PLAYING));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PLAYING));
 export const onPointerCancel: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_CANCEL));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_CANCEL));
 export const onPointerDown: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_DOWN));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_DOWN));
 export const onPointerMove: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_MOVE));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_MOVE));
 export const onPointerOut: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_OUT));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_OUT));
 export const onPointerOver: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_OVER));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_OVER));
 export const onPointerUp: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_UP));
+) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_UP));
 export const onProgress: <P>(
   handler: (ev: SyntheticNativeEvent<ProgressEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<ProgressEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PROGRESS));
+) => EventHandlerNode<SyntheticNativeEvent<ProgressEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_PROGRESS));
 export const onRateChange: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_RATE_CHANGE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_RATE_CHANGE));
 export const onReset: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_RESET));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_RESET));
 export const onScroll: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SCROLL));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SCROLL));
 export const onSeeked: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SEEKED));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SEEKED));
 export const onSeeking: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SEEKING));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SEEKING));
 export const onSelect: <P>(
   handler: (ev: SyntheticNativeEvent<UIEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SELECT));
+) => EventHandlerNode<SyntheticNativeEvent<UIEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SELECT));
 export const onSelectStart: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SELECT_START));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SELECT_START));
 export const onStalled: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_STALLED));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_STALLED));
 export const onSubmit: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SUBMIT));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SUBMIT));
 export const onSuspend: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SUSPEND));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_SUSPEND));
 export const onTimeUpdate: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TIME_UPDATE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TIME_UPDATE));
 export const onTouchCancel: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_CANCEL));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_CANCEL));
 export const onTouchEnd: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_END));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_END));
 export const onTouchMove: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_MOVE));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_MOVE));
 export const onTouchStart: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_START));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_START));
 export const onUnload: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_UNLOAD));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_UNLOAD));
 export const onVolumeChange: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_VOLUME_CHANGE));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_VOLUME_CHANGE));
 export const onWaiting: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_WAITING));
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_WAITING));
 export const onWheel: <P>(
   handler: (ev: SyntheticNativeEvent<WheelEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<WheelEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_WHEEL));
+) => EventHandlerNode<SyntheticNativeEvent<WheelEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_WHEEL));
 
 export const onActiveTouchEnd: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_TOUCH_END));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_TOUCH_END));
 export const onActiveTouchMove: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE));
 export const onActiveTouchStart: <P>(
   handler: (ev: SyntheticNativeEvent<TouchEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_TOUCH_START));
+) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_TOUCH_START));
 export const onActiveWheel: <P>(
   handler: (ev: SyntheticNativeEvent<WheelEvent>) => EventFlags | void,
   capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<WheelEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_WHEEL));
+) => EventHandlerNode<SyntheticNativeEvent<WheelEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_ACTIVE_WHEEL));
 
 /* tslint:enable:max-line-length */

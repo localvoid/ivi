@@ -1,6 +1,6 @@
 import {
   TOUCH_EVENTS, catchError,
-  DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventDispatcher, EventHandler, dispatchEvent,
+  DispatchTarget, accumulateDispatchTargets, SyntheticEvent, EventDispatcher, EventHandlerNode, dispatchEvent,
   scheduleMicrotask,
 } from "ivi";
 import { GesturePointerEvent, GesturePointerAction } from "./gesture_pointer_event";
@@ -16,14 +16,14 @@ export function createGestureEventDispatcher(): EventDispatcher {
   let dependencies = 0;
 
   const src = {
-    add(h: EventHandler) {
+    add(h: EventHandlerNode) {
       if (dependencies++ === 0) {
         listener.activate();
       }
       ++h.listeners;
 
     },
-    remove(h: EventHandler) {
+    remove(h: EventHandlerNode) {
       if (--dependencies === 0) {
         listener.deactivate();
       }
@@ -36,7 +36,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
     },
   };
 
-  const matchEventSource = (h: EventHandler) => (h.src === src);
+  const matchEventSource = (h: EventHandlerNode) => (h.src === src);
 
   const pointers = new Map<number, GesturePointerEvent>();
   const recognizers: GestureRecognizer<any>[] = [];
@@ -173,7 +173,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
       const targets: DispatchTarget[] = [];
       accumulateDispatchTargets(targets, target!, matchEventSource);
       if (targets.length > 0) {
-        dispatchEvent(targets, ev, false, (h: EventHandler, e: SyntheticEvent) => {
+        dispatchEvent(targets, ev, false, (h: EventHandlerNode, e: SyntheticEvent) => {
           let recognizer = h.state;
           if (conflictResolverClosed) {
             if (recognizer !== null && (recognizer.state & GestureRecognizerState.Active)) {
