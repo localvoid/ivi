@@ -11,5 +11,5 @@ export interface DispatchTarget {
   /**
    * Matched Event Handlers.
    */
-  h: EventHandlerNode | EventHandlerNode[];
+  h: EventHandlerNode;
 }

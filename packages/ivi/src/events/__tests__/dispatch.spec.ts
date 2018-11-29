@@ -42,21 +42,6 @@ test("dispatch onClick", () => {
   expect(invoked).toBe(1);
 });
 
-test("dispatch to adjacent onClick handlers", () => {
-  let invoked = 0;
-
-  const t = {};
-  const h = onClick(() => { invoked++; });
-
-  dispatchEvent(
-    [{ t, h: [h, h] }],
-    createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
-    true,
-  );
-
-  expect(invoked).toBe(2);
-});
-
 test("dispatch to several onClick handlers", () => {
   let invoked = 0;
 
@@ -73,22 +58,6 @@ test("dispatch to several onClick handlers", () => {
 });
 
 describe("event flow", () => {
-  test("adjacent handlers should be invoked from left to right", () => {
-    const order: number[] = [];
-
-    const t = {};
-    const h1 = onClick(() => { order.push(1); });
-    const h2 = onClick(() => { order.push(2); });
-
-    dispatchEvent(
-      [{ t, h: [h1, h2] }],
-      createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
-      true,
-    );
-
-    expect(order).toEqual([1, 2]);
-  });
-
   test("bubbling phase should execute handlers from left to right (bottom-to-up)", () => {
     const order: number[] = [];
 

@@ -1,5 +1,5 @@
 import { DispatchTarget } from "./dispatch_target";
-import { EventHandlerNode } from "./event_handler";
+import { EventHandlerNode, EventHandler } from "./event_handler";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpState } from "../vdom/state";
 import { ROOTS } from "../vdom/root";
@@ -63,7 +63,7 @@ function visitDown(
   } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
     if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
       if ((f & NodeFlags.Events) !== 0) {
-        accumulateDispatchTargetsFromEventsOpNode(result, stateNode, match);
+        accumulateDispatchTargetsFromEventsOpNode(result, stateNode, (stateNode.o as OpNode<EventsData>).d.v, match);
       }
       return r;
     }
@@ -80,39 +80,25 @@ function visitDown(
 
 /**
  * accumulateDispatchTargetsFromElement accumulates matching Event Handlers in `result` array from the `target`
- * Virtual DOM Element.
+ * operation state.
  *
  * @param result Accumulated Dispatch Targets.
- * @param t Target Virtual DOM Element.
+ * @param t Target operation state.
+ * @param h Event handler.
  * @param match Matching function.
  */
 function accumulateDispatchTargetsFromEventsOpNode(
   result: DispatchTarget[],
   t: OpState,
+  h: EventHandler,
   match: (h: EventHandlerNode) => boolean,
 ): void {
-  const events = (t.o as OpNode<EventsData>).d.v;
-  if (events !== null) {
-    let h: EventHandlerNode[] | EventHandlerNode | undefined;
-    if (events instanceof Array) {
-      let count = 0;
-      for (let i = 0; i < events.length; i++) {
-        const ev = events[i];
-        if (ev !== null && match(ev) === true) {
-          if (count === 0) {
-            h = ev;
-          } else if (count === 1) {
-            h = [h as EventHandlerNode, ev];
-          } else {
-            (h as EventHandlerNode[]).push(ev);
-          }
-          ++count;
-        }
+  if (h !== null) {
+    if (h instanceof Array) {
+      for (let i = 0; i < h.length; ++i) {
+        accumulateDispatchTargetsFromEventsOpNode(result, t, h[i], match);
       }
-    } else if (match(events) === true) {
-      h = events;
-    }
-    if (h !== void 0) {
+    } else if (match(h) === true) {
       result.push({ t, h });
     }
   }

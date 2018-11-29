@@ -60,20 +60,10 @@ function dispatchEventToLocalEventHandlers(
   dispatch: ((h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void) | undefined,
 ): void {
   const handlers = target.h;
-  let flags: EventFlags = 0;
-  event.node = target.t as OpState;
-  if (handlers instanceof Array) {
-    for (let i = 0; i < handlers.length; ++i) {
-      const handler = handlers[i];
-      if (handler.d.flags & matchFlags) {
-        flags |= _dispatch(handler, dispatch, event);
-      }
-    }
-  } else if (handlers.d.flags & matchFlags) {
-    flags = _dispatch(handlers, dispatch, event);
+  if ((handlers.d.flags & matchFlags) === matchFlags) {
+    event.node = target.t as OpState;
+    event.flags |= _dispatch(handlers, dispatch, event);
   }
-
-  event.flags |= flags;
 }
 
 function _dispatch(

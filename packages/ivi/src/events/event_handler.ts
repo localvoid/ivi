@@ -42,4 +42,12 @@ export interface EventHandlerNode<E extends SyntheticEvent = any> {
   readonly h: (ev: E) => EventFlags | void;
 }
 
+/**
+ * Event handler.
+ */
 export type EventHandler = EventHandlerNode | Array<EventHandlerNode | null> | null;
+
+/**
+ * Recursive event handler array.
+ */
+export interface EventHandlerArray extends Array<EventHandler> { }
