@@ -114,7 +114,14 @@ function renderObject(op: OpNode): string {
   const flags = op.t.f;
   let result;
   if ((flags & NodeFlags.Element) !== 0) {
-    return emitElementOpen(op) + renderToString((op as OpNode<ElementData>).d.c) + emitElementClose(op);
+    result = emitElementOpen(op);
+    const childrenString = renderToString((op as OpNode<ElementData>).d.c);
+    if ((flags & NodeFlags.NewlineEatingElement) !== 0) {
+      if (childrenString.length > 0 && childrenString.charCodeAt(0) === 10) { // "\n"
+        result += "\n";
+      }
+    }
+    return result + childrenString + emitElementClose(op);
   }
   if ((flags & NodeFlags.Component) !== 0) {
     if ((flags & NodeFlags.Stateful) !== 0) {

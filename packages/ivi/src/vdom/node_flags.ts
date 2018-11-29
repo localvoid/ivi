@@ -30,6 +30,13 @@ export const enum NodeFlags {
   DirtyCheck = 1 << 12,
   // Node requires unmounting.
   Unmount = 1 << 13,
+  /**
+   * Newline eating element <pre> and <textarea>
+   *
+   * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
+   * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
+   */
+  NewlineEatingElement = 1 << 14,
 
   // Flags that should be preserved before updating.
   SelfFlags = Text
@@ -46,7 +53,8 @@ export const enum NodeFlags {
   | Svg
   // | Dirty // Dirty flag should be erased after update.
   | DirtyCheck
-  | Unmount,
+  | Unmount
+  | NewlineEatingElement,
 
   // Flags that were used by the children operations.
   DeepStateFlags = DirtyCheck | Unmount,

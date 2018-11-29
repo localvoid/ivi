@@ -1,5 +1,5 @@
 import { _ } from "ivi-shared";
-import { div, span, strong } from "ivi-html";
+import { div, span, strong, textarea } from "ivi-html";
 import { renderToString } from "../render";
 
 describe("render", () => {
@@ -130,21 +130,21 @@ describe("render", () => {
     });
   });
 
-  // describe("special cases", () => {
-  //   describe("newline-eating elements", () => {
-  //     test("no newline", () => {
-  //       expect(render(textarea(_, _, "hello"))).toBe(`<textarea>hello</textarea>`);
-  //     });
+  describe("special cases", () => {
+    describe("newline-eating elements", () => {
+      test("no newline", () => {
+        expect(renderToString(textarea(_, _, "hello"))).toBe(`<textarea>hello</textarea>`);
+      });
 
-  //     test("single newline", () => {
-  //       expect(render(textarea(_, _, "\n"))).toBe(`<textarea>\n\n</textarea>`);
-  //     });
+      test("single newline", () => {
+        expect(renderToString(textarea(_, _, "\n"))).toBe(`<textarea>\n\n</textarea>`);
+      });
 
-  //     test("double newline", () => {
-  //       expect(render(textarea(_, _, "\n\n"))).toBe(`<textarea>\n\n\n</textarea>`);
-  //     });
-  //   });
-  // });
+      test("double newline", () => {
+        expect(renderToString(textarea(_, _, "\n\n"))).toBe(`<textarea>\n\n\n</textarea>`);
+      });
+    });
+  });
 
   describe("escape", () => {
     test("attribute values", () => {

@@ -17,7 +17,7 @@ import {
   elementSetAttributeNS, XML_NAMESPACE, XLINK_NAMESPACE,
   ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,
 
-  AttributeDirective, svgElement,
+  AttributeDirective, svgElementFactory,
 } from "ivi";
 
 const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING = {
@@ -155,7 +155,7 @@ export function XLINK_ATTR(v: string | number | boolean | undefined): AttributeD
  * @param children Children nodes.
  * @returns OpNode SVG element <a>
  */
-export const a = /*#__PURE__*/svgElement<SVGElementAttrs, SVGAElement>("a");
+export const a = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGAElement>("a");
 
 /**
  * Creates OpNode SVG element <animate>.
@@ -167,7 +167,7 @@ export const a = /*#__PURE__*/svgElement<SVGElementAttrs, SVGAElement>("a");
  * @param children Children nodes.
  * @returns OpNode SVG element <animate>
  */
-export const animate = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animate");
+export const animate = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("animate");
 
 /**
  * Creates OpNode SVG element <animateColor>.
@@ -179,7 +179,7 @@ export const animate = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("ani
  * @param children Children nodes.
  * @returns OpNode SVG element <animateColor>
  */
-export const animateColor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateColor");
+export const animateColor = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("animateColor");
 
 /**
  * Creates OpNode SVG element <animateMotion>.
@@ -191,7 +191,7 @@ export const animateColor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <animateMotion>
  */
-export const animateMotion = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateMotion");
+export const animateMotion = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("animateMotion");
 
 /**
  * Creates OpNode SVG element <animateTransform>.
@@ -203,7 +203,7 @@ export const animateMotion = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement
  * @param children Children nodes.
  * @returns OpNode SVG element <animateTransform>
  */
-export const animateTransform = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("animateTransform");
+export const animateTransform = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("animateTransform");
 
 /**
  * Creates OpNode SVG element <circle>.
@@ -215,7 +215,7 @@ export const animateTransform = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElem
  * @param children Children nodes.
  * @returns OpNode SVG element <circle>
  */
-export const circle = /*#__PURE__*/svgElement<SVGCircleElementAttrs, SVGCircleElement>("circle");
+export const circle = /*#__PURE__*/svgElementFactory<SVGCircleElementAttrs, SVGCircleElement>("circle");
 
 /**
  * Creates OpNode SVG element <clipPath>.
@@ -227,7 +227,7 @@ export const circle = /*#__PURE__*/svgElement<SVGCircleElementAttrs, SVGCircleEl
  * @param children Children nodes.
  * @returns OpNode SVG element <clipPath>
  */
-export const clipPath = /*#__PURE__*/svgElement<SVGClipPathElementAttrs, SVGClipPathElement>("clipPath");
+export const clipPath = /*#__PURE__*/svgElementFactory<SVGClipPathElementAttrs, SVGClipPathElement>("clipPath");
 
 /**
  * Creates OpNode SVG element <defs>.
@@ -239,7 +239,7 @@ export const clipPath = /*#__PURE__*/svgElement<SVGClipPathElementAttrs, SVGClip
  * @param children Children nodes.
  * @returns OpNode SVG element <defs>
  */
-export const defs = /*#__PURE__*/svgElement<SVGDefsElementAttrs, SVGDefsElement>("defs");
+export const defs = /*#__PURE__*/svgElementFactory<SVGDefsElementAttrs, SVGDefsElement>("defs");
 
 /**
  * Creates OpNode SVG element <desc>.
@@ -251,7 +251,7 @@ export const defs = /*#__PURE__*/svgElement<SVGDefsElementAttrs, SVGDefsElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <desc>
  */
-export const desc = /*#__PURE__*/svgElement<SVGDescElementAttrs, SVGDescElement>("desc");
+export const desc = /*#__PURE__*/svgElementFactory<SVGDescElementAttrs, SVGDescElement>("desc");
 
 /**
  * Creates OpNode SVG element <discard>.
@@ -263,7 +263,7 @@ export const desc = /*#__PURE__*/svgElement<SVGDescElementAttrs, SVGDescElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <discard>
  */
-export const discard = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("discard");
+export const discard = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("discard");
 
 /**
  * Creates OpNode SVG element <ellipse>.
@@ -275,7 +275,7 @@ export const discard = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("dis
  * @param children Children nodes.
  * @returns OpNode SVG element <ellipse>
  */
-export const ellipse = /*#__PURE__*/svgElement<SVGEllipseElementAttrs, SVGEllipseElement>("ellipse");
+export const ellipse = /*#__PURE__*/svgElementFactory<SVGEllipseElementAttrs, SVGEllipseElement>("ellipse");
 
 /**
  * Creates OpNode SVG element <feBlend>.
@@ -287,7 +287,7 @@ export const ellipse = /*#__PURE__*/svgElement<SVGEllipseElementAttrs, SVGEllips
  * @param children Children nodes.
  * @returns OpNode SVG element <feBlend>
  */
-export const feBlend = /*#__PURE__*/svgElement<SVGFEBlendElementAttrs, SVGFEBlendElement>("feBlend");
+export const feBlend = /*#__PURE__*/svgElementFactory<SVGFEBlendElementAttrs, SVGFEBlendElement>("feBlend");
 
 /**
  * Creates OpNode SVG element <feColorMatrix>.
@@ -299,7 +299,7 @@ export const feBlend = /*#__PURE__*/svgElement<SVGFEBlendElementAttrs, SVGFEBlen
  * @param children Children nodes.
  * @returns OpNode SVG element <feColorMatrix>
  */
-export const feColorMatrix = /*#__PURE__*/svgElement<SVGFEColorMatrixElementAttrs, SVGFEColorMatrixElement>("feColorMatrix");
+export const feColorMatrix = /*#__PURE__*/svgElementFactory<SVGFEColorMatrixElementAttrs, SVGFEColorMatrixElement>("feColorMatrix");
 
 /**
  * Creates OpNode SVG element <feComponentTransfer>.
@@ -311,7 +311,7 @@ export const feColorMatrix = /*#__PURE__*/svgElement<SVGFEColorMatrixElementAttr
  * @param children Children nodes.
  * @returns OpNode SVG element <feComponentTransfer>
  */
-export const feComponentTransfer = /*#__PURE__*/svgElement<SVGFEComponentTransferElementAttrs, SVGFEComponentTransferElement>("feComponentTransfer");
+export const feComponentTransfer = /*#__PURE__*/svgElementFactory<SVGFEComponentTransferElementAttrs, SVGFEComponentTransferElement>("feComponentTransfer");
 
 /**
  * Creates OpNode SVG element <feComposite>.
@@ -323,7 +323,7 @@ export const feComponentTransfer = /*#__PURE__*/svgElement<SVGFEComponentTransfe
  * @param children Children nodes.
  * @returns OpNode SVG element <feComposite>
  */
-export const feComposite = /*#__PURE__*/svgElement<SVGFECompositeElementAttrs, SVGFECompositeElement>("feComposite");
+export const feComposite = /*#__PURE__*/svgElementFactory<SVGFECompositeElementAttrs, SVGFECompositeElement>("feComposite");
 
 /**
  * Creates OpNode SVG element <feConvolveMatrix>.
@@ -335,7 +335,7 @@ export const feComposite = /*#__PURE__*/svgElement<SVGFECompositeElementAttrs, S
  * @param children Children nodes.
  * @returns OpNode SVG element <feConvolveMatrix>
  */
-export const feConvolveMatrix = /*#__PURE__*/svgElement<SVGFEConvolveMatrixElementAttrs, SVGFEConvolveMatrixElement>("feConvolveMatrix");
+export const feConvolveMatrix = /*#__PURE__*/svgElementFactory<SVGFEConvolveMatrixElementAttrs, SVGFEConvolveMatrixElement>("feConvolveMatrix");
 
 /**
  * Creates OpNode SVG element <feDiffuseLighting>.
@@ -347,7 +347,7 @@ export const feConvolveMatrix = /*#__PURE__*/svgElement<SVGFEConvolveMatrixEleme
  * @param children Children nodes.
  * @returns OpNode SVG element <feDiffuseLighting>
  */
-export const feDiffuseLighting = /*#__PURE__*/svgElement<SVGFEDiffuseLightingElementAttrs, SVGFEDiffuseLightingElement>("feDiffuseLighting");
+export const feDiffuseLighting = /*#__PURE__*/svgElementFactory<SVGFEDiffuseLightingElementAttrs, SVGFEDiffuseLightingElement>("feDiffuseLighting");
 
 /**
  * Creates OpNode SVG element <feDisplacementMap>.
@@ -359,7 +359,7 @@ export const feDiffuseLighting = /*#__PURE__*/svgElement<SVGFEDiffuseLightingEle
  * @param children Children nodes.
  * @returns OpNode SVG element <feDisplacementMap>
  */
-export const feDisplacementMap = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDisplacementMap");
+export const feDisplacementMap = /*#__PURE__*/svgElementFactory<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDisplacementMap");
 
 /**
  * Creates OpNode SVG element <feDistantLight>.
@@ -371,7 +371,7 @@ export const feDisplacementMap = /*#__PURE__*/svgElement<SVGFEDisplacementMapEle
  * @param children Children nodes.
  * @returns OpNode SVG element <feDistantLight>
  */
-export const feDistantLight = /*#__PURE__*/svgElement<SVGFEDistantLightElementAttrs, SVGFEDistantLightElement>("feDistantLight");
+export const feDistantLight = /*#__PURE__*/svgElementFactory<SVGFEDistantLightElementAttrs, SVGFEDistantLightElement>("feDistantLight");
 
 /**
  * Creates OpNode SVG element <feDropShadow>.
@@ -383,7 +383,7 @@ export const feDistantLight = /*#__PURE__*/svgElement<SVGFEDistantLightElementAt
  * @param children Children nodes.
  * @returns OpNode SVG element <feDropShadow>
  */
-export const feDropShadow = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDropShadow");
+export const feDropShadow = /*#__PURE__*/svgElementFactory<SVGFEDisplacementMapElementAttrs, SVGFEDisplacementMapElement>("feDropShadow");
 
 /**
  * Creates OpNode SVG element <feFlood>.
@@ -395,7 +395,7 @@ export const feDropShadow = /*#__PURE__*/svgElement<SVGFEDisplacementMapElementA
  * @param children Children nodes.
  * @returns OpNode SVG element <feFlood>
  */
-export const feFlood = /*#__PURE__*/svgElement<SVGFEFloodElementAttrs, SVGFEFloodElement>("feFlood");
+export const feFlood = /*#__PURE__*/svgElementFactory<SVGFEFloodElementAttrs, SVGFEFloodElement>("feFlood");
 
 /**
  * Creates OpNode SVG element <feFuncA>.
@@ -407,7 +407,7 @@ export const feFlood = /*#__PURE__*/svgElement<SVGFEFloodElementAttrs, SVGFEFloo
  * @param children Children nodes.
  * @returns OpNode SVG element <feFuncA>
  */
-export const feFuncA = /*#__PURE__*/svgElement<SVGFEFuncAElementAttrs, SVGFEFuncAElement>("feFuncA");
+export const feFuncA = /*#__PURE__*/svgElementFactory<SVGFEFuncAElementAttrs, SVGFEFuncAElement>("feFuncA");
 
 /**
  * Creates OpNode SVG element <feFuncB>.
@@ -419,7 +419,7 @@ export const feFuncA = /*#__PURE__*/svgElement<SVGFEFuncAElementAttrs, SVGFEFunc
  * @param children Children nodes.
  * @returns OpNode SVG element <feFuncB>
  */
-export const feFuncB = /*#__PURE__*/svgElement<SVGFEFuncBElementAttrs, SVGFEFuncBElement>("feFuncB");
+export const feFuncB = /*#__PURE__*/svgElementFactory<SVGFEFuncBElementAttrs, SVGFEFuncBElement>("feFuncB");
 
 /**
  * Creates OpNode SVG element <feFuncG>.
@@ -431,7 +431,7 @@ export const feFuncB = /*#__PURE__*/svgElement<SVGFEFuncBElementAttrs, SVGFEFunc
  * @param children Children nodes.
  * @returns OpNode SVG element <feFuncG>
  */
-export const feFuncG = /*#__PURE__*/svgElement<SVGFEFuncGElementAttrs, SVGFEFuncGElement>("feFuncG");
+export const feFuncG = /*#__PURE__*/svgElementFactory<SVGFEFuncGElementAttrs, SVGFEFuncGElement>("feFuncG");
 
 /**
  * Creates OpNode SVG element <feFuncR>.
@@ -443,7 +443,7 @@ export const feFuncG = /*#__PURE__*/svgElement<SVGFEFuncGElementAttrs, SVGFEFunc
  * @param children Children nodes.
  * @returns OpNode SVG element <feFuncR>
  */
-export const feFuncR = /*#__PURE__*/svgElement<SVGFEFuncRElementAttrs, SVGFEFuncRElement>("feFuncR");
+export const feFuncR = /*#__PURE__*/svgElementFactory<SVGFEFuncRElementAttrs, SVGFEFuncRElement>("feFuncR");
 
 /**
  * Creates OpNode SVG element <feGaussianBlur>.
@@ -455,7 +455,7 @@ export const feFuncR = /*#__PURE__*/svgElement<SVGFEFuncRElementAttrs, SVGFEFunc
  * @param children Children nodes.
  * @returns OpNode SVG element <feGaussianBlur>
  */
-export const feGaussianBlur = /*#__PURE__*/svgElement<SVGFEGaussianBlurElementAttrs, SVGFEGaussianBlurElement>("feGaussianBlur");
+export const feGaussianBlur = /*#__PURE__*/svgElementFactory<SVGFEGaussianBlurElementAttrs, SVGFEGaussianBlurElement>("feGaussianBlur");
 
 /**
  * Creates OpNode SVG element <feImage>.
@@ -467,7 +467,7 @@ export const feGaussianBlur = /*#__PURE__*/svgElement<SVGFEGaussianBlurElementAt
  * @param children Children nodes.
  * @returns OpNode SVG element <feImage>
  */
-export const feImage = /*#__PURE__*/svgElement<SVGFEImageElementAttrs, SVGFEImageElement>("feImage");
+export const feImage = /*#__PURE__*/svgElementFactory<SVGFEImageElementAttrs, SVGFEImageElement>("feImage");
 
 /**
  * Creates OpNode SVG element <feMerge>.
@@ -479,7 +479,7 @@ export const feImage = /*#__PURE__*/svgElement<SVGFEImageElementAttrs, SVGFEImag
  * @param children Children nodes.
  * @returns OpNode SVG element <feMerge>
  */
-export const feMerge = /*#__PURE__*/svgElement<SVGFEMergeElementAttrs, SVGFEMergeElement>("feMerge");
+export const feMerge = /*#__PURE__*/svgElementFactory<SVGFEMergeElementAttrs, SVGFEMergeElement>("feMerge");
 
 /**
  * Creates OpNode SVG element <feMergeNode>.
@@ -491,7 +491,7 @@ export const feMerge = /*#__PURE__*/svgElement<SVGFEMergeElementAttrs, SVGFEMerg
  * @param children Children nodes.
  * @returns OpNode SVG element <feMergeNode>
  */
-export const feMergeNode = /*#__PURE__*/svgElement<SVGFEMergeNodeElementAttrs, SVGFEMergeNodeElementAttrs>("feMergeNode");
+export const feMergeNode = /*#__PURE__*/svgElementFactory<SVGFEMergeNodeElementAttrs, SVGFEMergeNodeElementAttrs>("feMergeNode");
 
 /**
  * Creates OpNode SVG element <feMorphology>.
@@ -503,7 +503,7 @@ export const feMergeNode = /*#__PURE__*/svgElement<SVGFEMergeNodeElementAttrs, S
  * @param children Children nodes.
  * @returns OpNode SVG element <feMorphology>
  */
-export const feMorphology = /*#__PURE__*/svgElement<SVGFEMorphologyElementAttrs, SVGFEMorphologyElement>("feMorphology");
+export const feMorphology = /*#__PURE__*/svgElementFactory<SVGFEMorphologyElementAttrs, SVGFEMorphologyElement>("feMorphology");
 
 /**
  * Creates OpNode SVG element <feOffset>.
@@ -515,7 +515,7 @@ export const feMorphology = /*#__PURE__*/svgElement<SVGFEMorphologyElementAttrs,
  * @param children Children nodes.
  * @returns OpNode SVG element <feOffset>
  */
-export const feOffset = /*#__PURE__*/svgElement<SVGFEOffsetElementAttrs, SVGFEOffsetElement>("feOffset");
+export const feOffset = /*#__PURE__*/svgElementFactory<SVGFEOffsetElementAttrs, SVGFEOffsetElement>("feOffset");
 
 /**
  * Creates OpNode SVG element <fePointLight>.
@@ -527,7 +527,7 @@ export const feOffset = /*#__PURE__*/svgElement<SVGFEOffsetElementAttrs, SVGFEOf
  * @param children Children nodes.
  * @returns OpNode SVG element <fePointLight>
  */
-export const fePointLight = /*#__PURE__*/svgElement<SVGFEPointLightElementAttrs, SVGFEPointLightElement>("fePointLight");
+export const fePointLight = /*#__PURE__*/svgElementFactory<SVGFEPointLightElementAttrs, SVGFEPointLightElement>("fePointLight");
 
 /**
  * Creates OpNode SVG element <feSpecularLighting>.
@@ -539,7 +539,7 @@ export const fePointLight = /*#__PURE__*/svgElement<SVGFEPointLightElementAttrs,
  * @param children Children nodes.
  * @returns OpNode SVG element <feSpecularLighting>
  */
-export const feSpecularLighting = /*#__PURE__*/svgElement<SVGFESpecularLightingElementAttrs, SVGFESpecularLightingElement>("feSpecularLighting");
+export const feSpecularLighting = /*#__PURE__*/svgElementFactory<SVGFESpecularLightingElementAttrs, SVGFESpecularLightingElement>("feSpecularLighting");
 
 /**
  * Creates OpNode SVG element <feSpotLight>.
@@ -551,7 +551,7 @@ export const feSpecularLighting = /*#__PURE__*/svgElement<SVGFESpecularLightingE
  * @param children Children nodes.
  * @returns OpNode SVG element <feSpotLight>
  */
-export const feSpotLight = /*#__PURE__*/svgElement<SVGFESpotLightElementAttrs, SVGFESpotLightElement>("feSpotLight");
+export const feSpotLight = /*#__PURE__*/svgElementFactory<SVGFESpotLightElementAttrs, SVGFESpotLightElement>("feSpotLight");
 
 /**
  * Creates OpNode SVG element <feTile>.
@@ -563,7 +563,7 @@ export const feSpotLight = /*#__PURE__*/svgElement<SVGFESpotLightElementAttrs, S
  * @param children Children nodes.
  * @returns OpNode SVG element <feTile>
  */
-export const feTile = /*#__PURE__*/svgElement<SVGFETileElementAttrs, SVGFETileElement>("feTile");
+export const feTile = /*#__PURE__*/svgElementFactory<SVGFETileElementAttrs, SVGFETileElement>("feTile");
 
 /**
  * Creates OpNode SVG element <feTurbulence>.
@@ -575,7 +575,7 @@ export const feTile = /*#__PURE__*/svgElement<SVGFETileElementAttrs, SVGFETileEl
  * @param children Children nodes.
  * @returns OpNode SVG element <feTurbulence>
  */
-export const feTurbulence = /*#__PURE__*/svgElement<SVGFETurbulenceElementAttrs, SVGFETurbulenceElement>("feTurbulence");
+export const feTurbulence = /*#__PURE__*/svgElementFactory<SVGFETurbulenceElementAttrs, SVGFETurbulenceElement>("feTurbulence");
 
 /**
  * Creates OpNode SVG element <filter>.
@@ -587,7 +587,7 @@ export const feTurbulence = /*#__PURE__*/svgElement<SVGFETurbulenceElementAttrs,
  * @param children Children nodes.
  * @returns OpNode SVG element <filter>
  */
-export const filter = /*#__PURE__*/svgElement<SVGFilterElementAttrs, SVGFilterElement>("filter");
+export const filter = /*#__PURE__*/svgElementFactory<SVGFilterElementAttrs, SVGFilterElement>("filter");
 
 /**
  * Creates OpNode SVG element <foreignObject>.
@@ -599,7 +599,7 @@ export const filter = /*#__PURE__*/svgElement<SVGFilterElementAttrs, SVGFilterEl
  * @param children Children nodes.
  * @returns OpNode SVG element <foreignObject>
  */
-export const foreignObject = /*#__PURE__*/svgElement<SVGForeignObjectElementAttrs, SVGForeignObjectElement>("foreignObject");
+export const foreignObject = /*#__PURE__*/svgElementFactory<SVGForeignObjectElementAttrs, SVGForeignObjectElement>("foreignObject");
 
 /**
  * Creates OpNode SVG element <g>.
@@ -611,7 +611,7 @@ export const foreignObject = /*#__PURE__*/svgElement<SVGForeignObjectElementAttr
  * @param children Children nodes.
  * @returns OpNode SVG element <g>
  */
-export const g = /*#__PURE__*/svgElement<SVGGElementAttrs, SVGGElement>("g");
+export const g = /*#__PURE__*/svgElementFactory<SVGGElementAttrs, SVGGElement>("g");
 
 /**
  * Creates OpNode SVG element <hatch>.
@@ -623,7 +623,7 @@ export const g = /*#__PURE__*/svgElement<SVGGElementAttrs, SVGGElement>("g");
  * @param children Children nodes.
  * @returns OpNode SVG element <hatch>
  */
-export const hatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatch");
+export const hatch = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("hatch");
 
 /**
  * Creates OpNode SVG element <hatchpath>.
@@ -635,7 +635,7 @@ export const hatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatch
  * @param children Children nodes.
  * @returns OpNode SVG element <hatchpath>
  */
-export const hatchpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("hatchpath");
+export const hatchpath = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("hatchpath");
 
 /**
  * Creates OpNode SVG element <image>.
@@ -647,7 +647,7 @@ export const hatchpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("h
  * @param children Children nodes.
  * @returns OpNode SVG element <image>
  */
-export const image = /*#__PURE__*/svgElement<SVGImageElementAttrs, SVGImageElement>("image");
+export const image = /*#__PURE__*/svgElementFactory<SVGImageElementAttrs, SVGImageElement>("image");
 
 /**
  * Creates OpNode SVG element <line>.
@@ -659,7 +659,7 @@ export const image = /*#__PURE__*/svgElement<SVGImageElementAttrs, SVGImageEleme
  * @param children Children nodes.
  * @returns OpNode SVG element <line>
  */
-export const line = /*#__PURE__*/svgElement<SVGLineElementAttrs, SVGLineElement>("line");
+export const line = /*#__PURE__*/svgElementFactory<SVGLineElementAttrs, SVGLineElement>("line");
 
 /**
  * Creates OpNode SVG element <linearGradient>.
@@ -671,7 +671,7 @@ export const line = /*#__PURE__*/svgElement<SVGLineElementAttrs, SVGLineElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <linearGradient>
  */
-export const linearGradient = /*#__PURE__*/svgElement<SVGLinearGradientElementAttrs, SVGLinearGradientElement>("linearGradient");
+export const linearGradient = /*#__PURE__*/svgElementFactory<SVGLinearGradientElementAttrs, SVGLinearGradientElement>("linearGradient");
 
 /**
  * Creates OpNode SVG element <marker>.
@@ -683,7 +683,7 @@ export const linearGradient = /*#__PURE__*/svgElement<SVGLinearGradientElementAt
  * @param children Children nodes.
  * @returns OpNode SVG element <marker>
  */
-export const marker = /*#__PURE__*/svgElement<SVGMarkerElementAttrs, SVGMarkerElement>("marker");
+export const marker = /*#__PURE__*/svgElementFactory<SVGMarkerElementAttrs, SVGMarkerElement>("marker");
 
 /**
  * Creates OpNode SVG element <mask>.
@@ -695,7 +695,7 @@ export const marker = /*#__PURE__*/svgElement<SVGMarkerElementAttrs, SVGMarkerEl
  * @param children Children nodes.
  * @returns OpNode SVG element <mask>
  */
-export const mask = /*#__PURE__*/svgElement<SVGMaskElementAttrs, SVGMaskElement>("mask");
+export const mask = /*#__PURE__*/svgElementFactory<SVGMaskElementAttrs, SVGMaskElement>("mask");
 
 /**
  * Creates OpNode SVG element <mesh>.
@@ -707,7 +707,7 @@ export const mask = /*#__PURE__*/svgElement<SVGMaskElementAttrs, SVGMaskElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <mesh>
  */
-export const mesh = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mesh");
+export const mesh = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("mesh");
 
 /**
  * Creates OpNode SVG element <meshgradient>.
@@ -719,7 +719,7 @@ export const mesh = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mesh")
  * @param children Children nodes.
  * @returns OpNode SVG element <meshgradient>
  */
-export const meshgradient = /*#__PURE__*/svgElement<SVGElementAttrs, SVGLinearGradientElement>("meshgradient");
+export const meshgradient = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGLinearGradientElement>("meshgradient");
 
 /**
  * Creates OpNode SVG element <meshpatch>.
@@ -731,7 +731,7 @@ export const meshgradient = /*#__PURE__*/svgElement<SVGElementAttrs, SVGLinearGr
  * @param children Children nodes.
  * @returns OpNode SVG element <meshpatch>
  */
-export const meshpatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("meshpatch");
+export const meshpatch = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("meshpatch");
 
 /**
  * Creates OpNode SVG element <meshrow>.
@@ -743,7 +743,7 @@ export const meshpatch = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("m
  * @param children Children nodes.
  * @returns OpNode SVG element <meshrow>
  */
-export const meshrow = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("meshrow");
+export const meshrow = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("meshrow");
 
 /**
  * Creates OpNode SVG element <metadata>.
@@ -755,7 +755,7 @@ export const meshrow = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mes
  * @param children Children nodes.
  * @returns OpNode SVG element <metadata>
  */
-export const metadata = /*#__PURE__*/svgElement<SVGMetadataElementAttrs, SVGMetadataElement>("metadata");
+export const metadata = /*#__PURE__*/svgElementFactory<SVGMetadataElementAttrs, SVGMetadataElement>("metadata");
 
 /**
  * Creates OpNode SVG element <mpath>.
@@ -767,7 +767,7 @@ export const metadata = /*#__PURE__*/svgElement<SVGMetadataElementAttrs, SVGMeta
  * @param children Children nodes.
  * @returns OpNode SVG element <mpath>
  */
-export const mpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mpath");
+export const mpath = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("mpath");
 
 /**
  * Creates OpNode SVG element <path>.
@@ -779,7 +779,7 @@ export const mpath = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("mpath
  * @param children Children nodes.
  * @returns OpNode SVG element <path>
  */
-export const path = /*#__PURE__*/svgElement<SVGPathElementAttrs, SVGPathElement>("path");
+export const path = /*#__PURE__*/svgElementFactory<SVGPathElementAttrs, SVGPathElement>("path");
 
 /**
  * Creates OpNode SVG element <pattern>.
@@ -791,7 +791,7 @@ export const path = /*#__PURE__*/svgElement<SVGPathElementAttrs, SVGPathElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <pattern>
  */
-export const pattern = /*#__PURE__*/svgElement<SVGPatternElementAttrs, SVGPatternElement>("pattern");
+export const pattern = /*#__PURE__*/svgElementFactory<SVGPatternElementAttrs, SVGPatternElement>("pattern");
 
 /**
  * Creates OpNode SVG element <polygon>.
@@ -803,7 +803,7 @@ export const pattern = /*#__PURE__*/svgElement<SVGPatternElementAttrs, SVGPatter
  * @param children Children nodes.
  * @returns OpNode SVG element <polygon>
  */
-export const polygon = /*#__PURE__*/svgElement<SVGPolygonElementAttrs, SVGPolygonElement>("polygon");
+export const polygon = /*#__PURE__*/svgElementFactory<SVGPolygonElementAttrs, SVGPolygonElement>("polygon");
 
 /**
  * Creates OpNode SVG element <polyline>.
@@ -815,7 +815,7 @@ export const polygon = /*#__PURE__*/svgElement<SVGPolygonElementAttrs, SVGPolygo
  * @param children Children nodes.
  * @returns OpNode SVG element <polyline>
  */
-export const polyline = /*#__PURE__*/svgElement<SVGPolylineElementAttrs, SVGPolylineElement>("polyline");
+export const polyline = /*#__PURE__*/svgElementFactory<SVGPolylineElementAttrs, SVGPolylineElement>("polyline");
 
 /**
  * Creates OpNode SVG element <radialGradient>.
@@ -827,7 +827,7 @@ export const polyline = /*#__PURE__*/svgElement<SVGPolylineElementAttrs, SVGPoly
  * @param children Children nodes.
  * @returns OpNode SVG element <radialGradient>
  */
-export const radialGradient = /*#__PURE__*/svgElement<SVGRadialGradientElementAttrs, SVGRadialGradientElement>("radialGradient");
+export const radialGradient = /*#__PURE__*/svgElementFactory<SVGRadialGradientElementAttrs, SVGRadialGradientElement>("radialGradient");
 
 /**
  * Creates OpNode SVG element <rect>.
@@ -839,7 +839,7 @@ export const radialGradient = /*#__PURE__*/svgElement<SVGRadialGradientElementAt
  * @param children Children nodes.
  * @returns OpNode SVG element <rect>
  */
-export const rect = /*#__PURE__*/svgElement<SVGRectElementAttrs, SVGRectElement>("rect");
+export const rect = /*#__PURE__*/svgElementFactory<SVGRectElementAttrs, SVGRectElement>("rect");
 
 /**
  * Creates OpNode SVG element <set>.
@@ -851,7 +851,7 @@ export const rect = /*#__PURE__*/svgElement<SVGRectElementAttrs, SVGRectElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <set>
  */
-export const set = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("set");
+export const set = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("set");
 
 /**
  * Creates OpNode SVG element <solidcolor>.
@@ -863,7 +863,7 @@ export const set = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("set");
  * @param children Children nodes.
  * @returns OpNode SVG element <solidcolor>
  */
-export const solidcolor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("solidcolor");
+export const solidcolor = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("solidcolor");
 
 /**
  * Creates OpNode SVG element <stop>.
@@ -875,7 +875,7 @@ export const solidcolor = /*#__PURE__*/svgElement<SVGElementAttrs, SVGElement>("
  * @param children Children nodes.
  * @returns OpNode SVG element <stop>
  */
-export const stop = /*#__PURE__*/svgElement<SVGStopElementAttrs, SVGStopElement>("stop");
+export const stop = /*#__PURE__*/svgElementFactory<SVGStopElementAttrs, SVGStopElement>("stop");
 
 /**
  * Creates OpNode SVG element <svg>.
@@ -887,7 +887,7 @@ export const stop = /*#__PURE__*/svgElement<SVGStopElementAttrs, SVGStopElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <svg>
  */
-export const svg = /*#__PURE__*/svgElement<SVGSVGElementAttrs, SVGSVGElement>("svg");
+export const svg = /*#__PURE__*/svgElementFactory<SVGSVGElementAttrs, SVGSVGElement>("svg");
 
 /**
  * Creates OpNode SVG element <symbol>.
@@ -899,7 +899,7 @@ export const svg = /*#__PURE__*/svgElement<SVGSVGElementAttrs, SVGSVGElement>("s
  * @param children Children nodes.
  * @returns OpNode SVG element <symbol>
  */
-export const symbol = /*#__PURE__*/svgElement<SVGSymbolElementAttrs, SVGSymbolElement>("symbol");
+export const symbol = /*#__PURE__*/svgElementFactory<SVGSymbolElementAttrs, SVGSymbolElement>("symbol");
 
 /**
  * Creates OpNode SVG element <text>.
@@ -911,7 +911,7 @@ export const symbol = /*#__PURE__*/svgElement<SVGSymbolElementAttrs, SVGSymbolEl
  * @param children Children nodes.
  * @returns OpNode SVG element <text>
  */
-export const text = /*#__PURE__*/svgElement<SVGTextElementAttrs, SVGTextElement>("text");
+export const text = /*#__PURE__*/svgElementFactory<SVGTextElementAttrs, SVGTextElement>("text");
 
 /**
  * Creates OpNode SVG element <textPath>.
@@ -923,7 +923,7 @@ export const text = /*#__PURE__*/svgElement<SVGTextElementAttrs, SVGTextElement>
  * @param children Children nodes.
  * @returns OpNode SVG element <textPath>
  */
-export const textPath = /*#__PURE__*/svgElement<SVGTextPathElementAttrs, SVGTextPathElement>("textPath");
+export const textPath = /*#__PURE__*/svgElementFactory<SVGTextPathElementAttrs, SVGTextPathElement>("textPath");
 
 /**
  * Creates OpNode SVG element <title>.
@@ -935,7 +935,7 @@ export const textPath = /*#__PURE__*/svgElement<SVGTextPathElementAttrs, SVGText
  * @param children Children nodes.
  * @returns OpNode SVG element <title>
  */
-export const title = /*#__PURE__*/svgElement<SVGElementAttrs, SVGTitleElement>("title");
+export const title = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGTitleElement>("title");
 
 /**
  * Creates OpNode SVG element <tspan>.
@@ -947,7 +947,7 @@ export const title = /*#__PURE__*/svgElement<SVGElementAttrs, SVGTitleElement>("
  * @param children Children nodes.
  * @returns OpNode SVG element <tspan>
  */
-export const tspan = /*#__PURE__*/svgElement<SVGTSpanElementAttrs, SVGTSpanElement>("tspan");
+export const tspan = /*#__PURE__*/svgElementFactory<SVGTSpanElementAttrs, SVGTSpanElement>("tspan");
 
 /**
  * Creates OpNode SVG element <use>.
@@ -959,7 +959,7 @@ export const tspan = /*#__PURE__*/svgElement<SVGTSpanElementAttrs, SVGTSpanEleme
  * @param children Children nodes.
  * @returns OpNode SVG element <use>
  */
-export const use = /*#__PURE__*/svgElement<SVGUseElementAttrs, SVGUseElement>("use");
+export const use = /*#__PURE__*/svgElementFactory<SVGUseElementAttrs, SVGUseElement>("use");
 
 /**
  * Creates OpNode SVG element <view>.
@@ -971,4 +971,4 @@ export const use = /*#__PURE__*/svgElement<SVGUseElementAttrs, SVGUseElement>("u
  * @param children Children nodes.
  * @returns OpNode SVG element <view>
  */
-export const view = /*#__PURE__*/svgElement<SVGViewElementAttrs, SVGViewElement>("view");
+export const view = /*#__PURE__*/svgElementFactory<SVGViewElementAttrs, SVGViewElement>("view");

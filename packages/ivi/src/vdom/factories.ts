@@ -3,43 +3,34 @@ import { NodeFlags } from "./node_flags";
 import { OpNode, Op, ElementData, createOpNode, createOpType } from "./operations";
 import { OpState } from "./state";
 
-function element<T, U>(tag: string, svg: boolean) {
-  const type = createOpType(
-    svg === true ? (NodeFlags.Element | NodeFlags.Svg) : NodeFlags.Element,
-    tag,
-  );
-  return (
-    n?: string,
-    a?: {},
-    c: Op = null,
-  ) => (
-      createOpNode<ElementData>(type, { n, a, c })
-    );
+export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
+  const type = createOpType(flags, tag);
+  return (n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
 }
 
 /**
- * htmlElement create a HTML element operation factories.
+ * htmlElementFactory creates a HTML element operation factories.
  *
  * @param tag HTML element tag name.
  * @returns HTML element operation factory.
  */
-export const htmlElement: <T, U>(tag: string) => (
+export const htmlElementFactory: <T, U>(tag: string) => (
   className?: string,
   attrs?: {},
   children?: Op,
-) => OpNode<ElementData<T>> = (tag: string) => element(tag, false);
+) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element);
 
 /**
- * htmlElement create a SVG element operation factories.
+ * svgElementFactory creates a SVG element operation factories.
  *
  * @param tag SVG element tag name.
  * @returns SVG element operation factory.
  */
-export const svgElement: <T, U>(tag: string) => (
+export const svgElementFactory: <T, U>(tag: string) => (
   className?: string,
   attrs?: {},
   children?: Op,
-) => OpNode<ElementData<T>> = (tag: string) => element(tag, true);
+) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element | NodeFlags.Svg);
 
 /**
  * `elementProto()` creates a factory that produces elements with predefined attributes.
@@ -64,11 +55,7 @@ export function elementProto<P>(proto: OpNode<ElementData<P>>) {
     }
   }
   const type = createOpType(proto.t.f | NodeFlags.ElementProto, { node: null, proto });
-  return (
-    n?: string,
-    a?: {},
-    c: Op = null,
-  ) => createOpNode<ElementData>(type, { n, a, c });
+  return (n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
 }
 
 /**

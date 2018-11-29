@@ -15,7 +15,7 @@ import {
 
   ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
 
-  AttributeDirective, htmlElement,
+  AttributeDirective, elementFactory, htmlElementFactory, NodeFlags,
 } from "ivi";
 
 /**
@@ -122,6 +122,7 @@ export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
     v ? CHECKED_TRUE : CHECKED_FALSE;
 }
 
+/* tslint:disable:max-line-length */
 /**
  * Creates OpNode HTML element <a>.
  *
@@ -132,7 +133,7 @@ export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
  * @param children Children nodes.
  * @returns OpNode HTML element <a>
  */
-export const a = /*#__PURE__*/htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
+export const a = /*#__PURE__*/htmlElementFactory<HTMLAnchorElementAttrs, HTMLAnchorElement>("a");
 
 /**
  * Creates OpNode HTML element <abbr>.
@@ -144,7 +145,7 @@ export const a = /*#__PURE__*/htmlElement<HTMLAnchorElementAttrs, HTMLAnchorElem
  * @param children Children nodes.
  * @returns OpNode HTML element <abbr>
  */
-export const abbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("abbr");
+export const abbr = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("abbr");
 
 /**
  * Creates OpNode HTML element <address>.
@@ -156,7 +157,7 @@ export const abbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("abb
  * @param children Children nodes.
  * @returns OpNode HTML element <address>
  */
-export const address = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("address");
+export const address = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("address");
 
 /**
  * Creates OpNode HTML element <article>.
@@ -168,7 +169,7 @@ export const address = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("
  * @param children Children nodes.
  * @returns OpNode HTML element <article>
  */
-export const article = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("article");
+export const article = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("article");
 
 /**
  * Creates OpNode HTML element <aside>.
@@ -180,7 +181,7 @@ export const article = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("
  * @param children Children nodes.
  * @returns OpNode HTML element <aside>
  */
-export const aside = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("aside");
+export const aside = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("aside");
 
 /**
  * Creates OpNode HTML element <b>.
@@ -192,7 +193,7 @@ export const aside = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("as
  * @param children Children nodes.
  * @returns OpNode HTML element <b>
  */
-export const b = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("b");
+export const b = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("b");
 
 /**
  * Creates OpNode HTML element <base>.
@@ -204,7 +205,7 @@ export const b = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("b");
  * @param children Children nodes.
  * @returns OpNode HTML element <base>
  */
-export const base = /*#__PURE__*/htmlElement<HTMLBaseElementAttrs, HTMLBaseElement>("base");
+export const base = /*#__PURE__*/htmlElementFactory<HTMLBaseElementAttrs, HTMLBaseElement>("base");
 
 /**
  * Creates OpNode HTML element <bdo>.
@@ -216,7 +217,7 @@ export const base = /*#__PURE__*/htmlElement<HTMLBaseElementAttrs, HTMLBaseEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <bdo>
  */
-export const bdo = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("bdo");
+export const bdo = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("bdo");
 
 /**
  * Creates OpNode HTML element <blockquote>.
@@ -228,7 +229,7 @@ export const bdo = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("bdo"
  * @param children Children nodes.
  * @returns OpNode HTML element <blockquote>
  */
-export const blockquote = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("blockquote");
+export const blockquote = /*#__PURE__*/htmlElementFactory<HTMLQuoteElementAttrs, HTMLQuoteElement>("blockquote");
 
 /**
  * Creates OpNode HTML element <body>.
@@ -240,7 +241,7 @@ export const blockquote = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQu
  * @param children Children nodes.
  * @returns OpNode HTML element <body>
  */
-export const body = /*#__PURE__*/htmlElement<HTMLBodyElementAttrs, HTMLBodyElement>("body");
+export const body = /*#__PURE__*/htmlElementFactory<HTMLBodyElementAttrs, HTMLBodyElement>("body");
 
 /**
  * Creates OpNode HTML element <br>.
@@ -252,7 +253,7 @@ export const body = /*#__PURE__*/htmlElement<HTMLBodyElementAttrs, HTMLBodyEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <br>
  */
-export const br = /*#__PURE__*/htmlElement<HTMLBRElementAttrs, HTMLBRElement>("br");
+export const br = /*#__PURE__*/htmlElementFactory<HTMLBRElementAttrs, HTMLBRElement>("br");
 
 /**
  * Creates OpNode HTML element <button>.
@@ -264,7 +265,7 @@ export const br = /*#__PURE__*/htmlElement<HTMLBRElementAttrs, HTMLBRElement>("b
  * @param children Children nodes.
  * @returns OpNode HTML element <button>
  */
-export const button = /*#__PURE__*/htmlElement<HTMLButtonElementAttrs, HTMLButtonElement>("button");
+export const button = /*#__PURE__*/htmlElementFactory<HTMLButtonElementAttrs, HTMLButtonElement>("button");
 
 /**
  * Creates OpNode HTML element <canvas>.
@@ -276,7 +277,7 @@ export const button = /*#__PURE__*/htmlElement<HTMLButtonElementAttrs, HTMLButto
  * @param children Children nodes.
  * @returns OpNode HTML element <canvas>
  */
-export const canvas = /*#__PURE__*/htmlElement<HTMLCanvasElementAttrs, HTMLCanvasElement>("canvas");
+export const canvas = /*#__PURE__*/htmlElementFactory<HTMLCanvasElementAttrs, HTMLCanvasElement>("canvas");
 
 /**
  * Creates OpNode HTML element <caption>.
@@ -288,7 +289,7 @@ export const canvas = /*#__PURE__*/htmlElement<HTMLCanvasElementAttrs, HTMLCanva
  * @param children Children nodes.
  * @returns OpNode HTML element <caption>
  */
-export const caption = /*#__PURE__*/htmlElement<HTMLTableCaptionElementAttrs, HTMLTableCaptionElement>("caption");
+export const caption = /*#__PURE__*/htmlElementFactory<HTMLTableCaptionElementAttrs, HTMLTableCaptionElement>("caption");
 
 /**
  * Creates OpNode HTML element <cite>.
@@ -300,7 +301,7 @@ export const caption = /*#__PURE__*/htmlElement<HTMLTableCaptionElementAttrs, HT
  * @param children Children nodes.
  * @returns OpNode HTML element <cite>
  */
-export const cite = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("cite");
+export const cite = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("cite");
 
 /**
  * Creates OpNode HTML element <code>.
@@ -312,7 +313,7 @@ export const cite = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("cit
  * @param children Children nodes.
  * @returns OpNode HTML element <code>
  */
-export const code = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("code");
+export const code = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("code");
 
 /**
  * Creates OpNode HTML element <col>.
@@ -324,7 +325,7 @@ export const code = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("cod
  * @param children Children nodes.
  * @returns OpNode HTML element <col>
  */
-export const col = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("col");
+export const col = /*#__PURE__*/htmlElementFactory<HTMLTableColElementAttrs, HTMLTableColElement>("col");
 
 /**
  * Creates OpNode HTML element <colgroup>.
@@ -336,7 +337,7 @@ export const col = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableC
  * @param children Children nodes.
  * @returns OpNode HTML element <colgroup>
  */
-export const colgroup = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLTableColElement>("colgroup");
+export const colgroup = /*#__PURE__*/htmlElementFactory<HTMLTableColElementAttrs, HTMLTableColElement>("colgroup");
 
 /**
  * Creates OpNode HTML element <del>.
@@ -348,7 +349,7 @@ export const colgroup = /*#__PURE__*/htmlElement<HTMLTableColElementAttrs, HTMLT
  * @param children Children nodes.
  * @returns OpNode HTML element <del>
  */
-export const del = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>("del");
+export const del = /*#__PURE__*/htmlElementFactory<HTMLModElementAttrs, HTMLModElement>("del");
 
 /**
  * Creates OpNode HTML element <dfn>.
@@ -360,7 +361,7 @@ export const del = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>
  * @param children Children nodes.
  * @returns OpNode HTML element <dfn>
  */
-export const dfn = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dfn");
+export const dfn = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("dfn");
 
 /**
  * Creates OpNode HTML element <div>.
@@ -372,7 +373,7 @@ export const dfn = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dfn"
  * @param children Children nodes.
  * @returns OpNode HTML element <div>
  */
-export const div = /*#__PURE__*/htmlElement<HTMLDivElementAttrs, HTMLDivElement>("div");
+export const div = /*#__PURE__*/htmlElementFactory<HTMLDivElementAttrs, HTMLDivElement>("div");
 
 /**
  * Creates OpNode HTML element <dd>.
@@ -384,7 +385,7 @@ export const div = /*#__PURE__*/htmlElement<HTMLDivElementAttrs, HTMLDivElement>
  * @param children Children nodes.
  * @returns OpNode HTML element <dd>
  */
-export const dd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dd");
+export const dd = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("dd");
 
 /**
  * Creates OpNode HTML element <dl>.
@@ -396,7 +397,7 @@ export const dd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dd");
  * @param children Children nodes.
  * @returns OpNode HTML element <dl>
  */
-export const dl = /*#__PURE__*/htmlElement<HTMLDListElementAttrs, HTMLDListElement>("dl");
+export const dl = /*#__PURE__*/htmlElementFactory<HTMLDListElementAttrs, HTMLDListElement>("dl");
 
 /**
  * Creates OpNode HTML element <dt>.
@@ -408,7 +409,7 @@ export const dl = /*#__PURE__*/htmlElement<HTMLDListElementAttrs, HTMLDListEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <dt>
  */
-export const dt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dt");
+export const dt = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("dt");
 
 /**
  * Creates OpNode HTML element <em>.
@@ -420,7 +421,7 @@ export const dt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("dt");
  * @param children Children nodes.
  * @returns OpNode HTML element <em>
  */
-export const em = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("em");
+export const em = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("em");
 
 /**
  * Creates OpNode HTML element <fieldset>.
@@ -432,7 +433,7 @@ export const em = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("em");
  * @param children Children nodes.
  * @returns OpNode HTML element <fieldset>
  */
-export const fieldset = /*#__PURE__*/htmlElement<HTMLFieldSetElementAttrs, HTMLFieldSetElement>("fieldset");
+export const fieldset = /*#__PURE__*/htmlElementFactory<HTMLFieldSetElementAttrs, HTMLFieldSetElement>("fieldset");
 
 /**
  * Creates OpNode HTML element <figcaption>.
@@ -444,7 +445,7 @@ export const fieldset = /*#__PURE__*/htmlElement<HTMLFieldSetElementAttrs, HTMLF
  * @param children Children nodes.
  * @returns OpNode HTML element <figcaption>
  */
-export const figcaption = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("figcaption");
+export const figcaption = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("figcaption");
 
 /**
  * Creates OpNode HTML element <figure>.
@@ -456,7 +457,7 @@ export const figcaption = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement
  * @param children Children nodes.
  * @returns OpNode HTML element <figure>
  */
-export const figure = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("figure");
+export const figure = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("figure");
 
 /**
  * Creates OpNode HTML element <footer>.
@@ -468,7 +469,7 @@ export const figure = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("f
  * @param children Children nodes.
  * @returns OpNode HTML element <footer>
  */
-export const footer = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("footer");
+export const footer = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("footer");
 
 /**
  * Creates OpNode HTML element <form>.
@@ -480,7 +481,7 @@ export const footer = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("f
  * @param children Children nodes.
  * @returns OpNode HTML element <form>
  */
-export const form = /*#__PURE__*/htmlElement<HTMLFormElementAttrs, HTMLFormElement>("form");
+export const form = /*#__PURE__*/htmlElementFactory<HTMLFormElementAttrs, HTMLFormElement>("form");
 
 /**
  * Creates OpNode HTML element <h1>.
@@ -492,7 +493,7 @@ export const form = /*#__PURE__*/htmlElement<HTMLFormElementAttrs, HTMLFormEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <h1>
  */
-export const h1 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1");
+export const h1 = /*#__PURE__*/htmlElementFactory<HTMLHeadingElementAttrs, HTMLHeadingElement>("h1");
 
 /**
  * Creates OpNode HTML element <h2>.
@@ -504,7 +505,7 @@ export const h1 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingE
  * @param children Children nodes.
  * @returns OpNode HTML element <h2>
  */
-export const h2 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2");
+export const h2 = /*#__PURE__*/htmlElementFactory<HTMLHeadingElementAttrs, HTMLHeadingElement>("h2");
 
 /**
  * Creates OpNode HTML element <h3>.
@@ -516,7 +517,7 @@ export const h2 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingE
  * @param children Children nodes.
  * @returns OpNode HTML element <h3>
  */
-export const h3 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3");
+export const h3 = /*#__PURE__*/htmlElementFactory<HTMLHeadingElementAttrs, HTMLHeadingElement>("h3");
 
 /**
  * Creates OpNode HTML element <h4>.
@@ -528,7 +529,7 @@ export const h3 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingE
  * @param children Children nodes.
  * @returns OpNode HTML element <h4>
  */
-export const h4 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4");
+export const h4 = /*#__PURE__*/htmlElementFactory<HTMLHeadingElementAttrs, HTMLHeadingElement>("h4");
 
 /**
  * Creates OpNode HTML element <h5>.
@@ -540,7 +541,7 @@ export const h4 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingE
  * @param children Children nodes.
  * @returns OpNode HTML element <h5>
  */
-export const h5 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5");
+export const h5 = /*#__PURE__*/htmlElementFactory<HTMLHeadingElementAttrs, HTMLHeadingElement>("h5");
 
 /**
  * Creates OpNode HTML element <h6>.
@@ -552,7 +553,7 @@ export const h5 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingE
  * @param children Children nodes.
  * @returns OpNode HTML element <h6>
  */
-export const h6 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6");
+export const h6 = /*#__PURE__*/htmlElementFactory<HTMLHeadingElementAttrs, HTMLHeadingElement>("h6");
 
 /**
  * Creates OpNode HTML element <head>.
@@ -564,7 +565,7 @@ export const h6 = /*#__PURE__*/htmlElement<HTMLHeadingElementAttrs, HTMLHeadingE
  * @param children Children nodes.
  * @returns OpNode HTML element <head>
  */
-export const head = /*#__PURE__*/htmlElement<HTMLHeadElementAttrs, HTMLHeadElement>("head");
+export const head = /*#__PURE__*/htmlElementFactory<HTMLHeadElementAttrs, HTMLHeadElement>("head");
 
 /**
  * Creates OpNode HTML element <header>.
@@ -576,7 +577,7 @@ export const head = /*#__PURE__*/htmlElement<HTMLHeadElementAttrs, HTMLHeadEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <header>
  */
-export const header = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("header");
+export const header = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("header");
 
 /**
  * Creates OpNode HTML element <hgroup>.
@@ -588,7 +589,7 @@ export const header = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("h
  * @param children Children nodes.
  * @returns OpNode HTML element <hgroup>
  */
-export const hgroup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("hgroup");
+export const hgroup = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("hgroup");
 
 /**
  * Creates OpNode HTML element <hr>.
@@ -600,7 +601,7 @@ export const hgroup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("h
  * @param children Children nodes.
  * @returns OpNode HTML element <hr>
  */
-export const hr = /*#__PURE__*/htmlElement<HTMLHRElementAttrs, HTMLHRElement>("hr");
+export const hr = /*#__PURE__*/htmlElementFactory<HTMLHRElementAttrs, HTMLHRElement>("hr");
 
 /**
  * Creates OpNode HTML element <html>.
@@ -612,7 +613,7 @@ export const hr = /*#__PURE__*/htmlElement<HTMLHRElementAttrs, HTMLHRElement>("h
  * @param children Children nodes.
  * @returns OpNode HTML element <html>
  */
-export const html = /*#__PURE__*/htmlElement<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
+export const html = /*#__PURE__*/htmlElementFactory<HTMLHtmlElementAttrs, HTMLHtmlElement>("html");
 
 /**
  * Creates OpNode HTML element <i>.
@@ -624,7 +625,7 @@ export const html = /*#__PURE__*/htmlElement<HTMLHtmlElementAttrs, HTMLHtmlEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <i>
  */
-export const i = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("i");
+export const i = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("i");
 
 /**
  * Creates OpNode HTML element <iframe>.
@@ -636,7 +637,7 @@ export const i = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("i");
  * @param children Children nodes.
  * @returns OpNode HTML element <iframe>
  */
-export const iframe = /*#__PURE__*/htmlElement<HTMLIFrameElementAttrs, HTMLIFrameElement>("iframe");
+export const iframe = /*#__PURE__*/htmlElementFactory<HTMLIFrameElementAttrs, HTMLIFrameElement>("iframe");
 
 /**
  * Creates OpNode HTML element <img>.
@@ -648,7 +649,7 @@ export const iframe = /*#__PURE__*/htmlElement<HTMLIFrameElementAttrs, HTMLIFram
  * @param children Children nodes.
  * @returns OpNode HTML element <img>
  */
-export const img = /*#__PURE__*/htmlElement<HTMLImageElementAttrs, HTMLImageElement>("img");
+export const img = /*#__PURE__*/htmlElementFactory<HTMLImageElementAttrs, HTMLImageElement>("img");
 
 /**
  * Creates OpNode HTML element <area>.
@@ -660,7 +661,7 @@ export const img = /*#__PURE__*/htmlElement<HTMLImageElementAttrs, HTMLImageElem
  * @param children Children nodes.
  * @returns OpNode HTML element <area>
  */
-export const area = /*#__PURE__*/htmlElement<HTMLAreaElementAttrs, HTMLAreaElement>("area");
+export const area = /*#__PURE__*/htmlElementFactory<HTMLAreaElementAttrs, HTMLAreaElement>("area");
 
 /**
  * Creates OpNode HTML element <map>.
@@ -672,7 +673,7 @@ export const area = /*#__PURE__*/htmlElement<HTMLAreaElementAttrs, HTMLAreaEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <map>
  */
-export const map = /*#__PURE__*/htmlElement<HTMLMapElementAttrs, HTMLMapElement>("map");
+export const map = /*#__PURE__*/htmlElementFactory<HTMLMapElementAttrs, HTMLMapElement>("map");
 
 /**
  * Creates OpNode HTML element <ins>.
@@ -684,7 +685,7 @@ export const map = /*#__PURE__*/htmlElement<HTMLMapElementAttrs, HTMLMapElement>
  * @param children Children nodes.
  * @returns OpNode HTML element <ins>
  */
-export const ins = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>("ins");
+export const ins = /*#__PURE__*/htmlElementFactory<HTMLModElementAttrs, HTMLModElement>("ins");
 
 /**
  * Creates OpNode HTML element <kbd>.
@@ -696,7 +697,7 @@ export const ins = /*#__PURE__*/htmlElement<HTMLModElementAttrs, HTMLModElement>
  * @param children Children nodes.
  * @returns OpNode HTML element <kbd>
  */
-export const kbd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("kbd");
+export const kbd = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("kbd");
 
 /**
  * Creates OpNode HTML element <label>.
@@ -708,7 +709,7 @@ export const kbd = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("kbd"
  * @param children Children nodes.
  * @returns OpNode HTML element <label>
  */
-export const label = /*#__PURE__*/htmlElement<HTMLLabelElementAttrs, HTMLLabelElement>("label");
+export const label = /*#__PURE__*/htmlElementFactory<HTMLLabelElementAttrs, HTMLLabelElement>("label");
 
 /**
  * Creates OpNode HTML element <legend>.
@@ -720,7 +721,7 @@ export const label = /*#__PURE__*/htmlElement<HTMLLabelElementAttrs, HTMLLabelEl
  * @param children Children nodes.
  * @returns OpNode HTML element <legend>
  */
-export const legend = /*#__PURE__*/htmlElement<HTMLLegendElementAttrs, HTMLLegendElement>("legend");
+export const legend = /*#__PURE__*/htmlElementFactory<HTMLLegendElementAttrs, HTMLLegendElement>("legend");
 
 /**
  * Creates OpNode HTML element <li>.
@@ -732,7 +733,7 @@ export const legend = /*#__PURE__*/htmlElement<HTMLLegendElementAttrs, HTMLLegen
  * @param children Children nodes.
  * @returns OpNode HTML element <li>
  */
-export const li = /*#__PURE__*/htmlElement<HTMLLIElementAttrs, HTMLLIElement>("li");
+export const li = /*#__PURE__*/htmlElementFactory<HTMLLIElementAttrs, HTMLLIElement>("li");
 
 /**
  * Creates OpNode HTML element <link>.
@@ -744,7 +745,7 @@ export const li = /*#__PURE__*/htmlElement<HTMLLIElementAttrs, HTMLLIElement>("l
  * @param children Children nodes.
  * @returns OpNode HTML element <link>
  */
-export const link = /*#__PURE__*/htmlElement<HTMLLinkElementAttrs, HTMLLinkElement>("link");
+export const link = /*#__PURE__*/htmlElementFactory<HTMLLinkElementAttrs, HTMLLinkElement>("link");
 
 /**
  * Creates OpNode HTML element <main>.
@@ -756,7 +757,7 @@ export const link = /*#__PURE__*/htmlElement<HTMLLinkElementAttrs, HTMLLinkEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <main>
  */
-export const main = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("main");
+export const main = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("main");
 
 /**
  * Creates OpNode HTML element <mark>.
@@ -768,7 +769,7 @@ export const main = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("mai
  * @param children Children nodes.
  * @returns OpNode HTML element <mark>
  */
-export const mark = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("mark");
+export const mark = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("mark");
 
 /**
  * Creates OpNode HTML element <menu>.
@@ -780,7 +781,7 @@ export const mark = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("mar
  * @param children Children nodes.
  * @returns OpNode HTML element <menu>
  */
-export const menu = /*#__PURE__*/htmlElement<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
+export const menu = /*#__PURE__*/htmlElementFactory<HTMLMenuElementAttrs, HTMLMenuElement>("menu");
 
 /**
  * Creates OpNode HTML element <meta>.
@@ -792,7 +793,7 @@ export const menu = /*#__PURE__*/htmlElement<HTMLMenuElementAttrs, HTMLMenuEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <meta>
  */
-export const meta = /*#__PURE__*/htmlElement<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
+export const meta = /*#__PURE__*/htmlElementFactory<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
 
 /**
  * Creates OpNode HTML element <meter>.
@@ -804,7 +805,7 @@ export const meta = /*#__PURE__*/htmlElement<HTMLMetaElementAttrs, HTMLMetaEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <meter>
  */
-export const meter = /*#__PURE__*/htmlElement<HTMLMeterElementAttrs, HTMLMeterElement>("meter");
+export const meter = /*#__PURE__*/htmlElementFactory<HTMLMeterElementAttrs, HTMLMeterElement>("meter");
 
 /**
  * Creates OpNode HTML element <nav>.
@@ -816,7 +817,7 @@ export const meter = /*#__PURE__*/htmlElement<HTMLMeterElementAttrs, HTMLMeterEl
  * @param children Children nodes.
  * @returns OpNode HTML element <nav>
  */
-export const nav = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("nav");
+export const nav = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("nav");
 
 /**
  * Creates OpNode HTML element <noscript>.
@@ -828,7 +829,7 @@ export const nav = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("nav"
  * @param children Children nodes.
  * @returns OpNode HTML element <noscript>
  */
-export const noscript = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("noscript");
+export const noscript = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("noscript");
 
 /**
  * Creates OpNode HTML element <ol>.
@@ -840,7 +841,7 @@ export const noscript = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>(
  * @param children Children nodes.
  * @returns OpNode HTML element <ol>
  */
-export const ol = /*#__PURE__*/htmlElement<HTMLOListElementAttrs, HTMLOListElement>("ol");
+export const ol = /*#__PURE__*/htmlElementFactory<HTMLOListElementAttrs, HTMLOListElement>("ol");
 
 /**
  * Creates OpNode HTML element <optgroup>.
@@ -852,7 +853,7 @@ export const ol = /*#__PURE__*/htmlElement<HTMLOListElementAttrs, HTMLOListEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <optgroup>
  */
-export const optgroup = /*#__PURE__*/htmlElement<HTMLOptGroupElementAttrs, HTMLOptGroupElement>("optgroup");
+export const optgroup = /*#__PURE__*/htmlElementFactory<HTMLOptGroupElementAttrs, HTMLOptGroupElement>("optgroup");
 
 /**
  * Creates OpNode HTML element <option>.
@@ -864,7 +865,7 @@ export const optgroup = /*#__PURE__*/htmlElement<HTMLOptGroupElementAttrs, HTMLO
  * @param children Children nodes.
  * @returns OpNode HTML element <option>
  */
-export const option = /*#__PURE__*/htmlElement<HTMLOptionElementAttrs, HTMLOptionElement>("option");
+export const option = /*#__PURE__*/htmlElementFactory<HTMLOptionElementAttrs, HTMLOptionElement>("option");
 
 /**
  * Creates OpNode HTML element <p>.
@@ -876,7 +877,7 @@ export const option = /*#__PURE__*/htmlElement<HTMLOptionElementAttrs, HTMLOptio
  * @param children Children nodes.
  * @returns OpNode HTML element <p>
  */
-export const p = /*#__PURE__*/htmlElement<HTMLParagraphElementAttrs, HTMLParagraphElement>("p");
+export const p = /*#__PURE__*/htmlElementFactory<HTMLParagraphElementAttrs, HTMLParagraphElement>("p");
 
 /**
  * Creates OpNode HTML element <picture>.
@@ -888,7 +889,7 @@ export const p = /*#__PURE__*/htmlElement<HTMLParagraphElementAttrs, HTMLParagra
  * @param children Children nodes.
  * @returns OpNode HTML element <picture>
  */
-export const picture = /*#__PURE__*/htmlElement<HTMLPictureElementAttrs, HTMLPictureElement>("picture");
+export const picture = /*#__PURE__*/htmlElementFactory<HTMLPictureElementAttrs, HTMLPictureElement>("picture");
 
 /**
  * Creates OpNode HTML element <pre>.
@@ -900,7 +901,7 @@ export const picture = /*#__PURE__*/htmlElement<HTMLPictureElementAttrs, HTMLPic
  * @param children Children nodes.
  * @returns OpNode HTML element <pre>
  */
-export const pre = /*#__PURE__*/htmlElement<HTMLPreElementAttrs, HTMLPreElement>("pre");
+export const pre = /*#__PURE__*/elementFactory<HTMLPreElementAttrs, HTMLPreElement>("pre", NodeFlags.Element | NodeFlags.NewlineEatingElement);
 
 /**
  * Creates OpNode HTML element <progress>.
@@ -912,7 +913,7 @@ export const pre = /*#__PURE__*/htmlElement<HTMLPreElementAttrs, HTMLPreElement>
  * @param children Children nodes.
  * @returns OpNode HTML element <progress>
  */
-export const progress = /*#__PURE__*/htmlElement<HTMLProgressElementAttrs, HTMLProgressElement>("progress");
+export const progress = /*#__PURE__*/htmlElementFactory<HTMLProgressElementAttrs, HTMLProgressElement>("progress");
 
 /**
  * Creates OpNode HTML element <q>.
@@ -924,7 +925,7 @@ export const progress = /*#__PURE__*/htmlElement<HTMLProgressElementAttrs, HTMLP
  * @param children Children nodes.
  * @returns OpNode HTML element <q>
  */
-export const q = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
+export const q = /*#__PURE__*/htmlElementFactory<HTMLQuoteElementAttrs, HTMLQuoteElement>("q");
 
 /**
  * Creates OpNode HTML element <rt>.
@@ -936,7 +937,7 @@ export const q = /*#__PURE__*/htmlElement<HTMLQuoteElementAttrs, HTMLQuoteElemen
  * @param children Children nodes.
  * @returns OpNode HTML element <rt>
  */
-export const rt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("rt");
+export const rt = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("rt");
 
 /**
  * Creates OpNode HTML element <ruby>.
@@ -948,7 +949,7 @@ export const rt = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("rt");
  * @param children Children nodes.
  * @returns OpNode HTML element <ruby>
  */
-export const ruby = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("ruby");
+export const ruby = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("ruby");
 
 /**
  * Creates OpNode HTML element <s>.
@@ -960,7 +961,7 @@ export const ruby = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("rub
  * @param children Children nodes.
  * @returns OpNode HTML element <s>
  */
-export const s = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("s");
+export const s = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("s");
 
 /**
  * Creates OpNode HTML element <samp>.
@@ -972,7 +973,7 @@ export const s = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("s");
  * @param children Children nodes.
  * @returns OpNode HTML element <samp>
  */
-export const samp = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("samp");
+export const samp = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("samp");
 
 /**
  * Creates OpNode HTML element <script>.
@@ -984,7 +985,7 @@ export const samp = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sam
  * @param children Children nodes.
  * @returns OpNode HTML element <script>
  */
-export const script = /*#__PURE__*/htmlElement<HTMLScriptElementAttrs, HTMLScriptElement>("script");
+export const script = /*#__PURE__*/htmlElementFactory<HTMLScriptElementAttrs, HTMLScriptElement>("script");
 
 /**
  * Creates OpNode HTML element <section>.
@@ -996,7 +997,7 @@ export const script = /*#__PURE__*/htmlElement<HTMLScriptElementAttrs, HTMLScrip
  * @param children Children nodes.
  * @returns OpNode HTML element <section>
  */
-export const section = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("section");
+export const section = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("section");
 
 /**
  * Creates OpNode HTML element <select>.
@@ -1008,7 +1009,7 @@ export const section = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("
  * @param children Children nodes.
  * @returns OpNode HTML element <select>
  */
-export const select = /*#__PURE__*/htmlElement<HTMLSelectElementAttrs, HTMLSelectElement>("select");
+export const select = /*#__PURE__*/htmlElementFactory<HTMLSelectElementAttrs, HTMLSelectElement>("select");
 
 /**
  * Creates OpNode HTML element <source>.
@@ -1020,7 +1021,7 @@ export const select = /*#__PURE__*/htmlElement<HTMLSelectElementAttrs, HTMLSelec
  * @param children Children nodes.
  * @returns OpNode HTML element <source>
  */
-export const source = /*#__PURE__*/htmlElement<HTMLSourceElementAttrs, HTMLSourceElement>("source");
+export const source = /*#__PURE__*/htmlElementFactory<HTMLSourceElementAttrs, HTMLSourceElement>("source");
 
 /**
  * Creates OpNode HTML element <span>.
@@ -1032,7 +1033,7 @@ export const source = /*#__PURE__*/htmlElement<HTMLSourceElementAttrs, HTMLSourc
  * @param children Children nodes.
  * @returns OpNode HTML element <span>
  */
-export const span = /*#__PURE__*/htmlElement<HTMLSpanElementAttrs, HTMLSpanElement>("span");
+export const span = /*#__PURE__*/htmlElementFactory<HTMLSpanElementAttrs, HTMLSpanElement>("span");
 
 /**
  * Creates OpNode HTML element <strong>.
@@ -1044,7 +1045,7 @@ export const span = /*#__PURE__*/htmlElement<HTMLSpanElementAttrs, HTMLSpanEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <strong>
  */
-export const strong = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("strong");
+export const strong = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("strong");
 
 /**
  * Creates OpNode HTML element <style>.
@@ -1056,7 +1057,7 @@ export const strong = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("s
  * @param children Children nodes.
  * @returns OpNode HTML element <style>
  */
-export const style = /*#__PURE__*/htmlElement<HTMLStyleElementAttrs, HTMLStyleElement>("style");
+export const style = /*#__PURE__*/htmlElementFactory<HTMLStyleElementAttrs, HTMLStyleElement>("style");
 
 /**
  * Creates OpNode HTML element <sub>.
@@ -1068,7 +1069,7 @@ export const style = /*#__PURE__*/htmlElement<HTMLStyleElementAttrs, HTMLStyleEl
  * @param children Children nodes.
  * @returns OpNode HTML element <sub>
  */
-export const sub = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sub");
+export const sub = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("sub");
 
 /**
  * Creates OpNode HTML element <sup>.
@@ -1080,7 +1081,7 @@ export const sub = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sub"
  * @param children Children nodes.
  * @returns OpNode HTML element <sup>
  */
-export const sup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sup");
+export const sup = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("sup");
 
 /**
  * Creates OpNode HTML element <table>.
@@ -1092,7 +1093,7 @@ export const sup = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("sup"
  * @param children Children nodes.
  * @returns OpNode HTML element <table>
  */
-export const table = /*#__PURE__*/htmlElement<HTMLTableElementAttrs, HTMLTableElement>("table");
+export const table = /*#__PURE__*/htmlElementFactory<HTMLTableElementAttrs, HTMLTableElement>("table");
 
 /**
  * Creates OpNode HTML element <tbody>.
@@ -1104,7 +1105,7 @@ export const table = /*#__PURE__*/htmlElement<HTMLTableElementAttrs, HTMLTableEl
  * @param children Children nodes.
  * @returns OpNode HTML element <tbody>
  */
-export const tbody = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tbody");
+export const tbody = /*#__PURE__*/htmlElementFactory<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tbody");
 
 /**
  * Creates OpNode HTML element <td>.
@@ -1116,7 +1117,7 @@ export const tbody = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTML
  * @param children Children nodes.
  * @returns OpNode HTML element <td>
  */
-export const td = /*#__PURE__*/htmlElement<HTMLTableDataCellElementAttrs, HTMLTableDataCellElement>("td");
+export const td = /*#__PURE__*/htmlElementFactory<HTMLTableDataCellElementAttrs, HTMLTableDataCellElement>("td");
 
 /**
  * Creates OpNode HTML element <template>.
@@ -1128,7 +1129,7 @@ export const td = /*#__PURE__*/htmlElement<HTMLTableDataCellElementAttrs, HTMLTa
  * @param children Children nodes.
  * @returns OpNode HTML element <template>
  */
-export const template = /*#__PURE__*/htmlElement<HTMLTemplateElementAttrs, HTMLTemplateElement>("template");
+export const template = /*#__PURE__*/htmlElementFactory<HTMLTemplateElementAttrs, HTMLTemplateElement>("template");
 
 /**
  * Creates OpNode HTML element <tfoot>.
@@ -1140,7 +1141,7 @@ export const template = /*#__PURE__*/htmlElement<HTMLTemplateElementAttrs, HTMLT
  * @param children Children nodes.
  * @returns OpNode HTML element <tfoot>
  */
-export const tfoot = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tfoot");
+export const tfoot = /*#__PURE__*/htmlElementFactory<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("tfoot");
 
 /**
  * Creates OpNode HTML element <th>.
@@ -1152,7 +1153,7 @@ export const tfoot = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTML
  * @param children Children nodes.
  * @returns OpNode HTML element <th>
  */
-export const th = /*#__PURE__*/htmlElement<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCellElement>("th");
+export const th = /*#__PURE__*/htmlElementFactory<HTMLTableHeaderCellElementAttrs, HTMLTableHeaderCellElement>("th");
 
 /**
  * Creates OpNode HTML element <thead>.
@@ -1164,7 +1165,7 @@ export const th = /*#__PURE__*/htmlElement<HTMLTableHeaderCellElementAttrs, HTML
  * @param children Children nodes.
  * @returns OpNode HTML element <thead>
  */
-export const thead = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("thead");
+export const thead = /*#__PURE__*/htmlElementFactory<HTMLTableSectionElementAttrs, HTMLTableSectionElement>("thead");
 
 /**
  * Creates OpNode HTML element <time>.
@@ -1176,7 +1177,7 @@ export const thead = /*#__PURE__*/htmlElement<HTMLTableSectionElementAttrs, HTML
  * @param children Children nodes.
  * @returns OpNode HTML element <time>
  */
-export const time = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("time");
+export const time = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("time");
 
 /**
  * Creates OpNode HTML element <title>.
@@ -1188,7 +1189,7 @@ export const time = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("tim
  * @param children Children nodes.
  * @returns OpNode HTML element <title>
  */
-export const title = /*#__PURE__*/htmlElement<HTMLTitleElementAttrs, HTMLTitleElement>("title");
+export const title = /*#__PURE__*/htmlElementFactory<HTMLTitleElementAttrs, HTMLTitleElement>("title");
 
 /**
  * Creates OpNode HTML element <tr>.
@@ -1200,7 +1201,7 @@ export const title = /*#__PURE__*/htmlElement<HTMLTitleElementAttrs, HTMLTitleEl
  * @param children Children nodes.
  * @returns OpNode HTML element <tr>
  */
-export const tr = /*#__PURE__*/htmlElement<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr");
+export const tr = /*#__PURE__*/htmlElementFactory<HTMLTableRowElementAttrs, HTMLTableRowElement>("tr");
 
 /**
  * Creates OpNode HTML element <track>.
@@ -1212,7 +1213,7 @@ export const tr = /*#__PURE__*/htmlElement<HTMLTableRowElementAttrs, HTMLTableRo
  * @param children Children nodes.
  * @returns OpNode HTML element <track>
  */
-export const track = /*#__PURE__*/htmlElement<HTMLTrackElementAttrs, HTMLTrackElement>("track");
+export const track = /*#__PURE__*/htmlElementFactory<HTMLTrackElementAttrs, HTMLTrackElement>("track");
 
 /**
  * Creates OpNode HTML element <u>.
@@ -1224,7 +1225,7 @@ export const track = /*#__PURE__*/htmlElement<HTMLTrackElementAttrs, HTMLTrackEl
  * @param children Children nodes.
  * @returns OpNode HTML element <u>
  */
-export const u = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("u");
+export const u = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("u");
 
 /**
  * Creates OpNode HTML element <ul>.
@@ -1236,7 +1237,7 @@ export const u = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("u");
  * @param children Children nodes.
  * @returns OpNode HTML element <ul>
  */
-export const ul = /*#__PURE__*/htmlElement<HTMLUListElementAttrs, HTMLUListElement>("ul");
+export const ul = /*#__PURE__*/htmlElementFactory<HTMLUListElementAttrs, HTMLUListElement>("ul");
 
 /**
  * Creates OpNode HTML element <wbr>.
@@ -1248,7 +1249,7 @@ export const ul = /*#__PURE__*/htmlElement<HTMLUListElementAttrs, HTMLUListEleme
  * @param children Children nodes.
  * @returns OpNode HTML element <wbr>
  */
-export const wbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("wbr");
+export const wbr = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("wbr");
 
 /**
  * Creates OpNode HTML element <textarea>.
@@ -1260,7 +1261,7 @@ export const wbr = /*#__PURE__*/htmlElement<HTMLElementAttrs, HTMLElement>("wbr"
  * @param children Children nodes.
  * @returns OpNode HTML element <textarea>
  */
-export const textarea = /*#__PURE__*/htmlElement<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea");
+export const textarea = /*#__PURE__*/elementFactory<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea", NodeFlags.Element | NodeFlags.NewlineEatingElement);
 
 /**
  * Creates OpNode HTML element <input>.
@@ -1272,7 +1273,7 @@ export const textarea = /*#__PURE__*/htmlElement<HTMLTextAreaElementAttrs, HTMLT
  * @param children Children nodes.
  * @returns OpNode HTML element <input>
  */
-export const input = /*#__PURE__*/htmlElement<HTMLInputElementAttrs, HTMLInputElement>("input");
+export const input = /*#__PURE__*/htmlElementFactory<HTMLInputElementAttrs, HTMLInputElement>("input");
 
 /**
  * Creates OpNode HTML element <audio>.
@@ -1284,7 +1285,7 @@ export const input = /*#__PURE__*/htmlElement<HTMLInputElementAttrs, HTMLInputEl
  * @param children Children nodes.
  * @returns OpNode HTML element <audio>
  */
-export const audio = /*#__PURE__*/htmlElement<HTMLAudioElementAttrs, HTMLAudioElement>("audio");
+export const audio = /*#__PURE__*/htmlElementFactory<HTMLAudioElementAttrs, HTMLAudioElement>("audio");
 
 /**
  * Creates OpNode HTML element <video>.
@@ -1296,4 +1297,4 @@ export const audio = /*#__PURE__*/htmlElement<HTMLAudioElementAttrs, HTMLAudioEl
  * @param children Children nodes.
  * @returns OpNode HTML element <video>
  */
-export const video = /*#__PURE__*/htmlElement<HTMLVideoElementAttrs, HTMLVideoElement>("video");
+export const video = /*#__PURE__*/htmlElementFactory<HTMLVideoElementAttrs, HTMLVideoElement>("video");
