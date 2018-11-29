@@ -38,7 +38,7 @@ export const mut = <T, U extends any[], V>(
 ) => (
     function () {
       const a = arguments;
-      dirty(a[0], m.apply(void 0, a));
+      dirty(a[0], (m as Function).apply(void 0, a));
     } as (v: T, ...args: U) => void
   );
 
@@ -65,6 +65,6 @@ export const pipe = <U extends any[], V>(
   from: (...args: U) => V,
 ) => (
     function () {
-      to(from.apply(void 0, arguments));
+      to(from.apply(void 0, arguments as unknown as U));
     } as (...args: U) => void
   );

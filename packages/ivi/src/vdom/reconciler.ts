@@ -1212,7 +1212,7 @@ function _updateAttr(
           if (DEBUG) {
             element.setAttribute(key, next as string);
           } else {
-            elementSetAttribute.call(element, key, next);
+            elementSetAttribute.call(element, key, next as string);
           }
         }
       }

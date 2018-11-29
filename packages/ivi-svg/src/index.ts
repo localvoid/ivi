@@ -46,7 +46,7 @@ function updateNSAttr(
   next: string | number | boolean | undefined,
 ) {
   if (prev !== next) {
-    elementSetAttributeNS.call(element, ns, key, next!);
+    elementSetAttributeNS.call(element, ns, key, next as string);
   }
 }
 

@@ -6,9 +6,9 @@ export interface Action<U extends any[]> {
 export function action<U extends any[]>(handler: (...args: U) => void): Action<U> {
   const r = function () {
     const subs = r._s;
-    handler.apply(void 0, arguments);
+    handler.apply(void 0, arguments as unknown as U);
     for (let i = 0; i < subs.length; i++) {
-      subs[i].apply(void 0, arguments);
+      subs[i].apply(void 0, arguments as unknown as U);
     }
   } as Action<U>;
   r._s = [];

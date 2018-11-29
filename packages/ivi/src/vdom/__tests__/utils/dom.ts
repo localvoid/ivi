@@ -41,31 +41,31 @@ export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
 
   Document.prototype.createElement = function (this: Document) {
     counter.createElement++;
-    return createElement.apply(this, arguments);
+    return createElement.apply(this, arguments as any);
   };
   Document.prototype.createElementNS = function (this: Document) {
     counter.createElementNS++;
-    return createElementNS.apply(this, arguments);
+    return createElementNS.apply(this, arguments as any) as any;
   };
   Document.prototype.createTextNode = function (this: Document) {
     counter.createTextNode++;
-    return createTextNode.apply(this, arguments);
+    return createTextNode.apply(this, arguments as any);
   };
   Node.prototype.appendChild = function (this: Document) {
     counter.appendChild++;
-    return appendChild.apply(this, arguments);
+    return appendChild.apply(this, arguments as any) as any;
   };
   Node.prototype.insertBefore = function (this: Document) {
     counter.insertBefore++;
-    return insertBefore.apply(this, arguments);
+    return insertBefore.apply(this, arguments as any) as any;
   };
   Node.prototype.replaceChild = function (this: Document) {
     counter.replaceChild++;
-    return replaceChild.apply(this, arguments);
+    return replaceChild.apply(this, arguments as any) as any;
   };
   Node.prototype.removeChild = function (this: Document) {
     counter.removeChild++;
-    return removeChild.apply(this, arguments);
+    return removeChild.apply(this, arguments as any) as any;
   };
 
   fn(counter);

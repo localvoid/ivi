@@ -103,7 +103,7 @@ let _frameStartTime = 0;
 export const withSchedulerTick = <T extends any[]>(inner: (...args: T) => void) => (
   catchError(function () {
     _flags |= SchedulerFlags.Running;
-    inner.apply(void 0, arguments);
+    inner.apply(void 0, arguments as unknown as T);
     run(_microtasks);
     _flags &= ~(SchedulerFlags.Running | SchedulerFlags.TickPending);
     ++_clock;

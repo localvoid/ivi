@@ -18,7 +18,7 @@ export function addErrorHandler(handler: (e: any) => void): void {
  * @returns function decorated with a catchError
  */
 export function catchError<T>(fn: (...args: any[]) => T): (...args: any[]) => T;
-export function catchError<T>(fn: () => T): (...args: any[]) => T {
+export function catchError<T>(fn: Function): (...args: any[]) => T {
   return function () {
     try {
       return fn.apply(void 0, arguments);
