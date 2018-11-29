@@ -16,7 +16,7 @@ export interface ComponentHooks<T = any> {
   /**
    * Unmount hooks.
    */
-  u: null | ((detached?: boolean) => void) | ((detached?: boolean) => void)[];
+  u: null | ((unmount?: boolean) => void) | ((unmount?: boolean) => void)[];
 }
 
 /**

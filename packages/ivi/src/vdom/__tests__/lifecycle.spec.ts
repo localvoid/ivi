@@ -1,4 +1,4 @@
-import { OpNode, _, component, useDetached, useEffect, useMutationEffect, useLayoutEffect } from "ivi";
+import { OpNode, _, component, useUnmount, useEffect, useMutationEffect, useLayoutEffect } from "ivi";
 import * as h from "ivi-html";
 import { startRender, Static, checkLifecycle, lifecycleTouch } from "./utils";
 
@@ -19,8 +19,8 @@ function createLifecycleTester(id: string) {
         lifecycleTouch(id, "effect");
       });
 
-      useDetached(c, () => {
-        lifecycleTouch(id, "detached");
+      useUnmount(c, () => {
+        lifecycleTouch(id, "unmount");
       });
 
       return (child) => {
@@ -50,7 +50,7 @@ test(`<C><div></C>`, () => {
       expect(c("1", "effect")).toBe(4);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
-      expect(c("1", "detached")).toBe(-1);
+      expect(c("1", "unmount")).toBe(-1);
     });
   });
 });
@@ -66,7 +66,7 @@ test(`<C><div></C> => <div>`, () => {
       expect(c("1", "mutationEffect")).toBe(2);
       expect(c("1", "layoutEffect")).toBe(3);
       expect(c("1", "effect")).toBe(4);
-      expect(c("1", "detached")).toBe(5);
+      expect(c("1", "unmount")).toBe(5);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
     });
@@ -86,7 +86,7 @@ test(`<div> => <C><div></C>`, () => {
       expect(c("1", "effect")).toBe(4);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
-      expect(c("1", "detached")).toBe(-1);
+      expect(c("1", "unmount")).toBe(-1);
     });
   });
 });
@@ -104,7 +104,7 @@ test(`<div></div> => <div><C><div></C></div>`, () => {
       expect(c("1", "effect")).toBe(4);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
-      expect(c("1", "detached")).toBe(-1);
+      expect(c("1", "unmount")).toBe(-1);
     });
   });
 });
@@ -120,7 +120,7 @@ test(`<div><C><div></C></div> => <div></div>`, () => {
       expect(c("1", "mutationEffect")).toBe(2);
       expect(c("1", "layoutEffect")).toBe(3);
       expect(c("1", "effect")).toBe(4);
-      expect(c("1", "detached")).toBe(5);
+      expect(c("1", "unmount")).toBe(5);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
     });
@@ -144,10 +144,10 @@ test(`<C><C><div></C></C>`, () => {
       expect(c("2", "effect")).toBe(9);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
-      expect(c("1", "detached")).toBe(-1);
+      expect(c("1", "unmount")).toBe(-1);
 
       expect(c("2", "shouldUpdate")).toBe(-1);
-      expect(c("2", "detached")).toBe(-1);
+      expect(c("2", "unmount")).toBe(-1);
     });
   });
 });
@@ -168,8 +168,8 @@ test(`<C><C><div></C></C> => <div>`, () => {
       expect(c("2", "layoutEffect")).toBe(7);
       expect(c("1", "effect")).toBe(8);
       expect(c("2", "effect")).toBe(9);
-      expect(c("2", "detached")).toBe(10);
-      expect(c("1", "detached")).toBe(11);
+      expect(c("2", "unmount")).toBe(10);
+      expect(c("1", "unmount")).toBe(11);
 
       expect(c("1", "shouldUpdate")).toBe(-1);
 
@@ -194,7 +194,7 @@ test(`<C><div></C> => <C><div></C>`, () => {
 
       expect(c("1", "render", false)).toBe(1);
 
-      expect(c("1", "detached")).toBe(-1);
+      expect(c("1", "unmount")).toBe(-1);
     });
   });
 });
@@ -214,7 +214,7 @@ test(`<S><C><div></C></S> => <S><C><div></C></S>`, () => {
 
       expect(c("1", "shouldUpdate")).toBe(-1);
 
-      expect(c("1", "detached")).toBe(-1);
+      expect(c("1", "unmount")).toBe(-1);
     });
   });
 });

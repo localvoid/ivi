@@ -80,7 +80,7 @@ export {
   elementFactory, htmlElementFactory, svgElementFactory, elementProto, component, statelessComponent,
 } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
-export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
+export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { selector, findDOMNode } from "./vdom/utils";
 export { visitNodes, getDOMNode } from "./vdom/reconciler";
 

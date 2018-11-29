@@ -5,7 +5,7 @@ export interface LifecycleCounters {
   effect: number;
   mutationEffect: number;
   layoutEffect: number;
-  detached: number;
+  unmount: number;
   render: number;
 }
 
@@ -16,7 +16,7 @@ const LIFECYCLE_COUNTERS: LifecycleCounters = {
   effect: 0,
   mutationEffect: 0,
   layoutEffect: 0,
-  detached: 0,
+  unmount: 0,
   render: 0,
 };
 
@@ -55,7 +55,7 @@ export function checkLifecycle(
   LIFECYCLE_COUNTERS.effect = 0;
   LIFECYCLE_COUNTERS.mutationEffect = 0;
   LIFECYCLE_COUNTERS.layoutEffect = 0;
-  LIFECYCLE_COUNTERS.detached = 0;
+  LIFECYCLE_COUNTERS.unmount = 0;
   LIFECYCLE_COUNTERS.render = 0;
   fn(lifecycleGet);
   LIFECYCLE_DATA = undefined;

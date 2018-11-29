@@ -668,13 +668,13 @@ const Pixel = component((c) => {
 });
 ```
 
-##### `useDetached()`
+##### `useUnmount()`
 
 ```ts
-function useDetached(c: Component, hook: () => void): void;
+function useUnmount(c: Component, hook: () => void): void;
 ```
 
-`useDetached()` creates a hook that will be invoked when component is detached from the document.
+`useUnmount()` creates a hook that will be invoked when component is unmounted from the document.
 
 #### Additional Functions
 

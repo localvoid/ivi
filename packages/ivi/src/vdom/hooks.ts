@@ -142,22 +142,22 @@ export function useSelect<T, P, C extends {}>(
 }
 
 /**
- * useDetached creates a detached hook.
+ * useUnmount creates an unmount hook.
  *
  * @example
  *
  *     const C = component((h) => {
- *       useDetached(h, () => {
- *         console.log("detached");
+ *       useUnmount(h, () => {
+ *         console.log("unmounted");
  *       });
  *
  *       return () => div();
  *     });
  *
  * @param stateNode Component instance.
- * @param hook Detached hook.
+ * @param hook Unmount hook.
  */
-export function useDetached(stateNode: OpState, hook: () => void): void {
+export function useUnmount(stateNode: OpState, hook: () => void): void {
   stateNode.f |= NodeFlags.Unmount;
   const hooks = stateNode.s as ComponentHooks;
   hooks.u = addHook(hooks.u, hook);
@@ -171,16 +171,16 @@ function withEffect<P>(fn: (effect: () => void) => void): (
   return (stateNode, hook, shouldUpdate) => {
     let reset: (() => void) | void;
     let props: P | undefined = EMPTY_OBJECT as P;
-    let detached = false;
+    let unmount = false;
     const handler = (d?: boolean) => {
       if (reset !== void 0) {
         reset();
       }
       if (d !== true) {
         reset = hook(props);
-        if (reset !== void 0 && !detached) {
-          detached = true;
-          useDetached(stateNode, handler);
+        if (reset !== void 0 && !unmount) {
+          unmount = true;
+          useUnmount(stateNode, handler);
         }
       }
     };
