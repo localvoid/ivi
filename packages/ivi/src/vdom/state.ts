@@ -1,11 +1,10 @@
 import { NodeFlags } from "./node_flags";
 import { Op } from "./operations";
-import { ComponentHooks } from "./component";
 
 /**
  * Operation state.
  */
-export interface OpState {
+export interface OpState<T = any> {
   /**
    * Operation.
    */
@@ -21,7 +20,7 @@ export interface OpState {
   /**
    * Current state.
    */
-  s: Node | ComponentHooks | {} | null;
+  s: T;
 }
 
 /**

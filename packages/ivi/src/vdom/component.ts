@@ -62,3 +62,5 @@ export interface StatelessComponentDescriptor<P = any> {
    */
   su: undefined | ((prev: P, next: P) => boolean);
 }
+
+export type Component = OpState<ComponentHooks>;

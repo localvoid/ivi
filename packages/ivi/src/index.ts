@@ -69,7 +69,7 @@ export {
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
 export { ElementProtoDescriptor } from "./vdom/element_proto";
-export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor } from "./vdom/component";
+export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor, Component } from "./vdom/component";
 export {
   OpType, OpNode, Op, OpArray, ElementData, OpData, EventsData, RefData, ContextData, Key,
   createOpType, createOpNode,
