@@ -36,18 +36,18 @@ function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
 }
 
 export function visitNodes(
-  current: OpState,
+  currentOpState: OpState,
   filter: NodeFlags,
-  visitor: (node: OpState) => void | boolean,
+  visitor: (opState: OpState) => void | boolean,
 ): boolean {
-  const flags = current.flags;
+  const flags = currentOpState.f;
   if ((flags & filter) === filter) {
-    if (visitor(current) === true) {
+    if (visitor(currentOpState) === true) {
       return true;
     }
   }
 
-  const children = current.children;
+  const children = currentOpState.c;
   if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
     for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
       const c = (children as Array<OpState | null>)[i];
@@ -66,15 +66,15 @@ export function visitNodes(
 }
 
 /**
- * getDOMNode retrieves closest DOM node from the {@link OpNodeState} instance.
+ * getDOMNode retrieves closest DOM node from the {@link OpState} instance.
  *
- * @param node State node.
+ * @param opState State node.
  * @returns DOM node.
  */
-export function getDOMNode(node: OpState): Node | null {
-  const flags = node.flags;
+export function getDOMNode(opState: OpState): Node | null {
+  const flags = opState.f;
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) === 0) {
-    const children = node.children;
+    const children = opState.c;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
         const c = (children as Array<OpState | null>)[i];
@@ -89,51 +89,51 @@ export function getDOMNode(node: OpState): Node | null {
     }
     return getDOMNode(children as OpState);
   }
-  return node.state as Node;
+  return opState.s as Node;
 }
 
 export function _dirtyCheck(
   parentElement: Element,
-  stateNode: OpState,
+  opState: OpState,
   moveNode: boolean,
   singleChild: boolean,
 ): void {
-  const { flags, children } = stateNode;
+  const { f, c } = opState;
   let node;
   let deepState;
   let i;
 
-  if ((flags & NodeFlags.Component) !== 0) {
-    const hooks = stateNode.state as ComponentHooks;
+  if ((f & NodeFlags.Component) !== 0) {
+    const hooks = opState.s as ComponentHooks;
     deepState = _pushDeepState();
     if (
-      ((flags & NodeFlags.Stateful) !== 0) && (
-        ((flags & NodeFlags.Dirty) !== 0) ||
+      ((f & NodeFlags.Stateful) !== 0) && (
+        ((f & NodeFlags.Dirty) !== 0) ||
         (hooks.dirtyCheck !== null && hooks.dirtyCheck(getContext()) === true)
       )
     ) {
-      stateNode.children = _update(
+      opState.c = _update(
         parentElement,
-        children as OpState,
-        hooks.update!((stateNode.op as OpNode).data),
+        c as OpState,
+        hooks.update!((opState.o as OpNode).d),
         moveNode,
         singleChild,
       );
-    } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
-      _dirtyCheck(parentElement, children as OpState, moveNode, singleChild);
+    } else if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
+      _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
     } else {
       if (moveNode) {
-        _moveNodes(parentElement, stateNode);
+        _moveNodes(parentElement, opState);
       } else {
-        _nextNode = getDOMNode(stateNode);
+        _nextNode = getDOMNode(opState);
       }
     }
-    stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | _deepStateFlags;
-    _deepStateFlags |= deepState | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
-  } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
+    opState.f = (opState.f & NodeFlags.SelfFlags) | _deepStateFlags;
+    _deepStateFlags |= deepState | ((opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
+  } else if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
     deepState = _pushDeepState();
-    if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-      node = stateNode.state as Node;
+    if ((f & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+      node = opState.s as Node;
       if (moveNode === true) {
         /* istanbul ignore else */
         if (DEBUG) {
@@ -142,41 +142,41 @@ export function _dirtyCheck(
           nodeInsertBefore.call(parentElement, node, _nextNode);
         }
       }
-      if (children !== null) {
-        _dirtyCheck(node as Element, children as OpState, false, true);
+      if (c !== null) {
+        _dirtyCheck(node as Element, c as OpState, false, true);
       }
       _nextNode = node;
-    } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-      i = (children as Array<OpState | null>).length;
+    } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+      i = (c as Array<OpState | null>).length;
       while (--i >= 0) {
-        if ((node = (children as Array<OpState | null>)[i]) !== null) {
+        if ((node = (c as Array<OpState | null>)[i]) !== null) {
           _dirtyCheck(parentElement, node, moveNode, false);
         }
       }
-    } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-      _dirtyCheck(parentElement, stateNode.children as OpState, moveNode, singleChild);
+    } else if ((f & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
+      _dirtyCheck(parentElement, opState.c as OpState, moveNode, singleChild);
     } else {
       if (_dirtyContext === true) {
-        stateNode.state = { ...getContext(), ...(stateNode.op as OpNode<ContextData>).data.data };
+        opState.s = { ...getContext(), ...(opState.o as OpNode<ContextData>).d.v };
       }
-      const prevContext = setContext(stateNode.state as {});
-      _dirtyCheck(parentElement, stateNode.children as OpState, moveNode, singleChild);
+      const prevContext = setContext(opState.s as {});
+      _dirtyCheck(parentElement, opState.c as OpState, moveNode, singleChild);
       restoreContext(prevContext);
     }
-    stateNode.flags = _popDeepState(deepState, stateNode.flags);
+    opState.f = _popDeepState(deepState, opState.f);
   } else {
     if (moveNode) {
-      _moveNodes(parentElement, stateNode);
+      _moveNodes(parentElement, opState);
     } else {
-      _nextNode = getDOMNode(stateNode);
+      _nextNode = getDOMNode(opState);
     }
   }
 }
 
-function _moveNodes(parentElement: Element, stateNode: OpState) {
-  const flags = stateNode.flags;
+function _moveNodes(parentElement: Element, opState: OpState) {
+  const flags = opState.f;
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    const domNode = stateNode.state as Node;
+    const domNode = opState.s as Node;
     /* istanbul ignore else */
     if (DEBUG) {
       parentElement.insertBefore(domNode, _nextNode);
@@ -185,7 +185,7 @@ function _moveNodes(parentElement: Element, stateNode: OpState) {
     }
     _nextNode = domNode;
   } else {
-    const children = stateNode.children;
+    const children = opState.c;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       let i = (children as Array<OpState | null>).length;
       while (--i >= 0) {
@@ -200,13 +200,13 @@ function _moveNodes(parentElement: Element, stateNode: OpState) {
   }
 }
 
-function _unmountWalk(stateNode: OpState): void {
-  const flags = stateNode.flags;
+function _unmountWalk(opState: OpState): void {
+  const flags = opState.f;
   let i;
   let v;
 
   if ((flags & NodeFlags.DeepStateUnmount) !== 0) {
-    const children = stateNode.children;
+    const children = opState.c;
     if (children !== null) {
       if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         for (i = 0; i < (children as Array<OpState | null>).length; i++) {
@@ -221,7 +221,7 @@ function _unmountWalk(stateNode: OpState): void {
   }
 
   if ((flags & NodeFlags.Unmount) !== 0) {
-    v = (stateNode.state as ComponentHooks).unmount;
+    v = (opState.s as ComponentHooks).unmount;
     if (v !== null) {
       if (typeof v === "function") {
         v();
@@ -234,12 +234,12 @@ function _unmountWalk(stateNode: OpState): void {
   }
 }
 
-function _unmountRemove(parentElement: Element, stateNode: OpState, singleChild: boolean): void {
-  const flags = stateNode.flags;
+function _unmountRemove(parentElement: Element, opState: OpState, singleChild: boolean): void {
+  const flags = opState.f;
   let children;
 
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    children = stateNode.state as Node;
+    children = opState.s as Node;
     if (DEBUG) {
       parentElement.removeChild(children);
     } else {
@@ -249,7 +249,7 @@ function _unmountRemove(parentElement: Element, stateNode: OpState, singleChild:
     if (singleChild === true) {
       parentElement.textContent = "";
     } else {
-      children = stateNode.children as Array<OpState | null>;
+      children = opState.c as Array<OpState | null>;
       for (let i = 0; i < children.length; ++i) {
         const c = children[i];
         if (c !== null) {
@@ -258,21 +258,21 @@ function _unmountRemove(parentElement: Element, stateNode: OpState, singleChild:
       }
     }
   } else {
-    children = stateNode.children as OpState | null;
+    children = opState.c as OpState | null;
     if (children !== null) {
       _unmountRemove(parentElement, children, singleChild);
     }
   }
 }
 
-export function _unmount(parentElement: Element, stateNode: OpState, singleChild: boolean): void {
-  _unmountRemove(parentElement, stateNode, singleChild);
-  _unmountWalk(stateNode);
+export function _unmount(parentElement: Element, opState: OpState, singleChild: boolean): void {
+  _unmountRemove(parentElement, opState, singleChild);
+  _unmountWalk(opState);
 }
 
 function _mountText(
   parentElement: Element,
-  stateNode: OpState,
+  opState: OpState,
   op: string | number,
 ) {
   const node = document.createTextNode(op as string);
@@ -283,39 +283,39 @@ function _mountText(
     nodeInsertBefore.call(parentElement, node, _nextNode);
   }
   _nextNode = node;
-  stateNode.state = node;
-  stateNode.flags = NodeFlags.Text;
+  opState.s = node;
+  opState.f = NodeFlags.Text;
 }
 
 function _createElement(node: Element | undefined, op: OpNode<ElementData>): Element {
-  const opType = op.type;
-  const svg = (opType.flags & NodeFlags.Svg) !== 0;
+  const opType = op.t;
+  const svg = (opType.f & NodeFlags.Svg) !== 0;
   if (node === void 0) {
-    const tagName = opType.descriptor as string;
+    const tagName = opType.d as string;
     node = svg ?
       document.createElementNS(SVG_NAMESPACE, tagName) :
       document.createElement(tagName);
   }
 
-  const { className, attrs } = op.data;
-  if (className) {
+  const { n, a } = op.d;
+  if (n) {
     /**
      * SVGElement.className returns `SVGAnimatedString`
      */
     if (svg) {
       /* istanbul ignore else */
       if (DEBUG) {
-        (node as SVGElement).setAttribute("class", className);
+        (node as SVGElement).setAttribute("class", n);
       } else {
-        elementSetAttribute.call(node, "class", className);
+        elementSetAttribute.call(node, "class", n);
       }
     } else {
-      (node as HTMLElement).className = className;
+      (node as HTMLElement).className = n;
     }
   }
 
-  if (attrs !== void 0) {
-    _updateAttrs(node, void 0, attrs);
+  if (a !== void 0) {
+    _updateAttrs(node, void 0, a);
   }
 
   return node;
@@ -323,32 +323,32 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
 
 function _mountObject(
   parentElement: Element,
-  stateNode: OpState,
+  opState: OpState,
   op: OpNode,
 ): void {
-  const { type, data } = op;
-  const flags = type.flags;
+  const { t, d } = op;
+  const flags = t.f;
   let deepStateFlags;
   let value;
 
   if ((flags & NodeFlags.Component) !== 0) {
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Stateful) !== 0) {
-      const hooks: ComponentHooks = stateNode.state = { update: null, dirtyCheck: null, unmount: null };
+      const hooks: ComponentHooks = opState.s = { update: null, dirtyCheck: null, unmount: null };
       // Reusing value variable.
-      value = hooks.update = (op.type.descriptor as ComponentDescriptor).c(stateNode);
+      value = hooks.update = (op.t.d as ComponentDescriptor).c(opState);
     } else {
-      value = (op.type.descriptor as StatelessComponentDescriptor).c;
+      value = (op.t.d as StatelessComponentDescriptor).c;
     }
-    stateNode.children = _mount(parentElement, value(data));
-    stateNode.flags = (stateNode.flags & NodeFlags.SelfFlags) | flags | _deepStateFlags;
-    _deepStateFlags |= deepStateFlags | ((stateNode.flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
+    opState.c = _mount(parentElement, value(d));
+    opState.f = (opState.f & NodeFlags.SelfFlags) | flags | _deepStateFlags;
+    _deepStateFlags |= deepStateFlags | ((opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else {
     let prevState;
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Element) !== 0) {
       let node: Element | undefined;
-      const descriptor = type.descriptor;
+      const descriptor = t.d;
       if ((flags & NodeFlags.ElementProto) !== 0) {
         node = (descriptor as ElementProtoDescriptor).node as Element;
         if (node === null) {
@@ -364,13 +364,13 @@ function _mountObject(
           node = nodeCloneNode.call(node, false) as Element;
         }
       }
-      stateNode.state = node = _createElement(node, op);
+      opState.s = node = _createElement(node, op);
 
       prevState = _nextNode;
       _nextNode = null;
-      value = data.children;
+      value = d.c;
       if (value !== null) {
-        stateNode.children = _mount(node, value);
+        opState.c = _mount(node, value);
       }
       /* istanbul ignore else */
       if (DEBUG) {
@@ -382,30 +382,30 @@ function _mountObject(
     } else if ((flags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
         prevState = setContext(
-          stateNode.state = { ...getContext(), ...(data as OpData<ContextData>).data },
+          opState.s = { ...getContext(), ...(d as OpData<ContextData>).v },
         );
-        stateNode.children = _mount(parentElement, (data as OpData<ContextData>).children);
+        opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
         restoreContext(prevState);
       } else {
         if ((flags & NodeFlags.Ref) !== 0) {
-          data.data.v = stateNode;
+          (d as RefData).v.v = opState;
         }
-        stateNode.children = _mount(parentElement, (data as OpData<ContextData>).children);
+        opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
-      let i = (data as Key<any, OpNode>[]).length;
-      stateNode.children = value = Array(i);
+      let i = (d as Key<any, OpNode>[]).length;
+      opState.c = value = Array(i);
       while (--i >= 0) {
-        value[i] = _mount(parentElement, (data as Key<any, OpNode>[])[i].v);
+        value[i] = _mount(parentElement, (d as Key<any, OpNode>[])[i].v);
       }
     }
-    stateNode.flags = _popDeepState(deepStateFlags, flags);
+    opState.f = _popDeepState(deepStateFlags, flags);
   }
 }
 
 function _mountFragment(
   parentElement: Element,
-  stateNode: OpState,
+  opState: OpState,
   childrenOps: OpArray,
 ): void {
   const deepStateFlags = _pushDeepState();
@@ -414,8 +414,8 @@ function _mountFragment(
   while (--i >= 0) {
     newChildren[i] = _mount(parentElement, childrenOps[i]);
   }
-  stateNode.children = newChildren;
-  stateNode.flags = _popDeepState(deepStateFlags, NodeFlags.Fragment);
+  opState.c = newChildren;
+  opState.f = _popDeepState(deepStateFlags, NodeFlags.Fragment);
 }
 
 export function _mount(
@@ -440,7 +440,7 @@ export function _mount(
 
 function _hasDifferentType(
   a: OpNode | OpArray,
-  b: OpNode | string | number | OpArray,
+  b: OpNode | OpArray | string | number,
 ): boolean {
   if (typeof b !== "object") {
     return true;
@@ -448,7 +448,7 @@ function _hasDifferentType(
     if (!(b instanceof Array)) {
       return true;
     }
-  } else if (b instanceof Array || a.type !== b.type) {
+  } else if (b instanceof Array || a.t !== b.t) {
     return true;
   }
   return false;
@@ -458,7 +458,7 @@ function _hasDifferentType(
  * _update updates a stateNode with a next operation.
  *
  * @param parentElement Parent DOM Element.
- * @param nodeState OpNode state.
+ * @param opState Operation state.
  * @param nextOp Next operation.
  * @param moveNode DOM Element should be moved.
  * @param singleChild Parent DOM Element contains a single child.
@@ -466,70 +466,70 @@ function _hasDifferentType(
  */
 export function _update(
   parentElement: Element,
-  nodeState: OpState | null,
+  opState: OpState | null,
   nextOp: Op,
   moveNode: boolean,
   singleChild: boolean,
 ): OpState | null {
   if (nextOp === null) {
-    if (nodeState !== null) {
-      _unmount(parentElement, nodeState, singleChild);
+    if (opState !== null) {
+      _unmount(parentElement, opState, singleChild);
     }
     return null;
   }
-  if (nodeState === null) {
+  if (opState === null) {
     return _mount(parentElement, nextOp);
   }
-  const { op, state } = nodeState;
-  let flags = nodeState.flags;
+  const { o, s } = opState;
+  let flags = opState.f;
 
   if ((flags & NodeFlags.Text) !== 0) {
     if (typeof nextOp !== "object") {
       // Reassign to reduce memory consumption even if nextOp is strictly equal to the prev op.
-      nodeState.op = nextOp;
-      if (op !== nextOp) {
-        (state as Node).nodeValue = nextOp as string;
+      opState.o = nextOp;
+      if (o !== nextOp) {
+        (s as Node).nodeValue = nextOp as string;
       }
       if (moveNode === true) {
         /* istanbul ignore else */
         if (DEBUG) {
-          parentElement.insertBefore(state as Node, _nextNode);
+          parentElement.insertBefore(s as Node, _nextNode);
         } else {
-          nodeInsertBefore.call(parentElement, state as Node, _nextNode);
+          nodeInsertBefore.call(parentElement, s as Node, _nextNode);
         }
       }
-      _nextNode = state as Node;
+      _nextNode = s as Node;
     } else {
       /* istanbul ignore else */
       if (DEBUG) {
-        parentElement.removeChild(state as Node);
+        parentElement.removeChild(s as Node);
       } else {
-        nodeRemoveChild.call(parentElement, state as Node);
+        nodeRemoveChild.call(parentElement, s as Node);
       }
       return _mount(parentElement, nextOp);
     }
   } else {
     // Here we don't need to reassign nextOp because op should always be an object, and strict equality will guarantee
     // that this object is occupying the same memory region.
-    if (op === nextOp) {
-      _dirtyCheck(parentElement, nodeState, moveNode, singleChild);
-      return nodeState;
+    if (o === nextOp) {
+      _dirtyCheck(parentElement, opState, moveNode, singleChild);
+      return opState;
     }
-    if (_hasDifferentType(op as OpNode | OpArray, nextOp) === true) {
-      _unmount(parentElement, nodeState, singleChild);
+    if (_hasDifferentType(o as OpNode | OpArray, nextOp) === true) {
+      _unmount(parentElement, opState, singleChild);
       return _mount(parentElement, nextOp);
     }
-    nodeState.op = nextOp;
-    const nodeStateChildren = nodeState.children;
+    opState.o = nextOp;
+    const opStateChildren = opState.c;
     let deepStateFlags;
     let prevData;
     let nextData;
     let nextValue;
 
     if ((flags & NodeFlags.Component) !== 0) {
-      prevData = (op as OpNode).data;
-      nextData = (nextOp as OpNode).data;
-      const descriptor = ((nextOp as OpNode).type.descriptor as StatelessComponentDescriptor | ComponentDescriptor);
+      prevData = (o as OpNode).d;
+      nextData = (nextOp as OpNode).d;
+      const descriptor = ((nextOp as OpNode).t.d as StatelessComponentDescriptor | ComponentDescriptor);
       if (
         ((flags & NodeFlags.Dirty) !== 0) ||
         (
@@ -538,38 +538,38 @@ export function _update(
         )
       ) {
         deepStateFlags = _pushDeepState();
-        nodeState.children = _update(
+        opState.c = _update(
           parentElement,
-          nodeStateChildren as OpState,
+          opStateChildren as OpState,
           ((flags & NodeFlags.Stateful) !== 0) ?
-            (nodeState.state as ComponentHooks).update!(nextData) :
+            (opState.s as ComponentHooks).update!(nextData) :
             (descriptor as StatelessComponentDescriptor).c(nextData),
           moveNode,
           singleChild,
         );
-        // nodeState.flags can be changed after `_update()`.
-        flags = nodeState.flags;
-        nodeState.flags = (flags & NodeFlags.SelfFlags) | _deepStateFlags;
+        // opState.f can be changed after `_update()`.
+        flags = opState.f;
+        opState.f = (flags & NodeFlags.SelfFlags) | _deepStateFlags;
         _deepStateFlags |= deepStateFlags | ((flags & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
       } else {
-        _dirtyCheck(parentElement, nodeState, moveNode, singleChild);
+        _dirtyCheck(parentElement, opState, moveNode, singleChild);
       }
     } else {
       deepStateFlags = _pushDeepState();
       if ((flags & NodeFlags.Element) !== 0) {
-        prevData = (op as OpNode<ElementData>).data;
-        nextData = (nextOp as OpNode<ElementData>).data;
+        prevData = (o as OpNode<ElementData>).d;
+        nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
           /* istanbul ignore else */
           if (DEBUG) {
-            parentElement.insertBefore(state as Node, _nextNode);
+            parentElement.insertBefore(s as Node, _nextNode);
           } else {
-            nodeInsertBefore.call(parentElement, state, _nextNode);
+            nodeInsertBefore.call(parentElement, s, _nextNode);
           }
         }
 
-        nextValue = nextData.className;
-        if (prevData.className !== nextValue) {
+        nextValue = nextData.n;
+        if (prevData.n !== nextValue) {
           if (nextValue === void 0) {
             nextValue = "";
           }
@@ -577,27 +577,27 @@ export function _update(
           if ((flags & NodeFlags.Svg) !== 0) {
             /* istanbul ignore else */
             if (DEBUG) {
-              (state as SVGElement).setAttribute("class", nextValue);
+              (s as SVGElement).setAttribute("class", nextValue);
             } else {
-              elementSetAttribute.call(state, "class", nextValue);
+              elementSetAttribute.call(s, "class", nextValue);
             }
           } else {
-            (state as HTMLElement).className = nextValue;
+            (s as HTMLElement).className = nextValue;
           }
         }
 
-        nextValue = nextData.attrs;
-        if (prevData.attrs !== nextValue) {
-          _updateAttrs(state as Element, prevData.attrs, nextValue);
+        nextValue = nextData.a;
+        if (prevData.a !== nextValue) {
+          _updateAttrs(s as Element, prevData.a, nextValue);
         }
 
-        nextValue = nextData.children;
-        if (prevData.children !== nextValue) {
+        nextValue = nextData.c;
+        if (prevData.c !== nextValue) {
           _nextNode = null;
-          nodeState.children = _update(state as Element, nodeStateChildren as OpState, nextValue, false, true);
+          opState.c = _update(s as Element, opStateChildren as OpState, nextValue, false, true);
         }
 
-        _nextNode = state as Node;
+        _nextNode = s as Node;
       } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((flags & NodeFlags.Fragment) !== 0) {
           let i = (nextOp as OpArray).length;
@@ -605,59 +605,59 @@ export function _update(
           // elements should have a different internal state, so it is better to destroy previous state and instantiate
           // a new one. This heuristics is slightly different from React, but it should be better at handling some
           // use cases.
-          if ((nodeStateChildren as Array<OpState | null>).length === i) {
+          if ((opStateChildren as Array<OpState | null>).length === i) {
             while (--i >= 0) {
-              (nodeStateChildren as Array<OpState | null>)[i] =
+              (opStateChildren as Array<OpState | null>)[i] =
                 _update(
                   parentElement,
-                  (nodeStateChildren as Array<OpState | null>)[i],
+                  (opStateChildren as Array<OpState | null>)[i],
                   (nextOp as OpArray)[i],
                   moveNode,
                   false);
             }
           } else {
-            _unmount(parentElement, nodeState, singleChild);
-            _mountFragment(parentElement, nodeState, nextOp as OpArray);
+            _unmount(parentElement, opState, singleChild);
+            _mountFragment(parentElement, opState, nextOp as OpArray);
           }
         } else {
           _updateChildrenTrackByKeys(
             parentElement,
-            nodeState,
-            (op as OpNode).data,
-            (nextOp as OpNode).data,
+            opState,
+            (o as OpNode).d,
+            (nextOp as OpNode).d,
             moveNode,
             singleChild,
           );
         }
       } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-        nextData = (nextOp as OpNode<EventsData | RefData>).data;
-        nodeState.children = _update(
+        nextData = (nextOp as OpNode<EventsData | RefData>).d;
+        opState.c = _update(
           parentElement,
-          nodeStateChildren as OpState,
-          nextData.children,
+          opStateChildren as OpState,
+          nextData.c,
           moveNode,
           singleChild,
         );
       } else { // if ((stateFlags & NodeFlags.Context) !== 0) {
-        prevData = (op as OpNode<ContextData>).data;
-        nextData = (nextOp as OpNode<ContextData>).data;
+        prevData = (o as OpNode<ContextData>).d;
+        nextData = (nextOp as OpNode<ContextData>).d;
         const dirtyContext = _dirtyContext;
-        nextValue = nextData.data;
-        if (prevData.data !== nextValue || _dirtyContext === true) {
-          nodeState.state = { ...getContext(), ...nextValue };
+        nextValue = nextData.v;
+        if (prevData.v !== nextValue || _dirtyContext === true) {
+          opState.s = { ...getContext(), ...nextValue };
           _dirtyContext = true;
         }
         // reusing variable name, it is actually a previous value in the context stack.
-        nextValue = setContext(nodeState.state as {});
-        _update(parentElement, nodeStateChildren as OpState, nextData.children, moveNode, singleChild);
+        nextValue = setContext(opState.s as {});
+        _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
         restoreContext(nextValue);
         _dirtyContext = dirtyContext;
       }
-      nodeState.flags = _popDeepState(deepStateFlags, nodeState.flags);
+      opState.f = _popDeepState(deepStateFlags, opState.f);
     }
   }
 
-  return nodeState;
+  return opState;
 }
 
 /**
@@ -883,7 +883,7 @@ export function _update(
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
  *
  * @param parentElement Parent DOM element.
- * @param nodeState OpNode state for a TrackByKey operation.
+ * @param opState OpNode state for a TrackByKey operation.
  * @param a Previous operations.
  * @param b Next operations.
  * @param moveNode Children DOM nodes should be moved.
@@ -892,21 +892,21 @@ export function _update(
  */
 function _updateChildrenTrackByKeys(
   parentElement: Element,
-  nodeState: OpState,
+  opState: OpState,
   a: Key<any, OpNode>[],
   b: Key<any, OpNode>[],
   moveNode: boolean,
   singleChild: boolean,
 ): void {
-  const nodeStateChildren = nodeState.children as Array<OpState | null>;
+  const opStateChildren = opState.c as Array<OpState | null>;
   const result = Array(b.length);
   let i = b.length;
 
   if (i === 0) {
-    if (nodeStateChildren.length > 0) {
-      _unmount(parentElement, nodeState, singleChild);
+    if (opStateChildren.length > 0) {
+      _unmount(parentElement, opState, singleChild);
     }
-  } else if (nodeStateChildren.length === 0) {
+  } else if (opStateChildren.length === 0) {
     while (--i >= 0) {
       result[i] = _mount(parentElement, b[i].v);
     }
@@ -925,7 +925,7 @@ function _updateChildrenTrackByKeys(
     outer: while (true) {
       // Sync nodes with the same key at the end.
       while (aEndNode.k === bEndNode.k) {
-        result[bEnd] = _update(parentElement, nodeStateChildren[aEnd--], bEndNode.v, moveNode, false);
+        result[bEnd] = _update(parentElement, opStateChildren[aEnd--], bEndNode.v, moveNode, false);
         if (start > --bEnd || start > aEnd) {
           break outer;
         }
@@ -955,7 +955,7 @@ function _updateChildrenTrackByKeys(
       // All nodes from b are synced, remove the rest from a.
       i = start;
       do {
-        if ((sNode = nodeStateChildren[i++]) !== null) {
+        if ((sNode = opStateChildren[i++]) !== null) {
           _unmount(parentElement, sNode, false);
         }
       } while (i <= aEnd);
@@ -985,22 +985,22 @@ function _updateChildrenTrackByKeys(
           pos = (pos > j) ? 1000000 : j;
           ++updated;
           sources[j - start] = i;
-          result[j] = nodeStateChildren[i];
+          result[j] = opStateChildren[i];
           // remove updated nodes from previous array, so that we could remove the rest from the document.
-          nodeStateChildren[i] = null;
+          opStateChildren[i] = null;
         }
       }
 
       if (aLength === a.length && updated === 0) {
         // Noone is synced.
-        _unmount(parentElement, nodeState, singleChild);
+        _unmount(parentElement, opState, singleChild);
         while (bEnd >= 0) {
           result[bEnd] = _mount(parentElement, b[bEnd--].v);
         }
       } else {
         // Step 3
         for (i = start; i <= aEnd; i++) {
-          if ((sNode = nodeStateChildren[i]) !== null) {
+          if ((sNode = opStateChildren[i]) !== null) {
             _unmount(parentElement, sNode, false);
           }
         }
@@ -1040,10 +1040,10 @@ function _updateChildrenTrackByKeys(
 
     // update nodes from Step 1 (prefix only)
     while (--start >= 0) {
-      result[start] = _update(parentElement, nodeStateChildren[start], b[start].v, moveNode, false);
+      result[start] = _update(parentElement, opStateChildren[start], b[start].v, moveNode, false);
     }
   }
-  nodeState.children = result;
+  opState.c = result;
 }
 
 /**

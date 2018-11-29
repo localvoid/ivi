@@ -9,19 +9,19 @@ export interface OpState {
   /**
    * Operation.
    */
-  op: Op;
+  o: Op;
   /**
    * See {@link NodeFlags} for details.
    */
-  flags: NodeFlags;
+  f: NodeFlags;
   /**
    * State for children operations.
    */
-  children: OpState | Array<OpState | null> | null;
+  c: OpState | Array<OpState | null> | null;
   /**
    * Current state.
    */
-  state: Node | ComponentHooks | {} | null;
+  s: Node | ComponentHooks | {} | null;
 }
 
 /**
@@ -30,6 +30,6 @@ export interface OpState {
  * @param op Operation.
  * @returns {@link StateNode} instance.
  */
-export const createStateNode = (op: Op): OpState => (
-  { op, flags: 0, children: null, state: null }
+export const createStateNode = (o: Op): OpState => (
+  { o, f: 0, c: null, s: null }
 );

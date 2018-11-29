@@ -71,17 +71,17 @@ export function emitElementStyle(style: { [key: string]: any }): string {
  * @returns Open tag in a string format
  */
 export function emitElementOpen(op: OpNode<ElementData>): string {
-  const data = op.data;
-  let result = `<${op.type.descriptor}`;
+  const data = op.d;
+  let result = `<${op.t.d}`;
   let value;
 
-  value = data.className;
+  value = data.n;
   if (value !== void 0 && value !== "") {
     result += ` class="${value}"`;
   }
-  value = data.attrs;
-  if ((op.type.flags & NodeFlags.ElementProto) !== 0) {
-    value = { ...(op.type.descriptor as ElementProtoDescriptor).proto.data.attrs, ...value };
+  value = data.a;
+  if ((op.t.f & NodeFlags.ElementProto) !== 0) {
+    value = { ...(op.t.d as ElementProtoDescriptor).proto.d.attrs, ...value };
   }
   if (value !== void 0) {
     result += emitElementAttrs(value);
@@ -92,7 +92,7 @@ export function emitElementOpen(op: OpNode<ElementData>): string {
 }
 
 export function emitElementClose(op: OpNode<ElementData>): string {
-  return `</${op.type.descriptor}>`;
+  return `</${op.t.d}>`;
 }
 
 function renderText(text: string | number): string {
@@ -111,34 +111,34 @@ function renderFragment(children: OpArray): string {
 }
 
 function renderObject(op: OpNode): string {
-  const flags = op.type.flags;
+  const flags = op.t.f;
   let result;
   if ((flags & NodeFlags.Element) !== 0) {
-    return emitElementOpen(op) + renderToString(op.data.children) + emitElementClose(op);
+    return emitElementOpen(op) + renderToString((op as OpNode<ElementData>).d.c) + emitElementClose(op);
   }
   if ((flags & NodeFlags.Component) !== 0) {
     if ((flags & NodeFlags.Stateful) !== 0) {
       const stateNode = createStateNode(op);
-      stateNode.state = { update: null, dirtyCheck: null, unmount: null };
-      return renderToString((op.type.descriptor as ComponentDescriptor).c(stateNode)(op.data));
+      stateNode.s = { update: null, dirtyCheck: null, unmount: null };
+      return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.d));
     } else {
-      return renderToString((op.type.descriptor as StatelessComponentDescriptor).c(op.data));
+      return renderToString((op.t.d as StatelessComponentDescriptor).c(op.d));
     }
   }
   if ((flags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
     if ((flags & NodeFlags.Context) !== 0) {
-      const contextData = (op.data as ContextData);
-      const prevContext = setContext(contextData.data);
-      result = renderToString(contextData.children);
+      const contextData = (op.d as ContextData);
+      const prevContext = setContext(contextData.v);
+      result = renderToString(contextData.c);
       restoreContext(prevContext);
       return result;
     } else {
-      return renderToString(op.data.children);
+      return renderToString(op.d.children);
     }
   }
 
   result = "";
-  const children = (op.data as Key<any, Op>[]);
+  const children = (op.d as Key<any, Op>[]);
   for (let i = 0; i < children.length; ++i) {
     result += renderToString(children[i].v);
   }

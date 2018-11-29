@@ -6,19 +6,19 @@ const divProto = elementProto(div);
 
 describe("Element proto", () => {
   test(`flags`, () => {
-    expect(divProto().type.flags & ~NodeFlags.ElementProto).toBe(h.div().type.flags);
+    expect(divProto().t.f & ~NodeFlags.ElementProto).toBe(h.div().t.f);
   });
 
   test(`prototype`, () => {
-    expect((divProto().type.descriptor as ElementProtoDescriptor).proto).toBe(div);
+    expect((divProto().t.d as ElementProtoDescriptor).proto).toBe(div);
   });
 
   test(`default className = undefined`, () => {
-    expect(divProto().data.className).toBeUndefined();
+    expect(divProto().d.n).toBeUndefined();
   });
 
   test(`className = "a"`, () => {
-    expect(divProto("a").data.className).toBe("a");
+    expect(divProto("a").d.n).toBe("a");
   });
 
   test(`should throw an error when element proto has children`, () => {

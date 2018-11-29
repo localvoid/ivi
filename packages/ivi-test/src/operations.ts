@@ -19,11 +19,11 @@ export function visitOpNodes(
         }
       }
     } else {
-      const flags = op.type.flags;
+      const flags = op.t.f;
       if ((flags & NodeFlags.Element) !== 0) {
-        return visitOpNodes(op.data.children, op, void 0, context, visitor);
+        return visitOpNodes(op.d.children, op, void 0, context, visitor);
       } else if ((flags & NodeFlags.TrackByKey) !== 0) {
-        const children = (op as OpNode<Key<any, Op>[]>).data;
+        const children = (op as OpNode<Key<any, Op>[]>).d;
         for (let i = 0; i < children.length; i++) {
           const k = children[i];
           if (visitOpNodes(k.v, op, k.k, context, visitor)) {
@@ -31,9 +31,9 @@ export function visitOpNodes(
           }
         }
       } else if ((flags & NodeFlags.Context) !== 0) {
-        return visitOpNodes(op.data.children, op, void 0, { ...context, ...op.data.data }, visitor);
+        return visitOpNodes(op.d.children, op, void 0, { ...context, ...op.d.data }, visitor);
       } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-        return visitOpNodes(op.data.children, op, void 0, context, visitor);
+        return visitOpNodes(op.d.children, op, void 0, context, visitor);
       }
     }
   }
@@ -54,13 +54,13 @@ export function isOpFragment(op: Op): op is OpArray {
 }
 
 export function isOpElement(op: Op): op is OpNode<ElementData> {
-  return isOpObject(op) && !isOpFragment(op) && (op.type.flags & NodeFlags.Element) !== 0;
+  return isOpObject(op) && !isOpFragment(op) && (op.t.f & NodeFlags.Element) !== 0;
 }
 
 export function isOpComponent<T = any>(op: Op): op is OpNode<T> {
-  return isOpObject(op) && !isOpFragment(op) && (op.type.flags & NodeFlags.Component) !== 0;
+  return isOpObject(op) && !isOpFragment(op) && (op.t.f & NodeFlags.Component) !== 0;
 }
 
 export function isOpContext(op: Op): op is OpNode<ContextData> {
-  return isOpObject(op) && !isOpFragment(op) && (op.type.flags & NodeFlags.Component) !== 0;
+  return isOpObject(op) && !isOpFragment(op) && (op.t.f & NodeFlags.Component) !== 0;
 }

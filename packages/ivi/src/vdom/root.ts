@@ -1,7 +1,7 @@
 import { NOOP, unorderedArrayDelete } from "ivi-shared";
 import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { checkNestingViolations } from "../debug/html_nesting_rules";
-import { OpNode } from "./operations";
+import { Op } from "./operations";
 import { OpState } from "./state";
 import { _mount, _update, _unmount, _dirtyCheck, _resetState } from "./reconciler";
 
@@ -16,7 +16,7 @@ export interface Root {
   /**
    * Next virtual DOM node.
    */
-  next: OpNode | string | number | null | undefined;
+  next: Op | undefined;
   /**
    * Current virtual DOM node.
    */

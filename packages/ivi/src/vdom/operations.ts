@@ -12,24 +12,24 @@ export interface OpType {
   /**
    * See {@link NodeFlags} for details.
    */
-  readonly flags: NodeFlags;
+  readonly f: NodeFlags;
   /**
    * Operation type descriptor.
    */
-  readonly descriptor: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | string | null;
+  readonly d: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | string | null;
 }
 
 /**
  * createOpType creates {@link OpType} instances.
  *
- * @param flags See {@link NodeFlags} for details.
- * @param descriptor Operation type descriptor.
+ * @param f See {@link NodeFlags} for details.
+ * @param d Operation type descriptor.
  * @returns {@link OpType} instance.
  */
 export const createOpType = (
-  flags: NodeFlags,
-  descriptor: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | string | null,
-): OpType => ({ flags, descriptor });
+  f: NodeFlags,
+  d: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | string | null,
+): OpType => ({ f, d });
 
 /**
  * OpType for Events nodes.
@@ -58,21 +58,21 @@ export interface OpNode<T = any> {
   /**
    * Operation type.
    */
-  readonly type: OpType;
+  readonly t: OpType;
   /**
    * Operation data.
    */
-  readonly data: T;
+  readonly d: T;
 }
 
 /**
  * createOpNode creates an {@link OpNode} instance.
  *
- * @param type Operation type.
- * @param data Operation data.
+ * @param t Operation type.
+ * @param d Operation data.
  * @returns {@link OpNode} instance.
  */
-export const createOpNode = <T>(type: OpType, data: T): OpNode<T> => ({ type, data });
+export const createOpNode = <T>(t: OpType, d: T): OpNode<T> => ({ t, d });
 
 /**
  * Operation data for element operations.
@@ -81,15 +81,15 @@ export interface ElementData<T = any> {
   /**
    * Element class name.
    */
-  readonly className: string | undefined;
+  readonly n: string | undefined;
   /**
    * Element attributes.
    */
-  readonly attrs: T | undefined;
+  readonly a: T | undefined;
   /**
    * Children operations.
    */
-  readonly children: Op;
+  readonly c: Op;
 }
 
 /**
@@ -107,13 +107,13 @@ export interface OpArray extends Array<Op> { }
  */
 export interface OpData<T = any> {
   /**
-   * Generic data.
+   * Generic value.
    */
-  readonly data: T;
+  readonly v: T;
   /**
    * Children operation nodes.
    */
-  readonly children: Op;
+  readonly c: Op;
 }
 
 /**
@@ -143,14 +143,14 @@ export type ContextData = OpData<{}>;
  *       DOMContainer,
  *     );
  *
- * @param data Event handlers.
- * @param children Children operation nodes.
- * @returns Event handler OpNode.
+ * @param v Event handlers.
+ * @param c Children operation nodes.
+ * @returns Events handler operation.
  */
 export const Events = (
-  data: EventHandler | Array<EventHandler | null> | null,
-  children: Op,
-): OpNode<EventsData> => createOpNode(EVENTS, { data, children });
+  v: EventHandler | Array<EventHandler | null> | null,
+  c: Op,
+): OpNode<EventsData> => createOpNode(EVENTS, { v, c });
 
 /**
  * Operation factory for ref nodes.
@@ -168,14 +168,14 @@ export const Events = (
  *
  *     findDOMNode(_ref);
  *
- * @param data Boxed value.
- * @param children Children operation nodes.
- * @returns Ref OpNode.
+ * @param v Boxed value.
+ * @param c Children operation nodes.
+ * @returns Ref operation.
  */
 export const Ref = (
-  data: Box<OpState | null>,
-  children: Op,
-): OpNode<RefData> => createOpNode(REF, { data, children });
+  v: Box<OpState | null>,
+  c: Op,
+): OpNode<RefData> => createOpNode(REF, { v, c });
 
 /**
  * Operation factory for context nodes.
@@ -189,14 +189,14 @@ export const Ref = (
  *       DOMContainer,
  *     );
  *
- * @param data Context object.
- * @param children Children operation nodes.
- * @returns Context OpNode.
+ * @param v Context object.
+ * @param c Children operation nodes.
+ * @returns Context operation.
  */
 export const Context = (
-  data: {},
-  children: Op,
-): OpNode<ContextData> => createOpNode(CONTEXT, { data, children });
+  v: {},
+  c: Op,
+): OpNode<ContextData> => createOpNode(CONTEXT, { v, c });
 
 /**
  * Key is an object that is used by TrackByKey operations to track operations.
@@ -233,7 +233,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  *     );
  *
  * @param items Keyed operations.
- * @returns Track by key OpNode.
+ * @returns Track by key operation.
  */
 export const TrackByKey = DEBUG ?
   <T>(items: Key<T, Op>[]) => {

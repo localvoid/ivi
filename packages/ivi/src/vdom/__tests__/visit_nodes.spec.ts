@@ -14,7 +14,7 @@ test(`should visit element node`, () => {
     );
 
     visitNodes(_ref.v!, NodeFlags.Element, (node) => {
-      expect(node.state).toBe(n);
+      expect(node.s).toBe(n);
     });
   });
 });

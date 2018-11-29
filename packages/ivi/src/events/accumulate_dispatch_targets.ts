@@ -51,25 +51,25 @@ function visitDown(
   if (stateNode === null) {
     return null;
   }
-  const { flags, children } = stateNode;
+  const { f, c } = stateNode;
   let r;
-  if ((flags & NodeFlags.Element) !== 0) {
-    if (stateNode.state === element) {
+  if ((f & NodeFlags.Element) !== 0) {
+    if (stateNode.s === element) {
       return stateNode;
     }
-    if (children !== null) {
-      return visitDown(result, match, element, children as OpState);
+    if (c !== null) {
+      return visitDown(result, match, element, c as OpState);
     }
-  } else if ((flags & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
-    if ((r = visitDown(result, match, element, stateNode.children as OpState)) !== null) {
-      if ((flags & NodeFlags.Events) !== 0) {
+  } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
+    if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
+      if ((f & NodeFlags.Events) !== 0) {
         accumulateDispatchTargetsFromEventsOpNode(result, stateNode, match);
       }
       return r;
     }
-  } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-    for (let i = 0; i < (children as OpState[]).length; i++) {
-      if ((r = visitDown(result, match, element, (children as OpState[])[i])) !== null) {
+  } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+    for (let i = 0; i < (c as OpState[]).length; i++) {
+      if ((r = visitDown(result, match, element, (c as OpState[])[i])) !== null) {
         return r;
       }
     }
@@ -91,7 +91,7 @@ function accumulateDispatchTargetsFromEventsOpNode(
   target: OpState,
   match: (h: EventHandler) => boolean,
 ): void {
-  const events = (target.op as OpNode<OpData>).data.data;
+  const events = (target.o as OpNode<OpData>).d.v;
   if (events !== null) {
     let handlers: EventHandler[] | EventHandler | undefined;
     if (events instanceof Array) {

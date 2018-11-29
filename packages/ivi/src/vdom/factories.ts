@@ -9,11 +9,11 @@ function element<T, U>(tag: string, svg: boolean) {
     tag,
   );
   return (
-    className?: string,
-    attrs?: {},
-    children: Op = null,
+    n?: string,
+    a?: {},
+    c: Op = null,
   ) => (
-      createOpNode<ElementData>(type, { className, attrs, children })
+      createOpNode<ElementData>(type, { n, a, c })
     );
 }
 
@@ -59,16 +59,16 @@ export const svgElement: <T, U>(tag: string) => (
 export function elementProto<P>(proto: OpNode<ElementData<P>>) {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (proto.data.children !== null) {
+    if (proto.d.c !== null) {
       throw new Error(`Invalid OpNode, element prototypes can't have any children`);
     }
   }
-  const type = createOpType(proto.type.flags | NodeFlags.ElementProto, { node: null, proto });
+  const type = createOpType(proto.t.f | NodeFlags.ElementProto, { node: null, proto });
   return (
-    className?: string,
-    attrs?: {},
-    children: Op = null,
-  ) => createOpNode<ElementData>(type, { className, attrs, children });
+    n?: string,
+    a?: {},
+    c: Op = null,
+  ) => createOpNode<ElementData>(type, { n, a, c });
 }
 
 /**

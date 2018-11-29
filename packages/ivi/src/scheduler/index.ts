@@ -292,7 +292,7 @@ export function requestDirtyCheck(flags?: UpdateFlags) {
  * @param flags - See {@link UpdateFlags} for details.
  */
 export function invalidate(c: OpState, flags?: UpdateFlags): void {
-  c.flags |= NodeFlags.Dirty;
+  c.f |= NodeFlags.Dirty;
   requestDirtyCheck(flags);
 }
 
