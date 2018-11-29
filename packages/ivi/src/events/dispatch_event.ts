@@ -59,9 +59,9 @@ function dispatchEventToLocalEventHandlers(
   matchFlags: EventHandlerFlags,
   dispatch: ((h: EventHandler, ev: SyntheticEvent) => EventFlags | void) | undefined,
 ): void {
-  const handlers = target.handlers;
+  const handlers = target.h;
   let flags: EventFlags = 0;
-  event.node = target.target as OpState;
+  event.node = target.t as OpState;
   if (handlers instanceof Array) {
     for (let i = 0; i < handlers.length; ++i) {
       const handler = handlers[i];

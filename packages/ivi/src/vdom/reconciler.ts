@@ -109,13 +109,13 @@ export function _dirtyCheck(
     if (
       ((f & NodeFlags.Stateful) !== 0) && (
         ((f & NodeFlags.Dirty) !== 0) ||
-        (hooks.dirtyCheck !== null && hooks.dirtyCheck(getContext()) === true)
+        (hooks.s !== null && hooks.s(getContext()) === true)
       )
     ) {
       opState.c = _update(
         parentElement,
         c as OpState,
-        hooks.update!((opState.o as OpNode).d),
+        hooks.r!((opState.o as OpNode).d),
         moveNode,
         singleChild,
       );
@@ -221,7 +221,7 @@ function _unmountWalk(opState: OpState): void {
   }
 
   if ((flags & NodeFlags.Unmount) !== 0) {
-    v = (opState.s as ComponentHooks).unmount;
+    v = (opState.s as ComponentHooks).u;
     if (v !== null) {
       if (typeof v === "function") {
         v();
@@ -334,9 +334,9 @@ function _mountObject(
   if ((flags & NodeFlags.Component) !== 0) {
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Stateful) !== 0) {
-      const hooks: ComponentHooks = opState.s = { update: null, dirtyCheck: null, unmount: null };
+      const hooks: ComponentHooks = opState.s = { r: null, s: null, u: null };
       // Reusing value variable.
-      value = hooks.update = (op.t.d as ComponentDescriptor).c(opState);
+      value = hooks.r = (op.t.d as ComponentDescriptor).c(opState);
     } else {
       value = (op.t.d as StatelessComponentDescriptor).c;
     }
@@ -542,7 +542,7 @@ export function _update(
           parentElement,
           opStateChildren as OpState,
           ((flags & NodeFlags.Stateful) !== 0) ?
-            (opState.s as ComponentHooks).update!(nextData) :
+            (opState.s as ComponentHooks).r!(nextData) :
             (descriptor as StatelessComponentDescriptor).c(nextData),
           moveNode,
           singleChild,

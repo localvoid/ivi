@@ -7,9 +7,9 @@ export interface DispatchTarget {
   /**
    * Target.
    */
-  target: any;
+  t: any;
   /**
    * Matched Event Handlers.
    */
-  handlers: EventHandler | EventHandler[];
+  h: EventHandler | EventHandler[];
 }

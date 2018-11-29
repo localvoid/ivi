@@ -106,12 +106,12 @@ export function useSelect<T, P, C extends {}>(
   selector: (props: P, context: C, prev: T | undefined) => T,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
-  const prevSelector = (stateNode.s as ComponentHooks).dirtyCheck;
+  const prevSelector = (stateNode.s as ComponentHooks).s;
   let lastChecked = 0;
   let state: T | undefined;
   let props: P;
 
-  (stateNode.s as ComponentHooks).dirtyCheck = (context: {}) => {
+  (stateNode.s as ComponentHooks).s = (context: {}) => {
     if (prevSelector !== null && prevSelector(context) === true) {
       return true;
     }
@@ -160,7 +160,7 @@ export function useSelect<T, P, C extends {}>(
 export function useDetached(stateNode: OpState, hook: () => void): void {
   stateNode.f |= NodeFlags.Unmount;
   const hooks = stateNode.s as ComponentHooks;
-  hooks.unmount = addHook(hooks.unmount, hook);
+  hooks.u = addHook(hooks.u, hook);
 }
 
 function withEffect<P>(fn: (effect: () => void) => void): (

@@ -14,25 +14,13 @@ import { SyntheticNativeEvent, createNativeEvent } from "./synthetic_native_even
  */
 export interface NativeEventDispatcher<E extends Event> {
   /**
-   * See `NativeEventSourceFlags` for details.
+   * Hooks that will be executed after dispatching an event.
    */
-  flags: NativeEventSourceFlags;
-  /**
-   * Event handler options.
-   */
-  readonly options: { capture?: boolean, passive?: boolean } | boolean;
+  a: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
   /**
    * Hooks that will be executed before dispatching an event.
    */
-  before: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
-  /**
-   * Hooks that will be executed after dispatching an event.
-   */
-  after: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
-  /**
-   * Event dispatcher.
-   */
-  dispatch: ((ev: E) => void) | null;
+  b: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
 }
 
 /**
@@ -46,16 +34,9 @@ export interface NativeEventDispatcher<E extends Event> {
 export function createNativeEventDispatcher<E extends Event>(
   flags: NativeEventSourceFlags,
   name: string,
-  options?: { capture?: boolean, passive?: boolean } | boolean,
+  options: { capture?: boolean, passive?: boolean } | boolean = true,
 ): NativeEventDispatcher<E> {
-  const source: NativeEventDispatcher<E> = {
-    flags,
-    options: options === void 0 ? true : options,
-    before: null,
-    after: null,
-    dispatch: null,
-  };
-
+  const source: NativeEventDispatcher<E> = { a: null, b: null };
   const matchEventSource = (h: EventHandler) => h.d.src === source;
 
   document.addEventListener(name, withSchedulerTick((ev: Event): void => {
@@ -64,20 +45,20 @@ export function createNativeEventDispatcher<E extends Event>(
 
     accumulateDispatchTargets(targets, target, matchEventSource);
 
-    if (targets.length || source.before || source.after) {
+    if (targets.length || source.b || source.a) {
       const syntheticEvent = createNativeEvent(0, ev.timeStamp, null, ev as E);
 
-      dispatchToListeners(source.before, syntheticEvent);
+      dispatchToListeners(source.b, syntheticEvent);
       if (targets.length) {
-        dispatchEvent(targets, syntheticEvent, (source.flags & NativeEventSourceFlags.Bubbles) !== 0);
+        dispatchEvent(targets, syntheticEvent, (flags & NativeEventSourceFlags.Bubbles) !== 0);
       }
-      dispatchToListeners(source.after, syntheticEvent);
+      dispatchToListeners(source.a, syntheticEvent);
 
       if (syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) {
         ev.preventDefault();
       }
     }
-  }), source.options);
+  }), options);
 
   return source;
 }
@@ -92,7 +73,7 @@ export function beforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  source.before = append(source.before, cb);
+  source.b = append(source.b, cb);
 }
 
 /**
@@ -105,7 +86,7 @@ export function afterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
-  source.after = append(source.after, cb);
+  source.a = append(source.a, cb);
 }
 
 /**
@@ -120,11 +101,11 @@ export function removeBeforeNativeEvent<E extends Event>(
 ): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (source.before === null) {
+    if (source.b === null) {
       throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
     }
   }
-  unorderedArrayDelete(source.before!, cb);
+  unorderedArrayDelete(source.b!, cb);
 }
 
 /**
@@ -139,11 +120,11 @@ export function removeAfterNativeEvent<E extends Event>(
 ): void {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (source.after === null) {
+    if (source.a === null) {
       throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");
     }
   }
-  unorderedArrayDelete(source.after!, cb);
+  unorderedArrayDelete(source.a!, cb);
 }
 
 function dispatchToListeners<E extends Event>(

@@ -6,17 +6,17 @@ import { OpState } from "./state";
  */
 export interface ComponentHooks<T = any> {
   /**
-   * Update function.
+   * Render function.
    */
-  update: null | ((props: T) => Op);
+  r: null | ((props: T) => Op);
   /**
    * Selector hooks.
    */
-  dirtyCheck: null | ((context: {}) => boolean);
+  s: null | ((context: {}) => boolean);
   /**
-   * Detached hooks.
+   * Unmount hooks.
    */
-  unmount: null | ((detached?: boolean) => void) | ((detached?: boolean) => void)[];
+  u: null | ((detached?: boolean) => void) | ((detached?: boolean) => void)[];
 }
 
 /**

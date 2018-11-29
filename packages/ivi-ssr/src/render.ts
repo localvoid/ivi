@@ -126,7 +126,7 @@ function renderObject(op: OpNode): string {
   if ((flags & NodeFlags.Component) !== 0) {
     if ((flags & NodeFlags.Stateful) !== 0) {
       const stateNode = createStateNode(op);
-      stateNode.s = { update: null, dirtyCheck: null, unmount: null };
+      stateNode.s = { r: null, s: null, u: null };
       return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.d));
     } else {
       return renderToString((op.t.d as StatelessComponentDescriptor).c(op.d));

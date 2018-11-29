@@ -83,37 +83,37 @@ function visitDown(
  * Virtual DOM Element.
  *
  * @param result Accumulated Dispatch Targets.
- * @param target Target Virtual DOM Element.
+ * @param t Target Virtual DOM Element.
  * @param match Matching function.
  */
 function accumulateDispatchTargetsFromEventsOpNode(
   result: DispatchTarget[],
-  target: OpState,
+  t: OpState,
   match: (h: EventHandler) => boolean,
 ): void {
-  const events = (target.o as OpNode<OpData>).d.v;
+  const events = (t.o as OpNode<OpData>).d.v;
   if (events !== null) {
-    let handlers: EventHandler[] | EventHandler | undefined;
+    let h: EventHandler[] | EventHandler | undefined;
     if (events instanceof Array) {
       let count = 0;
       for (let i = 0; i < events.length; i++) {
-        const h = events[i];
-        if (h !== null && match(h) === true) {
+        const ev = events[i];
+        if (ev !== null && match(ev) === true) {
           if (count === 0) {
-            handlers = h;
+            h = ev;
           } else if (count === 1) {
-            handlers = [handlers as EventHandler, h];
+            h = [h as EventHandler, ev];
           } else {
-            (handlers as EventHandler[]).push(h);
+            (h as EventHandler[]).push(ev);
           }
           ++count;
         }
       }
     } else if (match(events) === true) {
-      handlers = events;
+      h = events;
     }
-    if (handlers !== void 0) {
-      result.push({ target, handlers });
+    if (h !== void 0) {
+      result.push({ t, h });
     }
   }
 }

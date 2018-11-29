@@ -30,11 +30,11 @@ test("empty dispatch target array should not invoke custom dispatch function", (
 test("dispatch onClick", () => {
   let invoked = 0;
 
-  const target = {};
-  const handlers = onClick(() => { invoked++; });
+  const t = {};
+  const h = onClick(() => { invoked++; });
 
   dispatchEvent(
-    [{ target, handlers }],
+    [{ t, h }],
     createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
     true,
   );
@@ -45,11 +45,11 @@ test("dispatch onClick", () => {
 test("dispatch to adjacent onClick handlers", () => {
   let invoked = 0;
 
-  const target = {};
+  const t = {};
   const h = onClick(() => { invoked++; });
 
   dispatchEvent(
-    [{ target, handlers: [h, h] }],
+    [{ t, h: [h, h] }],
     createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
     true,
   );
@@ -60,11 +60,11 @@ test("dispatch to adjacent onClick handlers", () => {
 test("dispatch to several onClick handlers", () => {
   let invoked = 0;
 
-  const target = {};
+  const t = {};
   const h = onClick(() => { invoked++; });
 
   dispatchEvent(
-    [{ target, handlers: h }, { target, handlers: h }],
+    [{ t, h: h }, { t, h: h }],
     createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
     true,
   );
@@ -76,12 +76,12 @@ describe("event flow", () => {
   test("adjacent handlers should be invoked from left to right", () => {
     const order: number[] = [];
 
-    const target = {};
+    const t = {};
     const h1 = onClick(() => { order.push(1); });
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
-      [{ target, handlers: [h1, h2] }],
+      [{ t, h: [h1, h2] }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -96,7 +96,7 @@ describe("event flow", () => {
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
-      [{ target: {}, handlers: h1 }, { target: {}, handlers: h2 }],
+      [{ t: {}, h: h1 }, { t: {}, h: h2 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -111,7 +111,7 @@ describe("event flow", () => {
     const h2 = onClick(() => { order.push(2); }, true);
 
     dispatchEvent(
-      [{ target: {}, handlers: h1 }, { target: {}, handlers: h2 }],
+      [{ t: {}, h: h1 }, { t: {}, h: h2 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -126,7 +126,7 @@ describe("event flow", () => {
     const h2 = onClick(() => { order.push(2); }, true);
 
     dispatchEvent(
-      [{ target: {}, handlers: h1 }, { target: {}, handlers: h2 }],
+      [{ t: {}, h: h1 }, { t: {}, h: h2 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -143,7 +143,7 @@ describe("event flow", () => {
     const h2 = onClick(() => { order.push(2); });
 
     dispatchEvent(
-      [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
+      [{ t: t1, h: h1 }, { t: t2, h: h2 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -160,7 +160,7 @@ describe("event flow", () => {
     const h2 = onClick(() => (order.push(2), EventFlags.StopPropagation), true);
 
     dispatchEvent(
-      [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
+      [{ t: t1, h: h1 }, { t: t2, h: h2 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -177,7 +177,7 @@ describe("event flow", () => {
     const h2 = onClick(() => (order.push(2), EventFlags.StopPropagation), true);
 
     dispatchEvent(
-      [{ target: t1, handlers: h1 }, { target: t2, handlers: h2 }],
+      [{ t: t1, h: h1 }, { t: t2, h: h2 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
@@ -192,7 +192,7 @@ test(`returning invalid EventFlags should raise an exception`, () => {
 
   expect(() => {
     dispatchEvent(
-      [{ target: t1, handlers: h1 }],
+      [{ t: t1, h: h1 }],
       createNativeEvent<MouseEvent>(0, 0, null, new MouseEvent("click")),
       true,
     );
