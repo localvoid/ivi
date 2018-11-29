@@ -80,7 +80,7 @@ export { htmlElement, svgElement, elementProto, component, statelessComponent } 
 export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { selector, findDOMNode } from "./vdom/utils";
-export { getDOMNode } from "./vdom/reconciler";
+export { visitNodes, getDOMNode } from "./vdom/reconciler";
 
 // Scheduler
 export {

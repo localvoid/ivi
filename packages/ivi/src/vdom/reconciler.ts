@@ -35,6 +35,36 @@ function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
   return r;
 }
 
+export function visitNodes(
+  current: OpNodeState,
+  filter: NodeFlags,
+  visitor: (node: OpNodeState) => void | boolean,
+): boolean {
+  const flags = current.flags;
+  if ((flags & filter) === filter) {
+    if (visitor(current) === true) {
+      return true;
+    }
+  }
+
+  const children = current.children;
+  if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+    for (let i = 0; i < (children as Array<OpNodeState | null>).length; i++) {
+      const c = (children as Array<OpNodeState | null>)[i];
+      if (c !== null) {
+        if (visitNodes(c, filter, visitor) === true) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  if (children !== null) {
+    return visitNodes(children as OpNodeState, filter, visitor);
+  }
+  return false;
+}
+
 /**
  * getDOMNode retrieves closest DOM node from the {@link OpNodeState} instance.
  *
@@ -173,15 +203,15 @@ function _moveNodes(parentElement: Element, stateNode: OpNodeState) {
 function _unmountWalk(stateNode: OpNodeState): void {
   const flags = stateNode.flags;
   let i;
+  let v;
 
   if ((flags & NodeFlags.DeepStateUnmount) !== 0) {
     const children = stateNode.children;
     if (children !== null) {
       if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         for (i = 0; i < (children as Array<OpNodeState | null>).length; i++) {
-          const c = (children as Array<OpNodeState | null>)[i];
-          if (c !== null) {
-            _unmountWalk(c);
+          if ((v = (children as Array<OpNodeState | null>)[i]) !== null) {
+            _unmountWalk(v);
           }
         }
       } else {
@@ -191,14 +221,13 @@ function _unmountWalk(stateNode: OpNodeState): void {
   }
 
   if ((flags & NodeFlags.Unmount) !== 0) {
-    const hooks = (stateNode.state as ComponentHooks);
-    const unmountHooks = hooks.unmount;
-    if (unmountHooks !== null) {
-      if (typeof unmountHooks === "function") {
-        unmountHooks();
+    v = (stateNode.state as ComponentHooks).unmount;
+    if (v !== null) {
+      if (typeof v === "function") {
+        v();
       } else {
-        for (i = 0; i < unmountHooks.length; i++) {
-          unmountHooks[i](true);
+        for (i = 0; i < v.length; i++) {
+          v[i](true);
         }
       }
     }
@@ -363,7 +392,7 @@ function _mountObject(
         }
         stateNode.children = _mount(parentElement, (data as OpData<ContextData>).children);
       }
-    } else { // ((opFlags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0)
+    } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
       let i = (data as Key<any, OpNode>[]).length;
       stateNode.children = value = Array(i);
       while (--i >= 0) {
