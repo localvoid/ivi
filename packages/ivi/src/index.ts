@@ -75,7 +75,7 @@ export {
   createOpType, createOpNode,
   Events, Ref, Context, TrackByKey, key
 } from "./vdom/operations";
-export { OpNodeState, createStateNode } from "./vdom/state";
+export { OpState, createStateNode } from "./vdom/state";
 export { htmlElement, svgElement, elementProto, component, statelessComponent } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useDetached, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";

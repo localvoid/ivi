@@ -1,5 +1,5 @@
 import { Op } from "./operations";
-import { OpNodeState } from "./state";
+import { OpState } from "./state";
 
 /**
  * Component state.
@@ -29,7 +29,7 @@ export interface ComponentDescriptor<P = any> {
    * @param state Component state.
    * @returns update function.
    */
-  c(state: OpNodeState): (props: P) => Op;
+  c(state: OpState): (props: P) => Op;
 
   /**
    * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.

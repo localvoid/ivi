@@ -1,7 +1,7 @@
 import { DispatchTarget } from "./dispatch_target";
 import { EventHandler } from "./event_handler";
 import { NodeFlags } from "../vdom/node_flags";
-import { OpNodeState } from "../vdom/state";
+import { OpState } from "../vdom/state";
 import { ROOTS } from "../vdom/root";
 import { OpNode, OpData } from "../vdom/operations";
 
@@ -34,8 +34,8 @@ function visitUp(
   match: (h: EventHandler) => boolean,
   element: Element,
   root: Element,
-  stateNode: OpNodeState | null,
-): OpNodeState | null {
+  stateNode: OpState | null,
+): OpState | null {
   const parentElement = element.parentNode! as Element;
   return (parentElement === root || (stateNode = visitUp(result, match, parentElement, root, stateNode)) !== null) ?
     visitDown(result, match, element, stateNode!) :
@@ -46,8 +46,8 @@ function visitDown(
   result: DispatchTarget[],
   match: (h: EventHandler) => boolean,
   element: Element,
-  stateNode: OpNodeState | null,
-): OpNodeState | null {
+  stateNode: OpState | null,
+): OpState | null {
   if (stateNode === null) {
     return null;
   }
@@ -58,18 +58,18 @@ function visitDown(
       return stateNode;
     }
     if (children !== null) {
-      return visitDown(result, match, element, children as OpNodeState);
+      return visitDown(result, match, element, children as OpState);
     }
   } else if ((flags & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
-    if ((r = visitDown(result, match, element, stateNode.children as OpNodeState)) !== null) {
+    if ((r = visitDown(result, match, element, stateNode.children as OpState)) !== null) {
       if ((flags & NodeFlags.Events) !== 0) {
         accumulateDispatchTargetsFromEventsOpNode(result, stateNode, match);
       }
       return r;
     }
   } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-    for (let i = 0; i < (children as OpNodeState[]).length; i++) {
-      if ((r = visitDown(result, match, element, (children as OpNodeState[])[i])) !== null) {
+    for (let i = 0; i < (children as OpState[]).length; i++) {
+      if ((r = visitDown(result, match, element, (children as OpState[])[i])) !== null) {
         return r;
       }
     }
@@ -88,7 +88,7 @@ function visitDown(
  */
 function accumulateDispatchTargetsFromEventsOpNode(
   result: DispatchTarget[],
-  target: OpNodeState,
+  target: OpState,
   match: (h: EventHandler) => boolean,
 ): void {
   const events = (target.op as OpNode<OpData>).data.data;

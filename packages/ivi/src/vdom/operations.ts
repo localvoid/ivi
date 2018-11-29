@@ -1,7 +1,7 @@
 import { Box } from "ivi-shared";
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
-import { OpNodeState } from "./state";
+import { OpState } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "./component";
 
@@ -124,7 +124,7 @@ export type EventsData = OpData<EventHandler | Array<EventHandler | null> | null
 /**
  * Operation data for Ref operations.
  */
-export type RefData = OpData<Box<OpNodeState | null>>;
+export type RefData = OpData<Box<OpState | null>>;
 
 /**
  * Operation data for Context operations.
@@ -173,7 +173,7 @@ export const Events = (
  * @returns Ref OpNode.
  */
 export const Ref = (
-  data: Box<OpNodeState | null>,
+  data: Box<OpState | null>,
   children: Op,
 ): OpNode<RefData> => createOpNode(REF, { data, children });
 

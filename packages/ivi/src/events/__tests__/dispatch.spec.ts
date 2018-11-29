@@ -1,7 +1,7 @@
-import { _, OpNodeState, createNativeEvent, dispatchEvent, onClick, EventFlags } from "ivi";
+import { _, OpState, createNativeEvent, dispatchEvent, onClick, EventFlags } from "ivi";
 import { SyntheticEventFlags } from "../flags";
 
-function createEvent(flags: SyntheticEventFlags, timestamp: number, node: OpNodeState | null) {
+function createEvent(flags: SyntheticEventFlags, timestamp: number, node: OpState | null) {
   return { flags, timestamp, node };
 }
 

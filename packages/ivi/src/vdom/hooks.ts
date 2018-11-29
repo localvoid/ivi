@@ -3,7 +3,7 @@ import { NodeFlags } from "./node_flags";
 import { ComponentHooks } from "./component";
 import { getContext } from "./context";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
-import { OpNodeState } from "./state";
+import { OpState } from "./state";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -34,7 +34,7 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  * @returns Selector hook.
  */
 export function useSelect<T>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   selector: (props?: undefined, context?: undefined, prev?: T | undefined) => T,
 ): () => T;
 
@@ -56,7 +56,7 @@ export function useSelect<T>(
  * @returns Selector hook.
  */
 export function useSelect<T, P>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   selector: (props: P, context?: undefined, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
@@ -79,7 +79,7 @@ export function useSelect<T, P>(
  * @returns Selector hook.
  */
 export function useSelect<T, P, C>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   selector: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
@@ -102,7 +102,7 @@ export function useSelect<T, P, C>(
  * @returns Selector hook.
  */
 export function useSelect<T, P, C extends {}>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   selector: (props: P, context: C, prev: T | undefined) => T,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
@@ -157,14 +157,14 @@ export function useSelect<T, P, C extends {}>(
  * @param stateNode Component instance.
  * @param hook Detached hook.
  */
-export function useDetached(stateNode: OpNodeState, hook: () => void): void {
+export function useDetached(stateNode: OpState, hook: () => void): void {
   stateNode.flags |= NodeFlags.Unmount;
   const hooks = stateNode.state as ComponentHooks;
   hooks.unmount = addHook(hooks.unmount, hook);
 }
 
 function withEffect<P>(fn: (effect: () => void) => void): (
-  stateNode: OpNodeState,
+  stateNode: OpState,
   hook: (props?: P) => (() => void) | void,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ) => (props: P) => void {
@@ -226,7 +226,7 @@ function withEffect<P>(fn: (effect: () => void) => void): (
  * @returns Side effect hook
  */
 export const useEffect: <T = undefined>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
@@ -240,7 +240,7 @@ export const useEffect: <T = undefined>(
  * @returns Side effect hook
  */
 export const useMutationEffect: <T = undefined>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
@@ -254,7 +254,7 @@ export const useMutationEffect: <T = undefined>(
  * @returns Side effect hook
  */
 export const useLayoutEffect: <T = undefined>(
-  stateNode: OpNodeState,
+  stateNode: OpState,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;

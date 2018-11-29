@@ -1,11 +1,11 @@
-import { OpNodeState, box, Ref, visitNodes } from "ivi";
+import { OpState, box, Ref, visitNodes } from "ivi";
 import { div } from "ivi-html";
 import { startRender } from "./utils";
 import { NodeFlags } from "../node_flags";
 
 test(`should visit element node`, () => {
   startRender<HTMLButtonElement>(r => {
-    const _ref = box<OpNodeState | null>(null);
+    const _ref = box<OpState | null>(null);
     const n = r(
       Ref(
         _ref,
@@ -21,7 +21,7 @@ test(`should visit element node`, () => {
 
 test(`should ignore non-element node`, () => {
   startRender<HTMLButtonElement>(r => {
-    const _ref = box<OpNodeState | null>(null);
+    const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,
@@ -38,7 +38,7 @@ test(`should ignore non-element node`, () => {
 
 test(`should visit all element nodes in a fragment`, () => {
   startRender<HTMLButtonElement>(r => {
-    const _ref = box<OpNodeState | null>(null);
+    const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,
@@ -55,7 +55,7 @@ test(`should visit all element nodes in a fragment`, () => {
 
 test(`should ignore non-element nodes in a fragment`, () => {
   startRender<HTMLButtonElement>(r => {
-    const _ref = box<OpNodeState | null>(null);
+    const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,
@@ -72,7 +72,7 @@ test(`should ignore non-element nodes in a fragment`, () => {
 
 test(`should ignore null nodes in a fragment`, () => {
   startRender<HTMLButtonElement>(r => {
-    const _ref = box<OpNodeState | null>(null);
+    const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,
@@ -89,7 +89,7 @@ test(`should ignore null nodes in a fragment`, () => {
 
 test(`should stop when visitor returns true`, () => {
   startRender<HTMLButtonElement>(r => {
-    const _ref = box<OpNodeState | null>(null);
+    const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,

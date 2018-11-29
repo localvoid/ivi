@@ -1,4 +1,4 @@
-import { OpNodeState } from "./state";
+import { OpState } from "./state";
 import { useSelect } from "./hooks";
 import { getDOMNode } from "./reconciler";
 import { Box } from "ivi-shared";
@@ -25,7 +25,7 @@ import { Box } from "ivi-shared";
  */
 export function selector<T>(
   s: () => T,
-): (stateNode: OpNodeState) => () => T;
+): (stateNode: OpState) => () => T;
 
 /**
  * selector creates a selector factory.
@@ -50,7 +50,7 @@ export function selector<T>(
 export function selector<T, P>(
   s: (props: P, context: undefined, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (stateNode: OpNodeState) => undefined extends P ? () => T : (props: P) => T;
+): (stateNode: OpState) => undefined extends P ? () => T : (props: P) => T;
 
 /**
  * selector creates a selector factory.
@@ -75,7 +75,7 @@ export function selector<T, P>(
 export function selector<T, P, C>(
   s: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (stateNode: OpNodeState) => undefined extends P ? () => T : (props: P) => T;
+): (stateNode: OpState) => undefined extends P ? () => T : (props: P) => T;
 
 /**
  * selector creates a selector factory.
@@ -100,8 +100,8 @@ export function selector<T, P, C>(
 export function selector<T, P, C>(
   s: (props: P, context: C, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (c: OpNodeState) => undefined extends P ? () => T : (props: P) => T {
-  return (stateNode: OpNodeState) => useSelect(stateNode, s, shouldUpdate);
+): (c: OpState) => undefined extends P ? () => T : (props: P) => T {
+  return (stateNode: OpState) => useSelect(stateNode, s, shouldUpdate);
 }
 
 /**
@@ -111,5 +111,5 @@ export function selector<T, P, C>(
  * @returns DOM Node or a `null` value.
  */
 export const findDOMNode = <T extends Node>(
-  box: Box<OpNodeState | null>,
+  box: Box<OpState | null>,
 ) => box.v === null ? null : getDOMNode(box.v) as T;

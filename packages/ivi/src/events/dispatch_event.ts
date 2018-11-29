@@ -1,4 +1,4 @@
-import { OpNodeState } from "../vdom/state";
+import { OpState } from "../vdom/state";
 import { EventFlags, SyntheticEventFlags } from "./flags";
 import { DispatchTarget } from "./dispatch_target";
 import { EventHandlerFlags, EventHandler } from "./event_handler";
@@ -61,7 +61,7 @@ function dispatchEventToLocalEventHandlers(
 ): void {
   const handlers = target.handlers;
   let flags: EventFlags = 0;
-  event.node = target.target as OpNodeState;
+  event.node = target.target as OpState;
   if (handlers instanceof Array) {
     for (let i = 0; i < handlers.length; ++i) {
       const handler = handlers[i];

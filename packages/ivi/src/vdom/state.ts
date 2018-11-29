@@ -5,7 +5,7 @@ import { ComponentHooks } from "./component";
 /**
  * Operation state.
  */
-export interface OpNodeState {
+export interface OpState {
   /**
    * Operation.
    */
@@ -17,7 +17,7 @@ export interface OpNodeState {
   /**
    * State for children operations.
    */
-  children: OpNodeState | Array<OpNodeState | null> | null;
+  children: OpState | Array<OpState | null> | null;
   /**
    * Current state.
    */
@@ -30,6 +30,6 @@ export interface OpNodeState {
  * @param op Operation.
  * @returns {@link StateNode} instance.
  */
-export const createStateNode = (op: Op): OpNodeState => (
+export const createStateNode = (op: Op): OpState => (
   { op, flags: 0, children: null, state: null }
 );
