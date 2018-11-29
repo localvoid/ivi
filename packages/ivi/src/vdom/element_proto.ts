@@ -16,9 +16,9 @@ export interface ElementProtoDescriptor {
   /**
    * DOM Node that will be cloned.
    */
-  node: Node | null;
+  n: Node | null;
   /**
    * Operation that were used to create a DOM Node.
    */
-  readonly proto: OpNode;
+  readonly p: OpNode;
 }

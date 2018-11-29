@@ -350,11 +350,11 @@ function _mountObject(
       let node: Element | undefined;
       const descriptor = t.d;
       if ((flags & NodeFlags.ElementProto) !== 0) {
-        node = (descriptor as ElementProtoDescriptor).node as Element;
+        node = (descriptor as ElementProtoDescriptor).n as Element;
         if (node === null) {
-          (descriptor as ElementProtoDescriptor).node = node = _createElement(
+          (descriptor as ElementProtoDescriptor).n = node = _createElement(
             void 0,
-            (descriptor as ElementProtoDescriptor).proto,
+            (descriptor as ElementProtoDescriptor).p,
           );
         }
         /* istanbul ignore else */
@@ -534,7 +534,7 @@ export function _update(
         ((flags & NodeFlags.Dirty) !== 0) ||
         (
           (prevData !== nextData) &&
-          (descriptor.shouldUpdate === void 0 || descriptor.shouldUpdate(prevData, nextData) === true)
+          (descriptor.su === void 0 || descriptor.su(prevData, nextData) === true)
         )
       ) {
         deepStateFlags = _pushDeepState();

@@ -44,17 +44,17 @@ export const svgElementFactory: <T, U>(tag: string) => (
  *       document.getElementById("app")!,
  *     );
  *
- * @param proto Element prototype.
+ * @param p Element prototype.
  * @returns Factory that produces elements with predefined attributes.
  */
-export function elementProto<P>(proto: OpNode<ElementData<P>>) {
+export function elementProto<P>(p: OpNode<ElementData<P>>) {
   /* istanbul ignore else */
   if (DEBUG) {
-    if (proto.d.c !== null) {
+    if (p.d.c !== null) {
       throw new Error(`Invalid OpNode, element prototypes can't have any children`);
     }
   }
-  const type = createOpType(proto.t.f | NodeFlags.ElementProto, { node: null, proto });
+  const type = createOpType(p.t.f | NodeFlags.ElementProto, { n: null, p });
   return (n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
 }
 
@@ -127,14 +127,14 @@ export function component<P>(
  *     });
  *
  * @param c Component function.
- * @param shouldUpdate `shouldUpdate` function.
+ * @param su `shouldUpdate` function.
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
   c: (c: OpState) => (props: P) => Op,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  su?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, shouldUpdate });
+  const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, su });
   return (props: P) => createOpNode(type, props);
 }
 
@@ -161,12 +161,12 @@ export function statelessComponent(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update Update function.
- * @param shouldUpdate `shouldUpdate` function.
+ * @param su `shouldUpdate` function.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   update: (props: P) => Op,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  su?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
@@ -177,13 +177,13 @@ export function statelessComponent<P>(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param c Update function.
- * @param shouldUpdate `shouldUpdate` function.
+ * @param su `shouldUpdate` function.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   c: (props: P) => Op,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  su?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component, { c, shouldUpdate });
+  const type = createOpType(NodeFlags.Component, { c, su });
   return (props: P) => createOpNode(type, props);
 }

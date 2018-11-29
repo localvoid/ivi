@@ -10,7 +10,7 @@ describe("Element proto", () => {
   });
 
   test(`prototype`, () => {
-    expect((divProto().t.d as ElementProtoDescriptor).proto).toBe(div);
+    expect((divProto().t.d as ElementProtoDescriptor).p).toBe(div);
   });
 
   test(`default className = undefined`, () => {

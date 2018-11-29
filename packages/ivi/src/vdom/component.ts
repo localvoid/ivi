@@ -24,7 +24,7 @@ export interface ComponentHooks<T = any> {
  */
 export interface ComponentDescriptor<P = any> {
   /**
-   * Lifecycle hook `c()`.
+   * Lifecycle hook `create`.
    *
    * @param state Component state.
    * @returns update function.
@@ -32,13 +32,13 @@ export interface ComponentDescriptor<P = any> {
   c(state: OpState): (props: P) => Op;
 
   /**
-   * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.
+   * Lifecycle hook `shouldUpdate` is used as a hint to reduce unnecessary updates.
    *
    * @param prev Previous properties.
    * @param next Next properties.
    * @returns `true` when changes in props should trigger update.
    */
-  shouldUpdate: undefined | ((prev: P, next: P) => boolean);
+  su: undefined | ((prev: P, next: P) => boolean);
 }
 
 /**
@@ -46,7 +46,7 @@ export interface ComponentDescriptor<P = any> {
  */
 export interface StatelessComponentDescriptor<P = any> {
   /**
-   * Lifecycle hook `c()`.
+   * Lifecycle hook `create`.
    *
    * @param props Component props.
    * @returns OpNode.
@@ -54,11 +54,11 @@ export interface StatelessComponentDescriptor<P = any> {
   c(props: P): Op;
 
   /**
-   * Lifecycle hook `shouldUpdate()` is used as a hint to reduce unnecessary updates.
+   * Lifecycle hook `shouldUpdate` is used as a hint to reduce unnecessary updates.
    *
    * @param prev Previous properties.
    * @param next Next properties.
    * @returns `true` when changes in props should trigger update.
    */
-  shouldUpdate: undefined | ((prev: P, next: P) => boolean);
+  su: undefined | ((prev: P, next: P) => boolean);
 }
