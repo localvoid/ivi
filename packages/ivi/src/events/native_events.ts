@@ -55,8 +55,6 @@ export const EVENT_DISPATCHER_LOADED_METADATA = /*#__PURE__*/createNativeEventDi
 export const EVENT_DISPATCHER_LOAD_START = /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture, "loadstart");
 export const EVENT_DISPATCHER_LOST_POINTER_CAPTURE = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture, "lostpointercapture");
 export const EVENT_DISPATCHER_MOUSE_DOWN = /*#__PURE__*/createNativeEventDispatcher<MouseEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mousedown");
-export const EVENT_DISPATCHER_MOUSE_ENTER = /*#__PURE__*/createNativeEventDispatcher<MouseEvent>(NativeEventSourceFlags.Capture, "mouseenter");
-export const EVENT_DISPATCHER_MOUSE_LEAVE = /*#__PURE__*/createNativeEventDispatcher<MouseEvent>(NativeEventSourceFlags.Capture, "mouseleave");
 export const EVENT_DISPATCHER_MOUSE_MOVE = /*#__PURE__*/createNativeEventDispatcher<MouseEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mousemove");
 export const EVENT_DISPATCHER_MOUSE_OUT = /*#__PURE__*/createNativeEventDispatcher<MouseEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseout");
 export const EVENT_DISPATCHER_MOUSE_OVER = /*#__PURE__*/createNativeEventDispatcher<MouseEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "mouseover");
@@ -67,8 +65,6 @@ export const EVENT_DISPATCHER_PLAY = /*#__PURE__*/createNativeEventDispatcher<Ev
 export const EVENT_DISPATCHER_PLAYING = /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture, "playing");
 export const EVENT_DISPATCHER_POINTER_CANCEL = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointercancel");
 export const EVENT_DISPATCHER_POINTER_DOWN = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerdown");
-export const EVENT_DISPATCHER_POINTER_ENTER = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture, "pointerenter");
-export const EVENT_DISPATCHER_POINTER_LEAVE = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture, "pointerleave");
 export const EVENT_DISPATCHER_POINTER_MOVE = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointermove");
 export const EVENT_DISPATCHER_POINTER_OUT = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerout");
 export const EVENT_DISPATCHER_POINTER_OVER = /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "pointerover");
@@ -295,14 +291,6 @@ export const onMouseDown: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
 ) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_DOWN));
-export const onMouseEnter: <P>(
-  handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
-  capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_ENTER));
-export const onMouseLeave: <P>(
-  handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
-  capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<MouseEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_MOUSE_LEAVE));
 export const onMouseMove: <P>(
   handler: (ev: SyntheticNativeEvent<MouseEvent>) => EventFlags | void,
   capture?: boolean,
@@ -343,14 +331,6 @@ export const onPointerDown: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
 ) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_DOWN));
-export const onPointerEnter: <P>(
-  handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
-  capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_ENTER));
-export const onPointerLeave: <P>(
-  handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
-  capture?: boolean,
-) => EventHandler<SyntheticNativeEvent<PointerEvent>> = (/*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_POINTER_LEAVE));
 export const onPointerMove: <P>(
   handler: (ev: SyntheticNativeEvent<PointerEvent>) => EventFlags | void,
   capture?: boolean,
