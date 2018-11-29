@@ -77,7 +77,7 @@ export function createNativeEventDispatcher<E extends Event>(
         ev.preventDefault();
       }
     }
-  }));
+  }), source.options);
 
   return source;
 }
