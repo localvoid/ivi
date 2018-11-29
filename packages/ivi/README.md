@@ -11,10 +11,12 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 ## Features
 
 - Declarative rendering with "Virtual DOM"
-- Components
-- Immutable "Virtual DOM"
+- Powerful [composition model](https://codesandbox.io/s/k9m8wlqky3)
+- [Immutable](#immutable-virtual-dom) "Virtual DOM"
+- [Fragments](#fragments)
+- [Components](#components)
 - Extensible synthetic event subsystem
-- Synchronous and deterministic update algorithm with [minimum number of DOM operations](#children-reconciliation)
+- Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Test utilities
 - **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
 
@@ -26,7 +28,7 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.7KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.5KB** (minified+compressed).
 
 ## Quick Start
 
@@ -313,15 +315,27 @@ sending data snapshots that doesn't contain any information how nodes should be 
 ### Virtual DOM
 
 Virtual DOM in ivi has some major differences from other implementations. Refs, keys, events are implemented as a
-special nodes instead of attributes. Using special nodes gives an additional flexibility: simple stateless components
-doesn't require creating virtual dom nodes, DOM events can be attached to components.
+special nodes instead of attributes. Using special nodes instead of attributes improves composition patterns, simple
+stateless components can be implemented as a basic immediately executed functions, DOM events can be attached to
+components, fragments or any other node.
+
+#### Immutable Virtual DOM
+
+When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
+efficiently implement it otherwise, since that time many other virtual dom libraries just copied this terrible idea, and
+now it is [everywhere](https://vuejs.org/v2/guide/render-function.html#Constraints). Some libraries are using different
+workarounds to hide that they are using mutable virtual dom nodes, but this workarounds has hidden costs when mutable
+nodes are passed around.
+
+ivi is using immutable virtual dom like React does, and it is still has an extremely fast reconciler, there are no any
+hidden costs, zero normalization passes, nothing gets copied when dealing with edge cases.
 
 #### Element Factories
 
 All factory functions that create DOM elements have an interface:
 
 ```ts
-type ElementFactory<T> = (className?: string, attrs?: T, children?: OpNodeChildren) => OpNode<T>;
+type ElementFactory<T> = (className?: string, attrs?: T, children?: OpChildren) => OpNode<T>;
 ```
 
 `ivi-html` package contains factories for HTML elements.
@@ -338,10 +352,15 @@ render(
 );
 ```
 
+#### Fragments
+
+All virtual dom nodes and component root nodes can have any number of children nodes. Fragments and dynamic children
+lists can be deeply nested. All dynamic children lists are using their own key namespaces to prevent key collisions.
+
 #### Events
 
 ```ts
-function Events(data: EventHandler | Array<EventHandler | null> | null, child: OpNode): OpNode<EventsData>;
+function Events(data: EventHandler | Array<EventHandler | null> | null, children: OpChildren): OpNode<EventsData>;
 ```
 
 `Events()` node is used to attach event handlers.
@@ -361,16 +380,16 @@ render(
 #### Ref
 
 ```ts
-function Ref(data: Ref<StateNode>, child: OpNode): OpNode<RefData>;
+function Ref(data: Box<OpNodeState | null>, children: OpChildren): OpNode<RefData>;
 ```
 
 `Ref()` node is used to capture reference to an instance.
 
 ```ts
-import { _, box, Ref, getDOMNode, render } from "ivi";
+import { _, OpNodeState, box, Ref, findDOMNode, render } from "ivi";
 import { div } from "ivi-html";
 
-const _ref = box<Node | null>(null);
+const _ref = box<OpNodeState | null>(null);
 render(
   Ref(_ref,
     div(_, _, "Hello World"),
@@ -378,14 +397,14 @@ render(
   document.getElementById("app")!,
 );
 
-getDOMNode(_ref.v);
+findDOMNode(_ref);
 // => <HTMLDivElement>
 ```
 
 #### Context
 
 ```ts
-function Context(data: {}, child: OpNode): OpNode<ContextData>;
+function Context(data: {}, children: OpChildren): OpNode<ContextData>;
 ```
 
 `Context()` node is used to assign context.
@@ -411,7 +430,7 @@ render(
 #### TrackByKey
 
 ```ts
-function TrackByKey(items: Key<any, OpNode | number | string>[]): OpNode<Key<any, OpNode | number | string>[]>;
+function TrackByKey(items: Key<any, OpChildren>[]): OpNode<Key<any, OpChildren>[]>;
 ```
 
 `TrackByKey()` node is used for dynamic children lists.
@@ -550,7 +569,7 @@ function requestDirtyCheck(flags?: UpdateFlags);
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: OpNode<any> | null, container: Element, flags?: UpdateFlags): void;
+function render(node: OpNode | null, container: Element, flags?: UpdateFlags): void;
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
@@ -561,11 +580,11 @@ function render(node: OpNode<any> | null, container: Element, flags?: UpdateFlag
 
 ```ts
 function component(
-  c: (c: Component<undefined>) => () => OpNode,
+  c: (c: Component<undefined>) => () => OpChildren,
 ): () => OpNode<undefined>;
 
 function component<P>(
-  c: (c: Component<P>) => (props: P) => OpNode,
+  c: (c: Component<P>) => (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 ```
@@ -777,11 +796,22 @@ render(
 
 ### Children Reconciliation
 
-Children reconciliation algorithm in ivi works in almost exactly the same way as
-[React Reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
+Children reconciliation algorithm in ivi works in a slightly different way than
+[React children reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
 
-The key difference is that ivi algorithm tries to find a minimum number of DOM operations when rearranging children
-nodes.
+There are two types of children lists: static fragments (basic arrays) and dynamic children lists (`TrackByKey()`
+nodes).
+
+Static fragments can't have variable number of nodes, to remove node from a static fragment it should be
+replaced with a hole `null`. When fragments length is changed, previous fragment will be completely destroyed and new
+one instantiated, in majority of use cases this heuristics is way much better than appending/removing nodes at the end.
+Static fragments can have deeply nested fragments or dynamic children lists and each fragment is used as a completely
+separate entity.
+
+Dynamic children lists are wrapped in a `TrackByKey()` nodes, each node in dynamic children list should be wrapped in a
+`Key` object that should contain unique key. Dynamic children list algorithm is using a
+[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm to find a minimum number of DOM
+operations.
 
 Finding a minimum number of DOM operations is not just about performance, it is also about preserving internal state
 of DOM nodes. Moving DOM nodes isn't always a side-effect free operation, it may restart animations, drop focus, reset
@@ -813,6 +843,7 @@ shouldn't rely on this behaviour.
 - [Events](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/03_events/)
 - [Forms](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/04_forms/)
 - [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_collapsable/)
+- [Composition](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_composition/)
 
 #### Apps
 

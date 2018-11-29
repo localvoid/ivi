@@ -11,6 +11,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 ## Features
 
 - Declarative rendering with "Virtual DOM"
+- Powerful [composition model](https://codesandbox.io/s/k9m8wlqky3)
 - [Immutable](#immutable-virtual-dom) "Virtual DOM"
 - [Fragments](#fragments)
 - [Components](#components)
@@ -27,7 +28,7 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.7KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.5KB** (minified+compressed).
 
 ## Quick Start
 
@@ -842,6 +843,7 @@ shouldn't rely on this behaviour.
 - [Events](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/03_events/)
 - [Forms](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/04_forms/)
 - [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_collapsable/)
+- [Composition](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_composition/)
 
 #### Apps
 
