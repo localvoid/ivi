@@ -319,6 +319,13 @@ special nodes instead of attributes. Using special nodes instead of attributes i
 stateless components can be implemented as a basic immediately executed functions, DOM events can be attached to
 components, fragments or any other node.
 
+Internally, all "Virtual DOM" nodes in ivi are called operations and has a type `Op`.
+
+```ts
+type Op = string | number | OpNode | OpArray | null;
+interface OpArray extends Array<Op> { }
+```
+
 #### Immutable Virtual DOM
 
 When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
@@ -335,7 +342,7 @@ hidden costs, zero normalization passes, nothing gets copied when dealing with e
 All factory functions that create DOM elements have an interface:
 
 ```ts
-type ElementFactory<T> = (className?: string, attrs?: T, children?: OpChildren) => OpNode<T>;
+type ElementFactory<T> = (className?: string, attrs?: T, children?: Op) => OpNode<ElementData<T>>;
 ```
 
 `ivi-html` package contains factories for HTML elements.
@@ -360,10 +367,14 @@ lists can be deeply nested. All dynamic children lists are using their own key n
 #### Events
 
 ```ts
-function Events(data: EventHandler | Array<EventHandler | null> | null, children: OpChildren): OpNode<EventsData>;
+function Events(events: EventHandler, children: Op): Op<EventsData>;
+
+type EventHandler = EventHandlerNode | Array<EventHandlerNode | null> | null;
+interface EventHandlerArray extends Array<EventHandler> { }
 ```
 
-`Events()` node is used to attach event handlers.
+`Events()` operation is used to attach event handlers. `events` argument can be a singular event handler, `null` or
+recursive array of event handlers.
 
 ```ts
 import { _, Events, onClick, render } from "ivi";
@@ -380,16 +391,16 @@ render(
 #### Ref
 
 ```ts
-function Ref(data: Box<OpNodeState | null>, children: OpChildren): OpNode<RefData>;
+function Ref(data: Box<OpState | null>, children: Op): OpNode<RefData>;
 ```
 
-`Ref()` node is used to capture reference to an instance.
+`Ref()` operation is used to capture reference to an internal state of an operation.
 
 ```ts
 import { _, OpNodeState, box, Ref, findDOMNode, render } from "ivi";
 import { div } from "ivi-html";
 
-const _ref = box<OpNodeState | null>(null);
+const _ref = box<OpState | null>(null);
 render(
   Ref(_ref,
     div(_, _, "Hello World"),
@@ -404,17 +415,18 @@ findDOMNode(_ref);
 #### Context
 
 ```ts
-function Context(data: {}, children: OpChildren): OpNode<ContextData>;
+function Context(data: {}, children: Op): OpNode<ContextData>;
 ```
 
-`Context()` node is used to assign context.
+`Context()` operation is used to assign context.
 
 ```ts
 import { _, Context, component, render } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
-  const getContextValue = useSelect<undefined, { key: string }>((props, ctx) => ctx.key);
+  // Partial type argument inference: https://github.com/Microsoft/TypeScript/pull/26349
+  const getContextValue = useSelect<_, { key: string }>((props, ctx) => ctx.key);
 
   return () => div(_, _, getContextValue());
 });
@@ -430,10 +442,10 @@ render(
 #### TrackByKey
 
 ```ts
-function TrackByKey(items: Key<any, OpChildren>[]): OpNode<Key<any, OpChildren>[]>;
+function TrackByKey(items: Key<any, Op>[]): OpNode<Key<any, Op>[]>;
 ```
 
-`TrackByKey()` node is used for dynamic children lists.
+`TrackByKey()` operation is used for dynamic children lists.
 
 ```ts
 import { _, TrackByKey, key, render } from "ivi";
@@ -449,12 +461,11 @@ render(
 );
 ```
 
-
 #### Attribute Directives
 
 By default, reconciliation algorithm assigns all attributes with `setAttribute()` and removes them with
 `removeAttribute()` functions, but sometimes we need to assign properties or assign attributes from different
-namespaces. To solve this problems, ivi introduces the concept of Attribute Directives, this values can extend the
+namespaces. To solve this problems, ivi introduces the concept of Attribute Directives, this directives can extend the
 default behavior of the attributes reconciliation algorithm. It significantly reduces code complexity, because we no
 longer need to bake in all this edge cases into reconciliation algorithm. Also it gives an additional escape hatch to
 manipulate DOM elements directly.
@@ -569,10 +580,10 @@ function requestDirtyCheck(flags?: UpdateFlags);
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: OpNode | null, container: Element, flags?: UpdateFlags): void;
+function render(children: Op, container: Element, flags?: UpdateFlags): void;
 ```
 
-`render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
+`render()` function assigns a new virtual DOM root node to the `container` and requests dirty checking.
 
 ### Components
 
@@ -586,10 +597,12 @@ function component(
 function component<P>(
   c: (c: Component<P>) => (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
+): undefined extends P ? () => OpNode<P> : (props: P) => OpNode<P>;
 ```
 
-`component()` function creates a factory function that will instantiate virtual DOM nodes for the component.
+`component()` function creates a factory function that will instantiate component nodes.
+
+By default, all components and hooks are using strict equality `===` operator as a `shouldUpdate` function.
 
 ```ts
 import { _, component } from "ivi";
@@ -658,7 +671,8 @@ function useSelect<T, P, C>(
 
 `useSelect()` creates a selector hook.
 
-Selectors are used for sideways data loading and accessing current context.
+Selectors are used for sideways data accessing or retrieving data from the current context. It is a low-level and more
+flexible alternative to redux connectors.
 
 ```js
 const Pixel = component((c) => {
@@ -684,7 +698,7 @@ function useUnmount(c: Component, hook: () => void): void;
 function invalidate(c: Component, flags?: UpdateFlags): void;
 ```
 
-`invalidate()` marks component as dirty and triggers an update.
+`invalidate()` marks component as dirty and requests dirty checking.
 
 #### Using a Custom Hook
 
@@ -725,9 +739,12 @@ const FriendStatus = component((c) => {
 ##### Pass Information Between Hooks
 
 ```js
+const useFilter = selector(() => query().filter());
+const useEntriesByFilterType = selector((filter) => (query().entriesByFilterType(filter).result));
+
 const EntryList = component((c) => {
-  const getFilter = useSelect(c, () => query().filter());
-  const getEntriesByFilterType = useSelect(c, (filter) => (query().entriesByFilterType(filter).result));
+  const getFilter = useFilter(c);
+  const getEntriesByFilterType = useEntriesByFilterType(c);
 
   return () => (
     ul("", { id: "todo-list" },
@@ -819,7 +836,8 @@ scrollbar positions, stop video playback, collapse IME etc.
 
 #### Defined Behaviour
 
-This is the behaviour that you can rely on when thinking how syncing algorithm will update children lists.
+This is the behaviour that you can rely on when thinking how reconciliation algorithm will update dynamic children
+lists.
 
 - Inserted nodes won't cause any nodes to move.
 - Removed nodes won't cause any nodes to move.
