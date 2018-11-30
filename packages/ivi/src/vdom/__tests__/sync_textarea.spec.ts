@@ -16,8 +16,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 1,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -39,8 +41,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 1,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -62,8 +66,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 1,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });

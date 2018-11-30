@@ -20,8 +20,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 1,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -46,8 +48,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 1,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -72,8 +76,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -94,8 +100,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });

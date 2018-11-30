@@ -20,8 +20,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -46,8 +48,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -68,8 +72,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -90,8 +96,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -116,8 +124,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -142,8 +152,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -168,8 +180,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 1,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -194,8 +208,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 1,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -220,8 +236,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 1,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -246,8 +264,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 1,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -272,8 +292,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -294,8 +316,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -320,8 +344,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -346,8 +372,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -372,8 +400,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -394,8 +424,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -424,8 +456,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
       });
@@ -454,8 +488,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
       });
@@ -484,8 +520,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -509,8 +547,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
       });
@@ -539,8 +579,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -568,8 +610,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
       });

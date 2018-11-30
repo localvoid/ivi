@@ -27,8 +27,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -58,8 +60,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -87,8 +91,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -117,8 +123,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -148,8 +156,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -177,8 +187,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -207,8 +219,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -237,8 +251,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -268,8 +284,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -299,8 +317,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -330,8 +350,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -363,8 +385,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 5,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -394,8 +418,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -425,8 +451,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -456,8 +484,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -488,8 +518,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -520,8 +552,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -552,8 +586,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -585,8 +621,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 5,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -621,8 +659,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 8,
   "insertBefore": 9,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -653,8 +693,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -685,8 +727,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -719,8 +763,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 6,
   "insertBefore": 7,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -753,8 +799,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 6,
   "insertBefore": 7,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -778,8 +826,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 1,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -807,8 +857,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -836,8 +888,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -866,8 +920,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -896,8 +952,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -926,8 +984,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -951,8 +1011,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -980,8 +1042,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1010,8 +1074,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1040,8 +1106,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1070,8 +1138,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1100,8 +1170,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1130,8 +1202,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1162,8 +1236,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 6,
   "insertBefore": 7,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1193,8 +1269,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1225,8 +1303,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 8,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1257,8 +1337,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1289,8 +1371,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1321,8 +1405,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1353,8 +1439,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1385,8 +1473,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1417,8 +1507,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1452,8 +1544,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 7,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1487,8 +1581,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 7,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1522,8 +1618,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 7,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1557,8 +1655,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 7,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1595,8 +1695,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 10,
   "insertBefore": 14,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1633,8 +1735,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 10,
   "insertBefore": 14,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1664,8 +1768,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1695,8 +1801,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1727,8 +1835,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1759,8 +1869,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1791,8 +1903,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1823,8 +1937,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1857,8 +1973,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 6,
   "insertBefore": 11,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1892,8 +2010,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 7,
   "insertBefore": 12,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1928,8 +2048,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 8,
   "insertBefore": 13,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1958,8 +2080,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -1988,8 +2112,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 5,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2024,8 +2150,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 15,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2060,8 +2188,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 15,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2096,8 +2226,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 15,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2131,8 +2263,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 15,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2165,8 +2299,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 15,
+  "nodeValue": 0,
   "removeChild": 3,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2194,8 +2330,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 3,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -2224,8 +2362,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -2253,8 +2393,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -2283,8 +2425,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2313,8 +2457,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 3,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2344,8 +2490,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 6,
   "insertBefore": 7,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -2375,8 +2523,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 5,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2409,8 +2559,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 12,
   "insertBefore": 13,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 1,
 }
 `);
     });
@@ -2443,8 +2595,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 3,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2475,8 +2629,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 9,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 5,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2506,8 +2662,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2537,8 +2695,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2568,8 +2728,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2599,8 +2761,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2633,8 +2797,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 8,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2667,8 +2833,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 8,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2700,8 +2868,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 8,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 3,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2734,8 +2904,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 8,
   "insertBefore": 10,
+  "nodeValue": 0,
   "removeChild": 2,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
@@ -2773,8 +2945,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -2811,8 +2985,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 4,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -2848,8 +3024,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -2896,8 +3074,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 2,
   "insertBefore": 6,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -2928,8 +3108,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 7,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -2968,8 +3150,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 7,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });
@@ -3014,8 +3198,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 4,
   "insertBefore": 8,
+  "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
       });

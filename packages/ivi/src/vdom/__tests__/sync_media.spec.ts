@@ -15,8 +15,10 @@ Object {
   "createElementNS": 0,
   "createTextNode": 0,
   "insertBefore": 2,
+  "nodeValue": 0,
   "removeChild": 1,
   "replaceChild": 0,
+  "textContent": 0,
 }
 `);
     });
