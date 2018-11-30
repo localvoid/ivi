@@ -1,10 +1,11 @@
-import { startRender, checkDOMOps } from "./utils";
 import { _ } from "ivi";
 import * as h from "ivi-html";
+import { testRenderDOM } from "ivi-test";
+import { checkDOMOps } from "./utils";
 
 test(`<div>{ null }</div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const n = r(h.div(_, _, null));
 
       expect(n).toMatchSnapshot();
@@ -15,7 +16,7 @@ test(`<div>{ null }</div>`, () => {
 
 test(`<div>"abc"</div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = h.div(_, _, "abc");
       const n = r(v);
 
@@ -27,7 +28,7 @@ test(`<div>"abc"</div>`, () => {
 
 test(`<div>10</div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = h.div(_, _, 10);
       const n = r(v);
 
@@ -39,7 +40,7 @@ test(`<div>10</div>`, () => {
 
 test(`<div><span></span></div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = (
         h.div(_, _,
           h.span(),
@@ -55,7 +56,7 @@ test(`<div><span></span></div>`, () => {
 
 test(`<div><span></span><strong></strong></div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = (
         h.div(_, _, [
           h.span(),
@@ -72,7 +73,7 @@ test(`<div><span></span><strong></strong></div>`, () => {
 
 test(`<div><div></div>{ null }<span></span></div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = (
         h.div(_, _, [
           h.div(),
@@ -90,7 +91,7 @@ test(`<div><div></div>{ null }<span></span></div>`, () => {
 
 test(`<div><div></div>"abc"<span></span></div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = (
         h.div(_, _, [
           h.div(),
@@ -108,7 +109,7 @@ test(`<div><div></div>"abc"<span></span></div>`, () => {
 
 test(`<div><div></div>123<span></span></div>`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = (
         h.div(_, _, [
           h.div(),
@@ -126,7 +127,7 @@ test(`<div><div></div>123<span></span></div>`, () => {
 
 test(`complex tree #1`, () => {
   checkDOMOps(c => {
-    startRender(r => {
+    testRenderDOM(r => {
       const v = (
         h.div(_, _, [
           h.div(_, _, "hello"),

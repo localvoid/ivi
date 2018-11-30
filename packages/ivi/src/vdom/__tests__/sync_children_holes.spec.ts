@@ -1,10 +1,11 @@
 import { _, TrackByKey, key } from "ivi";
 import * as h from "ivi-html";
-import { startRender, checkDOMOps, Stateful, Static } from "./utils";
+import { testRenderDOM } from "ivi-test";
+import { checkDOMOps, Stateful, Static } from "./utils";
 
 describe(`update children lists with holes`, () => {
   test(`single child from null to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [null]);
         const v2 = h.div(_, _, [null]);
@@ -30,7 +31,7 @@ Object {
   });
 
   test(`single child from null to 1`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [null]);
         const v2 = h.div(_, _, [1]);
@@ -60,7 +61,7 @@ Object {
   });
 
   test(`single child from 1 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1]);
         const v2 = h.div(_, _, [null]);
@@ -86,7 +87,7 @@ Object {
   });
 
   test(`first child from null to 1`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [null, 2]);
         const v2 = h.div(_, _, [1, 2]);
@@ -117,7 +118,7 @@ Object {
   });
 
   test(`first child from 1 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, 2]);
         const v2 = h.div(_, _, [null, 2]);
@@ -147,7 +148,7 @@ Object {
   });
 
   test(`second child from null to 2`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, null]);
         const v2 = h.div(_, _, [1, 2]);
@@ -178,7 +179,7 @@ Object {
   });
 
   test(`second child from 2 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, 2]);
         const v2 = h.div(_, _, [1, null]);
@@ -208,7 +209,7 @@ Object {
   });
 
   test(`both children from null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [null, null]);
         const v2 = h.div(_, _, [1, 2]);
@@ -239,7 +240,7 @@ Object {
   });
 
   test(`both children to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, 2]);
         const v2 = h.div(_, _, [null, null]);
@@ -265,7 +266,7 @@ Object {
   });
 
   test(`single stateful component root from null to 1`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [Stateful(null)]);
         const v2 = h.div(_, _, [Stateful(1)]);
@@ -295,7 +296,7 @@ Object {
   });
 
   test(`single stateful component root from 1 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [Stateful(1)]);
         const v2 = h.div(_, _, [Stateful(null)]);
@@ -321,7 +322,7 @@ Object {
   });
 
   test(`first stateful component root from null to 1`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [Stateful(null), Stateful(2)]);
         const v2 = h.div(_, _, [Stateful(1), Stateful(2)]);
@@ -352,7 +353,7 @@ Object {
   });
 
   test(`first stateful component root from 1 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [Stateful(1), Stateful(2)]);
         const v2 = h.div(_, _, [Stateful(null), Stateful(2)]);
@@ -382,7 +383,7 @@ Object {
   });
 
   test(`second stateful component root from null to 2`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [Stateful(1), Stateful(null)]);
         const v2 = h.div(_, _, [Stateful(1), Stateful(2)]);
@@ -413,7 +414,7 @@ Object {
   });
 
   test(`second stateful component root from 2 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [Stateful(1), Stateful(2)]);
         const v2 = h.div(_, _, [Stateful(1), Stateful(null)]);
@@ -443,7 +444,7 @@ Object {
   });
 
   test(`move stateful component and replace root from 2 to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -481,7 +482,7 @@ Object {
   });
 
   test(`move stateful component and replace root from null to 2`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -520,7 +521,7 @@ Object {
   });
 
   test(`TrackByKey nodes mixed with basic nodes should be removed`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, TrackByKey([key(0, 0)])]);
         const v2 = h.div(_, _, [1, null]);
@@ -550,7 +551,7 @@ Object {
   });
 
   test(`TrackByKey null nodes mixed with basic nodes should be removed when TrackByKey is removed`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, TrackByKey([key(2, 2)])]);
         const v2 = h.div(_, _, [1, null]);
@@ -580,7 +581,7 @@ Object {
   });
 
   test(`TrackByKey null nodes mixed with basic nodes should be removed when TrackByKey has an empty array`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, TrackByKey([key(2, 2)])]);
         const v2 = h.div(_, _, [1, TrackByKey([])]);
@@ -610,7 +611,7 @@ Object {
   });
 
   test(`move static component with null node`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -657,7 +658,7 @@ Object {
   });
 
   test(`move static fragment with null nodes`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -704,7 +705,7 @@ Object {
   });
 
   test(`move static element with null fragments`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v0 = h.div(_, _, [null, null]);
 
@@ -738,7 +739,7 @@ Object {
   });
 
   test(`move static fragment with stateful component and null node`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v0 = h.div(_, _, [Stateful(1), null]);
 

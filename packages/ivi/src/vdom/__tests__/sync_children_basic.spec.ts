@@ -1,9 +1,10 @@
 import { _ } from "ivi";
 import * as h from "ivi-html";
-import { startRender, checkDOMOps } from "./utils";
+import { testRenderDOM } from "ivi-test";
+import { checkDOMOps } from "./utils";
 
 test(`<div></div> => <div>"abc"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div());
       const n = r(h.div(_, _, "abc"));
@@ -31,7 +32,7 @@ Object {
 });
 
 test(`<div></div> => <div>10</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div());
       const n = r(h.div(_, _, 10));
@@ -59,7 +60,7 @@ Object {
 });
 
 test(`<div>"abc"</div> => <div></div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "abc"));
       const n = r(h.div());
@@ -83,7 +84,7 @@ Object {
 });
 
 test(`<div>10</div> => <div></div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, 10));
       const n = r(h.div());
@@ -107,7 +108,7 @@ Object {
 });
 
 test(`<div>"abc"</div> => <div>"abc"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "abc"));
       const n = r(h.div(_, _, "abc"));
@@ -135,7 +136,7 @@ Object {
 });
 
 test(`<div>10</div> => <div>10</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, 10));
       const n = r(h.div(_, _, 10));
@@ -163,7 +164,7 @@ Object {
 });
 
 test(`<div>"abc"</div> => <div>"cde"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "abc"));
       const n = r(h.div(_, _, "cde"));
@@ -191,7 +192,7 @@ Object {
 });
 
 test(`<div>""</div> => <div>"cde"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, ""));
       const n = r(h.div(_, _, "cde"));
@@ -219,7 +220,7 @@ Object {
 });
 
 test(`<div>"abc"</div> => <div>10</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "abc"));
       const n = r(h.div(_, _, 10));
@@ -247,7 +248,7 @@ Object {
 });
 
 test(`<div>10</div> => <div>"abc"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, 10));
       const n = r(h.div(_, _, "abc"));
@@ -275,7 +276,7 @@ Object {
 });
 
 test(`<div>{ null }</div> => <div><div></div></div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div());
       const n = r(h.div(_, _, h.div())) as HTMLElement;
@@ -303,7 +304,7 @@ Object {
 });
 
 test(`<div><div></div></div> => <div>{ null }</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, h.div()));
       const n = r(h.div(_, _, null));
@@ -327,7 +328,7 @@ Object {
 });
 
 test(`<div><div></div> => <div>"cde"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, h.div()));
       const n = r(h.div(_, _, "cde"));
@@ -355,7 +356,7 @@ Object {
 });
 
 test(`<div>"cde"</div> => <div><div></div></div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "cde"));
       const n = r(h.div(_, _, h.div()));
@@ -383,7 +384,7 @@ Object {
 });
 
 test(`<div></div> => <div><div></div></div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div());
       const n = r(h.div(_, _, h.div()));
@@ -411,7 +412,7 @@ Object {
 });
 
 test(`<div><div></div></div> => <div></div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, h.div()));
       const n = r(h.div());
@@ -436,7 +437,7 @@ Object {
 
 describe(`fragments`, () => {
   test(`different fragment length, 2 to 1`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [0, 1]);
         const v2 = h.div(_, _, [2]);
@@ -467,7 +468,7 @@ Object {
   });
 
   test(`different fragment length, 1 to 2`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [0]);
         const v2 = h.div(_, _, [1, 2]);
@@ -499,7 +500,7 @@ Object {
   });
 
   test(`from null to fragment`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, null);
         const v2 = h.div(_, _, [1, 2]);
@@ -531,7 +532,7 @@ Object {
   });
 
   test(`from fragment to null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, 2]);
         const v2 = h.div(_, _, null);
@@ -558,7 +559,7 @@ Object {
   });
 
   test(`from div to fragment`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, h.div());
         const v2 = h.div(_, _, [1, 2]);
@@ -590,7 +591,7 @@ Object {
   });
 
   test(`from fragment to div`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, [1, 2]);
         const v2 = h.div(_, _, h.div());

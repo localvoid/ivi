@@ -1,9 +1,9 @@
 import * as h from "ivi-html";
-import { startRender } from "./utils";
+import { testRenderDOM } from "ivi-test";
 
 test(`<button>`, () => {
-  startRender<HTMLButtonElement>(r => {
-    const n = r(h.button());
+  testRenderDOM<HTMLButtonElement>(r => {
+    const n = r(h.button())!;
 
     expect(n.tagName.toLowerCase()).toBe("button");
     expect(n.type).toBe("submit");

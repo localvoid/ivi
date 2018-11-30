@@ -1,7 +1,7 @@
 import { EventFlags, EventHandlerNode, SyntheticEvent, Events } from "ivi";
 import * as events from "ivi";
 import * as h from "ivi-html";
-import { startRender } from "./utils";
+import { testRenderDOM } from "ivi-test";
 
 function createMouseEvent(type: string): MouseEvent {
   if (document.createEvent) {
@@ -37,13 +37,13 @@ describe("events", () => {
   document.body.appendChild(container);
 
   test(`<div onclick=FN>`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       const n = r(
         Events(click.event,
           h.div(),
         )
-      );
+      )!;
       n.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(1);
@@ -51,14 +51,14 @@ describe("events", () => {
   });
 
   test(`<div onclick=FN onclick=FN>`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const aClick = eventCounter(events.onClick);
       const bClick = eventCounter(events.onClick);
       const n = r(
         Events([aClick.event, bClick.event],
           h.div(),
         ),
-      );
+      )!;
       n.dispatchEvent(createMouseEvent("click"));
 
       expect(aClick.value).toBe(1);
@@ -67,14 +67,14 @@ describe("events", () => {
   });
 
   test(`<div onclick=FN onmousedown=FN>`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       const mousedown = eventCounter(events.onMouseDown);
       const n = r(
         Events([click.event, mousedown.event],
           h.div(),
         ),
-      );
+      )!;
 
       n.dispatchEvent(createMouseEvent("click"));
 
@@ -89,7 +89,7 @@ describe("events", () => {
   });
 
   test(`[] => []`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       expect(() => {
         r(Events([], h.div()));
         r(Events([], h.div()));
@@ -98,7 +98,7 @@ describe("events", () => {
   });
 
   test(`null => onclick`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       r(
         Events(null,
@@ -109,7 +109,7 @@ describe("events", () => {
         Events(click.event,
           h.div()
         ),
-      );
+      )!;
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(1);
@@ -117,7 +117,7 @@ describe("events", () => {
   });
 
   test(`onclick => null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       r(
         Events(click.event,
@@ -128,7 +128,7 @@ describe("events", () => {
         Events(null,
           h.div(),
         ),
-      );
+      )!;
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(0);
@@ -136,7 +136,7 @@ describe("events", () => {
   });
 
   test(`null => [onclick]`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       r(
         Events(null,
@@ -147,7 +147,7 @@ describe("events", () => {
         Events([click.event],
           h.div(),
         ),
-      );
+      )!;
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(1);
@@ -155,7 +155,7 @@ describe("events", () => {
   });
 
   test(`[onclick] => null`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       r(
         Events([click.event],
@@ -166,7 +166,7 @@ describe("events", () => {
         Events(null,
           h.div(),
         ),
-      );
+      )!;
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(0);
@@ -176,7 +176,7 @@ describe("events", () => {
   // TODO: dev mode errors
   //
   // test(`onclick => [onclick]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click1 = eventCounter(events.onClick);
   //     const click2 = eventCounter(events.onClick);
   //     r(h.div().e(
@@ -193,7 +193,7 @@ describe("events", () => {
   // });
 
   // test(`[onclick] => onclick`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click1 = eventCounter(events.onClick);
   //     const click2 = eventCounter(events.onClick);
   //     r(h.div().e([
@@ -210,7 +210,7 @@ describe("events", () => {
   // });
 
   // test(`[] => [onclick]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     r(h.div().e([]));
   //     const b = r(h.div().e([
@@ -223,7 +223,7 @@ describe("events", () => {
   // });
 
   // test(`[onclick] => []`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     r(h.div().e([
   //       click.event,
@@ -236,7 +236,7 @@ describe("events", () => {
   // });
 
   // test(`unassigned => [onclick, onmousedown]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     r(h.div());
@@ -253,7 +253,7 @@ describe("events", () => {
   // });
 
   // test(`null => [onclick, onmousedown]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     r(h.div().e(null));
@@ -273,7 +273,7 @@ describe("events", () => {
   // });
 
   // test(`[] => [onclick, onmousedown]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     r(h.div().e([]));
@@ -293,7 +293,7 @@ describe("events", () => {
   // });
 
   // test(`null => [onclick, onclick]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const aClick = eventCounter(events.onClick);
   //     const bClick = eventCounter(events.onClick);
   //     r(h.div().e(null));
@@ -309,7 +309,7 @@ describe("events", () => {
   // });
 
   test(`[onclick] => [onclick]`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       r(
         Events([click.event],
@@ -320,7 +320,7 @@ describe("events", () => {
         Events([click.event],
           h.div(),
         ),
-      );
+      )!;
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(click.value).toBe(1);
@@ -328,7 +328,7 @@ describe("events", () => {
   });
 
   // test(`[onclick] => unassigned`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     r(h.div().e([
   //       click.event,
@@ -341,7 +341,7 @@ describe("events", () => {
   // });
 
   // test(`[onclick] => null`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     r(h.div().e([
   //       click.event,
@@ -356,7 +356,7 @@ describe("events", () => {
   // });
 
   // test(`[onclick] => []`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     r(h.div().e([
   //       click.event,
@@ -369,7 +369,7 @@ describe("events", () => {
   // });
 
   test(`[onclick, null] => [null, onclick]`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const aClick = eventCounter(events.onClick);
       const bClick = eventCounter(events.onClick);
       r(
@@ -381,7 +381,7 @@ describe("events", () => {
         Events([null, bClick.event],
           h.div(),
         ),
-      );
+      )!;
       b.dispatchEvent(createMouseEvent("click"));
 
       expect(aClick.value).toBe(0);
@@ -390,7 +390,7 @@ describe("events", () => {
   });
 
   // test(`[onclick, onmousedown] => []`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     r(h.div().e([
@@ -410,7 +410,7 @@ describe("events", () => {
   // });
 
   // test(`[onclick, onmousedown] => null`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     r(h.div().e([
@@ -432,7 +432,7 @@ describe("events", () => {
   // });
 
   // test(`[onclick, onmousedown] => [onclick]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     r(h.div().e([
@@ -454,7 +454,7 @@ describe("events", () => {
   // });
 
   test(`[onclick, onmousedown] => [onclick, onmouseup]`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       const click = eventCounter(events.onClick);
       const mousedown = eventCounter(events.onMouseDown);
       const mouseup = eventCounter(events.onMouseUp);
@@ -467,7 +467,7 @@ describe("events", () => {
         Events([click.event, mouseup.event],
           h.div(),
         ),
-      );
+      )!;
 
       b.dispatchEvent(createMouseEvent("click"));
 
@@ -484,7 +484,7 @@ describe("events", () => {
   });
 
   // test(`[onclick, onmousedown] => [onmouseup]`, () => {
-  //   startRender(r => {
+  //   testRenderDOM(r => {
   //     const click = eventCounter(events.onClick);
   //     const mousedown = eventCounter(events.onMouseDown);
   //     const mouseup = eventCounter(events.onMouseUp);
@@ -511,12 +511,12 @@ describe("events", () => {
   // });
 
   test(`EventFlags.PreventDefault should trigger native prevent default behavior`, () => {
-    startRender<HTMLInputElement>(r => {
+    testRenderDOM<HTMLInputElement>(r => {
       const n = r(
         Events(events.onClick(() => EventFlags.PreventDefault),
           h.input("", { type: "checkbox" }),
         ),
-      );
+      )!;
 
       n.dispatchEvent(createMouseEvent("click"));
       expect(n.checked).toBeFalsy();

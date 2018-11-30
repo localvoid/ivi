@@ -630,20 +630,18 @@ export function _update(
           );
         }
       } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
-        nextData = (nextOp as OpNode<EventsData | RefData>).d;
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
-          nextData.c,
+          (nextOp as OpNode<EventsData | RefData>).d.c,
           moveNode,
           singleChild,
         );
       } else { // if ((stateFlags & NodeFlags.Context) !== 0) {
-        prevData = (o as OpNode<ContextData>).d;
-        nextData = (nextOp as OpNode<ContextData>).d;
         const dirtyContext = _dirtyContext;
+        nextData = (nextOp as OpNode<ContextData>).d;
         nextValue = nextData.v;
-        if (prevData.v !== nextValue || _dirtyContext === true) {
+        if ((o as OpNode<ContextData>).d.v !== nextValue || _dirtyContext === true) {
           opState.s = { ...getContext(), ...nextValue };
           _dirtyContext = true;
         }

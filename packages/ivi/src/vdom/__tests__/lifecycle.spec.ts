@@ -1,6 +1,7 @@
 import { OpNode, _, component, useUnmount, useEffect, useMutationEffect, useLayoutEffect } from "ivi";
 import * as h from "ivi-html";
-import { startRender, Static, checkLifecycle, lifecycleTouch } from "./utils";
+import { testRender } from "ivi-test";
+import { Static, checkLifecycle, lifecycleTouch } from "./utils";
 
 function createLifecycleTester(id: string) {
   return component<OpNode>(
@@ -39,7 +40,7 @@ function createLifecycleTester(id: string) {
 }
 
 test(`<C><div></C>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(createLifecycleTester("1")(h.div()));
 
@@ -56,7 +57,7 @@ test(`<C><div></C>`, () => {
 });
 
 test(`<C><div></C> => <div>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(createLifecycleTester("1")(h.div()));
       render(h.div());
@@ -74,7 +75,7 @@ test(`<C><div></C> => <div>`, () => {
 });
 
 test(`<div> => <C><div></C>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(h.div());
       render(createLifecycleTester("1")(h.div()));
@@ -92,7 +93,7 @@ test(`<div> => <C><div></C>`, () => {
 });
 
 test(`<div></div> => <div><C><div></C></div>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(h.div());
       render(h.div(_, _, createLifecycleTester("1")(h.div())));
@@ -110,7 +111,7 @@ test(`<div></div> => <div><C><div></C></div>`, () => {
 });
 
 test(`<div><C><div></C></div> => <div></div>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(h.div(_, _, createLifecycleTester("1")(h.div())));
       render(h.div());
@@ -128,7 +129,7 @@ test(`<div><C><div></C></div> => <div></div>`, () => {
 });
 
 test(`<C><C><div></C></C>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(createLifecycleTester("1")(createLifecycleTester("2")(h.div())));
 
@@ -153,7 +154,7 @@ test(`<C><C><div></C></C>`, () => {
 });
 
 test(`<C><C><div></C></C> => <div>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       render(createLifecycleTester("1")(createLifecycleTester("2")(h.div())));
       render(h.div());
@@ -179,7 +180,7 @@ test(`<C><C><div></C></C> => <div>`, () => {
 });
 
 test(`<C><div></C> => <C><div></C>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       const lc = createLifecycleTester("1");
       render(lc(h.div()));
@@ -200,7 +201,7 @@ test(`<C><div></C> => <C><div></C>`, () => {
 });
 
 test(`<S><C><div></C></S> => <S><C><div></C></S>`, () => {
-  startRender(render => {
+  testRender(render => {
     checkLifecycle(c => {
       const lc = createLifecycleTester("1");
       render(Static(lc(h.div())));

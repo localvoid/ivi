@@ -1,6 +1,7 @@
 import { _, component, useSelect, Context } from "ivi";
 import { div } from "ivi-html";
-import { startRender, Static } from "./utils";
+import { testRenderDOM } from "ivi-test";
+import { Static } from "./utils";
 
 const ContextTestPrinter = component(h => {
   const selector = useSelect<string, undefined, { value: string }>(
@@ -11,7 +12,7 @@ const ContextTestPrinter = component(h => {
 });
 
 test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     const v = Context({ value: 10 }, ContextTestPrinter());
     const n = r(v);
 
@@ -24,7 +25,7 @@ test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () 
 });
 
 test(`Sync context value`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     const v1 = Context({ value: 10 }, ContextTestPrinter());
     const v2 = Context({ value: 20 }, ContextTestPrinter());
     r(v1);
@@ -39,7 +40,7 @@ test(`Sync context value`, () => {
 });
 
 test(`Sync context value inside component with shouldUpdate=false`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     const v1 = Context({ value: 10 }, Static(ContextTestPrinter()));
     const v2 = Context({ value: 20 }, Static(ContextTestPrinter()));
     r(v1);

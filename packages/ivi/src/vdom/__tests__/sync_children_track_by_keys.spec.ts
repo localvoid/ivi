@@ -1,13 +1,13 @@
 import { _, TrackByKey, key } from "ivi";
 import * as h from "ivi-html";
-import { startRender, checkDOMOps, Stateless, Static, Stateful } from "./utils";
-import {} from "../operations";
+import { testRenderDOM } from "ivi-test";
+import { checkDOMOps, Stateless, Static, Stateful } from "./utils";
 
 const i = (n: number) => key(n, n);
 const k = (...is: number[]) => h.div(_, _, TrackByKey(is.map(i)));
 
 test(`#1`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(0);
@@ -38,7 +38,7 @@ Object {
 });
 
 test(`#2`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(0, 1, 2);
@@ -71,7 +71,7 @@ Object {
 });
 
 test(`#3`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k();
       const v2 = k(0);
@@ -102,7 +102,7 @@ Object {
 });
 
 test(`#4`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(0, 1);
@@ -134,7 +134,7 @@ Object {
 });
 
 test(`0 => 0 1 2`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(0, 1, 2);
@@ -167,7 +167,7 @@ Object {
 });
 
 test(`#6`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(1);
@@ -198,7 +198,7 @@ Object {
 });
 
 test(`0 => 1 0`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(1, 0);
@@ -230,7 +230,7 @@ Object {
 });
 
 test(`#8`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(0, 1);
@@ -262,7 +262,7 @@ Object {
 });
 
 test(`#9`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(1, 2, 0);
@@ -295,7 +295,7 @@ Object {
 });
 
 test(`#10`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(0, 1, 2);
@@ -328,7 +328,7 @@ Object {
 });
 
 test(`#13`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(1, 0, 2);
@@ -361,7 +361,7 @@ Object {
 });
 
 test(`#14`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(2);
       const v2 = k(0, 1, 2, 3, 4);
@@ -396,7 +396,7 @@ Object {
 });
 
 test(`#16`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(1, 2);
       const v2 = k(0, 1, 2);
@@ -429,7 +429,7 @@ Object {
 });
 
 test(`#17`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(0, 1, 2);
@@ -462,7 +462,7 @@ Object {
 });
 
 test(`#18`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 2);
       const v2 = k(0, 1, 2);
@@ -495,7 +495,7 @@ Object {
 });
 
 test(`#19`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(2, 3);
       const v2 = k(0, 1, 2, 3);
@@ -529,7 +529,7 @@ Object {
 });
 
 test(`#20`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(0, 1, 2, 3);
@@ -563,7 +563,7 @@ Object {
 });
 
 test(`#21`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(1, 2);
       const v2 = k(0, 1, 2, 3);
@@ -597,7 +597,7 @@ Object {
 });
 
 test(`#22`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(1, 3);
       const v2 = k(0, 1, 2, 3, 4);
@@ -632,7 +632,7 @@ Object {
 });
 
 test(`#23`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(2, 5);
       const v2 = k(0, 1, 2, 3, 4, 5, 6, 7);
@@ -670,7 +670,7 @@ Object {
 });
 
 test(`#24`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(1, 3);
       const v2 = k(0, 1, 2, 3);
@@ -704,7 +704,7 @@ Object {
 });
 
 test(`#25`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 2);
       const v2 = k(0, 1, 2, 3);
@@ -738,7 +738,7 @@ Object {
 });
 
 test(`#26`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(2, 5);
       const v2 = k(0, 1, 2, 3, 4, 5);
@@ -774,7 +774,7 @@ Object {
 });
 
 test(`#27`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 3);
       const v2 = k(0, 1, 2, 3, 4, 5);
@@ -810,7 +810,7 @@ Object {
 });
 
 test(`#34`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k();
@@ -837,7 +837,7 @@ Object {
 });
 
 test(`#35`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(1);
@@ -868,7 +868,7 @@ Object {
 });
 
 test(`#36`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(0);
@@ -899,7 +899,7 @@ Object {
 });
 
 test(`#37`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(1, 2);
@@ -931,7 +931,7 @@ Object {
 });
 
 test(`#38`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(0, 1);
@@ -963,7 +963,7 @@ Object {
 });
 
 test(`#39`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(0, 2);
@@ -995,7 +995,7 @@ Object {
 });
 
 test(`#43`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k();
@@ -1022,7 +1022,7 @@ Object {
 });
 
 test(`#44`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(2);
@@ -1053,7 +1053,7 @@ Object {
 });
 
 test(`#45`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(0, 1);
@@ -1085,7 +1085,7 @@ Object {
 });
 
 test(`#46`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(2, 3);
@@ -1117,7 +1117,7 @@ Object {
 });
 
 test(`#47`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(0, 1);
@@ -1149,7 +1149,7 @@ Object {
 });
 
 test(`#48`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(1, 2);
@@ -1181,7 +1181,7 @@ Object {
 });
 
 test(`#49`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(0, 3);
@@ -1213,7 +1213,7 @@ Object {
 });
 
 test(`#51`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(0, 1, 2, 4);
@@ -1248,7 +1248,7 @@ Object {
 
 // moves
 test(`#57`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(1, 0);
@@ -1280,7 +1280,7 @@ Object {
 });
 
 test(`#58`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(3, 2, 1, 0);
@@ -1314,7 +1314,7 @@ Object {
 });
 
 test(`#59`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(0, 2, 3, 1);
@@ -1348,7 +1348,7 @@ Object {
 });
 
 test(`#60`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(3, 0, 1, 2);
@@ -1382,7 +1382,7 @@ Object {
 });
 
 test(`#61`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(1, 0, 2, 3);
@@ -1416,7 +1416,7 @@ Object {
 });
 
 test(`#62`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(2, 0, 1, 3);
@@ -1450,7 +1450,7 @@ Object {
 });
 
 test(`#63`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(0, 1, 3, 2);
@@ -1484,7 +1484,7 @@ Object {
 });
 
 test(`#64`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3);
       const v2 = k(0, 2, 3, 1);
@@ -1518,7 +1518,7 @@ Object {
 });
 
 test(`#66`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5, 6);
       const v2 = k(2, 1, 0, 3, 4, 5, 6);
@@ -1555,7 +1555,7 @@ Object {
 });
 
 test(`#67`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5, 6);
       const v2 = k(0, 3, 4, 1, 2, 5, 6);
@@ -1592,7 +1592,7 @@ Object {
 });
 
 test(`#68`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5, 6);
       const v2 = k(0, 2, 3, 5, 6, 1, 4);
@@ -1629,7 +1629,7 @@ Object {
 });
 
 test(`#69`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5, 6);
       const v2 = k(0, 1, 5, 3, 2, 4, 6);
@@ -1666,7 +1666,7 @@ Object {
 });
 
 test(`#70`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
       const v2 = k(8, 1, 3, 4, 5, 6, 0, 7, 2, 9);
@@ -1706,7 +1706,7 @@ Object {
 });
 
 test(`#71`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
       const v2 = k(9, 5, 0, 7, 1, 2, 3, 4, 6, 8);
@@ -1746,7 +1746,7 @@ Object {
 });
 
 test(`#72`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(2, 1, 0);
@@ -1779,7 +1779,7 @@ Object {
 });
 
 test(`#73`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1);
       const v2 = k(1, 0, 2);
@@ -1812,7 +1812,7 @@ Object {
 });
 
 test(`#74`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(3, 0, 2, 1);
@@ -1846,7 +1846,7 @@ Object {
 });
 
 test(`#75`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(0, 2, 1, 3);
@@ -1880,7 +1880,7 @@ Object {
 });
 
 test(`#76`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(0, 2, 3, 1);
@@ -1914,7 +1914,7 @@ Object {
 });
 
 test(`#77`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(1, 2, 3, 0);
@@ -1948,7 +1948,7 @@ Object {
 });
 
 test(`#78`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4);
       const v2 = k(5, 4, 3, 2, 1, 0);
@@ -1984,7 +1984,7 @@ Object {
 });
 
 test(`#79`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4);
       const v2 = k(5, 4, 3, 6, 2, 1, 0);
@@ -2021,7 +2021,7 @@ Object {
 });
 
 test(`#80`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4);
       const v2 = k(5, 4, 3, 6, 2, 1, 0, 7);
@@ -2059,7 +2059,7 @@ Object {
 });
 
 test(`#81`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(1, 0);
@@ -2091,7 +2091,7 @@ Object {
 });
 
 test(`#82`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(2, 0, 1);
       const v2 = k(1, 0);
@@ -2123,7 +2123,7 @@ Object {
 });
 
 test(`#83`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(7, 0, 1, 8, 2, 3, 4, 5, 9);
       const v2 = k(7, 5, 4, 8, 3, 2, 1, 0);
@@ -2161,7 +2161,7 @@ Object {
 });
 
 test(`#84`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(7, 0, 1, 8, 2, 3, 4, 5, 9);
       const v2 = k(5, 4, 8, 3, 2, 1, 0, 9);
@@ -2199,7 +2199,7 @@ Object {
 });
 
 test(`#85`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(7, 0, 1, 8, 2, 3, 4, 5, 9);
       const v2 = k(7, 5, 4, 3, 2, 1, 0, 9);
@@ -2237,7 +2237,7 @@ Object {
 });
 
 test(`#86`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(7, 0, 1, 8, 2, 3, 4, 5, 9);
       const v2 = k(5, 4, 3, 2, 1, 0, 9);
@@ -2274,7 +2274,7 @@ Object {
 });
 
 test(`#87`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(7, 0, 1, 8, 2, 3, 4, 5, 9);
       const v2 = k(5, 4, 3, 2, 1, 0);
@@ -2310,7 +2310,7 @@ Object {
 });
 
 test(`#88`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(1);
@@ -2341,7 +2341,7 @@ Object {
 });
 
 test(`#89`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0);
       const v2 = k(1, 2);
@@ -2373,7 +2373,7 @@ Object {
 });
 
 test(`#90`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 2);
       const v2 = k(1);
@@ -2404,7 +2404,7 @@ Object {
 });
 
 test(`#91`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 2);
       const v2 = k(1, 2);
@@ -2436,7 +2436,7 @@ Object {
 });
 
 test(`#92`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 2);
       const v2 = k(2, 1);
@@ -2468,7 +2468,7 @@ Object {
 });
 
 test(`#93`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(3, 4, 5);
@@ -2501,7 +2501,7 @@ Object {
 });
 
 test(`#94`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(2, 4, 5);
@@ -2534,7 +2534,7 @@ Object {
 });
 
 test(`#95`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(6, 7, 8, 9, 10, 11);
@@ -2570,7 +2570,7 @@ Object {
 });
 
 test(`#96`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(6, 1, 7, 3, 4, 8);
@@ -2606,7 +2606,7 @@ Object {
 });
 
 test(`#97`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(6, 7, 3, 8);
@@ -2640,7 +2640,7 @@ Object {
 });
 
 test(`#98`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(3, 2, 1);
@@ -2673,7 +2673,7 @@ Object {
 });
 
 test(`#99`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2);
       const v2 = k(2, 1, 3);
@@ -2706,7 +2706,7 @@ Object {
 });
 
 test(`#100`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(1, 2, 0);
       const v2 = k(2, 1, 3);
@@ -2739,7 +2739,7 @@ Object {
 });
 
 test(`#101`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(1, 2, 0);
       const v2 = k(3, 2, 1);
@@ -2772,7 +2772,7 @@ Object {
 });
 
 test(`#102`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(6, 1, 3, 2, 4, 7);
@@ -2808,7 +2808,7 @@ Object {
 });
 
 test(`#103`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(6, 1, 7, 3, 2, 4);
@@ -2844,7 +2844,7 @@ Object {
 });
 
 test(`#104`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 1, 2, 3, 4, 5);
       const v2 = k(6, 7, 3, 2, 4);
@@ -2879,7 +2879,7 @@ Object {
 });
 
 test(`#105`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       const v1 = k(0, 2, 3, 4, 5);
       const v2 = k(6, 1, 7, 3, 2, 4);
@@ -2916,7 +2916,7 @@ Object {
 
 describe(`Components`, () => {
   test(`move component nodes`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -2956,7 +2956,7 @@ Object {
   });
 
   test(`move static component nodes`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -2996,7 +2996,7 @@ Object {
   });
 
   test(`move static component node with null root`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -3035,7 +3035,7 @@ Object {
   });
 
   test(`move static component nodes with nested components`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -3085,7 +3085,7 @@ Object {
   });
 
   test(`move fragments`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(_, _, TrackByKey([key(0, [1, 2]), key(1, [3, 4])]));
         const v2 = h.div(_, _, TrackByKey([key(1, [3, 4]), key(0, [1, 2])]));
@@ -3119,7 +3119,7 @@ Object {
   });
 
   test(`move fragments wrapped into static components`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,
@@ -3161,7 +3161,7 @@ Object {
   });
 
   test(`move TrackByKey nodes`, () => {
-    startRender(r => {
+    testRenderDOM(r => {
       checkDOMOps(c => {
         const v1 = h.div(
           _,

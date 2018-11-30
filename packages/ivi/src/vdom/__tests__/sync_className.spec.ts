@@ -1,13 +1,13 @@
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
-import { startRender } from "./utils";
+import { testRenderDOM } from "ivi-test";
 
 describe("HTML", () => {
   describe(`sync className`, () => {
     test(`undefined => "a"`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div());
-        const b = r(h.div("a"));
+        const b = r(h.div("a"))!;
 
         expect(b.classList.length).toBe(1);
         expect(b.classList.contains("a")).toBe(true);
@@ -15,18 +15,18 @@ describe("HTML", () => {
     });
 
     test(`"a" => undefined`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div("a"));
-        const b = r(h.div());
+        const b = r(h.div())!;
 
         expect(b.classList.length).toBe(0);
       });
     });
 
     test(`"a" => "a"`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div("a"));
-        const b = r(h.div("a"));
+        const b = r(h.div("a"))!;
 
         expect(b.classList.length).toBe(1);
         expect(b.classList.contains("a")).toBe(true);
@@ -34,9 +34,9 @@ describe("HTML", () => {
     });
 
     test(`"a b" => "a"`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div("a"));
-        const b = r(h.div("a"));
+        const b = r(h.div("a"))!;
 
         expect(b.classList.length).toBe(1);
         expect(b.classList.contains("a")).toBe(true);
@@ -44,9 +44,9 @@ describe("HTML", () => {
     });
 
     test(`"a" => "a b"`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div("a"));
-        const b = r(h.div("a b"));
+        const b = r(h.div("a b"))!;
 
         expect(b.classList.length).toBe(2);
         expect(b.classList.contains("a")).toBe(true);
@@ -55,9 +55,9 @@ describe("HTML", () => {
     });
 
     test(`null => "a b"`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div());
-        const b = r(h.div("a b"));
+        const b = r(h.div("a b"))!;
 
         expect(b.classList.length).toBe(2);
         expect(b.classList.contains("a")).toBe(true);
@@ -66,9 +66,9 @@ describe("HTML", () => {
     });
 
     test(`"a b" => undefined`, () => {
-      startRender<HTMLElement>(r => {
+      testRenderDOM<HTMLElement>(r => {
         r(h.div("a b"));
-        const b = r(h.div());
+        const b = r(h.div())!;
 
         expect(b.classList.length).toBe(0);
       });
@@ -79,27 +79,27 @@ describe("HTML", () => {
 describe("SVG", () => {
   describe(`sync className`, () => {
     test(`undefined => "a"`, () => {
-      startRender<SVGElement>(r => {
+      testRenderDOM<SVGElement>(r => {
         r(s.circle());
-        const b = r(s.circle("a"));
+        const b = r(s.circle("a"))!;
 
         expect(b.getAttribute("class")).toBe("a");
       });
     });
 
     test(`"a" => undefined`, () => {
-      startRender<SVGElement>(r => {
+      testRenderDOM<SVGElement>(r => {
         r(s.circle("a"));
-        const b = r(s.circle());
+        const b = r(s.circle())!;
 
         expect(b.getAttribute("class")).toBe("");
       });
     });
 
     test(`"a" => "a"`, () => {
-      startRender<SVGElement>(r => {
+      testRenderDOM<SVGElement>(r => {
         r(s.circle("a"));
-        const b = r(s.circle("a"));
+        const b = r(s.circle("a"))!;
 
         expect(b.getAttribute("class")).toBe("a");
       });

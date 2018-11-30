@@ -1,11 +1,12 @@
 import * as h from "ivi-html";
-import { startRender, checkDOMOps } from "./utils";
+import { testRenderDOM } from "ivi-test";
+import { checkDOMOps } from "./utils";
 
 test(`<audio> => <video>`, () => {
-  startRender<HTMLMediaElement>(r => {
+  testRenderDOM<HTMLMediaElement>(r => {
     checkDOMOps(c => {
       r(h.audio());
-      const b = r(h.video());
+      const b = r(h.video())!;
 
       expect(b.tagName.toLowerCase()).toBe("video");
       expect(c).toMatchInlineSnapshot(`

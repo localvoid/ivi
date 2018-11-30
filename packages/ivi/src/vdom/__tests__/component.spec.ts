@@ -1,9 +1,9 @@
 import { component } from "ivi";
 import * as h from "ivi-html";
-import { startRender } from "./utils";
+import { testRender } from "ivi-test";
 
 test(`props should be passed to shouldUpdate hook`, () => {
-  startRender(r => {
+  testRender(r => {
     const c = component<number>(
       () => () => h.div(),
       (prev, next) => {

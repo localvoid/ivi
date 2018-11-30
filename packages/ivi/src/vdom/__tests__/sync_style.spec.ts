@@ -1,39 +1,39 @@
 import { _ } from "ivi";
 import * as h from "ivi-html";
-import { startRender } from "./utils";
+import { testRenderDOM } from "ivi-test";
 
 describe(`sync element style`, () => {
   test(`{} => null`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { style: {} }));
-      const n = r(h.div());
+      const n = r(h.div())!;
 
       expect(n.style.length).toBe(0);
     });
   });
 
   test(`undefined => {}`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div());
-      const n = r(h.div(_, { style: {} }));
+      const n = r(h.div(_, { style: {} }))!;
 
       expect(n.style.length).toBe(0);
     });
   });
 
   test(`{} => {}`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { style: {} }));
-      const n = r(h.div(_, { style: {} }));
+      const n = r(h.div(_, { style: {} }))!;
 
       expect(n.style.length).toBe(0);
     });
   });
 
   test(`undefined => { top: "10px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div());
-      const n = r(h.div(_, { style: { top: "10px" } }));
+      const n = r(h.div(_, { style: { top: "10px" } }))!;
 
       expect(n.style.length).toBe(1);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -41,9 +41,9 @@ describe(`sync element style`, () => {
   });
 
   test(`{} => { top: "10px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { style: {} }));
-      const n = r(h.div(_, { style: { top: "10px" } }));
+      const n = r(h.div(_, { style: { top: "10px" } }))!;
 
       expect(n.style.length).toBe(1);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -51,18 +51,18 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "10px" } => { top: undefined }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { style: { top: "10px" } }));
-      const n = r(h.div(_, { style: { top: undefined } }));
+      const n = r(h.div(_, { style: { top: undefined } }))!;
 
       expect(n.style.length).toBe(0);
     });
   });
 
   test(`{ top: "10px" } => { top: "10px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { style: { top: "10px" } }));
-      const n = r(h.div(_, { style: { top: "10px" } }));
+      const n = r(h.div(_, { style: { top: "10px" } }))!;
 
       expect(n.style.length).toBe(1);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -70,14 +70,14 @@ describe(`sync element style`, () => {
   });
 
   test(`undefined => { top: "10px", left: "20px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div(_, {
         style: {
           top: "10px",
           left: "20px",
         },
-      }));
+      }))!;
 
       expect(n.style.length).toBe(2);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -86,39 +86,39 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px" } => undefined`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {
         style: { top: "1px" },
       }));
-      const n = r(h.div());
+      const n = r(h.div())!;
 
       expect(n.style.length).toBe(0);
     });
   });
 
   test(`{ top: "1px", left: "1px" } => undefined`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {
         style: {
           top: "1px",
           left: "1px",
         },
       }));
-      const n = r(h.div());
+      const n = r(h.div())!;
 
       expect(n.style.length).toBe(0);
     });
   });
 
   test(`{ top: "1px" } => { top: "10px", left: "20px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { style: { top: "1px" } }));
       const n = r(h.div(_, {
         style: {
           top: "10px",
           left: "20px",
         },
-      }));
+      }))!;
 
       expect(n.style.length).toBe(2);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -127,7 +127,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { top: "10px", left: "20px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {
         style: {
           top: "1px",
@@ -139,7 +139,7 @@ describe(`sync element style`, () => {
           top: "10px",
           left: "20px",
         },
-      }));
+      }))!;
 
       expect(n.style.length).toBe(2);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -148,7 +148,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { top: "10px", left: "20px", right: "30px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {
         style: {
           top: "1px",
@@ -161,7 +161,7 @@ describe(`sync element style`, () => {
           left: "20px",
           right: "30px",
         },
-      }));
+      }))!;
 
       expect(n.style.length).toBe(3);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -171,7 +171,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { top: "10px", right: "30px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {
         style: {
           top: "1px",
@@ -183,7 +183,7 @@ describe(`sync element style`, () => {
           top: "10px",
           right: "30px",
         },
-      }));
+      }))!;
 
       expect(n.style.length).toBe(2);
       expect(n.style.getPropertyValue("top")).toBe("10px");
@@ -192,7 +192,7 @@ describe(`sync element style`, () => {
   });
 
   test(`{ top: "1px", left: "1px" } => { right: "30px" }`, () => {
-    startRender<HTMLElement>(r => {
+    testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {
         style: {
           top: "1px",
@@ -203,7 +203,7 @@ describe(`sync element style`, () => {
         style: {
           right: "30px",
         },
-      }));
+      }))!;
 
       expect(n.style.length).toBe(1);
       expect(n.style.getPropertyValue("right")).toBe("30px");

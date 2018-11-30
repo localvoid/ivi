@@ -6,16 +6,8 @@ export interface DOMOpsCounter {
   insertBefore: number;
   replaceChild: number;
   removeChild: number;
-}
-
-export function resetDOMCounter(counter: DOMOpsCounter): void {
-  counter.createElement = 0;
-  counter.createElementNS = 0;
-  counter.createTextNode = 0;
-  counter.appendChild = 0;
-  counter.insertBefore = 0;
-  counter.replaceChild = 0;
-  counter.removeChild = 0;
+  textContent: number;
+  nodeValue: number;
 }
 
 export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
@@ -27,6 +19,8 @@ export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
   const insertBefore = Node.prototype.insertBefore;
   const replaceChild = Node.prototype.replaceChild;
   const removeChild = Node.prototype.removeChild;
+  const textContent = Object.getOwnPropertyDescriptor(Node.prototype, "textContent")!;
+  const nodeValue = Object.getOwnPropertyDescriptor(Node.prototype, "nodeValue")!;
 
   // patch
   const counter = {
@@ -37,6 +31,8 @@ export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
     insertBefore: 0,
     replaceChild: 0,
     removeChild: 0,
+    textContent: 0,
+    nodeValue: 0,
   };
 
   Document.prototype.createElement = function (this: Document) {
@@ -67,6 +63,24 @@ export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
     counter.removeChild++;
     return removeChild.apply(this, arguments as any) as any;
   };
+  Object.defineProperty(Node.prototype, "textContent", {
+    get: function () {
+      textContent.get!.apply(this);
+    },
+    set: function () {
+      counter.textContent++;
+      textContent.set!.apply(this, arguments as any);
+    }
+  });
+  Object.defineProperty(Node.prototype, "nodeValue", {
+    get: function () {
+      nodeValue.get!.apply(this);
+    },
+    set: function () {
+      counter.nodeValue++;
+      nodeValue.set!.apply(this, arguments as any);
+    }
+  });
 
   fn(counter);
 
@@ -78,4 +92,6 @@ export function checkDOMOps(fn: (counter: DOMOpsCounter) => void): void {
   Node.prototype.insertBefore = insertBefore;
   Node.prototype.replaceChild = replaceChild;
   Node.prototype.removeChild = removeChild;
+  Object.defineProperty(Node.prototype, "textContent", textContent);
+  Object.defineProperty(Node.prototype, "nodeValue", nodeValue);
 }

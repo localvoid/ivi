@@ -1,12 +1,12 @@
 import { SVG_NAMESPACE, render } from "ivi";
 import * as h from "ivi-html";
 import * as s from "ivi-svg";
-import { startRender } from "./utils";
+import { testRenderDOM } from "ivi-test";
 
 describe(`TextNode`, () => {
   test(`"abc"`, () => {
-    startRender(r => {
-      const n = r("abc");
+    testRenderDOM(r => {
+      const n = r("abc")!;
 
       expect(n.nodeValue).toBe("abc");
     });
@@ -15,16 +15,16 @@ describe(`TextNode`, () => {
 
 describe(`HTML`, () => {
   test(`<div>`, () => {
-    startRender<HTMLElement>(r => {
-      const n = r(h.div());
+    testRenderDOM<HTMLElement>(r => {
+      const n = r(h.div())!;
 
       expect(n.tagName.toLowerCase()).toBe("div");
     });
   });
 
   test(`<span>`, () => {
-    startRender<HTMLElement>(r => {
-      const n = r(h.span());
+    testRenderDOM<HTMLElement>(r => {
+      const n = r(h.span())!;
 
       expect(n.tagName.toLowerCase()).toBe("span");
     });
@@ -33,8 +33,8 @@ describe(`HTML`, () => {
 
 describe(`SVG`, () => {
   test(`<circle>`, () => {
-    startRender<SVGCircleElement>(r => {
-      const n = r(s.circle());
+    testRenderDOM<SVGCircleElement>(r => {
+      const n = r(s.circle())!;
 
       expect(n.tagName.toLowerCase()).toBe("circle");
       expect(n.namespaceURI).toBe(SVG_NAMESPACE);

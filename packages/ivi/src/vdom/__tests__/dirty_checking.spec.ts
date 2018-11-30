@@ -2,6 +2,7 @@ describe(`dirty checking`, () => {
   /* tslint:disable:whitespace */
   let ivi: typeof import("ivi");
   let html: typeof import("ivi-html");
+  let iviTest: typeof import("ivi-test");
   let utils: typeof import("./utils");
   /* tslint:enable:whitespace */
 
@@ -9,11 +10,12 @@ describe(`dirty checking`, () => {
     jest.resetModules();
     ivi = await import("ivi");
     html = await import("ivi-html");
+    iviTest = await import("ivi-test");
     utils = await import("./utils");
   });
 
   test(`dirtyCheck() should start dirty checking`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       let triggered = 0;
       const c = ivi.component((h) => {
         const s = ivi.useSelect(h, () => (triggered++));
@@ -29,7 +31,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`identical vnodes should start dirty checking`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       let triggered = 0;
       const c = ivi.component((h) => {
         const s = ivi.useSelect(h, () => (triggered++));
@@ -46,7 +48,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`update ivi.context during dirty checking`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       let innerTest = -1;
       let outerTest = -1;
       const c = ivi.component((h) => {
@@ -85,7 +87,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`update inner ivi.context during dirty checking`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       let i = 0;
       let innerTest = -1;
       const C = ivi.component((h) => {
@@ -113,7 +115,7 @@ describe(`dirty checking`, () => {
   });
 
   test(`selector factory`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       let triggered = 0;
       const useTriggered = ivi.selector(() => triggered++);
       const c = ivi.component((h) => {

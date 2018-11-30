@@ -1,9 +1,10 @@
 import { _ } from "ivi";
 import * as h from "ivi-html";
-import { startRender, checkDOMOps } from "./utils";
+import { testRenderDOM } from "ivi-test";
+import { checkDOMOps } from "./utils";
 
 test(`<div>""</div> => <div>"abc"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, ""));
       const n = r(h.div(_, _, "abc"));
@@ -31,7 +32,7 @@ Object {
 });
 
 test(`<div>"abc"</div> => <div>""</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "abc"));
       const n = r(h.div(_, _, ""));
@@ -59,7 +60,7 @@ Object {
 });
 
 test(`<div></div> => <div>"abc"</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div());
       const n = r(h.div(_, _, "abc"));
@@ -87,7 +88,7 @@ Object {
 });
 
 test(`<div>"abc"</div> => <div>""</div>`, () => {
-  startRender(r => {
+  testRenderDOM(r => {
     checkDOMOps(c => {
       r(h.div(_, _, "abc"));
       const n = r(h.div());

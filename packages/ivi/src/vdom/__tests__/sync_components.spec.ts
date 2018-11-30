@@ -1,17 +1,19 @@
 describe(`sync components`, () => {
   /* tslint:disable:whitespace */
   let html: typeof import("ivi-html");
+  let iviTest: typeof import("ivi-test");
   let utils: typeof import("./utils");
   /* tslint:enable:whitespace */
 
   beforeEach(async () => {
     jest.resetModules();
     html = await import("ivi-html");
+    iviTest = await import("ivi-test");
     utils = await import("./utils");
   });
 
   test(`#1`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = html.span();
         const v2 = utils.Stateful(html.div());
@@ -38,7 +40,7 @@ Object {
   });
 
   test(`#2`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = utils.Stateful(html.div());
         const v2 = html.div();
@@ -66,7 +68,7 @@ Object {
   });
 
   test(`#3`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = html.div();
         const v2 = utils.Stateful(html.div());
@@ -94,7 +96,7 @@ Object {
   });
 
   test(`#4`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = utils.Stateful(html.div());
         const v2 = html.span();
@@ -121,7 +123,7 @@ Object {
   });
 
   test(`#5`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = utils.Stateful(html.div());
         const v2 = utils.Stateful(html.div());
@@ -149,7 +151,7 @@ Object {
   });
 
   test(`#6`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = utils.Stateful(utils.Stateful(html.div()));
         const v2 = html.span();
@@ -176,7 +178,7 @@ Object {
   });
 
   test(`#7`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = html.span();
         const v2 = utils.Stateful(utils.Stateful(html.div()));
@@ -203,7 +205,7 @@ Object {
   });
 
   test(`#8`, () => {
-    utils.startRender(r => {
+    iviTest.testRenderDOM(r => {
       utils.checkDOMOps(c => {
         const v1 = utils.Stateful(utils.Stateful(html.div()));
         const v2 = utils.Stateful(utils.Stateful(html.div()));
@@ -231,7 +233,7 @@ Object {
   });
 
   test(`null root to a div in a stateful component`, () => {
-    utils.startRender<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       const v1 = utils.Stateful(null);
       r(v1);
       const v2 = utils.Stateful(html.div());
@@ -241,7 +243,7 @@ Object {
   });
 
   test(`div to a null root in a stateful component`, () => {
-    utils.startRender<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       const v1 = utils.Stateful(html.div());
       r(v1);
       const v2 = utils.Stateful(null);
