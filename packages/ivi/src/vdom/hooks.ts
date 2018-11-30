@@ -106,6 +106,11 @@ export function useSelect<T, P, C extends {}>(
   selector: (props: P, context: C, prev: T | undefined) => T,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
+  /* istanbul ignore next */
+  if (TARGET === "ssr") {
+    return (nextProps: P) => selector(nextProps, getContext() as C, void 0);
+  }
+
   const prevSelector = (stateNode.s as ComponentHooks).s;
   let lastChecked = 0;
   let state: T | undefined;
@@ -158,9 +163,12 @@ export function useSelect<T, P, C extends {}>(
  * @param hook Unmount hook.
  */
 export function useUnmount(stateNode: OpState, hook: () => void): void {
-  stateNode.f |= NodeFlags.Unmount;
-  const hooks = stateNode.s as ComponentHooks;
-  hooks.u = addHook(hooks.u, hook);
+  /* istanbul ignore else */
+  if (TARGET !== "ssr") {
+    stateNode.f |= NodeFlags.Unmount;
+    const hooks = stateNode.s as ComponentHooks;
+    hooks.u = addHook(hooks.u, hook);
+  }
 }
 
 function withEffect<P>(fn: (effect: () => void) => void): (
@@ -229,7 +237,9 @@ export const useEffect: <T = undefined>(
   stateNode: OpState,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
+) => undefined extends T ? () => void : (props: T) => void = TARGET === "ssr" ?
+    /* istanbul ignore next */(props: any) => { /**/ } :
+    (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
 
 /**
  * useMutationEffect creates a DOM mutation effect hook.
@@ -243,7 +253,9 @@ export const useMutationEffect: <T = undefined>(
   stateNode: OpState,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
+) => undefined extends T ? () => void : (props: T) => void = TARGET === "ssr" ?
+    /* istanbul ignore next */(props: any) => { /**/ } :
+    (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
 
 /**
  * useLayoutEffect creates a DOM layout effect hook.
@@ -257,4 +269,6 @@ export const useLayoutEffect: <T = undefined>(
   stateNode: OpState,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
+) => undefined extends T ? () => void : (props: T) => void = TARGET === "ssr" ?
+    /* istanbul ignore next */(props: any) => { /**/ } :
+    (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
