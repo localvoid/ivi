@@ -45,7 +45,7 @@ export interface EventHandlerNode<E extends SyntheticEvent = any> {
 /**
  * Event handler.
  */
-export type EventHandler = EventHandlerNode | Array<EventHandlerNode | null> | null;
+export type EventHandler = EventHandlerNode | EventHandlerArray | null;
 
 /**
  * Recursive event handler array.

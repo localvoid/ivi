@@ -2,10 +2,16 @@
 import { NodeFlags } from "./node_flags";
 import { OpNode, Op, ElementData, createOpNode, createOpType } from "./operations";
 import { OpState } from "./state";
+import { checkElement } from "../debug/element";
 
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
   const type = createOpType(flags, tag);
-  return (n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
+  return DEBUG ?
+    (n?: string, a?: {}, c: Op = null) => {
+      checkElement(tag, a, (flags & NodeFlags.Svg) !== 0);
+      return createOpNode<ElementData>(type, { n, a, c });
+    } :
+    /* istanbul ignore else */(n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
 }
 
 /**
@@ -53,6 +59,7 @@ export function elementProto<P>(p: OpNode<ElementData<P>>) {
     if (p.d.c !== null) {
       throw new Error(`Invalid OpNode, element prototypes can't have any children`);
     }
+    checkElement(p.t.d as string, p.d.a, (p.t.f & NodeFlags.Svg) !== 0);
   }
   const type = createOpType(p.t.f | NodeFlags.ElementProto, { n: null, p });
   return (n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });

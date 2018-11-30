@@ -1,5 +1,4 @@
 import { CSSStyleProps } from "../dom/style";
-import { OpNode, Key } from "../vdom/operations";
 import { printWarn, printWarnOnce } from "./print";
 
 /**
@@ -92,21 +91,5 @@ export function checkElement(tag: string, attrs: any, svg: boolean): void {
     if (style) {
       checkStyle(style);
     }
-  }
-}
-
-/**
- * checkUniqueKeys checks that all nodes have unique keys.
- *
- * @param items - Keyed operations
- */
-export function checkUniqueKeys(items: Key<any, OpNode>[]): void {
-  const keys = new Set<any>();
-  for (let i = 0; i < items.length; i++) {
-    const key = items[i].k;
-    if (keys.has(key)) {
-      throw new Error(`Invalid children list, key: "${key}" is used multiple times.`);
-    }
-    keys.add(key);
   }
 }
