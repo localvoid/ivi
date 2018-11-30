@@ -1,4 +1,4 @@
-import { OpNode } from "./operations";
+import { OpNode, ElementData } from "./operations";
 
 /**
  * ElementProtoDescriptor is a descriptor for an element prototype.
@@ -20,5 +20,5 @@ export interface ElementProtoDescriptor {
   /**
    * Operation that were used to create a DOM Node.
    */
-  readonly p: OpNode;
+  readonly p: OpNode<ElementData>;
 }
