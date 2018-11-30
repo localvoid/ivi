@@ -81,7 +81,7 @@ export function emitElementOpen(op: OpNode<ElementData>): string {
   }
   value = data.a;
   if ((op.t.f & NodeFlags.ElementProto) !== 0) {
-    value = { ...(op.t.d as ElementProtoDescriptor).p.d.attrs, ...value };
+    value = { ...(op.t.d as ElementProtoDescriptor).p.d.a, ...value };
   }
   if (value !== void 0) {
     result += emitElementAttrs(value);
