@@ -26,17 +26,18 @@ export const enum NodeFlags {
   Svg = 1 << 10,
   // Component is dirty.
   Dirty = 1 << 11,
-  // Node requires dirty checking.
-  DirtyCheck = 1 << 12,
-  // Node requires unmounting.
-  Unmount = 1 << 13,
   /**
    * Newline eating element <pre> and <textarea>
    *
    * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
    * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
    */
-  NewlineEatingElement = 1 << 14,
+  NewlineEatingElement = 1 << 12,
+  // Node requires dirty checking.
+  DirtyCheck = 1 << 13,
+  // Node requires unmounting.
+  Unmount = 1 << 14,
+  // IMPORTANT: DO NOT ADD FLAGS AFTER THIS ONE, LAST FLAGS ARE SHIFTED BY `DeepStateShift`.
 
   // Flags that should be preserved before updating.
   SelfFlags = Text
