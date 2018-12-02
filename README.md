@@ -314,7 +314,7 @@ sending data snapshots that doesn't contain any information how nodes should be 
 
 ### Virtual DOM
 
-Virtual DOM in ivi has some major differences from other implementations. Refs, keys, events are implemented as a
+Virtual DOM in ivi has some major differences from other implementations. Events and keys are implemented as a
 special nodes instead of attributes. Using special nodes instead of attributes improves composition patterns, simple
 stateless components can be implemented as a basic immediately executed functions, DOM events can be attached to
 components, fragments or any other node.
@@ -347,7 +347,7 @@ type ElementFactory<T> = (className?: string, attrs?: T, children?: Op) => OpNod
 
 `ivi-html` package contains factories for HTML elements.
 
-`ivi-svg` package contains factoris for SVG elements.
+`ivi-svg` package contains factories for SVG elements.
 
 ```ts
 import { _, render } from "ivi";
@@ -369,7 +369,7 @@ lists can be deeply nested. All dynamic children lists are using their own key n
 ```ts
 function Events(events: EventHandler, children: Op): Op<EventsData>;
 
-type EventHandler = EventHandlerNode | Array<EventHandlerNode | null> | null;
+type EventHandler = EventHandlerNode | EventHandlerArray | null;
 interface EventHandlerArray extends Array<EventHandler> { }
 ```
 
@@ -388,30 +388,6 @@ render(
 );
 ```
 
-#### Ref
-
-```ts
-function Ref(data: Box<OpState | null>, children: Op): OpNode<RefData>;
-```
-
-`Ref()` operation is used to capture reference to an internal state of an operation.
-
-```ts
-import { _, OpNodeState, box, Ref, findDOMNode, render } from "ivi";
-import { div } from "ivi-html";
-
-const _ref = box<OpState | null>(null);
-render(
-  Ref(_ref,
-    div(_, _, "Hello World"),
-  ),
-  document.getElementById("app")!,
-);
-
-findDOMNode(_ref);
-// => <HTMLDivElement>
-```
-
 #### Context
 
 ```ts
@@ -425,7 +401,6 @@ import { _, Context, component, render } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
-  // Partial type argument inference: https://github.com/Microsoft/TypeScript/pull/26349
   const getContextValue = useSelect<_, { key: string }>((props, ctx) => ctx.key);
 
   return () => div(_, _, getContextValue());
@@ -748,7 +723,7 @@ const EntryList = component((c) => {
 
   return () => (
     ul("", { id: "todo-list" },
-      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.value.id, EntryField(e)))),
+      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.id, EntryField(e)))),
     )
   );
 });

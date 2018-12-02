@@ -71,9 +71,9 @@ export {
 export { ElementProtoDescriptor } from "./vdom/element_proto";
 export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor, Component } from "./vdom/component";
 export {
-  OpType, OpNode, Op, OpArray, ElementData, OpData, EventsData, RefData, ContextData, Key,
+  OpType, OpNode, Op, OpArray, ElementData, OpData, EventsData, ContextData, Key,
   createOpType, createOpNode,
-  Events, Ref, Context, TrackByKey, key
+  Events, Context, TrackByKey, key
 } from "./vdom/operations";
 export { OpState, createStateNode } from "./vdom/state";
 export {

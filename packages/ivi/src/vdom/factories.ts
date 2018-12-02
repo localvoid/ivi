@@ -1,8 +1,7 @@
-// import { CSSStyleProps } from "../dom/style";
+import { checkElement } from "../debug/element";
 import { NodeFlags } from "./node_flags";
 import { OpNode, Op, ElementData, createOpNode, createOpType } from "./operations";
-import { OpState } from "./state";
-import { checkElement } from "../debug/element";
+import { Component } from "./component";
 
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
   const type = createOpType(flags, tag);
@@ -87,7 +86,7 @@ export function elementProto<P>(p: OpNode<ElementData<P>>) {
  * @returns Factory that produces component nodes.
  */
 export function component(
-  c: (c: OpState) => () => Op,
+  c: (c: Component) => () => Op,
 ): () => OpNode<undefined>;
 
 /**
@@ -112,7 +111,7 @@ export function component(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: OpState) => (props: P) => Op,
+  c: (c: Component) => (props: P) => Op,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
@@ -138,7 +137,7 @@ export function component<P>(
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
-  c: (c: OpState) => (props: P) => Op,
+  c: (c: Component) => (props: P) => Op,
   su?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
   const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, su });

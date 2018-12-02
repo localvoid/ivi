@@ -5,9 +5,7 @@ import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
-import {
-  OpNode, ElementData, OpArray, Key, OpData, ContextData, Op, EventsData, RefData,
-} from "./operations";
+import { OpNode, ElementData, OpArray, Key, OpData, ContextData, Op, EventsData } from "./operations";
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
@@ -153,9 +151,9 @@ export function _dirtyCheck(
           _dirtyCheck(parentElement, node, moveNode, false);
         }
       }
-    } else if ((f & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
+    } else if ((f & NodeFlags.Events) !== 0) {
       _dirtyCheck(parentElement, opState.c as OpState, moveNode, singleChild);
-    } else {
+    } else { // Context
       if (_dirtyContext === true) {
         opState.s = { ...getContext(), ...(opState.o as OpNode<ContextData>).d.v };
       }
@@ -379,7 +377,7 @@ function _mountObject(
         nodeInsertBefore.call(parentElement, node, prevState);
       }
       _nextNode = node;
-    } else if ((flags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
+    } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
         prevState = setContext(
           opState.s = { ...getContext(), ...(d as OpData<ContextData>).v },
@@ -387,9 +385,6 @@ function _mountObject(
         opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
         restoreContext(prevState);
       } else {
-        if ((flags & NodeFlags.Ref) !== 0) {
-          (d as RefData).v.v = opState;
-        }
         opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
@@ -629,11 +624,11 @@ export function _update(
             singleChild,
           );
         }
-      } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
+      } else if ((flags & NodeFlags.Events) !== 0) {
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
-          (nextOp as OpNode<EventsData | RefData>).d.c,
+          (nextOp as OpNode<EventsData>).d.c,
           moveNode,
           singleChild,
         );

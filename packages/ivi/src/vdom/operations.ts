@@ -1,7 +1,5 @@
-import { Box } from "ivi-shared";
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
-import { OpState } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "./component";
 
@@ -35,11 +33,6 @@ export const createOpType = (
  * OpType for Events nodes.
  */
 export const EVENTS = createOpType(NodeFlags.Events, null);
-
-/**
- * OpType for Ref nodes.
- */
-export const REF = createOpType(NodeFlags.Ref, null);
 
 /**
  * OpType for Context nodes.
@@ -122,11 +115,6 @@ export interface OpData<T = any> {
 export type EventsData = OpData<EventHandler>;
 
 /**
- * Operation data for Ref operations.
- */
-export type RefData = OpData<Box<OpState | null>>;
-
-/**
  * Operation data for Context operations.
  */
 export type ContextData = OpData<{}>;
@@ -151,28 +139,6 @@ export const Events = (
   v: EventHandler,
   c: Op,
 ): OpNode<EventsData> => createOpNode(EVENTS, { v, c });
-
-/**
- * Operation factory for ref nodes.
- *
- * @example
- *
- *     const _ref = box<OpNodeState | null>(null);
- *
- *     render(
- *       Ref(_ref,
- *         div(),
- *       ),
- *       DOMContainer,
- *     );
- *
- *     findDOMNode(_ref);
- *
- * @param v Boxed value.
- * @param c Children operation nodes.
- * @returns Ref operation.
- */
-export const Ref = (v: Box<OpState | null>, c: Op): OpNode<RefData> => createOpNode(REF, { v, c });
 
 /**
  * Operation factory for context nodes.

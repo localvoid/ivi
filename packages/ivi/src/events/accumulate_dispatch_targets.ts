@@ -60,7 +60,7 @@ function visitDown(
     if (c !== null) {
       return visitDown(result, match, element, c as OpState);
     }
-  } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context | NodeFlags.Ref)) !== 0) {
+  } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context)) !== 0) {
     if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
       if ((f & NodeFlags.Events) !== 0) {
         accumulateDispatchTargetsFromEventsOpNode(result, stateNode, (stateNode.o as OpNode<EventsData>).d.v, match);

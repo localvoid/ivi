@@ -16,27 +16,25 @@ export const enum NodeFlags {
   Context = 1 << 5,
   // Element prototype node.
   ElementProto = 1 << 6,
-  // Ref node.
-  Ref = 1 << 7,
   // Fragment
-  Fragment = 1 << 8,
+  Fragment = 1 << 7,
   // Stateful Component
-  Stateful = 1 << 9,
+  Stateful = 1 << 8,
   // Svg Element.
-  Svg = 1 << 10,
+  Svg = 1 << 9,
   // Component is dirty.
-  Dirty = 1 << 11,
+  Dirty = 1 << 10,
   /**
    * Newline eating element <pre> and <textarea>
    *
    * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
    * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
    */
-  NewlineEatingElement = 1 << 12,
+  NewlineEatingElement = 1 << 11,
   // Node requires dirty checking.
-  DirtyCheck = 1 << 13,
+  DirtyCheck = 1 << 12,
   // Node requires unmounting.
-  Unmount = 1 << 14,
+  Unmount = 1 << 13,
   // IMPORTANT: DO NOT ADD FLAGS AFTER THIS ONE, LAST FLAGS ARE SHIFTED BY `DeepStateShift`.
 
   // Flags that should be preserved before updating.
@@ -48,7 +46,6 @@ export const enum NodeFlags {
   | Events
   | Context
   | ElementProto
-  | Ref
   | Fragment
   | Stateful
   | Svg

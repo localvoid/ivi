@@ -32,7 +32,7 @@ export function visitOpNodes(
         }
       } else if ((flags & NodeFlags.Context) !== 0) {
         return visitOpNodes(op.d.children, op, void 0, { ...context, ...op.d.data }, visitor);
-      } else if ((flags & (NodeFlags.Events | NodeFlags.Ref)) !== 0) {
+      } else if ((flags & NodeFlags.Events) !== 0) {
         return visitOpNodes(op.d.children, op, void 0, context, visitor);
       }
     }

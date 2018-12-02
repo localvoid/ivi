@@ -132,7 +132,7 @@ function renderObject(op: OpNode): string {
       return renderToString((op.t.d as StatelessComponentDescriptor).c(op.d));
     }
   }
-  if ((flags & (NodeFlags.Events | NodeFlags.Ref | NodeFlags.Context)) !== 0) {
+  if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
     if ((flags & NodeFlags.Context) !== 0) {
       const contextData = (op.d as ContextData);
       const prevContext = setContext(contextData.v);

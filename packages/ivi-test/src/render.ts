@@ -1,4 +1,5 @@
-import { Op, OpState, render, requestDirtyCheck, withNextFrame, Ref, box, getDOMNode } from "ivi";
+import { Op, OpState, render, requestDirtyCheck, withNextFrame, box, getDOMNode } from "ivi";
+import { Ref } from "./ref";
 
 export function testRender(
   fn: (
