@@ -6,6 +6,33 @@ import { checkDOMOps, Stateless, Static, Stateful } from "./utils";
 const i = (n: number) => key(n, n);
 const k = (...is: number[]) => h.div(_, _, TrackByKey(is.map(i)));
 
+test(`empty to empty`, () => {
+  testRenderDOM(r => {
+    checkDOMOps(c => {
+      const v1 = k();
+      const v2 = k();
+
+      r(v1);
+      const n = r(v2);
+
+      expect(n).toMatchInlineSnapshot(`<div />`);
+      expect(c).toMatchInlineSnapshot(`
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`);
+    });
+  });
+});
+
 test(`#1`, () => {
   testRenderDOM(r => {
     checkDOMOps(c => {

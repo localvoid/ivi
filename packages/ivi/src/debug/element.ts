@@ -55,24 +55,19 @@ function checkSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
 function checkHTMLAttributes(tag: string, attrs: { [key: string]: any }): void {
   switch (tag) {
     case "input": {
-      let attrsBeforeValue = 0;
-      loop: for (const key of Object.keys(attrs)) {
+      let value = false;
+      for (const key of Object.keys(attrs)) {
         switch (key) {
           case "step":
-            attrsBeforeValue = 1;
-            break;
           case "min":
-            attrsBeforeValue = 1;
-            break;
           case "max":
-            attrsBeforeValue = 1;
-            break;
-          case "value":
-            if (attrsBeforeValue) {
+            if (value) {
               printWarn(`Input value should be assigned after "step", "min" and "max" attributes to prevent ` +
                 `rounding issues.`);
             }
-            break loop;
+            break;
+          case "value":
+            value = true;
         }
       }
       break;
