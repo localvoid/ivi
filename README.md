@@ -825,18 +825,17 @@ shouldn't rely on this behaviour.
 
 ### Examples and demo applications
 
-#### Boilerplate
+#### CodeSandbox
 
-- [Basic Boilerplate](https://github.com/localvoid/ivi-boilerplate/)
-
-#### Basic
-
-- [Introduction](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction/)
-- [Stateful Component](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/02_stateful_component/)
-- [Events](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/03_events/)
-- [Forms](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/04_forms/)
-- [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_collapsable/)
-- [Composition](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_composition/)
+- [Hello World](https://codesandbox.io/s/vm9l368jk0)
+- [Update](https://codesandbox.io/s/qx8jkjx514)
+- [Components](https://codesandbox.io/s/oor080n22y)
+- [Stateful Components](https://codesandbox.io/s/64m11k50rr)
+- [Events](https://codesandbox.io/s/pmppl5wp70)
+- [Conditional Rendering](https://codesandbox.io/s/y79nwp613j)
+- [Dynamic Lists](https://codesandbox.io/s/006ol1moxp)
+- [Forms](https://codesandbox.io/s/zlk18r8n03)
+- [Composition](https://codesandbox.io/s/k9m8wlqky3)
 
 #### Apps
 
