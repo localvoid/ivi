@@ -21,19 +21,10 @@ export interface Root {
   next: Op | undefined;
 }
 
-export type Portal = Root;
-
-export const createPortal = (): Portal => ({ container: null, state: null, next: void 0 });
-
 /**
  * Root nodes.
  */
 export const ROOTS = [] as Root[];
-
-/**
- * Portals.
- */
-export const PORTALS = [] as Root[];
 
 /**
  * Find root node of a container.
@@ -41,17 +32,14 @@ export const PORTALS = [] as Root[];
  * @param predicate - Find predicate.
  * @returns root node or undefined when root node doesn't exist.
  */
-export const findRoot = (predicate: (root: Root) => boolean) => PORTALS.find(predicate) || ROOTS.find(predicate);
+export const findRoot = (predicate: (root: Root) => boolean) => ROOTS.find(predicate);
 
-export function forEachRoot(fn: (root: Root) => void) {
-  ROOTS.forEach(fn);
-  PORTALS.forEach(fn);
-}
 /**
  * Performs a dirty checking.
  */
 export function dirtyCheck() {
-  forEachRoot((root) => {
+  for (let i = 0; i < ROOTS.length; ++i) {
+    const root = ROOTS[i];
     const { container, state, next } = root;
     _resetState();
     if (next !== void 0) {
@@ -67,10 +55,5 @@ export function dirtyCheck() {
         checkNestingViolations(container!, root.state);
       }
     }
-  });
-}
-
-export function mountPortal(portal: Portal, container: Element): void {
-  portal.container = container;
-  PORTALS.push(portal);
+  }
 }

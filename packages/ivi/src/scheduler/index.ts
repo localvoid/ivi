@@ -3,7 +3,7 @@ import { sMT, rAF } from "ivi-scheduler";
 import { printWarn } from "../debug/print";
 import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";
-import { OpNode } from "../vdom/operations";
+import { Op } from "../vdom/operations";
 import { OpState } from "../vdom/state";
 import { ROOTS, findRoot, dirtyCheck } from "../vdom/root";
 
@@ -312,7 +312,7 @@ export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock)
  * @param container - DOM Node that will contain rendered node
  * @param flags - See {@link UpdateFlags} for details
  */
-export function render(next: OpNode | string | number | null, container: Element, flags?: UpdateFlags): void {
+export function render(next: Op, container: Element, flags?: UpdateFlags): void {
   /* istanbul ignore else */
   if (DEBUG) {
     /**

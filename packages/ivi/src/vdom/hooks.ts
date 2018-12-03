@@ -4,8 +4,6 @@ import { ComponentHooks, Component } from "./component";
 import { getContext } from "./context";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { OpState } from "./state";
-import { Portal } from "./root";
-import { Op } from "./operations";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -274,27 +272,3 @@ export const useLayoutEffect: <T = undefined>(
 ) => undefined extends T ? () => void : (props: T) => void = TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
-
-/**
- * usePortal creates a portal entry.
- *
- * @param component Component state.
- * @param portal Portal.
- * @returns Portal entry.
- */
-export function usePortal(component: Component, portal: Portal) {
-  let unmount = false;
-  return (op: Op) => {
-    if (portal.container !== null) {
-      portal.next = op;
-      if (unmount === false) {
-        unmount = true;
-        useUnmount(component, () => {
-          if (op !== null) {
-            portal.next = null;
-          }
-        });
-      }
-    }
-  };
-}

@@ -79,11 +79,12 @@ export { OpState, createStateNode } from "./vdom/state";
 export {
   elementFactory, htmlElementFactory, svgElementFactory, elementProto, component, statelessComponent,
 } from "./vdom/factories";
-export { createPortal, mountPortal, dirtyCheck } from "./vdom/root";
-export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect, usePortal } from "./vdom/hooks";
+export { dirtyCheck } from "./vdom/root";
+export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { selector, findDOMNode } from "./vdom/utils";
 export { visitNodes, getDOMNode } from "./vdom/reconciler";
 export { Ref } from "./vdom/ref";
+export { Portal, portal, usePortal } from "./vdom/portal";
 
 // Scheduler
 export {
