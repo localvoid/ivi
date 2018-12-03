@@ -1,9 +1,11 @@
 import { EMPTY_OBJECT } from "ivi-shared";
 import { NodeFlags } from "./node_flags";
-import { ComponentHooks } from "./component";
+import { ComponentHooks, Component } from "./component";
 import { getContext } from "./context";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { OpState } from "./state";
+import { Portal } from "./root";
+import { Op } from "./operations";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -260,15 +262,39 @@ export const useMutationEffect: <T = undefined>(
 /**
  * useLayoutEffect creates a DOM layout effect hook.
  *
- * @param stateNode Component instance.
+ * @param component Component state.
  * @param hook DOM layout function.
  * @param shouldUpdate Should update function.
  * @returns Side effect hook
  */
 export const useLayoutEffect: <T = undefined>(
-  stateNode: OpState,
+  component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
+
+/**
+ * usePortal creates a portal entry.
+ *
+ * @param component Component state.
+ * @param portal Portal.
+ * @returns Portal entry.
+ */
+export function usePortal(component: Component, portal: Portal) {
+  let unmount = false;
+  return (op: Op) => {
+    if (portal.container !== null) {
+      portal.next = op;
+      if (unmount === false) {
+        unmount = true;
+        useUnmount(component, () => {
+          if (op !== null) {
+            portal.next = null;
+          }
+        });
+      }
+    }
+  };
+}

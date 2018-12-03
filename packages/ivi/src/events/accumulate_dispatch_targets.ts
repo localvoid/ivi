@@ -2,7 +2,7 @@ import { DispatchTarget } from "./dispatch_target";
 import { EventHandlerNode, EventHandler } from "./event_handler";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpState } from "../vdom/state";
-import { ROOTS } from "../vdom/root";
+import { findRoot } from "../vdom/root";
 import { OpNode, EventsData } from "../vdom/operations";
 
 /**
@@ -18,13 +18,11 @@ export function accumulateDispatchTargets(
   target: Element,
   match: (h: EventHandlerNode) => boolean,
 ): void {
-  for (let i = 0; i < ROOTS.length; i++) {
-    const { container, state } = ROOTS[i];
-    if (container.contains(target)) {
-      if (container !== target) {
-        visitUp(result, match, target, container, state!);
-      }
-      break;
+  const root = findRoot((r) => r.container!.contains(target));
+  if (root) {
+    const container = root.container;
+    if (container !== target) {
+      visitUp(result, match, target, container!, root.state);
     }
   }
 }

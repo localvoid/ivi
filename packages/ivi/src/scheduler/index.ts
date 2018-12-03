@@ -1,6 +1,7 @@
 import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList } from "ivi-shared";
 import { sMT, rAF } from "ivi-scheduler";
 import { printWarn } from "../debug/print";
+import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpNode } from "../vdom/operations";
 import { OpState } from "../vdom/state";
@@ -325,11 +326,22 @@ export function render(next: OpNode | string | number | null, container: Element
     }
   }
 
-  const root = findRoot(container);
+  const root = findRoot((v) => v.container === container);
   if (root) {
     root.next = next;
   } else {
-    ROOTS.push({ container, next, state: null });
+    ROOTS.push({ container, state: null, next });
+    /* istanbul ignore if */
+    /**
+     * Fix for the Mouse Event bubbling on iOS devices.
+     *
+     * #quirks
+     *
+     * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+     */
+    if (TARGET === "browser" && IOS_GESTURE_EVENT) {
+      (container as HTMLElement).onclick = NOOP;
+    }
   }
 
   requestDirtyCheck(flags);
