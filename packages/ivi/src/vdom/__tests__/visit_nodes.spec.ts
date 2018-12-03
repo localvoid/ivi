@@ -1,6 +1,6 @@
-import { NodeFlags, OpState, box, visitNodes } from "ivi";
+import { NodeFlags, OpState, box, Ref, visitNodes } from "ivi";
 import { div } from "ivi-html";
-import { Ref, testRenderDOM } from "ivi-test";
+import { testRenderDOM } from "ivi-test";
 
 test(`should visit element node`, () => {
   testRenderDOM<HTMLButtonElement>(r => {

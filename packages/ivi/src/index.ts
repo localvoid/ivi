@@ -83,6 +83,7 @@ export { createPortal, mountPortal, dirtyCheck } from "./vdom/root";
 export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect, usePortal } from "./vdom/hooks";
 export { selector, findDOMNode } from "./vdom/utils";
 export { visitNodes, getDOMNode } from "./vdom/reconciler";
+export { Ref } from "./vdom/ref";
 
 // Scheduler
 export {
