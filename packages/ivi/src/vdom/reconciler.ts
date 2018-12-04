@@ -97,23 +97,23 @@ export function _dirtyCheck(
   singleChild: boolean,
 ): void {
   const { f, c } = opState;
-  let node;
+  let state;
   let deepState;
   let i;
 
   if ((f & NodeFlags.Component) !== 0) {
-    const hooks = opState.s as ComponentHooks;
+    state = opState.s as ComponentHooks;
     deepState = _pushDeepState();
     if (
       ((f & NodeFlags.Stateful) !== 0) && (
         ((f & NodeFlags.Dirty) !== 0) ||
-        (hooks.s !== null && hooks.s(getContext()) === true)
+        (state.s !== null && state.s(getContext()) === true)
       )
     ) {
       opState.c = _update(
         parentElement,
         c as OpState,
-        hooks.r!((opState.o as OpNode).d),
+        state.r!((opState.o as OpNode).d),
         moveNode,
         singleChild,
       );
@@ -131,24 +131,24 @@ export function _dirtyCheck(
   } else if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
     deepState = _pushDeepState();
     if ((f & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-      node = opState.s as Node;
+      state = opState.s as Node;
       if (moveNode === true) {
         /* istanbul ignore else */
         if (DEBUG) {
-          parentElement.insertBefore(node, _nextNode);
+          parentElement.insertBefore(state, _nextNode);
         } else {
-          nodeInsertBefore.call(parentElement, node, _nextNode);
+          nodeInsertBefore.call(parentElement, state, _nextNode);
         }
       }
       if (c !== null) {
-        _dirtyCheck(node as Element, c as OpState, false, true);
+        _dirtyCheck(state as Element, c as OpState, false, true);
       }
-      _nextNode = node;
+      _nextNode = state;
     } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       i = (c as Array<OpState | null>).length;
       while (--i >= 0) {
-        if ((node = (c as Array<OpState | null>)[i]) !== null) {
-          _dirtyCheck(parentElement, node, moveNode, false);
+        if ((state = (c as Array<OpState | null>)[i]) !== null) {
+          _dirtyCheck(parentElement, state, moveNode, false);
         }
       }
     } else if ((f & NodeFlags.Events) !== 0) {
@@ -327,14 +327,15 @@ function _mountObject(
   const { t, d } = op;
   const flags = t.f;
   let deepStateFlags;
+  let prevState;
   let value;
 
   if ((flags & NodeFlags.Component) !== 0) {
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Stateful) !== 0) {
-      const hooks: ComponentHooks = opState.s = { r: null, s: null, u: null };
+      prevState = opState.s = { r: null, s: null, u: null } as ComponentHooks;
       // Reusing value variable.
-      value = hooks.r = (op.t.d as ComponentDescriptor).c(opState);
+      value = (prevState as ComponentHooks).r = (op.t.d as ComponentDescriptor).c(opState);
     } else {
       value = (op.t.d as StatelessComponentDescriptor).c;
     }
@@ -342,11 +343,10 @@ function _mountObject(
     opState.f = (opState.f & NodeFlags.SelfFlags) | flags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else {
-    let prevState;
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Element) !== 0) {
-      let node: Element | undefined;
       const descriptor = t.d;
+      let node: Element | undefined;
       if ((flags & NodeFlags.ElementProto) !== 0) {
         node = (descriptor as ElementProtoDescriptor).n as Element;
         if (node === null) {

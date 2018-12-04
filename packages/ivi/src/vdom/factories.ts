@@ -3,6 +3,13 @@ import { NodeFlags } from "./node_flags";
 import { OpNode, Op, ElementData, createOpNode, createOpType } from "./operations";
 import { Component } from "./component";
 
+/**
+ * elementFactory creates a factory for DOM elements.
+ *
+ * @param tag HTML element tag name.
+ * @param flags Node flags.
+ * @returns HTML element operation factory.
+ */
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
   const type = createOpType(flags, tag);
   return DEBUG ?
@@ -10,11 +17,11 @@ export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
       checkElement(tag, a, (flags & NodeFlags.Svg) !== 0);
       return createOpNode<ElementData>(type, { n, a, c });
     } :
-    /* istanbul ignore else */(n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
+    /* istanbul ignore next */(n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
 }
 
 /**
- * htmlElementFactory creates a HTML element operation factories.
+ * htmlElementFactory creates a factory for HTML elements.
  *
  * @param tag HTML element tag name.
  * @returns HTML element operation factory.
@@ -26,7 +33,7 @@ export const htmlElementFactory: <T, U>(tag: string) => (
 ) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element);
 
 /**
- * svgElementFactory creates a SVG element operation factories.
+ * svgElementFactory creates a factory for SVG elements.
  *
  * @param tag SVG element tag name.
  * @returns SVG element operation factory.
@@ -42,7 +49,7 @@ export const svgElementFactory: <T, U>(tag: string) => (
  *
  * @example
  *
- *     const DivWithIdAttribute = element(div(_, { id: "predefined-id" }));
+ *     const DivWithIdAttribute = elementProto(div(_, { id: "predefined-id" }));
  *
  *     render(
  *       DivWithIdAttribute("class-name", { title: "Title" }, "Hello World"),
@@ -65,7 +72,7 @@ export function elementProto<P>(p: OpNode<ElementData<P>>) {
 }
 
 /**
- * component creates an OpNode factory that produces nodes for components.
+ * component creates a factory that produces component nodes.
  *
  * @example
  *
@@ -90,7 +97,7 @@ export function component(
 ): () => OpNode<undefined>;
 
 /**
- * component creates an OpNode factory that produces nodes for components.
+ * component creates a factory that produces component nodes.
  *
  * @example
  *
@@ -116,7 +123,7 @@ export function component<P>(
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
- * component creates an OpNode factory that produces nodes for components.
+ * component creates a factory that produces component nodes.
  *
  * @example
  *
@@ -145,7 +152,7 @@ export function component<P>(
 }
 
 /**
- * statelessComponent creates an OpNode factory that produces nodes for stateless components.
+ * statelessComponent creates an factory that produces stateless components nodes.
  *
  * @example
  *
@@ -160,7 +167,7 @@ export function statelessComponent(
 ): () => OpNode<undefined>;
 
 /**
- * statelessComponent creates an OpNode factory that produces nodes for stateless components.
+ * statelessComponent creates an factory that produces stateless components nodes.
  *
  * @example
  *
@@ -176,7 +183,7 @@ export function statelessComponent<P>(
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
- * statelessComponent creates an OpNode factory that produces nodes for stateless components.
+ * statelessComponent creates an factory that produces stateless components nodes.
  *
  * @example
  *
