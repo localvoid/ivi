@@ -28,7 +28,7 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.5KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KB** (minified+compressed).
 
 ## Quick Start
 
@@ -314,10 +314,17 @@ sending data snapshots that doesn't contain any information how nodes should be 
 
 ### Virtual DOM
 
-Virtual DOM in ivi has some major differences from other implementations. Refs, keys, events are implemented as a
+Virtual DOM in ivi has some major differences from other implementations. Events and keys are implemented as a
 special nodes instead of attributes. Using special nodes instead of attributes improves composition patterns, simple
 stateless components can be implemented as a basic immediately executed functions, DOM events can be attached to
 components, fragments or any other node.
+
+Internally, all "Virtual DOM" nodes in ivi are called operations and has a type `Op`.
+
+```ts
+type Op = string | number | OpNode | OpArray | null;
+interface OpArray extends Array<Op> { }
+```
 
 #### Immutable Virtual DOM
 
@@ -335,12 +342,12 @@ hidden costs, zero normalization passes, nothing gets copied when dealing with e
 All factory functions that create DOM elements have an interface:
 
 ```ts
-type ElementFactory<T> = (className?: string, attrs?: T, children?: OpChildren) => OpNode<T>;
+type ElementFactory<T> = (className?: string, attrs?: T, children?: Op) => OpNode<ElementData<T>>;
 ```
 
 `ivi-html` package contains factories for HTML elements.
 
-`ivi-svg` package contains factoris for SVG elements.
+`ivi-svg` package contains factories for SVG elements.
 
 ```ts
 import { _, render } from "ivi";
@@ -352,18 +359,52 @@ render(
 );
 ```
 
+#### Element Prototypes
+
+Element prototypes are used to create factories for elements with predefined attributes.
+
+```ts
+import { _, elementProto, render } from "ivi";
+import { input, CHECKED } from "ivi-html";
+
+const checkbox = elementProto(input(_, { type: "checkbox" }));
+
+render(
+  checkbox(_, { checked: CHECKED(true) }),
+  document.getElementById("app")!,
+);
+```
+
 #### Fragments
 
 All virtual dom nodes and component root nodes can have any number of children nodes. Fragments and dynamic children
-lists can be deeply nested. All dynamic children lists are using their own key namespaces to prevent key collisions.
+lists can be deeply nested.
+
+```ts
+const C = component((c) => () => (
+  [1, 2]
+));
+
+render(
+  div(_, _, [
+    [C(), C()],
+    [C(), C()],
+  ]),
+  document.getElementById("app")!,
+);
+```
 
 #### Events
 
 ```ts
-function Events(data: EventHandler | Array<EventHandler | null> | null, children: OpChildren): OpNode<EventsData>;
+function Events(events: EventHandler, children: Op): Op<EventsData>;
+
+type EventHandler = EventHandlerNode | EventHandlerArray | null;
+interface EventHandlerArray extends Array<EventHandler> { }
 ```
 
-`Events()` node is used to attach event handlers.
+`Events()` operation is used to attach event handlers. `events` argument can be a singular event handler, `null` or
+recursive array of event handlers.
 
 ```ts
 import { _, Events, onClick, render } from "ivi";
@@ -377,44 +418,20 @@ render(
 );
 ```
 
-#### Ref
-
-```ts
-function Ref(data: Box<OpNodeState | null>, children: OpChildren): OpNode<RefData>;
-```
-
-`Ref()` node is used to capture reference to an instance.
-
-```ts
-import { _, OpNodeState, box, Ref, findDOMNode, render } from "ivi";
-import { div } from "ivi-html";
-
-const _ref = box<OpNodeState | null>(null);
-render(
-  Ref(_ref,
-    div(_, _, "Hello World"),
-  ),
-  document.getElementById("app")!,
-);
-
-findDOMNode(_ref);
-// => <HTMLDivElement>
-```
-
 #### Context
 
 ```ts
-function Context(data: {}, children: OpChildren): OpNode<ContextData>;
+function Context(data: {}, children: Op): OpNode<ContextData>;
 ```
 
-`Context()` node is used to assign context.
+`Context()` operation is used to assign context.
 
 ```ts
 import { _, Context, component, render } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
-  const getContextValue = useSelect<undefined, { key: string }>((props, ctx) => ctx.key);
+  const getContextValue = useSelect<_, { key: string }>((props, ctx) => ctx.key);
 
   return () => div(_, _, getContextValue());
 });
@@ -430,10 +447,10 @@ render(
 #### TrackByKey
 
 ```ts
-function TrackByKey(items: Key<any, OpChildren>[]): OpNode<Key<any, OpChildren>[]>;
+function TrackByKey(items: Key<any, Op>[]): OpNode<Key<any, Op>[]>;
 ```
 
-`TrackByKey()` node is used for dynamic children lists.
+`TrackByKey()` operation is used for dynamic children lists.
 
 ```ts
 import { _, TrackByKey, key, render } from "ivi";
@@ -449,12 +466,11 @@ render(
 );
 ```
 
-
 #### Attribute Directives
 
 By default, reconciliation algorithm assigns all attributes with `setAttribute()` and removes them with
 `removeAttribute()` functions, but sometimes we need to assign properties or assign attributes from different
-namespaces. To solve this problems, ivi introduces the concept of Attribute Directives, this values can extend the
+namespaces. To solve this problems, ivi introduces the concept of Attribute Directives, this directives can extend the
 default behavior of the attributes reconciliation algorithm. It significantly reduces code complexity, because we no
 longer need to bake in all this edge cases into reconciliation algorithm. Also it gives an additional escape hatch to
 manipulate DOM elements directly.
@@ -569,10 +585,10 @@ function requestDirtyCheck(flags?: UpdateFlags);
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(node: OpNode | null, container: Element, flags?: UpdateFlags): void;
+function render(children: Op, container: Element, flags?: UpdateFlags): void;
 ```
 
-`render()` function assigns a new virtual DOM root node to the `container` and performs dirty checking.
+`render()` function assigns a new virtual DOM root node to the `container` and requests dirty checking.
 
 ### Components
 
@@ -586,10 +602,12 @@ function component(
 function component<P>(
   c: (c: Component<P>) => (props: P) => OpChildren,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
+): undefined extends P ? () => OpNode<P> : (props: P) => OpNode<P>;
 ```
 
-`component()` function creates a factory function that will instantiate virtual DOM nodes for the component.
+`component()` function creates a factory function that will instantiate component nodes.
+
+By default, all components and hooks are using strict equality `===` operator as a `shouldUpdate` function.
 
 ```ts
 import { _, component } from "ivi";
@@ -658,7 +676,8 @@ function useSelect<T, P, C>(
 
 `useSelect()` creates a selector hook.
 
-Selectors are used for sideways data loading and accessing current context.
+Selectors are used for sideways data accessing or retrieving data from the current context. It is a low-level and more
+flexible alternative to redux connectors.
 
 ```js
 const Pixel = component((c) => {
@@ -668,13 +687,13 @@ const Pixel = component((c) => {
 });
 ```
 
-##### `useDetached()`
+##### `useUnmount()`
 
 ```ts
-function useDetached(c: Component, hook: () => void): void;
+function useUnmount(c: Component, hook: () => void): void;
 ```
 
-`useDetached()` creates a hook that will be invoked when component is detached from the document.
+`useUnmount()` creates a hook that will be invoked when component is unmounted from the document.
 
 #### Additional Functions
 
@@ -684,7 +703,7 @@ function useDetached(c: Component, hook: () => void): void;
 function invalidate(c: Component, flags?: UpdateFlags): void;
 ```
 
-`invalidate()` marks component as dirty and triggers an update.
+`invalidate()` marks component as dirty and requests dirty checking.
 
 #### Using a Custom Hook
 
@@ -725,13 +744,16 @@ const FriendStatus = component((c) => {
 ##### Pass Information Between Hooks
 
 ```js
+const useFilter = selector(() => query().filter());
+const useEntriesByFilterType = selector((filter) => (query().entriesByFilterType(filter).result));
+
 const EntryList = component((c) => {
-  const getFilter = useSelect(c, () => query().filter());
-  const getEntriesByFilterType = useSelect(c, (filter) => (query().entriesByFilterType(filter).result));
+  const getFilter = useFilter(c);
+  const getEntriesByFilterType = useEntriesByFilterType(c);
 
   return () => (
     ul("", { id: "todo-list" },
-      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.value.id, EntryField(e)))),
+      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.id, EntryField(e)))),
     )
   );
 });
@@ -819,7 +841,8 @@ scrollbar positions, stop video playback, collapse IME etc.
 
 #### Defined Behaviour
 
-This is the behaviour that you can rely on when thinking how syncing algorithm will update children lists.
+This is the behaviour that you can rely on when thinking how reconciliation algorithm will update dynamic children
+lists.
 
 - Inserted nodes won't cause any nodes to move.
 - Removed nodes won't cause any nodes to move.
@@ -832,18 +855,17 @@ shouldn't rely on this behaviour.
 
 ### Examples and demo applications
 
-#### Boilerplate
+#### CodeSandbox
 
-- [Basic Boilerplate](https://github.com/localvoid/ivi-boilerplate/)
-
-#### Basic
-
-- [Introduction](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction/)
-- [Stateful Component](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/02_stateful_component/)
-- [Events](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/03_events/)
-- [Forms](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/04_forms/)
-- [Collapsable](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_collapsable/)
-- [Composition](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/05_composition/)
+- [Hello World](https://codesandbox.io/s/vm9l368jk0)
+- [Update](https://codesandbox.io/s/qx8jkjx514)
+- [Components](https://codesandbox.io/s/oor080n22y)
+- [Stateful Components](https://codesandbox.io/s/64m11k50rr)
+- [Events](https://codesandbox.io/s/pmppl5wp70)
+- [Conditional Rendering](https://codesandbox.io/s/y79nwp613j)
+- [Dynamic Lists](https://codesandbox.io/s/006ol1moxp)
+- [Forms](https://codesandbox.io/s/zlk18r8n03)
+- [Composition](https://codesandbox.io/s/k9m8wlqky3)
 
 #### Apps
 

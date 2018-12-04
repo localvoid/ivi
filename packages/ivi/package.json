@@ -1,6 +1,6 @@
 {
   "name": "ivi",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",
@@ -20,8 +20,8 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "dependencies": {
-    "ivi-scheduler": "^0.19.0",
-    "ivi-shared": "^0.19.0"
+    "ivi-scheduler": "^0.20.0",
+    "ivi-shared": "^0.20.0"
   },
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",
