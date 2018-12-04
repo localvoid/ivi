@@ -28,7 +28,7 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.5KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KB** (minified+compressed).
 
 ## Quick Start
 
@@ -359,10 +359,40 @@ render(
 );
 ```
 
+#### Element Prototypes
+
+Element prototypes are used to create factories for elements with predefined attributes.
+
+```ts
+import { _, elementProto, render } from "ivi";
+import { input, CHECKED } from "ivi-html";
+
+const checkbox = elementProto(input(_, { type: "checkbox" }));
+
+render(
+  checkbox(_, { checked: CHECKED(true) }),
+  document.getElementById("app")!,
+);
+```
+
 #### Fragments
 
 All virtual dom nodes and component root nodes can have any number of children nodes. Fragments and dynamic children
-lists can be deeply nested. All dynamic children lists are using their own key namespaces to prevent key collisions.
+lists can be deeply nested.
+
+```ts
+const C = component((c) => () => (
+  [1, 2]
+));
+
+render(
+  div(_, _, [
+    [C(), C()],
+    [C(), C()],
+  ]),
+  document.getElementById("app")!,
+);
+```
 
 #### Events
 
