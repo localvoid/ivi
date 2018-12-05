@@ -816,6 +816,49 @@ render(
 );
 ```
 
+### Global Variables
+
+#### `DEBUG`
+
+When `DEBUG` is enabled, there will be many different runtime checks that improve development experience.
+
+#### `TARGET`
+
+Supported targets:
+
+- `browser` - Default target.
+- `evergreen` - Evergreen browsers.
+- `electron` - [Electron](https://github.com/electron/electron).
+- `ssr` - Server-side rendering.
+
+#### Webpack Configuration
+
+```js
+module.exports = {
+  plugins: [
+    new webpack.DefinePlugin({
+      "DEBUG": "true",
+      "TARGET": JSON.stringify("browser"),
+    }),
+  ],
+}
+```
+
+#### Rollup Configuration
+
+```js
+export default {
+  plugins: [
+    replace({
+      values: {
+        DEBUG: true,
+        TARGET: JSON.stringify("browser"),
+      },
+    }),
+  ],
+};
+```
+
 ### Children Reconciliation
 
 Children reconciliation algorithm in ivi works in a slightly different way than
@@ -876,6 +919,7 @@ shouldn't rely on this behaviour.
 
 #### Benchmarks
 
+- [JS Frameworks Benchmark](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi)
 - [UIBench](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/uibench/)
 - [DBMon](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/dbmon/)
 - [10k Components](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/10k/)
