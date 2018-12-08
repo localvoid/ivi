@@ -33,6 +33,6 @@ export function restoreContext(context: {}): void {
  *
  * @returns current context
  */
-export function getContext(): {} {
-  return _context;
+export function getContext<T extends {}>(): T {
+  return _context as T;
 }

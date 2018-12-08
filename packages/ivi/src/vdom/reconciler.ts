@@ -107,7 +107,7 @@ export function _dirtyCheck(
     if (
       ((f & NodeFlags.Stateful) !== 0) && (
         ((f & NodeFlags.Dirty) !== 0) ||
-        (state.s !== null && state.s(getContext()) === true)
+        (state.s !== null && state.s() === true)
       )
     ) {
       opState.c = _update(

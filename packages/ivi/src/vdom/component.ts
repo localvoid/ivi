@@ -12,7 +12,7 @@ export interface ComponentHooks<T = any> {
   /**
    * Selector hooks.
    */
-  s: null | ((context: {}) => boolean);
+  s: null | (() => boolean);
   /**
    * Unmount hooks.
    */

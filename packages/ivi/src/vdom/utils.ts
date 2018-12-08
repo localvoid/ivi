@@ -48,7 +48,7 @@ export function selector<T>(
  * @returns Selector factory.
  */
 export function selector<T, P>(
-  s: (props: P, context: undefined, prev?: T | undefined) => T,
+  s: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (stateNode: OpState) => undefined extends P ? () => T : (props: P) => T;
 
@@ -72,8 +72,8 @@ export function selector<T, P>(
  * @param shouldUpdate Should update function.
  * @returns Selector factory.
  */
-export function selector<T, P, C>(
-  s: (props: P, context: C, prev?: T | undefined) => T,
+export function selector<T, P>(
+  s: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (stateNode: OpState) => undefined extends P ? () => T : (props: P) => T;
 
@@ -97,8 +97,8 @@ export function selector<T, P, C>(
  * @param shouldUpdate Should update function.
  * @returns Selector factory.
  */
-export function selector<T, P, C>(
-  s: (props: P, context: C, prev?: T | undefined) => T,
+export function selector<T, P>(
+  s: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (c: OpState) => undefined extends P ? () => T : (props: P) => T {
   return (stateNode: OpState) => useSelect(stateNode, s, shouldUpdate);

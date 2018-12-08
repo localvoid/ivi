@@ -1,7 +1,6 @@
 import { EMPTY_OBJECT } from "ivi-shared";
 import { NodeFlags } from "./node_flags";
 import { ComponentHooks, Component } from "./component";
-import { getContext } from "./context";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { OpState } from "./state";
 
@@ -22,8 +21,8 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  * @example
  *
  *     const C = component<number>((h) => {
- *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (id, context) => context.data[id],
+ *       const selector = useSelect<string, number>(c,
+ *         (id, context) => getContext<{ data: string[] }>.data[id],
  *       );
  *
  *       return (id) => div(_, _, selector(id));
@@ -35,7 +34,7 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  */
 export function useSelect<T>(
   stateNode: OpState,
-  selector: (props?: undefined, context?: undefined, prev?: T | undefined) => T,
+  selector: (props?: undefined, prev?: T | undefined) => T,
 ): () => T;
 
 /**
@@ -44,8 +43,8 @@ export function useSelect<T>(
  * @example
  *
  *     const C = component<number>((h) => {
- *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (id, context) => context.data[id],
+ *       const selector = useSelect<string, number>(c,
+ *         (id, context) => getContext<{ data: string[] }>.data[id],
  *       );
  *
  *       return (id) => div(_, _, selector(id));
@@ -57,7 +56,7 @@ export function useSelect<T>(
  */
 export function useSelect<T, P>(
   stateNode: OpState,
-  selector: (props: P, context?: undefined, prev?: T | undefined) => T,
+  selector: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -67,8 +66,8 @@ export function useSelect<T, P>(
  * @example
  *
  *     const C = component<number>((h) => {
- *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (id, context) => context.data[id],
+ *       const selector = useSelect<string, number>(c,
+ *         (id, context) => getContext<{ data: string[] }>.data[id],
  *       );
  *
  *       return (id) => div(_, _, selector(id));
@@ -78,9 +77,9 @@ export function useSelect<T, P>(
  * @param selector Selector function.
  * @returns Selector hook.
  */
-export function useSelect<T, P, C>(
+export function useSelect<T, P>(
   stateNode: OpState,
-  selector: (props: P, context: C, prev?: T | undefined) => T,
+  selector: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 
@@ -89,9 +88,9 @@ export function useSelect<T, P, C>(
  *
  * @example
  *
- *     const C = component<number>((c) => {
- *       const selector = useSelect<string, number, { data: string[] }>(c,
- *         (id, context) => context.data[id],
+ *     const C = component<number>((h) => {
+ *       const selector = useSelect<string, number>(c,
+ *         (id, context) => getContext<{ data: string[] }>.data[id],
  *       );
  *
  *       return (id) => div(_, _, selector(id));
@@ -101,14 +100,14 @@ export function useSelect<T, P, C>(
  * @param selector Selector function.
  * @returns Selector hook.
  */
-export function useSelect<T, P, C extends {}>(
+export function useSelect<T, P>(
   stateNode: OpState,
-  selector: (props: P, context: C, prev: T | undefined) => T,
+  selector: (props: P, prev: T | undefined) => T,
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
   /* istanbul ignore next */
   if (TARGET === "ssr") {
-    return (nextProps: P) => selector(nextProps, getContext() as C, void 0);
+    return (nextProps: P) => selector(nextProps, void 0);
   }
 
   const prevSelector = (stateNode.s as ComponentHooks).s;
@@ -116,12 +115,12 @@ export function useSelect<T, P, C extends {}>(
   let state: T | undefined;
   let props: P;
 
-  (stateNode.s as ComponentHooks).s = (context: {}) => {
-    if (prevSelector !== null && prevSelector(context) === true) {
+  (stateNode.s as ComponentHooks).s = () => {
+    if (prevSelector !== null && prevSelector() === true) {
       return true;
     }
     if (state !== void 0) {
-      const nextState = selector(props, context as C, state);
+      const nextState = selector(props, state);
       lastChecked = clock();
       if (state !== nextState) {
         state = nextState;
@@ -139,7 +138,7 @@ export function useSelect<T, P, C extends {}>(
       state = void 0;
     }
     if (state === void 0 || lastChecked < clock()) {
-      state = selector(nextProps, getContext() as C, state);
+      state = selector(nextProps, state);
     }
     props = nextProps;
     return state;

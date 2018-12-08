@@ -1,13 +1,10 @@
-import { _, component, useSelect, Context } from "ivi";
+import { _, component, useSelect, Context, getContext } from "ivi";
 import { div } from "ivi-html";
 import { testRenderDOM } from "ivi-test";
 import { Static } from "./utils";
 
 const ContextTestPrinter = component(h => {
-  const selector = useSelect<string, undefined, { value: string }>(
-    h,
-    (props, ctx) => ctx.value
-  );
+  const selector = useSelect<string>(h, () => getContext<{ value: string }>().value);
   return () => div(_, _, selector());
 });
 
