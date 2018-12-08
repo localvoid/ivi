@@ -338,6 +338,8 @@ export function render(next: Op, container: Element, flags?: UpdateFlags): void 
      * #quirks
      *
      * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+     *
+     * Fixed in Safari TP71: https://trac.webkit.org/changeset/237978/webkit/
      */
     if (TARGET === "browser" && IOS_GESTURE_EVENT) {
       (container as HTMLElement).onclick = NOOP;

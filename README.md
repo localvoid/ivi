@@ -212,9 +212,16 @@ other areas.
 
 ### Performance Benchmarks
 
-There are no good ways how to compare performance of different libraries, and there are no good benchmarks since all
-benchmarks are biased towards some type of libraries. So we need to understand how to read numbers from this biased
-benchmarks.
+There are no good ways how to compare performance of different libraries, and there are issues with existing benchmarks:
+
+- Benchmark tests are usually so simple, so it is possible to create a specialized code path in the library that will
+work fast in this simple conditions, give this feature a name like "optimization hints" and focus on performance of this
+small subset of a library.
+- Some benchmark implementations are abusing different techniques to
+get an edge over other implementations:
+[explicit event delegation](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L41),
+[workarounds to reduce number of data bindings](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L42-L48).
+- Benchmarks are usually biased towards some type of libraries.
 
 To explain why benchmarks are biased I'll use [the most popular benchmark](https://github.com/krausest/js-framework-benchmark).
 It contains implementations for many different libraries and ivi is
