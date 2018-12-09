@@ -8,12 +8,12 @@ let _context = {};
  *
  * Should be executed before going deeper into Context node.
  *
- * @param context - Current context.
+ * @param c - Current context.
  * @returns previous context
  */
-export function setContext(context: {}): {} {
+export function setContext(c: {}): {} {
   const tmp = _context;
-  _context = context;
+  _context = c;
   return tmp;
 }
 
@@ -22,17 +22,17 @@ export function setContext(context: {}): {} {
  *
  * Should be executed after processing Context node.
  *
- * @param context - Previous context.
+ * @param c - Previous context.
  */
-export function restoreContext(context: {}): void {
-  _context = context;
+export function restoreContext(c: {}): void {
+  _context = c;
 }
 
 /**
- * getContext retrieves current context.
+ * context retrieves current context.
  *
  * @returns current context
  */
-export function getContext<T extends {}>(): T {
+export function context<T extends {}>(): T {
   return _context as T;
 }

@@ -61,7 +61,7 @@ export { debugSub, debugPub } from "./debug/pubsub";
 
 // Virtual DOM
 export { NodeFlags } from "./vdom/node_flags";
-export { setContext, restoreContext, getContext } from "./vdom/context";
+export { setContext, restoreContext, context } from "./vdom/context";
 export {
   AttributeDirective,
   ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED, ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,

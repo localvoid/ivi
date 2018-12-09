@@ -1,19 +1,17 @@
+let ivi: typeof import("ivi");
+let html: typeof import("ivi-html");
+let iviTest: typeof import("ivi-test");
+let utils: typeof import("./utils");
+
+beforeEach(async () => {
+  jest.resetModules();
+  ivi = await import("ivi");
+  html = await import("ivi-html");
+  iviTest = await import("ivi-test");
+  utils = await import("./utils");
+});
+
 describe(`dirty checking`, () => {
-  /* tslint:disable:whitespace */
-  let ivi: typeof import("ivi");
-  let html: typeof import("ivi-html");
-  let iviTest: typeof import("ivi-test");
-  let utils: typeof import("./utils");
-  /* tslint:enable:whitespace */
-
-  beforeEach(async () => {
-    jest.resetModules();
-    ivi = await import("ivi");
-    html = await import("ivi-html");
-    iviTest = await import("ivi-test");
-    utils = await import("./utils");
-  });
-
   test(`dirtyCheck() should start dirty checking`, () => {
     iviTest.testRenderDOM(r => {
       let triggered = 0;
@@ -53,7 +51,7 @@ describe(`dirty checking`, () => {
       let outerTest = -1;
       const c = ivi.component((h) => {
         const s = ivi.useSelect<number>(h, () => {
-          const { outer, inner } = ivi.getContext<{ outer: number, inner: number }>();
+          const { outer, inner } = ivi.context<{ outer: number, inner: number }>();
           innerTest = inner;
           return outerTest = outer;
         });
@@ -93,7 +91,7 @@ describe(`dirty checking`, () => {
       let i = 0;
       let innerTest = -1;
       const C = ivi.component((h) => {
-        const s = ivi.useSelect<number>(h, () => (innerTest = ivi.getContext<{ inner: number }>().inner));
+        const s = ivi.useSelect<number>(h, () => (innerTest = ivi.context<{ inner: number }>().inner));
         return () => (s(), html.div());
       });
 

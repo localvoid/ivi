@@ -1,52 +1,39 @@
-import { _, component, useSelect, Context, getContext } from "ivi";
-import { div } from "ivi-html";
+import { _, component, useSelect, Context, context } from "ivi";
 import { testRenderDOM } from "ivi-test";
 import { Static } from "./utils";
 
-const ContextTestPrinter = component(h => {
-  const selector = useSelect<string>(h, () => getContext<{ value: string }>().value);
-  return () => div(_, _, selector());
+const ContextValue = component(c => {
+  const selector = useSelect<string>(c, () => context<{ value: string }>().value);
+  return () => selector();
 });
 
-test(`<Context={ value: 10 }<Connector>{ ctx.value }</Connector></Context>`, () => {
+test(`context value should be propagated`, () => {
   testRenderDOM(r => {
-    const v = Context({ value: 10 }, ContextTestPrinter());
+    const v = Context({ value: 10 }, ContextValue());
     const n = r(v);
 
-    expect(n).toMatchInlineSnapshot(`
-<div>
-  10
-</div>
-`);
+    expect(n).toMatchInlineSnapshot(`10`);
   });
 });
 
-test(`Sync context value`, () => {
+test(`context value should be updated`, () => {
   testRenderDOM(r => {
-    const v1 = Context({ value: 10 }, ContextTestPrinter());
-    const v2 = Context({ value: 20 }, ContextTestPrinter());
+    const v1 = Context({ value: 10 }, ContextValue());
+    const v2 = Context({ value: 20 }, ContextValue());
     r(v1);
     const b = r(v2);
 
-    expect(b).toMatchInlineSnapshot(`
-<div>
-  20
-</div>
-`);
+    expect(b).toMatchInlineSnapshot(`20`);
   });
 });
 
-test(`Sync context value inside component with shouldUpdate=false`, () => {
+test(`context value should be updated through static components`, () => {
   testRenderDOM(r => {
-    const v1 = Context({ value: 10 }, Static(ContextTestPrinter()));
-    const v2 = Context({ value: 20 }, Static(ContextTestPrinter()));
+    const v1 = Context({ value: 10 }, Static(ContextValue()));
+    const v2 = Context({ value: 20 }, Static(ContextValue()));
     r(v1);
     const b = r(v2);
 
-    expect(b).toMatchInlineSnapshot(`
-<div>
-  20
-</div>
-`);
+    expect(b).toMatchInlineSnapshot(`20`);
   });
 });

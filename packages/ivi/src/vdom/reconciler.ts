@@ -9,7 +9,7 @@ import { OpNode, ElementData, OpArray, Key, OpData, ContextData, Op, EventsData 
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
-import { getContext, setContext, restoreContext } from "./context";
+import { context, setContext, restoreContext } from "./context";
 
 let _nextNode!: Node | null;
 let _deepStateFlags!: NodeFlags;
@@ -155,7 +155,7 @@ export function _dirtyCheck(
       _dirtyCheck(parentElement, opState.c as OpState, moveNode, singleChild);
     } else { // Context
       if (_dirtyContext === true) {
-        opState.s = { ...getContext(), ...(opState.o as OpNode<ContextData>).d.v };
+        opState.s = { ...context(), ...(opState.o as OpNode<ContextData>).d.v };
       }
       const prevContext = setContext(opState.s as {});
       _dirtyCheck(parentElement, opState.c as OpState, moveNode, singleChild);
@@ -380,7 +380,7 @@ function _mountObject(
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
         prevState = setContext(
-          opState.s = { ...getContext(), ...(d as OpData<ContextData>).v },
+          opState.s = { ...context(), ...(d as OpData<ContextData>).v },
         );
         opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
         restoreContext(prevState);
@@ -637,7 +637,7 @@ export function _update(
         nextData = (nextOp as OpNode<ContextData>).d;
         nextValue = nextData.v;
         if ((o as OpNode<ContextData>).d.v !== nextValue || _dirtyContext === true) {
-          opState.s = { ...getContext(), ...nextValue };
+          opState.s = { ...context(), ...nextValue };
           _dirtyContext = true;
         }
         // reusing variable name, it is actually a previous value in the context stack.
