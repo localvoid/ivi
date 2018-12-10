@@ -24,6 +24,9 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 
 ivi has a tree shakeable API, so it can scale from simple widgets to complex desktop applications.
 
+Small library size is important, but in complex applications, major reduction in the code size will come from the
+powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to write reusable code.
+
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
@@ -227,6 +230,9 @@ To explain why benchmarks are biased I'll use [the most popular benchmark](https
 It contains implementations for many different libraries and ivi is
 [among the fastest libraries](https://krausest.github.io/js-framework-benchmark/current.html) in this benchmark, even
 when benchmark is biased towards libraries that use direct data bindings to connect observable data with DOM elements.
+[ivi implementation](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi) doesn't abuse
+any "advanced" optimizations in this benchmark and implemented in almost exactly the same way as
+[react-redux implementation](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/react-redux).
 
 There are several key characteristics and we need to compare them with numbers from complex web applications:
 
@@ -266,7 +272,7 @@ just choosing to go with the simplest solution and implement it without any comp
 Good luck figuring out how library will perform in a scenario when components are involved. And for some libraries,
 components has a huge impact on performance, since they were optimized just to deal with low-level primitives.
 
-#### Event Handlers per DOM Element
+#### Ratio of Event Handlers per DOM Element
 
 ```
 Benchmark: ~0.25 without event delegation
@@ -282,7 +288,7 @@ registering one native event handler per each event type, but it is an internal 
 difference between event delegation and synthetic events is that synthetic events doesn't break component encapsulation,
 components aren't leaking any information about their DOM structure.
 
-#### Data Bindings per DOM Element
+#### Ratio of Data Bindings per DOM Element
 
 ```
 Benchmark: ~0.25 (some implementations are using workarounds to reduce it to 0.125)
@@ -295,7 +301,7 @@ data bindings.
 Virtual DOM libraries by design are trying to optimize for use cases when the ratio of data bindings per DOM element is
 greater or equal than 1.
 
-#### Components per Component Types
+#### Ratio of Components per Component Types
 
 It is hard to guess how many different component types are used in Google Mail, but if it is like any other complex
 application, the ratio of components per component type shouldn't be too high.
