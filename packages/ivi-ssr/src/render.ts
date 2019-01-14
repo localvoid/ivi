@@ -1,11 +1,14 @@
 import {
   NodeFlags, OpNode, Op, OpArray, ElementData,
   ComponentDescriptor, StatelessComponentDescriptor,
-  ElementProtoDescriptor, ContextData, Key,
+  ElementProtoDescriptor, ContextData, Key, AttributeDirective,
   createStateNode,
   setContext, restoreContext,
 } from "ivi";
 import { escapeAttributeValue, escapeText } from "./escape";
+
+// Temporary solution for unsafeHTML attribute directives.
+let unsafeHTML: string | undefined;
 
 /**
  * Renders element attributes to string.
@@ -23,6 +26,9 @@ export function emitElementAttrs(attrs: { [key: string]: any }): string {
     } else {
       if (typeof value === "object") {
         // skip attribute directives
+        if (key === "unsafeHTML") {
+          unsafeHTML = (value as AttributeDirective<string>).v;
+        }
       } else if (typeof value !== "boolean") {
         if (value !== null) {
           result += ` ${key}="${escapeAttributeValue(value)}"`;
@@ -80,7 +86,7 @@ export function emitElementOpen(op: OpNode<ElementData>): string {
     result += ` class="${value}"`;
   }
   value = data.a;
-  if ((op.t.f & NodeFlags.ElementProto) !== 0) {
+  if ((op.t.f & NodeFlags.ElementProto) !== 0 && (op.t.d as ElementProtoDescriptor).p.d.a !== void 0) {
     value = { ...(op.t.d as ElementProtoDescriptor).p.d.a, ...value };
   }
   if (value !== void 0) {
@@ -115,7 +121,13 @@ function renderObject(op: OpNode): string {
   let result;
   if ((flags & NodeFlags.Element) !== 0) {
     result = emitElementOpen(op);
-    const childrenString = renderToString((op as OpNode<ElementData>).d.c);
+    let childrenString;
+    if (unsafeHTML === void 0) {
+      childrenString = renderToString((op as OpNode<ElementData>).d.c);
+    } else {
+      childrenString = unsafeHTML;
+      unsafeHTML = void 0;
+    }
     if ((flags & NodeFlags.NewlineEatingElement) !== 0) {
       if (childrenString.length > 0 && childrenString.charCodeAt(0) === 10) { // "\n"
         result += "\n";

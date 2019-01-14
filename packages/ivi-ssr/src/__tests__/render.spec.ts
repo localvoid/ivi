@@ -1,4 +1,5 @@
 import { _ } from "ivi-shared";
+import { UNSAFE_HTML } from "ivi";
 import { div, span, strong, textarea } from "ivi-html";
 import { renderToString } from "../render";
 
@@ -142,6 +143,12 @@ describe("render", () => {
 
       test("double newline", () => {
         expect(renderToString(textarea(_, _, "\n\n"))).toBe(`<textarea>\n\n\n</textarea>`);
+      });
+    });
+
+    describe("attribute directives", () => {
+      test("unsafeHTML", () => {
+        expect(renderToString(div(_, { unsafeHTML: UNSAFE_HTML("&") }))).toBe(`<div>&</div>`);
       });
     });
   });
