@@ -1045,12 +1045,23 @@ function _updateChildrenTrackByKeys(
  *
  * {@link http://en.wikipedia.org/wiki/Longest_increasing_subsequence}
  *
+ * It is possible to use typed arrays in this function, and it will make it faster in most javascript engines, but for
+ * some reason instantiating small typed arrays is slower in synthetic microbenchmarks on V8
+ * {@link https://gist.github.com/localvoid/88da772d987794605f7fa4a078bce4d6} (maybe there is something wrong in this
+ * benchmarks, if someone want to spend more time on optimizations, I'd recommend to double check everything).
+ *
+ * To solve problem with instantiation, we could just reuse arrays, but in my opinion it isn't worth to overcomplicate
+ * this algorithm since it is already extremely fast and it is highly unlikely that it will be even noticeable in the
+ * profiler. Usually when there is an update in the real applications, it triggers reordering of one dynamic children
+ * list, that is why I prefer to keep it simple.
+ *
  * @param a - Array of numbers
  * @returns Longest increasing subsequence
  * @noinline
  */
 function lis(a: number[]): number[] {
   const p = a.slice();
+  // result is instantiated as an empty array to prevent instantiation with CoW backing store.
   const result: number[] = [];
   result[0] = 0;
   let n = 0;
@@ -1060,34 +1071,31 @@ function lis(a: number[]): number[] {
 
   for (let i = 0; i < a.length; ++i) {
     const k = a[i];
-    if (k === -1) {
-      continue;
-    }
-
-    j = result[n];
-    if (a[j] < k) {
-      p[i] = j;
-      result[++n] = i;
-      continue;
-    }
-
-    u = 0;
-    v = n;
-
-    while (u < v) {
-      j = ((u + v) / 2) | 0;
-      if (a[result[j]] < k) {
-        u = j + 1;
+    if (k > -1) {
+      j = result[n];
+      if (a[j] < k) {
+        p[i] = j;
+        result[++n] = i;
       } else {
-        v = j;
-      }
-    }
+        u = 0;
+        v = n;
 
-    if (k < a[result[u]]) {
-      if (u > 0) {
-        p[i] = result[u - 1];
+        while (u < v) {
+          j = (u + v) >> 1;
+          if (a[result[j]] < k) {
+            u = j + 1;
+          } else {
+            v = j;
+          }
+        }
+
+        if (k < a[result[u]]) {
+          if (u > 0) {
+            p[i] = result[u - 1];
+          }
+          result[u] = i;
+        }
       }
-      result[u] = i;
     }
   }
 
