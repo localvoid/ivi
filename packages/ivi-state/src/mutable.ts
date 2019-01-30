@@ -45,6 +45,8 @@ export const mut = <T, U extends any[], V>(
 /**
  * pipe creates a function that will pipe data from one function into another.
  *
+ * @example
+ *
  *     let _title = "Title";
  *     const useTitle = selector(() => _title);
  *     const m = () => { requestDirtyChecking() };
