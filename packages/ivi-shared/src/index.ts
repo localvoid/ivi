@@ -15,7 +15,7 @@ declare global {
   }
 
   const DEBUG: boolean;
-  const TARGET: string;
+  const TARGET: "browser" | "evergreen" | "electron" | "ssr";
 }
 
 export { _ } from "./shortcuts";
