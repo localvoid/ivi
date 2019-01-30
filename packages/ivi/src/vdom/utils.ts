@@ -1,7 +1,8 @@
+import { Box } from "ivi-shared";
 import { OpState } from "./state";
+import { Component } from "./component";
 import { useSelect } from "./hooks";
 import { getDOMNode } from "./reconciler";
-import { Box } from "ivi-shared";
 
 /**
  * selector creates a selector factory.
@@ -20,21 +21,20 @@ import { Box } from "ivi-shared";
  *     });
  *
  * @param s Selector function.
- * @param shouldUpdate Should update function.
  * @returns Selector factory.
  */
 export function selector<T>(
   s: () => T,
-): (stateNode: OpState) => () => T;
+): (component: Component) => () => T;
 
 /**
  * selector creates a selector factory.
  *
  * @example
  *
- *     interface Entry {
- *       title: string;
- *     }
+ * interface Entry {
+ *   title: string;
+ * }
  *     const useEntryTitle = selector((entry: Entry) => entry.title);
  *
  *     const EntryView = component<Entry>((c) => {
@@ -50,58 +50,13 @@ export function selector<T>(
 export function selector<T, P>(
   s: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (stateNode: OpState) => undefined extends P ? () => T : (props: P) => T;
+): (component: Component) => undefined extends P ? () => T : (props: P) => T;
 
-/**
- * selector creates a selector factory.
- *
- * @example
- *
- *     interface Entry {
- *       title: string;
- *     }
- *     const useEntryTitle = selector((entry: Entry) => entry.title);
- *
- *     const EntryView = component<Entry>((c) => {
- *       const getEntryTitle = useEntryTitle(c);
- *
- *       return (entry) => div(_, _, getEntryTitle(entry));
- *     });
- *
- * @param s Selector function.
- * @param shouldUpdate Should update function.
- * @returns Selector factory.
- */
 export function selector<T, P>(
   s: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (stateNode: OpState) => undefined extends P ? () => T : (props: P) => T;
-
-/**
- * selector creates a selector factory.
- *
- * @example
- *
- *     interface Entry {
- *       title: string;
- *     }
- *     const useEntryTitle = selector((entry: Entry) => entry.title);
- *
- *     const EntryView = component<Entry>((c) => {
- *       const getEntryTitle = useEntryTitle(c);
- *
- *       return (entry) => div(_, _, getEntryTitle(entry));
- *     });
- *
- * @param s Selector function.
- * @param shouldUpdate Should update function.
- * @returns Selector factory.
- */
-export function selector<T, P>(
-  s: (props: P, prev?: T | undefined) => T,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (c: OpState) => undefined extends P ? () => T : (props: P) => T {
-  return (stateNode: OpState) => useSelect(stateNode, s, shouldUpdate);
+): (component: Component) => undefined extends P ? () => T : (props: P) => T {
+  return (component: Component) => useSelect(component, s, shouldUpdate);
 }
 
 /**
