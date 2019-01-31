@@ -458,7 +458,7 @@ export function getEventKey(ev: KeyboardEvent): string {
  *
  * #quirks
  *
- * @param ev
+ * @param ev Mouse event.
  * @returns MouseEvent `buttons` value.
  */
 export const getMouseButtons = (TARGET === "electron" || MOUSE_EVENT_BUTTONS) ?

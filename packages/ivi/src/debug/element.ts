@@ -4,7 +4,7 @@ import { printWarn, printWarnOnce } from "./print";
 /**
  * Checks style typos and prints warning messages with possible errors.
  *
- * @param styles - Styles.
+ * @param styles Styles.
  */
 function checkStyle(styles: CSSStyleProps): void {
   for (const styleName of Object.keys(styles) as (keyof CSSStyleProps)[]) {
@@ -28,8 +28,8 @@ function checkStyle(styles: CSSStyleProps): void {
 /**
  * Checks SVG attributes.
  *
- * @param tag - Tag name.
- * @param attrs - SVG attributes.
+ * @param tag Tag name.
+ * @param attrs SVG attributes.
  */
 function checkSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
   switch (tag) {
@@ -49,8 +49,8 @@ function checkSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
 /**
  * Checks HTML attributes.
  *
- * @param tag - Tag name.
- * @param attrs - SVG attributes.
+ * @param tag Tag name.
+ * @param attrs SVG attributes.
  */
 function checkHTMLAttributes(tag: string, attrs: { [key: string]: any }): void {
   switch (tag) {
@@ -75,6 +75,13 @@ function checkHTMLAttributes(tag: string, attrs: { [key: string]: any }): void {
   }
 }
 
+/**
+ * Checks element.
+ *
+ * @param tag Tag name.
+ * @param attrs Element attributes.
+ * @param svg SVG element.
+ */
 export function checkElement(tag: string, attrs: any, svg: boolean): void {
   if (attrs) {
     if (svg) {

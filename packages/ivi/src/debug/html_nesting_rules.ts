@@ -238,6 +238,8 @@ function visitNode(opState: OpState, parentTagName: string, ancestorFlags: Ances
 /**
  * checkNestingViolations goes through virtual dom tree and checks for HTML nesting rules violations.
  *
+ * @param parent Parent element.
+ * @param root Stateful operation root node.
  * @throws Error when child nesting rules are violated.
  */
 export function checkNestingViolations(parent: Element, root: OpState): void {

@@ -3,6 +3,8 @@ import { Op } from "./operations";
 
 /**
  * Operation state.
+ *
+ * @typeparam T Internal state type.
  */
 export interface OpState<T = any> {
   /**

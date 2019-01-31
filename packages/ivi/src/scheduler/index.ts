@@ -4,7 +4,7 @@ import { printWarn } from "../debug/print";
 import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";
 import { Op } from "../vdom/operations";
-import { OpState } from "../vdom/state";
+import { Component } from "../vdom/component";
 import { ROOTS, findRoot, dirtyCheck } from "../vdom/root";
 
 /**
@@ -98,7 +98,8 @@ let _frameStartTime = 0;
 /**
  * withSchedulerTick wraps `inner` function into a scheduler context execution.
  *
- * @param inner - Inner function.
+ * @typeparam T Arguments.
+ * @param inner Inner function.
  * @returns function that will be executed in a scheduler context.
  */
 export const withSchedulerTick = <T extends any[]>(inner: (...args: T) => void) => (
@@ -123,7 +124,7 @@ export const clock = () => _clock;
 /**
  * scheduleMicrotask adds task to the microtask queue.
  *
- * @param task - Microtask.
+ * @param task Microtask.
  */
 export function scheduleMicrotask(task: () => void): void {
   _microtasks.v.push(task);
@@ -136,7 +137,7 @@ export function scheduleMicrotask(task: () => void): void {
 /**
  * beforeMutations adds a hook that will be executed before DOM mutations.
  *
- * @param fn - hook.
+ * @param fn Hook function.
  */
 export function beforeMutations(fn: () => boolean | void): void {
   _beforeMutations.push(fn);
@@ -145,7 +146,7 @@ export function beforeMutations(fn: () => boolean | void): void {
 /**
  * afterMutations adds a hook that will be executed after DOM mutations.
  *
- * @param fn - hook.
+ * @param fn Hook function.
  */
 export function afterMutations(fn: () => boolean | void): void {
   _afterMutations.push(fn);
@@ -161,7 +162,7 @@ export const frameStartTime = () => _frameStartTime;
 /**
  * withNextFrame wraps `inner` function into a scheduler frame update context.
  *
- * @param inner - Inner function.
+ * @param inner Inner function.
  * @returns function that will be executed in a frame update context.
  */
 export const withNextFrame = (inner: (time?: number) => void) => (
@@ -218,6 +219,8 @@ const _handleNextFrame = withNextFrame(NOOP);
 
 /**
  * requestNextFrame requests an update for next frame.
+ *
+ * @param flags See {@link UpdateFlags} for details.
  */
 export function requestNextFrame(flags?: UpdateFlags): void {
   if (
@@ -240,7 +243,8 @@ export function requestNextFrame(flags?: UpdateFlags): void {
 /**
  * Adds a write DOM task to the queue.
  *
- * @param fn - Write DOM task
+ * @param fn Write DOM task.
+ * @param flags See {@link UpdateFlags} for details.
  */
 export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): void {
   /* istanbul ignore else */
@@ -258,7 +262,8 @@ export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): voi
 /**
  * Adds a DOM layout task to the queue.
  *
- * @param fn - Read DOM task
+ * @param fn Read DOM task
+ * @param flags See {@link UpdateFlags} for details.
  */
 export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void {
   /* istanbul ignore else */
@@ -273,7 +278,12 @@ export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void 
   requestNextFrame(flags);
 }
 
-export function requestDirtyCheck(flags?: UpdateFlags) {
+/**
+ * Request dirty checking.
+ *
+ * @param flags See {@link UpdateFlags} for details.
+ */
+export function requestDirtyCheck(flags?: UpdateFlags): void {
   /* istanbul ignore else */
   if (DEBUG) {
     if (_flags & SchedulerFlags.UpdatingFrame) {
@@ -289,10 +299,10 @@ export function requestDirtyCheck(flags?: UpdateFlags) {
 /**
  * Invalidate component.
  *
- * @param c - Component instance
- * @param flags - See {@link UpdateFlags} for details.
+ * @param c Component instance.
+ * @param flags See {@link UpdateFlags} for details.
  */
-export function invalidate(c: OpState, flags?: UpdateFlags): void {
+export function invalidate(c: Component, flags?: UpdateFlags): void {
   c.f |= NodeFlags.Dirty;
   requestDirtyCheck(flags);
 }
@@ -300,17 +310,17 @@ export function invalidate(c: OpState, flags?: UpdateFlags): void {
 /**
  * dirty requests a dirty checking and returns current monotonic clock value.
  *
- * @param flags - See {@link UpdateFlags} for details.
+ * @param flags See {@link UpdateFlags} for details.
  * @returns current monotonic clock value.
  */
 export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock);
 
 /**
- * Render virtual DOM node into the container.
+ * Render operation into the container.
  *
- * @param next - Virtual DOM node to render
- * @param container - DOM Node that will contain rendered node
- * @param flags - See {@link UpdateFlags} for details
+ * @param next Operation to render.
+ * @param container DOM Node that will contain rendered operation.
+ * @param flags See {@link UpdateFlags} for details.
  */
 export function render(next: Op, container: Element, flags?: UpdateFlags): void {
   /* istanbul ignore else */

@@ -46,6 +46,8 @@ export const TRACK_BY_KEY = createOpType(NodeFlags.TrackByKey, null);
 
 /**
  * Operation node.
+ *
+ * @typeparam T Operation data type.
  */
 export interface OpNode<T = any> {
   /**
@@ -61,6 +63,7 @@ export interface OpNode<T = any> {
 /**
  * createOpNode creates an {@link OpNode} instance.
  *
+ * @typeparam T Operation data type.
  * @param t Operation type.
  * @param d Operation data.
  * @returns {@link OpNode} instance.
@@ -69,6 +72,8 @@ export const createOpNode = <T>(t: OpType, d: T): OpNode<T> => ({ t, d });
 
 /**
  * Operation data for element operations.
+ *
+ * @typeparam T Element attributes type.
  */
 export interface ElementData<T = any> {
   /**
@@ -96,7 +101,9 @@ export type Op = string | number | OpNode | OpArray | null;
 export interface OpArray extends Readonly<Array<Op>> { }
 
 /**
- * Generic operation data for simple operations.
+ * Generic operation data for operations that has children nodes.
+ *
+ * @typeparam T Additional data type.
  */
 export interface OpData<T = any> {
   /**
@@ -160,6 +167,9 @@ export const Context = (v: {}, c: Op): OpNode<ContextData> => createOpNode(CONTE
 
 /**
  * Key is an object that is used by TrackByKey operations to track operations.
+ *
+ * @typeparam K Key type.
+ * @typeparam V Value type.
  */
 export interface Key<K, V> {
   /**
@@ -175,6 +185,8 @@ export interface Key<K, V> {
 /**
  * key creates a {@link Key} instance.
  *
+ * @typeparam K Key type.
+ * @typeparam V Value type.
  * @param k Key.
  * @param v Value.
  * @returns {@link Key} instance.
@@ -192,6 +204,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  *       DOMContainer,
  *     );
  *
+ * @typeparam K Key type.
  * @param items Keyed operations.
  * @returns Track by key operation.
  */

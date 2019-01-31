@@ -20,6 +20,7 @@ import { getDOMNode } from "./reconciler";
  *       return (entry) => div(_, _, getEntryTitle(entry));
  *     });
  *
+ * @typename T Selector value type.
  * @param s Selector function.
  * @returns Selector factory.
  */
@@ -43,6 +44,7 @@ export function selector<T>(
  *       return (entry) => div(_, _, getEntryTitle(entry));
  *     });
  *
+ * @typename T Selector value type.
  * @param s Selector function.
  * @param shouldUpdate Should update function.
  * @returns Selector factory.
@@ -62,6 +64,7 @@ export function selector<T, P>(
 /**
  * findDOMNode finds a closest DOM node.
  *
+ * @typeparam T DOM Node type.
  * @param box Boxed op node state.
  * @returns DOM Node or a `null` value.
  */

@@ -3,12 +3,14 @@ import { OpState } from "./state";
 
 /**
  * Component state.
+ *
+ * @typeparam P Props type.
  */
-export interface ComponentHooks<T = any> {
+export interface ComponentHooks<P = any> {
   /**
    * Render function.
    */
-  r: null | ((props: T) => Op);
+  r: null | ((props: P) => Op);
   /**
    * Selector hooks.
    */
@@ -21,6 +23,8 @@ export interface ComponentHooks<T = any> {
 
 /**
  * Component Descriptor.
+ *
+ * @typeparam P Props type.
  */
 export interface ComponentDescriptor<P = any> {
   /**
@@ -43,6 +47,8 @@ export interface ComponentDescriptor<P = any> {
 
 /**
  * Stateless Component Descriptor.
+ *
+ * @typeparam P Props type.
  */
 export interface StatelessComponentDescriptor<P = any> {
   /**

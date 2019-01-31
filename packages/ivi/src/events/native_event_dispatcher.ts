@@ -11,6 +11,8 @@ import { SyntheticNativeEvent, createNativeEvent } from "./synthetic_native_even
  * NativeEventSource dispatches native events.
  *
  * It is using two-phase dispatching algorithm similar to native DOM events flow.
+ *
+ * @typeparam E Native event type.
  */
 export interface NativeEventDispatcher<E extends Event> {
   /**
@@ -26,9 +28,10 @@ export interface NativeEventDispatcher<E extends Event> {
 /**
  * Creates a native event dispatcher.
  *
- * @param flags - See {@link NativeEventSourceFlags} for details.
- * @param name - Event name
- * @param options - Event handler options
+ * @typeparam E Native event type.
+ * @param flags See {@link NativeEventSourceFlags} for details.
+ * @param name Event name
+ * @param options Event handler options
  * @returns {@link NativeEventDispatcher} instance
  */
 export function createNativeEventDispatcher<E extends Event>(
@@ -66,8 +69,9 @@ export function createNativeEventDispatcher<E extends Event>(
 /**
  * beforeNativeEvent attaches a hook that will be executed before dispatching an event.
  *
- * @param source - Event dispatcher source.
- * @param cb - Hook
+ * @typeparam E Native event type.
+ * @param source Event dispatcher source.
+ * @param cb Hook.
  */
 export function beforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
@@ -79,8 +83,9 @@ export function beforeNativeEvent<E extends Event>(
 /**
  * afterNativeEvent attaches a hook that will be executed after dispatching an event.
  *
- * @param source - Event dispatcher source.
- * @param cb - Hook
+ * @typeparam E Native event type.
+ * @param source Event dispatcher source.
+ * @param cb Hook.
  */
 export function afterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
@@ -92,8 +97,9 @@ export function afterNativeEvent<E extends Event>(
 /**
  * removeBeforeNativeEvent removes a hook that is executed before dispatching an event.
  *
- * @param source - Event dispatcher source.
- * @param cb - Hook
+ * @typeparam E Native event type.
+ * @param source Event dispatcher source.
+ * @param cb Hook.
  */
 export function removeBeforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
@@ -111,8 +117,9 @@ export function removeBeforeNativeEvent<E extends Event>(
 /**
  * removeAfterNativeEvent removes a hook that is executed after dispatching an event.
  *
- * @param source - Event dispatcher source.
- * @param cb - Hook
+ * @typeparam E Native event type.
+ * @param source Event dispatcher source.
+ * @param cb Hook
  */
 export function removeAfterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,

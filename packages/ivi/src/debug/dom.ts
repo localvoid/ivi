@@ -1,7 +1,7 @@
 /**
  * isValidTag returns true when tag is valid.
  *
- * @param tag - Tag name.
+ * @param tag Tag name.
  * @returns `true` when tag name is valid.
  */
 export function isValidTag(tag: string): boolean {
@@ -11,7 +11,7 @@ export function isValidTag(tag: string): boolean {
 /**
  * isVoidElement returns true when element is void.
  *
- * @param tag - Element tag name.
+ * @param tag Tag name.
  * @returns `true` when element is void.
  */
 export function isVoidElement(tag: string): boolean {

@@ -3,7 +3,7 @@
  *
  * Local exception is thrown so that we can break on caught errors.
  *
- * @param message - Error message
+ * @param message Error message.
  */
 export function printError(message: string): void {
   console.error(message);
@@ -20,7 +20,7 @@ export function printError(message: string): void {
  *
  * Local exception is thrown so that we can break on caught errors.
  *
- * @param message - Warning message
+ * @param message Warning message.
  */
 export function printWarn(message: string): void {
   console.warn(message);
@@ -37,8 +37,8 @@ let _printedWarnings: Set<string>;
 /**
  * Print warning just once.
  *
- * @param key - Unique key for a warning
- * @param message - Warning message
+ * @param key Unique key for a warning.
+ * @param message Warning message.
  */
 export function printWarnOnce(key: string, message: string): void {
   if (!_printedWarnings) {

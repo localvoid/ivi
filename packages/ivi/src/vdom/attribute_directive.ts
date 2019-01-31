@@ -33,7 +33,8 @@ export interface AttributeDirective<T> {
  *
  *   const e = div("", { _customProperty: PROPERTY("value") });
  *
- * @param v - Property value
+ * @typeparam Property value type.
+ * @param v Property value.
  * @returns {@link AttributeDirective}
  */
 export const PROPERTY = <T>(v: T): AttributeDirective<T> => ({ v, u: updateProperty });
@@ -41,12 +42,12 @@ export const PROPERTY = <T>(v: T): AttributeDirective<T> => ({ v, u: updatePrope
 /**
  * Update function for an {@link AttributeDirective} created with a {@link PROPERTY} function.
  *
- * @param element - Target element
- * @param key - Attribute key
- * @param prev - Previous value
- * @param next - Next value
+ * @param element Target element.
+ * @param key Attribute key.
+ * @param prev Previous value.
+ * @param next Next value.
  */
-function updateProperty(element: Element, key: string, prev: any, next: any) {
+function updateProperty(element: Element, key: string, prev: any, next: any): void {
   if (prev !== next && next !== void 0) {
     (element as any)[key] = next!;
   }
@@ -59,7 +60,7 @@ function updateProperty(element: Element, key: string, prev: any, next: any) {
  *
  *   const e = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
  *
- * @param v - innerHTML value
+ * @param v innerHTML value.
  * @returns {@link AttributeDirective}
  */
 export const UNSAFE_HTML = (v: string): AttributeDirective<string> => ({ v, u: updateUnsafeHTML });
@@ -67,10 +68,10 @@ export const UNSAFE_HTML = (v: string): AttributeDirective<string> => ({ v, u: u
 /**
  * Update function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
  *
- * @param element - Target element
- * @param key - Attribute key
- * @param prev - Previous value
- * @param next - Next value
+ * @param element Target element.
+ * @param key Attribute key.
+ * @param prev Previous value.
+ * @param next Next value.
  */
 function updateUnsafeHTML(element: Element, key: string, prev: string | undefined, next: string | undefined) {
   if (prev !== next) {
@@ -90,7 +91,7 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  *
  *   const e = div("", { click: EVENT((ev) => { console.log(ev) }); });
  *
- * @param v - Event handler
+ * @param v Event handler.
  * @returns {@link AttributeDirective}
  */
 export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => ({ v, u: updateEvent });
@@ -98,10 +99,10 @@ export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) =>
 /**
  * Update function for an {@link AttributeDirective} created with {@link EVENT} function.
  *
- * @param element - Target element
- * @param key - Attribute key
- * @param prev - Previous value
- * @param next - Next value
+ * @param element Target element.
+ * @param key Attribute key.
+ * @param prev Previous value.
+ * @param next Next value.
  */
 function updateEvent(
   element: Element,
@@ -120,10 +121,10 @@ function updateEvent(
 /**
  * Synchronization function for {@link AttributeDirective} created with {@link AUTOFOCUS} function.
  *
- * @param element - Target element
- * @param key - Attribute key
- * @param prev - Previous value
- * @param next - Next value
+ * @param element Target element.
+ * @param key Attribute key.
+ * @param prev Previous value.
+ * @param next Next value.
  */
 function updateAutofocus(
   element: Element,
@@ -153,7 +154,7 @@ const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocu
  *
  *   const e = input("", { autofocus: AUTOFOCUS(true) });
  *
- * @param v - Autofocus state
+ * @param v Autofocus state.
  * @returns {@link AttributeDirective}
  */
 export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;

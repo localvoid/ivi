@@ -4,6 +4,8 @@ import { OpState } from "../vdom/state";
 
 /**
  * SyntheticNativeEvent is a wrapper for native events.
+ *
+ * @typeparam E Native event type.
  */
 export interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
   readonly native: E;
@@ -11,6 +13,8 @@ export interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
 
 /**
  * createNativeEvent creates a wrapper for a native event.
+ *
+ * @typeparam E Native event type.
  */
 export function createNativeEvent<E extends Event>(
   flags: SyntheticEventFlags,
