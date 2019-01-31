@@ -439,14 +439,11 @@ function _hasDifferentType(
 ): boolean {
   if (typeof b !== "object") {
     return true;
-  } else if (a instanceof Array) {
-    if (!(b instanceof Array)) {
-      return true;
-    }
-  } else if (b instanceof Array || a.t !== b.t) {
-    return true;
   }
-  return false;
+  if (a instanceof Array) {
+    return !(b instanceof Array);
+  }
+  return (b instanceof Array || a.t !== b.t);
 }
 
 /**
