@@ -1,5 +1,3 @@
-import { NOOP } from "ivi-shared";
-import { elementRemoveAttribute } from "../dom/shortcuts";
 import { scheduleLayoutEffect } from "../scheduler";
 
 /**
@@ -8,64 +6,28 @@ import { scheduleLayoutEffect } from "../scheduler";
  * When DOM element attributes are updated, all value types are checked if it is a string, number, boolean or an
  * `AttributeDirective`. When it is an attribute directive, custom update function will be invoked with the DOM
  * element, attribute key, previous and next values.
+ *
+ * @typeparam T Value type.
  */
-export interface AttributeDirective<P> {
+export interface AttributeDirective<T> {
   /**
    * Value.
    */
-  v: P | undefined;
+  v: T | undefined;
   /**
    * Update function.
    *
-   * @param element - Target element
-   * @param key - Attribute key
-   * @param prev - Previous value
-   * @param next - Next value
+   * @param element Target element.
+   * @param key Attribute key.
+   * @param prev Previous value.
+   * @param next Next value.
    */
-  u(element: Element, key: string, prev: P | undefined, next: P | undefined): void;
+  u(element: Element, key: string, prev: T | undefined, next: T | undefined): void;
 }
-
-/**
- * {@link AttributeDirective} with `undefined` value and `NOOP` update function.
- */
-export const ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED: AttributeDirective<any> = {
-  v: void 0,
-  u: NOOP as (element: Element, key: string, prev: any, next: any) => void,
-};
-
-/**
- * {@link AttributeDirective} with `undefined` value and update functions that removes `key` attribute.
- */
-export const ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED = {
-  v: void 0,
-  u: (element: Element, key: string, prev: any) => {
-    if (prev !== void 0) {
-      elementRemoveAttribute.call(element, key);
-    }
-  },
-};
-
-/**
- * {@link AttributeDirective} with `undefined` value and update functions that removes `key` event.
- */
-export const ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED = {
-  v: void 0,
-  u: (
-    element: Element,
-    key: string,
-    prev: ((ev: Event) => void) | undefined,
-  ) => {
-    if (prev !== void 0) {
-      element.removeEventListener(key, prev);
-    }
-  },
-};
 
 /**
  * PROPERTY function creates an {@link AttributeDirective} that assigns a property to a property name derived from the
  * `key` of the attribute.
- *
- * `undefined` values are ignored.
  *
  * @example
  *
@@ -74,8 +36,7 @@ export const ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED = {
  * @param v - Property value
  * @returns {@link AttributeDirective}
  */
-export const PROPERTY = <T>(v: T | undefined): AttributeDirective<T> => (v === void 0) ?
-  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: updateProperty };
+export const PROPERTY = <T>(v: T): AttributeDirective<T> => ({ v, u: updateProperty });
 
 /**
  * Update function for an {@link AttributeDirective} created with a {@link PROPERTY} function.
@@ -94,8 +55,6 @@ function updateProperty(element: Element, key: string, prev: any, next: any) {
 /**
  * UNSAFE_HTML function creates a {@link AttributeDirective} that assigns an `innerHTML` property to an Element.
  *
- * `undefined` values are ignored.
- *
  * @example
  *
  *   const e = div("", { unsafeHTML: UNSAFE_HTML("<span></span>") });
@@ -103,8 +62,7 @@ function updateProperty(element: Element, key: string, prev: any, next: any) {
  * @param v - innerHTML value
  * @returns {@link AttributeDirective}
  */
-export const UNSAFE_HTML = (v: string | undefined): AttributeDirective<string> => (v === void 0) ?
-  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: updateUnsafeHTML };
+export const UNSAFE_HTML = (v: string): AttributeDirective<string> => ({ v, u: updateUnsafeHTML });
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
@@ -128,8 +86,6 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * EVENT function creates an {@link AttributeDirective} that assigns a native event handler derived from the `key`
  * attribute to an Element.
  *
- * `undefined` values remove event listener.
- *
  * @example
  *
  *   const e = div("", { click: EVENT((ev) => { console.log(ev) }); });
@@ -137,8 +93,7 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * @param v - Event handler
  * @returns {@link AttributeDirective}
  */
-export const EVENT = (v: ((ev: Event) => void) | undefined): AttributeDirective<(ev: Event) => void> => (v === void 0) ?
-  ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED : { v, u: updateEvent };
+export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => ({ v, u: updateEvent });
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link EVENT} function.
@@ -194,8 +149,6 @@ const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocu
 /**
  * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
  *
- * `undefined` values are ignored.
- *
  * @example
  *
  *   const e = input("", { autofocus: AUTOFOCUS(true) });
@@ -203,6 +156,4 @@ const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocu
  * @param v - Autofocus state
  * @returns {@link AttributeDirective}
  */
-export const AUTOFOCUS = (v: boolean | undefined): AttributeDirective<boolean> => (v === void 0) ?
-  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
-  v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;
+export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;

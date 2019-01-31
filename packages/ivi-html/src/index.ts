@@ -13,8 +13,6 @@ import {
   HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
 
-  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED,
-
   AttributeDirective, elementFactory, htmlElementFactory, NodeFlags,
 } from "ivi";
 
@@ -87,8 +85,6 @@ function updateChecked(
  * VALUE function creates a {@link AttributeDirective} that assigns a `value` property to an HTMLInputElement or
  * HTMLTextAreaElement.
  *
- * `undefined` values are ignored.
- *
  * @example
  *
  *   const e = input("", { value: VALUE("value") });
@@ -96,18 +92,12 @@ function updateChecked(
  * @param v - Value
  * @returns {@link AttributeDirective}
  */
-export function VALUE(v: string | number | undefined): AttributeDirective<string | number> {
-  return (v === void 0) ?
-    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED :
-    v === "" ?
-      VALUE_EMPTY_STRING :
-      { v, u: updateValue };
-}
+export const VALUE = (v: string | number): AttributeDirective<string | number> => (
+  v === "" ? VALUE_EMPTY_STRING : { v, u: updateValue }
+);
 
 /**
  * CHECKED function creates a {@link AttributeDirective} that assigns a `checked` property to an HTMLInputElement.
- *
- * `undefined` values are ignored.
  *
  * @example
  *
@@ -116,11 +106,7 @@ export function VALUE(v: string | number | undefined): AttributeDirective<string
  * @param v - Checked value
  * @returns {@link AttributeDirective}
  */
-export function CHECKED(v: boolean | undefined): AttributeDirective<boolean> {
-  return (v === void 0) ?
-    ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED as any as AttributeDirective<boolean> :
-    v ? CHECKED_TRUE : CHECKED_FALSE;
-}
+export const CHECKED = (v: boolean): AttributeDirective<boolean> => v ? CHECKED_TRUE : CHECKED_FALSE;
 
 /* tslint:disable:max-line-length */
 /**

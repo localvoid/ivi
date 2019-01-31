@@ -15,9 +15,8 @@ import {
   SVGTSpanElementAttrs, SVGViewElementAttrs, SVGUseElementAttrs,
 
   elementSetAttributeNS, XML_NAMESPACE, XLINK_NAMESPACE,
-  ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,
 
-  AttributeDirective, svgElementFactory,
+  AttributeDirective, svgElementFactory, elementRemoveAttribute,
 } from "ivi";
 
 const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING = {
@@ -46,7 +45,11 @@ function updateNSAttr(
   next: string | number | boolean | undefined,
 ) {
   if (prev !== next) {
-    elementSetAttributeNS.call(element, ns, key, next as string);
+    if (next === void 0) {
+      elementRemoveAttribute.call(element, key);
+    } else {
+      elementSetAttributeNS.call(element, ns, key, next as string);
+    }
   }
 }
 
@@ -85,64 +88,34 @@ function updateXLinkAttr(
 }
 
 /**
- * Helper function that creates a {@link AttributeDirective} for namespaced attribute.
- *
- * @param v - Attribute value
- * @param emptyString - Attribute directive that should be used for empty strings
- * @param s - Synchronization function
- */
-function NS_ATTR(
-  v: string | number | boolean | undefined,
-  emptyString: AttributeDirective<string | number | boolean>,
-  u: (
-    element: Element,
-    key: string,
-    prev: string | number | boolean | undefined,
-    next: string | number | boolean | undefined,
-  ) => void,
-): AttributeDirective<string | number | boolean> {
-  if (typeof v === "boolean") {
-    if (v) {
-      return emptyString;
-    }
-    v = void 0;
-  }
-  return (v === void 0) ? ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED : { v, u };
-}
-
-/**
  * XML_ATTR function creates an {@link AttributeDirective} that assigns an attribute from XML namespace, attribute name
  * is derived from the `key`.
- *
- * `undefined` values are removed.
  *
  * @example
  *
  *   const e = circle("", { "xml:text": XML_ATTR("abc") });
  *
- * @param v - Value
+ * @param v Value.
  * @returns {@link AttributeDirective}
  */
-export function XML_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean> {
-  return NS_ATTR(v, ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING, updateXMLAttr);
-}
+export const XML_ATTR = (v: string | number | boolean): AttributeDirective<string | number | boolean> => (
+  (v === "") ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING : { v, u: updateXMLAttr }
+);
 
 /**
  * XLINK_ATTR function creates an {@link AttributeDirective} that assigns an attribute from XLINK namespace, attribute
  * name is derived from the `key`.
  *
- * `undefined` values are removed.
- *
  * @example
  *
  *   const e = circle("", { "xlink:text": XLINK_ATTR("abc") });
  *
- * @param v - Value
+ * @param v Value.
  * @returns {@link AttributeDirective}
  */
-export function XLINK_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean> {
-  return NS_ATTR(v, ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_STRING, updateXLinkAttr);
-}
+export const XLINK_ATTR = (v: string | number | boolean): AttributeDirective<string | number | boolean> => (
+  (v === "") ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_STRING : { v, u: updateXLinkAttr }
+);
 
 /* tslint:disable:max-line-length */
 /**

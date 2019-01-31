@@ -64,8 +64,6 @@ export { NodeFlags } from "./vdom/node_flags";
 export { setContext, restoreContext, context } from "./vdom/context";
 export {
   AttributeDirective,
-  ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED, ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED,
-  ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED,
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
 export { ElementProtoDescriptor } from "./vdom/element_proto";

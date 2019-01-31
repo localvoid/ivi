@@ -1,14 +1,10 @@
 import {
-  PROPERTY, EVENT, ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED, ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED, UNSAFE_HTML,
+  PROPERTY, EVENT, UNSAFE_HTML,
   AUTOFOCUS, withNextFrame,
 } from "ivi";
 
 describe(`Attribute Directive`, () => {
   describe(`PROPERTY()`, () => {
-    test(`undefined should return ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED`, () => {
-      expect(PROPERTY(undefined)).toBe(ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED);
-    });
-
     test(`value`, () => {
       expect(PROPERTY(1).v).toBe(1);
     });
@@ -41,10 +37,6 @@ describe(`Attribute Directive`, () => {
   });
 
   describe(`UNSAFE_HTML()`, () => {
-    test(`undefined should return ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED`, () => {
-      expect(UNSAFE_HTML(undefined)).toBe(ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED);
-    });
-
     test(`value`, () => {
       expect(UNSAFE_HTML("abc").v).toBe("abc");
     });
@@ -87,10 +79,6 @@ describe(`Attribute Directive`, () => {
   });
 
   describe(`AUTOFOCUS()`, () => {
-    test(`undefined should return ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED`, () => {
-      expect(AUTOFOCUS(undefined)).toBe(ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED);
-    });
-
     test(`true value`, () => {
       expect(AUTOFOCUS(true).v).toBe(true);
     });
@@ -126,10 +114,6 @@ describe(`Attribute Directive`, () => {
   });
 
   describe(`EVENT()`, () => {
-    test(`undefined should return ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED`, () => {
-      expect(EVENT(undefined)).toBe(ATTRIBUTE_DIRECTIVE_REMOVE_EVENT_UNDEFINED);
-    });
-
     test(`value`, () => {
       const h = () => { /**/ };
 
@@ -170,27 +154,13 @@ describe(`Attribute Directive`, () => {
       expect(h.mock.calls.length).toBe(1);
     });
 
-    test(`sync native event with undefined values`, () => {
-      const e = document.createElement("div");
-      const rm = jest.fn();
-      const add = jest.fn();
-      e.removeEventListener = rm;
-      e.addEventListener = add;
-
-      const p = EVENT(undefined);
-      p.u(e, "click", void 0, void 0);
-
-      expect(rm.mock.calls.length).toBe(0);
-      expect(add.mock.calls.length).toBe(0);
-    });
-
     test(`remove native event`, () => {
       const e = document.createElement("div");
       const h = jest.fn();
       const p1 = EVENT(h);
-      const p2 = EVENT(undefined);
+      const p2 = EVENT(h);
       p1.u(e, "click", void 0, p1.v);
-      p2.u(e, "click", p1.v, p2.v);
+      p2.u(e, "click", p1.v, void 0);
       e.click();
 
       expect(h.mock.calls.length).toBe(0);

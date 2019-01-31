@@ -110,6 +110,14 @@ describe(`SVG`, () => {
     });
   });
 
+  test(`<circle attrs={ "xml:text": "" }>`, () => {
+    testRenderDOM<SVGElement>(r => {
+      const n = r(s.circle("", { "xml:test": s.XML_ATTR("") }))!;
+      expect(n.attributes.length).toBe(1);
+      expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("");
+    });
+  });
+
   test(`<circle attrs={ "xml:text": "a" }>`, () => {
     testRenderDOM<SVGElement>(r => {
       const n = r(s.circle("", { "xml:test": s.XML_ATTR("a") }))!;
@@ -118,25 +126,19 @@ describe(`SVG`, () => {
     });
   });
 
-  test(`<circle attrs={ "xml:text": undefined }>`, () => {
-    testRenderDOM<SVGElement>(r => {
-      const n = r(s.circle("", { "xml:test": s.XML_ATTR(undefined) }))!;
-      expect(n.attributes.length).toBe(0);
-    });
-  });
-
   test(`<circle attrs={ "xml:text": true }>`, () => {
     testRenderDOM<SVGElement>(r => {
       const n = r(s.circle("", { "xml:test": s.XML_ATTR(true) }))!;
       expect(n.attributes.length).toBe(1);
-      expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("");
+      expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("true");
     });
   });
 
   test(`<circle attrs={ "xml:text": false }>`, () => {
     testRenderDOM<SVGElement>(r => {
-      const n = r(s.circle("", { "xml:test": s.XML_ATTR(false) }))!;
-      expect(n.attributes.length).toBe(0);
+      const n = r(s.circle("", { "xml:test": s.XML_ATTR("false") }))!;
+      expect(n.attributes.length).toBe(1);
+      expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("false");
     });
   });
 });

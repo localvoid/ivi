@@ -279,6 +279,16 @@ NamedNodeMap {
   });
 
   describe(`svg`, () => {
+    test(`{ "xml:text": "" } => { "xml:text": "" }`, () => {
+      testRenderDOM<HTMLElement>(r => {
+        r(s.circle("", { "xml:text": s.XML_ATTR("") }));
+        const n = r(s.circle("", { "xml:text": s.XML_ATTR("") }))!;
+
+        expect(n.attributes).toHaveLength(1);
+        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("");
+      });
+    });
+
     test(`{ "xml:text": "abc" } => { "xml:text": "abc" }`, () => {
       testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
@@ -292,7 +302,7 @@ NamedNodeMap {
     test(`{ "xml:text": "abc" } => { "xml:text": undefined }`, () => {
       testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
-        const n = r(s.circle("", { "xml:text": s.XML_ATTR(undefined) }))!;
+        const n = r(s.circle("", { "xml:text": void 0 }))!;
 
         expect(n.attributes).toHaveLength(0);
       });
@@ -304,7 +314,7 @@ NamedNodeMap {
         const n = r(s.circle("", { "xml:text": s.XML_ATTR(true) }))!;
 
         expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("");
+        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("true");
       });
     });
 
@@ -314,7 +324,7 @@ NamedNodeMap {
         const n = r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }))!;
 
         expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XLINK_NAMESPACE, "text")).toBe("");
+        expect(n.getAttributeNS(XLINK_NAMESPACE, "text")).toBe("true");
       });
     });
   });
