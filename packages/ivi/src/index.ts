@@ -56,9 +56,6 @@ export {
   getEventCharCode, getEventKey, getMouseButtons,
 } from "./dom/input";
 
-// Debug
-export { debugSub, debugPub } from "./debug/pubsub";
-
 // Virtual DOM
 export { NodeFlags } from "./vdom/node_flags";
 export { setContext, restoreContext, context } from "./vdom/context";
