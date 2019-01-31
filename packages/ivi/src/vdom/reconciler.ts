@@ -891,27 +891,27 @@ function _updateChildrenTrackByKeys(
   moveNode: boolean,
   singleChild: boolean,
 ): void {
-  const opStateChildren = opState.c as Array<OpState | null>;
-  const result = Array(b.length);
   let i = b.length;
+  let j: number | undefined = a.length;
+  const result = Array(i);
 
   if (i === 0) {
-    if (opStateChildren.length > 0) {
+    if (j > 0) {
       _unmount(parentElement, opState, singleChild);
     }
-  } else if (opStateChildren.length === 0) {
+  } else if (j === 0) {
     while (--i >= 0) {
       result[i] = _mount(parentElement, b[i].v);
     }
   } else {
+    const opStateChildren = opState.c as Array<OpState | null>;
     let aStartNode = a[0];
     let bStartNode = b[0];
-    let aEnd = a.length - 1;
-    let bEnd = b.length - 1;
+    let aEnd = j - 1; // a.length - 1
+    let bEnd = i - 1; // b.length - 1
     let aEndNode = a[aEnd];
     let bEndNode = b[bEnd];
     let start = 0;
-    let j: number | undefined;
     let sNode: OpState | null;
 
     // Step 1
@@ -962,7 +962,8 @@ function _updateChildrenTrackByKeys(
         sources[i] = -1;
       }
 
-      // When pos === 1000000, it means that one of the nodes in the wrong position.
+      // When `pos === -1`, it means that one of the nodes is in the wrong position and we should rearrange nodes with
+      // lis-based algorithm.
       let pos = 0;
       let updated = 0;
 
@@ -975,7 +976,7 @@ function _updateChildrenTrackByKeys(
       for (i = start; i <= aEnd && updated < bLength; ++i) {
         j = keyIndex.get(a[i].k);
         if (j !== void 0) {
-          pos = (pos > j) ? 1000000 : j;
+          pos = (j < pos) ? j : -1;
           ++updated;
           sources[j - start] = i;
           result[j] = opStateChildren[i];
@@ -1000,7 +1001,7 @@ function _updateChildrenTrackByKeys(
 
         let opNode;
         i = bLength;
-        if (moveNode === true || pos !== 1000000) {
+        if (moveNode === true || pos !== -1) {
           while (--i >= 0) {
             pos = start + i;
             opNode = b[pos].v;
