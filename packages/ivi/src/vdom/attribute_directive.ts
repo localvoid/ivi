@@ -3,7 +3,7 @@ import { scheduleLayoutEffect } from "../scheduler";
 import { emitChildren, emitAttribute } from "../ssr/render";
 
 /**
- * Attribute directives are used to extend reconciliation algorithm.
+ * Attribute directives are used to extend reconciliation and renderToString algorithms.
  *
  * When DOM element attributes are updated, all value types are checked if it is a string, number, boolean or an
  * `AttributeDirective`. When it is an attribute directive, custom update function will be invoked with the DOM
@@ -35,6 +35,11 @@ export interface AttributeDirective<T> {
 }
 
 /**
+ * {@link AttributeDirective} that ignores rendering to string.
+ */
+export const IGNORE_RENDER_TO_STRING = ({ v: void 0, s: NOOP });
+
+/**
  * PROPERTY function creates an {@link AttributeDirective} that assigns a property to a property name derived from the
  * `key` of the attribute.
  *
@@ -46,9 +51,9 @@ export interface AttributeDirective<T> {
  * @param v Property value.
  * @returns {@link AttributeDirective}
  */
-export const PROPERTY = <T>(v: T): AttributeDirective<T> => TARGET === "ssr" ?
-  ({ v, s: NOOP }) :
-  ({ v, u: updateProperty });
+export const PROPERTY = <T>(v: T): AttributeDirective<T> => (
+  TARGET === "ssr" ? IGNORE_RENDER_TO_STRING : ({ v, u: updateProperty })
+);
 
 /**
  * Update function for an {@link AttributeDirective} created with a {@link PROPERTY} function.
@@ -74,9 +79,11 @@ function updateProperty(element: Element, key: string, prev: any, next: any): vo
  * @param v innerHTML value.
  * @returns {@link AttributeDirective}
  */
-export const UNSAFE_HTML = (v: string): AttributeDirective<string> => TARGET === "ssr" ?
-  ({ v, s: renderToStringUnsafeHTML }) :
-  ({ v, u: updateUnsafeHTML });
+export const UNSAFE_HTML = (v: string): AttributeDirective<string> => (
+  TARGET === "ssr" ?
+    ({ v, s: renderToStringUnsafeHTML }) :
+    ({ v, u: updateUnsafeHTML })
+);
 
 /**
  * Render to string function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
@@ -117,9 +124,11 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * @param v Event handler.
  * @returns {@link AttributeDirective}
  */
-export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => TARGET === "ssr" ?
-  ({ v, s: NOOP }) :
-  ({ v, u: updateEvent });
+export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => (
+  TARGET === "ssr" ?
+    IGNORE_RENDER_TO_STRING :
+    ({ v, u: updateEvent })
+);
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link EVENT} function.
@@ -175,14 +184,12 @@ const AUTOFOCUS_FALSE: AttributeDirective<boolean> = { v: false, u: updateAutofo
 const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocus };
 
 /**
- * {@link AttributeDirective} with `false` value that doesn't emit any attributes.
- */
-const AUTOFOCUS_FALSE_STRING: AttributeDirective<boolean> = { v: false, s: NOOP };
-
-/**
  * {@link AttributeDirective} with `true` value that emits `autofocus` attribute.
  */
-const AUTOFOCUS_TRUE_STRING: AttributeDirective<boolean> = { v: true, s: () => { emitAttribute("autofocus"); } };
+const AUTOFOCUS_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = {
+  v: true,
+  s: () => { emitAttribute("autofocus"); },
+};
 
 /**
  * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
@@ -194,6 +201,8 @@ const AUTOFOCUS_TRUE_STRING: AttributeDirective<boolean> = { v: true, s: () => {
  * @param v Autofocus state.
  * @returns {@link AttributeDirective}
  */
-export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => v ?
-  TARGET === "ssr" ? AUTOFOCUS_TRUE_STRING : AUTOFOCUS_TRUE :
-  TARGET === "ssr" ? AUTOFOCUS_FALSE_STRING : AUTOFOCUS_FALSE;
+export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => (
+  TARGET === "ssr" ?
+    v ? AUTOFOCUS_TRUE_RENDER_TO_STRING : IGNORE_RENDER_TO_STRING :
+    v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE
+);

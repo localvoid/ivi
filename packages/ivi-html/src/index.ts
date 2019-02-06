@@ -13,19 +13,14 @@ import {
   HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
 
-  AttributeDirective, elementFactory, htmlElementFactory, NodeFlags, NOOP,
-  emitAttribute, emitChildren, escapeAttributeValue, escapeText,
+  AttributeDirective, elementFactory, htmlElementFactory, NodeFlags,
+  emitAttribute, emitChildren, escapeAttributeValue, escapeText, IGNORE_RENDER_TO_STRING,
 } from "ivi";
 
 /**
  * {@link AttributeDirective} with `""` value and {@link updateValue} sync function.
  */
 const VALUE_EMPTY: AttributeDirective<string | number> = { v: "", u: updateValue };
-
-/**
- * {@link AttributeDirective} with `""` value that doesn't emit any attributes.
- */
-const VALUE_EMPTY_STRING: AttributeDirective<string | number> = { v: "", u: NOOP };
 
 /**
  * {@link AttributeDirective} with `false` value and {@link updateChecked} sync function.
@@ -38,14 +33,9 @@ const CHECKED_FALSE: AttributeDirective<boolean> = { v: false, u: updateChecked 
 const CHECKED_TRUE: AttributeDirective<boolean> = { v: true, u: updateChecked };
 
 /**
- * {@link AttributeDirective} with `false` value that doesn't emit any attributes.
- */
-const CHECKED_FALSE_STRING: AttributeDirective<boolean> = { v: false, s: NOOP };
-
-/**
  * {@link AttributeDirective} with `true` value that emits `checked` attribute.
  */
-const CHECKED_TRUE_STRING: AttributeDirective<boolean> = { v: true, s: () => { emitAttribute("checked"); } };
+const CHECKED_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = { v: true, s: () => { emitAttribute("checked"); } };
 
 /**
  * Render to string function for an {@link AttributeDirective} created with {@link VALUE} function.
@@ -129,7 +119,7 @@ function updateChecked(
  */
 export const VALUE = (v: string | number): AttributeDirective<string | number> => (
   TARGET === "ssr" ?
-    v === "" ? VALUE_EMPTY_STRING : { v, s: renderToStringValue } :
+    v === "" ? IGNORE_RENDER_TO_STRING : { v, s: renderToStringValue } :
     v === "" ? VALUE_EMPTY : { v, u: updateValue }
 );
 
@@ -143,11 +133,13 @@ export const VALUE = (v: string | number): AttributeDirective<string | number> =
  * @param v Value.
  * @returns {@link AttributeDirective}
  */
-export const CONTENT = TARGET === "ssr" ?
-  (v: string | number): AttributeDirective<string | number> => (
-    v === "" ? VALUE_EMPTY_STRING : ({ v, s: renderToStringContent })
-  ) :
-  VALUE;
+export const CONTENT = (
+  TARGET === "ssr" ?
+    (v: string | number): AttributeDirective<string | number> => (
+      v === "" ? IGNORE_RENDER_TO_STRING : ({ v, s: renderToStringContent })
+    ) :
+    VALUE
+);
 
 /**
  * CHECKED function creates a {@link AttributeDirective} that assigns a `checked` property to an HTMLInputElement.
@@ -159,9 +151,11 @@ export const CONTENT = TARGET === "ssr" ?
  * @param v Checked value.
  * @returns {@link AttributeDirective}
  */
-export const CHECKED = (v: boolean): AttributeDirective<boolean> => v ?
-  TARGET === "ssr" ? CHECKED_TRUE_STRING : CHECKED_TRUE :
-  TARGET === "ssr" ? CHECKED_FALSE_STRING : CHECKED_FALSE;
+export const CHECKED = (v: boolean): AttributeDirective<boolean> => (
+  TARGET === "ssr" ?
+    v ? CHECKED_TRUE_RENDER_TO_STRING : IGNORE_RENDER_TO_STRING :
+    v ? CHECKED_TRUE : CHECKED_FALSE
+);
 
 /* tslint:disable:max-line-length */
 /**

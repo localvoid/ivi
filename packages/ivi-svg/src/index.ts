@@ -28,7 +28,7 @@ const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY = {
   },
 };
 
-const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING = {
+const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_RENDER_TO_STRING = {
   v: "",
   s: (key: string, value: string | number) => { emitAttribute(`xml:${key}`); },
 };
@@ -42,7 +42,7 @@ const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY = {
   },
 };
 
-const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_STRING = {
+const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_RENDER_TO_STRING = {
   v: "",
   s: (key: string, value: string | number) => { emitAttribute(`xlink:${key}`); },
 };
@@ -118,7 +118,7 @@ function updateXLinkAttr(
  */
 export const XML_ATTR = (v: string | number): AttributeDirective<string | number> => (
   TARGET === "ssr" ?
-    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_STRING : { v, s: renderToStringXMLAttr } :
+    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_RENDER_TO_STRING : { v, s: renderToStringXMLAttr } :
     v === "" ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY : { v, u: updateXMLAttr }
 );
 
@@ -135,7 +135,7 @@ export const XML_ATTR = (v: string | number): AttributeDirective<string | number
  */
 export const XLINK_ATTR = (v: string | number): AttributeDirective<string | number> => (
   TARGET === "ssr" ?
-    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_STRING : { v, s: renderToStringXLinkAttr } :
+    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_RENDER_TO_STRING : { v, s: renderToStringXLinkAttr } :
     v === "" ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY : { v, u: updateXLinkAttr }
 );
 
