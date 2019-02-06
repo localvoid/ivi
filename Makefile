@@ -8,13 +8,6 @@ clean: clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_state
 
 build: build_ivi build_ivi_html build_ivi_svg build_ivi_state
 
-# ivi-shared
-clean_ivi_shared:
-	$Q cd packages/ivi-shared && yarn clean
-
-build_ivi_shared: clean_ivi_shared
-	$Q cd packages/ivi-shared && yarn dist
-
 # ivi-scheduler
 clean_ivi_scheduler:
 	$Q cd packages/ivi-scheduler && yarn clean
@@ -26,7 +19,7 @@ build_ivi_scheduler: clean_ivi_scheduler
 clean_ivi:
 	$Q cd packages/ivi && yarn clean
 
-build_ivi: clean_ivi build_ivi_shared build_ivi_scheduler
+build_ivi: clean_ivi build_ivi_scheduler
 	$Q cd packages/ivi && yarn dist
 
 # ivi-html
