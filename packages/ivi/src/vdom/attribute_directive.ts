@@ -15,7 +15,7 @@ export interface AttributeDirective<T> {
   /**
    * Value.
    */
-  v: T | undefined;
+  readonly v: T | undefined;
   /**
    * Update function.
    *
@@ -24,14 +24,14 @@ export interface AttributeDirective<T> {
    * @param prev Previous value.
    * @param next Next value.
    */
-  u?: (element: Element, key: string, prev: T | undefined, next: T | undefined) => void;
+  readonly u?: (element: Element, key: string, prev: T | undefined, next: T | undefined) => void;
   /**
    * Render to string function.
    *
    * @param key Attribute key.
    * @param value Value.
    */
-  s?: (key: string, value: T) => void;
+  readonly s?: (key: string, value: T) => void;
 }
 
 /**
