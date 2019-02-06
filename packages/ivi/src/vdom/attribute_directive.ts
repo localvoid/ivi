@@ -1,4 +1,6 @@
+import { NOOP } from "../core";
 import { scheduleLayoutEffect } from "../scheduler";
+import { emitChildren, emitAttribute } from "../ssr/render";
 
 /**
  * Attribute directives are used to extend reconciliation algorithm.
@@ -22,7 +24,14 @@ export interface AttributeDirective<T> {
    * @param prev Previous value.
    * @param next Next value.
    */
-  u(element: Element, key: string, prev: T | undefined, next: T | undefined): void;
+  u?: (element: Element, key: string, prev: T | undefined, next: T | undefined) => void;
+  /**
+   * Render to string function.
+   *
+   * @param key Attribute key.
+   * @param value Value.
+   */
+  s?: (key: string, value: T) => void;
 }
 
 /**
@@ -37,7 +46,9 @@ export interface AttributeDirective<T> {
  * @param v Property value.
  * @returns {@link AttributeDirective}
  */
-export const PROPERTY = <T>(v: T): AttributeDirective<T> => ({ v, u: updateProperty });
+export const PROPERTY = <T>(v: T): AttributeDirective<T> => TARGET === "ssr" ?
+  ({ v, s: NOOP }) :
+  ({ v, u: updateProperty });
 
 /**
  * Update function for an {@link AttributeDirective} created with a {@link PROPERTY} function.
@@ -63,7 +74,19 @@ function updateProperty(element: Element, key: string, prev: any, next: any): vo
  * @param v innerHTML value.
  * @returns {@link AttributeDirective}
  */
-export const UNSAFE_HTML = (v: string): AttributeDirective<string> => ({ v, u: updateUnsafeHTML });
+export const UNSAFE_HTML = (v: string): AttributeDirective<string> => TARGET === "ssr" ?
+  ({ v, s: renderToStringUnsafeHTML }) :
+  ({ v, u: updateUnsafeHTML });
+
+/**
+ * Render to string function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
+ *
+ * @param key Attribute key.
+ * @param value Value.
+ */
+function renderToStringUnsafeHTML(key: string, value: string) {
+  emitChildren(value);
+}
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
@@ -94,7 +117,9 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * @param v Event handler.
  * @returns {@link AttributeDirective}
  */
-export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => ({ v, u: updateEvent });
+export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => TARGET === "ssr" ?
+  ({ v, s: NOOP }) :
+  ({ v, u: updateEvent });
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link EVENT} function.
@@ -108,13 +133,15 @@ function updateEvent(
   element: Element,
   key: string,
   prev: ((ev: Event) => void) | undefined,
-  next: ((ev: Event) => void),
+  next: ((ev: Event) => void) | undefined,
 ) {
   if (prev !== next) {
     if (prev !== void 0) {
       element.removeEventListener(key, prev);
     }
-    element.addEventListener(key, next);
+    if (next !== void 0) {
+      element.addEventListener(key, next);
+    }
   }
 }
 
@@ -148,6 +175,16 @@ const AUTOFOCUS_FALSE: AttributeDirective<boolean> = { v: false, u: updateAutofo
 const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocus };
 
 /**
+ * {@link AttributeDirective} with `false` value that doesn't emit any attributes.
+ */
+const AUTOFOCUS_FALSE_STRING: AttributeDirective<boolean> = { v: false, s: NOOP };
+
+/**
+ * {@link AttributeDirective} with `true` value that emits `autofocus` attribute.
+ */
+const AUTOFOCUS_TRUE_STRING: AttributeDirective<boolean> = { v: true, s: () => { emitAttribute("autofocus"); } };
+
+/**
  * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
  *
  * @example
@@ -157,4 +194,6 @@ const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocu
  * @param v Autofocus state.
  * @returns {@link AttributeDirective}
  */
-export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE;
+export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => v ?
+  TARGET === "ssr" ? AUTOFOCUS_TRUE_STRING : AUTOFOCUS_TRUE :
+  TARGET === "ssr" ? AUTOFOCUS_FALSE_STRING : AUTOFOCUS_FALSE;

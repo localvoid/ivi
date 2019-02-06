@@ -20,8 +20,7 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "dependencies": {
-    "ivi-scheduler": "^0.20.0",
-    "ivi-shared": "^0.20.0"
+    "ivi-scheduler": "^0.20.0"
   },
   "description": "Javascript (TypeScript) library for building web user interfaces.",
   "license": "MIT",

@@ -10,7 +10,6 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    "ivi-shared": "<rootDir>/packages/ivi-shared/src/",
     "ivi-scheduler": "<rootDir>/packages/ivi-scheduler/src/",
     "ivi-test-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
     "ivi-gestures": "<rootDir>/packages/ivi-gestures/src",
@@ -20,7 +19,6 @@ module.exports = {
     "ivi-state": "<rootDir>/packages/ivi-state/src",
     "ivi-router": "<rootDir>/packages/ivi-router/src",
     "ivi-math": "<rootDir>/packages/ivi-math/src",
-    "ivi-ssr": "<rootDir>/packages/ivi/src",
     "ivi": "<rootDir>/packages/ivi/src",
   },
   transform: {
@@ -40,7 +38,6 @@ module.exports = {
     "!**/node_modules/**",
     "!**/__tests__/**",
     "!packages/ivi-scheduler/**",
-    "!packages/ivi-ssr/**",
     "!packages/ivi-test-scheduler/**",
     "!packages/ivi-test/**",
     "!packages/ivi-router/**",

@@ -1,4 +1,4 @@
-import { append, unorderedArrayDelete } from "ivi-shared";
+import { append, unorderedArrayDelete } from "../core";
 import { withSchedulerTick } from "../scheduler";
 import { SyntheticEventFlags, NativeEventSourceFlags } from "./flags";
 import { EventHandlerNode } from "./event_handler";

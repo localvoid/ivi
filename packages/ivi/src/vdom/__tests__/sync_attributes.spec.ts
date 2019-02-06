@@ -289,6 +289,16 @@ NamedNodeMap {
       });
     });
 
+    test(`{ "xlink:text": "" } => { "xlink:text": "" }`, () => {
+      testRenderDOM<HTMLElement>(r => {
+        r(s.circle("", { "xlink:text": s.XLINK_ATTR("") }));
+        const n = r(s.circle("", { "xlink:text": s.XLINK_ATTR("") }))!;
+
+        expect(n.attributes).toHaveLength(1);
+        expect(n.getAttributeNS(XLINK_NAMESPACE, "text")).toBe("");
+      });
+    });
+
     test(`{ "xml:text": "abc" } => { "xml:text": "abc" }`, () => {
       testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
@@ -305,26 +315,6 @@ NamedNodeMap {
         const n = r(s.circle("", { "xml:text": void 0 }))!;
 
         expect(n.attributes).toHaveLength(0);
-      });
-    });
-
-    test(`{ "xml:text": true } => { "xml:text": true }`, () => {
-      testRenderDOM<HTMLElement>(r => {
-        r(s.circle("", { "xml:text": s.XML_ATTR(true) }));
-        const n = r(s.circle("", { "xml:text": s.XML_ATTR(true) }))!;
-
-        expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("true");
-      });
-    });
-
-    test(`{ "xlink:text": true } => { "xlink:text": true }`, () => {
-      testRenderDOM<HTMLElement>(r => {
-        r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }));
-        const n = r(s.circle("", { "xlink:text": s.XLINK_ATTR(true) }))!;
-
-        expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XLINK_NAMESPACE, "text")).toBe("true");
       });
     });
   });

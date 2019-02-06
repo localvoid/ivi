@@ -125,20 +125,4 @@ describe(`SVG`, () => {
       expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("a");
     });
   });
-
-  test(`<circle attrs={ "xml:text": true }>`, () => {
-    testRenderDOM<SVGElement>(r => {
-      const n = r(s.circle("", { "xml:test": s.XML_ATTR(true) }))!;
-      expect(n.attributes.length).toBe(1);
-      expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("true");
-    });
-  });
-
-  test(`<circle attrs={ "xml:text": false }>`, () => {
-    testRenderDOM<SVGElement>(r => {
-      const n = r(s.circle("", { "xml:test": s.XML_ATTR("false") }))!;
-      expect(n.attributes.length).toBe(1);
-      expect(n.getAttributeNS(XML_NAMESPACE, "test")).toBe("false");
-    });
-  });
 });

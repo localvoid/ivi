@@ -1,7 +1,7 @@
-import { _ } from "ivi-shared";
-import { UNSAFE_HTML } from "ivi";
+TARGET = "ssr";
+
+import { _, UNSAFE_HTML, renderToString } from "ivi";
 import { div, span, strong, textarea } from "ivi-html";
-import { renderToString } from "../render";
 
 describe("render", () => {
   test("<div>", () => {

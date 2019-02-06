@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT } from "ivi-shared";
+import { EMPTY_OBJECT } from "../core";
 import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";

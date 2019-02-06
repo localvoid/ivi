@@ -1,4 +1,4 @@
-import { Box } from "ivi-shared";
+import { Box } from "../core";
 import { OpState } from "./state";
 import { Component } from "./component";
 import { useSelect } from "./hooks";

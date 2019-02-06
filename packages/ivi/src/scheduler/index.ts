@@ -1,5 +1,5 @@
-import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList } from "ivi-shared";
 import { sMT, rAF } from "ivi-scheduler";
+import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList } from "../core";
 import { printWarn } from "../debug/print";
 import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";

@@ -1,4 +1,4 @@
-import { escapeAttributeValue, escapeText } from "../escape";
+import { escapeAttributeValue, escapeText } from "ivi";
 
 describe("escape", () => {
   describe("attribute values", () => {

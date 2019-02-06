@@ -1,4 +1,4 @@
-import { Box } from "ivi-shared";
+import { Box } from "../core";
 import { Op } from "./operations";
 import { OpState } from "./state";
 import { component } from "./factories";

@@ -1,11 +1,11 @@
-// Shared
+// Core
 export {
   _, Predicate, Box, box, EMPTY_OBJECT, getFunctionName, addErrorHandler, catchError,
   NOOP, NOOP_FALSE, NOOP_TRUE,
   append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
   RepeatableTaskList, runRepeatableTasks,
   shallowEqual,
-} from "ivi-shared";
+} from "./core";
 
 // DOM
 export {
@@ -80,6 +80,11 @@ export { selector, findDOMNode } from "./vdom/utils";
 export { visitNodes, getDOMNode } from "./vdom/reconciler";
 export { Ref } from "./vdom/ref";
 export { Portal, portal, usePortal } from "./vdom/portal";
+
+// SSR
+export {
+  escapeAttributeValue, escapeText, escapeJavascript, emitAttribute, emitStyle, emitChildren, renderToString,
+} from "./ssr";
 
 // Scheduler
 export {

@@ -31,6 +31,12 @@ export const enum NodeFlags {
    * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
    */
   NewlineEatingElement = 1 << 11,
+  /**
+   * Void Element
+   *
+   * https://www.w3.org/TR/html5/syntax.html#void-elements
+   */
+  VoidElement = 1 << 12,
   // Node requires dirty checking.
   DirtyCheck = 1 << 12,
   // Node requires unmounting.
