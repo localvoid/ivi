@@ -41,18 +41,17 @@ export function emitChildren(children: string | number): void {
   _children += children;
 }
 
-function renderObject(op: OpNode): string {
+function renderNode(op: OpNode): string {
   const flags = op.t.f;
   let result;
   if ((flags & NodeFlags.Element) !== 0) {
     const data = op.d;
-    _attributes = "";
-    _styles = "";
-    _children = "";
+    let openElement = `<${op.t.d}`;
+    let children = "";
 
     const className = data.n;
     if (className !== void 0 && className !== "") {
-      emitAttribute(`class="${className}"`);
+      openElement += ` class="${className}"`;
     }
     let attrs = data.a;
     if ((op.t.f & NodeFlags.ElementProto) !== 0 && (op.t.d as ElementProtoDescriptor).p.d.a !== void 0) {
@@ -79,10 +78,14 @@ function renderObject(op: OpNode): string {
       }
       if (_styles !== "") {
         emitAttribute(`style="${_styles}"`);
+        _styles = "";
       }
+      openElement += _attributes;
+      children = _children;
+      _attributes = "";
+      _children = "";
     }
-    const openElement = `<${op.t.d}${_attributes}`;
-    let children = _children;
+
     if (children === "") {
       children = renderToString((op as OpNode<ElementData>).d.c);
     }
@@ -91,10 +94,7 @@ function renderObject(op: OpNode): string {
         children = `\n${children}`;
       }
     }
-    return (
-      (flags & NodeFlags.VoidElement) !== 0 ||
-      ((flags & NodeFlags.Svg) !== 0 && children === "")
-    ) ?
+    return ((flags & (NodeFlags.VoidElement | NodeFlags.Svg)) !== 0 && children === "") ?
       `${openElement} />` :
       `${openElement}>${children}</${op.t.d}>`;
   }
@@ -118,7 +118,7 @@ function renderObject(op: OpNode): string {
       return renderToString(op.d.children);
     }
   }
-
+  // TrackByKey Node
   result = "";
   const childrenNodes = (op.d as Key<any, Op>[]);
   for (let i = 0; i < childrenNodes.length; ++i) {
@@ -140,7 +140,7 @@ export function renderToString(op: Op): string {
       if (op instanceof Array) {
         return renderFragment(op);
       }
-      return renderObject(op);
+      return renderNode(op);
     }
     return renderText(op);
   }
