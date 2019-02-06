@@ -120,7 +120,7 @@ export function _dirtyCheck(
     } else if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
       _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
     } else {
-      if (moveNode) {
+      if (moveNode === true) {
         _moveNodes(parentElement, opState);
       } else {
         _nextNode = getDOMNode(opState);
@@ -163,7 +163,7 @@ export function _dirtyCheck(
     }
     opState.f = _popDeepState(deepState, opState.f);
   } else {
-    if (moveNode) {
+    if (moveNode === true) {
       _moveNodes(parentElement, opState);
     } else {
       _nextNode = getDOMNode(opState);
