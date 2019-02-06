@@ -1,7 +1,8 @@
 TARGET = "ssr";
 
 import { _, UNSAFE_HTML, renderToString } from "ivi";
-import { div, span, strong, textarea } from "ivi-html";
+import { div, span, strong, textarea, CONTENT, input, CHECKED, VALUE } from "ivi-html";
+import { PROPERTY, EVENT, AUTOFOCUS } from "../../vdom/attribute_directive";
 
 describe("render", () => {
   test("<div>", () => {
@@ -147,8 +148,48 @@ describe("render", () => {
     });
 
     describe("attribute directives", () => {
+      test("property", () => {
+        expect(renderToString(div(_, { _prop: PROPERTY("value") }))).toBe(`<div></div>`);
+      });
+
       test("unsafeHTML", () => {
         expect(renderToString(div(_, { unsafeHTML: UNSAFE_HTML("&") }))).toBe(`<div>&</div>`);
+      });
+
+      test("event", () => {
+        expect(renderToString(div(_, { click: EVENT(() => true) }))).toBe(`<div></div>`);
+      });
+
+      test("autofocus=true", () => {
+        expect(renderToString(div(_, { autofocus: AUTOFOCUS(true) }))).toBe(`<div autofocus></div>`);
+      });
+
+      test("autofocus=false", () => {
+        expect(renderToString(div(_, { autofocus: AUTOFOCUS(false) }))).toBe(`<div></div>`);
+      });
+
+      test("checked=true", () => {
+        expect(renderToString(input(_, { checked: CHECKED(true) }))).toBe(`<input checked />`);
+      });
+
+      test("checked=false", () => {
+        expect(renderToString(input(_, { checked: CHECKED(false) }))).toBe(`<input />`);
+      });
+
+      test(`value=""`, () => {
+        expect(renderToString(input(_, { value: VALUE("") }))).toBe(`<input />`);
+      });
+
+      test(`value="abc"`, () => {
+        expect(renderToString(input(_, { value: VALUE("abc") }))).toBe(`<input value="abc" />`);
+      });
+
+      test(`content=""`, () => {
+        expect(renderToString(textarea(_, { content: CONTENT("") }))).toBe(`<textarea></textarea>`);
+      });
+
+      test(`content="abc"`, () => {
+        expect(renderToString(textarea(_, { content: CONTENT("abc") }))).toBe(`<textarea>abc</textarea>`);
       });
     });
   });
