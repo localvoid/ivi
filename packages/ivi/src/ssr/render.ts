@@ -134,7 +134,7 @@ function renderNode(op: OpNode): string {
  * @param context Current context.
  * @returns Rendering results.
  */
-export function renderToString(op: Op): string {
+function _renderToString(op: Op): string {
   if (op !== null) {
     if (typeof op === "object") {
       if (op instanceof Array) {
@@ -145,4 +145,22 @@ export function renderToString(op: Op): string {
     return renderText(op);
   }
   return "";
+}
+
+/**
+ * Renders a {@link OpNode} to string.
+ *
+ * @param op {@link OpNode}
+ * @param context Current context.
+ * @returns Rendering results.
+ */
+export function renderToString(op: Op): string {
+  try {
+    return _renderToString(op);
+  } catch (e) {
+    _attributes = "";
+    _styles = "";
+    _children = "";
+    throw e;
+  }
 }
