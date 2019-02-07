@@ -26,7 +26,7 @@ export function createMouseEventListener(
   let moveTrackingEnabled = false;
   let activePointer: GesturePointerEvent | null = null;
 
-  if (DEBUG) {
+  if (__IVI_DEBUG__) {
     debugPubMouseState({
       currentFlags,
     });
@@ -78,7 +78,7 @@ export function createMouseEventListener(
       dispatch(activePointer, ev.target as Element);
     }
 
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubMouseState({ currentFlags });
     }
   }
@@ -95,7 +95,7 @@ export function createMouseEventListener(
       }
     }
 
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubMouseState({ currentFlags });
     }
   }
@@ -121,7 +121,7 @@ export function createMouseEventListener(
       }
     }
 
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubMouseState({ currentFlags });
     }
   }
@@ -143,7 +143,7 @@ export function createMouseEventListener(
         }
       }
       currentFlags |= flags;
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         debugPubMouseState({ currentFlags });
       }
     },
@@ -155,7 +155,7 @@ export function createMouseEventListener(
         }
       }
       currentFlags &= ~flags;
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         debugPubMouseState({ currentFlags });
       }
     },

@@ -14,8 +14,8 @@ declare global {
     scale: number;
   }
 
-  let DEBUG: boolean;
-  let TARGET: "browser" | "evergreen" | "electron" | "ssr";
+  let __IVI_DEBUG__: boolean;
+  let __IVI_TARGET__: "browser" | "evergreen" | "electron" | "ssr";
 }
 
 export { _ } from "./shortcuts";

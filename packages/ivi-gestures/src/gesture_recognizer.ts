@@ -125,7 +125,7 @@ export abstract class GestureRecognizer<T> {
   }
 
   protected activate() {
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (this.state & GestureRecognizerState.Active) {
         throw new Error("Unable to activate gesture recognizer, gesture recognizer is already activated");
       }
@@ -139,7 +139,7 @@ export abstract class GestureRecognizer<T> {
   }
 
   protected deactivate() {
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (!(this.state & GestureRecognizerState.Active)) {
         throw new Error("Unable to deactivate gesture recognizer, gesture recognizer should be active");
       }
@@ -150,7 +150,7 @@ export abstract class GestureRecognizer<T> {
   }
 
   protected resolve() {
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (!(this.state & GestureRecognizerState.Active)) {
         throw new Error("Unable to resolve gesture recognizer, gesture recognizer should be active");
       }
@@ -164,7 +164,7 @@ export abstract class GestureRecognizer<T> {
   }
 
   protected cancel() {
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (!(this.state & GestureRecognizerState.Active)) {
         throw new Error("Unable to cancel gesture recognizer, gesture recognizer should be active");
       }
@@ -173,7 +173,7 @@ export abstract class GestureRecognizer<T> {
   }
 
   protected start() {
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (!(this.state & GestureRecognizerState.Active)) {
         throw new Error("Unable to start gesture recognizer, gesture recognizer should be active");
       }
@@ -183,7 +183,7 @@ export abstract class GestureRecognizer<T> {
   }
 
   protected end() {
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (!(this.state & GestureRecognizerState.Active)) {
         throw new Error("Unable to end gesture recognizer, gesture recognizer should be active");
       }

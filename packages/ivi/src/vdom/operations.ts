@@ -208,7 +208,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
  * @param items Keyed operations.
  * @returns Track by key operation.
  */
-export const TrackByKey = DEBUG ?
+export const TrackByKey = __IVI_DEBUG__ ?
   <T>(items: Key<T, Op>[]) => {
     const keys = new Set<T>();
     for (let i = 0; i < items.length; i++) {

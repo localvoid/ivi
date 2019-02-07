@@ -12,7 +12,7 @@ import { Component } from "./component";
  */
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
   const type = createOpType(flags, tag);
-  return DEBUG ?
+  return __IVI_DEBUG__ ?
     (n?: string, a?: {}, c: Op = null) => {
       checkElement(tag, a, (flags & NodeFlags.Svg) !== 0);
       return createOpNode<ElementData>(type, { n, a, c });
@@ -61,7 +61,7 @@ export const svgElementFactory: <T, U>(tag: string) => (
  */
 export function elementProto<P>(p: OpNode<ElementData<P>>) {
   /* istanbul ignore else */
-  if (DEBUG) {
+  if (__IVI_DEBUG__) {
     if (p.d.c !== null) {
       throw new Error(`Invalid OpNode, element prototypes can't have any children`);
     }

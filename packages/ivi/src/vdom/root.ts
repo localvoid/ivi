@@ -50,7 +50,7 @@ export function dirtyCheck() {
     }
 
     /* istanbul ignore else */
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       if (root.state) {
         checkNestingViolations(container!, root.state);
       }

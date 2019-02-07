@@ -3,8 +3,8 @@ module.exports = {
   verbose: true,
   browser: true,
   globals: {
-    "DEBUG": true,
-    "TARGET": "browser",
+    "__IVI_DEBUG__": true,
+    "__IVI_TARGET__": "browser",
     "ts-jest": {
       "tsConfig": "tsconfig.json",
     },

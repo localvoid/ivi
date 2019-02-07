@@ -106,7 +106,7 @@ export function removeBeforeNativeEvent<E extends Event>(
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   /* istanbul ignore else */
-  if (DEBUG) {
+  if (__IVI_DEBUG__) {
     if (source.b === null) {
       throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
     }
@@ -126,7 +126,7 @@ export function removeAfterNativeEvent<E extends Event>(
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   /* istanbul ignore else */
-  if (DEBUG) {
+  if (__IVI_DEBUG__) {
     if (source.a === null) {
       throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");
     }

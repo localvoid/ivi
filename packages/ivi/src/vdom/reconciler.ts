@@ -134,7 +134,7 @@ export function _dirtyCheck(
       state = opState.s as Node;
       if (moveNode === true) {
         /* istanbul ignore else */
-        if (DEBUG) {
+        if (__IVI_DEBUG__) {
           parentElement.insertBefore(state, _nextNode);
         } else {
           nodeInsertBefore.call(parentElement, state, _nextNode);
@@ -176,7 +176,7 @@ function _moveNodes(parentElement: Element, opState: OpState) {
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
     const domNode = opState.s as Node;
     /* istanbul ignore else */
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       parentElement.insertBefore(domNode, _nextNode);
     } else {
       nodeInsertBefore.call(parentElement, domNode, _nextNode);
@@ -238,7 +238,7 @@ function _unmountRemove(parentElement: Element, opState: OpState, singleChild: b
 
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
     children = opState.s as Node;
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       parentElement.removeChild(children);
     } else {
       nodeRemoveChild.call(parentElement, children);
@@ -275,7 +275,7 @@ function _mountText(
 ) {
   const node = document.createTextNode(op as string);
   /* istanbul ignore else */
-  if (DEBUG) {
+  if (__IVI_DEBUG__) {
     parentElement.insertBefore(node, _nextNode);
   } else {
     nodeInsertBefore.call(parentElement, node, _nextNode);
@@ -302,7 +302,7 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
      */
     if (svg) {
       /* istanbul ignore else */
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         (node as SVGElement).setAttribute("class", n);
       } else {
         elementSetAttribute.call(node, "class", n);
@@ -356,7 +356,7 @@ function _mountObject(
           );
         }
         /* istanbul ignore else */
-        if (DEBUG) {
+        if (__IVI_DEBUG__) {
           node = node.cloneNode(false) as Element;
         } else {
           node = nodeCloneNode.call(node, false) as Element;
@@ -371,7 +371,7 @@ function _mountObject(
         opState.c = _mount(node, value);
       }
       /* istanbul ignore else */
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         parentElement.insertBefore(node, prevState);
       } else {
         nodeInsertBefore.call(parentElement, node, prevState);
@@ -484,7 +484,7 @@ export function _update(
       }
       if (moveNode === true) {
         /* istanbul ignore else */
-        if (DEBUG) {
+        if (__IVI_DEBUG__) {
           parentElement.insertBefore(s as Node, _nextNode);
         } else {
           nodeInsertBefore.call(parentElement, s as Node, _nextNode);
@@ -493,7 +493,7 @@ export function _update(
       _nextNode = s as Node;
     } else {
       /* istanbul ignore else */
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         parentElement.removeChild(s as Node);
       } else {
         nodeRemoveChild.call(parentElement, s as Node);
@@ -553,7 +553,7 @@ export function _update(
         nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
           /* istanbul ignore else */
-          if (DEBUG) {
+          if (__IVI_DEBUG__) {
             parentElement.insertBefore(s as Node, _nextNode);
           } else {
             nodeInsertBefore.call(parentElement, s, _nextNode);
@@ -568,7 +568,7 @@ export function _update(
           // SVG elements doesn't have `className` property.
           if ((flags & NodeFlags.Svg) !== 0) {
             /* istanbul ignore else */
-            if (DEBUG) {
+            if (__IVI_DEBUG__) {
               (s as SVGElement).setAttribute("class", nextValue);
             } else {
               elementSetAttribute.call(s, "class", nextValue);
@@ -1187,14 +1187,14 @@ function _updateAttr(
         }
         if (next === void 0) {
           /* istanbul ignore else */
-          if (DEBUG) {
+          if (__IVI_DEBUG__) {
             element.removeAttribute(key);
           } else {
             elementRemoveAttribute.call(element, key);
           }
         } else {
           /* istanbul ignore else */
-          if (DEBUG) {
+          if (__IVI_DEBUG__) {
             element.setAttribute(key, next as string);
           } else {
             elementSetAttribute.call(element, key, next as string);

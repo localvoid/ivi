@@ -53,7 +53,7 @@ export function createTouchEventListener(
   let moveTrackingEnabled = false;
   let eventTimeOffset = 0;
 
-  if (DEBUG) {
+  if (__IVI_DEBUG__) {
     debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
   }
 
@@ -103,7 +103,7 @@ export function createTouchEventListener(
         eventTimeOffset + primaryPointers![0].timestamp - now,
       );
     }
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
@@ -148,7 +148,7 @@ export function createTouchEventListener(
         dispatch(p, touch.target as Element);
       }
     }
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
@@ -179,7 +179,7 @@ export function createTouchEventListener(
     } else {
       onCancel(s);
     }
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
@@ -215,7 +215,7 @@ export function createTouchEventListener(
         removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
       }
     }
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
@@ -249,7 +249,7 @@ export function createTouchEventListener(
         removeBeforeNativeEvent(EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, onMove);
       }
     }
-    if (DEBUG) {
+    if (__IVI_DEBUG__) {
       debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
     }
   }
@@ -299,7 +299,7 @@ export function createTouchEventListener(
         }
       }
       currentFlags |= flags;
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
       }
     },
@@ -311,7 +311,7 @@ export function createTouchEventListener(
         }
       }
       currentFlags &= ~flags;
-      if (DEBUG) {
+      if (__IVI_DEBUG__) {
         debugPubTouchState({ currentFlags, primaryPointers, primaryTouch, eventTimeOffset, moveTrackingEnabled });
       }
     },
