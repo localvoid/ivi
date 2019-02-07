@@ -46,29 +46,28 @@ function visitDown(
   element: Element,
   stateNode: OpState | null,
 ): OpState | null {
-  if (stateNode === null) {
-    return null;
-  }
-  const { f, c } = stateNode;
-  let r;
-  if ((f & NodeFlags.Element) !== 0) {
-    if (stateNode.s === element) {
-      return stateNode;
-    }
-    if (c !== null) {
-      return visitDown(result, match, element, c as OpState);
-    }
-  } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context)) !== 0) {
-    if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
-      if ((f & NodeFlags.Events) !== 0) {
-        accumulateDispatchTargetsFromEventsOpNode(result, stateNode, (stateNode.o as OpNode<EventsData>).d.v, match);
+  if (stateNode !== null) {
+    const { f, c } = stateNode;
+    let r;
+    if ((f & NodeFlags.Element) !== 0) {
+      if (stateNode.s === element) {
+        return stateNode;
       }
-      return r;
-    }
-  } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-    for (let i = 0; i < (c as OpState[]).length; i++) {
-      if ((r = visitDown(result, match, element, (c as OpState[])[i])) !== null) {
+      if (c !== null) {
+        return visitDown(result, match, element, c as OpState);
+      }
+    } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context)) !== 0) {
+      if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
+        if ((f & NodeFlags.Events) !== 0) {
+          accumulateDispatchTargetsFromEventsOpNode(result, stateNode, (stateNode.o as OpNode<EventsData>).d.v, match);
+        }
         return r;
+      }
+    } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+      for (let i = 0; i < (c as OpState[]).length; i++) {
+        if ((r = visitDown(result, match, element, (c as OpState[])[i])) !== null) {
+          return r;
+        }
       }
     }
   }
