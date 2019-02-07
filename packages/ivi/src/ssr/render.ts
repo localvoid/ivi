@@ -108,9 +108,7 @@ function _renderToString(op: Op): string {
               if (typeof value === "object") {
                 (value as AttributeDirective<any>).s!(key, (value as AttributeDirective<any>).v);
               } else if (typeof value !== "boolean") {
-                if (value !== null) {
-                  emitAttribute(`${key}="${escapeAttributeValue(value)}"`);
-                }
+                emitAttribute(`${key}="${escapeAttributeValue(value)}"`);
               } else if (value === true) {
                 emitAttribute(key);
               }
