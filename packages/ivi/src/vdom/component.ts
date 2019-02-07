@@ -42,7 +42,7 @@ export interface ComponentDescriptor<P = any> {
    * @param next Next properties.
    * @returns `true` when changes in props should trigger update.
    */
-  su: undefined | ((prev: P, next: P) => boolean);
+  readonly su: undefined | ((prev: P, next: P) => boolean);
 }
 
 /**
@@ -66,7 +66,7 @@ export interface StatelessComponentDescriptor<P = any> {
    * @param next Next properties.
    * @returns `true` when changes in props should trigger update.
    */
-  su: undefined | ((prev: P, next: P) => boolean);
+  readonly su: undefined | ((prev: P, next: P) => boolean);
 }
 
 export type Component = OpState<ComponentHooks>;
