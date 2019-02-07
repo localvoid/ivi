@@ -1,4 +1,5 @@
 import { escapeAttributeValue, escapeText } from "ivi";
+import { escapeJavascript } from "../escape";
 
 describe("escape", () => {
   describe("attribute values", () => {
@@ -32,6 +33,10 @@ describe("escape", () => {
   });
 
   describe("text", () => {
+    test("1 => 1", () => {
+      expect(escapeText(1)).toBe("1");
+    });
+
     test("& => &amp;", () => {
       expect(escapeText("&")).toBe("&amp;");
     });
@@ -58,6 +63,44 @@ describe("escape", () => {
 
     test("< => &lt;", () => {
       expect(escapeText(`<`)).toBe("&lt;");
+    });
+  });
+
+  describe("javascript", () => {
+    test("/ => u002F", () => {
+      expect(escapeJavascript(`/`)).toBe("\\u002F");
+    });
+
+    test("/a => u002F", () => {
+      expect(escapeJavascript(`/a`)).toBe("\\u002Fa");
+    });
+
+    test("a/ => u002F", () => {
+      expect(escapeJavascript(`a/`)).toBe("a\\u002F");
+    });
+
+    test("a/a => u002F", () => {
+      expect(escapeJavascript(`a/a`)).toBe("a\\u002Fa");
+    });
+
+    test("a/a/ => u002F", () => {
+      expect(escapeJavascript(`a/a/`)).toBe("a\\u002Fa\\u002F");
+    });
+
+    test("< => u003C", () => {
+      expect(escapeJavascript(`<`)).toBe("\\u003C");
+    });
+
+    test("> => u003E", () => {
+      expect(escapeJavascript(`>`)).toBe("\\u003E");
+    });
+
+    test("LS => u2028", () => {
+      expect(escapeJavascript(String.fromCharCode(8232))).toBe("\\u2028");
+    });
+
+    test("PS => u2029", () => {
+      expect(escapeJavascript(String.fromCharCode(8233))).toBe("\\u2029");
     });
   });
 });

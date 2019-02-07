@@ -3,6 +3,9 @@ __IVI_TARGET__ = "ssr";
 import { _, UNSAFE_HTML, renderToString } from "ivi";
 import { div, span, strong, textarea, CONTENT, input, CHECKED, VALUE } from "ivi-html";
 import { PROPERTY, EVENT, AUTOFOCUS } from "../../vdom/attribute_directive";
+import { TrackByKey, key } from "../../vdom/operations";
+import { elementProto } from "../../vdom/factories";
+import { Stateful, Stateless } from "../../vdom/__tests__/utils";
 
 describe("render", () => {
   test("<div>", () => {
@@ -105,6 +108,65 @@ describe("render", () => {
       ]))).toBe(`<div><div>hello</div><div><span>world</span><div><span></span></div></div><div><div></div>` +
         `</div><div></div></div>`);
     });
+
+  describe("Element Prototype", () => {
+    const protoWithClassName = elementProto(div("abc"));
+    const protoWithAttr = elementProto(div(_, { id: "123" }));
+
+    test("predefined className", () => {
+      expect(renderToString(protoWithClassName()))
+        .toBe(`<div class="abc"></div>`);
+    });
+
+    test("override className", () => {
+      expect(renderToString(protoWithClassName("def")))
+        .toBe(`<div class="def"></div>`);
+    });
+
+    test("predefined attribute", () => {
+      expect(renderToString(protoWithAttr()))
+        .toBe(`<div id="123"></div>`);
+    });
+
+    test("override attribute", () => {
+      expect(renderToString(protoWithAttr(_, { id: "456" })))
+        .toBe(`<div id="456"></div>`);
+    });
+  });
+
+  describe("TrackByKey", () => {
+    test("empty", () => {
+      expect(renderToString(TrackByKey([])))
+        .toBe(``);
+    });
+
+    test("several items", () => {
+      expect(renderToString(TrackByKey([key(0, "a"), key(1, "b")])))
+        .toBe(`ab`);
+    });
+  });
+
+  describe("Component", () => {
+    test("empty stateful", () => {
+      expect(renderToString(Stateful(null)))
+        .toBe(``);
+    });
+
+    test("stateful", () => {
+      expect(renderToString(Stateful("abc")))
+        .toBe(`abc`);
+    });
+
+    test("empty stateless", () => {
+      expect(renderToString(Stateless(null)))
+        .toBe(``);
+    });
+
+    test("stateless", () => {
+      expect(renderToString(Stateless("abc")))
+        .toBe(`abc`);
+    });
+  });
 
   describe("children normalization", () => {
     test("<div><span>, [<strong>, <a>], <span></div>", () => {
