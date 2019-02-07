@@ -74,16 +74,28 @@ function _renderToString(op: Op): string {
       const flags = op.t.f;
       if ((flags & NodeFlags.Element) !== 0) {
         const data = op.d;
-        let openElement = `<${op.t.d}`;
         let children = "";
 
-        const className = data.n;
+        let tagName;
+        let className = data.n;
+        let attrs = data.a;
+        if ((op.t.f & NodeFlags.ElementProto) !== 0) {
+          const proto = (op.t.d as ElementProtoDescriptor).p;
+          const protoData = proto.d;
+          tagName = proto.t.d;
+          if (className === void 0) {
+            className = protoData.n;
+          }
+          if (protoData.a !== void 0) {
+            attrs = attrs === void 0 ? protoData.a : { ...protoData.a, ...attrs };
+          }
+        } else {
+          tagName = op.t.d;
+        }
+
+        let openElement = `<${tagName}`;
         if (className !== void 0 && className !== "") {
           openElement += ` class="${className}"`;
-        }
-        let attrs = data.a;
-        if ((op.t.f & NodeFlags.ElementProto) !== 0 && (op.t.d as ElementProtoDescriptor).p.d.a !== void 0) {
-          attrs = { ...(op.t.d as ElementProtoDescriptor).p.d.a, ...attrs };
         }
         if (attrs !== void 0) {
           for (const key in attrs) {
@@ -124,7 +136,7 @@ function _renderToString(op: Op): string {
         }
         return ((flags & (NodeFlags.VoidElement | NodeFlags.Svg)) !== 0 && children === "") ?
           `${openElement} />` :
-          `${openElement}>${children}</${op.t.d}>`;
+          `${openElement}>${children}</${tagName}>`;
       }
       if ((flags & NodeFlags.Component) !== 0) {
         if ((flags & NodeFlags.Stateful) !== 0) {
