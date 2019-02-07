@@ -1,8 +1,11 @@
 import { AttributeDirective } from "../vdom/attribute_directive";
+import { CSSStyleProps } from "./style";
 
 /* tslint:disable:max-line-length no-empty-interface */
 
 export declare interface ElementAttrs {
+  style?: CSSStyleProps;
+
   /**
    * The id global attribute defines a unique identifier (ID) which must be unique in the whole document. Its purpose
    * is to identify the element when linking (using a fragment identifier), scripting, or styling (with CSS).
@@ -36,7 +39,7 @@ export declare interface ElementAttrs {
    */
   autofocus?: AttributeDirective<boolean>;
 
-  [key: string]: string | number | boolean | AttributeDirective<any> | undefined;
+  [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined;
 }
 
 export declare interface HTMLElementAttrs extends ElementAttrs {

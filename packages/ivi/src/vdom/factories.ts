@@ -13,11 +13,11 @@ import { Component } from "./component";
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
   const type = createOpType(flags, tag);
   return __IVI_DEBUG__ ?
-    (n?: string, a?: {}, c: Op = null) => {
+    (n?: string, a?: T, c: Op = null) => {
       checkElement(tag, a, (flags & NodeFlags.Svg) !== 0);
-      return createOpNode<ElementData>(type, { n, a, c });
+      return createOpNode<ElementData<T>>(type, { n, a, c });
     } :
-    /* istanbul ignore next */(n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
+    /* istanbul ignore next */(n?: string, a?: T, c: Op = null) => createOpNode<ElementData<T>>(type, { n, a, c });
 }
 
 /**
@@ -28,7 +28,7 @@ export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
  */
 export const htmlElementFactory: <T, U>(tag: string) => (
   className?: string,
-  attrs?: {},
+  attrs?: T,
   children?: Op,
 ) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element);
 
@@ -40,7 +40,7 @@ export const htmlElementFactory: <T, U>(tag: string) => (
  */
 export const svgElementFactory: <T, U>(tag: string) => (
   className?: string,
-  attrs?: {},
+  attrs?: T,
   children?: Op,
 ) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element | NodeFlags.Svg);
 
@@ -59,7 +59,7 @@ export const svgElementFactory: <T, U>(tag: string) => (
  * @param p Element prototype.
  * @returns Factory that produces elements with predefined attributes.
  */
-export function elementProto<P>(p: OpNode<ElementData<P>>) {
+export function elementProto<T>(p: OpNode<ElementData<T>>) {
   /* istanbul ignore else */
   if (__IVI_DEBUG__) {
     if (p.d.c !== null) {
@@ -68,7 +68,7 @@ export function elementProto<P>(p: OpNode<ElementData<P>>) {
     checkElement(p.t.d as string, p.d.a, (p.t.f & NodeFlags.Svg) !== 0);
   }
   const type = createOpType(p.t.f | NodeFlags.ElementProto, { n: null, p });
-  return (n?: string, a?: {}, c: Op = null) => createOpNode<ElementData>(type, { n, a, c });
+  return (n?: string, a?: T, c: Op = null) => createOpNode<ElementData<T>>(type, { n, a, c });
 }
 
 /**
