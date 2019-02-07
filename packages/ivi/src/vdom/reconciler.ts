@@ -133,12 +133,7 @@ export function _dirtyCheck(
     if ((f & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
       state = opState.s as Node;
       if (moveNode === true) {
-        /* istanbul ignore else */
-        if (__IVI_DEBUG__) {
-          parentElement.insertBefore(state, _nextNode);
-        } else {
-          nodeInsertBefore.call(parentElement, state, _nextNode);
-        }
+        nodeInsertBefore.call(parentElement, state, _nextNode);
       }
       if (c !== null) {
         _dirtyCheck(state as Element, c as OpState, false, true);
@@ -175,12 +170,7 @@ function _moveNodes(parentElement: Element, opState: OpState) {
   const flags = opState.f;
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
     const domNode = opState.s as Node;
-    /* istanbul ignore else */
-    if (__IVI_DEBUG__) {
-      parentElement.insertBefore(domNode, _nextNode);
-    } else {
-      nodeInsertBefore.call(parentElement, domNode, _nextNode);
-    }
+    nodeInsertBefore.call(parentElement, domNode, _nextNode);
     _nextNode = domNode;
   } else {
     const children = opState.c;
@@ -238,11 +228,7 @@ function _unmountRemove(parentElement: Element, opState: OpState, singleChild: b
 
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
     children = opState.s as Node;
-    if (__IVI_DEBUG__) {
-      parentElement.removeChild(children);
-    } else {
-      nodeRemoveChild.call(parentElement, children);
-    }
+    nodeRemoveChild.call(parentElement, children);
   } else if ((flags & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
     if (singleChild === true) {
       parentElement.textContent = "";
@@ -274,12 +260,7 @@ function _mountText(
   op: string | number,
 ) {
   const node = document.createTextNode(op as string);
-  /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
-    parentElement.insertBefore(node, _nextNode);
-  } else {
-    nodeInsertBefore.call(parentElement, node, _nextNode);
-  }
+  nodeInsertBefore.call(parentElement, node, _nextNode);
   _nextNode = node;
   opState.s = node;
   opState.f = NodeFlags.Text;
@@ -301,12 +282,7 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
      * SVGElement.className returns `SVGAnimatedString`
      */
     if (svg) {
-      /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
-        (node as SVGElement).setAttribute("class", n);
-      } else {
-        elementSetAttribute.call(node, "class", n);
-      }
+      elementSetAttribute.call(node, "class", n);
     } else {
       (node as HTMLElement).className = n;
     }
@@ -355,12 +331,7 @@ function _mountObject(
             (descriptor as ElementProtoDescriptor).p,
           );
         }
-        /* istanbul ignore else */
-        if (__IVI_DEBUG__) {
-          node = node.cloneNode(false) as Element;
-        } else {
-          node = nodeCloneNode.call(node, false) as Element;
-        }
+        node = nodeCloneNode.call(node, false) as Element;
       }
       opState.s = node = _createElement(node, op);
 
@@ -370,12 +341,7 @@ function _mountObject(
       if (value !== null) {
         opState.c = _mount(node, value);
       }
-      /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
-        parentElement.insertBefore(node, prevState);
-      } else {
-        nodeInsertBefore.call(parentElement, node, prevState);
-      }
+      nodeInsertBefore.call(parentElement, node, prevState);
       _nextNode = node;
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
@@ -483,21 +449,11 @@ export function _update(
         (s as Node).nodeValue = nextOp as string;
       }
       if (moveNode === true) {
-        /* istanbul ignore else */
-        if (__IVI_DEBUG__) {
-          parentElement.insertBefore(s as Node, _nextNode);
-        } else {
-          nodeInsertBefore.call(parentElement, s as Node, _nextNode);
-        }
+        nodeInsertBefore.call(parentElement, s as Node, _nextNode);
       }
       _nextNode = s as Node;
     } else {
-      /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
-        parentElement.removeChild(s as Node);
-      } else {
-        nodeRemoveChild.call(parentElement, s as Node);
-      }
+      nodeRemoveChild.call(parentElement, s as Node);
       return _mount(parentElement, nextOp);
     }
   } else {
@@ -552,12 +508,7 @@ export function _update(
         prevData = (o as OpNode<ElementData>).d;
         nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
-          /* istanbul ignore else */
-          if (__IVI_DEBUG__) {
-            parentElement.insertBefore(s as Node, _nextNode);
-          } else {
-            nodeInsertBefore.call(parentElement, s, _nextNode);
-          }
+          nodeInsertBefore.call(parentElement, s, _nextNode);
         }
 
         nextValue = nextData.n;
@@ -567,12 +518,7 @@ export function _update(
           }
           // SVG elements doesn't have `className` property.
           if ((flags & NodeFlags.Svg) !== 0) {
-            /* istanbul ignore else */
-            if (__IVI_DEBUG__) {
-              (s as SVGElement).setAttribute("class", nextValue);
-            } else {
-              elementSetAttribute.call(s, "class", nextValue);
-            }
+            elementSetAttribute.call(s, "class", nextValue);
           } else {
             (s as HTMLElement).className = nextValue;
           }
@@ -955,7 +901,7 @@ function _updateChildrenTrackByKeys(
       for (i = 0; i < bLength; ++i) {
         j = i + start;
         sources[i] = -1; // Mark all nodes as inserted.
-        keyIndex.set(b[j].k, j); // Build an index that maps keys to their locations in the new children list.
+        keyIndex.set(b[j].k, j); // Build an index that maps keys to their positions in the new children list.
       }
 
       for (i = start; i <= aEnd && updated < bLength; ++i) {
@@ -1186,19 +1132,9 @@ function _updateAttr(
           next = next ? "" : void 0;
         }
         if (next === void 0) {
-          /* istanbul ignore else */
-          if (__IVI_DEBUG__) {
-            element.removeAttribute(key);
-          } else {
-            elementRemoveAttribute.call(element, key);
-          }
+          elementRemoveAttribute.call(element, key);
         } else {
-          /* istanbul ignore else */
-          if (__IVI_DEBUG__) {
-            element.setAttribute(key, next as string);
-          } else {
-            elementSetAttribute.call(element, key, next as string);
-          }
+          elementSetAttribute.call(element, key, next as string);
         }
       }
     }
