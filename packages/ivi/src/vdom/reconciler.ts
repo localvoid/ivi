@@ -902,35 +902,28 @@ function _updateChildrenTrackByKeys(
     }
   } else {
     const opStateChildren = opState.c as Array<OpState | null>;
-    let aStartNode = a[0];
-    let bStartNode = b[0];
     let aEnd = j - 1; // a.length - 1
     let bEnd = i - 1; // b.length - 1
-    let aEndNode = a[aEnd];
-    let bEndNode = b[bEnd];
     let start = 0;
-    let sNode: OpState | null;
+    let node: OpNode | Key<any, OpNode> | OpState | null = b[bEnd];
 
     // Step 1
     outer: while (true) {
       // Sync nodes with the same key at the end.
-      while (aEndNode.k === bEndNode.k) {
-        result[bEnd] = _update(parentElement, opStateChildren[aEnd--], bEndNode.v, moveNode, false);
+      while (a[aEnd].k === node.k) {
+        result[bEnd] = _update(parentElement, opStateChildren[aEnd--], node.v, moveNode, false);
         if (start > --bEnd || start > aEnd) {
           break outer;
         }
-        aEndNode = a[aEnd];
-        bEndNode = b[bEnd];
+        node = b[bEnd];
       }
 
       // Sync nodes with the same key at the beginning.
-      while (aStartNode.k === bStartNode.k) {
+      while (a[start].k === b[start].k) {
         // delayed update (all updates should be performed from right-to-left)
         if (++start > aEnd || start > bEnd) {
           break outer;
         }
-        aStartNode = a[start];
-        bStartNode = b[start];
       }
 
       break;
@@ -945,29 +938,24 @@ function _updateChildrenTrackByKeys(
       // All nodes from b are synced, remove the rest from a.
       i = start;
       do {
-        if ((sNode = opStateChildren[i++]) !== null) {
-          _unmount(parentElement, sNode, false);
+        if ((node = opStateChildren[i++]) !== null) {
+          _unmount(parentElement, node, false);
         }
       } while (i <= aEnd);
     } else { // Step 2
       const aLength = aEnd - start + 1;
       const bLength = bEnd - start + 1;
-
-      // Mark all nodes as inserted.
-      const sources = Array(bLength);
-      for (i = 0; i < bLength; ++i) {
-        sources[i] = -1;
-      }
-
       // When `pos === -1`, it means that one of the nodes is in the wrong position and we should rearrange nodes with
       // lis-based algorithm.
       let pos = 0;
       let updated = 0;
 
+      const sources = Array(bLength);
       const keyIndex = new Map<any, number>();
-      // Build an index that maps keys to their locations in the new children list.
-      for (j = start; j <= bEnd; ++j) {
-        keyIndex.set(b[j].k, j);
+      for (i = 0; i < bLength; ++i) {
+        j = i + start;
+        sources[i] = -1; // Mark all nodes as inserted.
+        keyIndex.set(b[j].k, j); // Build an index that maps keys to their locations in the new children list.
       }
 
       for (i = start; i <= aEnd && updated < bLength; ++i) {
@@ -991,37 +979,35 @@ function _updateChildrenTrackByKeys(
       } else {
         // Step 3
         for (i = start; i <= aEnd; i++) {
-          if ((sNode = opStateChildren[i]) !== null) {
-            _unmount(parentElement, sNode, false);
+          if ((node = opStateChildren[i]) !== null) {
+            _unmount(parentElement, node, false);
           }
         }
 
-        let opNode;
         i = bLength;
         if (moveNode === true || pos !== -1) {
           while (--i >= 0) {
             pos = start + i;
-            opNode = b[pos].v;
+            node = b[pos].v;
             result[pos] = (sources[i] === -1) ?
-              _mount(parentElement, opNode) :
-              _update(parentElement, result[pos], opNode, moveNode, false);
+              _mount(parentElement, node) :
+              _update(parentElement, result[pos], node, moveNode, false);
           }
         } else {
           const seq = lis(sources);
           j = seq.length - 1;
           while (--i >= 0) {
             pos = start + i;
-            opNode = b[pos].v;
+            node = b[pos].v;
             if (sources[i] === -1) {
-              result[pos] = _mount(parentElement, opNode);
+              result[pos] = _mount(parentElement, node);
             } else {
-              sNode = result[pos];
               if (j < 0 || i !== seq[j]) {
                 moveNode = true;
               } else {
                 --j;
               }
-              result[pos] = _update(parentElement, sNode, opNode, moveNode, false);
+              result[pos] = _update(parentElement, result[pos], node, moveNode, false);
               moveNode = false;
             }
           }
