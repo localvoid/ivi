@@ -31,7 +31,7 @@ test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
   testRenderDOM<HTMLTextAreaElement>(r => {
     checkDOMOps(c => {
       r(h.textarea("", { content: h.CONTENT("abc") }));
-      const b = r(h.textarea("", { value: h.CONTENT("cde") }))!;
+      const b = r(h.textarea("", { content: h.CONTENT("cde") }))!;
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
       expect(b.value).toBe("cde");
