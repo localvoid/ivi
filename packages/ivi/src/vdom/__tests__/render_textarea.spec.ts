@@ -11,7 +11,7 @@ test(`<textarea>`, () => {
 
 test(`<textarea>abc</textarea>`, () => {
   testRenderDOM<HTMLTextAreaElement>(r => {
-    const n = r(h.textarea("", { value: h.VALUE("abc") }))!;
+    const n = r(h.textarea("", { content: h.CONTENT("abc") }))!;
 
     expect(n.value).toBe("abc");
   });

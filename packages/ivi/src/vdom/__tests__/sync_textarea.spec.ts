@@ -6,7 +6,7 @@ test(`<textarea></textarea> => <textarea>cde</textarea>`, () => {
   testRenderDOM<HTMLTextAreaElement>(r => {
     checkDOMOps(c => {
       r(h.textarea());
-      const b = r(h.textarea("", { value: h.VALUE("cde") }))!;
+      const b = r(h.textarea("", { content: h.CONTENT("cde") }))!;
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
       expect(b.value).toBe("cde");
@@ -30,8 +30,8 @@ Object {
 test(`<textarea>abc</textarea> => <textarea>cde</textarea>`, () => {
   testRenderDOM<HTMLTextAreaElement>(r => {
     checkDOMOps(c => {
-      r(h.textarea("", { value: h.VALUE("abc") }));
-      const b = r(h.textarea("", { value: h.VALUE("cde") }))!;
+      r(h.textarea("", { content: h.CONTENT("abc") }));
+      const b = r(h.textarea("", { value: h.CONTENT("cde") }))!;
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
       expect(b.value).toBe("cde");
@@ -55,7 +55,7 @@ Object {
 test(`<textarea>abc</textarea> => <textarea></textarea>`, () => {
   testRenderDOM<HTMLTextAreaElement>(r => {
     checkDOMOps(c => {
-      r(h.textarea("", { value: h.VALUE("abc") }));
+      r(h.textarea("", { content: h.CONTENT("abc") }));
       const b = r(h.textarea())!;
 
       expect(b.tagName.toLowerCase()).toBe("textarea");
