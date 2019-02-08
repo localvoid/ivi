@@ -1,3 +1,4 @@
+import { EMPTY_OBJECT } from "../core";
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
 import { OpNode, Op, ElementData, ContextData, Key } from "../vdom/operations";
@@ -183,6 +184,7 @@ export function renderToString(op: Op): string {
   try {
     return _renderToString(op);
   } catch (e) {
+    restoreContext(EMPTY_OBJECT);
     _attributes = "";
     _styles = "";
     _children = "";

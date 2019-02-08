@@ -1,7 +1,9 @@
+import { EMPTY_OBJECT } from "../core";
+
 /**
  * Current context.
  */
-let _context = {};
+let _context = EMPTY_OBJECT;
 
 /**
  * setContext assigns current context.
