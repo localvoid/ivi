@@ -224,27 +224,24 @@ function _unmountWalk(opState: OpState): void {
 
 function _unmountRemove(parentElement: Element, opState: OpState, singleChild: boolean): void {
   const flags = opState.f;
-  let children;
 
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    children = opState.s as Node;
-    nodeRemoveChild.call(parentElement, children);
-  } else if ((flags & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
-    if (singleChild === true) {
-      parentElement.textContent = "";
-    } else {
-      children = opState.c as Array<OpState | null>;
-      for (let i = 0; i < children.length; ++i) {
-        const c = children[i];
-        if (c !== null) {
-          _unmountRemove(parentElement, c, false);
+    nodeRemoveChild.call(parentElement, opState.s as Node);
+  } else {
+    const children = opState.c;
+    if ((flags & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
+      if (singleChild === true) {
+        parentElement.textContent = "";
+      } else {
+        for (let i = 0; i < (children as Array<OpState | null>).length; ++i) {
+          const c = (children as Array<OpState | null>)[i];
+          if (c !== null) {
+            _unmountRemove(parentElement, c, false);
+          }
         }
       }
-    }
-  } else {
-    children = opState.c as OpState | null;
-    if (children !== null) {
-      _unmountRemove(parentElement, children, singleChild);
+    } else if (children !== null) {
+      _unmountRemove(parentElement, children as OpState, singleChild);
     }
   }
 }
@@ -309,9 +306,9 @@ function _mountObject(
   if ((flags & NodeFlags.Component) !== 0) {
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Stateful) !== 0) {
-      prevState = opState.s = { r: null, s: null, u: null } as ComponentHooks;
+      opState.s = prevState = { r: null, s: null, u: null } as ComponentHooks;
       // Reusing value variable.
-      value = (prevState as ComponentHooks).r = (op.t.d as ComponentDescriptor).c(opState);
+      (prevState as ComponentHooks).r = value = (op.t.d as ComponentDescriptor).c(opState);
     } else {
       value = (op.t.d as StatelessComponentDescriptor).c;
     }
@@ -369,9 +366,9 @@ function _mountFragment(
   opState: OpState,
   childrenOps: OpArray,
 ): void {
-  const deepStateFlags = _pushDeepState();
   let i = childrenOps.length;
   const newChildren = Array(i);
+  const deepStateFlags = _pushDeepState();
   while (--i >= 0) {
     newChildren[i] = _mount(parentElement, childrenOps[i]);
   }
