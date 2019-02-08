@@ -670,7 +670,7 @@ export declare interface HTMLInputElementAttrs extends HTMLElementAttrs {
    *
    * @example
    *
-   *   const n = input("", { type: "checked", value: INPUT_VALUE("abc") });
+   *   const n = input("", { type: "checked", checked: CHECKED(true) });
    */
   checked?: AttributeDirective<boolean>;
   /**
@@ -678,7 +678,7 @@ export declare interface HTMLInputElementAttrs extends HTMLElementAttrs {
    *
    * @example
    *
-   *   const n = input("", { value: INPUT_VALUE("abc") });
+   *   const n = input("", { value: VALUE("abc") });
    */
   value?: AttributeDirective<string | number>;
 }
@@ -1160,13 +1160,21 @@ export declare interface HTMLTextAreaElementAttrs extends HTMLElementAttrs {
    */
   wrap?: string;
   /**
+   * Text area value is disable, content attribute is used to assign text area value.
+   *
+   * @example
+   *
+   *   const n = textarea("", { content: CONTENT("abc") });
+   */
+  value?: never;
+  /**
    * Text area value.
    *
    * @example
    *
-   *   const n = textarea("", { value: TEXTAREA_VALUE("abc") });
+   *   const n = textarea("", { content: CONTENT("abc") });
    */
-  value?: AttributeDirective<string | number>;
+  content?: AttributeDirective<string | number>;
 }
 
 export declare interface HTMLTitleElementAttrs extends HTMLElementAttrs {
