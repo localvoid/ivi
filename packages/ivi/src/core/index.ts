@@ -14,6 +14,9 @@ declare global {
     scale: number;
   }
 
+  /**
+   * Debug mode enables additional runtime checks.
+   */
   let __IVI_DEBUG__: boolean;
   let __IVI_TARGET__: "browser" | "evergreen" | "electron" | "ssr";
 }
