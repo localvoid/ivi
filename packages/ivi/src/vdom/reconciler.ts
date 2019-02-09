@@ -265,6 +265,7 @@ function _mountText(
 
 function _createElement(node: Element | undefined, op: OpNode<ElementData>): Element {
   const opType = op.t;
+  const { n, a } = op.d;
   const svg = (opType.f & NodeFlags.Svg) !== 0;
   if (node === void 0) {
     const tagName = opType.d as string;
@@ -273,16 +274,8 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
       document.createElement(tagName);
   }
 
-  const { n, a } = op.d;
   if (n) {
-    /**
-     * SVGElement.className returns `SVGAnimatedString`
-     */
-    if (svg) {
-      elementSetAttribute.call(node, "class", n);
-    } else {
-      (node as HTMLElement).className = n;
-    }
+    _updateClassName(node, n, svg);
   }
 
   if (a !== void 0) {
@@ -513,12 +506,7 @@ export function _update(
           if (nextValue === void 0) {
             nextValue = "";
           }
-          // SVG elements doesn't have `className` property.
-          if ((flags & NodeFlags.Svg) !== 0) {
-            elementSetAttribute.call(s, "class", nextValue);
-          } else {
-            (s as HTMLElement).className = nextValue;
-          }
+          _updateClassName(s, nextValue, (flags & NodeFlags.Svg) !== 0);
         }
 
         nextValue = nextData.a;
@@ -835,12 +823,12 @@ function _updateChildrenTrackByKeys(
   let j: number | undefined = a.length;
   const result = Array(i);
 
-  if (i === 0) {
-    if (j > 0) {
+  if (i === 0) { // New children list is empty.
+    if (j > 0) { // Unmount nodes from the old children list.
       _unmount(parentElement, opState, singleChild);
     }
-  } else if (j === 0) {
-    while (--i >= 0) {
+  } else if (j === 0) { // Old children list is empty.
+    while (--i >= 0) { // Mount nodes from the new children list.
       result[i] = _mount(parentElement, b[i].v);
     }
   } else {
@@ -852,7 +840,7 @@ function _updateChildrenTrackByKeys(
 
     // Step 1
     outer: while (true) {
-      // Sync nodes with the same key at the end.
+      // Update nodes with the same key at the end.
       while (a[aEnd].k === node.k) {
         result[bEnd] = _update(parentElement, opStateChildren[aEnd--], node.v, moveNode, false);
         if (start > --bEnd || start > aEnd) {
@@ -861,9 +849,9 @@ function _updateChildrenTrackByKeys(
         node = b[bEnd];
       }
 
-      // Sync nodes with the same key at the beginning.
+      // Update nodes with the same key at the beginning.
       while (a[start].k === b[start].k) {
-        // delayed update (all updates should be performed from right-to-left)
+        // delayed update (all updates should be performed from right-to-left).
         if (++start > aEnd || start > bEnd) {
           break outer;
         }
@@ -873,12 +861,12 @@ function _updateChildrenTrackByKeys(
     }
 
     if (start > aEnd) {
-      // All nodes from a are synced, insert the rest from b.
+      // All nodes from `a` are updated, insert the rest from `b`.
       while (bEnd >= start) {
         result[bEnd] = _mount(parentElement, b[bEnd--].v);
       }
     } else if (start > bEnd) {
-      // All nodes from b are synced, remove the rest from a.
+      // All nodes from `b` are updated, remove the rest from `a`.
       i = start;
       do {
         if ((node = opStateChildren[i++]) !== null) {
@@ -886,19 +874,21 @@ function _updateChildrenTrackByKeys(
         }
       } while (i <= aEnd);
     } else { // Step 2
-      const aLength = aEnd - start + 1;
-      const bLength = bEnd - start + 1;
       // When `pos === -1`, it means that one of the nodes is in the wrong position and we should rearrange nodes with
       // lis-based algorithm.
       let pos = 0;
+      // Number of updated nodes after prefix/suffix phase. It is used for an optimization that removes all child nodes
+      // with `textContent=""` when there are no updated nodes.
       let updated = 0;
 
-      const sources = Array(bLength);
-      const keyIndex = new Map<any, number>();
+      const aLength = aEnd - start + 1;
+      const bLength = bEnd - start + 1;
+      const sources = Array(bLength); // Maps positions in the new children list to positions in the old children list.
+      const keyIndex = new Map<any, number>(); // Maps keys to their positions in the new children list.
       for (i = 0; i < bLength; ++i) {
         j = i + start;
-        sources[i] = -1; // Mark all nodes as inserted.
-        keyIndex.set(b[j].k, j); // Build an index that maps keys to their positions in the new children list.
+        sources[i] = -1; // Special value `-1` indicates that node doesn't exist in the old children list.
+        keyIndex.set(b[j].k, j);
       }
 
       for (i = start; i <= aEnd && updated < bLength; ++i) {
@@ -914,13 +904,14 @@ function _updateChildrenTrackByKeys(
       }
 
       if (aLength === a.length && updated === 0) {
-        // Noone is synced.
+        // Zero updated nodes in step 1 and 2, remove all nodes and insert new ones.
         _unmount(parentElement, opState, singleChild);
         while (bEnd >= 0) {
           result[bEnd] = _mount(parentElement, b[bEnd--].v);
         }
       } else {
         // Step 3
+        // Remove nodes that weren't updated in the old children list.
         for (i = start; i <= aEnd; i++) {
           if ((node = opStateChildren[i]) !== null) {
             _unmount(parentElement, node, false);
@@ -990,13 +981,14 @@ function lis(a: number[]): number[] {
   const p = a.slice();
   // result is instantiated as an empty array to prevent instantiation with CoW backing store.
   const result: number[] = [];
-  result[0] = 0;
   let n = 0;
+  let i = 0;
   let u: number;
   let v: number;
   let j: number;
 
-  for (let i = 0; i < a.length; ++i) {
+  result[0] = 0;
+  for (; i < a.length; ++i) {
     const k = a[i];
     if (k > -1) {
       j = result[n];
@@ -1037,13 +1029,33 @@ function lis(a: number[]): number[] {
 }
 
 /**
+ * Update DOM classname.
+ *
+ * @param element DOM Element.
+ * @param className Class name.
+ * @param svg SVG Element.
+ */
+function _updateClassName(element: Element, className: string, svg: boolean): void {
+  /**
+   * SVGElement.className returns `SVGAnimatedString`.
+   *
+   * #quirks
+   */
+  if (svg === true) {
+    elementSetAttribute.call(element, "class", className);
+  } else {
+    (element as HTMLElement).className = className;
+  }
+}
+
+/**
  * Update DOM styles.
  *
- * @param element - HTML or SVG Element
- * @param a - Prev styles
- * @param b - Next styles
+ * @param element HTML or SVG Element.
+ * @param a Prev styles.
+ * @param b Next styles.
  */
-function updateStyle(
+function _updateStyle(
   element: HTMLElement | SVGElement,
   a: CSSStyleProps | undefined,
   b: CSSStyleProps | undefined,
@@ -1067,13 +1079,10 @@ function updateStyle(
     }
   } else {
     let matchCount = 0;
+    let i = 0;
     for (key in a) {
-      bValue = void 0;
-      if (objectHasOwnProperty.call(b, key) === true) {
-        bValue = b[key];
-        matchCount++;
-      }
       const aValue = a[key];
+      bValue = (objectHasOwnProperty.call(b, key) === true) ? (matchCount++ , b[key]) : void 0;
       if (aValue !== bValue) {
         if (bValue !== void 0) {
           style.setProperty(key, bValue);
@@ -1084,7 +1093,7 @@ function updateStyle(
     }
 
     const keys = Object.keys(b);
-    for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
+    for (; matchCount < keys.length && i < keys.length; ++i) {
       key = keys[i];
       if (objectHasOwnProperty.call(a, key) === false) {
         style.setProperty(key, b[key]);
@@ -1095,12 +1104,59 @@ function updateStyle(
 }
 
 /**
+ * Update DOM attributes.
+ *
+ * @param element DOM element.
+ * @param a Prev DOM attributes.
+ * @param b Next DOM attributes.
+ */
+function _updateAttrs(
+  element: Element,
+  a: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
+  b: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
+): void {
+  let key: string;
+
+  if (a === void 0) {
+    // a is empty, insert all attributes from b.
+    for (key in b!) {
+      _updateAttr(element, key, void 0, b![key]);
+    }
+  } else if (b === void 0) {
+    // b is empty, remove all attributes from a.
+    for (key in a) {
+      _updateAttr(element, key, a[key], void 0);
+    }
+  } else {
+    let matchCount = 0;
+    let i = 0;
+    for (key in a) {
+      _updateAttr(
+        element,
+        key,
+        a[key],
+        (objectHasOwnProperty.call(b, key) === true) ? (matchCount++ , b[key]) : void 0,
+      );
+    }
+
+    const keys = Object.keys(b);
+    for (; matchCount < keys.length && i < keys.length; ++i) {
+      key = keys[i];
+      if (objectHasOwnProperty.call(a, key) === false) {
+        _updateAttr(element, key, void 0, b[key]);
+        ++matchCount;
+      }
+    }
+  }
+}
+
+/**
  * Update DOM attribute.
  *
- * @param element - DOM Element
- * @param key - Attribute name
- * @param prev - Previous value
- * @param next - Next value
+ * @param element DOM Element.
+ * @param key Attribute name.
+ * @param prev Previous value.
+ * @param next Next value.
  */
 function _updateAttr(
   element: Element,
@@ -1136,52 +1192,6 @@ function _updateAttr(
       }
     }
   } else if (prev !== next) {
-    updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
-  }
-}
-
-/**
- * Update DOM attributes.
- *
- * @param element - DOM element
- * @param a - Prev DOM attributes
- * @param b - Next DOM attributes
- */
-function _updateAttrs(
-  element: Element,
-  a: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
-  b: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
-): void {
-  let key: string;
-
-  if (a === void 0) {
-    // a is empty, insert all attributes from b.
-    for (key in b!) {
-      _updateAttr(element, key, void 0, b![key]);
-    }
-  } else if (b === void 0) {
-    // b is empty, remove all attributes from a.
-    for (key in a) {
-      _updateAttr(element, key, a[key], void 0);
-    }
-  } else {
-    let matchCount = 0;
-    for (key in a) {
-      let bValue: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined = void 0;
-      if (objectHasOwnProperty.call(b, key) === true) {
-        bValue = b[key];
-        matchCount++;
-      }
-      _updateAttr(element, key, a[key], bValue);
-    }
-
-    const keys = Object.keys(b);
-    for (let i = 0; matchCount < keys.length && i < keys.length; ++i) {
-      key = keys[i];
-      if (objectHasOwnProperty.call(a, key) === false) {
-        _updateAttr(element, key, void 0, b[key]);
-        ++matchCount;
-      }
-    }
+    _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
   }
 }
