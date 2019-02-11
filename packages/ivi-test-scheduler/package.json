@@ -20,12 +20,6 @@
     "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
-  "peerDependencies": {
-    "ivi": "^0.20.0"
-  },
-  "devDependencies": {
-    "ivi": "^0.20.0"
-  },
   "description": "Test scheduler for ivi library",
   "license": "MIT",
   "author": {

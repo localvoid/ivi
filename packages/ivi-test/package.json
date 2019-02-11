@@ -20,14 +20,14 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "peerDependencies": {
-    "ivi": "^0.20.0",
-    "ivi-html": "^0.20.0",
-    "ivi-svg": "^0.20.0"
+    "ivi": "^0.21.0",
+    "ivi-html": "^0.21.0",
+    "ivi-svg": "^0.21.0"
   },
   "devDependencies": {
-    "ivi": "^0.20.0",
-    "ivi-html": "^0.20.0",
-    "ivi-svg": "^0.20.0"
+    "ivi": "^0.21.0",
+    "ivi-html": "^0.21.0",
+    "ivi-svg": "^0.21.0"
   },
   "description": "Test utils for ivi library",
   "license": "MIT",

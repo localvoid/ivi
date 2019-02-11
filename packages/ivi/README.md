@@ -2,33 +2,33 @@
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
+- Declarative rendering with "Virtual DOM"
+- Powerful [composition model](https://codesandbox.io/s/k9m8wlqky3)
+- [Immutable](#immutable-virtual-dom) "Virtual DOM"
+- [Fragments](#fragments)
+- [Components](#components)
+- Extensible synthetic events
+- Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
+- Server-side rendering
+
 |Package      |NPM version                                                                                                  |
 |-------------|-------------------------------------------------------------------------------------------------------------|
 |ivi          |[![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi)                    |
 |ivi-html     |[![npm version](https://img.shields.io/npm/v/ivi-html.svg)](https://www.npmjs.com/package/ivi-html)          |
 |ivi-svg      |[![npm version](https://img.shields.io/npm/v/ivi-svg.svg)](https://www.npmjs.com/package/ivi-svg)            |
 
-## Features
-
-- Declarative rendering with "Virtual DOM"
-- Powerful [composition model](https://codesandbox.io/s/k9m8wlqky3)
-- [Immutable](#immutable-virtual-dom) "Virtual DOM"
-- [Fragments](#fragments)
-- [Components](#components)
-- Extensible synthetic event subsystem
-- Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
-- Test utilities
-- **EXPERIMENTAL** [gesture events](https://github.com/localvoid/ivi/tree/master/packages/ivi-gestures)
-
 ## Library Size
 
 ivi has a tree shakeable API, so it can scale from simple widgets to complex desktop applications.
 
+Small library size is important, but in complex applications, major reduction in the code size will come from the
+powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to write reusable code.
+
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **3.1KB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **3KiB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KiB** (minified+compressed).
 
 ## Quick Start
 
@@ -53,8 +53,9 @@ specify a Virtual DOM to render, and the second one is a DOM node that will be u
 
 Virtual DOM API in ivi is using factory functions to instantiate Virtual DOM nodes.
 
-Factory functions for HTML elements are declared in the `ivi-html` package. `h1()` function will instantiate a Virtual
-DOM node for a `<h1>` element.
+Factory functions for HTML elements are declared in the `ivi-html` package.
+
+`h1()` function will instantiate a "Virtual DOM" node for a `<h1>` element.
 
 `_` is a shortcut for an `undefined` value.
 
@@ -86,7 +87,7 @@ import { h1 } from "ivi-html";
 const Counter = component((c) => {
   let counter = 0;
 
-  const ticker = useEffect((interval) => {
+  const ticker = useEffect(c, (interval) => {
     const id = setInterval(() => {
       counter++;
       invalidate(c);
@@ -121,7 +122,7 @@ interface `Factory(props)`.
 In the outer function we are declaring internal state `counter`.
 
 ```js
-  const ticker = useEffect((interval) => {
+  const ticker = useEffect(c, (interval) => {
     // ...
     return () => cleanup;
   });
@@ -132,7 +133,7 @@ a cleanup function, it will be automatically invoked when component is unmounted
 property `interval` is modified.
 
 ```js
-  const ticker = useEffect((interval) => {
+  const ticker = useEffect(c, (interval) => {
     const id = setInterval(() => {
       counter++;
       invalidate(c);
@@ -205,42 +206,49 @@ Here is a list of different optimization goals (in random order) that we should 
 - Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
 - Increase probability that executed code is JITed (usually depends on the application code size)
 
-Virtual DOM is not the best possible solution if we were trying to find a solution that focuses on small updates
-performance, but small updates doesn't have any significant impact on performance, even 2x speedup that reduces time
+Virtual DOM is not the best possible solution if we were trying to find a solution that focuses on performance of micro
+updates, but micro updates doesn't have any significant impact on performance, even 2x speedup that reduces time
 from 0.1ms to 0.05ms will be hardly noticeable. Virtual DOM trades update performance to improve performance in many
-other areas.
+other areas and because of the increased performance in other areas it is often even faster than alternative solutions
+in micro updates.
 
 ### Performance Benchmarks
 
-There are no good ways how to compare performance of different libraries, and there are no good benchmarks since all
-benchmarks are biased towards some type of libraries. So we need to understand how to read numbers from this biased
-benchmarks.
+There are no good ways how to compare performance of different libraries, and there are issues with existing benchmarks:
 
-To explain why benchmarks are biased I'll use [the most popular benchmark](https://github.com/krausest/js-framework-benchmark).
-It contains implementations for many different libraries and ivi is
+- Benchmark tests are usually so simple, so it is possible to create a specialized code path in the library that will
+work fast in this simple conditions, give this feature a name like "optimization hints" and focus on performance of this
+small subset of a library.
+- Some benchmark implementations are abusing different techniques to
+get an edge over other implementations:
+[explicit event delegation](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L41),
+[workarounds to reduce number of data bindings](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L42-L48).
+- Benchmarks are usually biased towards some type of libraries.
+
+But any flawed benchmark is still way much better than "common sense" that is used by some other libraries to explain
+why their libraries are faster.
+
+To explain how to make sense from numbers in benchmarks I'll use
+[the most popular benchmark](https://github.com/krausest/js-framework-benchmark). It contains implementations for many
+different libraries and ivi is
 [among the fastest libraries](https://krausest.github.io/js-framework-benchmark/current.html) in this benchmark, even
 when benchmark is biased towards libraries that use direct data bindings to connect observable data with DOM elements.
+[ivi implementation](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi) doesn't abuse
+any "advanced" optimizations in this benchmark and implemented in almost exactly the same way as
+[react-redux implementation](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/react-redux).
 
-There are several key characteristics and we need to compare them with numbers from complex web applications:
+There are several important characteristics that can skew benchmark results in favor of some library type:
 
 - Number of DOM Elements
 - Ratio of DOM Elements per Component
 - Ratio of Event Handlers per DOM Element
-- Ratio of Data Bindings per DOM Element
+- Ratio of Dynamic Data Bindings per DOM Element
 - Ratio of Components per Component Type
-- Complex data transformations
-
-As an example of a complex application I'll use Google Mail.
 
 #### Number of DOM Elements
 
-```
-Benchmark: 8000-80000
-Google Mail: ~4000
-```
-
-In some test cases of this benchmark there is an insane amount of DOM elements. Usually when there are so many DOM
-elements in the document, recalc style, reflow, etc will be so slow, so it doesn't matter how fast is UI library,
+In some test cases of this benchmark there is an insane amount of DOM elements (80000). Usually when there are so many
+DOM elements in the document, recalc style, reflow, etc will be so slow, so it doesn't matter how fast is UI library,
 application will be completely unusable.
 
 Libraries that are using algorithms and data structures that can easily scale to any number of DOM elements will
@@ -248,50 +256,39 @@ obviously benefit from such insane numbers of DOM elements.
 
 #### Ratio of DOM Elements per Component
 
-```
-Benchmark: +Infinity
-Google Mail: ~3 (rough estimate, guessed by looking at DOM nodes in the document)
-```
-
 Since benchmark doesn't impose any strict requirements how to structure benchmark implementation, many implementations
 just choosing to go with the simplest solution and implement it without any components.
 
-Good luck figuring out how library will perform in a scenario when components are involved. And for some libraries,
-components has a huge impact on performance, since they were optimized just to deal with low-level primitives.
+When there are no components or any other form that is used by the library to create reusable blocks, it is hard to
+guess how library will perform in a scenario when you decompose your application into reusable blocks "components". And
+for some libraries, reusable blocks has a huge impact on performance, since they were optimized just to deal with
+low-level primitives.
 
-#### Event Handlers per DOM Element
+#### Ratio of Event Handlers per DOM Element
 
-```
-Benchmark: ~0.25 without event delegation
-Google Mail: ~0.25
-```
+There also no strict requirements how to handle user interactions, and some implementations are using explicit event
+delegation to reduce the number of event handlers:
 
-There also no strict requirements how to handle user interactions, some libraries are attaching event handlers to
-DOM nodes and some implementations are using event delegation technique to reduce number of event handlers to 1 per
-8000-80000 DOM Elements (0.000125 - 0.0000125).
+- [Surplus](https://github.com/krausest/js-framework-benchmark/blob/e469a62889894cb4d4e2cac5923f14d91d1294f8/frameworks/keyed/surplus/src/view.tsx#L41)
+- [lit-html](https://github.com/krausest/js-framework-benchmark/blob/e469a62889894cb4d4e2cac5923f14d91d1294f8/frameworks/keyed/lit-html/src/index.js#L126)
+- etc...
 
-Libraries like React and ivi are using synthetic events with custom event dispatcher, so behind the scenes they are
-registering one native event handler per each event type, but it is an internal implementation detail and the key
-difference between event delegation and synthetic events is that synthetic events doesn't break component encapsulation,
-components aren't leaking any information about their DOM structure.
+Any library in this benchmark can use this technique to reduce the number of event handlers, so when comparing numbers
+it is important to keep in mind that some implementations show better numbers only because they've decided to use
+explicit event delegation.
 
-#### Data Bindings per DOM Element
+#### Ratio of Dynamic Data Bindings per DOM Element
 
-```
-Benchmark: ~0.25 (some implementations are using workarounds to reduce it to 0.125)
-Google Mail: ~2 (rough estimate, guessed by looking at DOM nodes in the document)
-```
+The ratio of dynamic data bindings per DOM element in this benchmark is `0.25`. Such low number of data bindings is a
+huge indicator that benchmark is biased toward libraries with fine-grained direct data bindings, and some libraries
+are
+[using workarounds](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L42-L48) to reduce this ratio to `0.125`.
 
-Such low number of data bindings is a huge indicator that benchmark is biased toward libraries with fine-grained direct
-data bindings.
+Just take a look at any library that implements a set of reusable components, the number of dynamic bindings per DOM
+element is usually greater than 1. Virtual DOM libraries by design are trying to optimize for use cases when the ratio
+of data bindings per DOM element is greater or equal than 1.
 
-Virtual DOM libraries by design are trying to optimize for use cases when the ratio of data bindings per DOM element is
-greater or equal than 1.
-
-#### Components per Component Types
-
-It is hard to guess how many different component types are used in Google Mail, but if it is like any other complex
-application, the ratio of components per component type shouldn't be too high.
+#### Ratio of Components per Component Types
 
 Benchmark implementations with zero components are obviously have zero component types. When there are no components,
 libraries that generate "optimal" code and don't care about the size of the generated code, and the amount of different
@@ -302,28 +299,19 @@ micro updates by a couple of microseconds. Virtual DOM libraries are usually hav
 a single code path for creating and updating DOM nodes, with no additional code for destroying DOM nodes. Single code
 path has an additional advantage that it has a higher chances that this code path will be JITed earlier.
 
-#### Complex data transformations
-
-Since there are no complex data transformation in the benchmark, it is an ideal situation for libraries with
-fine-grained direct data bindings. Just bind an observable value to DOM nodes directly and all problems are solved.
-
-But in real applcations there are complex data transformation that lose all information about data changes, servers are
-sending data snapshots that doesn't contain any information how nodes should be rearranged and many other use cases.
-
 ## Documentation
 
 ### Virtual DOM
 
-Virtual DOM in ivi has some major differences from other implementations. Events and keys are implemented as a
-special nodes instead of attributes. Using special nodes instead of attributes improves composition patterns, simple
-stateless components can be implemented as a basic immediately executed functions, DOM events can be attached to
-components, fragments or any other node.
+Virtual DOM in ivi has some major differences from other implementations. Events and keys are decoupled from DOM
+elements to improve composition model. Simple stateless components can be implemented as a basic immediately executed
+functions, DOM events can be attached to components, fragments or any other node.
 
 Internally, all "Virtual DOM" nodes in ivi are called operations and has a type `Op`.
 
 ```ts
 type Op = string | number | OpNode | OpArray | null;
-interface OpArray extends Array<Op> { }
+interface OpArray extends Readonly<Array<Op>> { }
 ```
 
 #### Immutable Virtual DOM
@@ -400,7 +388,7 @@ render(
 function Events(events: EventHandler, children: Op): Op<EventsData>;
 
 type EventHandler = EventHandlerNode | EventHandlerArray | null;
-interface EventHandlerArray extends Array<EventHandler> { }
+interface EventHandlerArray extends Readonly<Array<EventHandler>> { }
 ```
 
 `Events()` operation is used to attach event handlers. `events` argument can be a singular event handler, `null` or
@@ -427,11 +415,11 @@ function Context(data: {}, children: Op): OpNode<ContextData>;
 `Context()` operation is used to assign context.
 
 ```ts
-import { _, Context, component, render } from "ivi";
+import { _, Context, context, component, render } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
-  const getContextValue = useSelect<_, { key: string }>((props, ctx) => ctx.key);
+  const getContextValue = useSelect(() => context<{ key: string }>().key);
 
   return () => div(_, _, getContextValue());
 });
@@ -479,17 +467,18 @@ There are several attribute directives defined in ivi packages:
 
 ```ts
 // ivi
-function PROPERTY<T>(v: T | undefined): AttributeDirective<T>;
-function UNSAFE_HTML(v: string | undefined): AttributeDirective<string>;
-function AUTOFOCUS(v: boolean | undefined): AttributeDirective<boolean>;
+function PROPERTY<T>(v: T): AttributeDirective<T>;
+function UNSAFE_HTML(v: string): AttributeDirective<string>;
+function AUTOFOCUS(v: boolean): AttributeDirective<boolean>;
 
 // ivi-html
-function VALUE(v: string | number | undefined): AttributeDirective<string | number>;
-function CHECKED(v: boolean | undefined): AttributeDirective<boolean>;
+function VALUE(v: string | number): AttributeDirective<string | number>;
+function CONTENT(v: string | number): AttributeDirective<string | number>;
+function CHECKED(v: boolean): AttributeDirective<boolean>;
 
 // ivi-svg
-function XML_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
-function XLINK_ATTR(v: string | number | boolean | undefined): AttributeDirective<string | number | boolean>;
+function XML_ATTR(v: string | number | boolean): AttributeDirective<string | number | boolean>;
+function XLINK_ATTR(v: string | number | boolean): AttributeDirective<string | number | boolean>;
 ```
 
 `PROPERTY()` function creates an `AttributeDirective` that assigns a property to a property name derived from the `key`
@@ -500,8 +489,9 @@ of the attribute.
 `AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is updated from `undefined` or
 `false` to `true`.
 
-`VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement or
-HTMLTextAreaElement.
+`VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement.
+
+`CONTENT()` function creates an `AttributeDirective` that assigns a `value` property to HTMLTextAreaElement.
 
 `CHECKED()` function creates an `AttributeDirective` that assigns a `checked` property to an HTMLInputElement.
 
@@ -522,21 +512,22 @@ const e = input("", { type: "checked", checked: CHECKED(true) })
 ##### Custom Attribute Directives
 
 ```ts
-export interface AttributeDirective<P> {
-  v: P | undefined;
-  s: (element: Element, key: string, prev: P | undefined, next: P | undefined) => void;
+interface AttributeDirective<P> {
+  v: P;
+  u?: (element: Element, key: string, prev: P | undefined, next: P | undefined) => void;
+  s?: (key: string, next: P) => void;
 }
 ```
 
 ```ts
 function updateCustomValue(element: Element, key: string, prev: number | undefined, next: number | undefined) {
-  if (prev !== next) {
+  if (prev !== next && next !== void 0) {
     (element as any)._custom = next;
   }
 }
 ```
 
-First thing that we need to do is to create an update function. Update function has 4 arguments: `element` will contain
+First thing that we need to do is create an update function. Update function has 4 arguments: `element` will contain
 a target DOM element, `key` is an attribute name that was used to assign this value, `prev` is a previous value and
 `next` is the current value.
 
@@ -544,26 +535,22 @@ In this function we are just checking that the value is changed, and if it is ch
 `_custom` property.
 
 ```ts
-export function CUSTOM_VALUE(v: number | undefined): AttributeDirective<number> {
-  return (v === undefined) ? ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED : { v, u: syncCustomValue };
+function renderToStringCustomValue(key: string, value: number) {
+  emitAttribute(`data-custom="${value}"`);
 }
 ```
 
-Now we need to create a function that will be used to instantiate `AttributeDirective` objects. In this function we are
-using predefined `ATTRIBUTE_VALUE_SKIP_UNDEFINED` attribute directive to ignore updates when the value is `undefined`,
-otherwise we are creating a new `AttributeDirective` object with the value `v` and update function `updateCustomValue`.
-
-###### Predefined Attribute Directives
+To support server-side rendering we also need to create a function that will render attribute directive to string.
 
 ```ts
-const ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED: AttributeDirective<any>;
-const ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED: AttributeDirective<any>;
+export const CUSTOM_VALUE = (v: number): AttributeDirective<number> => (
+  __IVI_TARGET__ === "ssr" ?
+    { v, s: renderToStringCustomValue } :
+    { v, u: updateCustomValue }
+);
 ```
 
-`ATTRIBUTE_DIRECTIVE_SKIP_UNDEFINED` has `undefined` value with `NOOP` synchronization function.
-
-`ATTRIBUTE_DIRECTIVE_REMOVE_ATTR_UNDEFINED` has `undefined` value and it will remove `key` attribute from the DOM
-element.
+Now we need to create a function that will be used to instantiate `AttributeDirective` objects.
 
 #### Additional functions
 
@@ -660,28 +647,22 @@ function useLayoutEffect<P>(
 ```ts
 function useSelect<T>(
   c: StateNode,
-  selector: (props?: undefined, context?: undefined, prev?: T | undefined) => T,
+  selector: (props?: undefined, prev?: T | undefined) => T,
 ): () => T;
 function useSelect<T, P>(
   c: StateNode,
-  selector: (props: P, context?: undefined, prev?: T | undefined) => T,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? () => T : (props: P) => T;
-function useSelect<T, P, C>(
-  c: StateNode,
-  selector: (props: P, context: C, prev?: T | undefined) => T,
+  selector: (props: P, prev?: T | undefined) => T,
   shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 ```
 
 `useSelect()` creates a selector hook.
 
-Selectors are used for sideways data accessing or retrieving data from the current context. It is a low-level and more
-flexible alternative to redux connectors.
+Selectors are used for sideways data accessing. It is a low-level and more flexible alternative to redux connectors.
 
 ```js
 const Pixel = component((c) => {
-  const getColor = useSelect(c, (i, { colors }) => colors[i]);
+  const getColor = useSelect(c, (i) => context().colors[i]);
 
   return (i) => span("pixel", { style: { background: getColor(i) }});
 });
@@ -816,6 +797,49 @@ render(
 );
 ```
 
+### Global Variables
+
+#### `__IVI_DEBUG__`
+
+When `__IVI_DEBUG__` is enabled, there will be many different runtime checks that improve development experience.
+
+#### `__IVI_TARGET__`
+
+Supported targets:
+
+- `browser` - Default target.
+- `evergreen` - Evergreen browsers.
+- `electron` - [Electron](https://github.com/electron/electron).
+- `ssr` - Server-side rendering.
+
+#### Webpack Configuration
+
+```js
+module.exports = {
+  plugins: [
+    new webpack.DefinePlugin({
+      "__IVI_DEBUG__": "true",
+      "__IVI_TARGET__": JSON.stringify("browser"),
+    }),
+  ],
+}
+```
+
+#### Rollup Configuration
+
+```js
+export default {
+  plugins: [
+    replace({
+      values: {
+        "__IVI_DEBUG__": true,
+        "__IVI_TARGET__": JSON.stringify("browser"),
+      },
+    }),
+  ],
+};
+```
+
 ### Children Reconciliation
 
 Children reconciliation algorithm in ivi works in a slightly different way than
@@ -866,15 +890,18 @@ shouldn't rely on this behaviour.
 - [Dynamic Lists](https://codesandbox.io/s/006ol1moxp)
 - [Forms](https://codesandbox.io/s/zlk18r8n03)
 - [Composition](https://codesandbox.io/s/k9m8wlqky3)
+- [Portals](https://codesandbox.io/s/v8z27nxk77)
 
 #### Apps
 
 - [TodoMVC](https://github.com/localvoid/ivi-todomvc/)
 - [ndx search demo](https://github.com/localvoid/ndx-demo/)
 - [Snake Game](https://github.com/localvoid/ivi-examples/tree/master/packages/apps/snake/)
+- [TMDb movie database](https://codesandbox.io/s/3x9x5v4kq5) by [@brucou](https://github.com/brucou)
 
 #### Benchmarks
 
+- [JS Frameworks Benchmark](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi)
 - [UIBench](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/uibench/)
 - [DBMon](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/dbmon/)
 - [10k Components](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/10k/)

@@ -1,6 +1,6 @@
 {
   "name": "ivi-scheduler",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",

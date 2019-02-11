@@ -22,11 +22,11 @@
   },
   "peerDependencies": {
     "ivi-math": "^0.0.1",
-    "ivi": "^0.20.0"
+    "ivi": "^0.21.0"
   },
   "devDependencies": {
     "ivi-math": "^0.0.1",
-    "ivi": "^0.20.0"
+    "ivi": "^0.21.0"
   },
   "description": "Gesture and DnD events for ivi library",
   "license": "MIT",
