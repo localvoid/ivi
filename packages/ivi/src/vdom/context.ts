@@ -6,6 +6,25 @@ import { EMPTY_OBJECT } from "../core";
 let _context = EMPTY_OBJECT;
 
 /**
+ * Used for detecting invalid `context()` invocations in DEBUG mode.
+ */
+let _contextEnabled = false;
+
+/**
+ * Enable checking for invalid `context()` invocations in DEBUG mode.
+ */
+export function enableContext() {
+  _contextEnabled = true;
+}
+
+/**
+ * Disable checking for invalid `context()` invocations in DEBUG mode.
+ */
+export function disableContext() {
+  _contextEnabled = false;
+}
+
+/**
  * setContext assigns current context.
  *
  * Should be executed before going deeper into Context node.
@@ -37,5 +56,11 @@ export function restoreContext(c: {}): void {
  * @returns current context
  */
 export function context<T extends {}>(): T {
+  /* istanbul ignore else */
+  if (__IVI_DEBUG__) {
+    if (!_contextEnabled) {
+      throw new Error(`Invalid context() invocation. Context can't be used outside of a reconciliation phase`);
+    }
+  }
   return _context as T;
 }

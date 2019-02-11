@@ -2,6 +2,7 @@ import { checkNestingViolations } from "../debug/html_nesting_rules";
 import { Op } from "./operations";
 import { OpState } from "./state";
 import { _mount, _update, _unmount, _dirtyCheck, _resetState } from "./reconciler";
+import { enableContext, disableContext } from "./context";
 
 /**
  * Root.
@@ -38,6 +39,10 @@ export const findRoot = (predicate: (root: Root) => boolean) => ROOTS.find(predi
  * Performs a dirty checking.
  */
 export function dirtyCheck() {
+  /* istanbul ignore else */
+  if (__IVI_DEBUG__) {
+    enableContext();
+  }
   for (let i = 0; i < ROOTS.length; ++i) {
     const root = ROOTS[i];
     const { container, state, next } = root;
@@ -55,5 +60,9 @@ export function dirtyCheck() {
         checkNestingViolations(container!, root.state);
       }
     }
+  }
+  /* istanbul ignore else */
+  if (__IVI_DEBUG__) {
+    disableContext();
   }
 }

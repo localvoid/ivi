@@ -5,7 +5,7 @@ import { OpNode, Op, ElementData, ContextData, Key } from "../vdom/operations";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "../vdom/component";
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
-import { setContext, restoreContext } from "../vdom/context";
+import { setContext, restoreContext, disableContext, enableContext } from "../vdom/context";
 import { escapeAttributeValue, escapeText } from "./escape";
 
 let _attributes = "";
@@ -182,6 +182,10 @@ function _renderToString(op: Op): string {
  */
 export function renderToString(op: Op): string {
   try {
+    /* istanbul ignore else */
+    if (__IVI_DEBUG__) {
+      enableContext();
+    }
     return _renderToString(op);
   } catch (e) {
     restoreContext(EMPTY_OBJECT);
@@ -189,5 +193,10 @@ export function renderToString(op: Op): string {
     _styles = "";
     _children = "";
     throw e;
+  } finally {
+    /* istanbul ignore else */
+    if (__IVI_DEBUG__) {
+      disableContext();
+    }
   }
 }
