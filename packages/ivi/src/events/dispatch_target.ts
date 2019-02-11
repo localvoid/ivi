@@ -7,9 +7,9 @@ export interface DispatchTarget {
   /**
    * Target.
    */
-  t: any;
+  readonly t: any;
   /**
    * Matched Event Handlers.
    */
-  h: EventHandlerNode;
+  readonly h: EventHandlerNode;
 }
