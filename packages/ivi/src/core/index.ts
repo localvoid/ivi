@@ -30,4 +30,4 @@ export { addErrorHandler, catchError } from "./error";
 export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete } from "./array";
 export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
-export { shallowEqual } from "./equal";
+export { shallowEqual, shallowEqualArray } from "./equal";
