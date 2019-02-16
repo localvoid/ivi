@@ -141,8 +141,8 @@ export function _dirtyCheck(
       _nextNode = state;
     } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       i = (c as Array<OpState | null>).length;
-      while (--i >= 0) {
-        if ((state = (c as Array<OpState | null>)[i]) !== null) {
+      while (i > 0) {
+        if ((state = (c as Array<OpState | null>)[--i]) !== null) {
           _dirtyCheck(parentElement, state, moveNode, false);
         }
       }
@@ -176,8 +176,8 @@ function _moveNodes(parentElement: Element, opState: OpState) {
     const children = opState.c;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       let i = (children as Array<OpState | null>).length;
-      while (--i >= 0) {
-        const c = (children as Array<OpState | null>)[i];
+      while (i > 0) {
+        const c = (children as Array<OpState | null>)[--i];
         if (c !== null) {
           _moveNodes(parentElement, c);
         }
@@ -346,8 +346,8 @@ function _mountObject(
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
       let i = (d as Key<any, OpNode>[]).length;
       opState.c = value = Array(i);
-      while (--i >= 0) {
-        value[i] = _mount(parentElement, (d as Key<any, OpNode>[])[i].v);
+      while (i > 0) {
+        value[--i] = _mount(parentElement, (d as Key<any, OpNode>[])[i].v);
       }
     }
     opState.f = _popDeepState(deepStateFlags, flags);
@@ -362,8 +362,8 @@ function _mountFragment(
   let i = childrenOps.length;
   const newChildren = Array(i);
   const deepStateFlags = _pushDeepState();
-  while (--i >= 0) {
-    newChildren[i] = _mount(parentElement, childrenOps[i]);
+  while (i > 0) {
+    newChildren[--i] = _mount(parentElement, childrenOps[i]);
   }
   opState.c = newChildren;
   opState.f = _popDeepState(deepStateFlags, NodeFlags.Fragment);
@@ -529,8 +529,8 @@ export function _update(
           // a new one. This heuristics is slightly different from React, but it should be better at handling some
           // use cases.
           if ((opStateChildren as Array<OpState | null>).length === i) {
-            while (--i >= 0) {
-              (opStateChildren as Array<OpState | null>)[i] =
+            while (i > 0) {
+              (opStateChildren as Array<OpState | null>)[--i] =
                 _update(
                   parentElement,
                   (opStateChildren as Array<OpState | null>)[i],
@@ -828,8 +828,8 @@ function _updateChildrenTrackByKeys(
       _unmount(parentElement, opState, singleChild);
     }
   } else if (j === 0) { // Old children list is empty.
-    while (--i >= 0) { // Mount nodes from the new children list.
-      result[i] = _mount(parentElement, b[i].v);
+    while (i > 0) { // Mount nodes from the new children list.
+      result[--i] = _mount(parentElement, b[i].v);
     }
   } else {
     const opStateChildren = opState.c as Array<OpState | null>;
@@ -920,8 +920,8 @@ function _updateChildrenTrackByKeys(
 
         i = bLength;
         if (moveNode === true || pos !== -1) {
-          while (--i >= 0) {
-            pos = start + i;
+          while (i > 0) {
+            pos = --i + start;
             node = b[pos].v;
             result[pos] = (sources[i] === -1) ?
               _mount(parentElement, node) :
@@ -930,8 +930,8 @@ function _updateChildrenTrackByKeys(
         } else {
           const seq = lis(sources);
           j = seq.length - 1;
-          while (--i >= 0) {
-            pos = start + i;
+          while (i > 0) {
+            pos = --i + start;
             node = b[pos].v;
             if (sources[i] === -1) {
               result[pos] = _mount(parentElement, node);
@@ -950,8 +950,8 @@ function _updateChildrenTrackByKeys(
     }
 
     // update nodes from Step 1 (prefix only)
-    while (--start >= 0) {
-      result[start] = _update(parentElement, opStateChildren[start], b[start].v, moveNode, false);
+    while (start > 0) {
+      result[--start] = _update(parentElement, opStateChildren[start], b[start].v, moveNode, false);
     }
   }
   opState.c = result;
