@@ -7,7 +7,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - [Immutable](#immutable-virtual-dom) "Virtual DOM"
 - [Fragments](#fragments)
 - [Components](#components)
-- Extensible synthetic events
 - Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Server-side rendering
 
@@ -384,6 +383,9 @@ render(
 
 #### Events
 
+Synthetic events subsystem is using its own two-phase event dispatching algorithm. Custom event dispatching makes it
+possible to decouple event handlers from DOM elements and improve composition model.
+
 ```ts
 function Events(events: EventHandler, children: Op): Op<EventsData>;
 
@@ -404,6 +406,40 @@ render(
   ),
   document.getElementById("app")!,
 );
+```
+
+`ivi` package provides event handler factories for all DOM events: `onClick()`, `onKeyDown()`, etc. All DOM event
+objects are wrapped in `SyntheticNativeEvent` objects.
+
+```ts
+interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
+  readonly flags: SyntheticEventFlags;
+  readonly timestamp: number;
+  readonly node: OpState | null;
+  readonly native: E;
+}
+```
+
+`native` property is used to get access to the native DOM event.
+
+##### Stop Propagation and Prevent Default
+
+Event handler should return `EventFlags` to stop event propagation or prevent default behavior.
+
+TypeScript:
+
+```ts
+import { EventFlags } from "ivi";
+
+onClick((ev) => EventFlags.StopPropagation | EventFlags.PreventDefault);
+```
+
+Javascript:
+
+```js
+import { STOP_PROPAGATION, PREVENT_DEFAULT } from "ivi";
+
+onClick((ev) => STOP_PROPAGATION | PREVENT_DEFAULT);
 ```
 
 #### Context
@@ -740,61 +776,26 @@ const EntryList = component((c) => {
 });
 ```
 
-### Synthetic Events
-
-Synthetic events subsystem is using its own two-phase event dispatching algorithm. With custom event dispatching
-algorithm it is possible to create new events like "click outside", gestures and DnD events.
-
-#### Event Handler
-
-Event Handler is an object that contains information about `EventDispatcher` that is used for dispatching events
-and a handler function that will be executed when dispatcher fires an event.
-
-`ivi` package provides event handler factories for all native events.
+### Accessing DOM Elements
 
 ```ts
-import { onClick, onKeyDown } from "ivi";
-
-const click = onClick((ev) => { console.log("clicked"); });
-const keyDown = onKeyDown((ev) => { console.log("Key Down"); });
+function getDOMNode(opState: OpState): Node | null;
 ```
 
-#### Example
+`getDOMNode()` finds the closest DOM Element.
 
 ```ts
-import { _, component, render, Events, onClick } from "ivi";
+import { component, useMutationEffect, getDOMNode } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
-  let counter1 = 0;
-  let counter2 = 0;
+  const m = useMutationEffect(c, () => {
+    const divElement = getDOMNode(c);
+    divElement.className = "abc";
+  });
 
-  // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
-  // multiple `onClick` event handlers.
-  const events = [
-    onClick((ev) => {
-      counter1++;
-      invalidate(c);
-    }),
-    onClick((ev) => {
-      counter2++;
-      invalidate(c);
-    }),
-  ]);
-
-  return () => (
-    Events(events,
-      div(_, _, `Clicks: [${counter1}] [${counter2}]`),
-    )
-  );
+  return () => (m(), div());
 });
-
-render(
-  Events(onClick(() => { console.log("event handler attached to component"); }),
-    C(),
-  ),
-  document.getElementById("app"),
-);
 ```
 
 ### Global Variables
