@@ -381,6 +381,26 @@ render(
 );
 ```
 
+##### Fragments Memoization
+
+Fragments in `ivi` can be memoized or hoisted like any other node. Because `ivi` doesn't use normalization to implement
+fragments, memoized fragments will immediately short-circuit diffing algorithm.
+
+```ts
+const C = component((c) => {
+  let memo;
+
+  return () => (
+    div(_, _,
+      memo || memo = [
+        span(),
+        span(),
+      ],
+    )
+  );
+});
+```
+
 #### Events
 
 Synthetic events subsystem is using its own two-phase event dispatching algorithm. Custom event dispatching makes it
