@@ -4,7 +4,8 @@ export {
   NOOP, NOOP_FALSE, NOOP_TRUE,
   append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
   RepeatableTaskList, runRepeatableTasks,
-  shallowEqual, shallowEqualArray,
+  strictEqual, strictNotEqual, shallowEqual, shallowNotEqual, shallowEqualArray, shallowNotEqualArray,
+  lazy, memo, memoObject, memoArray,
 } from "./core";
 
 // DOM
