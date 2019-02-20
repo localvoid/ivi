@@ -44,7 +44,7 @@ export function memo<T, U>(
 export const memoObject = <T extends {}, U>(fn: (props: T) => U) => memo<T, U>(fn, shallowNotEqual);
 
 /**
- * memoObject creates a memoized function with {@link shallowNotEqualArray} as a `shouldUpdate` function.
+ * memoArray creates a memoized function with {@link shallowNotEqualArray} as a `shouldUpdate` function.
  *
  * @typeparam T input type.
  * @typeparam U output type.

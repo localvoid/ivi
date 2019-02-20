@@ -3,11 +3,13 @@ import { scheduleLayoutEffect } from "../scheduler";
 import { emitChildren, emitAttribute } from "../ssr/render";
 
 /**
- * Attribute directives are used to extend reconciliation and renderToString algorithms.
+ * Attribute directives are used to extend reconciliation and `renderToString()` algorithms.
  *
- * When DOM element attributes are updated, all value types are checked if it is a string, number, boolean or an
- * `AttributeDirective`. When it is an attribute directive, custom update function will be invoked with the DOM
- * element, attribute key, previous and next values.
+ * When DOM element attributes are updated during reconciliation, custom update function `u()` will be invoked with the
+ * DOM element, attribute key, previous and next values.
+ *
+ * When DOM element is rendered to string, custom render to string function `s()` will be invoked with attribute key
+ * and its value `v`.
  *
  * @typeparam T Value type.
  */
@@ -43,6 +45,8 @@ export const IGNORE_RENDER_TO_STRING = ({ v: void 0, s: NOOP });
  * PROPERTY function creates an {@link AttributeDirective} that assigns a property to a property name derived from the
  * `key` of the attribute.
  *
+ * When rendered to string, it will be ignored.
+ *
  * @example
  *
  *   const e = div("", { _customProperty: PROPERTY("value") });
@@ -71,6 +75,8 @@ function updateProperty(element: Element, key: string, prev: any, next: any): vo
 
 /**
  * UNSAFE_HTML function creates a {@link AttributeDirective} that assigns an `innerHTML` property to an Element.
+ *
+ * When rendered to string, it will emit its value as inner HTML without any escaping.
  *
  * @example
  *
@@ -116,6 +122,8 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
 /**
  * EVENT function creates an {@link AttributeDirective} that assigns a native event handler derived from the `key`
  * attribute to an Element.
+ *
+ * When rendered to string, it will be ignored.
  *
  * @example
  *
@@ -193,6 +201,8 @@ const AUTOFOCUS_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = {
 
 /**
  * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
+ *
+ * When rendered to string, it will emit `autofocus` attribute.
  *
  * @example
  *
