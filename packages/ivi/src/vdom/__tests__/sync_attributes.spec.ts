@@ -278,6 +278,20 @@ NamedNodeMap {
     });
   });
 
+  test(`should throw error when transition from basic value to attribute directive`, () => {
+    testRenderDOM<HTMLElement>(r => {
+      r(s.circle("", { "xml:text": "abc" }));
+      expect(() => { r(s.circle("", { "xml:text": s.XML_ATTR("") })); }).toThrowError();
+    });
+  });
+
+  test(`should throw error when transition from attribute directive to basic value`, () => {
+    testRenderDOM<HTMLElement>(r => {
+      r(s.circle("", { "xml:text": s.XML_ATTR("") }));
+      expect(() => { r(s.circle("", { "xml:text": "abc" })); }).toThrowError();
+    });
+  });
+
   describe(`svg`, () => {
     test(`{ "xml:text": "" } => { "xml:text": "" }`, () => {
       testRenderDOM<HTMLElement>(r => {

@@ -1164,17 +1164,33 @@ function _updateAttr(
   prev: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
   next: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
 ): void {
-  if (key !== "style") {
-    if (typeof next === "object") {
-      next.u(
-        element,
-        key,
-        prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
-        next.v,
-      );
-    } else if (prev !== next) {
-      if (typeof prev === "object") {
-        prev.u(
+  if (prev !== next) {
+    if (key !== "style") {
+      if (typeof next === "object") {
+        /* istanbul ignore else */
+        if (__IVI_DEBUG__) {
+          if (typeof prev !== "object" && prev !== void 0) {
+            throw new Error(
+              `Invalid DOM attribute, transitioning from basic values to attribute directives isn't allowed`,
+            );
+          }
+        }
+        (next as AttributeDirective<any>).u!(
+          element,
+          key,
+          prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
+          next.v,
+        );
+      } else if (typeof prev === "object") {
+        /* istanbul ignore else */
+        if (__IVI_DEBUG__) {
+          if (typeof next !== "object" && next !== void 0) {
+            throw new Error(
+              `Invalid DOM attribute, transitioning from attribute directives to basic values isn't allowed`,
+            );
+          }
+        }
+        (prev as AttributeDirective<any>).u!(
           element,
           key,
           (prev as AttributeDirective<any>).v,
@@ -1190,8 +1206,8 @@ function _updateAttr(
           elementSetAttribute.call(element, key, next as string);
         }
       }
+    } else {
+      _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
     }
-  } else if (prev !== next) {
-    _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
   }
 }
