@@ -16,12 +16,11 @@ export const PASSIVE_EVENTS = (__IVI_TARGET__ === "electron") ? true :
     let v = false;
     try {
       // Test via a getter in the options object to see if the passive property is accessed
-      const opts = Object.defineProperty({}, "passive", {
-        get() {
-          v = true;
-        },
+      window.addEventListener("_", null as any, {
+        get passive(): boolean {
+          return v = true;
+        }
       });
-      window.addEventListener("test", null as any as (ev: Event) => void, opts);
     } catch (e) {
       // ignore
     }
