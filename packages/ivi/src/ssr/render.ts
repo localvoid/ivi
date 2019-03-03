@@ -1,7 +1,7 @@
 import { EMPTY_OBJECT } from "../core";
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
-import { OpNode, Op, ElementData, ContextData, Key } from "../vdom/operations";
+import { OpNode, Op, ElementData, ContextData, Key, EventsData } from "../vdom/operations";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "../vdom/component";
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
@@ -154,7 +154,7 @@ function _renderToString(op: Op): string {
           restoreContext(prevContext);
           return result;
         } else {
-          return renderToString(op.d.children);
+          return renderToString((op.d as EventsData).c);
         }
       }
       // TrackByKey Node

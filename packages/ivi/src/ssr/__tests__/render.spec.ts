@@ -3,9 +3,10 @@ __IVI_TARGET__ = "ssr";
 import { _, UNSAFE_HTML, renderToString } from "ivi";
 import { div, span, strong, textarea, CONTENT, input, CHECKED, VALUE } from "ivi-html";
 import { PROPERTY, EVENT, AUTOFOCUS } from "../../vdom/attribute_directive";
-import { TrackByKey, key } from "../../vdom/operations";
+import { TrackByKey, key, Events } from "../../vdom/operations";
 import { elementProto } from "../../vdom/factories";
 import { Stateful, Stateless } from "../../vdom/__tests__/utils";
+import { onClick } from "../../events/native_events";
 
 describe("render", () => {
   test("<div>", () => {
@@ -164,6 +165,18 @@ describe("render", () => {
 
     test("stateless", () => {
       expect(renderToString(Stateless("abc")))
+        .toBe(`abc`);
+    });
+  });
+
+  describe("Events", () => {
+    test("empty event", () => {
+      expect(renderToString(Events(onClick(() => 0), null)))
+        .toBe(``);
+    });
+
+    test("event with text child", () => {
+      expect(renderToString(Events(onClick(() => 0), "abc")))
         .toBe(`abc`);
     });
   });
