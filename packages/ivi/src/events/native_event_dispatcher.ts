@@ -42,26 +42,29 @@ export function createNativeEventDispatcher<E extends Event>(
   const source: NativeEventDispatcher<E> = { a: null, b: null };
   const matchEventSource = (h: EventHandlerNode) => h.d.src === source;
 
-  document.addEventListener(name, withSchedulerTick((ev: Event): void => {
-    const target = ev.target as Element;
-    const targets: DispatchTarget[] = [];
+  /* istanbul ignore else */
+  if (__IVI_TARGET__ !== "ssr") {
+    document.addEventListener(name, withSchedulerTick((ev: Event): void => {
+      const target = ev.target as Element;
+      const targets: DispatchTarget[] = [];
 
-    accumulateDispatchTargets(targets, target, matchEventSource);
+      accumulateDispatchTargets(targets, target, matchEventSource);
 
-    if (targets.length || source.b || source.a) {
-      const syntheticEvent = createNativeEvent(0, ev.timeStamp, null, ev as E);
+      if (targets.length || source.b || source.a) {
+        const syntheticEvent = createNativeEvent(0, ev.timeStamp, null, ev as E);
 
-      dispatchToListeners(source.b, syntheticEvent);
-      if (targets.length) {
-        dispatchEvent(targets, syntheticEvent, (flags & NativeEventSourceFlags.Bubbles) !== 0);
+        dispatchToListeners(source.b, syntheticEvent);
+        if (targets.length) {
+          dispatchEvent(targets, syntheticEvent, (flags & NativeEventSourceFlags.Bubbles) !== 0);
+        }
+        dispatchToListeners(source.a, syntheticEvent);
+
+        if (syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) {
+          ev.preventDefault();
+        }
       }
-      dispatchToListeners(source.a, syntheticEvent);
-
-      if (syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) {
-        ev.preventDefault();
-      }
-    }
-  }), options);
+    }), options);
+  }
 
   return source;
 }

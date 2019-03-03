@@ -1,5 +1,5 @@
-const nodeProto = Node.prototype;
-const elementProto = Element.prototype;
+const nodeProto = __IVI_TARGET__ === "ssr" ? void 0 : Node.prototype;
+const elementProto = __IVI_TARGET__ === "ssr" ? void 0 : Element.prototype;
 
 /**
  * Shortcut for an `Object.prototype.hasOwnProperty`.
@@ -14,7 +14,7 @@ export const nodeInsertBefore = (
     function <T extends Node>(this: Node, newChild: T, refChild: Node | null): T {
       return this.insertBefore(newChild, refChild);
     } :
-    /* istanbul ignore next */nodeProto.insertBefore
+    /* istanbul ignore next */nodeProto!.insertBefore
 );
 
 /**
@@ -25,7 +25,7 @@ export const nodeRemoveChild = (
     function <T extends Node>(this: Node, oldChild: T): T {
       return this.removeChild(oldChild);
     } :
-    /* istanbul ignore next */nodeProto.removeChild
+    /* istanbul ignore next */nodeProto!.removeChild
 );
 
 /**
@@ -36,7 +36,7 @@ export const nodeReplaceChild = (
     function <T extends Node>(this: Node, newChild: Node, oldChild: T): T {
       return this.replaceChild(newChild, oldChild);
     } :
-    /* istanbul ignore next */nodeProto.replaceChild
+    /* istanbul ignore next */nodeProto!.replaceChild
 );
 
 /**
@@ -47,7 +47,7 @@ export const nodeCloneNode = (
     function (this: Node, deep?: boolean): Node {
       return this.cloneNode(deep);
     } :
-    /* istanbul ignore next */nodeProto.cloneNode
+    /* istanbul ignore next */nodeProto!.cloneNode
 );
 
 /**
@@ -58,7 +58,7 @@ export const elementSetAttribute = (
     function (this: Element, qualifiedName: string, value: string): void {
       this.setAttribute(qualifiedName, value);
     } :
-    /* istanbul ignore next */elementProto.setAttribute
+    /* istanbul ignore next */elementProto!.setAttribute
 );
 
 /**
@@ -69,7 +69,7 @@ export const elementSetAttributeNS = (
     function (this: Element, namespace: string | null, qualifiedName: string, value: string): void {
       this.setAttributeNS(namespace, qualifiedName, value);
     } :
-    /* istanbul ignore next */elementProto.setAttributeNS
+    /* istanbul ignore next */elementProto!.setAttributeNS
 );
 
 /**
@@ -80,5 +80,5 @@ export const elementRemoveAttribute = (
     function (this: Element, qualifiedName: string): void {
       this.removeAttribute(qualifiedName);
     } :
-    /* istanbul ignore next */elementProto.removeAttribute
+    /* istanbul ignore next */elementProto!.removeAttribute
 );
