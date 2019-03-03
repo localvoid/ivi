@@ -2,12 +2,11 @@
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
-- Declarative rendering with "Virtual DOM"
+- Declarative rendering with ["Virtual DOM"](#virtual-dom)
 - Powerful [composition model](https://codesandbox.io/s/k9m8wlqky3)
 - [Immutable](#immutable-virtual-dom) "Virtual DOM"
 - [Fragments](#fragments)
 - [Components](#components)
-- Extensible synthetic events
 - Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
 - Server-side rendering
 
@@ -162,47 +161,33 @@ The final step for a component is to create an "update" function, it should pass
 and return a Virtual DOM. Update function will be invoked when component is invalidated or component properties are
 modified.
 
-## Architecture
+## Virtual DOM
 
-Virtual DOM in ivi is implemented as a synchronous and deterministic single pass algorithm. The difference between
-single pass and two pass algorithms is that we don't generate "patch" objects and instead of that we immediately
-apply all detected changes.
+Virtual DOM term is usually associated with diffing algorithms, but the problem with this definition is that almost
+all efficient declarative libraries are using diffing algorithms. And all feature complete libraries implement the same
+diffing algorithms to deal with use cases like dynamic attributes `<div {...domProps}></div>`, children lists diffing,
+etc.
 
-One of the major ideas that heavily influenced the design of the reconciliation algorithm in ivi were that instead of
-optimizing for an infinitely large number of DOM nodes, it is better to optimize for real world use cases. Optimizing
-for a large number of DOM nodes doesn't make any sense, because when there is an insane number of DOM nodes in the
-document, recalc style, reflow, etc will be so slow, so that application will be completely unusable. That is why
-reconciliation algorithm always starts working from the root nodes in dirty checking mode. In dirty checking mode
-it just checks selectors and looks for dirty components. This approach makes it easy to implement contexts, selectors,
-update priorities and significantly reduces code complexity.
-
-All data structures are optimized to make sure that they are using as least memory as possible, [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) with different ["hacks"](https://github.com/localvoid/ivi/blob/029adbd368acebca2501d59503c65bf34c0d2411/packages/ivi/src/vdom/sync.ts#L74) are
-used everywhere in the code. All frequently accessed data structures always using the same shape, almost all call sites
-in the code are [monomorphic](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
-
-Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
-cases. To find the minimum number of DOM operations when nodes are rearranged it is using a
-[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm.
-
-Synthetic events are usually implemented by storing references to Virtual DOM nodes on the DOM nodes, ivi is using a
-different approach that doesn't require storing any data on the DOM nodes. Event dispatcher implements two-phase event
-flow and goes through Virtual DOM tree. It allows us to attach DOM events not just on elements, but also on components.
+What makes a real difference between Virtual DOM and other technologies is that it provides an easy to use API with
+simple composable primitives so that you can use javascript for composition without any specialized compilers.
 
 ## Performance
 
-Designing UI library with a focus on performance is quite hard, there are many different optimization goals and we need
-to find a balanced solution that should produce the best possible outcome for a complex application. Simple applications
-usually doesn't suffer from performance problems, so the focus should be on the architecture of complex applications.
+There is no such thing as "the fastest UI library", optimizing UI library for some use cases will make it slower in
+other use cases. ivi is optimized for complex dynamic applications that composed from small reusable blocks.
 
-Here is a list of different optimization goals (in random order) that we should be focusing on:
+There are many different optimization goals and we need to find a balanced solution. Here is a list of different
+optimization goals (in random order) that we should be focusing on:
 
 - Application code size
 - Library code size
 - Time to render first interactive page
-- Rendering performance
-- Updating performance
+- Creating DOM nodes
+- Updating DOM nodes
+- Cleaning up internal state
 - Memory usage
 - Garbage collection
+- Composition patterns performance (components, conditional rendering, transclusion, fragments, dynamic attributes, etc)
 - Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
 - Increase probability that executed code is JITed (usually depends on the application code size)
 
@@ -301,7 +286,7 @@ path has an additional advantage that it has a higher chances that this code pat
 
 ## Documentation
 
-### Virtual DOM
+### Operations ("Virtual DOM")
 
 Virtual DOM in ivi has some major differences from other implementations. Events and keys are decoupled from DOM
 elements to improve composition model. Simple stateless components can be implemented as a basic immediately executed
@@ -314,7 +299,7 @@ type Op = string | number | OpNode | OpArray | null;
 interface OpArray extends Readonly<Array<Op>> { }
 ```
 
-#### Immutable Virtual DOM
+#### Immutable "Virtual DOM"
 
 When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
 efficiently implement it otherwise, since that time many other virtual dom libraries just copied this terrible idea, and
@@ -382,7 +367,30 @@ render(
 );
 ```
 
+##### Fragments Memoization
+
+Fragments in `ivi` can be memoized or hoisted like any other node. Because `ivi` doesn't use normalization to implement
+fragments, memoized fragments will immediately short-circuit diffing algorithm.
+
+```ts
+const C = component((c) => {
+  let memo;
+
+  return () => (
+    div(_, _,
+      memo || memo = [
+        span(),
+        span(),
+      ],
+    )
+  );
+});
+```
+
 #### Events
+
+Synthetic events subsystem is using its own two-phase event dispatching algorithm. Custom event dispatching makes it
+possible to decouple event handlers from DOM elements and improve composition model.
 
 ```ts
 function Events(events: EventHandler, children: Op): Op<EventsData>;
@@ -404,6 +412,40 @@ render(
   ),
   document.getElementById("app")!,
 );
+```
+
+`ivi` package provides event handler factories for all DOM events: `onClick()`, `onKeyDown()`, etc. All DOM event
+objects are wrapped in `SyntheticNativeEvent` objects.
+
+```ts
+interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
+  readonly flags: SyntheticEventFlags;
+  readonly timestamp: number;
+  readonly node: OpState | null;
+  readonly native: E;
+}
+```
+
+`native` property is used to get access to the native DOM event.
+
+##### Stop Propagation and Prevent Default
+
+Event handler should return `EventFlags` to stop event propagation or prevent default behavior.
+
+TypeScript:
+
+```ts
+import { EventFlags } from "ivi";
+
+onClick((ev) => EventFlags.StopPropagation | EventFlags.PreventDefault);
+```
+
+Javascript:
+
+```js
+import { STOP_PROPAGATION, PREVENT_DEFAULT } from "ivi";
+
+onClick((ev) => STOP_PROPAGATION | PREVENT_DEFAULT);
 ```
 
 #### Context
@@ -740,61 +782,26 @@ const EntryList = component((c) => {
 });
 ```
 
-### Synthetic Events
-
-Synthetic events subsystem is using its own two-phase event dispatching algorithm. With custom event dispatching
-algorithm it is possible to create new events like "click outside", gestures and DnD events.
-
-#### Event Handler
-
-Event Handler is an object that contains information about `EventDispatcher` that is used for dispatching events
-and a handler function that will be executed when dispatcher fires an event.
-
-`ivi` package provides event handler factories for all native events.
+### Accessing DOM Elements
 
 ```ts
-import { onClick, onKeyDown } from "ivi";
-
-const click = onClick((ev) => { console.log("clicked"); });
-const keyDown = onKeyDown((ev) => { console.log("Key Down"); });
+function getDOMNode(opState: OpState): Node | null;
 ```
 
-#### Example
+`getDOMNode()` finds the closest DOM Element.
 
 ```ts
-import { _, component, render, Events, onClick } from "ivi";
+import { component, useMutationEffect, getDOMNode } from "ivi";
 import { div } from "ivi-html";
 
 const C = component((c) => {
-  let counter1 = 0;
-  let counter2 = 0;
+  const m = useMutationEffect(c, () => {
+    const divElement = getDOMNode(c);
+    divElement.className = "abc";
+  });
 
-  // There are no restrictions in number of attached event handlers with the same type, it is possible to attach
-  // multiple `onClick` event handlers.
-  const events = [
-    onClick((ev) => {
-      counter1++;
-      invalidate(c);
-    }),
-    onClick((ev) => {
-      counter2++;
-      invalidate(c);
-    }),
-  ]);
-
-  return () => (
-    Events(events,
-      div(_, _, `Clicks: [${counter1}] [${counter2}]`),
-    )
-  );
+  return () => (m(), div());
 });
-
-render(
-  Events(onClick(() => { console.log("event handler attached to component"); }),
-    C(),
-  ),
-  document.getElementById("app"),
-);
 ```
 
 ### Global Variables
@@ -839,6 +846,29 @@ export default {
   ],
 };
 ```
+
+## Internal Details
+
+ivi reconciliation algorithm is implemented as a synchronous and deterministic single pass algorithm with immutable
+operations. The difference between single pass and two pass algorithms is that we don't generate "patch" objects and
+instead of that we immediately apply all detected changes.
+
+One of the major ideas that heavily influenced the design of the reconciliation algorithm in ivi were that instead of
+optimizing for an infinitely large number of DOM nodes, it is better to optimize for real world use cases. Optimizing
+for a large number of DOM nodes doesn't make any sense, because when there is an insane number of DOM nodes in the
+document, recalc style, reflow, hit tests, etc will be so slow, so that application will be completely unusable. That is
+why ivi reconciliation algorithm always starts working from the root nodes in dirty checking mode. In dirty checking
+mode it just checks selectors and looks for dirty components. This approach makes it easy to implement contexts,
+selectors, update priorities and significantly reduces code complexity.
+
+Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
+cases. To find the minimum number of DOM operations when nodes are rearranged it is using a
+[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm.
+
+Synthetic events are usually implemented by storing references to Virtual DOM nodes on the DOM nodes, ivi is using a
+different approach that doesn't require storing any data on the DOM nodes. Event dispatcher implements two-phase event
+flow and goes through Virtual DOM tree. Synthetic events allows us to decouple events from DOM elements and improve
+composition model.
 
 ### Children Reconciliation
 
