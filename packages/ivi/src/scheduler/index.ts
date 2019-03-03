@@ -1,5 +1,5 @@
 import { sMT, rAF } from "ivi-scheduler";
-import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList } from "../core";
+import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box } from "../core";
 import { printWarn } from "../debug/print";
 import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";
@@ -56,14 +56,7 @@ const enum SchedulerDebugFlags {
 /**
  * Task list.
  */
-interface TaskList { v: Array<() => void>; }
-
-/**
- * createTaskList creates a task list.
- *
- * @returns task list
- */
-const createTaskList = () => ({ v: [] }) as TaskList;
+type TaskList = Box<Array<() => void>>;
 
 /**
  * Execute tasks from the `TaskList`.
@@ -73,24 +66,20 @@ const createTaskList = () => ({ v: [] }) as TaskList;
 function run(t: TaskList) {
   while (t.v.length > 0) {
     const tasks = t.v;
-    let i = 0;
     t.v = [];
-    do {
-      tasks[i++]();
-    } while (i < tasks.length);
+    for (let i = 0; i < tasks.length; ++i) {
+      tasks[i]();
+    }
   }
 }
 
 let _flags: SchedulerFlags = 0;
-let _debugFlags: SchedulerDebugFlags;
-/* istanbul ignore else */
-if (__IVI_DEBUG__) {
-  _debugFlags = 0;
-}
+let _debugFlags: SchedulerDebugFlags = 0;
+
 let _clock = 1;
-const _microtasks = createTaskList();
-const _mutationEffects = createTaskList();
-const _domLayoutEffects = createTaskList();
+const _microtasks = box<Array<() => void>>([]);
+const _mutationEffects = box<Array<() => void>>([]);
+const _layoutEffects = box<Array<() => void>>([]);
 const _beforeMutations = [] as RepeatableTaskList;
 const _afterMutations = [] as RepeatableTaskList;
 let _frameStartTime = 0;
@@ -187,7 +176,7 @@ export const withNextFrame = (inner: (time?: number) => void) => (
         _debugFlags |= SchedulerDebugFlags.MutationsFinished;
       }
       runRepeatableTasks(_afterMutations);
-      run(_domLayoutEffects);
+      run(_layoutEffects);
       /* istanbul ignore else */
       if (__IVI_DEBUG__) {
         _debugFlags |= SchedulerDebugFlags.LayoutFinished;
@@ -274,7 +263,7 @@ export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void 
       }
     }
   }
-  _domLayoutEffects.v.push(fn);
+  _layoutEffects.v.push(fn);
   requestNextFrame(flags);
 }
 
