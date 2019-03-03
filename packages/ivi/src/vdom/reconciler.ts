@@ -1164,50 +1164,48 @@ function _updateAttr(
   prev: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
   next: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
 ): void {
-  if (prev !== next) {
-    if (key !== "style") {
-      if (typeof next === "object") {
-        /* istanbul ignore else */
-        if (__IVI_DEBUG__) {
-          if (typeof prev !== "object" && prev !== void 0) {
-            throw new Error(
-              `Invalid DOM attribute, transitioning from basic values to attribute directives isn't allowed`,
-            );
-          }
-        }
-        (next as AttributeDirective<any>).u!(
-          element,
-          key,
-          prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
-          next.v,
-        );
-      } else if (typeof prev === "object") {
-        /* istanbul ignore else */
-        if (__IVI_DEBUG__) {
-          if (typeof next !== "object" && next !== void 0) {
-            throw new Error(
-              `Invalid DOM attribute, transitioning from attribute directives to basic values isn't allowed`,
-            );
-          }
-        }
-        (prev as AttributeDirective<any>).u!(
-          element,
-          key,
-          (prev as AttributeDirective<any>).v,
-          void 0,
-        );
-      } else {
-        if (typeof next === "boolean") {
-          next = next ? "" : void 0;
-        }
-        if (next === void 0) {
-          elementRemoveAttribute.call(element, key);
-        } else {
-          elementSetAttribute.call(element, key, next as string);
+  if (key !== "style") {
+    if (typeof next === "object") {
+      /* istanbul ignore else */
+      if (__IVI_DEBUG__) {
+        if (typeof prev !== "object" && prev !== void 0) {
+          throw new Error(
+            `Invalid DOM attribute, transitioning from basic values to attribute directives isn't allowed`,
+          );
         }
       }
-    } else {
-      _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
+      (next as AttributeDirective<any>).u!(
+        element,
+        key,
+        prev === void 0 ? void 0 : (prev as AttributeDirective<any>).v,
+        next.v,
+      );
+    } else if (typeof prev === "object") {
+      /* istanbul ignore else */
+      if (__IVI_DEBUG__) {
+        if (typeof next !== "object" && next !== void 0) {
+          throw new Error(
+            `Invalid DOM attribute, transitioning from attribute directives to basic values isn't allowed`,
+          );
+        }
+      }
+      (prev as AttributeDirective<any>).u!(
+        element,
+        key,
+        (prev as AttributeDirective<any>).v,
+        void 0,
+      );
+    } else if (prev !== next) {
+      if (typeof next === "boolean") {
+        next = next ? "" : void 0;
+      }
+      if (next === void 0) {
+        elementRemoveAttribute.call(element, key);
+      } else {
+        elementSetAttribute.call(element, key, next as string);
+      }
     }
+  } else if (prev !== next) {
+    _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
   }
 }

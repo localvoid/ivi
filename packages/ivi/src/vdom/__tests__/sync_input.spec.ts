@@ -103,6 +103,16 @@ Object {
   });
 });
 
+test(`input value should always check internal state`, () => {
+  testRenderDOM<HTMLInputElement>(r => {
+    let n = r(h.input(_, { value: h.VALUE("") }));
+    n!.value = "abc";
+    n = r(h.input(_, { value: h.VALUE("") }));
+
+    expect(n!.value).toBe("");
+  });
+});
+
 test(`<input type="checkbox"> => <input type="checkbox" checked=true>`, () => {
   testRenderDOM(r => {
     checkDOMOps(c => {
