@@ -907,9 +907,66 @@ lists.
 Moved nodes can be rearranged in any way. `[ab] => [ba]` transformation can move node `a` or node `b`. Applications
 shouldn't rely on this behaviour.
 
-### Examples and demo applications
+## Caveats
 
-#### CodeSandbox
+### Legacy Browsers Support
+
+React is probably the only library that tries hard to hide all browser quirks for public APIs, almost all other
+libraries claim support for legacy browsers, but what it usually means is that their test suite passes in legacy
+browsers and their test suites doesn't contain tests for edge cases in older browsers. `ivi` isn't any different from
+many other libraries, it fixes some hard issues, but it doesn't try to fix all quirks for legacy browsers.
+
+### Rendering into `<body>`
+
+Rendering into `<body>` is disabled to prevent some [issues](https://github.com/facebook/create-react-app/issues/1568).
+If someone submits a good explanation why this limitation should be removed, it is possible to remove this limitation
+from the code base.
+
+### Server-Side Rendering
+
+There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in `ivi`.
+It isn't that hard to implement rehydration, but it would require someone who is interested in it to maintain this code
+base.
+
+Primary use case for server-side rendering in `ivi` is SEO. Usually when SSR is used for SEO purposes, it is better to
+use conditional rendering with `__IVI_TARGET__` and generate slightly different output by expanding all collapsed text
+regions, etc.
+
+### Synthetic Events
+
+Synthetic events implemented by traversing "Virtual DOM" tree, worst case scenario is that we will need to traverse all
+"Virtual DOM" nodes to deliver an event, but it isn't the problem because it is hard to imagine an application that
+implemented as a huge flat list of DOM nodes.
+
+All listeners for synthetic events are automatically registered when javascript is loaded, `ivi` is relying on dead code
+elimination to prevent registration of unused event listeners. React applications has lazy event listeners registration
+and all event listeners always stay registered even when they aren't used anymore, it seems that there aren't many
+issues with it, but if there is a good explanation why it shouldn't behave this way, it is possible to add support for
+removing global event listeners by using dependency counters.
+
+### Dirty Checking
+
+Dirty checking in `ivi` is a `O(N)` operation where `N` is the number of "Virtual DOM" nodes, it isn't like dirty
+checking in Angular.js where `N` is the number of dynamic bindings.
+
+Each time view is updated, dirty checking algorithm executes all selectors `useSelect()` and checks if selector
+output is changed with strict equality operator `===`.
+
+To get a better understanding of dirty checking overhead, you can play with dbmonster benchmark that has 0 mutations:
+https://localvoid.github.io/ivi-examples/benchmarks/dbmon/?m=0&n=50
+
+- `m` parameter specifies number of mutations from `0` to `1`. 0 is a 0%, 1 is a 100%.
+- `n` parameter specifies number of rows multiplied by 2.
+
+This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-examples/blob/3da4c7db883b4249698ac18a4c728352bb98b679/packages/benchmarks/dbmon/src/main.ts#L35), with more complicated selectors there will be higher overhead.
+
+### Custom Elements
+
+Creating custom elements isn't supported, but there shouldn't be any problems to use custom elements.
+
+## Examples and demo applications
+
+### CodeSandbox
 
 - [Hello World](https://codesandbox.io/s/vm9l368jk0)
 - [Update](https://codesandbox.io/s/qx8jkjx514)
@@ -922,14 +979,14 @@ shouldn't rely on this behaviour.
 - [Composition](https://codesandbox.io/s/k9m8wlqky3)
 - [Portals](https://codesandbox.io/s/v8z27nxk77)
 
-#### Apps
+### Apps
 
 - [TodoMVC](https://github.com/localvoid/ivi-todomvc/)
 - [ndx search demo](https://github.com/localvoid/ndx-demo/)
 - [Snake Game](https://github.com/localvoid/ivi-examples/tree/master/packages/apps/snake/)
 - [TMDb movie database](https://codesandbox.io/s/3x9x5v4kq5) by [@brucou](https://github.com/brucou)
 
-#### Benchmarks
+### Benchmarks
 
 - [JS Frameworks Benchmark](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi)
 - [UIBench](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/uibench/)
