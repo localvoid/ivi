@@ -376,13 +376,15 @@ fragments, memoized fragments will immediately short-circuit diffing algorithm.
 const C = component((c) => {
   let memo;
 
-  return () => (
-    div(_, _,
+  return (title) => (
+    div(_, _, [
+      h1(_, _, title),
       memo || memo = [
-        span(),
-        span(),
+        span(_, _, "Static"),
+        " ",
+        span(_, _, "Fragment"),
       ],
-    )
+    ])
   );
 });
 ```
@@ -710,6 +712,25 @@ const Pixel = component((c) => {
 });
 ```
 
+###### Selector Optimizations
+
+Second argument `prev` can be used to optimize complex selectors.
+
+```js
+const C = component((c) => {
+  const select = useSelect(c, (props, prev) => {
+    const value = context().value;
+    return (prev !== void 0 && prev.value === value) ? prev :
+      {
+        value,
+        computedValue: value * value,
+      };
+  });
+
+  return () => span(_, _, select().computedValue);
+});
+```
+
 ##### `useUnmount()`
 
 ```ts
@@ -782,7 +803,7 @@ const EntryList = component((c) => {
 });
 ```
 
-### Accessing DOM Elements
+### Accessing DOM Nodes
 
 ```ts
 function getDOMNode(opState: OpState): Node | null;
@@ -954,8 +975,7 @@ active event listeners.
 
 ### Dirty Checking
 
-Dirty checking in `ivi` is a `O(N)` operation where `N` is the number of "Virtual DOM" nodes, it isn't like dirty
-checking in Angular.js where `N` is the number of dynamic bindings.
+Dirty checking in `ivi` is a `O(N)` operation where `N` is the number of "Virtual DOM" nodes.
 
 Each time view is updated, dirty checking algorithm executes all selectors `useSelect()` and checks if selector
 output is changed with strict equality operator `===`.
