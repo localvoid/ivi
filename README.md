@@ -934,15 +934,23 @@ regions, etc.
 
 ### Synthetic Events
 
-Synthetic events implemented by traversing "Virtual DOM" tree, worst case scenario is that we will need to traverse all
-"Virtual DOM" nodes to deliver an event, but it isn't the problem because it is hard to imagine an application that
-implemented as a huge flat list of DOM nodes.
+Synthetic events subsystem dispatches events by traversing "Virtual DOM" tree. Worst case scenario is that it will need
+to traverse all "Virtual DOM" nodes to deliver an event, but it isn't the problem because it is hard to imagine an
+application implemented as a huge flat list of DOM nodes.
 
-All listeners for synthetic events are automatically registered when javascript is loaded, `ivi` is relying on dead code
-elimination to prevent registration of unused event listeners. React applications has lazy event listeners registration
-and all event listeners always stay registered even when they aren't used anymore, it seems that there aren't many
-issues with it, but if there is a good explanation why it shouldn't behave this way, it is possible to add support for
-removing global event listeners by using dependency counters.
+All global event listeners for synthetic events are automatically registered when javascript is loaded. `ivi` is relying
+on dead code elimination to prevent registration of unused event listeners. React applications has lazy event listeners
+registration and all global event listeners always stay registered even when they aren't used anymore, it seems that
+there aren't many issues with it, but if there is a good explanation why it shouldn't behave this way, it is possible to
+add support for removing global event listeners by using dependency counters.
+
+There are no `onMouseEnter()` and `onMouseLeave()` events, [here is an example](https://codesandbox.io/s/k9m8wlqky3) how
+to implement the same behavior using `onMouseOver()` event.
+
+`onTouchEnd()`, `onTouchMove()`, `onTouchStart()` and `onWheel()` are
+[passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners)
+event listeners. `onActiveTouchEnd()`, `onActiveTouchMove()`, `onActiveTouchStart()` and `onActiveWheel()` will add
+active event listeners.
 
 ### Dirty Checking
 
@@ -960,9 +968,9 @@ https://localvoid.github.io/ivi-examples/benchmarks/dbmon/?m=0&n=50
 
 This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-examples/blob/3da4c7db883b4249698ac18a4c728352bb98b679/packages/benchmarks/dbmon/src/main.ts#L35), with more complicated selectors there will be higher overhead.
 
-### Custom Elements
+### Custom Elements (Web Components)
 
-Creating custom elements isn't supported, but there shouldn't be any problems to use custom elements.
+Creating custom elements isn't supported, but there shouldn't be any problems with using custom elements.
 
 ## Examples and demo applications
 
