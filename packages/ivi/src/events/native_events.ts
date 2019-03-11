@@ -143,6 +143,10 @@ export const EVENT_DISPATCHER_GOT_POINTER_CAPTURE = (
   __IVI_TARGET__ === "ssr" ? void 0 :
   /*#__PURE__*/createNativeEventDispatcher<PointerEvent>(NativeEventSourceFlags.Capture, "gotpointercapture")
 );
+export const EVENT_DISPATCHER_BEFORE_INPUT = (
+  __IVI_TARGET__ === "ssr" ? void 0 :
+  /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "beforeinput")
+);
 export const EVENT_DISPATCHER_INPUT = (
   __IVI_TARGET__ === "ssr" ? void 0 :
   /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "input")
@@ -591,6 +595,13 @@ export const onGotPointerCapture: <P>(
 ) => EventHandlerNode<SyntheticNativeEvent<PointerEvent>> = (
     __IVI_TARGET__ === "ssr" ? () => (null as any) :
   /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_GOT_POINTER_CAPTURE!)
+  );
+export const onBeforeInput: <P>(
+  handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
+  capture?: boolean,
+) => EventHandlerNode<SyntheticNativeEvent<Event>> = (
+    __IVI_TARGET__ === "ssr" ? () => (null as any) :
+    /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_BEFORE_INPUT!)
   );
 export const onInput: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
