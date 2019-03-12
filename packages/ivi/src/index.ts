@@ -135,7 +135,8 @@ export {
   EVENT_DISPATCHER_RESET, EVENT_DISPATCHER_SCROLL, EVENT_DISPATCHER_SEEKED, EVENT_DISPATCHER_SEEKING,
   EVENT_DISPATCHER_SELECT, EVENT_DISPATCHER_SELECT_START, EVENT_DISPATCHER_STALLED, EVENT_DISPATCHER_SUBMIT,
   EVENT_DISPATCHER_SUSPEND, EVENT_DISPATCHER_TIME_UPDATE, EVENT_DISPATCHER_TOUCH_CANCEL, EVENT_DISPATCHER_TOUCH_END,
-  EVENT_DISPATCHER_TOUCH_MOVE, EVENT_DISPATCHER_TOUCH_START, EVENT_DISPATCHER_UNLOAD, EVENT_DISPATCHER_VOLUME_CHANGE,
+  EVENT_DISPATCHER_TOUCH_MOVE, EVENT_DISPATCHER_TOUCH_START, EVENT_DISPATCHER_TRANSITION_CANCEL,
+  EVENT_DISPATCHER_TRANSITION_END, EVENT_DISPATCHER_UNLOAD, EVENT_DISPATCHER_VOLUME_CHANGE,
   EVENT_DISPATCHER_WAITING, EVENT_DISPATCHER_WHEEL, EVENT_DISPATCHER_ACTIVE_TOUCH_END,
   EVENT_DISPATCHER_ACTIVE_TOUCH_MOVE, EVENT_DISPATCHER_ACTIVE_TOUCH_START, EVENT_DISPATCHER_ACTIVE_WHEEL,
 
@@ -149,8 +150,8 @@ export {
   onMouseMove, onMouseOut, onMouseOver, onMouseUp, onPaste, onPause, onPlay, onPlaying, onPointerCancel, onPointerDown,
   onPointerMove, onPointerOut, onPointerOver, onPointerUp, onProgress, onRateChange, onReset, onScroll, onSeeked,
   onSeeking, onSelect, onSelectStart, onStalled, onSubmit, onSuspend, onTimeUpdate, onTouchCancel, onTouchEnd,
-  onTouchMove, onTouchStart, onUnload, onVolumeChange, onWaiting, onWheel, onActiveTouchEnd, onActiveTouchMove,
-  onActiveTouchStart, onActiveWheel,
+  onTouchMove, onTouchStart, onTransitionCancel, onTransitionEnd, onUnload, onVolumeChange, onWaiting, onWheel,
+  onActiveTouchEnd, onActiveTouchMove, onActiveTouchStart, onActiveWheel,
 } from "./events/native_events";
 
 // Helpers

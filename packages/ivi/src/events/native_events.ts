@@ -311,6 +311,14 @@ export const EVENT_DISPATCHER_TOUCH_START = (
   __IVI_TARGET__ === "ssr" ? void 0 :
   /*#__PURE__*/createNativeEventDispatcher<TouchEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles | NativeEventSourceFlags.Passive, "touchstart")
 );
+export const EVENT_DISPATCHER_TRANSITION_CANCEL = (
+  __IVI_TARGET__ === "ssr" ? void 0 :
+  /*#__PURE__*/createNativeEventDispatcher<TransitionEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "transitioncancel")
+);
+export const EVENT_DISPATCHER_TRANSITION_END = (
+  __IVI_TARGET__ === "ssr" ? void 0 :
+  /*#__PURE__*/createNativeEventDispatcher<TransitionEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "transitionend")
+);
 export const EVENT_DISPATCHER_UNLOAD = (
   __IVI_TARGET__ === "ssr" ? void 0 :
   /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture, "unload")
@@ -889,6 +897,20 @@ export const onTouchStart: <P>(
 ) => EventHandlerNode<SyntheticNativeEvent<TouchEvent>> = (
     __IVI_TARGET__ === "ssr" ? () => (null as any) :
   /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TOUCH_START!)
+  );
+export const onTransitionCancel: <P>(
+  handler: (ev: SyntheticNativeEvent<TransitionEvent>) => EventFlags | void,
+  capture?: boolean,
+) => EventHandlerNode<SyntheticNativeEvent<TransitionEvent>> = (
+    __IVI_TARGET__ === "ssr" ? () => (null as any) :
+    /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TRANSITION_CANCEL!)
+  );
+export const onTransitionEnd: <P>(
+  handler: (ev: SyntheticNativeEvent<TransitionEvent>) => EventFlags | void,
+  capture?: boolean,
+) => EventHandlerNode<SyntheticNativeEvent<TransitionEvent>> = (
+    __IVI_TARGET__ === "ssr" ? () => (null as any) :
+      /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TRANSITION_END!)
   );
 export const onUnload: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
