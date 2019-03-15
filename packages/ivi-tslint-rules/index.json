@@ -2,6 +2,7 @@
   "extends": "tslint:recommended",
   "rules": {
     "ban-types": [
+      true,
       [
         "Object",
         "Avoid using the `Object` type. Did you mean `object`?"
@@ -24,42 +25,22 @@
       ]
     ],
     "unified-signatures": false,
-    "array-type": [
-      false
-    ],
-    "interface-name": [
-      false
-    ],
-    "max-classes-per-file": [
-      false
-    ],
-    "ordered-imports": [
-      false
-    ],
-    "only-arrow-functions": [
-      false
-    ],
+    "array-type": false,
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "ordered-imports": false,
+    "only-arrow-functions": false,
     "prefer-for-of": false,
-    "align": [
-      false
-    ],
+    "align": false,
     "no-conditional-assignment": false,
-    "no-console": [
-      false
-    ],
+    "no-console": false,
     "forin": false,
     "member-access": false,
-    "member-ordering": [
-      false
-    ],
+    "member-ordering": false,
     "no-bitwise": false,
-    "no-namespace": [
-      false
-    ],
+    "no-namespace": false,
     "no-string-literal": false,
-    "object-literal-key-quotes": [
-      false
-    ],
+    "object-literal-key-quotes": false,
     "object-literal-sort-keys": false,
     "object-literal-shorthand": false,
     "switch-default": false,
