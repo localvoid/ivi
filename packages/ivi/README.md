@@ -376,13 +376,15 @@ fragments, memoized fragments will immediately short-circuit diffing algorithm.
 const C = component((c) => {
   let memo;
 
-  return () => (
-    div(_, _,
+  return (title) => (
+    div(_, _, [
+      h1(_, _, title),
       memo || memo = [
-        span(),
-        span(),
+        span(_, _, "Static"),
+        " ",
+        span(_, _, "Fragment"),
       ],
-    )
+    ])
   );
 });
 ```
@@ -586,7 +588,7 @@ To support server-side rendering we also need to create a function that will ren
 
 ```ts
 export const CUSTOM_VALUE = (v: number): AttributeDirective<number> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     { v, s: renderToStringCustomValue } :
     { v, u: updateCustomValue }
 );
@@ -710,6 +712,25 @@ const Pixel = component((c) => {
 });
 ```
 
+###### Selector Optimizations
+
+Second argument `prev` can be used to optimize complex selectors.
+
+```js
+const C = component((c) => {
+  const select = useSelect(c, (props, prev) => {
+    const value = context().value;
+    return (prev !== void 0 && prev.value === value) ? prev :
+      {
+        value,
+        computedValue: value * value,
+      };
+  });
+
+  return () => span(_, _, select().computedValue);
+});
+```
+
 ##### `useUnmount()`
 
 ```ts
@@ -782,7 +803,7 @@ const EntryList = component((c) => {
 });
 ```
 
-### Accessing DOM Elements
+### Accessing DOM Nodes
 
 ```ts
 function getDOMNode(opState: OpState): Node | null;
@@ -804,15 +825,13 @@ const C = component((c) => {
 });
 ```
 
-### Global Variables
+### Environment Variables
 
-#### `__IVI_DEBUG__`
+#### `NODE_ENV`
 
-When `__IVI_DEBUG__` is enabled, there will be many different runtime checks that improve development experience.
+- `production` - Disables runtime checks that improve development experience.
 
-#### `__IVI_TARGET__`
-
-Supported targets:
+#### `IVI_TARGET`
 
 - `browser` - Default target.
 - `evergreen` - Evergreen browsers.
@@ -825,8 +844,7 @@ Supported targets:
 module.exports = {
   plugins: [
     new webpack.DefinePlugin({
-      "__IVI_DEBUG__": "true",
-      "__IVI_TARGET__": JSON.stringify("browser"),
+      "process.env.IVI_TARGET": JSON.stringify("browser"),
     }),
   ],
 }
@@ -839,8 +857,8 @@ export default {
   plugins: [
     replace({
       values: {
-        "__IVI_DEBUG__": true,
-        "__IVI_TARGET__": JSON.stringify("browser"),
+        "process.env.NODE_ENV": JSON.stringify("production"),
+        "process.env.IVI_TARGET": JSON.stringify("browser"),
       },
     }),
   ],
@@ -907,9 +925,73 @@ lists.
 Moved nodes can be rearranged in any way. `[ab] => [ba]` transformation can move node `a` or node `b`. Applications
 shouldn't rely on this behaviour.
 
-### Examples and demo applications
+## Caveats
 
-#### CodeSandbox
+### Legacy Browsers Support
+
+React is probably the only library that tries hard to hide all browser quirks for public APIs, almost all other
+libraries claim support for legacy browsers, but what it usually means is that their test suite passes in legacy
+browsers and their test suites doesn't contain tests for edge cases in older browsers. `ivi` isn't any different from
+many other libraries, it fixes some hard issues, but it doesn't try to fix all quirks for legacy browsers.
+
+### Rendering into `<body>`
+
+Rendering into `<body>` is disabled to prevent some [issues](https://github.com/facebook/create-react-app/issues/1568).
+If someone submits a good explanation why this limitation should be removed, it is possible to remove this limitation
+from the code base.
+
+### Server-Side Rendering
+
+There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in `ivi`.
+It isn't that hard to implement rehydration, but it would require someone who is interested in it to maintain this code
+base.
+
+Primary use case for server-side rendering in `ivi` is SEO. Usually when SSR is used for SEO purposes, it is better to
+use conditional rendering with `process.env.IVI_TARGET` and generate slightly different output by expanding all
+collapsed text regions, etc.
+
+### Synthetic Events
+
+Synthetic events subsystem dispatches events by traversing "Virtual DOM" tree. Worst case scenario is that it will need
+to traverse all "Virtual DOM" nodes to deliver an event, but it isn't the problem because it is hard to imagine an
+application implemented as a huge flat list of DOM nodes.
+
+All global event listeners for synthetic events are automatically registered when javascript is loaded. `ivi` is relying
+on dead code elimination to prevent registration of unused event listeners. React applications has lazy event listeners
+registration and all global event listeners always stay registered even when they aren't used anymore, it seems that
+there aren't many issues with it, but if there is a good explanation why it shouldn't behave this way, it is possible to
+add support for removing global event listeners by using dependency counters.
+
+There are no `onMouseEnter()` and `onMouseLeave()` events, [here is an example](https://codesandbox.io/s/k9m8wlqky3) how
+to implement the same behavior using `onMouseOver()` event.
+
+`onTouchEnd()`, `onTouchMove()`, `onTouchStart()` and `onWheel()` are
+[passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners)
+event listeners. `onActiveTouchEnd()`, `onActiveTouchMove()`, `onActiveTouchStart()` and `onActiveWheel()` will add
+active event listeners.
+
+### Dirty Checking
+
+Dirty checking in `ivi` is a `O(N)` operation where `N` is the number of "Virtual DOM" nodes.
+
+Each time view is updated, dirty checking algorithm executes all selectors `useSelect()` and checks if selector
+output is changed with strict equality operator `===`.
+
+To get a better understanding of dirty checking overhead, you can play with dbmonster benchmark that has 0 mutations:
+https://localvoid.github.io/ivi-examples/benchmarks/dbmon/?m=0&n=50
+
+- `m` parameter specifies number of mutations from `0` to `1`. 0 is a 0%, 1 is a 100%.
+- `n` parameter specifies number of rows multiplied by 2.
+
+This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-examples/blob/3da4c7db883b4249698ac18a4c728352bb98b679/packages/benchmarks/dbmon/src/main.ts#L35), with more complicated selectors there will be higher overhead.
+
+### Custom Elements (Web Components)
+
+Creating custom elements isn't supported, but there shouldn't be any problems with using custom elements.
+
+## Examples and demo applications
+
+### CodeSandbox
 
 - [Hello World](https://codesandbox.io/s/vm9l368jk0)
 - [Update](https://codesandbox.io/s/qx8jkjx514)
@@ -922,14 +1004,14 @@ shouldn't rely on this behaviour.
 - [Composition](https://codesandbox.io/s/k9m8wlqky3)
 - [Portals](https://codesandbox.io/s/v8z27nxk77)
 
-#### Apps
+### Apps
 
 - [TodoMVC](https://github.com/localvoid/ivi-todomvc/)
 - [ndx search demo](https://github.com/localvoid/ndx-demo/)
 - [Snake Game](https://github.com/localvoid/ivi-examples/tree/master/packages/apps/snake/)
 - [TMDb movie database](https://codesandbox.io/s/3x9x5v4kq5) by [@brucou](https://github.com/brucou)
 
-#### Benchmarks
+### Benchmarks
 
 - [JS Frameworks Benchmark](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi)
 - [UIBench](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/uibench/)
