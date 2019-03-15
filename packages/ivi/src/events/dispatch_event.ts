@@ -73,7 +73,7 @@ function _dispatch(
 ): EventFlags {
   const flags = (dispatch === void 0) ? handler.h(event) : dispatch(handler, event);
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (flags !== void 0) {
       if (flags & ~(EventFlags.PreventDefault | EventFlags.StopPropagation)) {
         throw new Error(`Invalid event flags: ${flags}`);

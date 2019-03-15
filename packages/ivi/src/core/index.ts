@@ -13,12 +13,6 @@ declare global {
     rotation: number;
     scale: number;
   }
-
-  /**
-   * Debug mode enables additional runtime checks.
-   */
-  let __IVI_DEBUG__: boolean;
-  let __IVI_TARGET__: "browser" | "evergreen" | "electron" | "ssr";
 }
 
 export { _ } from "./shortcuts";

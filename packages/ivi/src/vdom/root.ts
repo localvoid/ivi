@@ -40,7 +40,7 @@ export const findRoot = (predicate: (root: Root) => boolean) => ROOTS.find(predi
  */
 export function dirtyCheck() {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     enableContext();
   }
   for (let i = 0; i < ROOTS.length; ++i) {
@@ -55,14 +55,14 @@ export function dirtyCheck() {
     }
 
     /* istanbul ignore else */
-    if (__IVI_DEBUG__) {
+    if (process.env.NODE_ENV !== "production") {
       if (root.state) {
         checkNestingViolations(container!, root.state);
       }
     }
   }
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     disableContext();
   }
 }

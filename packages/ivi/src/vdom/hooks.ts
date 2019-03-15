@@ -69,7 +69,7 @@ export function useSelect<T, P>(
   shouldUpdate?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
   /* istanbul ignore next */
-  if (__IVI_TARGET__ === "ssr") {
+  if (process.env.IVI_TARGET === "ssr") {
     return (nextProps: P) => selector(nextProps, void 0);
   }
 
@@ -126,7 +126,7 @@ export function useSelect<T, P>(
  */
 export function useUnmount(component: Component, hook: () => void): void {
   /* istanbul ignore else */
-  if (__IVI_TARGET__ !== "ssr") {
+  if (process.env.IVI_TARGET !== "ssr") {
     component.f |= NodeFlags.Unmount;
     const hooks = component.s;
     hooks.u = addHook(hooks.u, hook);
@@ -200,7 +200,7 @@ export const useEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = __IVI_TARGET__ === "ssr" ?
+) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
 
@@ -217,7 +217,7 @@ export const useMutationEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = __IVI_TARGET__ === "ssr" ?
+) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
 
@@ -234,6 +234,6 @@ export const useLayoutEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = __IVI_TARGET__ === "ssr" ?
+) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;

@@ -118,7 +118,7 @@ function updateChecked(
  * @returns {@link AttributeDirective}
  */
 export const VALUE = (v: string | number): AttributeDirective<string | number> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     v === "" ? IGNORE_RENDER_TO_STRING : { v, s: renderToStringValue } :
     v === "" ? VALUE_EMPTY : { v, u: updateValue }
 );
@@ -134,7 +134,7 @@ export const VALUE = (v: string | number): AttributeDirective<string | number> =
  * @returns {@link AttributeDirective}
  */
 export const CONTENT = (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     (v: string | number): AttributeDirective<string | number> => (
       v === "" ? IGNORE_RENDER_TO_STRING : ({ v, s: renderToStringContent })
     ) :
@@ -152,7 +152,7 @@ export const CONTENT = (
  * @returns {@link AttributeDirective}
  */
 export const CHECKED = (v: boolean): AttributeDirective<boolean> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     v ? CHECKED_TRUE_RENDER_TO_STRING : IGNORE_RENDER_TO_STRING :
     v ? CHECKED_TRUE : CHECKED_FALSE
 );

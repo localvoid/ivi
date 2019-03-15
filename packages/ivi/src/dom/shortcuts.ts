@@ -1,5 +1,5 @@
-const nodeProto = __IVI_TARGET__ === "ssr" ? void 0 : Node.prototype;
-const elementProto = __IVI_TARGET__ === "ssr" ? void 0 : Element.prototype;
+const nodeProto = process.env.IVI_TARGET === "ssr" ? void 0 : Node.prototype;
+const elementProto = process.env.IVI_TARGET === "ssr" ? void 0 : Element.prototype;
 
 /**
  * Shortcut for an `Object.prototype.hasOwnProperty`.
@@ -10,7 +10,7 @@ export const objectHasOwnProperty = Object.prototype.hasOwnProperty;
  * Shortcut for a `Node.prototype.insertBefore`.
  */
 export const nodeInsertBefore = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function <T extends Node>(this: Node, newChild: T, refChild: Node | null): T {
       return this.insertBefore(newChild, refChild);
     } :
@@ -21,7 +21,7 @@ export const nodeInsertBefore = (
  * Shortcut for a `Node.prototype.removeChild`.
  */
 export const nodeRemoveChild = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function <T extends Node>(this: Node, oldChild: T): T {
       return this.removeChild(oldChild);
     } :
@@ -32,7 +32,7 @@ export const nodeRemoveChild = (
  * Shortcut for a `Node.prototype.replaceChild`.
  */
 export const nodeReplaceChild = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function <T extends Node>(this: Node, newChild: Node, oldChild: T): T {
       return this.replaceChild(newChild, oldChild);
     } :
@@ -43,7 +43,7 @@ export const nodeReplaceChild = (
  * Shortcut for a `Node.prototype.cloneNode`.
  */
 export const nodeCloneNode = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function (this: Node, deep?: boolean): Node {
       return this.cloneNode(deep);
     } :
@@ -54,7 +54,7 @@ export const nodeCloneNode = (
  * Shortcut for an `Element.prototype.setAttribute`.
  */
 export const elementSetAttribute = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function (this: Element, qualifiedName: string, value: string): void {
       this.setAttribute(qualifiedName, value);
     } :
@@ -65,7 +65,7 @@ export const elementSetAttribute = (
  * Shortcut for an `Element.prototype.setAttributeNS`.
  */
 export const elementSetAttributeNS = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function (this: Element, namespace: string | null, qualifiedName: string, value: string): void {
       this.setAttributeNS(namespace, qualifiedName, value);
     } :
@@ -76,7 +76,7 @@ export const elementSetAttributeNS = (
  * Shortcut for an `Element.prototype.removeAttribute`.
  */
 export const elementRemoveAttribute = (
-  __IVI_DEBUG__ ?
+  process.env.NODE_ENV !== "production" ?
     function (this: Element, qualifiedName: string): void {
       this.removeAttribute(qualifiedName);
     } :

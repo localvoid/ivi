@@ -588,7 +588,7 @@ To support server-side rendering we also need to create a function that will ren
 
 ```ts
 export const CUSTOM_VALUE = (v: number): AttributeDirective<number> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     { v, s: renderToStringCustomValue } :
     { v, u: updateCustomValue }
 );
@@ -825,15 +825,13 @@ const C = component((c) => {
 });
 ```
 
-### Global Variables
+### Environment Variables
 
-#### `__IVI_DEBUG__`
+#### `NODE_ENV`
 
-When `__IVI_DEBUG__` is enabled, there will be many different runtime checks that improve development experience.
+- `production` - Disables runtime checks that improve development experience.
 
-#### `__IVI_TARGET__`
-
-Supported targets:
+#### `IVI_TARGET`
 
 - `browser` - Default target.
 - `evergreen` - Evergreen browsers.
@@ -846,8 +844,7 @@ Supported targets:
 module.exports = {
   plugins: [
     new webpack.DefinePlugin({
-      "__IVI_DEBUG__": "true",
-      "__IVI_TARGET__": JSON.stringify("browser"),
+      "process.env.IVI_TARGET": JSON.stringify("browser"),
     }),
   ],
 }
@@ -860,8 +857,8 @@ export default {
   plugins: [
     replace({
       values: {
-        "__IVI_DEBUG__": true,
-        "__IVI_TARGET__": JSON.stringify("browser"),
+        "process.env.NODE_ENV": JSON.stringify("production"),
+        "process.env.IVI_TARGET": JSON.stringify("browser"),
       },
     }),
   ],
@@ -950,8 +947,8 @@ It isn't that hard to implement rehydration, but it would require someone who is
 base.
 
 Primary use case for server-side rendering in `ivi` is SEO. Usually when SSR is used for SEO purposes, it is better to
-use conditional rendering with `__IVI_TARGET__` and generate slightly different output by expanding all collapsed text
-regions, etc.
+use conditional rendering with `process.env.IVI_TARGET` and generate slightly different output by expanding all
+collapsed text regions, etc.
 
 ### Synthetic Events
 

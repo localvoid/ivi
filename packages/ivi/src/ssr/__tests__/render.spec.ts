@@ -1,4 +1,4 @@
-__IVI_TARGET__ = "ssr";
+process.env.IVI_TARGET = "ssr";
 
 import { _, UNSAFE_HTML, renderToString } from "ivi";
 import { div, span, strong, textarea, CONTENT, input, CHECKED, VALUE } from "ivi-html";

@@ -1167,7 +1167,7 @@ function _updateAttr(
   if (key !== "style") {
     if (typeof next === "object") {
       /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
+      if (process.env.NODE_ENV !== "production") {
         if (typeof prev !== "object" && prev !== void 0) {
           throw new Error(
             `Invalid DOM attribute, transitioning from basic values to attribute directives isn't allowed`,
@@ -1182,7 +1182,7 @@ function _updateAttr(
       );
     } else if (typeof prev === "object") {
       /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
+      if (process.env.NODE_ENV !== "production") {
         if (typeof next !== "object" && next !== void 0) {
           throw new Error(
             `Invalid DOM attribute, transitioning from attribute directives to basic values isn't allowed`,

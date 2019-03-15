@@ -37,7 +37,7 @@ export function unorderedArrayDeleteByIndex<T>(array: T[], index: number): void 
 export function unorderedArrayDelete<T>(array: T[], item: T): void {
   const index = array.indexOf(item);
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (index === -1) {
       throw new Error(`Failed to delete an item from an array, item doesn't exist in the array`);
     }

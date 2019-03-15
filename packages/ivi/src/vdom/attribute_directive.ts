@@ -56,7 +56,7 @@ export const IGNORE_RENDER_TO_STRING = ({ v: void 0, s: NOOP });
  * @returns {@link AttributeDirective}
  */
 export const PROPERTY = <T>(v: T): AttributeDirective<T> => (
-  __IVI_TARGET__ === "ssr" ? IGNORE_RENDER_TO_STRING : ({ v, u: updateProperty })
+  process.env.IVI_TARGET === "ssr" ? IGNORE_RENDER_TO_STRING : ({ v, u: updateProperty })
 );
 
 /**
@@ -86,7 +86,7 @@ function updateProperty(element: Element, key: string, prev: any, next: any): vo
  * @returns {@link AttributeDirective}
  */
 export const UNSAFE_HTML = (v: string): AttributeDirective<string> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     ({ v, s: renderToStringUnsafeHTML }) :
     ({ v, u: updateUnsafeHTML })
 );
@@ -133,7 +133,7 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * @returns {@link AttributeDirective}
  */
 export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     IGNORE_RENDER_TO_STRING :
     ({ v, u: updateEvent })
 );
@@ -212,7 +212,7 @@ const AUTOFOCUS_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = {
  * @returns {@link AttributeDirective}
  */
 export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => (
-  __IVI_TARGET__ === "ssr" ?
+  process.env.IVI_TARGET === "ssr" ?
     v ? AUTOFOCUS_TRUE_RENDER_TO_STRING : IGNORE_RENDER_TO_STRING :
     v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE
 );

@@ -183,7 +183,7 @@ function _renderToString(op: Op): string {
 export function renderToString(op: Op): string {
   try {
     /* istanbul ignore else */
-    if (__IVI_DEBUG__) {
+    if (process.env.NODE_ENV !== "production") {
       enableContext();
     }
     return _renderToString(op);
@@ -195,7 +195,7 @@ export function renderToString(op: Op): string {
     throw e;
   } finally {
     /* istanbul ignore else */
-    if (__IVI_DEBUG__) {
+    if (process.env.NODE_ENV !== "production") {
       disableContext();
     }
   }

@@ -461,7 +461,7 @@ export function getEventKey(ev: KeyboardEvent): string {
  * @param ev Mouse event.
  * @returns MouseEvent `buttons` value.
  */
-export const getMouseButtons = (__IVI_TARGET__ === "electron" || MOUSE_EVENT_BUTTONS) ?
+export const getMouseButtons = (process.env.IVI_TARGET === "electron" || MOUSE_EVENT_BUTTONS) ?
   (ev: MouseEvent) => ev.buttons :
   (ev: MouseEvent) => {
     const button = ev.button;

@@ -12,8 +12,8 @@
  * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
  */
 export const PASSIVE_EVENTS = (
-  (__IVI_TARGET__ === "ssr") ? false :
-    (__IVI_TARGET__ === "electron") ? true :
+  (process.env.IVI_TARGET === "ssr") ? false :
+    (process.env.IVI_TARGET === "electron") ? true :
   /*#__PURE__*/(() => {
         let v = false;
         try {
@@ -34,11 +34,11 @@ export const PASSIVE_EVENTS = (
 /**
  * `key` property is available on KeyboardEvent instances.
  */
-export const KEYBOARD_EVENT_KEY = /*#__PURE__*/(
-  (__IVI_TARGET__ !== "ssr") && (
-    (__IVI_TARGET__ === "electron") ||
-    (__IVI_TARGET__ === "evergreen") ||
-    KeyboardEvent.prototype.hasOwnProperty("key")
+export const KEYBOARD_EVENT_KEY = (
+  (process.env.IVI_TARGET !== "ssr") && (
+    (process.env.IVI_TARGET === "electron") ||
+    (process.env.IVI_TARGET === "evergreen") ||
+    /*#__PURE__*/KeyboardEvent.prototype.hasOwnProperty("key")
   )
 );
 
@@ -46,11 +46,11 @@ export const KEYBOARD_EVENT_KEY = /*#__PURE__*/(
 /**
  * `buttons` property is available on MouseEvent instances.
  */
-export const MOUSE_EVENT_BUTTONS = /*#__PURE__*/(
-  (__IVI_TARGET__ !== "ssr") && (
-    (__IVI_TARGET__ === "electron") ||
-    (__IVI_TARGET__ === "evergreen") ||
-    MouseEvent.prototype.hasOwnProperty("buttons")
+export const MOUSE_EVENT_BUTTONS = (
+  (process.env.IVI_TARGET !== "ssr") && (
+    (process.env.IVI_TARGET === "electron") ||
+    (process.env.IVI_TARGET === "evergreen") ||
+    /*#__PURE__*/MouseEvent.prototype.hasOwnProperty("buttons")
   )
 );
 
@@ -59,7 +59,7 @@ export const MOUSE_EVENT_BUTTONS = /*#__PURE__*/(
  * Touch Events support.
  */
 export const TOUCH_EVENTS = (
-  (__IVI_TARGET__ !== "ssr") &&
+  (process.env.IVI_TARGET !== "ssr") &&
   ("ontouchstart" in window)
 );
 
@@ -68,22 +68,9 @@ export const TOUCH_EVENTS = (
  * Pointer Events support.
  */
 export const POINTER_EVENTS = (
-  (__IVI_TARGET__ !== "ssr") && (
-    (__IVI_TARGET__ === "electron") ||
+  (process.env.IVI_TARGET !== "ssr") && (
+    (process.env.IVI_TARGET === "electron") ||
     ("PointerEvent" in window)
-  )
-);
-
-/* istanbul ignore next */
-/**
- * InputDeviceCapabilities support.
- *
- * http://wicg.github.io/InputDeviceCapabilities/
- */
-export const INPUT_DEVICE_CAPABILITIES = (
-  (__IVI_TARGET__ !== "ssr") && (
-    (__IVI_TARGET__ === "electron") ||
-    ("InputDeviceCapabilities" in window)
   )
 );
 
@@ -94,8 +81,19 @@ export const INPUT_DEVICE_CAPABILITIES = (
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/GestureEvent}
  */
 export const IOS_GESTURE_EVENT = (
-  (__IVI_TARGET__ !== "ssr") && (
-    (__IVI_TARGET__ !== "electron") &&
-    ("GestureEvent" in window)
+  (process.env.IVI_TARGET === "browser") &&
+  ("GestureEvent" in window)
+);
+
+/* istanbul ignore next */
+/**
+ * InputDeviceCapabilities support.
+ *
+ * http://wicg.github.io/InputDeviceCapabilities/
+ */
+export const INPUT_DEVICE_CAPABILITIES = (
+  (process.env.IVI_TARGET !== "ssr") && (
+    (process.env.IVI_TARGET === "electron") ||
+    ("InputDeviceCapabilities" in window)
   )
 );

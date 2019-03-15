@@ -57,7 +57,7 @@ export function restoreContext(c: {}): void {
  */
 export function context<T extends {}>(): T {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (!_contextEnabled) {
       throw new Error(`Invalid context() invocation. Context can't be used outside of a reconciliation phase`);
     }

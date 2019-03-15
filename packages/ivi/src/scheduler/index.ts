@@ -167,18 +167,18 @@ export const withNextFrame = (inner: (time?: number) => void) => (
         dirtyCheck();
       }
       /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
+      if (process.env.NODE_ENV !== "production") {
         _debugFlags |= SchedulerDebugFlags.DirtyCheckingFinished;
       }
       run(_mutationEffects);
       /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
+      if (process.env.NODE_ENV !== "production") {
         _debugFlags |= SchedulerDebugFlags.MutationsFinished;
       }
       runRepeatableTasks(_afterMutations);
       run(_layoutEffects);
       /* istanbul ignore else */
-      if (__IVI_DEBUG__) {
+      if (process.env.NODE_ENV !== "production") {
         _debugFlags |= SchedulerDebugFlags.LayoutFinished;
       }
     }
@@ -189,7 +189,7 @@ export const withNextFrame = (inner: (time?: number) => void) => (
       SchedulerFlags.DirtyCheckPending
     );
     /* istanbul ignore else */
-    if (__IVI_DEBUG__) {
+    if (process.env.NODE_ENV !== "production") {
       _debugFlags &= ~(
         SchedulerDebugFlags.DirtyCheckingFinished |
         SchedulerDebugFlags.MutationsFinished |
@@ -237,7 +237,7 @@ export function requestNextFrame(flags?: UpdateFlags): void {
  */
 export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): void {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
       if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
         printWarn("Mutation effect is scheduled after mutations were finished");
@@ -256,7 +256,7 @@ export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): voi
  */
 export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
       if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
         printWarn("Layout effect is scheduled after layout were finished");
@@ -274,7 +274,7 @@ export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void 
  */
 export function requestDirtyCheck(flags?: UpdateFlags): void {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
       if (_debugFlags & SchedulerDebugFlags.MutationsFinished) {
         printWarn("Dirty checking is scheduled after dirty checking were finished");
@@ -313,7 +313,7 @@ export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock)
  */
 export function render(next: Op, container: Element, flags?: UpdateFlags): void {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     /**
      * Rendering into the <body> element is disabled to make it possible to fix iOS quirk with click events.
      */
@@ -340,7 +340,7 @@ export function render(next: Op, container: Element, flags?: UpdateFlags): void 
      *
      * Fixed in Safari TP71: https://trac.webkit.org/changeset/237978/webkit/
      */
-    if (__IVI_TARGET__ === "browser" && IOS_GESTURE_EVENT) {
+    if (process.env.IVI_TARGET === "browser" && IOS_GESTURE_EVENT) {
       (container as HTMLElement).onclick = NOOP;
     }
   }

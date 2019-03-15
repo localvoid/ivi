@@ -9,9 +9,9 @@
     "clean": "make clean",
     "build": "make build",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
-    "test:coverage": "jest --coverage"
+    "test:watch": "IVI_TARGET=\"browser\" jest --watch",
+    "test:debug": "IVI_TARGET=\"browser\" node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "test:coverage": "IVI_TARGET=\"browser\" jest --coverage"
   },
   "husky": {
     "hooks": {
@@ -20,10 +20,10 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.9",
-    "@types/node": "^11.10.4",
+    "@types/node": "^11.10.5",
     "codecov": "^3.2.0",
     "husky": "^1.3.1",
-    "jest": "^24.1.0",
+    "jest": "^24.3.1",
     "prettier": "^1.16.4",
     "routekit-resolver": "^0.5.0",
     "ts-jest": "^24.0.0",

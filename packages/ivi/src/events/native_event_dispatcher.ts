@@ -43,7 +43,7 @@ export function createNativeEventDispatcher<E extends Event>(
   const matchEventSource = (h: EventHandlerNode) => h.d.src === source;
 
   /* istanbul ignore else */
-  if (__IVI_TARGET__ !== "ssr") {
+  if (process.env.IVI_TARGET !== "ssr") {
     document.addEventListener(name, withSchedulerTick((ev: Event): void => {
       const target = ev.target as Element;
       const targets: DispatchTarget[] = [];
@@ -109,7 +109,7 @@ export function removeBeforeNativeEvent<E extends Event>(
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (source.b === null) {
       throw new Error("removeBeforeNativeEvent() failed, unable to find registered callback");
     }
@@ -129,7 +129,7 @@ export function removeAfterNativeEvent<E extends Event>(
   cb: (e: SyntheticNativeEvent<E>) => void,
 ): void {
   /* istanbul ignore else */
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     if (source.a === null) {
       throw new Error("removeAfterNativeEvent() failed, unable to find registered callback");
     }

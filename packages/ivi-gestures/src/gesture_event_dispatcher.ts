@@ -46,7 +46,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
   let activeRecognizersCounter = 0;
   let resolvedRecognizersCounter = 0;
 
-  if (__IVI_DEBUG__) {
+  if (process.env.NODE_ENV !== "production") {
     debugPubDispatcherState({
       pointers,
       recognizers,
@@ -109,7 +109,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
       resolvedRecognizersCounter = 0;
     }
 
-    if (__IVI_DEBUG__) {
+    if (process.env.NODE_ENV !== "production") {
       debugPubDispatcherState({
         pointers,
         recognizers,
@@ -234,7 +234,7 @@ export function createGestureEventDispatcher(): EventDispatcher {
       }
     }
 
-    if (__IVI_DEBUG__) {
+    if (process.env.NODE_ENV !== "production") {
       debugPubDispatcherState({
         pointers,
         recognizers,
