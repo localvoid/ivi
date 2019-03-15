@@ -49,7 +49,7 @@ export function setupRouter<T>(
     onChange(router);
   });
 
-  afterNativeEvent(EVENT_DISPATCHER_CLICK, (ev) => {
+  afterNativeEvent(EVENT_DISPATCHER_CLICK!, (ev) => {
     const native = ev.native;
     if (
       ((ev.flags & (SyntheticEventFlags.PreventedDefault | SyntheticEventFlags.StoppedPropagation)) === 0) &&
