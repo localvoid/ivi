@@ -319,6 +319,14 @@ export const EVENT_DISPATCHER_TRANSITION_END = (
   process.env.IVI_TARGET === "ssr" ? void 0 :
   /*#__PURE__*/createNativeEventDispatcher<TransitionEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "transitionend")
 );
+export const EVENT_DISPATCHER_TRANSITION_RUN = (
+  process.env.IVI_TARGET === "ssr" ? void 0 :
+  /*#__PURE__*/createNativeEventDispatcher<TransitionEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "transitionrun")
+);
+export const EVENT_DISPATCHER_TRANSITION_START = (
+  process.env.IVI_TARGET === "ssr" ? void 0 :
+  /*#__PURE__*/createNativeEventDispatcher<TransitionEvent>(NativeEventSourceFlags.Capture | NativeEventSourceFlags.Bubbles, "transitionstart")
+);
 export const EVENT_DISPATCHER_UNLOAD = (
   process.env.IVI_TARGET === "ssr" ? void 0 :
   /*#__PURE__*/createNativeEventDispatcher<Event>(NativeEventSourceFlags.Capture, "unload")
@@ -911,6 +919,20 @@ export const onTransitionEnd: <P>(
 ) => EventHandlerNode<SyntheticNativeEvent<TransitionEvent>> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
       /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TRANSITION_END!)
+  );
+export const onTransitionRun: <P>(
+  handler: (ev: SyntheticNativeEvent<TransitionEvent>) => EventFlags | void,
+  capture?: boolean,
+) => EventHandlerNode<SyntheticNativeEvent<TransitionEvent>> = (
+    process.env.IVI_TARGET === "ssr" ? () => (null as any) :
+        /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TRANSITION_RUN!)
+  );
+export const onTransitionStart: <P>(
+  handler: (ev: SyntheticNativeEvent<TransitionEvent>) => EventFlags | void,
+  capture?: boolean,
+) => EventHandlerNode<SyntheticNativeEvent<TransitionEvent>> = (
+    process.env.IVI_TARGET === "ssr" ? () => (null as any) :
+          /*#__PURE__*/createNativeEventHandler(EVENT_DISPATCHER_TRANSITION_START!)
   );
 export const onUnload: <P>(
   handler: (ev: SyntheticNativeEvent<Event>) => EventFlags | void,
