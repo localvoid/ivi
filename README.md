@@ -940,6 +940,10 @@ Rendering into `<body>` is disabled to prevent some [issues](https://github.com/
 If someone submits a good explanation why this limitation should be removed, it is possible to remove this limitation
 from the code base.
 
+### Rendering into external `Document`
+
+Rendering into external `Document` (iframe, window, etc) isn't supported.
+
 ### Server-Side Rendering
 
 There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in `ivi`.
