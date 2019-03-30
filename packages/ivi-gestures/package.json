@@ -9,6 +9,7 @@
   "files": [
     "dist",
     "src",
+    "!dist/**/*.tsbuildinfo",
     "!src/**/__tests__",
     "README.md",
     "LICENSE"

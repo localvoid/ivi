@@ -1,6 +1,7 @@
 {
   "extends": "../../tools/typescript/tsconfig.checks.json",
   "compilerOptions": {
+    "incremental": true,
     "moduleResolution": "node",
     "declaration": false,
     "sourceMap": true,

@@ -98,7 +98,7 @@ export type Op = string | number | OpNode | OpArray | null;
 /**
  * Recursive operation array.
  */
-export interface OpArray extends Readonly<Array<Op>> { }
+export interface OpArray extends Array<Op> { }
 
 /**
  * Generic operation data for operations that has children nodes.
