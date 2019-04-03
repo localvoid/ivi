@@ -33,34 +33,35 @@ function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
   return r;
 }
 
-export function visitNodes(
-  currentOpState: OpState,
-  filter: NodeFlags,
-  visitor: (opState: OpState) => void | boolean,
-): boolean {
-  const flags = currentOpState.f;
-  if ((flags & filter) === filter) {
-    if (visitor(currentOpState) === true) {
-      return true;
-    }
+export const enum VisitNodesFlags {
+  Continue = 0,
+  StopImmediate = 1,
+  Stop = 1 << 1,
+}
+
+export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesFlags): VisitNodesFlags {
+  const flags = opState.f;
+  const vFlags = visitor(opState);
+  if (vFlags !== VisitNodesFlags.Continue) {
+    return (vFlags & VisitNodesFlags.StopImmediate);
   }
 
-  const children = currentOpState.c;
+  const children = opState.c;
   if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
     for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
       const c = (children as Array<OpState | null>)[i];
       if (c !== null) {
-        if (visitNodes(c, filter, visitor) === true) {
-          return true;
+        if ((visitNodes(c, visitor) & VisitNodesFlags.StopImmediate) !== 0) {
+          return VisitNodesFlags.StopImmediate;
         }
       }
     }
-    return false;
+    return VisitNodesFlags.Continue;
   }
   if (children !== null) {
-    return visitNodes(children as OpState, filter, visitor);
+    return visitNodes(children as OpState, visitor);
   }
-  return false;
+  return VisitNodesFlags.Continue;
 }
 
 /**

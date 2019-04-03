@@ -1,75 +1,28 @@
-import { NodeFlags, OpState, box, Ref, visitNodes } from "ivi";
+import { _, NodeFlags, OpState, box, Ref, VisitNodesFlags, visitNodes } from "ivi";
 import { div } from "ivi-html";
 import { testRenderDOM } from "ivi-test";
 
-test(`should visit element node`, () => {
-  testRenderDOM<HTMLButtonElement>(r => {
-    const _ref = box<OpState | null>(null);
-    const n = r(
-      Ref(
-        _ref,
-        div(),
-      )
-    );
-
-    visitNodes(_ref.v!, NodeFlags.Element, (node) => {
-      expect(node.s).toBe(n);
-    });
-  });
-});
-
-test(`should ignore non-element node`, () => {
+test(`should visit all nodes`, () => {
   testRenderDOM<HTMLButtonElement>(r => {
     const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,
-        div(),
+        [div(_, _, [div()]), div(_, _, [div()])],
       )
     );
     let i = 0;
-    visitNodes(_ref.v!, NodeFlags.Text, (node) => {
-      i++;
+    visitNodes(_ref.v!, (node) => {
+      if (node.f & NodeFlags.Element) {
+        i++;
+      }
+      return VisitNodesFlags.Continue;
     });
-    expect(i).toBe(0);
+    expect(i).toBe(4);
   });
 });
 
-test(`should visit all element nodes in a fragment`, () => {
-  testRenderDOM<HTMLButtonElement>(r => {
-    const _ref = box<OpState | null>(null);
-    r(
-      Ref(
-        _ref,
-        [div(), div()],
-      )
-    );
-    let i = 0;
-    visitNodes(_ref.v!, NodeFlags.Element, (node) => {
-      i++;
-    });
-    expect(i).toBe(2);
-  });
-});
-
-test(`should ignore non-element nodes in a fragment`, () => {
-  testRenderDOM<HTMLButtonElement>(r => {
-    const _ref = box<OpState | null>(null);
-    r(
-      Ref(
-        _ref,
-        [div(), 123, div()],
-      )
-    );
-    let i = 0;
-    visitNodes(_ref.v!, NodeFlags.Element, (node) => {
-      i++;
-    });
-    expect(i).toBe(2);
-  });
-});
-
-test(`should ignore null nodes in a fragment`, () => {
+test(`should ignore null nodes`, () => {
   testRenderDOM<HTMLButtonElement>(r => {
     const _ref = box<OpState | null>(null);
     r(
@@ -79,27 +32,58 @@ test(`should ignore null nodes in a fragment`, () => {
       )
     );
     let i = 0;
-    visitNodes(_ref.v!, NodeFlags.Element, (node) => {
+    visitNodes(_ref.v!, (node) => {
       i++;
+      return VisitNodesFlags.Continue;
     });
-    expect(i).toBe(2);
+    expect(i).toBe(4);
   });
 });
 
-test(`should stop when visitor returns true`, () => {
+test(`should stop immediately when visitor returns StopImmediate`, () => {
   testRenderDOM<HTMLButtonElement>(r => {
     const _ref = box<OpState | null>(null);
     r(
       Ref(
         _ref,
-        [div(), div()],
+        [
+          [div(), div()],
+          [div(), div()],
+        ]
       )
     );
     let i = 0;
-    visitNodes(_ref.v!, NodeFlags.Element, (node) => {
-      i++;
-      return true;
+    visitNodes(_ref.v!, (node) => {
+      if (node.f & NodeFlags.Element) {
+        i++;
+        return VisitNodesFlags.StopImmediate;
+      }
+      return VisitNodesFlags.Continue;
     });
     expect(i).toBe(1);
+  });
+});
+
+test(`should stop when visitor returns Stop`, () => {
+  testRenderDOM<HTMLButtonElement>(r => {
+    const _ref = box<OpState | null>(null);
+    r(
+      Ref(
+        _ref,
+        [
+          [div(_, _, [div()]), div(_, _, [div()])],
+          [div(_, _, [div()]), div(_, _, [div()])],
+        ]
+      )
+    );
+    let i = 0;
+    visitNodes(_ref.v!, (node) => {
+      if (node.f & NodeFlags.Element) {
+        i++;
+        return VisitNodesFlags.Stop;
+      }
+      return VisitNodesFlags.Continue;
+    });
+    expect(i).toBe(4);
   });
 });
