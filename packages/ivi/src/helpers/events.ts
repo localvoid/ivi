@@ -15,3 +15,17 @@ export function containsRelatedTarget(ev: SyntheticNativeEvent<MouseEvent>): boo
   });
   return result;
 }
+
+export function isCurrentTarget(ev: SyntheticNativeEvent<Event>): boolean {
+  const target = ev.native.target;
+  let result = false;
+  visitNodes(ev.node!, (node) => {
+    if ((node.f & NodeFlags.Element) !== 0) {
+      return (node.s === target) ?
+        (result = true, VisitNodesFlags.StopImmediate) :
+        VisitNodesFlags.Stop;
+    }
+    return VisitNodesFlags.Continue;
+  });
+  return result;
+}

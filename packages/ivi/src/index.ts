@@ -156,4 +156,4 @@ export {
 } from "./events/native_events";
 
 // Helpers
-export { containsRelatedTarget } from "./helpers/events";
+export { containsRelatedTarget, isCurrentTarget } from "./helpers/events";
