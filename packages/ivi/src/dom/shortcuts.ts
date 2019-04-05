@@ -2,6 +2,11 @@ const nodeProto = process.env.IVI_TARGET === "ssr" ? void 0 : Node.prototype;
 const elementProto = process.env.IVI_TARGET === "ssr" ? void 0 : Element.prototype;
 
 /**
+ * Shortcut for a `Document`.
+ */
+export const doc = (process.env.IVI_TARGET === "ssr" ? void 0 : document) as Document;
+
+/**
  * Shortcut for an `Object.prototype.hasOwnProperty`.
  */
 export const objectHasOwnProperty = Object.prototype.hasOwnProperty;

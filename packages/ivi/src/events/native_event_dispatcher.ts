@@ -1,3 +1,4 @@
+import { doc } from "../dom/shortcuts";
 import { append, unorderedArrayDelete } from "../core";
 import { withSchedulerTick } from "../scheduler";
 import { NativeEventSourceFlags, EventFlags } from "./flags";
@@ -58,7 +59,7 @@ export function createNativeEventDispatcher<E extends Event>(
   const source: NativeEventDispatcher<E> = { a: null, b: null };
   const matchEventSource = (h: EventHandlerNode) => h.d.src === source;
 
-  document.addEventListener(name, withSchedulerTick((nativeEvent: Event): void => {
+  doc.addEventListener(name, withSchedulerTick((nativeEvent: Event): void => {
     const target = nativeEvent.target as Element;
     const targets: DispatchTarget<NativeEventHandler>[] = [];
 

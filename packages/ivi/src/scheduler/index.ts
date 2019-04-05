@@ -1,6 +1,7 @@
 import { sMT, rAF } from "ivi-scheduler";
 import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box } from "../core";
 import { printWarn } from "../debug/print";
+import { doc } from "../dom/shortcuts";
 import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";
 import { Op } from "../vdom/operations";
@@ -317,10 +318,10 @@ export function render(next: Op, container: Element, flags?: UpdateFlags): void 
     /**
      * Rendering into the <body> element is disabled to make it possible to fix iOS quirk with click events.
      */
-    if (container === document.body) {
+    if (container === doc.body) {
       throw new Error("Rendering into the <body> element aren't allowed");
     }
-    if (!document.body.contains(container)) {
+    if (!doc.body.contains(container)) {
       throw new Error("Container element should be attached to the document");
     }
   }

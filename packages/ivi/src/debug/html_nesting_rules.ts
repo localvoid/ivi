@@ -1,3 +1,4 @@
+import { doc } from "../dom/shortcuts";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpNode } from "../vdom/operations";
 import { OpState } from "../vdom/state";
@@ -115,7 +116,7 @@ function ancestorFlagsToTagNames(aFlags: AncestorFlags): string[] {
  */
 function calculateAncestorFlags(element: Element | null): AncestorFlags {
   let result = 0;
-  while (element !== null && (element !== document.body)) {
+  while (element !== null && (element !== doc.body)) {
     result |= ANCESTOR_FLAGS_BY_TAG_NAME[element.tagName.toLowerCase()];
     element = element.parentElement;
   }

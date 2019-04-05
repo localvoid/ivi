@@ -1,5 +1,6 @@
 import {
-  objectHasOwnProperty, nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, elementRemoveAttribute,
+  doc, objectHasOwnProperty,
+  nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, elementRemoveAttribute,
 } from "../dom/shortcuts";
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
@@ -253,7 +254,7 @@ function _mountText(
   opState: OpState,
   op: string | number,
 ) {
-  const node = document.createTextNode(op as string);
+  const node = doc.createTextNode(op as string);
   nodeInsertBefore.call(parentElement, node, _nextNode);
   _nextNode = node;
   opState.s = node;
@@ -267,8 +268,8 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
   if (node === void 0) {
     const tagName = opType.d as string;
     node = svg ?
-      document.createElementNS(SVG_NAMESPACE, tagName) :
-      document.createElement(tagName);
+      doc.createElementNS(SVG_NAMESPACE, tagName) :
+      doc.createElement(tagName);
   }
 
   if (n) {
