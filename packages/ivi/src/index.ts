@@ -98,7 +98,7 @@ export {
 
 // Events
 export {
-  SyntheticEventFlags, EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION, NativeEventSourceFlags,
+  EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION, NativeEventSourceFlags,
 } from "./events/flags";
 export {
   getEventTarget,
@@ -108,7 +108,7 @@ export { SyntheticEvent } from "./events/synthetic_event";
 export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/event_handler";
 export { DispatchTarget } from "./events/dispatch_target";
 export { accumulateDispatchTargets } from "./events/accumulate_dispatch_targets";
-export { dispatchEvent } from "./events/dispatch_event";
+export { DispatchEventDirective, dispatchEventToTarget, dispatchEvent } from "./events/dispatch_event";
 export { SyntheticNativeEvent, createNativeEvent } from "./events/synthetic_native_event";
 export {
   NativeEventDispatcher, createNativeEventDispatcher,

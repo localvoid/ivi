@@ -1,31 +1,25 @@
-/**
- * SyntheticEventFlags.
- */
-export const enum SyntheticEventFlags {
-  /**
-   * Default behaviour should be prevented.
-   */
-  PreventedDefault = 1,
-  /**
-   * Propagation is stopped.
-   */
-  StoppedPropagation = 1 << 1,
-}
+import { DispatchEventDirective } from "./dispatch_event";
 
 export const enum EventFlags {
-  PreventDefault = SyntheticEventFlags.PreventedDefault,
-  StopPropagation = SyntheticEventFlags.StoppedPropagation,
+  /**
+   * Stops event propagation.
+   */
+  StopPropagation = DispatchEventDirective.StopPropagation,
+  /**
+   * Prevents default behavior.
+   */
+  PreventDefault = 1 << 1,
 }
 
 /**
- * Prevents default behaviour for an event.
+ * Prevents default behavior for an event.
  */
-export const PREVENT_DEFAULT = SyntheticEventFlags.PreventedDefault;
+export const PREVENT_DEFAULT = EventFlags.PreventDefault;
 
 /**
  * Stops event propagation.
  */
-export const STOP_PROPAGATION = SyntheticEventFlags.StoppedPropagation;
+export const STOP_PROPAGATION = EventFlags.StopPropagation;
 
 /**
  * NativeEventSourceFlags.

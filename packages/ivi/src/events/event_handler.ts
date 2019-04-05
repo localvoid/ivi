@@ -1,6 +1,3 @@
-import { EventFlags } from "./flags";
-import { SyntheticEvent } from "./synthetic_event";
-
 /**
  * EventHandlerFlags.
  */
@@ -31,7 +28,7 @@ export interface EventHandlerDescriptor {
 /**
  * Event Handler.
  */
-export interface EventHandlerNode<E extends SyntheticEvent = any> {
+export interface EventHandlerNode<H = any> {
   /**
    * Event Handler Descriptor.
    */
@@ -39,7 +36,7 @@ export interface EventHandlerNode<E extends SyntheticEvent = any> {
   /**
    * Event Handler function.
    */
-  readonly h: (ev: E) => EventFlags | void;
+  readonly h: H;
 }
 
 /**

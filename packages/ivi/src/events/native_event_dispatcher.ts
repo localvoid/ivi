@@ -1,11 +1,13 @@
 import { append, unorderedArrayDelete } from "../core";
 import { withSchedulerTick } from "../scheduler";
-import { SyntheticEventFlags, NativeEventSourceFlags } from "./flags";
+import { NativeEventSourceFlags, EventFlags } from "./flags";
 import { EventHandlerNode } from "./event_handler";
 import { DispatchTarget } from "./dispatch_target";
 import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
-import { dispatchEvent } from "./dispatch_event";
+import { dispatchEvent, DispatchEventDirective } from "./dispatch_event";
 import { SyntheticNativeEvent, createNativeEvent } from "./synthetic_native_event";
+
+export type NativeEventHandler = (ev: SyntheticNativeEvent<Event>) => EventFlags | void;
 
 /**
  * NativeEventSource dispatches native events.
@@ -25,6 +27,20 @@ export interface NativeEventDispatcher<E extends Event> {
   b: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
 }
 
+function dispatchNativeEvent(
+  target: DispatchTarget<NativeEventHandler>,
+  event: SyntheticNativeEvent<Event>,
+): DispatchEventDirective {
+  const flags = target.h.h(event);
+  if (flags !== void 0) {
+    if ((flags & EventFlags.PreventDefault) !== 0) {
+      event.native.preventDefault();
+    }
+    return flags as any as DispatchEventDirective;
+  }
+  return 0;
+}
+
 /**
  * Creates a native event dispatcher.
  *
@@ -42,29 +58,25 @@ export function createNativeEventDispatcher<E extends Event>(
   const source: NativeEventDispatcher<E> = { a: null, b: null };
   const matchEventSource = (h: EventHandlerNode) => h.d.src === source;
 
-  /* istanbul ignore else */
-  if (process.env.IVI_TARGET !== "ssr") {
-    document.addEventListener(name, withSchedulerTick((ev: Event): void => {
-      const target = ev.target as Element;
-      const targets: DispatchTarget[] = [];
+  document.addEventListener(name, withSchedulerTick((nativeEvent: Event): void => {
+    const target = nativeEvent.target as Element;
+    const targets: DispatchTarget<NativeEventHandler>[] = [];
 
-      accumulateDispatchTargets(targets, target, matchEventSource);
+    accumulateDispatchTargets(targets, target, matchEventSource);
 
-      if (targets.length || source.b || source.a) {
-        const syntheticEvent = createNativeEvent(0, ev.timeStamp, null, ev as E);
+    if (targets.length > 0 || source.b || source.a) {
+      const event = createNativeEvent(nativeEvent.timeStamp, null, nativeEvent as E);
 
-        dispatchToListeners(source.b, syntheticEvent);
-        if (targets.length) {
-          dispatchEvent(targets, syntheticEvent, (flags & NativeEventSourceFlags.Bubbles) !== 0);
-        }
-        dispatchToListeners(source.a, syntheticEvent);
-
-        if (syntheticEvent.flags & SyntheticEventFlags.PreventedDefault) {
-          ev.preventDefault();
-        }
-      }
-    }), options);
-  }
+      dispatchToListeners(source.b, event);
+      dispatchEvent(
+        targets,
+        event,
+        (flags & NativeEventSourceFlags.Bubbles) !== 0,
+        dispatchNativeEvent,
+      );
+      dispatchToListeners(source.a, event);
+    }
+  }), options);
 
   return source;
 }

@@ -1,4 +1,3 @@
-import { SyntheticEventFlags } from "./flags";
 import { SyntheticEvent } from "./synthetic_event";
 import { OpState } from "../vdom/state";
 
@@ -17,10 +16,9 @@ export interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
  * @typeparam E Native event type.
  */
 export function createNativeEvent<E extends Event>(
-  flags: SyntheticEventFlags,
   timestamp: number,
   node: OpState | null,
   native: E,
 ): SyntheticNativeEvent<E> {
-  return { flags, timestamp, node, native };
+  return { timestamp, node, native };
 }

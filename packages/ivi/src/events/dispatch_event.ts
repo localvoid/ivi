@@ -1,8 +1,27 @@
 import { OpState } from "../vdom/state";
-import { EventFlags, SyntheticEventFlags } from "./flags";
 import { DispatchTarget } from "./dispatch_target";
-import { EventHandlerFlags, EventHandlerNode } from "./event_handler";
+import { EventHandlerFlags } from "./event_handler";
 import { SyntheticEvent } from "./synthetic_event";
+
+export const enum DispatchEventDirective {
+  StopPropagation = 1,
+}
+
+/**
+ * dispatchEventToTarget dispatches event to `DispatchTarget`.
+ *
+ * @param target Dispatch target.
+ * @param event Event to dispatch.
+ * @param dispatch Dispatch handler.
+ */
+export function dispatchEventToTarget<E extends SyntheticEvent>(
+  target: DispatchTarget,
+  event: E,
+  dispatch: (target: DispatchTarget, ev: E) => DispatchEventDirective,
+): DispatchEventDirective {
+  event.node = target.t as OpState;
+  return dispatch(target, event);
+}
 
 /**
  * dispatchEvent dispatches event to the list of dispatch targets.
@@ -16,69 +35,36 @@ import { SyntheticEvent } from "./synthetic_event";
  * @param targets Dispatch targets.
  * @param event Event to dispatch.
  * @param bubble Use bubbling phase.
- * @param dispatch Dispatch callback.
+ * @param dispatch Dispatch handler.
  */
-export function dispatchEvent(
+export function dispatchEvent<E extends SyntheticEvent>(
   targets: DispatchTarget[],
-  event: SyntheticEvent,
+  event: E,
   bubble: boolean,
-  dispatch?: (h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void,
+  dispatch: (target: DispatchTarget, ev: E) => DispatchEventDirective,
 ): void {
+  let target;
   let i = targets.length;
 
   // capture phase
   while (--i >= 0) {
-    dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Capture, dispatch);
-    if (event.flags & SyntheticEventFlags.StoppedPropagation) {
-      return;
+    target = targets[i];
+    if ((target.h.d.flags & EventHandlerFlags.Capture) !== 0) {
+      if ((dispatchEventToTarget(target, event, dispatch) & DispatchEventDirective.StopPropagation) !== 0) {
+        return;
+      }
     }
   }
 
   // bubble phase
   if (bubble) {
     while (++i < targets.length) {
-      dispatchEventToLocalEventHandlers(targets[i], event, EventHandlerFlags.Bubble, dispatch);
-      if (event.flags & SyntheticEventFlags.StoppedPropagation) {
-        return;
+      target = targets[i];
+      if ((target.h.d.flags & EventHandlerFlags.Bubble) !== 0) {
+        if ((dispatchEventToTarget(target, event, dispatch) & DispatchEventDirective.StopPropagation) !== 0) {
+          return;
+        }
       }
     }
   }
-}
-
-/**
- * dispatchEventToLocalEventHandlers dispatches event to local(at the same DOM Node) event handlers.
- *
- * @param target Dispatch Target.
- * @param event Synthetic Event.
- * @param matchFlags Flags that should match to deliver event.
- * @param dispatch Dispatch callback.
- */
-function dispatchEventToLocalEventHandlers(
-  target: DispatchTarget,
-  event: SyntheticEvent,
-  matchFlags: EventHandlerFlags,
-  dispatch: ((h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void) | undefined,
-): void {
-  const handlers = target.h;
-  if ((handlers.d.flags & matchFlags) === matchFlags) {
-    event.node = target.t as OpState;
-    event.flags |= _dispatch(handlers, dispatch, event);
-  }
-}
-
-function _dispatch(
-  handler: EventHandlerNode,
-  dispatch: ((h: EventHandlerNode, ev: SyntheticEvent) => EventFlags | void) | undefined,
-  event: SyntheticEvent,
-): EventFlags {
-  const flags = (dispatch === void 0) ? handler.h(event) : dispatch(handler, event);
-  /* istanbul ignore else */
-  if (process.env.NODE_ENV !== "production") {
-    if (flags !== void 0) {
-      if (flags & ~(EventFlags.PreventDefault | EventFlags.StopPropagation)) {
-        throw new Error(`Invalid event flags: ${flags}`);
-      }
-    }
-  }
-  return (flags === void 0) ? 0 : flags;
 }

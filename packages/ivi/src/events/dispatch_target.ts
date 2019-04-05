@@ -3,7 +3,7 @@ import { EventHandlerNode } from "./event_handler";
 /**
  * DispatchTarget.
  */
-export interface DispatchTarget {
+export interface DispatchTarget<H = any> {
   /**
    * Target.
    */
@@ -11,5 +11,5 @@ export interface DispatchTarget {
   /**
    * Matched Event Handlers.
    */
-  readonly h: EventHandlerNode;
+  readonly h: EventHandlerNode<H>;
 }
