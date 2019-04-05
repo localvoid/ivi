@@ -1,8 +1,9 @@
 import { Box } from "../core";
+import { NodeFlags } from "./node_flags";
 import { OpState } from "./state";
 import { Component } from "./component";
 import { useSelect } from "./hooks";
-import { getDOMNode } from "./reconciler";
+import { getDOMNode, VisitNodesFlags, visitNodes } from "./reconciler";
 
 /**
  * selector creates a selector factory.
@@ -71,3 +72,23 @@ export function selector<T, P>(
 export const findDOMNode = <T extends Node>(
   box: Box<OpState | null>,
 ) => box.v === null ? null : getDOMNode(box.v) as T;
+
+/**
+ * containsNode returns `true` when `parent` contains a DOM node `node`.
+ *
+ * @param parent Op state node.
+ * @param node DOM node.
+ * @returns `true` when `parent` contains a DOM node `node`.
+ */
+export function containsNode(parent: OpState, node: Node): boolean {
+  let result = false;
+  visitNodes(parent, (n) => {
+    if ((n.f & NodeFlags.Element) !== 0) {
+      return ((n.s as Element).contains(node)) === true ?
+        (result = true, VisitNodesFlags.StopImmediate) :
+        VisitNodesFlags.Stop;
+    }
+    return VisitNodesFlags.Continue;
+  });
+  return result;
+}

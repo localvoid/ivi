@@ -1,19 +1,10 @@
 import { SyntheticNativeEvent } from "../events/synthetic_native_event";
 import { visitNodes, VisitNodesFlags } from "../vdom/reconciler";
 import { NodeFlags } from "../vdom/node_flags";
+import { containsNode } from "../vdom/utils";
 
 export function containsRelatedTarget(ev: SyntheticNativeEvent<MouseEvent>): boolean {
-  const related = ev.native.relatedTarget as Node;
-  let result = false;
-  visitNodes(ev.node!, (node) => {
-    if ((node.f & NodeFlags.Element) !== 0) {
-      return ((node.s as Element).contains(related)) === true ?
-        (result = true, VisitNodesFlags.StopImmediate) :
-        VisitNodesFlags.Stop;
-    }
-    return VisitNodesFlags.Continue;
-  });
-  return result;
+  return containsNode(ev.node!, ev.native.relatedTarget as Node);
 }
 
 export function isCurrentTarget(ev: SyntheticNativeEvent<Event>): boolean {

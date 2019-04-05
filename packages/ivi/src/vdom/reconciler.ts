@@ -50,15 +50,11 @@ export function visitNodes(opState: OpState, visitor: (opState: OpState) => Visi
   if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
     for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
       const c = (children as Array<OpState | null>)[i];
-      if (c !== null) {
-        if ((visitNodes(c, visitor) & VisitNodesFlags.StopImmediate) !== 0) {
-          return VisitNodesFlags.StopImmediate;
-        }
+      if (c !== null && (visitNodes(c, visitor) & VisitNodesFlags.StopImmediate) !== 0) {
+        return VisitNodesFlags.StopImmediate;
       }
     }
-    return VisitNodesFlags.Continue;
-  }
-  if (children !== null) {
+  } else if (children !== null) {
     return visitNodes(children as OpState, visitor);
   }
   return VisitNodesFlags.Continue;
