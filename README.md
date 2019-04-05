@@ -8,6 +8,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - [Fragments](#fragments)
 - [Components](#components)
 - Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
+- [Extensible](https://codesandbox.io/s/zy1wrn0j4) synthetic events
 - Server-side rendering
 
 |Package      |NPM version                                                                                                  |
@@ -1007,6 +1008,7 @@ Creating custom elements isn't supported, but there shouldn't be any problems wi
 - [Forms](https://codesandbox.io/s/zlk18r8n03)
 - [Composition](https://codesandbox.io/s/k9m8wlqky3)
 - [Portals](https://codesandbox.io/s/v8z27nxk77)
+- [Custom Synthetic Events](https://codesandbox.io/s/zy1wrn0j4)
 
 ### Apps
 
