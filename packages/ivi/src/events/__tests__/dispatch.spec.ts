@@ -1,37 +1,16 @@
-import { _, OpState, DispatchEventDirective, EventHandlerNode, EventHandlerFlags, dispatchEvent } from "ivi";
+import { _, DispatchEventDirective, EventHandlerNode, EventHandlerFlags, dispatchEvent } from "ivi";
 
-function createEvent(timestamp: number, node: OpState | null) {
-  return { timestamp, node };
-}
+const BUBBLE_DESCRIPTOR = { src: {}, flags: 0 };
+const CAPTURE_DESCRIPTOR = { src: {}, flags: EventHandlerFlags.Capture };
 
-const BUBBLE_DESCRIPTOR = {
-  src: {},
-  flags: EventHandlerFlags.Bubble
-};
-const CAPTURE_DESCRIPTOR = {
-  src: {},
-  flags: EventHandlerFlags.Capture
-};
-
-function onBubble(): EventHandlerNode {
-  return {
-    d: BUBBLE_DESCRIPTOR,
-    h: null,
-  };
-}
-
-function onCapture(): EventHandlerNode {
-  return {
-    d: CAPTURE_DESCRIPTOR,
-    h: null,
-  };
-}
+const onBubble = () => ({ d: BUBBLE_DESCRIPTOR, h: null });
+const onCapture = () => ({ d: CAPTURE_DESCRIPTOR, h: null });
 
 test("empty dispatch target array should not raise exceptions", () => {
   expect(() => {
     dispatchEvent(
       [],
-      createEvent(0, null),
+      {},
       true,
       () => 0,
     );
@@ -42,7 +21,7 @@ test("empty dispatch target array should not invoke custom dispatch function", (
   let invoked = false;
   dispatchEvent(
     [],
-    createEvent(0, null),
+    {},
     true,
     () => (invoked = true, 0),
   );
@@ -57,7 +36,7 @@ test("dispatch event", () => {
 
   dispatchEvent(
     [{ t, h: onCapture() }],
-    createEvent(0, null),
+    {},
     true,
     () => (invoked++ , 0),
   );
@@ -72,7 +51,7 @@ test("dispatch to several targets", () => {
 
   dispatchEvent(
     [{ t, h: onCapture() }, { t, h: onCapture() }],
-    createEvent(0, null),
+    {},
     true,
     () => (invoked++ , 0)
   );
@@ -90,9 +69,9 @@ describe("event flow", () => {
 
     dispatchEvent(
       [{ t, h: h1 }, { t, h: h2 }],
-      createEvent(0, null),
+      {},
       true,
-      (target) => (order.push(target.h), 0),
+      (ev, target) => (order.push(target.h), 0),
     );
 
     expect(order).toEqual([h1, h2]);
@@ -107,9 +86,9 @@ describe("event flow", () => {
 
     dispatchEvent(
       [{ t, h: h1 }, { t, h: h2 }],
-      createEvent(0, null),
+      {},
       true,
-      (target) => (order.push(target.h), 0),
+      (ev, target) => (order.push(target.h), 0),
     );
 
     expect(order).toEqual([h2, h1]);
@@ -125,9 +104,9 @@ describe("event flow", () => {
 
     dispatchEvent(
       [{ t, h: h1 }, { t, h: h2 }],
-      createEvent(0, null),
+      {},
       true,
-      (target) => (order.push(target.h), 0),
+      (ev, target) => (order.push(target.h), 0),
     );
 
     expect(order).toEqual([h2, h1]);
@@ -142,9 +121,9 @@ describe("event flow", () => {
 
     dispatchEvent(
       [{ t, h: h1 }, { t, h: h2 }],
-      createEvent(0, null),
+      {},
       true,
-      (target) => (order.push(target.h), DispatchEventDirective.StopPropagation),
+      (ev, target) => (order.push(target.h), DispatchEventDirective.StopPropagation),
     );
 
     expect(order).toEqual([h1]);
@@ -159,9 +138,9 @@ describe("event flow", () => {
 
     dispatchEvent(
       [{ t, h: h1 }, { t, h: h2 }],
-      createEvent(0, null),
+      {},
       true,
-      (target) => (order.push(target.h), DispatchEventDirective.StopPropagation),
+      (ev, target) => (order.push(target.h), DispatchEventDirective.StopPropagation),
     );
 
     expect(order).toEqual([h2]);
@@ -176,9 +155,9 @@ describe("event flow", () => {
 
     dispatchEvent(
       [{ t, h: h1 }, { t, h: h2 }],
-      createEvent(0, null),
+      {},
       true,
-      (target) => (order.push(target.h), DispatchEventDirective.StopPropagation),
+      (ev, target) => (order.push(target.h), DispatchEventDirective.StopPropagation),
     );
 
     expect(order).toEqual([h2]);

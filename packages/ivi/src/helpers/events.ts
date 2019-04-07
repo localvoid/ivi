@@ -1,16 +1,16 @@
-import { SyntheticNativeEvent } from "../events/synthetic_native_event";
+import { OpState } from "../vdom/state";
 import { visitNodes, VisitNodesFlags } from "../vdom/reconciler";
 import { NodeFlags } from "../vdom/node_flags";
 import { containsNode } from "../vdom/utils";
 
-export function containsRelatedTarget(ev: SyntheticNativeEvent<MouseEvent>): boolean {
-  return containsNode(ev.node!, ev.native.relatedTarget as Node);
+export function containsRelatedTarget(event: MouseEvent, currentTarget: OpState): boolean {
+  return containsNode(currentTarget, event.relatedTarget as Node);
 }
 
-export function isCurrentTarget(ev: SyntheticNativeEvent<Event>): boolean {
-  const target = ev.native.target;
+export function isCurrentTarget(event: Event, currentTarget: OpState): boolean {
+  const target = event.target;
   let result = false;
-  visitNodes(ev.node!, (node) => {
+  visitNodes(currentTarget, (node) => {
     if ((node.f & NodeFlags.Element) !== 0) {
       return (node.s === target) ?
         (result = true, VisitNodesFlags.StopImmediate) :

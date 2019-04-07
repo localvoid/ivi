@@ -15,14 +15,14 @@ describe(`Event Handler`, () => {
     expect(h.h).toBe(handler);
   });
 
-  test(`event handler should have bubble flag when capture arg is undefined`, () => {
+  test(`event handler shouldn't have capture flag when capture arg is undefined`, () => {
     const h = onClick(handler);
-    expect(h.d.flags & EventHandlerFlags.Bubble).toBeTruthy();
+    expect(h.d.flags & EventHandlerFlags.Capture).toBeFalsy();
   });
 
-  test(`event handler should have bubble flag when capture arg is false`, () => {
+  test(`event handler shouldn't have capture flag when capture arg is false`, () => {
     const h = onClick(handler, false);
-    expect(h.d.flags & EventHandlerFlags.Bubble).toBeTruthy();
+    expect(h.d.flags & EventHandlerFlags.Capture).toBeFalsy();
   });
 
   test(`event handler should have capture flag`, () => {

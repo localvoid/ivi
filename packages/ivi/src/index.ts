@@ -98,20 +98,15 @@ export {
 
 // Events
 export {
-  EventFlags, PREVENT_DEFAULT, STOP_PROPAGATION, NativeEventSourceFlags,
-} from "./events/flags";
-export {
   getEventTarget,
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./events/utils";
-export { SyntheticEvent } from "./events/synthetic_event";
 export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/event_handler";
 export { DispatchTarget } from "./events/dispatch_target";
-export { accumulateDispatchTargets } from "./events/accumulate_dispatch_targets";
-export { DispatchEventDirective, dispatchEventToTarget, dispatchEvent } from "./events/dispatch_event";
-export { SyntheticNativeEvent, createNativeEvent } from "./events/synthetic_native_event";
+export { collectDispatchTargets } from "./events/collect_dispatch_targets";
+export { DispatchEventDirective, dispatchEvent } from "./events/dispatch_event";
 export {
-  NativeEventDispatcher, createNativeEventDispatcher,
+  NativeEventDispatcherFlags, NativeEventDispatcher, createNativeEventDispatcher,
   beforeNativeEvent, afterNativeEvent,
   removeBeforeNativeEvent, removeAfterNativeEvent,
 } from "./events/native_event_dispatcher";

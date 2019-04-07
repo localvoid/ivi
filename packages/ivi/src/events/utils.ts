@@ -32,7 +32,7 @@ export function getEventTarget(ev: Event): EventTarget {
    *
    * https://www.w3.org/TR/SVG2/changes.html#structure
    */
-  if ((target as any).correspondingUseElement !== undefined) {
+  if ((target as any).correspondingUseElement !== void 0) {
     target = (target as any).correspondingUseElement;
   }
 

@@ -1,4 +1,4 @@
-import { EventFlags, EventHandlerNode, SyntheticEvent, Events } from "ivi";
+import { EventHandlerNode, Events } from "ivi";
 import * as events from "ivi";
 import * as h from "ivi-html";
 import { testRenderDOM } from "ivi-test";
@@ -18,7 +18,7 @@ export interface EventCounter {
 }
 
 export function eventCounter(handlerFactory: (
-  handler: (ev: SyntheticEvent) => void,
+  handler: (ev: Event) => void,
   capture?: boolean) => EventHandlerNode<any>,
 ): EventCounter {
   const c = {
@@ -292,7 +292,7 @@ describe("events", () => {
   test(`EventFlags.PreventDefault should trigger native prevent default behavior`, () => {
     testRenderDOM<HTMLInputElement>(r => {
       const n = r(
-        Events(events.onClick(() => EventFlags.PreventDefault),
+        Events(events.onClick((ev) => { ev.preventDefault(); }),
           h.input("", { type: "checkbox" }),
         ),
       )!;

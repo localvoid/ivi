@@ -7,11 +7,6 @@ export const enum EventHandlerFlags {
    * being dispatched to any EventTarget beneath it in the DOM tree.
    */
   Capture = 1,
-  /**
-   * Bubbles flag indicating that the events of this type will be dispatched to the registered listener in the
-   * bubbling phase.
-   */
-  Bubble = 1 << 1,
 }
 
 export interface EventHandlerDescriptor {

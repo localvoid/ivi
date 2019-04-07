@@ -1,14 +1,22 @@
 import { doc } from "../dom/shortcuts";
+import { OpState } from "../vdom/state";
 import { append, unorderedArrayDelete } from "../core";
 import { withSchedulerTick } from "../scheduler";
-import { NativeEventSourceFlags, EventFlags } from "./flags";
-import { EventHandlerNode } from "./event_handler";
 import { DispatchTarget } from "./dispatch_target";
-import { accumulateDispatchTargets } from "./accumulate_dispatch_targets";
+import { collectDispatchTargets } from "./collect_dispatch_targets";
 import { dispatchEvent, DispatchEventDirective } from "./dispatch_event";
-import { SyntheticNativeEvent, createNativeEvent } from "./synthetic_native_event";
 
-export type NativeEventHandler = (ev: SyntheticNativeEvent<Event>) => EventFlags | void;
+/**
+ * NativeEventDispatcherFlags.
+ */
+export const enum NativeEventDispatcherFlags {
+  /**
+   * Bubbles flag indicating that the event is bubbling.
+   */
+  Bubbles = 1,
+}
+
+export type NativeEventHandler = <E extends Event>(event: E, currentTarget?: OpState) => DispatchEventDirective | void;
 
 /**
  * NativeEventSource dispatches native events.
@@ -21,25 +29,16 @@ export interface NativeEventDispatcher<E extends Event> {
   /**
    * Hooks that will be executed after dispatching an event.
    */
-  a: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
+  a: Array<(event: E) => void> | null;
   /**
    * Hooks that will be executed before dispatching an event.
    */
-  b: Array<(ev: SyntheticNativeEvent<E>) => void> | null;
+  b: Array<(event: E) => void> | null;
 }
 
-function dispatchNativeEvent(
-  target: DispatchTarget<NativeEventHandler>,
-  event: SyntheticNativeEvent<Event>,
-): DispatchEventDirective {
-  const flags = target.h.h(event);
-  if (flags !== void 0) {
-    if ((flags & EventFlags.PreventDefault) !== 0) {
-      event.native.preventDefault();
-    }
-    return flags as any as DispatchEventDirective;
-  }
-  return 0;
+function dispatchNativeEvent(event: Event, currentTarget: DispatchTarget<NativeEventHandler>): DispatchEventDirective {
+  const flags = currentTarget.h.h(event, currentTarget.t);
+  return flags === void 0 ? 0 : flags;
 }
 
 /**
@@ -52,30 +51,23 @@ function dispatchNativeEvent(
  * @returns {@link NativeEventDispatcher} instance
  */
 export function createNativeEventDispatcher<E extends Event>(
-  flags: NativeEventSourceFlags,
+  flags: NativeEventDispatcherFlags,
   name: string,
   options: { capture?: boolean, passive?: boolean } | boolean = true,
 ): NativeEventDispatcher<E> {
   const source: NativeEventDispatcher<E> = { a: null, b: null };
-  const matchEventSource = (h: EventHandlerNode) => h.d.src === source;
 
-  doc.addEventListener(name, withSchedulerTick((nativeEvent: Event): void => {
-    const target = nativeEvent.target as Element;
-    const targets: DispatchTarget<NativeEventHandler>[] = [];
-
-    accumulateDispatchTargets(targets, target, matchEventSource);
-
+  doc.addEventListener(name, withSchedulerTick((event: Event): void => {
+    const targets = collectDispatchTargets(event.target as Element, source);
     if (targets.length > 0 || source.b || source.a) {
-      const event = createNativeEvent(nativeEvent.timeStamp, null, nativeEvent as E);
-
-      dispatchToListeners(source.b, event);
+      dispatchToListeners(source.b, event as E);
       dispatchEvent(
         targets,
         event,
-        (flags & NativeEventSourceFlags.Bubbles) !== 0,
+        (flags & NativeEventDispatcherFlags.Bubbles) !== 0,
         dispatchNativeEvent,
       );
-      dispatchToListeners(source.a, event);
+      dispatchToListeners(source.a, event as E);
     }
   }), options);
 
@@ -89,10 +81,7 @@ export function createNativeEventDispatcher<E extends Event>(
  * @param source Event dispatcher source.
  * @param cb Hook.
  */
-export function beforeNativeEvent<E extends Event>(
-  source: NativeEventDispatcher<E>,
-  cb: (e: SyntheticNativeEvent<E>) => void,
-): void {
+export function beforeNativeEvent<E extends Event>(source: NativeEventDispatcher<E>, cb: (event: E) => void): void {
   source.b = append(source.b, cb);
 }
 
@@ -103,10 +92,7 @@ export function beforeNativeEvent<E extends Event>(
  * @param source Event dispatcher source.
  * @param cb Hook.
  */
-export function afterNativeEvent<E extends Event>(
-  source: NativeEventDispatcher<E>,
-  cb: (e: SyntheticNativeEvent<E>) => void,
-): void {
+export function afterNativeEvent<E extends Event>(source: NativeEventDispatcher<E>, cb: (event: E) => void): void {
   source.a = append(source.a, cb);
 }
 
@@ -119,7 +105,7 @@ export function afterNativeEvent<E extends Event>(
  */
 export function removeBeforeNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
-  cb: (e: SyntheticNativeEvent<E>) => void,
+  cb: (event: E) => void,
 ): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
@@ -139,7 +125,7 @@ export function removeBeforeNativeEvent<E extends Event>(
  */
 export function removeAfterNativeEvent<E extends Event>(
   source: NativeEventDispatcher<E>,
-  cb: (e: SyntheticNativeEvent<E>) => void,
+  cb: (event: E) => void,
 ): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
@@ -150,15 +136,11 @@ export function removeAfterNativeEvent<E extends Event>(
   unorderedArrayDelete(source.a!, cb);
 }
 
-function dispatchToListeners<E extends Event>(
-  listeners: Array<(ev: SyntheticNativeEvent<E>) => void> | null,
-  ev: SyntheticNativeEvent<E>,
-): void {
+function dispatchToListeners<E extends Event>(listeners: Array<(ev: E) => void> | null, event: E): void {
   if (listeners !== null) {
-    ev.node = null;
     const cbs = listeners.slice();
     for (let i = 0; i < cbs.length; i++) {
-      cbs[i](ev);
+      cbs[i](event);
     }
   }
 }

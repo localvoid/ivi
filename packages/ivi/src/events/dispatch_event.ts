@@ -1,27 +1,14 @@
-import { OpState } from "../vdom/state";
 import { DispatchTarget } from "./dispatch_target";
 import { EventHandlerFlags } from "./event_handler";
-import { SyntheticEvent } from "./synthetic_event";
 
 export const enum DispatchEventDirective {
   StopPropagation = 1,
 }
 
 /**
- * dispatchEventToTarget dispatches event to `DispatchTarget`.
- *
- * @param target Dispatch target.
- * @param event Event to dispatch.
- * @param dispatch Dispatch handler.
+ * Stops event propagation.
  */
-export function dispatchEventToTarget<E extends SyntheticEvent>(
-  target: DispatchTarget,
-  event: E,
-  dispatch: (target: DispatchTarget, ev: E) => DispatchEventDirective,
-): DispatchEventDirective {
-  event.node = target.t as OpState;
-  return dispatch(target, event);
-}
+export const STOP_PROPAGATION = DispatchEventDirective.StopPropagation;
 
 /**
  * dispatchEvent dispatches event to the list of dispatch targets.
@@ -37,11 +24,11 @@ export function dispatchEventToTarget<E extends SyntheticEvent>(
  * @param bubble Use bubbling phase.
  * @param dispatch Dispatch handler.
  */
-export function dispatchEvent<E extends SyntheticEvent>(
+export function dispatchEvent<E>(
   targets: DispatchTarget[],
   event: E,
   bubble: boolean,
-  dispatch: (target: DispatchTarget, ev: E) => DispatchEventDirective,
+  dispatch: (event: E, target: DispatchTarget) => DispatchEventDirective,
 ): void {
   let target;
   let i = targets.length;
@@ -50,7 +37,7 @@ export function dispatchEvent<E extends SyntheticEvent>(
   while (--i >= 0) {
     target = targets[i];
     if ((target.h.d.flags & EventHandlerFlags.Capture) !== 0) {
-      if ((dispatchEventToTarget(target, event, dispatch) & DispatchEventDirective.StopPropagation) !== 0) {
+      if ((dispatch(event, target) & DispatchEventDirective.StopPropagation) !== 0) {
         return;
       }
     }
@@ -60,8 +47,8 @@ export function dispatchEvent<E extends SyntheticEvent>(
   if (bubble) {
     while (++i < targets.length) {
       target = targets[i];
-      if ((target.h.d.flags & EventHandlerFlags.Bubble) !== 0) {
-        if ((dispatchEventToTarget(target, event, dispatch) & DispatchEventDirective.StopPropagation) !== 0) {
+      if ((target.h.d.flags & EventHandlerFlags.Capture) === 0) {
+        if ((dispatch(event, target) & DispatchEventDirective.StopPropagation) !== 0) {
           return;
         }
       }
