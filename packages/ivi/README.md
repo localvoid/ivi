@@ -1,4 +1,4 @@
-# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE) [![codecov](https://codecov.io/gh/localvoid/ivi/branch/master/graph/badge.svg)](https://codecov.io/gh/localvoid/ivi) [![CircleCI Status](https://circleci.com/gh/localvoid/ivi.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/localvoid/ivi) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/localvoid/ivi)
+# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE) [![codecov](https://codecov.io/gh/localvoid/ivi/branch/master/graph/badge.svg)](https://codecov.io/gh/localvoid/ivi) [![CircleCI Status](https://circleci.com/gh/localvoid/ivi.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/localvoid/ivi) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/localvoid/ivi) [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/ivi)
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
@@ -8,6 +8,7 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - [Fragments](#fragments)
 - [Components](#components)
 - Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
+- [Extensible](https://codesandbox.io/s/zy1wrn0j4) synthetic events
 - Server-side rendering
 
 |Package      |NPM version                                                                                                  |
@@ -940,6 +941,10 @@ Rendering into `<body>` is disabled to prevent some [issues](https://github.com/
 If someone submits a good explanation why this limitation should be removed, it is possible to remove this limitation
 from the code base.
 
+### Rendering into external `Document`
+
+Rendering into external `Document` (iframe, window, etc) isn't supported.
+
 ### Server-Side Rendering
 
 There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in `ivi`.
@@ -1003,6 +1008,7 @@ Creating custom elements isn't supported, but there shouldn't be any problems wi
 - [Forms](https://codesandbox.io/s/zlk18r8n03)
 - [Composition](https://codesandbox.io/s/k9m8wlqky3)
 - [Portals](https://codesandbox.io/s/v8z27nxk77)
+- [Custom Synthetic Events](https://codesandbox.io/s/zy1wrn0j4)
 
 ### Apps
 
