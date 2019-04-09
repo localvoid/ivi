@@ -18,14 +18,8 @@
       "ivi": [
         "packages/ivi/src"
       ],
-      "ivi-gestures": [
-        "packages/ivi-gestures/src"
-      ],
       "ivi-html": [
         "packages/ivi-html/src"
-      ],
-      "ivi-math": [
-        "packages/ivi-math/src"
       ],
       "ivi-router": [
         "packages/ivi-router/src"

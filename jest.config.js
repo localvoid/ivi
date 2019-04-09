@@ -10,13 +10,11 @@ module.exports = {
   moduleNameMapper: {
     "ivi-scheduler": "<rootDir>/packages/ivi-scheduler/src/",
     "ivi-test-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
-    "ivi-gestures": "<rootDir>/packages/ivi-gestures/src",
     "ivi-html": "<rootDir>/packages/ivi-html/src",
     "ivi-svg": "<rootDir>/packages/ivi-svg/src",
     "ivi-test": "<rootDir>/packages/ivi-test/src",
     "ivi-state": "<rootDir>/packages/ivi-state/src",
     "ivi-router": "<rootDir>/packages/ivi-router/src",
-    "ivi-math": "<rootDir>/packages/ivi-math/src",
     "ivi": "<rootDir>/packages/ivi/src",
   },
   transform: {
@@ -39,7 +37,6 @@ module.exports = {
     "!packages/ivi-test-scheduler/**",
     "!packages/ivi-test/**",
     "!packages/ivi-router/**",
-    "!packages/ivi-gestures/**",
   ],
   coveragePathIgnorePatterns: ["/__tests__/", "/node_modules/"],
   cacheDirectory: ".jest/cache",
