@@ -1,9 +1,31 @@
-import { DispatchTarget } from "./dispatch_target";
-import { EventHandler } from "./event_handler";
 import { NodeFlags } from "../vdom/node_flags";
 import { OpState } from "../vdom/state";
 import { findRoot } from "../vdom/root";
 import { OpNode, EventsData } from "../vdom/operations";
+import { EventHandlerFlags, EventHandler, EventHandlerNode } from "./event_handler";
+
+/**
+ * DispatchTarget.
+ */
+export interface DispatchTarget<H = any> {
+  /**
+   * Target.
+   */
+  readonly t: any;
+  /**
+   * Matched Event Handlers.
+   */
+  readonly h: EventHandlerNode<H>;
+}
+
+export const enum DispatchEventDirective {
+  StopPropagation = 1,
+}
+
+/**
+ * Stops event propagation.
+ */
+export const STOP_PROPAGATION = DispatchEventDirective.StopPropagation;
 
 /**
  * collectDispatchTargets traverses the DOM tree from the `target` Element to the root element, then goes down
@@ -13,7 +35,7 @@ import { OpNode, EventsData } from "../vdom/operations";
  * @param target Target DOM Element.
  * @param match Matching event source.
  */
-export function collectDispatchTargets(target: Element, match: {}): DispatchTarget[] {
+function collectDispatchTargets(target: Element, match: {}): DispatchTarget[] {
   const targets = [] as DispatchTarget[];
   const root = findRoot((r) => r.container!.contains(target));
   if (root) {
@@ -91,6 +113,57 @@ function collectDispatchTargetsFromEventsOpState(
       }
     } else if (h.d.src === match) {
       result.push({ t, h });
+    }
+  }
+}
+
+/**
+ * dispatchEvent dispatches event to the list of dispatch targets.
+ *
+ * Simplified version of w3 Events flow algorithm. This algorithm doesn't include target phase, only capture and
+ * bubbling phases. We don't care too much about w3 events compatibility, and there aren't any use cases that require
+ * target phase.
+ *
+ * https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+ *
+ * @param src Event source.
+ * @param targets Dispatch targets.
+ * @param event Event to dispatch.
+ * @param bubble Use bubbling phase.
+ * @param dispatch Dispatch handler.
+ */
+export function dispatchEvent<E>(
+  src: {},
+  target: Element,
+  event: E,
+  bubble: boolean,
+  dispatch: (event: E, target: DispatchTarget, src: {}) => DispatchEventDirective,
+): void {
+  const targets = collectDispatchTargets(target, src);
+  let i = targets.length;
+  let currentTarget;
+
+  if (i > 0) {
+    // capture phase
+    while (--i >= 0) {
+      currentTarget = targets[i];
+      if ((currentTarget.h.d.flags & EventHandlerFlags.Capture) !== 0) {
+        if ((dispatch(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
+          return;
+        }
+      }
+    }
+
+    // bubble phase
+    if (bubble) {
+      while (++i < targets.length) {
+        currentTarget = targets[i];
+        if ((currentTarget.h.d.flags & EventHandlerFlags.Capture) === 0) {
+          if ((dispatch(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
+            return;
+          }
+        }
+      }
     }
   }
 }

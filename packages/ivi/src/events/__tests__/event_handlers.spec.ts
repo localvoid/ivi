@@ -1,4 +1,4 @@
-import { EventHandlerFlags, EVENT_DISPATCHER_CLICK, onClick } from "ivi";
+import { EventHandlerFlags, CLICK_EVENT, onClick } from "ivi";
 
 function handler(ev: any): void {
   // Event handler...
@@ -7,7 +7,7 @@ function handler(ev: any): void {
 describe(`Event Handler`, () => {
   test(`event dispatcher should be assigned`, () => {
     const h = onClick(handler);
-    expect(h.d.src).toBe(EVENT_DISPATCHER_CLICK);
+    expect(h.d.src).toBe(CLICK_EVENT);
   });
 
   test(`event handler should be assigned`, () => {
