@@ -7,9 +7,7 @@
 import { OpState } from "../vdom/state";
 import { EventHandlerNode, EventHandlerFlags } from "./event_handler";
 import { DispatchEventDirective } from "./dispatch_event";
-import {
-  NativeEventDispatcherFlags, NativeEventDispatcher, createNativeEventDispatcher,
-} from "./native_event_dispatcher";
+import { NativeEventDispatcherFlags, createNativeEventDispatcher } from "./native_event_dispatcher";
 import { EVENT_CAPTURE_ACTIVE_OPTIONS } from "./utils";
 
 /* tslint:disable:max-line-length */
@@ -371,7 +369,7 @@ export const EVENT_DISPATCHER_ACTIVE_WHEEL = (
  * @param capture Capture mode
  * @returns EventHandler instance
  */
-export function createNativeEventHandler(src: NativeEventDispatcher<any>): (
+export function createNativeEventHandler(src: {}): (
   h: (ev: any, target?: any) => DispatchEventDirective | void,
   capture?: boolean,
 ) => EventHandlerNode<any> {

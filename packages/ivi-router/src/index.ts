@@ -1,4 +1,4 @@
-import { EVENT_DISPATCHER_CLICK, SyntheticEventFlags, afterNativeEvent } from "ivi";
+import { withSchedulerTick } from "ivi";
 import { RouteMap, resolve } from "routekit-resolver";
 
 export interface Router<T> {
@@ -49,24 +49,22 @@ export function setupRouter<T>(
     onChange(router);
   });
 
-  afterNativeEvent(EVENT_DISPATCHER_CLICK!, (ev) => {
-    const native = ev.native;
+  document.addEventListener("click", withSchedulerTick((ev) => {
     if (
-      ((ev.flags & (SyntheticEventFlags.PreventedDefault | SyntheticEventFlags.StoppedPropagation)) === 0) &&
-      native.button === 0 &&
-      !(native.metaKey || native.altKey || native.ctrlKey || native.shiftKey)
+      !ev.defaultPrevented && ev.button === 0 &&
+      !(ev.metaKey || ev.altKey || ev.ctrlKey || ev.shiftKey)
     ) {
-      const anchor = findAnchorNode(ev.native.target as Element);
+      const anchor = findAnchorNode(ev.target as Element);
       if (anchor !== null) {
         const href = anchor.href;
         if (href.startsWith(baseURL)) {
-          ev.flags |= SyntheticEventFlags.PreventedDefault;
+          ev.preventDefault();
           history.pushState(null, "", href);
           nav(anchor.pathname);
         }
       }
     }
-  });
+  }));
 
   return router;
 }

@@ -105,11 +105,7 @@ export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/even
 export { DispatchTarget } from "./events/dispatch_target";
 export { collectDispatchTargets } from "./events/collect_dispatch_targets";
 export { DispatchEventDirective, dispatchEvent } from "./events/dispatch_event";
-export {
-  NativeEventDispatcherFlags, NativeEventDispatcher, createNativeEventDispatcher,
-  beforeNativeEvent, afterNativeEvent,
-  removeBeforeNativeEvent, removeAfterNativeEvent,
-} from "./events/native_event_dispatcher";
+export { NativeEventDispatcherFlags, createNativeEventDispatcher } from "./events/native_event_dispatcher";
 export {
   EVENT_DISPATCHER_ABORT, EVENT_DISPATCHER_ACTIVATE, EVENT_DISPATCHER_ARIA_REQUEST, EVENT_DISPATCHER_BEFORE_ACTIVATE,
   EVENT_DISPATCHER_BEFORE_COPY, EVENT_DISPATCHER_BEFORE_CUT, EVENT_DISPATCHER_BEFORE_DEACTIVATE,
