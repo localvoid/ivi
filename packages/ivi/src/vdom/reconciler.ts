@@ -210,7 +210,7 @@ function _unmountWalk(opState: OpState): void {
     v = (opState.s as ComponentHooks).u;
     if (v !== null) {
       if (typeof v === "function") {
-        v();
+        v(true);
       } else {
         for (i = 0; i < v.length; i++) {
           v[i](true);
