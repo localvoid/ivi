@@ -1,7 +1,8 @@
 import { _, DispatchEventDirective, EventHandlerNode, EventHandlerFlags, dispatchEvent } from "ivi";
 
-const BUBBLE_DESCRIPTOR = { src: {}, flags: 0 };
-const CAPTURE_DESCRIPTOR = { src: {}, flags: EventHandlerFlags.Capture };
+const EVENT_SOURCE = {};
+const BUBBLE_DESCRIPTOR = { src: EVENT_SOURCE, flags: 0 };
+const CAPTURE_DESCRIPTOR = { src: EVENT_SOURCE, flags: EventHandlerFlags.Capture };
 
 const onBubble = () => ({ d: BUBBLE_DESCRIPTOR, h: null });
 const onCapture = () => ({ d: CAPTURE_DESCRIPTOR, h: null });
@@ -9,6 +10,7 @@ const onCapture = () => ({ d: CAPTURE_DESCRIPTOR, h: null });
 test("empty dispatch target array should not raise exceptions", () => {
   expect(() => {
     dispatchEvent(
+      EVENT_SOURCE,
       [],
       {},
       true,
@@ -20,6 +22,7 @@ test("empty dispatch target array should not raise exceptions", () => {
 test("empty dispatch target array should not invoke custom dispatch function", () => {
   let invoked = false;
   dispatchEvent(
+    EVENT_SOURCE,
     [],
     {},
     true,
@@ -35,6 +38,7 @@ test("dispatch event", () => {
   const t = {};
 
   dispatchEvent(
+    EVENT_SOURCE,
     [{ t, h: onCapture() }],
     {},
     true,
@@ -50,6 +54,7 @@ test("dispatch to several targets", () => {
   const t = {};
 
   dispatchEvent(
+    EVENT_SOURCE,
     [{ t, h: onCapture() }, { t, h: onCapture() }],
     {},
     true,
@@ -68,6 +73,7 @@ describe("event flow", () => {
     const h2 = onBubble();
 
     dispatchEvent(
+      EVENT_SOURCE,
       [{ t, h: h1 }, { t, h: h2 }],
       {},
       true,
@@ -85,6 +91,7 @@ describe("event flow", () => {
     const h2 = onCapture();
 
     dispatchEvent(
+      EVENT_SOURCE,
       [{ t, h: h1 }, { t, h: h2 }],
       {},
       true,
@@ -103,6 +110,7 @@ describe("event flow", () => {
     const h2 = onCapture();
 
     dispatchEvent(
+      EVENT_SOURCE,
       [{ t, h: h1 }, { t, h: h2 }],
       {},
       true,
@@ -120,6 +128,7 @@ describe("event flow", () => {
     const h2 = onBubble();
 
     dispatchEvent(
+      EVENT_SOURCE,
       [{ t, h: h1 }, { t, h: h2 }],
       {},
       true,
@@ -137,6 +146,7 @@ describe("event flow", () => {
     const h2 = onCapture();
 
     dispatchEvent(
+      EVENT_SOURCE,
       [{ t, h: h1 }, { t, h: h2 }],
       {},
       true,
@@ -154,6 +164,7 @@ describe("event flow", () => {
     const h2 = onCapture();
 
     dispatchEvent(
+      EVENT_SOURCE,
       [{ t, h: h1 }, { t, h: h2 }],
       {},
       true,

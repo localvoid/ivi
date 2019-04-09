@@ -19,16 +19,18 @@ export const STOP_PROPAGATION = DispatchEventDirective.StopPropagation;
  *
  * https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
  *
+ * @param src Event source.
  * @param targets Dispatch targets.
  * @param event Event to dispatch.
  * @param bubble Use bubbling phase.
  * @param dispatch Dispatch handler.
  */
 export function dispatchEvent<E>(
+  src: {},
   targets: DispatchTarget[],
   event: E,
   bubble: boolean,
-  dispatch: (event: E, target: DispatchTarget) => DispatchEventDirective,
+  dispatch: (event: E, target: DispatchTarget, src: {}) => DispatchEventDirective,
 ): void {
   let target;
   let i = targets.length;
@@ -37,7 +39,7 @@ export function dispatchEvent<E>(
   while (--i >= 0) {
     target = targets[i];
     if ((target.h.d.flags & EventHandlerFlags.Capture) !== 0) {
-      if ((dispatch(event, target) & DispatchEventDirective.StopPropagation) !== 0) {
+      if ((dispatch(event, target, src) & DispatchEventDirective.StopPropagation) !== 0) {
         return;
       }
     }
@@ -48,7 +50,7 @@ export function dispatchEvent<E>(
     while (++i < targets.length) {
       target = targets[i];
       if ((target.h.d.flags & EventHandlerFlags.Capture) === 0) {
-        if ((dispatch(event, target) & DispatchEventDirective.StopPropagation) !== 0) {
+        if ((dispatch(event, target, src) & DispatchEventDirective.StopPropagation) !== 0) {
           return;
         }
       }

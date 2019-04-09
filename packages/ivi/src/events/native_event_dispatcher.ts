@@ -15,10 +15,18 @@ export const enum NativeEventDispatcherFlags {
   Bubbles = 1,
 }
 
-export type NativeEventHandler = <E extends Event>(event: E, currentTarget?: OpState) => DispatchEventDirective | void;
+export type NativeEventHandler = <E extends Event>(
+  event: E,
+  currentTarget?: OpState,
+  src?: {},
+) => DispatchEventDirective | void;
 
-function dispatchNativeEvent(event: Event, currentTarget: DispatchTarget<NativeEventHandler>): DispatchEventDirective {
-  const flags = currentTarget.h.h(event, currentTarget.t);
+function dispatchNativeEvent(
+  event: Event,
+  currentTarget: DispatchTarget<NativeEventHandler>,
+  src: {},
+): DispatchEventDirective {
+  const flags = currentTarget.h.h(event, currentTarget.t, src);
   return flags === void 0 ? 0 : flags;
 }
 
@@ -41,6 +49,7 @@ export function createNativeEventDispatcher<E extends Event>(
     const targets = collectDispatchTargets(event.target as Element, source);
     if (targets.length > 0) {
       dispatchEvent(
+        source,
         targets,
         event,
         (flags & NativeEventDispatcherFlags.Bubbles) !== 0,
