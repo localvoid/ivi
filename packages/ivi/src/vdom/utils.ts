@@ -74,17 +74,37 @@ export const findDOMNode = <T extends Node>(
 ) => box.v === null ? null : getDOMNode(box.v) as T;
 
 /**
- * containsNode returns `true` when `parent` contains a DOM node `node`.
+ * containsDOMElement returns `true` when `parent` contains a DOM element `element`.
  *
  * @param parent Op state node.
- * @param node DOM node.
- * @returns `true` when `parent` contains a DOM node `node`.
+ * @param element DOM element.
+ * @returns `true` when `parent` contains a DOM element `element`.
  */
-export function containsNode(parent: OpState, node: Node): boolean {
+export function containsDOMElement(parent: OpState, element: Element): boolean {
   let result = false;
-  visitNodes(parent, (n) => {
-    if ((n.f & NodeFlags.Element) !== 0) {
-      return ((n.s as Element).contains(node)) === true ?
+  visitNodes(parent, (node) => {
+    if ((node.f & NodeFlags.Element) !== 0) {
+      return ((node.s as Element).contains(element)) === true ?
+        (result = true, VisitNodesFlags.StopImmediate) :
+        VisitNodesFlags.Stop;
+    }
+    return VisitNodesFlags.Continue;
+  });
+  return result;
+}
+
+/**
+ * hasDOMElement child returns `true` when `parent` has a DOM element child `child`.
+ *
+ * @param parent Op state node.
+ * @param child DOM element.
+ * @returns `true` when `parent` has a DOM element child `child`.
+ */
+export function hasDOMElementChild(parent: OpState, child: Element): boolean {
+  let result = false;
+  visitNodes(parent, (node) => {
+    if ((node.f & NodeFlags.Element) !== 0) {
+      return (node.s === child) ?
         (result = true, VisitNodesFlags.StopImmediate) :
         VisitNodesFlags.Stop;
     }

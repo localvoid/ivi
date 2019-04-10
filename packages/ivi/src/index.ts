@@ -79,7 +79,7 @@ export {
 export { dirtyCheck } from "./vdom/root";
 export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { VisitNodesFlags, visitNodes, getDOMNode } from "./vdom/reconciler";
-export { selector, findDOMNode, containsNode } from "./vdom/utils";
+export { selector, findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
 export { Ref } from "./vdom/ref";
 export { Portal, portal, usePortal } from "./vdom/portal";
 
@@ -134,6 +134,3 @@ export {
   onTouchMove, onTouchStart, onTransitionCancel, onTransitionEnd, onTransitionRun, onTransitionStart, onUnload,
   onVolumeChange, onWaiting, onWheel, onActiveTouchEnd, onActiveTouchMove, onActiveTouchStart, onActiveWheel,
 } from "./events/native_events";
-
-// Helpers
-export { containsRelatedTarget, isCurrentTarget } from "./helpers/events";
