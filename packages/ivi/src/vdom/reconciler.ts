@@ -512,11 +512,8 @@ export function _update(
           _updateAttrs(s as Element, prevData.a, nextValue);
         }
 
-        nextValue = nextData.c;
-        if (prevData.c !== nextValue) {
-          _nextNode = null;
-          opState.c = _update(s as Element, opStateChildren as OpState, nextValue, false, true);
-        }
+        _nextNode = null;
+        opState.c = _update(s as Element, opStateChildren as OpState, nextData.c, false, true);
 
         _nextNode = s as Node;
       } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
