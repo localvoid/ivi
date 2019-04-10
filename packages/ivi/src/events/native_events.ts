@@ -50,17 +50,15 @@ export function createNativeEventDispatcher<E extends Event>(
   name: string,
   options: { capture?: boolean, passive?: boolean } | boolean = true,
 ): {} {
-  const source = {};
-  doc.addEventListener(name, withSchedulerTick((event: Event): void => {
+  const source = withSchedulerTick((event: Event): void => {
     dispatchEvent(
       source,
       event.target as Element,
       event,
       (flags & NativeEventDispatcherFlags.Bubbles) !== 0,
-      dispatchNativeEvent,
     );
-  }), options);
-
+  });
+  doc.addEventListener(name, source, options);
   return source;
 }
 
@@ -423,12 +421,12 @@ export const ACTIVE_WHEEL_EVENT = (
  * @param capture Capture mode
  * @returns EventHandler instance
  */
-export function createNativeEventHandler(src: {}): (
+export function createNativeEventHandler(s: {}): (
   h: (ev: any, target?: any) => DispatchEventDirective | void,
   capture?: boolean,
 ) => EventHandlerNode<any> {
-  const bubbleDescriptor = { src, flags: 0 };
-  const captureDescriptor = { src, flags: EventHandlerFlags.Capture };
+  const bubbleDescriptor = { s, h: dispatchNativeEvent, f: 0 };
+  const captureDescriptor = { s, h: dispatchNativeEvent, f: EventHandlerFlags.Capture };
   return (h, capture) => ({
     d: capture === true ? captureDescriptor : bubbleDescriptor,
     h,

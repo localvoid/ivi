@@ -1,3 +1,5 @@
+import { DispatchTarget, DispatchEventDirective } from "./dispatch";
+
 /**
  * EventHandlerFlags.
  */
@@ -13,11 +15,15 @@ export interface EventHandlerDescriptor {
   /**
    * Reference to the event source that will dispatch events for this event handler.
    */
-  readonly src: any;
+  readonly s: any;
+  /**
+   * Event handler.
+   */
+  readonly h: (event: any, currentTarget: DispatchTarget, source: {}) => DispatchEventDirective;
   /**
    * See {@link EventHandlerFlags} for details.
    */
-  readonly flags: EventHandlerFlags;
+  readonly f: EventHandlerFlags;
 }
 
 /**

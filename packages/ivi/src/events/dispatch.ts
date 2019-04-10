@@ -111,7 +111,7 @@ function collectDispatchTargetsFromEventsOpState(
       for (let i = 0; i < h.length; ++i) {
         collectDispatchTargetsFromEventsOpState(result, t, h[i], match);
       }
-    } else if (h.d.src === match) {
+    } else if (h.d.s === match) {
       result.push({ t, h });
     }
   }
@@ -137,18 +137,19 @@ export function dispatchEvent<E>(
   target: Element,
   event: E,
   bubble: boolean,
-  dispatch: (event: E, target: DispatchTarget, src: {}) => DispatchEventDirective,
 ): void {
   const targets = collectDispatchTargets(target, src);
   let i = targets.length;
   let currentTarget;
+  let descriptor;
 
   if (i > 0) {
     // capture phase
     while (--i >= 0) {
       currentTarget = targets[i];
-      if ((currentTarget.h.d.flags & EventHandlerFlags.Capture) !== 0) {
-        if ((dispatch(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
+      descriptor = currentTarget.h.d;
+      if ((descriptor.f & EventHandlerFlags.Capture) !== 0) {
+        if ((descriptor.h(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
           return;
         }
       }
@@ -158,8 +159,9 @@ export function dispatchEvent<E>(
     if (bubble) {
       while (++i < targets.length) {
         currentTarget = targets[i];
-        if ((currentTarget.h.d.flags & EventHandlerFlags.Capture) === 0) {
-          if ((dispatch(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
+        descriptor = currentTarget.h.d;
+        if ((descriptor.f & EventHandlerFlags.Capture) === 0) {
+          if ((descriptor.h(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
             return;
           }
         }
