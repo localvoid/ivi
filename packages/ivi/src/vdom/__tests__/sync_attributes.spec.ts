@@ -1,11 +1,20 @@
-import { XML_NAMESPACE, XLINK_NAMESPACE, _ } from "ivi";
-import * as h from "ivi-html";
-import * as s from "ivi-svg";
-import { testRenderDOM } from "ivi-test";
-
 describe(`sync element attributes`, () => {
+  const _ = void 0;
+  let ivi: typeof import("ivi");
+  let h: typeof import("ivi-html");
+  let s: typeof import("ivi-svg");
+  let iviTest: typeof import("ivi-test");
+
+  beforeEach(async () => {
+    jest.resetModules();
+    ivi = await import("ivi");
+    h = await import("ivi-html");
+    s = await import("ivi-svg");
+    iviTest = await import("ivi-test");
+  });
+
   test(`undefined => {}`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div(_, {}))!;
 
@@ -14,7 +23,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{} => undefined`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {}));
       const n = r(h.div())!;
 
@@ -23,7 +32,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`{} => {}`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {}));
       const n = r(h.div(_, {}))!;
 
@@ -32,7 +41,7 @@ describe(`sync element attributes`, () => {
   });
 
   test(`undefined => { title: "1" }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div());
       const n = r(h.div(_, { title: "1" }))!;
 
@@ -45,7 +54,7 @@ NamedNodeMap {
   });
 
   test(`{} => { title: "1" }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {}));
       const n = r(h.div(_, { title: "1" }))!;
 
@@ -58,7 +67,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1" } => { title: "2" }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { title: "1" }));
       const n = r(h.div(_, { title: "2" }))!;
 
@@ -71,7 +80,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1" } => { title: undefined }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { title: "1" }));
       const n = r(h.div(_, { title: undefined }))!;
 
@@ -80,7 +89,7 @@ NamedNodeMap {
   });
 
   test(`{ bool: false } => { bool: true }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, { bool: false }));
       const n = r(h.div(_, { bool: true }))!;
 
@@ -93,7 +102,7 @@ NamedNodeMap {
   });
 
   test(`{} => { title: "2", tabIndex: 2 }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(h.div(_, {}));
       const n = r(
         h.div(_, {
@@ -112,7 +121,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1" } => { title: "2", tabIndex: 2 }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1"
@@ -135,7 +144,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "2", tabIndex: 2 }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -159,7 +168,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "1", tabIndex: 1 }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -183,7 +192,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "2" }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -205,7 +214,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { title: "2", lang: "en" }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -229,7 +238,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => { lang: "en" }`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -251,7 +260,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => {}`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -265,7 +274,7 @@ NamedNodeMap {
   });
 
   test(`{ title: "1", tabIndex: 1 } => undefined`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(
         h.div(_, {
           title: "1",
@@ -279,14 +288,14 @@ NamedNodeMap {
   });
 
   test(`should throw error when transition from basic value to attribute directive`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(s.circle("", { "xml:text": "abc" }));
       expect(() => { r(s.circle("", { "xml:text": s.XML_ATTR("") })); }).toThrowError();
     });
   });
 
   test(`should throw error when transition from attribute directive to basic value`, () => {
-    testRenderDOM<HTMLElement>(r => {
+    iviTest.testRenderDOM<HTMLElement>(r => {
       r(s.circle("", { "xml:text": s.XML_ATTR("") }));
       expect(() => { r(s.circle("", { "xml:text": "abc" })); }).toThrowError();
     });
@@ -294,37 +303,37 @@ NamedNodeMap {
 
   describe(`svg`, () => {
     test(`{ "xml:text": "" } => { "xml:text": "" }`, () => {
-      testRenderDOM<HTMLElement>(r => {
+      iviTest.testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("") }));
         const n = r(s.circle("", { "xml:text": s.XML_ATTR("") }))!;
 
         expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("");
+        expect(n.getAttributeNS(ivi.XML_NAMESPACE, "text")).toBe("");
       });
     });
 
     test(`{ "xlink:text": "" } => { "xlink:text": "" }`, () => {
-      testRenderDOM<HTMLElement>(r => {
+      iviTest.testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xlink:text": s.XLINK_ATTR("") }));
         const n = r(s.circle("", { "xlink:text": s.XLINK_ATTR("") }))!;
 
         expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XLINK_NAMESPACE, "text")).toBe("");
+        expect(n.getAttributeNS(ivi.XLINK_NAMESPACE, "text")).toBe("");
       });
     });
 
     test(`{ "xml:text": "abc" } => { "xml:text": "abc" }`, () => {
-      testRenderDOM<HTMLElement>(r => {
+      iviTest.testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
         const n = r(s.circle("", { "xml:text": s.XML_ATTR("abc") }))!;
 
         expect(n.attributes).toHaveLength(1);
-        expect(n.getAttributeNS(XML_NAMESPACE, "text")).toBe("abc");
+        expect(n.getAttributeNS(ivi.XML_NAMESPACE, "text")).toBe("abc");
       });
     });
 
     test(`{ "xml:text": "abc" } => { "xml:text": undefined }`, () => {
-      testRenderDOM<HTMLElement>(r => {
+      iviTest.testRenderDOM<HTMLElement>(r => {
         r(s.circle("", { "xml:text": s.XML_ATTR("abc") }));
         const n = r(s.circle("", { "xml:text": void 0 }))!;
 

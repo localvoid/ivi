@@ -1,17 +1,17 @@
-let ivi: typeof import("ivi");
-let html: typeof import("ivi-html");
-let iviTest: typeof import("ivi-test");
-let utils: typeof import("./utils");
-
-beforeEach(async () => {
-  jest.resetModules();
-  ivi = await import("ivi");
-  html = await import("ivi-html");
-  iviTest = await import("ivi-test");
-  utils = await import("./utils");
-});
-
 describe(`dirty checking`, () => {
+  let ivi: typeof import("ivi");
+  let html: typeof import("ivi-html");
+  let iviTest: typeof import("ivi-test");
+  let utils: typeof import("./utils");
+
+  beforeEach(async () => {
+    jest.resetModules();
+    ivi = await import("ivi");
+    html = await import("ivi-html");
+    iviTest = await import("ivi-test");
+    utils = await import("./utils");
+  });
+
   test(`dirtyCheck() should start dirty checking`, () => {
     iviTest.testRenderDOM(r => {
       let triggered = 0;

@@ -1,4 +1,5 @@
 const ERROR_HANDLERS: Array<(e: any) => void> = [];
+let error = false;
 
 /**
  * addErrorHandler adds an error handler for errors catched by functions decorated with `catchError()`.
@@ -20,11 +21,14 @@ export function addErrorHandler(handler: (e: any) => void): void {
 export function catchError<T>(fn: (...args: any[]) => T): (...args: any[]) => T;
 export function catchError<T>(fn: Function): (...args: any[]) => T {
   return function () {
-    try {
-      return fn.apply(void 0, arguments);
-    } catch (e) {
-      ERROR_HANDLERS.forEach((h) => { h(e); });
-      throw e;
+    if (!error) {
+      try {
+        return fn.apply(void 0, arguments);
+      } catch (e) {
+        error = true;
+        ERROR_HANDLERS.forEach((h) => { h(e); });
+        throw e;
+      }
     }
   };
 }
