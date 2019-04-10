@@ -50,17 +50,21 @@ export function setupRouter<T>(
   });
 
   document.addEventListener("click", withSchedulerTick((ev) => {
+    const target = ev.target as HTMLAnchorElement;
     if (
       !ev.defaultPrevented && ev.button === 0 &&
       !(ev.metaKey || ev.altKey || ev.ctrlKey || ev.shiftKey)
     ) {
-      const anchor = findAnchorNode(ev.target as Element);
-      if (anchor !== null) {
-        const href = anchor.href;
-        if (href.startsWith(baseURL)) {
-          ev.preventDefault();
-          history.pushState(null, "", href);
-          nav(anchor.pathname);
+      const targetAttr = target.target;
+      if (!targetAttr || targetAttr !== "_self") {
+        const anchor = findAnchorNode(target);
+        if (anchor !== null) {
+          const href = anchor.href;
+          if (href.startsWith(baseURL)) {
+            ev.preventDefault();
+            history.pushState(null, "", href);
+            nav(anchor.pathname);
+          }
         }
       }
     }
