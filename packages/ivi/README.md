@@ -162,6 +162,24 @@ The final step for a component is to create an "update" function, it should pass
 and return a Virtual DOM. Update function will be invoked when component is invalidated or component properties are
 modified.
 
+#### Stateless Components
+
+One of the unique features in ivi is that it doesn't store any magic properties like keys on "Virtual DOM" nodes.
+Decoupling magic properties from "Virtual DOM" nodes allows us to use simple immediately invocated functions as
+stateless components.
+
+```js
+const Link = (href, children) => a("link", { href }, children);
+const LINKS = [1, 2];
+
+render(
+  TrackByKey(LINKS.map((id) => (
+    key(id, Link(`#${id}`, id))
+  ))),
+  document.getElementById("app"),
+);
+```
+
 ## Virtual DOM
 
 Virtual DOM term is usually associated with diffing algorithms, but the problem with this definition is that almost
