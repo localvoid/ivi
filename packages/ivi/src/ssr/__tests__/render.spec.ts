@@ -171,12 +171,12 @@ describe("render", () => {
 
   describe("Events", () => {
     test("empty event", () => {
-      expect(renderToString(Events(onClick(() => 0), null)))
+      expect(renderToString(Events(onClick(() => false), null)))
         .toBe(``);
     });
 
     test("event with text child", () => {
-      expect(renderToString(Events(onClick(() => 0), "abc")))
+      expect(renderToString(Events(onClick(() => false), "abc")))
         .toBe(`abc`);
     });
   });

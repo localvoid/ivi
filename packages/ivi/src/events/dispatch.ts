@@ -18,15 +18,6 @@ export interface DispatchTarget<H = any> {
   readonly h: EventHandlerNode<H>;
 }
 
-export const enum DispatchEventDirective {
-  StopPropagation = 1,
-}
-
-/**
- * Stops event propagation.
- */
-export const STOP_PROPAGATION = DispatchEventDirective.StopPropagation;
-
 /**
  * collectDispatchTargets traverses the DOM tree from the `target` Element to the root element, then goes down
  * through Virtual DOM tree and accumulates matching Event Handlers in `result` array.
@@ -149,7 +140,7 @@ export function dispatchEvent<E>(
       currentTarget = targets[i];
       descriptor = currentTarget.h.d;
       if ((descriptor.f & EventHandlerFlags.Capture) !== 0) {
-        if ((descriptor.h(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
+        if (descriptor.h(event, currentTarget, src) === true) {
           return;
         }
       }
@@ -161,7 +152,7 @@ export function dispatchEvent<E>(
         currentTarget = targets[i];
         descriptor = currentTarget.h.d;
         if ((descriptor.f & EventHandlerFlags.Capture) === 0) {
-          if ((descriptor.h(event, currentTarget, src) & DispatchEventDirective.StopPropagation) !== 0) {
+          if (descriptor.h(event, currentTarget, src) === true) {
             return;
           }
         }

@@ -102,7 +102,7 @@ export {
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./events/utils";
 export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/event_handler";
-export { DispatchTarget, DispatchEventDirective, dispatchEvent } from "./events/dispatch";
+export { DispatchTarget, dispatchEvent } from "./events/dispatch";
 export {
   NativeEventDispatcherFlags, createNativeEventDispatcher,
 
