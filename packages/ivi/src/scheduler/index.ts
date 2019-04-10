@@ -2,7 +2,6 @@ import { sMT, rAF } from "ivi-scheduler";
 import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box } from "../core";
 import { printWarn } from "../debug/print";
 import { doc } from "../dom/shortcuts";
-import { IOS_GESTURE_EVENT } from "../dom/feature_detection";
 import { NodeFlags } from "../vdom/node_flags";
 import { Op } from "../vdom/operations";
 import { Component } from "../vdom/component";
@@ -331,19 +330,6 @@ export function render(next: Op, container: Element, flags?: UpdateFlags): void 
     root.next = next;
   } else {
     ROOTS.push({ container, state: null, next });
-    /* istanbul ignore if */
-    /**
-     * Fix for the Mouse Event bubbling on iOS devices.
-     *
-     * #quirks
-     *
-     * http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-     *
-     * Fixed in Safari TP71: https://trac.webkit.org/changeset/237978/webkit/
-     */
-    if (process.env.IVI_TARGET === "browser" && IOS_GESTURE_EVENT) {
-      (container as HTMLElement).onclick = NOOP;
-    }
   }
 
   requestDirtyCheck(flags);
