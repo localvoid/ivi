@@ -28,7 +28,7 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3KiB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.4KiB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.3KiB** (minified+compressed).
 
 ## Quick Start
 
@@ -165,7 +165,7 @@ modified.
 #### Stateless Components
 
 One of the unique features in ivi is that it doesn't store any magic properties like keys on "Virtual DOM" nodes.
-Decoupling magic properties from "Virtual DOM" nodes allows us to use simple immediately invocated functions as
+Decoupling magic properties from "Virtual DOM" nodes allows us to use simple immediately invoked functions as
 stateless components.
 
 ```js
@@ -428,45 +428,19 @@ import { _, Events, onClick, render } from "ivi";
 import { button } from "ivi-html";
 
 render(
-  Events(onClick((ev) => { console.log("click"); }),
+  Events(onClick((ev, currentTarget) => { console.log("click"); }),
     button(_, _, "Click Me"),
   ),
   document.getElementById("app")!,
 );
 ```
 
-`ivi` package provides event handler factories for all DOM events: `onClick()`, `onKeyDown()`, etc. All DOM event
-objects are wrapped in `SyntheticNativeEvent` objects.
+##### Stop Propagation
+
+Event handler should return `true` value to stop event propagation.
 
 ```ts
-interface SyntheticNativeEvent<E extends Event> extends SyntheticEvent {
-  readonly flags: SyntheticEventFlags;
-  readonly timestamp: number;
-  readonly node: OpState | null;
-  readonly native: E;
-}
-```
-
-`native` property is used to get access to the native DOM event.
-
-##### Stop Propagation and Prevent Default
-
-Event handler should return `EventFlags` to stop event propagation or prevent default behavior.
-
-TypeScript:
-
-```ts
-import { EventFlags } from "ivi";
-
-onClick((ev) => EventFlags.StopPropagation | EventFlags.PreventDefault);
-```
-
-Javascript:
-
-```js
-import { STOP_PROPAGATION, PREVENT_DEFAULT } from "ivi";
-
-onClick((ev) => STOP_PROPAGATION | PREVENT_DEFAULT);
+onClick((ev) => true);
 ```
 
 #### Context
