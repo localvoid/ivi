@@ -102,8 +102,14 @@ function collectDispatchTargetsFromEventsOpState(
       for (let i = 0; i < h.length; ++i) {
         collectDispatchTargetsFromEventsOpState(result, t, h[i], match);
       }
-    } else if (h.d.s === match) {
-      result.push({ t, h });
+    } else {
+      const source = h.d.s;
+      if (
+        (typeof source === "function" && source(match) === true) ||
+        (source === match)
+      ) {
+        result.push({ t, h });
+      }
     }
   }
 }
