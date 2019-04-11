@@ -1,4 +1,4 @@
-import { _, NodeFlags, OpState, box, Ref, VisitNodesFlags, visitNodes } from "ivi";
+import { _, NodeFlags, OpState, box, Ref, VisitNodesDirective, visitNodes } from "ivi";
 import { div } from "ivi-html";
 import { testRenderDOM } from "ivi-test";
 
@@ -16,7 +16,7 @@ test(`should visit all nodes`, () => {
       if (node.f & NodeFlags.Element) {
         i++;
       }
-      return VisitNodesFlags.Continue;
+      return VisitNodesDirective.Continue;
     });
     expect(i).toBe(4);
   });
@@ -34,7 +34,7 @@ test(`should ignore null nodes`, () => {
     let i = 0;
     visitNodes(_ref.v!, (node) => {
       i++;
-      return VisitNodesFlags.Continue;
+      return VisitNodesDirective.Continue;
     });
     expect(i).toBe(4);
   });
@@ -56,9 +56,9 @@ test(`should stop immediately when visitor returns StopImmediate`, () => {
     visitNodes(_ref.v!, (node) => {
       if (node.f & NodeFlags.Element) {
         i++;
-        return VisitNodesFlags.StopImmediate;
+        return VisitNodesDirective.StopImmediate;
       }
-      return VisitNodesFlags.Continue;
+      return VisitNodesDirective.Continue;
     });
     expect(i).toBe(1);
   });
@@ -80,9 +80,9 @@ test(`should stop when visitor returns Stop`, () => {
     visitNodes(_ref.v!, (node) => {
       if (node.f & NodeFlags.Element) {
         i++;
-        return VisitNodesFlags.Stop;
+        return VisitNodesDirective.Stop;
       }
-      return VisitNodesFlags.Continue;
+      return VisitNodesDirective.Continue;
     });
     expect(i).toBe(4);
   });
