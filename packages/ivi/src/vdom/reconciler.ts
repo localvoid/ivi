@@ -6,7 +6,7 @@ import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
-import { OpNode, ElementData, OpArray, Key, OpData, ContextData, Op, EventsData } from "./operations";
+import { OpNode, ElementData, OpArray, Key, ContextData, Op, EventsData } from "./operations";
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
@@ -353,12 +353,12 @@ function _mountObject(
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
         prevState = setContext(
-          opState.s = { ...context(), ...(d as OpData<ContextData>).v },
+          opState.s = { ...context(), ...(d as ContextData).v },
         );
-        opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
+        opState.c = _mount(parentElement, (d as ContextData).c);
         restoreContext(prevState);
       } else {
-        opState.c = _mount(parentElement, (d as OpData<ContextData>).c);
+        opState.c = _mount(parentElement, (d as EventsData).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
       let i = (d as Key<any, OpNode>[]).length;
@@ -584,7 +584,7 @@ export function _update(
         }
         // reusing variable name, it is actually a previous value in the context stack.
         nextValue = setContext(opState.s as {});
-        _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
+        opState.c = _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
         restoreContext(nextValue);
         _dirtyContext = dirtyContext;
       }
