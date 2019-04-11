@@ -20,11 +20,12 @@ export interface DispatchTarget<H = any> {
 
 /**
  * collectDispatchTargets traverses the DOM tree from the `target` Element to the root element, then goes down
- * through Virtual DOM tree and accumulates matching Event Handlers in `result` array.
+ * through Virtual DOM tree and collects matching Event Handlers.
  *
  * @param result Accumulated Dispatch Targets.
  * @param target Target DOM Element.
  * @param match Matching event source.
+ * @returns Dispatch targets.
  */
 function collectDispatchTargets(target: Element, match: {}): DispatchTarget[] {
   const targets = [] as DispatchTarget[];
