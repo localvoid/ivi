@@ -78,7 +78,7 @@ export {
 } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
-export { VisitNodesFlags, visitNodes, getDOMNode } from "./vdom/reconciler";
+export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
 export { selector, findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
 export { Ref } from "./vdom/ref";
 export { Portal, portal, usePortal } from "./vdom/portal";

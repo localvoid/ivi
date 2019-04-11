@@ -3,7 +3,7 @@ import { NodeFlags } from "./node_flags";
 import { OpState } from "./state";
 import { Component } from "./component";
 import { useSelect } from "./hooks";
-import { getDOMNode, VisitNodesFlags, visitNodes } from "./reconciler";
+import { getDOMNode, VisitNodesDirective, visitNodes } from "./reconciler";
 
 /**
  * selector creates a selector factory.
@@ -34,9 +34,9 @@ export function selector<T>(
  *
  * @example
  *
- * interface Entry {
- *   title: string;
- * }
+ *     interface Entry {
+ *       title: string;
+ *     }
  *     const useEntryTitle = selector((entry: Entry) => entry.title);
  *
  *     const EntryView = component<Entry>((c) => {
@@ -85,16 +85,16 @@ export function containsDOMElement(parent: OpState, element: Element): boolean {
   visitNodes(parent, (node) => {
     if ((node.f & NodeFlags.Element) !== 0) {
       return ((node.s as Element).contains(element)) === true ?
-        (result = true, VisitNodesFlags.StopImmediate) :
-        VisitNodesFlags.Stop;
+        (result = true, VisitNodesDirective.StopImmediate) :
+        VisitNodesDirective.Stop;
     }
-    return VisitNodesFlags.Continue;
+    return VisitNodesDirective.Continue;
   });
   return result;
 }
 
 /**
- * hasDOMElement child returns `true` when `parent` has a DOM element child `child`.
+ * hasDOMElementChild returns `true` when `parent` has a DOM element child `child`.
  *
  * @param parent Op state node.
  * @param child DOM element.
@@ -105,10 +105,10 @@ export function hasDOMElementChild(parent: OpState, child: Element): boolean {
   visitNodes(parent, (node) => {
     if ((node.f & NodeFlags.Element) !== 0) {
       return (node.s === child) ?
-        (result = true, VisitNodesFlags.StopImmediate) :
-        VisitNodesFlags.Stop;
+        (result = true, VisitNodesDirective.StopImmediate) :
+        VisitNodesDirective.Stop;
     }
-    return VisitNodesFlags.Continue;
+    return VisitNodesDirective.Continue;
   });
   return result;
 }

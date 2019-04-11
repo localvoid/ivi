@@ -34,31 +34,50 @@ function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
   return r;
 }
 
-export const enum VisitNodesFlags {
+/**
+ * VisitNodesDirective controls the traversal algorithm.
+ */
+export const enum VisitNodesDirective {
+  /**
+   * Continue traversing the tree.
+   */
   Continue = 0,
+  /**
+   * Stops immediately.
+   */
   StopImmediate = 1,
+  /**
+   * Stops traversing through children nodes.
+   */
   Stop = 1 << 1,
 }
 
-export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesFlags): VisitNodesFlags {
+/**
+ * visitNodes traverses the operation state tree and invokes `visitor` function for each state node.
+ *
+ * @param opState State node.
+ * @param visitor Visitor function.
+ * @returns {@link VisitNodesFlags}
+ */
+export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesDirective): VisitNodesDirective {
   const flags = opState.f;
   const vFlags = visitor(opState);
-  if (vFlags !== VisitNodesFlags.Continue) {
-    return (vFlags & VisitNodesFlags.StopImmediate);
+  if (vFlags !== VisitNodesDirective.Continue) {
+    return (vFlags & VisitNodesDirective.StopImmediate);
   }
 
   const children = opState.c;
   if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
     for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
       const c = (children as Array<OpState | null>)[i];
-      if (c !== null && (visitNodes(c, visitor) & VisitNodesFlags.StopImmediate) !== 0) {
-        return VisitNodesFlags.StopImmediate;
+      if (c !== null && (visitNodes(c, visitor) & VisitNodesDirective.StopImmediate) !== 0) {
+        return VisitNodesDirective.StopImmediate;
       }
     }
   } else if (children !== null) {
     return visitNodes(children as OpState, visitor);
   }
-  return VisitNodesFlags.Continue;
+  return VisitNodesDirective.Continue;
 }
 
 /**
