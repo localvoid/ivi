@@ -985,11 +985,7 @@ This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-
 ### Portals
 
 Current portal implementation relies on the reconciler execution order. There are many ways how to implement portals and
-right now it has a simple component based [implementation](https://github.com/localvoid/ivi/blob/4d68087fbe2f694d0dbfdcea7a8d92bd10d80c0b/packages/ivi/src/vdom/portal.ts) that doesn't use any internal APIs.
-
-It is a temporary solution that covers major use cases. There are many different edge cases with portals that doesn't
-even work in [React](https://codesandbox.io/s/pmm2m75xlx) and right now I am investigating different approaches how to
-solve this issues. Most likely it will have similar issues as React portals.
+right now it has a simple component based [implementation](https://github.com/localvoid/ivi/tree/ba79b66b0ac9589fd9e19b53591f2801b4cc93a6/packages/ivi-portal) that doesn't use any internal APIs.
 
 ### Custom Elements (Web Components)
 

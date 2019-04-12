@@ -88,6 +88,36 @@ addNativeEventMiddleware(MOUSE_DOWN, (event, next) => {
 });
 ```
 
+### Portals
+
+Portals were completely redesigned and moved to `ivi-portal` package. Portals now correctly propagate context through
+portal entries.
+
+```js
+import { _, render, component, invalidate, Events, onClick, } from "ivi";
+import { div, button } from "ivi-html";
+import { portal } from "ivi-portal";
+
+const MODAL = portal();
+
+const App = component((c) => {
+  let showModal = false;
+  const showEvent = onClick(() => { showModal = true; invalidate(c); });
+
+  return () => (
+    [
+      showModal ? MODAL.entry(div("modal", _, "This is being rendered inside the #modal-root div.")) : null,
+      Events(showEvent,
+        button(_, _, "Show modal"),
+      ),
+    ]
+  );
+});
+
+render(App(), document.getElementById("app"));
+render(MODAL.root, document.getElementById("modal-root"));
+```
+
 ### Error Handling
 
 Unhandled exceptions raised inside of a `catchError()` block are now considered as userspace bugs and will change
@@ -123,10 +153,6 @@ with performance https://bugs.chromium.org/p/v8/issues/detail?id=8820
 - Removed autofix for [Mouse Event bubbling in iOS](https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html)
 - Added `VisitNodesDirective` to get a better control over `visitNodes()` algorithm.
 - Added `onTransitionRun()` and `onTransitionStart()` events.
-- Context propagation through portals.
-- Portal implementation is moved to a separate package `ivi-portal`. Since portals are implemented in userspace and
-don't use any internal APIs, it will guarantee that they will be working without any breaking changes when portals
-are implemented in the reconciler.
 
 ## v0.22.0
 
