@@ -21,6 +21,9 @@
       "ivi-html": [
         "packages/ivi-html/src"
       ],
+      "ivi-portal": [
+        "packages/ivi-portal/src"
+      ],
       "ivi-router": [
         "packages/ivi-router/src"
       ],

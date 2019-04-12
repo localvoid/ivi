@@ -1,5 +1,6 @@
-import { _, component, portal, usePortal } from "ivi";
+import { _, component } from "ivi";
 import { div } from "ivi-html";
+import { portal, usePortal } from "ivi-portal";
 import { testRenderDOM } from "ivi-test";
 
 test(`portal`, () => {

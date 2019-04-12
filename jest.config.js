@@ -13,6 +13,7 @@ module.exports = {
     "ivi-html": "<rootDir>/packages/ivi-html/src",
     "ivi-svg": "<rootDir>/packages/ivi-svg/src",
     "ivi-test": "<rootDir>/packages/ivi-test/src",
+    "ivi-portal": "<rootDir>/packages/ivi-portal/src",
     "ivi-state": "<rootDir>/packages/ivi-state/src",
     "ivi-router": "<rootDir>/packages/ivi-router/src",
     "ivi": "<rootDir>/packages/ivi/src",

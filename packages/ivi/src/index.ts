@@ -81,7 +81,6 @@ export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } 
 export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
 export { selector, findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
 export { Ref } from "./vdom/ref";
-export { Portal, portal, usePortal } from "./vdom/portal";
 
 // SSR
 export {

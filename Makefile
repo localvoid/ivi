@@ -4,9 +4,9 @@ Q := $(if $(VERBOSE),,@)
 
 all: build
 
-clean: clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_state
+clean: clean_ivi_html clean_ivi_svg clean_ivi clean_ivi_portal clean_ivi_state
 
-build: build_ivi build_ivi_html build_ivi_svg build_ivi_state
+build: build_ivi build_ivi_html build_ivi_svg build_ivi_portal build_ivi_state
 
 # ivi-scheduler
 clean_ivi_scheduler:
@@ -35,6 +35,13 @@ clean_ivi_svg:
 
 build_ivi_svg: clean_ivi_svg build_ivi
 	$Q cd packages/ivi-svg && yarn dist
+
+# ivi-portal
+clean_ivi_portal:
+	$Q cd packages/ivi-portal && yarn clean
+
+build_ivi_portal: clean_ivi_portal build_ivi
+	$Q cd packages/ivi-portal && yarn dist
 
 # ivi-state
 clean_ivi_state:

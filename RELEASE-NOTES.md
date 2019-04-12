@@ -124,6 +124,9 @@ with performance https://bugs.chromium.org/p/v8/issues/detail?id=8820
 - Added `VisitNodesDirective` to get a better control over `visitNodes()` algorithm.
 - Added `onTransitionRun()` and `onTransitionStart()` events.
 - Context propagation through portals.
+- Portal implementation is moved to a separate package `ivi-portal`. Since portals are implemented in userspace and
+don't use any internal APIs, it will guarantee that they will be working without any breaking changes when portals
+are implemented in the reconciler.
 
 ## v0.22.0
 

@@ -1,8 +1,4 @@
-import { context } from "./context";
-import { Op, key, TrackByKey, Key, OpNode, Context } from "./operations";
-import { Component } from "./component";
-import { component } from "./factories";
-import { useSelect, useUnmount } from "./hooks";
+import { Op, key, TrackByKey, Key, OpNode, Context, context, Component, component, useSelect, useUnmount } from "ivi";
 
 /**
  * Portal instance.
