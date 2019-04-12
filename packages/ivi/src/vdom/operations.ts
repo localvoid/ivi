@@ -91,6 +91,11 @@ export interface ElementData<T = any> {
 }
 
 /**
+ * Element operation.
+ */
+export type ElementOp<T = any> = OpNode<ElementData>;
+
+/**
  * Operation.
  */
 export type Op = string | number | OpNode | OpArray | null;
@@ -122,9 +127,19 @@ export interface OpData<T = any> {
 export type EventsData = OpData<EventHandler>;
 
 /**
+ * Events operation.
+ */
+export type EventsOp = OpNode<EventsData>;
+
+/**
  * Operation data for Context operations.
  */
-export type ContextData = OpData<{}>;
+export type ContextData<T = {}> = OpData<T>;
+
+/**
+ * Context operation.
+ */
+export type ContextOp<T = {}> = OpNode<ContextData<T>>;
 
 /**
  * Operation factory for event handlers.
@@ -192,6 +207,11 @@ export interface Key<K, V> {
  * @returns {@link Key} instance.
  */
 export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
+
+/**
+ * TrackByKey operation.
+ */
+export type TrackByKeyOp<K, V> = OpNode<Key<K, V>>;
 
 /**
  * Operation factory for track by key nodes.

@@ -70,7 +70,8 @@ export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor, Comp
 export {
   OpType, OpNode, Op, OpArray, ElementData, OpData, EventsData, ContextData, Key,
   createOpType, createOpNode,
-  Events, Context, TrackByKey, key
+  Events, Context, TrackByKey, key,
+  ElementOp, EventsOp, ContextOp, TrackByKeyOp,
 } from "./vdom/operations";
 export { OpState, createStateNode } from "./vdom/state";
 export {
