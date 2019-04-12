@@ -1,6 +1,7 @@
 import {
   doc, objectHasOwnProperty,
-  nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, elementRemoveAttribute,
+  nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, nodeSetTextContent, elementRemoveAttribute,
+  elementSetClassName, htmlElementGetStyle, svgElementGetStyle,
 } from "../dom/shortcuts";
 import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
@@ -150,7 +151,7 @@ export function _dirtyCheck(
     if ((f & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
       state = opState.s as Node;
       if (moveNode === true) {
-        nodeInsertBefore.call(parentElement, state, _nextNode);
+        nodeInsertBefore!.call(parentElement, state, _nextNode);
       }
       if (c !== null) {
         _dirtyCheck(state as Element, c as OpState, false, true);
@@ -187,7 +188,7 @@ function _moveNodes(parentElement: Element, opState: OpState) {
   const flags = opState.f;
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
     const domNode = opState.s as Node;
-    nodeInsertBefore.call(parentElement, domNode, _nextNode);
+    nodeInsertBefore!.call(parentElement, domNode, _nextNode);
     _nextNode = domNode;
   } else {
     const children = opState.c;
@@ -243,12 +244,12 @@ function _unmountRemove(parentElement: Element, opState: OpState, singleChild: b
   const flags = opState.f;
 
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    nodeRemoveChild.call(parentElement, opState.s as Node);
+    nodeRemoveChild!.call(parentElement, opState.s as Node);
   } else {
     const children = opState.c;
     if ((flags & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
       if (singleChild === true) {
-        parentElement.textContent = "";
+        nodeSetTextContent!.call(parentElement, "");
       } else {
         for (let i = 0; i < (children as Array<OpState | null>).length; ++i) {
           const c = (children as Array<OpState | null>)[i];
@@ -274,7 +275,7 @@ function _mountText(
   op: string | number,
 ) {
   const node = doc.createTextNode(op as string);
-  nodeInsertBefore.call(parentElement, node, _nextNode);
+  nodeInsertBefore!.call(parentElement, node, _nextNode);
   _nextNode = node;
   opState.s = node;
   opState.f = NodeFlags.Text;
@@ -296,7 +297,7 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
   }
 
   if (a !== void 0) {
-    _updateAttrs(node, void 0, a);
+    _updateAttrs(node, void 0, a, svg);
   }
 
   return node;
@@ -338,7 +339,7 @@ function _mountObject(
             (descriptor as ElementProtoDescriptor).p,
           );
         }
-        node = nodeCloneNode.call(node, false) as Element;
+        node = nodeCloneNode!.call(node, false) as Element;
       }
       opState.s = node = _createElement(node, op);
 
@@ -348,7 +349,7 @@ function _mountObject(
       if (value !== null) {
         opState.c = _mount(node, value);
       }
-      nodeInsertBefore.call(parentElement, node, prevState);
+      nodeInsertBefore!.call(parentElement, node, prevState);
       _nextNode = node;
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
@@ -456,11 +457,11 @@ export function _update(
         (s as Node).nodeValue = nextOp as string;
       }
       if (moveNode === true) {
-        nodeInsertBefore.call(parentElement, s as Node, _nextNode);
+        nodeInsertBefore!.call(parentElement, s as Node, _nextNode);
       }
       _nextNode = s as Node;
     } else {
-      nodeRemoveChild.call(parentElement, s as Node);
+      nodeRemoveChild!.call(parentElement, s as Node);
       return _mount(parentElement, nextOp);
     }
   } else {
@@ -512,10 +513,11 @@ export function _update(
     } else {
       deepStateFlags = _pushDeepState();
       if ((flags & NodeFlags.Element) !== 0) {
+        const svg = (flags & NodeFlags.Svg) !== 0;
         prevData = (o as OpNode<ElementData>).d;
         nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
-          nodeInsertBefore.call(parentElement, s, _nextNode);
+          nodeInsertBefore!.call(parentElement, s, _nextNode);
         }
 
         nextValue = nextData.n;
@@ -523,12 +525,12 @@ export function _update(
           if (nextValue === void 0) {
             nextValue = "";
           }
-          _updateClassName(s, nextValue, (flags & NodeFlags.Svg) !== 0);
+          _updateClassName(s, nextValue, svg);
         }
 
         nextValue = nextData.a;
         if (prevData.a !== nextValue) {
-          _updateAttrs(s as Element, prevData.a, nextValue);
+          _updateAttrs(s as Element, prevData.a, nextValue, svg);
         }
 
         _nextNode = null;
@@ -1056,9 +1058,9 @@ function _updateClassName(element: Element, className: string, svg: boolean): vo
    * #quirks
    */
   if (svg === true) {
-    elementSetAttribute.call(element, "class", className);
+    elementSetAttribute!.call(element, "class", className);
   } else {
-    (element as HTMLElement).className = className;
+    elementSetClassName!.call((element as HTMLElement), className);
   }
 }
 
@@ -1073,8 +1075,9 @@ function _updateStyle(
   element: HTMLElement | SVGElement,
   a: CSSStyleProps | undefined,
   b: CSSStyleProps | undefined,
+  svg: boolean,
 ): void {
-  const style = element.style;
+  const style = svg === true ? svgElementGetStyle!.call(element) : htmlElementGetStyle!.call(element);
   let key: string;
   let bValue;
 
@@ -1128,18 +1131,19 @@ function _updateAttrs(
   element: Element,
   a: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
   b: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
+  svg: boolean,
 ): void {
   let key: string;
 
   if (a === void 0) {
     // a is empty, insert all attributes from b.
     for (key in b!) {
-      _updateAttr(element, key, void 0, b![key]);
+      _updateAttr(element, key, void 0, b![key], svg);
     }
   } else if (b === void 0) {
     // b is empty, remove all attributes from a.
     for (key in a) {
-      _updateAttr(element, key, a[key], void 0);
+      _updateAttr(element, key, a[key], void 0, svg);
     }
   } else {
     let matchCount = 0;
@@ -1150,6 +1154,7 @@ function _updateAttrs(
         key,
         a[key],
         (objectHasOwnProperty.call(b, key) === true) ? (matchCount++ , b[key]) : void 0,
+        svg,
       );
     }
 
@@ -1157,7 +1162,7 @@ function _updateAttrs(
     for (; matchCount < keys.length && i < keys.length; ++i) {
       key = keys[i];
       if (objectHasOwnProperty.call(a, key) === false) {
-        _updateAttr(element, key, void 0, b[key]);
+        _updateAttr(element, key, void 0, b[key], svg);
         ++matchCount;
       }
     }
@@ -1177,6 +1182,7 @@ function _updateAttr(
   key: string,
   prev: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
   next: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
+  svg: boolean,
 ): void {
   if (key !== "style") {
     if (typeof next === "object") {
@@ -1214,12 +1220,12 @@ function _updateAttr(
         next = next ? "" : void 0;
       }
       if (next === void 0) {
-        elementRemoveAttribute.call(element, key);
+        elementRemoveAttribute!.call(element, key);
       } else {
-        elementSetAttribute.call(element, key, next as string);
+        elementSetAttribute!.call(element, key, next as string);
       }
     }
   } else if (prev !== next) {
-    _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps);
+    _updateStyle(element as HTMLElement, prev as CSSStyleProps, next as CSSStyleProps, svg);
   }
 }
