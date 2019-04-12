@@ -1,101 +1,87 @@
-import { Op, key, TrackByKey, Key, OpNode, Context, context, Component, component, useSelect, useUnmount } from "ivi";
+import { Op, key, TrackByKey, Key, OpNode, ContextData, Context, context, component, useSelect, useUnmount } from "ivi";
 
 /**
- * Portal instance.
+ * Portal.
  */
 export interface Portal {
   /**
-   * Dynamic list of children nodes.
+   * Root Node.
    */
-  children: OpNode<Key<number, Op>[]>;
+  readonly root: Op;
   /**
-   * Root node.
+   * Portal Entry.
    */
-  root: Op;
+  readonly entry: (children: Op) => Op;
 }
 
 /**
- * updateChildren updates portal children list.
+ * updateChildren updates and returns a new portal children list.
  *
- * @param p Portal.
- * @param isRemove Is remove operation.
- * @param child Child node.
+ * @param trackByOp TrackBy operation.
+ * @param prev Previous child operation.
+ * @param next Next child operation.
+ * @returns TrackBy operation.
  */
-function updateChildren(p: Portal, isRemove: boolean, child: Key<number, Op>) {
-  const children = p.children.d;
-  const k = child.k;
-  let i = 0;
-  while (i < children.length) {
-    if (children[i].k === k) {
-      break;
-    }
-    ++i;
-  }
-  const newChildren = p.children.d.slice();
-  if (isRemove) {
-    newChildren.splice(i, 1);
+function updateChildren(
+  trackByOp: OpNode<Key<number, Op>[]>,
+  prev: Key<number, Op> | null,
+  next: Key<number, Op> | null,
+) {
+  const nextChildren = trackByOp.d.slice();
+  if (prev === null) {
+    nextChildren.push(next!);
   } else {
-    if (i < children.length) {
-      newChildren[i] = child;
+    const idx = nextChildren.indexOf(prev);
+    if (next === null) {
+      nextChildren.splice(idx, 1);
+    } else if (idx === -1) {
+      nextChildren.push(next);
     } else {
-      newChildren.push(child);
+      nextChildren[idx] = next;
     }
   }
-  p.children = TrackByKey(newChildren);
+  return TrackByKey(nextChildren);
 }
 
 const defaultPortal = (children: Op) => children;
 
 const empty = TrackByKey<number>([]);
-
-/**
- * portal creates a portal instance.
- *
- * @param inner Inner component.
- * @returns Portal instance.
- */
-export const portal = (inner: (children: Op) => Op = defaultPortal): Portal => {
-  const p: Portal = { children: empty, root: null };
-  p.root = component((c) => {
-    const getChildren = useSelect<Op>(c, () => p.children);
-    return () => inner(getChildren());
-  })();
-  return p;
-};
-
 let _nextId = 0;
 
 /**
- * usePortal creates a portal entry.
+ * portal creates a portal.
  *
- * @param c Component state.
- * @param p Portal.
- * @returns Portal entry.
+ * @param inner Inner component.
+ * @returns Portal.
  */
-export function usePortal(c: Component, p: Portal) {
-  const getContext = useSelect(c, context);
-  const id = _nextId++;
-  let prev: Key<number, Op> | undefined;
-  let unmount = false;
-
-  return (op: Op) => {
-    const ctx = getContext();
-
-    if (prev === void 0 || prev.v !== op) {
-      if (op !== null) {
-        updateChildren(p, false, prev = key(id, Context(ctx, op)));
-        if (unmount === false) {
-          unmount = true;
-          useUnmount(c, () => {
-            if (prev !== void 0) {
-              updateChildren(p, true, prev);
-            }
-          });
+export const portal = (inner: (children: Op) => Op = defaultPortal) => {
+  let children = empty;
+  return {
+    root: component((c) => {
+      const getChildren = useSelect<Op>(c, () => children);
+      return () => inner(getChildren());
+    })(),
+    entry: component<Op>((c) => {
+      const getContext = useSelect(c, context);
+      const id = _nextId++;
+      let prev: Key<number, OpNode<ContextData>> | null = null;
+      useUnmount(c, () => {
+        if (prev !== null) {
+          children = updateChildren(children, prev, null);
         }
-      } else if (prev !== void 0) {
-        updateChildren(p, true, prev);
-        prev = void 0;
-      }
-    }
+      });
+
+      return (op: Op) => {
+        if (op === null) {
+          if (prev !== null) {
+            children = updateChildren(children, prev, null);
+            prev = null;
+          }
+        } else if (prev === null || prev.v.d.c !== op) {
+          children = updateChildren(children, prev, prev = key(id, Context(getContext(), op)));
+        }
+        return null;
+      };
+    }),
   };
-}
+};
