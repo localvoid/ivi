@@ -982,6 +982,17 @@ https://localvoid.github.io/ivi-examples/benchmarks/dbmon/?m=0&n=50
 
 This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-examples/blob/3da4c7db883b4249698ac18a4c728352bb98b679/packages/benchmarks/dbmon/src/main.ts#L35), with more complicated selectors there will be higher overhead.
 
+### Portals
+
+Current portal implementation relies on the reconciler execution order and unable to propagate current context. There
+are many ways how to implement portals and right now it has a simple component based
+[implementation](https://github.com/localvoid/ivi/blob/4d68087fbe2f694d0dbfdcea7a8d92bd10d80c0b/packages/ivi/src/vdom/portal.ts)
+that doesn't use any internal APIs.
+
+It is a temporary solution that covers major use cases. There are many different edge cases with portals that doesn't
+even work in [React](https://codesandbox.io/s/pmm2m75xlx) and right now I am investigating different approaches how to
+solve this issues. Most likely it will have similar issues as React portals.
+
 ### Custom Elements (Web Components)
 
 Creating custom elements isn't supported, but there shouldn't be any problems with using custom elements.
