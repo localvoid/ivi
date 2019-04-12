@@ -1,4 +1,5 @@
-import { Op, key, TrackByKey, Key, OpNode } from "./operations";
+import { context } from "./context";
+import { Op, key, TrackByKey, Key, OpNode, Context } from "./operations";
 import { Component } from "./component";
 import { component } from "./factories";
 import { useSelect, useUnmount } from "./hooks";
@@ -76,13 +77,17 @@ let _nextId = 0;
  * @returns Portal entry.
  */
 export function usePortal(c: Component, p: Portal) {
+  const getContext = useSelect(c, context);
   const id = _nextId++;
   let prev: Key<number, Op> | undefined;
   let unmount = false;
+
   return (op: Op) => {
+    const ctx = getContext();
+
     if (prev === void 0 || prev.v !== op) {
       if (op !== null) {
-        updateChildren(p, false, prev = key(id, op));
+        updateChildren(p, false, prev = key(id, Context(ctx, op)));
         if (unmount === false) {
           unmount = true;
           useUnmount(c, () => {

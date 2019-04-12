@@ -123,6 +123,7 @@ with performance https://bugs.chromium.org/p/v8/issues/detail?id=8820
 - Removed autofix for [Mouse Event bubbling in iOS](https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html)
 - Added `VisitNodesDirective` to get a better control over `visitNodes()` algorithm.
 - Added `onTransitionRun()` and `onTransitionStart()` events.
+- Context propagation through portals.
 
 ## v0.22.0
 
