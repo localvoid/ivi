@@ -5,7 +5,7 @@
 Synthetic event internals were heavily redesigned to reduce overall complexity and improve API flexibility for custom
 synthetic events.
 
-Custom synthetic events can now inject their own behavior to event flow of native events. It should significantly
+Custom synthetic events can now inject their own behavior into event flow of native events. It should significantly
 improve performance when there are many custom synthetic events as it won't be necessary to traverse virtual dom to
 collect dispatch targets for each custom synthetic event.
 
@@ -143,8 +143,7 @@ entryFn(arg1, arg2);
 - Fixed bug when strictly equal direct child node of an HTML/SVG element doesn't trigger deep dirty checking.
 - Fixed bug when `useUnmount()` hook hasn't been receiving an undocumented `true` value as a first argument. It is an
 unstable feature that can be used for micro optimizations in custom hooks.
-- Ported back shortcuts for DOM property accesors that should reduce megamorphic call-sites. Chrome 74 fixed an issue
-with performance https://bugs.chromium.org/p/v8/issues/detail?id=8820
+- Added shortcuts for DOM property accesors that should reduce megamorphic call-sites.
 
 ### Misc
 

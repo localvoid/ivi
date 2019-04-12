@@ -41,22 +41,22 @@ function updateChildren(
   return TrackByKey(nextChildren);
 }
 
-const defaultPortal = (children: Op) => children;
+const defaultPortalDecorator = (children: Op) => children;
 const EMPTY = TrackByKey<number>([]);
 let nextId = 0;
 
 /**
  * portal creates a portal.
  *
- * @param inner Inner component.
+ * @param rootDecorator Root decorator.
  * @returns Portal.
  */
-export const portal = (inner: (children: Op) => Op = defaultPortal) => {
+export const portal = (rootDecorator: (children: Op) => Op = defaultPortalDecorator) => {
   let children = EMPTY;
   return {
     root: component((c) => {
       const getChildren = useSelect<Op>(c, () => children);
-      return () => inner(getChildren());
+      return () => rootDecorator(getChildren());
     })(),
     entry: component<Op>((c) => {
       const getContext = useSelect(c, context);
