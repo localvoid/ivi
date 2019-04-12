@@ -23,7 +23,7 @@ const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY = {
   v: "",
   u: (element: Element, key: string, prev: any) => {
     if (prev !== "") {
-      elementSetAttributeNS.call(element, XML_NAMESPACE, key, "");
+      elementSetAttributeNS!.call(element, XML_NAMESPACE, key, "");
     }
   },
 };
@@ -37,7 +37,7 @@ const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY = {
   v: "",
   u: (element: Element, key: string, prev: any) => {
     if (prev !== "") {
-      elementSetAttributeNS.call(element, XLINK_NAMESPACE, key, "");
+      elementSetAttributeNS!.call(element, XLINK_NAMESPACE, key, "");
     }
   },
 };
@@ -64,9 +64,9 @@ function updateNSAttr(
 ) {
   if (prev !== next) {
     if (next === void 0) {
-      elementRemoveAttribute.call(element, key);
+      elementRemoveAttribute!.call(element, key);
     } else {
-      elementSetAttributeNS.call(element, ns, key, next as string);
+      elementSetAttributeNS!.call(element, ns, key, next as string);
     }
   }
 }
