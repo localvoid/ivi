@@ -24,18 +24,16 @@ export interface Portal {
  */
 function updateChildren(
   trackByOp: OpNode<Key<number, Op>[]>,
-  prev: Key<number, Op> | null,
-  next: Key<number, Op> | null,
+  prev: Key<number, Op> | undefined,
+  next: Key<number, Op> | undefined,
 ) {
   const nextChildren = trackByOp.d.slice();
-  if (prev === null) {
+  if (prev === void 0) {
     nextChildren.push(next!);
   } else {
     const idx = nextChildren.indexOf(prev);
-    if (next === null) {
+    if (next === void 0) {
       nextChildren.splice(idx, 1);
-    } else if (idx === -1) {
-      nextChildren.push(next);
     } else {
       nextChildren[idx] = next;
     }
@@ -44,9 +42,8 @@ function updateChildren(
 }
 
 const defaultPortal = (children: Op) => children;
-
-const empty = TrackByKey<number>([]);
-let _nextId = 0;
+const EMPTY = TrackByKey<number>([]);
+let nextId = 0;
 
 /**
  * portal creates a portal.
@@ -55,7 +52,7 @@ let _nextId = 0;
  * @returns Portal.
  */
 export const portal = (inner: (children: Op) => Op = defaultPortal) => {
-  let children = empty;
+  let children = EMPTY;
   return {
     root: component((c) => {
       const getChildren = useSelect<Op>(c, () => children);
@@ -63,22 +60,14 @@ export const portal = (inner: (children: Op) => Op = defaultPortal) => {
     })(),
     entry: component<Op>((c) => {
       const getContext = useSelect(c, context);
-      const id = _nextId++;
-      let prev: Key<number, OpNode<ContextData>> | null = null;
-      useUnmount(c, () => {
-        if (prev !== null) {
-          children = updateChildren(children, prev, null);
-        }
-      });
-
+      const id = nextId++;
+      let prevCtx: {};
+      let prevOp: Key<number, OpNode<ContextData>> | undefined;
+      useUnmount(c, () => { children = updateChildren(children, prevOp!, void 0); });
       return (op: Op) => {
-        if (op === null) {
-          if (prev !== null) {
-            children = updateChildren(children, prev, null);
-            prev = null;
-          }
-        } else if (prev === null || prev.v.d.c !== op) {
-          children = updateChildren(children, prev, prev = key(id, Context(getContext(), op)));
+        const ctx = getContext();
+        if (prevOp === void 0 || prevOp.v.d.c !== op || prevCtx !== ctx) {
+          children = updateChildren(children, prevOp, prevOp = key(id, Context(prevCtx = ctx, op)));
         }
         return null;
       };
