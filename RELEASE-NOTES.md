@@ -5,14 +5,14 @@
 Synthetic event internals were heavily redesigned to reduce overall complexity and improve API flexibility for custom
 synthetic events.
 
-Custom synthetic events can now dispatch custom events when native events are dispatched. It should significantly
-improve performance when there are many custom synthetic events as it would require to traverse virtual dom just once
-when dispatch targets are collected.
+Custom synthetic events can now inject their own behavior to event flow of native events. It should significantly
+improve performance when there are many custom synthetic events as it won't be necessary to traverse virtual dom to
+collect dispatch targets for each custom synthetic event.
 
 API for creating custom synthetic events is still an unstable API and it is most likely that there will be changes in
 the future, but it is an extremely useful API that solves alot of problems with UI applications.
 
-#### Native events are no longer wrapped in a `SyntheticNativeEvent` object.
+#### Native events are no longer wrapped in a `SyntheticNativeEvent` object
 
 BEFORE
 
@@ -30,7 +30,7 @@ onClick((ev) => {
 });
 ```
 
-#### `EventFlags` is removed.
+#### `EventFlags` is removed
 
 To stop event propagation event handler should return `true` value.
 
@@ -51,13 +51,13 @@ onClick((ev) => {
 });
 ```
 
-#### `currentTarget` is now accessible as a second argument.
+#### `currentTarget` is now accessible as a second argument
 
 BEFORE
 
 ```js
 onClick((ev) => {
-  console.log(ev.node); // target
+  console.log(ev.node); // currentTarget
 });
 ```
 
@@ -73,10 +73,10 @@ onClick((ev, currentTarget) => {
 
 `SyntheticEvent` interface had two properties: `node` and `timestamp`. `node` were used to assign current target, it is
 replaced with an additional argument in all event handler functions. `timestamp` is a leftover from an old synthetic
-events implementation that tried to fix cross-browser quirks, for many custom synthetic events this property doesn't
-have any value and it should be decided by a custom event implementor when `timestamp` value is necessary.
+events implementation that tried to fix cross-browser quirks. For many custom synthetic events this property doesn't
+have any value and it custom event implementor should decide when `timestamp` value is necessary.
 
-#### `beforeNativeEvent()` and `afterNativeEvent()` is removed
+#### `beforeNativeEvent()` and `afterNativeEvent()` are removed
 
 It is replaced with an `addNativeEventMiddleware()`.
 

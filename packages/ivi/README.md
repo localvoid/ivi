@@ -26,9 +26,9 @@ powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **3KiB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **3.1KiB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5.3KiB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5KiB** (minified+compressed).
 
 ## Quick Start
 
@@ -985,7 +985,7 @@ This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-
 ### Portals
 
 Current portal implementation relies on the reconciler execution order. There are many ways how to implement portals and
-right now it has a simple component based [implementation](https://github.com/localvoid/ivi/tree/ba79b66b0ac9589fd9e19b53591f2801b4cc93a6/packages/ivi-portal) that doesn't use any internal APIs.
+right now it has a simple component based [implementation](https://github.com/localvoid/ivi/tree/71edcfa08415b941e7414bbb1b5bfafdfe3418e6/packages/ivi-portal) that doesn't use any internal APIs.
 
 ### Custom Elements (Web Components)
 
