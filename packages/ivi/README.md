@@ -1025,8 +1025,28 @@ This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-
 
 ### Portals
 
-Current portal implementation relies on the reconciler execution order. There are many ways how to implement portals and
-right now it has a simple component based [implementation](https://github.com/localvoid/ivi/tree/71edcfa08415b941e7414bbb1b5bfafdfe3418e6/packages/ivi-portal) that doesn't use any internal APIs.
+Portal implementation relies on the reconciler execution order.
+
+Reconciler always mounts and updates nodes from right to left and this example won't work correctly:
+
+```js
+render([App(), PORTAL.root], document.getElementById("app"));
+```
+
+To fix this example, we should either place portal roots before components that use them:
+
+```js
+render([PORTAL.root, App()], document.getElementById("app"));
+```
+
+Or render them in a different container:
+
+```js
+render(App(), document.getElementById("app"));
+render(PORTAL.root, document.getElementById("portal"));
+```
+
+Root nodes are always updated in the order in which they originally were mounted into the document.
 
 ### Custom Elements (Web Components)
 
