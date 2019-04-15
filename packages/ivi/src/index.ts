@@ -105,6 +105,7 @@ export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/even
 export { DispatchTarget, dispatchEvent } from "./events/dispatch";
 export {
   NativeEventSourceFlags, NativeEventSource, createNativeEventSource, addNativeEventMiddleware,
+  nativeEventHandlerFactory,
 
   ABORT_EVENT, ACTIVATE_EVENT, ARIA_REQUEST_EVENT, BEFORE_ACTIVATE_EVENT, BEFORE_COPY_EVENT, BEFORE_CUT_EVENT,
   BEFORE_DEACTIVATE_EVENT, BEFORE_PASTE_EVENT, BLUR_EVENT, CAN_PLAY_EVENT, CAN_PLAYTHROUGH_EVENT, CHANGE_EVENT,
@@ -120,8 +121,6 @@ export {
   TOUCH_CANCEL_EVENT, TOUCH_END_EVENT, TOUCH_MOVE_EVENT, TOUCH_START_EVENT, TRANSITION_CANCEL_EVENT,
   TRANSITION_END_EVENT, TRANSITION_RUN_EVENT, TRANSITION_START_EVENT, UNLOAD_EVENT, VOLUME_CHANGE_EVENT, WAITING_EVENT,
   WHEEL_EVENT, ACTIVE_TOUCH_END_EVENT, ACTIVE_TOUCH_MOVE_EVENT, ACTIVE_TOUCH_START_EVENT, ACTIVE_WHEEL_EVENT,
-
-  createNativeEventHandler,
 
   onAbort, onActivate, onAriaRequest, onBeforeActivate, onBeforeCopy, onBeforeCut, onBeforeDeactivate, onBeforePaste,
   onBlur, onCanPlay, onCanPlaythrough, onChange, onClick, onContextMenu, onCopy, onCueChange, onCut, onDoubleClick,

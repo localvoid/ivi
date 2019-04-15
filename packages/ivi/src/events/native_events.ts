@@ -12,7 +12,7 @@ import { DispatchTarget, dispatchEvent } from "./dispatch";
 import { EVENT_CAPTURE_ACTIVE_OPTIONS } from "./utils";
 
 /**
- * NativeEventDispatcherFlags.
+ * NativeEventSourceFlags.
  */
 export const enum NativeEventSourceFlags {
   /**
@@ -419,17 +419,13 @@ export const ACTIVE_WHEEL_EVENT = (
 );
 
 /**
- * Helper function that creates event handlers.
+ * Helper function that creates native event handler factories.
  *
- * @param d Event source
- * @param h Event Handler function
- * @param capture Capture mode
- * @returns EventHandler instance
+ * @param s Native event source.
+ * @returns Native event handler factory.
  */
-export function createNativeEventHandler(s: {}): (
-  h: NativeEventHandler<any>,
-  capture?: boolean,
-) => EventHandlerNode<any> {
+export function nativeEventHandlerFactory(s: {}):
+  (h: NativeEventHandler<any>, capture?: boolean) => EventHandlerNode<any> {
   const bubbleDescriptor = { s, h: dispatchNativeEvent, f: 0 };
   const captureDescriptor = { s, h: dispatchNativeEvent, f: EventHandlerFlags.Capture };
   return (h, capture) => ({
@@ -443,581 +439,581 @@ export const onAbort: <P>(
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ABORT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ABORT_EVENT)
   );
 export const onActivate: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ACTIVATE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ACTIVATE_EVENT)
   );
 export const onAriaRequest: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ARIA_REQUEST_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ARIA_REQUEST_EVENT)
   );
 export const onBeforeActivate: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BEFORE_ACTIVATE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BEFORE_ACTIVATE_EVENT)
   );
 export const onBeforeCopy: <P>(
   handler: NativeEventHandler<ClipboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ClipboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BEFORE_COPY_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BEFORE_COPY_EVENT)
   );
 export const onBeforeCut: <P>(
   handler: NativeEventHandler<ClipboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ClipboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BEFORE_CUT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BEFORE_CUT_EVENT)
   );
 export const onBeforeDeactivate: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BEFORE_DEACTIVATE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BEFORE_DEACTIVATE_EVENT)
   );
 export const onBeforePaste: <P>(
   handler: NativeEventHandler<ClipboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ClipboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BEFORE_PASTE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BEFORE_PASTE_EVENT)
   );
 export const onBlur: <P>(
   handler: NativeEventHandler<FocusEvent>,
   capture?: boolean,
 ) => EventHandlerNode<FocusEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BLUR_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BLUR_EVENT)
   );
 export const onCanPlay: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CAN_PLAY_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CAN_PLAY_EVENT)
   );
 export const onCanPlaythrough: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CAN_PLAYTHROUGH_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CAN_PLAYTHROUGH_EVENT)
   );
 export const onChange: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CHANGE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CHANGE_EVENT)
   );
 export const onClick: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CLICK_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CLICK_EVENT)
   );
 export const onContextMenu: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CONTEXT_MENU_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CONTEXT_MENU_EVENT)
   );
 export const onCopy: <P>(
   handler: NativeEventHandler<ClipboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ClipboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(COPY_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(COPY_EVENT)
   );
 export const onCueChange: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CUE_CHANGE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CUE_CHANGE_EVENT)
   );
 export const onCut: <P>(
   handler: NativeEventHandler<ClipboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ClipboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(CUT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(CUT_EVENT)
   );
 export const onDoubleClick: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DOUBLE_CLICK_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DOUBLE_CLICK_EVENT)
   );
 export const onDeactivate: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DEACTIVATE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DEACTIVATE_EVENT)
   );
 export const onDrag: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DRAG_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DRAG_EVENT)
   );
 export const onDragEnd: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DRAG_END_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DRAG_END_EVENT)
   );
 export const onDragEnter: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DRAG_ENTER_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DRAG_ENTER_EVENT)
   );
 export const onDragLeave: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DRAG_LEAVE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DRAG_LEAVE_EVENT)
   );
 export const onDragOver: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DRAG_OVER_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DRAG_OVER_EVENT)
   );
 export const onDragStart: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DRAG_START_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DRAG_START_EVENT)
   );
 export const onDrop: <P>(
   handler: NativeEventHandler<DragEvent>,
   capture?: boolean,
 ) => EventHandlerNode<DragEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DROP_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DROP_EVENT)
   );
 export const onDurationChange: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(DURATION_CHANGE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(DURATION_CHANGE_EVENT)
   );
 export const onEmptied: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(EMPTIED_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(EMPTIED_EVENT)
   );
 export const onEncrypted: <P>(
   handler: NativeEventHandler<MediaEncryptedEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MediaEncryptedEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ENCRYPTED_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ENCRYPTED_EVENT)
   );
 export const onEnded: <P>(
   handler: NativeEventHandler<MediaStreamErrorEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MediaStreamErrorEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ENDED_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ENDED_EVENT)
   );
 export const onError: <P>(
   handler: NativeEventHandler<ErrorEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ErrorEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ERROR_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ERROR_EVENT)
   );
 export const onFocus: <P>(
   handler: NativeEventHandler<FocusEvent>,
   capture?: boolean,
 ) => EventHandlerNode<FocusEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(FOCUS_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(FOCUS_EVENT)
   );
 export const onGotPointerCapture: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(GOT_POINTER_CAPTURE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(GOT_POINTER_CAPTURE_EVENT)
   );
 export const onBeforeInput: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(BEFORE_INPUT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(BEFORE_INPUT_EVENT)
   );
 export const onInput: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(INPUT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(INPUT_EVENT)
   );
 export const onInvalid: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(INVALID_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(INVALID_EVENT)
   );
 export const onKeyDown: <P>(
   handler: NativeEventHandler<KeyboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<KeyboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(KEY_DOWN_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(KEY_DOWN_EVENT)
   );
 export const onKeyPress: <P>(
   handler: NativeEventHandler<KeyboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<KeyboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(KEY_PRESS_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(KEY_PRESS_EVENT)
   );
 export const onKeyUp: <P>(
   handler: NativeEventHandler<KeyboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<KeyboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(KEY_UP_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(KEY_UP_EVENT)
   );
 export const onLoad: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(LOAD_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(LOAD_EVENT)
   );
 export const onLoadedData: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(LOADED_DATA_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(LOADED_DATA_EVENT)
   );
 export const onLoadedMetadata: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(LOADED_METADATA_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(LOADED_METADATA_EVENT)
   );
 export const onLoadStart: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(LOAD_START_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(LOAD_START_EVENT)
   );
 export const onLostPointerCapture: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(LOST_POINTER_CAPTURE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(LOST_POINTER_CAPTURE_EVENT)
   );
 export const onMouseDown: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(MOUSE_DOWN_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(MOUSE_DOWN_EVENT)
   );
 export const onMouseMove: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(MOUSE_MOVE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(MOUSE_MOVE_EVENT)
   );
 export const onMouseOut: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(MOUSE_OUT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(MOUSE_OUT_EVENT)
   );
 export const onMouseOver: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(MOUSE_OVER_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(MOUSE_OVER_EVENT)
   );
 export const onMouseUp: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
 ) => EventHandlerNode<MouseEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(MOUSE_UP_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(MOUSE_UP_EVENT)
   );
 export const onPaste: <P>(
   handler: NativeEventHandler<ClipboardEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ClipboardEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(PASTE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(PASTE_EVENT)
   );
 export const onPause: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(PAUSE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(PAUSE_EVENT)
   );
 export const onPlay: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(PLAY_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(PLAY_EVENT)
   );
 export const onPlaying: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(PLAYING_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(PLAYING_EVENT)
   );
 export const onPointerCancel: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(POINTER_CANCEL_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(POINTER_CANCEL_EVENT)
   );
 export const onPointerDown: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(POINTER_DOWN_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(POINTER_DOWN_EVENT)
   );
 export const onPointerMove: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(POINTER_MOVE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(POINTER_MOVE_EVENT)
   );
 export const onPointerOut: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(POINTER_OUT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(POINTER_OUT_EVENT)
   );
 export const onPointerOver: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(POINTER_OVER_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(POINTER_OVER_EVENT)
   );
 export const onPointerUp: <P>(
   handler: NativeEventHandler<PointerEvent>,
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(POINTER_UP_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(POINTER_UP_EVENT)
   );
 export const onProgress: <P>(
   handler: NativeEventHandler<ProgressEvent>,
   capture?: boolean,
 ) => EventHandlerNode<ProgressEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(PROGRESS_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(PROGRESS_EVENT)
   );
 export const onRateChange: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(RATE_CHANGE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(RATE_CHANGE_EVENT)
   );
 export const onReset: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(RESET_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(RESET_EVENT)
   );
 export const onScroll: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SCROLL_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SCROLL_EVENT)
   );
 export const onSeeked: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SEEKED_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SEEKED_EVENT)
   );
 export const onSeeking: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SEEKING_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SEEKING_EVENT)
   );
 export const onSelect: <P>(
   handler: NativeEventHandler<UIEvent>,
   capture?: boolean,
 ) => EventHandlerNode<UIEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SELECT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SELECT_EVENT)
   );
 export const onSelectStart: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SELECT_START_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SELECT_START_EVENT)
   );
 export const onStalled: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(STALLED_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(STALLED_EVENT)
   );
 export const onSubmit: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SUBMIT_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SUBMIT_EVENT)
   );
 export const onSuspend: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(SUSPEND_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(SUSPEND_EVENT)
   );
 export const onTimeUpdate: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TIME_UPDATE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TIME_UPDATE_EVENT)
   );
 export const onTouchCancel: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TOUCH_CANCEL_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TOUCH_CANCEL_EVENT)
   );
 export const onTouchEnd: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TOUCH_END_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TOUCH_END_EVENT)
   );
 export const onTouchMove: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TOUCH_MOVE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TOUCH_MOVE_EVENT)
   );
 export const onTouchStart: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TOUCH_START_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TOUCH_START_EVENT)
   );
 export const onTransitionCancel: <P>(
   handler: NativeEventHandler<TransitionEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TransitionEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TRANSITION_CANCEL_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TRANSITION_CANCEL_EVENT)
   );
 export const onTransitionEnd: <P>(
   handler: NativeEventHandler<TransitionEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TransitionEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TRANSITION_END_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TRANSITION_END_EVENT)
   );
 export const onTransitionRun: <P>(
   handler: NativeEventHandler<TransitionEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TransitionEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TRANSITION_RUN_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TRANSITION_RUN_EVENT)
   );
 export const onTransitionStart: <P>(
   handler: NativeEventHandler<TransitionEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TransitionEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(TRANSITION_START_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(TRANSITION_START_EVENT)
   );
 export const onUnload: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(UNLOAD_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(UNLOAD_EVENT)
   );
 export const onVolumeChange: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(VOLUME_CHANGE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(VOLUME_CHANGE_EVENT)
   );
 export const onWaiting: <P>(
   handler: NativeEventHandler<Event>,
   capture?: boolean,
 ) => EventHandlerNode<Event> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(WAITING_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(WAITING_EVENT)
   );
 export const onWheel: <P>(
   handler: NativeEventHandler<WheelEvent>,
   capture?: boolean,
 ) => EventHandlerNode<WheelEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(WHEEL_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(WHEEL_EVENT)
   );
 
 export const onActiveTouchEnd: <P>(
@@ -1025,28 +1021,28 @@ export const onActiveTouchEnd: <P>(
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ACTIVE_TOUCH_END_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ACTIVE_TOUCH_END_EVENT)
   );
 export const onActiveTouchMove: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ACTIVE_TOUCH_MOVE_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ACTIVE_TOUCH_MOVE_EVENT)
   );
 export const onActiveTouchStart: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ACTIVE_TOUCH_START_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ACTIVE_TOUCH_START_EVENT)
   );
 export const onActiveWheel: <P>(
   handler: NativeEventHandler<WheelEvent>,
   capture?: boolean,
 ) => EventHandlerNode<WheelEvent> = (
     process.env.IVI_TARGET === "ssr" ? () => (null as any) :
-    /*#__PURE__*/createNativeEventHandler(ACTIVE_WHEEL_EVENT)
+    /*#__PURE__*/nativeEventHandlerFactory(ACTIVE_WHEEL_EVENT)
   );
 
 /* tslint:enable:max-line-length */
