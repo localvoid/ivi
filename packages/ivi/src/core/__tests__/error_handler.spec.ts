@@ -1,19 +1,20 @@
+import { useModule, useResetModules } from "ivi-jest";
+
+useResetModules();
+const ivi = useModule<typeof import("ivi")>("ivi");
+
 describe(`catchError`, () => {
-  const handler = jest.fn();
-  let ivi: typeof import("ivi");
-
-  beforeEach(async () => {
-    jest.resetModules();
-    handler.mockReset();
-    ivi = await import("ivi");
-    ivi.addErrorHandler(handler);
-  });
-
   test(`handler should not be invoked when it is added`, () => {
+    const handler = jest.fn();
+    ivi.addErrorHandler(handler);
+
     expect(handler.mock.calls.length).toBe(0);
   });
 
   test(`handler should be invoked with an error raised from inside`, () => {
+    const handler = jest.fn();
+    ivi.addErrorHandler(handler);
+
     const e = new Error();
     try {
       ivi.catchError(() => { throw e; })();

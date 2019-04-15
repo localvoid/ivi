@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mount text node empty string 1`] = ``;
+
+exports[`mount text node number 1`] = `123`;
+
+exports[`mount text node string 1`] = `abc`;
+
+exports[`mount text node zero number 1`] = `0`;

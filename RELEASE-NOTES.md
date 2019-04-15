@@ -1,3 +1,10 @@
+## Upcoming Release
+
+### Tests
+
+New package `ivi-jest` adds a collection of useful tools for testing with jest library. All ivi tests were completely
+rewritten using a new `ivi-jest` library.
+
 ## v0.23.0
 
 ### Synthetic Events

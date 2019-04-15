@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mount fragment empty 1`] = `null`;
+
+exports[`mount fragment empty 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 0,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`mount fragment null between two children 1`] = `<h1 />`;
+
+exports[`mount fragment null between two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`mount fragment single child 1`] = `<h1 />`;
+
+exports[`mount fragment single child 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`mount fragment two children 1`] = `<h1 />`;
+
+exports[`mount fragment two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mount element style one property 1`] = `
+<circle
+  style="top: 10px;"
+/>
+`;
+
+exports[`mount element style property with undefined value 1`] = `<circle />`;
+
+exports[`mount element style two properties 1`] = `
+<circle
+  style="top: 10px; left: 20px;"
+/>
+`;
+
+exports[`mount element style undefined 1`] = `<circle />`;

@@ -1,0 +1,23 @@
+{
+  "extends": "../../tools/typescript/tsconfig.checks.json",
+  "compilerOptions": {
+    "incremental": true,
+    "moduleResolution": "node",
+    "declaration": false,
+    "sourceMap": true,
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "removeComments": false,
+    "lib": [
+      "es2015",
+      "es2016",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "**/__tests__"
+  ]
+}

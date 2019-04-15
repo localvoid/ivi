@@ -1,11 +1,9 @@
+import { useModule, useResetModules } from "ivi-jest";
+
+useResetModules();
+const ivi = useModule<typeof import("ivi")>("ivi");
+
 describe(`Event Handler`, () => {
-  let ivi: typeof import("ivi");
-
-  beforeEach(async () => {
-    jest.resetModules();
-    ivi = await import("ivi");
-  });
-
   function handler(ev: any): void {
     // Event handler...
   }
