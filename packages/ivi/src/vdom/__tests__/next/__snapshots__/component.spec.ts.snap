@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component mount basic root node 1`] = `123`;
+
+exports[`component mount component root node 1`] = `123`;
+
+exports[`component mount fragment root node 1`] = `1`;
+
+exports[`component mount null root node 1`] = `null`;

@@ -61,22 +61,21 @@ export const enum VisitNodesDirective {
  * @returns {@link VisitNodesFlags}
  */
 export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesDirective): VisitNodesDirective {
-  const flags = opState.f;
   const vFlags = visitor(opState);
   if (vFlags !== VisitNodesDirective.Continue) {
     return (vFlags & VisitNodesDirective.StopImmediate);
   }
 
-  const children = opState.c;
-  if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-    for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
-      const c = (children as Array<OpState | null>)[i];
-      if (c !== null && (visitNodes(c, visitor) & VisitNodesDirective.StopImmediate) !== 0) {
+  const { f, c } = opState;
+  if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+    for (let i = 0; i < (c as Array<OpState | null>).length; i++) {
+      const child = (c as Array<OpState | null>)[i];
+      if (child !== null && (visitNodes(child, visitor) & VisitNodesDirective.StopImmediate) !== 0) {
         return VisitNodesDirective.StopImmediate;
       }
     }
-  } else if (children !== null) {
-    return visitNodes(children as OpState, visitor);
+  } else if (c !== null) {
+    return visitNodes(c as OpState, visitor);
   }
   return VisitNodesDirective.Continue;
 }
@@ -1092,7 +1091,9 @@ function _updateStyle(
   } else if (b === void 0) {
     // b is empty, remove all styles from a
     for (key in a) {
-      style.removeProperty(key);
+      if ((a as { [key: string]: string })[key] !== void 0) {
+        style.removeProperty(key);
+      }
     }
   } else {
     let matchCount = 0;
@@ -1113,8 +1114,11 @@ function _updateStyle(
     for (; matchCount < keys.length && i < keys.length; ++i) {
       key = keys[i];
       if (objectHasOwnProperty.call(a, key) === false) {
-        style.setProperty(key, b[key]);
+        bValue = b[key];
         ++matchCount;
+        if (bValue !== void 0) {
+          style.setProperty(key, b[key]);
+        }
       }
     }
   }

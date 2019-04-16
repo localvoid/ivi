@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`elementProto mount basic element 1`] = `<div />`;
+
+exports[`elementProto mount override attribute 1`] = `
+<div
+  height="20px"
+/>
+`;
+
+exports[`elementProto mount override className 1`] = `
+<div
+  class="def"
+/>
+`;
+
+exports[`elementProto mount predefined attribute 1`] = `
+<div
+  height="10px"
+/>
+`;
+
+exports[`elementProto mount predefined className 1`] = `
+<div
+  class="abc"
+/>
+`;
+
+exports[`elementProto update override attribute 1`] = `
+<div
+  height="20px"
+/>
+`;

@@ -289,67 +289,7 @@ Object {
 }
 `;
 
-exports[`update text node string to fragment 1`] = `
-Object {
-  "domNode": 1,
-  "stateNode": Object {
-    "c": Object {
-      "c": Array [
-        Object {
-          "c": null,
-          "f": 1,
-          "o": 1,
-          "s": 1,
-        },
-        Object {
-          "c": null,
-          "f": 1,
-          "o": 2,
-          "s": 2,
-        },
-        Object {
-          "c": null,
-          "f": 1,
-          "o": 3,
-          "s": 3,
-        },
-      ],
-      "f": 128,
-      "o": Array [
-        1,
-        2,
-        3,
-      ],
-      "s": null,
-    },
-    "f": 12548,
-    "o": Object {
-      "d": Object {
-        "c": Array [
-          1,
-          2,
-          3,
-        ],
-        "r": Object {
-          "v": [Circular],
-        },
-      },
-      "t": Object {
-        "d": Object {
-          "c": [Function],
-          "su": undefined,
-        },
-        "f": 4356,
-      },
-    },
-    "s": Object {
-      "r": [Function],
-      "s": null,
-      "u": [Function],
-    },
-  },
-}
-`;
+exports[`update text node string to fragment 1`] = `1`;
 
 exports[`update text node string to fragment 2`] = `
 Object {

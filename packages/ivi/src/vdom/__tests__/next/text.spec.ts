@@ -176,8 +176,8 @@ describe("update text node", () => {
 
   test("string to fragment", () => {
     r("abc");
-    const n = t.render([1, 2, 3], c());
-    expect(n).toMatchSnapshot();
+    const { domNode } = t.render([1, 2, 3], c());
+    expect(domNode).toMatchSnapshot();
     expect(domOps()).toMatchSnapshot();
   });
 });
