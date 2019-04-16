@@ -1,0 +1,311 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`element attribute mount attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute mount attribute with false value 1`] = `<div />`;
+
+exports[`element attribute mount attribute with string value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute mount attribute with true value 1`] = `
+<div
+  boolean=""
+/>
+`;
+
+exports[`element attribute mount attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute mount empty attributes object 1`] = `<div />`;
+
+exports[`element attribute mount two attributes with string values 1`] = `
+<div
+  height="20px"
+  width="10px"
+/>
+`;
+
+exports[`element attribute mount undefined 1`] = `<div />`;
+
+exports[`element attribute update attribute with empty string value to attribute with different value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute update attribute with empty string value to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with empty string value to attribute with false value 1`] = `<div />`;
+
+exports[`element attribute update attribute with empty string value to attribute with true value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with empty string value to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update attribute with empty string value to empty attribute object 1`] = `<div />`;
+
+exports[`element attribute update attribute with empty string value to one attribute with same value and one with different 1`] = `
+<div
+  height="20px"
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with empty string value to two attributes with different values 1`] = `
+<div
+  height="20px"
+  width="30px"
+/>
+`;
+
+exports[`element attribute update attribute with empty string value to two different attributes 1`] = `
+<div
+  height="20px"
+  left="30px"
+/>
+`;
+
+exports[`element attribute update attribute with empty string value to undefined 1`] = `<div />`;
+
+exports[`element attribute update attribute with false value to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with false value to attribute with false value 1`] = `<div />`;
+
+exports[`element attribute update attribute with false value to attribute with string value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute update attribute with false value to attribute with true value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with false value to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update attribute with false value to empty attribute object 1`] = `<div />`;
+
+exports[`element attribute update attribute with false value to undefined 1`] = `<div />`;
+
+exports[`element attribute update attribute with string value to attribute with different value 1`] = `
+<div
+  width="20px"
+/>
+`;
+
+exports[`element attribute update attribute with string value to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with string value to attribute with false value 1`] = `<div />`;
+
+exports[`element attribute update attribute with string value to attribute with same value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute update attribute with string value to attribute with true value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with string value to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update attribute with string value to empty attribute object 1`] = `<div />`;
+
+exports[`element attribute update attribute with string value to one attribute with same value and one with different 1`] = `
+<div
+  height="20px"
+  width="10px"
+/>
+`;
+
+exports[`element attribute update attribute with string value to two attributes with different values 1`] = `
+<div
+  height="20px"
+  width="30px"
+/>
+`;
+
+exports[`element attribute update attribute with string value to two different attributes 1`] = `
+<div
+  height="20px"
+  left="30px"
+/>
+`;
+
+exports[`element attribute update attribute with string value to undefined 1`] = `<div />`;
+
+exports[`element attribute update attribute with true value to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with true value to attribute with false value 1`] = `<div />`;
+
+exports[`element attribute update attribute with true value to attribute with string value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute update attribute with true value to attribute with true value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with true value to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update attribute with true value to empty attribute object 1`] = `<div />`;
+
+exports[`element attribute update attribute with true value to undefined 1`] = `<div />`;
+
+exports[`element attribute update attribute with undefined value to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update attribute with undefined value to attribute with false value 1`] = `<div />`;
+
+exports[`element attribute update attribute with undefined value to attribute with string value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute update attribute with undefined value to attribute with true value 1`] = `
+<div
+  boolean=""
+/>
+`;
+
+exports[`element attribute update attribute with undefined value to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update attribute with undefined value to empty attribute object 1`] = `<div />`;
+
+exports[`element attribute update attribute with undefined value to one attribute with same value and one with different 1`] = `
+<div
+  height="20px"
+/>
+`;
+
+exports[`element attribute update attribute with undefined value to two attributes with different values 1`] = `
+<div
+  height="20px"
+  width="30px"
+/>
+`;
+
+exports[`element attribute update attribute with undefined value to two different attributes 1`] = `
+<div
+  height="20px"
+  left="30px"
+/>
+`;
+
+exports[`element attribute update attribute with undefined value to undefined 1`] = `<div />`;
+
+exports[`element attribute update two attributes with string values to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update two attributes with string values to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update two attributes with string values to empty attribute object 1`] = `<div />`;
+
+exports[`element attribute update two attributes with string values to one attribute with different value 1`] = `
+<div
+  width="30px"
+/>
+`;
+
+exports[`element attribute update two attributes with string values to one attribute with same value and one with different 1`] = `
+<div
+  height="30px"
+  width="10px"
+/>
+`;
+
+exports[`element attribute update two attributes with string values to two attributes with different values 1`] = `
+<div
+  height="40px"
+  width="30px"
+/>
+`;
+
+exports[`element attribute update two attributes with string values to two attributes with same values 1`] = `
+<div
+  height="20px"
+  width="10px"
+/>
+`;
+
+exports[`element attribute update two attributes with string values to two different attributes 1`] = `
+<div
+  left="30px"
+  right="40px"
+/>
+`;
+
+exports[`element attribute update two attributes with string values to undefined 1`] = `<div />`;
+
+exports[`element attribute update undefined to attribute with empty string value 1`] = `
+<div
+  width=""
+/>
+`;
+
+exports[`element attribute update undefined to attribute with false value 1`] = `<div />`;
+
+exports[`element attribute update undefined to attribute with string value 1`] = `
+<div
+  width="10px"
+/>
+`;
+
+exports[`element attribute update undefined to attribute with true value 1`] = `
+<div
+  boolean=""
+/>
+`;
+
+exports[`element attribute update undefined to attribute with undefined value 1`] = `<div />`;
+
+exports[`element attribute update undefined to empty attributes object 1`] = `<div />`;
+
+exports[`element attribute update undefined to two attributes with string values 1`] = `
+<div
+  height="20px"
+  width="10px"
+/>
+`;
+
+exports[`element attribute update undefined to undefined 1`] = `<div />`;

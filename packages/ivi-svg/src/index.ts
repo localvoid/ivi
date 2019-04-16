@@ -21,11 +21,7 @@ import {
 
 const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY = {
   v: "",
-  u: (element: Element, key: string, prev: any) => {
-    if (prev !== "") {
-      elementSetAttributeNS!.call(element, XML_NAMESPACE, key, "");
-    }
-  },
+  u: updateXMLAttr,
 };
 
 const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_RENDER_TO_STRING = {
@@ -35,11 +31,7 @@ const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_RENDER_TO_STRING = {
 
 const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY = {
   v: "",
-  u: (element: Element, key: string, prev: any) => {
-    if (prev !== "") {
-      elementSetAttributeNS!.call(element, XLINK_NAMESPACE, key, "");
-    }
-  },
+  u: updateXLinkAttr,
 };
 
 const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_RENDER_TO_STRING = {

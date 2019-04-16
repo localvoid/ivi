@@ -1,10 +1,11 @@
-import { useResetModules, useModule, useDOMElement } from "ivi-jest";
+import { useResetJSDOM, useResetModules, useDOMElement, useIVI, useHTML, useTest } from "ivi-jest";
 
+useResetJSDOM();
 useResetModules();
 const c = useDOMElement();
-const ivi = useModule<typeof import("ivi")>("ivi");
-const h = useModule<typeof import("ivi-html")>("ivi-html");
-const t = useModule<typeof import("ivi-test")>("ivi-test");
+const ivi = useIVI();
+const h = useHTML();
+const t = useTest();
 const _ = void 0;
 
 describe("attribute directive PROPERTY", () => {

@@ -680,7 +680,7 @@ export declare interface HTMLInputElementAttrs extends HTMLElementAttrs {
    *
    *   const n = input("", { value: VALUE("abc") });
    */
-  value?: AttributeDirective<string | number>;
+  value?: AttributeDirective<string>;
 }
 
 export declare interface HTMLUnknownElementAttrs extends HTMLElementAttrs {
@@ -1174,7 +1174,7 @@ export declare interface HTMLTextAreaElementAttrs extends HTMLElementAttrs {
    *
    *   const n = textarea("", { content: CONTENT("abc") });
    */
-  content?: AttributeDirective<string | number>;
+  content?: AttributeDirective<string>;
 }
 
 export declare interface HTMLTitleElementAttrs extends HTMLElementAttrs {

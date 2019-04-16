@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`element style HTML mount one property 1`] = `
+<div
+  style="top: 10px;"
+/>
+`;
+
+exports[`element style HTML mount property with undefined value 1`] = `<div />`;
+
+exports[`element style HTML mount two properties 1`] = `
+<div
+  style="top: 10px; left: 20px;"
+/>
+`;
+
+exports[`element style HTML mount undefined 1`] = `<div />`;
+
+exports[`element style SVG mount one property 1`] = `
+<circle
+  style="top: 10px;"
+/>
+`;
+
+exports[`element style SVG mount property with undefined value 1`] = `<circle />`;
+
+exports[`element style SVG mount two properties 1`] = `
+<circle
+  style="top: 10px; left: 20px;"
+/>
+`;
+
+exports[`element style SVG mount undefined 1`] = `<circle />`;

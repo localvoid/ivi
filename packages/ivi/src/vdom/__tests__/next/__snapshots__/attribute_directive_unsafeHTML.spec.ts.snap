@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`attribute directive unsafeHTML mount 1`] = `
+exports[`attribute directive unsafeHTML mount empty string 1`] = `<div />`;
+
+exports[`attribute directive unsafeHTML mount html 1`] = `
 <div>
   <span>
     1
@@ -8,9 +10,17 @@ exports[`attribute directive unsafeHTML mount 1`] = `
 </div>
 `;
 
-exports[`attribute directive unsafeHTML mount empty string 1`] = `<div />`;
+exports[`attribute directive unsafeHTML update empty string to empty string 1`] = `<div />`;
 
-exports[`attribute directive unsafeHTML update 1`] = `
+exports[`attribute directive unsafeHTML update empty string to html 1`] = `
+<div>
+  <span>
+    1
+  </span>
+</div>
+`;
+
+exports[`attribute directive unsafeHTML update html to different html 1`] = `
 <div>
   <span>
     2
@@ -18,4 +28,22 @@ exports[`attribute directive unsafeHTML update 1`] = `
 </div>
 `;
 
-exports[`attribute directive unsafeHTML update with empty string should not assign innerHTML 1`] = `<div />`;
+exports[`attribute directive unsafeHTML update html to empty string 1`] = `<div />`;
+
+exports[`attribute directive unsafeHTML update html to same html 1`] = `
+<div>
+  <span>
+    1
+  </span>
+</div>
+`;
+
+exports[`attribute directive unsafeHTML update html to undefined 1`] = `<div />`;
+
+exports[`attribute directive unsafeHTML update undefined to html 1`] = `
+<div>
+  <span>
+    1
+  </span>
+</div>
+`;

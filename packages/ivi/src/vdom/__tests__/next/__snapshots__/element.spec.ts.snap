@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`element HTML mount div 1`] = `<div />`;
+
+exports[`element HTML mount div 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`element HTML update div to span 1`] = `<div />`;
+
+exports[`element HTML update div to span 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`element SVG mount circle 1`] = `<circle />`;
+
+exports[`element SVG mount circle 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 1,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;

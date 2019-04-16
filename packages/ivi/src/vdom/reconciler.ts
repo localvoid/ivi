@@ -1220,7 +1220,9 @@ function _updateAttr(
         next = next ? "" : void 0;
       }
       if (next === void 0) {
-        elementRemoveAttribute!.call(element, key);
+        if (prev !== void 0 && prev !== false) {
+          elementRemoveAttribute!.call(element, key);
+        }
       } else {
         elementSetAttribute!.call(element, key, next as string);
       }

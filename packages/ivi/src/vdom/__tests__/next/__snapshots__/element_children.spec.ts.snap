@@ -1,42 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`mount fragment empty 1`] = `null`;
+exports[`element children mount null 1`] = `<div />`;
 
-exports[`mount fragment empty 2`] = `
-Object {
-  "appendChild": 0,
-  "createElement": 0,
-  "createElementNS": 0,
-  "createTextNode": 0,
-  "innerHTML": 0,
-  "insertBefore": 0,
-  "nodeValue": 0,
-  "removeChild": 0,
-  "replaceChild": 0,
-  "textContent": 0,
-}
-`;
-
-exports[`mount fragment null between two children 1`] = `<h1 />`;
-
-exports[`mount fragment null between two children 2`] = `
-Object {
-  "appendChild": 0,
-  "createElement": 2,
-  "createElementNS": 0,
-  "createTextNode": 0,
-  "innerHTML": 0,
-  "insertBefore": 2,
-  "nodeValue": 0,
-  "removeChild": 0,
-  "replaceChild": 0,
-  "textContent": 0,
-}
-`;
-
-exports[`mount fragment single child 1`] = `<h1 />`;
-
-exports[`mount fragment single child 2`] = `
+exports[`element children mount null 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -51,9 +17,55 @@ Object {
 }
 `;
 
-exports[`mount fragment two children 1`] = `<h1 />`;
+exports[`element children mount text 1`] = `
+<div>
+  abc
+</div>
+`;
 
-exports[`mount fragment two children 2`] = `
+exports[`element children mount text 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`element children update different child 1`] = `
+<div>
+  <span />
+</div>
+`;
+
+exports[`element children update different child 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`element children update strictly equal child 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`element children update strictly equal child 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,

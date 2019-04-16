@@ -20,7 +20,7 @@ import {
 /**
  * {@link AttributeDirective} with `""` value and {@link updateValue} sync function.
  */
-const VALUE_EMPTY: AttributeDirective<string | number> = { v: "", u: updateValue };
+const VALUE_EMPTY: AttributeDirective<string> = { v: "", u: updateValue };
 
 /**
  * {@link AttributeDirective} with `false` value and {@link updateChecked} sync function.
@@ -43,7 +43,7 @@ const CHECKED_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = { v: true, s:
  * @param key Attribute key.
  * @param value Value.
  */
-function renderToStringValue(key: string, value: string | number) {
+function renderToStringValue(key: string, value: string) {
   emitAttribute(`value="${escapeAttributeValue(value)}"`);
 }
 
@@ -53,7 +53,7 @@ function renderToStringValue(key: string, value: string | number) {
  * @param key Attribute key.
  * @param value Value.
  */
-function renderToStringContent(key: string, value: string | number) {
+function renderToStringContent(key: string, value: string) {
   emitChildren(escapeText(value));
 }
 
@@ -68,17 +68,15 @@ function renderToStringContent(key: string, value: string | number) {
 function updateValue(
   element: Element,
   key: string,
-  prev: string | number | undefined,
-  next: string | number | undefined,
+  prev: string | undefined,
+  next: string | undefined,
 ) {
   if (prev === void 0) {
     if (next !== "") {
-      (element as HTMLInputElement | HTMLTextAreaElement).value = next as string;
+      (element as HTMLInputElement | HTMLTextAreaElement).value = next!;
     }
-  } else if (next !== void 0) {
-    if ((element as HTMLInputElement | HTMLTextAreaElement).value !== next) {
-      (element as HTMLInputElement | HTMLTextAreaElement).value = next as string;
-    }
+  } else if (next !== void 0 && ((element as HTMLInputElement | HTMLTextAreaElement).value !== next)) {
+    (element as HTMLInputElement | HTMLTextAreaElement).value = next;
   }
 }
 
@@ -117,7 +115,7 @@ function updateChecked(
  * @param v Value.
  * @returns {@link AttributeDirective}
  */
-export const VALUE = (v: string | number): AttributeDirective<string | number> => (
+export const VALUE = (v: string): AttributeDirective<string> => (
   process.env.IVI_TARGET === "ssr" ?
     v === "" ? IGNORE_RENDER_TO_STRING : { v, s: renderToStringValue } :
     v === "" ? VALUE_EMPTY : { v, u: updateValue }
@@ -135,7 +133,7 @@ export const VALUE = (v: string | number): AttributeDirective<string | number> =
  */
 export const CONTENT = (
   process.env.IVI_TARGET === "ssr" ?
-    (v: string | number): AttributeDirective<string | number> => (
+    (v: string): AttributeDirective<string> => (
       v === "" ? IGNORE_RENDER_TO_STRING : ({ v, s: renderToStringContent })
     ) :
     VALUE

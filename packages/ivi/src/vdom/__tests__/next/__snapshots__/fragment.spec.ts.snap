@@ -1,0 +1,388 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fragment mount components first null 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment mount components first null 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment mount components last null 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment mount components last null 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment mount components null between two children 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment mount components null between two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment mount empty 1`] = `<div />`;
+
+exports[`fragment mount empty 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 0,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment mount null between two children 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment mount null between two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment mount single child 1`] = `
+<div>
+  <h1 />
+</div>
+`;
+
+exports[`fragment mount single child 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment mount two children 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment mount two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 1 1`] = `
+<div>
+  <h1 />
+</div>
+`;
+
+exports[`fragment update hole 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 2 1`] = `
+<div>
+  <h2 />
+</div>
+`;
+
+exports[`fragment update hole 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 3 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment update hole 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 4 1`] = `<div />`;
+
+exports[`fragment update hole 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 5 1`] = `<div />`;
+
+exports[`fragment update hole 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 6 1`] = `<div />`;
+
+exports[`fragment update hole 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 7 1`] = `
+<div>
+  <h2 />
+</div>
+`;
+
+exports[`fragment update hole 7 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update hole 8 1`] = `
+<div>
+  <h1 />
+</div>
+`;
+
+exports[`fragment update hole 8 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update null to fragment with a hole 1`] = `<div />`;
+
+exports[`fragment update null to fragment with a hole 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 0,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update null to two children 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment update null to two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update one child to two children 1`] = `
+<div>
+  <h1 />
+  <h2 />
+</div>
+`;
+
+exports[`fragment update one child to two children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`fragment update two children to one child 1`] = `
+<div>
+  <h1 />
+</div>
+`;
+
+exports[`fragment update two children to one child 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 3,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;

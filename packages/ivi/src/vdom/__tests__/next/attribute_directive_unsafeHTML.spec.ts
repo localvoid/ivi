@@ -1,44 +1,83 @@
-import { useResetModules, useModule, useDOMElement, useSpyOn } from "ivi-jest";
+import { useResetJSDOM, useResetModules, useSpyOn, useDOMElement, useIVI, useHTML, useTest } from "ivi-jest";
 
+useResetJSDOM();
 useResetModules();
-const c = useDOMElement();
-const ivi = useModule<typeof import("ivi")>("ivi");
-const h = useModule<typeof import("ivi-html")>("ivi-html");
-const t = useModule<typeof import("ivi-test")>("ivi-test");
 const innerHTML = useSpyOn(() => Element.prototype, "innerHTML", "set");
+const c = useDOMElement();
+const ivi = useIVI();
+const h = useHTML();
+const t = useTest();
 const _ = void 0;
+const r = (html?: string) => (
+  t.render(
+    h.div(_, html === void 0 ? void 0 : { unsafeHTML: ivi.UNSAFE_HTML(html) }),
+    c(),
+  ).domNode!
+);
 
 describe("attribute directive unsafeHTML", () => {
-  test("mount", () => {
-    const { domNode } = t.render(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("<span>1</span>") }), c());
-    expect(innerHTML().mock.calls.length).toBe(1);
-    expect(domNode).toMatchSnapshot();
+  describe("mount", () => {
+    test("empty string", () => {
+      const n = r("");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(0);
+    });
+
+    test("html", () => {
+      const n = r("<span>1</span>");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(1);
+    });
   });
 
-  test("mount empty string", () => {
-    const { domNode } = t.render(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("") }), c());
-    expect(innerHTML().mock.calls.length).toBe(0);
-    expect(domNode).toMatchSnapshot();
-  });
+  describe("update", () => {
+    test("undefined to html", () => {
+      r();
+      const n = r("<span>1</span>");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(1);
+    });
 
-  test("update", () => {
-    t.render<any>(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("<span>1</span>") }), c());
-    const { domNode } = t.render(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("<span>2</span>") }), c());
-    expect(innerHTML().mock.calls.length).toBe(2);
-    expect(domNode).toMatchSnapshot();
-  });
+    test("html to undefined", () => {
+      r("<span>1</span>");
+      const n = r();
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(2);
+    });
 
-  test("update with the same value", () => {
-    const a = t.render<HTMLSpanElement>(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("<span>1</span>") }), c());
-    const b = t.render<HTMLSpanElement>(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("<span>1</span>") }), c());
-    expect(innerHTML().mock.calls.length).toBe(1);
-    expect(a.domNode!.firstChild).toBe(b.domNode!.firstChild);
-  });
+    test("html to same html", () => {
+      r("<span>1</span>");
+      const n = r("<span>1</span>");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(1);
+    });
 
-  test("update with empty string should not assign innerHTML", () => {
-    t.render(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("") }), c());
-    const { domNode } = t.render(h.div(_, { unsafeHTML: ivi.UNSAFE_HTML("") }), c());
-    expect(innerHTML().mock.calls.length).toBe(0);
-    expect(domNode).toMatchSnapshot();
+    test("html to different html", () => {
+      r("<span>1</span>");
+      const n = r("<span>2</span>");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(2);
+    });
+
+    test("empty string to empty string", () => {
+      r("");
+      const n = r("");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(0);
+    });
+
+    test("empty string to html", () => {
+      r("");
+      const n = r("<span>1</span>");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(1);
+    });
+
+    test("html to empty string", () => {
+      r("<span>1</span>");
+      const n = r("");
+      expect(n).toMatchSnapshot();
+      expect(innerHTML().mock.calls.length).toBe(2);
+    });
   });
 });
