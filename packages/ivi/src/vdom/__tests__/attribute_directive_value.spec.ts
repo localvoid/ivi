@@ -19,13 +19,13 @@ describe("attribute directive VALUE", () => {
     test("empty string", () => {
       const n = r("");
       expect(n.value).toBe("");
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("string", () => {
       const n = r("abc");
       expect(n.value).toBe("abc");
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
   });
 
@@ -34,63 +34,63 @@ describe("attribute directive VALUE", () => {
       r();
       const n = r("");
       expect(n.value).toBe("");
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("undefined to string", () => {
       r();
       const n = r("abc");
       expect(n.value).toBe("abc");
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
 
     test("empty string to empty string", () => {
       r("");
       const n = r("");
       expect(n.value).toBe("");
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("empty string to undefined", () => {
       r("");
       const n = r();
       expect(n.value).toBe("");
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("empty string to string", () => {
       r("");
       const n = r("abc");
       expect(n.value).toBe("abc");
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
 
     test("string to same string", () => {
       r("abc");
       const n = r("abc");
       expect(n.value).toBe("abc");
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
 
     test("string to different string", () => {
       r("abc");
       const n = r("def");
       expect(n.value).toBe("def");
-      expect(setValue().mock.calls.length).toBe(2);
+      expect(setValue.mock.calls.length).toBe(2);
     });
 
     test("string to empty string", () => {
       r("abc");
       const n = r("");
       expect(n.value).toBe("");
-      expect(setValue().mock.calls.length).toBe(2);
+      expect(setValue.mock.calls.length).toBe(2);
     });
 
     test("string to undefined", () => {
       r("abc");
       const n = r();
       expect(n.value).toBe("abc");
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
   });
 });

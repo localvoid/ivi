@@ -6,15 +6,20 @@ export function useResetModules() {
 
 export function useModule<T>(path: string): T {
   let module: any;
-  const proxy = new Proxy({}, {
-    get(target, key) {
-      return module[key];
-    }
-  });
   beforeEach(async () => {
     module = await import(path);
   });
-  return proxy as T;
+  return new Proxy({}, {
+    get(target, key) {
+      return module[key];
+    },
+    apply(target, thisArg, args) {
+      return module(...args);
+    },
+    construct(target, args) {
+      return new module(...args);
+    },
+  }) as T;
 }
 
 export function useIVI() {

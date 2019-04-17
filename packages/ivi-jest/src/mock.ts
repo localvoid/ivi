@@ -17,18 +17,18 @@ export function useSpyOn<T extends {}, M extends jest.NonFunctionPropertyNames<R
   object: () => T,
   method: M,
   accessType: "get",
-): () => jest.SpyInstance<Required<T>[M], []>;
+): jest.SpyInstance<Required<T>[M], []>;
 export function useSpyOn<T extends {}, M extends jest.NonFunctionPropertyNames<Required<T>>>(
   object: () => T,
   method: M,
   accessType: "set",
-): () => jest.SpyInstance<void, [Required<T>[M]]>;
+): jest.SpyInstance<void, [Required<T>[M]]>;
 export function useSpyOn<T extends {}, M extends jest.FunctionPropertyNames<Required<T>>>(
   object: () => T,
   method: M,
-): () => Required<T>[M] extends (...args: any[]) => any ?
+): Required<T>[M] extends (...args: any[]) => any ?
   jest.SpyInstance<ReturnType<Required<T>[M]>, jest.ArgsType<Required<T>[M]>> : never;
-export function useSpyOn(object: any, methodName: any, accessType?: any) {
+export function useSpyOn(object: any, methodName: any, accessType?: any): any {
   let spy: any;
   beforeEach(() => {
     spy = jest.spyOn(object(), methodName, accessType);
@@ -37,5 +37,9 @@ export function useSpyOn(object: any, methodName: any, accessType?: any) {
     spy.mockRestore();
   });
 
-  return () => spy;
+  return new Proxy({}, {
+    get(target, key) {
+      return spy[key];
+    },
+  });
 }

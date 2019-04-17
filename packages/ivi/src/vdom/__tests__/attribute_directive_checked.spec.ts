@@ -19,13 +19,13 @@ describe("attribute directive CHECKED", () => {
     test("false", () => {
       const n = r(false);
       expect(n.checked).toBe(false);
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("true", () => {
       const n = r(true);
       expect(n.checked).toBe(true);
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
   });
 
@@ -34,42 +34,42 @@ describe("attribute directive CHECKED", () => {
       r();
       const n = r(false);
       expect(n.checked).toBe(false);
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("undefined to true", () => {
       r();
       const n = r(true);
       expect(n.checked).toBe(true);
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
 
     test("false to undefined", () => {
       r(false);
       const n = r();
       expect(n.checked).toBe(false);
-      expect(setValue().mock.calls.length).toBe(0);
+      expect(setValue.mock.calls.length).toBe(0);
     });
 
     test("false to true", () => {
       r(false);
       const n = r(true);
       expect(n.checked).toBe(true);
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
 
     test("true to undefined", () => {
       r(true);
       const n = r();
       expect(n.checked).toBe(true);
-      expect(setValue().mock.calls.length).toBe(1);
+      expect(setValue.mock.calls.length).toBe(1);
     });
 
     test("true to false", () => {
       r(true);
       const n = r(false);
       expect(n.checked).toBe(false);
-      expect(setValue().mock.calls.length).toBe(2);
+      expect(setValue.mock.calls.length).toBe(2);
     });
   });
 });

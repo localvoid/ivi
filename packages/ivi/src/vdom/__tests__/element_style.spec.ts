@@ -17,36 +17,36 @@ describe("element style", () => {
       test("undefined", () => {
         const n = r();
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("empty style object", () => {
         const n = r({});
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("property with undefined value", () => {
         const n = r({ top: void 0 });
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("one property", () => {
         const n = r({ top: "10px" });
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("two properties", () => {
         const n = r({ top: "10px", left: "20px" });
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
     });
 
@@ -58,40 +58,40 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -102,40 +102,40 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -146,40 +146,40 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -190,56 +190,56 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("property with same value", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with different value", () => {
           r(initialState);
           const n = r({ top: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["top", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["top", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("different property", () => {
           r(initialState);
           const n = r({ left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -250,59 +250,59 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"], ["left"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"], ["left"]]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"], ["left"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"], ["left"]]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"], ["left"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"], ["left"]]);
         });
 
         test("properties with same values", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("properties with different values", () => {
           r(initialState);
           const n = r({ top: "30px", left: "40px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([
+          expect(setProperty.mock.calls).toEqual([
             ["top", "10px"], ["left", "20px"],
             ["top", "30px"], ["left", "40px"],
           ]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property with same value", () => {
           r(initialState);
           const n = r({ left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("one property with different value", () => {
           r(initialState);
           const n = r({ left: "30px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"], ["left", "30px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"], ["left", "30px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
       });
     });
@@ -316,36 +316,36 @@ describe("element style", () => {
       test("undefined", () => {
         const n = r();
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("empty style object", () => {
         const n = r({});
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("property with undefined value", () => {
         const n = r({ top: void 0 });
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("one property", () => {
         const n = r({ top: "10px" });
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
 
       test("two properties", () => {
         const n = r({ top: "10px", left: "20px" });
         expect(n).toMatchSnapshot();
-        expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-        expect(removeProperty().mock.calls).toEqual([]);
+        expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+        expect(removeProperty.mock.calls).toEqual([]);
       });
     });
 
@@ -357,40 +357,40 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -401,40 +401,40 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -445,40 +445,40 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -489,56 +489,56 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("property with same value", () => {
           r(initialState);
           const n = r({ top: "10px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("property with different value", () => {
           r(initialState);
           const n = r({ top: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["top", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["top", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("different property", () => {
           r(initialState);
           const n = r({ left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("two properties", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
       });
 
@@ -549,59 +549,59 @@ describe("element style", () => {
           r(initialState);
           const n = r();
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"], ["left"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"], ["left"]]);
         });
 
         test("empty style object", () => {
           r(initialState);
           const n = r({});
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"], ["left"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"], ["left"]]);
         });
 
         test("property with undefined value", () => {
           r(initialState);
           const n = r({ top: void 0 });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"], ["left"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"], ["left"]]);
         });
 
         test("properties with same values", () => {
           r(initialState);
           const n = r({ top: "10px", left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("properties with different values", () => {
           r(initialState);
           const n = r({ top: "30px", left: "40px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([
+          expect(setProperty.mock.calls).toEqual([
             ["top", "10px"], ["left", "20px"],
             ["top", "30px"], ["left", "40px"],
           ]);
-          expect(removeProperty().mock.calls).toEqual([]);
+          expect(removeProperty.mock.calls).toEqual([]);
         });
 
         test("one property with same value", () => {
           r(initialState);
           const n = r({ left: "20px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
 
         test("one property with different value", () => {
           r(initialState);
           const n = r({ left: "30px" });
           expect(n).toMatchSnapshot();
-          expect(setProperty().mock.calls).toEqual([["top", "10px"], ["left", "20px"], ["left", "30px"]]);
-          expect(removeProperty().mock.calls).toEqual([["top"]]);
+          expect(setProperty.mock.calls).toEqual([["top", "10px"], ["left", "20px"], ["left", "30px"]]);
+          expect(removeProperty.mock.calls).toEqual([["top"]]);
         });
       });
     });

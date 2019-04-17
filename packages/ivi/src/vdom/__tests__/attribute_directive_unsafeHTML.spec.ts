@@ -20,13 +20,13 @@ describe("attribute directive unsafeHTML", () => {
     test("empty string", () => {
       const n = r("");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(0);
+      expect(innerHTML.mock.calls.length).toBe(0);
     });
 
     test("html", () => {
       const n = r("<span>1</span>");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(1);
+      expect(innerHTML.mock.calls.length).toBe(1);
     });
   });
 
@@ -35,49 +35,49 @@ describe("attribute directive unsafeHTML", () => {
       r();
       const n = r("<span>1</span>");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(1);
+      expect(innerHTML.mock.calls.length).toBe(1);
     });
 
     test("html to undefined", () => {
       r("<span>1</span>");
       const n = r();
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(2);
+      expect(innerHTML.mock.calls.length).toBe(2);
     });
 
     test("html to same html", () => {
       r("<span>1</span>");
       const n = r("<span>1</span>");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(1);
+      expect(innerHTML.mock.calls.length).toBe(1);
     });
 
     test("html to different html", () => {
       r("<span>1</span>");
       const n = r("<span>2</span>");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(2);
+      expect(innerHTML.mock.calls.length).toBe(2);
     });
 
     test("empty string to empty string", () => {
       r("");
       const n = r("");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(0);
+      expect(innerHTML.mock.calls.length).toBe(0);
     });
 
     test("empty string to html", () => {
       r("");
       const n = r("<span>1</span>");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(1);
+      expect(innerHTML.mock.calls.length).toBe(1);
     });
 
     test("html to empty string", () => {
       r("<span>1</span>");
       const n = r("");
       expect(n).toMatchSnapshot();
-      expect(innerHTML().mock.calls.length).toBe(2);
+      expect(innerHTML.mock.calls.length).toBe(2);
     });
   });
 });

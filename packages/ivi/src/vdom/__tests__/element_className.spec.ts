@@ -17,19 +17,19 @@ describe("element className", () => {
       test("undefined", () => {
         const n = r();
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("empty string", () => {
         const n = r("");
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("class", () => {
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
     });
 
@@ -38,63 +38,63 @@ describe("element className", () => {
         r();
         const n = r();
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("undefined to empty string", () => {
         r();
         const n = r("");
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("undefined to class", () => {
         r();
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("empty string to undefined", () => {
         r("");
         const n = r();
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("empty string to class", () => {
         r("");
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("empty string to empty string", () => {
         r("");
         const n = r("");
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("class to undefined", () => {
         r("a");
         const n = r();
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(2);
+        expect(setter.mock.calls.length).toBe(2);
       });
 
       test("class to empty string", () => {
         r("a");
         const n = r("");
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(2);
+        expect(setter.mock.calls.length).toBe(2);
       });
 
       test("class to class", () => {
         r("a");
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
     });
   });
@@ -108,19 +108,19 @@ describe("element className", () => {
       test("undefined", () => {
         const n = r();
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("empty string", () => {
         const n = r("");
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("class", () => {
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
     });
 
@@ -129,63 +129,63 @@ describe("element className", () => {
         r();
         const n = r();
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("undefined to empty string", () => {
         r();
         const n = r("");
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("undefined to class", () => {
         r();
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("empty string to undefined", () => {
         r("");
         const n = r();
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("empty string to class", () => {
         r("");
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
 
       test("empty string to empty string", () => {
         r("");
         const n = r("");
         expect(n.getAttribute("class")).toBeNull();
-        expect(setter().mock.calls.length).toBe(0);
+        expect(setter.mock.calls.length).toBe(0);
       });
 
       test("class to undefined", () => {
         r("a");
         const n = r();
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(2);
+        expect(setter.mock.calls.length).toBe(2);
       });
 
       test("class to empty string", () => {
         r("a");
         const n = r("");
         expect(n.getAttribute("class")).toBe("");
-        expect(setter().mock.calls.length).toBe(2);
+        expect(setter.mock.calls.length).toBe(2);
       });
 
       test("class to class", () => {
         r("a");
         const n = r("a");
         expect(n.getAttribute("class")).toBe("a");
-        expect(setter().mock.calls.length).toBe(1);
+        expect(setter.mock.calls.length).toBe(1);
       });
     });
   });
