@@ -1,7 +1,29 @@
-export function createMutableProxy<T>() {
+/**
+ * Mutable Proxy.
+ */
+export interface MutableProxy<T> {
+  /**
+   * Proxy object.
+   */
+  readonly proxy: T;
+  /**
+   * Update target value.
+   *
+   * @param value Target value.
+   */
+  update(value: T): void;
+}
+
+/**
+ * createMutableProxy creates a mutable proxy.
+ *
+ * @param type Object type (function or object).
+ * @returns {@link MutableProxy}
+ */
+export function createMutableProxy<T>(type: "function" | "object"): MutableProxy<T> {
   let target: any;
   return {
-    proxy: new Proxy((() => void 0) as any, {
+    proxy: new Proxy(type === "function" ? (() => void 0) as any : {}, {
       getPrototypeOf: (oTarget) => Object.getPrototypeOf(target),
       setPrototypeOf: (oTarget, proto) => Object.setPrototypeOf(target, proto),
       isExtensible: (oTarget) => Object.isExtensible(target),

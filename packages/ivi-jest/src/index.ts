@@ -1,5 +1,5 @@
 export { useComputedValue } from "./value";
+export { useEnv } from "./env";
 export { useMockFn, useSpyOn } from "./mock";
 export { useResetModules, useModule, useIVI, useHTML, useSVG, useTest } from "./module";
-export { useResetJSDOMGlobalEventListeners, useResetJSDOM } from "./jsdom";
-export { useDOMElement } from "./dom";
+export { useResetDOMGlobalEventListeners, useResetDOM, useDOMElement } from "./dom";

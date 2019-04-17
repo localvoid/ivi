@@ -1,8 +1,8 @@
-import { useResetJSDOM, useResetModules, useDOMElement, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useResetModules, useDOMElement, useHTML, useTest } from "ivi-jest";
 import { Op } from "ivi";
 import { useDOMOpsCounters } from "./jest";
 
-useResetJSDOM();
+useResetDOM();
 useResetModules();
 const c = useDOMElement();
 const domOps = useDOMOpsCounters();

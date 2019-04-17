@@ -1,6 +1,6 @@
-import { useResetJSDOM, useResetModules, useIVI } from "ivi-jest";
+import { useResetDOM, useResetModules, useIVI } from "ivi-jest";
 
-useResetJSDOM();
+useResetDOM();
 useResetModules();
 const ivi = useIVI();
 

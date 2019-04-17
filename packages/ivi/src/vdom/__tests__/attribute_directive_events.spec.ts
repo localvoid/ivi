@@ -1,6 +1,6 @@
-import { useResetJSDOM, useResetModules, useDOMElement, useMockFn, useIVI, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useResetModules, useDOMElement, useMockFn, useIVI, useHTML, useTest } from "ivi-jest";
 
-useResetJSDOM();
+useResetDOM();
 useResetModules();
 const c = useDOMElement();
 const handler1 = useMockFn();
