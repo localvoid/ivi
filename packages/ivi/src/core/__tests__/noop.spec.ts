@@ -1,5 +1,4 @@
-import { NOOP, NOOP_FALSE } from "ivi";
-import { NOOP_TRUE } from "../noop";
+import { NOOP, NOOP_FALSE, NOOP_TRUE } from "ivi";
 
 describe("NOOP", () => {
   test("NOOP => undefined", () => {

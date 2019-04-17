@@ -1,6 +1,6 @@
 import { useResetJSDOM, useResetModules, useDOMElement, useIVI, useTest, useHTML, useComputedValue } from "ivi-jest";
-import { ElementProtoDescriptor } from "../../element_proto";
-import { Op } from "../../operations";
+import { ElementProtoDescriptor } from "../element_proto";
+import { Op } from "ivi";
 
 useResetJSDOM();
 useResetModules();

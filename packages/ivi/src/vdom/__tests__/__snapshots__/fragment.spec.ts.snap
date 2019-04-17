@@ -148,13 +148,13 @@ Object {
 }
 `;
 
-exports[`fragment update hole 1 1`] = `
+exports[`fragment update general hole 1 1`] = `
 <div>
   <h1 />
 </div>
 `;
 
-exports[`fragment update hole 1 2`] = `
+exports[`fragment update general hole 1 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -169,13 +169,13 @@ Object {
 }
 `;
 
-exports[`fragment update hole 2 1`] = `
+exports[`fragment update general hole 2 1`] = `
 <div>
   <h2 />
 </div>
 `;
 
-exports[`fragment update hole 2 2`] = `
+exports[`fragment update general hole 2 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -190,14 +190,14 @@ Object {
 }
 `;
 
-exports[`fragment update hole 3 1`] = `
+exports[`fragment update general hole 3 1`] = `
 <div>
   <h1 />
   <h2 />
 </div>
 `;
 
-exports[`fragment update hole 3 2`] = `
+exports[`fragment update general hole 3 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -212,9 +212,9 @@ Object {
 }
 `;
 
-exports[`fragment update hole 4 1`] = `<div />`;
+exports[`fragment update general hole 4 1`] = `<div />`;
 
-exports[`fragment update hole 4 2`] = `
+exports[`fragment update general hole 4 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -229,9 +229,9 @@ Object {
 }
 `;
 
-exports[`fragment update hole 5 1`] = `<div />`;
+exports[`fragment update general hole 5 1`] = `<div />`;
 
-exports[`fragment update hole 5 2`] = `
+exports[`fragment update general hole 5 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 1,
@@ -246,9 +246,9 @@ Object {
 }
 `;
 
-exports[`fragment update hole 6 1`] = `<div />`;
+exports[`fragment update general hole 6 1`] = `<div />`;
 
-exports[`fragment update hole 6 2`] = `
+exports[`fragment update general hole 6 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -263,13 +263,13 @@ Object {
 }
 `;
 
-exports[`fragment update hole 7 1`] = `
+exports[`fragment update general hole 7 1`] = `
 <div>
   <h2 />
 </div>
 `;
 
-exports[`fragment update hole 7 2`] = `
+exports[`fragment update general hole 7 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -284,13 +284,13 @@ Object {
 }
 `;
 
-exports[`fragment update hole 8 1`] = `
+exports[`fragment update general hole 8 1`] = `
 <div>
   <h1 />
 </div>
 `;
 
-exports[`fragment update hole 8 2`] = `
+exports[`fragment update general hole 8 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -305,9 +305,9 @@ Object {
 }
 `;
 
-exports[`fragment update null to fragment with a hole 1`] = `<div />`;
+exports[`fragment update general null to fragment with a hole 1`] = `<div />`;
 
-exports[`fragment update null to fragment with a hole 2`] = `
+exports[`fragment update general null to fragment with a hole 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 0,
@@ -322,14 +322,14 @@ Object {
 }
 `;
 
-exports[`fragment update null to two children 1`] = `
+exports[`fragment update general null to two children 1`] = `
 <div>
   <h1 />
   <h2 />
 </div>
 `;
 
-exports[`fragment update null to two children 2`] = `
+exports[`fragment update general null to two children 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 2,
@@ -344,14 +344,14 @@ Object {
 }
 `;
 
-exports[`fragment update one child to two children 1`] = `
+exports[`fragment update general one child to two children 1`] = `
 <div>
   <h1 />
   <h2 />
 </div>
 `;
 
-exports[`fragment update one child to two children 2`] = `
+exports[`fragment update general one child to two children 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 3,
@@ -366,13 +366,13 @@ Object {
 }
 `;
 
-exports[`fragment update two children to one child 1`] = `
+exports[`fragment update general two children to one child 1`] = `
 <div>
   <h1 />
 </div>
 `;
 
-exports[`fragment update two children to one child 2`] = `
+exports[`fragment update general two children to one child 2`] = `
 Object {
   "appendChild": 0,
   "createElement": 3,
@@ -384,5 +384,53 @@ Object {
   "removeChild": 0,
   "replaceChild": 0,
   "textContent": 1,
+}
+`;
+
+exports[`fragment update move 1 1`] = `
+<div>
+  3
+  4
+  1
+  2
+</div>
+`;
+
+exports[`fragment update move 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update move 2 1`] = `
+<div>
+  3
+  4
+  1
+  2
+</div>
+`;
+
+exports[`fragment update move 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
 }
 `;

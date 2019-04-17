@@ -1,0 +1,2151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TrackByKey mount empty 1`] = `<div />`;
+
+exports[`TrackByKey mount empty 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey mount one item 1`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`TrackByKey mount one item 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey mount three items 1`] = `
+<div>
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey mount three items 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 1 1`] = `<div />`;
+
+exports[`TrackByKey update general insert and remove 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 1,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 2 1`] = `
+<div>
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 3 1`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 4 1`] = `
+<div>
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 5 1`] = `
+<div>
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 6 1`] = `
+<div>
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 7 1`] = `
+<div>
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 7 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 8 1`] = `
+<div>
+  0
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 8 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 9 1`] = `
+<div>
+  1
+  2
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 9 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 10 1`] = `
+<div>
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 10 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 11 1`] = `
+<div>
+  1
+  0
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 11 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 12 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 12 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 13 1`] = `
+<div>
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 13 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 14 1`] = `
+<div>
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 14 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 15 1`] = `
+<div>
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 15 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 16 1`] = `
+<div>
+  0
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 16 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 17 1`] = `
+<div>
+  0
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 17 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 18 1`] = `
+<div>
+  0
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 18 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 19 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 19 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 20 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 20 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "innerHTML": 0,
+  "insertBefore": 9,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 21 1`] = `
+<div>
+  0
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 21 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 22 1`] = `
+<div>
+  0
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 22 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 23 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+  5
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 23 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "innerHTML": 0,
+  "insertBefore": 7,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 24 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+  5
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 24 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "innerHTML": 0,
+  "insertBefore": 7,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 25 1`] = `<div />`;
+
+exports[`TrackByKey update general insert and remove 25 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 26 1`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 26 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 27 1`] = `
+<div>
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 27 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 28 1`] = `
+<div>
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 28 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 29 1`] = `
+<div>
+  0
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 29 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 30 1`] = `
+<div>
+  0
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 30 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 31 1`] = `<div />`;
+
+exports[`TrackByKey update general insert and remove 31 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 3,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 32 1`] = `
+<div>
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 32 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 33 1`] = `
+<div>
+  0
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 33 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 34 1`] = `
+<div>
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 34 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 35 1`] = `
+<div>
+  0
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 35 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 36 1`] = `
+<div>
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 36 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 37 1`] = `
+<div>
+  0
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 37 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 38 1`] = `
+<div>
+  0
+  1
+  2
+  4
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 38 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "innerHTML": 0,
+  "insertBefore": 7,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 39 1`] = `
+<div>
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 39 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 40 1`] = `
+<div>
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 40 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 41 1`] = `
+<div>
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 41 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 42 1`] = `
+<div>
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 42 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 43 1`] = `
+<div>
+  3
+  4
+  5
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 43 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "innerHTML": 0,
+  "insertBefore": 7,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 44 1`] = `
+<div>
+  2
+  4
+  5
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 44 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 45 1`] = `
+<div>
+  6
+  7
+  8
+  9
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 45 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 11,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 1,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 46 1`] = `
+<div>
+  6
+  1
+  7
+  3
+  4
+  8
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 46 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 3,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert and remove 47 1`] = `
+<div>
+  6
+  7
+  3
+  8
+</div>
+`;
+
+exports[`TrackByKey update general insert and remove 47 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 5,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 1 1`] = `
+<div>
+  2
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 2 1`] = `
+<div>
+  1
+  0
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 3 1`] = `
+<div>
+  3
+  0
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 4 1`] = `
+<div>
+  0
+  2
+  1
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 5 1`] = `
+<div>
+  0
+  2
+  3
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 6 1`] = `
+<div>
+  1
+  2
+  3
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 7 1`] = `
+<div>
+  5
+  4
+  3
+  2
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 7 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 6,
+  "innerHTML": 0,
+  "insertBefore": 11,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 8 1`] = `
+<div>
+  5
+  4
+  3
+  6
+  2
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 8 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "innerHTML": 0,
+  "insertBefore": 12,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 9 1`] = `
+<div>
+  5
+  4
+  3
+  6
+  2
+  1
+  0
+  7
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 9 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "innerHTML": 0,
+  "insertBefore": 13,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 10 1`] = `
+<div>
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 10 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 11 1`] = `
+<div>
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 11 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 3,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 12 1`] = `
+<div>
+  7
+  5
+  4
+  8
+  3
+  2
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 12 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 15,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 13 1`] = `
+<div>
+  5
+  4
+  8
+  3
+  2
+  1
+  0
+  9
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 13 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 15,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 14 1`] = `
+<div>
+  7
+  5
+  4
+  3
+  2
+  1
+  0
+  9
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 14 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 15,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 15 1`] = `
+<div>
+  5
+  4
+  3
+  2
+  1
+  0
+  9
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 15 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 15,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 16 1`] = `
+<div>
+  5
+  4
+  3
+  2
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 16 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 9,
+  "innerHTML": 0,
+  "insertBefore": 15,
+  "nodeValue": 0,
+  "removeChild": 3,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 17 1`] = `
+<div>
+  2
+  3
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 17 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 18 1`] = `
+<div>
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 18 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 19 1`] = `
+<div>
+  2
+  1
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 19 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 20 1`] = `
+<div>
+  3
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 20 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 21 1`] = `
+<div>
+  1
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 21 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 22 1`] = `
+<div>
+  1
+  3
+  2
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 22 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 5,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 23 1`] = `
+<div>
+  6
+  1
+  3
+  2
+  4
+  7
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 23 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 24 1`] = `
+<div>
+  6
+  1
+  7
+  3
+  2
+  4
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 24 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 25 1`] = `
+<div>
+  6
+  7
+  3
+  2
+  4
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 25 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 3,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general insert, remove and move 26 1`] = `
+<div>
+  6
+  1
+  7
+  3
+  2
+  4
+</div>
+`;
+
+exports[`TrackByKey update general insert, remove and move 26 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 8,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 1 1`] = `
+<div>
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general move 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 2,
+  "innerHTML": 0,
+  "insertBefore": 4,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 2 1`] = `
+<div>
+  3
+  2
+  1
+  0
+</div>
+`;
+
+exports[`TrackByKey update general move 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 3 1`] = `
+<div>
+  0
+  2
+  3
+  1
+</div>
+`;
+
+exports[`TrackByKey update general move 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 4 1`] = `
+<div>
+  3
+  0
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update general move 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 5 1`] = `
+<div>
+  1
+  0
+  2
+  3
+</div>
+`;
+
+exports[`TrackByKey update general move 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 6 1`] = `
+<div>
+  2
+  0
+  1
+  3
+</div>
+`;
+
+exports[`TrackByKey update general move 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 7 1`] = `
+<div>
+  0
+  1
+  3
+  2
+</div>
+`;
+
+exports[`TrackByKey update general move 7 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 8 1`] = `
+<div>
+  0
+  2
+  3
+  1
+</div>
+`;
+
+exports[`TrackByKey update general move 8 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 9 1`] = `
+<div>
+  2
+  1
+  0
+  3
+  4
+  5
+  6
+</div>
+`;
+
+exports[`TrackByKey update general move 9 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 10 1`] = `
+<div>
+  0
+  3
+  4
+  1
+  2
+  5
+  6
+</div>
+`;
+
+exports[`TrackByKey update general move 10 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 11 1`] = `
+<div>
+  0
+  2
+  3
+  5
+  6
+  1
+  4
+</div>
+`;
+
+exports[`TrackByKey update general move 11 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 12 1`] = `
+<div>
+  0
+  1
+  5
+  3
+  2
+  4
+  6
+</div>
+`;
+
+exports[`TrackByKey update general move 12 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 7,
+  "innerHTML": 0,
+  "insertBefore": 10,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 13 1`] = `
+<div>
+  8
+  1
+  3
+  4
+  5
+  6
+  0
+  7
+  2
+  9
+</div>
+`;
+
+exports[`TrackByKey update general move 13 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 14,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update general move 14 1`] = `
+<div>
+  9
+  5
+  0
+  7
+  1
+  2
+  3
+  4
+  6
+  8
+</div>
+`;
+
+exports[`TrackByKey update general move 14 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 14,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update nested 1 1`] = `
+<div>
+  3
+  4
+  1
+  2
+</div>
+`;
+
+exports[`TrackByKey update nested 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 4,
+  "innerHTML": 0,
+  "insertBefore": 6,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;

@@ -1,7 +1,8 @@
-import { useModule, useResetModules } from "ivi-jest";
+import { useResetJSDOM, useResetModules, useIVI } from "ivi-jest";
 
+useResetJSDOM();
 useResetModules();
-const ivi = useModule<typeof import("ivi")>("ivi");
+const ivi = useIVI();
 
 describe(`Event Handler`, () => {
   function handler(ev: any): void {

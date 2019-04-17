@@ -1,5 +1,5 @@
 import { useResetJSDOM, useResetModules, useHTML, useTest, useDOMElement } from "ivi-jest";
-import { Op } from "../../operations";
+import { Op } from "ivi";
 
 useResetJSDOM();
 useResetModules();
