@@ -2,602 +2,478 @@ import { useResetJSDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useTe
 
 useResetJSDOM();
 useResetModules();
-const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
-const c = useDOMElement();
+const root = useDOMElement();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
-const r = (attrs?: {}) => t.render<HTMLElement>(h.div(_, attrs), c()).domNode!;
+const r = (attrs?: {}) => t.render<HTMLElement>(h.div(_, attrs), root()).domNode!;
 
 describe("element attribute", () => {
   describe("mount", () => {
+    const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+    const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+
     test("undefined", () => {
-      const n = r();
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(0);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r()).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("empty attributes object", () => {
-      const n = r({});
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(0);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({})).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("attribute with undefined value", () => {
-      const n = r({ width: void 0 });
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(0);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({ width: void 0 })).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("attribute with empty string value", () => {
-      const n = r({ width: "" });
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(1);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({ width: "" })).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("attribute with string value", () => {
-      const n = r({ width: "10px" });
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(1);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({ width: "10px" })).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([["width", "10px"]]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("two attributes with string values", () => {
-      const n = r({ width: "10px", height: "20px" });
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(2);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({ width: "10px", height: "20px" })).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([["width", "10px"], ["height", "20px"]]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("attribute with true value", () => {
-      const n = r({ boolean: true });
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(1);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({ boolean: true })).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([["boolean", ""]]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
 
     test("attribute with false value", () => {
-      const n = r({ boolean: false });
-      expect(n).toMatchSnapshot();
-      expect(setAttribute().mock.calls.length).toBe(0);
-      expect(removeAttribute().mock.calls.length).toBe(0);
+      expect(r({ boolean: false })).toMatchSnapshot();
+      expect(setAttribute().mock.calls).toEqual([]);
+      expect(removeAttribute().mock.calls).toEqual([]);
     });
   });
 
   describe("update", () => {
     describe("undefined to", () => {
-      const initialState = () => r();
-      const initialSetAttributeCount = 0;
+      beforeEach(() => { r(); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("empty attributes object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with string value", () => {
-        initialState();
-        const n = r({ width: "10px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "10px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with true value", () => {
-        initialState();
-        const n = r({ boolean: true });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ boolean: true })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["boolean", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with false value", () => {
-        initialState();
-        const n = r({ boolean: false });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ boolean: false })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two attributes with string values", () => {
-        initialState();
-        const n = r({ width: "10px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "10px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
     });
 
     describe("attribute with undefined value to", () => {
-      const initialState = () => r({ width: void 0 });
-      const initialSetAttributeCount = 0;
+      beforeEach(() => { r({ width: void 0 }); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("empty attribute object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with string value", () => {
-        initialState();
-        const n = r({ width: "10px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "10px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with true value", () => {
-        initialState();
-        const n = r({ boolean: true });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ boolean: true })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["boolean", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with false value", () => {
-        initialState();
-        const n = r({ boolean: false });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ boolean: false })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("one attribute with same value and one with different", () => {
-        initialState();
-        const n = r({ width: void 0, height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: void 0, height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two attributes with different values", () => {
-        initialState();
-        const n = r({ width: "30px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "30px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "30px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two different attributes", () => {
-        initialState();
-        const n = r({ left: "30px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ left: "30px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["left", "30px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
     });
 
     describe("attribute with empty string value to", () => {
-      const initialState = () => r({ width: "" });
-      const initialSetAttributeCount = 1;
+      beforeEach(() => { r({ width: "" }); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("empty attribute object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with different value", () => {
-        initialState();
-        const n = r({ width: "10px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "10px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with true value", () => {
-        initialState();
-        const n = r({ width: true });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: true })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with false value", () => {
-        initialState();
-        const n = r({ width: false });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: false })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("one attribute with same value and one with different", () => {
-        initialState();
-        const n = r({ width: "", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two attributes with different values", () => {
-        initialState();
-        const n = r({ width: "30px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "30px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "30px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two different attributes", () => {
-        initialState();
-        const n = r({ left: "30px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ left: "30px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["left", "30px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
     });
 
     describe("attribute with string value to", () => {
-      const initialState = () => r({ width: "10px" });
-      const initialSetAttributeCount = 1;
+      beforeEach(() => { r({ width: "10px" }); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("empty attribute object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with same value", () => {
-        initialState();
-        const n = r({ width: "10px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with different value", () => {
-        initialState();
-        const n = r({ width: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with true value", () => {
-        initialState();
-        const n = r({ width: true });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: true })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with false value", () => {
-        initialState();
-        const n = r({ width: false });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: false })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("one attribute with same value and one with different", () => {
-        initialState();
-        const n = r({ width: "10px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two attributes with different values", () => {
-        initialState();
-        const n = r({ width: "30px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "30px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "30px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two different attributes", () => {
-        initialState();
-        const n = r({ left: "30px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ left: "30px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["left", "30px"], ["height", "20px"]]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
     });
 
     describe("attribute with false value to", () => {
-      const initialState = () => r({ width: false });
-      const initialSetAttributeCount = 0;
+      beforeEach(() => { r({ width: false }); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("empty attribute object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with string value", () => {
-        initialState();
-        const n = r({ width: "10px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "10px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with true value", () => {
-        initialState();
-        const n = r({ width: true });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: true })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with false value", () => {
-        initialState();
-        const n = r({ width: false });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: false })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
     });
 
     describe("attribute with true value to", () => {
-      const initialState = () => r({ width: true });
-      const initialSetAttributeCount = 1;
+      beforeEach(() => { r({ width: true }); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("empty attribute object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with string value", () => {
-        initialState();
-        const n = r({ width: "10px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "10px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with true value", () => {
-        initialState();
-        const n = r({ width: true });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: true })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("attribute with false value", () => {
-        initialState();
-        const n = r({ width: false });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: false })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"]]);
       });
     });
 
     describe("two attributes with string values to", () => {
-      const initialState = () => r({ width: "10px", height: "20px" });
-      const initialSetAttributeCount = 2;
+      beforeEach(() => { r({ width: "10px", height: "20px" }); });
+      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 
       test("undefined", () => {
-        initialState();
-        const n = r();
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(2);
+        expect(r()).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"], ["height"]]);
       });
 
       test("empty attribute object", () => {
-        initialState();
-        const n = r({});
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(2);
+        expect(r({})).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"], ["height"]]);
       });
 
       test("attribute with undefined value", () => {
-        initialState();
-        const n = r({ width: void 0 });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(2);
+        expect(r({ width: void 0 })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([["width"], ["height"]]);
       });
 
       test("attribute with empty string value", () => {
-        initialState();
-        const n = r({ width: "" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: "" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", ""]]);
+        expect(removeAttribute().mock.calls).toEqual([["height"]]);
       });
 
       test("one attribute with different value", () => {
-        initialState();
-        const n = r({ width: "30px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(1);
+        expect(r({ width: "30px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "30px"]]);
+        expect(removeAttribute().mock.calls).toEqual([["height"]]);
       });
 
       test("two attributes with same values", () => {
-        initialState();
-        const n = r({ width: "10px", height: "20px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 0);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px", height: "20px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two attributes with different values", () => {
-        initialState();
-        const n = r({ width: "30px", height: "40px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "30px", height: "40px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["width", "30px"], ["height", "40px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("one attribute with same value and one with different", () => {
-        initialState();
-        const n = r({ width: "10px", height: "30px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 1);
-        expect(removeAttribute().mock.calls.length).toBe(0);
+        expect(r({ width: "10px", height: "30px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["height", "30px"]]);
+        expect(removeAttribute().mock.calls).toEqual([]);
       });
 
       test("two different attributes", () => {
-        initialState();
-        const n = r({ left: "30px", right: "40px" });
-        expect(n).toMatchSnapshot();
-        expect(setAttribute().mock.calls.length).toBe(initialSetAttributeCount + 2);
-        expect(removeAttribute().mock.calls.length).toBe(2);
+        expect(r({ left: "30px", right: "40px" })).toMatchSnapshot();
+        expect(setAttribute().mock.calls).toEqual([["left", "30px"], ["right", "40px"]]);
+        expect(removeAttribute().mock.calls).toEqual([["width"], ["height"]]);
       });
     });
   });
