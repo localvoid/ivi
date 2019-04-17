@@ -1,3 +1,5 @@
+import { createMutableProxy } from "./proxy";
+
 export function useResetModules() {
   beforeEach(() => {
     jest.resetModules();
@@ -5,21 +7,11 @@ export function useResetModules() {
 }
 
 export function useModule<T>(path: string): T {
-  let module: any;
+  const { proxy, update } = createMutableProxy<T>();
   beforeEach(async () => {
-    module = await import(path);
+    update(await import(path));
   });
-  return new Proxy({}, {
-    get(target, key) {
-      return module[key];
-    },
-    apply(target, thisArg, args) {
-      return module(...args);
-    },
-    construct(target, args) {
-      return new module(...args);
-    },
-  }) as T;
+  return proxy;
 }
 
 export function useIVI() {

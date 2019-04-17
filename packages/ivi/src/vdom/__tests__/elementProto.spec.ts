@@ -14,25 +14,25 @@ const r = (op: Op) => t.render(op, c()).domNode!;
 describe("elementProto", () => {
   describe("factory", () => {
     const proto = useComputedValue(() => h.div());
-    const factory = useComputedValue(() => ivi.elementProto(proto()));
+    const factory = useComputedValue(() => ivi.elementProto(proto));
 
     test("flags", () => {
-      const op = factory()();
-      expect(op.t.f & ~ivi.NodeFlags.ElementProto).toBe(proto().t.f);
+      const op = factory();
+      expect(op.t.f & ~ivi.NodeFlags.ElementProto).toBe(proto.t.f);
     });
 
     test("descriptor", () => {
-      const op = factory()();
-      expect((op.t.d as ElementProtoDescriptor).p).toBe(proto());
+      const op = factory();
+      expect((op.t.d as ElementProtoDescriptor).p).toBe(proto);
     });
 
     test("default className is undefined", () => {
-      const op = factory()();
+      const op = factory();
       expect(op.d.n).toBeUndefined();
     });
 
     test("override className", () => {
-      const op = factory()("abc");
+      const op = factory("abc");
       expect(op.d.n).toBe("abc");
     });
 

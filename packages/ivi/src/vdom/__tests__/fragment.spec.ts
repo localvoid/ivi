@@ -40,19 +40,19 @@ describe("fragment", () => {
 
     describe("components", () => {
       test("first null", () => {
-        r([Component()(null), Component()(h.h1()), Component()(h.h2())]);
+        r([Component(null), Component(h.h1()), Component(h.h2())]);
         expect(c()).toMatchSnapshot();
         expect(domOps()).toMatchSnapshot();
       });
 
       test("last null", () => {
-        r([Component()(h.h1()), Component()(h.h2()), Component()(null)]);
+        r([Component(h.h1()), Component(h.h2()), Component(null)]);
         expect(c()).toMatchSnapshot();
         expect(domOps()).toMatchSnapshot();
       });
 
       test("null between two children", () => {
-        r([Component()(h.h1()), Component()(null), Component()(h.h2())]);
+        r([Component(h.h1()), Component(null), Component(h.h2())]);
         expect(c()).toMatchSnapshot();
         expect(domOps()).toMatchSnapshot();
       });

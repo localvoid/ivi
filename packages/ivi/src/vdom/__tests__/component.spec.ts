@@ -16,22 +16,22 @@ const Static = useComputedValue(() => ivi.component(() => (op: Op) => op, () => 
 describe("component", () => {
   describe("mount", () => {
     test("null root node", () => {
-      const n = r(Stateful()(null));
+      const n = r(Stateful(null));
       expect(n).toMatchSnapshot();
     });
 
     test("basic root node", () => {
-      const n = r(Stateful()(123));
+      const n = r(Stateful(123));
       expect(n).toMatchSnapshot();
     });
 
     test("component root node", () => {
-      const n = r(Stateful()(Stateful()(123)));
+      const n = r(Stateful(Stateful(123)));
       expect(n).toMatchSnapshot();
     });
 
     test("fragment root node", () => {
-      const n = r(Stateful()([1, 2, 3]));
+      const n = r(Stateful([1, 2, 3]));
       expect(n).toMatchSnapshot();
     });
   });
@@ -40,14 +40,14 @@ describe("component", () => {
     describe("root node", () => {
       test("1", () => {
         const a = r(h.div());
-        const b = r(Stateful()(h.div()));
+        const b = r(Stateful(h.div()));
         expect(b).toMatchSnapshot();
         expect(a).not.toBe(b);
         expect(domOps()).toMatchSnapshot();
       });
 
       test("2", () => {
-        const a = r(Stateful()(h.div()));
+        const a = r(Stateful(h.div()));
         const b = r(h.div());
         expect(b).toMatchSnapshot();
         expect(a).not.toBe(b);
@@ -55,24 +55,24 @@ describe("component", () => {
       });
 
       test("3", () => {
-        const a = r(Stateful()(h.div()));
-        const b = r(Stateful()(h.div()));
+        const a = r(Stateful(h.div()));
+        const b = r(Stateful(h.div()));
         expect(b).toMatchSnapshot();
         expect(a).toBe(b);
         expect(domOps()).toMatchSnapshot();
       });
 
       test("4", () => {
-        const a = r(Stateful()(null));
-        const b = r(Stateful()(h.div()));
+        const a = r(Stateful(null));
+        const b = r(Stateful(h.div()));
         expect(b).toMatchSnapshot();
         expect(a).not.toBe(b);
         expect(domOps()).toMatchSnapshot();
       });
 
       test("5", () => {
-        const a = r(Stateful()(h.div()));
-        const b = r(Stateful()(null));
+        const a = r(Stateful(h.div()));
+        const b = r(Stateful(null));
         expect(b).toMatchSnapshot();
         expect(a).not.toBe(b);
         expect(domOps()).toMatchSnapshot();
@@ -80,8 +80,8 @@ describe("component", () => {
 
       test("6", () => {
         const root = h.div();
-        const a = r(Stateful()(root));
-        const b = r(Stateful()(root));
+        const a = r(Stateful(root));
+        const b = r(Stateful(root));
         expect(b).toMatchSnapshot();
         expect(a).toBe(b);
         expect(domOps()).toMatchSnapshot();
@@ -91,20 +91,20 @@ describe("component", () => {
     describe("move", () => {
       test("1", () => {
         r(ivi.TrackByKey([
-          ivi.key(0, Stateful()(0)),
-          ivi.key(1, Stateful()(1)),
+          ivi.key(0, Stateful(0)),
+          ivi.key(1, Stateful(1)),
         ]));
         r(ivi.TrackByKey([
-          ivi.key(1, Stateful()(1)),
-          ivi.key(0, Stateful()(0)),
+          ivi.key(1, Stateful(1)),
+          ivi.key(0, Stateful(0)),
         ]));
         expect(c()).toMatchSnapshot();
         expect(domOps()).toMatchSnapshot();
       });
 
       test("2", () => {
-        const c0 = Stateful()(0);
-        const c1 = Stateful()(1);
+        const c0 = Stateful(0);
+        const c1 = Stateful(1);
         r(ivi.TrackByKey([
           ivi.key(0, c0),
           ivi.key(1, c1),
@@ -118,8 +118,8 @@ describe("component", () => {
       });
 
       test("3", () => {
-        const c0 = Stateful()(0);
-        const c1 = Stateful()(null);
+        const c0 = Stateful(0);
+        const c1 = Stateful(null);
         r(ivi.TrackByKey([
           ivi.key(0, c0),
           ivi.key(1, c1),
@@ -248,8 +248,8 @@ describe("component", () => {
     });
 
     test("6", () => {
-      r(Static()(createLifecycleTester("1")(null)));
-      r(Static()(createLifecycleTester("1")(null)));
+      r(Static(createLifecycleTester("1")(null)));
+      r(Static(createLifecycleTester("1")(null)));
 
       expect(lifecycle.get("1", "constructor")).toBe(0);
       expect(lifecycle.get("1", "render")).toBe(1);

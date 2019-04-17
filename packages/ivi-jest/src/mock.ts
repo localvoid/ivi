@@ -1,3 +1,5 @@
+import { createMutableProxy } from "./proxy";
+
 export function useMockFn<T = any, Y extends any[] = any>(
   each?: (mock: jest.Mock<T, Y>) => void,
 ): jest.Mock<T, Y> {
@@ -29,17 +31,13 @@ export function useSpyOn<T extends {}, M extends jest.FunctionPropertyNames<Requ
 ): Required<T>[M] extends (...args: any[]) => any ?
   jest.SpyInstance<ReturnType<Required<T>[M]>, jest.ArgsType<Required<T>[M]>> : never;
 export function useSpyOn(object: any, methodName: any, accessType?: any): any {
-  let spy: any;
+  const { proxy, update } = createMutableProxy<any>();
   beforeEach(() => {
-    spy = jest.spyOn(object(), methodName, accessType);
+    update(jest.spyOn(object(), methodName, accessType));
   });
   afterEach(() => {
-    spy.mockRestore();
+    proxy.mockRestore();
   });
 
-  return new Proxy({}, {
-    get(target, key) {
-      return spy[key];
-    },
-  });
+  return proxy;
 }

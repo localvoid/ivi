@@ -1,8 +1,9 @@
-export function useComputedValue<T>(fn: () => T): () => T {
-  let value: T;
-  let ready = false;
+import { createMutableProxy } from "./proxy";
+
+export function useComputedValue<T>(fn: () => T): T {
+  const { proxy, update } = createMutableProxy<T>();
   beforeEach(() => {
-    ready = false;
+    update(fn());
   });
-  return () => ready ? value : (ready = true, value = fn());
+  return proxy;
 }
