@@ -1,4 +1,3 @@
-import { sMT, rAF } from "ivi-scheduler";
 import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box } from "../core";
 import { printWarn } from "../debug/print";
 import { doc } from "../dom/shortcuts";
@@ -119,7 +118,7 @@ export function scheduleMicrotask(task: () => void): void {
   _microtasks.v.push(task);
   if ((_flags & (SchedulerFlags.Running | SchedulerFlags.TickPending)) === 0) {
     _flags |= SchedulerFlags.TickPending;
-    sMT(runMicrotasks);
+    Promise.resolve().then(runMicrotasks);
   }
 }
 
@@ -224,7 +223,7 @@ export function requestNextFrame(flags?: UpdateFlags): void {
   } else if ((_flags & SchedulerFlags.NextFramePending) === 0) {
     _flags |= SchedulerFlags.NextFramePending;
     if ((_flags & SchedulerFlags.UpdatingFrame) === 0) {
-      rAF(_handleNextFrame);
+      requestAnimationFrame(_handleNextFrame);
     }
   }
 }

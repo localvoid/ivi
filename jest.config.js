@@ -8,8 +8,6 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    "ivi-scheduler": "<rootDir>/packages/ivi-scheduler/src/",
-    "ivi-test-scheduler": "<rootDir>/packages/ivi-test-scheduler/src/",
     "ivi-html": "<rootDir>/packages/ivi-html/src",
     "ivi-svg": "<rootDir>/packages/ivi-svg/src",
     "ivi-jest": "<rootDir>/packages/ivi-jest/src",
@@ -35,8 +33,6 @@ module.exports = {
     "packages/**/src/**/*.ts",
     "!**/node_modules/**",
     "!**/__tests__/**",
-    "!packages/ivi-scheduler/**",
-    "!packages/ivi-test-scheduler/**",
     "!packages/ivi-test/**",
     "!packages/ivi-router/**",
   ],

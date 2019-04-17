@@ -16,7 +16,9 @@ each test.
 
 - `useResetDOMGlobalEventListeners()`
 
-`useDOMElement()` creates a DOM element and optionally mounts it to the document body
+`useDOMElement()` creates a DOM element and optionally mounts it to the document body.
+
+`useRequestAnimationFrame()` mocks `requestAnimationFrame()` and `cancelAnimationFrame()`.
 
 ### Modules
 
@@ -34,6 +36,14 @@ each test.
 
 `useEnv()` overrides `process.env` before each tests and restores to the original value after each test.
 
+### Promise
+
+`usePromiseQueue()` adds support for waiting until promise tasks are executed.
+
+### Timers
+
+`useTimers()` mocks timers.
+
 ### Computed Value
 
-`useComputedValue()` creates a value that will be computed before each test.
+`useComputedValue()` creates a value that will be recomputed before each test.

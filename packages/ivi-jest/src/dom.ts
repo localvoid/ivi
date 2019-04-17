@@ -47,6 +47,47 @@ export function useResetDOM() {
 }
 
 /**
+ * useRequestAnimationFrame mocks `requestAnimationFrame()` and `cancelAnimationFrame()`.
+ */
+export function useRequestAnimationFrame() {
+  const prevRAF = window.requestAnimationFrame;
+  const prevCAF = window.cancelAnimationFrame;
+  let tasks: Array<FrameRequestCallback | null> = [];
+  const rAF = jest.fn((cb: FrameRequestCallback) => (tasks.push(cb) - 1));
+  const cAF = jest.fn((id: number) => { tasks[id] = null; });
+
+  beforeEach(() => {
+    window.requestAnimationFrame = rAF;
+    window.cancelAnimationFrame = cAF;
+    (global as any).requestAnimationFrame = rAF;
+    (global as any).cancelAnimationFrame = cAF;
+  });
+
+  afterEach(() => {
+    rAF.mockReset();
+    cAF.mockReset();
+    tasks = [];
+    window.requestAnimationFrame = prevRAF;
+    window.cancelAnimationFrame = prevCAF;
+    (global as any).requestAnimationFrame = prevRAF;
+    (global as any).cancelAnimationFrame = prevCAF;
+  });
+
+  return {
+    flush(time = 0) {
+      const copy = tasks;
+      tasks = [];
+      for (let i = 0; i < copy.length; i++) {
+        const task = copy[i];
+        if (task !== null) {
+          task(time);
+        }
+      }
+    },
+  };
+}
+
+/**
  * useDOMElement creates a DOM element and optionally mounts it to the document body.
  *
  * @example

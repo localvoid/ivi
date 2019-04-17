@@ -1,7 +1,7 @@
 import { createMutableProxy } from "./proxy";
 
 /**
- * useComputedValue creates a value that will be computed before each test.
+ * useComputedValue creates a value that will be recomputed before each test.
  *
  * @param fn Function.
  * @param type Proxy type.

@@ -33,17 +33,11 @@
       "ivi-svg": [
         "packages/ivi-svg/src"
       ],
-      "ivi-scheduler": [
-        "packages/ivi-scheduler/src"
-      ],
       "ivi-state": [
         "packages/ivi-state/src"
       ],
       "ivi-test": [
         "packages/ivi-test/src"
-      ],
-      "ivi-test-scheduler": [
-        "packages/ivi-test-scheduler/src"
       ]
     }
   },
