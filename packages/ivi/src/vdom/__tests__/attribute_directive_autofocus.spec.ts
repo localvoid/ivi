@@ -1,54 +1,50 @@
 import { useResetJSDOM, useResetModules, useDOMElement, useIVI, useHTML, useTest } from "ivi-jest";
+import { Op } from "ivi";
 
 useResetJSDOM();
 useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
-const _ = void 0;
+const input = (value: boolean, className?: string) => h.input(className, { autofocus: ivi.AUTOFOCUS(value) });
+const r = (op: Op) => t.render(op, root()).domNode;
 
 describe("attribute directive AUTOFOCUS", () => {
   describe("mount", () => {
     test("true", () => {
-      const { domNode } = t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(true) }), c());
-      expect(document.activeElement).toBe(domNode);
+      const n = r(input(true));
+      expect(document.activeElement).toBe(n);
     });
 
     test("false", () => {
-      const { domNode } = t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(false) }), c());
-      expect(document.activeElement).not.toBe(domNode);
+      const n = r(input(false));
+      expect(document.activeElement).not.toBe(n);
     });
 
     test("two focused elements", () => {
-      const r = ivi.box(null);
-      t.render([
-        ivi.Ref(r,
-          h.input(_, { autofocus: ivi.AUTOFOCUS(true) }),
-        ),
-        h.input(_, { autofocus: ivi.AUTOFOCUS(true) }),
-      ], c());
-      expect(document.activeElement).toBe(ivi.getDOMNode(r.v!));
+      r([input(true, "focused"), input(true)]);
+      expect(document.activeElement).toBe(root().querySelector(".focused"));
     });
   });
 
   describe("update", () => {
     test("undefined to true", () => {
-      t.render(h.input(), c());
-      const { domNode } = t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(true) }), c());
-      expect(document.activeElement).toBe(domNode);
+      r(h.input());
+      const n = r(input(true));
+      expect(document.activeElement).toBe(n);
     });
 
     test("false to true", () => {
-      t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(false) }), c());
-      const { domNode } = t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(true) }), c());
-      expect(document.activeElement).not.toBe(domNode);
+      r(input(false));
+      const n = r(input(true));
+      expect(document.activeElement).not.toBe(n);
     });
 
     test("true to false", () => {
-      t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(true) }), c());
-      const { domNode } = t.render(h.input(_, { autofocus: ivi.AUTOFOCUS(false) }), c());
-      expect(document.activeElement).toBe(domNode);
+      r(input(true));
+      const n = r(input(false));
+      expect(document.activeElement).toBe(n);
     });
   });
 });
