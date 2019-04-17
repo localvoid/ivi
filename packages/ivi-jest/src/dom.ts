@@ -64,8 +64,8 @@ export function useRequestAnimationFrame() {
   });
 
   afterEach(() => {
-    rAF.mockReset();
-    cAF.mockReset();
+    rAF.mockClear();
+    cAF.mockClear();
     tasks = [];
     window.requestAnimationFrame = prevRAF;
     window.cancelAnimationFrame = prevCAF;

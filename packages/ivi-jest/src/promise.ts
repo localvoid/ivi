@@ -3,6 +3,6 @@
  */
 export function usePromiseQueue() {
   return {
-    wait: Promise.resolve(),
+    wait: () => Promise.resolve(),
   };
 }

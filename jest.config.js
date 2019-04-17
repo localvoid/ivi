@@ -1,5 +1,4 @@
 module.exports = {
-  resetMocks: true,
   verbose: true,
   browser: true,
   globals: {

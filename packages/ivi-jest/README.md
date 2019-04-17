@@ -5,6 +5,10 @@
 Jest resets global state for every test module, but all tests in a test module share the same global state. This package
 provides a set of tools to make it easier to write isolated unit tests.
 
+## Configuration
+
+`jest.resetMocks` should be disabled.
+
 ## API
 
 ### DOM
