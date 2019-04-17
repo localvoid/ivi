@@ -47,18 +47,18 @@ describe("equality", () => {
     });
 
     test("[1] === [1] (different instances)", () => {
-      expect(shallowEqual([1], [1])).toBe(true);
-      expect(shallowNotEqual([1], [1])).toBe(false);
+      expect(shallowEqualArray([1], [1])).toBe(true);
+      expect(shallowNotEqualArray([1], [1])).toBe(false);
     });
 
     test("[1] !== [2]", () => {
-      expect(shallowEqual([1], [2])).toBe(false);
-      expect(shallowNotEqual([1], [2])).toBe(true);
+      expect(shallowEqualArray([1], [2])).toBe(false);
+      expect(shallowNotEqualArray([1], [2])).toBe(true);
     });
 
     test("[1, 2] !== [1]", () => {
-      expect(shallowEqual([1, 2], [1])).toBe(false);
-      expect(shallowNotEqual([1, 2], [1])).toBe(true);
+      expect(shallowEqualArray([1, 2], [1])).toBe(false);
+      expect(shallowNotEqualArray([1, 2], [1])).toBe(true);
     });
   });
 });

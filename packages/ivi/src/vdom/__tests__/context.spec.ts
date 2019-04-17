@@ -16,6 +16,10 @@ const ContextValue = useComputedValue(() => ivi.component((h) => {
 const r = (op: Op) => t.render(op, c()).domNode;
 
 describe("context", () => {
+  test("error when used outside of a reconcilation", () => {
+    expect(() => ivi.context()).toThrowError("context");
+  });
+
   test("mount", () => {
     r(ivi.Context({ value: 10 }, ContextValue()));
     expect(getContext.mock.calls.length).toBe(1);

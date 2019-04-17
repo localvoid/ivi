@@ -889,8 +889,8 @@ function _updateChildrenTrackByKeys(
         }
       } while (i <= aEnd);
     } else { // Step 2
-      // When `pos === -1`, it means that one of the nodes is in the wrong position and we should rearrange nodes with
-      // lis-based algorithm.
+      // When `pos === 99999999`, it means that one of the nodes is in the wrong position and we should rearrange nodes
+      // with lis-based algorithm.
       let pos = 0;
       // Number of updated nodes after prefix/suffix phase. It is used for an optimization that removes all child nodes
       // with `textContent=""` when there are no updated nodes.
@@ -909,7 +909,7 @@ function _updateChildrenTrackByKeys(
       for (i = start; i <= aEnd && updated < bLength; ++i) {
         j = keyIndex.get(a[i].k);
         if (j !== void 0) {
-          pos = (j < pos) ? j : -1;
+          pos = (pos < j) ? j : 99999999;
           ++updated;
           sources[j - start] = i;
           result[j] = opStateChildren[i];
@@ -934,7 +934,7 @@ function _updateChildrenTrackByKeys(
         }
 
         i = bLength;
-        if (moveNode === true || pos !== -1) {
+        if (moveNode === true || pos !== 99999999) {
           while (i > 0) {
             pos = --i + start;
             node = b[pos].v;
