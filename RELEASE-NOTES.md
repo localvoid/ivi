@@ -5,6 +5,18 @@
 New package `ivi-jest` adds a collection of useful tools for testing with jest library. All ivi tests were completely
 rewritten using a new `ivi-jest` library.
 
+### Scheduler packages removed
+
+`ivi-scheduler` and `ivi-test-scheduler` packages were removed. Old unit tests were using package aliasing to mock
+scheduler behavior and now it is not needed anymore.
+
+### Bug Fixes
+
+- Fast path for `TrackByKey` hasn't been executed correctly when nodes doesn't change their positions. It is hard to
+test because it is still works correctly even when this fast path hasn't been executed.
+- Prevent `VALUE()` and `CONTENT()` attribute directives from accepting numbers, they should work only with string
+values.
+
 ## v0.23.0
 
 ### Synthetic Events
