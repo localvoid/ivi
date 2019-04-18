@@ -2,6 +2,8 @@ import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useTest
 
 useResetDOM();
 useResetModules();
+const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
+const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
 const root = useDOMElement();
 const h = useHTML();
 const t = useTest();
@@ -10,9 +12,6 @@ const r = (attrs?: {}) => t.render<HTMLElement>(h.div(_, attrs), root()).domNode
 
 describe("element attribute", () => {
   describe("mount", () => {
-    const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-    const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
-
     test("undefined", () => {
       expect(r()).toMatchSnapshot();
       expect(setAttribute.mock.calls).toEqual([]);
@@ -64,9 +63,11 @@ describe("element attribute", () => {
 
   describe("update", () => {
     describe("undefined to", () => {
-      beforeEach(() => { r(); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r();
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
@@ -118,9 +119,11 @@ describe("element attribute", () => {
     });
 
     describe("attribute with undefined value to", () => {
-      beforeEach(() => { r({ width: void 0 }); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r({ width: void 0 });
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
@@ -184,9 +187,11 @@ describe("element attribute", () => {
     });
 
     describe("attribute with empty string value to", () => {
-      beforeEach(() => { r({ width: "" }); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r({ width: "" });
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
@@ -250,9 +255,11 @@ describe("element attribute", () => {
     });
 
     describe("attribute with string value to", () => {
-      beforeEach(() => { r({ width: "10px" }); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r({ width: "10px" });
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
@@ -322,9 +329,11 @@ describe("element attribute", () => {
     });
 
     describe("attribute with false value to", () => {
-      beforeEach(() => { r({ width: false }); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r({ width: false });
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
@@ -370,9 +379,11 @@ describe("element attribute", () => {
     });
 
     describe("attribute with true value to", () => {
-      beforeEach(() => { r({ width: true }); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r({ width: true });
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
@@ -418,9 +429,11 @@ describe("element attribute", () => {
     });
 
     describe("two attributes with string values to", () => {
-      beforeEach(() => { r({ width: "10px", height: "20px" }); });
-      const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
-      const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
+      beforeEach(() => {
+        r({ width: "10px", height: "20px" });
+        setAttribute.mockClear();
+        removeAttribute.mockClear();
+      });
 
       test("undefined", () => {
         expect(r()).toMatchSnapshot();

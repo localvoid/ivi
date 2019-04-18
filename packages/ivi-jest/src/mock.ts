@@ -11,10 +11,12 @@ export function useMockFn<T = any, Y extends any[] = any>(
 ): jest.Mock<T, Y> {
   const fn = jest.fn();
   if (each !== void 0) {
-    each(fn);
+    beforeEach(() => {
+      each(fn);
+    });
   }
   afterEach(() => {
-    fn.mockClear();
+    fn.mockReset();
   });
   return fn;
 }

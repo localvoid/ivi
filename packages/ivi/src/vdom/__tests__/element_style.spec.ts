@@ -2,6 +2,8 @@ import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useSVG,
 
 useResetDOM();
 useResetModules();
+const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
+const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
 const c = useDOMElement();
 const t = useTest();
 const _ = void 0;
@@ -12,9 +14,6 @@ describe("element style", () => {
     const r = (style?: {}) => t.render<HTMLElement>(h.div(_, { style }), c()).domNode!;
 
     describe("mount", () => {
-      const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-      const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
-
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
         expect(setProperty.mock.calls).toEqual([]);
@@ -48,9 +47,11 @@ describe("element style", () => {
 
     describe("update", () => {
       describe("undefined to", () => {
-        beforeEach(() => { r(); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r();
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -84,9 +85,11 @@ describe("element style", () => {
       });
 
       describe("empty style object to", () => {
-        beforeEach(() => { r({}); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({});
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -120,9 +123,11 @@ describe("element style", () => {
       });
 
       describe("property with undefined value", () => {
-        beforeEach(() => { r({ top: void 0 }); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({ top: void 0 });
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -156,9 +161,11 @@ describe("element style", () => {
       });
 
       describe("one property", () => {
-        beforeEach(() => { r({ top: "10px" }); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({ top: "10px" });
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -204,9 +211,11 @@ describe("element style", () => {
       });
 
       describe("two properties", () => {
-        beforeEach(() => { r({ top: "10px", left: "20px" }); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({ top: "10px", left: "20px" });
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -258,9 +267,6 @@ describe("element style", () => {
     const r = (style?: {}) => t.render<SVGElement>(s.circle(_, { style }), c()).domNode!;
 
     describe("mount", () => {
-      const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-      const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
-
       test("undefined", () => {
         expect(r()).toMatchSnapshot();
         expect(setProperty.mock.calls).toEqual([]);
@@ -294,9 +300,11 @@ describe("element style", () => {
 
     describe("update", () => {
       describe("undefined to", () => {
-        beforeEach(() => { r(); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r();
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -330,9 +338,11 @@ describe("element style", () => {
       });
 
       describe("empty style object to", () => {
-        beforeEach(() => { r({}); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({});
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -366,9 +376,11 @@ describe("element style", () => {
       });
 
       describe("property with undefined value", () => {
-        beforeEach(() => { r({ top: void 0 }); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({ top: void 0 });
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -402,9 +414,11 @@ describe("element style", () => {
       });
 
       describe("one property", () => {
-        beforeEach(() => { r({ top: "10px" }); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({ top: "10px" });
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();
@@ -450,9 +464,11 @@ describe("element style", () => {
       });
 
       describe("two properties", () => {
-        beforeEach(() => { r({ top: "10px", left: "20px" }); });
-        const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
-        const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
+        beforeEach(() => {
+          r({ top: "10px", left: "20px" });
+          setProperty.mockClear();
+          removeProperty.mockClear();
+        });
 
         test("undefined", () => {
           expect(r()).toMatchSnapshot();

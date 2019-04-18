@@ -31,8 +31,6 @@ module.exports = {
   coverageReporters: ["text", "json", "lcov", "html"],
   collectCoverageFrom: [
     "packages/**/src/**/*.ts",
-    "!**/node_modules/**",
-    "!**/__tests__/**",
     "!packages/ivi-test/**",
     "!packages/ivi-router/**",
   ],
