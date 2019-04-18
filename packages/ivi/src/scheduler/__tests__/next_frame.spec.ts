@@ -1,6 +1,7 @@
-import { useIVI, useResetModules, useRequestAnimationFrame } from "ivi-jest";
+import { useIVI, useResetModules, useRequestAnimationFrame, useMockFn, usePromiseQueue } from "ivi-jest";
 
 useResetModules();
+const promise = usePromiseQueue();
 const raf = useRequestAnimationFrame();
 const ivi = useIVI();
 
@@ -59,5 +60,24 @@ describe("next frame", () => {
     raf.flush();
 
     expect(order).toEqual(["beforeMutations", "mutationEffect", "afterMutations", "layoutEffect"]);
+  });
+
+  describe("requestNextFrame", () => {
+    const fn = useMockFn();
+
+    test("sync", async () => {
+      ivi.beforeMutations(fn);
+      ivi.requestNextFrame(ivi.UpdateFlags.RequestSyncUpdate);
+      await promise.wait();
+      expect(fn).toBeCalled();
+    });
+
+    test("raf after sync", async () => {
+      ivi.requestNextFrame(ivi.UpdateFlags.RequestSyncUpdate);
+      await promise.wait();
+      ivi.beforeMutations(fn);
+      raf.flush();
+      expect(fn).not.toBeCalled();
+    });
   });
 });
