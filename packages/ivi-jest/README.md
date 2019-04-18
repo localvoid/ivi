@@ -9,6 +9,10 @@ provides a set of tools to make it easier to write isolated unit tests.
 
 `jest.resetMocks` should be disabled.
 
+### Environments
+
+- `ivi-jest/env/jsdom`
+
 ## API
 
 ### DOM

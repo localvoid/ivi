@@ -1,6 +1,7 @@
 module.exports = {
   verbose: true,
   browser: true,
+  testEnvironment: "ivi-jest/env/jsdom",
   globals: {
     "ts-jest": {
       "tsConfig": "tsconfig.json",

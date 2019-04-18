@@ -20,6 +20,9 @@
     "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
+  "dependencies": {
+    "jsdom": "^14.0.0"
+  },
   "peerDependencies": {},
   "devDependencies": {},
   "description": "Jest utils for ivi library",
