@@ -104,8 +104,7 @@ export {
 export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/event_handler";
 export { DispatchTarget, dispatchEvent } from "./events/dispatch";
 export {
-  NativeEventSourceFlags, NativeEventSource, createNativeEventSource, addNativeEventMiddleware,
-  nativeEventHandlerFactory,
+  NativeEventSource, createNativeEventSource, addNativeEventMiddleware, nativeEventHandlerFactory,
 
   ABORT_EVENT, ACTIVATE_EVENT, ARIA_REQUEST_EVENT, BEFORE_ACTIVATE_EVENT, BEFORE_COPY_EVENT, BEFORE_CUT_EVENT,
   BEFORE_DEACTIVATE_EVENT, BEFORE_PASTE_EVENT, BLUR_EVENT, CAN_PLAY_EVENT, CAN_PLAYTHROUGH_EVENT, CHANGE_EVENT,

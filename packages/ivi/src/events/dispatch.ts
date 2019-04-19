@@ -134,7 +134,6 @@ export function dispatchEvent<E>(
   src: {},
   target: Element,
   event: E,
-  bubble: boolean,
 ): void {
   const targets = collectDispatchTargets(target, src);
   let i = targets.length;
@@ -154,14 +153,12 @@ export function dispatchEvent<E>(
     }
 
     // bubble phase
-    if (bubble) {
-      while (++i < targets.length) {
-        currentTarget = targets[i];
-        descriptor = currentTarget.h.d;
-        if ((descriptor.f & EventHandlerFlags.Capture) === 0) {
-          if (descriptor.h(event, currentTarget, src) === true) {
-            return;
-          }
+    while (++i < targets.length) {
+      currentTarget = targets[i];
+      descriptor = currentTarget.h.d;
+      if ((descriptor.f & EventHandlerFlags.Capture) === 0) {
+        if (descriptor.h(event, currentTarget, src) === true) {
+          return;
         }
       }
     }

@@ -9,6 +9,7 @@ const c = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
+const _ = void 0;
 const r = (op: Op) => t.render(op, c()).domNode!;
 const target = () => h.div("target");
 const dispatch = (event: Event) => {
@@ -17,14 +18,8 @@ const dispatch = (event: Event) => {
     targets[i].dispatchEvent(event);
   }
 };
-function createMouseEvent(type: string = "click"): MouseEvent {
-  if (document.createEvent) {
-    const ev = document.createEvent("MouseEvent");
-    ev.initMouseEvent(type, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null!);
-    return ev;
-  }
-  return new MouseEvent(type);
-}
+const click = () => new MouseEvent("click");
+const error = () => new ErrorEvent("error");
 
 describe("Events", () => {
   describe("basic", () => {
@@ -32,14 +27,14 @@ describe("Events", () => {
 
     test("1", () => {
       r(ivi.Events(ivi.onClick(handler), target()));
-      dispatch(createMouseEvent());
-      expect(handler.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler).toBeCalledTimes(1);
     });
 
     test("2", () => {
       r(ivi.Events(ivi.onClick(handler), [target(), target()]));
-      dispatch(createMouseEvent());
-      expect(handler.mock.calls.length).toBe(2);
+      dispatch(click());
+      expect(handler).toBeCalledTimes(2);
     });
   });
 
@@ -49,41 +44,41 @@ describe("Events", () => {
 
     test("1", () => {
       r(ivi.Events([ivi.onClick(handler1), ivi.onClick(handler2)], target()));
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(1);
-      expect(handler2.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(1);
+      expect(handler2).toBeCalledTimes(1);
     });
 
     test("2", () => {
       r(ivi.Events([ivi.onMouseDown(handler1), ivi.onClick(handler2)], target()));
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(0);
-      expect(handler2.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(0);
+      expect(handler2).toBeCalledTimes(1);
     });
 
     test("3", () => {
       r(ivi.Events([ivi.onClick(handler1), ivi.onMouseDown(handler2)], target()));
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(1);
-      expect(handler2.mock.calls.length).toBe(0);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(1);
+      expect(handler2).toBeCalledTimes(0);
     });
 
     test("4", () => {
       r(ivi.Events([ivi.onClick(handler1), null], target()));
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(1);
     });
 
     test("5", () => {
       r(ivi.Events([null, ivi.onClick(handler1)], target()));
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(1);
     });
 
     test("6", () => {
       r(ivi.Events([null, [ivi.onClick(handler1)]], target()));
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(1);
     });
 
     test("7", () => {
@@ -94,9 +89,24 @@ describe("Events", () => {
           ),
         ),
       );
-      dispatch(createMouseEvent());
-      expect(handler1.mock.calls.length).toBe(1);
-      expect(handler2.mock.calls.length).toBe(1);
+      dispatch(click());
+      expect(handler1).toBeCalledTimes(1);
+      expect(handler2).toBeCalledTimes(1);
+    });
+  });
+
+  describe("error event", () => {
+    const handler = useMockFn();
+
+    test("bubble", () => {
+      r(
+        ivi.Events(ivi.onError(handler),
+          h.div(_, _, target()),
+        ),
+      );
+
+      dispatch(error());
+      expect(handler).toBeCalledTimes(1);
     });
   });
 });
