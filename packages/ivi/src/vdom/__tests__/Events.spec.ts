@@ -109,4 +109,12 @@ describe("Events", () => {
       expect(handler).toBeCalledTimes(1);
     });
   });
+
+  describe("update", () => {
+    test("children", () => {
+      r(ivi.Events(null, 1));
+      const n = r(ivi.Events(null, 2));
+      expect(n).toMatchSnapshot();
+    });
+  });
 });

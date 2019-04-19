@@ -34,6 +34,23 @@ Object {
 }
 `;
 
+exports[`element HTML update div to text 1`] = `123`;
+
+exports[`element HTML update div to text 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 1,
+  "createElementNS": 0,
+  "createTextNode": 1,
+  "innerHTML": 0,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
 exports[`element SVG mount circle 1`] = `<circle />`;
 
 exports[`element SVG mount circle 2`] = `

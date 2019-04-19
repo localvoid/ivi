@@ -547,6 +547,54 @@ describe("TrackByKey", () => {
         });
       });
 
+      describe("elements", () => {
+        const v = (key: number, value?: Op) => (
+          ivi.key(key, value === void 0 ? h.div(_, _, key) : value === null ? null : h.div(_, _, value))
+        );
+
+        test("1", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("2", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("3", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("4", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("5", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("6", () => {
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+      });
+
       describe("components", () => {
         const Component = useComputedValue(() => ivi.component<Op>((c) => (op) => op));
         const v = (key: number, value?: Op) => ivi.key(key, Component(value === void 0 ? key : value));

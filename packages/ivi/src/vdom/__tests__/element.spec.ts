@@ -28,6 +28,13 @@ describe("element", () => {
         expect(n).toMatchSnapshot();
         expect(domOps()).toMatchSnapshot();
       });
+
+      test("div to text", () => {
+        r(h.span());
+        const n = r(123);
+        expect(n).toMatchSnapshot();
+        expect(domOps()).toMatchSnapshot();
+      });
     });
   });
 
