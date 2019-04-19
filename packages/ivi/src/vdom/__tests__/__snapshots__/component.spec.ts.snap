@@ -175,7 +175,7 @@ Object {
 }
 `;
 
-exports[`component stateful useSelect return value 1`] = `1`;
+exports[`component stateful useSelect render return value 1`] = `1`;
 
 exports[`component stateless mount basic root node 1`] = `123`;
 
