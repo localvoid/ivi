@@ -343,30 +343,32 @@ describe("component", () => {
       test("update with identical value", () => {
         const value = {};
         const effector = jest.fn();
-        const C = ivi.component<{}>((c) => {
+        const C = ivi.component<{ value: {} }>((c) => {
           const effect = ivi.useEffect<{}>(c, effector);
-          return (n) => (effect(n), null);
+          return (n) => (effect(n.value), null);
         });
-        r(C(value));
-        r(C(value));
+        r(C({ value }));
+        r(C({ value }));
         expect(effector).toBeCalledTimes(1);
         expect(effector).toBeCalledWith(value);
       });
 
       test("shouldUpdate true", () => {
+        const v1 = {};
+        const v2 = {};
         const effector = jest.fn();
         const shouldUpdate = jest.fn().mockReturnValue(true);
-        const C = ivi.component<number>((c) => {
-          const effect = ivi.useEffect<number>(c, effector, shouldUpdate);
-          return (n) => (effect(n), null);
+        const C = ivi.component<{ value: {} }>((c) => {
+          const effect = ivi.useEffect<{}>(c, effector, shouldUpdate);
+          return (n) => (effect(n.value), null);
         });
-        r(C(1));
-        r(C(2));
+        r(C({ value: v1 }));
+        r(C({ value: v2 }));
         expect(shouldUpdate).toBeCalledTimes(1);
-        expect(shouldUpdate).toBeCalledWith(1, 2);
+        expect(shouldUpdate).toBeCalledWith(v1, v2);
         expect(effector).toBeCalledTimes(2);
-        expect(effector).toHaveBeenNthCalledWith(1, 1);
-        expect(effector).toHaveBeenNthCalledWith(2, 2);
+        expect(effector).toHaveBeenNthCalledWith(1, v1);
+        expect(effector).toHaveBeenNthCalledWith(2, v2);
       });
 
       test("shouldUpdate false", () => {
@@ -374,12 +376,12 @@ describe("component", () => {
         const v2 = {};
         const effector = jest.fn();
         const shouldUpdate = jest.fn().mockReturnValue(false);
-        const C = ivi.component<{}>((c) => {
+        const C = ivi.component<{ value: {} }>((c) => {
           const effect = ivi.useEffect<{}>(c, effector, shouldUpdate);
-          return (n) => (effect(n), null);
+          return (n) => (effect(n.value), null);
         });
-        r(C(v1));
-        r(C(v2));
+        r(C({ value: v1 }));
+        r(C({ value: v2 }));
         expect(shouldUpdate).toBeCalledTimes(1);
         expect(shouldUpdate).toBeCalledWith(v1, v2);
         expect(effector).toBeCalledTimes(1);
@@ -423,45 +425,49 @@ describe("component", () => {
 
       test("update with identical value", () => {
         const value = {};
-        const C = ivi.component<{}>((c) => {
+        const C = ivi.component<{ value: {} }>((c) => {
           const select = ivi.useSelect<{}, {}>(c, selector);
-          return (n) => (select(n), null);
+          return (n) => (select(n.value), null);
         });
-        r(C(value));
-        r(C(value));
+        r(C({ value }));
+        r(C({ value }));
         expect(selector).toBeCalledTimes(2);
         expect(selector).toHaveBeenNthCalledWith(1, value, void 0);
         expect(selector).toHaveBeenNthCalledWith(2, value, value);
       });
 
       test("shouldUpdate true", () => {
+        const v1 = {};
+        const v2 = {};
         const shouldUpdate = jest.fn().mockReturnValue(true);
-        const C = ivi.component<number>((c) => {
-          const select = ivi.useSelect<number, number>(c, selector, shouldUpdate);
-          return (n) => (select(n), null);
+        const C = ivi.component<{ value: {} }>((c) => {
+          const select = ivi.useSelect<{}, {}>(c, selector, shouldUpdate);
+          return (n) => (select(n.value), null);
         });
-        r(C(1));
-        r(C(2));
+        r(C({ value: v1 }));
+        r(C({ value: v2 }));
         expect(shouldUpdate).toBeCalledTimes(1);
-        expect(shouldUpdate).toBeCalledWith(1, 2);
+        expect(shouldUpdate).toBeCalledWith(v1, v2);
         expect(selector).toBeCalledTimes(2);
-        expect(selector).toHaveBeenNthCalledWith(1, 1, void 0);
-        expect(selector).toHaveBeenNthCalledWith(2, 2, void 0);
+        expect(selector).toHaveBeenNthCalledWith(1, v1, void 0);
+        expect(selector).toHaveBeenNthCalledWith(2, v2, void 0);
       });
 
       test("shouldUpdate false", () => {
+        const v1 = {};
+        const v2 = {};
         const shouldUpdate = jest.fn().mockReturnValue(false);
-        const C = ivi.component<number>((c) => {
-          const select = ivi.useSelect<number, number>(c, selector, shouldUpdate);
-          return (n) => (select(n), null);
+        const C = ivi.component<{ value: {} }>((c) => {
+          const select = ivi.useSelect<{}, {}>(c, selector, shouldUpdate);
+          return (n) => (select(n.value), null);
         });
-        r(C(1));
-        r(C(2));
+        r(C({ value: v1 }));
+        r(C({ value: v2 }));
         expect(shouldUpdate).toBeCalledTimes(1);
-        expect(shouldUpdate).toBeCalledWith(1, 2);
+        expect(shouldUpdate).toBeCalledWith(v1, v2);
         expect(selector).toBeCalledTimes(2);
-        expect(selector).toHaveBeenNthCalledWith(1, 1, void 0);
-        expect(selector).toHaveBeenNthCalledWith(2, 2, 1);
+        expect(selector).toHaveBeenNthCalledWith(1, v1, void 0);
+        expect(selector).toHaveBeenNthCalledWith(2, v2, v1);
       });
     });
 

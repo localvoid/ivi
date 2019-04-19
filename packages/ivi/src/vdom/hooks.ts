@@ -97,8 +97,8 @@ export function useSelect<T, P>(
     if (
       (state !== void 0) &&
       (
-        (shouldUpdate !== void 0 && shouldUpdate(props, nextProps) === true) ||
-        (shouldUpdate === void 0 && props !== nextProps)
+        (props !== nextProps) &&
+        (shouldUpdate === void 0 || shouldUpdate(props, nextProps) === true)
       )
     ) {
       state = void 0;
@@ -160,9 +160,11 @@ function withEffect<P>(fn: (effect: () => void) => void): (
 
     return (nextProps: P) => {
       if (
-        props === EMPTY_OBJECT ||
-        (shouldUpdate !== void 0 && shouldUpdate(props as P, nextProps) === true) ||
-        (shouldUpdate === void 0 && props !== nextProps)
+        (props === EMPTY_OBJECT) ||
+        (
+          (props !== nextProps) &&
+          (shouldUpdate === void 0 || shouldUpdate(props as P, nextProps) === true)
+        )
       ) {
         props = nextProps;
         fn(handler);
