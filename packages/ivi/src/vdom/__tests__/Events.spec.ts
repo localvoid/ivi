@@ -95,6 +95,98 @@ describe("Events", () => {
     });
   });
 
+  describe("flow", () => {
+    const handlerStop = useMockFn((fn) => { fn.mockReturnValue(true); });
+    const handler = useMockFn();
+
+    test("1", () => {
+      r(
+        ivi.Events(ivi.onClick(handler),
+          ivi.Events(ivi.onClick(handlerStop),
+            target(),
+          ),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(0);
+    });
+
+    test("2", () => {
+      r(
+        ivi.Events(ivi.onClick(handlerStop, true),
+          ivi.Events(ivi.onClick(handler, true),
+            target(),
+          ),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(0);
+    });
+
+    test("3", () => {
+      r(
+        ivi.Events(ivi.onClick(handlerStop, true),
+          ivi.Events(ivi.onClick(handler),
+            target(),
+          ),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(0);
+    });
+
+    test("4", () => {
+      r(
+        ivi.Events(ivi.onClick(handler),
+          ivi.Events(ivi.onClick(handlerStop, true),
+            target(),
+          ),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(0);
+    });
+
+    test("5", () => {
+      r(
+        ivi.Events(ivi.onClick(handler, true),
+          ivi.Events(ivi.onClick(handlerStop),
+            target(),
+          ),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(1);
+    });
+
+    test("6", () => {
+      r(
+        ivi.Events([ivi.onClick(handler), ivi.onClick(handlerStop)],
+          target(),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(0);
+    });
+
+    test("7", () => {
+      r(
+        ivi.Events([ivi.onClick(handlerStop, true), ivi.onClick(handler, true)],
+          target(),
+        ),
+      );
+      dispatch(click());
+      expect(handlerStop).toBeCalledTimes(1);
+      expect(handler).toBeCalledTimes(0);
+    });
+  });
+
   describe("error event", () => {
     const handler = useMockFn();
 

@@ -100,7 +100,8 @@ function collectDispatchTargetsFromEventsOpState(
 ): void {
   if (h !== null) {
     if (h instanceof Array) {
-      for (let i = 0; i < h.length; ++i) {
+      let i = h.length;
+      while (--i >= 0) {
         collectDispatchTargetsFromEventsOpState(result, t, h[i], match);
       }
     } else {
