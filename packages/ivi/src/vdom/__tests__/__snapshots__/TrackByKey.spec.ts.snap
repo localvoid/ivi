@@ -2126,6 +2126,675 @@ Object {
 }
 `;
 
+exports[`TrackByKey update holes components 1 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes components 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 9,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes components 2 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes components 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes components 3 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes components 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes components 4 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes components 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes components 5 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes components 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes components 6 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes components 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes fragments with nested components 1 1`] = `
+<div>
+  <div>
+    4
+  </div>
+  4
+  <div>
+    3
+  </div>
+  3
+  <div>
+    2
+  </div>
+  2
+  <div>
+    1
+  </div>
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes fragments with nested components 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 23,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes fragments with nested components 2 1`] = `
+<div>
+  <div>
+    4
+  </div>
+  4
+  <div>
+    3
+  </div>
+  3
+  <div>
+    2
+  </div>
+  2
+  <div>
+    1
+  </div>
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes fragments with nested components 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 21,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes fragments with nested components 3 1`] = `
+<div>
+  <div>
+    4
+  </div>
+  4
+  <div>
+    3
+  </div>
+  3
+  <div>
+    2
+  </div>
+  2
+  <div>
+    1
+  </div>
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes fragments with nested components 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 21,
+  "nodeValue": 0,
+  "removeChild": 2,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes fragments with nested components 4 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  0
+  <div>
+    1
+  </div>
+  1
+  <div>
+    2
+  </div>
+  2
+  <div>
+    3
+  </div>
+  3
+  <div>
+    4
+  </div>
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes fragments with nested components 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 21,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes fragments with nested components 5 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  0
+  <div>
+    1
+  </div>
+  1
+  <div>
+    2
+  </div>
+  2
+  <div>
+    3
+  </div>
+  3
+  <div>
+    4
+  </div>
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes fragments with nested components 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 21,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes fragments with nested components 6 1`] = `
+<div>
+  <div>
+    0
+  </div>
+  0
+  <div>
+    1
+  </div>
+  1
+  <div>
+    2
+  </div>
+  2
+  <div>
+    3
+  </div>
+  3
+  <div>
+    4
+  </div>
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes fragments with nested components 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 5,
+  "createElementNS": 0,
+  "createTextNode": 10,
+  "innerHTML": 0,
+  "insertBefore": 21,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes static components 1 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes static components 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 9,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes static components 2 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes static components 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes static components 3 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes static components 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes static components 4 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes static components 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes static components 5 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes static components 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes static components 6 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes static components 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes text 1 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes text 1 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 9,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes text 2 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes text 2 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes text 3 1`] = `
+<div>
+  4
+  3
+  2
+  1
+</div>
+`;
+
+exports[`TrackByKey update holes text 3 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes text 4 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes text 4 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes text 5 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes text 5 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`TrackByKey update holes text 6 1`] = `
+<div>
+  0
+  1
+  2
+  3
+  4
+</div>
+`;
+
+exports[`TrackByKey update holes text 6 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 0,
+  "createElementNS": 0,
+  "createTextNode": 5,
+  "innerHTML": 0,
+  "insertBefore": 8,
+  "nodeValue": 0,
+  "removeChild": 0,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
 exports[`TrackByKey update nested 1 1`] = `
 <div>
   3

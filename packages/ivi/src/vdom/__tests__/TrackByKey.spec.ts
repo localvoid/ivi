@@ -1,10 +1,10 @@
-import { useResetDOM, useResetModules, useDOMElement, useIVI, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useResetModules, useDOMElement, useIVI, useHTML, useTest, useComputedValue } from "ivi-jest";
 import { Op } from "ivi";
 import { useDOMOpsCounters } from "./jest";
 
 useResetDOM();
 useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const domOps = useDOMOpsCounters();
 const ivi = useIVI();
 const h = useHTML();
@@ -21,7 +21,7 @@ describe("TrackByKey", () => {
   });
 
   describe("mount", () => {
-    const r = (...a: number[]) => t.render(h.div(_, _, k(...a)), c()).domNode;
+    const r = (...a: number[]) => t.render(h.div(_, _, k(...a)), root()).domNode;
 
     test("empty", () => {
       expect(r()).toMatchSnapshot();
@@ -42,8 +42,8 @@ describe("TrackByKey", () => {
   describe("update", () => {
     describe("general", () => {
       const r = (a: number[], b: number[]) => {
-        t.render(h.div(_, _, k(...a)), c());
-        return t.render(h.div(_, _, k(...b)), c()).domNode;
+        t.render(h.div(_, _, k(...a)), root());
+        return t.render(h.div(_, _, k(...b)), root()).domNode;
       };
       describe("insert and remove", () => {
         test("1", () => {
@@ -488,13 +488,212 @@ describe("TrackByKey", () => {
     });
 
     describe("nested", () => {
-      const r = (op: Op) => t.render(op, c()).domNode;
+      const r = (op: Op) => t.render(op, root()).domNode;
 
       test("1", () => {
         r(ivi.TrackByKey([ivi.key(0, k(1, 2)), ivi.key(1, k(3, 4))]));
         r(ivi.TrackByKey([ivi.key(1, k(3, 4)), ivi.key(0, k(1, 2))]));
-        expect(c()).toMatchSnapshot();
+        expect(root()).toMatchSnapshot();
         expect(domOps()).toMatchSnapshot();
+      });
+    });
+
+    describe("holes", () => {
+      const r = (op: Op) => t.render(op, root()).domNode;
+
+      describe("text", () => {
+        const v = (key: number, value?: Op) => ivi.key(key, value === void 0 ? key : value);
+
+        test("1", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("2", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("3", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("4", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("5", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("6", () => {
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+      });
+
+      describe("components", () => {
+        const Component = useComputedValue(() => ivi.component<Op>((c) => (op) => op));
+        const v = (key: number, value?: Op) => ivi.key(key, Component(value === void 0 ? key : value));
+
+        test("1", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("2", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("3", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("4", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("5", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("6", () => {
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+      });
+
+      describe("static components", () => {
+        const Component = useComputedValue(() => ivi.component<Op>((c) => (op) => op, () => false));
+        const v = (key: number, value?: Op) => (
+          ivi.key(key, value === void 0 ? Component(key) : value === null ? null : Component(value))
+        );
+
+        test("1", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("2", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("3", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("4", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("5", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("6", () => {
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+      });
+
+      describe("fragments with nested components", () => {
+        const Nested = useComputedValue(() => ivi.component<Op>((c) => (op) => op, () => false));
+        const Component = useComputedValue(() => ivi.component<Op>(
+          (c) => (op) => ([h.div(_, _, Nested(op)), Nested(op)]),
+          () => false,
+        ));
+        const v = (key: number, value?: Op) => (
+          ivi.key(key, value === void 0 ? Component(key) : value === null ? null : Component(value))
+        );
+
+        test("1", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("2", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("3", () => {
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("4", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(2), v(1), v(0, null)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("5", () => {
+          r(ivi.TrackByKey([v(4), v(3), v(0, null), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
+
+        test("6", () => {
+          r(ivi.TrackByKey([v(0, null), v(4), v(3), v(2), v(1)]));
+          r(ivi.TrackByKey([v(0), v(1), v(2), v(3), v(4)]));
+          expect(root()).toMatchSnapshot();
+          expect(domOps()).toMatchSnapshot();
+        });
       });
     });
   });
