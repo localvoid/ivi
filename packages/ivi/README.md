@@ -724,6 +724,20 @@ const C = component((c) => {
 });
 ```
 
+When `shouldUpdate` function returns `true` value, `prev` state will have an `undefined` value. It means that it
+is unnecessary to implement additional checks for `props` changes in selector functions.
+
+```js
+const C = component((c) => {
+  const select = useSelect(c,
+    ([a, b], prev) => ((prev !== void 0) ? prev : { computedValue: a + b }),
+    shallowNotEqualArray,
+  );
+
+  return ({a, b}) => span(_, _, select([a, b]).computedValue);
+});
+```
+
 ##### `useUnmount()`
 
 ```ts
