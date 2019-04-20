@@ -20,6 +20,8 @@ Removed optional bubbling, all events are now always bubble.
 test because it is still works correctly even when this fast path doesn't execute.
 - Prevent `VALUE()` and `CONTENT()` attribute directives from accepting numbers, they should work only with string
 values.
+- `shouldUpdate` functions hasn't been executed correctly in component hooks and caused more updates than it was
+necessary.
 
 ## v0.23.0
 

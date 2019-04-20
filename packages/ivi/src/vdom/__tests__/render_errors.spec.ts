@@ -1,8 +1,7 @@
-import { useResetDOM, useResetModules, useHTML, useTest, useDOMElement } from "ivi-jest";
+import { useResetDOM, useHTML, useTest, useDOMElement } from "ivi-jest";
 import { Op } from "ivi";
 
 useResetDOM();
-useResetModules();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;

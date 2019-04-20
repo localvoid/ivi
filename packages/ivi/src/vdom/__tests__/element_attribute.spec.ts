@@ -1,10 +1,9 @@
-import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useSpyOn, useDOMElement, useHTML, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
+const root = useDOMElement();
 const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
 const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
-const root = useDOMElement();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;

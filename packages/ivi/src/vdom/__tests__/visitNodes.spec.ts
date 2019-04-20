@@ -1,16 +1,13 @@
-import {
-  useResetDOM, useResetModules, useDOMElement, useIVI, useHTML, useTest, useMockFn,
-} from "ivi-jest";
+import { useResetDOM, useDOMElement, useIVI, useHTML, useTest, useMockFn } from "ivi-jest";
 import { Op } from "ivi";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
-const r = (op: Op) => t.render(op, c()).stateNode!;
+const r = (op: Op) => t.render(op, root()).stateNode!;
 
 describe("visitNodes", () => {
   const visited: Op[] = [];

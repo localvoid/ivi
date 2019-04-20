@@ -1,19 +1,16 @@
-import {
-  useResetDOM, useResetModules, useDOMElement, useIVI, useHTML, useTest, useMockFn,
-} from "ivi-jest";
+import { useResetDOM, useDOMElement, useIVI, useHTML, useTest, useMockFn } from "ivi-jest";
 import { Op } from "ivi";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
-const r = (op: Op) => t.render(op, c()).domNode!;
+const r = (op: Op) => t.render(op, root()).domNode!;
 const target = () => h.div("target");
 const dispatch = (event: Event) => {
-  const targets = c().getElementsByClassName("target");
+  const targets = root().getElementsByClassName("target");
   for (let i = 0; i < targets.length; i++) {
     targets[i].dispatchEvent(event);
   }

@@ -1,12 +1,11 @@
-import { useResetDOM, useResetModules, useDOMElement, useTest } from "ivi-jest";
+import { useResetDOM, useDOMElement, useTest } from "ivi-jest";
 import { useDOMOpsCounters } from "./jest";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const domOps = useDOMOpsCounters();
 const t = useTest();
-const r = (text: string | number | null) => t.render(text, c()).domNode!;
+const r = (text: string | number | null) => t.render(text, root()).domNode!;
 
 describe("mount text node", () => {
   test("empty string", () => {
@@ -177,7 +176,7 @@ describe("update text node", () => {
 
   test("string to fragment", () => {
     r("abc");
-    const { domNode } = t.render([1, 2, 3], c());
+    const { domNode } = t.render([1, 2, 3], root());
     expect(domNode).toMatchSnapshot();
     expect(domOps()).toMatchSnapshot();
   });

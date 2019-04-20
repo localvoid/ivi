@@ -1,10 +1,7 @@
-import {
-  useResetDOM, useResetModules, useDOMElement, useHTML, useTest, useModule, useComputedValue,
-} from "ivi-jest";
+import { useResetDOM, useDOMElement, useHTML, useTest, useModule, useComputedValue } from "ivi-jest";
 import { Op } from "ivi";
 
 useResetDOM();
-useResetModules();
 const c = useDOMElement();
 const h = useHTML();
 const portal = useModule<typeof import("ivi-portal")>("ivi-portal");

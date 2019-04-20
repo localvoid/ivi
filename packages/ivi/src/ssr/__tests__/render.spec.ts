@@ -1,8 +1,7 @@
-import { useEnv, useResetModules, useIVI, useHTML, useSVG, useComputedValue } from "ivi-jest";
+import { useEnv, useIVI, useHTML, useSVG, useComputedValue } from "ivi-jest";
 import { Op } from "ivi";
 
 useEnv("IVI_TARGET", "ssr");
-useResetModules();
 const ivi = useIVI();
 const h = useHTML();
 const _ = void 0;

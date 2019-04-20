@@ -1,13 +1,12 @@
-import { useResetDOM, useResetModules, useDOMElement, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useDOMElement, useHTML, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
 const DIRECTIVE = <T>(v: T) => ({ v, u: jest.fn() });
-const r = (attrs?: {}) => t.render<HTMLElement>(h.div(_, attrs), c()).domNode!;
+const r = (attrs?: {}) => t.render<HTMLElement>(h.div(_, attrs), root()).domNode!;
 
 describe("attribute directive", () => {
   test("mount", () => {

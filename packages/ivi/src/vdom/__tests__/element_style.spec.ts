@@ -1,17 +1,16 @@
-import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useSVG, useTest } from "ivi-jest";
+import { useResetDOM, useSpyOn, useDOMElement, useHTML, useSVG, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
+const root = useDOMElement();
 const setProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "setProperty");
 const removeProperty = useSpyOn(() => CSSStyleDeclaration.prototype, "removeProperty");
-const c = useDOMElement();
 const t = useTest();
 const _ = void 0;
 
 describe("element style", () => {
   describe("HTML", () => {
     const h = useHTML();
-    const r = (style?: {}) => t.render<HTMLElement>(h.div(_, { style }), c()).domNode!;
+    const r = (style?: {}) => t.render<HTMLElement>(h.div(_, { style }), root()).domNode!;
 
     describe("mount", () => {
       test("undefined", () => {
@@ -264,7 +263,7 @@ describe("element style", () => {
 
   describe("SVG", () => {
     const s = useSVG();
-    const r = (style?: {}) => t.render<SVGElement>(s.circle(_, { style }), c()).domNode!;
+    const r = (style?: {}) => t.render<SVGElement>(s.circle(_, { style }), root()).domNode!;
 
     describe("mount", () => {
       test("undefined", () => {

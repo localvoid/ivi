@@ -1,16 +1,15 @@
-import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useSpyOn, useDOMElement, useHTML, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
+const root = useDOMElement();
 const setValue = useSpyOn(() => HTMLTextAreaElement.prototype, "value", "set");
-const c = useDOMElement();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
 const r = (value?: string) => (
   t.render<HTMLTextAreaElement>(
     h.textarea(_, value === void 0 ? void 0 : { content: h.CONTENT(value) }),
-    c(),
+    root(),
   ).domNode!
 );
 

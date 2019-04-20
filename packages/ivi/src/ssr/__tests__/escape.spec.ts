@@ -1,6 +1,5 @@
-import { useResetModules, useIVI } from "ivi-jest";
+import { useIVI } from "ivi-jest";
 
-useResetModules();
 const ivi = useIVI();
 
 describe("escape", () => {

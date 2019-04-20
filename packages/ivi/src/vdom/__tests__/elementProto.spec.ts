@@ -1,15 +1,14 @@
-import { useResetDOM, useResetModules, useDOMElement, useIVI, useTest, useHTML, useComputedValue } from "ivi-jest";
+import { useResetDOM, useDOMElement, useIVI, useTest, useHTML, useComputedValue } from "ivi-jest";
 import { ElementProtoDescriptor } from "../element_proto";
 import { Op } from "ivi";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
-const r = (op: Op) => t.render(op, c()).domNode!;
+const r = (op: Op) => t.render(op, root()).domNode!;
 
 describe("elementProto", () => {
   describe("factory", () => {

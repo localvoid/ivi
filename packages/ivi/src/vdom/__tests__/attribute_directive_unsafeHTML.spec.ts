@@ -1,9 +1,8 @@
-import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useIVI, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useSpyOn, useDOMElement, useIVI, useHTML, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
+const root = useDOMElement();
 const innerHTML = useSpyOn(() => Element.prototype, "innerHTML", "set");
-const c = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
@@ -11,7 +10,7 @@ const _ = void 0;
 const r = (html?: string) => (
   t.render(
     h.div(_, html === void 0 ? void 0 : { unsafeHTML: ivi.UNSAFE_HTML(html) }),
-    c(),
+    root(),
   ).domNode!
 );
 

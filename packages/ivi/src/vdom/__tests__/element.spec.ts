@@ -1,17 +1,16 @@
-import { useResetDOM, useResetModules, useDOMElement, useIVI, useHTML, useSVG, useTest } from "ivi-jest";
+import { useResetDOM, useDOMElement, useIVI, useHTML, useSVG, useTest } from "ivi-jest";
 import { Op } from "ivi";
 import { useDOMOpsCounters } from "./jest";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const domOps = useDOMOpsCounters();
 const t = useTest();
 
 describe("element", () => {
   describe("HTML", () => {
     const h = useHTML();
-    const r = (op: Op) => t.render<HTMLElement>(op, c()).domNode!;
+    const r = (op: Op) => t.render<HTMLElement>(op, root()).domNode!;
 
     describe("mount", () => {
       test("div", () => {
@@ -41,7 +40,7 @@ describe("element", () => {
   describe("SVG", () => {
     const ivi = useIVI();
     const s = useSVG();
-    const r = (op: Op) => t.render<SVGElement>(op, c()).domNode!;
+    const r = (op: Op) => t.render<SVGElement>(op, root()).domNode!;
 
     describe("mount", () => {
       test("circle", () => {

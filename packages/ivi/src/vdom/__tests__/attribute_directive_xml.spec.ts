@@ -1,10 +1,9 @@
-import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useIVI, useSVG, useTest } from "ivi-jest";
+import { useResetDOM, useSpyOn, useDOMElement, useIVI, useSVG, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
+const root = useDOMElement();
 const setAttributeNS = useSpyOn(() => Element.prototype, "setAttributeNS");
 const removeAttribute = useSpyOn(() => Element.prototype, "removeAttribute");
-const c = useDOMElement();
 const ivi = useIVI();
 const s = useSVG();
 const t = useTest();
@@ -12,7 +11,7 @@ const _ = void 0;
 const r = (value?: string | number) => (
   t.render<SVGElement>(
     s.circle(_, value === void 0 ? void 0 : { "text": s.XML_ATTR(value) }),
-    c(),
+    root(),
   ).domNode!
 );
 

@@ -1,17 +1,16 @@
-import { useResetDOM, useResetModules, useSpyOn, useDOMElement, useHTML, useSVG, useTest } from "ivi-jest";
+import { useResetDOM, useSpyOn, useDOMElement, useHTML, useSVG, useTest } from "ivi-jest";
 
 useResetDOM();
-useResetModules();
+const root = useDOMElement();
 const setAttribute = useSpyOn(() => Element.prototype, "setAttribute");
 const setClassName = useSpyOn(() => Element.prototype, "className", "set");
-const c = useDOMElement();
 const t = useTest();
 
 describe("element className", () => {
   describe("HTML", () => {
     const setter = setClassName;
     const h = useHTML();
-    const r = (className?: string) => t.render<HTMLDivElement>(h.div(className), c()).domNode!;
+    const r = (className?: string) => t.render<HTMLDivElement>(h.div(className), root()).domNode!;
 
     describe("mount", () => {
       test("undefined", () => {
@@ -102,7 +101,7 @@ describe("element className", () => {
   describe("SVG", () => {
     const setter = setAttribute;
     const s = useSVG();
-    const r = (className?: string) => t.render<SVGCircleElement>(s.circle(className), c()).domNode!;
+    const r = (className?: string) => t.render<SVGCircleElement>(s.circle(className), root()).domNode!;
 
     describe("mount", () => {
       test("undefined", () => {

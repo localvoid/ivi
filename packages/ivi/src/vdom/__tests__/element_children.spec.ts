@@ -1,15 +1,14 @@
-import { useResetDOM, useResetModules, useDOMElement, useHTML, useTest } from "ivi-jest";
+import { useResetDOM, useDOMElement, useHTML, useTest } from "ivi-jest";
 import { Op } from "ivi";
 import { useDOMOpsCounters } from "./jest";
 
 useResetDOM();
-useResetModules();
-const c = useDOMElement();
+const root = useDOMElement();
 const domOps = useDOMOpsCounters();
 const h = useHTML();
 const t = useTest();
 const _ = void 0;
-const r = (children: Op) => t.render<HTMLDivElement>(h.div(_, _, children), c()).domNode!;
+const r = (children: Op) => t.render<HTMLDivElement>(h.div(_, _, children), root()).domNode!;
 
 describe("element children", () => {
   describe("mount", () => {

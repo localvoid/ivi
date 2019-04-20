@@ -7,7 +7,7 @@ provides a set of tools to make it easier to write isolated unit tests.
 
 ## Configuration
 
-`jest.resetMocks` should be disabled.
+`jest.resetModules` should be enabled.
 
 ### Environments
 
