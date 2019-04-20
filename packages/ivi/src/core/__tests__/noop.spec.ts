@@ -1,15 +1,17 @@
-import { NOOP, NOOP_FALSE, NOOP_TRUE } from "ivi";
+import { useIVI } from "ivi-jest";
+
+const ivi = useIVI();
 
 describe("NOOP", () => {
   test("NOOP => undefined", () => {
-    expect(NOOP()).toBe(undefined);
+    expect(ivi.NOOP()).toBe(void 0);
   });
 
   test("NOOP_FALSE => false", () => {
-    expect(NOOP_FALSE()).toBe(false);
+    expect(ivi.NOOP_FALSE()).toBe(false);
   });
 
   test("NOOP_TRUE => false", () => {
-    expect(NOOP_TRUE()).toBe(true);
+    expect(ivi.NOOP_TRUE()).toBe(true);
   });
 });

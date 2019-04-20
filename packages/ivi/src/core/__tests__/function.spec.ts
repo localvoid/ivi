@@ -1,24 +1,28 @@
-import { getFunctionName } from "ivi";
+import { useIVI } from "ivi-jest";
 
-function wrap(fn: Function): Function {
-  return fn;
-}
+const ivi = useIVI();
 
-test(`basic name`, () => {
-  function A() { /* */ }
+describe("getFunctionName", () => {
+  function wrap(fn: Function): Function {
+    return fn;
+  }
 
-  expect(getFunctionName(A)).toBe("A");
-});
+  test("basic name", () => {
+    function A() { /* */ }
 
-test(`displayName`, () => {
-  function A() { /* */ }
-  A.displayName = "B";
+    expect(ivi.getFunctionName(A)).toBe("A");
+  });
 
-  expect(getFunctionName(A)).toBe("B");
-});
+  test("displayName", () => {
+    function A() { /* */ }
+    A.displayName = "B";
 
-test(`anonymous`, () => {
-  const A = wrap(() => { /* */ });
+    expect(ivi.getFunctionName(A)).toBe("B");
+  });
 
-  expect(getFunctionName(A)).toBe("(anonymous function)");
+  test("anonymous", () => {
+    const A = wrap(() => { /* */ });
+
+    expect(ivi.getFunctionName(A)).toBe("(anonymous function)");
+  });
 });

@@ -1,5 +1,7 @@
-import { EMPTY_OBJECT } from "ivi";
+import { useIVI } from "ivi-jest";
+
+const ivi = useIVI();
 
 test("empty object should be empty", () => {
-  expect(EMPTY_OBJECT).toEqual({});
+  expect(ivi.EMPTY_OBJECT).toEqual({});
 });

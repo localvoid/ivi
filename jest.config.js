@@ -1,6 +1,7 @@
 module.exports = {
   verbose: true,
   browser: true,
+  resetModules: true,
   testEnvironment: "ivi-jest/env/jsdom",
   globals: {
     "ts-jest": {
