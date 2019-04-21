@@ -1,4 +1,3 @@
-import { checkNestingViolations } from "../debug/html_nesting_rules";
 import { Op } from "./operations";
 import { OpState } from "./state";
 import { _mount, _update, _unmount, _dirtyCheck, _resetState } from "./reconciler";
@@ -52,13 +51,6 @@ export function dirtyCheck() {
       root.state = _update(container!, state, next, false, true);
     } else if (state !== null) {
       _dirtyCheck(container!, state, false, true);
-    }
-
-    /* istanbul ignore else */
-    if (process.env.NODE_ENV !== "production") {
-      if (root.state) {
-        checkNestingViolations(container!, root.state);
-      }
     }
   }
   /* istanbul ignore else */
