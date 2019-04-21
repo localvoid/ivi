@@ -33,7 +33,6 @@ module.exports = {
   collectCoverageFrom: [
     "packages/**/src/**/*.ts",
     "!packages/ivi-jest/**",
-    "!packages/ivi-test/**",
     "!packages/ivi-router/**",
   ],
   coveragePathIgnorePatterns: ["/__tests__/", "/node_modules/"],

@@ -19,6 +19,30 @@ const click = () => new MouseEvent("click");
 const error = () => new ErrorEvent("error");
 
 describe("Events", () => {
+  describe("operation", () => {
+    const handler = () => { /**/ };
+
+    test("event source", () => {
+      expect(ivi.onClick(handler).d.s).toBe(ivi.CLICK_EVENT);
+    });
+
+    test("event handler", () => {
+      expect(ivi.onClick(handler).h).toBe(handler);
+    });
+
+    test("event handler shouldn't have capture flag when capture arg is undefined", () => {
+      expect(ivi.onClick(handler).d.f & ivi.EventHandlerFlags.Capture).toBeFalsy();
+    });
+
+    test("event handler shouldn't have capture flag when capture arg is false", () => {
+      expect(ivi.onClick(handler, false).d.f & ivi.EventHandlerFlags.Capture).toBeFalsy();
+    });
+
+    test("event handler should have capture flag when capture arg is true", () => {
+      expect(ivi.onClick(handler, true).d.f & ivi.EventHandlerFlags.Capture).toBeTruthy();
+    });
+  });
+
   describe("basic", () => {
     const handler = useMockFn();
 
