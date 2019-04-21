@@ -3,7 +3,7 @@ export type LifecycleCounters = ReturnType<typeof createLifecycleCounters>;
 const createLifecycleCounters = () => ({
   global: 0,
   constructor: 0,
-  shouldUpdate: 0,
+  areEqual: 0,
   effect: 0,
   mutationEffect: 0,
   layoutEffect: 0,

@@ -47,19 +47,19 @@ export function selector<T>(
  *
  * @typename T Selector value type.
  * @param s Selector function.
- * @param shouldUpdate Should update function.
+ * @param areEqual `areEqual` function.
  * @returns Selector factory.
  */
 export function selector<T, P>(
   s: (props: P, prev?: T | undefined) => T,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (component: Component) => undefined extends P ? () => T : (props: P) => T;
 
 export function selector<T, P>(
   s: (props: P, prev?: T | undefined) => T,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (component: Component) => undefined extends P ? () => T : (props: P) => T {
-  return (component: Component) => useSelect(component, s, shouldUpdate);
+  return (component: Component) => useSelect(component, s, areEqual);
 }
 
 /**

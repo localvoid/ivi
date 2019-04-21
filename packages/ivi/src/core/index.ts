@@ -24,7 +24,5 @@ export { addErrorHandler, catchError } from "./error";
 export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete } from "./array";
 export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
-export {
-  strictEqual, strictNotEqual, shallowEqual, shallowNotEqual, shallowEqualArray, shallowNotEqualArray,
-} from "./equal";
+export { strictEqual, shallowEqual, shallowEqualArray } from "./equal";
 export { lazy, memo, memoObject, memoArray } from "./memo";

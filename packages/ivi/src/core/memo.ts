@@ -1,4 +1,4 @@
-import { strictNotEqual, shallowNotEqual, shallowNotEqualArray } from "./equal";
+import { strictEqual, shallowEqual, shallowEqualArray } from "./equal";
 
 /**
  * lazy creates a lazy value.
@@ -15,17 +15,17 @@ export const lazy = <T>(fn: () => T, v?: T) => () => v === void 0 ? v = fn() : v
  * @typeparam T input type.
  * @typeparam U output type.
  * @param fn
- * @param shouldUpdate
+ * @param areEqual `areEqual` function.
  * @returns memoized function.
  */
 export function memo<T, U>(
   fn: (props: T) => U,
-  shouldUpdate: (prev: T, next: T) => boolean = strictNotEqual,
+  areEqual: (prev: T, next: T) => boolean = strictEqual,
 ): (props: T) => U {
   let prev: T | undefined;
   let v: U | undefined;
   return (props: T) => {
-    if (v === void 0 || shouldUpdate(prev!, props) === true) {
+    if (v === void 0 || areEqual(prev!, props) !== true) {
       prev = props;
       v = fn(props);
     }
@@ -34,21 +34,21 @@ export function memo<T, U>(
 }
 
 /**
- * memoObject creates a memoized function with {@link shallowNotEqual} as a `shouldUpdate` function.
+ * memoObject creates a memoized function with {@link shallowEqual} as a `areEqual` function.
  *
  * @typeparam T input type.
  * @typeparam U output type.
  * @param fn
  * @returns memoized function.
  */
-export const memoObject = <T extends {}, U>(fn: (props: T) => U) => memo<T, U>(fn, shallowNotEqual);
+export const memoObject = <T extends {}, U>(fn: (props: T) => U) => memo<T, U>(fn, shallowEqual);
 
 /**
- * memoArray creates a memoized function with {@link shallowNotEqualArray} as a `shouldUpdate` function.
+ * memoArray creates a memoized function with {@link shallowEqualArray} as a `areEqual` function.
  *
  * @typeparam T input type.
  * @typeparam U output type.
  * @param fn
  * @returns memoized function.
  */
-export const memoArray = <T extends any[], U>(fn: (props: T) => U) => memo<T, U>(fn, shallowNotEqualArray);
+export const memoArray = <T extends any[], U>(fn: (props: T) => U) => memo<T, U>(fn, shallowEqualArray);

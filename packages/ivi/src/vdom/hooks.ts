@@ -54,7 +54,7 @@ export function useSelect<T>(
  * @typeparam P Selector props type.
  * @param component Component instance.
  * @param selector Selector function.
- * @param shouldUpdate Should update fucntion.
+ * @param areEqual `areEqual` function.
  * @returns Selector hook.
  */
 export function useSelect<T, P>(
@@ -66,7 +66,7 @@ export function useSelect<T, P>(
 export function useSelect<T, P>(
   component: Component,
   selector: (props: P, prev: T | undefined) => T,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => T {
   /* istanbul ignore next */
   if (process.env.IVI_TARGET === "ssr") {
@@ -98,7 +98,7 @@ export function useSelect<T, P>(
       (state !== void 0) &&
       (
         (props !== nextProps) &&
-        (shouldUpdate === void 0 || shouldUpdate(props, nextProps) === true)
+        (areEqual === void 0 || areEqual(props, nextProps) !== true)
       )
     ) {
       state = void 0;
@@ -139,7 +139,7 @@ export function useUnmount(component: Component, hook: () => void): void {
 function withEffect<P>(fn: (effect: () => void) => void): (
   component: Component,
   hook: (props?: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  areEqual?: (prev: P, next: P) => boolean,
 ) => (props: P) => void {
   return (stateNode, hook, shouldUpdate) => {
     let reset: (() => void) | void;
@@ -163,7 +163,7 @@ function withEffect<P>(fn: (effect: () => void) => void): (
         (props === EMPTY_OBJECT) ||
         (
           (props !== nextProps) &&
-          (shouldUpdate === void 0 || shouldUpdate(props as P, nextProps) === true)
+          (shouldUpdate === void 0 || shouldUpdate(props as P, nextProps) !== true)
         )
       ) {
         props = nextProps;
@@ -198,8 +198,8 @@ function withEffect<P>(fn: (effect: () => void) => void): (
  * @typeparam T Hook props type.
  * @param component Component instance.
  * @param hook Side effect function.
- * @param shouldUpdate Should update function.
- * @returns Side effect hook
+ * @param areEqual `areEqual` function.
+ * @returns Side effect hook.
  */
 export const useEffect: <T = undefined>(
   component: Component,
@@ -215,8 +215,8 @@ export const useEffect: <T = undefined>(
  * @typeparam T Hook props type.
  * @param stateNode Component instance.
  * @param hook DOM mutation function.
- * @param shouldUpdate Should update function.
- * @returns Side effect hook
+ * @param areEqual `areEqual` function.
+ * @returns Side effect hook.
  */
 export const useMutationEffect: <T = undefined>(
   component: Component,
@@ -232,8 +232,8 @@ export const useMutationEffect: <T = undefined>(
  * @typeparam T Hook props type.
  * @param component Component instance.
  * @param hook DOM layout function.
- * @param shouldUpdate Should update function.
- * @returns Side effect hook
+ * @param areEqual `areEqual` function.
+ * @returns Side effect hook.
  */
 export const useLayoutEffect: <T = undefined>(
   component: Component,

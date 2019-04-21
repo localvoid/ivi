@@ -4,7 +4,7 @@ export {
   NOOP, NOOP_FALSE, NOOP_TRUE,
   append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
   RepeatableTaskList, runRepeatableTasks,
-  strictEqual, strictNotEqual, shallowEqual, shallowNotEqual, shallowEqualArray, shallowNotEqualArray,
+  strictEqual, shallowEqual, shallowEqualArray,
   lazy, memo, memoObject, memoArray,
 } from "./core";
 

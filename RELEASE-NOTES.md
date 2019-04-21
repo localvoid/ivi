@@ -1,5 +1,20 @@
 ## Upcoming Release
 
+### `shouldUpdate`
+
+All `shouldUpdate` functions are replaced with their inverse function `areEqual`.
+
+APIs affected by this change:
+
+- `component(_, shouldUpdate)`
+- `statelessComponent(_, shouldUpdate)`
+- `useSelect(_, shouldUpdate)`
+- `useEffect(_, shouldUpdate)`
+- `useLayoutEffect(_, shouldUpdate)`
+- `useMutationEffect(_, shouldUpdate)`
+- `memo(_, shouldUpdate)`
+- `selector(_, shouldUpdate)`
+
 ### Tests
 
 New package `ivi-jest` adds a collection of useful tools for testing with jest library. All ivi tests were completely

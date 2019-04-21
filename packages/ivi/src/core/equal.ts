@@ -8,15 +8,6 @@
 export const strictEqual = <T>(a: T, b: T) => a === b;
 
 /**
- * strictNotEqual returns `true` when `a` and `b` are strictly not equal `!==`.
- *
- * @param a
- * @param b
- * @returns `true` when `a` and `b` are strictly not equal `!==`.
- */
-export const strictNotEqual = <T>(a: T, b: T) => a !== b;
-
-/**
  * shallowEqual returns `true` when objects are shallow equal.
  *
  * @param a
@@ -44,15 +35,6 @@ export function shallowEqual<T>(a: T, b: T): boolean {
 }
 
 /**
- * shallowNotEqual returns `true` when objects aren't shallow equal.
- *
- * @param a
- * @param b
- * @returns `true` when props aren't shallow equal.
- */
-export const shallowNotEqual = <T>(a: T, b: T) => !shallowEqual(a, b);
-
-/**
  * shallowEqualArray returns `true` when arrays are shallow equal.
  *
  * @param a
@@ -74,12 +56,3 @@ export function shallowEqualArray<T extends any[]>(a: T, b: T): boolean {
 
   return true;
 }
-
-/**
- * shallowNotEqualArray returns `true` when arrays aren't shallow equal.
- *
- * @param a
- * @param b
- * @returns `true` when arrays aren't shallow equal.
- */
-export const shallowNotEqualArray = <T extends any[]>(a: T, b: T) => !shallowEqualArray(a, b);

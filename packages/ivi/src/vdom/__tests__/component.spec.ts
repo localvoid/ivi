@@ -259,27 +259,27 @@ describe("component", () => {
     });
 
     describe("hooks", () => {
-      describe("shouldUpdate", () => {
+      describe("areEqual", () => {
         test("different props", () => {
-          const shouldUpdate = jest.fn(() => true);
-          const C = ivi.component(() => () => null, shouldUpdate);
+          const areEqual = jest.fn(() => false);
+          const C = ivi.component(() => () => null, areEqual);
 
           r(C(1));
           r(C(2));
 
-          expect(shouldUpdate).toBeCalledTimes(1);
-          expect(shouldUpdate).toBeCalledWith(1, 2);
+          expect(areEqual).toBeCalledTimes(1);
+          expect(areEqual).toBeCalledWith(1, 2);
         });
 
         test("identical props", () => {
           const value = {};
-          const shouldUpdate = jest.fn(() => true);
-          const C = ivi.component(() => () => null, shouldUpdate);
+          const areEqual = jest.fn(() => false);
+          const C = ivi.component(() => () => null, areEqual);
 
           r(C(value));
           r(C(value));
 
-          expect(shouldUpdate).not.toBeCalled();
+          expect(areEqual).not.toBeCalled();
         });
       });
 
@@ -361,37 +361,37 @@ describe("component", () => {
         expect(effector).toBeCalledWith(value);
       });
 
-      test("shouldUpdate true", () => {
+      test("areEqual false", () => {
         const v1 = {};
         const v2 = {};
         const effector = jest.fn();
-        const shouldUpdate = jest.fn().mockReturnValue(true);
+        const areEqual = jest.fn().mockReturnValue(false);
         const C = ivi.component<{ value: {} }>((c) => {
-          const effect = ivi.useEffect<{}>(c, effector, shouldUpdate);
+          const effect = ivi.useEffect<{}>(c, effector, areEqual);
           return (n) => (effect(n.value), null);
         });
         r(C({ value: v1 }));
         r(C({ value: v2 }));
-        expect(shouldUpdate).toBeCalledTimes(1);
-        expect(shouldUpdate).toBeCalledWith(v1, v2);
+        expect(areEqual).toBeCalledTimes(1);
+        expect(areEqual).toBeCalledWith(v1, v2);
         expect(effector).toBeCalledTimes(2);
         expect(effector).toHaveBeenNthCalledWith(1, v1);
         expect(effector).toHaveBeenNthCalledWith(2, v2);
       });
 
-      test("shouldUpdate false", () => {
+      test("areEqual true", () => {
         const v1 = {};
         const v2 = {};
         const effector = jest.fn();
-        const shouldUpdate = jest.fn().mockReturnValue(false);
+        const areEqual = jest.fn().mockReturnValue(true);
         const C = ivi.component<{ value: {} }>((c) => {
-          const effect = ivi.useEffect<{}>(c, effector, shouldUpdate);
+          const effect = ivi.useEffect<{}>(c, effector, areEqual);
           return (n) => (effect(n.value), null);
         });
         r(C({ value: v1 }));
         r(C({ value: v2 }));
-        expect(shouldUpdate).toBeCalledTimes(1);
-        expect(shouldUpdate).toBeCalledWith(v1, v2);
+        expect(areEqual).toBeCalledTimes(1);
+        expect(areEqual).toBeCalledWith(v1, v2);
         expect(effector).toBeCalledTimes(1);
         expect(effector).toBeCalledWith(v1);
       });
@@ -445,35 +445,35 @@ describe("component", () => {
           expect(selector).toHaveBeenNthCalledWith(2, value, value);
         });
 
-        test("shouldUpdate true", () => {
+        test("areEqual false", () => {
           const v1 = {};
           const v2 = {};
-          const shouldUpdate = jest.fn().mockReturnValue(true);
+          const areEqual = jest.fn().mockReturnValue(false);
           const C = ivi.component<{ value: {} }>((c) => {
-            const select = ivi.useSelect<{}, {}>(c, selector, shouldUpdate);
+            const select = ivi.useSelect<{}, {}>(c, selector, areEqual);
             return (n) => (select(n.value), null);
           });
           r(C({ value: v1 }));
           r(C({ value: v2 }));
-          expect(shouldUpdate).toBeCalledTimes(1);
-          expect(shouldUpdate).toBeCalledWith(v1, v2);
+          expect(areEqual).toBeCalledTimes(1);
+          expect(areEqual).toBeCalledWith(v1, v2);
           expect(selector).toBeCalledTimes(2);
           expect(selector).toHaveBeenNthCalledWith(1, v1, void 0);
           expect(selector).toHaveBeenNthCalledWith(2, v2, void 0);
         });
 
-        test("shouldUpdate false", () => {
+        test("areEqual true", () => {
           const v1 = {};
           const v2 = {};
-          const shouldUpdate = jest.fn().mockReturnValue(false);
+          const areEqual = jest.fn().mockReturnValue(true);
           const C = ivi.component<{ value: {} }>((c) => {
-            const select = ivi.useSelect<{}, {}>(c, selector, shouldUpdate);
+            const select = ivi.useSelect<{}, {}>(c, selector, areEqual);
             return (n) => (select(n.value), null);
           });
           r(C({ value: v1 }));
           r(C({ value: v2 }));
-          expect(shouldUpdate).toBeCalledTimes(1);
-          expect(shouldUpdate).toBeCalledWith(v1, v2);
+          expect(areEqual).toBeCalledTimes(1);
+          expect(areEqual).toBeCalledWith(v1, v2);
           expect(selector).toBeCalledTimes(2);
           expect(selector).toHaveBeenNthCalledWith(1, v1, void 0);
           expect(selector).toHaveBeenNthCalledWith(2, v2, v1);
@@ -549,7 +549,7 @@ describe("component", () => {
           ivi.useUnmount(component, () => { lifecycle.touch(id, "unmount"); });
           return (child) => (mutation(), layout(), effect(), lifecycle.touch(id, "render"), child);
         },
-        (prev, next) => (lifecycle.touch(id, "shouldUpdate"), true),
+        (prev, next) => (lifecycle.touch(id, "areEqual"), false),
       ));
 
       test("1", () => {
@@ -561,7 +561,7 @@ describe("component", () => {
         expect(lifecycle.get("1", "layoutEffect")).toBe(3);
         expect(lifecycle.get("1", "effect")).toBe(4);
 
-        expect(lifecycle.get("1", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("1", "areEqual")).toBe(-1);
         expect(lifecycle.get("1", "unmount")).toBe(-1);
       });
 
@@ -576,7 +576,7 @@ describe("component", () => {
         expect(lifecycle.get("1", "effect")).toBe(4);
         expect(lifecycle.get("1", "unmount")).toBe(5);
 
-        expect(lifecycle.get("1", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("1", "areEqual")).toBe(-1);
       });
 
       test("3", () => {
@@ -593,10 +593,10 @@ describe("component", () => {
         expect(lifecycle.get("1", "effect")).toBe(8);
         expect(lifecycle.get("2", "effect")).toBe(9);
 
-        expect(lifecycle.get("1", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("1", "areEqual")).toBe(-1);
         expect(lifecycle.get("1", "unmount")).toBe(-1);
 
-        expect(lifecycle.get("2", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("2", "areEqual")).toBe(-1);
         expect(lifecycle.get("2", "unmount")).toBe(-1);
       });
 
@@ -617,9 +617,9 @@ describe("component", () => {
         expect(lifecycle.get("2", "unmount")).toBe(10);
         expect(lifecycle.get("1", "unmount")).toBe(11);
 
-        expect(lifecycle.get("1", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("1", "areEqual")).toBe(-1);
 
-        expect(lifecycle.get("2", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("2", "areEqual")).toBe(-1);
       });
 
       test("5", () => {
@@ -633,7 +633,7 @@ describe("component", () => {
         expect(lifecycle.get("1", "layoutEffect")).toBe(3);
         expect(lifecycle.get("1", "effect")).toBe(4);
 
-        expect(lifecycle.get("1", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("1", "areEqual")).toBe(-1);
         expect(lifecycle.get("1", "unmount")).toBe(-1);
       });
 
@@ -647,7 +647,7 @@ describe("component", () => {
         expect(lifecycle.get("1", "layoutEffect")).toBe(3);
         expect(lifecycle.get("1", "effect")).toBe(4);
 
-        expect(lifecycle.get("1", "shouldUpdate")).toBe(-1);
+        expect(lifecycle.get("1", "areEqual")).toBe(-1);
 
         expect(lifecycle.get("1", "unmount")).toBe(-1);
       });

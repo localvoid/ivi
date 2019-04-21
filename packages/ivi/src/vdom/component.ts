@@ -36,13 +36,14 @@ export interface ComponentDescriptor<P = any> {
   c(state: OpState): (props: P) => Op;
 
   /**
-   * Lifecycle hook `shouldUpdate` is used as a hint to reduce unnecessary updates.
+   * `areEqual` is a function that checks if `prev` and `next` props are equal, it is used as a hint to reduce
+   * unnecessary updates.
    *
    * @param prev Previous properties.
    * @param next Next properties.
-   * @returns `true` when changes in props should trigger update.
+   * @returns `true` when props are equal.
    */
-  readonly su: undefined | ((prev: P, next: P) => boolean);
+  readonly e: undefined | ((prev: P, next: P) => boolean);
 }
 
 /**
@@ -60,13 +61,14 @@ export interface StatelessComponentDescriptor<P = any> {
   c(props: P): Op;
 
   /**
-   * Lifecycle hook `shouldUpdate` is used as a hint to reduce unnecessary updates.
+   * `areEqual` is a function that checks if `prev` and `next` props are equal, it is used as a hint to reduce
+   * unnecessary updates.
    *
    * @param prev Previous properties.
    * @param next Next properties.
-   * @returns `true` when changes in props should trigger update.
+   * @returns `true` when props are equal.
    */
-  readonly su: undefined | ((prev: P, next: P) => boolean);
+  readonly e: undefined | ((prev: P, next: P) => boolean);
 }
 
 export type Component = OpState<ComponentHooks>;

@@ -489,7 +489,7 @@ export function _update(
         ((flags & NodeFlags.Dirty) !== 0) ||
         (
           (prevData !== nextData) &&
-          (descriptor.su === void 0 || descriptor.su(prevData, nextData) === true)
+          (descriptor.e === void 0 || descriptor.e(prevData, nextData) === true)
         )
       ) {
         deepStateFlags = _pushDeepState();

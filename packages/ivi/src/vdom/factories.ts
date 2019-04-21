@@ -89,7 +89,6 @@ export function elementProto<T>(p: OpNode<ElementData<T>>) {
  *     });
  *
  * @param c Component function.
- * @param shouldUpdate `shouldUpdate` function.
  * @returns Factory that produces component nodes.
  */
 export function component(
@@ -114,12 +113,12 @@ export function component(
  *     });
  *
  * @param c Component function.
- * @param shouldUpdate `shouldUpdate` function.
+ * @param areEqual `areEqual` function.
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
   c: (c: Component) => (props: P) => Op,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
@@ -140,14 +139,14 @@ export function component<P>(
  *     });
  *
  * @param c Component function.
- * @param su `shouldUpdate` function.
+ * @param e `areEqual` function.
  * @returns Factory that produces component nodes.
  */
 export function component<P>(
   c: (c: Component) => (props: P) => Op,
-  su?: (prev: P, next: P) => boolean,
+  e?: (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, su });
+  const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, e });
   return (props: P) => createOpNode(type, props);
 }
 
@@ -159,7 +158,6 @@ export function component<P>(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update Update function.
- * @param shouldUpdate `shouldUpdate` function.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent(
@@ -174,12 +172,12 @@ export function statelessComponent(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update Update function.
- * @param su `shouldUpdate` function.
+ * @param areEqual `areEqual` function.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   update: (props: P) => Op,
-  su?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
 
 /**
@@ -190,13 +188,13 @@ export function statelessComponent<P>(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param c Update function.
- * @param su `shouldUpdate` function.
+ * @param e `areEqual` function.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P>(
   c: (props: P) => Op,
-  su?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  e?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => OpNode<P> {
-  const type = createOpType(NodeFlags.Component, { c, su });
+  const type = createOpType(NodeFlags.Component, { c, e });
   return (props: P) => createOpNode(type, props);
 }
