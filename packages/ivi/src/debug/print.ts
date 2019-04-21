@@ -1,21 +1,4 @@
 /**
- * Print error to the console and throw local exception.
- *
- * Local exception is thrown so that we can break on caught errors.
- *
- * @param message Error message.
- */
-export function printError(message: string): void {
-  console.error(message);
-  try {
-    throw new Error(message);
-  } catch {
-    /* tslint:disable:no-empty */
-    /* tslint:enable:no-empty */
-  }
-}
-
-/**
  * Print warning to the console and throw local exception.
  *
  * Local exception is thrown so that we can break on caught errors.
