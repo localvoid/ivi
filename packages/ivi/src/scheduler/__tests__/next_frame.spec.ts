@@ -1,4 +1,7 @@
-import { useIVI, useResetModules, useRequestAnimationFrame, useMockFn, usePromiseQueue } from "ivi-jest";
+import {
+  useIVI, useResetModules, useRequestAnimationFrame, useMockFn, usePromiseQueue, useDOMElement, useTest,
+} from "ivi-jest";
+import { Component } from "ivi";
 
 useResetModules();
 const promise = usePromiseQueue();
@@ -10,7 +13,19 @@ describe("next frame", () => {
     test("execute handler", () => {
       const fn = jest.fn();
       ivi.withNextFrame(fn)(10);
-      expect(fn.mock.calls).toEqual([[10]]);
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).toHaveBeenCalledWith(10);
+    });
+
+    test("frameStartTime", () => {
+      let startTime;
+      ivi.beforeMutations(() => {
+        startTime = ivi.frameStartTime();
+      });
+      ivi.withNextFrame(() => {
+        ivi.requestDirtyCheck();
+      })(10);
+      expect(startTime).toBe(10);
     });
   });
 
@@ -78,6 +93,27 @@ describe("next frame", () => {
       ivi.beforeMutations(fn);
       raf.flush();
       expect(fn).not.toBeCalled();
+    });
+  });
+
+  describe("requestDirtyCheck", () => {
+    test("dirty", () => {
+      expect(ivi.dirty()).toBe(ivi.clock());
+    });
+  });
+
+  describe("invalidate", () => {
+    const root = useDOMElement();
+    const t = useTest();
+
+    test("component", () => {
+      const render = jest.fn(() => null);
+      let cref: Component;
+      const C = ivi.component((c) => (cref = c, render));
+      t.render(C(), root());
+      ivi.invalidate(cref!);
+      raf.flush();
+      expect(render).toHaveBeenCalledTimes(2);
     });
   });
 });
