@@ -105,11 +105,15 @@ export function useDOMElement(tagName: string = "div", mount = true) {
   let el: HTMLElement;
   beforeEach(() => {
     el = document.createElement(tagName);
-    document.body.appendChild(el);
+    if (mount) {
+      document.body.appendChild(el);
+    }
   });
-  afterEach(() => {
-    document.body.removeChild(el);
-  });
+  if (mount) {
+    afterEach(() => {
+      document.body.removeChild(el);
+    });
+  }
 
   return () => el;
 }
