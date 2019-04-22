@@ -1,8 +1,9 @@
 {
-  "name": "ivi-test",
-  "version": "0.24.0",
+  "name": "ivi-test-utils",
+  "version": "0.24.1",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
+  "typings": "dist/typings/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",

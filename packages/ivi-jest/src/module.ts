@@ -51,10 +51,10 @@ export function useSVG() {
 }
 
 /**
- * useTest imports "ivi-test" module.
+ * useTest imports "ivi-test-utils" module.
  *
  * @returns "ivi-test" module.
  */
 export function useTest() {
-  return useModule<typeof import("ivi-test")>("ivi-test");
+  return useModule<typeof import("ivi-test-utils")>("ivi-test-utils");
 }

@@ -36,8 +36,8 @@
       "ivi-state": [
         "packages/ivi-state/src"
       ],
-      "ivi-test": [
-        "packages/ivi-test/src"
+      "ivi-test-utils": [
+        "packages/ivi-test-utils/src"
       ]
     }
   },

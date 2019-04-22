@@ -2,7 +2,7 @@
   "name": "ivi-jest",
   "version": "0.24.0",
   "main": "dist/main/index.js",
-  "module": "dist/module/index.js",
+  "typings": "dist/typings/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",
@@ -15,9 +15,8 @@
   "scripts": {
     "prepublishOnly": "npm run clean && npm run dist",
     "clean": "rm -rf ./dist",
-    "dist": "npm run dist:main && npm run dist:module",
-    "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json",
-    "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
+    "dist": "npm run dist:main",
+    "dist:main": "../../node_modules/.bin/tsc -p ./tsconfig.build.main.json"
   },
   "dependencies": {
     "jsdom": "^15.0.0"

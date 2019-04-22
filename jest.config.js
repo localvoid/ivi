@@ -12,7 +12,7 @@ module.exports = {
     "ivi-html": "<rootDir>/packages/ivi-html/src",
     "ivi-svg": "<rootDir>/packages/ivi-svg/src",
     "ivi-jest": "<rootDir>/packages/ivi-jest/src",
-    "ivi-test": "<rootDir>/packages/ivi-test/src",
+    "ivi-test-utils": "<rootDir>/packages/ivi-test-utils/src",
     "ivi-portal": "<rootDir>/packages/ivi-portal/src",
     "ivi-state": "<rootDir>/packages/ivi-state/src",
     "ivi-router": "<rootDir>/packages/ivi-router/src",
