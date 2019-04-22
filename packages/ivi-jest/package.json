@@ -1,7 +1,6 @@
 {
-  "private": true,
   "name": "ivi-jest",
-  "version": "0.0.1",
+  "version": "0.24.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "sideEffects": false,
@@ -21,7 +20,7 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "dependencies": {
-    "jsdom": "^14.0.0"
+    "jsdom": "^15.0.0"
   },
   "peerDependencies": {},
   "devDependencies": {},

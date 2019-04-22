@@ -625,13 +625,13 @@ function component(
 
 function component<P>(
   c: (c: Component<P>) => (props: P) => OpChildren,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => OpNode<P> : (props: P) => OpNode<P>;
 ```
 
 `component()` function creates a factory function that will instantiate component nodes.
 
-By default, all components and hooks are using strict equality `===` operator as a `shouldUpdate` function.
+By default, all components and hooks are using strict equality `===` operator as `areEqual` function.
 
 ```ts
 import { _, component } from "ivi";
@@ -648,7 +648,7 @@ const Hello = component<string>(() => (text) = div(_, _, `Hello ${text}`));
 function useEffect<P>(
   c: StateNode,
   hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
 
@@ -661,7 +661,7 @@ function useEffect<P>(
 function useMutationEffect<P>(
   c: StateNode,
   hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
 
@@ -673,7 +673,7 @@ function useMutationEffect<P>(
 function useLayoutEffect<P>(
   c: StateNode,
   hook: (props: P) => (() => void) | void,
-  shouldUpdate?: (prev: P, next: P) => boolean,
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
 
@@ -689,7 +689,7 @@ function useSelect<T>(
 function useSelect<T, P>(
   c: StateNode,
   selector: (props: P, prev?: T | undefined) => T,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 ```
 
@@ -724,7 +724,7 @@ const C = component((c) => {
 });
 ```
 
-When `shouldUpdate` function returns `true` value, `prev` state will have an `undefined` value. It means that it
+When `areEqual` function returns `false` value, `prev` state will have an `undefined` value. It means that it
 is unnecessary to implement additional checks for `props` changes in selector functions.
 
 ```js

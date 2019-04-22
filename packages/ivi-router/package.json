@@ -1,6 +1,6 @@
 {
   "name": "ivi-router",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",
@@ -24,10 +24,10 @@
     "routekit-resolver": "^0.5.0"
   },
   "peerDependencies": {
-    "ivi": "^0.23.0"
+    "ivi": "^0.24.0"
   },
   "devDependencies": {
-    "ivi": "^0.23.0"
+    "ivi": "^0.24.0"
   },
   "description": "ivi router",
   "license": "MIT",
