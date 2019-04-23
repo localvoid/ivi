@@ -50,6 +50,16 @@ export function restoreContext(c: {}): void {
 }
 
 /**
+ * assignContext applies `Object.assign({}, currentContext, c)` and returns a new context.
+ *
+ * @param c New context values.
+ * @returns New context.
+ */
+export function assignContext(c: {}): {} {
+  return Object.assign({}, _context, c);
+}
+
+/**
  * context retrieves current context.
  *
  * @typeparam Context type.
