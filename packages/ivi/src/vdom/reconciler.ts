@@ -185,17 +185,17 @@ export function _dirtyCheck(
 
 function _moveNodes(parentElement: Element, opState: OpState) {
   const flags = opState.f;
+  let c;
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    const domNode = opState.s as Node;
-    nodeInsertBefore!.call(parentElement, domNode, _nextNode);
-    _nextNode = domNode;
+    c = opState.s as Node;
+    nodeInsertBefore!.call(parentElement, c, _nextNode);
+    _nextNode = c;
   } else {
     const children = opState.c;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       let i = (children as Array<OpState | null>).length;
       while (i > 0) {
-        const c = (children as Array<OpState | null>)[--i];
-        if (c !== null) {
+        if ((c = (children as Array<OpState | null>)[--i]) !== null) {
           _moveNodes(parentElement, c);
         }
       }
@@ -226,8 +226,7 @@ function _unmountWalk(opState: OpState): void {
   }
 
   if ((flags & NodeFlags.Unmount) !== 0) {
-    v = (opState.s as ComponentHooks).u;
-    if (v !== null) {
+    if ((v = (opState.s as ComponentHooks).u) !== null) {
       if (typeof v === "function") {
         v(true);
       } else {
@@ -406,19 +405,6 @@ export function _mount(
   return null;
 }
 
-function _hasDifferentType(
-  a: OpNode | OpArray,
-  b: OpNode | OpArray | string | number,
-): boolean {
-  if (typeof b !== "object") {
-    return true;
-  }
-  if (a instanceof Array) {
-    return !(b instanceof Array);
-  }
-  return (b instanceof Array || a.t !== b.t);
-}
-
 /**
  * _update updates a stateNode with a next operation.
  *
@@ -470,7 +456,12 @@ export function _update(
       _dirtyCheck(parentElement, opState, moveNode, singleChild);
       return opState;
     }
-    if (_hasDifferentType(o as OpNode | OpArray, nextOp) === true) {
+    if (
+      ((flags & NodeFlags.Fragment) !== 0 ?
+        !(nextOp instanceof Array) :
+        (nextOp instanceof Array || (o as OpNode).t !== (nextOp as OpNode).t)
+      )
+    ) {
       _unmount(parentElement, opState, singleChild);
       return _mount(parentElement, nextOp);
     }
@@ -480,16 +471,17 @@ export function _update(
     let prevData;
     let nextData;
     let nextValue;
+    let i;
 
     if ((flags & NodeFlags.Component) !== 0) {
       prevData = (o as OpNode).d;
       nextData = (nextOp as OpNode).d;
-      const descriptor = ((nextOp as OpNode).t.d as StatelessComponentDescriptor | ComponentDescriptor);
+      nextValue = ((nextOp as OpNode).t.d as StatelessComponentDescriptor | ComponentDescriptor);
       if (
         ((flags & NodeFlags.Dirty) !== 0) ||
         (
           (prevData !== nextData) &&
-          (descriptor.e === void 0 || descriptor.e(prevData, nextData) === true)
+          (nextValue.e === void 0 || nextValue.e(prevData, nextData) === true)
         )
       ) {
         deepStateFlags = _pushDeepState();
@@ -498,7 +490,7 @@ export function _update(
           opStateChildren as OpState,
           ((flags & NodeFlags.Stateful) !== 0) ?
             (opState.s as ComponentHooks).r!(nextData) :
-            (descriptor as StatelessComponentDescriptor).c(nextData),
+            (nextValue as StatelessComponentDescriptor).c(nextData),
           moveNode,
           singleChild,
         );
@@ -512,7 +504,7 @@ export function _update(
     } else {
       deepStateFlags = _pushDeepState();
       if ((flags & NodeFlags.Element) !== 0) {
-        const svg = (flags & NodeFlags.Svg) !== 0;
+        i = (flags & NodeFlags.Svg) !== 0;
         prevData = (o as OpNode<ElementData>).d;
         nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
@@ -524,12 +516,12 @@ export function _update(
           if (nextValue === void 0) {
             nextValue = "";
           }
-          _updateClassName(s, nextValue, svg);
+          _updateClassName(s, nextValue, i);
         }
 
         nextValue = nextData.a;
         if (prevData.a !== nextValue) {
-          _updateAttrs(s as Element, prevData.a, nextValue, svg);
+          _updateAttrs(s as Element, prevData.a, nextValue, i);
         }
 
         _nextNode = null;
@@ -538,7 +530,7 @@ export function _update(
         _nextNode = s as Node;
       } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((flags & NodeFlags.Fragment) !== 0) {
-          let i = (nextOp as OpArray).length;
+          i = (nextOp as OpArray).length;
           // When there is a different length for statically positioned elements, it is much more likely that internal
           // elements should have a different internal state, so it is better to destroy previous state and instantiate
           // a new one. This heuristics is slightly different from React, but it should be better at handling some
@@ -551,7 +543,8 @@ export function _update(
                   (opStateChildren as Array<OpState | null>)[i],
                   (nextOp as OpArray)[i],
                   moveNode,
-                  false);
+                  false,
+                );
             }
           } else {
             _unmount(parentElement, opState, singleChild);
@@ -576,7 +569,7 @@ export function _update(
           singleChild,
         );
       } else { // if ((stateFlags & NodeFlags.Context) !== 0) {
-        const dirtyContext = _dirtyContext;
+        prevData = _dirtyContext;
         nextData = (nextOp as OpNode<ContextData>).d;
         nextValue = nextData.v;
         if ((o as OpNode<ContextData>).d.v !== nextValue || _dirtyContext === true) {
@@ -587,7 +580,7 @@ export function _update(
         nextValue = setContext(opState.s as {});
         opState.c = _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
         restoreContext(nextValue);
-        _dirtyContext = dirtyContext;
+        _dirtyContext = prevData;
       }
       opState.f = _popDeepState(deepStateFlags, opState.f);
     }
