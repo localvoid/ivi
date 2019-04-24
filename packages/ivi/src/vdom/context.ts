@@ -1,76 +1,159 @@
-import { EMPTY_OBJECT } from "../core";
+import { createOpType, createOpNode, OpType, ContextOp, Op } from "./operations";
+import { NodeFlags } from "./node_flags";
+
+/**
+ * Context descriptor.
+ */
+export interface ContextDescriptor<T = any> {
+  /**
+   * Retrieves context value.
+   */
+  get(): T;
+  /**
+   * Creates a context operation.
+   */
+  set(value: T, children: Op): ContextOp<T>;
+}
+
+/**
+ * Context state.
+ */
+export interface ContextState<T = any> {
+  /**
+   * Next state.
+   */
+  readonly n: ContextState | null;
+  /**
+   * Descriptor.
+   */
+  readonly d: ContextDescriptor<T>;
+  /**
+   * Context value.
+   */
+  v: T;
+  /**
+   * Getter.
+   */
+  g(): T;
+}
 
 /**
  * Current context.
  */
-let _context = EMPTY_OBJECT;
+let n: ContextState | null = null;
 
 /**
- * Used for detecting invalid `context()` invocations in DEBUG mode.
+ * Used for detecting invalid `ContextDescriptor()` invocations in DEBUG mode.
  */
-let _contextEnabled = false;
+let contextEnabled = false;
 
 /**
  * Enable checking for invalid `context()` invocations in DEBUG mode.
  */
 export function enableContext() {
-  _contextEnabled = true;
+  contextEnabled = true;
 }
 
 /**
  * Disable checking for invalid `context()` invocations in DEBUG mode.
  */
 export function disableContext() {
-  _contextEnabled = false;
+  contextEnabled = false;
+}
+
+/**
+ * Reset current context.
+ */
+export function resetContext() {
+  n = null;
+}
+
+/**
+ * pushContext creates a new context state and pushes it to the context stack.
+ *
+ * @param d Context descriptor.
+ * @param v Context value.
+ * @returns New {@link ContextState}.
+ */
+export function pushContext<T = any>(d: ContextDescriptor<T>, v: T): ContextState<T> {
+  const state = { n, d, v, g: () => state.v };
+  n = state;
+  return state;
+}
+
+/**
+ * getContext retrieves current context.
+ *
+ * @returns current context.
+ */
+export function getContext(): ContextState | null {
+  return n;
 }
 
 /**
  * setContext assigns current context.
  *
- * Should be executed before going deeper into Context node.
+ * Should be executed before going deeper into context node.
  *
  * @param c Current context.
- * @returns previous context
  */
-export function setContext(c: {}): {} {
-  const tmp = _context;
-  _context = c;
-  return tmp;
+export function setContext(c: ContextState): ContextState {
+  return n = c;
 }
 
 /**
  * restoreContext restores previous context.
  *
- * Should be executed after processing Context node.
- *
- * @param c Previous context.
+ * Should be executed after processing context node.
  */
-export function restoreContext(c: {}): void {
-  _context = c;
+export function restoreContext(c: ContextState | null): void {
+  n = c;
 }
 
 /**
- * assignContext applies `Object.assign({}, currentContext, c)` and returns a new context.
+ * contextValue creates a context descriptor.
  *
- * @param c New context values.
- * @returns New context.
+ * @example
+ *
+ *     const { set: StoreContext, get: getStore } = contextValue<Store>();
+ *     const Component = component((c) => {
+ *       const getValue = useSelect(c, () => getStore().value);
+ *       return () => getValue();
+ *     });
+ *     render(
+ *       StoreContext(store,
+ *         Component(),
+ *       ),
+ *       container,
+ *     );
+ *
+ * @returns {@link ContextDescriptor}
  */
-export function assignContext(c: {}): {} {
-  return Object.assign({}, _context, c);
-}
+export function contextValue<T = any>(): ContextDescriptor<T> {
+  let type: OpType;
+  const d = {
+    get: (): T | void => {
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== "production") {
+        if (!contextEnabled) {
+          throw Error("Invalid context invocation");
+        }
+      }
 
-/**
- * context retrieves current context.
- *
- * @typeparam Context type.
- * @returns current context
- */
-export function context<T extends {}>(): T {
-  /* istanbul ignore else */
-  if (process.env.NODE_ENV !== "production") {
-    if (!_contextEnabled) {
-      throw new Error(`Invalid context() invocation. Context can't be used outside of a reconciliation phase`);
-    }
-  }
-  return _context as T;
+      let next = n;
+      while (next !== null) {
+        if (next.d === d) {
+          return next.g();
+        }
+        next = next.n;
+      }
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== "production") {
+        throw Error("Unable to find context value");
+      }
+    },
+    set: (v: T, c: Op) => createOpNode(type, { v, c }),
+  };
+  type = createOpType(NodeFlags.Context, d as ContextDescriptor<T>);
+  return d as ContextDescriptor<T>;
 }

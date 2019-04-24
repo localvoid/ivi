@@ -18,7 +18,7 @@ declare global {
 export { _ } from "./shortcuts";
 export { Predicate } from "./predicate";
 export { Box, box } from "./box";
-export { EMPTY_OBJECT } from "./empty_object";
+export { EMPTY_OBJECT, EMPTY_ARRAY } from "./empty_object";
 export { getFunctionName } from "./function";
 export { addErrorHandler, catchError } from "./error";
 export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete } from "./array";

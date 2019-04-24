@@ -177,14 +177,15 @@ describe("renderToString", () => {
   });
 
   describe("Context", () => {
+    const ContextProvider = useComputedValue(() => ivi.contextValue<number>());
     const ContextValue = useComputedValue(() => ivi.component((c) => {
-      const value = ivi.useSelect(c, () => ivi.context<{ value: number }>().value);
-      return () => value() === void 0 ? "undefined" : value();
+      const get = ivi.useSelect(c, () => ContextProvider.get());
+      return () => get();
     }));
 
     test("1", () => {
       const s = r(
-        ivi.Context({ value: 10 },
+        ContextProvider.set(10,
           ContextValue(),
         )
       );
@@ -192,13 +193,14 @@ describe("renderToString", () => {
     });
 
     test("2", () => {
-      const s = r([
-        ivi.Context({ value: 10 },
+      expect(() => {
+        r([
+          ContextProvider.set(10,
+            ContextValue(),
+          ),
           ContextValue(),
-        ),
-        ContextValue(),
-      ]);
-      expect(s).toBe("10undefined");
+        ]);
+      }).toThrowError("context");
     });
   });
 
@@ -344,16 +346,13 @@ describe("renderToString", () => {
 
   describe("restore global state on error", () => {
     test("context", () => {
-      const ContextValue = ivi.component((c) => {
-        const value = ivi.useSelect(c, () => ivi.context<{ value: number }>().value);
-        return () => value() === void 0 ? "undefined" : value();
-      });
+      const ContextProvider = useComputedValue(() => ivi.contextValue<number>());
       const ThrowError = ivi.statelessComponent(() => { throw Error(); });
 
       try {
-        r(ivi.Context({ value: "10" }, ThrowError()));
+        r(ContextProvider.set(10, ThrowError()));
       } catch { /**/ }
-      expect(r(ContextValue())).toBe("undefined");
+      expect(ivi.getContext()).toBeNull();
     });
   });
 });

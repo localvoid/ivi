@@ -49,6 +49,19 @@ exports[`portal decorated unmount two entries 1`] = `
 </div>
 `;
 
+exports[`portal decorated update context 1`] = `
+<div>
+  <div
+    class="portal-root"
+  >
+    1
+  </div>
+  <div
+    class="main"
+  />
+</div>
+`;
+
 exports[`portal decorated update one entry 1`] = `
 <div>
   <div

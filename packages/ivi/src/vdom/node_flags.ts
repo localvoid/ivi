@@ -37,10 +37,12 @@ export const enum NodeFlags {
    * https://www.w3.org/TR/html5/syntax.html#void-elements
    */
   VoidElement = 1 << 12,
+  // Set context state.
+  SetContextState = 1 << 13,
   // Node requires dirty checking.
-  DirtyCheck = 1 << 12,
+  DirtyCheck = 1 << 14,
   // Node requires unmounting.
-  Unmount = 1 << 13,
+  Unmount = 1 << 15,
   // IMPORTANT: DO NOT ADD FLAGS AFTER THIS ONE, LAST FLAGS ARE SHIFTED BY `DeepStateShift`.
 
   // Flags that should be preserved before updating.

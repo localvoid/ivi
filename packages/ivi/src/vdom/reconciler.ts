@@ -11,16 +11,14 @@ import { OpNode, ElementData, OpArray, Key, ContextData, Op, EventsData } from "
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
-import { setContext, restoreContext, assignContext } from "./context";
+import { setContext, restoreContext, pushContext, ContextDescriptor, ContextState } from "./context";
 
 let _nextNode!: Node | null;
 let _deepStateFlags!: NodeFlags;
-let _dirtyContext!: boolean;
 
 export function _resetState(): void {
   _nextNode = null;
   _deepStateFlags = 0;
-  _dirtyContext = false;
 }
 
 function _pushDeepState(): NodeFlags {
@@ -165,11 +163,8 @@ export function _dirtyCheck(
       }
     } else if ((f & NodeFlags.Events) !== 0) {
       _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
-    } else { // Context
-      if (_dirtyContext === true) {
-        opState.s = assignContext((opState.o as OpNode<ContextData>).d.v);
-      }
-      state = setContext(opState.s as {});
+    } else {  // ((f & NodeFlags.Context) !== 0)
+      state = setContext(opState.s);
       _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
       restoreContext(state);
     }
@@ -353,9 +348,9 @@ function _mountObject(
       nodeInsertBefore!.call(parentElement, node, prevState);
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
-        prevState = setContext(
-          opState.s = assignContext((d as ContextData).v),
-        );
+        opState.s = prevState = ((flags & NodeFlags.SetContextState) !== 0) ?
+          setContext((d as ContextData).v) :
+          pushContext(t.d as ContextDescriptor, (d as ContextData).v);
         opState.c = _mount(parentElement, (d as ContextData).c);
         restoreContext(prevState);
       } else {
@@ -570,19 +565,16 @@ export function _update(
           moveNode,
           singleChild,
         );
-      } else { // if ((stateFlags & NodeFlags.Context) !== 0) {
-        prevData = _dirtyContext;
+      } else { // if ((flags & NodeFlags.Context) !== 0) {
         nextData = (nextOp as OpNode<ContextData>).d;
-        nextValue = nextData.v;
-        if ((o as OpNode<ContextData>).d.v !== nextValue || _dirtyContext === true) {
-          opState.s = assignContext(nextValue);
-          _dirtyContext = true;
+        if ((flags & NodeFlags.SetContextState) !== 0) {
+          opState.s = nextData.v;
+        } else {
+          (opState.s as ContextState).v = nextData.v;
         }
-        // reusing variable name, it is actually a previous value in the context stack.
-        nextValue = setContext(opState.s as {});
+        nextValue = setContext(opState.s);
         opState.c = _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
         restoreContext(nextValue);
-        _dirtyContext = prevData;
       }
       opState.f = _popDeepState(deepStateFlags, opState.f);
     }

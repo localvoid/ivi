@@ -1,3 +1,44 @@
+## Upcoming Changes
+
+### Context
+
+New context implementation provides a slightly different API that makes it possible to remove dirty context checking
+during updates and dirty checking, doesn't require to provide value type when retrieving context values, and doesn't use
+global namespace for context keys.
+
+BEFORE:
+
+```ts
+const C = component((c) => {
+  const getValue = useSelect((c) => context<{ value: number }>().value);
+  return () => getValue();
+});
+
+render(
+  Context({ value: 123 },
+    C(),
+  ),
+  container,
+);
+```
+
+AFTER:
+
+```ts
+const Value = contextValue<number>();
+const C = component((c) => {
+  const getValue = useSelect((c) => Value.get());
+  return () => getValue();
+});
+
+render(
+  Value.set(123,
+    C(),
+  ),
+  container,
+);
+```
+
 ## v0.24.0
 
 ### `shouldUpdate`

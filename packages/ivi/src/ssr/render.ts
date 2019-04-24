@@ -1,11 +1,12 @@
-import { EMPTY_OBJECT } from "../core";
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
 import { OpNode, Op, ElementData, ContextData, Key, EventsData } from "../vdom/operations";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "../vdom/component";
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
-import { setContext, restoreContext, assignContext, disableContext, enableContext } from "../vdom/context";
+import {
+  restoreContext, pushContext, disableContext, enableContext, ContextDescriptor, resetContext, getContext,
+} from "../vdom/context";
 import { escapeAttributeValue, escapeText } from "./escape";
 
 let _attributes = "";
@@ -148,8 +149,9 @@ function _renderToString(op: Op): string {
       }
       if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
         if ((flags & NodeFlags.Context) !== 0) {
-          const contextData = (op.d as ContextData);
-          const prevContext = setContext(assignContext(contextData.v));
+          const contextData = op.d as ContextData;
+          const prevContext = getContext();
+          pushContext((op.t.d as ContextDescriptor), contextData.v);
           result = renderToString(contextData.c);
           restoreContext(prevContext);
           return result;
@@ -188,7 +190,7 @@ export function renderToString(op: Op): string {
     }
     return _renderToString(op);
   } catch (e) {
-    restoreContext(EMPTY_OBJECT);
+    resetContext();
     _attributes = "";
     _styles = "";
     _children = "";

@@ -6,90 +6,100 @@ const root = useDOMElement();
 const ivi = useIVI();
 const h = useHTML();
 const t = useTest();
-const getContext = useMockFn((fn) => { fn.mockImplementation(() => ivi.context()); });
+const ContextProvider = useComputedValue(() => ivi.contextValue<number>());
+const getContext = useMockFn((fn) => { fn.mockImplementation(() => ContextProvider.get()); });
 const ContextValue = useComputedValue(() => ivi.component((c) => {
-  const selector = ivi.useSelect<number>(c, () => getContext().value);
-  return () => selector();
+  const get = ivi.useSelect(c, () => getContext());
+  return () => get();
 }));
 const _ = void 0;
 const r = (op: Op) => t.render(op, root()).domNode;
 
 describe("context", () => {
-  test("error when used outside of a reconcilation", () => {
-    expect(() => ivi.context()).toThrowError("context");
+  test("error when used outside of a reconciliation", () => {
+    expect(() => ContextProvider.get()).toThrowError("context");
   });
 
-  test("mount", () => {
-    r(ivi.Context({ value: 10 }, ContextValue()));
-    expect(getContext).toBeCalledTimes(1);
-    expect(getContext).toHaveLastReturnedWith({ value: 10 });
+  describe("mount", () => {
+    test("1", () => {
+      r(ContextProvider.set(10, ContextValue()));
+      expect(getContext).toBeCalledTimes(1);
+      expect(getContext).toHaveLastReturnedWith(10);
+    });
+
+    test("2", () => {
+      const InnerContext = ivi.contextValue<number>();
+      r(ContextProvider.set(10, InnerContext.set(20, ContextValue())));
+      expect(getContext).toBeCalledTimes(1);
+      expect(getContext).toHaveLastReturnedWith(10);
+    });
   });
 
   describe("update", () => {
     test("basic", () => {
-      r(ivi.Context({ value: 10 }, ContextValue()));
-      r(ivi.Context({ value: 20 }, ContextValue()));
+      r(ContextProvider.set(10, ContextValue()));
+      r(ContextProvider.set(20, ContextValue()));
       expect(getContext).toBeCalledTimes(2);
-      expect(getContext).toHaveLastReturnedWith({ value: 20 });
+      expect(getContext).toHaveLastReturnedWith(20);
     });
 
     describe("strictly equal op", () => {
       test("component", () => {
         const op = ContextValue();
-        r(ivi.Context({ value: 10 }, op));
-        r(ivi.Context({ value: 20 }, op));
+        r(ContextProvider.set(10, op));
+        r(ContextProvider.set(20, op));
         expect(getContext).toBeCalledTimes(2);
-        expect(getContext).toHaveLastReturnedWith({ value: 20 });
+        expect(getContext).toHaveLastReturnedWith(20);
       });
 
       test("element", () => {
         const op = h.div(_, _, ContextValue());
-        r(ivi.Context({ value: 10 }, op));
-        r(ivi.Context({ value: 20 }, op));
+        r(ContextProvider.set(10, op));
+        r(ContextProvider.set(20, op));
         expect(getContext).toBeCalledTimes(2);
-        expect(getContext).toHaveLastReturnedWith({ value: 20 });
+        expect(getContext).toHaveLastReturnedWith(20);
       });
 
       test("fragment", () => {
         const op = [ContextValue()];
-        r(ivi.Context({ value: 10 }, op));
-        r(ivi.Context({ value: 20 }, op));
+        r(ContextProvider.set(10, op));
+        r(ContextProvider.set(20, op));
         expect(getContext).toBeCalledTimes(2);
-        expect(getContext).toHaveLastReturnedWith({ value: 20 });
+        expect(getContext).toHaveLastReturnedWith(20);
       });
 
       test("TrackByKey", () => {
         const op = ivi.TrackByKey([ivi.key(0, ContextValue())]);
-        r(ivi.Context({ value: 10 }, op));
-        r(ivi.Context({ value: 20 }, op));
+        r(ContextProvider.set(10, op));
+        r(ContextProvider.set(20, op));
         expect(getContext).toBeCalledTimes(2);
-        expect(getContext).toHaveLastReturnedWith({ value: 20 });
+        expect(getContext).toHaveLastReturnedWith(20);
       });
 
       test("Events", () => {
         const op = ivi.Events(null, ContextValue());
-        r(ivi.Context({ value: 10 }, op));
-        r(ivi.Context({ value: 20 }, op));
+        r(ContextProvider.set(10, op));
+        r(ContextProvider.set(20, op));
         expect(getContext).toBeCalledTimes(2);
-        expect(getContext).toHaveLastReturnedWith({ value: 20 });
+        expect(getContext).toHaveLastReturnedWith(20);
       });
 
       test("Context", () => {
-        const op = ivi.Context({ value: 30 }, ContextValue());
-        r(ivi.Context({ value: 10 }, op));
-        r(ivi.Context({ value: 20 }, op));
+        const op = ContextProvider.set(30, ContextValue());
+        r(ContextProvider.set(10, op));
+        r(ContextProvider.set(20, op));
         expect(getContext).toBeCalledTimes(2);
-        expect(getContext).toHaveLastReturnedWith({ value: 30 });
+        expect(getContext).toHaveLastReturnedWith(30);
       });
     });
 
     test("through static component", () => {
       const Static = ivi.component(() => (op: Op) => op, () => false);
 
-      r(ivi.Context({ value: 10 }, Static(ContextValue())));
-      r(ivi.Context({ value: 20 }, Static(ContextValue())));
+      r(ContextProvider.set(10, Static(ContextValue())));
+      r(ContextProvider.set(20, Static(ContextValue())));
       expect(getContext).toBeCalledTimes(2);
-      expect(getContext).toHaveLastReturnedWith({ value: 20 });
+      expect(getContext).toHaveLastReturnedWith(20);
     });
   });
 });

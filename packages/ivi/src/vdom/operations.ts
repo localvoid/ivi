@@ -2,6 +2,7 @@ import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "./component";
+import { ContextDescriptor, ContextState } from "./context";
 
 /**
  * Operation type.
@@ -14,7 +15,13 @@ export interface OpType {
   /**
    * Operation type descriptor.
    */
-  readonly d: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | string | null;
+  readonly d:
+  | StatelessComponentDescriptor
+  | ComponentDescriptor
+  | ElementProtoDescriptor
+  | ContextDescriptor
+  | string
+  | null;
 }
 
 /**
@@ -26,7 +33,7 @@ export interface OpType {
  */
 export const createOpType = (
   f: NodeFlags,
-  d: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | string | null,
+  d: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | ContextDescriptor | string | null,
 ): OpType => ({ f, d });
 
 /**
@@ -35,9 +42,9 @@ export const createOpType = (
 export const EVENTS = createOpType(NodeFlags.Events, null);
 
 /**
- * OpType for Context nodes.
+ * OpType for Context state nodes.
  */
-export const CONTEXT = createOpType(NodeFlags.Context, null);
+export const SET_CONTEXT_STATE = createOpType(NodeFlags.Context | NodeFlags.SetContextState, null);
 
 /**
  * OpType for TrackByKey nodes.
@@ -134,12 +141,17 @@ export type EventsOp = OpNode<EventsData>;
 /**
  * Operation data for Context operations.
  */
-export type ContextData<T = {}> = OpData<T>;
+export type ContextData<T = any> = OpData<T>;
 
 /**
  * Context operation.
  */
-export type ContextOp<T = {}> = OpNode<ContextData<T>>;
+export type ContextOp<T = any> = OpNode<ContextData<T>>;
+
+/**
+ * Set context state operation.
+ */
+export type SetContextStateOp = OpNode<OpData<ContextState>>;
 
 /**
  * Operation factory for event handlers.
@@ -163,22 +175,13 @@ export const Events = (
 ): OpNode<EventsData> => createOpNode(EVENTS, { v, c });
 
 /**
- * Operation factory for context nodes.
+ * Operation factory for set context state operation.
  *
- * @example
- *
- *     render(
- *       Context({ key: 123 },
- *         ChildComponent(),
- *       ),
- *       DOMContainer,
- *     );
- *
- * @param v Context object.
+ * @param v Context state.
  * @param c Children operation nodes.
- * @returns Context operation.
+ * @returns Set context state operation.
  */
-export const Context = (v: {}, c: Op): OpNode<ContextData> => createOpNode(CONTEXT, { v, c });
+export const SetContextState = (v: ContextState, c: Op) => createOpNode(SET_CONTEXT_STATE, { v, c });
 
 /**
  * Key is an object that is used by TrackByKey operations to track operations.

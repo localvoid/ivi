@@ -1,4 +1,6 @@
-import { Op, key, TrackByKey, Key, OpNode, ContextData, Context, context, component, useSelect, useUnmount } from "ivi";
+import { Op, key, TrackByKey, Key, OpNode, component, useSelect, useUnmount } from "ivi";
+import { SetContextState } from "packages/ivi/src/vdom/operations";
+import { getContext } from "packages/ivi/src/vdom/context";
 
 /**
  * Portal.
@@ -59,15 +61,19 @@ export const portal = (rootDecorator: (children: Op) => Op = defaultPortalDecora
       return () => rootDecorator(getChildren());
     })(),
     entry: component<Op>((c) => {
-      const getContext = useSelect(c, context);
       const id = nextId++;
-      let prevCtx: {};
-      let prevOp: Key<number, OpNode<ContextData>> | undefined;
-      useUnmount(c, () => { children = updateChildren(children, prevOp!, void 0); });
+      let prevOp: Op | undefined;
+      let prevKey: Key<number, Op> | undefined;
+      useUnmount(c, () => { children = updateChildren(children, prevKey!, void 0); });
       return (op: Op) => {
-        const ctx = getContext();
-        if (prevOp === void 0 || prevOp.v.d.c !== op || prevCtx !== ctx) {
-          children = updateChildren(children, prevOp, prevOp = key(id, Context(prevCtx = ctx, op)));
+        if (prevOp === void 0 || prevOp !== op) {
+          const ctx = getContext();
+          prevOp = op;
+          children = updateChildren(
+            children,
+            prevKey,
+            prevKey = key(id, ctx === null ? op : SetContextState(ctx, op)),
+          );
         }
         return null;
       };

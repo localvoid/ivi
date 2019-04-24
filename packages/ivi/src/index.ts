@@ -1,6 +1,6 @@
 // Core
 export {
-  _, Predicate, Box, box, EMPTY_OBJECT, getFunctionName, addErrorHandler, catchError,
+  _, Predicate, Box, box, EMPTY_OBJECT, EMPTY_ARRAY, getFunctionName, addErrorHandler, catchError,
   NOOP, NOOP_FALSE, NOOP_TRUE,
   append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
   RepeatableTaskList, runRepeatableTasks,
@@ -59,7 +59,9 @@ export {
 
 // Virtual DOM
 export { NodeFlags } from "./vdom/node_flags";
-export { setContext, restoreContext, context } from "./vdom/context";
+export {
+  ContextDescriptor, ContextState, getContext, setContext, restoreContext, pushContext, contextValue,
+} from "./vdom/context";
 export {
   AttributeDirective,
   IGNORE_RENDER_TO_STRING,
@@ -70,8 +72,8 @@ export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor, Comp
 export {
   OpType, OpNode, Op, OpArray, ElementData, OpData, EventsData, ContextData, Key,
   createOpType, createOpNode,
-  Events, Context, TrackByKey, key,
-  ElementOp, EventsOp, ContextOp, TrackByKeyOp,
+  Events, TrackByKey, SetContextState, key,
+  ElementOp, EventsOp, ContextOp, SetContextStateOp, TrackByKeyOp,
 } from "./vdom/operations";
 export { OpState, createStateNode } from "./vdom/state";
 export {
