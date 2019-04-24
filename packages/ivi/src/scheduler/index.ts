@@ -159,7 +159,9 @@ export const withNextFrame = (inner: (time?: number) => void) => (
     inner(time);
 
     if ((_flags & SchedulerFlags.NextFramePending) !== 0) {
-      _frameStartTime = time === void 0 ? performance.now() : time;
+      if (time !== void 0) {
+        _frameStartTime = time;
+      }
 
       runRepeatableTasks(_beforeMutations);
       if ((_flags & SchedulerFlags.DirtyCheckPending) !== 0) {

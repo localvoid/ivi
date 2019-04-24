@@ -185,15 +185,17 @@ export function _dirtyCheck(
 
 function _moveNodes(parentElement: Element, opState: OpState) {
   const flags = opState.f;
+  let children;
   let c;
+  let i;
   if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
     c = opState.s as Node;
     nodeInsertBefore!.call(parentElement, c, _nextNode);
     _nextNode = c;
   } else {
-    const children = opState.c;
+    children = opState.c;
     if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-      let i = (children as Array<OpState | null>).length;
+      i = (children as Array<OpState | null>).length;
       while (i > 0) {
         if ((c = (children as Array<OpState | null>)[--i]) !== null) {
           _moveNodes(parentElement, c);
@@ -311,6 +313,8 @@ function _mountObject(
   let deepStateFlags;
   let prevState;
   let value;
+  let node: Element | undefined;
+  let i;
 
   if ((flags & NodeFlags.Component) !== 0) {
     deepStateFlags = _pushDeepState();
@@ -327,14 +331,13 @@ function _mountObject(
   } else {
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Element) !== 0) {
-      const descriptor = t.d;
-      let node: Element | undefined;
+      value = t.d;
       if ((flags & NodeFlags.ElementProto) !== 0) {
-        node = (descriptor as ElementProtoDescriptor).n as Element;
+        node = (value as ElementProtoDescriptor).n as Element;
         if (node === null) {
-          (descriptor as ElementProtoDescriptor).n = node = _createElement(
+          (value as ElementProtoDescriptor).n = node = _createElement(
             void 0,
-            (descriptor as ElementProtoDescriptor).p,
+            (value as ElementProtoDescriptor).p,
           );
         }
         node = nodeCloneNode!.call(node, false) as Element;
@@ -342,13 +345,12 @@ function _mountObject(
       opState.s = node = _createElement(node, op);
 
       prevState = _nextNode;
-      _nextNode = null;
-      value = d.c;
-      if (value !== null) {
+      if ((value = d.c) !== null) {
+        _nextNode = null;
         opState.c = _mount(node, value);
       }
-      nodeInsertBefore!.call(parentElement, node, prevState);
       _nextNode = node;
+      nodeInsertBefore!.call(parentElement, node, prevState);
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
         prevState = setContext(
@@ -360,7 +362,7 @@ function _mountObject(
         opState.c = _mount(parentElement, (d as EventsData).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
-      let i = (d as Key<any, OpNode>[]).length;
+      i = (d as Key<any, OpNode>[]).length;
       opState.c = value = Array(i);
       while (i > 0) {
         value[--i] = _mount(parentElement, (d as Key<any, OpNode>[])[i].v);
@@ -390,17 +392,17 @@ export function _mount(
   op: Op,
 ): OpState | null {
   if (op !== null) {
-    const stateNode = createStateNode(op);
+    const opState = createStateNode(op);
     if (typeof op === "object") {
       if (op instanceof Array) {
-        _mountFragment(parentElement, stateNode, op);
+        _mountFragment(parentElement, opState, op);
       } else {
-        _mountObject(parentElement, stateNode, op);
+        _mountObject(parentElement, opState, op);
       }
     } else {
-      _mountText(parentElement, stateNode, op);
+      _mountText(parentElement, opState, op);
     }
-    return stateNode;
+    return opState;
   }
   return null;
 }
