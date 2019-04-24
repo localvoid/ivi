@@ -31,10 +31,6 @@ export interface ContextState<T = any> {
    * Context value.
    */
   v: T;
-  /**
-   * Getter.
-   */
-  g(): T;
 }
 
 /**
@@ -76,9 +72,7 @@ export function resetContext() {
  * @returns New {@link ContextState}.
  */
 export function pushContext<T = any>(d: ContextDescriptor<T>, v: T): ContextState<T> {
-  const state = { n, d, v, g: () => state.v };
-  n = state;
-  return state;
+  return n = { n, d, v };
 }
 
 /**
@@ -143,7 +137,7 @@ export function contextValue<T = any>(): ContextDescriptor<T> {
       let next = n;
       while (next !== null) {
         if (next.d === d) {
-          return next.g();
+          return next.v;
         }
         next = next.n;
       }
