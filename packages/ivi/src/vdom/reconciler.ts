@@ -529,12 +529,12 @@ export function _update(
       } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((f & NodeFlags.Fragment) !== 0) {
           i = (nextOp as OpArray).length;
-          opState.c = nextValue = Array(i);
           if (i === 0) {
             _unmount(parentElement, opState, singleChild);
           } else {
             prevData = (opStateChildren as Array<OpState | null>).length;
             if (i !== prevData) {
+              opState.c = nextValue = Array(i);
               while (prevData > i) {
                 nextData = (opStateChildren as Array<OpState | null>)[--prevData];
                 if (nextData !== null) {
@@ -544,6 +544,8 @@ export function _update(
               while (i > prevData) {
                 nextValue[--i] = _mount(parentElement, (nextOp as OpArray)[i]);
               }
+            } else {
+              nextValue = (opStateChildren as Array<OpState | null>);
             }
             while (i > 0) {
               nextValue[--i] = _update(
