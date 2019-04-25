@@ -75,13 +75,14 @@ function run(t: TaskList) {
 let _flags: SchedulerFlags = 0;
 let _debugFlags: SchedulerDebugFlags = 0;
 
+let _frameStartTime = 0;
 let _clock = 1;
+const _resolvedPromise = Promise.resolve();
 const _microtasks = box<Array<() => void>>([]);
 const _mutationEffects = box<Array<() => void>>([]);
 const _layoutEffects = box<Array<() => void>>([]);
 const _beforeMutations = [] as RepeatableTaskList;
 const _afterMutations = [] as RepeatableTaskList;
-let _frameStartTime = 0;
 
 /**
  * withSchedulerTick wraps `inner` function into a scheduler context execution.
@@ -118,7 +119,7 @@ export function scheduleMicrotask(task: () => void): void {
   _microtasks.v.push(task);
   if ((_flags & (SchedulerFlags.Running | SchedulerFlags.TickPending)) === 0) {
     _flags |= SchedulerFlags.TickPending;
-    Promise.resolve().then(runMicrotasks);
+    _resolvedPromise.then(runMicrotasks);
   }
 }
 
