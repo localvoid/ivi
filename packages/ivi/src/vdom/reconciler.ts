@@ -428,10 +428,11 @@ export function _update(
   if (opState === null) {
     return _mount(parentElement, nextOp);
   }
-  const { o, s } = opState;
-  let j = opState.f;
+  /* tslint:disable:prefer-const */
+  const { f, o, s } = opState;
+  /* tslint:enable:prefer-const */
 
-  if ((j & NodeFlags.Text) !== 0) {
+  if ((f & NodeFlags.Text) !== 0) {
     if (typeof nextOp !== "object") {
       // Reassign to reduce memory consumption even if nextOp is strictly equal to the prev op.
       opState.o = nextOp;
@@ -454,7 +455,7 @@ export function _update(
       return opState;
     }
     if (
-      ((j & NodeFlags.Fragment) !== 0 ?
+      ((f & NodeFlags.Fragment) !== 0 ?
         !(nextOp instanceof Array) :
         (nextOp instanceof Array || (o as OpNode).t !== (nextOp as OpNode).t)
       )
@@ -470,12 +471,12 @@ export function _update(
     let nextValue;
     let i;
 
-    if ((j & NodeFlags.Component) !== 0) {
+    if ((f & NodeFlags.Component) !== 0) {
       prevData = (o as OpNode).d;
       nextData = (nextOp as OpNode).d;
       nextValue = ((nextOp as OpNode).t.d as StatelessComponentDescriptor | ComponentDescriptor);
       if (
-        ((j & NodeFlags.Dirty) !== 0) ||
+        ((f & NodeFlags.Dirty) !== 0) ||
         (
           (prevData !== nextData) &&
           (nextValue.e === void 0 || nextValue.e(prevData, nextData) === true)
@@ -485,23 +486,23 @@ export function _update(
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
-          ((j & NodeFlags.Stateful) !== 0) ?
-            (opState.s as ComponentHooks).r!(nextData) :
+          ((f & NodeFlags.Stateful) !== 0) ?
+            (s as ComponentHooks).r!(nextData) :
             (nextValue as StatelessComponentDescriptor).c(nextData),
           moveNode,
           singleChild,
         );
         // opState.f can be changed after `_update()`.
-        j = opState.f;
-        opState.f = (j & NodeFlags.SelfFlags) | _deepStateFlags;
-        _deepStateFlags |= deepStateFlags | ((j & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
+        nextValue = opState.f;
+        opState.f = (nextValue & NodeFlags.SelfFlags) | _deepStateFlags;
+        _deepStateFlags |= deepStateFlags | ((nextValue & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
       } else {
         _dirtyCheck(parentElement, opState, moveNode, singleChild);
       }
     } else {
       deepStateFlags = _pushDeepState();
-      if ((j & NodeFlags.Element) !== 0) {
-        i = (j & NodeFlags.Svg) !== 0;
+      if ((f & NodeFlags.Element) !== 0) {
+        i = (f & NodeFlags.Svg) !== 0;
         prevData = (o as OpNode<ElementData>).d;
         nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
@@ -525,22 +526,22 @@ export function _update(
         opState.c = _update(s as Element, opStateChildren as OpState, nextData.c, false, true);
 
         _nextNode = s as Node;
-      } else if ((j & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-        if ((j & NodeFlags.Fragment) !== 0) {
+      } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+        if ((f & NodeFlags.Fragment) !== 0) {
           i = (nextOp as OpArray).length;
           opState.c = nextValue = Array(i);
           if (i === 0) {
             _unmount(parentElement, opState, singleChild);
           } else {
-            j = (opStateChildren as Array<OpState | null>).length;
-            if (i !== j) {
-              while (j > i) {
-                nextData = (opStateChildren as Array<OpState | null>)[--j];
+            prevData = (opStateChildren as Array<OpState | null>).length;
+            if (i !== prevData) {
+              while (prevData > i) {
+                nextData = (opStateChildren as Array<OpState | null>)[--prevData];
                 if (nextData !== null) {
                   _unmount(parentElement, nextData, false);
                 }
               }
-              while (i > j) {
+              while (i > prevData) {
                 nextValue[--i] = _mount(parentElement, (nextOp as OpArray)[i]);
               }
             }
@@ -564,7 +565,7 @@ export function _update(
             singleChild,
           );
         }
-      } else if ((j & NodeFlags.Events) !== 0) {
+      } else if ((f & NodeFlags.Events) !== 0) {
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
@@ -574,16 +575,16 @@ export function _update(
         );
       } else { // if ((flags & NodeFlags.Context) !== 0) {
         nextData = (nextOp as OpNode<ContextData>).d;
-        if ((j & NodeFlags.SetContextState) !== 0) {
+        if ((f & NodeFlags.SetContextState) !== 0) {
           opState.s = nextData.v;
         } else {
-          (opState.s as ContextState).v = nextData.v;
+          (s as ContextState).v = nextData.v;
         }
         nextValue = setContext(opState.s);
         opState.c = _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
         restoreContext(nextValue);
       }
-      opState.f = _popDeepState(deepStateFlags, opState.f);
+      opState.f = _popDeepState(deepStateFlags, f);
     }
   }
 
