@@ -354,15 +354,15 @@ exports[`fragment update general one child to two children 1`] = `
 exports[`fragment update general one child to two children 2`] = `
 Object {
   "appendChild": 0,
-  "createElement": 3,
+  "createElement": 2,
   "createElementNS": 0,
   "createTextNode": 0,
   "innerHTML": 0,
-  "insertBefore": 3,
+  "insertBefore": 2,
   "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -375,11 +375,28 @@ exports[`fragment update general two children to one child 1`] = `
 exports[`fragment update general two children to one child 2`] = `
 Object {
   "appendChild": 0,
-  "createElement": 3,
+  "createElement": 2,
   "createElementNS": 0,
   "createTextNode": 0,
   "innerHTML": 0,
-  "insertBefore": 3,
+  "insertBefore": 2,
+  "nodeValue": 0,
+  "removeChild": 1,
+  "replaceChild": 0,
+  "textContent": 0,
+}
+`;
+
+exports[`fragment update general two children to zero children 1`] = `<div />`;
+
+exports[`fragment update general two children to zero children 2`] = `
+Object {
+  "appendChild": 0,
+  "createElement": 2,
+  "createElementNS": 0,
+  "createTextNode": 0,
+  "innerHTML": 0,
+  "insertBefore": 2,
   "nodeValue": 0,
   "removeChild": 0,
   "replaceChild": 0,

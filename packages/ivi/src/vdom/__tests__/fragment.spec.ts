@@ -88,6 +88,13 @@ describe("fragment", () => {
         expect(domOps()).toMatchSnapshot();
       });
 
+      test("two children to zero children", () => {
+        r([h.h1(), h.h2()]);
+        r([]);
+        expect(root()).toMatchSnapshot();
+        expect(domOps()).toMatchSnapshot();
+      });
+
       test("hole 1", () => {
         r([null, null]);
         r([h.h1(), null]);

@@ -39,6 +39,11 @@ render(
 );
 ```
 
+### Reconciler
+
+Children reconciliation algorithm for fragments were changed to dynamically add/remove at the end of the fragment
+instead of reinstantiating entire fragment when fragment length is changed.
+
 ## v0.24.0
 
 ### `shouldUpdate`
