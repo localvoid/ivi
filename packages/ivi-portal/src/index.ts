@@ -1,6 +1,4 @@
-import { Op, key, TrackByKey, Key, OpNode, component, useSelect, useUnmount } from "ivi";
-import { SetContextState } from "packages/ivi/src/vdom/operations";
-import { getContext } from "packages/ivi/src/vdom/context";
+import { Op, key, TrackByKey, Key, SetContextState, OpNode, component, getContext, useSelect, useUnmount } from "ivi";
 
 /**
  * Portal.
