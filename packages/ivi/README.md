@@ -28,7 +28,7 @@ Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/maste
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
 [terser](https://github.com/fabiosantoscode/terser) is just a **3.1KiB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **5KiB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.9KiB** (minified+compressed).
 
 ## Quick Start
 
@@ -193,9 +193,10 @@ simple composable primitives so that you can use javascript for composition with
 ## Performance
 
 Recently there were alot of misleading articles about
-[Virtual DOM "overhead"](https://svelte.dev/blog/virtual-dom-is-pure-overhead). This article shows the simplest
-problem that declarative rendering libraries are solving and presents with an obvious solution that does direct DOM
-mutations. But imagine a slightly more complicated problem:
+[Virtual DOM "overhead"](https://svelte.dev/blog/virtual-dom-is-pure-overhead). This article shows the simplest problem
+that declarative rendering libraries are solving and presents an obvious solution with direct DOM mutations and from
+this solution they are making a conclusion that if it is possible to solve this problem without this overhead, it means
+that Virtual DOM is a pure overhead. But imagine a slightly more complicated problem:
 
 ```js
 const Row = (data) => ([
@@ -343,17 +344,6 @@ type Op = string | number | OpNode | OpArray | null;
 interface OpArray extends Readonly<Array<Op>> { }
 ```
 
-#### Immutable "Virtual DOM"
-
-When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
-efficiently implement it otherwise, since that time many other virtual dom libraries just copied this terrible idea, and
-now it is [everywhere](https://vuejs.org/v2/guide/render-function.html#Constraints). Some libraries are using different
-workarounds to hide that they are using mutable virtual dom nodes, but this workarounds has hidden costs when mutable
-nodes are passed around.
-
-ivi is using immutable virtual dom like React does, and it is still has an extremely fast reconciler, there are no any
-hidden costs, zero normalization passes, nothing gets copied when dealing with edge cases.
-
 #### Element Factories
 
 All factory functions that create DOM elements have an interface:
@@ -471,23 +461,27 @@ onClick((ev) => true);
 #### Context
 
 ```ts
-function Context(data: {}, children: Op): OpNode<ContextData>;
+interface ContextDescriptor<T> {
+  get(): T;
+  set(value: T, children: Op): ContextOp<T>;
+}
+function contextValue<T>(): ContextDescriptor<T>;
 ```
 
-`Context()` operation is used to assign context.
+`contextValue()` creates context getter `get()` and operation factory for context nodes `set()`.
 
 ```ts
-import { _, Context, context, component, render } from "ivi";
+import { _, context, component, render } from "ivi";
 import { div } from "ivi-html";
 
+const Value = context<string>();
 const C = component((c) => {
-  const getContextValue = useSelect(() => context<{ key: string }>().key);
-
-  return () => div(_, _, getContextValue());
+  const getContextValue = useSelect(c, Value.get);
+  return () => getContextValue();
 });
 
 render(
-  Context({ key: "value" },
+  Value.set("context value",
     C(),
   ),
   document.getElementById("app")!,
@@ -724,7 +718,7 @@ Selectors are used for sideways data accessing. It is a low-level and more flexi
 
 ```js
 const Pixel = component((c) => {
-  const getColor = useSelect(c, (i) => context().colors[i]);
+  const getColor = useSelect(c, (i) => Store.get().colors[i]);
 
   return (i) => span("pixel", { style: { background: getColor(i) }});
 });
@@ -737,7 +731,7 @@ Second argument `prev` can be used to optimize complex selectors.
 ```js
 const C = component((c) => {
   const select = useSelect(c, (props, prev) => {
-    const value = context().value;
+    const value = Store.get().value;
     return (prev !== void 0 && prev.value === value) ? prev :
       {
         value,
@@ -961,19 +955,27 @@ different approach that doesn't require storing any data on the DOM nodes. Event
 flow and goes through Virtual DOM tree. Synthetic events allows us to decouple events from DOM elements and improve
 composition model.
 
+### Immutable "Virtual DOM"
+
+When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
+efficiently implement it otherwise, since that time many other virtual dom libraries just copied this terrible idea, and
+now it is [everywhere](https://vuejs.org/v2/guide/render-function.html#Constraints). Some libraries are using different
+workarounds to hide that they are using mutable virtual dom nodes, but this workarounds has hidden costs when mutable
+nodes are passed around.
+
+ivi is using immutable virtual dom like React does, and it is still has an extremely fast reconciler, there are no any
+hidden costs, zero normalization passes, nothing gets copied when dealing with edge cases.
+
 ### Children Reconciliation
 
 Children reconciliation algorithm in ivi works in a slightly different way than
 [React children reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
 
-There are two types of children lists: static fragments (basic arrays) and dynamic children lists (`TrackByKey()`
+There are two types of children lists: fragments (javascript arrays) and dynamic children lists (`TrackByKey()`
 nodes).
 
-Static fragments can't have variable number of nodes, to remove node from a static fragment it should be
-replaced with a hole `null`. When fragments length is changed, previous fragment will be completely destroyed and new
-one instantiated, in majority of use cases this heuristics is way much better than appending/removing nodes at the end.
-Static fragments can have deeply nested fragments or dynamic children lists and each fragment is used as a completely
-separate entity.
+Fragments are using a simple reconciliation algorithm that matches nodes by their position in the array. When fragment
+length is changing, nodes will be mounted or unmounted at the end of the fragment.
 
 Dynamic children lists are wrapped in a `TrackByKey()` nodes, each node in dynamic children list should be wrapped in a
 `Key` object that should contain unique key. Dynamic children list algorithm is using a
