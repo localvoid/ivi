@@ -192,6 +192,37 @@ simple composable primitives so that you can use javascript for composition with
 
 ## Performance
 
+Recently there were alot of misleading articles about
+[Virtual DOM "overhead"](https://svelte.dev/blog/virtual-dom-is-pure-overhead). This article shows the simplest
+problem that declarative rendering libraries are solving and presents with an obvious solution that does direct DOM
+mutations. But imagine a slightly more complicated problem:
+
+```js
+const Row = (data) => ([
+  InnerComponent(data),
+  data.showTitle ? PopupTitle(data) : null,
+]);
+render(data.map((rowData) => Row(rowData)), container);
+```
+
+The main problem in this example is that we render several adjacent components that has conditional rendering at the
+root node, so when `showTitle` property is changed we need to figure out where to insert DOM node that will be rendered
+in `PopupTitle` compoment. It is possible that previous and next adjacent components doesn't have any DOM nodes at this
+time, so how we can figure out where to insert our new DOM element? Libraries like Svelte unable to deal with such
+problems efficiently and will insert additional DOM node in conditional statements as a marker that will be used to
+insert other nodes.
+
+Everything gets even more complicated with features like components, fragments, transclusion, context propagation, etc.
+All this features are so intertwined when implemented efficiently and there are many different constraints because it
+should work on top of the DOM API, and it is not so easy to optimize DOM operations for different browsers and browser
+environments (some browser extensions can have a noticeable impact on performance).
+
+Another problem is the amount of produced code in this "optimized" libraries, simple components like the `Row()`
+component above will be compiled into ~100 lines of code in Svelte, and it gets way much worse when application is built
+from small reusable components.
+
+### "The Fastest UI Library"
+
 There is no such thing as "the fastest UI library", optimizing UI library for some use cases will make it slower in
 other use cases. ivi is optimized for complex dynamic applications that composed from small reusable blocks.
 
@@ -209,12 +240,6 @@ optimization goals (in random order) that we should be focusing on:
 - Composition patterns performance (components, conditional rendering, transclusion, fragments, dynamic attributes, etc)
 - Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
 - Increase probability that executed code is JITed (usually depends on the application code size)
-
-Virtual DOM is not the best possible solution if we were trying to find a solution that focuses on performance of micro
-updates, but micro updates doesn't have any significant impact on performance, even 2x speedup that reduces time
-from 0.1ms to 0.05ms will be hardly noticeable. Virtual DOM trades update performance to improve performance in many
-other areas and because of the increased performance in other areas it is often even faster than alternative solutions
-in micro updates.
 
 ### Performance Benchmarks
 
