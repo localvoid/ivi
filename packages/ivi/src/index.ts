@@ -1,6 +1,8 @@
 // Core
 export {
-  _, Predicate, Box, box, EMPTY_OBJECT, EMPTY_ARRAY, getFunctionName, addErrorHandler, catchError,
+  _, Predicate, Box, box,
+  TaskToken, SelectToken, UnmountToken, TASK_TOKEN, SELECT_TOKEN, UNMOUNT_TOKEN, EMPTY_OBJECT, EMPTY_ARRAY,
+  getFunctionName, addErrorHandler, catchError,
   NOOP, NOOP_FALSE, NOOP_TRUE,
   append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
   RepeatableTaskList, runRepeatableTasks,
@@ -79,9 +81,7 @@ export {
 } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
-export {
-  SelectToken, UnmountToken, SELECT_TOKEN, UNMOUNT_TOKEN, VisitNodesDirective, visitNodes, getDOMNode,
-} from "./vdom/reconciler";
+export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
 export { selector, findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
 export { RefProps, Ref } from "./vdom/ref";
 

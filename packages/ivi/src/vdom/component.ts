@@ -1,6 +1,6 @@
+import { SelectToken, UnmountToken } from "../core";
 import { Op } from "./operations";
 import { OpState } from "./state";
-import { SelectToken, UnmountToken } from "./reconciler";
 
 /**
  * Component state.

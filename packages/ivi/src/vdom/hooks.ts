@@ -1,8 +1,7 @@
-import { EMPTY_OBJECT } from "../core";
+import { EMPTY_OBJECT, TaskToken, TASK_TOKEN, SelectToken, UnmountToken, SELECT_TOKEN, UNMOUNT_TOKEN } from "../core";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
-import { SelectToken, UnmountToken, SELECT_TOKEN, UNMOUNT_TOKEN } from "./reconciler";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -139,7 +138,7 @@ export function useUnmount(component: Component, hook: (token: UnmountToken) => 
   }
 }
 
-function withEffect<P>(fn: (effect: () => void) => void): (
+function withEffect<P>(scheduleTask: (task: (token: TaskToken) => void) => void): (
   component: Component,
   hook: (props?: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
@@ -148,31 +147,31 @@ function withEffect<P>(fn: (effect: () => void) => void): (
     let reset: (() => void) | void;
     let props: P | undefined = EMPTY_OBJECT as P;
     let unmount = false;
-    const handler = (d?: UnmountToken) => {
-      if (reset !== void 0) {
-        reset();
-      }
-      if (d !== UNMOUNT_TOKEN) {
-        reset = hook(props);
-        if (reset !== void 0 && !unmount) {
-          unmount = true;
-          useUnmount(stateNode, handler);
+    const handler = (p: UnmountToken | TaskToken | P) => {
+      if (p === TASK_TOKEN || p === UNMOUNT_TOKEN) {
+        if (reset !== void 0) {
+          reset();
         }
+        if (p !== UNMOUNT_TOKEN) {
+          reset = hook(props);
+          if (reset !== void 0 && !unmount) {
+            unmount = true;
+            useUnmount(stateNode, handler);
+          }
+        }
+      } else if (
+        (props === EMPTY_OBJECT) ||
+        (
+          (props !== p) &&
+          (shouldUpdate === void 0 || shouldUpdate(props as P, p as P) !== true)
+        )
+      ) {
+        props = p as P;
+        scheduleTask(handler);
       }
     };
 
-    return (nextProps: P) => {
-      if (
-        (props === EMPTY_OBJECT) ||
-        (
-          (props !== nextProps) &&
-          (shouldUpdate === void 0 || shouldUpdate(props as P, nextProps) !== true)
-        )
-      ) {
-        props = nextProps;
-        fn(handler);
-      }
-    };
+    return handler;
   };
 }
 

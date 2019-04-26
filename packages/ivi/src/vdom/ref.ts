@@ -1,8 +1,7 @@
-import { Box } from "../core";
+import { Box, UNMOUNT_TOKEN } from "../core";
 import { Op } from "./operations";
 import { OpState } from "./state";
 import { component } from "./factories";
-import { UNMOUNT_TOKEN } from "./reconciler";
 import { useUnmount } from "./hooks";
 
 export interface RefProps {

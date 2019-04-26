@@ -1,4 +1,4 @@
-import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box } from "../core";
+import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box, TaskToken, TASK_TOKEN } from "../core";
 import { printWarn } from "../debug/print";
 import { doc } from "../dom/shortcuts";
 import { NodeFlags } from "../vdom/node_flags";
@@ -55,7 +55,7 @@ const enum SchedulerDebugFlags {
 /**
  * Task list.
  */
-type TaskList = Box<Array<() => void>>;
+type TaskList = Box<Array<(token: TaskToken) => void>>;
 
 /**
  * Execute tasks from the `TaskList`.
@@ -67,7 +67,7 @@ function run(t: TaskList) {
     const tasks = t.v;
     t.v = [];
     for (let i = 0; i < tasks.length; ++i) {
-      tasks[i]();
+      tasks[i](TASK_TOKEN);
     }
   }
 }
@@ -78,9 +78,9 @@ let _debugFlags: SchedulerDebugFlags = 0;
 let _frameStartTime = 0;
 let _clock = 1;
 const _resolvedPromise = Promise.resolve();
-const _microtasks = box<Array<() => void>>([]);
-const _mutationEffects = box<Array<() => void>>([]);
-const _layoutEffects = box<Array<() => void>>([]);
+const _microtasks = box<Array<(token: TaskToken) => void>>([]);
+const _mutationEffects = box<Array<(token: TaskToken) => void>>([]);
+const _layoutEffects = box<Array<(token: TaskToken) => void>>([]);
 const _beforeMutations = [] as RepeatableTaskList;
 const _afterMutations = [] as RepeatableTaskList;
 
@@ -115,7 +115,7 @@ export const clock = () => _clock;
  *
  * @param task Microtask.
  */
-export function scheduleMicrotask(task: () => void): void {
+export function scheduleMicrotask(task: (token: TaskToken) => void): void {
   _microtasks.v.push(task);
   if ((_flags & (SchedulerFlags.Running | SchedulerFlags.TickPending)) === 0) {
     _flags |= SchedulerFlags.TickPending;
@@ -207,6 +207,7 @@ export const withNextFrame = (inner: (time?: number) => void) => (
  * @param t Current time.
  */
 const _handleNextFrame = withNextFrame(NOOP);
+const _handleNextFrameSync = () => { _handleNextFrame(); };
 
 /**
  * requestNextFrame requests an update for next frame.
@@ -221,7 +222,7 @@ export function requestNextFrame(flags?: UpdateFlags): void {
   ) {
     _flags |= SchedulerFlags.NextFramePending | SchedulerFlags.NextSyncFramePending;
     if ((_flags & SchedulerFlags.UpdatingFrame) === 0) {
-      scheduleMicrotask(_handleNextFrame);
+      scheduleMicrotask(_handleNextFrameSync);
     }
   } else if ((_flags & SchedulerFlags.NextFramePending) === 0) {
     _flags |= SchedulerFlags.NextFramePending;
@@ -237,7 +238,7 @@ export function requestNextFrame(flags?: UpdateFlags): void {
  * @param fn Write DOM task.
  * @param flags See {@link UpdateFlags} for details.
  */
-export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): void {
+export function scheduleMutationEffect(fn: (token: TaskToken) => void, flags?: UpdateFlags): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
@@ -256,7 +257,7 @@ export function scheduleMutationEffect(fn: () => void, flags?: UpdateFlags): voi
  * @param fn Read DOM task
  * @param flags See {@link UpdateFlags} for details.
  */
-export function scheduleLayoutEffect(fn: () => void, flags?: UpdateFlags): void {
+export function scheduleLayoutEffect(fn: (token: TaskToken) => void, flags?: UpdateFlags): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
