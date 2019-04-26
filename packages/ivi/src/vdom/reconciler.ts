@@ -222,12 +222,12 @@ function _moveNodes(parentElement: Element, opState: OpState) {
 
 function _unmountWalk(opState: OpState): void {
   const flags = opState.f;
+  let children;
   let i;
   let v;
 
   if ((flags & NodeFlags.DeepStateUnmount) !== 0) {
-    const children = opState.c;
-    if (children !== null) {
+    if ((children = opState.c) !== null) {
       if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         for (i = 0; i < (children as Array<OpState | null>).length; i++) {
           if ((v = (children as Array<OpState | null>)[i]) !== null) {
@@ -253,26 +253,31 @@ function _unmountWalk(opState: OpState): void {
   }
 }
 
-function _unmountRemove(parentElement: Element, opState: OpState, singleChild: boolean): void {
-  const flags = opState.f;
+function _unmountRemove(parentElement: Element, opState: OpState, singleChild: boolean): void;
+function _unmountRemove(
+  parentElement: Element,
+  opState: OpState | Array<OpState | null> | null,
+  singleChild: boolean,
+): void {
+  let i = (opState as OpState).f;
+  let c;
 
-  if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    nodeRemoveChild!.call(parentElement, opState.s as Node);
+  if ((i & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+    nodeRemoveChild!.call(parentElement, (opState as OpState).s as Node);
   } else {
-    const children = opState.c;
-    if ((flags & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
+    opState = (opState as OpState).c;
+    if ((i & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
       if (singleChild === true) {
         nodeSetTextContent!.call(parentElement, "");
       } else {
-        for (let i = 0; i < (children as Array<OpState | null>).length; ++i) {
-          const c = (children as Array<OpState | null>)[i];
-          if (c !== null) {
+        for (i = 0; i < (opState as Array<OpState | null>).length; ++i) {
+          if ((c = (opState as Array<OpState | null>)[i]) !== null) {
             _unmountRemove(parentElement, c, false);
           }
         }
       }
-    } else if (children !== null) {
-      _unmountRemove(parentElement, children as OpState, singleChild);
+    } else if (opState !== null) {
+      _unmountRemove(parentElement, opState as OpState, singleChild);
     }
   }
 }
@@ -296,8 +301,8 @@ function _mountText(
 
 function _createElement(node: Element | undefined, op: OpNode<ElementData>): Element {
   const opType = op.t;
-  const { n, a } = op.d;
   const svg = (opType.f & NodeFlags.Svg) !== 0;
+  const { n, a } = op.d;
   if (node === void 0) {
     const tagName = opType.d as string;
     node = svg ?
@@ -334,9 +339,9 @@ function _mountObject(
     if ((flags & NodeFlags.Stateful) !== 0) {
       opState.s = prevState = { r: null, s: null, u: null } as ComponentHooks;
       // Reusing value variable.
-      (prevState as ComponentHooks).r = value = (op.t.d as ComponentDescriptor).c(opState);
+      (prevState as ComponentHooks).r = value = (t.d as ComponentDescriptor).c(opState);
     } else {
-      value = (op.t.d as StatelessComponentDescriptor).c;
+      value = (t.d as StatelessComponentDescriptor).c;
     }
     opState.c = _mount(parentElement, value(d));
     opState.f = (opState.f & NodeFlags.SelfFlags) | flags | _deepStateFlags;
