@@ -2,7 +2,13 @@ import { Box } from "../core";
 import { Op } from "./operations";
 import { OpState } from "./state";
 import { component } from "./factories";
+import { UNMOUNT_TOKEN } from "./reconciler";
 import { useUnmount } from "./hooks";
+
+export interface RefProps {
+  readonly r: Box<OpState | null>;
+  readonly c: Op;
+}
 
 function updateRef(prev: Box<OpState | null> | undefined, next: Box<OpState | null>, s: OpState): Box<OpState | null> {
   if (prev !== void 0 && prev !== next) {
@@ -12,10 +18,10 @@ function updateRef(prev: Box<OpState | null> | undefined, next: Box<OpState | nu
   return next;
 }
 
-const _Ref = component<{ r: Box<OpState | null>, c: Op }>((s) => {
+const _Ref = component<RefProps>((s) => {
   let _ref: Box<OpState | null>;
-  const h = (p: true | { r: Box<OpState | null>, c: Op }) => (
-    (p === true) ? (_ref.v = null, void 0) : (_ref = updateRef(_ref, p.r, s), p.c)
+  const h = (p: {} | RefProps) => (
+    (p === UNMOUNT_TOKEN) ? (_ref.v = null, void 0) : (_ref = updateRef(_ref, (p as RefProps).r, s), (p as RefProps).c)
   );
   useUnmount(s, h as () => void);
   return h as (p: { r: Box<OpState | null>, c: Op }) => Op;

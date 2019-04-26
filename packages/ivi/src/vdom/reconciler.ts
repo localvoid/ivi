@@ -16,6 +16,9 @@ import { setContext, restoreContext, pushContext, ContextDescriptor, ContextStat
 let _nextNode!: Node | null;
 let _deepStateFlags!: NodeFlags;
 
+export const SELECT_TOKEN = {};
+export const UNMOUNT_TOKEN = {};
+
 export function _resetState(): void {
   _nextNode = null;
   _deepStateFlags = 0;
@@ -122,7 +125,7 @@ export function _dirtyCheck(
     if (
       ((f & NodeFlags.Stateful) !== 0) && (
         ((f & NodeFlags.Dirty) !== 0) ||
-        (state.s !== null && state.s() === true)
+        (state.s !== null && state.s(SELECT_TOKEN) === true)
       )
     ) {
       opState.c = _update(
@@ -225,10 +228,10 @@ function _unmountWalk(opState: OpState): void {
   if ((flags & NodeFlags.Unmount) !== 0) {
     if ((v = (opState.s as ComponentHooks).u) !== null) {
       if (typeof v === "function") {
-        v(true);
+        v(UNMOUNT_TOKEN);
       } else {
         for (i = 0; i < v.length; i++) {
-          v[i](true);
+          v[i](UNMOUNT_TOKEN);
         }
       }
     }

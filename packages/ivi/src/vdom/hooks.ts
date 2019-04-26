@@ -1,7 +1,8 @@
 import { EMPTY_OBJECT } from "../core";
+import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
-import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
+import { SELECT_TOKEN } from "./reconciler";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -73,42 +74,44 @@ export function useSelect<T, P>(
     return (nextProps: P) => selector(nextProps, void 0);
   }
 
-  const prevSelector = component.s.s;
   let lastChecked = 0;
   let state: T | undefined;
   let props: P;
-
-  component.s.s = () => {
-    if (prevSelector !== null && prevSelector() === true) {
-      return true;
-    }
-    if (state !== void 0) {
-      const nextState = selector(props, state);
-      lastChecked = clock();
-      if (state !== nextState) {
-        state = nextState;
+  const prevSelector = component.s.s;
+  const hook = (p: {} | P) => {
+    if (p === SELECT_TOKEN) {
+      if (prevSelector !== null && prevSelector(SELECT_TOKEN) === true) {
         return true;
       }
+      if (state !== void 0) {
+        p = selector(props, state);
+        lastChecked = clock();
+        if (state !== p) {
+          state = p as T;
+          return true;
+        }
+      }
+      return false;
     }
-    return false;
-  };
 
-  return (nextProps: P) => {
     if (
       (state !== void 0) &&
       (
-        (props !== nextProps) &&
-        (areEqual === void 0 || areEqual(props, nextProps) !== true)
+        (props !== p as P) &&
+        (areEqual === void 0 || areEqual(props, p as P) !== true)
       )
     ) {
       state = void 0;
     }
     if (state === void 0 || lastChecked < clock()) {
-      state = selector(nextProps, state);
+      state = selector(p as P, state);
     }
-    props = nextProps;
+    props = p as P;
     return state;
   };
+
+  component.s.s = hook as (token?: {}) => boolean;
+  return hook as (p: P) => T;
 }
 
 /**

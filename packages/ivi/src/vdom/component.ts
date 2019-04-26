@@ -14,11 +14,11 @@ export interface ComponentHooks<P = any> {
   /**
    * Selector hooks.
    */
-  s: null | (() => boolean);
+  s: null | ((token?: {}) => boolean);
   /**
    * Unmount hooks.
    */
-  u: null | ((unmount?: boolean) => void) | ((unmount?: boolean) => void)[];
+  u: null | ((token?: {}) => void) | ((token?: {}) => void)[];
 }
 
 /**

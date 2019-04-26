@@ -293,7 +293,7 @@ describe("component", () => {
           r(C());
           r(null);
           expect(unmount).toBeCalledTimes(1);
-          expect(unmount).toBeCalledWith(true);
+          expect(unmount).toBeCalledWith(ivi.UNMOUNT_TOKEN);
         });
       });
 
@@ -308,9 +308,9 @@ describe("component", () => {
         r(C());
         r(null);
         expect(unmount1).toBeCalledTimes(1);
-        expect(unmount1).toBeCalledWith(true);
+        expect(unmount1).toBeCalledWith(ivi.UNMOUNT_TOKEN);
         expect(unmount2).toBeCalledTimes(1);
-        expect(unmount2).toBeCalledWith(true);
+        expect(unmount2).toBeCalledWith(ivi.UNMOUNT_TOKEN);
       });
 
       test("three hooks", () => {
@@ -326,11 +326,11 @@ describe("component", () => {
         r(C());
         r(null);
         expect(unmount1).toBeCalledTimes(1);
-        expect(unmount1).toBeCalledWith(true);
+        expect(unmount1).toBeCalledWith(ivi.UNMOUNT_TOKEN);
         expect(unmount2).toBeCalledTimes(1);
-        expect(unmount2).toBeCalledWith(true);
+        expect(unmount2).toBeCalledWith(ivi.UNMOUNT_TOKEN);
         expect(unmount1).toBeCalledTimes(1);
-        expect(unmount1).toBeCalledWith(true);
+        expect(unmount1).toBeCalledWith(ivi.UNMOUNT_TOKEN);
       });
     });
 

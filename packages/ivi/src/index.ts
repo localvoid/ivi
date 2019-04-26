@@ -81,9 +81,9 @@ export {
 } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
 export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
-export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
+export { SELECT_TOKEN, UNMOUNT_TOKEN, VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
 export { selector, findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
-export { Ref } from "./vdom/ref";
+export { RefProps, Ref } from "./vdom/ref";
 
 // SSR
 export {
