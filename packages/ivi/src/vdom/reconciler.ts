@@ -38,11 +38,11 @@ function _pushDeepState(): NodeFlags {
   return s;
 }
 
-function _popDeepState(prev: NodeFlags, current: NodeFlags): NodeFlags {
-  const r = current | _deepStateFlags;
-  _deepStateFlags |= prev;
-  return r;
-}
+const _popDeepState = (prev: NodeFlags, current: NodeFlags): NodeFlags => (
+  current |= _deepStateFlags,
+  _deepStateFlags |= prev,
+  current
+);
 
 /**
  * VisitNodesDirective controls the traversal algorithm.
@@ -69,17 +69,23 @@ export const enum VisitNodesDirective {
  * @param visitor Visitor function.
  * @returns {@link VisitNodesFlags}
  */
-export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesDirective): VisitNodesDirective {
-  const vFlags = visitor(opState);
-  if (vFlags !== VisitNodesDirective.Continue) {
-    return (vFlags & VisitNodesDirective.StopImmediate);
+export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesDirective): VisitNodesDirective;
+export function visitNodes(
+  opState: OpState | null,
+  visitor: (opState: OpState) => VisitNodesDirective,
+): VisitNodesDirective {
+  let i = visitor(opState!);
+  if (i !== VisitNodesDirective.Continue) {
+    return (i & VisitNodesDirective.StopImmediate);
   }
 
-  const { f, c } = opState;
+  const { f, c } = opState!;
   if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-    for (let i = 0; i < (c as Array<OpState | null>).length; i++) {
-      const child = (c as Array<OpState | null>)[i];
-      if (child !== null && (visitNodes(child, visitor) & VisitNodesDirective.StopImmediate) !== 0) {
+    for (i = 0; i < (c as Array<OpState | null>).length; i++) {
+      if (
+        (opState = (c as Array<OpState | null>)[i]) !== null &&
+        (visitNodes(opState, visitor) & VisitNodesDirective.StopImmediate) !== 0
+      ) {
         return VisitNodesDirective.StopImmediate;
       }
     }
@@ -95,25 +101,26 @@ export function visitNodes(opState: OpState, visitor: (opState: OpState) => Visi
  * @param opState State node.
  * @returns DOM node.
  */
-export function getDOMNode(opState: OpState): Node | null {
-  const flags = opState.f;
-  if ((flags & (NodeFlags.Element | NodeFlags.Text)) === 0) {
-    const children = opState.c;
-    if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-      for (let i = 0; i < (children as Array<OpState | null>).length; i++) {
-        const c = (children as Array<OpState | null>)[i];
-        if (c !== null) {
+export function getDOMNode(opState: OpState): Node | null;
+export function getDOMNode(opState: OpState | Array<OpState | null> | null): Node | null {
+  let i = (opState as OpState).f;
+  let c: OpState | null;
+  if ((i & (NodeFlags.Element | NodeFlags.Text)) === 0) {
+    opState = (opState as OpState).c;
+    if ((i & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+      for (i = 0; i < (opState as Array<OpState | null>).length; i++) {
+        if ((c = (opState as Array<OpState | null>)[i]) !== null) {
           return getDOMNode(c);
         }
       }
       return null;
     }
-    if (children === null) {
+    if (opState === null) {
       return null;
     }
-    return getDOMNode(children as OpState);
+    return getDOMNode(opState as OpState);
   }
-  return opState.s as Node;
+  return (opState as OpState).s as Node;
 }
 
 export function _dirtyCheck(
