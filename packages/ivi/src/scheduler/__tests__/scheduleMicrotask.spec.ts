@@ -11,14 +11,16 @@ describe("scheduleMicrotask", () => {
     test("outside of a scheduler loop", async () => {
       ivi.scheduleMicrotask(task);
       await promise.wait();
-      expect(task.mock.calls.length).toBe(1);
+      expect(task).toHaveBeenCalledTimes(1);
+      expect(task).toBeCalledWith(ivi.TASK_TOKEN);
     });
 
     test("inside of a scheduler loop", () => {
       ivi.withSchedulerTick(() => {
         ivi.scheduleMicrotask(task);
       })();
-      expect(task.mock.calls.length).toBe(1);
+      expect(task).toHaveBeenCalledTimes(1);
+      expect(task).toBeCalledWith(ivi.TASK_TOKEN);
     });
   });
 
@@ -30,8 +32,9 @@ describe("scheduleMicrotask", () => {
       ivi.scheduleMicrotask(task1);
       ivi.scheduleMicrotask(task2);
       await promise.wait();
-      expect(task1.mock.calls.length).toBe(1);
-      expect(task2.mock.calls.length).toBe(1);
+
+      expect(task1).toHaveBeenCalledTimes(1);
+      expect(task2).toHaveBeenCalledTimes(1);
     });
 
     test("inside of a scheduler loop", () => {
@@ -39,8 +42,8 @@ describe("scheduleMicrotask", () => {
         ivi.scheduleMicrotask(task1);
         ivi.scheduleMicrotask(task2);
       })();
-      expect(task1.mock.calls.length).toBe(1);
-      expect(task2.mock.calls.length).toBe(1);
+      expect(task1).toHaveBeenCalledTimes(1);
+      expect(task2).toHaveBeenCalledTimes(1);
     });
   });
 

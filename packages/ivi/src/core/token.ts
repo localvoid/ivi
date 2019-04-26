@@ -14,29 +14,29 @@ export interface UnmountToken {
  * Task token.
  */
 export const TASK_TOKEN: TaskToken = (
- /* istanbul ignore else */process.env.NODE_ENV !== "production" ? Object.freeze({}) : {}
+  process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{}
 );
 
 /**
  * Select token.
  */
 export const SELECT_TOKEN: SelectToken = (
-  /* istanbul ignore else */process.env.NODE_ENV !== "production" ? Object.freeze({}) : {}
+  process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{}
 );
 
 /**
  * Unmount token.
  */
 export const UNMOUNT_TOKEN: UnmountToken = (
-  /* istanbul ignore else */process.env.NODE_ENV !== "production" ? Object.freeze({}) : {}
+  process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{}
 );
 
 /**
  * Empty object.
  */
-export const EMPTY_OBJECT = /* istanbul ignore else */process.env.NODE_ENV !== "production" ? Object.freeze({}) : {};
+export const EMPTY_OBJECT = process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{};
 
 /**
  * Empty array.
  */
-export const EMPTY_ARRAY = /* istanbul ignore else */process.env.NODE_ENV !== "production" ? Object.freeze([]) : [];
+export const EMPTY_ARRAY = process.env.NODE_ENV !== "production" ? Object.freeze([]) : /* istanbul ignore next */[];
