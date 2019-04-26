@@ -26,7 +26,7 @@ powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **3.1KiB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **3KiB** (minified+compressed).
 
 Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.9KiB** (minified+compressed).
 

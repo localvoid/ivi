@@ -91,17 +91,8 @@ export function getContext(): ContextState | null {
  *
  * @param c Current context.
  */
-export function setContext(c: ContextState): ContextState {
+export function setContext(c: ContextState | null): ContextState | null {
   return n = c;
-}
-
-/**
- * restoreContext restores previous context.
- *
- * Should be executed after processing context node.
- */
-export function restoreContext(c: ContextState | null): void {
-  n = c;
 }
 
 /**

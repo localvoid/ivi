@@ -11,7 +11,7 @@ import { OpNode, ElementData, OpArray, Key, ContextData, Op, EventsData } from "
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
-import { setContext, restoreContext, pushContext, ContextDescriptor, ContextState } from "./context";
+import { setContext, pushContext, ContextDescriptor, ContextState } from "./context";
 
 export interface SelectToken {
   readonly $$label?: "ivi-select-token";
@@ -177,7 +177,7 @@ export function _dirtyCheck(
     } else {  // ((f & NodeFlags.Context) !== 0)
       state = setContext(opState.s);
       _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
-      restoreContext(state);
+      setContext(state);
     }
     opState.f = _popDeepState(deepState, opState.f);
   } else {
@@ -363,7 +363,7 @@ function _mountObject(
           setContext((d as ContextData).v) :
           pushContext(t.d as ContextDescriptor, (d as ContextData).v);
         opState.c = _mount(parentElement, (d as ContextData).c);
-        restoreContext(prevState);
+        setContext(prevState);
       } else {
         opState.c = _mount(parentElement, (d as EventsData).c);
       }
@@ -595,7 +595,7 @@ export function _update(
         }
         nextValue = setContext(opState.s);
         opState.c = _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
-        restoreContext(nextValue);
+        setContext(nextValue);
       }
       opState.f = _popDeepState(deepStateFlags, f);
     }
@@ -873,11 +873,8 @@ function _updateChildrenTrackByKeys(
       }
 
       // Update nodes with the same key at the beginning.
-      while (a[start].k === b[start].k) {
+      while (a[start].k === b[start].k && ++start <= aEnd && start <= bEnd) {
         // delayed update (all updates should be performed from right-to-left).
-        if (++start > aEnd || start > bEnd) {
-          break outer;
-        }
       }
 
       break;

@@ -5,7 +5,7 @@ import { ComponentDescriptor, StatelessComponentDescriptor } from "../vdom/compo
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
 import {
-  restoreContext, pushContext, disableContext, enableContext, ContextDescriptor, resetContext, getContext,
+  pushContext, disableContext, enableContext, ContextDescriptor, resetContext, getContext, setContext,
 } from "../vdom/context";
 import { escapeAttributeValue, escapeText } from "./escape";
 
@@ -153,7 +153,7 @@ function _renderToString(op: Op): string {
           const prevContext = getContext();
           pushContext((op.t.d as ContextDescriptor), contextData.v);
           result = renderToString(contextData.c);
-          restoreContext(prevContext);
+          setContext(prevContext);
           return result;
         } else {
           return renderToString((op.d as EventsData).c);

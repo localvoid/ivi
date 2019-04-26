@@ -59,9 +59,7 @@ export {
 
 // Virtual DOM
 export { NodeFlags } from "./vdom/node_flags";
-export {
-  ContextDescriptor, ContextState, getContext, setContext, restoreContext, pushContext, contextValue,
-} from "./vdom/context";
+export { ContextDescriptor, ContextState, getContext, setContext, pushContext, contextValue } from "./vdom/context";
 export {
   AttributeDirective,
   IGNORE_RENDER_TO_STRING,
