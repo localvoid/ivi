@@ -13,11 +13,19 @@ import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
 import { setContext, restoreContext, pushContext, ContextDescriptor, ContextState } from "./context";
 
+export interface SelectToken {
+  readonly $$label?: "ivi-select-token";
+}
+
+export interface UnmountToken {
+  readonly $$label?: "ivi-unmount-token";
+}
+
+export const SELECT_TOKEN: SelectToken = {};
+export const UNMOUNT_TOKEN: UnmountToken = {};
+
 let _nextNode!: Node | null;
 let _deepStateFlags!: NodeFlags;
-
-export const SELECT_TOKEN = {};
-export const UNMOUNT_TOKEN = {};
 
 export function _resetState(): void {
   _nextNode = null;

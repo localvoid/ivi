@@ -1,4 +1,7 @@
-import { Op, key, TrackByKey, Key, SetContextState, OpNode, component, getContext, useSelect, useUnmount } from "ivi";
+import {
+  Op, key, TrackByKey, Key, SetContextState, OpNode, component, getContext, useSelect, useUnmount, UnmountToken,
+  UNMOUNT_TOKEN,
+} from "ivi";
 
 /**
  * Portal.
@@ -59,22 +62,27 @@ export const portal = (rootDecorator: (children: Op) => Op = defaultPortalDecora
       return () => rootDecorator(getChildren());
     })(),
     entry: component<Op>((c) => {
-      const id = nextId++;
       let prevOp: Op | undefined;
       let prevKey: Key<number, Op> | undefined;
-      useUnmount(c, () => { children = updateChildren(children, prevKey!, void 0); });
-      return (op: Op) => {
-        if (prevOp === void 0 || prevOp !== op) {
-          const ctx = getContext();
-          prevOp = op;
-          children = updateChildren(
-            children,
-            prevKey,
-            prevKey = key(id, ctx === null ? op : SetContextState(ctx, op)),
-          );
+      const id = nextId++;
+      const h = (p: UnmountToken | Op): null | void => {
+        if (p !== UNMOUNT_TOKEN) {
+          if (prevOp === void 0 || prevOp !== p as Op) {
+            const ctx = getContext();
+            prevOp = p as Op;
+            children = updateChildren(
+              children,
+              prevKey,
+              prevKey = key(id, ctx === null ? p as Op : SetContextState(ctx, p as Op)),
+            );
+          }
+          return null;
         }
-        return null;
+
+        children = updateChildren(children, prevKey!, void 0);
       };
+      useUnmount(c, h as (token: UnmountToken) => void);
+      return h as (p: Op) => Op;
     }),
   };
 };

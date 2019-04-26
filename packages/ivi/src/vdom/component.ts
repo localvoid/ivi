@@ -1,5 +1,6 @@
 import { Op } from "./operations";
 import { OpState } from "./state";
+import { SelectToken, UnmountToken } from "./reconciler";
 
 /**
  * Component state.
@@ -14,11 +15,11 @@ export interface ComponentHooks<P = any> {
   /**
    * Selector hooks.
    */
-  s: null | ((token?: {}) => boolean);
+  s: null | ((token: SelectToken) => boolean);
   /**
    * Unmount hooks.
    */
-  u: null | ((token?: {}) => void) | ((token?: {}) => void)[];
+  u: null | ((token: UnmountToken) => void) | ((token: UnmountToken) => void)[];
 }
 
 /**

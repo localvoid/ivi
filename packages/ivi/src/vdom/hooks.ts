@@ -2,7 +2,7 @@ import { EMPTY_OBJECT } from "../core";
 import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
-import { SELECT_TOKEN } from "./reconciler";
+import { SelectToken, UnmountToken, SELECT_TOKEN, UNMOUNT_TOKEN } from "./reconciler";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   if (hooks === null) {
@@ -78,7 +78,7 @@ export function useSelect<T, P>(
   let state: T | undefined;
   let props: P;
   const prevSelector = component.s.s;
-  const hook = (p: {} | P) => {
+  const hook = (p: SelectToken | P) => {
     if (p === SELECT_TOKEN) {
       if (prevSelector !== null && prevSelector(SELECT_TOKEN) === true) {
         return true;
@@ -97,7 +97,7 @@ export function useSelect<T, P>(
     if (
       (state !== void 0) &&
       (
-        (props !== p as P) &&
+        (props !== p) &&
         (areEqual === void 0 || areEqual(props, p as P) !== true)
       )
     ) {
@@ -110,7 +110,7 @@ export function useSelect<T, P>(
     return state;
   };
 
-  component.s.s = hook as (token?: {}) => boolean;
+  component.s.s = hook as (token: SelectToken) => boolean;
   return hook as (p: P) => T;
 }
 
@@ -130,7 +130,7 @@ export function useSelect<T, P>(
  * @param component Component instance.
  * @param hook Unmount hook.
  */
-export function useUnmount(component: Component, hook: () => void): void {
+export function useUnmount(component: Component, hook: (token: UnmountToken) => void): void {
   /* istanbul ignore else */
   if (process.env.IVI_TARGET !== "ssr") {
     component.f |= NodeFlags.Unmount;
@@ -148,11 +148,11 @@ function withEffect<P>(fn: (effect: () => void) => void): (
     let reset: (() => void) | void;
     let props: P | undefined = EMPTY_OBJECT as P;
     let unmount = false;
-    const handler = (d?: boolean) => {
+    const handler = (d?: UnmountToken) => {
       if (reset !== void 0) {
         reset();
       }
-      if (d !== true) {
+      if (d !== UNMOUNT_TOKEN) {
         reset = hook(props);
         if (reset !== void 0 && !unmount) {
           unmount = true;
