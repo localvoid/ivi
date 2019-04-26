@@ -14,8 +14,11 @@ function updateRef(prev: Box<OpState | null> | undefined, next: Box<OpState | nu
 
 const _Ref = component<{ r: Box<OpState | null>, c: Op }>((s) => {
   let _ref: Box<OpState | null>;
-  useUnmount(s, () => { _ref.v = null; });
-  return ({ r, c }) => (_ref = updateRef(_ref, r, s), c);
+  const h = (p: true | { r: Box<OpState | null>, c: Op }) => (
+    (p === true) ? (_ref.v = null, void 0) : (_ref = updateRef(_ref, p.r, s), p.c)
+  );
+  useUnmount(s, h as () => void);
+  return h as (p: { r: Box<OpState | null>, c: Op }) => Op;
 });
 
 /**
