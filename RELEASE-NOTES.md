@@ -1,4 +1,15 @@
-## Upcoming Changes
+## v0.26.0
+
+### Optimizations
+
+Reduced memory consumption in component hooks, refs and portals.
+
+API that is used for this optimizations is now public. This API is using several objects: `TASK_TOKEN`, `SELECT_TOKEN`
+and `UNMOUNT_TOKEN` to identify who is invoking a callback function. Callbacks registered with `scheduleMicrotask()`
+will receive `TASK_TOKEN` as a first argument, hooks added with `useUnmount()` will receive `UNMOUNT_TOKEN`.
+`SELECT_TOKEN` is used internally to optimize `useSelect()`.
+
+## v0.25.0
 
 ### Context
 
