@@ -1,4 +1,4 @@
-import { Box, UNMOUNT_TOKEN } from "../core";
+import { Box, UNMOUNT_TOKEN, UnmountToken } from "../core";
 import { Op } from "./operations";
 import { OpState } from "./state";
 import { component } from "./factories";
@@ -19,8 +19,10 @@ function updateRef(prev: Box<OpState | null> | undefined, next: Box<OpState | nu
 
 const _Ref = component<RefProps>((s) => {
   let _ref: Box<OpState | null>;
-  const h = (p: {} | RefProps) => (
-    (p === UNMOUNT_TOKEN) ? (_ref.v = null, void 0) : (_ref = updateRef(_ref, (p as RefProps).r, s), (p as RefProps).c)
+  const h = (p: UnmountToken | RefProps) => (
+    (p === UNMOUNT_TOKEN) ?
+      (_ref.v = null, void 0) :
+      (_ref = updateRef(_ref, (p as RefProps).r, s), (p as RefProps).c)
   );
   useUnmount(s, h as () => void);
   return h as (p: { r: Box<OpState | null>, c: Op }) => Op;

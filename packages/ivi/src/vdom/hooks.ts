@@ -60,7 +60,7 @@ export function useSelect<T>(
 export function useSelect<T, P>(
   component: Component,
   selector: (props: P, prev?: T | undefined) => T,
-  shouldUpdate?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
+  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): undefined extends P ? () => T : (props: P) => T;
 
 export function useSelect<T, P>(
@@ -139,14 +139,13 @@ export function useUnmount(component: Component, hook: (token: UnmountToken) => 
 }
 
 function withEffect<P>(scheduleTask: (task: (token: TaskToken) => void) => void): (
-  component: Component,
+  component: Component | undefined,
   hook: (props?: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
 ) => (props: P) => void {
-  return (stateNode, hook, shouldUpdate) => {
+  return (component, hook, areEqual) => {
     let reset: (() => void) | void;
     let props: P | undefined = EMPTY_OBJECT as P;
-    let unmount = false;
     const handler = (p: UnmountToken | TaskToken | P) => {
       if (p === TASK_TOKEN || p === UNMOUNT_TOKEN) {
         if (reset !== void 0) {
@@ -154,16 +153,17 @@ function withEffect<P>(scheduleTask: (task: (token: TaskToken) => void) => void)
         }
         if (p !== UNMOUNT_TOKEN) {
           reset = hook(props);
-          if (reset !== void 0 && !unmount) {
-            unmount = true;
-            useUnmount(stateNode, handler);
+          if (reset !== void 0 && component !== void 0) {
+            useUnmount(component, handler);
+            // remove component reference to indicate that unmount hook is registered.
+            component = void 0;
           }
         }
       } else if (
         (props === EMPTY_OBJECT) ||
         (
           (props !== p) &&
-          (shouldUpdate === void 0 || shouldUpdate(props as P, p as P) !== true)
+          (areEqual === void 0 || areEqual(props as P, p as P) !== true)
         )
       ) {
         props = p as P;
@@ -206,7 +206,7 @@ function withEffect<P>(scheduleTask: (task: (token: TaskToken) => void) => void)
 export const useEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
-  shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
+  areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
@@ -223,7 +223,7 @@ export const useEffect: <T = undefined>(
 export const useMutationEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
-  shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
+  areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
@@ -240,7 +240,7 @@ export const useMutationEffect: <T = undefined>(
 export const useLayoutEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
-  shouldUpdate?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
+  areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
