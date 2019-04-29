@@ -1,6 +1,6 @@
 {
   "name": "ivi-portal",
-  "version": "0.25.0",
+  "version": "0.26.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",
@@ -21,10 +21,10 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "peerDependencies": {
-    "ivi": "^0.25.0"
+    "ivi": "^0.26.0"
   },
   "devDependencies": {
-    "ivi": "^0.25.0"
+    "ivi": "^0.26.0"
   },
   "description": "Portals for ivi library",
   "license": "MIT",

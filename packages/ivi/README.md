@@ -1,4 +1,4 @@
-# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE) [![codecov](https://codecov.io/gh/localvoid/ivi/branch/master/graph/badge.svg)](https://codecov.io/gh/localvoid/ivi) [![CircleCI Status](https://circleci.com/gh/localvoid/ivi.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/localvoid/ivi) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/localvoid/ivi) [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/ivi)
+# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE) [![codecov](https://codecov.io/gh/localvoid/ivi/branch/master/graph/badge.svg)](https://codecov.io/gh/localvoid/ivi)
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
@@ -10,12 +10,6 @@ ivi is a javascript (TypeScript) library for building web user interfaces.
 - Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
 - [Extensible](https://codesandbox.io/s/zy1wrn0j4) synthetic events
 - Server-side rendering
-
-|Package      |NPM version                                                                                                  |
-|-------------|-------------------------------------------------------------------------------------------------------------|
-|ivi          |[![npm version](https://img.shields.io/npm/v/ivi.svg)](https://www.npmjs.com/package/ivi)                    |
-|ivi-html     |[![npm version](https://img.shields.io/npm/v/ivi-html.svg)](https://www.npmjs.com/package/ivi-html)          |
-|ivi-svg      |[![npm version](https://img.shields.io/npm/v/ivi-svg.svg)](https://www.npmjs.com/package/ivi-svg)            |
 
 ## Library Size
 
@@ -216,7 +210,8 @@ insert other nodes.
 Everything gets even more complicated with features like components, fragments, transclusion, context propagation, etc.
 All this features are so intertwined when implemented efficiently and there are many different constraints because it
 should work on top of the DOM API, and it is not so easy to optimize DOM operations for different browsers and browser
-environments (some browser extensions can have a noticeable impact on performance).
+environments. Some popular browser extensions add an additional overhead to many DOM operations, so it becomes
+extremely important to touch DOM as little as possible and avoid polluting document with useless DOM nodes.
 
 Another problem is the amount of produced code in this "optimized" libraries, simple components like the `Row()`
 component above will be compiled into ~100 lines of code in Svelte, and it gets way much worse when application is built
