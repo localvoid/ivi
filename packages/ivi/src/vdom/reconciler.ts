@@ -119,69 +119,73 @@ export function _dirtyCheck(
   moveNode: boolean,
   singleChild: boolean,
 ): void {
-  let f = opState.f;
+  const f = opState.f;
   let state;
   let deepState;
   let c;
   let i;
 
-  if ((f & (NodeFlags.Component | NodeFlags.DeepStateDirtyCheck)) !== 0) {
+  if ((f & NodeFlags.Component) !== 0) {
+    state = opState.s as ComponentHooks;
+    c = opState.c as OpState | null;
     deepState = _pushDeepState();
-    c = opState.c;
-    if ((f & NodeFlags.Component) !== 0) {
-      state = opState.s as ComponentHooks;
-      if (
-        ((f & NodeFlags.Stateful) !== 0) && (
-          ((f & NodeFlags.Dirty) !== 0) ||
-          (state.s !== null && state.s(SELECT_TOKEN) === true)
-        )
-      ) {
-        opState.c = _update(
-          parentElement,
-          c as OpState,
-          state.r!((opState.o as OpNode).d),
-          moveNode,
-          singleChild,
-        );
-        f = opState.f;
-        opState.f = (f & NodeFlags.SelfFlags) | _deepStateFlags;
-        _deepStateFlags |= deepState | ((f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
-        return;
+    if (
+      ((f & NodeFlags.Stateful) !== 0) && (
+        ((f & NodeFlags.Dirty) !== 0) ||
+        (state.s !== null && state.s(SELECT_TOKEN) === true)
+      )
+    ) {
+      opState.c = _update(
+        parentElement,
+        c,
+        state.r!((opState.o as OpNode).d),
+        moveNode,
+        singleChild,
+      );
+    } else if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
+      _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
+    } else {
+      if (moveNode === true) {
+        _moveNodes(parentElement, opState);
+      } else {
+        _nextNode = getDOMNode(opState);
       }
     }
-    if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
-      // Checking for `children === null` is unnecessary, `DeepStateDirtyCheck` flag guarantees that element should
-      // have children nodes.
-      if ((f & (NodeFlags.Component | NodeFlags.Events)) !== 0) {
-        _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
-      } else if ((f & NodeFlags.Element) !== 0) {
-        state = opState.s as Node;
-        if (moveNode === true) {
-          nodeInsertBefore!.call(parentElement, state, _nextNode);
-        }
-        _dirtyCheck(state as Element, c as OpState, false, true);
-        _nextNode = state;
-      } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-        i = (c as Array<OpState | null>).length;
-        while (i > 0) {
-          if ((state = (c as Array<OpState | null>)[--i]) !== null) {
-            _dirtyCheck(parentElement, state, moveNode, false);
-          }
-        }
-      } else { // ((f & NodeFlags.Context) !== 0)
-        state = setContext(opState.s);
-        _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
-        setContext(state);
+    opState.f = (opState.f & NodeFlags.SelfFlags) | _deepStateFlags;
+    _deepStateFlags |= deepState | ((opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
+  } else if ((f & NodeFlags.DeepStateDirtyCheck) !== 0) {
+    // Checking for `children === null` is unnecessary, `DeepStateDirtyCheck` flag guarantees that element should
+    // have children nodes.
+    deepState = _pushDeepState();
+    c = opState.c as OpState | Array<OpState | null>;
+    if ((f & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+      state = opState.s as Node;
+      if (moveNode === true) {
+        nodeInsertBefore!.call(parentElement, state, _nextNode);
       }
-      opState.f = _popDeepState(deepState, f);
-      return;
+      _dirtyCheck(state as Element, c as OpState, false, true);
+      _nextNode = state;
+    } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
+      i = (c as Array<OpState | null>).length;
+      while (i > 0) {
+        if ((state = (c as Array<OpState | null>)[--i]) !== null) {
+          _dirtyCheck(parentElement, state, moveNode, false);
+        }
+      }
+    } else if ((f & NodeFlags.Events) !== 0) {
+      _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
+    } else {  // ((f & NodeFlags.Context) !== 0)
+      state = setContext(opState.s);
+      _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
+      setContext(state);
     }
-    _deepStateFlags = deepState;
-  }
-  if (moveNode === true) {
-    _moveNodes(parentElement, opState);
+    opState.f = _popDeepState(deepState, opState.f);
   } else {
-    _nextNode = getDOMNode(opState);
+    if (moveNode === true) {
+      _moveNodes(parentElement, opState);
+    } else {
+      _nextNode = getDOMNode(opState);
+    }
   }
 }
 
