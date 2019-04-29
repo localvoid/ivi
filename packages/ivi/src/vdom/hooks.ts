@@ -1,5 +1,5 @@
 import { EMPTY_OBJECT, TaskToken, TASK_TOKEN, SelectToken, UnmountToken, SELECT_TOKEN, UNMOUNT_TOKEN } from "../core";
-import { clock, scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
+import { clock, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
 
@@ -209,7 +209,7 @@ export const useEffect: <T = undefined>(
   areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
 ) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
-    (/*#__PURE__*/withEffect(scheduleMicrotask)) as any;
+    (/*#__PURE__*/withEffect((task) => { task(TASK_TOKEN); })) as any;
 
 /**
  * useMutationEffect creates a DOM mutation effect hook.

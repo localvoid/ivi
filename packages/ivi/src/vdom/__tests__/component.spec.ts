@@ -547,7 +547,7 @@ describe("component", () => {
           const layout = ivi.useLayoutEffect(component, () => { lifecycle.touch(id, "layoutEffect"); });
           const effect = ivi.useEffect(component, () => { lifecycle.touch(id, "effect"); });
           ivi.useUnmount(component, () => { lifecycle.touch(id, "unmount"); });
-          return (child) => (mutation(), layout(), effect(), lifecycle.touch(id, "render"), child);
+          return (child) => (lifecycle.touch(id, "render"), mutation(), layout(), effect(), child);
         },
         (prev, next) => (lifecycle.touch(id, "areEqual"), false),
       ));
@@ -557,9 +557,9 @@ describe("component", () => {
 
         expect(lifecycle.get("1", "constructor")).toBe(0);
         expect(lifecycle.get("1", "render")).toBe(1);
-        expect(lifecycle.get("1", "mutationEffect")).toBe(2);
-        expect(lifecycle.get("1", "layoutEffect")).toBe(3);
-        expect(lifecycle.get("1", "effect")).toBe(4);
+        expect(lifecycle.get("1", "effect")).toBe(2);
+        expect(lifecycle.get("1", "mutationEffect")).toBe(3);
+        expect(lifecycle.get("1", "layoutEffect")).toBe(4);
 
         expect(lifecycle.get("1", "areEqual")).toBe(-1);
         expect(lifecycle.get("1", "unmount")).toBe(-1);
@@ -571,9 +571,9 @@ describe("component", () => {
 
         expect(lifecycle.get("1", "constructor")).toBe(0);
         expect(lifecycle.get("1", "render")).toBe(1);
-        expect(lifecycle.get("1", "mutationEffect")).toBe(2);
-        expect(lifecycle.get("1", "layoutEffect")).toBe(3);
-        expect(lifecycle.get("1", "effect")).toBe(4);
+        expect(lifecycle.get("1", "effect")).toBe(2);
+        expect(lifecycle.get("1", "mutationEffect")).toBe(3);
+        expect(lifecycle.get("1", "layoutEffect")).toBe(4);
         expect(lifecycle.get("1", "unmount")).toBe(5);
 
         expect(lifecycle.get("1", "areEqual")).toBe(-1);
@@ -584,14 +584,14 @@ describe("component", () => {
 
         expect(lifecycle.get("1", "constructor")).toBe(0);
         expect(lifecycle.get("1", "render")).toBe(1);
-        expect(lifecycle.get("2", "constructor")).toBe(2);
-        expect(lifecycle.get("2", "render")).toBe(3);
-        expect(lifecycle.get("1", "mutationEffect")).toBe(4);
-        expect(lifecycle.get("2", "mutationEffect")).toBe(5);
-        expect(lifecycle.get("1", "layoutEffect")).toBe(6);
-        expect(lifecycle.get("2", "layoutEffect")).toBe(7);
-        expect(lifecycle.get("1", "effect")).toBe(8);
-        expect(lifecycle.get("2", "effect")).toBe(9);
+        expect(lifecycle.get("1", "effect")).toBe(2);
+        expect(lifecycle.get("2", "constructor")).toBe(3);
+        expect(lifecycle.get("2", "render")).toBe(4);
+        expect(lifecycle.get("2", "effect")).toBe(5);
+        expect(lifecycle.get("1", "mutationEffect")).toBe(6);
+        expect(lifecycle.get("2", "mutationEffect")).toBe(7);
+        expect(lifecycle.get("1", "layoutEffect")).toBe(8);
+        expect(lifecycle.get("2", "layoutEffect")).toBe(9);
 
         expect(lifecycle.get("1", "areEqual")).toBe(-1);
         expect(lifecycle.get("1", "unmount")).toBe(-1);
@@ -606,14 +606,14 @@ describe("component", () => {
 
         expect(lifecycle.get("1", "constructor")).toBe(0);
         expect(lifecycle.get("1", "render")).toBe(1);
-        expect(lifecycle.get("2", "constructor")).toBe(2);
-        expect(lifecycle.get("2", "render")).toBe(3);
-        expect(lifecycle.get("1", "mutationEffect")).toBe(4);
-        expect(lifecycle.get("2", "mutationEffect")).toBe(5);
-        expect(lifecycle.get("1", "layoutEffect")).toBe(6);
-        expect(lifecycle.get("2", "layoutEffect")).toBe(7);
-        expect(lifecycle.get("1", "effect")).toBe(8);
-        expect(lifecycle.get("2", "effect")).toBe(9);
+        expect(lifecycle.get("1", "effect")).toBe(2);
+        expect(lifecycle.get("2", "constructor")).toBe(3);
+        expect(lifecycle.get("2", "render")).toBe(4);
+        expect(lifecycle.get("2", "effect")).toBe(5);
+        expect(lifecycle.get("1", "mutationEffect")).toBe(6);
+        expect(lifecycle.get("2", "mutationEffect")).toBe(7);
+        expect(lifecycle.get("1", "layoutEffect")).toBe(8);
+        expect(lifecycle.get("2", "layoutEffect")).toBe(9);
         expect(lifecycle.get("2", "unmount")).toBe(10);
         expect(lifecycle.get("1", "unmount")).toBe(11);
 
@@ -629,9 +629,9 @@ describe("component", () => {
 
         expect(lifecycle.get("1", "constructor")).toBe(0);
         expect(lifecycle.get("1", "render")).toBe(1);
-        expect(lifecycle.get("1", "mutationEffect")).toBe(2);
-        expect(lifecycle.get("1", "layoutEffect")).toBe(3);
-        expect(lifecycle.get("1", "effect")).toBe(4);
+        expect(lifecycle.get("1", "effect")).toBe(2);
+        expect(lifecycle.get("1", "mutationEffect")).toBe(3);
+        expect(lifecycle.get("1", "layoutEffect")).toBe(4);
 
         expect(lifecycle.get("1", "areEqual")).toBe(-1);
         expect(lifecycle.get("1", "unmount")).toBe(-1);
@@ -643,9 +643,9 @@ describe("component", () => {
 
         expect(lifecycle.get("1", "constructor")).toBe(0);
         expect(lifecycle.get("1", "render")).toBe(1);
-        expect(lifecycle.get("1", "mutationEffect")).toBe(2);
-        expect(lifecycle.get("1", "layoutEffect")).toBe(3);
-        expect(lifecycle.get("1", "effect")).toBe(4);
+        expect(lifecycle.get("1", "effect")).toBe(2);
+        expect(lifecycle.get("1", "mutationEffect")).toBe(3);
+        expect(lifecycle.get("1", "layoutEffect")).toBe(4);
 
         expect(lifecycle.get("1", "areEqual")).toBe(-1);
 
