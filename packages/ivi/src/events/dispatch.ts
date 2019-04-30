@@ -1,7 +1,7 @@
 import { NodeFlags } from "../vdom/node_flags";
 import { OpState } from "../vdom/state";
 import { findRoot } from "../vdom/root";
-import { OpNode, EventsData } from "../vdom/operations";
+import { EventsOp } from "../vdom/operations";
 import { EventHandlerFlags, EventHandler, EventHandlerNode } from "./event_handler";
 
 /**
@@ -67,7 +67,7 @@ function visitDown(result: DispatchTarget[], match: {}, element: Element, stateN
     } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context)) !== 0) {
       if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
         if ((f & NodeFlags.Events) !== 0) {
-          collectDispatchTargetsFromEventsOpState(result, stateNode, (stateNode.o as OpNode<EventsData>).d.v, match);
+          collectDispatchTargetsFromEventsOpState(result, stateNode, (stateNode.o as EventsOp).v, match);
         }
         return r;
       }

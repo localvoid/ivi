@@ -1,6 +1,6 @@
 import { checkElement } from "../debug/element";
 import { NodeFlags } from "./node_flags";
-import { OpNode, Op, ElementData, createOpNode, createOpType } from "./operations";
+import { Op, ValueOp, DOMElementOp, createOpType, createDOMElementOp, createValueOp } from "./operations";
 import { Component } from "./component";
 
 /**
@@ -11,13 +11,13 @@ import { Component } from "./component";
  * @returns HTML element operation factory.
  */
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
-  const type = createOpType(flags, tag);
+  const t = createOpType(flags, tag);
   return process.env.NODE_ENV !== "production" ?
-    (n?: string, a?: T, c: Op = null) => {
-      checkElement(tag, a, (flags & NodeFlags.Svg) !== 0);
-      return createOpNode<ElementData<T>>(type, { n, a, c });
+    (n?: string, v?: T, c: Op = null) => {
+      checkElement(tag, v, (flags & NodeFlags.Svg) !== 0);
+      return createDOMElementOp(t, v, c, n);
     } :
-    /* istanbul ignore next */(n?: string, a?: T, c: Op = null) => createOpNode<ElementData<T>>(type, { n, a, c });
+    /* istanbul ignore next */(n?: string, v?: T, c: Op = null) => createDOMElementOp(t, v, c, n);
 }
 
 /**
@@ -30,7 +30,7 @@ export const htmlElementFactory: <T, U>(tag: string) => (
   className?: string,
   attrs?: T,
   children?: Op,
-) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element);
+) => DOMElementOp<T | undefined> = (tag: string) => elementFactory(tag, NodeFlags.Element);
 
 /**
  * svgElementFactory creates a factory for SVG elements.
@@ -42,7 +42,7 @@ export const svgElementFactory: <T, U>(tag: string) => (
   className?: string,
   attrs?: T,
   children?: Op,
-) => OpNode<ElementData<T>> = (tag: string) => elementFactory(tag, NodeFlags.Element | NodeFlags.Svg);
+) => DOMElementOp<T | undefined> = (tag: string) => elementFactory(tag, NodeFlags.Element | NodeFlags.Svg);
 
 /**
  * `elementProto()` creates a factory that produces elements with predefined attributes.
@@ -59,16 +59,16 @@ export const svgElementFactory: <T, U>(tag: string) => (
  * @param p Element prototype.
  * @returns Factory that produces elements with predefined attributes.
  */
-export function elementProto<T>(p: OpNode<ElementData<T>>) {
+export function elementProto<T>(p: DOMElementOp<T>) {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
-    if (p.d.c !== null) {
+    if (p.c !== null) {
       throw new Error(`Invalid OpNode, element prototypes can't have any children`);
     }
-    checkElement(p.t.d as string, p.d.a, (p.t.f & NodeFlags.Svg) !== 0);
+    checkElement(p.t.d as string, p.v, (p.t.f & NodeFlags.Svg) !== 0);
   }
-  const type = createOpType(p.t.f | NodeFlags.ElementProto, { n: null, p });
-  return (n?: string, a?: T, c: Op = null) => createOpNode<ElementData<T>>(type, { n, a, c });
+  const t = createOpType(p.t.f | NodeFlags.ElementProto, { n: null, p });
+  return (n?: string, v?: T, c: Op = null) => createDOMElementOp(t, v, c, n);
 }
 
 /**
@@ -93,7 +93,7 @@ export function elementProto<T>(p: OpNode<ElementData<T>>) {
  */
 export function component(
   c: (c: Component) => () => Op,
-): () => OpNode<undefined>;
+): () => ValueOp<undefined>;
 
 /**
  * component creates a factory that produces component nodes.
@@ -119,7 +119,7 @@ export function component(
 export function component<P>(
   c: (c: Component) => (props: P) => Op,
   areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
+): undefined extends P ? (props?: P) => ValueOp<P> : (props: P) => ValueOp<P>;
 
 /**
  * component creates a factory that produces component nodes.
@@ -145,9 +145,9 @@ export function component<P>(
 export function component<P>(
   c: (c: Component) => (props: P) => Op,
   e?: (prev: P, next: P) => boolean,
-): (props: P) => OpNode<P> {
+): (props: P) => ValueOp<P> {
   const type = createOpType(NodeFlags.Component | NodeFlags.Stateful | NodeFlags.DirtyCheck, { c, e });
-  return (props: P) => createOpNode(type, props);
+  return (props: P) => createValueOp(type, props);
 }
 
 /**
@@ -162,7 +162,7 @@ export function component<P>(
  */
 export function statelessComponent(
   update: () => Op,
-): () => OpNode<undefined>;
+): () => ValueOp<undefined>;
 
 /**
  * statelessComponent creates an factory that produces stateless components nodes.
@@ -178,7 +178,7 @@ export function statelessComponent(
 export function statelessComponent<P>(
   update: (props: P) => Op,
   areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => OpNode<P> : (props: P) => OpNode<P>;
+): undefined extends P ? (props?: P) => ValueOp<P> : (props: P) => ValueOp<P>;
 
 /**
  * statelessComponent creates an factory that produces stateless components nodes.
@@ -194,7 +194,7 @@ export function statelessComponent<P>(
 export function statelessComponent<P>(
   c: (props: P) => Op,
   e?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (props: P) => OpNode<P> {
+): (props: P) => ValueOp<P> {
   const type = createOpType(NodeFlags.Component, { c, e });
-  return (props: P) => createOpNode(type, props);
+  return (props: P) => createValueOp(type, props);
 }

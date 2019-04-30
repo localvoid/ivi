@@ -52,55 +52,87 @@ export const SET_CONTEXT_STATE = createOpType(NodeFlags.Context | NodeFlags.SetC
 export const TRACK_BY_KEY = createOpType(NodeFlags.TrackByKey, null);
 
 /**
- * Operation node.
+ * Operation with a value.
  *
  * @typeparam T Operation data type.
  */
-export interface OpNode<T = any> {
+export interface ValueOp<T = any> {
   /**
    * Operation type.
    */
   readonly t: OpType;
   /**
-   * Operation data.
+   * Value.
    */
-  readonly d: T;
+  readonly v: T;
 }
 
 /**
- * createOpNode creates an {@link OpNode} instance.
+ * Container operation.
  *
  * @typeparam T Operation data type.
- * @param t Operation type.
- * @param d Operation data.
- * @returns {@link OpNode} instance.
  */
-export const createOpNode = <T>(t: OpType, d: T): OpNode<T> => ({ t, d });
-
-/**
- * Operation data for element operations.
- *
- * @typeparam T Element attributes type.
- */
-export interface ElementData<T = any> {
+export interface ContainerOp<T = any> extends ValueOp<T> {
   /**
-   * Element class name.
-   */
-  readonly n: string | undefined;
-  /**
-   * Element attributes.
-   */
-  readonly a: T | undefined;
-  /**
-   * Children operations.
+   * Children.
    */
   readonly c: Op;
 }
 
 /**
- * Element operation.
+ * DOM Element operation.
+ *
+ * @typeparam T Operation data type.
  */
-export type ElementOp<T = any> = OpNode<ElementData>;
+export interface DOMElementOp<T = any> extends ContainerOp<T | undefined> {
+  /**
+   * Class name.
+   */
+  readonly n: string | undefined;
+}
+
+/**
+ * Operation node.
+ */
+export type OpNode = ValueOp | ContainerOp | DOMElementOp | TrackByKeyOp;
+
+/**
+ * createValueOp creates a {@link ValueOp} instance.
+ *
+ * @typeparam T Operation data type.
+ * @param t Operation type.
+ * @param v Operation value.
+ * @returns {@link ValueOp} instance.
+ */
+export const createValueOp = <T>(t: OpType, v: T): ValueOp<T> => ({ t, v });
+
+/**
+ * createContainerOp creates a {@link ContainerOp} instance.
+ *
+ * @typeparam T Operation data type.
+ * @param t Operation type.
+ * @param v Operation value.
+ * @param c Operation children.
+ * @returns {@link ContainerOp} instance.
+ */
+export const createContainerOp = <T>(t: OpType, v: T, c: Op): ContainerOp<T> => ({ t, v, c });
+
+/**
+ * createDOMElementOp creates a {@link DOMElementOp} instance.
+ *
+ * @typeparam T Operation data type.
+ * @param t Operation type.
+ * @param v Operation value.
+ * @param c Operation children.
+ * @param n Class name.
+ * @returns {@link DOMElementOp} instance.
+ */
+export const createDOMElementOp = <T>(
+  t: OpType,
+  v: T,
+  c: Op,
+  n: string | undefined,
+): DOMElementOp<T> => ({ t, v, c, n });
 
 /**
  * Operation.
@@ -113,45 +145,19 @@ export type Op = string | number | OpNode | OpArray | null;
 export interface OpArray extends Array<Op> { }
 
 /**
- * Generic operation data for operations that has children nodes.
- *
- * @typeparam T Additional data type.
- */
-export interface OpData<T = any> {
-  /**
-   * Generic value.
-   */
-  readonly v: T;
-  /**
-   * Children operation nodes.
-   */
-  readonly c: Op;
-}
-
-/**
- * Operation data for Events operations.
- */
-export type EventsData = OpData<EventHandler>;
-
-/**
  * Events operation.
  */
-export type EventsOp = OpNode<EventsData>;
-
-/**
- * Operation data for Context operations.
- */
-export type ContextData<T = any> = OpData<T>;
+export type EventsOp = ContainerOp<EventHandler>;
 
 /**
  * Context operation.
  */
-export type ContextOp<T = any> = OpNode<ContextData<T>>;
+export type ContextOp<T = any> = ContainerOp<T>;
 
 /**
  * Set context state operation.
  */
-export type SetContextStateOp = OpNode<OpData<ContextState>>;
+export type SetContextStateOp = ContainerOp<ContextState>;
 
 /**
  * Operation factory for event handlers.
@@ -172,7 +178,7 @@ export type SetContextStateOp = OpNode<OpData<ContextState>>;
 export const Events = (
   v: EventHandler,
   c: Op,
-): OpNode<EventsData> => createOpNode(EVENTS, { v, c });
+): EventsOp => createContainerOp(EVENTS, v, c);
 
 /**
  * Operation factory for set context state operation.
@@ -181,7 +187,10 @@ export const Events = (
  * @param c Children operation nodes.
  * @returns Set context state operation.
  */
-export const SetContextState = (v: ContextState, c: Op) => createOpNode(SET_CONTEXT_STATE, { v, c });
+export const SetContextState = (
+  v: ContextState,
+  c: Op,
+): SetContextStateOp => createContainerOp(SET_CONTEXT_STATE, v, c);
 
 /**
  * Key is an object that is used by TrackByKey operations to track operations.
@@ -214,7 +223,7 @@ export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
 /**
  * TrackByKey operation.
  */
-export type TrackByKeyOp<K, V> = OpNode<Key<K, V>>;
+export type TrackByKeyOp<K = any, V = any> = ValueOp<Key<K, V>[]>;
 
 /**
  * Operation factory for track by key nodes.
@@ -241,6 +250,6 @@ export const TrackByKey = process.env.NODE_ENV !== "production" ?
       }
       keys.add(k);
     }
-    return createOpNode(TRACK_BY_KEY, items);
+    return createValueOp(TRACK_BY_KEY, items);
   } :
-  /* istanbul ignore next */ <T>(items: Key<T, Op>[]) => createOpNode(TRACK_BY_KEY, items);
+  /* istanbul ignore next */ <T>(items: Key<T, Op>[]) => createValueOp(TRACK_BY_KEY, items);

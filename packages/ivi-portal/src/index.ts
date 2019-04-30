@@ -1,6 +1,7 @@
 import {
-  Op, key, TrackByKey, Key, SetContextState, OpNode, component, getContext, useSelect, useUnmount, UnmountToken,
+  Op, key, TrackByKey, Key, SetContextState, TrackByKeyOp, component, getContext, useSelect, useUnmount, UnmountToken,
   UNMOUNT_TOKEN,
+
 } from "ivi";
 
 /**
@@ -26,11 +27,11 @@ export interface Portal {
  * @returns TrackBy operation.
  */
 function updateChildren(
-  trackByOp: OpNode<Key<number, Op>[]>,
+  trackByOp: TrackByKeyOp,
   prev: Key<number, Op> | undefined,
   next: Key<number, Op> | undefined,
 ) {
-  const nextChildren = trackByOp.d.slice();
+  const nextChildren = trackByOp.v.slice();
   if (prev === void 0) {
     nextChildren.push(next!);
   } else {

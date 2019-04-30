@@ -8,7 +8,7 @@ import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
-import { OpNode, ElementData, OpArray, Key, ContextData, Op, EventsData } from "./operations";
+import { OpNode, DOMElementOp, EventsOp, ContextOp, TrackByKeyOp, OpArray, Key, Op, ValueOp } from "./operations";
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
@@ -138,7 +138,7 @@ export function _dirtyCheck(
       opState.c = _update(
         parentElement,
         c,
-        state.r!((opState.o as OpNode).d),
+        state.r!((opState.o as ValueOp).v),
         moveNode,
         singleChild,
       );
@@ -158,11 +158,12 @@ export function _dirtyCheck(
     // have children nodes.
     deepState = _pushDeepState();
     c = opState.c as OpState | Array<OpState | null>;
-    if ((f & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+    if ((f & NodeFlags.Element) !== 0) {
       state = opState.s as Node;
       if (moveNode === true) {
         nodeInsertBefore!.call(parentElement, state, _nextNode);
       }
+      _nextNode = null;
       _dirtyCheck(state as Element, c as OpState, false, true);
       _nextNode = state;
     } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
@@ -292,12 +293,11 @@ function _mountText(
   opState.f = NodeFlags.Text;
 }
 
-function _createElement(node: Element | undefined, op: OpNode<ElementData>): Element {
-  const opType = op.t;
-  const svg = (opType.f & NodeFlags.Svg) !== 0;
-  const { n, a } = op.d;
+function _createElement(node: Element | undefined, op: DOMElementOp): Element {
+  const { t, v, n } = op;
+  const svg = (t.f & NodeFlags.Svg) !== 0;
   if (node === void 0) {
-    const tagName = opType.d as string;
+    const tagName = t.d as string;
     node = svg ?
       doc.createElementNS(SVG_NAMESPACE, tagName) :
       doc.createElement(tagName);
@@ -307,8 +307,8 @@ function _createElement(node: Element | undefined, op: OpNode<ElementData>): Ele
     _updateClassName(node, n, svg);
   }
 
-  if (a !== void 0) {
-    _updateAttrs(node, void 0, a, svg);
+  if (v !== void 0) {
+    _updateAttrs(node, void 0, v, svg);
   }
 
   return node;
@@ -319,12 +319,12 @@ function _mountObject(
   opState: OpState,
   op: OpNode,
 ): void {
-  const { t, d } = op;
-  const flags = t.f;
+  const opType = op.t;
+  const flags = opType.f;
   let deepStateFlags;
   let prevState;
   let value;
-  let node: Element | undefined;
+  let node;
   let i;
 
   if ((flags & NodeFlags.Component) !== 0) {
@@ -332,17 +332,17 @@ function _mountObject(
     if ((flags & NodeFlags.Stateful) !== 0) {
       opState.s = prevState = { r: null, s: null, u: null } as ComponentHooks;
       // Reusing value variable.
-      (prevState as ComponentHooks).r = value = (t.d as ComponentDescriptor).c(opState);
+      (prevState as ComponentHooks).r = value = (opType.d as ComponentDescriptor).c(opState);
     } else {
-      value = (t.d as StatelessComponentDescriptor).c;
+      value = (opType.d as StatelessComponentDescriptor).c;
     }
-    opState.c = _mount(parentElement, value(d));
+    opState.c = _mount(parentElement, value(op.v));
     opState.f = (opState.f & NodeFlags.SelfFlags) | flags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else {
     deepStateFlags = _pushDeepState();
     if ((flags & NodeFlags.Element) !== 0) {
-      value = t.d;
+      value = opType.d;
       if ((flags & NodeFlags.ElementProto) !== 0) {
         node = (value as ElementProtoDescriptor).n as Element;
         if (node === null) {
@@ -353,10 +353,10 @@ function _mountObject(
         }
         node = nodeCloneNode!.call(node, false) as Element;
       }
-      opState.s = node = _createElement(node, op);
+      opState.s = node = _createElement(node, op as DOMElementOp);
 
       prevState = _nextNode;
-      if ((value = d.c) !== null) {
+      if ((value = (op as DOMElementOp).c) !== null) {
         _nextNode = null;
         opState.c = _mount(node, value);
       }
@@ -365,18 +365,19 @@ function _mountObject(
     } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
       if ((flags & NodeFlags.Context) !== 0) {
         opState.s = prevState = ((flags & NodeFlags.SetContextState) !== 0) ?
-          setContext((d as ContextData).v) :
-          pushContext(t.d as ContextDescriptor, (d as ContextData).v);
-        opState.c = _mount(parentElement, (d as ContextData).c);
+          setContext((op as ContextOp).v) :
+          pushContext(opType.d as ContextDescriptor, (op as ContextOp).v);
+        opState.c = _mount(parentElement, (op as ContextOp).c);
         setContext(prevState);
       } else {
-        opState.c = _mount(parentElement, (d as EventsData).c);
+        opState.c = _mount(parentElement, (op as EventsOp).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
-      i = (d as Key<any, OpNode>[]).length;
+      node = (op as TrackByKeyOp).v;
+      i = node.length;
       opState.c = value = Array(i);
       while (i > 0) {
-        value[--i] = _mount(parentElement, (d as Key<any, OpNode>[])[i].v);
+        value[--i] = _mount(parentElement, node[i].v);
       }
     }
     opState.f = _popDeepState(deepStateFlags, flags);
@@ -488,9 +489,9 @@ export function _update(
     let i;
 
     if ((f & NodeFlags.Component) !== 0) {
-      prevData = (o as OpNode).d;
-      nextData = (nextOp as OpNode).d;
-      nextValue = ((nextOp as OpNode).t.d as StatelessComponentDescriptor | ComponentDescriptor);
+      prevData = (o as ValueOp).v;
+      nextData = (nextOp as ValueOp).v;
+      nextValue = (nextOp as ValueOp).t.d as StatelessComponentDescriptor | ComponentDescriptor;
       if (
         ((f & NodeFlags.Dirty) !== 0) ||
         (
@@ -519,27 +520,25 @@ export function _update(
       deepStateFlags = _pushDeepState();
       if ((f & NodeFlags.Element) !== 0) {
         i = (f & NodeFlags.Svg) !== 0;
-        prevData = (o as OpNode<ElementData>).d;
-        nextData = (nextOp as OpNode<ElementData>).d;
         if (moveNode === true) {
           nodeInsertBefore!.call(parentElement, s, _nextNode);
         }
 
-        nextValue = nextData.n;
-        if (prevData.n !== nextValue) {
+        nextValue = (nextOp as DOMElementOp).n;
+        if ((o as DOMElementOp).n !== nextValue) {
           if (nextValue === void 0) {
             nextValue = "";
           }
           _updateClassName(s, nextValue, i);
         }
 
-        nextValue = nextData.a;
-        if (prevData.a !== nextValue) {
-          _updateAttrs(s as Element, prevData.a, nextValue, i);
+        nextValue = (nextOp as DOMElementOp).v;
+        if ((o as DOMElementOp).v !== nextValue) {
+          _updateAttrs(s as Element, (o as DOMElementOp).v, nextValue, i);
         }
 
         _nextNode = null;
-        opState.c = _update(s as Element, opStateChildren as OpState, nextData.c, false, true);
+        opState.c = _update(s as Element, opStateChildren as OpState, (nextOp as DOMElementOp).c, false, true);
 
         _nextNode = s as Node;
       } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
@@ -577,8 +576,8 @@ export function _update(
           _updateChildrenTrackByKeys(
             parentElement,
             opState,
-            (o as OpNode).d,
-            (nextOp as OpNode).d,
+            (o as TrackByKeyOp).v,
+            (nextOp as TrackByKeyOp).v,
             moveNode,
             singleChild,
           );
@@ -587,19 +586,25 @@ export function _update(
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
-          (nextOp as OpNode<EventsData>).d.c,
+          (nextOp as EventsOp).c,
           moveNode,
           singleChild,
         );
       } else { // if ((flags & NodeFlags.Context) !== 0) {
-        nextData = (nextOp as OpNode<ContextData>).d;
+        nextData = (nextOp as ContextOp).v;
         if ((f & NodeFlags.SetContextState) !== 0) {
-          opState.s = nextData.v;
+          opState.s = nextData;
         } else {
-          (s as ContextState).v = nextData.v;
+          (s as ContextState).v = nextData;
         }
         nextValue = setContext(opState.s);
-        opState.c = _update(parentElement, opStateChildren as OpState, nextData.c, moveNode, singleChild);
+        opState.c = _update(
+          parentElement,
+          opStateChildren as OpState,
+          (nextOp as ContextOp).c,
+          moveNode,
+          singleChild,
+        );
         setContext(nextValue);
       }
       opState.f = _popDeepState(deepStateFlags, f);

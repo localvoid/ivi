@@ -1,6 +1,6 @@
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
-import { OpNode, Op, ElementData, ContextData, Key, EventsData } from "../vdom/operations";
+import { Op, DOMElementOp, ContextOp, TrackByKeyOp } from "../vdom/operations";
 import { ComponentDescriptor, StatelessComponentDescriptor } from "../vdom/component";
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
@@ -73,26 +73,25 @@ function _renderToString(op: Op): string {
         return result;
       }
 
-      const flags = op.t.f;
+      const opType = op.t;
+      const flags = opType.f;
       if ((flags & NodeFlags.Element) !== 0) {
-        const data = op.d;
         let children = "";
 
         let tagName;
-        let className = data.n;
-        let attrs = data.a;
-        if ((op.t.f & NodeFlags.ElementProto) !== 0) {
-          const proto = (op.t.d as ElementProtoDescriptor).p;
-          const protoData = proto.d;
+        let className = (op as DOMElementOp).n;
+        let attrs = (op as DOMElementOp).v;
+        if ((flags & NodeFlags.ElementProto) !== 0) {
+          const proto = (opType.d as ElementProtoDescriptor).p;
           tagName = proto.t.d;
           if (className === void 0) {
-            className = protoData.n;
+            className = proto.n;
           }
-          if (protoData.a !== void 0) {
-            attrs = attrs === void 0 ? protoData.a : { ...protoData.a, ...attrs };
+          if (proto.v !== void 0) {
+            attrs = attrs === void 0 ? proto.v : { ...proto.v, ...attrs };
           }
         } else {
-          tagName = op.t.d;
+          tagName = opType.d;
         }
 
         let openElement = `<${tagName}`;
@@ -127,7 +126,7 @@ function _renderToString(op: Op): string {
         }
 
         if (children === "") {
-          children = renderToString((op as OpNode<ElementData>).d.c);
+          children = renderToString((op as DOMElementOp).c);
         }
         if ((flags & NodeFlags.NewlineEatingElement) !== 0) {
           if (children.length > 0 && children.charCodeAt(0) === 10) { // "\n"
@@ -142,25 +141,24 @@ function _renderToString(op: Op): string {
         if ((flags & NodeFlags.Stateful) !== 0) {
           const stateNode = createStateNode(op);
           stateNode.s = { r: null, s: null, u: null };
-          return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.d));
+          return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.v));
         } else {
-          return renderToString((op.t.d as StatelessComponentDescriptor).c(op.d));
+          return renderToString((op.t.d as StatelessComponentDescriptor).c(op.v));
         }
       }
       if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
         if ((flags & NodeFlags.Context) !== 0) {
-          const contextData = op.d as ContextData;
           const prevContext = getContext();
-          pushContext((op.t.d as ContextDescriptor), contextData.v);
-          result = renderToString(contextData.c);
+          pushContext((op.t.d as ContextDescriptor), op.v);
+          result = renderToString((op as ContextOp).c);
           setContext(prevContext);
           return result;
         } else {
-          return renderToString((op.d as EventsData).c);
+          return renderToString((op as ContextOp).c);
         }
       }
       // TrackByKey Node
-      const childrenNodes = (op.d as Key<any, Op>[]);
+      const childrenNodes = (op as TrackByKeyOp).v;
       for (let i = 0; i < childrenNodes.length; ++i) {
         result += renderToString(childrenNodes[i].v);
       }

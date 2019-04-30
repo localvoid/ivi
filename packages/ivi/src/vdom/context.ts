@@ -1,4 +1,4 @@
-import { createOpType, createOpNode, OpType, ContextOp, Op } from "./operations";
+import { createOpType, createContainerOp, OpType, ContextOp, Op } from "./operations";
 import { NodeFlags } from "./node_flags";
 
 /**
@@ -137,7 +137,7 @@ export function contextValue<T = any>(): ContextDescriptor<T> {
         throw Error("Unable to find context value");
       }
     },
-    set: (v: T, c: Op) => createOpNode(type, { v, c }),
+    set: (v: T, c: Op) => createContainerOp(type, v, c),
   };
   type = createOpType(NodeFlags.Context, d as ContextDescriptor<T>);
   return d as ContextDescriptor<T>;

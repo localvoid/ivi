@@ -27,12 +27,12 @@ describe("elementProto", () => {
 
     test("default className is undefined", () => {
       const op = factory();
-      expect(op.d.n).toBeUndefined();
+      expect(op.n).toBeUndefined();
     });
 
     test("override className", () => {
       const op = factory("abc");
-      expect(op.d.n).toBe("abc");
+      expect(op.n).toBe("abc");
     });
 
     test("throw an error when element proto has children", () => {
