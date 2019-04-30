@@ -8,7 +8,7 @@ import { SVG_NAMESPACE } from "../dom/namespaces";
 import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
-import { OpNode, DOMElementOp, EventsOp, ContextOp, TrackByKeyOp, OpArray, Key, Op, ValueOp } from "./operations";
+import { OpNode, DOMElementOp, EventsOp, ContextOp, TrackByKeyOp, ComponentOp, OpArray, Key, Op } from "./operations";
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
@@ -138,7 +138,7 @@ export function _dirtyCheck(
       opState.c = _update(
         parentElement,
         c,
-        state.r!((opState.o as ValueOp).v),
+        state.r!((opState.o as ComponentOp).v),
         moveNode,
         singleChild,
       );
@@ -336,7 +336,7 @@ function _mountObject(
     } else {
       value = (opType.d as StatelessComponentDescriptor).c;
     }
-    opState.c = _mount(parentElement, value(op.v));
+    opState.c = _mount(parentElement, value((op as ComponentOp).v));
     opState.f = (opState.f & NodeFlags.SelfFlags) | flags | _deepStateFlags;
     _deepStateFlags |= deepStateFlags | ((opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
   } else {
@@ -489,9 +489,9 @@ export function _update(
     let i;
 
     if ((f & NodeFlags.Component) !== 0) {
-      prevData = (o as ValueOp).v;
-      nextData = (nextOp as ValueOp).v;
-      nextValue = (nextOp as ValueOp).t.d as StatelessComponentDescriptor | ComponentDescriptor;
+      prevData = (o as ComponentOp).v;
+      nextData = (nextOp as ComponentOp).v;
+      nextValue = (nextOp as ComponentOp).t.d as StatelessComponentDescriptor | ComponentDescriptor;
       if (
         ((f & NodeFlags.Dirty) !== 0) ||
         (

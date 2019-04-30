@@ -70,7 +70,7 @@ export {
 export { ElementProtoDescriptor } from "./vdom/element_proto";
 export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor, Component } from "./vdom/component";
 export {
-  OpType, DOMElementOp, EventsOp, ContextOp, SetContextStateOp, TrackByKeyOp, OpNode, Op, OpArray, Key,
+  Key, OpType, DOMElementOp, EventsOp, ContextOp, SetContextStateOp, TrackByKeyOp, ComponentOp, OpNode, Op, OpArray,
   createOpType, createValueOp, createContainerOp, createDOMElementOp,
   Events, TrackByKey, SetContextState, key,
 } from "./vdom/operations";

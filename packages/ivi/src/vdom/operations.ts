@@ -5,6 +5,23 @@ import { ComponentDescriptor, StatelessComponentDescriptor } from "./component";
 import { ContextDescriptor, ContextState } from "./context";
 
 /**
+ * Key is an object that is used by TrackByKey operations to track operations.
+ *
+ * @typeparam K Key type.
+ * @typeparam V Value type.
+ */
+export interface Key<K, V> {
+  /**
+   * Key.
+   */
+  readonly k: K;
+  /**
+   * Value.
+   */
+  readonly v: V;
+}
+
+/**
  * Operation type.
  */
 export interface OpType {
@@ -92,9 +109,52 @@ export interface DOMElementOp<T = any> extends ContainerOp<T | undefined> {
 }
 
 /**
+ * Events operation.
+ */
+export type EventsOp = ContainerOp<EventHandler>;
+
+/**
+ * Context operation.
+ */
+export type ContextOp<T = any> = ContainerOp<T>;
+
+/**
+ * Set context state operation.
+ */
+export type SetContextStateOp = ContainerOp<ContextState>;
+
+/**
+ * TrackByKey operation.
+ */
+export type TrackByKeyOp<K = any, V = any> = ValueOp<Key<K, V>[]>;
+
+/**
+ * Component operation.
+ */
+export type ComponentOp<T = any> = ValueOp<T>;
+
+/**
  * Operation node.
  */
-export type OpNode = ValueOp | ContainerOp | DOMElementOp | TrackByKeyOp;
+export type OpNode =
+  | ValueOp
+  | ContainerOp
+  | DOMElementOp
+  | EventsOp
+  | ContextOp
+  | SetContextStateOp
+  | TrackByKeyOp
+  | ComponentOp;
+
+/**
+ * Operation.
+ */
+export type Op = string | number | OpNode | OpArray | null;
+
+/**
+ * Recursive operation array.
+ */
+export interface OpArray extends Array<Op> { }
 
 /**
  * createValueOp creates a {@link ValueOp} instance.
@@ -135,31 +195,6 @@ export const createDOMElementOp = <T>(
 ): DOMElementOp<T> => ({ t, v, c, n });
 
 /**
- * Operation.
- */
-export type Op = string | number | OpNode | OpArray | null;
-
-/**
- * Recursive operation array.
- */
-export interface OpArray extends Array<Op> { }
-
-/**
- * Events operation.
- */
-export type EventsOp = ContainerOp<EventHandler>;
-
-/**
- * Context operation.
- */
-export type ContextOp<T = any> = ContainerOp<T>;
-
-/**
- * Set context state operation.
- */
-export type SetContextStateOp = ContainerOp<ContextState>;
-
-/**
  * Operation factory for event handlers.
  *
  * @example
@@ -193,23 +228,6 @@ export const SetContextState = (
 ): SetContextStateOp => createContainerOp(SET_CONTEXT_STATE, v, c);
 
 /**
- * Key is an object that is used by TrackByKey operations to track operations.
- *
- * @typeparam K Key type.
- * @typeparam V Value type.
- */
-export interface Key<K, V> {
-  /**
-   * Key.
-   */
-  readonly k: K;
-  /**
-   * Value.
-   */
-  readonly v: V;
-}
-
-/**
  * key creates a {@link Key} instance.
  *
  * @typeparam K Key type.
@@ -219,11 +237,6 @@ export interface Key<K, V> {
  * @returns {@link Key} instance.
  */
 export const key = <K, V>(k: K, v: V): Key<K, V> => ({ k, v });
-
-/**
- * TrackByKey operation.
- */
-export type TrackByKeyOp<K = any, V = any> = ValueOp<Key<K, V>[]>;
 
 /**
  * Operation factory for track by key nodes.
