@@ -319,7 +319,7 @@ function _mountObject(
   opState: OpState,
   op: OpNode,
 ): void {
-  const opType = op.t;
+  const opType = op.t; // polymorphic callsite
   const flags = opType.f;
   let deepStateFlags;
   let prevState;
@@ -445,9 +445,7 @@ export function _update(
   if (opState === null) {
     return _mount(parentElement, nextOp);
   }
-  /* tslint:disable:prefer-const */
   const { f, o, s } = opState;
-  /* tslint:enable:prefer-const */
 
   if ((f & NodeFlags.Text) !== 0) {
     if (typeof nextOp !== "object") {
@@ -474,7 +472,10 @@ export function _update(
     if (
       ((f & NodeFlags.Fragment) !== 0 ?
         !(nextOp instanceof Array) :
-        (nextOp instanceof Array || (o as OpNode).t !== (nextOp as OpNode).t)
+        (
+          nextOp instanceof Array ||
+          (o as OpNode).t !== (nextOp as OpNode).t // polymorphic callsites
+        )
       )
     ) {
       _unmount(parentElement, opState, singleChild);
@@ -510,9 +511,9 @@ export function _update(
           singleChild,
         );
         // opState.f can be changed after `_update()`.
-        nextValue = opState.f;
-        opState.f = (nextValue & NodeFlags.SelfFlags) | _deepStateFlags;
-        _deepStateFlags |= deepStateFlags | ((nextValue & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
+        i = opState.f;
+        opState.f = (i & NodeFlags.SelfFlags) | _deepStateFlags;
+        _deepStateFlags |= deepStateFlags | ((i & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift);
       } else {
         _dirtyCheck(parentElement, opState, moveNode, singleChild);
       }
@@ -539,7 +540,6 @@ export function _update(
 
         _nextNode = null;
         opState.c = _update(s as Element, opStateChildren as OpState, (nextOp as DOMElementOp).c, false, true);
-
         _nextNode = s as Node;
       } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((f & NodeFlags.Fragment) !== 0) {

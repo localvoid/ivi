@@ -3,9 +3,13 @@
 ### Optimizations
 
 Reduced memory consumption by operation nodes. All properties are now inlined into operation nodes and there are three
-different operation node shapes. Almost all call-sites should stay in monomorphic state, except for the one that
+different operation node shapes. Almost all callsites should stay in monomorphic state, except for the one that
 accessing operation type in the mount and update functions, it will be in polymorphic state and it is ok as long as it
 doesn't transition into megamorphic state.
+
+### Bug Fixes
+
+- Fixed `nextNode` assignment in a dirty checking algorithm when it is going through DOM elements.
 
 ## v0.26.0
 

@@ -666,8 +666,8 @@ function useEffect<P>(
 ): (props: P) => void;
 ```
 
-`useEffect()` lets you perform side effects, it replaces `componentDidMount()`, `componentWillUnmount()` and
-`componentDidUpdate()` methods of a class-based components API.
+`useEffect()` lets you perform side effects. It is fully deterministic and executes immediately when function created
+by `useEffect()` is invoked. It is safe to perform any subscriptions in `useEffect()` without losing any events.
 
 ##### `useMutationEffect()`
 
@@ -679,7 +679,8 @@ function useMutationEffect<P>(
 ): (props: P) => void;
 ```
 
-`useMutationEffect()` lets you perform DOM mutation side effects.
+`useMutationEffect()` lets you perform DOM mutation side effects. It will schedule DOM mutation task that will be
+executed immediately after all DOM updates.
 
 ##### `useLayoutEffect()`
 
@@ -691,7 +692,8 @@ function useLayoutEffect<P>(
 ): (props: P) => void;
 ```
 
-`useLayoutEffect()` lets you perform DOM layout side effects.
+`useLayoutEffect()` lets you perform DOM layout side effects. It will schedul DOM layout task that will be executed
+after all DOM updates and mutation effects.
 
 ##### `useSelect()`
 
@@ -745,7 +747,7 @@ is unnecessary to implement additional checks for `props` changes in selector fu
 const C = component((c) => {
   const select = useSelect(c,
     ([a, b], prev) => ((prev !== void 0) ? prev : { computedValue: a + b }),
-    shallowNotEqualArray,
+    shallowEqualArray,
   );
 
   return ({a, b}) => span(_, _, select([a, b]).computedValue);
@@ -755,10 +757,27 @@ const C = component((c) => {
 ##### `useUnmount()`
 
 ```ts
-function useUnmount(c: Component, hook: () => void): void;
+function useUnmount(c: Component, hook: (token: UnmountToken) => void): void;
 ```
 
 `useUnmount()` creates a hook that will be invoked when component is unmounted from the document.
+
+`hook` function always receives `UNMOUNT_TOKEN` as a first argument, it can be used in micro optimizations to reduce
+memory allocations.
+
+```js
+const C = component((c) => {
+  const h = (p) => {
+    if (p === UNMOUNT_TOKEN) {
+      // unmount
+    } else {
+      // render
+    }
+  };
+  useUnmount(c, h);
+  return h;
+});
+```
 
 #### Additional Functions
 
