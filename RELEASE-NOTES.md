@@ -1,3 +1,9 @@
+## v0.27.1
+
+Deep state flags propagation algorithm were redesigned to merge flags only when going through fragments and `TrackByKey`
+nodes. New algorithm also fixes some edge cases when deep state flags were kept assigned even when subtree no longer had
+this state.
+
 ## v0.27.0
 
 ### Optimizations

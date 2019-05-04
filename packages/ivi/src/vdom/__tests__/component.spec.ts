@@ -538,7 +538,7 @@ describe("component", () => {
     });
 
     describe("lifecycle", () => {
-      const Static = useComputedValue(() => ivi.component(() => (op: Op) => op, () => false));
+      const Static = useComputedValue(() => ivi.component(() => (op: Op) => op, () => true));
       const lifecycle = useLifecycleCounters();
       const createLifecycleTester = (id: string) => (ivi.component<Op>(
         (component) => {

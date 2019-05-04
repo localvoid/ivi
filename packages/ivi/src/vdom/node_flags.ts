@@ -60,7 +60,9 @@ export const enum NodeFlags {
   // | Dirty // Dirty flag should be erased after update.
   | DirtyCheck
   | Unmount
-  | NewlineEatingElement,
+  | NewlineEatingElement
+  | VoidElement
+  | SetContextState,
 
   // Flags that were used by the children operations.
   DeepStateFlags = DirtyCheck | Unmount,
