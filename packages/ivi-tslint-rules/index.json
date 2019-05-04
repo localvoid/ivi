@@ -35,6 +35,7 @@
     "no-conditional-assignment": false,
     "no-console": false,
     "forin": false,
+    "label-position": false,
     "member-access": false,
     "member-ordering": false,
     "no-bitwise": false,
