@@ -94,7 +94,7 @@ describe("context", () => {
     });
 
     test("through static component", () => {
-      const Static = ivi.component(() => (op: Op) => op, () => false);
+      const Static = ivi.component(() => (op: Op) => op, () => true);
 
       r(ContextProvider.set(10, Static(ContextValue())));
       r(ContextProvider.set(20, Static(ContextValue())));

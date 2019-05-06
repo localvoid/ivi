@@ -642,7 +642,7 @@ describe("TrackByKey", () => {
       });
 
       describe("static components", () => {
-        const Component = useComputedValue(() => ivi.component<Op>((c) => (op) => op, () => false));
+        const Component = useComputedValue(() => ivi.component<Op>((c) => (op) => op, () => true));
         const v = (key: number, value?: Op) => (
           ivi.key(key, value === void 0 ? Component(key) : value === null ? null : Component(value))
         );
