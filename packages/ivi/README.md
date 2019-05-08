@@ -213,14 +213,26 @@ should work on top of the DOM API, and it is not so easy to optimize DOM operati
 environments. Some popular browser extensions add an additional overhead to many DOM operations, so it becomes
 extremely important to touch DOM as little as possible and avoid polluting document with useless DOM nodes.
 
-Another problem is the amount of produced code in this "optimized" libraries, simple components like the `Row()`
-component above will be compiled into ~100 lines of code in Svelte, and it gets way much worse when application is built
-from small reusable components.
+To get a better understanding how all this "faster than Virtual DOM" libraries scale when we move from basic DOM
+primitives to a much more complicated composition primitives we can try to gradually add this primitives to their
+js-framework-benchmark implementations. Here is a
+[repository](https://github.com/localvoid/js-framework-benchmark/tree/master/frameworks/keyed) with modified
+implementations, and here is a
+[results](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table.html) table. In this repository,
+implementations with a suffix `-0` are abusing techniques like event delegation, etc. Then we start to gradually add
+components, conditional rendering, etc. `ivi-5` is a special variant that performs a full-blown rerender without any
+`shouldComponentUpdate` optimizations (diffing 10k-100k virtual dom nodes per update).
+
+If you really want to get any useful information from this benchmark, I'd recommend to do the same experiment with your
+favorite UI library.
+
+`ivi` is optimized for predictable performance, there are no perf cliffs when you start using any composition
+primitives.
 
 ### "The Fastest UI Library"
 
 There is no such thing as "the fastest UI library", optimizing UI library for some use cases will make it slower in
-other use cases. ivi is optimized for complex dynamic applications that composed from small reusable blocks.
+other use cases.
 
 There are many different optimization goals and we need to find a balanced solution. Here is a list of different
 optimization goals (in random order) that we should be focusing on:
