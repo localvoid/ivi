@@ -215,13 +215,14 @@ extremely important to touch DOM as little as possible and avoid polluting docum
 
 To get a better understanding how all this "faster than Virtual DOM" libraries scale when we move from basic DOM
 primitives to a much more complicated composition primitives we can try to gradually add this primitives to their
-js-framework-benchmark implementations. Here is a
-[repository](https://github.com/localvoid/js-framework-benchmark/tree/master/frameworks/keyed) with modified
-implementations, and here is a
-[results](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table.html) table. In this repository,
-implementations with a suffix `-0` are abusing techniques like event delegation, etc. Then we start to gradually add
-components, conditional rendering, etc. `ivi-5` is a special variant that performs a full-blown rerender without any
-`shouldComponentUpdate` optimizations (diffing 10k-100k virtual dom nodes per update).
+js-framework-benchmark
+[implementations](https://github.com/localvoid/js-framework-benchmark/tree/master/frameworks/keyed). Results in a
+[clean chrome](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table.html) and
+[chrome with uBlock origin extension](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table-extensions.html)
+clearly shows that they had alot of issues with their performance. In this repository, implementations with a suffix
+`-0` are abusing techniques like event delegation, etc. Then we start to gradually add components, conditional
+rendering, etc. `ivi-5` is a special variant that performs a full-blown rerender without any `shouldComponentUpdate`
+optimizations (diffing 10k-100k virtual dom nodes per update).
 
 If you really want to get any useful information from this benchmark, I'd recommend to do the same experiment with your
 favorite UI library.
