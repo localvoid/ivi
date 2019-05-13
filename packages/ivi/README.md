@@ -219,7 +219,7 @@ js-framework-benchmark
 [implementations](https://github.com/localvoid/js-framework-benchmark/tree/master/frameworks/keyed). Results in a
 [clean chrome](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table.html) and
 [chrome with uBlock origin extension](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table-extensions.html)
-clearly shows that they had alot of issues with their performance. In this repository, implementations with a suffix
+clearly shows that there are a lot of issues with their performance. In this repository, implementations with a suffix
 `-0` are abusing techniques like event delegation, etc. Then we start to gradually add components, conditional
 rendering, etc. `ivi-5` is a special variant that performs a full-blown rerender without any `shouldComponentUpdate`
 optimizations (diffing 10k-100k virtual dom nodes per update).
