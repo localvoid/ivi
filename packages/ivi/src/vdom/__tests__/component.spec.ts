@@ -262,7 +262,7 @@ describe("component", () => {
       describe("areEqual", () => {
         test("different props", () => {
           const areEqual = jest.fn(() => false);
-          const C = ivi.component(() => () => null, areEqual);
+          const C = ivi.component(() => (p: number) => null, areEqual);
 
           r(C(1));
           r(C(2));
@@ -274,7 +274,7 @@ describe("component", () => {
         test("identical props", () => {
           const value = {};
           const areEqual = jest.fn(() => false);
-          const C = ivi.component(() => () => null, areEqual);
+          const C = ivi.component(() => (p: {}) => null, areEqual);
 
           r(C(value));
           r(C(value));
