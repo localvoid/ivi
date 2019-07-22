@@ -18,29 +18,31 @@ export const enum NodeFlags {
   ElementProto = 1 << 6,
   // Fragment
   Fragment = 1 << 7,
-  // Stateful Component
-  Stateful = 1 << 8,
   // Svg Element.
-  Svg = 1 << 9,
+  Svg = 1 << 8,
   // Component is dirty.
-  Dirty = 1 << 10,
+  Dirty = 1 << 9,
   /**
    * Newline eating element <pre> and <textarea>
    *
    * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
    * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
    */
-  NewlineEatingElement = 1 << 11,
+  NewlineEatingElement = 1 << 10,
   /**
    * Void Element
    *
    * https://www.w3.org/TR/html5/syntax.html#void-elements
    */
-  VoidElement = 1 << 12,
+  VoidElement = 1 << 11,
   // Set context state.
-  SetContextState = 1 << 13,
+  SetContextState = 1 << 12,
+  // Node requires dirty checking state.
+  DirtyCheckState = 1 << 13,
+  // Node requires dirty checking observable.
+  DirtyCheckObservable = 1 << 14,
   // Node requires dirty checking.
-  DirtyCheck = 1 << 14,
+  DirtyCheck = DirtyCheckState | DirtyCheckObservable,
   // Node requires unmounting.
   Unmount = 1 << 15,
   // IMPORTANT: DO NOT ADD FLAGS AFTER THIS ONE, LAST FLAGS ARE SHIFTED BY `DeepStateShift`.
@@ -55,18 +57,17 @@ export const enum NodeFlags {
   | Context
   | ElementProto
   | Fragment
-  | Stateful
   | Svg
   // | Dirty // Dirty flag should be erased after update.
-  | DirtyCheck
+  | DirtyCheckState // DirtyCheck flag should be reassigned after update.
   | Unmount
   | NewlineEatingElement
   | VoidElement
   | SetContextState,
 
   // Flags that were used by the children operations.
-  DeepStateFlags = DirtyCheck | Unmount,
-  DeepStateShift = 2,
-  DeepStateDirtyCheck = DirtyCheck << DeepStateShift,
+  DeepStateFlags = DirtyCheckState | DirtyCheckObservable | Unmount,
+  DeepStateShift = 3,
+  DeepStateDirtyCheck = (DirtyCheckState << DeepStateShift) | (DirtyCheckObservable << DeepStateShift),
   DeepStateUnmount = Unmount << DeepStateShift,
 }

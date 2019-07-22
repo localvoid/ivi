@@ -1,4 +1,5 @@
-import { SelectToken, UnmountToken } from "../core";
+import { UnmountToken } from "../core";
+import { WatchList } from "../core/observable";
 import { Op } from "./operations";
 import { OpState } from "./state";
 
@@ -7,15 +8,15 @@ import { OpState } from "./state";
  *
  * @typeparam P Props type.
  */
-export interface ComponentHooks<P = any> {
+export interface ComponentState<P = any> {
   /**
    * Render function.
    */
   r: null | ((props: P) => Op);
   /**
-   * Selector hooks.
+   * Observable dependencies.
    */
-  s: null | ((token: SelectToken) => boolean);
+  d: WatchList;
   /**
    * Unmount hooks.
    */
@@ -47,29 +48,4 @@ export interface ComponentDescriptor<P = any> {
   readonly e: undefined | ((prev: P, next: P) => boolean);
 }
 
-/**
- * Stateless Component Descriptor.
- *
- * @typeparam P Props type.
- */
-export interface StatelessComponentDescriptor<P = any> {
-  /**
-   * Lifecycle hook `create`.
-   *
-   * @param props Component props.
-   * @returns OpNode.
-   */
-  c(props: P): Op;
-
-  /**
-   * `areEqual` is a function that checks if `prev` and `next` props are equal, it is used as a hint to reduce
-   * unnecessary updates.
-   *
-   * @param prev Previous properties.
-   * @param next Next properties.
-   * @returns `true` when props are equal.
-   */
-  readonly e: undefined | ((prev: P, next: P) => boolean);
-}
-
-export type Component = OpState<ComponentHooks>;
+export type Component = OpState<ComponentState>;

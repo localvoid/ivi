@@ -1,3 +1,8 @@
+## v0.28.0
+
+Dirty checking API were redesigned to improve support for use cases with coarse-grained observable graphs and
+mutable data structures.
+
 ## v0.27.1
 
 Deep state flags propagation algorithm were redesigned to merge flags only when going through fragments and `TrackByKey`

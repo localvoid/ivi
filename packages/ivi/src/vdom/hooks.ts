@@ -1,5 +1,5 @@
-import { EMPTY_OBJECT, TaskToken, TASK_TOKEN, SelectToken, UnmountToken, SELECT_TOKEN, UNMOUNT_TOKEN } from "../core";
-import { clock, scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
+import { EMPTY_OBJECT, TaskToken, TASK_TOKEN, UnmountToken, UNMOUNT_TOKEN } from "../core";
+import { scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
 import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
 
@@ -12,105 +12,6 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
   }
   hooks.push(hook);
   return hooks;
-}
-
-/**
- * useSelect creates a selector hook.
- *
- * @example
- *
- *     const C = component<number>((c) => {
- *       const selector = useSelect<string, number>(c,
- *         (id, context) => getContext<{ data: string[] }>.data[id],
- *       );
- *
- *       return (id) => div(_, _, selector(id));
- *     });
- *
- * @typeparam T Selector result type.
- * @param component Component instance.
- * @param selector Selector function.
- * @returns Selector hook.
- */
-export function useSelect<T>(
-  component: Component,
-  selector: (props?: undefined, prev?: T | undefined) => T,
-): () => T;
-
-/**
- * useSelect creates a selector hook.
- *
- * @example
- *
- *     const C = component<number>((c) => {
- *       const selector = useSelect<string, number>(c,
- *         (id, context) => getContext<{ data: string[] }>.data[id],
- *       );
- *
- *       return (id) => div(_, _, selector(id));
- *     });
- *
- * @typeparam T Selector result type.
- * @typeparam P Selector props type.
- * @param component Component instance.
- * @param selector Selector function.
- * @param areEqual `areEqual` function.
- * @returns Selector hook.
- */
-export function useSelect<T, P>(
-  component: Component,
-  selector: (props: P, prev?: T | undefined) => T,
-  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? () => T : (props: P) => T;
-
-export function useSelect<T, P>(
-  component: Component,
-  selector: (props: P, prev: T | undefined) => T,
-  areEqual?: (prev: P, next: P) => boolean,
-): (props: P) => T {
-  /* istanbul ignore next */
-  if (process.env.IVI_TARGET === "ssr") {
-    return (nextProps: P) => selector(nextProps, void 0);
-  }
-
-  let lastChecked = 0;
-  let state: T | undefined;
-  let props: P;
-  const prevSelector = component.s.s;
-  const hook = (p: SelectToken | P) => {
-    if (p === SELECT_TOKEN) {
-      if (prevSelector !== null && prevSelector(SELECT_TOKEN) === true) {
-        return true;
-      }
-      if (state !== void 0) {
-        p = selector(props, state);
-        lastChecked = clock();
-        if (state !== p) {
-          state = p as T;
-          return true;
-        }
-      }
-      return false;
-    }
-
-    if (
-      (state !== void 0) &&
-      (
-        (props !== p) &&
-        (areEqual === void 0 || areEqual(props, p as P) !== true)
-      )
-    ) {
-      state = void 0;
-    }
-    if (state === void 0 || lastChecked < clock()) {
-      state = selector(p as P, state);
-    }
-    props = p as P;
-    return state;
-  };
-
-  component.s.s = hook as (token: SelectToken) => boolean;
-  return hook as (p: P) => T;
 }
 
 /**

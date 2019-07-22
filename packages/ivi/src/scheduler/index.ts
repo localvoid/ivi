@@ -1,4 +1,6 @@
-import { NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box, TaskToken, TASK_TOKEN } from "../core";
+import {
+  NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box, TaskToken, TASK_TOKEN, advanceClock,
+} from "../core";
 import { printWarn } from "../debug/print";
 import { doc } from "../dom/shortcuts";
 import { NodeFlags } from "../vdom/node_flags";
@@ -76,7 +78,6 @@ let _flags: SchedulerFlags = 0;
 let _debugFlags: SchedulerDebugFlags = 0;
 
 let _frameStartTime = 0;
-let _clock = 1;
 const _resolvedPromise = Promise.resolve();
 const _microtasks = box<Array<(token: TaskToken) => void>>([]);
 const _mutationEffects = box<Array<(token: TaskToken) => void>>([]);
@@ -97,18 +98,11 @@ export const withSchedulerTick = <T extends any[]>(inner: (...args: T) => void) 
     inner.apply(void 0, arguments as unknown as T);
     run(_microtasks);
     _flags &= ~(SchedulerFlags.Running | SchedulerFlags.TickPending);
-    ++_clock;
+    advanceClock();
   })
 ) as (...args: T) => void;
 
 const runMicrotasks = withSchedulerTick(NOOP);
-
-/**
- * clock returns monotonically increasing clock value.
- *
- * @returns current clock value.
- */
-export const clock = () => _clock;
 
 /**
  * scheduleMicrotask adds task to the microtask queue.
@@ -298,14 +292,6 @@ export function invalidate(c: Component, flags?: UpdateFlags): void {
   c.f |= NodeFlags.Dirty;
   requestDirtyCheck(flags);
 }
-
-/**
- * dirty requests a dirty checking and returns current monotonic clock value.
- *
- * @param flags See {@link UpdateFlags} for details.
- * @returns current monotonic clock value.
- */
-export const dirty = (flags?: UpdateFlags) => (requestDirtyCheck(flags), _clock);
 
 /**
  * Render operation into the container.

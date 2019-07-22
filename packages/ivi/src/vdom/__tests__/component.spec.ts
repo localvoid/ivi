@@ -1,4 +1,4 @@
-import { useResetDOM, useDOMElement, useIVI, useTest, useComputedValue, useHTML, useMockFn } from "ivi-jest";
+import { useResetDOM, useDOMElement, useIVI, useTest, useComputedValue, useHTML } from "ivi-jest";
 import { Op } from "ivi";
 import { useDOMOpsCounters, useLifecycleCounters } from "./jest";
 
@@ -408,131 +408,15 @@ describe("component", () => {
       });
     });
 
-    describe("useSelect", () => {
-      describe("render", () => {
-        const selector = useMockFn((fn) => { fn.mockImplementation((v) => v); });
-
-        test("return value", () => {
-          const C = ivi.component<number>((c) => {
-            const select = ivi.useSelect<number, number>(c, selector);
-            return (i) => select(i);
-          });
-          expect(r(C(1))).toMatchSnapshot();
-        });
-
-        test("update value", () => {
-          const C = ivi.component<number>((c) => {
-            const select = ivi.useSelect<number, number>(c, selector);
-            return (i) => (select(i), null);
-          });
-          r(C(1));
-          r(C(2));
-          expect(selector).toBeCalledTimes(2);
-          expect(selector).toHaveBeenNthCalledWith(1, 1, void 0);
-          expect(selector).toHaveBeenNthCalledWith(2, 2, void 0);
-        });
-
-        test("update with identical value", () => {
-          const value = {};
-          const C = ivi.component<{ value: {} }>((c) => {
-            const select = ivi.useSelect<{}, {}>(c, selector);
-            return (n) => (select(n.value), null);
-          });
-          r(C({ value }));
-          r(C({ value }));
-          expect(selector).toBeCalledTimes(2);
-          expect(selector).toHaveBeenNthCalledWith(1, value, void 0);
-          expect(selector).toHaveBeenNthCalledWith(2, value, value);
-        });
-
-        test("areEqual false", () => {
-          const v1 = {};
-          const v2 = {};
-          const areEqual = jest.fn().mockReturnValue(false);
-          const C = ivi.component<{ value: {} }>((c) => {
-            const select = ivi.useSelect<{}, {}>(c, selector, areEqual);
-            return (n) => (select(n.value), null);
-          });
-          r(C({ value: v1 }));
-          r(C({ value: v2 }));
-          expect(areEqual).toBeCalledTimes(1);
-          expect(areEqual).toBeCalledWith(v1, v2);
-          expect(selector).toBeCalledTimes(2);
-          expect(selector).toHaveBeenNthCalledWith(1, v1, void 0);
-          expect(selector).toHaveBeenNthCalledWith(2, v2, void 0);
-        });
-
-        test("areEqual true", () => {
-          const v1 = {};
-          const v2 = {};
-          const areEqual = jest.fn().mockReturnValue(true);
-          const C = ivi.component<{ value: {} }>((c) => {
-            const select = ivi.useSelect<{}, {}>(c, selector, areEqual);
-            return (n) => (select(n.value), null);
-          });
-          r(C({ value: v1 }));
-          r(C({ value: v2 }));
-          expect(areEqual).toBeCalledTimes(1);
-          expect(areEqual).toBeCalledWith(v1, v2);
-          expect(selector).toBeCalledTimes(2);
-          expect(selector).toHaveBeenNthCalledWith(1, v1, void 0);
-          expect(selector).toHaveBeenNthCalledWith(2, v2, v1);
-        });
-      });
-
+    describe("watch", () => {
       describe("dirty checking", () => {
-        test("one selector", () => {
-          const selector = jest.fn((v) => v);
-          const C = ivi.component<number>((c) => {
-            const select = ivi.useSelect<number, number>(c, selector);
-            return (n) => (select(n), null);
-          });
-          r(C(1));
+        test("observable", () => {
+          const value = ivi.observable(1);
+          const C = ivi.component(() => () => (ivi.watch(value), value.v));
+          const result = r(C());
+          ivi.assign(value, 2);
           t.dirtyCheck();
-          expect(selector).toBeCalledTimes(2);
-          expect(selector).toHaveBeenNthCalledWith(1, 1, void 0);
-          expect(selector).toHaveBeenNthCalledWith(2, 1, 1);
-        });
-
-        test("two selectors", () => {
-          const selector1 = jest.fn((v) => v);
-          const selector2 = jest.fn((v) => v);
-          let render;
-          const C = ivi.component<number>((c) => {
-            const select1 = ivi.useSelect<number, number>(c, selector1);
-            const select2 = ivi.useSelect<number, number>(c, selector2);
-            return render = jest.fn((n) => (select1(n), select2(n + 1), null));
-          });
-          r(C(1));
-          t.dirtyCheck();
-          expect(render).toBeCalledTimes(1);
-          expect(selector1).toBeCalledTimes(2);
-          expect(selector1).toHaveBeenNthCalledWith(1, 1, void 0);
-          expect(selector1).toHaveBeenNthCalledWith(2, 1, 1);
-          expect(selector2).toBeCalledTimes(2);
-          expect(selector2).toHaveBeenNthCalledWith(1, 2, void 0);
-          expect(selector2).toHaveBeenNthCalledWith(2, 2, 2);
-        });
-
-        test("two dirty selectors", () => {
-          let i = 1;
-          const selector1 = jest.fn((v) => v + i++);
-          const selector2 = jest.fn((v) => v + i++);
-          let render;
-          const C = ivi.component<number>((c) => {
-            const select1 = ivi.useSelect<number, number>(c, selector1);
-            const select2 = ivi.useSelect<number, number>(c, selector2);
-            return render = jest.fn((n) => (select1(n), select2(n + 1), null));
-          });
-          r(C(1));
-          t.dirtyCheck();
-          expect(render).toBeCalledTimes(2);
-          expect(selector1).toBeCalledTimes(2);
-          expect(selector1).toHaveBeenNthCalledWith(1, 1, void 0);
-          expect(selector1).toHaveBeenNthCalledWith(2, 1, 2);
-          expect(selector2).toBeCalledTimes(2);
-          expect(selector2).toHaveBeenNthCalledWith(1, 2, void 0);
-          expect(selector2).toHaveBeenNthCalledWith(2, 2, 4);
+          expect(result).toMatchSnapshot();
         });
       });
     });

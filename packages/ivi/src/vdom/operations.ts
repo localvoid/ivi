@@ -1,7 +1,7 @@
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
 import { ElementProtoDescriptor } from "./element_proto";
-import { ComponentDescriptor, StatelessComponentDescriptor } from "./component";
+import { ComponentDescriptor } from "./component";
 import { ContextDescriptor, ContextState } from "./context";
 
 /**
@@ -33,7 +33,6 @@ export interface OpType {
    * Operation type descriptor.
    */
   readonly d:
-  | StatelessComponentDescriptor
   | ComponentDescriptor
   | ElementProtoDescriptor
   | ContextDescriptor
@@ -50,7 +49,7 @@ export interface OpType {
  */
 export const createOpType = (
   f: NodeFlags,
-  d: StatelessComponentDescriptor | ComponentDescriptor | ElementProtoDescriptor | ContextDescriptor | string | null,
+  d: ComponentDescriptor | ElementProtoDescriptor | ContextDescriptor | string | null,
 ): OpType => ({ f, d });
 
 /**

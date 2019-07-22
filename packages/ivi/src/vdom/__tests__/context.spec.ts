@@ -8,10 +8,7 @@ const h = useHTML();
 const t = useTest();
 const ContextProvider = useComputedValue(() => ivi.contextValue<number>());
 const getContext = useMockFn((fn) => { fn.mockImplementation(() => ContextProvider.get()); });
-const ContextValue = useComputedValue(() => ivi.component((c) => {
-  const get = ivi.useSelect(c, () => getContext());
-  return () => get();
-}));
+const ContextValue = useComputedValue(() => ivi.component(() => () => getContext()));
 const _ = void 0;
 const r = (op: Op) => t.render(op, root()).domNode;
 
@@ -88,7 +85,7 @@ describe("context", () => {
         const op = ContextProvider.set(30, ContextValue());
         r(ContextProvider.set(10, op));
         r(ContextProvider.set(20, op));
-        expect(getContext).toBeCalledTimes(2);
+        expect(getContext).toBeCalledTimes(1);
         expect(getContext).toHaveLastReturnedWith(30);
       });
     });

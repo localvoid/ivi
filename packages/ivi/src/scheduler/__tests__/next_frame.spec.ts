@@ -96,12 +96,6 @@ describe("next frame", () => {
     });
   });
 
-  describe("requestDirtyCheck", () => {
-    test("dirty", () => {
-      expect(ivi.dirty()).toBe(ivi.clock());
-    });
-  });
-
   describe("invalidate", () => {
     const root = useDOMElement();
     const t = useTest();

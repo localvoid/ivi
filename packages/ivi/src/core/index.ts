@@ -17,9 +17,10 @@ declare global {
 
 export { _ } from "./shortcuts";
 export { Predicate } from "./predicate";
+export { clock, advanceClock } from "./clock";
 export { Box, box } from "./box";
 export {
-  TaskToken, SelectToken, UnmountToken, EMPTY_OBJECT, TASK_TOKEN, SELECT_TOKEN, UNMOUNT_TOKEN, EMPTY_ARRAY,
+  TaskToken, DirtyCheckToken, UnmountToken, EMPTY_OBJECT, TASK_TOKEN, DIRTY_CHECK_TOKEN, UNMOUNT_TOKEN, EMPTY_ARRAY,
 } from "./token";
 export { getFunctionName } from "./function";
 export { addErrorHandler, catchError } from "./error";
@@ -28,3 +29,7 @@ export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
 export { strictEqual, shallowEqual, shallowEqualArray } from "./equal";
 export { lazy, memo, memoObject, memoArray } from "./memo";
+export {
+  Observable, WatchList, observable, apply, assign, signal, emit, computed, watch, saveObservableDependencies,
+  dirtyCheckWatchList,
+} from "./observable";

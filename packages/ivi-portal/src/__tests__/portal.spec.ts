@@ -62,10 +62,7 @@ describe("portal", () => {
 
       test("context", () => {
         const ContextProvider = ivi.contextValue<number>();
-        const ContextValue = ivi.component((c) => {
-          const get = ivi.useSelect(c, () => ContextProvider.get());
-          return () => get();
-        });
+        const ContextValue = ivi.component(() => () => ContextProvider.get());
 
         r(ContextProvider.set(2, [P.root, h.div("main", _, P.entry(ContextValue()))]));
         r(ContextProvider.set(1, [P.root, h.div("main", _, P.entry(ContextValue()))]));

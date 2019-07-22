@@ -1,3 +1,4 @@
+import { Observable, observable, watch } from "../core";
 import { createOpType, createContainerOp, OpType, ContextOp, Op } from "./operations";
 import { NodeFlags } from "./node_flags";
 
@@ -30,7 +31,7 @@ export interface ContextState<T = any> {
   /**
    * Context value.
    */
-  v: T;
+  readonly v: Observable<T>;
 }
 
 /**
@@ -72,7 +73,7 @@ export function resetContext() {
  * @returns New {@link ContextState}.
  */
 export function pushContext<T = any>(d: ContextDescriptor<T>, v: T): ContextState<T> {
-  return n = { n, d, v };
+  return n = { n, d, v: observable(v) };
 }
 
 /**
@@ -128,7 +129,7 @@ export function contextValue<T = any>(): ContextDescriptor<T> {
       let next = n;
       while (next !== null) {
         if (next.d === d) {
-          return next.v;
+          return watch(next.v).v;
         }
         next = next.n;
       }

@@ -1,13 +1,15 @@
 // Core
 export {
   _, Predicate, Box, box,
-  TaskToken, SelectToken, UnmountToken, TASK_TOKEN, SELECT_TOKEN, UNMOUNT_TOKEN, EMPTY_OBJECT, EMPTY_ARRAY,
+  clock,
+  TaskToken, DirtyCheckToken, UnmountToken, TASK_TOKEN, DIRTY_CHECK_TOKEN, UNMOUNT_TOKEN, EMPTY_OBJECT, EMPTY_ARRAY,
   getFunctionName, addErrorHandler, catchError,
   NOOP, NOOP_FALSE, NOOP_TRUE,
   append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
   RepeatableTaskList, runRepeatableTasks,
   strictEqual, shallowEqual, shallowEqualArray,
   lazy, memo, memoObject, memoArray,
+  Observable, observable, apply, assign, signal, emit, computed, watch,
 } from "./core";
 
 // DOM
@@ -68,7 +70,7 @@ export {
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
 export { ElementProtoDescriptor } from "./vdom/element_proto";
-export { ComponentHooks, ComponentDescriptor, StatelessComponentDescriptor, Component } from "./vdom/component";
+export { ComponentState, ComponentDescriptor, Component } from "./vdom/component";
 export {
   Key, OpType, DOMElementOp, EventsOp, ContextOp, SetContextStateOp, TrackByKeyOp, ComponentOp, OpNode, Op, OpArray,
   createOpType, createValueOp, createContainerOp, createDOMElementOp,
@@ -79,9 +81,9 @@ export {
   elementFactory, htmlElementFactory, svgElementFactory, elementProto, component, statelessComponent,
 } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
-export { useUnmount, useSelect, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
+export { useUnmount, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
-export { selector, findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
+export { findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
 export { RefProps, Ref } from "./vdom/ref";
 
 // SSR
@@ -94,7 +96,7 @@ export {
   UpdateFlags, withSchedulerTick, withNextFrame, requestDirtyCheck, render, invalidate, requestNextFrame,
   scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect,
   beforeMutations, afterMutations,
-  frameStartTime, clock, dirty,
+  frameStartTime,
 } from "./scheduler";
 
 // Events

@@ -1,7 +1,7 @@
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
 import { Op, DOMElementOp, ContextOp, TrackByKeyOp } from "../vdom/operations";
-import { ComponentDescriptor, StatelessComponentDescriptor } from "../vdom/component";
+import { ComponentDescriptor } from "../vdom/component";
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
 import {
@@ -138,13 +138,9 @@ function _renderToString(op: Op): string {
           `${openElement}>${children}</${tagName}>`;
       }
       if ((flags & NodeFlags.Component) !== 0) {
-        if ((flags & NodeFlags.Stateful) !== 0) {
-          const stateNode = createStateNode(op);
-          stateNode.s = { r: null, s: null, u: null };
-          return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.v));
-        } else {
-          return renderToString((op.t.d as StatelessComponentDescriptor).c(op.v));
-        }
+        const stateNode = createStateNode(op);
+        stateNode.s = { r: null, d: null, u: null };
+        return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.v));
       }
       if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
         if ((flags & NodeFlags.Context) !== 0) {

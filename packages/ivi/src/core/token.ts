@@ -2,8 +2,8 @@ export interface TaskToken {
   readonly $$label?: "ivi-task-token";
 }
 
-export interface SelectToken {
-  readonly $$label?: "ivi-select-token";
+export interface DirtyCheckToken {
+  readonly $$label?: "ivi-dirty-check-token";
 }
 
 export interface UnmountToken {
@@ -18,9 +18,9 @@ export const TASK_TOKEN: TaskToken = (
 );
 
 /**
- * Select token.
+ * Dirty check token.
  */
-export const SELECT_TOKEN: SelectToken = (
+export const DIRTY_CHECK_TOKEN: DirtyCheckToken = (
   process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{}
 );
 

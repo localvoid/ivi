@@ -1,4 +1,4 @@
-import { SELECT_TOKEN, UNMOUNT_TOKEN } from "../core";
+import { UNMOUNT_TOKEN, dirtyCheckWatchList, saveObservableDependencies, assign } from "../core";
 import {
   doc, objectHasOwnProperty,
   nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, nodeSetTextContent, elementRemoveAttribute,
@@ -11,7 +11,7 @@ import { AttributeDirective } from "./attribute_directive";
 import { OpNode, DOMElementOp, EventsOp, ContextOp, TrackByKeyOp, ComponentOp, OpArray, Key, Op } from "./operations";
 import { OpState, createStateNode } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
-import { ComponentDescriptor, ComponentHooks, StatelessComponentDescriptor } from "./component";
+import { ComponentDescriptor, ComponentState } from "./component";
 import { setContext, pushContext, ContextDescriptor, ContextState } from "./context";
 
 let _nextNode!: Node | null;
@@ -111,18 +111,20 @@ export function _dirtyCheck(
   let state;
   let c;
   let i;
-  let f;
+  let f = 0;
 
-  if ((flags & NodeFlags.Stateful) !== 0) {
-    state = opState.s as ComponentHooks;
+  if ((flags & NodeFlags.Component) !== 0) {
+    state = opState.s as ComponentState;
     if (
       ((flags & NodeFlags.Dirty) !== 0) ||
-      (state.s !== null && state.s(SELECT_TOKEN) === true)
+      (state.d !== null && dirtyCheckWatchList(state.d) === true)
     ) {
+      c = state.r!((opState.o as ComponentOp).v);
+      state.d = saveObservableDependencies();
       opState.c = _update(
         parentElement,
         opState.c as OpState | null,
-        state.r!((opState.o as ComponentOp).v),
+        c,
         moveNode,
         singleChild,
       );
@@ -135,7 +137,12 @@ export function _dirtyCheck(
         _nextNode = getDOMNode(opState);
       }
     }
-    opState.f = (opState.f & NodeFlags.SelfFlags) | _deepStateFlags;
+
+    opState.f = (
+      (opState.f & NodeFlags.SelfFlags) |
+      _deepStateFlags |
+      ((state.d === null) ? 0 : NodeFlags.DirtyCheckObservable)
+    );
     _deepStateFlags |= (opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift;
   } else if ((flags & NodeFlags.DeepStateDirtyCheck) !== 0) {
     // Checking for `children === null` is unnecessary, `DeepStateDirtyCheck` flag guarantees that element should
@@ -150,7 +157,6 @@ export function _dirtyCheck(
       _dirtyCheck(state as Element, c as OpState, false, true);
       _nextNode = state;
     } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
-      f = 0;
       i = (c as Array<OpState | null>).length;
       while (i > 0) {
         if ((state = (c as Array<OpState | null>)[--i]) !== null) {
@@ -160,7 +166,7 @@ export function _dirtyCheck(
         }
       }
       _deepStateFlags = f;
-    } else if ((flags & (NodeFlags.Events | NodeFlags.Component)) !== 0) {
+    } else if ((flags & NodeFlags.Events) !== 0) {
       _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
     } else { // ((f & NodeFlags.Context) !== 0)
       state = setContext(opState.s);
@@ -223,7 +229,7 @@ function _unmountWalk(opState: OpState): void {
   }
 
   if ((flags & NodeFlags.Unmount) !== 0) {
-    if ((v = (opState.s as ComponentHooks).u) !== null) {
+    if ((v = (opState.s as ComponentState).u) !== null) {
       if (typeof v === "function") {
         v(UNMOUNT_TOKEN);
       } else {
@@ -313,18 +319,18 @@ function _mountObject(
   let value;
   let node;
   let i;
-  let f;
+  let f = 0;
 
   if ((flags & NodeFlags.Component) !== 0) {
-    if ((flags & NodeFlags.Stateful) !== 0) {
-      opState.s = prevState = { r: null, s: null, u: null } as ComponentHooks;
-      // Reusing value variable.
-      (prevState as ComponentHooks).r = value = (opType.d as ComponentDescriptor).c(opState);
-    } else {
-      value = (opType.d as StatelessComponentDescriptor).c;
+    opState.s = prevState = { r: null, d: null, u: null } as ComponentState;
+    // Reusing value variable.
+    prevState.r = value = (opType.d as ComponentDescriptor).c(opState);
+    node = value((op as ComponentOp).v);
+    if ((prevState.d = saveObservableDependencies()) !== null) {
+      f = NodeFlags.DirtyCheckObservable;
     }
-    opState.c = _mount(parentElement, value((op as ComponentOp).v));
-    opState.f |= flags | _deepStateFlags;
+    opState.c = _mount(parentElement, node);
+    opState.f |= flags | f | _deepStateFlags;
     _deepStateFlags |= (opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift;
   } else {
     if ((flags & NodeFlags.Element) !== 0) {
@@ -359,7 +365,6 @@ function _mountObject(
         opState.c = _mount(parentElement, (op as EventsOp).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
-      f = 0;
       node = (op as TrackByKeyOp).v;
       i = node.length;
       opState.c = value = Array(i);
@@ -485,21 +490,27 @@ export function _update(
     if ((f & NodeFlags.Component) !== 0) {
       prevData = (o as ComponentOp).v;
       nextData = (nextOp as ComponentOp).v;
-      nextValue = (nextOp as ComponentOp).t.d as StatelessComponentDescriptor | ComponentDescriptor;
+      nextValue = (nextOp as ComponentOp).t.d as ComponentDescriptor;
       if (
         (prevData !== nextData) &&
         (nextValue.e === void 0 || nextValue.e(prevData, nextData) !== true)
       ) {
+        nextData = (s as ComponentState).r!(nextData);
+        (s as ComponentState).d = nextValue = saveObservableDependencies();
+
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
-          ((f & NodeFlags.Stateful) !== 0) ?
-            (s as ComponentHooks).r!(nextData) :
-            (nextValue as StatelessComponentDescriptor).c(nextData),
+          nextData,
           moveNode,
           singleChild,
         );
-        opState.f = (opState.f & NodeFlags.SelfFlags) | _deepStateFlags;
+
+        opState.f = (
+          (opState.f & NodeFlags.SelfFlags) |
+          _deepStateFlags |
+          ((nextValue === null) ? 0 : NodeFlags.DirtyCheckObservable)
+        );
         _deepStateFlags |= (opState.f & NodeFlags.DeepStateFlags) << NodeFlags.DeepStateShift;
       } else {
         _dirtyCheck(parentElement, opState, moveNode, singleChild);
@@ -587,7 +598,10 @@ export function _update(
         if ((f & NodeFlags.SetContextState) !== 0) {
           opState.s = nextData;
         } else {
-          (s as ContextState).v = nextData;
+          nextValue = (s as ContextState).v;
+          if (nextValue.v !== nextData) {
+            assign(nextValue, nextData);
+          }
         }
         nextValue = setContext(opState.s);
         opState.c = _update(

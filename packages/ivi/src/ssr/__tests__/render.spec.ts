@@ -178,10 +178,7 @@ describe("renderToString", () => {
 
   describe("Context", () => {
     const ContextProvider = useComputedValue(() => ivi.contextValue<number>());
-    const ContextValue = useComputedValue(() => ivi.component((c) => {
-      const get = ivi.useSelect(c, () => ContextProvider.get());
-      return () => get();
-    }));
+    const ContextValue = useComputedValue(() => ivi.component((c) => () => ContextProvider.get()));
 
     test("1", () => {
       const s = r(
