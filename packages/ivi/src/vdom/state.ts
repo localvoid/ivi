@@ -32,5 +32,5 @@ export interface OpState<T = any> {
  * @returns {@link StateNode} instance.
  */
 export const createStateNode = (o: Op): OpState => (
-  { o, f: 0, c: null, s: null }
+  { f: 0, o, c: null, s: null }
 );
