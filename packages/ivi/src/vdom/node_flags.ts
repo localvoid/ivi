@@ -59,7 +59,8 @@ export const enum NodeFlags {
   | Fragment
   | Svg
   // | Dirty // Dirty flag should be erased after update.
-  | DirtyCheckState // DirtyCheck flag should be reassigned after update.
+  | DirtyCheckState
+  // | DirtyCheckObservable // DirtyCheckObservable flag should be reassigned after update.
   | Unmount
   | NewlineEatingElement
   | VoidElement

@@ -2,6 +2,88 @@ import { clock } from "./clock";
 import { DirtyCheckToken, DIRTY_CHECK_TOKEN } from "./token";
 
 /**
+ * Coarse-grained observables (directed graph, pull) and dirty checking.
+ *
+ * IMPLEMENTATION DETAILS:
+ *
+ * Observable values are simple objects that store a time (monotonically increasing clock) `t` when they were updated
+ * last time and a value `v`. Computed values and side effects create a directed graph with edges pointing to
+ * observables and other computed values. Each time any observable value is modified, dirty checking algorithm goes
+ * through all side effects and checks if any of the dependencies were modified and when one of the dependencies is
+ * modified it will rerun side effect.
+ *
+ * Computeds and side effects automatically reset all edges every time they are reevaluated.
+ *
+ * CAVEATS:
+ *
+ * - "memory leaking" computed values. All glitch-free solutions that pull data in side effects are having the same
+ *   issue, previous value is always stored to prevent unnecessary computations when dependencies are changed but the
+ *   resulting value is the same. One of the solutions to deal with computeds that can store a lot of outdated data
+ *   could be to create a custom garbage collector that will nullify outdated computed values (`lastCheck < clock()`).
+ * - Large number of side effects can cause performance problems. Dirty checking algorithm checks all side effects each
+ *   time something is updated.
+ *
+ * TRADEOFFS:
+ *
+ * vs redux-like selectors (directed graph, pull) (`useSelect()` in ivi < 0.28.0)
+ *
+ * PROS:
+ *
+ * - Slightly better performance and less memory consumption.
+ * - Less verbose API, especially when working with mutable data structures.
+ * - Composable API.
+ *
+ * vs fine-grained observables (undirected graph, push-pull) and autotracking (Vue, MobX)
+ *
+ * PROS:
+ *
+ * - Significantly better performance with complex data processing algorithms (especially with map/reduce algorithms).
+ * - Significantly less memory consumption.
+ *
+ * CONS:
+ *
+ * - Verbose API, all edges are created explicitly with `watch()` function. Autotracking solutions implicitly create
+ *   all edges.
+ * - Dirty checking requires to check all side effects each time something is updated. Push-pull solutions are creating
+ *   undirected graphs so that when observable value is updated they can go through the graph and find all side effects
+ *   that use this observable value.
+ * - Complex use cases that can be easily solved with Vue or MobX require completely different solutions. For example,
+ *   when we need to sort a list of items, instead of watching every item, we will need to create a `signal()` that will
+ *   be emitted each time when observable value is modified. Use cases like "highlighting all items that match a list of
+ *   rules" would require creating custom data structures like inverted indexes, ordered maps(rb-tree), etc.
+ * - Significantly higher learning curve (requires basic knowledge of data structures and algorithms).
+ *
+ * @example
+ *     // Computed value
+ *     const a = observable(1);
+ *     const b = observable(2);
+ *     const sum = computed(() => watch(a).v + watch(b).v);
+ *     const A = statelessComponen(() => div(_, _, watch(sum)()));
+ *
+ *     // Basic selector with immutable state
+ *     const A = component((c) => {
+ *       const getValue = computed(() => STATE.value);
+ *       return () => div(_, _, watch(getValue)());
+ *     });
+ *
+ *     // Memoized selector with immutable state
+ *     const A = component((c) => {
+ *       const getValue = computed((prev) => (
+ *         prev !== void 0 && prev.a === STATE.a && prev.b === STATE.b ? prev :
+ *           { a: STATE.a, b: STATE.b, result: STATE.a + STATE.b };
+ *       ));
+ *       return () => div(_, _, watch(getValue)());
+ *     });
+ *
+ *     // Composition
+ *     const a = observable(1);
+ *     const A = component((c) => {
+ *       const getValue = memo((i) => computed(() => watch(a).v));
+ *       return (i) => div(_, _, watch(getValue(i))());
+ *     });
+ */
+
+/**
  * Observable value.
  */
 export interface Observable<T> {
@@ -14,6 +96,11 @@ export interface Observable<T> {
    */
   v: T;
 }
+
+/**
+ * Infers observable value type.
+ */
+export type ObservableValue<T> = T extends Observable<infer U> ? U : never;
 
 /**
  * List of observable dependencies.
@@ -33,7 +120,11 @@ let _deps: WatchList = null;
 export const observable = <T>(v: T): Observable<T> => ({ t: clock(), v });
 
 /**
- * apply applies a function to an observable value.
+ * Applies a function to an observable value.
+ *
+ * @example
+ *     const a = observable(1);
+ *     apply(a, (v) => v + 1);
  *
  * @param v Observable value.
  * @param fn Function to apply.
@@ -44,7 +135,11 @@ export function apply<T>(v: Observable<T>, fn: (v: T) => T): void {
 }
 
 /**
- * assign assigns a new value to an observable value.
+ * Assigns a new value to an observable value.
+ *
+ * @example
+ *     const a = observable(1);
+ *     assign(a, 2);
  *
  * @param v Observable value.
  * @param n New value.
@@ -53,6 +148,18 @@ export function assign<T>(v: Observable<T>, n: T): void {
   v.t = clock();
   v.v = n;
 }
+
+/**
+ * Mutates observable value.
+ *
+ * @example
+ *     const a = observable({ value: 1 });
+ *     mut(a).value = 2;
+ *
+ * @param v Observable value.
+ * @returns Stored value.
+ */
+export const mut = <T>(v: Observable<T>): T => (v.t = clock(), v.v);
 
 /**
  * Creates an observable signal.
