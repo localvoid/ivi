@@ -146,7 +146,7 @@ export function component<P>(
   c: (c: Component) => (props: P) => Op,
   e?: (prev: P, next: P) => boolean,
 ): (props: P) => ValueOp<P> {
-  const type = createOpType(NodeFlags.Component | NodeFlags.DirtyCheckState, { c, e });
+  const type = createOpType(NodeFlags.Component, { c, e });
   return (props: P) => createValueOp(type, props);
 }
 
@@ -195,6 +195,6 @@ export function statelessComponent<P>(
   c: (props: P) => Op,
   e?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
 ): (props: P) => ValueOp<P> {
-  const type = createOpType(NodeFlags.Component, { c: (_: Component) => c, e });
-  return (props: P) => createValueOp(type, props);
+  const f = (_: Component) => c;
+  return component(f, e);
 }

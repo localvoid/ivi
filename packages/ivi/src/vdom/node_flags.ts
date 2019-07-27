@@ -37,38 +37,4 @@ export const enum NodeFlags {
   VoidElement = 1 << 11,
   // Set context state.
   SetContextState = 1 << 12,
-  // Node requires dirty checking state.
-  DirtyCheckState = 1 << 13,
-  // Node requires dirty checking observable.
-  DirtyCheckObservable = 1 << 14,
-  // Node requires dirty checking.
-  DirtyCheck = DirtyCheckState | DirtyCheckObservable,
-  // Node requires unmounting.
-  Unmount = 1 << 15,
-  // IMPORTANT: DO NOT ADD FLAGS AFTER THIS ONE, LAST FLAGS ARE SHIFTED BY `DeepStateShift`.
-
-  // Flags that should be preserved before updating.
-  SelfFlags = Text
-  | Element
-  | ElementProto
-  | Component
-  | TrackByKey
-  | Events
-  | Context
-  | ElementProto
-  | Fragment
-  | Svg
-  // | Dirty // Dirty flag should be erased after update.
-  | DirtyCheckState
-  // | DirtyCheckObservable // DirtyCheckObservable flag should be reassigned after update.
-  | Unmount
-  | NewlineEatingElement
-  | VoidElement
-  | SetContextState,
-
-  // Flags that were used by the children operations.
-  DeepStateFlags = DirtyCheckState | DirtyCheckObservable | Unmount,
-  DeepStateShift = 3,
-  DeepStateDirtyCheck = (DirtyCheckState << DeepStateShift) | (DirtyCheckObservable << DeepStateShift),
-  DeepStateUnmount = Unmount << DeepStateShift,
 }

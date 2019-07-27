@@ -1,6 +1,5 @@
 import { EMPTY_OBJECT, TaskToken, TASK_TOKEN, UnmountToken, UNMOUNT_TOKEN } from "../core";
 import { scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
-import { NodeFlags } from "./node_flags";
 import { Component } from "./component";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
@@ -33,7 +32,6 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
 export function useUnmount(component: Component, hook: (token: UnmountToken) => void): void {
   /* istanbul ignore else */
   if (process.env.IVI_TARGET !== "ssr") {
-    component.f |= NodeFlags.Unmount;
     const hooks = component.s;
     hooks.u = addHook(hooks.u, hook);
   }
