@@ -111,7 +111,17 @@ export function _dirtyCheck(
   let i;
   let r;
 
-  if ((flags & NodeFlags.Component) !== 0) {
+  if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
+    state = opState.s as Node;
+    if (moveNode === true) {
+      nodeInsertBefore!.call(parentElement, state, _nextNode);
+    }
+    if (c !== null) {
+      _nextNode = null;
+      _dirtyCheck(state as Element, c as OpState, false, true);
+    }
+    _nextNode = state;
+  } else if ((flags & NodeFlags.Component) !== 0) {
     state = opState.s as ComponentState;
     if (
       ((flags & NodeFlags.Dirty) !== 0) ||
@@ -129,16 +139,6 @@ export function _dirtyCheck(
     } else if (c !== null) {
       _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
     }
-  } else if ((flags & (NodeFlags.Element | NodeFlags.Text)) !== 0) {
-    state = opState.s as Node;
-    if (moveNode === true) {
-      nodeInsertBefore!.call(parentElement, state, _nextNode);
-    }
-    _nextNode = null;
-    if (c !== null) {
-      _dirtyCheck(state as Element, c as OpState, false, true);
-    }
-    _nextNode = state;
   } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
     i = (c as Array<OpState | null>).length;
     while (i > 0) {
