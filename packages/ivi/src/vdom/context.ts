@@ -129,7 +129,7 @@ export function contextValue<T = any>(): ContextDescriptor<T> {
       let next = n;
       while (next !== null) {
         if (next.d === d) {
-          return watch(next.v).v;
+          return watch(next.v);
         }
         next = next.n;
       }

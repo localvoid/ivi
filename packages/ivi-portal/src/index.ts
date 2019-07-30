@@ -57,7 +57,7 @@ let nextId = 0;
 export const portal = (rootDecorator: (children: Op) => Op = defaultPortalDecorator) => {
   const children = observable(EMPTY);
   return {
-    root: statelessComponent(() => (watch(children), rootDecorator(children.v)))(),
+    root: statelessComponent(() => rootDecorator(watch(children)))(),
     entry: component<Op>((c) => {
       let prevOp: Op | undefined;
       let prevKey: Key<number, Op> | undefined;

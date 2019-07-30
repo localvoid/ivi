@@ -57,7 +57,7 @@ import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } fr
  *     // Computed value
  *     const a = observable(1);
  *     const b = observable(2);
- *     const sum = computed(() => watch(a).v + watch(b).v);
+ *     const sum = computed(() => watch(a) + watch(b));
  *     const A = statelessComponent(() => div(_, _, watch(sum)()));
  *
  *     // Basic selector with immutable state
@@ -78,7 +78,7 @@ import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } fr
  *     // Composition
  *     const a = observable(1);
  *     const A = component((c) => {
- *       const getValue = memo((i) => computed(() => watch(a).v + i));
+ *       const getValue = memo((i) => computed(() => watch(a) + i));
  *       return (i) => div(_, _, watch(getValue(i))());
  *     });
  */
@@ -197,7 +197,9 @@ export function emit(s: Observable<null>): void {
  *
  * @param v Observable or computed value.
  */
-export function watch<T extends Observable<any> | (() => any)>(v: T): T {
+export function watch<T extends () => any>(v: T): T;
+export function watch<T extends Observable<any>>(v: T): ObservableValue<T>;
+export function watch<T extends Observable<any> | (() => any)>(v: T): any {
   if (process.env.IVI_TARGET !== "ssr") {
     if (_deps === null) {
       _deps = [clock(), v];
@@ -205,7 +207,7 @@ export function watch<T extends Observable<any> | (() => any)>(v: T): T {
       _deps.push(v);
     }
   }
-  return v;
+  return typeof v === "function" ? v : (v as Observable<any>).v;
 }
 
 /**
