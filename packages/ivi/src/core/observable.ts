@@ -1,5 +1,5 @@
 import { clock } from "./clock";
-import { DirtyCheckToken, DIRTY_CHECK_TOKEN } from "./token";
+import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } from "./token";
 
 /**
  * Coarse-grained observables (directed graph, pull) and dirty checking.
@@ -58,17 +58,17 @@ import { DirtyCheckToken, DIRTY_CHECK_TOKEN } from "./token";
  *     const a = observable(1);
  *     const b = observable(2);
  *     const sum = computed(() => watch(a).v + watch(b).v);
- *     const A = statelessComponen(() => div(_, _, watch(sum)()));
+ *     const A = statelessComponent(() => div(_, _, watch(sum)()));
  *
  *     // Basic selector with immutable state
  *     const A = component((c) => {
- *       const getValue = computed(() => STATE.value);
+ *       const getValue = selector(() => STATE.value);
  *       return () => div(_, _, watch(getValue)());
  *     });
  *
  *     // Memoized selector with immutable state
  *     const A = component((c) => {
- *       const getValue = computed((prev) => (
+ *       const getValue = selector((prev) => (
  *         prev !== void 0 && prev.a === STATE.a && prev.b === STATE.b ? prev :
  *           { a: STATE.a, b: STATE.b, result: STATE.a + STATE.b };
  *       ));
@@ -78,7 +78,7 @@ import { DirtyCheckToken, DIRTY_CHECK_TOKEN } from "./token";
  *     // Composition
  *     const a = observable(1);
  *     const A = component((c) => {
- *       const getValue = memo((i) => computed(() => watch(a).v));
+ *       const getValue = memo((i) => computed(() => watch(a).v + i));
  *       return (i) => div(_, _, watch(getValue(i))());
  *     });
  */
@@ -160,6 +160,23 @@ export function assign<T>(v: Observable<T>, n: T): void {
  * @returns Stored value.
  */
 export const mut = <T>(v: Observable<T>): T => (v.t = clock(), v.v);
+
+/**
+ * Creates an observable mutator function.
+ *
+ * @param fn Mutator function.
+ * @returns Mutator function.
+ */
+export const mutator = <T, U extends any[]>(fn: (v: T, ...args: U) => T | NotModifiedToken | void) => function () {
+  const v = (fn as any).apply(void 0, arguments as any);
+  if (v !== NOT_MODIFIED) {
+    const o = arguments[0];
+    o.t = clock();
+    if (v !== void 0) {
+      o.v = v;
+    }
+  }
+} as (v: Observable<T>, ...args: U) => void;
 
 /**
  * Creates an observable signal.
@@ -245,6 +262,30 @@ export function computed<T>(fn: (prev?: T) => T): () => T {
           value = nextValue;
           lastUpdate = now;
         }
+      }
+    }
+    return (token === DIRTY_CHECK_TOKEN) ? lastUpdate > time! : value;
+  }) as () => T;
+}
+
+/**
+ * selector creates a dirty checking selector.
+ *
+ * @param fn Computed function.
+ * @returns Computed value.
+ */
+export function selector<T>(fn: (prev?: T) => T): () => T {
+  let lastCheck = 0;
+  let lastUpdate = 0;
+  let value: T | undefined = void 0;
+  return ((token?: DirtyCheckToken, time?: number) => {
+    const now = clock();
+    if (lastCheck < now) {
+      lastCheck = now;
+      const nextValue = fn(value);
+      if (value !== nextValue) {
+        value = nextValue;
+        lastUpdate = now;
       }
     }
     return (token === DIRTY_CHECK_TOKEN) ? lastUpdate > time! : value;

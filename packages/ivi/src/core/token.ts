@@ -10,6 +10,10 @@ export interface UnmountToken {
   readonly $$label?: "ivi-unmount-token";
 }
 
+export interface NotModifiedToken {
+  readonly $$label?: "ivi-not-modified-token";
+}
+
 /**
  * Task token.
  */
@@ -28,6 +32,13 @@ export const DIRTY_CHECK_TOKEN: DirtyCheckToken = (
  * Unmount token.
  */
 export const UNMOUNT_TOKEN: UnmountToken = (
+  process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{}
+);
+
+/**
+ * Unmount token.
+ */
+export const NOT_MODIFIED: UnmountToken = (
   process.env.NODE_ENV !== "production" ? Object.freeze({}) : /* istanbul ignore next */{}
 );
 

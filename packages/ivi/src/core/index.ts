@@ -16,6 +16,7 @@ declare global {
 }
 
 export { _ } from "./shortcuts";
+export { bitset } from "./bitset";
 export { Predicate } from "./predicate";
 export { clock, advanceClock } from "./clock";
 export { Box, box } from "./box";
@@ -24,12 +25,12 @@ export {
 } from "./token";
 export { getFunctionName } from "./function";
 export { addErrorHandler, catchError } from "./error";
-export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete } from "./array";
+export { append, unorderedArrayDeleteByIndex, unorderedArrayDelete, orderedArrayFindIndexForInsert } from "./array";
 export { NOOP, NOOP_FALSE, NOOP_TRUE } from "./noop";
 export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
 export { strictEqual, shallowEqual, shallowEqualArray } from "./equal";
 export { lazy, memo, memoObject, memoArray } from "./memo";
 export {
-  Observable, ObservableValue, WatchList, observable, apply, assign, mut, signal, emit, computed, watch,
-  saveObservableDependencies, dirtyCheckWatchList,
+  Observable, ObservableValue, WatchList, observable, apply, assign, mut, mutator, signal, emit, computed, selector,
+  watch, saveObservableDependencies, dirtyCheckWatchList,
 } from "./observable";

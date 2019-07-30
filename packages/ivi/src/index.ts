@@ -1,15 +1,15 @@
 // Core
 export {
-  _, Predicate, Box, box,
+  _, bitset, Predicate, Box, box,
   clock,
   TaskToken, DirtyCheckToken, UnmountToken, TASK_TOKEN, DIRTY_CHECK_TOKEN, UNMOUNT_TOKEN, EMPTY_OBJECT, EMPTY_ARRAY,
   getFunctionName, addErrorHandler, catchError,
   NOOP, NOOP_FALSE, NOOP_TRUE,
-  append, unorderedArrayDeleteByIndex, unorderedArrayDelete,
+  append, unorderedArrayDeleteByIndex, unorderedArrayDelete, orderedArrayFindIndexForInsert,
   RepeatableTaskList, runRepeatableTasks,
   strictEqual, shallowEqual, shallowEqualArray,
   lazy, memo, memoObject, memoArray,
-  Observable, ObservableValue, observable, apply, assign, mut, signal, emit, computed, watch,
+  Observable, ObservableValue, observable, apply, assign, mut, mutator, signal, emit, computed, selector, watch,
 } from "./core";
 
 // DOM

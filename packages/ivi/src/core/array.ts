@@ -44,3 +44,36 @@ export function unorderedArrayDelete<T>(array: T[], item: T): void {
   }
   unorderedArrayDeleteByIndex(array, index);
 }
+
+/**
+ * Finds index for insert in an ordered array.
+ *
+ * @example
+ *
+ *     const a = [1, 3, 4];
+ *     a.splice(orderedArrayFindIndexForInsert(a, (a, b) => a - b, 2), 0, 2);
+ *
+ * @param array Ordered array.
+ * @param cmp Comparator function.
+ * @param value Value.
+ * @returns Index for insert.
+ */
+export function orderedArrayFindIndexForInsert<T>(array: T[], cmp: (a: T, b: T) => number, value: T): number {
+  let low = 0;
+  let high = array.length;
+  let mid;
+  let c;
+
+  while (low < high) {
+    mid = (low + high) >>> 1;
+    c = cmp(array[mid], value);
+    if (c < 0) {
+      low = mid + 1;
+    } else if (c > 0) {
+      high = mid;
+    } else {
+      return mid + 1; // one less item to shift
+    }
+  }
+  return low;
+}
