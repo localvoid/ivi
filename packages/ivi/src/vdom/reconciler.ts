@@ -91,10 +91,7 @@ export function getDOMNode(opState: OpState | Array<OpState | null> | null): Nod
       }
       return null;
     }
-    if (opState === null) {
-      return null;
-    }
-    return getDOMNode(opState as OpState);
+    return (opState === null) ? null : getDOMNode(opState as OpState);
   }
   return (opState as OpState).s as Node;
 }
@@ -429,7 +426,7 @@ export function _update(
         (nextValue.e === void 0 || nextValue.e(prevData, nextData) !== true)
       ) {
         nextData = (s as ComponentState).r!(nextData);
-        (s as ComponentState).d = nextValue = saveObservableDependencies();
+        (s as ComponentState).d = saveObservableDependencies();
 
         opState.c = _update(
           parentElement,
@@ -444,21 +441,20 @@ export function _update(
     } else {
       if ((f & NodeFlags.Element) !== 0) {
         i = (f & NodeFlags.Svg) !== 0;
-        if (moveNode === true) {
-          nodeInsertBefore!.call(parentElement, s, _nextNode);
-        }
 
-        nextValue = (nextOp as DOMElementOp).n;
-        if ((o as DOMElementOp).n !== nextValue) {
+        if ((o as DOMElementOp).n !== (nextValue = (nextOp as DOMElementOp).n)) {
           if (nextValue === void 0) {
             nextValue = "";
           }
-          _updateClassName(s, nextValue, i);
+          _updateClassName(s as Element, nextValue, i);
         }
 
-        nextValue = (nextOp as DOMElementOp).v;
-        if ((o as DOMElementOp).v !== nextValue) {
+        if ((o as DOMElementOp).v !== (nextValue = (nextOp as DOMElementOp).v)) {
           _updateAttrs(s as Element, (o as DOMElementOp).v, nextValue, i);
+        }
+
+        if (moveNode === true) {
+          nodeInsertBefore!.call(parentElement, s as Element, _nextNode);
         }
 
         _nextNode = null;
