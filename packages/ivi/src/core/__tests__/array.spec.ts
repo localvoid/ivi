@@ -91,4 +91,25 @@ describe("array", () => {
       expect(() => { ivi.unorderedArrayDelete(a, 30); }).toThrowError();
     });
   });
+
+  describe("orderedArrayFindIndexForInsert", () => {
+    const v = [0, 1, 3, 4];
+    const c = (a: number, b: number) => a - b;
+
+    test("insert into the middle", () => {
+      expect(ivi.orderedArrayFindIndexForInsert(v, c, 2)).toBe(2);
+    });
+
+    test("insert first", () => {
+      expect(ivi.orderedArrayFindIndexForInsert(v, c, -1)).toBe(0);
+    });
+
+    test("insert last", () => {
+      expect(ivi.orderedArrayFindIndexForInsert(v, c, 5)).toBe(4);
+    });
+
+    test("insert duplicate", () => {
+      expect(ivi.orderedArrayFindIndexForInsert(v, c, 3)).toBe(3);
+    });
+  });
 });
