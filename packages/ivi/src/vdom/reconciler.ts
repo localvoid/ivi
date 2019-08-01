@@ -124,7 +124,8 @@ export function _dirtyCheck(
       ((flags & NodeFlags.Dirty) !== 0) ||
       (state.d !== null && dirtyCheckWatchList(state.d) === true)
     ) {
-      r = state.r!((opState.o as ComponentOp).v);
+      r = opState.o as ComponentOp;
+      r = state.r!(r.v, r.c);
       state.d = saveObservableDependencies();
       opState.c = _update(
         parentElement,
@@ -266,7 +267,7 @@ function _mountObject(
     opState.s = prevState = { r: null, d: null, u: null } as ComponentState;
     // Reusing value variable.
     prevState.r = value = (opType.d as ComponentDescriptor).c(opState);
-    node = value((op as ComponentOp).v);
+    node = value((op as ComponentOp).v, (op as ComponentOp).c);
     prevState.d = saveObservableDependencies();
     opState.c = _mount(parentElement, node);
     opState.f |= flags;
@@ -414,18 +415,25 @@ export function _update(
     const opStateChildren = opState.c;
     let prevData;
     let nextData;
+    let prevChildren;
+    let nextChildren;
     let nextValue;
     let i;
 
     if ((f & NodeFlags.Component) !== 0) {
       prevData = (o as ComponentOp).v;
+      prevChildren = (o as ComponentOp).c;
       nextData = (nextOp as ComponentOp).v;
+      nextChildren = (nextOp as ComponentOp).c;
       nextValue = (nextOp as ComponentOp).t.d as ComponentDescriptor;
       if (
-        (prevData !== nextData) &&
-        (nextValue.e === void 0 || nextValue.e(prevData, nextData) !== true)
+        (prevChildren !== nextChildren) ||
+        (
+          (prevData !== nextData) &&
+          (nextValue.e === void 0 || nextValue.e(prevData, nextData) !== true)
+        )
       ) {
-        nextData = (s as ComponentState).r!(nextData);
+        nextData = (s as ComponentState).r!(nextData, nextChildren);
         (s as ComponentState).d = saveObservableDependencies();
 
         opState.c = _update(

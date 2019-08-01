@@ -1,5 +1,23 @@
 ## v0.28.0
 
+### Components
+
+Added second prop to components.
+
+Second prop doesn't support custom equality checking `areEqual`, it is always compared with strict equality.
+
+```ts
+const Button = statelessComponent<{ id: string }, Op>((props, children) => (
+  button("button", props, children)
+));
+
+Button({ id: "button-id" },
+  "Click Me",
+);
+```
+
+### Dirty Checking / Observables
+
 Dirty checking API were redesigned to improve support for use cases with coarse-grained observable graphs and
 mutable data structures.
 

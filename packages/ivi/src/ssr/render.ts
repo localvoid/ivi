@@ -1,6 +1,6 @@
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
-import { Op, DOMElementOp, ContextOp, TrackByKeyOp } from "../vdom/operations";
+import { Op, DOMElementOp, ContextOp, TrackByKeyOp, ComponentOp } from "../vdom/operations";
 import { ComponentDescriptor } from "../vdom/component";
 import { ElementProtoDescriptor } from "../vdom/element_proto";
 import { createStateNode } from "../vdom/state";
@@ -140,7 +140,10 @@ function _renderToString(op: Op): string {
       if ((flags & NodeFlags.Component) !== 0) {
         const stateNode = createStateNode(op);
         stateNode.s = { r: null, d: null, u: null };
-        return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(op.v));
+        return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(
+          (op as ComponentOp).v,
+          (op as ComponentOp).c,
+        ));
       }
       if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
         if ((flags & NodeFlags.Context) !== 0) {

@@ -84,7 +84,7 @@ export { dirtyCheck } from "./vdom/root";
 export { useUnmount, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
 export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
 export { findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
-export { RefProps, Ref } from "./vdom/ref";
+export { Ref } from "./vdom/ref";
 
 // SSR
 export {

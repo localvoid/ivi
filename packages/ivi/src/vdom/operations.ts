@@ -88,11 +88,11 @@ export interface ValueOp<T = any> {
  *
  * @typeparam T Operation data type.
  */
-export interface ContainerOp<T = any> extends ValueOp<T> {
+export interface ContainerOp<T = any, C = any> extends ValueOp<T> {
   /**
    * Children.
    */
-  readonly c: Op;
+  readonly c: C;
 }
 
 /**
@@ -100,7 +100,7 @@ export interface ContainerOp<T = any> extends ValueOp<T> {
  *
  * @typeparam T Operation data type.
  */
-export interface DOMElementOp<T = any> extends ContainerOp<T | undefined> {
+export interface DOMElementOp<T = any> extends ContainerOp<T | undefined, Op> {
   /**
    * Class name.
    */
@@ -110,17 +110,17 @@ export interface DOMElementOp<T = any> extends ContainerOp<T | undefined> {
 /**
  * Events operation.
  */
-export type EventsOp = ContainerOp<EventHandler>;
+export interface EventsOp extends ContainerOp<EventHandler, Op> { }
 
 /**
  * Context operation.
  */
-export type ContextOp<T = any> = ContainerOp<T>;
+export interface ContextOp<T = any> extends ContainerOp<T, Op> { }
 
 /**
  * Set context state operation.
  */
-export type SetContextStateOp = ContainerOp<ContextState>;
+export interface SetContextStateOp extends ContainerOp<ContextState, Op> { }
 
 /**
  * TrackByKey operation.
@@ -130,7 +130,7 @@ export type TrackByKeyOp<K = any, V = any> = ValueOp<Key<K, V>[]>;
 /**
  * Component operation.
  */
-export type ComponentOp<T = any> = ValueOp<T>;
+export interface ComponentOp<T = any, C = any> extends ContainerOp<T, C> { }
 
 /**
  * Operation node.
@@ -174,7 +174,7 @@ export const createValueOp = <T>(t: OpType, v: T): ValueOp<T> => ({ t, v });
  * @param c Operation children.
  * @returns {@link ContainerOp} instance.
  */
-export const createContainerOp = <T>(t: OpType, v: T, c: Op): ContainerOp<T> => ({ t, v, c });
+export const createContainerOp = <T, C>(t: OpType, v: T, c: C): ContainerOp<T, C> => ({ t, v, c });
 
 /**
  * createDOMElementOp creates a {@link DOMElementOp} instance.

@@ -1,6 +1,6 @@
 import { checkElement } from "../debug/element";
 import { NodeFlags } from "./node_flags";
-import { Op, ValueOp, DOMElementOp, createOpType, createDOMElementOp, createValueOp } from "./operations";
+import { Op, DOMElementOp, ComponentOp, createOpType, createDOMElementOp, createContainerOp } from "./operations";
 import { Component } from "./component";
 
 /**
@@ -93,7 +93,7 @@ export function elementProto<T>(p: DOMElementOp<T>) {
  */
 export function component(
   c: (c: Component) => () => Op,
-): () => ValueOp<undefined>;
+): () => ComponentOp<undefined>;
 
 /**
  * component creates a factory that produces component nodes.
@@ -116,10 +116,13 @@ export function component(
  * @param areEqual `areEqual` function.
  * @returns Factory that produces component nodes.
  */
-export function component<P>(
-  c: (c: Component) => (props: P) => Op,
+export function component<P, C = undefined>(
+  c: (c: Component) => (props: P, children: C) => Op,
   areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => ValueOp<P> : (props: P) => ValueOp<P>;
+):
+  undefined extends P ?
+  (undefined extends C ? (props?: P, children?: C) => ComponentOp<P> : (props: P, children: C) => ComponentOp<P>) :
+  (undefined extends C ? (props?: P, children?: C) => ComponentOp<P> : (props: P, children: C) => ComponentOp<P>);
 
 /**
  * component creates a factory that produces component nodes.
@@ -142,12 +145,12 @@ export function component<P>(
  * @param e `areEqual` function.
  * @returns Factory that produces component nodes.
  */
-export function component<P>(
-  c: (c: Component) => (props: P) => Op,
+export function component<P, C = undefined>(
+  c: (c: Component) => (props: P, children: C) => Op,
   e?: (prev: P, next: P) => boolean,
-): (props: P) => ValueOp<P> {
+): (props: P, children: C) => ComponentOp<P, C> {
   const type = createOpType(NodeFlags.Component, { c, e });
-  return (props: P) => createValueOp(type, props);
+  return (props: P, children: C) => createContainerOp(type, props, children);
 }
 
 /**
@@ -162,7 +165,7 @@ export function component<P>(
  */
 export function statelessComponent(
   update: () => Op,
-): () => ValueOp<undefined>;
+): () => ComponentOp<undefined>;
 
 /**
  * statelessComponent creates an factory that produces stateless components nodes.
@@ -178,7 +181,7 @@ export function statelessComponent(
 export function statelessComponent<P>(
   update: (props: P) => Op,
   areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => ValueOp<P> : (props: P) => ValueOp<P>;
+): undefined extends P ? (props?: P) => ComponentOp<P> : (props: P) => ComponentOp<P>;
 
 /**
  * statelessComponent creates an factory that produces stateless components nodes.
@@ -191,10 +194,10 @@ export function statelessComponent<P>(
  * @param e `areEqual` function.
  * @returns Factory that produces stateless component nodes.
  */
-export function statelessComponent<P>(
-  c: (props: P) => Op,
+export function statelessComponent<P, C = undefined>(
+  c: (props: P, children: C) => Op,
   e?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (props: P) => ValueOp<P> {
+): (props: P, children: C) => ComponentOp<P, C> {
   const f = (_: Component) => c;
   return component(f, e);
 }

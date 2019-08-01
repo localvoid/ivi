@@ -8,11 +8,11 @@ import { OpState } from "./state";
  *
  * @typeparam P Props type.
  */
-export interface ComponentState<P = any> {
+export interface ComponentState<P = any, C = any> {
   /**
    * Render function.
    */
-  r: null | ((props: P) => Op);
+  r: null | ((props: P, children: C) => Op);
   /**
    * Observable dependencies.
    */
@@ -28,14 +28,14 @@ export interface ComponentState<P = any> {
  *
  * @typeparam P Props type.
  */
-export interface ComponentDescriptor<P = any> {
+export interface ComponentDescriptor<P = any, C = any> {
   /**
    * Lifecycle hook `create`.
    *
    * @param state Component state.
    * @returns update function.
    */
-  c(state: OpState): (props: P) => Op;
+  c(state: OpState): (props: P, children: C) => Op;
 
   /**
    * `areEqual` is a function that checks if `prev` and `next` props are equal, it is used as a hint to reduce
