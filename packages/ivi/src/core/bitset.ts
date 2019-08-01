@@ -25,11 +25,13 @@
  * @param args Boolean values.
  * @returns Bitset.
  */
-export function bitset<T extends any[]>(...args: T): number;
+export function bitset<T extends boolean[]>(...args: T): number;
 export function bitset(): number {
   let result = 0;
   for (let i = 0; i < arguments.length; i++) {
-    result |= arguments[i] << i;
+    if (arguments[i] === true) {
+      result |= 1 << i;
+    }
   }
   return result;
 }

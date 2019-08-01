@@ -6,11 +6,11 @@ import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } fr
  *
  * IMPLEMENTATION DETAILS:
  *
- * Observable values are simple objects that store a time (monotonically increasing clock) `t` when they were updated
- * last time and a value `v`. Computed values and side effects create a directed graph with edges pointing to
- * observables and other computed values. Each time any observable value is modified, dirty checking algorithm goes
- * through all side effects and checks if any of the dependencies were modified and when one of the dependencies is
- * modified it will rerun side effect.
+ * Observable (40b overhead) values are simple objects that store a time (monotonically increasing clock) `t` when
+ * they were updated last time and a value `v` . Computed (~212-356b overhead) values and side effects create a
+ * directed graph with edges pointing to observables and other computed values. Each time any observable value is
+ * modified, dirty checking algorithm goes through all side effects and checks if any of the dependencies were modified
+ * and when one of the dependencies is modified it will rerun side effect.
  *
  * Computeds and side effects automatically reset all edges every time they are reevaluated.
  *
@@ -29,8 +29,9 @@ import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } fr
  *
  * PROS:
  *
- * - Slightly better performance and less memory consumption.
- * - Less verbose API, especially when working with mutable data structures.
+ * - Slightly better performance.
+ * - Less verbose API, especially when working with mutable data structures and normalized data.
+ * - Stateless components can use context and watch observables/computeds.
  * - Composable API.
  *
  * vs fine-grained observables (undirected graph, push-pull) and autotracking (Vue, MobX)
@@ -44,6 +45,7 @@ import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } fr
  *
  * - Verbose API, all edges are created explicitly with `watch()` function. Autotracking solutions implicitly create
  *   all edges.
+ * - Updates trigger more updates than it is necessary.
  * - Dirty checking requires to check all side effects each time something is updated. Push-pull solutions are creating
  *   undirected graphs so that when observable value is updated they can go through the graph and find all side effects
  *   that use this observable value.
@@ -233,8 +235,8 @@ export function dirtyCheckWatchList(deps: WatchList): boolean {
       if (v.t > t) {
         return true;
       }
-    } else if ((v as (token?: DirtyCheckToken, time?: number) => any)(DIRTY_CHECK_TOKEN, t) === true) {
-      return true;
+    } else {
+      return (v as (token?: DirtyCheckToken, time?: number) => any)(DIRTY_CHECK_TOKEN, t);
     }
   }
   return false;
