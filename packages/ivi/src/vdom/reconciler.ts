@@ -413,33 +413,37 @@ export function _update(
     }
     opState.o = nextOp;
     const opStateChildren = opState.c;
-    let prevData;
-    let nextData;
-    let prevChildren;
-    let nextChildren;
+    let prevData1;
+    let nextData1;
+    let prevData2;
+    let nextData2;
     let nextValue;
     let i;
 
     if ((f & NodeFlags.Component) !== 0) {
-      prevData = (o as ComponentOp).v;
-      prevChildren = (o as ComponentOp).c;
-      nextData = (nextOp as ComponentOp).v;
-      nextChildren = (nextOp as ComponentOp).c;
+      prevData1 = (o as ComponentOp).v;
+      prevData2 = (o as ComponentOp).c;
+      nextData1 = (nextOp as ComponentOp).v;
+      nextData2 = (nextOp as ComponentOp).c;
       nextValue = (nextOp as ComponentOp).t.d as ComponentDescriptor;
+      // Prioritize checking 2nd property as it is most likely will be used to pass children nodes or custom render
+      // function, so it won't have any complex `areEqual` checking.
       if (
-        (prevChildren !== nextChildren) ||
         (
-          (prevData !== nextData) &&
-          (nextValue.e === void 0 || nextValue.e(prevData, nextData) !== true)
+          (prevData2 !== nextData2) &&
+          (nextValue.e2 === void 0 || nextValue.e2(prevData2, nextData2) !== true)
+        ) || (
+          (prevData1 !== nextData1) &&
+          (nextValue.e1 === void 0 || nextValue.e1(prevData1, nextData1) !== true)
         )
       ) {
-        nextData = (s as ComponentState).r!(nextData, nextChildren);
+        nextData1 = (s as ComponentState).r!(nextData1, nextData2);
         (s as ComponentState).d = saveObservableDependencies();
 
         opState.c = _update(
           parentElement,
           opStateChildren as OpState,
-          nextData,
+          nextData1,
           moveNode,
           singleChild,
         );
@@ -474,16 +478,16 @@ export function _update(
           if (i === 0) {
             _unmount(parentElement, opState, singleChild);
           } else {
-            prevData = (opStateChildren as Array<OpState | null>).length;
-            if (i !== prevData) {
+            prevData1 = (opStateChildren as Array<OpState | null>).length;
+            if (i !== prevData1) {
               opState.c = nextValue = Array(i);
-              while (prevData > i) {
-                nextData = (opStateChildren as Array<OpState | null>)[--prevData];
-                if (nextData !== null) {
-                  _unmount(parentElement, nextData, false);
+              while (prevData1 > i) {
+                nextData1 = (opStateChildren as Array<OpState | null>)[--prevData1];
+                if (nextData1 !== null) {
+                  _unmount(parentElement, nextData1, false);
                 }
               }
-              while (i > prevData) {
+              while (i > prevData1) {
                 nextValue[--i] = _mount(parentElement, (nextOp as OpArray)[i]);
               }
             } else {
@@ -518,13 +522,13 @@ export function _update(
           singleChild,
         );
       } else { // if ((flags & NodeFlags.Context) !== 0) {
-        nextData = (nextOp as ContextOp).v;
+        nextData1 = (nextOp as ContextOp).v;
         if ((f & NodeFlags.SetContextState) !== 0) {
-          opState.s = nextData;
+          opState.s = nextData1;
         } else {
           nextValue = (s as ContextState).v;
-          if (nextValue.v !== nextData) {
-            assign(nextValue, nextData);
+          if (nextValue.v !== nextData1) {
+            assign(nextValue, nextData1);
           }
         }
         nextValue = setContext(opState.s);

@@ -4,8 +4,6 @@
 
 Added second prop to components.
 
-Second prop doesn't support custom equality checking `areEqual`, it is always compared with strict equality.
-
 ```ts
 const Button = statelessComponent<{ id: string }, Op>((props, children) => (
   button("button", props, children)
@@ -14,6 +12,19 @@ const Button = statelessComponent<{ id: string }, Op>((props, children) => (
 Button({ id: "button-id" },
   "Click Me",
 );
+```
+
+#### Custom `areEqual` function
+
+```ts
+const View = statelessComponent<number, [number, number]>(
+  (a, b) => (
+    a + b[0] + b[1]
+  ),
+  undefined,
+  shallowEqualArray,
+);
+View(1, [2, 3]);
 ```
 
 ### Dirty Checking / Observables
@@ -25,7 +36,7 @@ New API for dirty checking is composable and can be used in stateless components
 
 - `useSelect()` hook were removed.
 - Added pull-based observables.
-- Context is reimplemented with observables and it is now way much cheaper to dirty check contexts.
+- Context is reimplemented with observables and it is now way much cheaper to dirty check.
 
 #### Examples
 

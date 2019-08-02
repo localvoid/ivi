@@ -38,14 +38,24 @@ export interface ComponentDescriptor<P1 = any, P2 = any> {
   c(state: OpState): (p1: P1, p2: P2) => Op;
 
   /**
-   * `areEqual` is a function that checks if `prev` and `next` props are equal, it is used as a hint to reduce
+   * `areEqual1` is a function that checks if `prev` and `next` props (p1) are equal, it is used as a hint to reduce
    * unnecessary updates.
    *
    * @param prev Previous properties.
    * @param next Next properties.
    * @returns `true` when props are equal.
    */
-  readonly e: undefined | ((prev: P1, next: P1) => boolean);
+  readonly e1: undefined | ((prev: P1, next: P1) => boolean);
+
+  /**
+   * `areEqual2` is a function that checks if `prev` and `next` props (p2) are equal, it is used as a hint to reduce
+   * unnecessary updates.
+   *
+   * @param prev Previous properties.
+   * @param next Next properties.
+   * @returns `true` when props are equal.
+   */
+  readonly e2: undefined | ((prev: P2, next: P2) => boolean);
 }
 
 export type Component = OpState<ComponentState>;

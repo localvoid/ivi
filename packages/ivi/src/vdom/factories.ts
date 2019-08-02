@@ -113,12 +113,14 @@ export function component(
  *     });
  *
  * @param c Component function.
- * @param areEqual `areEqual` function.
+ * @param e1 `areEqual` function that checks `p1` for equality.
+ * @param e2 `areEqual` function that checks `p2` for equality.
  * @returns Factory that produces component nodes.
  */
 export function component<P1, P2 = undefined>(
   c: (c: Component) => (p1: P1, p2: P2) => Op,
-  areEqual?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+  areEqual1?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+  areEqual2?: undefined extends P2 ? undefined : (prev: P2, next: P2) => boolean,
 ): undefined extends P1 ?
   (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>) :
   (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>);
@@ -141,14 +143,16 @@ export function component<P1, P2 = undefined>(
  *     });
  *
  * @param c Component function.
- * @param e `areEqual` function.
+ * @param e1 `areEqual` function that checks `p1` for equality.
+ * @param e2 `areEqual` function that checks `p2` for equality.
  * @returns Factory that produces component nodes.
  */
 export function component<P1, P2 = undefined>(
   c: (c: Component) => (p1: P1, p2: P2) => Op,
-  e?: (prev: P1, next: P1) => boolean,
+  e1?: (prev: P1, next: P1) => boolean,
+  e2?: (prev: P2, next: P2) => boolean,
 ): (p1: P1, p2: P2) => ComponentOp<P1, P2> {
-  const type = createOpType(NodeFlags.Component, { c, e });
+  const type = createOpType(NodeFlags.Component, { c, e1, e2 });
   return (p1: P1, p2: P2) => createContainerOp(type, p1, p2);
 }
 
@@ -174,12 +178,14 @@ export function statelessComponent(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param update Update function.
- * @param areEqual `areEqual` function.
+ * @param areEqual1 `areEqual` function that checks `p1` for equality.
+ * @param areEqual1 `areEqual` function that checks `p2` for equality.
  * @returns Factory that produces stateless component nodes.
  */
 export function statelessComponent<P1, P2 = undefined>(
   update: (p1: P1, p2: P2) => Op,
-  areEqual?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+  areEqual1?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+  areEqual2?: undefined extends P2 ? undefined : (prev: P2, next: P2) => boolean,
 ): undefined extends P1 ?
   (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>) :
   (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>);
@@ -192,13 +198,15 @@ export function statelessComponent<P1, P2 = undefined>(
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
  * @param c Update function.
- * @param e `areEqual` function.
+ * @param e1 `areEqual` function that checks `p1` for equality.
+ * @param e2 `areEqual` function that checks `p2` for equality.
  * @returns Factory that produces stateless component nodes.
  */
-export function statelessComponent<P, C = undefined>(
-  c: (props: P, children: C) => Op,
-  e?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): (props: P, children: C) => ComponentOp<P, C> {
+export function statelessComponent<P1, P2 = undefined>(
+  c: (p1: P1, p2: P2) => Op,
+  e1?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+  e2?: undefined extends P2 ? undefined : (prev: P2, next: P2) => boolean,
+): (props: P1, children: P2) => ComponentOp<P1, P2> {
   const f = (_: Component) => c;
-  return component(f, e);
+  return component(f, e1, e2);
 }
