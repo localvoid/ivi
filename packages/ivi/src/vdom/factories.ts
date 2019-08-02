@@ -116,13 +116,12 @@ export function component(
  * @param areEqual `areEqual` function.
  * @returns Factory that produces component nodes.
  */
-export function component<P, C = undefined>(
-  c: (c: Component) => (props: P, children: C) => Op,
-  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-):
-  undefined extends P ?
-  (undefined extends C ? (props?: P, children?: C) => ComponentOp<P> : (props: P, children: C) => ComponentOp<P>) :
-  (undefined extends C ? (props?: P, children?: C) => ComponentOp<P> : (props: P, children: C) => ComponentOp<P>);
+export function component<P1, P2 = undefined>(
+  c: (c: Component) => (p1: P1, p2: P2) => Op,
+  areEqual?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+): undefined extends P1 ?
+  (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>) :
+  (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>);
 
 /**
  * component creates a factory that produces component nodes.
@@ -145,12 +144,12 @@ export function component<P, C = undefined>(
  * @param e `areEqual` function.
  * @returns Factory that produces component nodes.
  */
-export function component<P, C = undefined>(
-  c: (c: Component) => (props: P, children: C) => Op,
-  e?: (prev: P, next: P) => boolean,
-): (props: P, children: C) => ComponentOp<P, C> {
+export function component<P1, P2 = undefined>(
+  c: (c: Component) => (p1: P1, p2: P2) => Op,
+  e?: (prev: P1, next: P1) => boolean,
+): (p1: P1, p2: P2) => ComponentOp<P1, P2> {
   const type = createOpType(NodeFlags.Component, { c, e });
-  return (props: P, children: C) => createContainerOp(type, props, children);
+  return (p1: P1, p2: P2) => createContainerOp(type, p1, p2);
 }
 
 /**
@@ -178,10 +177,12 @@ export function statelessComponent(
  * @param areEqual `areEqual` function.
  * @returns Factory that produces stateless component nodes.
  */
-export function statelessComponent<P>(
-  update: (props: P) => Op,
-  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? (props?: P) => ComponentOp<P> : (props: P) => ComponentOp<P>;
+export function statelessComponent<P1, P2 = undefined>(
+  update: (p1: P1, p2: P2) => Op,
+  areEqual?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+): undefined extends P1 ?
+  (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>) :
+  (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>);
 
 /**
  * statelessComponent creates an factory that produces stateless components nodes.
