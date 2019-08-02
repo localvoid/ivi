@@ -21,6 +21,67 @@ Button({ id: "button-id" },
 Dirty checking API were redesigned to improve support for use cases with coarse-grained observable graphs and
 mutable data structures.
 
+New API for dirty checking is composable and can be used in stateless components.
+
+- `useSelect()` hook were removed.
+- Added pull-based observables.
+- Context is reimplemented with observables and it is now way much cheaper to dirty check contexts.
+
+#### Examples
+
+##### Computed Values (lazy evaluation)
+
+```js
+const a = observable(1);
+const b = observable(2);
+const sum = computed(() => watch(a) + watch(b));
+const A = statelessComponent(() => div(_, _, watch(sum)()));
+```
+
+##### Basic selectors with immutable state
+
+```js
+const STATE = { value: 1 };
+const A = component((c) => {
+  const getValue = selector(() => STATE.value);
+  return () => div(_, _, watch(getValue)());
+});
+```
+
+##### Memoized selector with immutable state
+
+```js
+const STATE = { a: 1, b: 2 };
+const A = component((c) => {
+  const getValue = selector((prev) => (
+    prev !== void 0 && prev.a === STATE.a && prev.b === STATE.b ? prev :
+      { a: STATE.a, b: STATE.b, result: STATE.a + STATE.b };
+  ));
+  return () => div(_, _, watch(getValue)());
+});
+```
+
+##### Composition
+
+```js
+const a = observable(1);
+const A = component((c) => {
+  const getValue = memo((i) => computed(() => watch(a) + i));
+  return (i) => div(_, _, watch(getValue(i))());
+});
+```
+
+### Deep State Tracking
+
+Deep state tracking optimization were removed. It is one of those optimizations that improve performance in benchmarks,
+but make it worse in real applications.
+
+This optimization worked by updating node state flags during stack unwinding. It saved information about node subtree,
+so we could skip dirty checking and unmounting for subtrees that didn't have any stateful components. In applications
+decomposed into small components there will be many stateful components used as leaf nodes, so instead of optimizing it
+will make dirty checking and reconciliation algorithms slightly slower. Also, this optimization were adding a lot of
+complexity to the reconciliation algorithm.
+
 ## v0.27.1
 
 Deep state flags propagation algorithm were redesigned to merge flags only when going through fragments and `TrackByKey`
