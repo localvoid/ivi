@@ -260,26 +260,52 @@ describe("component", () => {
 
     describe("hooks", () => {
       describe("areEqual", () => {
-        test("different props", () => {
-          const areEqual = jest.fn(() => false);
-          const C = ivi.component(() => (p: number) => null, areEqual);
+        describe("prop 1", () => {
+          test("different props", () => {
+            const areEqual = jest.fn(() => false);
+            const C = ivi.component(() => (p: number) => null, areEqual);
 
-          r(C(1));
-          r(C(2));
+            r(C(1));
+            r(C(2));
 
-          expect(areEqual).toBeCalledTimes(1);
-          expect(areEqual).toBeCalledWith(1, 2);
+            expect(areEqual).toBeCalledTimes(1);
+            expect(areEqual).toBeCalledWith(1, 2);
+          });
+
+          test("identical props", () => {
+            const value = {};
+            const areEqual = jest.fn(() => false);
+            const C = ivi.component(() => (p: {}) => null, areEqual);
+
+            r(C(value));
+            r(C(value));
+
+            expect(areEqual).not.toBeCalled();
+          });
         });
 
-        test("identical props", () => {
-          const value = {};
-          const areEqual = jest.fn(() => false);
-          const C = ivi.component(() => (p: {}) => null, areEqual);
+        describe("prop 2", () => {
+          test("different props", () => {
+            const areEqual = jest.fn(() => false);
+            const C = ivi.component(() => (p1: number, p2: number) => null, void 0, areEqual);
 
-          r(C(value));
-          r(C(value));
+            r(C(1, 1));
+            r(C(1, 2));
 
-          expect(areEqual).not.toBeCalled();
+            expect(areEqual).toBeCalledTimes(1);
+            expect(areEqual).toBeCalledWith(1, 2);
+          });
+
+          test("identical props", () => {
+            const value = {};
+            const areEqual = jest.fn(() => false);
+            const C = ivi.component(() => (p1: number, p2: {}) => null, void 0, areEqual);
+
+            r(C(1, value));
+            r(C(2, value));
+
+            expect(areEqual).not.toBeCalled();
+          });
         });
       });
 
