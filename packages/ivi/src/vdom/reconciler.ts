@@ -1,3 +1,9 @@
+/**
+ * If you think that some code in this module is weird, you aren't alone :) There are many code fragments in this module
+ * that would be considered as a "bad practice" by the community, in most cases it is implemented this way because every
+ * function in this module is on a hot path. It is better to overoptimize some small module, instead of pushing
+ * performance issues into user space.
+ */
 import { UNMOUNT_TOKEN, dirtyCheckWatchList, saveObservableDependencies, assign } from "../core";
 import {
   doc, objectHasOwnProperty,
@@ -14,6 +20,14 @@ import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentState } from "./component";
 import { setContext, pushContext, ContextDescriptor, ContextState } from "./context";
 
+/**
+ * Simple workaround that efficiently solves a lot of issues with fragments, nested `TrackByKey` ops and holes
+ * (`null` ops).
+ *
+ * Reconciler always goes through the tree from right to left and updates `_nextNode` value when it goes through nodes
+ * associated with DOM nodes, so when we need to insert a new DOM node, we can just take it from this variable instead
+ * of recursively searching for a next DOM node.
+ */
 let _nextNode!: Node | null;
 
 export function _resetState(): void {
@@ -768,6 +782,22 @@ export function _update(
  * [1] Actually it is almost minimum number of dom ops, when node is removed and another one is inserted at the same
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
  * complicated, and other use cases will be slower, so I don't think that it is worth to use replace here.
+ *
+ * NOTE: There are many variations of this algorithm that are used by many UI libraries and many implementations are
+ * still using an old optimization technique that were removed several years ago from this implementation. This
+ * optimization were used to improve performance of simple moves/swaps:
+ *
+ *  A: -> [a b c]
+ *  B:    [c b a] <-
+ *
+ * This optimization were removed because it breaks the promise that insert and remove operations shouldn't trigger a
+ * move operation. ivi prioritizes predictability and correctness over performance. For example:
+ *
+ *  A: -> [a b]
+ *  B:    [c a] <-
+ *
+ * In this case, this optimization will move `a`, then this algo will remove `b` and insert `c`. Instead of just
+ * removing `b` and inserting `c`.
  *
  * @param parentElement Parent DOM element.
  * @param opState OpNode state for a TrackByKey operation.
