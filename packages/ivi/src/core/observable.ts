@@ -1,5 +1,5 @@
 import { clock } from "./clock";
-import { DirtyCheckToken, NotModifiedToken, DIRTY_CHECK_TOKEN, NOT_MODIFIED } from "./token";
+import { DirtyCheckToken, DIRTY_CHECK_TOKEN } from "./token";
 
 /**
  * Coarse-grained observables (directed graph, pull) and dirty checking.
@@ -164,23 +164,6 @@ export function assign<T>(v: Observable<T>, n: T): void {
 export const mut = <T>(v: Observable<T>): T => (v.t = clock(), v.v);
 
 /**
- * Creates an observable mutator function.
- *
- * @param fn Mutator function.
- * @returns Mutator function.
- */
-export const mutator = <T, U extends any[]>(fn: (v: T, ...args: U) => T | NotModifiedToken | void) => function () {
-  const v = (fn as any).apply(void 0, arguments as any);
-  if (v !== NOT_MODIFIED) {
-    const o = arguments[0];
-    o.t = clock();
-    if (v !== void 0) {
-      o.v = v;
-    }
-  }
-} as (v: Observable<T>, ...args: U) => void;
-
-/**
  * Creates an observable signal.
  *
  * @returns {@link Observable} value.
@@ -194,13 +177,13 @@ export function emit(s: Observable<null>): void {
   s.t = clock();
 }
 
-let watchEnabled = false;
+let watchEnabled = 0;
 export function enableWatch() {
-  watchEnabled = true;
+  watchEnabled++;
 }
 
 export function disableWatch() {
-  watchEnabled = false;
+  watchEnabled--;
 }
 
 /**
@@ -213,7 +196,7 @@ export function watch<T extends Observable<any>>(v: T): ObservableValue<T>;
 export function watch<T extends Observable<any> | (() => any)>(v: T): any {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
-    if (!watchEnabled) {
+    if (watchEnabled < 1) {
       throw Error("Invalid watch() invocation. watch() should be invoked in a watcher context (components, computeds)");
     }
   }

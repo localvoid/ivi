@@ -9,7 +9,7 @@ export {
   RepeatableTaskList, runRepeatableTasks,
   strictEqual, shallowEqual, shallowEqualArray,
   lazy, memo, memoObject, memoArray,
-  Observable, ObservableValue, observable, apply, assign, mut, mutator, signal, emit, computed, selector, watch,
+  Observable, ObservableValue, observable, apply, assign, mut, signal, emit, computed, selector, watch,
 } from "./core";
 
 // DOM

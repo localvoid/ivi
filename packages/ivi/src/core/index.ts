@@ -31,6 +31,6 @@ export { RepeatableTaskList, runRepeatableTasks } from "./repeatable_task_list";
 export { strictEqual, shallowEqual, shallowEqualArray } from "./equal";
 export { lazy, memo, memoObject, memoArray } from "./memo";
 export {
-  Observable, ObservableValue, WatchList, observable, apply, assign, mut, mutator, signal, emit, computed, selector,
+  Observable, ObservableValue, WatchList, observable, apply, assign, mut, signal, emit, computed, selector,
   watch, saveObservableDependencies, dirtyCheckWatchList, enableWatch, disableWatch,
 } from "./observable";
