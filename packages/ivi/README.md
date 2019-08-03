@@ -20,9 +20,9 @@ powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **3KiB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.9KiB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.9KiB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.7KiB** (minified+compressed).
 
 ## Quick Start
 
@@ -186,7 +186,7 @@ simple composable primitives so that you can use javascript for composition with
 
 ## Performance
 
-Recently there were alot of misleading articles about
+Recently there were a lot of misleading articles about
 [Virtual DOM "overhead"](https://svelte.dev/blog/virtual-dom-is-pure-overhead). This article shows the simplest problem
 that declarative rendering libraries are solving and presents an obvious solution with direct DOM mutations and from
 this solution they are making a conclusion that if it is possible to solve this problem without this overhead, it means
@@ -202,7 +202,7 @@ render(data.map((rowData) => Row(rowData)), container);
 
 The main problem in this example is that we render several adjacent components that has conditional rendering at the
 root node, so when `showTitle` property is changed we need to figure out where to insert DOM node that will be rendered
-in `PopupTitle` compoment. It is possible that previous and next adjacent components doesn't have any DOM nodes at this
+in `PopupTitle` component. It is possible that previous and next adjacent components doesn't have any DOM nodes at this
 time, so how we can figure out where to insert our new DOM element? Libraries like Svelte unable to deal with such
 problems efficiently and will insert additional DOM node in conditional statements as a marker that will be used to
 insert other nodes.
@@ -230,6 +230,18 @@ favorite UI library.
 `ivi` is optimized for predictable performance, there are no perf cliffs when you start using any composition
 primitives.
 
+Another argument that is often used against virtual DOM libraries is that components in real applications have expensive
+user space computations, so it isn't a virtual DOM diffing problem anymore :) But there is another problem, their
+solutions won't be able to magically remove expensive user space computations from components, so when we instantiate
+components we still need to perform this computations with an additional overhead to setup change detection graphs or
+generate additional code to optimize micro updates. It is as bad as using `PureComponent` in all React components, most
+of the time it isn't even worth it. And when we have a really computationaly expensive task, we can easily solve it with
+memoization `useMemo()` in React or `memo()` in ivi. There aren't any silver bullet solutions. Solutions with
+fine-grained observable graphs will have a similar developer experience because it would require to wrap expensive
+computations into lazy evaluated nodes `@computed` in a similar way to `memo()` in virtual DOM libraries. And solutions
+that generate a lot of inefficient code for change detection (Svelte) should solve performance issues with common case
+scenarios before making any claims about performance.
+
 ### "The Fastest UI Library"
 
 There is no such thing as "the fastest UI library", optimizing UI library for some use cases will make it slower in
@@ -238,17 +250,19 @@ other use cases.
 There are many different optimization goals and we need to find a balanced solution. Here is a list of different
 optimization goals (in random order) that we should be focusing on:
 
-- Application code size
+- Application code size (reduce compilation output, composable primitives, tree-shakeable and minifiable APIs)
 - Library code size
 - Time to render first interactive page
 - Creating DOM nodes
 - Updating DOM nodes
+- Initialization of internal state
 - Cleaning up internal state
 - Memory usage
 - Garbage collection
 - Composition patterns performance (components, conditional rendering, transclusion, fragments, dynamic attributes, etc)
 - Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
-- Increase probability that executed code is JITed (usually depends on the application code size)
+- Increase probability that executed code is JITed (reuse the same code path for initial rendering and updates - Virtual
+DOM, modern fine-grained DOM binding solutions like Surplus/Solid and modern incremental DOM solutions like Angular ivy)
 
 ### Performance Benchmarks
 
@@ -263,8 +277,8 @@ get an edge over other implementations:
 [workarounds to reduce number of data bindings](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L42-L48).
 - Benchmarks are usually biased towards some type of libraries.
 
-But any flawed benchmark is still way much better than "common sense" that is used by some other libraries to explain
-why their libraries are faster.
+But any flawed benchmark is still way much better than "common sense" that is used by some library authors to explain
+why their libraries are "faster".
 
 To explain how to make sense from numbers in benchmarks I'll use
 [the most popular benchmark](https://github.com/krausest/js-framework-benchmark). It contains implementations for many
@@ -479,14 +493,11 @@ function contextValue<T>(): ContextDescriptor<T>;
 `contextValue()` creates context getter `get()` and operation factory for context nodes `set()`.
 
 ```ts
-import { _, context, component, render } from "ivi";
+import { _, context, statelessComponent, render } from "ivi";
 import { div } from "ivi-html";
 
 const Value = context<string>();
-const C = component((c) => {
-  const getContextValue = useSelect(c, Value.get);
-  return () => getContextValue();
-});
+const C = statelessComponent(() => Value.get());
 
 render(
   Value.set("context value",
@@ -647,24 +658,37 @@ function render(children: Op, container: Element, flags?: UpdateFlags): void;
 
 ```ts
 function component(
-  c: (c: Component<undefined>) => () => OpChildren,
+  c: (c: Component<undefined>) => () => Op,
 ): () => OpNode<undefined>;
 
-function component<P>(
-  c: (c: Component<P>) => (props: P) => OpChildren,
-  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? () => OpNode<P> : (props: P) => OpNode<P>;
+function component<P1>(
+  c: (c: Component) => (p1: P1, p2: P2) => Op,
+  areEqual1?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
+  areEqual2?: undefined extends P2 ? undefined : (prev: P2, next: P2) => boolean,
+): undefined extends P1 ?
+  (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>) :
+  (undefined extends P2 ? (p1?: P1, p2?: P2) => ComponentOp<P1, P2> : (p1: P1, p2: P2) => ComponentOp<P1, P2>);
 ```
 
-`component()` function creates a factory function that will instantiate component nodes.
+`component()` function creates a factory function that will instantiate component nodes. Factory function can have up
+to two properties `P1` and `P2`.
 
 By default, all components and hooks are using strict equality `===` operator as `areEqual` function.
 
 ```ts
-import { _, component } from "ivi";
-import { div } from "ivi-html";
+import { _, component, Op, render } from "ivi";
+import { button } from "ivi-html";
 
-const Hello = component<string>(() => (text) = div(_, _, `Hello ${text}`));
+const Button = component<{ disabled?: boolean }, Op>(() => (attrs, children) => (
+  button("button", attrs, children)
+));
+
+render(
+  Button(_,
+    "click me",
+  ),
+  container,
+);
 ```
 
 #### Hooks
@@ -681,6 +705,25 @@ function useEffect<P>(
 
 `useEffect()` lets you perform side effects. It is fully deterministic and executes immediately when function created
 by `useEffect()` is invoked. It is safe to perform any subscriptions in `useEffect()` without losing any events.
+
+```ts
+const Timer = component<number>((c) => {
+  let i = 0;
+  const tick = useEffect<number>(c, (interval) => {
+    const id = setInterval(() => {
+      i++;
+      invalidate(c);
+    });
+    return () => { clearInterval(id); };
+  });
+
+  return (t) => (
+    tick(t),
+
+    div(_, _, i),
+  );
+})
+```
 
 ##### `useMutationEffect()`
 
@@ -705,67 +748,8 @@ function useLayoutEffect<P>(
 ): (props: P) => void;
 ```
 
-`useLayoutEffect()` lets you perform DOM layout side effects. It will schedul DOM layout task that will be executed
+`useLayoutEffect()` lets you perform DOM layout side effects. It will schedule DOM layout task that will be executed
 after all DOM updates and mutation effects.
-
-##### `useSelect()`
-
-```ts
-function useSelect<T>(
-  c: StateNode,
-  selector: (props?: undefined, prev?: T | undefined) => T,
-): () => T;
-function useSelect<T, P>(
-  c: StateNode,
-  selector: (props: P, prev?: T | undefined) => T,
-  areEqual?: undefined extends P ? undefined : (prev: P, next: P) => boolean,
-): undefined extends P ? () => T : (props: P) => T;
-```
-
-`useSelect()` creates a selector hook.
-
-Selectors are used for sideways data accessing. It is a low-level and more flexible alternative to redux connectors.
-
-```js
-const Pixel = component((c) => {
-  const getColor = useSelect(c, (i) => Store.get().colors[i]);
-
-  return (i) => span("pixel", { style: { background: getColor(i) }});
-});
-```
-
-###### Selector Optimizations
-
-Second argument `prev` can be used to optimize complex selectors.
-
-```js
-const C = component((c) => {
-  const select = useSelect(c, (props, prev) => {
-    const value = Store.get().value;
-    return (prev !== void 0 && prev.value === value) ? prev :
-      {
-        value,
-        computedValue: value * value,
-      };
-  });
-
-  return () => span(_, _, select().computedValue);
-});
-```
-
-When `areEqual` function returns `false` value, `prev` state will have an `undefined` value. It means that it
-is unnecessary to implement additional checks for `props` changes in selector functions.
-
-```js
-const C = component((c) => {
-  const select = useSelect(c,
-    ([a, b], prev) => ((prev !== void 0) ? prev : { computedValue: a + b }),
-    shallowEqualArray,
-  );
-
-  return ({a, b}) => span(_, _, select([a, b]).computedValue);
-});
-```
 
 ##### `useUnmount()`
 
@@ -791,6 +775,108 @@ const C = component((c) => {
   return h;
 });
 ```
+
+### Observables and Dirty Checking
+
+Observables in ivi are designed as a solution for coarse-grained change detection and implemented as a directed graph
+(pull-based) with monotonically increasing clock for change detection. Each observable value stores time of the last
+update and current value.
+
+Observables can be used to store either immutable tree structures or mutable graphs. Since ivi is fully deterministic,
+there isn't any value in using immutable data structures everywhere, it is better to use immutable values for small
+objects and mutable data structures for collections, indexing and references to big objects.
+
+#### Observable
+
+```ts
+interface Observable<T> {
+  t: number;
+  v: T;
+}
+type ObservableValue<T> = T extends Observable<infer U> ? U : never;
+```
+
+```ts
+const value = observable(1);
+```
+
+`observable()` creates an observable value.
+
+```ts
+const value = observable(1);
+assign(value, 2);
+```
+
+`assign()` assigns a new value.
+
+```ts
+const value = observable({ a: 1 });
+mut(value).a = 2;
+```
+
+`mut()` updates time of the last update and returns current value.
+
+#### Watching observable values
+
+```ts
+const value = observable(1);
+const C = statelessComponent(() => watch(value));
+```
+
+`watch()` adds observable or computed values to the list of dependencies. All dependencies are automatically removed
+each time component or computed value is updated.
+
+#### Computeds
+
+```ts
+const a = observable(1);
+const b = observable(2);
+const sum = computed(() => watch(a) + watch(b));
+
+sum();
+// => 3
+```
+
+`computed()` creates computed value that will be evaluated lazily when it is requested.
+
+#### Signals
+
+Signals are observables without any values.
+
+```ts
+type Entry = ReturnType<typeof createEntry>;
+
+const collection = observable<Entry[]>([]);
+const entryPropertyChanged = signal();
+
+function addEntry(property: number) {
+  mut(collection).push(observable({ property }));
+}
+
+function entrySetProperty(entry: Entry, value: number) {
+  mut(entry).property = value;
+  emit(entryPropertyChanged);
+}
+```
+
+`signal()` creates a new signal.
+
+`emit()` emits a signal.
+
+#### Watching a subset of an Observable object
+
+```ts
+const C = component((c) => {
+  const get = memo((entry) => computed((prev) => {
+    const v = watch(entry);
+    return prev !== void 0 && prev === v.value ? prev : v.value;
+  }));
+  return (entry) => watch(get(entry))().value;
+});
+```
+
+Computeds are using strict equality `===` as an additional change detection check. And we can use it to prevent
+unnecessary computations when result value is the same.
 
 #### Additional Functions
 
@@ -1078,18 +1164,32 @@ active event listeners.
 
 ### Dirty Checking
 
-Dirty checking in `ivi` is a `O(N)` operation where `N` is the number of "Virtual DOM" nodes.
+Dirty checking provides a solution for a wide range of edge cases. Dirty checking always goes through entire state
+tree, checks invalidated components, selectors, observables, propagates context values and makes it possible to
+efficiently solve all edge cases with nested keyed lists, fragments, holes (`null` ops).
 
-Each time view is updated, dirty checking algorithm executes all selectors `useSelect()` and checks if selector
-output is changed with strict equality operator `===`.
+Dirty checking is heavily optimized and doesn't allocate any memory. To understand how much overhead to expect from
+dirty checking algorithm, we can play with a stress test benchmark for dirty checking:
+https://localvoid.github.io/ivi-examples/benchmarks/dirtycheck/ (all memory allocations are from `perf-monitor` counter)
 
-To get a better understanding of dirty checking overhead, you can play with dbmonster benchmark that has 0 mutations:
-https://localvoid.github.io/ivi-examples/benchmarks/dbmon/?m=0&n=50
+This benchmark has a tree structure with 10 root containers, each container has 10 subcontainers and each subcontainer
+has 50 leaf nodes. Containers are DOM elements wrapped in a stateful component node with children nodes wrapped in
+`TrackByKey()` operation, each leaf node is a DOM element wrapped in a stateful component node with text child node
+wrapped in a fragment and `Events()` operation, also each leaf node watches two observable values. It creates so many
+unnecessary layers to get a better understanding how it will behave in the worst case scenarios.
 
-- `m` parameter specifies number of mutations from `0` to `1`. 0 is a 0%, 1 is a 100%.
-- `n` parameter specifies number of rows multiplied by 2.
+### Unhandled Exceptions
 
-This benchmark has [1 simple selector per row](https://github.com/localvoid/ivi-examples/blob/3da4c7db883b4249698ac18a4c728352bb98b679/packages/benchmarks/dbmon/src/main.ts#L35), with more complicated selectors there will be higher overhead.
+ivi doesn't try to recover from unhandled exceptions raised from user space code. If there is an unhandled exception, it
+means that there is a bug in the code and bugs lead to security issues.
+
+All ivi entry points are wrapped with `catchError()` decorator, when unhandled exception reaches this decorator,
+application goes into error mode. In error mode, all entry points are blocked to prevent any security issues because
+it is impossible to correctly recover from bugs.
+
+`addErrorHandler()` adds an error handler that will be invoked when application goes into error mode.
+
+- [Bugs Aren't Recoverable Errors!](http://joeduffyblog.com/2016/02/07/the-error-model/#bugs-arent-recoverable-errors)
 
 ### Portals
 
@@ -1148,7 +1248,7 @@ Creating custom elements isn't supported, but there shouldn't be any problems wi
 - [JS Frameworks Benchmark](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi)
 - [UIBench](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/uibench/)
 - [DBMon](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/dbmon/)
-- [10k Components](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/10k/)
+- [DirtyCheck](https://github.com/localvoid/ivi-examples/tree/master/packages/benchmarks/dirtycheck/)
 
 ## License
 
