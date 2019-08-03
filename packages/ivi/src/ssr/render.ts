@@ -1,3 +1,4 @@
+import { enableWatch, disableWatch } from "../core";
 import { NodeFlags } from "../vdom/node_flags";
 import { AttributeDirective } from "../vdom/attribute_directive";
 import { Op, DOMElementOp, ContextOp, TrackByKeyOp, ComponentOp } from "../vdom/operations";
@@ -140,10 +141,19 @@ function _renderToString(op: Op): string {
       if ((flags & NodeFlags.Component) !== 0) {
         const stateNode = createStateNode(op);
         stateNode.s = { r: null, d: null, u: null };
-        return renderToString((op.t.d as ComponentDescriptor).c(stateNode)(
+        /* istanbul ignore else */
+        if (process.env.NODE_ENV !== "production") {
+          enableWatch();
+        }
+        result = renderToString((op.t.d as ComponentDescriptor).c(stateNode)(
           (op as ComponentOp).v,
           (op as ComponentOp).c,
         ));
+        /* istanbul ignore else */
+        if (process.env.NODE_ENV !== "production") {
+          disableWatch();
+        }
+        return result;
       }
       if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
         if ((flags & NodeFlags.Context) !== 0) {

@@ -4,7 +4,9 @@
  * function in this module is on a hot path. It is better to overoptimize some small module, instead of pushing
  * performance issues into user space.
  */
-import { UNMOUNT_TOKEN, dirtyCheckWatchList, saveObservableDependencies, assign } from "../core";
+import {
+  UNMOUNT_TOKEN, dirtyCheckWatchList, saveObservableDependencies, assign, enableWatch, disableWatch,
+} from "../core";
 import {
   doc, objectHasOwnProperty,
   nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, nodeSetTextContent, elementRemoveAttribute,
@@ -139,7 +141,15 @@ export function _dirtyCheck(
       (state.d !== null && dirtyCheckWatchList(state.d) === true)
     ) {
       r = opState.o as ComponentOp;
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== "production") {
+        enableWatch();
+      }
       r = state.r!(r.v, r.c);
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== "production") {
+        disableWatch();
+      }
       state.d = saveObservableDependencies();
       opState.c = _update(
         parentElement,
@@ -281,7 +291,15 @@ function _mountObject(
     opState.s = prevState = { r: null, d: null, u: null } as ComponentState;
     // Reusing value variable.
     prevState.r = value = (opType.d as ComponentDescriptor).c(opState);
+    /* istanbul ignore else */
+    if (process.env.NODE_ENV !== "production") {
+      enableWatch();
+    }
     node = value((op as ComponentOp).v, (op as ComponentOp).c);
+    /* istanbul ignore else */
+    if (process.env.NODE_ENV !== "production") {
+      disableWatch();
+    }
     prevState.d = saveObservableDependencies();
     opState.c = _mount(parentElement, node);
     opState.f |= flags;
@@ -451,7 +469,15 @@ export function _update(
           (nextValue.e1 === void 0 || nextValue.e1(prevData1, nextData1) !== true)
         )
       ) {
+        /* istanbul ignore else */
+        if (process.env.NODE_ENV !== "production") {
+          enableWatch();
+        }
         nextData1 = (s as ComponentState).r!(nextData1, nextData2);
+        /* istanbul ignore else */
+        if (process.env.NODE_ENV !== "production") {
+          disableWatch();
+        }
         (s as ComponentState).d = saveObservableDependencies();
 
         opState.c = _update(

@@ -194,6 +194,15 @@ export function emit(s: Observable<null>): void {
   s.t = clock();
 }
 
+let watchEnabled = false;
+export function enableWatch() {
+  watchEnabled = true;
+}
+
+export function disableWatch() {
+  watchEnabled = false;
+}
+
 /**
  * watch adds an observable to the list of dependencies.
  *
@@ -202,6 +211,12 @@ export function emit(s: Observable<null>): void {
 export function watch<T extends () => any>(v: T): T;
 export function watch<T extends Observable<any>>(v: T): ObservableValue<T>;
 export function watch<T extends Observable<any> | (() => any)>(v: T): any {
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV !== "production") {
+    if (!watchEnabled) {
+      throw Error("Invalid watch() invocation. watch() should be invoked in a watcher context (components, computeds)");
+    }
+  }
   if (process.env.IVI_TARGET !== "ssr") {
     if (_deps === null) {
       _deps = [clock(), v];
@@ -259,7 +274,15 @@ export function computed<T>(fn: (prev?: T) => T): () => T {
       lastCheck = now;
       if (deps === null || dirtyCheckWatchList(deps) === true) {
         const prevDeps = saveObservableDependencies();
+        /* istanbul ignore else */
+        if (process.env.NODE_ENV !== "production") {
+          enableWatch();
+        }
         const nextValue = fn(value);
+        /* istanbul ignore else */
+        if (process.env.NODE_ENV !== "production") {
+          disableWatch();
+        }
         deps = saveObservableDependencies();
         restoreObservableDependencies(prevDeps);
         if (value !== nextValue) {

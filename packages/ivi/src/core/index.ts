@@ -32,5 +32,5 @@ export { strictEqual, shallowEqual, shallowEqualArray } from "./equal";
 export { lazy, memo, memoObject, memoArray } from "./memo";
 export {
   Observable, ObservableValue, WatchList, observable, apply, assign, mut, mutator, signal, emit, computed, selector,
-  watch, saveObservableDependencies, dirtyCheckWatchList,
+  watch, saveObservableDependencies, dirtyCheckWatchList, enableWatch, disableWatch,
 } from "./observable";
