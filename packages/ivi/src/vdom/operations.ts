@@ -1,3 +1,8 @@
+/**
+ * Operation nodes are using several different shapes to reduce memory consumption, but it is important that we don't
+ * use too many different shapes to make sure that call-sites won't switch into megamorphic state. All operations
+ * are just aliases to three different shapes: `ValueOp`, `ContainerOp` and `DOMElementOp`.
+ */
 import { EventHandler } from "../events/event_handler";
 import { NodeFlags } from "./node_flags";
 import { ElementProtoDescriptor } from "./element_proto";
