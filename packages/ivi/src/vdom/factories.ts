@@ -206,7 +206,7 @@ export function statelessComponent<P1, P2 = undefined>(
   c: (p1: P1, p2: P2) => Op,
   e1?: undefined extends P1 ? undefined : (prev: P1, next: P1) => boolean,
   e2?: undefined extends P2 ? undefined : (prev: P2, next: P2) => boolean,
-): (props: P1, children: P2) => ComponentOp<P1, P2> {
+): (p1: P1, p2: P2) => ComponentOp<P1, P2> {
   const f = (_: Component) => c;
   return component(f, e1, e2);
 }
