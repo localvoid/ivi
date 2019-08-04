@@ -12,12 +12,14 @@ import { Component } from "./component";
  */
 export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
   const t = createOpType(flags, tag);
-  return process.env.NODE_ENV !== "production" ?
-    (n?: string, v?: T, c: Op = null) => {
-      checkElement(tag, v, (flags & NodeFlags.Svg) !== 0);
-      return createDOMElementOp(t, v, c, n);
-    } :
-    /* istanbul ignore next */(n?: string, v?: T, c: Op = null) => createDOMElementOp(t, v, c, n);
+  return (
+    process.env.NODE_ENV !== "production" ?
+      (n?: string, v?: T, c: Op = null) => {
+        checkElement(tag, v, (flags & NodeFlags.Svg) !== 0);
+        return createDOMElementOp(t, v, c, n);
+      } :
+      /* istanbul ignore next */(n?: string, v?: T, c: Op = null) => createDOMElementOp(t, v, c, n)
+  );
 }
 
 /**
