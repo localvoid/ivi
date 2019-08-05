@@ -81,9 +81,9 @@ export {
   elementFactory, htmlElementFactory, svgElementFactory, elementProto, component, statelessComponent,
 } from "./vdom/factories";
 export { dirtyCheck } from "./vdom/root";
-export { useUnmount, useEffect, useMutationEffect, useLayoutEffect } from "./vdom/hooks";
+export { useUnmount, useEffect, useMutationEffect, useLayoutEffect, useReducer } from "./vdom/hooks";
 export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
-export { findDOMNode, containsDOMElement, hasDOMElementChild } from "./vdom/utils";
+export { findDOMNode, containsDOMElement, hasDOMElementChild, reducer } from "./vdom/utils";
 export { Ref } from "./vdom/ref";
 
 // SSR

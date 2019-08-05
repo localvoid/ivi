@@ -1,5 +1,5 @@
 import { EMPTY_OBJECT, TaskToken, TASK_TOKEN, UnmountToken, UNMOUNT_TOKEN } from "../core";
-import { scheduleMutationEffect, scheduleLayoutEffect } from "../scheduler";
+import { scheduleMutationEffect, scheduleLayoutEffect, invalidate } from "../scheduler";
 import { Component } from "./component";
 
 function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
@@ -143,3 +143,26 @@ export const useLayoutEffect: <T = undefined>(
 ) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
     /* istanbul ignore next */(props: any) => { /**/ } :
     (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
+
+/**
+ * useReducer creates a state reducer.
+ *
+ * @typeparam T State type.
+ * @typeparam U Reducer type.
+ * @param component Component instance.
+ * @param reducer Reducer function.
+ * @param state Initial state.
+ * @returns State reducer.
+ */
+export const useReducer = <T, U>(component: Component, reducer: (state: T, action: U) => T, state: T) => (
+  (action?: U) => {
+    if (action !== void 0) {
+      const nextState = reducer(state, action);
+      if (state !== nextState) {
+        state = nextState;
+        invalidate(component);
+      }
+    }
+    return state;
+  }
+);

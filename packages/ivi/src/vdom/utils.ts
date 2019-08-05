@@ -2,6 +2,8 @@ import { Box } from "../core";
 import { NodeFlags } from "./node_flags";
 import { OpState } from "./state";
 import { getDOMNode, VisitNodesDirective, visitNodes } from "./reconciler";
+import { Component } from "./component";
+import { useReducer } from "./hooks";
 
 /**
  * findDOMNode finds a closest DOM node.
@@ -51,3 +53,16 @@ export function hasDOMElementChild(parent: OpState, child: Element): boolean {
   ));
   return result;
 }
+
+/**
+ * reducer creates a state reducer hook.
+ *
+ * @typeparam T State type.
+ * @typeparam U Reducer type.
+ * @param reducerFn Reducer function.
+ * @param initialState Initial state.
+ * @returns State reducer hook.
+ */
+export const reducer = <T, U>(reducerFn: (state: T, action: U) => T, initialState: T) => (
+  (component: Component) => useReducer(component, reducerFn, initialState)
+);
