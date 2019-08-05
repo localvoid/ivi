@@ -102,10 +102,9 @@ export function setContext(c: ContextState | null): ContextState | null {
  * @example
  *
  *     const { set: StoreContext, get: getStore } = contextValue<Store>();
- *     const Component = component((c) => {
- *       const getValue = useSelect(c, () => getStore().value);
- *       return () => getValue();
- *     });
+ *     const Component = component((c) => (
+ *       () => getStore().value
+ *     ));
  *     render(
  *       StoreContext(store,
  *         Component(),

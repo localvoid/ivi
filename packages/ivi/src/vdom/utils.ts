@@ -23,14 +23,13 @@ export const findDOMNode = <T extends Node>(
  */
 export function containsDOMElement(parent: OpState, element: Element): boolean {
   let result = false;
-  visitNodes(parent, (node) => {
-    if ((node.f & NodeFlags.Element) !== 0) {
-      return ((node.s as Element).contains(element)) === true ?
+  visitNodes(parent, (node) => (
+    ((node.f & NodeFlags.Element) !== 0) ?
+      (((node.s as Element).contains(element) === true) ?
         (result = true, VisitNodesDirective.StopImmediate) :
-        VisitNodesDirective.Stop;
-    }
-    return VisitNodesDirective.Continue;
-  });
+        VisitNodesDirective.Stop) :
+      VisitNodesDirective.Continue
+  ));
   return result;
 }
 
@@ -43,13 +42,12 @@ export function containsDOMElement(parent: OpState, element: Element): boolean {
  */
 export function hasDOMElementChild(parent: OpState, child: Element): boolean {
   let result = false;
-  visitNodes(parent, (node) => {
-    if ((node.f & NodeFlags.Element) !== 0) {
-      return (node.s === child) ?
+  visitNodes(parent, (node) => (
+    ((node.f & NodeFlags.Element) !== 0) ?
+      ((node.s === child) ?
         (result = true, VisitNodesDirective.StopImmediate) :
-        VisitNodesDirective.Stop;
-    }
-    return VisitNodesDirective.Continue;
-  });
+        VisitNodesDirective.Stop) :
+      VisitNodesDirective.Continue
+  ));
   return result;
 }
