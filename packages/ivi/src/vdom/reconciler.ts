@@ -17,7 +17,7 @@ import { CSSStyleProps } from "../dom/style";
 import { NodeFlags } from "./node_flags";
 import { AttributeDirective } from "./attribute_directive";
 import { OpNode, DOMElementOp, EventsOp, ContextOp, TrackByKeyOp, ComponentOp, OpArray, Key, Op } from "./operations";
-import { OpState, createStateNode } from "./state";
+import { OpState } from "./state";
 import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentState } from "./component";
 import { setContext, pushContext, ContextDescriptor, ContextState } from "./context";
@@ -242,16 +242,11 @@ export function _unmount(parentElement: Element, opState: OpState, singleChild: 
   _unmountWalk(opState);
 }
 
-function _mountText(
-  parentElement: Element,
-  opState: OpState,
-  op: string | number,
-) {
-  const node = doc.createTextNode(op as string);
-  nodeInsertBefore!.call(parentElement, node, _nextNode);
-  _nextNode = node;
-  opState.s = node;
-  opState.f = NodeFlags.Text;
+function _mountText(parentElement: Element, o: string | number): OpState {
+  const s = doc.createTextNode(o as string);
+  nodeInsertBefore!.call(parentElement, s, _nextNode);
+  _nextNode = s;
+  return { f: NodeFlags.Text, o, c: null, s };
 }
 
 function _createElement(node: Element | undefined, op: DOMElementOp): Element {
@@ -277,17 +272,17 @@ function _createElement(node: Element | undefined, op: DOMElementOp): Element {
 
 function _mountObject(
   parentElement: Element,
-  opState: OpState,
-  op: OpNode,
-): void {
-  const opType = op.t; // polymorphic callsite
-  const flags = opType.f;
+  o: OpNode,
+): OpState {
+  const opType = o.t; // polymorphic callsite
+  const f = opType.f;
+  const opState = { f, o, c: null, s: null } as OpState;
   let prevState;
   let value;
   let node;
   let i;
 
-  if ((flags & NodeFlags.Component) !== 0) {
+  if ((f & NodeFlags.Component) !== 0) {
     opState.s = prevState = { r: null, d: null, u: null } as ComponentState;
     // Reusing value variable.
     prevState.r = value = (opType.d as ComponentDescriptor).c(opState);
@@ -295,18 +290,17 @@ function _mountObject(
     if (process.env.NODE_ENV !== "production") {
       enableWatch();
     }
-    node = value((op as ComponentOp).v, (op as ComponentOp).c);
+    node = value((o as ComponentOp).v, (o as ComponentOp).c);
     /* istanbul ignore else */
     if (process.env.NODE_ENV !== "production") {
       disableWatch();
     }
     prevState.d = saveObservableDependencies();
     opState.c = _mount(parentElement, node);
-    opState.f |= flags;
   } else {
-    if ((flags & NodeFlags.Element) !== 0) {
+    if ((f & NodeFlags.Element) !== 0) {
       value = opType.d;
-      if ((flags & NodeFlags.ElementProto) !== 0) {
+      if ((f & NodeFlags.ElementProto) !== 0) {
         node = (value as ElementProtoDescriptor).n as Element;
         if (node === null) {
           (value as ElementProtoDescriptor).n = node = _createElement(
@@ -316,69 +310,61 @@ function _mountObject(
         }
         node = nodeCloneNode!.call(node, false) as Element;
       }
-      opState.s = node = _createElement(node, op as DOMElementOp);
+      opState.s = node = _createElement(node, o as DOMElementOp);
 
       prevState = _nextNode;
-      if ((value = (op as DOMElementOp).c) !== null) {
+      if ((value = (o as DOMElementOp).c) !== null) {
         _nextNode = null;
         opState.c = _mount(node, value);
       }
       _nextNode = node;
       nodeInsertBefore!.call(parentElement, node, prevState);
-    } else if ((flags & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
-      if ((flags & NodeFlags.Context) !== 0) {
-        opState.s = prevState = ((flags & NodeFlags.SetContextState) !== 0) ?
-          setContext((op as ContextOp).v) :
-          pushContext(opType.d as ContextDescriptor, (op as ContextOp).v);
-        opState.c = _mount(parentElement, (op as ContextOp).c);
+    } else if ((f & (NodeFlags.Events | NodeFlags.Context)) !== 0) {
+      if ((f & NodeFlags.Context) !== 0) {
+        opState.s = prevState = ((f & NodeFlags.SetContextState) !== 0) ?
+          setContext((o as ContextOp).v) :
+          pushContext(opType.d as ContextDescriptor, (o as ContextOp).v);
+        opState.c = _mount(parentElement, (o as ContextOp).c);
         setContext(prevState);
       } else {
-        opState.c = _mount(parentElement, (op as EventsOp).c);
+        opState.c = _mount(parentElement, (o as EventsOp).c);
       }
     } else { // ((opFlags & NodeFlags.TrackByKey) !== 0)
-      node = (op as TrackByKeyOp).v;
+      node = (o as TrackByKeyOp).v;
       i = node.length;
       opState.c = value = Array(i);
       while (i > 0) {
         value[--i] = _mount(parentElement, node[i].v);
       }
     }
-    opState.f = flags;
   }
+  return opState;
 }
 
-function _mountFragment(
-  parentElement: Element,
-  opState: OpState,
-  childrenOps: OpArray,
-): void {
-  let i = childrenOps.length;
-  const newChildren = Array(i);
+function _mountFragment(parentElement: Element, o: OpArray): OpState {
+  let i = o.length;
+  const c = Array(i);
   while (i > 0) {
-    newChildren[--i] = _mount(parentElement, childrenOps[i]);
+    c[--i] = _mount(parentElement, o[i]);
   }
-  opState.c = newChildren;
-  opState.f = NodeFlags.Fragment;
+  return { f: NodeFlags.Fragment, o, c, s: null };
 }
 
 export function _mount(
   parentElement: Element,
   op: Op,
 ): OpState | null {
-  if (op !== null) {
-    const opState = createStateNode(op);
-    if (typeof op === "object") {
-      if (op instanceof Array) {
-        _mountFragment(parentElement, opState, op);
-      } else {
-        _mountObject(parentElement, opState, op);
-      }
-    } else {
-      _mountText(parentElement, opState, op);
-    }
-    return opState;
-  }
-  return null;
+  return (op !== null) ?
+    (
+      (typeof op === "object") ?
+        (
+          (op instanceof Array) ?
+            _mountFragment(parentElement, op) :
+            _mountObject(parentElement, op)
+        ) :
+        _mountText(parentElement, op)
+    ) :
+    null;
 }
 
 /**
