@@ -1063,8 +1063,8 @@ function _updateClassName(element: Element, className: string, svg: boolean): vo
  */
 function _updateStyle(
   element: HTMLElement | SVGElement,
-  a: CSSStyleProps | undefined,
-  b: CSSStyleProps | undefined,
+  a: Record<string, string> | undefined,
+  b: Record<string, string> | undefined,
   svg: boolean,
 ): void {
   const style = svg === true ? svgElementGetStyle!.call(element) : htmlElementGetStyle!.call(element);
@@ -1074,7 +1074,7 @@ function _updateStyle(
   if (a === void 0) {
     // a is empty, insert all styles from b.
     for (key in b!) {
-      bValue = (b as { [key: string]: string })[key];
+      bValue = b![key];
       if (bValue !== void 0) {
         style.setProperty(key, bValue);
       }
@@ -1082,7 +1082,7 @@ function _updateStyle(
   } else if (b === void 0) {
     // b is empty, remove all styles from a
     for (key in a) {
-      if ((a as { [key: string]: string })[key] !== void 0) {
+      if (a[key] !== void 0) {
         style.removeProperty(key);
       }
     }
@@ -1125,8 +1125,8 @@ function _updateStyle(
  */
 function _updateAttrs(
   element: Element,
-  a: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
-  b: { [key: string]: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined } | undefined,
+  a: Record<string, string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined> | undefined,
+  b: Record<string, string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined> | undefined,
   svg: boolean,
 ): void {
   let key: string;

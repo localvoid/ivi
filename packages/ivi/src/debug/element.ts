@@ -31,7 +31,7 @@ function checkStyle(styles: CSSStyleProps): void {
  * @param tag Tag name.
  * @param attrs SVG attributes.
  */
-function checkSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
+function checkSVGAttributes(tag: string, attrs: Record<string, any>): void {
   switch (tag) {
     case "svg":
       if (attrs.hasOwnProperty("viewport")) {
@@ -52,7 +52,7 @@ function checkSVGAttributes(tag: string, attrs: { [key: string]: any }): void {
  * @param tag Tag name.
  * @param attrs SVG attributes.
  */
-function checkHTMLAttributes(tag: string, attrs: { [key: string]: any }): void {
+function checkHTMLAttributes(tag: string, attrs: Record<string, any>): void {
   switch (tag) {
     case "input": {
       let value = false;
