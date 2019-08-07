@@ -6,6 +6,8 @@ import { Component } from "./component";
 /**
  * elementFactory creates a factory for DOM elements.
  *
+ * @typeparam T DOM Attributes type.
+ * @typeparam U DOM Element type.
  * @param tag HTML element tag name.
  * @param flags Node flags.
  * @returns HTML element operation factory.
@@ -25,6 +27,8 @@ export function elementFactory<T, U>(tag: string, flags: NodeFlags) {
 /**
  * htmlElementFactory creates a factory for HTML elements.
  *
+ * @typeparam T DOM Attributes type.
+ * @typeparam U DOM Element type.
  * @param tag HTML element tag name.
  * @returns HTML element operation factory.
  */
@@ -37,6 +41,8 @@ export const htmlElementFactory: <T, U>(tag: string) => (
 /**
  * svgElementFactory creates a factory for SVG elements.
  *
+ * @typeparam T DOM Attributes type.
+ * @typeparam U DOM Element type.
  * @param tag SVG element tag name.
  * @returns SVG element operation factory.
  */
@@ -58,6 +64,7 @@ export const svgElementFactory: <T, U>(tag: string) => (
  *       document.getElementById("app")!,
  *     );
  *
+ * @typeparam T DOM Attributes type.
  * @param p Element prototype.
  * @returns Factory that produces elements with predefined attributes.
  */
@@ -114,6 +121,8 @@ export function component(
  *       );
  *     });
  *
+ * @typeparam P1 First property type.
+ * @typeparam P2 Second property type.
  * @param c Component function.
  * @param e1 `areEqual` function that checks `p1` for equality.
  * @param e2 `areEqual` function that checks `p2` for equality.
@@ -144,6 +153,8 @@ export function component<P1, P2 = undefined>(
  *       );
  *     });
  *
+ * @typeparam P1 First property type.
+ * @typeparam P2 Second property type.
  * @param c Component function.
  * @param e1 `areEqual` function that checks `p1` for equality.
  * @param e2 `areEqual` function that checks `p2` for equality.
@@ -179,6 +190,8 @@ export function statelessComponent(
  *
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
+ * @typeparam P1 First property type.
+ * @typeparam P2 Second property type.
  * @param update Update function.
  * @param areEqual1 `areEqual` function that checks `p1` for equality.
  * @param areEqual1 `areEqual` function that checks `p2` for equality.
@@ -199,6 +212,8 @@ export function statelessComponent<P1, P2 = undefined>(
  *
  *     const A = statelessComponent<string>((text) => div(_, _, text));
  *
+ * @typeparam P1 First property type.
+ * @typeparam P2 Second property type.
  * @param c Update function.
  * @param e1 `areEqual` function that checks `p1` for equality.
  * @param e2 `areEqual` function that checks `p2` for equality.

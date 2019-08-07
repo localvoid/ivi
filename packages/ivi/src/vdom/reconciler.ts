@@ -978,7 +978,7 @@ function _updateChildrenTrackByKeys(
  * profiler. Usually when there is an update in the real applications, it triggers reordering of one dynamic children
  * list, that is why I prefer to keep it simple.
  *
- * @param a - Array of numbers
+ * @param a Array of numbers.
  * @returns Longest increasing subsequence
  * @noinline
  */
@@ -1059,6 +1059,7 @@ function _updateClassName(element: Element, className: string, svg: boolean): vo
  * @param element HTML or SVG Element.
  * @param a Prev styles.
  * @param b Next styles.
+ * @param svg SVG element.
  */
 function _updateStyle(
   element: HTMLElement | SVGElement,
@@ -1120,6 +1121,7 @@ function _updateStyle(
  * @param element DOM element.
  * @param a Prev DOM attributes.
  * @param b Next DOM attributes.
+ * @param svg SVG element.
  */
 function _updateAttrs(
   element: Element,
@@ -1170,6 +1172,7 @@ function _updateAttrs(
  * @param key Attribute name.
  * @param prev Previous value.
  * @param next Next value.
+ * @param svg SVG element.
  */
 function _updateAttr(
   element: Element,

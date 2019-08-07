@@ -53,6 +53,7 @@ export function unorderedArrayDelete<T>(array: T[], item: T): void {
  *     const a = [1, 3, 4];
  *     a.splice(orderedArrayFindIndexForInsert(a, (a, b) => a - b, 2), 0, 2);
  *
+ * @typeparam T Item type.
  * @param array Ordered array.
  * @param cmp Comparator function.
  * @param value Value.

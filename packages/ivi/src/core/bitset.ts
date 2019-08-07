@@ -22,6 +22,7 @@
  *       button(BUTTON_CLASS[bitset(props.hover, props.active, props.disabled)], _, props.children)
  *     );
  *
+ * @typeparam T Arguments type.
  * @param args Boolean values.
  * @returns Bitset.
  */

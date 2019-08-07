@@ -116,6 +116,7 @@ let _deps: WatchList = null;
 /**
  * Creates an observable value.
  *
+ * @typeparam T Observable value type.
  * @param v Value.
  * @returns {@link Observable} value.
  */
@@ -128,6 +129,7 @@ export const observable = <T>(v: T): Observable<T> => ({ t: clock(), v });
  *     const a = observable(1);
  *     apply(a, (v) => v + 1);
  *
+ * @typeparam T Observable value type.
  * @param v Observable value.
  * @param fn Function to apply.
  */
@@ -143,6 +145,7 @@ export function apply<T>(v: Observable<T>, fn: (v: T) => T): void {
  *     const a = observable(1);
  *     assign(a, 2);
  *
+ * @typeparam T Observable value type.
  * @param v Observable value.
  * @param n New value.
  */
@@ -158,6 +161,7 @@ export function assign<T>(v: Observable<T>, n: T): void {
  *     const a = observable({ value: 1 });
  *     mut(a).value = 2;
  *
+ * @typeparam T Observable value type.
  * @param v Observable value.
  * @returns Stored value.
  */
@@ -189,6 +193,7 @@ export function disableWatch() {
 /**
  * watch adds an observable to the list of dependencies.
  *
+ * @typeparam T Dependency type.
  * @param v Observable or computed value.
  */
 export function watch<T extends () => any>(v: T): T;
@@ -243,6 +248,7 @@ export function dirtyCheckWatchList(deps: WatchList): boolean {
 /**
  * computed creates a computed value.
  *
+ * @typeparam T Output type.
  * @param fn Computed function.
  * @returns Computed value.
  */
