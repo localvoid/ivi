@@ -227,7 +227,7 @@ optimizations (diffing 10k-100k virtual dom nodes per update).
 If you really want to get any useful information from this benchmark, I'd recommend to do the same experiment with your
 favorite UI library.
 
-`ivi` is optimized for predictable performance, there are no perf cliffs when you start using any composition
+ivi is optimized for predictable performance, there are no perf cliffs when you start using any composition
 primitives.
 
 Another argument that is often used against virtual DOM libraries is that components in real applications have expensive
@@ -425,7 +425,7 @@ render(
 
 ##### Fragments Memoization
 
-Fragments in `ivi` can be memoized or hoisted like any other node. Because `ivi` doesn't use normalization to implement
+Fragments in ivi can be memoized or hoisted like any other node. Because ivi doesn't use normalization to implement
 fragments, memoized fragments will immediately short-circuit diffing algorithm.
 
 ```ts
@@ -776,6 +776,92 @@ const C = component((c) => {
 });
 ```
 
+#### Additional Functions
+
+##### `invalidate()`
+
+```ts
+function invalidate(c: Component, flags?: UpdateFlags): void;
+```
+
+`invalidate()` marks component as dirty and requests dirty checking.
+
+#### Using a Custom Hook
+
+```js
+function useFriendStatus(c) {
+  let isOnline = null;
+
+  function handleStatusChange(status) {
+    isOnline = status.isOnline;
+    invalidate(c);
+  }
+
+  const subscribe = useEffect(c, (friendID) => (
+    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange),
+    () => { ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange); }
+  ));
+
+  return (friendID) => {
+    subscribe(friendID);
+    return isOnline;
+  };
+}
+
+const FriendStatus = component((c) => {
+  const getFriendStatus = useFriendStatus(c);
+
+  return (props) => {
+    const isOnline = getFriendStatus(props.friend.id);
+
+    if (isOnline === null) {
+      return "Loading...";
+    }
+    return isOnline ? "Online" : "Offline";
+  };
+});
+```
+
+##### Pass Information Between Hooks
+
+```js
+const useFilter = selector(() => query().filter());
+const useEntriesByFilterType = selector((filter) => (query().entriesByFilterType(filter).result));
+
+const EntryList = component((c) => {
+  const getFilter = useFilter(c);
+  const getEntriesByFilterType = useEntriesByFilterType(c);
+
+  return () => (
+    ul("", { id: "todo-list" },
+      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.id, EntryField(e)))),
+    )
+  );
+});
+```
+
+### Accessing DOM Nodes
+
+```ts
+function getDOMNode(opState: OpState): Node | null;
+```
+
+`getDOMNode()` finds the closest DOM Element.
+
+```ts
+import { component, useMutationEffect, getDOMNode } from "ivi";
+import { div } from "ivi-html";
+
+const C = component((c) => {
+  const m = useMutationEffect(c, () => {
+    const divElement = getDOMNode(c);
+    divElement.className = "abc";
+  });
+
+  return () => (m(), div());
+});
+```
+
 ### Observables and Dirty Checking
 
 Observables in ivi are designed as a solution for coarse-grained change detection and implemented as a directed graph
@@ -877,92 +963,6 @@ const C = component((c) => {
 
 Computeds are using strict equality `===` as an additional change detection check. And we can use it to prevent
 unnecessary computations when result value is the same.
-
-#### Additional Functions
-
-##### `invalidate()`
-
-```ts
-function invalidate(c: Component, flags?: UpdateFlags): void;
-```
-
-`invalidate()` marks component as dirty and requests dirty checking.
-
-#### Using a Custom Hook
-
-```js
-function useFriendStatus(c) {
-  let isOnline = null;
-
-  function handleStatusChange(status) {
-    isOnline = status.isOnline;
-    invalidate(c);
-  }
-
-  const subscribe = useEffect(c, (friendID) => (
-    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange),
-    () => { ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange); }
-  ));
-
-  return (friendID) => {
-    subscribe(friendID);
-    return isOnline;
-  };
-}
-
-const FriendStatus = component((c) => {
-  const getFriendStatus = useFriendStatus(c);
-
-  return (props) => {
-    const isOnline = getFriendStatus(props.friend.id);
-
-    if (isOnline === null) {
-      return "Loading...";
-    }
-    return isOnline ? "Online" : "Offline";
-  };
-});
-```
-
-##### Pass Information Between Hooks
-
-```js
-const useFilter = selector(() => query().filter());
-const useEntriesByFilterType = selector((filter) => (query().entriesByFilterType(filter).result));
-
-const EntryList = component((c) => {
-  const getFilter = useFilter(c);
-  const getEntriesByFilterType = useEntriesByFilterType(c);
-
-  return () => (
-    ul("", { id: "todo-list" },
-      TrackByKey(getEntriesByFilterType(getFilter()).map((e) => key(e.id, EntryField(e)))),
-    )
-  );
-});
-```
-
-### Accessing DOM Nodes
-
-```ts
-function getDOMNode(opState: OpState): Node | null;
-```
-
-`getDOMNode()` finds the closest DOM Element.
-
-```ts
-import { component, useMutationEffect, getDOMNode } from "ivi";
-import { div } from "ivi-html";
-
-const C = component((c) => {
-  const m = useMutationEffect(c, () => {
-    const divElement = getDOMNode(c);
-    divElement.className = "abc";
-  });
-
-  return () => (m(), div());
-});
-```
 
 ### Portals
 
@@ -1119,7 +1119,7 @@ shouldn't rely on this behaviour.
 
 React is probably the only library that tries hard to hide all browser quirks for public APIs, almost all other
 libraries claim support for legacy browsers, but what it usually means is that their test suite passes in legacy
-browsers and their test suites doesn't contain tests for edge cases in older browsers. `ivi` isn't any different from
+browsers and their test suites doesn't contain tests for edge cases in older browsers. ivi isn't any different from
 many other libraries, it fixes some hard issues, but it doesn't try to fix all quirks for legacy browsers.
 
 ### Rendering into `<body>`
@@ -1134,21 +1134,21 @@ Rendering into external `Document` (iframe, window, etc) isn't supported.
 
 ### Server-Side Rendering
 
-There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in `ivi`.
+There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in ivi.
 It isn't that hard to implement rehydration, but it would require someone who is interested in it to maintain this code
 base.
 
-Primary use case for server-side rendering in `ivi` is SEO. Usually when SSR is used for SEO purposes, it is better to
+Primary use case for server-side rendering in ivi is SEO. Usually when SSR is used for SEO purposes, it is better to
 use conditional rendering with `process.env.IVI_TARGET` and generate slightly different output by expanding all
 collapsed text regions, etc.
 
 ### Synthetic Events
 
-Synthetic events subsystem dispatches events by traversing "Virtual DOM" tree. Worst case scenario is that it will need
-to traverse all "Virtual DOM" nodes to deliver an event, but it isn't the problem because it is hard to imagine an
-application implemented as a huge flat list of DOM nodes.
+Synthetic events subsystem dispatches events by traversing state tree. Worst case scenario is that it will need to
+traverse entire state tree to deliver an event, but it isn't the problem because it is hard to imagine an application
+implemented as a huge flat list of DOM nodes.
 
-All global event listeners for synthetic events are automatically registered when javascript is loaded. `ivi` is relying
+All global event listeners for synthetic events are automatically registered when javascript is loaded. ivi is relying
 on dead code elimination to prevent registration of unused event listeners. React applications has lazy event listeners
 registration and all global event listeners always stay registered even when they aren't used anymore, it seems that
 there aren't many issues with it, but if there is a good explanation why it shouldn't behave this way, it is possible to
@@ -1181,11 +1181,9 @@ unnecessary layers to get a better understanding how it will behave in the worst
 ### Unhandled Exceptions
 
 ivi doesn't try to recover from unhandled exceptions raised from user space code. If there is an unhandled exception, it
-means that there is a bug in the code and bugs lead to security issues.
-
-All ivi entry points are wrapped with `catchError()` decorator, when unhandled exception reaches this decorator,
-application goes into error mode. In error mode, all entry points are blocked to prevent any security issues because
-it is impossible to correctly recover from bugs.
+means that there is a bug in the code and bugs lead to security issues. To catch unhandled execptions, all entry points
+are wrapped with `catchError()` decorator. When unhandled exception reaches this decorator, application goes into error
+mode. In error mode, all entry points are blocked because it is impossible to correctly recover from bugs.
 
 `addErrorHandler()` adds an error handler that will be invoked when application goes into error mode.
 
@@ -1214,7 +1212,7 @@ render(App(), document.getElementById("app"));
 render(PORTAL.root, document.getElementById("portal"));
 ```
 
-Root nodes are always updated in the order in which they originally were mounted into the document.
+Root nodes are always updated in the order in which they were originally mounted into the document.
 
 ### Custom Elements (Web Components)
 
