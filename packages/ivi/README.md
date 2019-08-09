@@ -1122,6 +1122,23 @@ libraries claim support for legacy browsers, but what it usually means is that t
 browsers and their test suites doesn't contain tests for edge cases in older browsers. ivi isn't any different from
 many other libraries, it fixes some hard issues, but it doesn't try to fix all quirks for legacy browsers.
 
+### Component Factories Ambiguity
+
+Stateless components implemented as immediately executed functions won't have any nodes in a "Virtual DOM" tree and
+reconciliation algorithm won't be able to detect when we are rendering completely different components.
+
+```ts
+const A = () => div();
+const B = () => div();
+render(
+  condition ? A() : B(),
+  container,
+);
+```
+
+In this example, when `condition` is changed, instead of completely destroying previous `<div>` element and
+instantiating a new one, reconciliation algorithm will reuse `<div>` element.
+
 ### Rendering into `<body>`
 
 Rendering into `<body>` is disabled to prevent some [issues](https://github.com/facebook/create-react-app/issues/1568).
