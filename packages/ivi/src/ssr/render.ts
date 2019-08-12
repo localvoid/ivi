@@ -10,6 +10,10 @@ import {
 } from "../vdom/context";
 import { escapeAttributeValue, escapeText } from "./escape";
 
+/**
+ * Global variables are used as a workaround to implement attribute directives. The main issue is that attribute
+ * directives like `UNSAFE_HTML()` and `VALUE()` for a `HTMLTextArea` should emit children string.
+ */
 let _attributes = "";
 let _styles = "";
 let _children = "";
