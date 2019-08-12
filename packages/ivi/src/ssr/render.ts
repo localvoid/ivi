@@ -69,7 +69,7 @@ function _renderToString(op: Op): string {
       let result = "";
       if (op instanceof Array) {
         for (let i = 0; i < op.length; ++i) {
-          result += renderToString(op[i]);
+          result += _renderToString(op[i]);
         }
         return result;
       }
@@ -127,7 +127,7 @@ function _renderToString(op: Op): string {
         }
 
         if (children === "") {
-          children = renderToString((op as DOMElementOp).c);
+          children = _renderToString((op as DOMElementOp).c);
         }
         if ((flags & NodeFlags.NewlineEatingElement) !== 0) {
           if (children.length > 0 && children.charCodeAt(0) === 10) { // "\n"
@@ -145,7 +145,7 @@ function _renderToString(op: Op): string {
         if (process.env.NODE_ENV !== "production") {
           enableWatch();
         }
-        result = renderToString((op.t.d as ComponentDescriptor).c(stateNode)(
+        result = _renderToString((op.t.d as ComponentDescriptor).c(stateNode)(
           (op as ComponentOp).v,
           (op as ComponentOp).c,
         ));
@@ -159,17 +159,17 @@ function _renderToString(op: Op): string {
         if ((flags & NodeFlags.Context) !== 0) {
           const prevContext = getContext();
           pushContext((op.t.d as ContextDescriptor), op.v);
-          result = renderToString((op as ContextOp).c);
+          result = _renderToString((op as ContextOp).c);
           setContext(prevContext);
           return result;
         } else {
-          return renderToString((op as ContextOp).c);
+          return _renderToString((op as ContextOp).c);
         }
       }
       // TrackByKey Node
       const childrenNodes = (op as TrackByKeyOp).v;
       for (let i = 0; i < childrenNodes.length; ++i) {
-        result += renderToString(childrenNodes[i].v);
+        result += _renderToString(childrenNodes[i].v);
       }
       return result;
     }
