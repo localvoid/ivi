@@ -246,6 +246,29 @@ export function scheduleMutationEffect(fn: (token: TaskToken) => void, flags?: U
 }
 
 /**
+ * debounceMutationEffect creates debounced mutation effect.
+ *
+ * @typeparam T Effect props type.
+ * @param fn Mutation effect.
+ * @returns Debounced mutation effect.
+ */
+export function debounceMutationEffect<T>(fn: (value: T) => void): (nextValue: T) => void {
+  let wait = 0;
+  let value: T | undefined;
+  return (nextValue: T) => {
+    value = nextValue;
+    if (wait === 0) {
+      wait = 1;
+      scheduleMutationEffect(() => {
+        fn(value!);
+        wait = 0;
+        value = void 0;
+      });
+    }
+  };
+}
+
+/**
  * Adds a DOM layout task to the queue.
  *
  * @param fn Read DOM task
