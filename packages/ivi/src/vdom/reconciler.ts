@@ -90,11 +90,12 @@ export function visitNodes(
 /**
  * getDOMNode retrieves closest DOM node from the {@link OpState} instance.
  *
+ * @typeparam T DOM node type.
  * @param opState State node.
  * @returns DOM node.
  */
-export function getDOMNode(opState: OpState): Node | null;
-export function getDOMNode(opState: OpState | Array<OpState | null> | null): Node | null {
+export function getDOMNode<T extends Node>(opState: OpState): T | null;
+export function getDOMNode<T extends Node>(opState: OpState | Array<OpState | null> | null): T | null {
   let i = (opState as OpState).f;
   let c: OpState | null;
   if ((i & (NodeFlags.Element | NodeFlags.Text)) === 0) {
@@ -109,7 +110,7 @@ export function getDOMNode(opState: OpState | Array<OpState | null> | null): Nod
     }
     return (opState === null) ? null : getDOMNode(opState as OpState);
   }
-  return (opState as OpState).s as Node;
+  return (opState as OpState).s as T;
 }
 
 export function _dirtyCheck(

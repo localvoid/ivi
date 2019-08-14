@@ -14,7 +14,7 @@ import { useReducer } from "./hooks";
  */
 export const findDOMNode = <T extends Node>(
   box: Box<OpState | null>,
-) => box.v === null ? null : getDOMNode(box.v) as T;
+) => box.v === null ? null : getDOMNode<T>(box.v);
 
 /**
  * containsDOMElement returns `true` when `parent` contains a DOM element `element`.
