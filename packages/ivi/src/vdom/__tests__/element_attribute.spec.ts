@@ -46,18 +46,6 @@ describe("element attribute", () => {
       expect(setAttribute.mock.calls).toEqual([["width", "10px"], ["height", "20px"]]);
       expect(removeAttribute.mock.calls).toEqual([]);
     });
-
-    test("attribute with true value", () => {
-      expect(r({ boolean: true })).toMatchSnapshot();
-      expect(setAttribute.mock.calls).toEqual([["boolean", ""]]);
-      expect(removeAttribute.mock.calls).toEqual([]);
-    });
-
-    test("attribute with false value", () => {
-      expect(r({ boolean: false })).toMatchSnapshot();
-      expect(setAttribute.mock.calls).toEqual([]);
-      expect(removeAttribute.mock.calls).toEqual([]);
-    });
   });
 
   describe("update", () => {
@@ -95,18 +83,6 @@ describe("element attribute", () => {
       test("attribute with string value", () => {
         expect(r({ width: "10px" })).toMatchSnapshot();
         expect(setAttribute.mock.calls).toEqual([["width", "10px"]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with true value", () => {
-        expect(r({ boolean: true })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["boolean", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with false value", () => {
-        expect(r({ boolean: false })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
         expect(removeAttribute.mock.calls).toEqual([]);
       });
 
@@ -151,18 +127,6 @@ describe("element attribute", () => {
       test("attribute with string value", () => {
         expect(r({ width: "10px" })).toMatchSnapshot();
         expect(setAttribute.mock.calls).toEqual([["width", "10px"]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with true value", () => {
-        expect(r({ boolean: true })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["boolean", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with false value", () => {
-        expect(r({ boolean: false })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
         expect(removeAttribute.mock.calls).toEqual([]);
       });
 
@@ -220,18 +184,6 @@ describe("element attribute", () => {
         expect(r({ width: "10px" })).toMatchSnapshot();
         expect(setAttribute.mock.calls).toEqual([["width", "10px"]]);
         expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with true value", () => {
-        expect(r({ width: true })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with false value", () => {
-        expect(r({ width: false })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([["width"]]);
       });
 
       test("one attribute with same value and one with different", () => {
@@ -296,18 +248,6 @@ describe("element attribute", () => {
         expect(removeAttribute.mock.calls).toEqual([]);
       });
 
-      test("attribute with true value", () => {
-        expect(r({ width: true })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with false value", () => {
-        expect(r({ width: false })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([["width"]]);
-      });
-
       test("one attribute with same value and one with different", () => {
         expect(r({ width: "10px", height: "20px" })).toMatchSnapshot();
         expect(setAttribute.mock.calls).toEqual([["height", "20px"]]);
@@ -323,106 +263,6 @@ describe("element attribute", () => {
       test("two different attributes", () => {
         expect(r({ left: "30px", height: "20px" })).toMatchSnapshot();
         expect(setAttribute.mock.calls).toEqual([["left", "30px"], ["height", "20px"]]);
-        expect(removeAttribute.mock.calls).toEqual([["width"]]);
-      });
-    });
-
-    describe("attribute with false value to", () => {
-      beforeEach(() => {
-        r({ width: false });
-        setAttribute.mockClear();
-        removeAttribute.mockClear();
-      });
-
-      test("undefined", () => {
-        expect(r()).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("empty attribute object", () => {
-        expect(r({})).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with undefined value", () => {
-        expect(r({ width: void 0 })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with empty string value", () => {
-        expect(r({ width: "" })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with string value", () => {
-        expect(r({ width: "10px" })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", "10px"]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with true value", () => {
-        expect(r({ width: true })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with false value", () => {
-        expect(r({ width: false })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-    });
-
-    describe("attribute with true value to", () => {
-      beforeEach(() => {
-        r({ width: true });
-        setAttribute.mockClear();
-        removeAttribute.mockClear();
-      });
-
-      test("undefined", () => {
-        expect(r()).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([["width"]]);
-      });
-
-      test("empty attribute object", () => {
-        expect(r({})).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([["width"]]);
-      });
-
-      test("attribute with undefined value", () => {
-        expect(r({ width: void 0 })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([["width"]]);
-      });
-
-      test("attribute with empty string value", () => {
-        expect(r({ width: "" })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", ""]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with string value", () => {
-        expect(r({ width: "10px" })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([["width", "10px"]]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with true value", () => {
-        expect(r({ width: true })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
-        expect(removeAttribute.mock.calls).toEqual([]);
-      });
-
-      test("attribute with false value", () => {
-        expect(r({ width: false })).toMatchSnapshot();
-        expect(setAttribute.mock.calls).toEqual([]);
         expect(removeAttribute.mock.calls).toEqual([["width"]]);
       });
     });

@@ -1126,8 +1126,8 @@ function _updateStyle(
  */
 function _updateAttrs(
   element: Element,
-  a: Record<string, string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined> | undefined,
-  b: Record<string, string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined> | undefined,
+  a: Record<string, string | number | AttributeDirective<any> | CSSStyleProps | undefined> | undefined,
+  b: Record<string, string | number | AttributeDirective<any> | CSSStyleProps | undefined> | undefined,
   svg: boolean,
 ): void {
   let key: string;
@@ -1178,8 +1178,8 @@ function _updateAttrs(
 function _updateAttr(
   element: Element,
   key: string,
-  prev: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
-  next: string | number | boolean | AttributeDirective<any> | CSSStyleProps | undefined,
+  prev: string | number | AttributeDirective<any> | CSSStyleProps | undefined,
+  next: string | number | AttributeDirective<any> | CSSStyleProps | undefined,
   svg: boolean,
 ): void {
   if (key !== "style") {
@@ -1214,13 +1214,8 @@ function _updateAttr(
         void 0,
       );
     } else if (prev !== next) {
-      if (typeof next === "boolean") {
-        next = next ? "" : void 0;
-      }
       if (next === void 0) {
-        if (prev !== void 0 && prev !== false) {
-          elementRemoveAttribute!.call(element, key);
-        }
+        elementRemoveAttribute!.call(element, key);
       } else {
         elementSetAttribute!.call(element, key, next as string);
       }

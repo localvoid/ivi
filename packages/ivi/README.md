@@ -552,8 +552,8 @@ function CONTENT(v: string | number): AttributeDirective<string | number>;
 function CHECKED(v: boolean): AttributeDirective<boolean>;
 
 // ivi-svg
-function XML_ATTR(v: string | number | boolean): AttributeDirective<string | number | boolean>;
-function XLINK_ATTR(v: string | number | boolean): AttributeDirective<string | number | boolean>;
+function XML_ATTR(v: string | number | boolean): AttributeDirective<string | number>;
+function XLINK_ATTR(v: string | number | boolean): AttributeDirective<string | number>;
 ```
 
 `PROPERTY()` function creates an `AttributeDirective` that assigns a property to a property name derived from the `key`

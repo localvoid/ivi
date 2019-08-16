@@ -82,6 +82,10 @@ const A = component((c) => {
 });
 ```
 
+### Boolean DOM Attribute Values
+
+Removed support for boolean DOM attribute values.
+
 ### Deep State Tracking
 
 Deep state tracking optimization were removed. It is one of those optimizations that improve performance in benchmarks,

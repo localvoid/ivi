@@ -6,17 +6,9 @@ exports[`element attribute mount attribute with empty string value 1`] = `
 />
 `;
 
-exports[`element attribute mount attribute with false value 1`] = `<div />`;
-
 exports[`element attribute mount attribute with string value 1`] = `
 <div
   width="10px"
-/>
-`;
-
-exports[`element attribute mount attribute with true value 1`] = `
-<div
-  boolean=""
 />
 `;
 
@@ -40,14 +32,6 @@ exports[`element attribute update attribute with empty string value to attribute
 `;
 
 exports[`element attribute update attribute with empty string value to attribute with empty string value 1`] = `
-<div
-  width=""
-/>
-`;
-
-exports[`element attribute update attribute with empty string value to attribute with false value 1`] = `<div />`;
-
-exports[`element attribute update attribute with empty string value to attribute with true value 1`] = `
 <div
   width=""
 />
@@ -80,32 +64,6 @@ exports[`element attribute update attribute with empty string value to two diffe
 
 exports[`element attribute update attribute with empty string value to undefined 1`] = `<div />`;
 
-exports[`element attribute update attribute with false value to attribute with empty string value 1`] = `
-<div
-  width=""
-/>
-`;
-
-exports[`element attribute update attribute with false value to attribute with false value 1`] = `<div />`;
-
-exports[`element attribute update attribute with false value to attribute with string value 1`] = `
-<div
-  width="10px"
-/>
-`;
-
-exports[`element attribute update attribute with false value to attribute with true value 1`] = `
-<div
-  width=""
-/>
-`;
-
-exports[`element attribute update attribute with false value to attribute with undefined value 1`] = `<div />`;
-
-exports[`element attribute update attribute with false value to empty attribute object 1`] = `<div />`;
-
-exports[`element attribute update attribute with false value to undefined 1`] = `<div />`;
-
 exports[`element attribute update attribute with string value to attribute with different value 1`] = `
 <div
   width="20px"
@@ -118,17 +76,9 @@ exports[`element attribute update attribute with string value to attribute with 
 />
 `;
 
-exports[`element attribute update attribute with string value to attribute with false value 1`] = `<div />`;
-
 exports[`element attribute update attribute with string value to attribute with same value 1`] = `
 <div
   width="10px"
-/>
-`;
-
-exports[`element attribute update attribute with string value to attribute with true value 1`] = `
-<div
-  width=""
 />
 `;
 
@@ -159,49 +109,15 @@ exports[`element attribute update attribute with string value to two different a
 
 exports[`element attribute update attribute with string value to undefined 1`] = `<div />`;
 
-exports[`element attribute update attribute with true value to attribute with empty string value 1`] = `
-<div
-  width=""
-/>
-`;
-
-exports[`element attribute update attribute with true value to attribute with false value 1`] = `<div />`;
-
-exports[`element attribute update attribute with true value to attribute with string value 1`] = `
-<div
-  width="10px"
-/>
-`;
-
-exports[`element attribute update attribute with true value to attribute with true value 1`] = `
-<div
-  width=""
-/>
-`;
-
-exports[`element attribute update attribute with true value to attribute with undefined value 1`] = `<div />`;
-
-exports[`element attribute update attribute with true value to empty attribute object 1`] = `<div />`;
-
-exports[`element attribute update attribute with true value to undefined 1`] = `<div />`;
-
 exports[`element attribute update attribute with undefined value to attribute with empty string value 1`] = `
 <div
   width=""
 />
 `;
 
-exports[`element attribute update attribute with undefined value to attribute with false value 1`] = `<div />`;
-
 exports[`element attribute update attribute with undefined value to attribute with string value 1`] = `
 <div
   width="10px"
-/>
-`;
-
-exports[`element attribute update attribute with undefined value to attribute with true value 1`] = `
-<div
-  boolean=""
 />
 `;
 
@@ -283,17 +199,9 @@ exports[`element attribute update undefined to attribute with empty string value
 />
 `;
 
-exports[`element attribute update undefined to attribute with false value 1`] = `<div />`;
-
 exports[`element attribute update undefined to attribute with string value 1`] = `
 <div
   width="10px"
-/>
-`;
-
-exports[`element attribute update undefined to attribute with true value 1`] = `
-<div
-  boolean=""
 />
 `;
 
