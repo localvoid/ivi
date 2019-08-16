@@ -9,16 +9,6 @@ import { Component } from "../vdom/component";
 import { ROOTS, findRoot, dirtyCheck } from "../vdom/root";
 
 /**
- * Update flags.
- */
-export const enum UpdateFlags {
-  /**
-   * Forces synchronous update.
-   */
-  RequestSyncUpdate = 1,
-}
-
-/**
  * Scheduler flags.
  */
 const enum SchedulerFlags {
@@ -35,17 +25,13 @@ const enum SchedulerFlags {
    */
   NextFramePending = 1 << 2,
   /**
-   * Sync Frame update is pending for an execution.
-   */
-  NextSyncFramePending = 1 << 3,
-  /**
    * Running inside of a frame update context.
    */
-  UpdatingFrame = 1 << 4,
+  UpdatingFrame = 1 << 3,
   /**
    * Dirty checking is pending for an execution.
    */
-  DirtyCheckPending = 1 << 5,
+  DirtyCheckPending = 1 << 4,
 }
 
 const enum SchedulerDebugFlags {
@@ -181,7 +167,6 @@ export const withNextFrame = (inner: (time?: number) => void) => (
     _flags &= ~(
       SchedulerFlags.UpdatingFrame |
       SchedulerFlags.NextFramePending |
-      SchedulerFlags.NextSyncFramePending |
       SchedulerFlags.DirtyCheckPending
     );
     /* istanbul ignore else */
@@ -201,24 +186,12 @@ export const withNextFrame = (inner: (time?: number) => void) => (
  * @param t Current time.
  */
 const _handleNextFrame = withNextFrame(NOOP);
-const _handleNextFrameSync = () => { _handleNextFrame(); };
 
 /**
  * requestNextFrame requests an update for next frame.
- *
- * @param flags See {@link UpdateFlags} for details.
  */
-export function requestNextFrame(flags?: UpdateFlags): void {
-  if (
-    (flags !== void 0) &&
-    ((flags & UpdateFlags.RequestSyncUpdate) !== 0) &&
-    ((_flags & SchedulerFlags.NextSyncFramePending) === 0)
-  ) {
-    _flags |= SchedulerFlags.NextFramePending | SchedulerFlags.NextSyncFramePending;
-    if ((_flags & SchedulerFlags.UpdatingFrame) === 0) {
-      scheduleMicrotask(_handleNextFrameSync);
-    }
-  } else if ((_flags & SchedulerFlags.NextFramePending) === 0) {
+export function requestNextFrame(): void {
+  if ((_flags & SchedulerFlags.NextFramePending) === 0) {
     _flags |= SchedulerFlags.NextFramePending;
     if ((_flags & SchedulerFlags.UpdatingFrame) === 0) {
       requestAnimationFrame(_handleNextFrame);
@@ -232,7 +205,7 @@ export function requestNextFrame(flags?: UpdateFlags): void {
  * @param fn Write DOM task.
  * @param flags See {@link UpdateFlags} for details.
  */
-export function scheduleMutationEffect(fn: (token: TaskToken) => void, flags?: UpdateFlags): void {
+export function scheduleMutationEffect(fn: (token: TaskToken) => void): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
@@ -242,7 +215,7 @@ export function scheduleMutationEffect(fn: (token: TaskToken) => void, flags?: U
     }
   }
   _mutationEffects.v.push(fn);
-  requestNextFrame(flags);
+  requestNextFrame();
 }
 
 /**
@@ -272,9 +245,8 @@ export function debounceMutationEffect<T>(fn: (value: T) => void): (nextValue: T
  * Adds a DOM layout task to the queue.
  *
  * @param fn Read DOM task
- * @param flags See {@link UpdateFlags} for details.
  */
-export function scheduleLayoutEffect(fn: (token: TaskToken) => void, flags?: UpdateFlags): void {
+export function scheduleLayoutEffect(fn: (token: TaskToken) => void): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
@@ -284,15 +256,13 @@ export function scheduleLayoutEffect(fn: (token: TaskToken) => void, flags?: Upd
     }
   }
   _layoutEffects.v.push(fn);
-  requestNextFrame(flags);
+  requestNextFrame();
 }
 
 /**
  * Request dirty checking.
- *
- * @param flags See {@link UpdateFlags} for details.
  */
-export function requestDirtyCheck(flags?: UpdateFlags): void {
+export function requestDirtyCheck(): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
     if (_flags & SchedulerFlags.UpdatingFrame) {
@@ -302,18 +272,17 @@ export function requestDirtyCheck(flags?: UpdateFlags): void {
     }
   }
   _flags |= SchedulerFlags.DirtyCheckPending;
-  requestNextFrame(flags);
+  requestNextFrame();
 }
 
 /**
  * Invalidate component.
  *
  * @param c Component instance.
- * @param flags See {@link UpdateFlags} for details.
  */
-export function invalidate(c: Component, flags?: UpdateFlags): void {
+export function invalidate(c: Component): void {
   c.f |= NodeFlags.Dirty;
-  requestDirtyCheck(flags);
+  requestDirtyCheck();
 }
 
 /**
@@ -323,7 +292,7 @@ export function invalidate(c: Component, flags?: UpdateFlags): void {
  * @param container DOM Node that will contain rendered operation.
  * @param flags See {@link UpdateFlags} for details.
  */
-export function render(next: Op, container: Element, flags?: UpdateFlags): void {
+export function render(next: Op, container: Element): void {
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== "production") {
     /**
@@ -344,5 +313,5 @@ export function render(next: Op, container: Element, flags?: UpdateFlags): void 
     ROOTS.push({ container, state: null, next });
   }
 
-  requestDirtyCheck(flags);
+  requestDirtyCheck();
 }

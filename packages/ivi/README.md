@@ -20,9 +20,9 @@ powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.9KiB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.8KiB** (minified+compressed).
 
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.7KiB** (minified+compressed).
+Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.6KiB** (minified+compressed).
 
 ## Quick Start
 
@@ -632,14 +632,7 @@ Now we need to create a function that will be used to instantiate `AttributeDire
 ##### Trigger an update
 
 ```ts
-const enum UpdateFlags {
-  /**
-   * Forces synchronous update.
-   */
-  RequestSyncUpdate = 1,
-}
-
-function requestDirtyCheck(flags?: UpdateFlags);
+function requestDirtyCheck();
 ```
 
 `requestDirtyCheck()` function requests a dirty checking.
@@ -647,7 +640,7 @@ function requestDirtyCheck(flags?: UpdateFlags);
 ##### Rendering virtual DOM into a document
 
 ```ts
-function render(children: Op, container: Element, flags?: UpdateFlags): void;
+function render(children: Op, container: Element): void;
 ```
 
 `render()` function assigns a new virtual DOM root node to the `container` and requests dirty checking.
@@ -781,7 +774,7 @@ const C = component((c) => {
 ##### `invalidate()`
 
 ```ts
-function invalidate(c: Component, flags?: UpdateFlags): void;
+function invalidate(c: Component): void;
 ```
 
 `invalidate()` marks component as dirty and requests dirty checking.
