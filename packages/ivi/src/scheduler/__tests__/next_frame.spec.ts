@@ -13,17 +13,6 @@ describe("next frame", () => {
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).toHaveBeenCalledWith(10);
     });
-
-    test("frameStartTime", () => {
-      let startTime;
-      ivi.beforeMutations(() => {
-        startTime = ivi.frameStartTime();
-      });
-      ivi.withNextFrame(() => {
-        ivi.requestDirtyCheck();
-      })(10);
-      expect(startTime).toBe(10);
-    });
   });
 
   describe("effects", () => {
@@ -42,36 +31,16 @@ describe("next frame", () => {
     });
   });
 
-  describe("hooks", () => {
-    test("beforeMutations", () => {
-      const fn = jest.fn();
-      ivi.beforeMutations(fn);
-      ivi.requestNextFrame();
-      raf.flush();
-      expect(fn.mock.calls.length).toBe(1);
-    });
-
-    test("afterMutations", () => {
-      const fn = jest.fn();
-      ivi.afterMutations(fn);
-      ivi.requestNextFrame();
-      raf.flush();
-      expect(fn.mock.calls.length).toBe(1);
-    });
-  });
-
   test("execution order", () => {
     const order: string[] = [];
     const fn = (name: string) => () => { order.push(name); };
 
-    ivi.beforeMutations(fn("beforeMutations"));
-    ivi.afterMutations(fn("afterMutations"));
     ivi.scheduleMutationEffect(fn("mutationEffect"));
     ivi.scheduleLayoutEffect(fn("layoutEffect"));
 
     raf.flush();
 
-    expect(order).toEqual(["beforeMutations", "mutationEffect", "afterMutations", "layoutEffect"]);
+    expect(order).toEqual(["mutationEffect", "layoutEffect"]);
   });
 
   describe("invalidate", () => {

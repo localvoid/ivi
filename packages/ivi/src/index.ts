@@ -93,9 +93,8 @@ export {
 
 // Scheduler
 export {
-  withSchedulerTick, withNextFrame, requestDirtyCheck, render, invalidate, requestNextFrame,
+  withSchedulerTick, addNextFrameMiddleware, withNextFrame, requestDirtyCheck, render, invalidate, requestNextFrame,
   scheduleMicrotask, scheduleMutationEffect, scheduleLayoutEffect, debounceMutationEffect,
-  beforeMutations, afterMutations,
   frameStartTime,
 } from "./scheduler";
 

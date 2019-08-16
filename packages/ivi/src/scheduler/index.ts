@@ -1,6 +1,4 @@
-import {
-  NOOP, catchError, runRepeatableTasks, RepeatableTaskList, box, Box, TaskToken, TASK_TOKEN, advanceClock,
-} from "../core";
+import { NOOP, catchError, box, Box, TaskToken, TASK_TOKEN, advanceClock } from "../core";
 import { printWarn } from "../debug/print";
 import { doc } from "../dom/shortcuts";
 import { NodeFlags } from "../vdom/node_flags";
@@ -68,8 +66,6 @@ const _resolvedPromise = Promise.resolve();
 const _microtasks = box<Array<(token: TaskToken) => void>>([]);
 const _mutationEffects = box<Array<(token: TaskToken) => void>>([]);
 const _layoutEffects = box<Array<(token: TaskToken) => void>>([]);
-const _beforeMutations = [] as RepeatableTaskList;
-const _afterMutations = [] as RepeatableTaskList;
 
 /**
  * withSchedulerTick wraps `inner` function into a scheduler context execution.
@@ -104,29 +100,43 @@ export function scheduleMicrotask(task: (token: TaskToken) => void): void {
 }
 
 /**
- * beforeMutations adds a hook that will be executed before DOM mutations.
- *
- * @param fn Hook function.
- */
-export function beforeMutations(fn: () => boolean | void): void {
-  _beforeMutations.push(fn);
-}
-
-/**
- * afterMutations adds a hook that will be executed after DOM mutations.
- *
- * @param fn Hook function.
- */
-export function afterMutations(fn: () => boolean | void): void {
-  _afterMutations.push(fn);
-}
-
-/**
  * frameStartTime returns current frame start time.
  *
  * @returns current frame start time.
  */
 export const frameStartTime = () => _frameStartTime;
+
+let _nextFrame = (time: number | undefined) => {
+  if ((_flags & SchedulerFlags.DirtyCheckPending) !== 0) {
+    dirtyCheck();
+  }
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV !== "production") {
+    _debugFlags |= SchedulerDebugFlags.DirtyCheckingFinished;
+  }
+  run(_mutationEffects);
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV !== "production") {
+    _debugFlags |= SchedulerDebugFlags.MutationsFinished;
+  }
+  run(_layoutEffects);
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV !== "production") {
+    _debugFlags |= SchedulerDebugFlags.LayoutFinished;
+  }
+};
+
+/**
+ * addNextFrameMiddleware adds next frame middleware function.
+ *
+ * @param fn Next frame middleware function.
+ */
+export function addNextFrameMiddleware(
+  fn: (time: number | undefined, next: (time?: number) => void) => void,
+): void {
+  const next = _nextFrame;
+  _nextFrame = (time: number | undefined) => { fn(time, next); };
+}
 
 /**
  * withNextFrame wraps `inner` function into a scheduler frame update context.
@@ -143,26 +153,7 @@ export const withNextFrame = (inner: (time?: number) => void) => (
       if (time !== void 0) {
         _frameStartTime = time;
       }
-
-      runRepeatableTasks(_beforeMutations);
-      if ((_flags & SchedulerFlags.DirtyCheckPending) !== 0) {
-        dirtyCheck();
-      }
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== "production") {
-        _debugFlags |= SchedulerDebugFlags.DirtyCheckingFinished;
-      }
-      run(_mutationEffects);
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== "production") {
-        _debugFlags |= SchedulerDebugFlags.MutationsFinished;
-      }
-      runRepeatableTasks(_afterMutations);
-      run(_layoutEffects);
-      /* istanbul ignore else */
-      if (process.env.NODE_ENV !== "production") {
-        _debugFlags |= SchedulerDebugFlags.LayoutFinished;
-      }
+      _nextFrame(time);
     }
     _flags &= ~(
       SchedulerFlags.UpdatingFrame |

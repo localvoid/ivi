@@ -20,7 +20,7 @@ powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to
 
 Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
 bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.8KiB** (minified+compressed).
+[terser](https://github.com/fabiosantoscode/terser) is just a **2.7KiB** (minified+compressed).
 
 Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.6KiB** (minified+compressed).
 
@@ -690,7 +690,7 @@ render(
 
 ```ts
 function useEffect<P>(
-  c: StateNode,
+  c: Component,
   hook: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
@@ -722,7 +722,7 @@ const Timer = component<number>((c) => {
 
 ```ts
 function useMutationEffect<P>(
-  c: StateNode,
+  c: Component,
   hook: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
@@ -735,7 +735,7 @@ executed immediately after all DOM updates.
 
 ```ts
 function useLayoutEffect<P>(
-  c: StateNode,
+  c: Component,
   hook: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => void;
