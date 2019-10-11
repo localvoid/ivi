@@ -48,4 +48,4 @@ export type EventHandler = EventHandlerNode | EventHandlerArray | null;
 /**
  * Recursive event handler array.
  */
-export interface EventHandlerArray extends Array<EventHandler> { }
+export type EventHandlerArray = Array<EventHandler>;

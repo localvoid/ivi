@@ -158,7 +158,7 @@ export type Op = string | number | OpNode | OpArray | null;
 /**
  * Recursive operation array.
  */
-export interface OpArray extends Array<Op> { }
+export type OpArray = Array<Op>;
 
 /**
  * createValueOp creates a {@link ValueOp} instance.
