@@ -398,9 +398,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 2,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 2,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 

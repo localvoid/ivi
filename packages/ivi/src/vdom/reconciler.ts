@@ -9,7 +9,7 @@ import {
 } from "../core";
 import {
   doc, objectHasOwnProperty,
-  nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, nodeSetTextContent, elementRemoveAttribute,
+  nodeInsertBefore, nodeRemoveChild, elementSetAttribute, nodeCloneNode, elementRemoveAttribute,
   elementSetClassName, htmlElementGetStyle, svgElementGetStyle,
 } from "../dom/shortcuts";
 import { SVG_NAMESPACE } from "../dom/namespaces";
@@ -117,7 +117,6 @@ export function _dirtyCheck(
   parentElement: Element,
   opState: OpState,
   moveNode: boolean,
-  singleChild: boolean,
 ): void {
   const flags = opState.f;
   const c = opState.c;
@@ -132,7 +131,7 @@ export function _dirtyCheck(
     }
     if (c !== null) {
       _nextNode = null;
-      _dirtyCheck(state as Element, c as OpState, false, true);
+      _dirtyCheck(state as Element, c as OpState, false);
     }
     _nextNode = state;
   } else if ((flags & NodeFlags.Component) !== 0) {
@@ -157,23 +156,22 @@ export function _dirtyCheck(
         c as OpState | null,
         r,
         moveNode,
-        singleChild,
       );
     } else if (c !== null) {
-      _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
+      _dirtyCheck(parentElement, c as OpState, moveNode);
     }
   } else if ((flags & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
     i = (c as Array<OpState | null>).length;
     while (i > 0) {
       if ((state = (c as Array<OpState | null>)[--i]) !== null) {
-        _dirtyCheck(parentElement, state, moveNode, false);
+        _dirtyCheck(parentElement, state, moveNode);
       }
     }
   } else if ((flags & NodeFlags.Events) !== 0) {
-    _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
+    _dirtyCheck(parentElement, c as OpState, moveNode);
   } else { // ((f & NodeFlags.Context) !== 0)
     state = setContext(opState.s);
-    _dirtyCheck(parentElement, c as OpState, moveNode, singleChild);
+    _dirtyCheck(parentElement, c as OpState, moveNode);
     setContext(state);
   }
 }
@@ -209,11 +207,10 @@ function _unmountWalk(opState: OpState): void {
   }
 }
 
-function _unmountRemove(parentElement: Element, opState: OpState, singleChild: boolean): void;
+function _unmountRemove(parentElement: Element, opState: OpState): void;
 function _unmountRemove(
   parentElement: Element,
   opState: OpState | Array<OpState | null> | null,
-  singleChild: boolean,
 ): void {
   let i = (opState as OpState).f;
   let c;
@@ -223,23 +220,19 @@ function _unmountRemove(
   } else {
     opState = (opState as OpState).c;
     if ((i & (NodeFlags.TrackByKey | NodeFlags.Fragment)) !== 0) {
-      if (singleChild === true) {
-        nodeSetTextContent!.call(parentElement, "");
-      } else {
-        for (i = 0; i < (opState as Array<OpState | null>).length; ++i) {
-          if ((c = (opState as Array<OpState | null>)[i]) !== null) {
-            _unmountRemove(parentElement, c, false);
-          }
+      for (i = 0; i < (opState as Array<OpState | null>).length; ++i) {
+        if ((c = (opState as Array<OpState | null>)[i]) !== null) {
+          _unmountRemove(parentElement, c);
         }
       }
     } else if (opState !== null) {
-      _unmountRemove(parentElement, opState as OpState, singleChild);
+      _unmountRemove(parentElement, opState as OpState);
     }
   }
 }
 
-export function _unmount(parentElement: Element, opState: OpState, singleChild: boolean): void {
-  _unmountRemove(parentElement, opState, singleChild);
+export function _unmount(parentElement: Element, opState: OpState): void {
+  _unmountRemove(parentElement, opState);
   _unmountWalk(opState);
 }
 
@@ -375,7 +368,6 @@ export function _mount(
  * @param opState Operation state.
  * @param nextOp Next operation.
  * @param moveNode DOM Element should be moved.
- * @param singleChild Parent DOM Element contains a single child.
  * @returns OpNode state.
  */
 export function _update(
@@ -383,11 +375,10 @@ export function _update(
   opState: OpState | null,
   nextOp: Op,
   moveNode: boolean,
-  singleChild: boolean,
 ): OpState | null {
   if (nextOp === null) {
     if (opState !== null) {
-      _unmount(parentElement, opState, singleChild);
+      _unmount(parentElement, opState);
     }
     return null;
   }
@@ -415,7 +406,7 @@ export function _update(
     // Here we don't need to reassign nextOp because op should always be an object, and strict equality will guarantee
     // that this object is occupying the same memory region.
     if (o === nextOp) {
-      _dirtyCheck(parentElement, opState, moveNode, singleChild);
+      _dirtyCheck(parentElement, opState, moveNode);
       return opState;
     }
     if (
@@ -427,7 +418,7 @@ export function _update(
         )
       )
     ) {
-      _unmount(parentElement, opState, singleChild);
+      _unmount(parentElement, opState);
       return _mount(parentElement, nextOp);
     }
     opState.o = nextOp;
@@ -472,10 +463,9 @@ export function _update(
           opStateChildren as OpState,
           nextData1,
           moveNode,
-          singleChild,
         );
       } else {
-        _dirtyCheck(parentElement, opState, moveNode, singleChild);
+        _dirtyCheck(parentElement, opState, moveNode);
       }
     } else {
       if ((f & NodeFlags.Element) !== 0) {
@@ -497,13 +487,13 @@ export function _update(
         }
 
         _nextNode = null;
-        opState.c = _update(s as Element, opStateChildren as OpState, (nextOp as DOMElementOp).c, false, true);
+        opState.c = _update(s as Element, opStateChildren as OpState, (nextOp as DOMElementOp).c, false);
         _nextNode = s as Node;
       } else if ((f & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
         if ((f & NodeFlags.Fragment) !== 0) {
           i = (nextOp as OpArray).length;
           if (i === 0) {
-            _unmount(parentElement, opState, singleChild);
+            _unmount(parentElement, opState);
           } else {
             prevData1 = (opStateChildren as Array<OpState | null>).length;
             if (i !== prevData1) {
@@ -511,7 +501,7 @@ export function _update(
               while (prevData1 > i) {
                 nextData1 = (opStateChildren as Array<OpState | null>)[--prevData1];
                 if (nextData1 !== null) {
-                  _unmount(parentElement, nextData1, false);
+                  _unmount(parentElement, nextData1);
                 }
               }
               while (i > prevData1) {
@@ -526,7 +516,6 @@ export function _update(
                 (opStateChildren as Array<OpState | null>)[i],
                 (nextOp as OpArray)[i],
                 moveNode,
-                false,
               );
             }
           }
@@ -537,7 +526,6 @@ export function _update(
             (o as TrackByKeyOp).v,
             (nextOp as TrackByKeyOp).v,
             moveNode,
-            singleChild,
           );
         }
       } else if ((f & NodeFlags.Events) !== 0) {
@@ -546,7 +534,6 @@ export function _update(
           opStateChildren as OpState,
           (nextOp as EventsOp).c,
           moveNode,
-          singleChild,
         );
       } else { // if ((flags & NodeFlags.Context) !== 0) {
         nextData1 = (nextOp as ContextOp).v;
@@ -564,7 +551,6 @@ export function _update(
           opStateChildren as OpState,
           (nextOp as ContextOp).c,
           moveNode,
-          singleChild,
         );
         setContext(nextValue);
       }
@@ -817,7 +803,6 @@ export function _update(
  * @param a Previous operations.
  * @param b Next operations.
  * @param moveNode Children DOM nodes should be moved.
- * @param singleChild Parent DOM element contains a single node.
  * @noinline
  */
 function _updateChildrenTrackByKeys(
@@ -826,7 +811,6 @@ function _updateChildrenTrackByKeys(
   a: Key<any, OpNode>[],
   b: Key<any, OpNode>[],
   moveNode: boolean,
-  singleChild: boolean,
 ): void {
   let i = b.length;
   let j: number | undefined = a.length;
@@ -834,7 +818,7 @@ function _updateChildrenTrackByKeys(
 
   if (i === 0) { // New children list is empty.
     if (j > 0) { // Unmount nodes from the old children list.
-      _unmount(parentElement, opState, singleChild);
+      _unmount(parentElement, opState);
     }
   } else if (j === 0) { // Old children list is empty.
     while (i > 0) { // Mount nodes from the new children list.
@@ -851,7 +835,7 @@ function _updateChildrenTrackByKeys(
     outer: while (true) {
       // Update nodes with the same key at the end.
       while (a[aEnd].k === node.k) {
-        result[bEnd] = _update(parentElement, opStateChildren[aEnd--], node.v, moveNode, false);
+        result[bEnd] = _update(parentElement, opStateChildren[aEnd--], node.v, moveNode);
         if (start > --bEnd || start > aEnd) {
           break outer;
         }
@@ -876,7 +860,7 @@ function _updateChildrenTrackByKeys(
       i = start;
       do {
         if ((node = opStateChildren[i++]) !== null) {
-          _unmount(parentElement, node, false);
+          _unmount(parentElement, node);
         }
       } while (i <= aEnd);
     } else { // Step 2
@@ -911,7 +895,7 @@ function _updateChildrenTrackByKeys(
 
       if (aLength === a.length && updated === 0) {
         // Zero updated nodes in step 1 and 2, remove all nodes and insert new ones.
-        _unmount(parentElement, opState, singleChild);
+        _unmount(parentElement, opState);
         while (bEnd >= 0) {
           result[bEnd] = _mount(parentElement, b[bEnd--].v);
         }
@@ -920,7 +904,7 @@ function _updateChildrenTrackByKeys(
         // Remove nodes that weren't updated in the old children list.
         for (i = start; i <= aEnd; i++) {
           if ((node = opStateChildren[i]) !== null) {
-            _unmount(parentElement, node, false);
+            _unmount(parentElement, node);
           }
         }
 
@@ -931,7 +915,7 @@ function _updateChildrenTrackByKeys(
             node = b[pos].v;
             result[pos] = (sources[i] === -1) ?
               _mount(parentElement, node) :
-              _update(parentElement, result[pos], node, moveNode, false);
+              _update(parentElement, result[pos], node, moveNode);
           }
         } else {
           const seq = lis(sources);
@@ -947,7 +931,7 @@ function _updateChildrenTrackByKeys(
               } else {
                 --j;
               }
-              result[pos] = _update(parentElement, result[pos], node, moveNode, false);
+              result[pos] = _update(parentElement, result[pos], node, moveNode);
               moveNode = false;
             }
           }
@@ -957,7 +941,7 @@ function _updateChildrenTrackByKeys(
 
     // update nodes from Step 1 (prefix only)
     while (start > 0) {
-      result[--start] = _update(parentElement, opStateChildren[start], b[start].v, moveNode, false);
+      result[--start] = _update(parentElement, opStateChildren[start], b[start].v, moveNode);
     }
   }
   opState.c = result;

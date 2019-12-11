@@ -65,14 +65,6 @@ export const elementSetAttributeNS = process.env.IVI_TARGET === "ssr" ? void 0 :
 export const elementRemoveAttribute = process.env.IVI_TARGET === "ssr" ? void 0 : elementProto!.removeAttribute;
 
 /**
- * Shortcut for a `Node.textContent = value`.
- */
-export const nodeSetTextContent = (
-  process.env.IVI_TARGET === "ssr" ? void 0 :
-    getDescriptor(nodeProto, "textContent")!.set
-);
-
-/**
  * Shortcut for an `Element.className = value`.
  */
 export const elementSetClassName = (

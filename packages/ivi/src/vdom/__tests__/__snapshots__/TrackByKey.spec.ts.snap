@@ -114,9 +114,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 3,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -630,9 +630,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 2,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -755,9 +755,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 3,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 2,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -932,9 +932,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 4,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 1,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -953,9 +953,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 4,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 2,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -1020,9 +1020,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 7,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 3,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 
@@ -1067,9 +1067,9 @@ Object {
   "innerHTML": 0,
   "insertBefore": 11,
   "nodeValue": 0,
-  "removeChild": 0,
+  "removeChild": 6,
   "replaceChild": 0,
-  "textContent": 1,
+  "textContent": 0,
 }
 `;
 

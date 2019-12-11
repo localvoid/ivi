@@ -48,9 +48,9 @@ export function dirtyCheck() {
     _resetState();
     if (next !== void 0) {
       root.next = void 0;
-      root.state = _update(container!, state, next, false, true);
+      root.state = _update(container!, state, next, false);
     } else if (state !== null) {
-      _dirtyCheck(container!, state, false, true);
+      _dirtyCheck(container!, state, false);
     }
   }
   /* istanbul ignore else */
