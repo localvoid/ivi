@@ -238,8 +238,8 @@ export function dirtyCheckWatchList(deps: WatchList): boolean {
       if (v.t > t) {
         return true;
       }
-    } else {
-      return (v as (token?: DirtyCheckToken, time?: number) => any)(DIRTY_CHECK_TOKEN, t);
+    } else if ((v as (token?: DirtyCheckToken, time?: number) => any)(DIRTY_CHECK_TOKEN, t) === true) {
+      return true;
     }
   }
   return false;
