@@ -16,13 +16,13 @@
  */
 const getDescriptor = (o: any, p: string | number | symbol) => Object.getOwnPropertyDescriptor(o, p);
 
-const nodeProto = process.env.IVI_TARGET === "ssr" ? void 0 : Node.prototype;
-const elementProto = process.env.IVI_TARGET === "ssr" ? void 0 : Element.prototype;
+const nodeProto = Node.prototype;
+const elementProto = Element.prototype;
 
 /**
  * Shortcut for a `Document`.
  */
-export const doc = (process.env.IVI_TARGET === "ssr" ? void 0 : document) as Document;
+export const doc = document;
 
 /**
  * Shortcut for an `Object.prototype.hasOwnProperty`.
@@ -32,58 +32,49 @@ export const objectHasOwnProperty = Object.prototype.hasOwnProperty;
 /**
  * Shortcut for a `Node.prototype.insertBefore`.
  */
-export const nodeInsertBefore = process.env.IVI_TARGET === "ssr" ? void 0 : nodeProto!.insertBefore;
+export const nodeInsertBefore = nodeProto.insertBefore;
 
 /**
  * Shortcut for a `Node.prototype.removeChild`.
  */
-export const nodeRemoveChild = process.env.IVI_TARGET === "ssr" ? void 0 : nodeProto!.removeChild;
+export const nodeRemoveChild = nodeProto.removeChild;
 
 /**
  * Shortcut for a `Node.prototype.replaceChild`.
  */
-export const nodeReplaceChild = process.env.IVI_TARGET === "ssr" ? void 0 : nodeProto!.replaceChild;
+export const nodeReplaceChild = nodeProto.replaceChild;
 
 /**
  * Shortcut for a `Node.prototype.cloneNode`.
  */
-export const nodeCloneNode = process.env.IVI_TARGET === "ssr" ? void 0 : nodeProto!.cloneNode;
+export const nodeCloneNode = nodeProto.cloneNode;
 
 /**
  * Shortcut for an `Element.prototype.setAttribute`.
  */
-export const elementSetAttribute = process.env.IVI_TARGET === "ssr" ? void 0 : elementProto!.setAttribute;
+export const elementSetAttribute = elementProto.setAttribute;
 
 /**
  * Shortcut for an `Element.prototype.setAttributeNS`.
  */
-export const elementSetAttributeNS = process.env.IVI_TARGET === "ssr" ? void 0 : elementProto!.setAttributeNS;
+export const elementSetAttributeNS = elementProto.setAttributeNS;
 
 /**
  * Shortcut for an `Element.prototype.removeAttribute`.
  */
-export const elementRemoveAttribute = process.env.IVI_TARGET === "ssr" ? void 0 : elementProto!.removeAttribute;
+export const elementRemoveAttribute = elementProto.removeAttribute;
 
 /**
  * Shortcut for an `Element.className = value`.
  */
-export const elementSetClassName = (
-  process.env.IVI_TARGET === "ssr" ? void 0 :
-    getDescriptor(elementProto, "className")!.set
-);
+export const elementSetClassName = getDescriptor(elementProto, "className")!.set;
 
 /**
  * Shortcut for a `HTMLElement.style`.
  */
-export const htmlElementGetStyle = (
-  process.env.IVI_TARGET === "ssr" ? void 0 :
-    getDescriptor(HTMLElement.prototype, "style")!.get
-);
+export const htmlElementGetStyle = getDescriptor(HTMLElement.prototype, "style")!.get;
 
 /**
  * Shortcut for a `SVGElement.style`.
  */
-export const svgElementGetStyle = (
-  process.env.IVI_TARGET === "ssr" ? void 0 :
-    getDescriptor(SVGElement.prototype, "style")!.get
-);
+export const svgElementGetStyle = getDescriptor(SVGElement.prototype, "style")!.get;

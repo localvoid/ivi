@@ -31,10 +31,8 @@ function addHook<T extends Function>(hooks: null | T | T[], hook: T): T | T[] {
  */
 export function useUnmount(component: Component, hook: (token: UnmountToken) => void): void {
   /* istanbul ignore else */
-  if (process.env.IVI_TARGET !== "ssr") {
-    const hooks = component.s;
-    hooks.u = addHook(hooks.u, hook);
-  }
+  const hooks = component.s;
+  hooks.u = addHook(hooks.u, hook);
 }
 
 function withEffect<P>(scheduleTask: (task: (token: TaskToken) => void) => void): (
@@ -106,9 +104,9 @@ export const useEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
-    /* istanbul ignore next */(props: any) => { /**/ } :
-    (/*#__PURE__*/withEffect((task) => { task(TASK_TOKEN); })) as any;
+) => undefined extends T ? () => void : (props: T) => void = (
+  /*#__PURE__*/withEffect((task) => { task(TASK_TOKEN); })
+) as any;
 
 /**
  * useMutationEffect creates a DOM mutation effect hook.
@@ -123,9 +121,9 @@ export const useMutationEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
-    /* istanbul ignore next */(props: any) => { /**/ } :
-    (/*#__PURE__*/withEffect(scheduleMutationEffect)) as any;
+) => undefined extends T ? () => void : (props: T) => void = (
+  /*#__PURE__*/withEffect(scheduleMutationEffect)
+) as any;
 
 /**
  * useLayoutEffect creates a DOM layout effect hook.
@@ -140,9 +138,9 @@ export const useLayoutEffect: <T = undefined>(
   component: Component,
   hook: undefined extends T ? () => (() => void) | void : (props: T) => (() => void) | void,
   areEqual?: undefined extends T ? undefined : (prev: T, next: T) => boolean,
-) => undefined extends T ? () => void : (props: T) => void = process.env.IVI_TARGET === "ssr" ?
-    /* istanbul ignore next */(props: any) => { /**/ } :
-    (/*#__PURE__*/withEffect(scheduleLayoutEffect)) as any;
+) => undefined extends T ? () => void : (props: T) => void = (
+  /*#__PURE__*/withEffect(scheduleLayoutEffect)
+) as any;
 
 /**
  * useReducer creates a state reducer.

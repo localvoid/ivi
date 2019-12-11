@@ -1,6 +1,4 @@
-import { NOOP } from "../core";
 import { scheduleLayoutEffect } from "../scheduler";
-import { emitChildren, emitAttribute } from "../ssr/render";
 
 /**
  * Attribute directives are used to extend reconciliation and `renderToString()` algorithms.
@@ -26,20 +24,8 @@ export interface AttributeDirective<T> {
    * @param prev Previous value.
    * @param next Next value.
    */
-  readonly u?: (element: Element, key: string, prev: T | undefined, next: T | undefined) => void;
-  /**
-   * Render to string function.
-   *
-   * @param key Attribute key.
-   * @param value Value.
-   */
-  readonly s?: (key: string, value: T) => void;
+  u(element: Element, key: string, prev: T | undefined, next: T | undefined): void;
 }
-
-/**
- * {@link AttributeDirective} that ignores rendering to string.
- */
-export const IGNORE_RENDER_TO_STRING = ({ v: void 0, s: NOOP });
 
 /**
  * PROPERTY function creates an {@link AttributeDirective} that assigns a property to a property name derived from the
@@ -55,9 +41,7 @@ export const IGNORE_RENDER_TO_STRING = ({ v: void 0, s: NOOP });
  * @param v Property value.
  * @returns {@link AttributeDirective}
  */
-export const PROPERTY = <T>(v: T): AttributeDirective<T> => (
-  process.env.IVI_TARGET === "ssr" ? IGNORE_RENDER_TO_STRING : ({ v, u: updateProperty })
-);
+export const PROPERTY = <T>(v: T): AttributeDirective<T> => ({ v, u: updateProperty });
 
 /**
  * Update function for an {@link AttributeDirective} created with a {@link PROPERTY} function.
@@ -85,21 +69,7 @@ function updateProperty(element: Element, key: string, prev: any, next: any): vo
  * @param v innerHTML value.
  * @returns {@link AttributeDirective}
  */
-export const UNSAFE_HTML = (v: string): AttributeDirective<string> => (
-  process.env.IVI_TARGET === "ssr" ?
-    ({ v, s: renderToStringUnsafeHTML }) :
-    ({ v, u: updateUnsafeHTML })
-);
-
-/**
- * Render to string function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
- *
- * @param key Attribute key.
- * @param value Value.
- */
-function renderToStringUnsafeHTML(key: string, value: string) {
-  emitChildren(value);
-}
+export const UNSAFE_HTML = (v: string): AttributeDirective<string> => ({ v, u: updateUnsafeHTML });
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link UNSAFE_HTML} function.
@@ -132,11 +102,7 @@ function updateUnsafeHTML(element: Element, key: string, prev: string | undefine
  * @param v Event handler.
  * @returns {@link AttributeDirective}
  */
-export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => (
-  process.env.IVI_TARGET === "ssr" ?
-    IGNORE_RENDER_TO_STRING :
-    ({ v, u: updateEvent })
-);
+export const EVENT = (v: (ev: Event) => void): AttributeDirective<(ev: Event) => void> => ({ v, u: updateEvent });
 
 /**
  * Update function for an {@link AttributeDirective} created with {@link EVENT} function.
@@ -192,14 +158,6 @@ const AUTOFOCUS_FALSE: AttributeDirective<boolean> = { v: false, u: updateAutofo
 const AUTOFOCUS_TRUE: AttributeDirective<boolean> = { v: true, u: updateAutofocus };
 
 /**
- * {@link AttributeDirective} with `true` value that emits `autofocus` attribute.
- */
-const AUTOFOCUS_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = {
-  v: true,
-  s: () => { emitAttribute("autofocus"); },
-};
-
-/**
  * AUTOFOCUS function creates a {@link AttributeDirective} that sets autofocus on an element.
  *
  * When rendered to string, it will emit `autofocus` attribute.
@@ -211,8 +169,4 @@ const AUTOFOCUS_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = {
  * @param v Autofocus state.
  * @returns {@link AttributeDirective}
  */
-export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => (
-  process.env.IVI_TARGET === "ssr" ?
-    v ? AUTOFOCUS_TRUE_RENDER_TO_STRING : IGNORE_RENDER_TO_STRING :
-    v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE
-);
+export const AUTOFOCUS = (v: boolean): AttributeDirective<boolean> => (v ? AUTOFOCUS_TRUE : AUTOFOCUS_FALSE);

@@ -12,22 +12,21 @@
  * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
  */
 export const PASSIVE_EVENTS = (
-  (process.env.IVI_TARGET === "ssr") ? false :
-    (process.env.IVI_TARGET === "electron") ? true :
+  (process.env.IVI_TARGET === "electron") ? true :
   /*#__PURE__*/(() => {
-        let v = false;
-        try {
-          // Test via a getter in the options object to see if the passive property is accessed
-          window.addEventListener("_", null as any, {
-            get passive(): boolean {
-              return v = true;
-            }
-          });
-        } catch (e) {
-          // ignore
-        }
-        return v;
-      })()
+      let v = false;
+      try {
+        // Test via a getter in the options object to see if the passive property is accessed
+        window.addEventListener("_", null as any, {
+          get passive(): boolean {
+            return v = true;
+          }
+        });
+      } catch (e) {
+        // ignore
+      }
+      return v;
+    })()
 );
 
 /* istanbul ignore next */
@@ -35,11 +34,9 @@ export const PASSIVE_EVENTS = (
  * `key` property is available on KeyboardEvent instances.
  */
 export const KEYBOARD_EVENT_KEY = (
-  (process.env.IVI_TARGET !== "ssr") && (
-    (process.env.IVI_TARGET === "electron") ||
-    (process.env.IVI_TARGET === "evergreen") ||
-    /*#__PURE__*/KeyboardEvent.prototype.hasOwnProperty("key")
-  )
+  (process.env.IVI_TARGET === "electron") ||
+  (process.env.IVI_TARGET === "evergreen") ||
+  /*#__PURE__*/KeyboardEvent.prototype.hasOwnProperty("key")
 );
 
 /* istanbul ignore next */
@@ -47,11 +44,9 @@ export const KEYBOARD_EVENT_KEY = (
  * `buttons` property is available on MouseEvent instances.
  */
 export const MOUSE_EVENT_BUTTONS = (
-  (process.env.IVI_TARGET !== "ssr") && (
-    (process.env.IVI_TARGET === "electron") ||
-    (process.env.IVI_TARGET === "evergreen") ||
-    /*#__PURE__*/MouseEvent.prototype.hasOwnProperty("buttons")
-  )
+  (process.env.IVI_TARGET === "electron") ||
+  (process.env.IVI_TARGET === "evergreen") ||
+  /*#__PURE__*/MouseEvent.prototype.hasOwnProperty("buttons")
 );
 
 /* istanbul ignore next */
@@ -59,7 +54,6 @@ export const MOUSE_EVENT_BUTTONS = (
  * Touch Events support.
  */
 export const TOUCH_EVENTS = (
-  (process.env.IVI_TARGET !== "ssr") &&
   ("ontouchstart" in window)
 );
 
@@ -68,10 +62,8 @@ export const TOUCH_EVENTS = (
  * Pointer Events support.
  */
 export const POINTER_EVENTS = (
-  (process.env.IVI_TARGET !== "ssr") && (
-    (process.env.IVI_TARGET === "electron") ||
-    ("PointerEvent" in window)
-  )
+  (process.env.IVI_TARGET === "electron") ||
+  ("PointerEvent" in window)
 );
 
 /* istanbul ignore next */
@@ -92,8 +84,6 @@ export const IOS_GESTURE_EVENT = (
  * http://wicg.github.io/InputDeviceCapabilities/
  */
 export const INPUT_DEVICE_CAPABILITIES = (
-  (process.env.IVI_TARGET !== "ssr") && (
-    (process.env.IVI_TARGET === "electron") ||
-    ("InputDeviceCapabilities" in window)
-  )
+  (process.env.IVI_TARGET === "electron") ||
+  ("InputDeviceCapabilities" in window)
 );

@@ -205,12 +205,10 @@ export function watch<T extends Observable<any> | (() => any)>(v: T): any {
       throw Error("Invalid watch() invocation. watch() should be invoked in a watcher context (components, computeds)");
     }
   }
-  if (process.env.IVI_TARGET !== "ssr") {
-    if (_deps === null) {
-      _deps = [clock(), v];
-    } else {
-      _deps.push(v);
-    }
+  if (_deps === null) {
+    _deps = [clock(), v];
+  } else {
+    _deps.push(v);
   }
   return typeof v === "function" ? v : (v as Observable<any>).v;
 }

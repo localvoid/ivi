@@ -66,7 +66,6 @@ export { NodeFlags } from "./vdom/node_flags";
 export { ContextDescriptor, ContextState, getContext, setContext, pushContext, contextValue } from "./vdom/context";
 export {
   AttributeDirective,
-  IGNORE_RENDER_TO_STRING,
   PROPERTY, UNSAFE_HTML, EVENT, AUTOFOCUS,
 } from "./vdom/attribute_directive";
 export { ElementProtoDescriptor } from "./vdom/element_proto";
@@ -85,11 +84,6 @@ export { useUnmount, useEffect, useMutationEffect, useLayoutEffect, useReducer }
 export { VisitNodesDirective, visitNodes, getDOMNode } from "./vdom/reconciler";
 export { findDOMNode, containsDOMElement, hasDOMElementChild, reducer } from "./vdom/utils";
 export { Ref } from "./vdom/ref";
-
-// SSR
-export {
-  escapeAttributeValue, escapeText, escapeJavascript, emitAttribute, emitStyle, emitChildren, renderToString,
-} from "./ssr";
 
 // Scheduler
 export {

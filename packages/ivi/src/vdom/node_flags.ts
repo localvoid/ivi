@@ -22,19 +22,6 @@ export const enum NodeFlags {
   Svg = 1 << 8,
   // Component is dirty.
   Dirty = 1 << 9,
-  /**
-   * Newline eating element <pre> and <textarea>
-   *
-   * http://www.w3.org/TR/html5/syntax.html#parsing-main-inbody
-   * http://www.w3.org/TR/html-polyglot/#newlines-in-textarea-and-pre
-   */
-  NewlineEatingElement = 1 << 10,
-  /**
-   * Void Element
-   *
-   * https://www.w3.org/TR/html5/syntax.html#void-elements
-   */
-  VoidElement = 1 << 11,
   // Set context state.
-  SetContextState = 1 << 12,
+  SetContextState = 1 << 10,
 }

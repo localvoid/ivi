@@ -16,7 +16,7 @@ import {
 
   elementSetAttributeNS, XML_NAMESPACE, XLINK_NAMESPACE,
 
-  AttributeDirective, svgElementFactory, elementRemoveAttribute, emitAttribute, escapeAttributeValue,
+  AttributeDirective, svgElementFactory, elementRemoveAttribute,
 } from "ivi";
 
 const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY = {
@@ -24,28 +24,10 @@ const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY = {
   u: updateXMLAttr,
 };
 
-const ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_RENDER_TO_STRING = {
-  v: "",
-  s: (key: string, value: string | number) => { emitAttribute(`xml:${key}`); },
-};
-
 const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY = {
   v: "",
   u: updateXLinkAttr,
 };
-
-const ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_RENDER_TO_STRING = {
-  v: "",
-  s: (key: string, value: string | number) => { emitAttribute(`xlink:${key}`); },
-};
-
-function renderToStringXMLAttr(key: string, value: string | number) {
-  emitAttribute(`xml:${key}="${escapeAttributeValue(value)}"`);
-}
-
-function renderToStringXLinkAttr(key: string, value: string | number) {
-  emitAttribute(`xlink:${key}="${escapeAttributeValue(value)}"`);
-}
 
 function updateNSAttr(
   element: Element,
@@ -109,9 +91,7 @@ function updateXLinkAttr(
  * @returns {@link AttributeDirective}
  */
 export const XML_ATTR = (v: string | number): AttributeDirective<string | number> => (
-  process.env.IVI_TARGET === "ssr" ?
-    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY_RENDER_TO_STRING : { v, s: renderToStringXMLAttr } :
-    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY : { v, u: updateXMLAttr }
+  v === "" ? ATTRIBUTE_DIRECTIVE_SET_XML_ATTR_EMPTY : { v, u: updateXMLAttr }
 );
 
 /**
@@ -126,9 +106,7 @@ export const XML_ATTR = (v: string | number): AttributeDirective<string | number
  * @returns {@link AttributeDirective}
  */
 export const XLINK_ATTR = (v: string | number): AttributeDirective<string | number> => (
-  process.env.IVI_TARGET === "ssr" ?
-    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY_RENDER_TO_STRING : { v, s: renderToStringXLinkAttr } :
-    v === "" ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY : { v, u: updateXLinkAttr }
+  v === "" ? ATTRIBUTE_DIRECTIVE_SET_XLINK_ATTR_EMPTY : { v, u: updateXLinkAttr }
 );
 
 /* tslint:disable:max-line-length */

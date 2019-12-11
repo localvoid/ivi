@@ -13,8 +13,7 @@ import {
   HTMLTableSectionElementAttrs, HTMLTemplateElementAttrs, HTMLTextAreaElementAttrs, HTMLTitleElementAttrs,
   HTMLTrackElementAttrs, HTMLUListElementAttrs, HTMLVideoElementAttrs,
 
-  AttributeDirective, elementFactory, htmlElementFactory, NodeFlags,
-  emitAttribute, emitChildren, escapeAttributeValue, escapeText, IGNORE_RENDER_TO_STRING,
+  AttributeDirective, htmlElementFactory,
 } from "ivi";
 
 /**
@@ -31,31 +30,6 @@ const CHECKED_FALSE: AttributeDirective<boolean> = { v: false, u: updateChecked 
  * {@link AttributeDirective} with `true` value and {@link updateChecked} sync function.
  */
 const CHECKED_TRUE: AttributeDirective<boolean> = { v: true, u: updateChecked };
-
-/**
- * {@link AttributeDirective} with `true` value that emits `checked` attribute.
- */
-const CHECKED_TRUE_RENDER_TO_STRING: AttributeDirective<boolean> = { v: true, s: () => { emitAttribute("checked"); } };
-
-/**
- * Render to string function for an {@link AttributeDirective} created with {@link VALUE} function.
- *
- * @param key Attribute key.
- * @param value Value.
- */
-function renderToStringValue(key: string, value: string) {
-  emitAttribute(`value="${escapeAttributeValue(value)}"`);
-}
-
-/**
- * Render to string function for an {@link AttributeDirective} created with {@link CONTENT} function.
- *
- * @param key Attribute key.
- * @param value Value.
- */
-function renderToStringContent(key: string, value: string) {
-  emitChildren(escapeText(value));
-}
 
 /**
  * Synchronization function for {@link AttributeDirective} created with {@link VALUE} function.
@@ -116,9 +90,7 @@ function updateChecked(
  * @returns {@link AttributeDirective}
  */
 export const VALUE = (v: string): AttributeDirective<string> => (
-  process.env.IVI_TARGET === "ssr" ?
-    v === "" ? IGNORE_RENDER_TO_STRING : { v, s: renderToStringValue } :
-    v === "" ? VALUE_EMPTY : { v, u: updateValue }
+  v === "" ? VALUE_EMPTY : { v, u: updateValue }
 );
 
 /**
@@ -132,11 +104,7 @@ export const VALUE = (v: string): AttributeDirective<string> => (
  * @returns {@link AttributeDirective}
  */
 export const CONTENT = (
-  process.env.IVI_TARGET === "ssr" ?
-    (v: string): AttributeDirective<string> => (
-      v === "" ? IGNORE_RENDER_TO_STRING : ({ v, s: renderToStringContent })
-    ) :
-    VALUE
+  VALUE
 );
 
 /**
@@ -150,9 +118,7 @@ export const CONTENT = (
  * @returns {@link AttributeDirective}
  */
 export const CHECKED = (v: boolean): AttributeDirective<boolean> => (
-  process.env.IVI_TARGET === "ssr" ?
-    v ? CHECKED_TRUE_RENDER_TO_STRING : IGNORE_RENDER_TO_STRING :
-    v ? CHECKED_TRUE : CHECKED_FALSE
+  v ? CHECKED_TRUE : CHECKED_FALSE
 );
 
 /* tslint:disable:max-line-length */
@@ -238,7 +204,7 @@ export const b = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>(
  * @param children Children nodes.
  * @returns OpNode HTML element <base>
  */
-export const base = /*#__PURE__*/elementFactory<HTMLBaseElementAttrs, HTMLBaseElement>("base", NodeFlags.Element | NodeFlags.VoidElement);
+export const base = /*#__PURE__*/htmlElementFactory<HTMLBaseElementAttrs, HTMLBaseElement>("base");
 
 /**
  * Creates OpNode HTML element <bdo>.
@@ -286,7 +252,7 @@ export const body = /*#__PURE__*/htmlElementFactory<HTMLBodyElementAttrs, HTMLBo
  * @param children Children nodes.
  * @returns OpNode HTML element <br>
  */
-export const br = /*#__PURE__*/elementFactory<HTMLBRElementAttrs, HTMLBRElement>("br", NodeFlags.Element | NodeFlags.VoidElement);
+export const br = /*#__PURE__*/htmlElementFactory<HTMLBRElementAttrs, HTMLBRElement>("br");
 
 /**
  * Creates OpNode HTML element <button>.
@@ -358,7 +324,7 @@ export const code = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElemen
  * @param children Children nodes.
  * @returns OpNode HTML element <col>
  */
-export const col = /*#__PURE__*/elementFactory<HTMLTableColElementAttrs, HTMLTableColElement>("col", NodeFlags.Element | NodeFlags.VoidElement);
+export const col = /*#__PURE__*/htmlElementFactory<HTMLTableColElementAttrs, HTMLTableColElement>("col");
 
 /**
  * Creates OpNode HTML element <colgroup>.
@@ -634,7 +600,7 @@ export const hgroup = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElem
  * @param children Children nodes.
  * @returns OpNode HTML element <hr>
  */
-export const hr = /*#__PURE__*/elementFactory<HTMLHRElementAttrs, HTMLHRElement>("hr", NodeFlags.Element | NodeFlags.VoidElement);
+export const hr = /*#__PURE__*/htmlElementFactory<HTMLHRElementAttrs, HTMLHRElement>("hr");
 
 /**
  * Creates OpNode HTML element <html>.
@@ -682,7 +648,7 @@ export const iframe = /*#__PURE__*/htmlElementFactory<HTMLIFrameElementAttrs, HT
  * @param children Children nodes.
  * @returns OpNode HTML element <img>
  */
-export const img = /*#__PURE__*/elementFactory<HTMLImageElementAttrs, HTMLImageElement>("img", NodeFlags.Element | NodeFlags.VoidElement);
+export const img = /*#__PURE__*/htmlElementFactory<HTMLImageElementAttrs, HTMLImageElement>("img");
 
 /**
  * Creates OpNode HTML element <area>.
@@ -694,7 +660,7 @@ export const img = /*#__PURE__*/elementFactory<HTMLImageElementAttrs, HTMLImageE
  * @param children Children nodes.
  * @returns OpNode HTML element <area>
  */
-export const area = /*#__PURE__*/elementFactory<HTMLAreaElementAttrs, HTMLAreaElement>("area", NodeFlags.Element | NodeFlags.VoidElement);
+export const area = /*#__PURE__*/htmlElementFactory<HTMLAreaElementAttrs, HTMLAreaElement>("area");
 
 /**
  * Creates OpNode HTML element <map>.
@@ -778,7 +744,7 @@ export const li = /*#__PURE__*/htmlElementFactory<HTMLLIElementAttrs, HTMLLIElem
  * @param children Children nodes.
  * @returns OpNode HTML element <link>
  */
-export const link = /*#__PURE__*/elementFactory<HTMLLinkElementAttrs, HTMLLinkElement>("link", NodeFlags.Element | NodeFlags.VoidElement);
+export const link = /*#__PURE__*/htmlElementFactory<HTMLLinkElementAttrs, HTMLLinkElement>("link");
 
 /**
  * Creates OpNode HTML element <main>.
@@ -826,7 +792,7 @@ export const menu = /*#__PURE__*/htmlElementFactory<HTMLMenuElementAttrs, HTMLMe
  * @param children Children nodes.
  * @returns OpNode HTML element <meta>
  */
-export const meta = /*#__PURE__*/elementFactory<HTMLMetaElementAttrs, HTMLMetaElement>("meta", NodeFlags.Element | NodeFlags.VoidElement);
+export const meta = /*#__PURE__*/htmlElementFactory<HTMLMetaElementAttrs, HTMLMetaElement>("meta");
 
 /**
  * Creates OpNode HTML element <meter>.
@@ -934,7 +900,7 @@ export const picture = /*#__PURE__*/htmlElementFactory<HTMLPictureElementAttrs, 
  * @param children Children nodes.
  * @returns OpNode HTML element <pre>
  */
-export const pre = /*#__PURE__*/elementFactory<HTMLPreElementAttrs, HTMLPreElement>("pre", NodeFlags.Element | NodeFlags.NewlineEatingElement);
+export const pre = /*#__PURE__*/htmlElementFactory<HTMLPreElementAttrs, HTMLPreElement>("pre");
 
 /**
  * Creates OpNode HTML element <progress>.
@@ -1054,7 +1020,7 @@ export const select = /*#__PURE__*/htmlElementFactory<HTMLSelectElementAttrs, HT
  * @param children Children nodes.
  * @returns OpNode HTML element <source>
  */
-export const source = /*#__PURE__*/elementFactory<HTMLSourceElementAttrs, HTMLSourceElement>("source", NodeFlags.Element | NodeFlags.VoidElement);
+export const source = /*#__PURE__*/htmlElementFactory<HTMLSourceElementAttrs, HTMLSourceElement>("source");
 
 /**
  * Creates OpNode HTML element <span>.
@@ -1246,7 +1212,7 @@ export const tr = /*#__PURE__*/htmlElementFactory<HTMLTableRowElementAttrs, HTML
  * @param children Children nodes.
  * @returns OpNode HTML element <track>
  */
-export const track = /*#__PURE__*/elementFactory<HTMLTrackElementAttrs, HTMLTrackElement>("track", NodeFlags.Element | NodeFlags.VoidElement);
+export const track = /*#__PURE__*/htmlElementFactory<HTMLTrackElementAttrs, HTMLTrackElement>("track");
 
 /**
  * Creates OpNode HTML element <u>.
@@ -1282,7 +1248,7 @@ export const ul = /*#__PURE__*/htmlElementFactory<HTMLUListElementAttrs, HTMLULi
  * @param children Children nodes.
  * @returns OpNode HTML element <wbr>
  */
-export const wbr = /*#__PURE__*/elementFactory<HTMLElementAttrs, HTMLElement>("wbr", NodeFlags.Element | NodeFlags.VoidElement);
+export const wbr = /*#__PURE__*/htmlElementFactory<HTMLElementAttrs, HTMLElement>("wbr");
 
 /**
  * Creates OpNode HTML element <textarea>.
@@ -1294,7 +1260,7 @@ export const wbr = /*#__PURE__*/elementFactory<HTMLElementAttrs, HTMLElement>("w
  * @param children Children nodes.
  * @returns OpNode HTML element <textarea>
  */
-export const textarea = /*#__PURE__*/elementFactory<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea", NodeFlags.Element | NodeFlags.NewlineEatingElement);
+export const textarea = /*#__PURE__*/htmlElementFactory<HTMLTextAreaElementAttrs, HTMLTextAreaElement>("textarea");
 
 /**
  * Creates OpNode HTML element <input>.
@@ -1306,7 +1272,7 @@ export const textarea = /*#__PURE__*/elementFactory<HTMLTextAreaElementAttrs, HT
  * @param children Children nodes.
  * @returns OpNode HTML element <input>
  */
-export const input = /*#__PURE__*/elementFactory<HTMLInputElementAttrs, HTMLInputElement>("input", NodeFlags.Element | NodeFlags.VoidElement);
+export const input = /*#__PURE__*/htmlElementFactory<HTMLInputElementAttrs, HTMLInputElement>("input");
 
 /**
  * Creates OpNode HTML element <audio>.
