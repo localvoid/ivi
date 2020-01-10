@@ -186,9 +186,6 @@ export const LOST_POINTER_CAPTURE_EVENT = (
 export const MOUSE_DOWN_EVENT = (
   /*#__PURE__*/createNativeEventSource<MouseEvent>("mousedown")
 );
-export const MOUSE_MOVE_EVENT = (
-  /*#__PURE__*/createNativeEventSource<MouseEvent>("mousemove")
-);
 export const MOUSE_OUT_EVENT = (
   /*#__PURE__*/createNativeEventSource<MouseEvent>("mouseout")
 );
@@ -215,9 +212,6 @@ export const POINTER_CANCEL_EVENT = (
 );
 export const POINTER_DOWN_EVENT = (
   /*#__PURE__*/createNativeEventSource<PointerEvent>("pointerdown")
-);
-export const POINTER_MOVE_EVENT = (
-  /*#__PURE__*/createNativeEventSource<PointerEvent>("pointermove")
 );
 export const POINTER_OUT_EVENT = (
   /*#__PURE__*/createNativeEventSource<PointerEvent>("pointerout")
@@ -270,9 +264,6 @@ export const TOUCH_CANCEL_EVENT = (
 export const TOUCH_END_EVENT = (
   /*#__PURE__*/createNativeEventSource<TouchEvent>("touchend")
 );
-export const TOUCH_MOVE_EVENT = (
-  /*#__PURE__*/createNativeEventSource<TouchEvent>("touchmove")
-);
 export const TOUCH_START_EVENT = (
   /*#__PURE__*/createNativeEventSource<TouchEvent>("touchstart")
 );
@@ -303,9 +294,6 @@ export const WHEEL_EVENT = (
 
 export const ACTIVE_TOUCH_END_EVENT = (
   /*#__PURE__*/createNativeEventSource<TouchEvent>("touchend", EVENT_CAPTURE_ACTIVE_OPTIONS)
-);
-export const ACTIVE_TOUCH_MOVE_EVENT = (
-  /*#__PURE__*/createNativeEventSource<TouchEvent>("touchmove", EVENT_CAPTURE_ACTIVE_OPTIONS)
 );
 export const ACTIVE_TOUCH_START_EVENT = (
   /*#__PURE__*/createNativeEventSource<TouchEvent>("touchstart", EVENT_CAPTURE_ACTIVE_OPTIONS)
@@ -600,12 +588,6 @@ export const onMouseDown: <P>(
 ) => EventHandlerNode<MouseEvent> = (
   /*#__PURE__*/nativeEventHandlerFactory(MOUSE_DOWN_EVENT)
   );
-export const onMouseMove: <P>(
-  handler: NativeEventHandler<MouseEvent>,
-  capture?: boolean,
-) => EventHandlerNode<MouseEvent> = (
-  /*#__PURE__*/nativeEventHandlerFactory(MOUSE_MOVE_EVENT)
-  );
 export const onMouseOut: <P>(
   handler: NativeEventHandler<MouseEvent>,
   capture?: boolean,
@@ -659,12 +641,6 @@ export const onPointerDown: <P>(
   capture?: boolean,
 ) => EventHandlerNode<PointerEvent> = (
   /*#__PURE__*/nativeEventHandlerFactory(POINTER_DOWN_EVENT)
-  );
-export const onPointerMove: <P>(
-  handler: NativeEventHandler<PointerEvent>,
-  capture?: boolean,
-) => EventHandlerNode<PointerEvent> = (
-  /*#__PURE__*/nativeEventHandlerFactory(POINTER_MOVE_EVENT)
   );
 export const onPointerOut: <P>(
   handler: NativeEventHandler<PointerEvent>,
@@ -768,12 +744,6 @@ export const onTouchEnd: <P>(
 ) => EventHandlerNode<TouchEvent> = (
   /*#__PURE__*/nativeEventHandlerFactory(TOUCH_END_EVENT)
   );
-export const onTouchMove: <P>(
-  handler: NativeEventHandler<TouchEvent>,
-  capture?: boolean,
-) => EventHandlerNode<TouchEvent> = (
-  /*#__PURE__*/nativeEventHandlerFactory(TOUCH_MOVE_EVENT)
-  );
 export const onTouchStart: <P>(
   handler: NativeEventHandler<TouchEvent>,
   capture?: boolean,
@@ -834,12 +804,6 @@ export const onActiveTouchEnd: <P>(
   capture?: boolean,
 ) => EventHandlerNode<TouchEvent> = (
   /*#__PURE__*/nativeEventHandlerFactory(ACTIVE_TOUCH_END_EVENT)
-  );
-export const onActiveTouchMove: <P>(
-  handler: NativeEventHandler<TouchEvent>,
-  capture?: boolean,
-) => EventHandlerNode<TouchEvent> = (
-  /*#__PURE__*/nativeEventHandlerFactory(ACTIVE_TOUCH_MOVE_EVENT)
   );
 export const onActiveTouchStart: <P>(
   handler: NativeEventHandler<TouchEvent>,
