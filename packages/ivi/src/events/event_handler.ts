@@ -19,7 +19,7 @@ export interface EventHandlerDescriptor {
   /**
    * Event handler.
    */
-  readonly h: (event: any, currentTarget: DispatchTarget, source: {}) => boolean | void;
+  readonly h: (event: any, currentTarget: DispatchTarget, source: {}) => number | void;
   /**
    * See {@link EventHandlerFlags} for details.
    */

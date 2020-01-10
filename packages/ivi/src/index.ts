@@ -98,7 +98,7 @@ export {
   EVENT_CAPTURE_PASSIVE_OPTIONS, EVENT_CAPTURE_ACTIVE_OPTIONS, EVENT_PASSIVE_OPTIONS, EVENT_ACTIVE_OPTIONS,
 } from "./events/utils";
 export { EventHandlerFlags, EventHandlerNode, EventHandler } from "./events/event_handler";
-export { DispatchTarget, dispatchEvent } from "./events/dispatch";
+export { DispatchEvent, DispatchTarget, dispatchEvent } from "./events/dispatch";
 export {
   NativeEventSource, createNativeEventSource, addNativeEventMiddleware, nativeEventHandlerFactory,
 
@@ -109,22 +109,22 @@ export {
   DURATION_CHANGE_EVENT, EMPTIED_EVENT, ENCRYPTED_EVENT, ENDED_EVENT, ERROR_EVENT, FOCUS_EVENT,
   GOT_POINTER_CAPTURE_EVENT, BEFORE_INPUT_EVENT, INPUT_EVENT, INVALID_EVENT, KEY_DOWN_EVENT, KEY_PRESS_EVENT,
   KEY_UP_EVENT, LOAD_EVENT, LOADED_DATA_EVENT, LOADED_METADATA_EVENT, LOAD_START_EVENT, LOST_POINTER_CAPTURE_EVENT,
-  MOUSE_DOWN_EVENT, MOUSE_MOVE_EVENT, MOUSE_OUT_EVENT, MOUSE_OVER_EVENT, MOUSE_UP_EVENT, PASTE_EVENT, PAUSE_EVENT,
-  PLAY_EVENT, PLAYING_EVENT, POINTER_CANCEL_EVENT, POINTER_DOWN_EVENT, POINTER_MOVE_EVENT, POINTER_OUT_EVENT,
+  MOUSE_DOWN_EVENT, MOUSE_OUT_EVENT, MOUSE_OVER_EVENT, MOUSE_UP_EVENT, PASTE_EVENT, PAUSE_EVENT,
+  PLAY_EVENT, PLAYING_EVENT, POINTER_CANCEL_EVENT, POINTER_DOWN_EVENT, POINTER_OUT_EVENT,
   POINTER_OVER_EVENT, POINTER_UP_EVENT, PROGRESS_EVENT, RATE_CHANGE_EVENT, RESET_EVENT, SCROLL_EVENT, SEEKED_EVENT,
   SEEKING_EVENT, SELECT_EVENT, SELECT_START_EVENT, STALLED_EVENT, SUBMIT_EVENT, SUSPEND_EVENT, TIME_UPDATE_EVENT,
-  TOUCH_CANCEL_EVENT, TOUCH_END_EVENT, TOUCH_MOVE_EVENT, TOUCH_START_EVENT, TRANSITION_CANCEL_EVENT,
+  TOUCH_CANCEL_EVENT, TOUCH_END_EVENT, TOUCH_START_EVENT, TRANSITION_CANCEL_EVENT,
   TRANSITION_END_EVENT, TRANSITION_RUN_EVENT, TRANSITION_START_EVENT, UNLOAD_EVENT, VOLUME_CHANGE_EVENT, WAITING_EVENT,
-  WHEEL_EVENT, ACTIVE_TOUCH_END_EVENT, ACTIVE_TOUCH_MOVE_EVENT, ACTIVE_TOUCH_START_EVENT, ACTIVE_WHEEL_EVENT,
+  WHEEL_EVENT, ACTIVE_TOUCH_END_EVENT, ACTIVE_TOUCH_START_EVENT, ACTIVE_WHEEL_EVENT,
 
   onAbort, onActivate, onAriaRequest, onBeforeActivate, onBeforeCopy, onBeforeCut, onBeforeDeactivate, onBeforePaste,
   onBlur, onCanPlay, onCanPlaythrough, onChange, onClick, onContextMenu, onCopy, onCueChange, onCut, onDoubleClick,
   onDeactivate, onDrag, onDragEnd, onDragEnter, onDragLeave, onDragOver, onDragStart, onDrop, onDurationChange,
   onEmptied, onEncrypted, onEnded, onError, onFocus, onGotPointerCapture, onBeforeInput, onInput, onInvalid, onKeyDown,
   onKeyPress, onKeyUp, onLoad, onLoadedData, onLoadedMetadata, onLoadStart, onLostPointerCapture, onMouseDown,
-  onMouseMove, onMouseOut, onMouseOver, onMouseUp, onPaste, onPause, onPlay, onPlaying, onPointerCancel, onPointerDown,
-  onPointerMove, onPointerOut, onPointerOver, onPointerUp, onProgress, onRateChange, onReset, onScroll, onSeeked,
+  onMouseOut, onMouseOver, onMouseUp, onPaste, onPause, onPlay, onPlaying, onPointerCancel, onPointerDown,
+  onPointerOut, onPointerOver, onPointerUp, onProgress, onRateChange, onReset, onScroll, onSeeked,
   onSeeking, onSelect, onSelectStart, onStalled, onSubmit, onSuspend, onTimeUpdate, onTouchCancel, onTouchEnd,
-  onTouchMove, onTouchStart, onTransitionCancel, onTransitionEnd, onTransitionRun, onTransitionStart, onUnload,
-  onVolumeChange, onWaiting, onWheel, onActiveTouchEnd, onActiveTouchMove, onActiveTouchStart, onActiveWheel,
+  onTouchStart, onTransitionCancel, onTransitionEnd, onTransitionRun, onTransitionStart, onUnload,
+  onVolumeChange, onWaiting, onWheel, onActiveTouchEnd, onActiveTouchStart, onActiveWheel,
 } from "./events/native_events";

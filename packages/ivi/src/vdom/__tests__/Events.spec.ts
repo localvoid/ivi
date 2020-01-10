@@ -60,8 +60,8 @@ describe("Events", () => {
   });
 
   describe("multiple handlers", () => {
-    const handler1 = useMockFn();
-    const handler2 = useMockFn();
+    const handler1 = useMockFn((fn) => { fn.mockReturnValue(ivi.DispatchEvent.Propagate); });
+    const handler2 = useMockFn((fn) => { fn.mockReturnValue(ivi.DispatchEvent.Propagate); });
 
     test("1", () => {
       r(ivi.Events([ivi.onClick(handler1), ivi.onClick(handler2)], target()));
@@ -117,8 +117,8 @@ describe("Events", () => {
   });
 
   describe("flow", () => {
-    const handlerStop = useMockFn((fn) => { fn.mockReturnValue(true); });
-    const handler = useMockFn();
+    const handlerStop = useMockFn();
+    const handler = useMockFn((fn) => { fn.mockReturnValue(ivi.DispatchEvent.Propagate); });
 
     test("1", () => {
       r(

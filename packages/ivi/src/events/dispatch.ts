@@ -4,6 +4,10 @@ import { findRoot } from "../vdom/root";
 import { EventsOp } from "../vdom/operations";
 import { EventHandlerFlags, EventHandler, EventHandlerNode } from "./event_handler";
 
+export const enum DispatchEvent {
+  Propagate = 1
+}
+
 /**
  * DispatchTarget.
  */
@@ -147,7 +151,7 @@ export function dispatchEvent<E>(
       currentTarget = targets[i];
       descriptor = currentTarget.h.d;
       if ((descriptor.f & EventHandlerFlags.Capture) !== 0) {
-        if (descriptor.h(event, currentTarget, src) === true) {
+        if (descriptor.h(event, currentTarget, src) !== DispatchEvent.Propagate) {
           return;
         }
       }
@@ -158,7 +162,7 @@ export function dispatchEvent<E>(
       currentTarget = targets[i];
       descriptor = currentTarget.h.d;
       if ((descriptor.f & EventHandlerFlags.Capture) === 0) {
-        if (descriptor.h(event, currentTarget, src) === true) {
+        if (descriptor.h(event, currentTarget, src) !== DispatchEvent.Propagate) {
           return;
         }
       }

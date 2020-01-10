@@ -15,7 +15,7 @@ export interface NativeEventSource<E extends Event> {
   next: (event: E) => void;
 }
 
-export type NativeEventHandler<E extends Event> = (event: E, currentTarget: OpState, src: {}) => boolean | void;
+export type NativeEventHandler<E extends Event> = (event: E, currentTarget: OpState, src: {}) => number | void;
 
 const dispatchNativeEvent = (event: Event, currentTarget: DispatchTarget<NativeEventHandler<Event>>, src: {}) => (
   currentTarget.h.h(event, currentTarget.t, src)
