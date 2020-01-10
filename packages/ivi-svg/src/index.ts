@@ -219,18 +219,6 @@ export const defs = /*#__PURE__*/svgElementFactory<SVGDefsElementAttrs, SVGDefsE
 export const desc = /*#__PURE__*/svgElementFactory<SVGDescElementAttrs, SVGDescElement>("desc");
 
 /**
- * Creates OpNode SVG element <discard>.
- *
- * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/discard}
- *
- * @param className Class name.
- * @param attrs Attributes.
- * @param children Children nodes.
- * @returns OpNode SVG element <discard>
- */
-export const discard = /*#__PURE__*/svgElementFactory<SVGElementAttrs, SVGElement>("discard");
-
-/**
  * Creates OpNode SVG element <ellipse>.
  *
  * {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/ellipse}
