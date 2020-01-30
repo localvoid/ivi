@@ -101,7 +101,7 @@ export function useRequestAnimationFrame() {
  * @param mount Mount element to the document body.
  * @returns DOM Element getter function.
  */
-export function useDOMElement(tagName: string = "div", mount = true) {
+export function useDOMElement(tagName = "div", mount = true) {
   let el: HTMLElement;
   beforeEach(() => {
     el = document.createElement(tagName);

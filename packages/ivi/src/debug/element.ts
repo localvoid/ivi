@@ -11,10 +11,10 @@ function checkStyle(styles: CSSStyleProps): void {
     const styleValue = styles[styleName];
 
     if (typeof styleValue === "string") {
-      if (styleValue.indexOf("\n") > -1) {
+      if (styleValue.includes("\n")) {
         printWarn(`Typo: style "${styleName}" has a value with a newline character "${styleValue}".`);
       }
-      if (styleValue.indexOf(";") > -1) {
+      if (styleValue.includes(";")) {
         printWarn(`Typo: style "${styleName}" has a value with a semicolon "${styleValue}".`);
       }
     } else if (typeof styleValue === "number") {

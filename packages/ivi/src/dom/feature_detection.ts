@@ -20,7 +20,7 @@ export const PASSIVE_EVENTS = (
         window.addEventListener("_", null as any, {
           get passive(): boolean {
             return v = true;
-          }
+          },
         });
       } catch (e) {
         // ignore

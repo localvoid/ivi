@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "tslint --format codeFrame --project ./tsconfig.json",
+    "lint": "eslint . --ext .js,.ts",
     "test": "jest",
     "test:watch": "IVI_TARGET=\"browser\" jest --watch",
     "test:debug": "IVI_TARGET=\"browser\" node --inspect-brk ./node_modules/.bin/jest --runInBand",
@@ -19,13 +19,18 @@
   "devDependencies": {
     "@types/jest": "^25.1.1",
     "@types/node": "^13.5.2",
+    "@typescript-eslint/parser": "^2.18.0",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "babel-eslint": "^10.0.3",
     "codecov": "^3.6.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prefer-arrow": "^1.1.7",
     "husky": "^4.2.1",
     "jest": "^25.1.0",
     "routekit-resolver": "^0.5.0",
     "ts-jest": "^25.1.0",
     "tslib": "^1.10.0",
-    "tslint": "^5.20.1",
     "typescript": "^3.7.5"
   }
 }

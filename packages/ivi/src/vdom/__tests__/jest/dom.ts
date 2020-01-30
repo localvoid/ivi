@@ -58,31 +58,31 @@ export function useDOMOpsCounters(): () => DOMOpsCounters {
       return removeChild.apply(this, arguments as any) as any;
     };
     Object.defineProperty(Element.prototype, "innerHTML", {
-      get: function () {
-        innerHTML.get!.apply(this);
+      get() {
+        return innerHTML.get!.apply(this);
       },
-      set: function () {
+      set() {
         state.innerHTML++;
         innerHTML.set!.apply(this, arguments as any);
-      }
+      },
     });
     Object.defineProperty(Node.prototype, "textContent", {
-      get: function () {
-        textContent.get!.apply(this);
+      get() {
+        return textContent.get!.apply(this);
       },
-      set: function () {
+      set() {
         state.textContent++;
         textContent.set!.apply(this, arguments as any);
-      }
+      },
     });
     Object.defineProperty(Node.prototype, "nodeValue", {
-      get: function () {
-        nodeValue.get!.apply(this);
+      get() {
+        return nodeValue.get!.apply(this);
       },
-      set: function () {
+      set() {
         state.nodeValue++;
         nodeValue.set!.apply(this, arguments as any);
-      }
+      },
     });
   });
 

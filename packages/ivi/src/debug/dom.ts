@@ -5,7 +5,7 @@
  * @returns `true` when tag name is valid.
  */
 export function isValidTag(tag: string): boolean {
-  return /^[a-zA-Z][a-zA-Z:_\.\-\d]*$/.test(tag);
+  return /^[a-zA-Z][a-zA-Z:_.\-\d]*$/.test(tag);
 }
 
 /**

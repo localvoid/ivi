@@ -32,12 +32,12 @@ const dispatchNativeEvent = (event: Event, currentTarget: DispatchTarget<NativeE
  */
 export function createNativeEventSource<E extends Event>(
   name: string,
-  options: { capture?: boolean, passive?: boolean } | boolean = true,
+  options: { capture?: boolean; passive?: boolean } | boolean = true,
 ): NativeEventSource<E> {
   const source = {
     next: (event: Event): void => {
       dispatchEvent(source, event.target as Element, event);
-    }
+    },
   };
   doc.addEventListener(name, withSchedulerTick((event) => { source.next(event); }), options);
   return source;

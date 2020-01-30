@@ -17,7 +17,7 @@ describe("catchError", () => {
     const e = Error();
     try {
       ivi.catchError(() => { throw e; })();
-    } catch (e) {
+    } catch (err) {
       //
     }
 

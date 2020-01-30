@@ -115,17 +115,17 @@ export interface DOMElementOp<T = any> extends ContainerOp<T | undefined, Op> {
 /**
  * Events operation.
  */
-export interface EventsOp extends ContainerOp<EventHandler, Op> { }
+export type EventsOp = ContainerOp<EventHandler, Op>;
 
 /**
  * Context operation.
  */
-export interface ContextOp<T = any> extends ContainerOp<T, Op> { }
+export type ContextOp<T = any> = ContainerOp<T, Op>;
 
 /**
  * Set context state operation.
  */
-export interface SetContextStateOp extends ContainerOp<ContextState, Op> { }
+export type SetContextStateOp = ContainerOp<ContextState, Op>;
 
 /**
  * TrackByKey operation.
@@ -135,7 +135,7 @@ export type TrackByKeyOp<K = any, V = any> = ValueOp<Key<K, V>[]>;
 /**
  * Component operation.
  */
-export interface ComponentOp<T = any, C = any> extends ContainerOp<T, C> { }
+export type ComponentOp<T = any, C = any> = ContainerOp<T, C>;
 
 /**
  * Operation node.

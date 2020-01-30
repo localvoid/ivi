@@ -12,7 +12,7 @@ class JSDomEnvironment {
         runScripts: "dangerously",
         url: config.testURL,
         virtualConsole: new VirtualConsole().sendTo(
-          options.console || console
+          options.console || console,
         ),
         resources: options.resources,
         ...config.testEnvironmentOptions,
