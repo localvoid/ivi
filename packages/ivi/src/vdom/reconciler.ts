@@ -804,6 +804,7 @@ export function _update(
  * @param b Next operations.
  * @param moveNode Children DOM nodes should be moved.
  * @noinline
+ * @__NOINLINE__
  */
 function _updateChildrenTrackByKeys(
   parentElement: Element,
@@ -966,6 +967,7 @@ function _updateChildrenTrackByKeys(
  * @param a Array of numbers.
  * @returns Longest increasing subsequence
  * @noinline
+ * @__NOINLINE__
  */
 function lis(a: number[]): number[] {
   const p = a.slice();
