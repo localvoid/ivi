@@ -1,5 +1,6 @@
 const { ModuleMocker } = require("jest-mock");
-const { FakeTimers, installCommonGlobals } = require("jest-util");
+const { installCommonGlobals } = require("jest-util");
+const { JestFakeTimers } = require("@jest/fake-timers");
 const { JSDOM, VirtualConsole } = require("jsdom");
 
 class JSDomEnvironment {
@@ -57,7 +58,7 @@ class JSDomEnvironment {
       refToId: (ref) => ref,
     };
 
-    this.fakeTimers = new FakeTimers({
+    this.fakeTimers = new JestFakeTimers({
       config,
       global: this.global,
       moduleMocker: this.moduleMocker,
