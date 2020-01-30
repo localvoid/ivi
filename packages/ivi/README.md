@@ -2,35 +2,11 @@
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
-- Declarative rendering with ["Virtual DOM"](#virtual-dom)
-- Powerful [composition model](https://codesandbox.io/s/k9m8wlqky3)
-- [Immutable](#immutable-virtual-dom) "Virtual DOM"
-- [Fragments](#fragments)
-- [Components](#components)
-- Synchronous and deterministic reconciliation algorithm with [minimum number of DOM operations](#children-reconciliation)
-- [Extensible](https://codesandbox.io/s/zy1wrn0j4) synthetic events
-- Server-side rendering
-
-## Library Size
-
-ivi has a tree shakeable API, so it can scale from simple widgets to complex desktop applications.
-
-Small library size is important, but in complex applications, major reduction in the code size will come from the
-powerful [composition model](https://codesandbox.io/s/k9m8wlqky3) that allows to write reusable code.
-
-Size of the [basic example](https://github.com/localvoid/ivi-examples/tree/master/packages/tutorial/01_introduction)
-bundled with [Rollup](https://github.com/rollup/rollup) and minified with
-[terser](https://github.com/fabiosantoscode/terser) is just a **2.7KiB** (minified+compressed).
-
-Size of the [TodoMVC](https://github.com/localvoid/ivi-todomvc) application is **4.6KiB** (minified+compressed).
-
 ## Quick Start
 
 ### Hello World
 
 The easiest way to get started with ivi is to use [this basic example on CodeSandbox](https://codesandbox.io/s/qlypwvz6o6).
-
-The smallest ivi example looks like this:
 
 ```js
 import { _, render } from "ivi";
@@ -52,304 +28,6 @@ Factory functions for HTML elements are declared in the `ivi-html` package.
 `h1()` function will instantiate a "Virtual DOM" node for a `<h1>` element.
 
 `_` is a shortcut for an `undefined` value.
-
-### Components
-
-Components API were heavily influenced by the new [React hooks API](https://reactjs.org/docs/hooks-intro.html).
-
-There are several differences in the ivi API because we don't need to support concurrent rendering, and because of it we
-could try to solve some flaws in the React hooks API design:
-
-- [Hooks rules](https://reactjs.org/docs/hooks-rules.html)
-- Excessive memory allocations each time component is updated
-- ["Memory leaking"](https://codesandbox.io/s/lz61v39r7) caused by
-[closure context sharing](https://mrale.ph/blog/2012/09/23/grokking-v8-closures-for-fun.html)
-
-All components has an interface `(component) => (props) => VDOM`.
-
-Outer function is used to store internal state, creating dataflow pipelines, attaching hooks and creating an "update"
-function. It is important that outer function doesn't have any access to the `props` to prevent unexpected
-"memory leaks". `component` is an opaque object, it is used as a first argument for almost all component functions like
-`invalidate()`, `useEffect()` etc.
-
-Internal "update" function passes input data through dataflow pipelines and returns a Virtual DOM.
-
-```js
-import { _, component, invalidate, render } from "ivi";
-import { h1 } from "ivi-html";
-
-const Counter = component((c) => {
-  let counter = 0;
-
-  const ticker = useEffect(c, (interval) => {
-    const id = setInterval(() => {
-      counter++;
-      invalidate(c);
-    }, interval);
-    return () => clearInterval(id);
-  });
-
-  return (interval) => (
-    ticker(interval),
-
-    div(_, _, `Counter: ${counter}`),
-  );
-});
-
-render(
-  Counter(1000),
-  document.getElementById("app"),
-);
-```
-
-```js
-const Counter = component((c) => {
-  let counter = 0;
-  // ...
-  return () => vdom;
-});
-```
-
-`component()` function creates Virtual DOM factory functions for component nodes. All component factory functions has an
-interface `Factory(props)`.
-
-In the outer function we are declaring internal state `counter`.
-
-```js
-  const ticker = useEffect(c, (interval) => {
-    // ...
-    return () => cleanup;
-  });
-```
-
-`useEffect()` creates a function that will be used to perform side effects. Side effect functions can optionally return
-a cleanup function, it will be automatically invoked when component is unmounted from the document or when input
-property `interval` is modified.
-
-```js
-  const ticker = useEffect(c, (interval) => {
-    const id = setInterval(() => {
-      counter++;
-      invalidate(c);
-    }, interval);
-    return () => clearInterval(id);
-  });
-```
-
-Side effect function `ticker()` registers a timer function that is periodically invoked and increments `counter` from
-the internal state. When internal state is modified, we need to trigger an update for the component. To trigger an
-update, we are using `invalidate()` function. Invalidate function will mark component as dirty and enqueue a task for
-dirty checking.
-
-Periodic timers registered with `setInterval()` function should be unregistered when they are no longer used. To
-unregister periodic timer we are creating and returning a cleanup function `() => clearInterval(id)`.
-
-```js
-  return (interval) => (
-    ticker(interval),
-
-    div(_, _, `Counter: ${counter}`),
-  );
-```
-
-The final step for a component is to create an "update" function, it should pass input data through dataflow pipelines
-and return a Virtual DOM. Update function will be invoked when component is invalidated or component properties are
-modified.
-
-#### Stateless Components
-
-One of the unique features in ivi is that it doesn't store any magic properties like keys on "Virtual DOM" nodes.
-Decoupling magic properties from "Virtual DOM" nodes allows us to use simple immediately invoked functions as
-stateless components.
-
-```js
-const Link = (href, children) => a("link", { href }, children);
-const LINKS = [1, 2];
-
-render(
-  TrackByKey(LINKS.map((id) => (
-    key(id, Link(`#${id}`, id))
-  ))),
-  document.getElementById("app"),
-);
-```
-
-## Virtual DOM
-
-Virtual DOM term is usually associated with diffing algorithms, but the problem with this definition is that almost
-all efficient declarative libraries are using diffing algorithms. And all feature complete libraries implement the same
-diffing algorithms to deal with use cases like dynamic attributes `<div {...domProps}></div>`, children lists diffing,
-etc.
-
-What makes a real difference between Virtual DOM and other technologies is that it provides an easy to use API with
-simple composable primitives so that you can use javascript for composition without any specialized compilers.
-
-## Performance
-
-Recently there were a lot of misleading articles about
-[Virtual DOM "overhead"](https://svelte.dev/blog/virtual-dom-is-pure-overhead). This article shows the simplest problem
-that declarative rendering libraries are solving and presents an obvious solution with direct DOM mutations and from
-this solution they are making a conclusion that if it is possible to solve this problem without this overhead, it means
-that Virtual DOM is a pure overhead. But imagine a slightly more complicated problem:
-
-```js
-const Row = (data) => ([
-  InnerComponent(data),
-  data.showTitle ? PopupTitle(data) : null,
-]);
-render(data.map((rowData) => Row(rowData)), container);
-```
-
-The main problem in this example is that we render several adjacent components that has conditional rendering at the
-root node, so when `showTitle` property is changed we need to figure out where to insert DOM node that will be rendered
-in `PopupTitle` component. It is possible that previous and next adjacent components doesn't have any DOM nodes at this
-time, so how we can figure out where to insert our new DOM element? Libraries like Svelte unable to deal with such
-problems efficiently and will insert additional DOM node in conditional statements as a marker that will be used to
-insert other nodes.
-
-Everything gets even more complicated with features like components, fragments, transclusion, context propagation, etc.
-All this features are so intertwined when implemented efficiently and there are many different constraints because it
-should work on top of the DOM API, and it is not so easy to optimize DOM operations for different browsers and browser
-environments. Some popular browser extensions add an additional overhead to many DOM operations, so it becomes
-extremely important to touch DOM as little as possible and avoid polluting document with useless DOM nodes.
-
-To get a better understanding how all this "faster than Virtual DOM" libraries scale when we move from basic DOM
-primitives to a much more complicated composition primitives we can try to gradually add this primitives to their
-js-framework-benchmark
-[implementations](https://github.com/localvoid/js-framework-benchmark/tree/master/frameworks/keyed). Results in a
-[clean chrome](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table.html) and
-[chrome with uBlock origin extension](https://localvoid.github.io/js-framework-benchmark/webdriver-ts-results/table-extensions.html)
-clearly shows that there are a lot of issues with their performance. In this repository, implementations with a suffix
-`-0` are abusing techniques like event delegation, etc. Then we start to gradually add components, conditional
-rendering, etc. `ivi-5` is a special variant that performs a full-blown rerender without any `shouldComponentUpdate`
-optimizations (diffing 10k-100k virtual dom nodes per update).
-
-If you really want to get any useful information from this benchmark, I'd recommend to do the same experiment with your
-favorite UI library.
-
-ivi is optimized for predictable performance, there are no perf cliffs when you start using any composition
-primitives.
-
-Another argument that is often used against virtual DOM libraries is that components in real applications have expensive
-user space computations, so it isn't a virtual DOM diffing problem anymore :) But there is another problem, their
-solutions won't be able to magically remove expensive user space computations from components, so when we instantiate
-components we still need to perform this computations with an additional overhead to setup change detection graphs or
-generate additional code to optimize micro updates. It is as bad as using `PureComponent` in all React components, most
-of the time it isn't even worth it. And when we have a really computationaly expensive task, we can easily solve it with
-memoization `useMemo()` in React or `memo()` in ivi. There aren't any silver bullet solutions. Solutions with
-fine-grained observable graphs will have a similar developer experience because it would require to wrap expensive
-computations into lazy evaluated nodes `@computed` in a similar way to `memo()` in virtual DOM libraries. And solutions
-that generate a lot of inefficient code for change detection (Svelte) should solve performance issues with common case
-scenarios before making any claims about performance.
-
-### "The Fastest UI Library"
-
-There is no such thing as "the fastest UI library", optimizing UI library for some use cases will make it slower in
-other use cases.
-
-There are many different optimization goals and we need to find a balanced solution. Here is a list of different
-optimization goals (in random order) that we should be focusing on:
-
-- Application code size (reduce compilation output, composable primitives, tree-shakeable and minifiable APIs)
-- Library code size
-- Time to render first interactive page
-- Creating DOM nodes
-- Updating DOM nodes
-- Initialization of internal state
-- Cleaning up internal state
-- Memory usage
-- Garbage collection
-- Composition patterns performance (components, conditional rendering, transclusion, fragments, dynamic attributes, etc)
-- Reduce [impact of polymorphism](http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/)
-- Increase probability that executed code is JITed (reuse the same code path for initial rendering and updates - Virtual
-DOM, modern fine-grained DOM binding solutions like Surplus/Solid and modern incremental DOM solutions like Angular ivy)
-
-### Performance Benchmarks
-
-There are no good ways how to compare performance of different libraries, and there are issues with existing benchmarks:
-
-- Benchmark tests are usually so simple, so it is possible to create a specialized code path in the library that will
-work fast in this simple conditions, give this feature a name like "optimization hints" and focus on performance of this
-small subset of a library.
-- Some benchmark implementations are abusing different techniques to
-get an edge over other implementations:
-[explicit event delegation](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L41),
-[workarounds to reduce number of data bindings](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L42-L48).
-- Benchmarks are usually biased towards some type of libraries.
-
-But any flawed benchmark is still way much better than "common sense" that is used by some library authors to explain
-why their libraries are "faster".
-
-To explain how to make sense from numbers in benchmarks I'll use
-[the most popular benchmark](https://github.com/krausest/js-framework-benchmark). It contains implementations for many
-different libraries and ivi is
-[among the fastest libraries](https://krausest.github.io/js-framework-benchmark/current.html) in this benchmark, even
-when benchmark is biased towards libraries that use direct data bindings to connect observable data with DOM elements.
-[ivi implementation](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/ivi) doesn't abuse
-any "advanced" optimizations in this benchmark and implemented in almost exactly the same way as
-[react-redux implementation](https://github.com/krausest/js-framework-benchmark/tree/master/frameworks/keyed/react-redux).
-
-There are several important characteristics that can skew benchmark results in favor of some library type:
-
-- Number of DOM Elements
-- Ratio of DOM Elements per Component
-- Ratio of Event Handlers per DOM Element
-- Ratio of Dynamic Data Bindings per DOM Element
-- Ratio of Components per Component Type
-
-#### Number of DOM Elements
-
-In some test cases of this benchmark there is an insane amount of DOM elements (80000). Usually when there are so many
-DOM elements in the document, recalc style, reflow, etc will be so slow, so it doesn't matter how fast is UI library,
-application will be completely unusable.
-
-Libraries that are using algorithms and data structures that can easily scale to any number of DOM elements will
-obviously benefit from such insane numbers of DOM elements.
-
-#### Ratio of DOM Elements per Component
-
-Since benchmark doesn't impose any strict requirements how to structure benchmark implementation, many implementations
-just choosing to go with the simplest solution and implement it without any components.
-
-When there are no components or any other form that is used by the library to create reusable blocks, it is hard to
-guess how library will perform in a scenario when you decompose your application into reusable blocks "components". And
-for some libraries, reusable blocks has a huge impact on performance, since they were optimized just to deal with
-low-level primitives.
-
-#### Ratio of Event Handlers per DOM Element
-
-There also no strict requirements how to handle user interactions, and some implementations are using explicit event
-delegation to reduce the number of event handlers:
-
-- [Surplus](https://github.com/krausest/js-framework-benchmark/blob/e469a62889894cb4d4e2cac5923f14d91d1294f8/frameworks/keyed/surplus/src/view.tsx#L41)
-- [lit-html](https://github.com/krausest/js-framework-benchmark/blob/e469a62889894cb4d4e2cac5923f14d91d1294f8/frameworks/keyed/lit-html/src/index.js#L126)
-- etc...
-
-Any library in this benchmark can use this technique to reduce the number of event handlers, so when comparing numbers
-it is important to keep in mind that some implementations show better numbers only because they've decided to use
-explicit event delegation.
-
-#### Ratio of Dynamic Data Bindings per DOM Element
-
-The ratio of dynamic data bindings per DOM element in this benchmark is `0.25`. Such low number of data bindings is a
-huge indicator that benchmark is biased toward libraries with fine-grained direct data bindings, and some libraries
-are
-[using workarounds](https://github.com/krausest/js-framework-benchmark/blob/dd5b6b6d8a5fa7c980ef7d6d4374335aa6e9d0b3/frameworks/keyed/surplus/src/view.tsx#L42-L48) to reduce this ratio to `0.125`.
-
-Just take a look at any library that implements a set of reusable components, the number of dynamic bindings per DOM
-element is usually greater than 1. Virtual DOM libraries by design are trying to optimize for use cases when the ratio
-of data bindings per DOM element is greater or equal than 1.
-
-#### Ratio of Components per Component Types
-
-Benchmark implementations with zero components are obviously have zero component types. When there are no components,
-libraries that generate "optimal" code and don't care about the size of the generated code, and the amount of different
-code paths will have an advantage in a microbenchmark like this.
-
-But in a complex application it maybe worthwile to reduce the amount of the generated code instead of trying to optimize
-micro updates by a couple of microseconds. Virtual DOM libraries are usually have a compact code, because they are using
-a single code path for creating and updating DOM nodes, with no additional code for destroying DOM nodes. Single code
-path has an additional advantage that it has a higher chances that this code path will be JITed earlier.
 
 ## Documentation
 
@@ -443,6 +121,117 @@ const C = component((c) => {
     ])
   );
 });
+```
+
+#### Components
+
+All components has an interface `(component) => (props) => VDOM`.
+
+Outer function is used to store internal state, creating dataflow pipelines, attaching hooks and creating an "update"
+function. It is important that outer function doesn't have any access to the `props` to prevent unexpected
+"memory leaks". `component` is an opaque object, it is used as a first argument for almost all component functions like
+`invalidate()`, `useEffect()` etc.
+
+Internal "update" function passes input data through dataflow pipelines and returns a Virtual DOM.
+
+```js
+import { _, component, invalidate, render } from "ivi";
+import { h1 } from "ivi-html";
+
+const Counter = component((c) => {
+  let counter = 0;
+
+  const ticker = useEffect(c, (interval) => {
+    const id = setInterval(() => {
+      counter++;
+      invalidate(c);
+    }, interval);
+    return () => clearInterval(id);
+  });
+
+  return (interval) => (
+    ticker(interval),
+
+    div(_, _, `Counter: ${counter}`),
+  );
+});
+
+render(
+  Counter(1000),
+  document.getElementById("app"),
+);
+```
+
+```js
+const Counter = component((c) => {
+  let counter = 0;
+  // ...
+  return () => vdom;
+});
+```
+
+`component()` function creates Virtual DOM factory functions for component nodes. All component factory functions has an
+interface `Factory(props)`.
+
+In the outer function we are declaring internal state `counter`.
+
+```js
+  const ticker = useEffect(c, (interval) => {
+    // ...
+    return () => cleanup;
+  });
+```
+
+`useEffect()` creates a function that will be used to perform side effects. Side effect functions can optionally return
+a cleanup function, it will be automatically invoked when component is unmounted from the document or when input
+property `interval` is modified.
+
+```js
+  const ticker = useEffect(c, (interval) => {
+    const id = setInterval(() => {
+      counter++;
+      invalidate(c);
+    }, interval);
+    return () => clearInterval(id);
+  });
+```
+
+Side effect function `ticker()` registers a timer function that is periodically invoked and increments `counter` from
+the internal state. When internal state is modified, we need to trigger an update for the component. To trigger an
+update, we are using `invalidate()` function. Invalidate function will mark component as dirty and enqueue a task for
+dirty checking.
+
+Periodic timers registered with `setInterval()` function should be unregistered when they are no longer used. To
+unregister periodic timer we are creating and returning a cleanup function `() => clearInterval(id)`.
+
+```js
+  return (interval) => (
+    ticker(interval),
+
+    div(_, _, `Counter: ${counter}`),
+  );
+```
+
+The final step for a component is to create an "update" function, it should pass input data through dataflow pipelines
+and return a Virtual DOM. Update function will be invoked when component is invalidated or component properties are
+modified.
+
+##### Stateless Components
+
+One of the unique features in ivi is that it doesn't store any magic properties like keys on "Virtual DOM" nodes.
+Decoupling magic properties from "Virtual DOM" nodes allows us to use immediately invoked functions as stateless
+components.
+
+```js
+const Link = (href, children) => a("link", { href }, children);
+const LINKS = [1, 2];
+
+render(
+  TrackByKey(LINKS.map((id) => (
+    key(id, Link(`#${id}`, id))
+  ))),
+  document.getElementById("app"),
+);
 ```
 
 #### Events
@@ -564,9 +353,8 @@ of the attribute.
 `AUTOFOCUS()` function creates an `AttributeDirective` that triggers focus when value is updated from `undefined` or
 `false` to `true`.
 
-`VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement.
-
-`CONTENT()` function creates an `AttributeDirective` that assigns a `value` property to HTMLTextAreaElement.
+`VALUE()` function creates an `AttributeDirective` that assigns a `value` property to an HTMLInputElement or
+HTMLTextAreaElement.
 
 `CHECKED()` function creates an `AttributeDirective` that assigns a `checked` property to an HTMLInputElement.
 
@@ -610,19 +398,7 @@ In this function we are just checking that the value is changed, and if it is ch
 `_custom` property.
 
 ```ts
-function renderToStringCustomValue(key: string, value: number) {
-  emitAttribute(`data-custom="${value}"`);
-}
-```
-
-To support server-side rendering we also need to create a function that will render attribute directive to string.
-
-```ts
-export const CUSTOM_VALUE = (v: number): AttributeDirective<number> => (
-  process.env.IVI_TARGET === "ssr" ?
-    { v, s: renderToStringCustomValue } :
-    { v, u: updateCustomValue }
-);
+export const CUSTOM_VALUE = (v: number): AttributeDirective<number> => ({ v, u: updateCustomValue });
 ```
 
 Now we need to create a function that will be used to instantiate `AttributeDirective` objects.
@@ -1009,7 +785,6 @@ render(MODAL.root, document.getElementById("modal-root"));
 - `browser` - Default target.
 - `evergreen` - Evergreen browsers.
 - `electron` - [Electron](https://github.com/electron/electron).
-- `ssr` - Server-side rendering.
 
 #### Webpack Configuration
 
@@ -1037,74 +812,6 @@ export default {
   ],
 };
 ```
-
-## Internal Details
-
-ivi reconciliation algorithm is implemented as a synchronous and deterministic single pass algorithm with immutable
-operations. The difference between single pass and two pass algorithms is that we don't generate "patch" objects and
-instead of that we immediately apply all detected changes.
-
-One of the major ideas that heavily influenced the design of the reconciliation algorithm in ivi were that instead of
-optimizing for an infinitely large number of DOM nodes, it is better to optimize for real world use cases. Optimizing
-for a large number of DOM nodes doesn't make any sense, because when there is an insane number of DOM nodes in the
-document, recalc style, reflow, hit tests, etc will be so slow, so that application will be completely unusable. That is
-why ivi reconciliation algorithm always starts working from the root nodes in dirty checking mode. In dirty checking
-mode it just checks selectors and looks for dirty components. This approach makes it easy to implement contexts,
-selectors, update priorities and significantly reduces code complexity.
-
-Children reconciliation algorithm is using pre-processing optimizations to improve performance for the most common use
-cases. To find the minimum number of DOM operations when nodes are rearranged it is using a
-[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm.
-
-Synthetic events are usually implemented by storing references to Virtual DOM nodes on the DOM nodes, ivi is using a
-different approach that doesn't require storing any data on the DOM nodes. Event dispatcher implements two-phase event
-flow and goes through Virtual DOM tree. Synthetic events allows us to decouple events from DOM elements and improve
-composition model.
-
-### Immutable "Virtual DOM"
-
-When I've implemented my first virtual dom library in 2014, I've used mutable virtual dom nodes and I had no idea how to
-efficiently implement it otherwise, since that time many other virtual dom libraries just copied this terrible idea, and
-now it is [everywhere](https://vuejs.org/v2/guide/render-function.html#Constraints). Some libraries are using different
-workarounds to hide that they are using mutable virtual dom nodes, but this workarounds has hidden costs when mutable
-nodes are passed around.
-
-ivi is using immutable virtual dom like React does, and it is still has an extremely fast reconciler, there are no any
-hidden costs, zero normalization passes, nothing gets copied when dealing with edge cases.
-
-### Children Reconciliation
-
-Children reconciliation algorithm in ivi works in a slightly different way than
-[React children reconciliation](https://facebook.github.io/react/docs/reconciliation.html).
-
-There are two types of children lists: fragments (javascript arrays) and dynamic children lists (`TrackByKey()`
-nodes).
-
-Fragments are using a simple reconciliation algorithm that matches nodes by their position in the array. When fragment
-length is changing, nodes will be mounted or unmounted at the end of the fragment.
-
-Dynamic children lists are wrapped in a `TrackByKey()` nodes, each node in dynamic children list should be wrapped in a
-`Key` object that should contain unique key. Dynamic children list algorithm is using a
-[LIS](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)-based algorithm to find a minimum number of DOM
-operations.
-
-Finding a minimum number of DOM operations is not just about performance, it is also about preserving internal state
-of DOM nodes. Moving DOM nodes isn't always a side-effect free operation, it may restart animations, drop focus, reset
-scrollbar positions, stop video playback, collapse IME etc.
-
-#### Defined Behaviour
-
-This is the behaviour that you can rely on when thinking how reconciliation algorithm will update dynamic children
-lists.
-
-- Inserted nodes won't cause any nodes to move.
-- Removed nodes won't cause any nodes to move.
-- Moved nodes will be rearranged in a correct positions with a minimum number of DOM operations.
-
-#### Undefined Behaviour
-
-Moved nodes can be rearranged in any way. `[ab] => [ba]` transformation can move node `a` or node `b`. Applications
-shouldn't rely on this behaviour.
 
 ## Caveats
 
@@ -1144,13 +851,7 @@ Rendering into external `Document` (iframe, window, etc) isn't supported.
 
 ### Server-Side Rendering
 
-There is no [rehydration](https://developers.google.com/web/updates/2019/02/rendering-on-the-web#rehydration) in ivi.
-It isn't that hard to implement rehydration, but it would require someone who is interested in it to maintain this code
-base.
-
-Primary use case for server-side rendering in ivi is SEO. Usually when SSR is used for SEO purposes, it is better to
-use conditional rendering with `process.env.IVI_TARGET` and generate slightly different output by expanding all
-collapsed text regions, etc.
+There is no SSR.
 
 ### Synthetic Events
 

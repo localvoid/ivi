@@ -84,7 +84,13 @@ const A = component((c) => {
 
 ### Boolean DOM Attribute Values
 
-Removed support for boolean DOM attribute values.
+Removed automagic conversion from boolean values to empty string. Correct attribute values should be specified
+explicitly.
+
+### `textContent=""` Optimization
+
+This optimization has a quite noticeable impact in popular benchmarks. But in real applications, use cases that would
+benefit from this optimization will work significantly faster by wrapping lists into a transient DOM node.
 
 ### Deep State Tracking
 
@@ -96,6 +102,23 @@ so we could skip dirty checking and unmounting for subtrees that didn't have any
 decomposed into small components there will be many stateful components used as leaf nodes, so instead of optimizing it
 will make dirty checking and reconciliation algorithms slightly slower. Also, this optimization were adding a lot of
 complexity to the reconciliation algorithm.
+
+### Events
+
+#### Stop Propagation
+
+Synthetic event handlers do not propagate events anymore. To propagate events, event handler should return
+`DispatchEvent.Propagate` value.
+
+#### Move Events
+
+Removed touch/mouse/pointer move events. Move event handlers usually attached when down event is triggered, and to make
+sure that we don't lose any move events, we can't wait until frame is rerendered, so move event handlers should be
+attached with native DOM api.
+
+### Server Side Rendering
+
+Removed. Not interested in supporting this feature.
 
 ## v0.27.1
 
