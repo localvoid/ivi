@@ -600,9 +600,9 @@ export function _update(
  *
  * 2. Look for removed and inserted nodes, and simultaneously check if one of the nodes is moved.
  *
- * First we create an array `P` with the length of the new children list and assign to each position value `-1`, it has
- * a meaning of a new node that should be inserted. Later we will assign node positions in the old children list to this
- * array.
+ * First we create an array `P` (`sources` variable) with the length of the new children list and assign to each
+ * position value `-1`, it has a meaning of a new node that should be inserted. Later we will assign node positions in
+ * the old children list to this array.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
@@ -709,74 +709,62 @@ export function _update(
  * removed nodes isn't equal to the length of the new children list. If any of this conditions is true, then we are
  * going to the next step.
  *
- * 3. Find minimum number of moves if `moved` flag is on, or insert new nodes if the length is changed.
+ * 3. Find minimum number of moves when moved `pos === 99999999` flag is on, or insert new nodes if the length is
+ * changed.
  *
- * When `moved` flag is on, we need to find the
- * [longest increasing subsequence](http://en.wikipedia.org/wiki/Longest_increasing_subsequence) in the positions array,
- * and move all nodes that doesn't belong to this subsequence.
+ * When `moved` flag is on, we need to mark all nodes in the array `P` that belong to the
+ * [longest increasing subsequence](http://en.wikipedia.org/wiki/Longest_increasing_subsequence) and move all nodes that
+ * doesn't belong to this subsequence.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
- *  P: [1 0 . 4 3] // . == -1
- *  LIS:     [1 4]
+ *  P: [1 * . 4 *] // . == -1  * == -2
  *  moved = true
  *
- * Now we just need to simultaneously iterate over the new children list and LIS from the end and check if the current
- * position is equal to a value from LIS.
+ * Now we just need to simultaneously iterate over the new children list and the `P` array. When the value from `P`
+ * array is equal to `-1`, we are inserting a new node. When it isn't equal to `-2`, we are moving it.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *              ^  // new_pos == 4
- *  P: [1 0 . 4 3] // . == -1
- *  LIS:     [1 4]
- *              ^  // new_pos == 4
- *  moved = true
+ *  P: [1 * . 4 *] // . == -1  * == -2
+ *              ^
  *
- * Node "e" stays at the same place.
+ * Node "e" has `-2` value in the array `P`, it stays at the same place.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *            ^    // new_pos == 3
- *  P: [1 0 . 4 3] // . == -1
- *  LIS:     [1 4]
- *            ^    // new_pos != 1
- *  moved = true
+ *  P: [1 * . 4 *] // . == -1  * == -2
+ *            ^
  *
- * Node "f" is moved, move it before the next node "e".
+ * Node "f" has `4` value in the array `P`, move it before the next node "e".
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *          ^      // new_pos == 2
- *  P: [1 0 . 4 3] // . == -1
- *          ^      // old_pos == -1
- *  LIS:     [1 4]
- *            ^
- *  moved = true
+ *  P: [1 * . 4 *] // . == -1  * == -2
+ *          ^
  *
- * Node "h" has a `-1` value in the positions array, insert new node "h".
+ * Node "h" has `-1` value in the array `P`, insert new node "h".
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *        ^        // new_pos == 1
- *  P: [1 0 . 4 3] // . == -1
- *  LIS:     [1 4]
- *            ^    // new_pos == 1
- *  moved = true
+ *  P: [1 * . 4 *] // . == -1  * == -2
+ *        ^
  *
- * Node "b" stays at the same place.
+ * Node "b" has `-2` value in the array `P`, it stays at the same place.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *      ^          // new_pos == 0
- *  P: [1 0 . 4 3] // . == -1
- *  LIS:     [1 4]
- *          ^      // new_pos != undefined
- *  moved = true
+ *  P: [1 * . 4 *] // . == -1  * == -2
  *
- * Node "c" is moved, move it before the next node "b".
+ * Node "c" has `1` value in the array `P`, move it before the next node "b".
  *
- * When moved flag is off, we don't need to find LIS, and we just iterate over the new children list and check its
- * current position in the positions array, if it is `-1`, then we insert new node.
+ * When moved flag is off, we can skip LIS algorithm. We just iterate over the new children list and check its
+ * value in the array `P`. When it is `-1`, then we insert a new node.
  *
  * [1] Actually it is almost minimum number of dom ops, when node is removed and another one is inserted at the same
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
@@ -815,7 +803,7 @@ function _updateChildrenTrackByKeys(
 ): void {
   let i = b.length;
   let j: number | undefined = a.length;
-  const result = Array(i);
+  let result = Array(i);
 
   if (i === 0) { // New children list is empty.
     if (j > 0) { // Unmount nodes from the old children list.
@@ -826,7 +814,7 @@ function _updateChildrenTrackByKeys(
       result[--i] = _mount(parentElement, b[i].v);
     }
   } else {
-    const opStateChildren = opState.c as Array<OpState | null>;
+    let opStateChildren = opState.c as Array<OpState | null>;
     let aEnd = j - 1; // a.length - 1
     let bEnd = i - 1; // b.length - 1
     let start = 0;
@@ -872,10 +860,10 @@ function _updateChildrenTrackByKeys(
       // with `textContent=""` when there are no updated nodes.
       let updated = 0;
 
-      const aLength = aEnd - start + 1;
-      const bLength = bEnd - start + 1;
-      const sources = Array(bLength); // Maps positions in the new children list to positions in the old children list.
-      const keyIndex = new Map<any, number>(); // Maps keys to their positions in the new children list.
+      let aLength = aEnd - start + 1;
+      let bLength = bEnd - start + 1;
+      let sources = new Int32Array(bLength); // Maps positions in the new children list to positions in the old list.
+      let keyIndex = new Map<any, number>(); // Maps keys to their positions in the new children list.
       for (i = 0; i < bLength; ++i) {
         j = i + start;
         sources[i] = -1; // Special value `-1` indicates that node doesn't exist in the old children list.
@@ -909,33 +897,18 @@ function _updateChildrenTrackByKeys(
           }
         }
 
-        i = bLength;
-        if (moveNode === true || pos !== 99999999) {
-          while (i > 0) {
-            pos = --i + start;
-            node = b[pos].v;
-            result[pos] = (sources[i] === -1) ?
-              _mount(parentElement, node) :
-              _update(parentElement, result[pos], node, moveNode);
-          }
-        } else {
-          const seq = lis(sources);
-          j = seq.length - 1;
-          while (i > 0) {
-            pos = --i + start;
-            node = b[pos].v;
-            if (sources[i] === -1) {
-              result[pos] = _mount(parentElement, node);
-            } else {
-              if (j < 0 || i !== seq[j]) {
-                moveNode = true;
-              } else {
-                --j;
-              }
-              result[pos] = _update(parentElement, result[pos], node, moveNode);
-              moveNode = false;
-            }
-          }
+        // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
+        // children nodes were moved `pos === 99999999`.
+        if (moveNode === false && pos === 99999999) {
+          markLIS(sources);
+        }
+        while (bLength-- > 0) {
+          bEnd = bLength + start;
+          node = b[bEnd].v;
+          j = sources[bLength];
+          result[bEnd] = (j === -1) ?
+            _mount(parentElement, node) :
+            _update(parentElement, result[bEnd], node, moveNode || (pos === 99999999 && j !== -2));
         }
       }
     }
@@ -949,75 +922,77 @@ function _updateChildrenTrackByKeys(
 }
 
 /**
- * Slightly modified Longest Increased Subsequence algorithm, it ignores items that have -1 value, they're representing
- * new items.
+ * Modified Longest Increased Subsequence algorithm.
+ *
+ * Mutates input array `a` and replaces all values that are part of LIS with -2 value.
+ *
+ * Constraints:
+ * - Doesn't work with negative numbers. -1 values are ignored.
+ * - Input array `a` should contain at least one value that is greater than -1.
  *
  * {@link http://en.wikipedia.org/wiki/Longest_increasing_subsequence}
  *
- * It is possible to use typed arrays in this function, and it will make it faster in most javascript engines, but for
- * some reason instantiating small typed arrays is slower in synthetic microbenchmarks on V8
- * {@link https://gist.github.com/localvoid/88da772d987794605f7fa4a078bce4d6} (maybe there is something wrong in this
- * benchmarks, if someone want to spend more time on optimizations, I'd recommend to double check everything).
+ * @example
  *
- * To solve problem with instantiation, we could just reuse arrays, but in my opinion it isn't worth to overcomplicate
- * this algorithm since it is already extremely fast and it is highly unlikely that it will be even noticeable in the
- * profiler. Usually when there is an update in the real applications, it triggers reordering of one dynamic children
- * list, that is why I prefer to keep it simple.
+ *   const A = Int32Array.from([-1, 0, 2, 1]);
+ *   markLIS(A);
+ *   // A => [-1, -2, 2, -2]
  *
  * @param a Array of numbers.
- * @returns Longest increasing subsequence
  * @noinline
  * @__NOINLINE__
  */
-function lis(a: number[]): number[] {
-  const p = a.slice();
-  // result is instantiated as an empty array to prevent instantiation with CoW backing store.
-  const result: number[] = [];
-  let n = 0;
+function markLIS(a: Int32Array): void {
+  let length = a.length;
+  let parent = new Int32Array(length);
+  let index = new Int32Array(length);
+  let indexLength = 0;
   let i = 0;
-  let u: number;
-  let v: number;
   let j: number;
+  let k: number;
+  let lo: number;
+  let hi: number;
 
-  result[0] = 0;
-  for (; i < a.length; ++i) {
-    const k = a[i];
-    if (k > -1) {
-      j = result[n];
+  // Skip -1 values at the start of the input array `a`.
+  for (; a[i] === -1; ++i) { /**/ }
+
+  index[0] = i++;
+  for (; i < length; ++i) {
+    k = a[i];
+    if (k !== -1) { // Ignore -1 values.
+      j = index[indexLength];
       if (a[j] < k) {
-        p[i] = j;
-        result[++n] = i;
+        parent[i] = j;
+        index[++indexLength] = i;
       } else {
-        u = 0;
-        v = n;
+        lo = 0;
+        hi = indexLength;
 
-        while (u < v) {
-          j = (u + v) >> 1;
-          if (a[result[j]] < k) {
-            u = j + 1;
+        while (lo < hi) {
+          j = (lo + hi) >> 1;
+          if (a[index[j]] < k) {
+            lo = j + 1;
           } else {
-            v = j;
+            hi = j;
           }
         }
 
-        if (k < a[result[u]]) {
-          if (u > 0) {
-            p[i] = result[u - 1];
+        if (k < a[index[lo]]) {
+          if (lo > 0) {
+            parent[i] = index[lo - 1];
           }
-          result[u] = i;
+          index[lo] = i;
         }
       }
     }
   }
 
-  v = result[n];
-
-  while (n >= 0) {
-    result[n--] = v;
-    v = p[v];
+  // Mutate input array `a` and assign -2 value to all nodes that are part of LIS.
+  j = index[indexLength];
+  while (indexLength-- >= 0) {
+    a[j] = -2;
+    j = parent[j];
   }
-
-  return result;
 }
 
 /**
