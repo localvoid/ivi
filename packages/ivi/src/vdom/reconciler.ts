@@ -705,12 +705,7 @@ export function _update(
  *
  * Assign position for 'f'.
  *
- * At this point we are checking if `moved` flag is on, or if the length of the old children list minus the number of
- * removed nodes isn't equal to the length of the new children list. If any of this conditions is true, then we are
- * going to the next step.
- *
- * 3. Find minimum number of moves when moved `pos === 99999999` flag is on, or insert new nodes if the length is
- * changed.
+ * 3. Find minimum number of moves when moved `pos === 99999999` flag is on.
  *
  * When `moved` flag is on, we need to mark all nodes in the array `P` that belong to the
  * [longest increasing subsequence](http://en.wikipedia.org/wiki/Longest_increasing_subsequence) and move all nodes that
@@ -856,11 +851,6 @@ function _updateChildrenTrackByKeys(
       // When `pos === 99999999`, it means that one of the nodes is in the wrong position and we should rearrange nodes
       // with lis-based algorithm.
       let pos = 0;
-      // Number of updated nodes after prefix/suffix phase. It is used for an optimization that removes all child nodes
-      // with `textContent=""` when there are no updated nodes.
-      let updated = 0;
-
-      let aLength = aEnd - start + 1;
       let bLength = bEnd - start + 1;
       let sources = new Int32Array(bLength); // Maps positions in the new children list to positions in the old list.
       let keyIndex = new Map<any, number>(); // Maps keys to their positions in the new children list.
@@ -870,46 +860,32 @@ function _updateChildrenTrackByKeys(
         keyIndex.set(b[j].k, j);
       }
 
-      for (i = start; i <= aEnd && updated < bLength; ++i) {
+      for (i = start; i <= aEnd; ++i) {
         j = keyIndex.get(a[i].k);
+        node = opStateChildren[i];
         if (j !== void 0) {
           pos = (pos < j) ? j : 99999999;
-          ++updated;
           sources[j - start] = i;
-          result[j] = opStateChildren[i];
-          // remove updated nodes from previous array, so that we could remove the rest from the document.
-          opStateChildren[i] = null;
+          result[j] = node;
+        } else if (node !== null) {
+          _unmount(parentElement, node);
         }
       }
 
-      if (aLength === a.length && updated === 0) {
-        // Zero updated nodes in step 1 and 2, remove all nodes and insert new ones.
-        _unmount(parentElement, opState);
-        while (bEnd >= 0) {
-          result[bEnd] = _mount(parentElement, b[bEnd--].v);
-        }
-      } else {
-        // Step 3
-        // Remove nodes that weren't updated in the old children list.
-        for (i = start; i <= aEnd; i++) {
-          if ((node = opStateChildren[i]) !== null) {
-            _unmount(parentElement, node);
-          }
-        }
+      // Step 3
 
-        // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
-        // children nodes were moved `pos === 99999999`.
-        if (moveNode === false && pos === 99999999) {
-          markLIS(sources);
-        }
-        while (bLength-- > 0) {
-          bEnd = bLength + start;
-          node = b[bEnd].v;
-          j = sources[bLength];
-          result[bEnd] = (j === -1) ?
-            _mount(parentElement, node) :
-            _update(parentElement, result[bEnd], node, moveNode || (pos === 99999999 && j !== -2));
-        }
+      // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
+      // children nodes were moved `pos === 99999999`.
+      if (moveNode === false && pos === 99999999) {
+        markLIS(sources);
+      }
+      while (bLength-- > 0) {
+        bEnd = bLength + start;
+        node = b[bEnd].v;
+        j = sources[bLength];
+        result[bEnd] = (j === -1) ?
+          _mount(parentElement, node) :
+          _update(parentElement, result[bEnd], node, moveNode || (pos === 99999999 && j !== -2));
       }
     }
 
