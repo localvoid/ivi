@@ -1,6 +1,6 @@
 {
   "name": "ivi-test-utils",
-  "version": "0.27.0",
+  "version": "1.0.0",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",
@@ -21,7 +21,7 @@
     "dist:module": "../../node_modules/.bin/tsc -p ./tsconfig.build.module.json"
   },
   "peerDependencies": {
-    "ivi": "^0.27.0"
+    "ivi": "^1.0.0"
   },
   "description": "Test utils for ivi library",
   "license": "MIT",
