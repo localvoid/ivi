@@ -22,22 +22,40 @@ import { ElementProtoDescriptor } from "./element_proto";
 import { ComponentDescriptor, ComponentState } from "./component";
 import { setContext, pushContext, ContextDescriptor, ContextState } from "./context";
 
+const enum MagicValues {
+  /**
+   * One of the children nodes were moved.
+   */
+  MovedChildren = 99999999,
+  /**
+   * New node marker.
+   */
+  NewNodeMark = -1,
+  /**
+   * LIS marker.
+   */
+  LISMark = -2,
+}
+
 /**
  * Simple workaround that efficiently solves a lot of issues with fragments, nested `TrackByKey` ops and holes
  * (`null` ops).
  *
  * Reconciler always goes through the tree from right to left and updates `_nextNode` value when it goes through nodes
- * associated with DOM nodes, so when we need to insert a new DOM node, we can just take it from this variable instead
- * of recursively searching for a next DOM node.
+ * associated with DOM nodes, so when we need to insert a new DOM node, we can take it from this variable instead of
+ * recursively looking for a next DOM node.
  */
 let _nextNode!: Node | null;
 
+/**
+ * _resetState resets global reconciler state.
+ */
 export function _resetState(): void {
   _nextNode = null;
 }
 
 /**
- * VisitNodesDirective controls the traversal algorithm.
+ * VisitNodesDirective controls the traversal algorithm {@link visitNodes}`.
  */
 export const enum VisitNodesDirective {
   /**
@@ -49,7 +67,7 @@ export const enum VisitNodesDirective {
    */
   StopImmediate = 1,
   /**
-   * Stops traversing through children nodes.
+   * Stops traversing through children nodes and continues trversing through adjacent nodes.
    */
   Stop = 1 << 1,
 }
@@ -59,7 +77,7 @@ export const enum VisitNodesDirective {
  *
  * @param opState State node.
  * @param visitor Visitor function.
- * @returns {@link VisitNodesFlags}
+ * @returns {@link VisitNodesDirective}
  */
 export function visitNodes(opState: OpState, visitor: (opState: OpState) => VisitNodesDirective): VisitNodesDirective;
 export function visitNodes(
@@ -563,69 +581,61 @@ export function _update(
 /**
  * Update children list with track by key algorithm.
  *
- * High-level overview of the algorithm that is implemented in this function (slightly outdated, but the key ideas are
- * the same).
+ * High-level overview of the algorithm that is implemented in this function.
  *
  * This algorithm finds a minimum[1] number of DOM operations. It works in several steps:
  *
- * 1. Find common suffix and prefix.
+ * 1. Common prefix and suffix optimization.
  *
- * This optimization technique is searching for nodes with identical keys by simultaneously iterating over nodes in the
- * old children list `A` and new children list `B` from both sides:
+ * This optimization technique is looking for nodes with identical keys by simultaneously iterating through nodes in the
+ * old children list `A` and new children list `B` from both sides.
  *
  *  A: -> [a b c d] <-
  *  B: -> [a b d] <-
  *
- * Here we can skip nodes "a" and "b" at the begininng, and node "d" at the end.
+ * Skip nodes "a" and "b" at the start, and node "d" at the end.
  *
  *  A: -> [c] <-
  *  B: -> [] <-
  *
- * Here it will check if the size of one of the list is equal to zero. When length of the old children list is zero,
- * it will insert all remaining nodes from the new list, and when length of the new children list is zero, it will
- * remove all remaining nodes from the old list.
+ * 2. Zero length optimizations.
  *
- * When algorithm can't find a solution with this simple optimization technique, it will go to the next step of the
- * algorithm. For example:
+ * Check if the size of one of the list is equal to zero. When length of the old children list is zero, insert remaining
+ * nodes from the new list. When length of the new children list is zero, remove remaining nodes from the old list.
  *
- *  A: -> [a b c d e f g] <-
- *  B: -> [a c b h f e g] <-
+ *  A: -> [a b c g] <-
+ *  B: -> [a g] <-
  *
- * Nodes "a" and "g" at the edges are the same, skipping them.
+ * Skip nodes "a" and "g" (prefix and suffix optimization).
  *
- *  A: -> [b c d e f] <-
- *  B: -> [c b h f e] <-
+ *  A: [b c]
+ *  B: []
  *
- * Here we are stuck, so we need to switch to the next step.
+ * Remove nodes "b" and "c".
  *
- * 2. Look for removed and inserted nodes, and simultaneously check if one of the nodes is moved.
- *
- * First we create an array `P` (`sources` variable) with the length of the new children list and assign to each
- * position value `-1`, it has a meaning of a new node that should be inserted. Later we will assign node positions in
- * the old children list to this array.
+ * 3. Index and unmount removed nodes.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *  P: [. . . . .] // . == -1
  *
- * Then we need to build an index `I` that maps keys with node positions of the remaining nodes from the new children
- * list.
+ * Create array `P` (`sources` variable) with the length of the new children list and fill it with `-1` values
+ * (`MagicValue.NewNodeMark` constant). `-1` value indicates that node at this position should be mounted. Later we will
+ * assign node positions in the old children list to this array.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *  P: [. . . . .] // . == -1
  *  I: {
- *    c: 0,
- *    b: 1,
+ *    c: 0, // B[0] == c
+ *    b: 1, // B[1] == b
  *    h: 2,
  *    f: 3,
  *    e: 4,
  *  }
  *  last = 0
  *
- * With this index, we start to iterate over the remaining nodes from the old children list and check if we can find a
- * node with the same key in the index. If we can't find any node, it means that it should be removed, otherwise we
- * assign position of the node in the old children list to the positions array.
+ * Create reverse index `I` that maps keys to node positions in the new children list.
  *
  *  A: [b c d e f]
  *      ^
@@ -640,9 +650,14 @@ export function _update(
  *  }
  *  last = 1
  *
- * When we assigning positions to the positions array, we also keep a position of the last seen node in the new children
- * list, if the last seen position is larger than current position of the node at the new list, then we are switching
- * `moved` flag to `true`.
+ * Assign original positions of the nodes from the old children list to the array `P`.
+ *
+ * Iterate through nodes in the old children list and get their new positions from the index `I`. Assign old node
+ * position to the array `P`. When index `I` doesn't have a key for the old node, it means that it should be unmounted.
+ *
+ * When we assigning positions to the array `P`, we also store a position of the last seen node in the new children
+ * list (`pos` variable), if the last seen position is greater than current position of the node at the new list, then
+ * we are switching `moved` flag to `true` (`pos === MagicValue.MovedChildren`).
  *
  *  A: [b c d e f]
  *        ^
@@ -657,7 +672,7 @@ export function _update(
  *  }
  *  last = 1 // last > 0; moved = true
  *
- * The last position `1` is larger than current position of the node at the new list `0`, switching `moved` flag to
+ * The last position `1` is greater than current position of the node at the new list `0`, switch `moved` flag to
  * `true`.
  *
  *  A: [b c d e f]
@@ -673,7 +688,7 @@ export function _update(
  *  }
  *  moved = true
  *
- * Node with key "d" doesn't exist in the index, removing node.
+ * Node with key "d" doesn't exist in the index `I`, unmount node `d`.
  *
  *  A: [b c d e f]
  *            ^
@@ -688,7 +703,7 @@ export function _update(
  *  }
  *  moved = true
  *
- * Assign position for `e`.
+ * Assign position `3` for `e` node.
  *
  *  A: [b c d e f]
  *              ^
@@ -703,21 +718,20 @@ export function _update(
  *  }
  *  moved = true
  *
- * Assign position for 'f'.
+ * Assign position `4` for 'f' node.
  *
- * 3. Find minimum number of moves when moved `pos === 99999999` flag is on.
- *
- * When `moved` flag is on, we need to mark all nodes in the array `P` that belong to the
- * [longest increasing subsequence](http://en.wikipedia.org/wiki/Longest_increasing_subsequence) and move all nodes that
- * doesn't belong to this subsequence.
+ * 4. Find minimum number of moves when `moved` flag is on and mount new nodes.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
  *  P: [1 * . 4 *] // . == -1  * == -2
- *  moved = true
  *
- * Now we just need to simultaneously iterate over the new children list and the `P` array. When the value from `P`
- * array is equal to `-1`, we are inserting a new node. When it isn't equal to `-2`, we are moving it.
+ * When `moved` is on, mark all nodes in the array `P` that belong to the
+ * [longest increasing subsequence](http://en.wikipedia.org/wiki/Longest_increasing_subsequence) and move all nodes that
+ * doesn't belong to this subsequence.
+ *
+ * Iterate over the new children list and the `P` array simultaneously. When value from `P` array is equal to `-1`,
+ * mount a new node. When it isn't equal to `-2`, move it.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
@@ -725,7 +739,7 @@ export function _update(
  *  P: [1 * . 4 *] // . == -1  * == -2
  *              ^
  *
- * Node "e" has `-2` value in the array `P`, it stays at the same place.
+ * Node "e" has `-2` value in the array `P`, nothing changes.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
@@ -741,7 +755,7 @@ export function _update(
  *  P: [1 * . 4 *] // . == -1  * == -2
  *          ^
  *
- * Node "h" has `-1` value in the array `P`, insert new node "h".
+ * Node "h" has `-1` value in the array `P`, mount new node "h".
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
@@ -749,7 +763,7 @@ export function _update(
  *  P: [1 * . 4 *] // . == -1  * == -2
  *        ^
  *
- * Node "b" has `-2` value in the array `P`, it stays at the same place.
+ * Node "b" has `-2` value in the array `P`, nothing changes.
  *
  *  A: [b c d e f]
  *  B: [c b h f e]
@@ -758,8 +772,7 @@ export function _update(
  *
  * Node "c" has `1` value in the array `P`, move it before the next node "b".
  *
- * When moved flag is off, we can skip LIS algorithm. We just iterate over the new children list and check its
- * value in the array `P`. When it is `-1`, then we insert a new node.
+ * When `moved` flag is off, skip LIS algorithm and mount nodes that have `-1` value in the array `P`.
  *
  * [1] Actually it is almost minimum number of dom ops, when node is removed and another one is inserted at the same
  * place, instead of insert and remove dom ops, we can use one replace op. It will make everything even more
@@ -767,19 +780,33 @@ export function _update(
  *
  * NOTE: There are many variations of this algorithm that are used by many UI libraries and many implementations are
  * still using an old optimization technique that were removed several years ago from this implementation. This
- * optimization were used to improve performance of simple moves/swaps:
+ * optimization were used to improve performance of simple moves/swaps. For example:
  *
- *  A: -> [a b c]
- *  B:    [c b a] <-
+ *  A: -> [a b c] <-
+ *  B: -> [c b a] <-
+ *
+ * Move "a" and "c" nodes to the other edge.
+ *
+ *  A: -> [b] <-
+ *  B: -> [b] <-
+ *
+ * Skip node "b".
  *
  * This optimization were removed because it breaks the promise that insert and remove operations shouldn't trigger a
- * move operation. ivi prioritizes predictability and correctness over performance. For example:
+ * move operation. For example:
  *
  *  A: -> [a b]
  *  B:    [c a] <-
  *
- * In this case, this optimization will move `a`, then this algo will remove `b` and insert `c`. Instead of just
- * removing `b` and inserting `c`.
+ * Move node "a" to the end.
+ *
+ *  A: [b]
+ *  B: [c]
+ *
+ * Remove node "b" and insert node "c".
+ *
+ * In this use case, this optimization performs one unnecessary operation. Instead of removing node "b" and inserting
+ * node "c", it also moves node `a`.
  *
  * @param parentElement Parent DOM element.
  * @param opState OpNode state for a TrackByKey operation.
@@ -834,6 +861,7 @@ function _updateChildrenTrackByKeys(
       break;
     }
 
+    // Step 2
     if (start > aEnd) {
       // All nodes from `a` are updated, insert the rest from `b`.
       while (bEnd >= start) {
@@ -847,16 +875,17 @@ function _updateChildrenTrackByKeys(
           _unmount(parentElement, node);
         }
       } while (i <= aEnd);
-    } else { // Step 2
+    } else { // Step 3
       // When `pos === 99999999`, it means that one of the nodes is in the wrong position and we should rearrange nodes
-      // with lis-based algorithm.
+      // with LIS-based algorithm `markLIS()`.
       let pos = 0;
       let bLength = bEnd - start + 1;
       let sources = new Int32Array(bLength); // Maps positions in the new children list to positions in the old list.
       let keyIndex = new Map<any, number>(); // Maps keys to their positions in the new children list.
       for (i = 0; i < bLength; ++i) {
         j = i + start;
-        sources[i] = -1; // Special value `-1` indicates that node doesn't exist in the old children list.
+        // `NewNodeMark` value indicates that node doesn't exist in the old children list.
+        sources[i] = MagicValues.NewNodeMark;
         keyIndex.set(b[j].k, j);
       }
 
@@ -864,7 +893,7 @@ function _updateChildrenTrackByKeys(
         j = keyIndex.get(a[i].k);
         node = opStateChildren[i];
         if (j !== void 0) {
-          pos = (pos < j) ? j : 99999999;
+          pos = (pos < j) ? j : MagicValues.MovedChildren;
           sources[j - start] = i;
           result[j] = node;
         } else if (node !== null) {
@@ -872,11 +901,11 @@ function _updateChildrenTrackByKeys(
         }
       }
 
-      // Step 3
+      // Step 4
 
       // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
-      // children nodes were moved `pos === 99999999`.
-      if (moveNode === false && pos === 99999999) {
+      // children nodes were moved `pos === MagicValues.MovedChildren`.
+      if (moveNode === false && pos === MagicValues.MovedChildren) {
         markLIS(sources);
       }
       while (bLength-- > 0) {
@@ -885,11 +914,17 @@ function _updateChildrenTrackByKeys(
         j = sources[bLength];
         result[bEnd] = (j === -1) ?
           _mount(parentElement, node) :
-          _update(parentElement, result[bEnd], node, moveNode || (pos === 99999999 && j !== -2));
+          _update(
+            parentElement,
+            result[bEnd],
+            node,
+            moveNode || (pos === MagicValues.MovedChildren && j !== MagicValues.LISMark),
+          );
       }
     }
 
-    // update nodes from Step 1 (prefix only)
+    // Delayed update for nodes from Step 1 (prefix only). Reconciliation algorithm always updates nodes from right to
+    // left.
     while (start > 0) {
       result[--start] = _update(parentElement, opStateChildren[start], b[start].v, moveNode);
     }
@@ -930,12 +965,12 @@ function markLIS(a: Int32Array): void {
   let hi: number;
 
   // Skip -1 values at the start of the input array `a`.
-  for (; a[i] === -1; ++i) { /**/ }
+  for (; a[i] === MagicValues.NewNodeMark; ++i) { /**/ }
 
   index[0] = i++;
   for (; i < length; ++i) {
     k = a[i];
-    if (k !== -1) { // Ignore -1 values.
+    if (k !== MagicValues.NewNodeMark) { // Ignore -1 values.
       j = index[indexLength];
       if (a[j] < k) {
         parent[i] = j;
@@ -966,7 +1001,7 @@ function markLIS(a: Int32Array): void {
   // Mutate input array `a` and assign -2 value to all nodes that are part of LIS.
   j = index[indexLength];
   while (indexLength-- >= 0) {
-    a[j] = -2;
+    a[j] = MagicValues.LISMark;
     j = parent[j];
   }
 }
