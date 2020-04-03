@@ -2,6 +2,10 @@
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
+## Status
+
+Maintenance mode. Bug fixes and documentation updates only.
+
 ## Quick Start
 
 ### Hello World

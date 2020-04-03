@@ -1,4 +1,4 @@
-## v0.28.0
+## v1.0.0
 
 ### Components
 
@@ -99,9 +99,13 @@ but make it worse in real applications.
 
 This optimization worked by updating node state flags during stack unwinding. It saved information about node subtree,
 so we could skip dirty checking and unmounting for subtrees that didn't have any stateful components. In applications
-decomposed into small components there will be many stateful components used as leaf nodes, so instead of optimizing it
+decomposed into small components there will be many stateful components used as leaf nodes, so instead of optimizing, it
 will make dirty checking and reconciliation algorithms slightly slower. Also, this optimization were adding a lot of
 complexity to the reconciliation algorithm.
+
+### Simplified track by key algorithm
+
+Instead of returning LIS indices, nodes that are part of LIS are now marked in the input array.
 
 ### Events
 
@@ -112,8 +116,8 @@ Synthetic event handlers do not propagate events anymore. To propagate events, e
 
 #### Move Events
 
-Removed touch/mouse/pointer move events. Move event handlers usually attached when down event is triggered, and to make
-sure that we don't lose any move events, we can't wait until frame is rerendered, so move event handlers should be
+Removed touch/mouse/pointer move events. Move event handlers usually attached when down event is triggered. To make
+sure that we don't lose any move events, we can't wait until next frame is rerendered, so move event handlers should be
 attached with native DOM api.
 
 ### Server Side Rendering
