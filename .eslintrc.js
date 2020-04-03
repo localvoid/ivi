@@ -8,7 +8,7 @@ const JS_RULES = {
   "dot-notation": "off",
   "eqeqeq": ["error", "smart"],
   "guard-for-in": "off",
-  "indent": "off",
+  "indent": ["error", 2],
   "id-blacklist": "off",
   "id-match": "off",
   "import/order": "off",
@@ -45,30 +45,24 @@ const JS_RULES = {
   "prefer-spread": "off",
   "quote-props": "off",
   "radix": "error",
-  "space-before-function-paren": [
-    "error",
-    {
-      "anonymous": "always",
-      "named": "never",
-      "asyncArrow": "always"
-    }
-  ],
+  "semi": ["error", "always"],
+  "space-before-function-paren": "off",
   "spaced-comment": "off",
   "use-isnan": "error",
   "valid-typeof": "off",
-}
+};
 
 module.exports = {
   root: true,
   env: {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
   },
   parser: "babel-eslint",
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: "module"
+    sourceType: "module",
   },
   extends: ["eslint:recommended"],
   rules: JS_RULES,
@@ -81,16 +75,16 @@ module.exports = {
         sourceType: "module",
       },
       plugins: [
-        "@typescript-eslint"
+        "@typescript-eslint",
       ],
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
       ],
       rules: {
         ...JS_RULES,
-        "space-before-function-paren": "off",
+        "indent": "off",
         "@typescript-eslint/adjacent-overload-signatures": "error",
         "@typescript-eslint/array-type": "off",
         "@typescript-eslint/ban-types": "error",
@@ -115,6 +109,7 @@ module.exports = {
         "@typescript-eslint/prefer-for-of": "off",
         "@typescript-eslint/prefer-function-type": "error",
         "@typescript-eslint/prefer-namespace-keyword": "error",
+        "@typescript-eslint/require-await": "off",
         "@typescript-eslint/triple-slash-reference": "error",
         "@typescript-eslint/unbound-method": "off",
         "@typescript-eslint/unified-signatures": "off",
