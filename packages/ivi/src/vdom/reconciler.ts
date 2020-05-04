@@ -112,21 +112,25 @@ export function visitNodes(
  * @param opState State node.
  * @returns DOM node.
  */
-export function getDOMNode<T extends Node>(opState: OpState): T | null;
+export function getDOMNode<T extends Node>(opState: OpState | null): T | null;
 export function getDOMNode<T extends Node>(opState: OpState | Array<OpState | null> | null): T | null {
+  if (opState === null) {
+    return null;
+  }
+
   let i = (opState as OpState).f;
-  let c: OpState | null;
+  let c: OpState | Node | null;
   if ((i & (NodeFlags.Element | NodeFlags.Text)) === 0) {
     opState = (opState as OpState).c;
     if ((i & (NodeFlags.Fragment | NodeFlags.TrackByKey)) !== 0) {
       for (i = 0; i < (opState as Array<OpState | null>).length; i++) {
-        if ((c = (opState as Array<OpState | null>)[i]) !== null) {
-          return getDOMNode(c);
+        if ((c = getDOMNode((opState as Array<OpState | null>)[i])) !== null) {
+          return c as T;
         }
       }
       return null;
     }
-    return (opState === null) ? null : getDOMNode(opState as OpState);
+    return getDOMNode(opState as OpState);
   }
   return (opState as OpState).s as T;
 }
@@ -1064,7 +1068,7 @@ function _updateStyle(
     let i = 0;
     for (key in a) {
       const aValue = a[key];
-      bValue = (objectHasOwnProperty.call(b, key) === true) ? (matchCount++ , b[key]) : void 0;
+      bValue = (objectHasOwnProperty.call(b, key) === true) ? (matchCount++, b[key]) : void 0;
       if (aValue !== bValue) {
         if (bValue !== void 0) {
           style.setProperty(key, bValue);
@@ -1122,7 +1126,7 @@ function _updateAttrs(
         element,
         key,
         a[key],
-        (objectHasOwnProperty.call(b, key) === true) ? (matchCount++ , b[key]) : void 0,
+        (objectHasOwnProperty.call(b, key) === true) ? (matchCount++, b[key]) : void 0,
         svg,
       );
     }
