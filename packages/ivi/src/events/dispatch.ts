@@ -53,7 +53,7 @@ function visitUp(
 ): OpState | null {
   const parentElement = element.parentNode! as Element;
   return (parentElement === root || (stateNode = visitUp(result, match, parentElement, root, stateNode)) !== null) ?
-    visitDown(result, match, element, stateNode!) :
+    visitDown(result, match, element, stateNode!.c as OpState | null) :
     null;
 }
 
@@ -64,9 +64,6 @@ function visitDown(result: DispatchTarget[], match: {}, element: Element, stateN
     if ((f & NodeFlags.Element) !== 0) {
       if (stateNode.s === element) {
         return stateNode;
-      }
-      if (c !== null) {
-        return visitDown(result, match, element, c as OpState);
       }
     } else if ((f & (NodeFlags.Events | NodeFlags.Component | NodeFlags.Context)) !== 0) {
       if ((r = visitDown(result, match, element, stateNode.c as OpState)) !== null) {
