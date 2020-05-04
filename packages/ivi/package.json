@@ -1,6 +1,6 @@
 {
   "name": "ivi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/main/index.js",
   "module": "dist/module/index.js",
   "typings": "dist/typings/index.d.ts",
