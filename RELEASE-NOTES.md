@@ -1,3 +1,11 @@
+## v1.0.1
+
+### Bug Fixes
+
+- Fixed `getDOMNode()` returning `null` value when first non-null node in a fragment or `TrackByKey` operation doesn't
+have any DOM nodes.
+- Fixed event dispatching algorithm visiting more nodes than it is necessary.
+
 ## v1.0.0
 
 ### Components
