@@ -198,7 +198,7 @@ export declare interface CSSStyleProps {
    * "auto" | "loose" | "normal" | "strict"
    */
   "line-break"?: string;
-  "line-geight"?: number | string;
+  "line-height"?: number | string;
   "list-style"?: string;
   "list-style-image"?: string;
   "list-style-position"?: string;
