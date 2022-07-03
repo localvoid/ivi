@@ -2,6 +2,99 @@
 
 ivi is a javascript (TypeScript) library for building web user interfaces.
 
+## Notes to fellow researchers
+### Recommended reading to understand fundamentals
+
+- [Incremental computing](https://en.wikipedia.org/wiki/Incremental_computing)
+- [Self-Adjusting Computation (Umut A. Acar)](https://www.cs.cmu.edu/~rwh/students/acar.pdf)
+- [Introducing incremental (JaneStreet)](https://blog.janestreet.com/introducing-incremental/)
+- [Incremental computation and the web (JaneStreet)](https://blog.janestreet.com/incrementality-and-the-web/)
+- [Self Adjusting DOM (JaneStreet)](https://blog.janestreet.com/self-adjusting-dom/)
+- [Self Adjusting DOM and Diffable Data (JaneStreet)](https://blog.janestreet.com/self-adjusting-dom-and-diffable-data/)
+- [Incremental Computation (Draft of part 1) (Rado Kirov)](https://rkirov.github.io/posts/incremental_computation/)
+- [Incremental Computation (Draft of part 2) (Rado Kirov)](https://rkirov.github.io/posts/incremental_computation_2/)
+- [Incremental Computation (Draft of part 3) (Rado Kirov)](https://rkirov.github.io/posts/incremental_computation_3/)
+- [Towards a unified theory of reactive UI (Raph Levien)](https://raphlinus.github.io/ui/druid/2019/11/22/reactive-ui.html)
+- [Xilem: an architecture for UI in Rust (Raph Levien)](https://raphlinus.github.io/rust/gui/2022/05/07/ui-architecture.html)
+- [Compose From First Principles](http://intelligiblebabble.com/compose-from-first-principles/)
+- [moxie: incremental declarative UI in Rust](https://blog.anp.lol/rust/moxie-intro/)
+
+### Right-to-Left DOM updates
+
+It is a technique that I've introduced in ivi somewhere in 2018-2019 to solve a lot of complexity issues when we update
+a DOM tree structure. The main issue is that when we start updating a DOM tree structure, we need to have references to
+parent and next DOM nodes to perform `parent.insertBefore(newNode, nextNode)`. It may seem like it is a simple problem,
+but when we introduce conditional rendering, components, fragments, etc, it may become quite complicated to deal with
+all edge cases. It is one of the main reasons why a lot of library authors were struggling with fragments when React
+introduced them. And in the end a lot of libraries just ended up with ugly duct taping solutions, so they can add
+fragments to their supported feature lists.
+
+Majority of libraries are dealing with this edge cases by introducing marker DOM nodes. For example, to implement
+conditional rendering we can add an empty text node, and each time when we need to replace a node, we can use
+this empty text node as a next DOM node reference. I've always hated polluting DOM trees with marker DOM nodes to avoid
+issues like [this](https://github.com/sveltejs/svelte/issues/3586).
+
+The basic idea behind this technique is that we rewrite all algorithms to traverse UI tree from right-to-left instead
+of left-to-right, always start traversing from UI node that represents a DOM node, traverse through all DOM nodes and
+[store next DOM reference in a global variable](https://github.com/localvoid/ivi/blob/686a8bc13dd1bcc891d5b896fcaf750feec26254/packages/ivi/src/vdom/reconciler.ts#L48).
+Each time we are visiting a DOM node in our UI tree, we need to update next DOM reference, so when we perform an update
+to DOM tree, we can immediately retrieve it from this global variable.
+
+The current ivi implementation is traversing entire UI tree in dirty checking mode each time something is modified, so
+it is easy to also update a next DOM reference. But this technique can be easily modified so that it won't require
+traversing entire UI tree, for example, when component is invalidated we will need to find a closest parent UI node that
+represents a DOM node, mark it with dirty child flag and add it to a scheduler queue. When scheduler starts updating
+UI tree, it should always start updating from UI nodes that represent DOM nodes and traverse in dirty child check mode
+until direct DOM children. This technique can be also applied to libraries that use static analysis and template
+precompilation. With precompilation it is possible to reduce the number of nodes that we need to visit (skip adjacent
+DOM nodes) to update next DOM ref.
+
+With this technique we can eliminate separate code paths for DOM node displacements, avoid ugly hacks like normalization
+and create flexible APIs for ops (next section).
+
+### Polymorphism
+
+To avoid [megamorphic call-sites](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html) ivi library is
+using a flags property to store object type and uses the same object shape for all UI tree nodes. But nowadays
+I think that it would be better to implement it with C-style dynamic dispatching `OpDescriptor`(vtable) and polymorphic
+call-sites that access `p1` and `p2` in `OpNode`s (slightly reduced memory consumption).
+
+```ts
+export type MountStateNode<O extends Op1, S extends StateNode<O>> = (stateNode: S, op: O, depth: number) => void;
+export type UpdateStateNode<O extends Op1, S extends StateNode<O>> = (stateNode: S, prevOp: O, nextOp: O, displaceDOMNode: boolean, depth: number) => void;
+export type DirtyCheckStateNode<S extends StateNode> = (stateNode: S, dirtyChild: boolean, displaceDOMNode: boolean, depth: number) => void;
+export type UnmountStateNode<S extends StateNode> = (stateNode: S, unmountDOMNodes: boolean) => void;
+
+export interface OpDescriptor<O extends Op1 = Op1, S extends StateNode<O> = StateNode<any>> {
+  readonly mount: MountStateNode<O, S>;
+  readonly update: UpdateStateNode<O, S>;
+  readonly dirtyCheck: DirtyCheckStateNode<S>;
+  readonly unmount: UnmountStateNode<S>;
+}
+
+export interface Op1<T1 = any, D extends OpDescriptor = OpDescriptor<any, any>> {
+  readonly d: D;
+  readonly p1: T1;
+}
+
+export interface Op2<T1 = any, T2 = any, D extends OpDescriptor = OpDescriptor<any, any>> extends Op1<T1, D> {
+  readonly p2: T2;
+}
+
+export type OpNode = Op1 | Op2;
+```
+
+With such API it is possible to implement a minimal core rendering library that supports only text nodes and static
+arrays, and everything else can be implemented as separate packages (DOM nodes, dynamic lists, components, contexts,
+precompiled templates, etc).
+
+### Call-Site Memoization
+
+If someone has a lot of time, it would be really great to see if someone can try to explore and implement ideas from
+[Jetpack Compose](http://intelligiblebabble.com/compose-from-first-principles/). In my opinion, it is way much better
+than constructing a tree and using positions in this tree as memoization slots (vdom). Unfortunately, it seems that it
+will be extremely hard to implement in javascript, but I think that it will be possible with typescript transformers.
+
 ## Status
 
 Maintenance mode. Bug fixes and documentation updates only.
