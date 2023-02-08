@@ -52,12 +52,21 @@ DOM nodes) to update next DOM ref.
 With this technique we can eliminate separate code paths for DOM node displacements, avoid ugly hacks like normalization
 and create flexible APIs for ops (next section).
 
+#### **UPDATE 2023-02-08**
+
+After a recent conversation on this topic with
+[@trueadm](https://github.com/trueadm/), he correctly pointed out that
+there could be some performance issues when inserting DOM nodes in a RTL
+order. And instead of traversing a tree in RTL order, we can switch to
+LTR order and instead of using `parent.insertBefore(..)` method, we can
+use [`insertAdjacentElement(..)`](https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement).
+
 ### Polymorphism
 
 To avoid [megamorphic call-sites](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html) ivi library is
 using a flags property to store object type and uses the same object shape for all UI tree nodes. But nowadays
 I think that it would be better to implement it with C-style dynamic dispatching `OpDescriptor`(vtable) and polymorphic
-call-sites that access `p1` and `p2` in `OpNode`s (slightly reduced memory consumption).
+call-sites that access descriptor/vtable (`d`) in `OpNode` objects.
 
 ```ts
 export type MountStateNode<O extends Op1, S extends StateNode<O>> = (stateNode: S, op: O, depth: number) => void;
@@ -88,7 +97,7 @@ With such API it is possible to implement a minimal core rendering library that 
 arrays, and everything else can be implemented as separate packages (DOM nodes, dynamic lists, components, contexts,
 precompiled templates, etc).
 
-### Call-Site Memoization
+### Positional Memoization
 
 If someone has a lot of time, it would be really great to see if someone can try to explore and implement ideas from
 [Jetpack Compose](http://intelligiblebabble.com/compose-from-first-principles/). In my opinion, it is way much better
