@@ -207,6 +207,24 @@ export type VArray = VAny[];
 
 export type Directive = (element: Element) => void;
 
+const _unmount = (
+  parentElement: Element,
+  sNode: SNode | (SNode | null)[] | null,
+): void => {
+  var c, i;
+  if (sNode !== null) {
+    if (_isArray(sNode)) {
+      for (i = 0; i < sNode.length; i++) {
+        if ((c = sNode[i]) !== null) {
+          unmount(parentElement, c, true);
+        }
+      }
+    } else {
+      unmount(parentElement, sNode, true);
+    }
+  }
+};
+
 const _updateTemplateProperties = (
   currentElement: Element,
   opCodes: PropOpCode[],
@@ -524,7 +542,7 @@ const _updateArray = (
   var j;
   var i = children.length;
   if (i === 0) {
-    unmount(parentElement, sNode);
+    _unmount(parentElement, sNode);
   } else {
     opStateChildren = sNode.c! as (SNode<any> | null)[];
     j = opStateChildren.length;
@@ -532,7 +550,7 @@ const _updateArray = (
       sNode.c = (result = _Array(i));
       while (j > i) {
         if ((childState = (opStateChildren as Array<SNode | null>)[--j]) !== null) {
-          unmount(parentElement, childState);
+          _unmount(parentElement, childState);
         }
       }
       while (i > j) {
@@ -593,7 +611,7 @@ const _updateList = (
 
   if (i === 0) { // New children list is empty.
     if (j > 0) { // Unmount nodes from the old children list.
-      unmount(parentElement, sNode);
+      _unmount(parentElement, sNode);
     }
   } else if (j === 0) { // Old children list is empty.
     while (i > 0) { // Mount nodes from the new children list.
@@ -641,7 +659,7 @@ const _updateList = (
       // All nodes from `b` are updated, remove the rest from `a`.
       i = start;
       do {
-        unmount(parentElement, opStateChildren[i++]);
+        _unmount(parentElement, opStateChildren[i++]);
       } while (i <= aEnd);
     } else { // Step 3
       // When `pos === 99999999`, it means that one of the nodes is in the wrong position and we should rearrange nodes
@@ -665,7 +683,7 @@ const _updateList = (
           sources[j - start] = i;
           result[j] = node;
         } else {
-          unmount(parentElement, node);
+          _unmount(parentElement, node);
         }
       }
 
@@ -1008,7 +1026,7 @@ export const update = (
 ): SNode | null => {
   var flags, prev;
   if (next === null) {
-    unmount(parentElement, sNode);
+    _unmount(parentElement, sNode);
     return null;
   }
   if (sNode === null) {
@@ -1034,7 +1052,7 @@ export const update = (
     ((flags & NodeFlags.Array) && !_isArray(next))
     || ((prev as VNode).d !== (next as VNode).d)
   ) {
-    unmount(parentElement, sNode);
+    _unmount(parentElement, sNode);
     return mount(parentSNode, parentElement, next);
   }
 
@@ -1118,7 +1136,7 @@ export const mount = (
   return null;
 };
 
-export const unmountSNode = (parentElement: Element, sNode: SNode, detach: boolean): void => {
+export const unmount = (parentElement: Element, sNode: SNode, detach: boolean): void => {
   var c, i, v, f = sNode.f;
 
   if (detach === true && (f & (NodeFlags.Template | NodeFlags.Text))) {
@@ -1134,11 +1152,11 @@ export const unmountSNode = (parentElement: Element, sNode: SNode, detach: boole
     if (_isArray(c)) {
       for (i = 0; i < c.length; i++) {
         if ((v = c[i]) !== null) {
-          unmountSNode(parentElement, v, detach);
+          unmount(parentElement, v, detach);
         }
       }
     } else {
-      unmountSNode(parentElement, c as SNode, detach);
+      unmount(parentElement, c as SNode, detach);
     }
   }
   if (f & NodeFlags.Component) {
@@ -1150,24 +1168,6 @@ export const unmountSNode = (parentElement: Element, sNode: SNode, detach: boole
           c[i]();
         }
       }
-    }
-  }
-};
-
-export const unmount = (
-  parentElement: Element,
-  sNode: SNode | (SNode | null)[] | null,
-): void => {
-  var c, i;
-  if (sNode !== null) {
-    if (_isArray(sNode)) {
-      for (i = 0; i < sNode.length; i++) {
-        if ((c = sNode[i]) !== null) {
-          unmountSNode(parentElement, c, true);
-        }
-      }
-    } else {
-      unmountSNode(parentElement, sNode, true);
     }
   }
 };
