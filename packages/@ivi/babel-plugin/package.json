@@ -1,34 +1,29 @@
 {
-  "name": "ivi",
+  "name": "@ivi/babel-plugin",
   "version": "2.0.0-alpha.0",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./template": "./dist/template.js",
-    "./root": "./dist/root.js",
-    "./hooks": "./dist/hooks.js",
-    "./state": "./dist/state.js",
-    "./utils": "./dist/utils.js"
+    ".": "./index.js"
   },
   "sideEffects": false,
   "files": [
-    "dist",
-    "src",
-    "!dist/**/*.tsbuildinfo",
-    "!src/**/__tests__",
+    "index.js",
+    "index.d.ts",
     "README.md",
     "LICENSE"
   ],
   "dependencies": {
+    "@babel/types": "^7.21.2",
+    "@babel/helper-plugin-utils": "^7.20.2",
+    "@babel/helper-module-imports": "^7.18.6",
     "@ivi/template-compiler": "workspace:*"
   },
-  "description": "Lightweight Embeddable Web UI Library.",
+  "description": "Babel plugins for ivi library.",
   "license": "MIT",
   "keywords": [
     "ivi",
-    "ui",
-    "web-components",
-    "custom-elements"
+    "babel",
+    "babel-plugin"
   ],
   "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
   "homepage": "https://github.com/localvoid/ivi",

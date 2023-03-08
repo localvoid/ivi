@@ -1,14 +1,9 @@
 {
-  "name": "ivi",
+  "name": "@ivi/rollup-plugin",
   "version": "2.0.0-alpha.0",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./template": "./dist/template.js",
-    "./root": "./dist/root.js",
-    "./hooks": "./dist/hooks.js",
-    "./state": "./dist/state.js",
-    "./utils": "./dist/utils.js"
+    ".": "./dist/index.js"
   },
   "sideEffects": false,
   "files": [
@@ -20,15 +15,22 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@ivi/template-compiler": "workspace:*"
+    "@babel/core": "^7.21.0",
+    "@rollup/pluginutils": "^5.0.2",
+    "@ivi/babel-plugin": "workspace:*"
   },
-  "description": "Lightweight Embeddable Web UI Library.",
+  "devDependencies": {
+    "@types/babel__core": "^7.20.0"
+  },
+  "description": "Rollup plugin for ivi library.",
   "license": "MIT",
   "keywords": [
     "ivi",
-    "ui",
-    "web-components",
-    "custom-elements"
+    "rollup",
+    "plugin",
+    "rollup-plugin",
+    "vite",
+    "vite-plugin"
   ],
   "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
   "homepage": "https://github.com/localvoid/ivi",

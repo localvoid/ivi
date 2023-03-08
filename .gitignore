@@ -1,14 +1,13 @@
-dist
-coverage
-.ignore
-.TODO
-
+examples/**/dist
+packages/**/dist
 node_modules
-.jest
+coverage
+
+*.tsbuildinfo
+npm-debug.log
 
 .DS_Store
 .idea
 .vscode
 
-npm-debug.log
-yarn-error.log
+.TODO

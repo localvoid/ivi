@@ -1,47 +1,11 @@
 {
-  "extends": "./tools/typescript/tsconfig.checks.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "target": "es2016",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "lib": [
-      "es2015",
-      "es2016",
-      "dom"
-    ],
-    "types": [
-      "node",
-      "jest"
-    ],
-    "paths": {
-      "ivi": [
-        "packages/ivi/src"
-      ],
-      "ivi-html": [
-        "packages/ivi-html/src"
-      ],
-      "ivi-jest": [
-        "packages/ivi-jest/src"
-      ],
-      "ivi-portal": [
-        "packages/ivi-portal/src"
-      ],
-      "ivi-router": [
-        "packages/ivi-router/src"
-      ],
-      "ivi-svg": [
-        "packages/ivi-svg/src"
-      ],
-      "ivi-state": [
-        "packages/ivi-state/src"
-      ],
-      "ivi-test-utils": [
-        "packages/ivi-test-utils/src"
-      ]
-    }
-  },
-  "include": [
-    "packages/*/src/**/*.ts"
+  "files": [],
+  "references": [
+    { "path": "packages/ivi" },
+    { "path": "packages/@ivi/template-compiler" },
+    { "path": "packages/@ivi/rollup-plugin" },
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
