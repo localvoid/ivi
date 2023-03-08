@@ -86,7 +86,6 @@ remove ambiguity that we can often see in HTML-like template languages:
   text
   <span></span>
 </div>
-`
 ```
 
 Some template languages will create text nodes with a "prefix " text node and
@@ -202,8 +201,8 @@ h1.Title ${text}
 
 ```js
 function component<P>(
-  (c: Component) => (props: P) => OpAny,
-): (props: P) => ComponentOp<P>;
+  (c: Component) => (props: P) => VAny,
+): (props: P) => VComponent<P>;
 
 function invalidate(c: Component): void;
 ```
