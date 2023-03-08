@@ -35,14 +35,6 @@ export const ivi = declare((api) => {
       Program: {
         enter(path, state) {
           state.importSymbol = importSymbolFactory(path);
-          state.templates = [];
-        },
-        exit(path, state) {
-          if (state.templates.length > 0) {
-            path.node.body.unshift(
-              t.variableDeclaration("const", state.templates),
-            );
-          }
         },
       },
 
