@@ -1,5 +1,5 @@
-import { createSNode, dirtyCheck, NodeFlags, RootDescriptor, SRoot, VAny } from "./index.js";
-import { update, unmount } from "./index.js";
+import type { RootDescriptor, SRoot, VAny } from "./index.js";
+import { NodeFlags, createSNode, dirtyCheck, update, unmountSNode } from "./index.js";
 
 const RESOLVED_PROMISE = Promise.resolve();
 const ROOT_DESCRIPTOR: RootDescriptor = {
@@ -31,6 +31,6 @@ export const updateRoot = (root: SRoot, v: VAny) => {
   root.s = update(root, root.v.p.p, root.s, v, false);
 };
 
-export const disposeRoot = (root: SRoot) => {
-  unmount(root.v.p.p, root.s);
+export const disposeRoot = (root: SRoot, detach: boolean) => {
+  unmountSNode(root.v.p.p, root.s, detach);
 };

@@ -207,42 +207,6 @@ export type VArray = VAny[];
 
 export type Directive = (element: Element) => void;
 
-const _unmountNode = (parentElement: Element, sNode: SNode, detach: boolean): void => {
-  var c, i, v, f = sNode.f;
-
-  if (detach === true && (f & (NodeFlags.Template | NodeFlags.Text))) {
-    detach = false;
-    _nodeRemoveChild!.call(
-      parentElement,
-      (f & NodeFlags.Template)
-        ? (sNode as STemplate).s[0]
-        : (sNode as SText).s
-    );
-  }
-  if ((c = sNode.c) !== null) {
-    if (_isArray(c)) {
-      for (i = 0; i < c.length; i++) {
-        if ((v = c[i]) !== null) {
-          _unmountNode(parentElement, v, detach);
-        }
-      }
-    } else {
-      _unmountNode(parentElement, c as SNode, detach);
-    }
-  }
-  if (f & NodeFlags.Component) {
-    if ((c = (sNode as SComponent).s.u) !== null) {
-      if (typeof c === "function") {
-        c();
-      } else {
-        for (i = 0; i < c.length; i++) {
-          c[i]();
-        }
-      }
-    }
-  }
-};
-
 const _updateTemplateProperties = (
   currentElement: Element,
   opCodes: PropOpCode[],
@@ -1154,6 +1118,42 @@ export const mount = (
   return null;
 };
 
+export const unmountSNode = (parentElement: Element, sNode: SNode, detach: boolean): void => {
+  var c, i, v, f = sNode.f;
+
+  if (detach === true && (f & (NodeFlags.Template | NodeFlags.Text))) {
+    detach = false;
+    _nodeRemoveChild!.call(
+      parentElement,
+      (f & NodeFlags.Template)
+        ? (sNode as STemplate).s[0]
+        : (sNode as SText).s
+    );
+  }
+  if ((c = sNode.c) !== null) {
+    if (_isArray(c)) {
+      for (i = 0; i < c.length; i++) {
+        if ((v = c[i]) !== null) {
+          unmountSNode(parentElement, v, detach);
+        }
+      }
+    } else {
+      unmountSNode(parentElement, c as SNode, detach);
+    }
+  }
+  if (f & NodeFlags.Component) {
+    if ((c = (sNode as SComponent).s.u) !== null) {
+      if (typeof c === "function") {
+        c();
+      } else {
+        for (i = 0; i < c.length; i++) {
+          c[i]();
+        }
+      }
+    }
+  }
+};
+
 export const unmount = (
   parentElement: Element,
   sNode: SNode | (SNode | null)[] | null,
@@ -1163,11 +1163,11 @@ export const unmount = (
     if (_isArray(sNode)) {
       for (i = 0; i < sNode.length; i++) {
         if ((c = sNode[i]) !== null) {
-          _unmountNode(parentElement, c, true);
+          unmountSNode(parentElement, c, true);
         }
       }
     } else {
-      _unmountNode(parentElement, sNode, true);
+      unmountSNode(parentElement, sNode, true);
     }
   }
 };
