@@ -499,7 +499,7 @@ const _updateComponent = (
       (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
     )
   ) {
-    sNode.f &= NodeFlags.CleanMask;
+    sNode.f = NodeFlags.Component;
     sNode.c = update(
       sNode,
       parentElement,

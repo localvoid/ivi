@@ -6,7 +6,7 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
   f: NodeFlags.Root,
   p1: (root: SRoot) => {
     RESOLVED_PROMISE.then(() => {
-      root.f &= NodeFlags.CleanMask;
+      root.f = NodeFlags.Root;
       dirtyCheck(root.v.p.p, root.s, false);
     });
   },
@@ -27,7 +27,7 @@ export const createRoot = (p: Element, n: Node | null = null): SRoot => (
 );
 
 export const updateRoot = (root: SRoot, v: VAny) => {
-  root.f &= NodeFlags.CleanMask;
+  root.f = NodeFlags.Root;
   root.s = update(root, root.v.p.p, root.s, v, false);
 };
 
