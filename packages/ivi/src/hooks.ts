@@ -1,4 +1,4 @@
-import type { SComponent } from "./index.js";
+import type { Component } from "./index.js";
 
 /**
  * useUnmount creates an unmount hook.
@@ -10,13 +10,13 @@ import type { SComponent } from "./index.js";
  *         console.log("unmounted");
  *       });
  *
- *       return () => htm`div`;
+ *       return () => null;
  *     });
  *
  * @param component Component instance.
  * @param hook Unmount hook.
  */
-export const useUnmount = (component: SComponent, hook: () => void): void => {
+export const useUnmount = (component: Component, hook: () => void): void => {
   var s = component.s;
   var hooks = s.u;
   s.u = (hooks === null)
@@ -31,15 +31,18 @@ export const useUnmount = (component: SComponent, hook: () => void): void => {
  *
  * @example
  *
- *     const Counter = component<number>((c) => {
+ *     const Counter = component((c) => {
  *       let i = 0;
- *       const timer = useEffect<number>(c, (delay) => {
- *         const tid = setInterval(() => {
- *           i++;
- *           invalidate(c);
- *         }, delay);
- *         return () => { clearInterval(tid); };
- *       });
+ *       const timer = useEffect(c,
+ *         (delay) => {
+ *           const tid = setInterval(() => {
+ *             i++;
+ *             invalidate(c);
+ *           }, delay);
+ *           return () => { clearInterval(tid); };
+ *         },
+ *         (prev, next) => prev !== next,
+ *       );
  *
  *       return (delay) => (
  *         timer(delay),
@@ -55,14 +58,14 @@ export const useUnmount = (component: SComponent, hook: () => void): void => {
  * @returns Side effect hook.
  */
 export const useEffect = <P>(
-  component: SComponent | undefined,
+  component: Component,
   hook: (props?: P) => (() => void) | void,
-  areEqual?: (prev: P, next: P) => boolean,
+  areEqual: (prev: P, next: P) => boolean,
 ): (props: P) => void => {
   var reset: (() => void) | void;
   var prev: P | undefined;
   return (next: P) => {
-    if (prev !== next && (areEqual === void 0 || areEqual(prev as P, next as P) !== true)) {
+    if (areEqual(prev as P, next as P) !== true) {
       if (reset !== void 0) {
         reset();
       }
@@ -74,7 +77,7 @@ export const useEffect = <P>(
             reset();
           }
         });
-        component = void 0;
+        component = (void 0)!;
       }
     }
   };

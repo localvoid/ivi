@@ -23,10 +23,10 @@ import { invalidate } from "./index.js";
  * @param areEqual `areEqual` function.
  * @returns memoized function.
  */
-export function memo<T, U>(
+export const memo = <T, U>(
   fn: (props: T) => U,
   areEqual: (prev: T, next: T) => boolean,
-): (props: T) => U {
+): (props: T) => U => {
   var prev: T | undefined;
   var v: U | undefined;
   return (props: T) => (
@@ -34,7 +34,7 @@ export function memo<T, U>(
       ? v = fn(prev = props)
       : v
   );
-}
+};
 
 /**
  * Creates a reactive state.
