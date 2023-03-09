@@ -59,9 +59,10 @@ const CONTEXT: Context = _Object.seal({
 });
 
 /**
- * NodeFlags are used by VNodes and SNodes.
+ * Flags.
  */
-export const enum NodeFlags {
+export const enum Flags {
+  // VNode and SNode flags
   Template = 1,
   Component = 1 << 1,
   List = 1 << 2,
@@ -69,9 +70,15 @@ export const enum NodeFlags {
   Text = 1 << 4,
   Root = 1 << 5,
 
+  // Component Dirty Flags
   Dirty = 1 << 6,
   DirtySubtree = 1 << 7,
-  CleanMask = Dirty - 1,
+
+  // Update Flags
+  ForceUpdate = 1 << 8,
+  DisplaceNode = 1 << 9,
+
+  CleanSNodeMask = Dirty - 1,
 }
 
 /**
@@ -82,8 +89,8 @@ export const enum NodeFlags {
 export interface SNode<V = VAny, S = any> {
   /** VAny. */
   v: V;
-  /** See {@link NodeFlags} for details. */
-  f: NodeFlags;
+  /** See {@link Flags} for details. */
+  f: Flags;
   /** Children state nodes. */
   c: SNode | (SNode | null)[] | null;
   /** Current state. */
@@ -113,7 +120,7 @@ export interface ComponentState {
  * @returns {@link SNode} instance.
  */
 export const createSNode = <V extends VAny, S>(
-  f: NodeFlags,
+  f: Flags,
   v: V,
   c: SNode | Array<SNode | null> | null,
   s: S,
@@ -121,8 +128,8 @@ export const createSNode = <V extends VAny, S>(
 ): SNode<V, S> => ({ f, v, c, s, p });
 
 export interface VDescriptor<P1 = any, P2 = any> {
-  /** See {@link NodeFlags} for details. */
-  readonly f: NodeFlags;
+  /** See {@link Flags} for details. */
+  readonly f: Flags;
   readonly p1: P1;
   readonly p2: P2;
 }
@@ -335,6 +342,7 @@ const _mountTemplate = (
   parentElement: Element,
   vNode: VTemplate,
 ) => {
+  var stateNode;
   var currentNode;
   var childIndex;
   var value;
@@ -377,7 +385,7 @@ const _mountTemplate = (
   currentNode = rootNode;
   childIndex = 0;
   j = i >> 10;
-  var stateNode = createSNode(NodeFlags.Template, vNode, children, state, parentSNode);
+  stateNode = createSNode(Flags.Template, vNode, children, state, parentSNode);
   if (j > 0) {
     stateNode.c = children = _Array(j);
     opCodes = tpl.c;
@@ -405,7 +413,7 @@ const _updateTemplate = (
   parentElement: Element,
   sNode: STemplate,
   next: VTemplate,
-  displace: boolean,
+  updateFlags: Flags,
 ) => {
   var v;
   var c;
@@ -422,7 +430,8 @@ const _updateTemplate = (
   var rootNode = state[0] as Element;
   var opCodes = tpl.c;
 
-  if (displace === true) {
+  if (updateFlags & Flags.DisplaceNode) {
+    updateFlags ^= Flags.DisplaceNode;
     _nodeInsertBefore!.call(parentElement, rootNode, ctx.n);
   }
 
@@ -451,7 +460,7 @@ const _updateTemplate = (
           parentElement,
           (children as (SNode | null)[])[j++],
           nextProps[v],
-          false,
+          updateFlags,
         );
     } else if (k === ChildOpCode.SetNext) {
       ctx.n = (state as Node[])[v];
@@ -464,7 +473,7 @@ const _updateTemplate = (
   ctx.n = rootNode;
 };
 
-const _mountList = (parentState: SNode, parentElement: Element, f: NodeFlags, arr: VArray, o: VAny): SNode => {
+const _mountList = (parentState: SNode, parentElement: Element, f: Flags, arr: VArray, o: VAny): SNode => {
   var i = arr.length;
   var c = _Array(i);
   var s = createSNode(f, o, c, null, parentState);
@@ -479,7 +488,7 @@ const _updateText = (
   parentElement: Element,
   sNode: SNode,
   next: string,
-  displace: boolean,
+  updateFlags: Flags,
 ): SNode => {
   var o;
   var s = sNode.s;
@@ -490,7 +499,7 @@ const _updateText = (
     if (o !== next) {
       (s as Node).nodeValue = next as string;
     }
-    if (displace === true) {
+    if (updateFlags & Flags.DisplaceNode) {
       _nodeInsertBefore!.call(parentElement, s as Node, CONTEXT.n);
     }
     return sNode;
@@ -504,29 +513,28 @@ const _updateComponent = (
   parentElement: Element,
   sNode: SComponent,
   next: VComponent,
-  displace: boolean,
-  forceUpdate: boolean,
+  updateFlags: Flags,
 ) => {
   var child = sNode.c;
   var prevProps = (sNode.v as VComponent).p;
   var descriptor = next.d as ComponentDescriptor;
   var nextProps = next.p;
   if (
-    (forceUpdate === true) || (
+    (updateFlags & (Flags.Dirty | Flags.ForceUpdate)) || (
       (prevProps !== nextProps) &&
       (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
     )
   ) {
-    sNode.f = NodeFlags.Component;
+    sNode.f = Flags.Component;
     sNode.c = update(
       sNode,
       parentElement,
       child as SNode,
       sNode.s.r!(nextProps),
-      displace,
+      updateFlags,
     );
   } else if (sNode.c !== null) {
-    dirtyCheck(parentElement, child as SNode, displace);
+    dirtyCheck(parentElement, child as SNode, updateFlags);
   }
 };
 
@@ -534,7 +542,7 @@ const _updateArray = (
   parentElement: Element,
   sNode: SNode,
   children: VArray,
-  displace: boolean,
+  updateFlags: Flags,
 ) => {
   var result;
   var childState;
@@ -563,7 +571,7 @@ const _updateArray = (
         parentElement,
         (opStateChildren as Array<SNode | null>)[i],
         children[i],
-        displace,
+        updateFlags,
       );
     }
   }
@@ -600,7 +608,7 @@ const _updateList = (
   sNode: SNode,
   a: ListProps<any>,
   b: ListProps<any>,
-  displace: boolean,
+  updateFlags: Flags,
 ): void => {
   var aKeys = a.k;
   var bKeys = b.k;
@@ -633,7 +641,7 @@ const _updateList = (
           parentElement,
           opStateChildren[aEnd--],
           bOps[bEnd],
-          displace,
+          updateFlags,
         );
         if (start > --bEnd || start > aEnd) {
           break outer;
@@ -691,7 +699,7 @@ const _updateList = (
 
       // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
       // children nodes were moved `pos === MagicValues.MovedChildren`.
-      if (displace === false && pos === MagicValues.MovedChildren) {
+      if (!(updateFlags & Flags.DisplaceNode) && pos === MagicValues.MovedChildren) {
         markLIS(sources);
       }
       while (bLength-- > 0) {
@@ -705,7 +713,11 @@ const _updateList = (
             parentElement,
             result[bEnd],
             node,
-            displace || (pos === MagicValues.MovedChildren && j !== MagicValues.LISMark),
+            updateFlags
+            // TODO: Figure out a better algo
+            | ((pos === MagicValues.MovedChildren && j !== MagicValues.LISMark)
+              ? Flags.DisplaceNode
+              : 0),
           );
       }
     }
@@ -718,7 +730,7 @@ const _updateList = (
         parentElement,
         opStateChildren[start],
         bOps[start],
-        displace,
+        updateFlags,
       );
     }
   }
@@ -870,7 +882,7 @@ export const _T = (
   s: StateOpCode[],
   d: any[],
 ): TemplateDescriptor => ({
-  f: NodeFlags.Template,
+  f: Flags.Template,
   p1: { f, p, c, s, d },
   p2,
 });
@@ -889,14 +901,14 @@ export const component = <P>(
   p1: (c: SComponent) => (props: P) => VAny,
   p2?: (prev: P, next: P) => boolean,
 ): (props: P) => VComponent<P> => (
-  p1 = { f: NodeFlags.Component, p1, p2 } satisfies ComponentDescriptor as any,
+  p1 = { f: Flags.Component, p1, p2 } satisfies ComponentDescriptor as any,
   (p: P) => ({ d: p1 as any, p })
 );
 
 /**
  * VDescriptor for List nodes.
  */
-const LIST: ListDescriptor = { f: NodeFlags.List, p1: null, p2: null };
+const LIST: ListDescriptor = { f: Flags.List, p1: null, p2: null };
 
 /**
  * Creates a dynamic list operation.
@@ -926,14 +938,14 @@ export const List = <E, K>(
  * @param c Component instance.
  */
 export const invalidate = (c: Component): void => {
-  if (!(c.f & NodeFlags.Dirty)) {
-    c.f |= NodeFlags.Dirty;
+  if (!(c.f & Flags.Dirty)) {
+    c.f |= Flags.Dirty;
     var parent = c.p;
     while (parent !== null) {
-      if (parent.f & NodeFlags.DirtySubtree) {
+      if (parent.f & Flags.DirtySubtree) {
         return;
       }
-      parent.f |= NodeFlags.DirtySubtree;
+      parent.f |= Flags.DirtySubtree;
       c = parent as any;
       parent = parent.p;
     }
@@ -944,20 +956,21 @@ export const invalidate = (c: Component): void => {
 export const dirtyCheck = (
   parentElement: Element,
   sNode: SNode,
-  displace: boolean,
+  updateFlags: Flags,
 ): void => {
   var state, i,
     rootNode,
     ctx = CONTEXT,
     children = sNode.c,
     flags = sNode.f;
-  if (flags & NodeFlags.Template) {
+  if (flags & Flags.Template) {
     rootNode = sNode.s[0];
     let c;
-    if (displace === true) {
+    if (updateFlags & Flags.DisplaceNode) {
+      updateFlags ^= Flags.DisplaceNode;
       _nodeInsertBefore.call(parentElement, rootNode, ctx.n);
     }
-    if (flags & NodeFlags.DirtySubtree) {
+    if (flags & Flags.DirtySubtree) {
       const childOpCodes = (sNode as STemplate).v.d.p1.c;
       const state = (sNode as STemplate).s;
       let currentNode = rootNode;
@@ -969,7 +982,7 @@ export const dirtyCheck = (
         if (type === ChildOpCode.Child) {
           c = (children as (SNode | null)[])[childIndex++];
           if (c !== null) {
-            dirtyCheck(currentNode, c, false);
+            dirtyCheck(currentNode, c, updateFlags);
           }
         } else if (type === ChildOpCode.SetNext) {
           ctx.n = (state as Node[])[value];
@@ -980,32 +993,31 @@ export const dirtyCheck = (
       }
     }
     ctx.n = rootNode;
-  } else if (flags & NodeFlags.Text) {
-    if (displace === true) {
+  } else if (flags & Flags.Text) {
+    if (updateFlags & Flags.DisplaceNode) {
       _nodeInsertBefore.call(parentElement, sNode.s, ctx.n);
     }
     ctx.n = sNode.s;
-  } else if (flags & NodeFlags.Component) {
-    if (flags & NodeFlags.Dirty) {
+  } else if (flags & Flags.Component) {
+    if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
       _updateComponent(
         parentElement,
         sNode as Component,
         (sNode as Component).v,
-        displace,
-        true,
+        updateFlags,
       );
     } else if (children !== null) {
-      dirtyCheck(parentElement, children as SNode, displace);
+      dirtyCheck(parentElement, children as SNode, updateFlags);
     }
   } else { // Array || List
     i = (children as Array<SNode | null>).length;
     while (i-- >= 0) {
       if ((state = (children as Array<SNode | null>)[i]) !== null) {
-        dirtyCheck(parentElement, state, displace);
+        dirtyCheck(parentElement, state, updateFlags);
       }
     }
   }
-  sNode.f &= NodeFlags.CleanMask;
+  sNode.f &= Flags.CleanSNodeMask;
 };
 
 /**
@@ -1015,14 +1027,14 @@ export const dirtyCheck = (
  * @param sNode Operation state.
  * @param next Next operation.
  * @param displace DOM Element should be moved.
- * @returns OpNode state.
+ * @returns SNode or a null value.
  */
 export const update = (
   parentSNode: SNode,
   parentElement: Element,
   sNode: SNode | null,
   next: VAny,
-  displace: boolean,
+  updateFlags: Flags,
 ): SNode | null => {
   var flags, prev;
   if (next === null) {
@@ -1034,53 +1046,52 @@ export const update = (
   }
   flags = sNode.f;
 
-  if (flags & NodeFlags.Text) {
+  if (flags & Flags.Text) {
     return _updateText(
       parentSNode,
       parentElement,
       sNode,
       next as string,
-      displace,
+      updateFlags,
     );
   }
   prev = sNode.v;
   if (prev === next) {
-    dirtyCheck(parentElement, sNode, displace);
+    dirtyCheck(parentElement, sNode, updateFlags);
     return sNode;
   }
   if (
-    ((flags & NodeFlags.Array) && !_isArray(next))
+    ((flags & Flags.Array) && !_isArray(next))
     || ((prev as VNode).d !== (next as VNode).d)
   ) {
     _unmount(parentElement, sNode);
     return mount(parentSNode, parentElement, next);
   }
 
-  flags &= (NodeFlags.Component | NodeFlags.Template | NodeFlags.Array);
-  if (flags === NodeFlags.Component) {
+  flags &= (Flags.Component | Flags.Template | Flags.Array);
+  if (flags === Flags.Component) {
     _updateComponent(
       parentElement,
       sNode as Component,
       next as VComponent,
-      displace,
-      false,
+      updateFlags,
     );
-  } else if (flags === NodeFlags.Template) {
+  } else if (flags === Flags.Template) {
     _updateTemplate(
       parentElement,
       sNode as STemplate,
       next as VTemplate,
-      displace,
+      updateFlags,
     );
-  } else if (flags === NodeFlags.Array) {
-    _updateArray(parentElement, sNode, next as VArray, displace);
+  } else if (flags === Flags.Array) {
+    _updateArray(parentElement, sNode, next as VArray, updateFlags);
   } else {
     _updateList(
       parentElement,
       sNode,
       (prev as VList).p,
       (next as VList).p,
-      displace,
+      updateFlags,
     );
   }
 
@@ -1097,16 +1108,16 @@ export const mount = (
   if (v !== null) {
     if (typeof v === "object") {
       if (_isArray(v)) {
-        return _mountList(parentSNode, parentElement, NodeFlags.Array, v, v);
+        return _mountList(parentSNode, parentElement, Flags.Array, v, v);
       } else {
         d = v.d;
-        i = d.f & (NodeFlags.Template | NodeFlags.Component);
-        if (i === NodeFlags.Template) {
+        i = d.f & (Flags.Template | Flags.Component);
+        if (i === Flags.Template) {
           return _mountTemplate(parentSNode, parentElement, v as VTemplate);
-        } else if (i === NodeFlags.Component) {
+        } else if (i === Flags.Component) {
           e = { r: null, u: null } satisfies ComponentState;
           s = createSNode<VComponent, ComponentState>(
-            NodeFlags.Component,
+            Flags.Component,
             v as VComponent,
             null,
             e,
@@ -1120,7 +1131,7 @@ export const mount = (
         return _mountList(
           parentSNode,
           parentElement,
-          NodeFlags.List,
+          Flags.List,
           (v as VList).p.v,
           v,
         );
@@ -1130,7 +1141,7 @@ export const mount = (
       e = doc.createTextNode(v as string);
       _nodeInsertBefore!.call(parentElement, e, c.n);
       c.n = e;
-      return createSNode(NodeFlags.Text, v, null, e, parentSNode);
+      return createSNode(Flags.Text, v, null, e, parentSNode);
     }
   }
   return null;
@@ -1139,11 +1150,11 @@ export const mount = (
 export const unmount = (parentElement: Element, sNode: SNode, detach: boolean): void => {
   var c, i, v, f = sNode.f;
 
-  if (detach === true && (f & (NodeFlags.Template | NodeFlags.Text))) {
+  if (detach === true && (f & (Flags.Template | Flags.Text))) {
     detach = false;
     _nodeRemoveChild!.call(
       parentElement,
-      (f & NodeFlags.Template)
+      (f & Flags.Template)
         ? (sNode as STemplate).s[0]
         : (sNode as SText).s
     );
@@ -1159,7 +1170,7 @@ export const unmount = (parentElement: Element, sNode: SNode, detach: boolean): 
       unmount(parentElement, c as SNode, detach);
     }
   }
-  if (f & NodeFlags.Component) {
+  if (f & Flags.Component) {
     if ((c = (sNode as SComponent).s.u) !== null) {
       if (typeof c === "function") {
         c();

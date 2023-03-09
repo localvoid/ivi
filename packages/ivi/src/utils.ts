@@ -1,5 +1,5 @@
 import type { SNode, STemplate, SText } from "./index.js";
-import { NodeFlags } from "./index.js";
+import { Flags } from "./index.js";
 
 /**
  * VisitNodesDirective controls the traversal algorithm {@link visitNodes}`.
@@ -30,7 +30,7 @@ export const visitNodes = (
   }
 
   var { f, c } = opState!;
-  if (f & (NodeFlags.Array | NodeFlags.List)) {
+  if (f & (Flags.Array | Flags.List)) {
     for (i = 0; i < (c as Array<SNode | null>).length; i++) {
       if (
         (opState = (c as Array<SNode | null>)[i]!) !== null &&
@@ -61,13 +61,13 @@ export const getDOMNode = <T extends Node | Text>(
 
   var i = (sNode as SNode).f;
   var c: SNode | Node | null;
-  if (i & (NodeFlags.Template | NodeFlags.Text)) {
-    return (i & NodeFlags.Template)
+  if (i & (Flags.Template | Flags.Text)) {
+    return (i & Flags.Template)
       ? (sNode as STemplate).s[0] as T
       : (sNode as SText).s as T;
   }
   sNode = (sNode as SNode).c as any;
-  if (i & (NodeFlags.Array | NodeFlags.List)) {
+  if (i & (Flags.Array | Flags.List)) {
     for (i = 0; i < (sNode as any as Array<SNode | null>).length; i++) {
       if ((c = getDOMNode((sNode as any as Array<SNode | null>)[i])) !== null) {
         return c as T;
@@ -91,7 +91,7 @@ export const containsElement = (
 ): boolean => {
   var result = false;
   visitNodes(parent, (node) => (
-    (node.f & NodeFlags.Template)
+    (node.f & Flags.Template)
       ? (((node.s as Element).contains(element) === true)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)
@@ -113,7 +113,7 @@ export const hasElementChild = (
 ): boolean => {
   var result = false;
   visitNodes(parent, (node) => (
-    (node.f & NodeFlags.Template)
+    (node.f & Flags.Template)
       ? ((node.s === child)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)

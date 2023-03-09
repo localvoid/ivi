@@ -1,13 +1,13 @@
 import type { RootDescriptor, SRoot, VAny } from "./index.js";
-import { NodeFlags, createSNode, dirtyCheck, update, unmount } from "./index.js";
+import { Flags, createSNode, dirtyCheck, update, unmount } from "./index.js";
 
 const RESOLVED_PROMISE = Promise.resolve();
 const ROOT_DESCRIPTOR: RootDescriptor = {
-  f: NodeFlags.Root,
+  f: Flags.Root,
   p1: (root: SRoot) => {
     RESOLVED_PROMISE.then(() => {
-      root.f = NodeFlags.Root;
-      dirtyCheck(root.v.p.p, root.s, false);
+      root.f = Flags.Root;
+      dirtyCheck(root.v.p.p, root.s, 0);
     });
   },
   p2: null,
@@ -15,7 +15,7 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
 
 export const createRoot = (p: Element, n: Node | null = null): SRoot => (
   createSNode(
-    NodeFlags.Root,
+    Flags.Root,
     {
       d: ROOT_DESCRIPTOR,
       p: { p, n },
@@ -27,8 +27,8 @@ export const createRoot = (p: Element, n: Node | null = null): SRoot => (
 );
 
 export const updateRoot = (root: SRoot, v: VAny) => {
-  root.f = NodeFlags.Root;
-  root.s = update(root, root.v.p.p, root.s, v, false);
+  root.f = Flags.Root;
+  root.s = update(root, root.v.p.p, root.s, v, 0);
 };
 
 export const disposeRoot = (root: SRoot, detach: boolean) => {
