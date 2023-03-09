@@ -214,6 +214,117 @@ function component<P>(
 function invalidate(c: Component): void;
 ```
 
+## Component State
+
+`ivi/state` module provides simple abstractions for managing component state.
+
+### Memoized Functions
+
+```ts
+/**
+ * Creates a memoized function.
+ *
+ * @typeparam T Input type.
+ * @typeparam U Output type.
+ * @param fn
+ * @param areEqual `areEqual` function.
+ * @returns memoized function.
+ */
+function memo<T, U>(
+  fn: (props: T) => U,
+  areEqual: (prev: T, next: T) => boolean,
+): (props: T) => U;
+```
+
+```ts
+const FullName = component((c) => {
+  const fullName = memo(
+    ([firstName, lastName]) => `${firstName} ${lastName}`,
+    (prev, next) => prev[0] === next[0] && prev[1] === next[1],
+  );
+
+  return ({firstName, lastName}) => htm`
+    div.fullName ${fullName([firstName, lastName])}
+  `;
+});
+```
+
+### Reactive State
+
+```ts
+/**
+ * Creates a reactive state.
+ *
+ * @typeparam S State type.
+ * @param component Component instance.
+ * @param state Initial state value.
+ * @returns A tuple with a getter and setter functions.
+ */
+const useState = <S>(component: Component, state: S): [() => S, (s: S) => void];
+```
+
+```ts
+const Counter = component((c) => {
+   const [getCounter, setCounter] = useState(c, 0);
+   const inc = () => {
+     setCounter(getCounter() + 1);
+   };
+
+   return () => htm`
+     div.app
+       div.counter ${getCounter()}
+       button @click=${inc} 'Increment'
+   `;
+ });
+```
+
+### Reactive State Reducer
+
+```ts
+/**
+ * Creates a reactive state reducer.
+ *
+ * @typeparam S State type.
+ * @typeparam A Reducer action type.
+ * @param component Component instance.
+ * @param state Initial state.
+ * @param reducer Reducer function.
+ * @returns State reducer.
+ */
+const useReducer = <S, A>(
+  component: Component,
+  state: S,
+  reducer: (state: S, action: A) => S,
+): (action?: A) => S;
+```
+
+```ts
+const Counter = component((c) => {
+   const counter = useReducer(c, 0, (state, action) => {
+     if (action === "inc") {
+       return state + 1;
+     }
+     return state;
+   });
+   const inc = () => {
+     counter("inc");
+   };
+
+   return () => htm`
+     div.app
+       div.counter ${counter()}
+       button @click=${inc} 'Increment'
+   `;
+ });
+```
+
+## Hooks
+
+`ivi/hooks` module.
+
+- `useUnmount()`
+- `useEffect()`
+
 ## Root Node
 
 `ivi/root` module provides a basic root nodes implementation that uses
@@ -256,21 +367,6 @@ export function disposeRoot(
   detach: boolean,
 ): void;
 ```
-
-## State
-
-`ivi/state` module.
-
-- `memo()`
-- `useState()`
-- `useReducer()`
-
-## Hooks
-
-`ivi/hooks` module.
-
-- `useUnmount()`
-- `useEffect()`
 
 ## Directives
 
