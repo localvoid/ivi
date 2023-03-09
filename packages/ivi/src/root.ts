@@ -17,8 +17,13 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
   // OnRootInvalidated hook
   p1: (root: SRoot) => {
     _queueMicrotask(() => {
-      // Updates all invalidated components.
-      dirtyCheck(root.v.p.p, root.s, 0);
+      // Retrieves DOM slot from VNode object.
+      var domSlot = root.v.p;
+      // Assign parent element and next node to the render context.
+      RENDER_CONTEXT.p = domSlot.p;
+      RENDER_CONTEXT.n = domSlot.n;
+      // Updates invalidated components.
+      dirtyCheck(root.s, 0);
       // Flags should always be reassigned to clear dirty flags.
       root.f = Flags.Root;
     });
@@ -77,7 +82,8 @@ export const updateRoot = (
 ): void => {
   // Retrieves DOM slot from VNode object.
   var domSlot = root.v.p;
-  // Assign next node to the current render context.
+  // Assign parent element and next node to the render context.
+  RENDER_CONTEXT.p = domSlot.p;
   RENDER_CONTEXT.n = domSlot.n;
   // Flags should always be reassigned on update to clear dirty flags.
   root.f = Flags.Root;
@@ -86,16 +92,12 @@ export const updateRoot = (
       ? mount(
         // Parent SNode should always be a root node.
         root,
-        // Parent Element.
-        domSlot.p,
         // UI Representation.
         v,
       )
       : update(
         // Parent SNode should always be a root node.
         root,
-        // Parent Element.
-        domSlot.p,
         // Previous UI state.
         root.c as SNode,
         // UI Representation.
@@ -116,9 +118,10 @@ export const updateRoot = (
  */
 export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
   if (root.c !== null) {
+    // Assign parent element to the render context.
+    RENDER_CONTEXT.p = root.v.p.p;
+    // Unmounts a root subtree.
     unmount(
-      // Parent Element.
-      root.v.p.p,
       // Previous UI state.
       root.c as SNode,
       // Detach root nodes.

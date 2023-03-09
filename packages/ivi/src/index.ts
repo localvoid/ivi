@@ -47,13 +47,16 @@ const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "s
 const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
 
 export interface RenderContext {
-  /** Next node. */
+  /** Parent DOM Element */
+  p: Element;
+  /** Next DOM Node. */
   n: Node | null;
-  /** State index. */
+  /** Template state index. */
   si: number;
 }
 
 export const RENDER_CONTEXT: RenderContext = _Object.seal({
+  p: null!,
   n: null,
   si: 0,
 });
@@ -215,7 +218,6 @@ export type VArray = VAny[];
 export type Directive = (element: Element) => void;
 
 const _unmount = (
-  parentElement: Element,
   sNode: SNode | (SNode | null)[] | null,
 ): void => {
   var c, i;
@@ -223,11 +225,11 @@ const _unmount = (
     if (_isArray(sNode)) {
       for (i = 0; i < sNode.length; i++) {
         if ((c = sNode[i]) !== null) {
-          unmount(parentElement, c, true);
+          unmount(c, true);
         }
       }
     } else {
-      unmount(parentElement, sNode, true);
+      unmount(sNode, true);
     }
   }
 };
@@ -339,17 +341,16 @@ const _assignTemplateSlots = (
 
 const _mountTemplate = (
   parentSNode: SNode,
-  parentElement: Element,
   vNode: VTemplate,
 ) => {
   var stateNode;
-  var currentNode;
   var childIndex;
   var value;
   var j;
   var type;
   var children = null;
   var ctx = RENDER_CONTEXT;
+  var parentElement = ctx.p;
   var nextNode = ctx.n;
   var d = vNode.d;
   var props = vNode.p;
@@ -382,11 +383,11 @@ const _mountTemplate = (
     !!(tpl.f & TemplateFlags.Svg),
   );
 
-  currentNode = rootNode;
   childIndex = 0;
   j = i >> 10;
   stateNode = createSNode(Flags.Template, vNode, children, state, parentSNode);
   if (j > 0) {
+    ctx.p = rootNode;
     stateNode.c = children = _Array(j);
     opCodes = tpl.c;
     for (i = 0; i < opCodes.length; i++) {
@@ -394,23 +395,23 @@ const _mountTemplate = (
       type = j & ChildOpCode.Type;
       value = j >> ChildOpCode.ValueShift;
       if (type === ChildOpCode.Child) {
-        children[childIndex++] = mount(stateNode, currentNode, props[value]);
+        children[childIndex++] = mount(stateNode, props[value]);
       } else if (type === ChildOpCode.SetNext) {
         ctx.n = (state as Node[])[value];
       } else { // ChildOpCode.SetParent
-        currentNode = (state as Node[])[value] as Element;
+        ctx.p = (state as Node[])[value] as Element;
         ctx.n = null;
       }
     }
   }
 
   _nodeInsertBefore!.call(parentElement, rootNode, nextNode);
+  ctx.p = parentElement;
   ctx.n = rootNode;
   return stateNode;
 };
 
 const _updateTemplate = (
-  parentElement: Element,
   sNode: STemplate,
   next: VTemplate,
   updateFlags: Flags,
@@ -421,6 +422,7 @@ const _updateTemplate = (
   var j;
   var i;
   var ctx = RENDER_CONTEXT;
+  var parentElement = ctx.p;
   var children = sNode.c;
   var prevProps = (sNode.v as VTemplate).p;
   var state = sNode.s;
@@ -445,7 +447,7 @@ const _updateTemplate = (
     !!(tpl.f & TemplateFlags.Svg),
   );
 
-  parentElement = rootNode;
+  ctx.p = rootNode;
   ctx.n = null;
 
   j = 0;
@@ -457,7 +459,6 @@ const _updateTemplate = (
       (children as (SNode | null)[])[j] =
         update(
           sNode,
-          parentElement,
           (children as (SNode | null)[])[j++],
           nextProps[v],
           updateFlags,
@@ -465,32 +466,33 @@ const _updateTemplate = (
     } else if (k === ChildOpCode.SetNext) {
       ctx.n = (state as Node[])[v];
     } else { // ChildOpCode.SetParent
-      parentElement = (state as Node[])[v] as Element;
+      ctx.p = (state as Node[])[v] as Element;
       ctx.n = null;
     }
   }
 
+  ctx.p = parentElement;
   ctx.n = rootNode;
 };
 
-const _mountList = (parentState: SNode, parentElement: Element, f: Flags, arr: VArray, o: VAny): SNode => {
+const _mountList = (parentState: SNode, f: Flags, arr: VArray, o: VAny): SNode => {
   var i = arr.length;
   var c = _Array(i);
   var s = createSNode(f, o, c, null, parentState);
   while (i > 0) {
-    c[--i] = mount(s, parentElement, arr[i]);
+    c[--i] = mount(s, arr[i]);
   }
   return s;
 };
 
 const _updateText = (
   parentSNode: SNode,
-  parentElement: Element,
   sNode: SNode,
   next: string,
   updateFlags: Flags,
 ): SNode => {
   var o;
+  var ctx = RENDER_CONTEXT;
   var s = sNode.s;
   if (typeof next !== "object") {
     o = sNode.v;
@@ -500,17 +502,16 @@ const _updateText = (
       (s as Node).nodeValue = next as string;
     }
     if (updateFlags & Flags.DisplaceNode) {
-      _nodeInsertBefore!.call(parentElement, s as Node, RENDER_CONTEXT.n);
+      _nodeInsertBefore!.call(ctx.p, s as Node, ctx.n);
     }
     return sNode;
   } else {
-    _nodeRemoveChild!.call(parentElement, s as Node);
-    return mount(parentSNode, parentElement, next)!;
+    _nodeRemoveChild!.call(ctx.p, s as Node);
+    return mount(parentSNode, next)!;
   }
 };
 
 const _updateComponent = (
-  parentElement: Element,
   sNode: SComponent,
   next: VComponent,
   updateFlags: Flags,
@@ -528,18 +529,16 @@ const _updateComponent = (
     sNode.f = Flags.Component;
     sNode.c = update(
       sNode,
-      parentElement,
       child as SNode,
       sNode.s.r!(nextProps),
       updateFlags,
     );
   } else if (sNode.c !== null) {
-    dirtyCheck(parentElement, child as SNode, updateFlags);
+    dirtyCheck(child as SNode, updateFlags);
   }
 };
 
 const _updateArray = (
-  parentElement: Element,
   sNode: SNode,
   children: VArray,
   updateFlags: Flags,
@@ -550,7 +549,7 @@ const _updateArray = (
   var j;
   var i = children.length;
   if (i === 0) {
-    _unmount(parentElement, sNode);
+    _unmount(sNode);
   } else {
     sChildren = sNode.c! as (SNode<any> | null)[];
     j = sChildren.length;
@@ -558,17 +557,16 @@ const _updateArray = (
       sNode.c = (result = _Array(i));
       while (j > i) {
         if ((childState = (sChildren as Array<SNode | null>)[--j]) !== null) {
-          _unmount(parentElement, childState);
+          _unmount(childState);
         }
       }
       while (i > j) {
-        result[--i] = mount(sNode, parentElement, children[i]);
+        result[--i] = mount(sNode, children[i]);
       }
     }
     while (i > 0) {
       sChildren[--i] = update(
         sNode,
-        parentElement,
         (sChildren as Array<SNode | null>)[i],
         children[i],
         updateFlags,
@@ -595,16 +593,14 @@ const enum MagicValues {
 /**
  * Update children list with track by key algorithm.
  *
- * @param parentElement Parent DOM element.
- * @param sNode OpNode state for a TrackByKey operation.
- * @param a Previous operations.
- * @param b Next operations.
- * @param displace Children DOM nodes should be moved.
+ * @param sNode {@link SList} node.
+ * @param a Previous {@link ListProps}.
+ * @param b Next {@link ListProps}.
+ * @param updateFlags Update flags.
  * @noinline
  * @__NOINLINE__
  */
 const _updateList = (
-  parentElement: Element,
   sNode: SNode,
   a: ListProps<any>,
   b: ListProps<any>,
@@ -619,11 +615,11 @@ const _updateList = (
 
   if (i === 0) { // New children list is empty.
     if (j > 0) { // Unmount nodes from the old children list.
-      _unmount(parentElement, sNode);
+      _unmount(sNode);
     }
   } else if (j === 0) { // Old children list is empty.
     while (i > 0) { // Mount nodes from the new children list.
-      result[--i] = mount(sNode, parentElement, bOps[i]);
+      result[--i] = mount(sNode, bOps[i]);
     }
   } else {
     var opStateChildren = sNode.c as Array<SNode | null>;
@@ -638,7 +634,6 @@ const _updateList = (
       while (aKeys[aEnd] === node) {
         result[bEnd] = update(
           sNode,
-          parentElement,
           opStateChildren[aEnd--],
           bOps[bEnd],
           updateFlags,
@@ -661,13 +656,13 @@ const _updateList = (
     if (start > aEnd) {
       // All nodes from `a` are updated, insert the rest from `b`.
       while (bEnd >= start) {
-        result[bEnd] = mount(sNode, parentElement, bOps[bEnd--]);
+        result[bEnd] = mount(sNode, bOps[bEnd--]);
       }
     } else if (start > bEnd) {
       // All nodes from `b` are updated, remove the rest from `a`.
       i = start;
       do {
-        _unmount(parentElement, opStateChildren[i++]);
+        _unmount(opStateChildren[i++]);
       } while (i <= aEnd);
     } else { // Step 3
       // When `pos === 99999999`, it means that one of the nodes is in the wrong position and we should rearrange nodes
@@ -691,7 +686,7 @@ const _updateList = (
           sources[j - start] = i;
           result[j] = node;
         } else {
-          _unmount(parentElement, node);
+          _unmount(node);
         }
       }
 
@@ -707,10 +702,9 @@ const _updateList = (
         node = bOps[bEnd];
         j = sources[bLength];
         result[bEnd] = (j === -1) ?
-          mount(sNode, parentElement, node) :
+          mount(sNode, node) :
           update(
             sNode,
-            parentElement,
             result[bEnd],
             node,
             updateFlags
@@ -727,7 +721,6 @@ const _updateList = (
     while (start > 0) {
       result[--start] = update(
         sNode,
-        parentElement,
         opStateChildren[start],
         bOps[start],
         updateFlags,
@@ -953,11 +946,7 @@ export const invalidate = (c: Component): void => {
   }
 };
 
-export const dirtyCheck = (
-  parentElement: Element,
-  sNode: SNode,
-  updateFlags: Flags,
-): void => {
+export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
   var state, i,
     rootNode,
     ctx = RENDER_CONTEXT,
@@ -968,13 +957,15 @@ export const dirtyCheck = (
     let c;
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
-      _nodeInsertBefore.call(parentElement, rootNode, ctx.n);
+      _nodeInsertBefore.call(ctx.p, rootNode, ctx.n);
     }
     if (flags & Flags.DirtySubtree) {
       const childOpCodes = (sNode as STemplate).v.d.p1.c;
       const state = (sNode as STemplate).s;
-      let currentNode = rootNode;
+      const parentElement = ctx.p;
       let childIndex = 0;
+      ctx.p = rootNode;
+      ctx.n = null;
       for (i = 0; i < childOpCodes.length; i++) {
         const op = childOpCodes[flags];
         const type = op & ChildOpCode.Type;
@@ -982,38 +973,38 @@ export const dirtyCheck = (
         if (type === ChildOpCode.Child) {
           c = (children as (SNode | null)[])[childIndex++];
           if (c !== null) {
-            dirtyCheck(currentNode, c, updateFlags);
+            dirtyCheck(c, updateFlags);
           }
         } else if (type === ChildOpCode.SetNext) {
           ctx.n = (state as Node[])[value];
         } else { // ChildOpCode.SetParent
-          currentNode = state[value] as Element;
+          ctx.p = state[value] as Element;
           ctx.n = null;
         }
       }
+      ctx.p = parentElement;
     }
     ctx.n = rootNode;
   } else if (flags & Flags.Text) {
     if (updateFlags & Flags.DisplaceNode) {
-      _nodeInsertBefore.call(parentElement, sNode.s, ctx.n);
+      _nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
     }
     ctx.n = sNode.s;
   } else if (flags & Flags.Component) {
     if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
       _updateComponent(
-        parentElement,
         sNode as Component,
         (sNode as Component).v,
         updateFlags,
       );
     } else if (children !== null) {
-      dirtyCheck(parentElement, children as SNode, updateFlags);
+      dirtyCheck(children as SNode, updateFlags);
     }
   } else { // Array || List
     i = (children as Array<SNode | null>).length;
     while (i-- >= 0) {
       if ((state = (children as Array<SNode | null>)[i]) !== null) {
-        dirtyCheck(parentElement, state, updateFlags);
+        dirtyCheck(state, updateFlags);
       }
     }
   }
@@ -1023,7 +1014,6 @@ export const dirtyCheck = (
 /**
  * Updates a SNode with a next operation.
  *
- * @param parentElement Parent DOM Element.
  * @param sNode Operation state.
  * @param next Next operation.
  * @param displace DOM Element should be moved.
@@ -1031,89 +1021,62 @@ export const dirtyCheck = (
  */
 export const update = (
   parentSNode: SNode,
-  parentElement: Element,
   sNode: SNode | null,
   next: VAny,
   updateFlags: Flags,
 ): SNode | null => {
   var flags, prev;
   if (next === null) {
-    _unmount(parentElement, sNode);
+    _unmount(sNode);
     return null;
   }
   if (sNode === null) {
-    return mount(parentSNode, parentElement, next);
+    return mount(parentSNode, next);
   }
   flags = sNode.f;
 
   if (flags & Flags.Text) {
-    return _updateText(
-      parentSNode,
-      parentElement,
-      sNode,
-      next as string,
-      updateFlags,
-    );
+    return _updateText(parentSNode, sNode, next as string, updateFlags);
   }
   prev = sNode.v;
   if (prev === next) {
-    dirtyCheck(parentElement, sNode, updateFlags);
+    dirtyCheck(sNode, updateFlags);
     return sNode;
   }
   if (
     ((flags & Flags.Array) && !_isArray(next))
     || ((prev as VNode).d !== (next as VNode).d)
   ) {
-    _unmount(parentElement, sNode);
-    return mount(parentSNode, parentElement, next);
+    _unmount(sNode);
+    return mount(parentSNode, next);
   }
 
   flags &= (Flags.Component | Flags.Template | Flags.Array);
   if (flags === Flags.Component) {
-    _updateComponent(
-      parentElement,
-      sNode as Component,
-      next as VComponent,
-      updateFlags,
-    );
+    _updateComponent(sNode as Component, next as VComponent, updateFlags);
   } else if (flags === Flags.Template) {
-    _updateTemplate(
-      parentElement,
-      sNode as STemplate,
-      next as VTemplate,
-      updateFlags,
-    );
+    _updateTemplate(sNode as STemplate, next as VTemplate, updateFlags);
   } else if (flags === Flags.Array) {
-    _updateArray(parentElement, sNode, next as VArray, updateFlags);
+    _updateArray(sNode, next as VArray, updateFlags);
   } else {
-    _updateList(
-      parentElement,
-      sNode,
-      (prev as VList).p,
-      (next as VList).p,
-      updateFlags,
-    );
+    _updateList(sNode, (prev as VList).p, (next as VList).p, updateFlags);
   }
 
   sNode.v = next;
   return sNode;
 };
 
-export const mount = (
-  parentSNode: SNode,
-  parentElement: Element,
-  v: VAny,
-): SNode | null => {
+export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
   var i, c, s, d, e;
   if (v !== null) {
     if (typeof v === "object") {
       if (_isArray(v)) {
-        return _mountList(parentSNode, parentElement, Flags.Array, v, v);
+        return _mountList(parentSNode, Flags.Array, v, v);
       } else {
         d = v.d;
         i = d.f & (Flags.Template | Flags.Component);
         if (i === Flags.Template) {
-          return _mountTemplate(parentSNode, parentElement, v as VTemplate);
+          return _mountTemplate(parentSNode, v as VTemplate);
         } else if (i === Flags.Component) {
           e = { r: null, u: null } satisfies ComponentState;
           s = createSNode<VComponent, ComponentState>(
@@ -1124,22 +1087,16 @@ export const mount = (
             parentSNode,
           );
           (e as ComponentState).r = c = (d as ComponentDescriptor).p1(s as Component);
-          s.c = mount(s, parentElement, c((v as VComponent).p));
+          s.c = mount(s, c((v as VComponent).p));
           return s;
         }
         // List
-        return _mountList(
-          parentSNode,
-          parentElement,
-          Flags.List,
-          (v as VList).p.v,
-          v,
-        );
+        return _mountList(parentSNode, Flags.List, (v as VList).p.v, v);
       }
     } else {
       c = RENDER_CONTEXT;
       e = doc.createTextNode(v as string);
-      _nodeInsertBefore!.call(parentElement, e, c.n);
+      _nodeInsertBefore!.call(c.p, e, c.n);
       c.n = e;
       return createSNode(Flags.Text, v, null, e, parentSNode);
     }
@@ -1147,13 +1104,13 @@ export const mount = (
   return null;
 };
 
-export const unmount = (parentElement: Element, sNode: SNode, detach: boolean): void => {
+export const unmount = (sNode: SNode, detach: boolean): void => {
   var c, i, v, f = sNode.f;
 
   if (detach === true && (f & (Flags.Template | Flags.Text))) {
     detach = false;
     _nodeRemoveChild!.call(
-      parentElement,
+      RENDER_CONTEXT.p,
       (f & Flags.Template)
         ? (sNode as STemplate).s[0]
         : (sNode as SText).s
@@ -1163,11 +1120,11 @@ export const unmount = (parentElement: Element, sNode: SNode, detach: boolean): 
     if (_isArray(c)) {
       for (i = 0; i < c.length; i++) {
         if ((v = c[i]) !== null) {
-          unmount(parentElement, v, detach);
+          unmount(v, detach);
         }
       }
     } else {
-      unmount(parentElement, c as SNode, detach);
+      unmount(c as SNode, detach);
     }
   }
   if (f & Flags.Component) {
