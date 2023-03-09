@@ -582,7 +582,7 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
       RENDER_CONTEXT.p = domSlot.p;
       RENDER_CONTEXT.n = domSlot.n;
       // Updates invalidated components.
-      dirtyCheck(root.s, 0);
+      dirtyCheck(root.c as SNode, 0);
       // Flags should always be reassigned to clear dirty flags.
       root.f = Flags.Root;
     });
