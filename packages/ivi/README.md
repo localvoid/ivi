@@ -236,7 +236,7 @@ function memo<T, U>(
 ): (props: T) => U;
 ```
 
-```ts
+```js
 const FullName = component((c) => {
   const fullName = memo(
     ([firstName, lastName]) => `${firstName} ${lastName}`,
@@ -260,10 +260,10 @@ const FullName = component((c) => {
  * @param state Initial state value.
  * @returns A tuple with a getter and setter functions.
  */
-const useState = <S>(component: Component, state: S): [() => S, (s: S) => void];
+function useState<S>(component: Component, state: S): [() => S, (s: S) => void];
 ```
 
-```ts
+```js
 const Counter = component((c) => {
    const [getCounter, setCounter] = useState(c, 0);
    const inc = () => {
@@ -291,14 +291,14 @@ const Counter = component((c) => {
  * @param reducer Reducer function.
  * @returns State reducer.
  */
-const useReducer = <S, A>(
+function useReducer<S, A>(
   component: Component,
   state: S,
   reducer: (state: S, action: A) => S,
 ): (action?: A) => S;
 ```
 
-```ts
+```js
 const Counter = component((c) => {
    const counter = useReducer(c, 0, (state, action) => {
      if (action === "inc") {
@@ -318,12 +318,69 @@ const Counter = component((c) => {
  });
 ```
 
-## Hooks
+## Component Hooks
 
-`ivi/hooks` module.
+### Unmount
 
-- `useUnmount()`
-- `useEffect()`
+```ts
+/**
+ * useUnmount creates an unmount hook.
+ *
+ * @param component Component instance.
+ * @param hook Unmount hook.
+ */
+function useUnmount(component: Component, hook: () => void): void;
+```
+
+```js
+const UnmountMe = component((c) => {
+  useUnmount(c, () => {
+    console.log("unmounted");
+  });
+
+  return () => null;
+});
+```
+
+### Effect
+
+```ts
+/**
+ * useEffect creates a side effect hook.
+ *
+ * @typeparam T Hook props type.
+ * @param component Component instance.
+ * @param hook Side effect function.
+ * @param areEqual `areEqual` function.
+ * @returns Side effect hook.
+ */
+function useEffect = <P>(
+  component: Component,
+  hook: (props?: P) => (() => void) | void,
+  areEqual: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+
+```js
+const Counter = component((c) => {
+  let i = 0;
+  const timer = useEffect(c,
+    (delay) => {
+      const tid = setInterval(() => {
+        i++;
+        invalidate(c);
+      }, delay);
+      return () => { clearInterval(tid); };
+    },
+    (prev, next) => prev !== next,
+  );
+
+  return (delay) => (
+    timer(delay),
+    htm`span.Counter ${i}`
+  );
+});
+```
 
 ## Root Node
 
