@@ -208,6 +208,42 @@ h1.Title ${text}
 `
 ```
 
+## Dynamic Lists
+
+```ts
+/**
+ * Creates a dynamic list.
+ *
+ * @typeparam E Entry type.
+ * @typeparam K Key type.
+ * @param entries Entries.
+ * @param getKey Get key from entry function.
+ * @param render Render entry function.
+ * @returns Dynamic list.
+ */
+function List<E, K>(
+  entries: E[],
+  getKey: (entry: E, index: number) => K,
+  render: (entry: E) => VAny,
+): VList;
+```
+
+```ts
+interface DataEntry {
+  key: number;
+  text: string;
+}
+const getEntryKey = (entry: DataEntry) => entry.key;
+const EntryView = (entry: DataEntry) => htm`li ${entry.text}`;
+
+const ListView = (data: DataEntry[]) => htm`
+  ul ${List(data, getEntryKey, EntryView)}
+`;
+```
+
+Dynamic lists are using an optimal algorithm that uses minimal number of
+`Node.insertBefore()` operations to rearrange DOM nodes.
+
 ## Stateful Components
 
 ```js
@@ -584,13 +620,57 @@ transformation pass.
 
 ### Mental Model
 
-...
+#### Component Invalidation and Dirty Checking
 
-- From scratch vs incremental algorithms
-- Component invalidation / Dirty checking algorithm
-- Right-to-Left DOM updates
-- List Diffing
-- Template call-site unique identity
+Component invalidation algorithm is implemented by marking component as dirty
+and marking all its parent nodes with a flag that they have a dirty subtree.
+When marking algorithm reaches root node, it invokes `OnRootInvalidate()` hook
+that can be used to implement a [custom scheduler](#custom-scheduler).
+
+When scheduler decides to update a root node with a  dirty subtree, it starts a
+dirty checking algorithm. This algorithm iterates through nodes that has a dirty
+subtree flag until it reaches a dirty component and updates a dirty component.
+
+#### Right-to-Left Updates
+
+One of the reasons why the core library is so small is because update algorithm
+is implemented in RTL order. Algorithm that performs updates in RTL order
+simplifies a lot of complex issues with DOM updates. The main issue with DOM
+updates is that when we start updating a DOM tree structure, we need to have
+a reference to a parent and a next DOM node, so that we can use
+`parent.insertBefore(newNode, nextNode)`. In most cases it is easy to retrieve
+a next DOM node, but there are edge cases like when we have two adjacent
+conditional expressions and one of their states is that it completely removes
+a DOM node from the tree, or two adjacent components with conditionals at their
+roots, etc.
+
+Majority of libraries are dealing with this edge cases by introducing marker
+DOM nodes (comment or an empty text node). For example, to implement
+conditional expressions we can add an empty text node when conditional doesn't
+render any DOM node and when conditional goes into a state when it needs to
+add a DOM node, it will use a marker node as a next DOM node reference. In some
+edge case scenarios, some libraries can [insert a lot](https://github.com/sveltejs/svelte/issues/3586) of marker nodes. Update algorithm in ivi doesn't
+use any marker nodes.
+
+The RTL algorithm that is used in ivi also makes it way much easier to implement
+node displacements without introducing any additional code paths, etc.
+
+#### Template Call-Site Unique Identity
+
+Each call-site that creates template has unique identity, so even identical
+templates created from different call-sites won't be able to diff against each
+other.
+
+```js
+function TemplateUniqueIdentity(condition, text) {
+  return (condition)
+    ? htm`div ${text}`
+    : htm`div ${text}`;
+}
+```
+
+In this example, when `condition` is changed, update algorithm will replace
+entire div element with a new one, instead of updating just text node.
 
 ### Template Compilation
 

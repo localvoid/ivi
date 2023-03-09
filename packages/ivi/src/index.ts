@@ -904,14 +904,14 @@ export const component = <P>(
 const LIST: ListDescriptor = { f: Flags.List, p1: null, p2: null };
 
 /**
- * Creates a dynamic list operation.
+ * Creates a dynamic list.
  *
  * @typeparam E Entry type.
  * @typeparam K Key type.
  * @param entries Entries.
  * @param getKey Get key from entry function.
  * @param render Render entry function.
- * @returns List operation.
+ * @returns Dynamic list.
  */
 export const List = <E, K>(
   entries: E[],
