@@ -1,6 +1,13 @@
 # [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE)
 
-Lightweight (2.5KB) Embeddable Web UI library.
+Lightweight Embeddable Web UI library.
+
+- The core library size is just 2.5KB.
+- `f(state) => UI`
+- [Precompiled](#template-compilation) templates optimized for size and
+performance.
+- Small memory footprint.
+- [Embeddable](#custom-scheduler)
 
 ## Basic Example
 
@@ -207,19 +214,48 @@ function component<P>(
 function invalidate(c: Component): void;
 ```
 
-```js
-import { component } from "ivi";
-
-const Button = component((c) => {
-});
-```
-
 ## Root Node
 
-`ivi/root` module.
+`ivi/root` module provides a basic root nodes implementation that uses
+[`queueMicrotask()`](https://developer.mozilla.org/en-US/docs/Web/API/queueMicrotask) to schedule updates.
 
-- `createRoot(parentNode, nextNode)`
-- `updateRoot(root, nextOp)`
+```ts
+/**
+ * Creates a new root.
+ *
+ * @param p Parent DOM Element.
+ * @param n Next DOM Element.
+ * @returns {@link SRoot} instance.
+ */
+export function createRoot(
+  p: Element,
+  n: Node | null = null,
+): SRoot<null>;
+
+/**
+ * Updates UI subtree.
+ *
+ * @param root {@link SRoot} instance.
+ * @param v UI representation.
+ * @param forceUpdate Forces update for all components in the subtree.
+ */
+export function updateRoot(
+  root: SRoot<null>,
+  v: VAny,
+  forceUpdate: boolean = false,
+): void;
+
+/**
+ * Disposed UI subtree and triggers all unmount hooks.
+ *
+ * @param root {@link SRoot} instance.
+ * @param detach Detach root nodes from the DOM.
+ */
+export function disposeRoot(
+  root: SRoot<null>,
+  detach: boolean,
+): void;
+```
 
 ## State
 
@@ -253,15 +289,29 @@ const Button = component((c) => {
 
 ## Setup
 
-`@ivi/babel-plugin` module.
+### Rollup / Vite
 
-### Vite
+`@ivi/rollup-plugin` package provides a plugin that can be used with a Vite or
+Rollup toolchains.
 
-...
+```js
+import { defineConfig } from "vite";
+import { ivi } from "@ivi/rollup-plugin";
 
-### Rollup
+export default defineConfig({
+  plugins: [ivi()],
+});
+```
 
-...
+### Babel Plugin
+
+`@ivi/babel-plugin` package provides a babel plugins for precompiling and
+optimizing templates.
+
+- `ivi` plugin precompiles templates and should be applied in a module
+transformation pass.
+- `iviOptimizer` deduplicates shared data and should be applied in a chunk
+transformation pass.
 
 ## Advanced
 
@@ -340,7 +390,7 @@ all templates.
 ### Stateless Components
 
 Stateless components with custom `areEqual` hook can be implemented by hoisting
-inner function. E.g.:
+inner function. E.g.
 
 ```js
 const _stateless = (props) => {};
@@ -362,17 +412,22 @@ type OnRootInvalidated<S> = (root: SRoot<S>) => void;
 ```
 
 As an example, there is a simple scheduler implemented in an `ivi/root`
-moodule that uses microtasks to batch updates.
+module that uses microtasks to batch updates.
 
 ```ts
+
+const _queueMicrotask = queueMicrotask;
+
 const ROOT_DESCRIPTOR: RootDescriptor = {
   // Root Descriptor should always have a `Flags.Root` flag.
   f: Flags.Root,
   // OnRootInvalidated hook
   p1: (root: SRoot) => {
     _queueMicrotask(() => {
-      root.f = Flags.Root;
+      // Updates all invalidated components.
       dirtyCheck(root.v.p.p, root.s, 0);
+      // Flags should always be reassigned to clear dirty flags.
+      root.f = Flags.Root;
     });
   },
   // p2 should always be initialized with `null` value. This propery is
@@ -393,16 +448,16 @@ export const createRoot = (p: Element, n: Node | null = null): SRoot<null> => (
   createSNode(
     // SRoot node should always have a `Flags.Root` flag.
     Flags.Root,
-    // VNode object
+    // VNode object.
     {
       // VNode descriptor should be initialized with `RootDescriptor`
       d: ROOT_DESCRIPTOR,
       // VNode props object contains the location in the DOM tree where subtree
       // should be rendered.
       p: {
-        // Parent DOM Element
+        // Parent DOM Element.
         p,
-        // Next DOM Node
+        // Next DOM Node.
         n,
       },
     },
@@ -427,7 +482,7 @@ export const updateRoot = (
   v: VAny,
   forceUpdate: boolean,
 ) => {
-  //
+  // Retrieves DOM slot from VNode object.
   var domSlot = root.v.p;
   // Assign next node to the current render context.
   RENDER_CONTEXT.n = domSlot.n;
@@ -438,21 +493,21 @@ export const updateRoot = (
       ? mount(
         // Parent SNode should always be a root node.
         root,
-        // Parent Element
+        // Parent Element.
         domSlot.p,
-        // UI Representation
+        // UI Representation.
         v,
       )
       : update(
         // Parent SNode should always be a root node.
         root,
-        // Parent Element
+        // Parent Element.
         domSlot.p,
-        // Previous UI state
+        // Previous UI state.
         root.c as SNode,
-        // UI Representation
+        // UI Representation.
         v,
-        // Force update
+        // Force update.
         forceUpdate === true
           ? Flags.ForceUpdate
           : 0,
