@@ -46,14 +46,14 @@ const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "s
 /** `SVGElement.prototype.style` */
 const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
 
-interface Context {
+export interface RenderContext {
   /** Next node. */
   n: Node | null;
   /** State index. */
   si: number;
 }
 
-const CONTEXT: Context = _Object.seal({
+export const RENDER_CONTEXT: RenderContext = _Object.seal({
   n: null,
   si: 0,
 });
@@ -311,7 +311,7 @@ const _assignTemplateSlots = (
 ) => {
   var tmp;
   var op;
-  var ctx = CONTEXT;
+  var ctx = RENDER_CONTEXT;
   while (offset < endOffset) {
     op = opCodes[offset++];
     if (op & StateOpCode.Save) {
@@ -349,7 +349,7 @@ const _mountTemplate = (
   var j;
   var type;
   var children = null;
-  var ctx = CONTEXT;
+  var ctx = RENDER_CONTEXT;
   var nextNode = ctx.n;
   var d = vNode.d;
   var props = vNode.p;
@@ -420,7 +420,7 @@ const _updateTemplate = (
   var k;
   var j;
   var i;
-  var ctx = CONTEXT;
+  var ctx = RENDER_CONTEXT;
   var children = sNode.c;
   var prevProps = (sNode.v as VTemplate).p;
   var state = sNode.s;
@@ -500,7 +500,7 @@ const _updateText = (
       (s as Node).nodeValue = next as string;
     }
     if (updateFlags & Flags.DisplaceNode) {
-      _nodeInsertBefore!.call(parentElement, s as Node, CONTEXT.n);
+      _nodeInsertBefore!.call(parentElement, s as Node, RENDER_CONTEXT.n);
     }
     return sNode;
   } else {
@@ -546,18 +546,18 @@ const _updateArray = (
 ) => {
   var result;
   var childState;
-  var opStateChildren;
+  var sChildren;
   var j;
   var i = children.length;
   if (i === 0) {
     _unmount(parentElement, sNode);
   } else {
-    opStateChildren = sNode.c! as (SNode<any> | null)[];
-    j = opStateChildren.length;
+    sChildren = sNode.c! as (SNode<any> | null)[];
+    j = sChildren.length;
     if (i !== j) {
       sNode.c = (result = _Array(i));
       while (j > i) {
-        if ((childState = (opStateChildren as Array<SNode | null>)[--j]) !== null) {
+        if ((childState = (sChildren as Array<SNode | null>)[--j]) !== null) {
           _unmount(parentElement, childState);
         }
       }
@@ -566,10 +566,10 @@ const _updateArray = (
       }
     }
     while (i > 0) {
-      opStateChildren[--i] = update(
+      sChildren[--i] = update(
         sNode,
         parentElement,
-        (opStateChildren as Array<SNode | null>)[i],
+        (sChildren as Array<SNode | null>)[i],
         children[i],
         updateFlags,
       );
@@ -960,7 +960,7 @@ export const dirtyCheck = (
 ): void => {
   var state, i,
     rootNode,
-    ctx = CONTEXT,
+    ctx = RENDER_CONTEXT,
     children = sNode.c,
     flags = sNode.f;
   if (flags & Flags.Template) {
@@ -1137,7 +1137,7 @@ export const mount = (
         );
       }
     } else {
-      c = CONTEXT;
+      c = RENDER_CONTEXT;
       e = doc.createTextNode(v as string);
       _nodeInsertBefore!.call(parentElement, e, c.n);
       c.n = e;
