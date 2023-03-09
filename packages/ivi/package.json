@@ -10,6 +10,7 @@
     "./state": "./dist/state.js",
     "./visitor": "./dist/visitor.js",
     "./dom": "./dist/dom.js",
+    "./directives": "./dist/directives.js",
     "./utils": "./dist/utils.js"
   },
   "sideEffects": false,

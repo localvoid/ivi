@@ -454,9 +454,30 @@ function disposeRoot(root: SRoot<null>, detach: boolean): void;
 
 ## Directives
 
-`ivi/directives` module.
+`ivi/directives` module provides commonly used DOM element directives.
 
-- `Ref()` - directive
+```ts
+/**
+ * Creates a directive that invokes a ref function when DOM element is
+ * intantiated.
+ *
+ * @param ref Ref function.
+ * @returns {@link Directive}.
+ */
+function domRef(ref: (element: Element) => void): Directive;
+```
+
+```js
+const InnerElement = component((c) => {
+  const onDOMNodeCreated = domRef((element) => {
+    // ..
+  });
+  return () => htm`
+    div.Outer
+      div.Inner $${onDOMNodeCreated}
+  `;
+});
+```
 
 ## Utils
 
