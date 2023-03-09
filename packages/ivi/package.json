@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
+    "./equal": "./dist/equal.js",
     "./template": "./dist/template.js",
     "./root": "./dist/root.js",
     "./hooks": "./dist/hooks.js",

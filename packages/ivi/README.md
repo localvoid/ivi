@@ -481,7 +481,49 @@ const InnerElement = component((c) => {
 
 ## Utils
 
-## State Tree DOM Utils
+### Equality Functions
+
+`ivi/equal` module provides functions that can be used to check input values
+for changes.
+
+```ts
+/**
+ * Checks if values are equal with a strict equality operator `===`.
+ *
+ * @param a
+ * @param b
+ * @returns True when values are strictly equal.
+ */
+const strictEq = <T>(a: T, b: T): boolean;
+
+/**
+ * Checks if objects are shallowly equal.
+ *
+ * shallowEqual algorithm is using strict equality operator `===` to
+ * compare object values.
+ *
+ * @param a
+ * @param b
+ * @returns True when objects are shallow equal.
+ */
+function shallowEq<T extends Record<string | symbol, unknown>>(a: T, b: T): boolean;
+
+/**
+ * Checks if arrays are shallow equal.
+ *
+ * shallowEqualArray algorithm is using strict equality operator `===` to
+ * compare array values.
+ *
+ * @param a
+ * @param b
+ * @returns True whan arrays are shallow equal.
+ */
+function shallowEqArray<T>(a: T[], b: T[]): boolean;
+```
+
+### State Tree DOM Utils
+
+`ivi/dom` module.
 
 ```ts
 /**
