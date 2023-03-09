@@ -886,12 +886,12 @@ export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
  * Creates a factory that produces component nodes.
  *
  * @typeparam P Property type.
- * @param p1 Component function.
+ * @param p1 Function that creates stateful render functions.
  * @param p2 `areEqual` function that checks `props` for equality.
  * @returns Factory that produces component nodes.
  */
 export const component = <P>(
-  p1: (c: SComponent) => (props: P) => VAny,
+  p1: (c: Component) => (props: P) => VAny,
   p2?: (prev: P, next: P) => boolean,
 ): (props: P) => VComponent<P> => (
   p1 = { f: Flags.Component, p1, p2 } satisfies ComponentDescriptor as any,

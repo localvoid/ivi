@@ -185,6 +185,10 @@ Events are assigned with an `EventTarget.addEventListener(..)` method.
 When event has an `undefined` value, it will be removed with an
 `EventTarget.removeEventListener(..)` method.
 
+### Attribute Directives
+
+- `$${directive}`
+
 ### Template Cloning
 
 Template cloning is an optimization that is used for cloning HTML templates
@@ -207,11 +211,44 @@ h1.Title ${text}
 ## Stateful Components
 
 ```js
+/**
+ * Creates a factory that produces component nodes.
+ *
+ * @typeparam P Property type.
+ * @param create Function that creates stateful render functions.
+ * @param areEqual Function that checks `props` for equality.
+ * @returns Factory that produces component nodes.
+ */
 function component<P>(
-  (c: Component) => (props: P) => VAny,
+  create: (c: Component) => (props: P) => VAny,
+  areEqual?: (prev: P, next: P) => boolean,
 ): (props: P) => VComponent<P>;
 
+/**
+ * Invalidates component.
+ *
+ * @param c Component instance.
+ */
 function invalidate(c: Component): void;
+```
+
+### Stateless Components
+
+Basic stateless components can be implemented with simple functions. E.g.
+
+```js
+const Button = (text, onClick) => htm`button @click=${onClick} ${text}`;
+```
+
+Stateless components with custom `areEqual` hook can be implemented by hoisting
+render function in a stateful component factory. E.g.
+
+```js
+const _Button = ([text, onClick]) => htm`button @click=${onClick} ${text}`;
+const Button = component(
+  () => _Button,
+  (prev, next) => prev[0] === next[0] && prev[1] === next[1],
+);
 ```
 
 ## Component State
@@ -395,10 +432,7 @@ const Counter = component((c) => {
  * @param n Next DOM Element.
  * @returns {@link SRoot} instance.
  */
-export function createRoot(
-  p: Element,
-  n: Node | null = null,
-): SRoot<null>;
+function createRoot(p: Element, n: Node | null = null): SRoot<null>;
 
 /**
  * Updates UI subtree.
@@ -407,11 +441,7 @@ export function createRoot(
  * @param v UI representation.
  * @param forceUpdate Forces update for all components in the subtree.
  */
-export function updateRoot(
-  root: SRoot<null>,
-  v: VAny,
-  forceUpdate: boolean = false,
-): void;
+function updateRoot(root: SRoot<null>, v: VAny, forceUpdate: boolean = false): void;
 
 /**
  * Disposed UI subtree and triggers all unmount hooks.
@@ -419,10 +449,7 @@ export function updateRoot(
  * @param root {@link SRoot} instance.
  * @param detach Detach root nodes from the DOM.
  */
-export function disposeRoot(
-  root: SRoot<null>,
-  detach: boolean,
-): void;
+function disposeRoot(root: SRoot<null>, detach: boolean): void;
 ```
 
 ## Directives
@@ -433,12 +460,36 @@ export function disposeRoot(
 
 ## Utils
 
-`ivi/utils` and `ivi/dom` modules.
+## State Tree DOM Utils
 
-- `visitNodes()` - state tree visitor
-- `getDOMNode()` - finds the closest node
-- `containsElement()` - checks entire subtree
-- `hasChildElement()` - checks direct children
+```ts
+/**
+ * Finds the closest DOM node from the {@link SNode} instance.
+ *
+ * @typeparam T DOM node type.
+ * @param sNode {@link SNode} instance.
+ * @returns DOM node.
+ */
+function findDOMNode<T extends Node | Text>(sNode: SNode | null): T | null;
+
+/**
+ * Checks if {@link SNode} contains a DOM element.
+ *
+ * @param parent {@link SNode}.
+ * @param element DOM element.
+ * @returns true when parent contains an element.
+ */
+function containsDOMElement(parent: SNode, element: Element): boolean;
+
+/**
+ * Checks if {@link SNode} has a child DOM element.
+ *
+ * @param parent {@link SNode}.
+ * @param child DOM element.
+ * @returns true when parent has a DOM element child.
+ */
+function hasDOMElement = (parent: SNode, child: Element): boolean;
+```
 
 ## Setup
 
@@ -535,23 +586,6 @@ treated as simple arrays with integers that can be used for different purposes.
 
 Shared data `SHARED_DATA` is deduplicated into one array that is shared between
 all templates.
-
-### Attribute Directives
-
-- `$${directive}`
-
-### Stateless Components
-
-Stateless components with custom `areEqual` hook can be implemented by hoisting
-inner function. E.g.
-
-```js
-const _stateless = (props) => {};
-const Stateless = component(
-  () => _stateless,
-  shallowEq,
-);
-```
 
 ### Custom Scheduler
 
@@ -688,7 +722,6 @@ export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
     );
   }
 };
-
 ```
 
 ## License
