@@ -107,7 +107,22 @@ div
 In this example we can immediately see that there won't be any whitespaces
 between text node and a span element.
 
-### Class Names
+### Element Properties Syntax:
+
+- [`div.classA.classB`](#class-names) - Static class names `<div class="classA classB">`
+- [`div${expr}`](#class-names) - Dynamic class names `element.className = expr`
+- [`div :name='value'`](#attributes) - Static attribute with a value `<div name="value">`.
+- [`div :name`](#attributes) - Static attribute without a value `<div name>`.
+- [`div :name=${expr}`](#attributes) - Dynamic attribute `element.setAttribute(name, expr)`.
+- [`div .name=${expr}`](#properties) - Property `element[name] = expr`.
+- [`div *name=${expr}`](#properties) - Property `element[name] = expr`, uses DOM value for diffing.
+- [`div ~name=${expr}`](#styles) - Style `element.style.setProperty(name, expr)`
+- [`div @name=${expr}`](#events) - Event `element.addEventListener(name, expr)`
+- [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`
+- [`div $${directive}`](#directives) - Directive `directive(element)`
+
+
+#### Class Names
 
 Static class names are declared with a `.` character immediately after a tag
 name:
@@ -141,11 +156,11 @@ HTML:
 
 Static and dynamic class names cannot be mixed together.
 
-### Attributes
+#### Attributes
 
-- `div :name='value'` - attribute with a static value `<div name="value">`.
-- `div :name` - static attribute without a value `<div name>`.
-- `div :name=${expr}` - dynamic attribute.
+- `div :name='value'` - Static attribute with a value `<div name="value">`.
+- `div :name` - Static attribute without a value `<div name>`.
+- `div :name=${expr}` - Dynamic attribute `element.setAttribute
 
 DOM attributes are assigned with `Element.setAttribute(..)` method and support
 several different forms:
@@ -153,10 +168,10 @@ several different forms:
 When dynamic attribute has an `undefined` value, it will be removed from the
 DOM element with `Element.removeAttribute(..)` method.
 
-### Properties
+#### Properties
 
-- `div .name=${expr}` - uses previous value for diffing.
-- `div *name=${expr}` - uses DOM value for diffing.
+- `div .name=${expr}` - Property `element[name] = expr`.
+- `div *name=${expr}` - Property `element[name] = expr`, uses DOM value for diffing.
 
 Properties are assigned with an assignment operator `Element.name = value` and
 support only dynamic values:
@@ -164,9 +179,9 @@ support only dynamic values:
 Diffing with a DOM value is useful in use cases when we use `<input>` values to
 avoid triggering unnecessary `change` events.
 
-### Styles
+#### Styles
 
-- `div ~name=${expr}`
+- `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
 
 Styles are assigned with a `CSSStyleDeclaration.setProperty(..)`
 method.
@@ -174,18 +189,18 @@ method.
 When style has an `undefined` value, it will be removed with a
 `CSSStyleDeclaration.removeProperty(..)` method.
 
-### Events
+#### Events
 
-- `div @name=${expr}`
+- `div @name=${expr}` - Event `element.addEventListener(name, expr)`
 
 Events are assigned with an `EventTarget.addEventListener(..)` method.
 
 When event has an `undefined` value, it will be removed with an
 `EventTarget.removeEventListener(..)` method.
 
-### Text Content
+#### Text Content
 
-- `div =${expr}`
+- `div =${expr}` - Text Content `element.textContent = expr`
 
 Text content property can be used as an optimization that slightly reduces
 [memory overhead](#memory-footprint) for elements with a text child. It will
@@ -194,9 +209,9 @@ property and won't have any stateful nodes associated with a text node.
 
 Text content value should have a string or a number type.
 
-### Directives
+#### Directives
 
-- `div $${directive}`
+- `div $${directive}` - Directive `directive(element)`
 
 Directive is a function that is invoked each time template is updated and
 receives a DOM element associated with a directive:
@@ -206,7 +221,8 @@ type ElementDirective = <E extends Element>(element: E) => void;
 ```
 
 Directive function is invoked only when template is created with a
-different function, so it can be used as a DOM element created callback:
+different function, so if we are going to reuse the same function, it can be
+used as a DOM element created callback:
 
 ```js
 const Example = component((c) => {
@@ -816,7 +832,7 @@ type SText = SNode<string | number, Text>;
 // dynamic properties that also used as a reference for insertBefore operation
 // will share the same slots, there won't be any duplicated references.
 type STemplate = SNode<VTemplate, Node[]>;
-// Dynamic lists don't have any addition state.
+// Dynamic lists don't have any additional state.
 type SList = SNode<VList, null>;
 // See component state below.
 type SComponent = SNode<VComponent, ComponentState>;
