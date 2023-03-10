@@ -6,7 +6,7 @@ Lightweight Embeddable Web UI library.
 - `f(state) => UI`
 - [Precompiled](#template-compilation) templates optimized for size and
 performance.
-- Small memory footprint.
+- [Small memory footprint](#memory-footprint).
 - [Embeddable](#custom-scheduler)
 
 ## Basic Example
@@ -114,7 +114,7 @@ name:
 
 ```js
 htm`
-div.class-one.class-two
+div.class-one.class-two ${expr}
 `
 ```
 
@@ -182,6 +182,18 @@ Events are assigned with an `EventTarget.addEventListener(..)` method.
 
 When event has an `undefined` value, it will be removed with an
 `EventTarget.removeEventListener(..)` method.
+
+### Text Content
+
+It is an optimization that slightly reduces [memory overhead](#memory-footprint) for DOM Elements with text content. Instead of creating
+Text DOM nodes and stateful nodes, text will be created and updated with a
+[`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+property.
+
+- `div =${expr}`
+
+It works only with string and number types, all other types will be coerced to
+strings.
 
 ### Directives
 
@@ -556,35 +568,6 @@ function updateRoot(root: SRoot<null>, v: VAny, forceUpdate: boolean = false): v
 function disposeRoot(root: SRoot<null>, detach: boolean): void;
 ```
 
-## Directives
-
-`ivi/directives` module provides commonly used DOM element directives.
-
-```ts
-/**
- * Creates a directive that invokes a ref function when DOM element is
- * intantiated.
- *
- * @param ref Ref function.
- * @returns {@link Directive}.
- */
-function domRef(ref: (element: Element) => void): Directive;
-```
-
-Example:
-
-```js
-const InnerElement = component((c) => {
-  const onDOMNodeCreated = domRef((element) => {
-    // ..
-  });
-  return () => htm`
-    div.Outer
-      div.Inner $${onDOMNodeCreated}
-  `;
-});
-```
-
 ## Utils
 
 ### Equality Functions
@@ -697,7 +680,7 @@ transformation pass.
 
 Component invalidation algorithm is implemented by marking component as dirty
 and marking all its parent nodes with a flag that they have a dirty subtree.
-When marking algorithm reaches root node, it invokes `OnRootInvalidate()` hook
+When marking algorithm reaches root node, it invokes `OnRootInvalidated()` hook
 that can be used to implement a [custom scheduler](#custom-scheduler).
 
 When scheduler decides to update a root node with a dirty subtree, it starts a
@@ -726,7 +709,8 @@ edge case scenarios, some libraries can [insert a lot](https://github.com/svelte
 use any marker nodes.
 
 The RTL algorithm that is used in ivi also makes it way much easier to implement
-node displacements without introducing any additional code paths, etc.
+node displacements without introducing any additional code paths, fragments and
+pretty much everything that involves updating a DOM structure.
 
 #### Template Call-Site Unique Identity
 
@@ -745,9 +729,15 @@ function TemplateUniqueIdentity(condition, text) {
 In this example, when `condition` is changed, update algorithm will replace
 entire div element with a new one, instead of updating just text node.
 
+It is designed this way so that even with precompilation it will have the same
+behavior as runtime compiler. It is quite easy to figure out during
+precompilation that two templates have similar shapes, but the major downside
+is that we will need to switch to whole program deduplication and it is going
+to have an impact on the chunking algorithm.
+
 #### Memory Footprint
 
-In the examples below we are going to calculate memory usage in a
+In the description below we are going to calculate memory usage in a
 Chromium-based engines with [Pointer Compression in V8](https://v8.dev/blog/pointer-compression).
 
 To get a rough estimate of memory usage it is important to understand internal
@@ -796,7 +786,7 @@ interface ListProps<K> {
 }
 ```
 
-For each stateless node `VAny` there is a stateful node `SNode`, that has an
+For each stateless node `VAny` there is a stateful node `SNode` that has an
 interface:
 
 ```ts
@@ -845,7 +835,7 @@ interface ComponentState {
 
 As we can see, ivi data structures are carefully designed to have a small
 memory overhead and static shapes to make sure that all call-sites that
-accessing will be in a [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
+accessing it will be in a [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 ### Template Compilation
 
@@ -904,6 +894,9 @@ treated as simple arrays with integers that can be used for different purposes.
 
 Shared data `SHARED_DATA` is deduplicated into one array that is shared between
 all templates.
+
+Data structures are deduplicated only in the same chunk scope to avoid
+generating a lot of small chunks.
 
 ### Custom Scheduler
 

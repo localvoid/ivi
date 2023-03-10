@@ -59,12 +59,10 @@ export const enum StateOpCode {
 
 /**
  * Commonly used properties.
- *
- * Right now it is just a class name, and most likely there won't be any new
- * types in the future.
  */
 export const enum CommonPropType {
   ClassName = 0,
+  TextContent = 1,
 }
 
 /**

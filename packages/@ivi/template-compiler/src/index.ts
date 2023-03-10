@@ -355,6 +355,16 @@ const element = (stateIndex: number): ParsedElement | null => {
         error("expected a valid attribute name");
       }
       attributeProp(propOpCodes, tmp!);
+    } else if (v === CharCode.EqualsTo) { // =textContent
+      comp.i++;
+      if ((v = expr()) === -1) {
+        error("expected a text content expression");
+      }
+      propOpCodes.push(
+        PropOpCode.Common |
+        (CommonPropType.TextContent << PropOpCode.DataShift) |
+        (dynamicExpr(v) << PropOpCode.InputShift),
+      );
     } else if (v === CharCode.Dot) { // .property
       comp.i++;
       if ((tmp = regexp(JS_PROPERTY)) === void 0) {

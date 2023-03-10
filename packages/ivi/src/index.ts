@@ -1,4 +1,6 @@
-import { TemplateFlags, ChildOpCode, PropOpCode, StateOpCode } from "@ivi/template-compiler/format";
+import {
+  TemplateFlags, ChildOpCode, PropOpCode, StateOpCode, CommonPropType,
+} from "@ivi/template-compiler/format";
 
 const _Object = Object;
 const _Array = Array;
@@ -39,6 +41,8 @@ const getDescriptor = (o: any, p: string | number | symbol) => _Object.getOwnPro
 const _nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
 /** `Node.prototype.getNextSibling` */
 const _nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
+/** `Node.prototype.setTextContent` */
+const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
 /** `Element.prototype.className` */
 const elementSetClassName = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
 /** `HTMLElement.prototype.style`. */
@@ -270,8 +274,11 @@ const _updateTemplateProperties = (
       next = nextProps[propsIndex];
       if (prev !== next || type === PropOpCode.DiffDOMProperty) {
         if (type === PropOpCode.Common) {
-          // There is only one common property right now: class names
-          elementSetClassName.call(currentElement, next);
+          if (dataIndex === CommonPropType.ClassName) {
+            elementSetClassName.call(currentElement, next);
+          } else {
+            nodeSetTextContent.call(currentElement, next);
+          }
         } else if (type === PropOpCode.Directive) {
           (next as ElementDirective)(currentElement);
         } else {
