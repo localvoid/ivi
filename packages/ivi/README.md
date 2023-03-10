@@ -289,7 +289,18 @@ const ListView = (data: DataEntry[]) => htm`
 ```
 
 Dynamic lists are using an optimal algorithm that uses minimal number of
-`Node.insertBefore()` operations to rearrange DOM nodes.
+`Node.insertBefore()` operations to rearrange DOM nodes. Almost all popular
+libraries are using naive algorithms and can handle efficiently only basic use
+cases. And some libraries optimizing their list diffing algorithms only for use
+cases that are used in benchmarks.
+
+Reducing `Node.insertBefore()` operations is important not just because it
+invalidates internal data structures, but also because each time one of
+the DOM nodes attached to the document is moved, it may produce a
+[MutationObserver notification](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
+And a lot of popular extensions are using Mutation Observers to observe entire
+document subtree, so each `insertBefore` operation can become quite costly when
+it is used outside of benchmarking sandboxes.
 
 ## Stateful Components
 
@@ -733,6 +744,108 @@ function TemplateUniqueIdentity(condition, text) {
 
 In this example, when `condition` is changed, update algorithm will replace
 entire div element with a new one, instead of updating just text node.
+
+#### Memory Footprint
+
+In the examples below we are going to calculate memory usage in a
+Chromium-based engines with [Pointer Compression in V8](https://v8.dev/blog/pointer-compression).
+
+To get a rough estimate of memory usage it is important to understand internal
+data structures. UI tree is implemented with a stateful tree `SNode` and
+immutable stateless tree `VAny`.
+
+Stateless tree has a simple data structure:
+
+```ts
+// 20 bytes
+interface VNode<D extends VDescriptor, P> {
+  // Descriptors are reused for all VNodes with the same type and its memory
+  // usage can be ignored during estimation.
+  readonly d: D;
+  // Prop value is used for storing the results of template expressions in an
+  // array, prop value for Components, or VRoot and VList props.
+  readonly p: P;
+}
+
+type VArray = VAny[];
+type VAny =
+  | null
+  | string
+  | number
+  | VRoot      // VNode<RootDescriptor, RootProps>
+  | VTemplate  // VNode<TemplateDescriptor, P>
+  | VComponent // VNode<ComponentDescriptor, P>
+  | VList      // VNode<ListDescriptor, ListProps<K>>
+  | VArray
+  ;
+
+// 20 bytes
+interface RootProps {
+  // Parent Element
+  p: Element,
+  // Next Node
+  n: Node | null,
+}
+
+// 20 bytes
+interface ListProps<K> {
+  // Keys
+  k: K[],
+  // Stateless Tree Nodes
+  v: VAny[],
+}
+```
+
+For each stateless node `VAny` there is a stateful node `SNode`, that has an
+interface:
+
+```ts
+// 32 bytes
+interface SNode<V extends VAny, S> {
+  // Stateless node associated with the current state.
+  v: V;
+  // Bitflags
+  f: Flags; // SMI value - Small Integer
+  // Children nodes.
+  c: SNode | (SNode | null)[] | null;
+  // Additional State that depends on the type of the SNode.
+  s: S;
+  // Parent node.
+  p: SNode | null,
+}
+
+// Additional state size of the root nodes depends on the implementation of
+// root nodes. Default root implementation doesn't use any additional state and
+// stores `null` value in the additional state slot.
+type SRoot<S> = SNode<VRoot, S>;
+// Text nodes are storing a reference to a Text DOM node.
+type SText = SNode<string | number, Text>;
+// Template nodes are storing a reference to a root DOM node, DOM nodes with
+// dynamic properties and DOM nodes that will be used as a reference for
+// `parent.insertBefore(node, nextNode)` operations. Slots for DOM nodes with
+// dynamic properties that also used as a reference for insertBefore operation
+// will share the same slots, there won't be any duplicated references.
+type STemplate = SNode<VTemplate, Node[]>;
+// Dynamic lists don't have any addition state.
+type SList = SNode<VList, null>;
+// See component state below.
+type SComponent = SNode<VComponent, ComponentState>;
+
+// 20 bytes.
+interface ComponentState {
+  // Render function.
+  r: null | ((props: any) => VAny),
+  // Unmount hooks.
+  // Usually components don't have any unmount hooks, or they have just one
+  // unmount hook. When there is one hook, it will be stored without any
+  // additional arrays.
+  u: null | (() => void) | (() => void)[];
+}
+```
+
+As we can see, ivi data structures are carefully designed to have a small
+memory overhead and static shapes to make sure that all call-sites that
+accessing will be in a [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 ### Template Compilation
 
