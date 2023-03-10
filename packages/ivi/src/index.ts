@@ -276,8 +276,12 @@ const _updateTemplateProperties = (
         if (type === PropOpCode.Common) {
           if (dataIndex === CommonPropType.ClassName) {
             elementSetClassName.call(currentElement, next);
-          } else {
-            nodeSetTextContent.call(currentElement, next);
+          } else { // CommonPropType.TextContent
+            if (prev === void 0) {
+              nodeSetTextContent.call(currentElement, next);
+            } else {
+              nodeGetFirstChild.call(currentElement).nodeValue = next;
+            }
           }
         } else if (type === PropOpCode.Directive) {
           (next as ElementDirective)(currentElement);
