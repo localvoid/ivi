@@ -47,9 +47,9 @@ export const containsDOMElement = (
   element: Element,
 ): boolean => {
   var result = false;
-  visitNodes(parent, (node) => (
-    (node.f & Flags.Template)
-      ? (((node.s as Element).contains(element) === true)
+  visitNodes(parent, (sNode) => (
+    (sNode.f & Flags.Template)
+      ? ((((sNode as STemplate).s[0] as Element).contains(element) === true)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)
       : VisitNodesDirective.Continue
@@ -69,9 +69,9 @@ export const hasDOMElement = (
   child: Element,
 ): boolean => {
   var result = false;
-  visitNodes(parent, (node) => (
-    (node.f & Flags.Template)
-      ? ((node.s === child)
+  visitNodes(parent, (sNode) => (
+    (sNode.f & Flags.Template)
+      ? (((sNode as SNode).s[0] === child)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)
       : VisitNodesDirective.Continue
