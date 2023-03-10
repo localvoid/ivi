@@ -143,70 +143,70 @@ Static and dynamic class names cannot be mixed together.
 
 ### Attributes
 
-DOM attributes are assigned with `Element.setAttribute(..)` method and support
-several different forms:
-
 - `div :name='value'` - attribute with a static value `<div name="value">`.
 - `div :name` - static attribute without a value `<div name>`.
 - `div :name=${expr}` - dynamic attribute.
+
+DOM attributes are assigned with `Element.setAttribute(..)` method and support
+several different forms:
 
 When dynamic attribute has an `undefined` value, it will be removed from the
 DOM element with `Element.removeAttribute(..)` method.
 
 ### Properties
 
-Properties are assigned with an assignment operator `Element.name = value` and
-support only dynamic values:
-
 - `div .name=${expr}` - uses previous value for diffing.
 - `div *name=${expr}` - uses DOM value for diffing.
+
+Properties are assigned with an assignment operator `Element.name = value` and
+support only dynamic values:
 
 Diffing with a DOM value is useful in use cases when we use `<input>` values to
 avoid triggering unnecessary `change` events.
 
 ### Styles
 
+- `div ~name=${expr}`
+
 Styles are assigned with a `CSSStyleDeclaration.setProperty(..)`
 method.
-
-- `div ~name=${expr}`
 
 When style has an `undefined` value, it will be removed with a
 `CSSStyleDeclaration.removeProperty(..)` method.
 
 ### Events
 
-Events are assigned with an `EventTarget.addEventListener(..)` method.
-
 - `div @name=${expr}`
+
+Events are assigned with an `EventTarget.addEventListener(..)` method.
 
 When event has an `undefined` value, it will be removed with an
 `EventTarget.removeEventListener(..)` method.
 
 ### Text Content
 
-It is an optimization that slightly reduces [memory overhead](#memory-footprint) for DOM Elements with text content. Instead of creating
-Text DOM nodes and stateful nodes, text will be created and updated with a
-[`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
-property.
-
 - `div =${expr}`
 
-It works only with string and number types, all other types will be coerced to
-strings.
+Text content property can be used as an optimization that slightly reduces
+[memory overhead](#memory-footprint) for elements with a text child. It will
+create a text node with a [`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+property and won't have any stateful nodes associated with a text node.
+
+Text content value should have a string or a number type.
 
 ### Directives
 
 - `div $${directive}`
 
-Directive is a function that receives a DOM element each time it is updated:
+Directive is a function that is invoked each time template is updated and
+receives a DOM element associated with a directive:
 
 ```ts
 type ElementDirective = <E extends Element>(element: E) => void;
 ```
 
-The directive function is invoked only when it receives a different function. We
-can use this property to implement a DOM element created callback:
+Directive function is invoked only when template is created with a
+different function, so it can be used as a DOM element created callback:
 
 ```js
 const Example = component((c) => {
@@ -220,8 +220,8 @@ const Example = component((c) => {
 });
 ```
 
-Directives can be used not just as simple DOM created callbacks, but also as
-stateful directives. E.g.
+Directives can be used not just as a simple DOM created callbacks, but also as
+a stateful directives. E.g.
 
 ```js
 function createStatefulDirective() {
