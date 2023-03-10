@@ -13,19 +13,17 @@ performance.
 
 ```js
 import { component, invalidate } from "ivi";
+import { useState } from "ivi/state";
 import { createRoot, updateRoot } from "ivi/root";
 import { htm } from "ivi/template";
 
 const Counter = component((c) => {
-  let i = 0;
-  const inc = () => {
-    i++;
-    invalidate(c);
-  };
+  const [count, setCount] = useState(0);
+  const inc = () => { setCount(count() + 1); };
 
   return () => htm`
     div.app
-      div.counter ${i}
+      div.counter ${count()}
       button @click=${inc}
         'Increment'
   `;
@@ -185,9 +183,56 @@ Events are assigned with an `EventTarget.addEventListener(..)` method.
 When event has an `undefined` value, it will be removed with an
 `EventTarget.removeEventListener(..)` method.
 
-### Attribute Directives
+### Directives
 
-- `$${directive}`
+- `div $${directive}`
+
+Directive is a function that receives a DOM element each time it is updated:
+
+```ts
+type ElementDirective = <E extends Element>(element: E) => void;
+```
+
+The directive function is invoked only when it receives a different function. We
+can use this property to implement a DOM element created callback:
+
+```js
+const Example = component((c) => {
+  const onCreated = (innerElement) => {
+    // ..
+  };
+  return () => htm`
+    div.outer
+      div.inner $${onCreated}
+  `;
+});
+```
+
+Directives can be used not just as simple DOM created callbacks, but also as
+stateful directives. E.g.
+
+```js
+function createStatefulDirective() {
+  // Internal state that stores previous value.
+  let prev;
+  // Returns a factory that creates directive functions.
+  return (next) => (element) => {
+    // Check if previous value has been changed.
+    if (prev !== next) {
+      prev = next;
+      // Updates textContent only when input value is changed.
+      element.textContent = next;
+    }
+  };
+}
+
+const Example = component((c) => {
+  const directive = createStatefulDirective();
+  return (i) => htm`
+    div $${directive(i)}
+  `;
+});
+```
 
 ### Template Cloning
 
@@ -227,6 +272,8 @@ function List<E, K>(
   render: (entry: E) => VAny,
 ): VList;
 ```
+
+Example:
 
 ```ts
 interface DataEntry {
@@ -309,6 +356,8 @@ function memo<T, U>(
 ): (props: T) => U;
 ```
 
+Example:
+
 ```js
 const FullName = component((c) => {
   const fullName = memo(
@@ -335,6 +384,8 @@ const FullName = component((c) => {
  */
 function useState<S>(component: Component, state: S): [() => S, (s: S) => void];
 ```
+
+Example:
 
 ```js
 const Counter = component((c) => {
@@ -371,6 +422,8 @@ function useReducer<S, A>(
 ): (action?: A) => S;
 ```
 
+Example:
+
 ```js
 const Counter = component((c) => {
    const counter = useReducer(c, 0, (state, action) => {
@@ -405,6 +458,8 @@ const Counter = component((c) => {
 function useUnmount(component: Component, hook: () => void): void;
 ```
 
+Example:
+
 ```js
 const UnmountMe = component((c) => {
   useUnmount(c, () => {
@@ -433,6 +488,8 @@ function useEffect = <P>(
   areEqual: (prev: P, next: P) => boolean,
 ): (props: P) => void;
 ```
+
+Example:
 
 ```js
 const Counter = component((c) => {
@@ -502,6 +559,8 @@ function disposeRoot(root: SRoot<null>, detach: boolean): void;
  */
 function domRef(ref: (element: Element) => void): Directive;
 ```
+
+Example:
 
 ```js
 const InnerElement = component((c) => {
@@ -592,6 +651,9 @@ function hasDOMElement = (parent: SNode, child: Element): boolean;
 
 ## Setup
 
+It is an optional step, ivi templates will work without any precompilation, but
+it is highly recommended to use precompilation to improve performance.
+
 ### Rollup / Vite
 
 `@ivi/rollup-plugin` package provides a plugin that can be used with a Vite or
@@ -627,9 +689,9 @@ and marking all its parent nodes with a flag that they have a dirty subtree.
 When marking algorithm reaches root node, it invokes `OnRootInvalidate()` hook
 that can be used to implement a [custom scheduler](#custom-scheduler).
 
-When scheduler decides to update a root node with a  dirty subtree, it starts a
-dirty checking algorithm. This algorithm iterates through nodes that has a dirty
-subtree flag until it reaches a dirty component and updates a dirty component.
+When scheduler decides to update a root node with a dirty subtree, it starts a
+dirty checking algorithm. This algorithm goes top-down visiting all nodes with a
+dirty subtree flag until it reaches a dirty component and updates it.
 
 #### Right-to-Left Updates
 

@@ -197,7 +197,7 @@ export interface ListProps<K = any> {
 }
 
 /**
- * Operation.
+ * UI value.
  */
 export type VAny =
   | null
@@ -211,11 +211,14 @@ export type VAny =
   ;
 
 /**
- * Recursive operation array.
+ * Recursive VAny array.
  */
 export type VArray = VAny[];
 
-export type Directive = (element: Element) => void;
+/**
+ * Element Directive.
+ */
+export type ElementDirective = <E extends Element>(element: E) => void;
 
 const _unmount = (
   sNode: SNode | (SNode | null)[] | null,
@@ -270,7 +273,7 @@ const _updateTemplateProperties = (
           // There is only one common property right now: class names
           elementSetClassName.call(currentElement, next);
         } else if (type === PropOpCode.Directive) {
-          (next as Directive)(currentElement);
+          (next as ElementDirective)(currentElement);
         } else {
           key = strings[dataIndex];
           if (type === PropOpCode.Attribute) {
