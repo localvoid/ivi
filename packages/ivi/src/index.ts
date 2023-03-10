@@ -20,11 +20,11 @@ const SVG_TEMPLATE = /**@__PURE__*/doc.createElementNS("http://www.w3.org/2000/s
 const SVG_TEMPLATE_CONTENT = _SVG_TEMPLATE.content.firstChild as Element;
 
 /** `Node.prototype.insertBefore` */
-const _nodeInsertBefore = nodeProto.insertBefore;
+const nodeInsertBefore = nodeProto.insertBefore;
 /** `Node.prototype.removeChild`. */
-const _nodeRemoveChild = nodeProto.removeChild;
+const nodeRemoveChild = nodeProto.removeChild;
 /** `Node.prototype.cloneNode`. */
-const _nodeCloneNode = nodeProto.cloneNode;
+const nodeCloneNode = nodeProto.cloneNode;
 /** `Element.prototype.setAttribute` */
 const elementSetAttribute = elementProto.setAttribute;
 /** `Element.prototype.removeAttribute` */
@@ -38,9 +38,9 @@ const elementRemoveEventListener = elementProto.removeEventListener;
 const getDescriptor = (o: any, p: string | number | symbol) => _Object.getOwnPropertyDescriptor(o, p);
 
 /** `Node.prototype.getFirstChild` */
-const _nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
+const nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
 /** `Node.prototype.getNextSibling` */
-const _nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
+const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
 /** `Node.prototype.setTextContent` */
 const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
 /** `Element.prototype.className` */
@@ -332,7 +332,7 @@ const _assignTemplateSlots = (
     if (op & StateOpCode.EnterOrRemove) {
       if (tmp = op >> StateOpCode.OffsetShift) { // Enter
         _assignTemplateSlots(
-          _nodeGetFirstChild.call(currentNode),
+          nodeGetFirstChild.call(currentNode),
           opCodes,
           offset,
           offset += tmp,
@@ -340,11 +340,11 @@ const _assignTemplateSlots = (
         );
       } else { // Remove
         tmp = currentNode as Comment;
-        state[++ctx.si] = currentNode = _nodeGetNextSibling.call(currentNode);
+        state[++ctx.si] = currentNode = nodeGetNextSibling.call(currentNode);
         tmp.remove();
       }
     } else { // Next
-      currentNode = _nodeGetNextSibling.call(currentNode);
+      currentNode = nodeGetNextSibling.call(currentNode);
     }
   }
 };
@@ -376,7 +376,7 @@ const _mountTemplate = (
   if (opCodes.length > 0) {
     ctx.si = 0;
     _assignTemplateSlots(
-      _nodeGetFirstChild.call(rootNode),
+      nodeGetFirstChild.call(rootNode),
       opCodes,
       0,
       opCodes.length,
@@ -415,7 +415,7 @@ const _mountTemplate = (
     }
   }
 
-  _nodeInsertBefore!.call(parentElement, rootNode, nextNode);
+  nodeInsertBefore!.call(parentElement, rootNode, nextNode);
   ctx.p = parentElement;
   ctx.n = rootNode;
   return stateNode;
@@ -444,7 +444,7 @@ const _updateTemplate = (
 
   if (updateFlags & Flags.DisplaceNode) {
     updateFlags ^= Flags.DisplaceNode;
-    _nodeInsertBefore!.call(parentElement, rootNode, ctx.n);
+    nodeInsertBefore!.call(parentElement, rootNode, ctx.n);
   }
 
   _updateTemplateProperties(
@@ -512,11 +512,11 @@ const _updateText = (
       (s as Node).nodeValue = next as string;
     }
     if (updateFlags & Flags.DisplaceNode) {
-      _nodeInsertBefore!.call(ctx.p, s as Node, ctx.n);
+      nodeInsertBefore!.call(ctx.p, s as Node, ctx.n);
     }
     return sNode;
   } else {
-    _nodeRemoveChild!.call(ctx.p, s as Node);
+    nodeRemoveChild!.call(ctx.p, s as Node);
     return mount(parentSNode, next)!;
   }
 };
@@ -823,7 +823,7 @@ export const _h = (t: string | Node): () => Element => (
       HTM_TEMPLATE.innerHTML = t;
       t = HTM_TEMPLATE_CONTENT.firstChild!;
     }
-    return _nodeCloneNode.call(t, true) as Element;
+    return nodeCloneNode.call(t, true) as Element;
   }
 );
 
@@ -853,7 +853,7 @@ export const _s = (t: string | Node): () => Element => (
       SVG_TEMPLATE.innerHTML = t;
       t = SVG_TEMPLATE_CONTENT.firstChild!;
     }
-    return _nodeCloneNode.call(t, true) as Element;
+    return nodeCloneNode.call(t, true) as Element;
   }
 );
 
@@ -967,7 +967,7 @@ export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
     let c;
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
-      _nodeInsertBefore.call(ctx.p, rootNode, ctx.n);
+      nodeInsertBefore.call(ctx.p, rootNode, ctx.n);
     }
     if (flags & Flags.DirtySubtree) {
       const childOpCodes = (sNode as STemplate).v.d.p1.c;
@@ -997,7 +997,7 @@ export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
     ctx.n = rootNode;
   } else if (flags & Flags.Text) {
     if (updateFlags & Flags.DisplaceNode) {
-      _nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
+      nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
     }
     ctx.n = sNode.s;
   } else if (flags & Flags.Component) {
@@ -1106,7 +1106,7 @@ export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
     } else {
       c = RENDER_CONTEXT;
       e = doc.createTextNode(v as string);
-      _nodeInsertBefore!.call(c.p, e, c.n);
+      nodeInsertBefore!.call(c.p, e, c.n);
       c.n = e;
       return createSNode(Flags.Text, v, null, e, parentSNode);
     }
@@ -1119,7 +1119,7 @@ export const unmount = (sNode: SNode, detach: boolean): void => {
 
   if (detach === true && (f & (Flags.Template | Flags.Text))) {
     detach = false;
-    _nodeRemoveChild!.call(
+    nodeRemoveChild!.call(
       RENDER_CONTEXT.p,
       (f & Flags.Template)
         ? (sNode as STemplate).s[0]
