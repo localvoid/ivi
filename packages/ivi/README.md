@@ -4,9 +4,9 @@ Lightweight Embeddable Web UI library.
 
 - The core library size is just 2.5KB.
 - `f(state) => UI`
-- [Precompiled](#template-compilation) templates optimized for size and
+- [Precompiled](#template-optimizations) templates optimized for size and
 performance.
-- [Small memory footprint](#memory-footprint).
+- [Small memory footprint](#internal-data-structures).
 - [Embeddable](#custom-scheduler)
 
 ## Basic Example
@@ -24,8 +24,7 @@ const Counter = component((c) => {
   return () => htm`
     div.app
       div.counter ${count()}
-      button @click=${inc}
-        'Increment'
+      button @click=${inc} 'Increment'
   `;
 });
 
@@ -107,7 +106,7 @@ div
 In this example we can immediately see that there won't be any whitespaces
 between text node and a span element.
 
-### Element Properties Syntax:
+### Element Properties Syntax
 
 - [`div.classA.classB`](#class-names) - Static class names `<div class="classA classB">`
 - [`div${expr}`](#class-names) - Dynamic class names `element.className = expr`
@@ -121,6 +120,16 @@ between text node and a span element.
 - [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`
 - [`div $${directive}`](#directives) - Directive `directive(element)`
 
+Element properties can be declared on the same line as element or with an
+indentation level.
+
+```js
+htm`
+div :inline-attr1 :inline-attr2
+  :indented-attr
+    :can-be-indented-with-any-amount-of-spaces
+  child-element
+```
 
 #### Class Names
 
@@ -279,6 +288,33 @@ To disable cloning, template should have a `-c` option at the beginning. E.g.
 htm`-c
 h1.Title ${text}
 `
+```
+
+## Arrays
+
+Basic javascript arrays can be used for composing UI nodes:
+
+```js
+const ArraysInsideTemplates = () => htm`
+  div
+    ${[
+      htm`div.one`
+      htm`div.two`
+    ]}
+`;
+
+const NestedArrays = () => htm`
+  div
+    ${[
+      [htm`div.a`, htm`div.b`],
+      [htm`div.c`, htm`div.d`],
+    ]}
+`;
+
+const ComponentsWithMultipleRootNodes = component((c) => () => ([
+  htm`div.one`,
+  htm`div.two`,
+]));
 ```
 
 ## Dynamic Lists
@@ -751,16 +787,20 @@ precompilation that two templates have similar shapes, but the major downside
 is that we will need to switch to whole program deduplication and it is going
 to have an impact on the chunking algorithm.
 
-#### Memory Footprint
+### Internal Data Structures
+
+To get a rough estimate of memory usage it is important to understand internal
+data structures.
 
 In the description below we are going to calculate memory usage in a
 Chromium-based engines with [Pointer Compression in V8](https://v8.dev/blog/pointer-compression).
 
-To get a rough estimate of memory usage it is important to understand internal
-data structures. UI tree is implemented with a stateful tree `SNode` and
-immutable stateless tree `VAny`.
+#### UI Tree Data Structures
 
-Stateless tree has a simple data structure:
+UI Tree is implemented with a stateful tree `SNode` and immutable stateless
+tree `VAny`.
+
+Stateless Tree has a simple data structure:
 
 ```ts
 // 20 bytes
@@ -775,17 +815,18 @@ interface VNode<D extends VDescriptor, P> {
 
 type VArray = VAny[];
 type VAny =
-  | null
-  | string
-  | number
+  | null       // empty slot
+  | string     // text
+  | number     // text
   | VRoot      // VNode<RootDescriptor, RootProps>
   | VTemplate  // VNode<TemplateDescriptor, P>
   | VComponent // VNode<ComponentDescriptor, P>
   | VList      // VNode<ListDescriptor, ListProps<K>>
-  | VArray
+  | VArray     // VAny[]
   ;
 
 // 20 bytes
+// Root Props stores a location where its children should be rendered.
 interface RootProps {
   // Parent Element
   p: Element,
@@ -795,9 +836,9 @@ interface RootProps {
 
 // 20 bytes
 interface ListProps<K> {
-  // Keys
+  // Keys that uniquely identify each stateless node in a dynamic list.
   k: K[],
-  // Stateless Tree Nodes
+  // Stateless nodes
   v: VAny[],
 }
 ```
@@ -849,11 +890,77 @@ interface ComponentState {
 }
 ```
 
-As we can see, ivi data structures are carefully designed to have a small
-memory overhead and static shapes to make sure that all call-sites that
-accessing it will be in a [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
+This data structures were carefully designed to have a small memory overhead
+and static shapes. Static shapes are important for performance, so that all
+call-sites that accessing this data structures will be in a
+[monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
-### Template Compilation
+#### Template Data Structures
+
+Templates are compiled into a static part that is stored in a
+`TemplateDescriptor` object and an array of dynamic expressions.
+
+```js
+const Example = (attr, child) => htm`div :attr=${attr} span ${child}`;
+```
+
+Gets compiled into:
+
+```js
+// _T() creates TemplateDescriptor
+const _tpl_1 = _T(
+  // _h() creates a template factory that uses Node.cloneNode(true) to
+  // instantiate static template structure.
+  _h("<div><span></span></div>"),
+  // SMI (Small Integer) value that packs several values:
+  // struct Data {
+  //   stateSize:10;    // The number of state slots
+  //   childrenSize:10; // The number of children slots
+  //   svg:1;           // Template with SVG elements
+  // }
+  // stateSize and childrenSize are used for preallocating arrays with
+  // exact number to avoid dynamic growth and reduce memory consumption.
+  1026,
+  // propOpCodes is an array of SMI values that stores opCodes for updating
+  // element properties.
+  [2],
+  // childOpCodes is an array of SMI values that stores opCodes for updating
+  // children nodes.
+  [7, 4],
+  // stateOpCodes is an array of SMI values that stores opCodes for traversing
+  // DOM nodes and saving references to DOM nodes into internal state when
+  // template is instantiated.
+  [4],
+  // Data is an array of string values that stores keys for dynamic properties.
+  ["attr"],
+);
+// _t() creates stateless tree node VTemplate with shared TemplateDescriptor
+// and an array of dynamic expressions.
+const Example = (attr, child) => _t(_tpl_1, [attr, child]);
+```
+
+```ts
+// Descriptor with TemplateData and template factory function.
+type TemplateDescriptor = VDescriptor<TemplateData, () => Element>;
+
+interface TemplateData {
+  // stateSize / childrenSize / svg flag
+  f: number,
+  // Prop OpCodes
+  p: PropOpCode[],
+  // Child OpCodes
+  c: ChildOpCode[],
+  // State OpCodes
+  s: StateOpCode[],
+  // Data
+  d: any[],
+}
+
+// Stateless tree node VTemplate.
+type VTemplate<P = any> = VNode<TemplateDescriptor, P>;
+```
+
+### Template Optimizations
 
 `@ivi/babel-plugin` module contains a babel plugin with a template compiler and
 optimizer that significantly improves start-up performance.
@@ -1048,6 +1155,61 @@ export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
       detach,
     );
   }
+};
+```
+
+#### Using [`requestAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) for Scheduling UI Updates
+
+Be careful when creating a scheduling algorithm with `rAF`, it can create
+issues with race conditions.
+
+```js
+const Form = component((c) => {
+  const state = useReducer(c, { value: "", valid: false }, (state, action) => {
+    if (action.type === "update") {
+      state = {
+        value: action.value,
+        valid: /^[a-z]+$/.test(action.value),
+      };
+    }
+    return state;
+  });
+  const onChange = (ev) => {
+    state({ type: "update", value: ev.currentTarget.value });
+  };
+  return () => htm`
+    form
+      input
+        @change=${onChange}
+        *value=${state().value}
+      input
+        :type='submit'
+        :value='Submit'
+        .disabled=${!state().valid}
+  `;
+});
+```
+
+In this example, if the user types really fast and pushes an `[enter]` button,
+it is possible to get an execution order like this:
+
+- User types '0' into `<input>`.
+- `onChange()` event handler is triggered, `state.valid` switches into a `false`
+  state.
+- User pushes an `[enter]` button.
+- Browser sends submit request because UI is still in the old state
+  `<input type="submit" .disabled={false} />`
+- `rAF` event is triggered, submit button goes into disabled state.
+
+The simplest way to avoid issues like this is to use microtasks for scheduling.
+But if you really want to add `rAF` scheduling, it is possible to solve issues like this by introducing some synchronization primitives:
+
+```js
+import { uiReady } from "my-custom-scheduler";
+
+const onSubmit = async (ev) => {
+  await uiReady();
+  submit();
 };
 ```
 
