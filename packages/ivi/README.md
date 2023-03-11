@@ -120,6 +120,18 @@ div
 In this example we can immediately see that there won't be any whitespaces
 between text node and a span element.
 
+Text nodes are escaped automatically:
+
+```js
+htm`div 'escape & <'`
+```
+
+HTML:
+
+```htm
+<div>escape &amp; &lt;</div>
+```
+
 ### Element Properties Syntax
 
 - [`div.classA.classB`](#class-names) - Static class names `<div class="classA classB">`
@@ -186,6 +198,18 @@ DOM attributes are assigned with `Element.setAttribute(..)`.
 
 When dynamic attribute has an `undefined` value, it will be removed from the
 DOM element with `Element.removeAttribute(..)` method.
+
+Attribute values are escaped automatically:
+
+```js
+htm`div :name='escape & "'
+```
+
+HTML:
+
+```htm
+<div name="escape &amp; &quot;"></div>
+```
 
 #### Properties
 
@@ -768,9 +792,21 @@ and marking all its parent nodes with a flag that they have a dirty subtree.
 When marking algorithm reaches root node, it invokes `OnRootInvalidated()` hook
 that can be used to implement a [custom scheduler](#custom-scheduler).
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://localvoid.github.io/ivi/images/component-invalidated-1-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://localvoid.github.io/ivi/images/component-invalidated-1-light.png">
+  <img src="https://localvoid.github.io/ivi/images/component-invalidated-1-light.png">
+</picture>
+
 When scheduler decides to update a root node with a dirty subtree, it starts a
 dirty checking algorithm. This algorithm goes top-down visiting all nodes with a
 dirty subtree flag until it reaches a dirty component and updates it.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://localvoid.github.io/ivi/images/dirty-checking-1-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://localvoid.github.io/ivi/images/dirty-checking-1-light.png">
+  <img src="https://localvoid.github.io/ivi/images/dirty-checking-1-light.png">
+</picture>
 
 #### Right-to-Left Updates
 
@@ -923,7 +959,7 @@ interface ComponentState {
 }
 ```
 
-This data structures were carefully designed to have a small memory overhead
+This data structures were carefully designed to have small memory overhead
 and static shapes. Static shapes are important for performance, so that all
 call-sites that accessing this data structures will be in a
 [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
