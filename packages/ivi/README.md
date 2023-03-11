@@ -65,12 +65,26 @@ In an HTML it could look something like that:
 ```
 
 As we can see from this example, indentation level is used for children nesting.
-Also, children can be nested by declaring them on the same line as their parent,
-e.g.:
+Also, children node can be nested by declaring them on the same line as their
+parent. E.g.
+
+```js
+htm`div 'prefix' ${expr} 'suffix'`
+```
+
+HTML:
+
+```html
+<div>prefix{expr}suffix</div>
+```
+
+Or in a mixed form:
 
 ```js
 htm`
-div 'prefix' ${expr} 'suffix'
+div 'prefix'
+  ${expr}
+  'sufix'
 `
 ```
 
@@ -114,7 +128,7 @@ between text node and a span element.
 - [`div :name`](#attributes) - Static attribute without a value `<div name>`.
 - [`div :name=${expr}`](#attributes) - Dynamic attribute `element.setAttribute(name, expr)`.
 - [`div .name=${expr}`](#properties) - Property `element[name] = expr`.
-- [`div *name=${expr}`](#properties) - Property `element[name] = expr`, uses DOM value for diffing.
+- [`div *name=${expr}`](#properties) - Property `element[name] = expr`, diffs against a DOM value.
 - [`div ~name=${expr}`](#styles) - Style `element.style.setProperty(name, expr)`
 - [`div @name=${expr}`](#events) - Event `element.addEventListener(name, expr)`
 - [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`
@@ -129,6 +143,7 @@ div :inline-attr1 :inline-attr2
   :indented-attr
     :can-be-indented-with-any-amount-of-spaces
   child-element
+`
 ```
 
 #### Class Names
@@ -137,9 +152,7 @@ Static class names are declared with a `.` character immediately after a tag
 name:
 
 ```js
-htm`
-div.class-one.class-two ${expr}
-`
+htm`div.class-one.class-two ${expr}`
 ```
 
 HTML:
@@ -152,9 +165,7 @@ Dynamic class names are declared with an expression immediately after a tag
 name:
 
 ```js
-htm`
-div${condition ? "class-one" : "class-two"}
-`
+htm`div${condition ? "class-one" : "class-two"}`
 ```
 
 HTML:
@@ -169,10 +180,9 @@ Static and dynamic class names cannot be mixed together.
 
 - `div :name='value'` - Static attribute with a value `<div name="value">`.
 - `div :name` - Static attribute without a value `<div name>`.
-- `div :name=${expr}` - Dynamic attribute `element.setAttribute
+- `div :name=${expr}` - Dynamic attribute `element.setAttribute(name, expr)`.
 
-DOM attributes are assigned with `Element.setAttribute(..)` method and support
-several different forms:
+DOM attributes are assigned with `Element.setAttribute(..)`.
 
 When dynamic attribute has an `undefined` value, it will be removed from the
 DOM element with `Element.removeAttribute(..)` method.
@@ -180,10 +190,9 @@ DOM element with `Element.removeAttribute(..)` method.
 #### Properties
 
 - `div .name=${expr}` - Property `element[name] = expr`.
-- `div *name=${expr}` - Property `element[name] = expr`, uses DOM value for diffing.
+- `div *name=${expr}` - Property `element[name] = expr`, diffs against a DOM value.
 
-Properties are assigned with an assignment operator `Element.name = value` and
-support only dynamic values:
+Properties are assigned with an assignment operator `Element.name = value`.
 
 Diffing with a DOM value is useful in use cases when we use `<input>` values to
 avoid triggering unnecessary `change` events.
@@ -212,8 +221,8 @@ When event has an `undefined` value, it will be removed with an
 - `div =${expr}` - Text Content `element.textContent = expr`
 
 Text content property can be used as an optimization that slightly reduces
-[memory overhead](#memory-footprint) for elements with a text child. It will
-create a text node with a [`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+[memory overhead](#ui-tree-data-structures) for elements with a text child. It
+will create a text node with a [`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
 property and won't have any stateful nodes associated with a text node.
 
 Text content value should have a string or a number type.
@@ -275,7 +284,7 @@ const Example = component((c) => {
 
 Template cloning is an optimization that is used for cloning HTML templates
 with a
-[Node.cloneNode()](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode)
+[`Node.cloneNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode)
 method.
 
 By default, template cloning is enabled for all templates. But sometimes it
@@ -298,8 +307,8 @@ Basic javascript arrays can be used for composing UI nodes:
 const ArraysInsideTemplates = () => htm`
   div
     ${[
-      htm`div.one`
-      htm`div.two`
+      htm`div.one`,
+      htm`div.two`,
     ]}
 `;
 
@@ -316,6 +325,26 @@ const ComponentsWithMultipleRootNodes = component((c) => () => ([
   htm`div.two`,
 ]));
 ```
+
+When arrays are diffed, stateless tree nodes mapped onto their stateful nodes
+by their position in the array.
+
+When array contains a conditional expression that returns a "hole" `null`
+value, the hole will occupy a slot in a stateful tree, so that all nodes will
+be correclty mapped onto their stateful nodes. E.g.
+
+```js
+[
+  conditional ? "text" : null,
+  StatefulComponent(),
+]
+```
+
+In the example above, when `conditional` goes from a text to a hole and vice
+versa, `StatefulComponent` will preserve its internal state.
+
+When array grows or shrinks in size, stateful nodes will be removed and created
+at the end.
 
 ## Dynamic Lists
 
@@ -412,6 +441,10 @@ const Button = component(
 ## Component State
 
 `ivi/state` module provides simple abstractions for managing component state.
+
+This primitives are optional and it is ok to create different high-level
+primitives for managing component state, or to use a low-level `invalidate()`
+API.
 
 ### Memoized Functions
 
@@ -1158,7 +1191,7 @@ export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
 };
 ```
 
-#### Using [`requestAnimationFrame()`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) for Scheduling UI Updates
+#### Using `requestAnimationFrame()` for Scheduling UI Updates
 
 Be careful when creating a scheduling algorithm with `rAF`, it can create
 issues with race conditions.
@@ -1193,7 +1226,7 @@ const Form = component((c) => {
 In this example, if the user types really fast and pushes an `[enter]` button,
 it is possible to get an execution order like this:
 
-- User types '0' into `<input>`.
+- User types `0` into `<input>`.
 - `onChange()` event handler is triggered, `state.valid` switches into a `false`
   state.
 - User pushes an `[enter]` button.
