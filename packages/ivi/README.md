@@ -372,6 +372,12 @@ at the end.
 
 ## Dynamic Lists
 
+Dynamic lists that map stateless nodes onto a stateful ones is not an
+optimization technique. It is used to correctly preserve components state, custom DOM elements state, CSS animations state, etc.
+
+Stateless nodes mapped onto their stateful nodes by their unique key
+`getKey()`, dynamic lists shouldn't have any duplicated keys.
+
 ```ts
 /**
  * Creates a dynamic list.
@@ -436,14 +442,14 @@ function component<P>(
 ): (props: P) => VComponent<P>;
 
 /**
- * Invalidates component.
+ * Invalidates a component.
  *
  * @param c Component instance.
  */
 function invalidate(c: Component): void;
 
 /**
- * useUnmount creates an unmount hook.
+ * Adds an unmount hook.
  *
  * @param component Component instance.
  * @param hook Unmount hook.

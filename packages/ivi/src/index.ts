@@ -89,20 +89,20 @@ export const enum Flags {
 }
 
 /**
- * State node.
+ * Stateful Node.
  *
  * @typeparam S Internal state.
  */
 export interface SNode<V = VAny, S = any> {
-  /** VAny. */
+  /** Stateless Node. */
   v: V;
   /** See {@link Flags} for details. */
   f: Flags;
-  /** Children state nodes. */
+  /** Children Stateful Nodes. */
   c: SNode | (SNode | null)[] | null;
-  /** Current state. */
+  /** State. */
   s: S;
-  /** Parent state. */
+  /** Parent Stateful Node. */
   p: SNode | null,
 }
 
@@ -121,7 +121,7 @@ export interface ComponentState {
 }
 
 /**
- * createSNode creates a {@link SNode} instance.
+ * Creates a Stateful Node instance.
  *
  * @param v VNode.
  * @returns {@link SNode} instance.
@@ -134,10 +134,15 @@ export const createSNode = <V extends VAny, S>(
   p: SNode | null,
 ): SNode<V, S> => ({ f, v, c, s, p });
 
+/**
+ * Stateless Node Descriptor.
+ */
 export interface VDescriptor<P1 = any, P2 = any> {
   /** See {@link Flags} for details. */
   readonly f: Flags;
+  /** First property. */
   readonly p1: P1;
+  /** Second property. */
   readonly p2: P2;
 }
 
@@ -201,7 +206,7 @@ export interface ListProps<K = any> {
 }
 
 /**
- * UI value.
+ * Stateless Tree Node.
  */
 export type VAny =
   | null
@@ -215,7 +220,7 @@ export type VAny =
   ;
 
 /**
- * Recursive VAny array.
+ * Recursive Stateless Tree Array.
  */
 export type VArray = VAny[];
 
@@ -942,7 +947,7 @@ export const useUnmount = (component: Component, hook: () => void): void => {
 };
 
 /**
- * Invalidates component.
+ * Invalidates a component.
  *
  * @param c Component instance.
  */
@@ -992,7 +997,7 @@ export const List = <E, K>(
 /**
  * Performs a Dirty Checking in a Stateful Node Subtree.
  *
- * @param sNode Stateful Tree Node.
+ * @param sNode Stateful Node.
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
 export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
