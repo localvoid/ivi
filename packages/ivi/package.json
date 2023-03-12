@@ -10,7 +10,8 @@
     "./hooks": "./dist/hooks.js",
     "./state": "./dist/state.js",
     "./visitor": "./dist/visitor.js",
-    "./dom": "./dist/dom.js"
+    "./dom": "./dist/dom.js",
+    "./test": "./dist/test.js"
   },
   "sideEffects": false,
   "files": [
