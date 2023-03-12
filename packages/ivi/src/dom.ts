@@ -3,10 +3,10 @@ import { Flags } from "./index.js";
 import { VisitNodesDirective, visitNodes } from "./visitor.js";
 
 /**
- * Finds the closest DOM node from the {@link SNode} instance.
+ * Finds the closest DOM node from a Stateful Tree {@link SNode}.
  *
  * @typeparam T DOM node type.
- * @param sNode {@link SNode} instance.
+ * @param sNode Stateful Tree {@link SNode}.
  * @returns DOM node.
  */
 export const findDOMNode = <T extends Node | Text>(
@@ -36,11 +36,11 @@ export const findDOMNode = <T extends Node | Text>(
 };
 
 /**
- * Checks if {@link SNode} contains a DOM element.
+ * Checks if a Stateful Tree {@link SNode} contains a DOM element.
  *
- * @param parent {@link SNode}.
+ * @param parent Stateful Tree {@link SNode}.
  * @param element DOM element.
- * @returns true when parent contains an element.
+ * @returns True when parent contains an element.
  */
 export const containsDOMElement = (
   parent: SNode,
@@ -58,11 +58,11 @@ export const containsDOMElement = (
 };
 
 /**
- * Checks if {@link SNode} has a child DOM element.
+ * Checks if a Stateful Tree {@link SNode} has a child DOM element.
  *
- * @param parent {@link SNode}.
+ * @param parent Stateful Tree {@link SNode}.
  * @param child DOM element.
- * @returns true when parent has a DOM element child.
+ * @returns True when parent has a DOM element child.
  */
 export const hasDOMElement = (
   parent: SNode,

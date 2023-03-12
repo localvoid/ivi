@@ -157,7 +157,7 @@ export interface TemplateData {
   d: any[],
 }
 
-export type TemplateDescriptor = VDescriptor<TemplateData, any>;
+export type TemplateDescriptor = VDescriptor<TemplateData, () => Element>;
 
 export type ComponentDescriptor<P = any> = VDescriptor<
   (component: Component) => (props: P) => VAny,
@@ -757,9 +757,9 @@ const _updateList = (
  *
  * @example
  *
- *   const A = Int32Array.from([-1, 0, 2, 1]);
- *   markLIS(A);
- *   // A => [-1, -2, 2, -2]
+ *     const A = Int32Array.from([-1, 0, 2, 1]);
+ *     markLIS(A);
+ *     // A => [-1, -2, 2, -2]
  *
  * @param a Array of numbers.
  * @noinline
@@ -901,16 +901,66 @@ export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
  *
  * @typeparam P Property type.
  * @param p1 Function that creates stateful render functions.
- * @param p2 `areEqual` function that checks `props` for equality.
+ * @param p2 Function that checks `props` for equality.
  * @returns Factory that produces component nodes.
  */
 export const component = <P>(
-  p1: (c: Component) => (props: P) => VAny,
+  p1: undefined extends P
+    ? (c: Component) => () => VAny
+    : (c: Component) => (props: P) => VAny,
   p2?: (prev: P, next: P) => boolean,
-): (props: P) => VComponent<P> => (
-  p1 = { f: Flags.Component, p1, p2 } satisfies ComponentDescriptor as any,
-  (p: P) => ({ d: p1 as any, p })
+): undefined extends P
+  ? () => VComponent<undefined>
+  : (props: P) => VComponent<P> => (
+  (
+    p1 = { f: Flags.Component, p1, p2 } satisfies ComponentDescriptor as any,
+    (p: P) => ({ d: p1, p })) as any
 );
+
+/**
+ * Adds an unmount hook.
+ *
+ * @example
+ *
+ *     const Example = component((c) => {
+ *       useUnmount(c, () => { console.log("unmounted"); });
+ *
+ *       return () => null;
+ *     });
+ *
+ * @param component Component instance.
+ * @param hook Unmount hook.
+ */
+export const useUnmount = (component: Component, hook: () => void): void => {
+  var s = component.s;
+  var hooks = s.u;
+  s.u = (hooks === null)
+    ? hook
+    : (typeof hooks === "function")
+      ? [hooks, hook]
+      : (hooks.push(hook), hooks);
+};
+
+/**
+ * Invalidates component.
+ *
+ * @param c Component instance.
+ */
+export const invalidate = (c: Component): void => {
+  if (!(c.f & Flags.Dirty)) {
+    c.f |= Flags.Dirty;
+    var parent = c.p;
+    while (parent !== null) {
+      if (parent.f & Flags.DirtySubtree) {
+        return;
+      }
+      parent.f |= Flags.DirtySubtree;
+      c = parent as any;
+      parent = parent.p;
+    }
+    (c as any as SRoot).v.d.p1(c as any as SRoot);
+  }
+};
 
 /**
  * VDescriptor for List nodes.
@@ -940,26 +990,11 @@ export const List = <E, K>(
 });
 
 /**
- * Invalidates component.
+ * Performs a Dirty Checking in a Stateful Node Subtree.
  *
- * @param c Component instance.
+ * @param sNode Stateful Tree Node.
+ * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
-export const invalidate = (c: Component): void => {
-  if (!(c.f & Flags.Dirty)) {
-    c.f |= Flags.Dirty;
-    var parent = c.p;
-    while (parent !== null) {
-      if (parent.f & Flags.DirtySubtree) {
-        return;
-      }
-      parent.f |= Flags.DirtySubtree;
-      c = parent as any;
-      parent = parent.p;
-    }
-    (c as any as SRoot).v.d.p1(c as any as SRoot);
-  }
-};
-
 export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
   var state, i,
     rootNode,
@@ -1026,12 +1061,13 @@ export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
 };
 
 /**
- * Updates a SNode with a next operation.
+ * Updates a Stateful Node with a new Stateless Node.
  *
- * @param sNode Operation state.
- * @param next Next operation.
- * @param displace DOM Element should be moved.
- * @returns SNode or a null value.
+ * @param parentSNode Parent Stateul Node.
+ * @param sNode Stateful Node to update.
+ * @param next New Stateless Node.
+ * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
+ * @returns Stateful Node.
  */
 export const update = (
   parentSNode: SNode,
@@ -1080,6 +1116,13 @@ export const update = (
   return sNode;
 };
 
+/**
+ * Mounts Stateless Node.
+ *
+ * @param parentSNode Parent Stateful Node.
+ * @param v Stateless Node.
+ * @returns Mounted Stateful Node.
+ */
 export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
   var i, c, s, d, e;
   if (v !== null) {
@@ -1118,6 +1161,12 @@ export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
   return null;
 };
 
+/**
+ * Unmounts Stateful Node.
+ *
+ * @param sNode Stateful Node.
+ * @param detach Detach root DOM nodes from the DOM.
+ */
 export const unmount = (sNode: SNode, detach: boolean): void => {
   var c, i, v, f = sNode.f;
 

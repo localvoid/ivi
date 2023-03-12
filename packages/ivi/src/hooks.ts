@@ -1,51 +1,20 @@
 import type { Component } from "./index.js";
+import { useUnmount } from "./index.js";
 
 /**
- * useUnmount creates an unmount hook.
+ * Creates a side effect hook.
  *
  * @example
  *
- *     const C = component((c) => {
- *       useUnmount(c, () => {
- *         console.log("unmounted");
+ *     const Example = component((c) => {
+ *       const [count, setCount] = useState(0);
+ *       const timer = useEffect(c, shallowEq, ({ interval }) => {
+ *         const tid = setInterval(() => { setCount(count() + 1); }, interval);
+ *         return () => { clearInterval(tid); };
  *       });
  *
- *       return () => null;
- *     });
- *
- * @param component Component instance.
- * @param hook Unmount hook.
- */
-export const useUnmount = (component: Component, hook: () => void): void => {
-  var s = component.s;
-  var hooks = s.u;
-  s.u = (hooks === null)
-    ? hook
-    : (typeof hooks === "function")
-      ? [hooks, hook]
-      : (hooks.push(hook), hooks);
-};
-
-/**
- * useEffect creates a side effect hook.
- *
- * @example
- *
- *     const Counter = component((c) => {
- *       let i = 0;
- *       const timer = useEffect(c,
- *         (delay) => {
- *           const tid = setInterval(() => {
- *             i++;
- *             invalidate(c);
- *           }, delay);
- *           return () => { clearInterval(tid); };
- *         },
- *         (prev, next) => prev !== next,
- *       );
- *
- *       return (delay) => (
- *         timer(delay),
+ *       return (interval) => (
+ *         timer({ interval }),
  *
  *         htm`span.Counter ${i}`
  *       );
@@ -53,14 +22,14 @@ export const useUnmount = (component: Component, hook: () => void): void => {
  *
  * @typeparam T Hook props type.
  * @param component Component instance.
+ * @param areEqual Function that checks if input value hasn't changed.
  * @param hook Side effect function.
- * @param areEqual `areEqual` function.
  * @returns Side effect hook.
  */
 export const useEffect = <P>(
   component: Component,
-  hook: (props?: P) => (() => void) | void,
   areEqual: (prev: P, next: P) => boolean,
+  hook: (props?: P) => (() => void) | void,
 ): (props: P) => void => {
   var reset: (() => void) | void;
   var prev: P | undefined;

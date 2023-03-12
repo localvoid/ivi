@@ -12,7 +12,7 @@ const objectKeys = Object.keys;
 /**
  * Checks if objects are shallow equal.
  *
- * shallowEqual algorithm is using strict equality operator `===` to
+ * shallowEq algorithm is using strict equality operator `===` to
  * compare object values.
  *
  * @param a
@@ -45,7 +45,7 @@ export function shallowEq<T extends Record<string | symbol, unknown>>(
 /**
  * Checks if arrays are shallow equal.
  *
- * shallowEqualArray algorithm is using strict equality operator `===` to
+ * shallowEqArray algorithm is using strict equality operator `===` to
  * compare array values.
  *
  * @param a
