@@ -39,7 +39,6 @@ export const useEffect = <P>(
         reset();
       }
       reset = hook(next);
-      prev = next;
       if (component !== void 0 && reset !== void 0) {
         useUnmount(component, () => {
           if (reset !== void 0) {
@@ -49,5 +48,6 @@ export const useEffect = <P>(
         component = (void 0)!;
       }
     }
+    prev = next;
   };
 };

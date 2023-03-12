@@ -848,6 +848,91 @@ precompilation that two templates have similar shapes, but the major downside
 is that we will need to switch to whole program deduplication and it is going
 to have an impact on the chunking algorithm.
 
+#### Side Effects in Components
+
+Side Effects in Components doesn't use any "magic" behind the scenes and it is
+recommended to understand how they are implemented in ivi, because in a lot of
+use cases we can avoid using generic `useEffect()` function and just write
+effects as simple closures.
+
+```ts
+function useEffect<P>(
+  component: Component,
+  areEqual: (prev: P, next: P) => boolean,
+  hook: (props?: P) => (() => void) | void,
+): (props: P) => void {
+  // When effect is updated, its previous state is cleared with reset closure.
+  // When reset has an `undefined` value, it means that it is either invoked
+  // for the first time, or effect doesn't need to clear internal state.
+  let reset: (() => void) | void;
+  // Previous input value that is used to avoid triggering side effects when
+  // its input value hasn't changed.
+  let prev: P | undefined;
+  return (next: P) => {
+    // Updates only when its input value has changed.
+    if (areEqual(prev as P, next as P) !== true) {
+      // Resets previous state.
+      if (reset !== void 0) {
+        reset();
+      }
+      // Invokes effect hook and assigns a new reset function.
+      reset = hook(next);
+      // When we add an unmount hook, we are dropping a reference to component
+      // instance, since we no longer need it.
+      // To avoid adding multiple unmount hooks, we just checking if component
+      // is referencing any component instances.
+      // And in cases when effect hook doesn't have any reset function, we can
+      // ignore adding any unmount hooks.
+      if (component !== void 0 && reset !== void 0) {
+        // Adds unmount hook.
+        useUnmount(component, () => {
+          // Checks if reset still holds a reference to a reset function to
+          // avoid issues when effect hook uses a reset function only in some
+          // cases.
+          if (reset !== void 0) {
+            // Invokes a reset function.
+            reset();
+          }
+        });
+        // Drops a reference to component instance.
+        component = (void 0)!;
+      }
+    }
+    // Always updates previous input value to reduce memory consumption.
+    // The latest values are most likely to be stored in the app or component
+    // state, so it is better to drop all references to old values.
+    prev = next;
+  };
+}
+```
+
+Below is a simple example that follows a similar logic that is implemented in
+a generic `useEffect()` function.
+
+```js
+function useInterval(component, fn) {
+  let prevTime;
+  let tid;
+  useUnmount(component, () => { clearInterval(tid); });
+  return (time) => {
+    if (prevTime !== time) {
+      prevTime = time;
+      clearInterval(tid);
+      tid = setInterval(fn, time);
+    }
+  };
+}
+
+const Example = component((c) => {
+  const [count, setCount] = useState(0);
+  const timer = useInterval(c, () => { setCount(count() + 1); });
+  return (time) => (
+    timer(time),
+    htm`span.Counter ${i}`
+  );
+});
+```
+
 ### Internal Data Structures
 
 To get a rough estimate of memory usage it is important to understand internal
