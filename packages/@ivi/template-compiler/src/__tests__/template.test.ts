@@ -41,6 +41,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -56,6 +57,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -71,6 +73,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -87,6 +90,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -103,6 +107,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -118,6 +123,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -133,6 +139,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -148,6 +155,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -163,6 +171,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -180,6 +189,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -199,6 +209,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -218,6 +229,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -233,6 +245,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -248,6 +261,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -263,6 +277,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -278,6 +293,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -296,6 +312,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -313,6 +330,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -328,6 +346,7 @@ describe("template compilation", () => {
           childOpCodes: [],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [],
         },
       );
     });
@@ -345,6 +364,7 @@ describe("template compilation", () => {
           childOpCodes: [cC(0)],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -362,6 +382,7 @@ describe("template compilation", () => {
           childOpCodes: [cC(0)],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -380,6 +401,7 @@ describe("template compilation", () => {
           childOpCodes: [cC(0)],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -398,6 +420,7 @@ describe("template compilation", () => {
           childOpCodes: [cSN(0), cC(0)],
           stateOpCodes: [S],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -417,6 +440,7 @@ describe("template compilation", () => {
           childOpCodes: [cSN(0), cC(0)],
           stateOpCodes: [N, R],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -435,6 +459,7 @@ describe("template compilation", () => {
           childOpCodes: [cC(0)],
           stateOpCodes: [],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -454,6 +479,7 @@ describe("template compilation", () => {
           childOpCodes: [cSN(0), cC(0)],
           stateOpCodes: [S],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -473,6 +499,7 @@ describe("template compilation", () => {
           childOpCodes: [cSN(0), cC(0)],
           stateOpCodes: [N, S],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -492,6 +519,7 @@ describe("template compilation", () => {
           childOpCodes: [cSN(0), cC(0)],
           stateOpCodes: [N, S],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -511,6 +539,7 @@ describe("template compilation", () => {
           childOpCodes: [cSN(0), cC(0)],
           stateOpCodes: [N, S],
           data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -533,6 +562,7 @@ describe("template compilation", () => {
           childOpCodes: [cC(3), cC(2), cSP(1), cC(1), cSP(0), cC(0)],
           stateOpCodes: [S | N, E(1), S],
           data: [],
+          dynamicExprs: [0, 1, 2, 3],
         },
       );
     });
@@ -547,12 +577,14 @@ describe("template compilation", () => {
             c
         `,
         {
-          t: `<div><a><b></b><c></c></a></div>`,
-          k: [],
-          s: [E(2) | S, N, S],
-          p: [],
-          c: [cSP(0), cSN(1), cC(0)],
-          f: F(false, 2, 1),
+          disableCloning: false,
+          flags: F(false, 2, 1),
+          template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
+          propOpCodes: [],
+          childOpCodes: [cSP(0), cSN(1), cC(0)],
+          stateOpCodes: [E(2) | S, N, S],
+          data: [],
+          dynamicExprs: [0],
         },
       );
     });
@@ -567,12 +599,14 @@ describe("template compilation", () => {
             ${1}
         `,
         {
-          t: `<div><a><b></b></a></div>`,
-          k: [],
-          s: [E(1) | S, S],
-          p: [],
-          c: [cSP(0), cC(1), cSP(1), cC(0)],
-          f: F(false, 2, 2),
+          disableCloning: false,
+          flags: F(false, 2, 2),
+          template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `</a>`, `</div>`],
+          propOpCodes: [],
+          childOpCodes: [cSP(0), cC(1), cSP(1), cC(0)],
+          stateOpCodes: [E(1) | S, S],
+          data: [],
+          dynamicExprs: [0, 1],
         },
       );
     });
@@ -587,12 +621,14 @@ describe("template compilation", () => {
             c
         `,
         {
-          t: `<div><a><b></b><c></c></a></div>`,
-          k: [],
-          s: [E(1) | S, S],
-          p: [],
-          c: [cSN(0), cC(0), cSP(1), cC(1)],
-          f: F(false, 2, 2),
+          disableCloning: false,
+          flags: F(false, 2, 2),
+          template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
+          propOpCodes: [],
+          childOpCodes: [cSN(0), cC(0), cSP(1), cC(1)],
+          stateOpCodes: [E(1) | S, S],
+          data: [],
+          dynamicExprs: [0, 1],
         },
       );
     });
@@ -614,6 +650,7 @@ describe("template compilation", () => {
           childOpCodes: [cC(3), cSP(1), cC(2), cSP(0), cC(0)],
           stateOpCodes: [S | N, E(1), S],
           data: [],
+          dynamicExprs: [0, 1, 2, 3],
         },
       );
     });
