@@ -202,7 +202,7 @@ DOM element with `Element.removeAttribute(..)` method.
 Attribute values are escaped automatically:
 
 ```js
-htm`div :name='escape & "'
+htm`div :name='escape & "'`
 ```
 
 HTML:
@@ -441,6 +441,14 @@ function component<P>(
  * @param c Component instance.
  */
 function invalidate(c: Component): void;
+
+/**
+ * useUnmount creates an unmount hook.
+ *
+ * @param component Component instance.
+ * @param hook Unmount hook.
+ */
+function useUnmount(component: Component, hook: () => void): void;
 ```
 
 ### Stateless Components
@@ -478,24 +486,23 @@ API.
  *
  * @typeparam T Input type.
  * @typeparam U Output type.
- * @param fn
- * @param areEqual `areEqual` function.
- * @returns memoized function.
+ * @param areEqual Function that checks if input value hasn't changed.
+ * @param fn Function to memoize.
+ * @returns Memoized function.
  */
 function memo<T, U>(
-  fn: (props: T) => U,
   areEqual: (prev: T, next: T) => boolean,
+  fn: (props: T) => U,
 ): (props: T) => U;
 ```
 
 Example:
 
 ```js
-const FullName = component((c) => {
-  const fullName = memo(
-    ([firstName, lastName]) => `${firstName} ${lastName}`,
-    (prev, next) => prev[0] === next[0] && prev[1] === next[1],
-  );
+const Example = component((c) => {
+  const fullName = memo(shallowEqArray, ([firstName, lastName]) => (
+    `${firstName} ${lastName}`
+  ));
 
   return ({firstName, lastName}) => htm`
     div.fullName ${fullName([firstName, lastName])}
@@ -578,30 +585,6 @@ const Counter = component((c) => {
 
 ## Component Hooks
 
-### Unmount
-
-```ts
-/**
- * useUnmount creates an unmount hook.
- *
- * @param component Component instance.
- * @param hook Unmount hook.
- */
-function useUnmount(component: Component, hook: () => void): void;
-```
-
-Example:
-
-```js
-const UnmountMe = component((c) => {
-  useUnmount(c, () => {
-    console.log("unmounted");
-  });
-
-  return () => null;
-});
-```
-
 ### Effect
 
 ```ts
@@ -610,35 +593,29 @@ const UnmountMe = component((c) => {
  *
  * @typeparam T Hook props type.
  * @param component Component instance.
+ * @param areEqual Function that checks if input value hasn't changed.
  * @param hook Side effect function.
- * @param areEqual `areEqual` function.
  * @returns Side effect hook.
  */
 function useEffect = <P>(
   component: Component,
-  hook: (props?: P) => (() => void) | void,
   areEqual: (prev: P, next: P) => boolean,
+  hook: (props?: P) => (() => void) | void,
 ): (props: P) => void;
 ```
 
 Example:
 
 ```js
-const Counter = component((c) => {
-  let i = 0;
-  const timer = useEffect(c,
-    (delay) => {
-      const tid = setInterval(() => {
-        i++;
-        invalidate(c);
-      }, delay);
-      return () => { clearInterval(tid); };
-    },
-    (prev, next) => prev !== next,
-  );
+const Example = component((c) => {
+  const [count, setCount] = useState(0);
+  const timer = useEffect(c, shallowEq, ({ interval }) => {
+    const tid = setInterval(() => { setCount(count() + 1); }, interval);
+    return () => { clearInterval(tid); };
+  });
 
-  return (delay) => (
-    timer(delay),
+  return (interval) => (
+    timer({ interval }),
     htm`span.Counter ${i}`
   );
 });
@@ -695,9 +672,9 @@ for changes.
 const strictEq = <T>(a: T, b: T): boolean;
 
 /**
- * Checks if objects are shallowly equal.
+ * Checks if objects are shallow equal.
  *
- * shallowEqual algorithm is using strict equality operator `===` to
+ * shallowEq algorithm is using strict equality operator `===` to
  * compare object values.
  *
  * @param a
@@ -709,7 +686,7 @@ function shallowEq<T extends Record<string | symbol, unknown>>(a: T, b: T): bool
 /**
  * Checks if arrays are shallow equal.
  *
- * shallowEqualArray algorithm is using strict equality operator `===` to
+ * shallowEqArray algorithm is using strict equality operator `===` to
  * compare array values.
  *
  * @param a
@@ -725,29 +702,29 @@ function shallowEqArray<T>(a: T[], b: T[]): boolean;
 
 ```ts
 /**
- * Finds the closest DOM node from the {@link SNode} instance.
+ * Finds the closest DOM node from a Stateful Tree {@link SNode}.
  *
  * @typeparam T DOM node type.
- * @param sNode {@link SNode} instance.
+ * @param sNode Stateful Tree {@link SNode}.
  * @returns DOM node.
  */
 function findDOMNode<T extends Node | Text>(sNode: SNode | null): T | null;
 
 /**
- * Checks if {@link SNode} contains a DOM element.
+ * Checks if a Stateful Tree {@link SNode} contains a DOM element.
  *
- * @param parent {@link SNode}.
+ * @param parent Stateful Tree {@link SNode}.
  * @param element DOM element.
- * @returns true when parent contains an element.
+ * @returns True when parent contains an element.
  */
 function containsDOMElement(parent: SNode, element: Element): boolean;
 
 /**
- * Checks if {@link SNode} has a child DOM element.
+ * Checks if a Stateful Tree {@link SNode} has a child DOM element.
  *
- * @param parent {@link SNode}.
+ * @param parent Stateful Tree {@link SNode}.
  * @param child DOM element.
- * @returns true when parent has a DOM element child.
+ * @returns True when parent has a DOM element child.
  */
 function hasDOMElement = (parent: SNode, child: Element): boolean;
 ```
@@ -798,15 +775,30 @@ that can be used to implement a [custom scheduler](#custom-scheduler).
   <img src="https://localvoid.github.io/ivi/images/component-invalidated-1-light.png">
 </picture>
 
+1. Component invalidated and marked with `Dirty` flag.
+2. Node marked with `DirtySubtree` flag.
+3. Root Node marked with `DirtySubtree` flag, `OnRootInvalidated()` hook
+invoked.
+4. Component invalidated and marked with `Dirty` flag, parents already marked
+with `DirtySubtree` flag.
+
 When scheduler decides to update a root node with a dirty subtree, it starts a
-dirty checking algorithm. This algorithm goes top-down visiting all nodes with a
-dirty subtree flag until it reaches a dirty component and updates it.
+dirty checking algorithm. This algorithm goes top-down in a right-to-left order,
+visiting all nodes with a dirty subtree flag until it reaches a dirty component
+and updates it.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://localvoid.github.io/ivi/images/dirty-checking-1-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="https://localvoid.github.io/ivi/images/dirty-checking-1-light.png">
   <img src="https://localvoid.github.io/ivi/images/dirty-checking-1-light.png">
 </picture>
+
+1. Starts dirty checking from the root node.
+2. Clean node, skips visiting its subtree.
+3. Node with `DirtySubtree` flag, starts checking its children.
+4. Component with `Dirty` flag, triggers an update.
+5. Component with `Dirty` flag, triggers an update.
+6. Clean node, skips visiting its subtree.
 
 #### Right-to-Left Updates
 
@@ -950,11 +942,23 @@ type SComponent = SNode<VComponent, ComponentState>;
 // 20 bytes.
 interface ComponentState {
   // Render function.
+  //
+  // Stateless components will share the same function.
+  // Stateful components will create closures and its memory usage will depend
+  // on the size of the closure context.
   r: null | ((props: any) => VAny),
   // Unmount hooks.
+  //
   // Usually components don't have any unmount hooks, or they have just one
-  // unmount hook. When there is one hook, it will be stored without any
-  // additional arrays.
+  // unmount hook.
+  //
+  // When there is one hook, it will be stored without any additional arrays.
+  // If we add one more hook, array will be preallocated with exactly two
+  // slots `[firstHook, newHook]`. And when it grows even more, javascript
+  // engine will preallocate internal storage using a growth factor[1][2].
+  //
+  // 1. https://en.wikipedia.org/wiki/Dynamic_array#Growth_factor
+  // 2. https://github.com/v8/v8/blob/1e6775a539a3b88b25cc0ffdb52529c68aad2be8/src/objects/js-objects.h#L584-L590
   u: null | (() => void) | (() => void)[];
 }
 ```
