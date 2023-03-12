@@ -1050,9 +1050,10 @@ export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
     ctx.n = sNode.s;
   } else if (flags & Flags.Component) {
     if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
-      _updateComponent(
-        sNode as Component,
-        (sNode as Component).v,
+      sNode.c = update(
+        sNode,
+        children as SNode,
+        (sNode as Component).s.r!((sNode as Component).v.p),
         updateFlags,
       );
     } else if (children !== null) {
