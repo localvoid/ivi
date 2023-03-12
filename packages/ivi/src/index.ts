@@ -1001,32 +1001,38 @@ export const List = <E, K>(
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
 export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
-  var state, i,
+  var state,
+    op,
+    type,
+    value,
+    c,
+    i,
+    j,
+    parentElement,
     rootNode,
+    childOpCodes,
     ctx = RENDER_CONTEXT,
     children = sNode.c,
     flags = sNode.f;
   if (flags & Flags.Template) {
     rootNode = sNode.s[0];
-    let c;
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
       nodeInsertBefore.call(ctx.p, rootNode, ctx.n);
     }
     if (flags & Flags.DirtySubtree) {
-      const childOpCodes = (sNode as STemplate).v.d.p1.c;
-      const state = (sNode as STemplate).s;
-      const parentElement = ctx.p;
-      let childIndex = 0;
+      j = 0;
+      parentElement = ctx.p;
       ctx.p = rootNode;
       ctx.n = null;
+      state = (sNode as STemplate).s;
+      childOpCodes = (sNode as STemplate).v.d.p1.c;
       for (i = 0; i < childOpCodes.length; i++) {
-        const op = childOpCodes[flags];
-        const type = op & ChildOpCode.Type;
-        const value = op >> ChildOpCode.ValueShift;
+        op = childOpCodes[flags];
+        type = op & ChildOpCode.Type;
+        value = op >> ChildOpCode.ValueShift;
         if (type === ChildOpCode.Child) {
-          c = (children as (SNode | null)[])[childIndex++];
-          if (c !== null) {
+          if ((c = (children as (SNode | null)[])[j++]) !== null) {
             dirtyCheck(c, updateFlags);
           }
         } else if (type === ChildOpCode.SetNext) {
