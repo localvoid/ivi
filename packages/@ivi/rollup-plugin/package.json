@@ -20,7 +20,8 @@
     "@ivi/babel-plugin": "workspace:*"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.20.0"
+    "@types/babel__core": "^7.20.0",
+    "rollup": "^3.19.1"
   },
   "description": "Rollup plugin for ivi library.",
   "license": "MIT",
