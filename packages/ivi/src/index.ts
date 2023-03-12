@@ -598,7 +598,7 @@ const enum MagicValues {
   /**
    * One of the children nodes were moved.
    */
-  MovedChildren = 1073741823,
+  RearrangeNodes = 1073741823, // Max SMI Value
   /**
    * New node marker.
    */
@@ -641,7 +641,7 @@ const _updateList = (
       result[--i] = mount(sNode, bOps[i]);
     }
   } else {
-    var opStateChildren = sNode.c as Array<SNode | null>;
+    var sChildren = sNode.c as Array<SNode | null>;
     var aEnd = j - 1; // a.length - 1
     var bEnd = i - 1; // b.length - 1
     var start = 0;
@@ -653,7 +653,7 @@ const _updateList = (
       while (aKeys[aEnd] === node) {
         result[bEnd] = update(
           sNode,
-          opStateChildren[aEnd--],
+          sChildren[aEnd--],
           bOps[bEnd],
           updateFlags,
         );
@@ -681,27 +681,26 @@ const _updateList = (
       // All nodes from `b` are updated, remove the rest from `a`.
       i = start;
       do {
-        _unmount(opStateChildren[i++]);
+        _unmount(sChildren[i++]);
       } while (i <= aEnd);
     } else { // Step 3
-      // When `pos === 99999999`, it means that one of the nodes is in the wrong position and we should rearrange nodes
-      // with LIS-based algorithm `markLIS()`.
+      // When `pos === RearrangeNodes`, it means that one of the nodes is in the wrong position and we should rearrange
+      // nodes with LIS-based algorithm `markLIS()`.
       var pos = 0;
       var bLength = bEnd - start + 1;
       var sources = new _Int32Array(bLength); // Maps positions in the new children list to positions in the old list.
       var keyIndex = new _Map<any, number>(); // Maps keys to their positions in the new children list.
       for (i = 0; i < bLength; ++i) {
-        j = i + start;
         // `NewNodeMark` value indicates that node doesn't exist in the old children list.
         sources[i] = MagicValues.NewNodeMark;
+        j = i + start;
         keyIndex.set(bKeys[j], j);
       }
 
       for (i = start; i <= aEnd; ++i) {
-        j = keyIndex.get(aKeys[i]);
-        node = opStateChildren[i];
-        if (j !== void 0) {
-          pos = (pos < j) ? j : MagicValues.MovedChildren;
+        node = sChildren[i];
+        if ((j = keyIndex.get(aKeys[i])) !== void 0) {
+          pos = (pos < j) ? j : MagicValues.RearrangeNodes;
           sources[j - start] = i;
           result[j] = node;
         } else {
@@ -713,22 +712,21 @@ const _updateList = (
 
       // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
       // children nodes were moved `pos === MagicValues.MovedChildren`.
-      if (!(updateFlags & Flags.DisplaceNode) && pos === MagicValues.MovedChildren) {
+      if (!(updateFlags & Flags.DisplaceNode) && pos === MagicValues.RearrangeNodes) {
         markLIS(sources);
       }
       while (bLength-- > 0) {
         bEnd = bLength + start;
         node = bOps[bEnd];
         j = sources[bLength];
-        result[bEnd] = (j === -1) ?
-          mount(sNode, node) :
-          update(
+        result[bEnd] = (j === -1)
+          ? mount(sNode, node)
+          : update(
             sNode,
             result[bEnd],
             node,
-            updateFlags
-            // TODO: Figure out a better algo
-            | ((pos === MagicValues.MovedChildren && j !== MagicValues.LISMark)
+            updateFlags |
+            ((pos === MagicValues.RearrangeNodes && j !== MagicValues.LISMark)
               ? Flags.DisplaceNode
               : 0),
           );
@@ -740,7 +738,7 @@ const _updateList = (
     while (start > 0) {
       result[--start] = update(
         sNode,
-        opStateChildren[start],
+        sChildren[start],
         bOps[start],
         updateFlags,
       );
@@ -782,10 +780,10 @@ const markLIS = (a: Int32Array): void => {
   var hi: number;
 
   // Skip -1 values at the start of the input array `a`.
-  for (; a[i] === MagicValues.NewNodeMark; ++i) { /**/ }
+  for (; a[i] === MagicValues.NewNodeMark; i++) { /**/ }
 
   index[0] = i++;
-  for (; i < length; ++i) {
+  for (; i < length; i++) {
     k = a[i];
     if (k !== MagicValues.NewNodeMark) { // Ignore -1 values.
       j = index[indexLength];
