@@ -72,17 +72,28 @@ export const useState = <S>(
 ]);
 
 /**
+ * Reducer Dispatch Function.
+ *
+ * @typeparam A Action Type.
+ */
+export type Dispatch<A> = (action: A) => void;
+
+/**
  * Creates a reactive state reducer.
  *
  * @example
  *
+ *     function reducer(state, action) {
+ *       switch (action.type) {
+ *         case "inc":
+ *           return state + 1;
+ *       }
+ *       return state;
+ *     }
+ *
  *     const Example = component((c) => {
- *        const counter = useReducer(c, 0, (state, action) => (
- *          (action === "inc")
- *             ? state + 1
- *             : state
- *        ));
- *        const inc = () => { counter("inc"); };
+ *        const [counter, dispatch] = useReducer(c, 0, reducer);
+ *        const inc = () => { dispatch("inc"); };
  *
  *       return () => htm`
  *         div.app
@@ -96,21 +107,20 @@ export const useState = <S>(
  * @param component Component instance.
  * @param state Initial state.
  * @param reducer Reducer function.
- * @returns State reducer.
+ * @returns State getter and dispatch functions.
  */
 export const useReducer = <S, A>(
   component: Component,
   state: S,
   reducer: (state: S, action: A) => S,
-): (action?: A) => S => (
-  (action?: A) => {
-    if (action !== void 0) {
-      var nextState = reducer(state, action);
-      if (state !== nextState) {
-        state = nextState;
-        invalidate(component);
-      }
+): [() => S, Dispatch<A>] => ([
+  () => state,
+  (action: A) => {
+    var nextState = reducer(state, action);
+    if (state !== nextState) {
+      state = nextState;
+      invalidate(component);
     }
     return state;
   }
-);
+]);

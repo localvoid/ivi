@@ -551,6 +551,13 @@ const Counter = component((c) => {
 
 ```ts
 /**
+ * Reducer Dispatch Function.
+ *
+ * @typeparam A Action Type.
+ */
+type Dispatch<S, A> = (action: A) => void;
+
+/**
  * Creates a reactive state reducer.
  *
  * @typeparam S State type.
@@ -558,35 +565,35 @@ const Counter = component((c) => {
  * @param component Component instance.
  * @param state Initial state.
  * @param reducer Reducer function.
- * @returns State reducer.
+ * @returns State getter and dispatch functions.
  */
 function useReducer<S, A>(
   component: Component,
   state: S,
   reducer: (state: S, action: A) => S,
-): (action?: A) => S;
+): [() => S, Dispatch<A>];
 ```
 
 Example:
 
 ```js
-const Counter = component((c) => {
-   const counter = useReducer(c, 0, (state, action) => {
-     if (action === "inc") {
-       return state + 1;
-     }
-     return state;
-   });
-   const inc = () => {
-     counter("inc");
-   };
+function reducer(state, action) {
+  switch (action.type) {
+    case "inc":
+      return state + 1;
+  }
+  return state;
+}
 
-   return () => htm`
-     div.app
-       div.counter ${counter()}
-       button @click=${inc} 'Increment'
-   `;
- });
+const Example = component((c) => {
+   const [counter, dispatch] = useReducer(c, 0, reducer);
+   const inc = () => { dispatch("inc"); };
+  return () => htm`
+    div.app
+      div.counter ${counter()}
+      button @click=${inc} 'Increment'
+  `;
+});
 ```
 
 ## Component Hooks
@@ -1328,23 +1335,29 @@ Be careful when creating a scheduling algorithm with `rAF`, it can create
 issues with race conditions.
 
 ```js
-const Form = component((c) => {
-  const state = useReducer(c, { value: "", valid: false }, (state, action) => {
-    if (action.type === "update") {
-      state = {
+function formStateReducer(state, action) {
+  switch (action.type) {
+    case "update":
+      return {
         value: action.value,
         valid: /^[a-z]+$/.test(action.value),
       };
-    }
-    return state;
-  });
-  const onChange = (ev) => {
-    state({ type: "update", value: ev.currentTarget.value });
+  }
+  return state;
+}
+
+const Form = component((c) => {
+  const [state, dispatch] = useReducer(c,
+    { value: "", valid: false },
+    formStateReducer,
+  );
+  const onInput = (ev) => {
+    dispatch({ type: "update", value: ev.target.value });
   };
   return () => htm`
     form
       input
-        @change=${onChange}
+        @input=${onInput}
         *value=${state().value}
       input
         :type='submit'
@@ -1352,6 +1365,11 @@ const Form = component((c) => {
         .disabled=${!state().valid}
   `;
 });
+
+updateRoot(
+  createRoot(document.getElementById("app")!),
+  Form(),
+);
 ```
 
 In this example, if the user types really fast and pushes an `[enter]` button,
