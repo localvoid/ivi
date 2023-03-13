@@ -953,6 +953,41 @@ const Example = component((c) => {
 });
 ```
 
+#### Forcing Component Updates
+
+There are some use cases that require a lot of frequent reads from a reactive
+variable. And whenever this variable changes, it affects a lot of UI nodes, like
+switching between light/dark themes.
+
+Instead of creating a lot of subscriptions to this variables, it is recommended
+to use simple javascript values and rerender entire UI subtree with
+`forceUpdateRoot()` when this values are changed.
+
+```js
+const root = createRoot(document.getElementById("app")!);
+
+let theme = Theme.Light;
+function setTheme(t) {
+  if (theme !== t) {
+    theme = t;
+    forceUpdateRoot(root);
+  }
+}
+
+const App = component((c) => {
+  const toggleTheme = () => {
+    setTheme((theme === "Light") ? "Dark" : "Light");
+  };
+  return () => htm`
+    div
+      div =${theme}
+      button @click=${toggleTheme} 'Toggle Theme'
+  `;
+});
+
+updateRoot(root, App());
+```
+
 ### Internal Data Structures
 
 To get a rough estimate of memory usage it is important to understand internal
