@@ -40,7 +40,7 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
  *
  * @param p Parent DOM Element.
  * @param n Next DOM Element.
- * @returns {@link SRoot} instance.
+ * @returns Root Node.
  */
 export const createRoot = (p: Element, n: Node | null = null): SRoot<null> => (
   createSNode(
@@ -69,11 +69,11 @@ export const createRoot = (p: Element, n: Node | null = null): SRoot<null> => (
 );
 
 /**
- * Updates UI subtree.
+ * Updates a root subtree.
  *
- * @param root {@link SRoot} instance.
- * @param v UI representation.
- * @param forceUpdate Forces update for all components in the subtree.
+ * @param root Root Node.
+ * @param v Stateless Node.
+ * @param forceUpdate Force update for all components.
  */
 export const updateRoot = (
   root: SRoot<null>,
@@ -85,8 +85,6 @@ export const updateRoot = (
   // Assign parent element and next node to the render context.
   RENDER_CONTEXT.p = domSlot.p;
   RENDER_CONTEXT.n = domSlot.n;
-  // Flags should always be reassigned on update to clear dirty flags.
-  root.f = Flags.Root;
   root.c = (
     (root.c === null)
       ? mount(
@@ -108,12 +106,35 @@ export const updateRoot = (
           : 0,
       )
   );
+  // Flags should always be reassigned on update to clear dirty flags.
+  root.f = Flags.Root;
 };
 
 /**
- * Disposed UI subtree and triggers all unmount hooks.
+ * Force update for all components in a root subtree.
  *
- * @param root {@link SRoot} instance.
+ * @param root Root Node.
+ */
+export const forceUpdateRoot = (root: SRoot<null>): void => {
+  // Checks if a Root Node has any children.
+  if (root.c !== null) {
+    update(
+      // Parent SNode should always be a root node.
+      root,
+      // Previous Stateful Node
+      root.c as SNode,
+      // Previous Stateless Node.
+      (root.c as SNode).v,
+      // Force update flag.
+      Flags.ForceUpdate,
+    );
+  }
+};
+
+/**
+ * Disposes a root subtree and triggers all unmount hooks.
+ *
+ * @param root Root Node.
  * @param detach Detach root nodes from the DOM.
  */
 export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
