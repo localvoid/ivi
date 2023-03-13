@@ -78,6 +78,9 @@ export class TestRoot {
   }
 }
 
+/**
+ * # Unstable API. It may change in the future versions.
+ */
 export const createRoot = (
   parentElement: Element = document.body,
   nextNode: Node | null = null,
