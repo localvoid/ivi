@@ -964,9 +964,9 @@ to use simple javascript values and rerender entire UI subtree with
 `forceUpdateRoot()` when this values are changed.
 
 ```js
-const root = createRoot(document.getElementById("app")!);
+const root = createRoot(document.getElementById("app"));
 
-let theme = Theme.Light;
+let theme = "Light";
 function setTheme(t) {
   if (theme !== t) {
     theme = t;
