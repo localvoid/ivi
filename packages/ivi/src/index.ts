@@ -16,7 +16,7 @@ const HTM_TEMPLATE = /**@__PURE__*/doc.createElement("template");
 const HTM_TEMPLATE_CONTENT = HTM_TEMPLATE.content;
 const _SVG_TEMPLATE = /**@__PURE__*/doc.createElement("template");
 const SVG_TEMPLATE = /**@__PURE__*/doc.createElementNS("http://www.w3.org/2000/svg", "svg");
-/**@__PURE__*/_SVG_TEMPLATE.appendChild(SVG_TEMPLATE);
+/**@__PURE__*/_SVG_TEMPLATE.content.appendChild(SVG_TEMPLATE);
 const SVG_TEMPLATE_CONTENT = _SVG_TEMPLATE.content.firstChild as Element;
 
 /** `Node.prototype.insertBefore` */
