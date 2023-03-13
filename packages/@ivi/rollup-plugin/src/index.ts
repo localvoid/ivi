@@ -9,7 +9,10 @@ export interface IviOptions {
 }
 
 export function ivi(options?: IviOptions): Plugin {
-  const filter = createFilter(options?.include, options?.exclude);
+  const filter = createFilter(
+    options?.include ?? /\.(m?js|m?ts)$/,
+    options?.exclude,
+  );
 
   return {
     name: "ivi",
