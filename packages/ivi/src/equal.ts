@@ -19,10 +19,7 @@ const objectKeys = Object.keys;
  * @param b
  * @returns True when objects are shallow equal.
  */
-export function shallowEq<T extends Record<string | symbol, unknown>>(
-  a: T,
-  b: T,
-): boolean {
+export const shallowEq = <T extends object>(a: T, b: T): boolean => {
   if (a !== b) {
     const aKeys = objectKeys(a);
     const bKeys = objectKeys(b);
@@ -33,14 +30,14 @@ export function shallowEq<T extends Record<string | symbol, unknown>>(
 
     for (let i = 0; i < aKeys.length; ++i) {
       const key = aKeys[i];
-      if (a[key] !== b[key]) {
+      if ((a as any)[key] !== (b as any)[key]) {
         return false;
       }
     }
   }
 
   return true;
-}
+};
 
 /**
  * Checks if arrays are shallow equal.
@@ -52,7 +49,7 @@ export function shallowEq<T extends Record<string | symbol, unknown>>(
  * @param b
  * @returns True whan arrays are shallow equal.
  */
-export function shallowEqArray<T>(a: T[], b: T[]): boolean {
+export const shallowEqArray = <T>(a: T[], b: T[]): boolean => {
   if (a !== b) {
     if (a.length !== b.length) {
       return false;
@@ -66,4 +63,4 @@ export function shallowEqArray<T>(a: T[], b: T[]): boolean {
   }
 
   return true;
-}
+};

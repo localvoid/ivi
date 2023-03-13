@@ -515,7 +515,8 @@ const _updateText = (
   var s = sNode.s;
   if (typeof next !== "object") {
     o = sNode.v;
-    // Reassign to reduce memory consumption even if nextOp is strictly equal to the prev op.
+    // Reassign to reduce memory consumption even if next value is strictly
+    // equal the prev value.
     sNode.v = next;
     if (o !== next) {
       (s as Node).nodeValue = next as string;
@@ -524,10 +525,9 @@ const _updateText = (
       nodeInsertBefore!.call(ctx.p, s as Node, ctx.n);
     }
     return sNode;
-  } else {
-    nodeRemoveChild!.call(ctx.p, s as Node);
-    return mount(parentSNode, next)!;
   }
+  nodeRemoveChild!.call(ctx.p, s as Node);
+  return mount(parentSNode, next)!;
 };
 
 const _updateComponent = (
@@ -540,19 +540,18 @@ const _updateComponent = (
   var descriptor = next.d as ComponentDescriptor;
   var nextProps = next.p;
   if (
-    (updateFlags & (Flags.Dirty | Flags.ForceUpdate)) || (
+    ((sNode.f | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) || (
       (prevProps !== nextProps) &&
       (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
     )
   ) {
-    sNode.f = Flags.Component;
     sNode.c = update(
       sNode,
       child as SNode,
       sNode.s.r!(nextProps),
       updateFlags,
     );
-  } else if (sNode.c !== null) {
+  } else if (child !== null) {
     dirtyCheck(child as SNode, updateFlags);
   }
 };
@@ -1026,7 +1025,7 @@ export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
       state = (sNode as STemplate).s;
       childOpCodes = (sNode as STemplate).v.d.p1.c;
       for (i = 0; i < childOpCodes.length; i++) {
-        op = childOpCodes[flags];
+        op = childOpCodes[i];
         type = op & ChildOpCode.Type;
         value = op >> ChildOpCode.ValueShift;
         if (type === ChildOpCode.Child) {
@@ -1061,7 +1060,7 @@ export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
     }
   } else { // Array || List
     i = (children as Array<SNode | null>).length;
-    while (i-- >= 0) {
+    while (--i >= 0) {
       if ((state = (children as Array<SNode | null>)[i]) !== null) {
         dirtyCheck(state, updateFlags);
       }
@@ -1122,6 +1121,7 @@ export const update = (
     _updateList(sNode, (prev as VList).p, (next as VList).p, updateFlags);
   }
 
+  sNode.f &= Flags.CleanSNodeMask;
   sNode.v = next;
   return sNode;
 };
