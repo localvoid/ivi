@@ -69,23 +69,34 @@ Also, children node can be nested by declaring them on the same line as their
 parent. E.g.
 
 ```js
-htm`div 'prefix' ${expr} 'suffix'`
+htm`div a ${expr}`
 ```
 
 HTML:
 
 ```html
-<div>prefix{expr}suffix</div>
+<div><a>{expr}</a></div>
 ```
 
 Or in a mixed form:
 
 ```js
 htm`
-div 'prefix'
-  ${expr}
-  'sufix'
+div a ${0}
+  ${1}
 `
+```
+
+HTML:
+
+```html
+<div><a>{0}</a>{1}</div>
+```
+
+Inline nodes that can't have any children will be rendered as siblings:
+
+```js
+htm`div 'prefix' ${expr} 'suffix'`
 ```
 
 HTML:
