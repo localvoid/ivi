@@ -132,6 +132,29 @@ HTML:
 <div>escape &amp; &lt;</div>
 ```
 
+### Multiple Root Nodes
+
+Templates can't have multiple root nodes.
+
+The following example won't work:
+
+```js
+htm`
+div 'a'
+div 'b'
+`
+```
+
+Instead of using multiple root nodes in a template, template nodes can be
+composed with javascript arrays. E.g.
+
+```js
+[
+  htm`div 'a'`,
+  htm`div 'b'`,
+]
+```
+
 ### Element Properties Syntax
 
 - [`div.classA.classB`](#class-names) - Static class names `<div class="classA classB">`
