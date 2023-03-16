@@ -76,6 +76,7 @@ export const enum Flags {
   Array = 1 << 3,
   Text = 1 << 4,
   Root = 1 << 5,
+  TypeMask = (1 << 6) - 1,
 
   // Component Dirty Flags
   Dirty = 1 << 6,
@@ -557,16 +558,21 @@ const _updateComponent = (
 };
 
 const _updateArray = (
+  parentSNode: SNode,
   sNode: SNode,
-  children: VArray,
+  next: VAny,
   updateFlags: Flags,
-) => {
+): SNode | null => {
   var result;
   var childState;
   var sChildren;
   var j;
-  var i = children.length;
-  if (i === 0) {
+  var i;
+  if (!_isArray(next)) {
+    _unmount(sNode);
+    return mount(parentSNode, next);
+  }
+  if ((i = next.length) === 0) {
     _unmount(sNode);
   } else {
     sChildren = sNode.c! as (SNode<any> | null)[];
@@ -579,18 +585,20 @@ const _updateArray = (
         }
       }
       while (i > j) {
-        result[--i] = mount(sNode, children[i]);
+        result[--i] = mount(sNode, next[i]);
       }
     }
     while (i > 0) {
       sChildren[--i] = update(
         sNode,
         (sChildren as Array<SNode | null>)[i],
-        children[i],
+        next[i],
         updateFlags,
       );
     }
   }
+  sNode.f = Flags.Array;
+  return sNode;
 };
 
 const enum MagicValues {
@@ -1092,37 +1100,39 @@ export const update = (
   if (sNode === null) {
     return mount(parentSNode, next);
   }
-  flags = sNode.f;
 
-  if (flags & Flags.Text) {
+  flags = sNode.f & Flags.TypeMask;
+
+  if (flags === Flags.Text) {
     return _updateText(parentSNode, sNode, next as string, updateFlags);
   }
   prev = sNode.v;
+  sNode.v = next;
   if (prev === next) {
     dirtyCheck(sNode, updateFlags);
     return sNode;
   }
-  if (
-    ((flags & Flags.Array) && !_isArray(next))
-    || ((prev as VNode).d !== (next as VNode).d)
-  ) {
+  if (flags === Flags.Array) {
+    return _updateArray(parentSNode, sNode, next, updateFlags);
+  }
+
+  // Text and Array should be checked before Component, Template and List
+  // because their stateless nodes are represented with basic string and array
+  // types.
+  if ((prev as VNode).d !== (next as VNode).d) {
     _unmount(sNode);
     return mount(parentSNode, next);
   }
 
-  flags &= (Flags.Component | Flags.Template | Flags.Array);
   if (flags === Flags.Component) {
     _updateComponent(sNode as Component, next as VComponent, updateFlags);
   } else if (flags === Flags.Template) {
     _updateTemplate(sNode as STemplate, next as VTemplate, updateFlags);
-  } else if (flags === Flags.Array) {
-    _updateArray(sNode, next as VArray, updateFlags);
   } else {
     _updateList(sNode, (prev as VList).p, (next as VList).p, updateFlags);
   }
 
   sNode.f &= Flags.CleanSNodeMask;
-  sNode.v = next;
   return sNode;
 };
 
