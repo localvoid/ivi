@@ -1368,26 +1368,17 @@ export const updateRoot = (
   // Assign parent element and next node to the render context.
   RENDER_CONTEXT.p = domSlot.p;
   RENDER_CONTEXT.n = domSlot.n;
-  root.c = (
-    (root.c === null)
-      ? mount(
-        // Parent SNode should always be a root node.
-        root,
-        // UI Representation.
-        v,
-      )
-      : update(
-        // Parent SNode should always be a root node.
-        root,
-        // Previous UI state.
-        root.c as SNode,
-        // UI Representation.
-        v,
-        // Force update.
-        forceUpdate === true
-          ? Flags.ForceUpdate
-          : 0,
-      )
+  root.c = update(
+    // Parent SNode should always be a root node.
+    root,
+    // Previous UI state.
+    root.c as SNode,
+    // UI Representation.
+    v,
+    // Force update.
+    forceUpdate === true
+      ? Flags.ForceUpdate
+      : 0,
   );
   // Flags should always be reassigned on update to clear dirty flags.
   root.f = Flags.Root;
