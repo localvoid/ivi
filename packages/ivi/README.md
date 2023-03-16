@@ -357,6 +357,15 @@ h1.Title ${text}
 `
 ```
 
+Templates with just one element that doesn't have any static properties will
+be created with [`document.createElement()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement).
+
+```js
+htm`div :attr=${0} ${1}`
+```
+
+In the example above, template cloning is automatically disabled.
+
 ## Arrays
 
 Basic javascript arrays can be used for composing UI nodes:
