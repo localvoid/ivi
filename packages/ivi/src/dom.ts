@@ -16,16 +16,16 @@ export const findDOMNode = <T extends Node | Text>(
     return null;
   }
 
-  let i: number = sNode.f;
-  if (i & (Flags.Template | Flags.Text)) {
-    return (i & Flags.Template)
+  let flags: number = sNode.f;
+  if (flags & (Flags.Template | Flags.Text)) {
+    return (flags & Flags.Template)
       ? (sNode as STemplate).s[0] as T
       : (sNode as SText).s as T;
   }
-  sNode = (sNode as SNode).c as any;
-  if (i & (Flags.Array | Flags.List)) {
-    for (i = 0; i < (sNode as any as Array<SNode | null>).length; i++) {
-      const c = findDOMNode((sNode as any as Array<SNode | null>)[i]);
+  const children = sNode.c;
+  if (flags & (Flags.Array | Flags.List)) {
+    for (let i = 0; i < (children as Array<SNode | null>).length; i++) {
+      const c = findDOMNode((children as Array<SNode | null>)[i]);
       if (c !== null) {
         return c as T;
       }
@@ -71,7 +71,7 @@ export const hasDOMElement = (
   let result = false;
   visitNodes(parent, (sNode) => (
     (sNode.f & Flags.Template)
-      ? (((sNode as SNode).s[0] === child)
+      ? (((sNode as STemplate).s[0] === child)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)
       : VisitNodesDirective.Continue
