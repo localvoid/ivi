@@ -1,13 +1,7 @@
 import { findDOMNode } from "./dom.js";
-import { RootDescriptor, SNode, SRoot, VAny, VRoot } from "./index.js";
+import type { RootDescriptor, SNode, SRoot, VAny, VRoot } from "./index.js";
 import {
-  Flags,
-  RENDER_CONTEXT,
-  createSNode,
-  dirtyCheck,
-  mount,
-  update,
-  unmount,
+  Flags, RENDER_CONTEXT, createSNode, dirtyCheck, update, unmount,
 } from "./index.js";
 
 const TEST_ROOT_DESCRIPTOR: RootDescriptor<TestRoot> = {
@@ -37,23 +31,15 @@ export class TestRoot {
     const domSlot = root.v.p;
     RENDER_CONTEXT.p = domSlot.p;
     RENDER_CONTEXT.n = domSlot.n;
-    root.f = Flags.Root;
-    root.c = (
-      (root.c === null)
-        ? mount(
-          root,
-          v,
-        )
-        : update(
-          root,
-          root.c as SNode,
-          v,
-          forceUpdate === true
-            ? Flags.ForceUpdate
-            : 0,
-        )
+    root.c = update(
+      root,
+      root.c as SNode | null,
+      v,
+      forceUpdate === true
+        ? Flags.ForceUpdate
+        : 0,
     );
-
+    root.f = Flags.Root;
   }
 
   dirtyCheck() {
@@ -61,13 +47,16 @@ export class TestRoot {
     const domSlot = root.v.p;
     RENDER_CONTEXT.p = domSlot.p;
     RENDER_CONTEXT.n = domSlot.n;
-    dirtyCheck(root.c as SNode, 0);
+    if (root.c !== null) {
+      dirtyCheck(root.c as SNode, 0);
+    }
     root.f = Flags.Root;
   }
 
   dispose() {
     const root = this._root;
     if (root.c !== null) {
+      root.f = Flags.Root;
       RENDER_CONTEXT.p = root.v.p.p;
       unmount(root.c as SNode, true);
     }
