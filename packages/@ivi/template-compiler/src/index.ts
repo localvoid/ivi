@@ -158,9 +158,9 @@ const string = (isAttribute: boolean): string => {
   if (i < textLength) {
     let s = "";
     let hashDelim = 0;
-    let c = text.charCodeAt(i++);
+    let c;
 
-    while (c === CharCode.Hash && i < textLength) {
+    while ((c = text.charCodeAt(i++)) === CharCode.Hash && i < textLength) {
       hashDelim++;
     }
 
