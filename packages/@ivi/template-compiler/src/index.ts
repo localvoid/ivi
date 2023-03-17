@@ -58,7 +58,7 @@ interface TemplateCompiler {
   dynamicExprs: number[],
 }
 
-const COMPILER: TemplateCompiler = {
+const COMPILER: TemplateCompiler = Object.seal({
   statics: null!,
   text: "",
   i: 0,
@@ -72,7 +72,7 @@ const COMPILER: TemplateCompiler = {
   data: [],
   stateOpCodes: [],
   dynamicExprs: [],
-};
+});
 
 const IDENTIFIER = /[a-zA-Z_][\w-]*/y;
 const JS_PROPERTY = /[a-zA-Z_$][\w]*/y;
@@ -93,8 +93,8 @@ const error = (msg: string): never => {
 };
 
 const expr = (): number => {
-  var e;
-  var c = COMPILER;
+  const c = COMPILER;
+  let e;
   return (c.i === c.text.length && (e = c.e) < (c.statics.length - 1))
     ? (c.i = 0, c.text = c.statics[++c.e], e)
     : -1;
@@ -104,12 +104,15 @@ const expr = (): number => {
  * `RegExp` should have sticky "y" flag.
  */
 const regexp = (re: RegExp): string | undefined => {
-  var match;
-  var c = COMPILER;
+  const c = COMPILER;
   re.lastIndex = c.i;
-  return ((match = re.exec(c.text)) !== null)
-    ? (match = match[0], c.i += match.length, match)
-    : void 0;
+  const match = re.exec(c.text);
+  if (match !== null) {
+    const m = match[0];
+    c.i += m.length;
+    return m;
+  }
+  return void 0;
 };
 
 /**
@@ -118,13 +121,12 @@ const regexp = (re: RegExp): string | undefined => {
  * @returns Indentation level.
  */
 const whitespace = (): boolean => {
-  var c;
-  var comp = COMPILER;
-  var text = comp.text;
-  var i = comp.i;
-  var indent = comp.indent;
+  const comp = COMPILER;
+  const text = comp.text;
+  let i = comp.i;
+  let indent = comp.indent;
   while (i < text.length) {
-    c = text.charCodeAt(i++);
+    const c = text.charCodeAt(i++);
     if (c === CharCode.Space || c === CharCode.Tab) {
       indent++;
       continue;
@@ -149,27 +151,27 @@ const whitespace = (): boolean => {
  * ##'stri'n'g'##
  */
 const string = (isAttribute: boolean): string => {
-  var c;
-  var start;
-  var end;
-  var j;
-  var hashDelim = 0;
-  var s = "";
-  var comp = COMPILER;
-  var text = comp.text;
-  var length = text.length;
-  var i = comp.i;
-  if (i < length) {
-    while ((c = text.charCodeAt(i++)) === CharCode.Hash && i < length) {
+  const comp = COMPILER;
+  const text = comp.text;
+  const textLength = text.length;
+  let i = comp.i;
+  if (i < textLength) {
+    let s = "";
+    let hashDelim = 0;
+    let c = text.charCodeAt(i++);
+
+    while (c === CharCode.Hash && i < textLength) {
       hashDelim++;
     }
 
     if (c === CharCode.Quote) {
-      start = i;
-      outer: while (i < length) {
-        if ((c = text.charCodeAt(i++)) === CharCode.Quote) {
-          end = i - 1;
-          if ((j = i + hashDelim) > length) {
+      let start = i;
+      outer: while (i < textLength) {
+        c = c = text.charCodeAt(i++);
+        if (c === CharCode.Quote) {
+          const end = i - 1;
+          const j = i + hashDelim;
+          if (j > textLength) {
             error("invalid string");
           }
           while (i < j) {
@@ -182,20 +184,21 @@ const string = (isAttribute: boolean): string => {
           return s + text.substring(start, end);
         }
 
+        let escaped: string;
         if (c === CharCode.Ampersand) {
-          c = "&amp;"; // &
+          escaped = "&amp;"; // &
         } else if (isAttribute === true) {
           if (c !== CharCode.DoubleQuote) {
             continue;
           }
-          c = "&quot;";
+          escaped = "&quot;";
         } else if (c === CharCode.LessThan) { // StringContext.Text
-          c = "&lt;";
+          escaped = "&lt;";
         } else {
           continue;
         }
 
-        s += text.substring(start, i - 1) + c;
+        s += text.substring(start, i - 1) + escaped;
         start = i;
       }
     }
@@ -204,17 +207,17 @@ const string = (isAttribute: boolean): string => {
 };
 
 const eq = (): boolean => {
-  var comp = COMPILER;
-  var text = comp.text;
+  const comp = COMPILER;
+  const text = comp.text;
   return (comp.i < text.length && text.charCodeAt(comp.i) === CharCode.EqualsTo)
     ? (comp.i++, true)
     : false;
 };
 
 const attributeProp = (opCodes: PropOpCode[], key: string) => {
-  var value;
-  var comp = COMPILER;
+  const comp = COMPILER;
   if (eq()) { // =
+    let value;
     if ((value = string(true)) !== "") {
       comp.isBasic = false;
       comp.template.push(' ' + key + '="' + value + '"');
@@ -244,8 +247,8 @@ const dynamicProp = (opCodes: PropOpCode[], opCode: PropOpCode, key: string) => 
   if (!eq()) {
     error("expected a '=' character");
   }
-  var data = COMPILER.data;
-  var v = expr();
+  const data = COMPILER.data;
+  const v = expr();
   if (v === -1) {
     error("expected an expression");
   }
@@ -289,19 +292,17 @@ const dynamicExpr = (i: number) => COMPILER.dynamicExprs.push(i) - 1;
  * indicates that it is a root node.
  */
 const element = (stateIndex: number): ParsedElement | null => {
-  var tmp;
-  var v;
-  var className;
-  var propOpCodes: PropOpCode[] = [];
-  var childOpCodes: ChildOpCode[] = [];
-  var children: ParsedElement[] = [];
-  var state = ParseElementState.Initial;
-  var comp = COMPILER;
-  var eSize = comp.statics.length - 1;
-  var indent = comp.indent;
-  var stateOpCodes: StateOpCode[] = comp.stateOpCodes;
-  var template = comp.template;
-  var tagName = regexp(IDENTIFIER);
+  let tmp;
+  let v;
+  const propOpCodes: PropOpCode[] = [];
+  const childOpCodes: ChildOpCode[] = [];
+  const children: ParsedElement[] = [];
+  const comp = COMPILER;
+  const eSize = comp.statics.length - 1;
+  const indent = comp.indent;
+  const stateOpCodes: StateOpCode[] = comp.stateOpCodes;
+  const template = comp.template;
+  const tagName = regexp(IDENTIFIER);
   if (tagName === void 0) {
     error("expected a valid tag name");
   }
@@ -313,7 +314,8 @@ const element = (stateIndex: number): ParsedElement | null => {
   }
   template.push("<" + tagName);
   // Dynamic class name
-  if ((v = expr()) !== -1) {
+  v = expr();
+  if (v !== -1) {
     if (comp.tryHoistExpr(v) === true) {
       comp.isBasic = false;
       template.push(' class="', v, '"');
@@ -326,16 +328,18 @@ const element = (stateIndex: number): ParsedElement | null => {
     }
   } else {
     // parse class names, e.g. `div.classA.classB`
+    let className;
     while (comp.i < comp.text.length) {
-      v = comp.text.charCodeAt(comp.i);
-      if (v === CharCode.Dot) {
+      const c = comp.text.charCodeAt(comp.i);
+      if (c === CharCode.Dot) {
         comp.i++;
-        if ((tmp = regexp(IDENTIFIER)) === void 0) {
+        const id = regexp(IDENTIFIER);
+        if (id === void 0) {
           error("expected a valid class name");
         }
         className = (className === void 0)
-          ? tmp
-          : className + " " + tmp;
+          ? id
+          : className + " " + id;
       } else {
         break;
       }
@@ -348,53 +352,53 @@ const element = (stateIndex: number): ParsedElement | null => {
 
   whitespace();
   while (comp.indent > indent && comp.i < comp.text.length) {
-    v = comp.text.charCodeAt(comp.i);
-    if (v === CharCode.Colon) { // :attribute
+    const c = comp.text.charCodeAt(comp.i);
+    if (c === CharCode.Colon) { // :attribute
       comp.i++;
       if ((tmp = regexp(IDENTIFIER)) === void 0) {
         error("expected a valid attribute name");
       }
       attributeProp(propOpCodes, tmp!);
-    } else if (v === CharCode.EqualsTo) { // =textContent
+    } else if (c === CharCode.EqualsTo) { // =textContent
       comp.i++;
-      if ((v = expr()) === -1) {
+      if ((tmp = expr()) === -1) {
         error("expected a text content expression");
       }
       propOpCodes.push(
         PropOpCode.Common |
         (CommonPropType.TextContent << PropOpCode.DataShift) |
-        (dynamicExpr(v) << PropOpCode.InputShift),
+        (dynamicExpr(tmp) << PropOpCode.InputShift),
       );
-    } else if (v === CharCode.Dot) { // .property
+    } else if (c === CharCode.Dot) { // .property
       comp.i++;
       if ((tmp = regexp(JS_PROPERTY)) === void 0) {
         error("expected a valid property name");
       }
       dynamicProp(propOpCodes, PropOpCode.Property, tmp!);
-    } else if (v === CharCode.Asterisk) { // *value
+    } else if (c === CharCode.Asterisk) { // *value
       comp.i++;
       if ((tmp = regexp(JS_PROPERTY)) === void 0) {
         error("expected a valid property name");
       }
       dynamicProp(propOpCodes, PropOpCode.DiffDOMProperty, tmp!);
-    } else if (v === CharCode.Tilde) { // ~style
+    } else if (c === CharCode.Tilde) { // ~style
       comp.i++;
       if ((tmp = regexp(IDENTIFIER)) === void 0) {
         error("expected a valid property name");
       }
       dynamicProp(propOpCodes, PropOpCode.Style, tmp!);
-    } else if (v === CharCode.AtSign) { // @event
+    } else if (c === CharCode.AtSign) { // @event
       comp.i++;
       if ((tmp = regexp(IDENTIFIER)) === void 0) {
         error("expected a valid event name");
       }
       dynamicProp(propOpCodes, PropOpCode.Event, tmp!);
-    } else if (v === 36) { // $${directive}
+    } else if (c === 36) { // $${directive}
       comp.i++;
-      if ((v = expr()) === -1) {
+      if ((tmp = expr()) === -1) {
         error("expected an attribute directive expression");
       }
-      propOpCodes.push(PropOpCode.Directive | (dynamicExpr(v) << PropOpCode.InputShift));
+      propOpCodes.push(PropOpCode.Directive | (dynamicExpr(tmp) << PropOpCode.InputShift));
     } else {
       break;
     }
@@ -404,6 +408,8 @@ const element = (stateIndex: number): ParsedElement | null => {
   template.push(">");
 
   if (!VOID_ELEMENTS.test(tagName!)) {
+    let state = ParseElementState.Initial;
+
     while (comp.indent > indent) {
       if (comp.i < comp.text.length) {
         comp.isBasic = false;
@@ -489,10 +495,10 @@ const emitOpCodes = (
   stateOpCodes: number[],
   element: ParsedElement,
 ) => {
-  var op;
-  var i;
-  var elementSlot;
-  var arr: PropOpCode[] | ChildOpCode[] | ParsedElement[] = element.propOpCodes;
+  let op;
+  let i;
+  let elementSlot;
+  let arr: PropOpCode[] | ChildOpCode[] | ParsedElement[] = element.propOpCodes;
   if ((elementSlot = element.stateIndex) !== -1) {
     elementSlot = stateOpCodes[elementSlot] >> StateOpCode.SaveSlotShift;
   }
@@ -557,16 +563,16 @@ export const compileTemplate = (
   if (s.length === 0) {
     error("empty template");
   }
-  var op;
-  var node;
-  var i;
-  var disableCloning = false;
-  var stateSize = 1;
-  var propOpCodes: PropOpCode[] = [];
-  var childOpCodes: ChildOpCode[] = [];
-  var comp = COMPILER;
-  var stateOpCodes = comp.stateOpCodes;
-  var text = s[0];
+  let op;
+  let node;
+  let i;
+  let disableCloning = false;
+  let stateSize = 1;
+  const propOpCodes: PropOpCode[] = [];
+  const childOpCodes: ChildOpCode[] = [];
+  const comp = COMPILER;
+  const stateOpCodes = comp.stateOpCodes;
+  const text = s[0];
   comp.text = text;
   comp.statics = s;
   comp.tryHoistExpr = tryHoistExpr;
