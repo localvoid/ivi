@@ -268,7 +268,7 @@ export const iviOptimizer = declare((api) => {
 
             if (sharedDecls.length > 0) {
               path.unshiftContainer("body", [
-                t.variableDeclaration("var", sharedDecls),
+                t.variableDeclaration("const", sharedDecls),
               ]);
             }
           }
