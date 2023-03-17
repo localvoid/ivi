@@ -402,10 +402,10 @@ const _updateTemplateProperties = (
     } else {
       let prev;
       const propsIndex = op >> PropOpCode.InputShift;
+      const next = nextProps[propsIndex];
       if (prevProps !== null) {
         prev = prevProps[propsIndex];
       }
-      const next = nextProps[propsIndex];
       if (prev !== next || type === PropOpCode.DiffDOMProperty) {
         if (type === PropOpCode.Common) {
           if (dataIndex === CommonPropType.ClassName) {
@@ -561,7 +561,7 @@ const _updateTemplate = (
 ) => {
   const ctx = RENDER_CONTEXT;
   const parentElement = ctx.p;
-  const children = sNode.c;
+  const children = sNode.c as (SNode | null)[];
   const state = sNode.s;
   const prevProps = prev.p;
   const nextProps = next.p;
@@ -584,31 +584,34 @@ const _updateTemplate = (
     !!(tplData.f & TemplateFlags.Svg),
   );
 
-  ctx.p = rootDOMNode;
-  ctx.n = null;
+  if (children.length > 0) {
+    ctx.p = rootDOMNode;
+    ctx.n = null;
 
-  let childrenIndex = 0;
-  for (let i = 0; i < childrenOpCodes.length; i++) {
-    const childOpCode = childrenOpCodes[i];
-    const type = childOpCode & ChildOpCode.Type;
-    const value = childOpCode >> ChildOpCode.ValueShift;
-    if (type === ChildOpCode.Child) {
-      (children as (SNode | null)[])[childrenIndex] =
-        update(
-          sNode,
-          (children as (SNode | null)[])[childrenIndex++],
-          nextProps[value],
-          updateFlags,
-        );
-    } else if (type === ChildOpCode.SetNext) {
-      ctx.n = state[value];
-    } else { // ChildOpCode.SetParent
-      ctx.p = state[value] as Element;
-      ctx.n = null;
+    let childrenIndex = 0;
+    for (let i = 0; i < childrenOpCodes.length; i++) {
+      const childOpCode = childrenOpCodes[i];
+      const type = childOpCode & ChildOpCode.Type;
+      const value = childOpCode >> ChildOpCode.ValueShift;
+      if (type === ChildOpCode.Child) {
+        children[childrenIndex] =
+          update(
+            sNode,
+            children[childrenIndex++],
+            nextProps[value],
+            updateFlags,
+          );
+      } else if (type === ChildOpCode.SetNext) {
+        ctx.n = state[value];
+      } else { // ChildOpCode.SetParent
+        ctx.p = state[value] as Element;
+        ctx.n = null;
+      }
     }
+
+    ctx.p = parentElement;
   }
 
-  ctx.p = parentElement;
   ctx.n = rootDOMNode;
 };
 
@@ -641,7 +644,7 @@ const _updateText = (
     // equal the prev value.
     sNode.v = next;
     if (prev !== next) {
-      (s as Node).nodeValue = next as string;
+      s.nodeValue = next as string;
     }
     if (updateFlags & Flags.DisplaceNode) {
       nodeInsertBefore!.call(ctx.p, s, ctx.n);
@@ -690,16 +693,16 @@ const _updateArray = (
     return mount(parentSNode, next);
   }
   let nextLength = next.length;
-  if ((nextLength = next.length) === 0) {
+  if (nextLength === 0) {
     unmount(sNode, true);
   } else {
-    const sChildren = sNode.c! as (SNode<any> | null)[];
+    const sChildren = sNode.c as (SNode | null)[];
     let prevLength = sChildren.length;
     if (nextLength !== prevLength) {
       const newSChildren = _Array(nextLength);
       sNode.c = newSChildren;
       while (prevLength > nextLength) {
-        const sChild = (sChildren as Array<SNode | null>)[--prevLength];
+        const sChild = sChildren[--prevLength];
         if (sChild !== null) {
           unmount(sChild, true);
         }
@@ -711,7 +714,7 @@ const _updateArray = (
     while (nextLength > 0) {
       sChildren[--nextLength] = update(
         sNode,
-        (sChildren as Array<SNode | null>)[nextLength],
+        sChildren[nextLength],
         next[nextLength],
         updateFlags,
       );
@@ -992,7 +995,7 @@ const _updateList = (
   const bKeys = b.k;
   const bVNodes = b.v;
   let bLength = bKeys.length;
-  let aLength: number | undefined = aKeys.length;
+  let aLength = aKeys.length;
   const result = _Array(bLength);
 
   if (bLength === 0) { // New children list is empty.
@@ -1321,16 +1324,17 @@ export const useUnmount = (component: Component, hook: () => void): void => {
 export const invalidate = (c: Component): void => {
   if (!(c.f & Flags.Dirty)) {
     c.f |= Flags.Dirty;
+    let prev: SNode = c;
     let parent = c.p;
     while (parent !== null) {
       if (parent.f & Flags.DirtySubtree) {
         return;
       }
       parent.f |= Flags.DirtySubtree;
-      c = parent as any;
+      prev = parent;
       parent = parent.p;
     }
-    (c as any as SRoot).v.d.p1(c as any as SRoot);
+    (prev as SRoot).v.d.p1(prev as SRoot);
   }
 };
 
@@ -1372,7 +1376,7 @@ export const dirtyCheck = (sNode: SNode, updateFlags: number): void => {
   const children = sNode.c;
   const flags = sNode.f;
   if (flags & Flags.Template) {
-    const rootDOMNode = sNode.s[0];
+    const rootDOMNode = (sNode as STemplate).s[0] as Element;
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
       nodeInsertBefore.call(ctx.p, rootDOMNode, ctx.n);
