@@ -160,7 +160,6 @@ export interface RenderContext {
   si: number;
 }
 
-
 // When object is sealed and stored in a const variable, JIT compiler can
 // eliminate object map(shape) checks when accessing its properties.
 /**
@@ -382,23 +381,6 @@ export type VArray = VAny[];
  * Element Directive.
  */
 export type ElementDirective = <E extends Element>(element: E) => void;
-
-const _unmount = (
-  sNode: SNode | (SNode | null)[] | null,
-): void => {
-  if (sNode !== null) {
-    if (_isArray(sNode)) {
-      for (let i = 0; i < sNode.length; i++) {
-        const c = sNode[i];
-        if (c !== null) {
-          unmount(c, true);
-        }
-      }
-    } else {
-      unmount(sNode, true);
-    }
-  }
-};
 
 const _updateTemplateProperties = (
   currentElement: Element,
@@ -704,12 +686,12 @@ const _updateArray = (
   updateFlags: Flags,
 ): SNode | null => {
   if (!_isArray(next)) {
-    _unmount(sNode);
+    unmount(sNode, true);
     return mount(parentSNode, next);
   }
   let nextLength = next.length;
   if ((nextLength = next.length) === 0) {
-    _unmount(sNode);
+    unmount(sNode, true);
   } else {
     const sChildren = sNode.c! as (SNode<any> | null)[];
     let prevLength = sChildren.length;
@@ -719,7 +701,7 @@ const _updateArray = (
       while (prevLength > nextLength) {
         const sChild = (sChildren as Array<SNode | null>)[--prevLength];
         if (sChild !== null) {
-          _unmount(sChild);
+          unmount(sChild, true);
         }
       }
       while (nextLength > prevLength) {
@@ -779,7 +761,7 @@ const _updateList = (
 
   if (bLength === 0) { // New children list is empty.
     if (aLength > 0) { // Unmount nodes from the old children list.
-      _unmount(sNode);
+      unmount(sNode, true);
     }
   } else if (aLength === 0) { // Old children list is empty.
     while (bLength > 0) { // Mount nodes from the new children list.
@@ -826,7 +808,10 @@ const _updateList = (
       // All nodes from `b` are updated, remove the rest from `a`.
       bLength = start;
       do {
-        _unmount(sChildren[bLength++]);
+        const sChild = sChildren[bLength++];
+        if (sChild !== null) {
+          unmount(sChild, true);
+        }
       } while (bLength <= aEnd);
     } else { // Step 3
       let bLength = bEnd - start + 1;
@@ -851,8 +836,8 @@ const _updateList = (
             : MagicValues.RearrangeNodes;
           sources[nextPosition - start] = i;
           result[nextPosition] = sChild;
-        } else {
-          _unmount(sChild);
+        } else if (sChild !== null) {
+          unmount(sChild, true);
         }
       }
 
@@ -1225,12 +1210,12 @@ export const update = (
   next: VAny,
   updateFlags: number,
 ): SNode | null => {
-  if (next === null) {
-    _unmount(sNode);
-    return null;
-  }
   if (sNode === null) {
     return mount(parentSNode, next);
+  }
+  if (next === null) {
+    unmount(sNode, true);
+    return null;
   }
 
   const flags = sNode.f & Flags.TypeMask;
@@ -1252,7 +1237,7 @@ export const update = (
   // because their stateless nodes are represented with basic string and array
   // types.
   if ((prev as VNode).d !== (next as VNode).d) {
-    _unmount(sNode);
+    unmount(sNode, true);
     return mount(parentSNode, next);
   }
 
