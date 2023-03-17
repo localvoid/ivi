@@ -501,8 +501,6 @@ const _mountTemplate = (parentSNode: SNode, vNode: VTemplate) => {
   const state = _Array<Node>(flags & TemplateFlags.Mask10);
   state[0] = rootNode;
 
-  ctx.n = null;
-
   if (stateOpCodes.length > 0) {
     ctx.si = 0;
     _assignTemplateSlots(
@@ -523,17 +521,17 @@ const _mountTemplate = (parentSNode: SNode, vNode: VTemplate) => {
     !!(tplData.f & TemplateFlags.Svg),
   );
 
-  let parentElement = ctx.p;
-  let nextNode = ctx.n;
-
+  const parentElement = ctx.p;
+  const nextNode = ctx.n;
   const stateNode = createSNode(Flags.Template, vNode, null, state, parentSNode);
   const childrenSize = flags >> TemplateFlags.ChildrenSizeShift;
   if (childrenSize > 0) {
     const childOpCodes = tplData.c;
     const children = _Array(childrenSize);
-    let childrenIndex = 0;
     stateNode.c = children;
     ctx.p = rootNode;
+    ctx.n = null;
+    let childrenIndex = 0;
     for (let i = 0; i < childOpCodes.length; i++) {
       const childOpCode = childOpCodes[i];
       const type = childOpCode & ChildOpCode.Type;
@@ -541,30 +539,31 @@ const _mountTemplate = (parentSNode: SNode, vNode: VTemplate) => {
       if (type === ChildOpCode.Child) {
         children[childrenIndex++] = mount(stateNode, props[value]);
       } else if (type === ChildOpCode.SetNext) {
-        ctx.n = (state as Node[])[value];
+        ctx.n = state[value];
       } else { // ChildOpCode.SetParent
-        ctx.p = (state as Node[])[value] as Element;
+        ctx.p = state[value] as Element;
         ctx.n = null;
       }
     }
+    ctx.p = parentElement;
   }
+  ctx.n = rootNode;
 
   nodeInsertBefore!.call(parentElement, rootNode, nextNode);
-  ctx.p = parentElement;
-  ctx.n = rootNode;
   return stateNode;
 };
 
 const _updateTemplate = (
   sNode: STemplate,
+  prev: VTemplate,
   next: VTemplate,
   updateFlags: Flags,
 ) => {
   const ctx = RENDER_CONTEXT;
   const parentElement = ctx.p;
   const children = sNode.c;
-  const prevProps = sNode.v.p;
   const state = sNode.s;
+  const prevProps = prev.p;
   const nextProps = next.p;
   const tplData = next.d.p1;
   const rootDOMNode = state[0] as Element;
@@ -602,9 +601,9 @@ const _updateTemplate = (
           updateFlags,
         );
     } else if (type === ChildOpCode.SetNext) {
-      ctx.n = (state as Node[])[value];
+      ctx.n = state[value];
     } else { // ChildOpCode.SetParent
-      ctx.p = (state as Node[])[value] as Element;
+      ctx.p = state[value] as Element;
       ctx.n = null;
     }
   }
@@ -655,11 +654,12 @@ const _updateText = (
 
 const _updateComponent = (
   sNode: SComponent,
+  prev: VComponent,
   next: VComponent,
   updateFlags: Flags,
 ) => {
   const child = sNode.c;
-  const prevProps = sNode.v.p;
+  const prevProps = prev.p;
   const descriptor = next.d;
   const nextProps = next.p;
   if (
@@ -1478,11 +1478,26 @@ export const update = (
   }
 
   if (flags === Flags.Component) {
-    _updateComponent(sNode as Component, next as VComponent, updateFlags);
+    _updateComponent(
+      sNode as Component,
+      prev as VComponent,
+      next as VComponent,
+      updateFlags,
+    );
   } else if (flags === Flags.Template) {
-    _updateTemplate(sNode as STemplate, next as VTemplate, updateFlags);
+    _updateTemplate(
+      sNode as STemplate,
+      prev as VTemplate,
+      next as VTemplate,
+      updateFlags,
+    );
   } else {
-    _updateList(sNode, (prev as VList).p, (next as VList).p, updateFlags);
+    _updateList(
+      sNode,
+      (prev as VList).p,
+      (next as VList).p,
+      updateFlags,
+    );
   }
 
   sNode.f &= Flags.TypeMask;
