@@ -968,7 +968,7 @@ const enum MagicValues {
  * Move node "a" to the end.
  *
  *     A: [b]
- *     B: [c]
+ *     B: [c a]
  *
  * Remove node "b" and insert node "c".
  *
