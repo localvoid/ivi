@@ -16,8 +16,7 @@ export const findDOMNode = <T extends Node | Text>(
     return null;
   }
 
-  var i: number = (sNode as SNode).f;
-  var c: SNode | Node | null;
+  let i: number = sNode.f;
   if (i & (Flags.Template | Flags.Text)) {
     return (i & Flags.Template)
       ? (sNode as STemplate).s[0] as T
@@ -26,7 +25,8 @@ export const findDOMNode = <T extends Node | Text>(
   sNode = (sNode as SNode).c as any;
   if (i & (Flags.Array | Flags.List)) {
     for (i = 0; i < (sNode as any as Array<SNode | null>).length; i++) {
-      if ((c = findDOMNode((sNode as any as Array<SNode | null>)[i])) !== null) {
+      const c = findDOMNode((sNode as any as Array<SNode | null>)[i]);
+      if (c !== null) {
         return c as T;
       }
     }
@@ -46,7 +46,7 @@ export const containsDOMElement = (
   parent: SNode,
   element: Element,
 ): boolean => {
-  var result = false;
+  let result = false;
   visitNodes(parent, (sNode) => (
     (sNode.f & Flags.Template)
       ? ((((sNode as STemplate).s[0] as Element).contains(element) === true)
@@ -68,7 +68,7 @@ export const hasDOMElement = (
   parent: SNode,
   child: Element,
 ): boolean => {
-  var result = false;
+  let result = false;
   visitNodes(parent, (sNode) => (
     (sNode.f & Flags.Template)
       ? (((sNode as SNode).s[0] === child)

@@ -17,7 +17,7 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
   p1: (root: SRoot) => {
     _queueMicrotask(() => {
       // Retrieves DOM slot from VNode object.
-      var domSlot = root.v.p;
+      const domSlot = root.v.p;
       // Assign parent element and next node to the render context.
       RENDER_CONTEXT.p = domSlot.p;
       RENDER_CONTEXT.n = domSlot.n;
@@ -80,7 +80,7 @@ export const updateRoot = (
   forceUpdate: boolean = false,
 ): void => {
   // Retrieves DOM slot from VNode object.
-  var domSlot = root.v.p;
+  const domSlot = root.v.p;
   // Assign parent element and next node to the render context.
   RENDER_CONTEXT.p = domSlot.p;
   RENDER_CONTEXT.n = domSlot.n;

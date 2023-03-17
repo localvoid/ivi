@@ -1,7 +1,100 @@
+// # Implementation Details
+//
+// ## Type Casting
+//
+// The current code base contains a lot of type casting. In idiomatic typescript
+// it should be implemented with type guards, and if javascript toolchains
+// supported inlining in some reliable way instead of relying on their
+// heuristics, the code would be way much cleaner with type guard functions.
+//
+// ## `var` vs `let`
+//
+// In some places variables are declared with `var` instead of `let`, it is a
+// micro optimization that propably won't have any significant impact on
+// performance, especially when the JIT kicks in.
+//
+//     function __var(i) {
+//       var j = i;
+//       return function _var() {
+//         return j;
+//       }
+//     }
+//
+//     function __let(i) {
+//       let j = i;
+//       return function _let() {
+//         return j;
+//       };
+//     }
+//
+// In the example above, `_var` function will have the following bytecode in V8:
+//
+//     LdaImmutableCurrentContextSlot [2]
+//     Return
+//
+// And `_let` function:
+//
+//     LdaImmutableCurrentContextSlot [2]
+//     ThrowReferenceErrorIfHole[0];
+//     Return
+//
+// ## `if (a === true) {}` vs `if (a) {}`
+//
+// In a lot of places there are explicit strict equality checks to avoid
+// `toBool()` coercion. Sometimes we can avoid explicit checks when JIT compiler
+// is going to inline functions and will be able to eliminate `toBool()`
+// coercion. For example, `_isArray()` calls doesn't use strict equality checks.
+//
+// `(a === true)`
+//
+// 0x738b024    24  488b5518             REX.W movq rdx, [rbp + 0x18];
+// 0x738b028    28  493995b0000000       REX.W cmpq[r13 + 0xb0](root(true_value)), rdx;
+// 0x738b02f    2f  0f8424000000         jz 0x738b059 < +0x59 >
+// 0x738b035    35  48b80000000014000000 REX.W movq rax, 0x1400000000;
+// 0x738b03f    3f  488b4de8             REX.W movq rcx, [rbp - 0x18];
+// 0x738b043    43  488be5               REX.W movq rsp, rbp;
+// 0x738b046    46  5d                   pop rbp;
+// 0x738b047    47  4883f902             REX.W cmpq rcx, 0x2;
+// 0x738b04b    4b  7f03                 jg 0x738b050 < +0x50 >
+// 0x738b04d    4d  c21000               ret 0x10;
+//
+// `(a)`, inlines `toBool()`
+//
+// 0x618b024    24  488b5518             REX.W movq rdx, [rbp + 0x18];
+// 0x618b028    28  f6c201               testb rdx, 0x1;
+// 0x618b02b    2b  0f84a7000000         jz 0x618b0d8 < +0xd8 >
+// 0x618b031    31  493995b8000000       REX.W cmpq[r13 + 0xb8](root(false_value)), rdx;
+// 0x618b038    38  0f8459000000         jz 0x618b097 < +0x97 >
+// 0x618b03e    3e  493995c0000000       REX.W cmpq[r13 + 0xc0](root(empty_string)), rdx;
+// 0x618b045    45  0f844c000000         jz 0x618b097 < +0x97 >
+// 0x618b04b    4b  488b4aff             REX.W movq rcx, [rdx - 0x1];
+// 0x618b04f    4f  f6410d10             testb[rcx + 0xd], 0x10;
+// 0x618b053    53  0f853e000000         jnz 0x618b097 < +0x97 >
+// 0x618b059    59  49398d38010000       REX.W cmpq[r13 + 0x138](root(heap_number_map)), rcx;
+// 0x618b060    60  0f8484000000         jz 0x618b0ea < +0xea >
+// 0x618b066    66  49398db8010000       REX.W cmpq[r13 + 0x1b8](root(bigint_map)), rcx;
+// 0x618b06d    6d  0f846c000000         jz 0x618b0df < +0xdf >
+// 0x618b073    73  48b8000000000a000000 REX.W movq rax, 0xa00000000;
+// 0x618b07d    7d  488b4de8             REX.W movq rcx, [rbp - 0x18];
+// 0x618b081    81  488be5               REX.W movq rsp, rbp;
+// 0x618b084    84  5d                   pop rbp;
+// 0x618b085    85  4883f902             REX.W cmpq rcx, 0x2;
+// 0x618b089    89  7f03                 jg 0x618b08e < +0x8e >
+// 0x618b08b    8b  c21000               ret 0x10;
+//
+// ## Additional Resources
+//
+// - https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html
+// - https://benediktmeurer.de/2017/06/29/javascript-optimization-patterns-part2/
+//
+
 import {
   TemplateFlags, ChildOpCode, PropOpCode, StateOpCode, CommonPropType,
 } from "@ivi/template-compiler/format";
 
+// Store global variables in a local scope as const variables so that JIT
+// compiler could easily inline functions and eliminate checks in case global
+// variables are overriden.
 const _Object = Object;
 const _Array = Array;
 const _isArray: <T = any>(a: any) => a is T[] = _Array.isArray;
@@ -12,12 +105,17 @@ const nodeProto = Node.prototype;
 const elementProto = Element.prototype;
 const doc = document;
 
+// Template containers are used to create static templates from HTML strings
+// via `innerHTML`.
 const HTM_TEMPLATE = /**@__PURE__*/doc.createElement("template");
 const HTM_TEMPLATE_CONTENT = HTM_TEMPLATE.content;
 const _SVG_TEMPLATE = /**@__PURE__*/doc.createElement("template");
 const SVG_TEMPLATE = /**@__PURE__*/doc.createElementNS("http://www.w3.org/2000/svg", "svg");
 /**@__PURE__*/_SVG_TEMPLATE.content.appendChild(SVG_TEMPLATE);
 const SVG_TEMPLATE_CONTENT = _SVG_TEMPLATE.content.firstChild as Element;
+
+// Store Node/Element methods to avoid going through a long prototype chain and
+// avoid megamorphic call-sites when accessing DOM nodes.
 
 /** `Node.prototype.insertBefore` */
 const nodeInsertBefore = nodeProto.insertBefore;
@@ -50,6 +148,9 @@ const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "s
 /** `SVGElement.prototype.style` */
 const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
 
+/**
+ * Render Context.
+ */
 export interface RenderContext {
   /** Parent DOM Element */
   p: Element;
@@ -59,12 +160,20 @@ export interface RenderContext {
   si: number;
 }
 
+
+// When object is sealed and stored in a const variable, JIT compiler can
+// eliminate object map(shape) checks when accessing its properties.
+/**
+ * Global Render Context.
+ */
 export const RENDER_CONTEXT: RenderContext = _Object.seal({
   p: null!,
   n: null,
   si: 0,
 });
 
+// Types are stored as bit flags so that we could perform multiple tests with a
+// single bitwise operation. E.g. `flags & (List | Array)`.
 /**
  * Flags.
  */
@@ -85,8 +194,6 @@ export const enum Flags {
   // Update Flags
   ForceUpdate = 1 << 8,
   DisplaceNode = 1 << 9,
-
-  CleanSNodeMask = Dirty - 1,
 }
 
 /**
@@ -107,13 +214,20 @@ export interface SNode<V = VAny, S = any> {
   p: SNode | null,
 }
 
+/** Stateful Root Node. */
 export type SRoot<S = any> = SNode<VRoot, S>;
+/** Stateful Text Node. */
 export type SText = SNode<string | number, Text>;
+/** Stateful Template Node. */
 export type STemplate = SNode<VTemplate, Node[]>;
+/** Stateful List Node. */
 export type SList = SNode<VList, null>;
+/** Stateful Component Node. */
 export type SComponent = SNode<VComponent, ComponentState>;
+/** Stateful Component Node. */
 export type Component = SComponent;
 
+/** Component State in a Stateful Component Node. */
 export interface ComponentState {
   /** Render function. */
   r: null | ((props: any) => VAny),
@@ -147,33 +261,60 @@ export interface VDescriptor<P1 = any, P2 = any> {
   readonly p2: P2;
 }
 
+/** Root Invalidate Hook. */
 export type OnRootInvalidated<S> = (root: SRoot<S>) => void;
+/** Root Descriptor. */
 export type RootDescriptor<S = any> = VDescriptor<OnRootInvalidated<S>, null>;
 
+/** Template Data. */
 export interface TemplateData {
-  /** Flags. */
+  /**
+   * SMI (Small Integer) value that packs several values:
+   *
+   *     struct Data {
+   *       stateSize:10;    // The number of state slots
+   *       childrenSize:10; // The number of children slots
+   *       svg:1;           // Template with SVG elements
+   *     }
+   *
+   * stateSize and childrenSize are used for preallocating arrays with
+   * exact number to avoid dynamic growth and reduce memory consumption.
+   */
   f: number,
-  /** Prop OpCodes */
+  /**
+   * Array of SMI values that stores OpCodes for updating element properties.
+   */
   p: PropOpCode[],
-  /** Child OpCodes */
+  /**
+   * Array of SMI values that stores OpCodes for updating children nodes.
+   */
   c: ChildOpCode[],
-  /** State OpCodes */
+  /**
+   * Array of SMI values that stores opCodes for traversing DOM nodes and
+   * saving references to DOM nodes into internal state when template is
+   * instantiated.
+   */
   s: StateOpCode[],
-  /** Data */
+  /** Array of string values that stores keys for dynamic properties. */
   d: any[],
 }
 
+/** Template Descriptor */
 export type TemplateDescriptor = VDescriptor<TemplateData, () => Element>;
 
+/** Component Descriptor */
 export type ComponentDescriptor<P = any> = VDescriptor<
+  // Component factory function.
   (component: Component) => (props: P) => VAny,
+  // `areEqual()` function.
   undefined | ((prev: P, next: P) => boolean)
 >;
 
+/** List Descriptor */
 export type ListDescriptor = VDescriptor<null, null>;
 
 /**
- * VNode.
+ * Stateless Node.
  *
  * @typeparam D Descriptor.
  * @typeparam P Property.
@@ -185,15 +326,20 @@ export interface VNode<D extends VDescriptor<any, any> = VDescriptor<any, any>, 
   readonly p: P;
 }
 
-/** Root VNode. */
+/** Stateless Root Node. */
 export type VRoot = VNode<RootDescriptor, RootProps>;
-/** Template VNode. */
+/** Stateless Template Node. */
 export type VTemplate<P = any> = VNode<TemplateDescriptor, P>;
-/** Component VNode. */
+/** Stateless Component Node. */
 export type VComponent<P = any> = VNode<ComponentDescriptor, P>;
-/** List VNode. */
+/** Stateless List Node. */
 export type VList<K = any> = VNode<ListDescriptor, ListProps<K>>;
 
+/**
+ * Stateless Root Node Props.
+ *
+ * Contains a DOM position where root children should mounted.
+ */
 export interface RootProps {
   /** Parent Element */
   p: Element,
@@ -201,8 +347,15 @@ export interface RootProps {
   n: Node | null,
 }
 
+/**
+ * Stateless List Node Props.
+ *
+ * Contains unique keys for stateless nodes and stateless nodes.
+ */
 export interface ListProps<K = any> {
+  /** Unique Keys. */
   k: K[],
+  /** Stateless Nodes. */
   v: VAny[],
 }
 
@@ -233,11 +386,11 @@ export type ElementDirective = <E extends Element>(element: E) => void;
 const _unmount = (
   sNode: SNode | (SNode | null)[] | null,
 ): void => {
-  var c, i;
   if (sNode !== null) {
     if (_isArray(sNode)) {
-      for (i = 0; i < sNode.length; i++) {
-        if ((c = sNode[i]) !== null) {
+      for (let i = 0; i < sNode.length; i++) {
+        const c = sNode[i];
+        if (c !== null) {
           unmount(c, true);
         }
       }
@@ -256,28 +409,21 @@ const _updateTemplateProperties = (
   nextProps: any[],
   svg: boolean,
 ) => {
-  var style;
-  var key;
-  var type;
-  var propsIndex;
-  var dataIndex;
-  var op;
-  var prev;
-  var next;
-  var i = 0;
-  for (; i < opCodes.length; i++) {
-    op = opCodes[i];
-    type = op & PropOpCode.TypeMask;
-    dataIndex = (op >> PropOpCode.DataShift) & PropOpCode.Mask10;
+  for (let i = 0; i < opCodes.length; i++) {
+    let style: CSSStyleDeclaration | undefined;
+    const op = opCodes[i];
+    const type = op & PropOpCode.TypeMask;
+    const dataIndex = (op >> PropOpCode.DataShift) & PropOpCode.Mask10;
     if (type === PropOpCode.SetNode) {
       currentElement = state[dataIndex] as Element;
       style = void 0;
     } else {
-      propsIndex = op >> PropOpCode.InputShift;
+      let prev;
+      const propsIndex = op >> PropOpCode.InputShift;
       if (prevProps !== null) {
         prev = prevProps[propsIndex];
       }
-      next = nextProps[propsIndex];
+      const next = nextProps[propsIndex];
       if (prev !== next || type === PropOpCode.DiffDOMProperty) {
         if (type === PropOpCode.Common) {
           if (dataIndex === CommonPropType.ClassName) {
@@ -292,7 +438,7 @@ const _updateTemplateProperties = (
         } else if (type === PropOpCode.Directive) {
           (next as ElementDirective)(currentElement);
         } else {
-          key = strings[dataIndex];
+          const key = strings[dataIndex];
           if (type === PropOpCode.Attribute) {
             if (next !== void 0) {
               elementSetAttribute.call(currentElement, key, next as string);
@@ -311,7 +457,7 @@ const _updateTemplateProperties = (
                 ? htmlElementGetStyle.call(currentElement as HTMLElement)
                 : svgElementGetStyle.call(currentElement as SVGElement);
             }
-            style.setProperty(key, next as string);
+            style!.setProperty(key, next as string);
           } else { // PropOpCode.Event
             if (prev !== void 0) {
               elementRemoveEventListener.call(currentElement, key, prev);
@@ -331,27 +477,30 @@ const _assignTemplateSlots = (
   endOffset: number,
   state: Node[],
 ) => {
-  var tmp;
-  var op;
-  var ctx = RENDER_CONTEXT;
+  const ctx = RENDER_CONTEXT;
   while (offset < endOffset) {
-    op = opCodes[offset++];
+    const op = opCodes[offset++];
     if (op & StateOpCode.Save) {
       state[++ctx.si] = currentNode;
     }
     if (op & StateOpCode.EnterOrRemove) {
-      if (tmp = op >> StateOpCode.OffsetShift) { // Enter
+      const enterOffset = op >> StateOpCode.OffsetShift;
+      // Enter offset is used to disambiguate between enter and remove
+      // operations. Remove operations will always have a 0 enterOffset.
+      if (enterOffset) { // Enter
         _assignTemplateSlots(
           nodeGetFirstChild.call(currentNode),
           opCodes,
           offset,
-          offset += tmp,
+          offset += enterOffset,
           state,
         );
       } else { // Remove
-        tmp = currentNode as Comment;
+        // Remove operation implies that current node is always a comment node
+        // followed by a text node.
+        const commentNode = currentNode as Comment;
         state[++ctx.si] = currentNode = nodeGetNextSibling.call(currentNode);
-        tmp.remove();
+        commentNode.remove();
       }
     } else { // Next
       currentNode = nodeGetNextSibling.call(currentNode);
@@ -359,63 +508,56 @@ const _assignTemplateSlots = (
   }
 };
 
-const _mountTemplate = (
-  parentSNode: SNode,
-  vNode: VTemplate,
-) => {
-  var stateNode;
-  var childIndex;
-  var value;
-  var j;
-  var type;
-  var children = null;
-  var ctx = RENDER_CONTEXT;
-  var parentElement = ctx.p;
-  var nextNode = ctx.n;
-  var d = vNode.d;
-  var props = vNode.p;
-  var tpl = d.p1;
-  var rootNode = d.p2();
-  var opCodes: StateOpCode[] | ChildOpCode[] = tpl.s;
-  var i = tpl.f;
-  var state = _Array<Node>(i & TemplateFlags.Mask10);
+const _mountTemplate = (parentSNode: SNode, vNode: VTemplate) => {
+  const ctx = RENDER_CONTEXT;
+  const descriptor = vNode.d;
+  const props = vNode.p;
+  const tplData = descriptor.p1;
+  const rootNode = descriptor.p2();
+  const stateOpCodes = tplData.s;
+  const flags = tplData.f;
+  const state = _Array<Node>(flags & TemplateFlags.Mask10);
   state[0] = rootNode;
 
   ctx.n = null;
 
-  if (opCodes.length > 0) {
+  if (stateOpCodes.length > 0) {
     ctx.si = 0;
     _assignTemplateSlots(
       nodeGetFirstChild.call(rootNode),
-      opCodes,
+      stateOpCodes,
       0,
-      opCodes.length,
+      stateOpCodes.length,
       state,
     );
   }
   _updateTemplateProperties(
     rootNode,
-    tpl.p,
-    tpl.d,
+    tplData.p,
+    tplData.d,
     state,
     null,
     props,
-    !!(tpl.f & TemplateFlags.Svg),
+    !!(tplData.f & TemplateFlags.Svg),
   );
 
-  childIndex = 0;
-  j = i >> 10;
-  stateNode = createSNode(Flags.Template, vNode, children, state, parentSNode);
-  if (j > 0) {
+  let parentElement = ctx.p;
+  let nextNode = ctx.n;
+
+  const stateNode = createSNode(Flags.Template, vNode, null, state, parentSNode);
+  const childrenSize = flags >> TemplateFlags.ChildrenSizeShift;
+  if (childrenSize > 0) {
+    const childOpCodes = tplData.c;
+    const children = _Array(childrenSize);
+    let childrenIndex = 0;
+    stateNode.c = children;
     ctx.p = rootNode;
-    stateNode.c = children = _Array(j);
-    opCodes = tpl.c;
-    for (i = 0; i < opCodes.length; i++) {
-      j = opCodes[i];
-      type = j & ChildOpCode.Type;
-      value = j >> ChildOpCode.ValueShift;
+    for (let i = 0; i < childOpCodes.length; i++) {
+      const childOpCode = childOpCodes[i];
+      const type = childOpCode & ChildOpCode.Type;
+      const value = childOpCode >> ChildOpCode.ValueShift;
       if (type === ChildOpCode.Child) {
-        children[childIndex++] = mount(stateNode, props[value]);
+        children[childrenIndex++] = mount(stateNode, props[value]);
       } else if (type === ChildOpCode.SetNext) {
         ctx.n = (state as Node[])[value];
       } else { // ChildOpCode.SetParent
@@ -436,98 +578,96 @@ const _updateTemplate = (
   next: VTemplate,
   updateFlags: Flags,
 ) => {
-  var v;
-  var c;
-  var k;
-  var j;
-  var i;
-  var ctx = RENDER_CONTEXT;
-  var parentElement = ctx.p;
-  var children = sNode.c;
-  var prevProps = (sNode.v as VTemplate).p;
-  var state = sNode.s;
-  var nextProps = next.p;
-  var d = next.d;
-  var tpl = d.p1;
-  var rootNode = state[0] as Element;
-  var opCodes = tpl.c;
+  const ctx = RENDER_CONTEXT;
+  const parentElement = ctx.p;
+  const children = sNode.c;
+  const prevProps = sNode.v.p;
+  const state = sNode.s;
+  const nextProps = next.p;
+  const tplData = next.d.p1;
+  const rootDOMNode = state[0] as Element;
+  const childrenOpCodes = tplData.c;
 
   if (updateFlags & Flags.DisplaceNode) {
     updateFlags ^= Flags.DisplaceNode;
-    nodeInsertBefore!.call(parentElement, rootNode, ctx.n);
+    nodeInsertBefore!.call(parentElement, rootDOMNode, ctx.n);
   }
 
   _updateTemplateProperties(
-    rootNode,
-    tpl.p,
-    tpl.d,
+    rootDOMNode,
+    tplData.p,
+    tplData.d,
     state as Node[],
     prevProps,
     nextProps,
-    !!(tpl.f & TemplateFlags.Svg),
+    !!(tplData.f & TemplateFlags.Svg),
   );
 
-  ctx.p = rootNode;
+  ctx.p = rootDOMNode;
   ctx.n = null;
 
-  j = 0;
-  for (i = 0; i < opCodes.length; i++) {
-    c = opCodes[i];
-    k = c & ChildOpCode.Type;
-    v = c >> ChildOpCode.ValueShift;
-    if (k === ChildOpCode.Child) {
-      (children as (SNode | null)[])[j] =
+  let childrenIndex = 0;
+  for (let i = 0; i < childrenOpCodes.length; i++) {
+    const childOpCode = childrenOpCodes[i];
+    const type = childOpCode & ChildOpCode.Type;
+    const value = childOpCode >> ChildOpCode.ValueShift;
+    if (type === ChildOpCode.Child) {
+      (children as (SNode | null)[])[childrenIndex] =
         update(
           sNode,
-          (children as (SNode | null)[])[j++],
-          nextProps[v],
+          (children as (SNode | null)[])[childrenIndex++],
+          nextProps[value],
           updateFlags,
         );
-    } else if (k === ChildOpCode.SetNext) {
-      ctx.n = (state as Node[])[v];
+    } else if (type === ChildOpCode.SetNext) {
+      ctx.n = (state as Node[])[value];
     } else { // ChildOpCode.SetParent
-      ctx.p = (state as Node[])[v] as Element;
+      ctx.p = (state as Node[])[value] as Element;
       ctx.n = null;
     }
   }
 
   ctx.p = parentElement;
-  ctx.n = rootNode;
+  ctx.n = rootDOMNode;
 };
 
-const _mountList = (parentState: SNode, f: Flags, arr: VArray, o: VAny): SNode => {
-  var i = arr.length;
-  var c = _Array(i);
-  var s = createSNode(f, o, c, null, parentState);
+const _mountList = (
+  parentState: SNode,
+  flags: Flags,
+  children: VArray,
+  vNode: VAny,
+): SNode => {
+  let i = children.length;
+  const sChildren = _Array(i);
+  const sNode = createSNode(flags, vNode, sChildren, null, parentState);
   while (i > 0) {
-    c[--i] = mount(s, arr[i]);
+    sChildren[--i] = mount(sNode, children[i]);
   }
-  return s;
+  return sNode;
 };
 
 const _updateText = (
   parentSNode: SNode,
-  sNode: SNode,
+  sNode: SText,
   next: string,
   updateFlags: Flags,
 ): SNode => {
-  var o;
-  var ctx = RENDER_CONTEXT;
-  var s = sNode.s;
+  const ctx = RENDER_CONTEXT;
+  const s = sNode.s;
   if (typeof next !== "object") {
-    o = sNode.v;
+    const prev = sNode.v;
     // Reassign to reduce memory consumption even if next value is strictly
     // equal the prev value.
     sNode.v = next;
-    if (o !== next) {
+    if (prev !== next) {
       (s as Node).nodeValue = next as string;
     }
     if (updateFlags & Flags.DisplaceNode) {
-      nodeInsertBefore!.call(ctx.p, s as Node, ctx.n);
+      nodeInsertBefore!.call(ctx.p, s, ctx.n);
     }
     return sNode;
   }
-  nodeRemoveChild!.call(ctx.p, s as Node);
+  nodeRemoveChild!.call(ctx.p, s);
   return mount(parentSNode, next)!;
 };
 
@@ -536,10 +676,10 @@ const _updateComponent = (
   next: VComponent,
   updateFlags: Flags,
 ) => {
-  var child = sNode.c;
-  var prevProps = (sNode.v as VComponent).p;
-  var descriptor = next.d as ComponentDescriptor;
-  var nextProps = next.p;
+  const child = sNode.c;
+  const prevProps = sNode.v.p;
+  const descriptor = next.d;
+  const nextProps = next.p;
   if (
     ((sNode.f | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) || (
       (prevProps !== nextProps) &&
@@ -563,36 +703,34 @@ const _updateArray = (
   next: VAny,
   updateFlags: Flags,
 ): SNode | null => {
-  var result;
-  var childState;
-  var sChildren;
-  var j;
-  var i;
   if (!_isArray(next)) {
     _unmount(sNode);
     return mount(parentSNode, next);
   }
-  if ((i = next.length) === 0) {
+  let nextLength = next.length;
+  if ((nextLength = next.length) === 0) {
     _unmount(sNode);
   } else {
-    sChildren = sNode.c! as (SNode<any> | null)[];
-    j = sChildren.length;
-    if (i !== j) {
-      sNode.c = (result = _Array(i));
-      while (j > i) {
-        if ((childState = (sChildren as Array<SNode | null>)[--j]) !== null) {
-          _unmount(childState);
+    const sChildren = sNode.c! as (SNode<any> | null)[];
+    let prevLength = sChildren.length;
+    if (nextLength !== prevLength) {
+      const newSChildren = _Array(nextLength);
+      sNode.c = newSChildren;
+      while (prevLength > nextLength) {
+        const sChild = (sChildren as Array<SNode | null>)[--prevLength];
+        if (sChild !== null) {
+          _unmount(sChild);
         }
       }
-      while (i > j) {
-        result[--i] = mount(sNode, next[i]);
+      while (nextLength > prevLength) {
+        newSChildren[--nextLength] = mount(sNode, next[nextLength]);
       }
     }
-    while (i > 0) {
-      sChildren[--i] = update(
+    while (nextLength > 0) {
+      sChildren[--nextLength] = update(
         sNode,
-        (sChildren as Array<SNode | null>)[i],
-        next[i],
+        (sChildren as Array<SNode | null>)[nextLength],
+        next[nextLength],
         updateFlags,
       );
     }
@@ -632,42 +770,42 @@ const _updateList = (
   b: ListProps<any>,
   updateFlags: Flags,
 ): void => {
-  var aKeys = a.k;
-  var bKeys = b.k;
-  var bOps = b.v;
-  var i = bKeys.length;
-  var j: number | undefined = aKeys.length;
-  var result = Array(i);
+  const aKeys = a.k;
+  const bKeys = b.k;
+  const bVNodes = b.v;
+  let bLength = bKeys.length;
+  let aLength: number | undefined = aKeys.length;
+  const result = _Array(bLength);
 
-  if (i === 0) { // New children list is empty.
-    if (j > 0) { // Unmount nodes from the old children list.
+  if (bLength === 0) { // New children list is empty.
+    if (aLength > 0) { // Unmount nodes from the old children list.
       _unmount(sNode);
     }
-  } else if (j === 0) { // Old children list is empty.
-    while (i > 0) { // Mount nodes from the new children list.
-      result[--i] = mount(sNode, bOps[i]);
+  } else if (aLength === 0) { // Old children list is empty.
+    while (bLength > 0) { // Mount nodes from the new children list.
+      result[--bLength] = mount(sNode, bVNodes[bLength]);
     }
   } else {
-    var sChildren = sNode.c as Array<SNode | null>;
-    var aEnd = j - 1; // a.length - 1
-    var bEnd = i - 1; // b.length - 1
-    var start = 0;
-    var node = bKeys[bEnd];
+    const sChildren = sNode.c as Array<SNode | null>;
+    let aEnd = aLength - 1;
+    let bEnd = bLength - 1;
+    let start = 0;
+    let key = bKeys[bEnd];
 
     // Step 1
     outer: while (true) {
       // Update nodes with the same key at the end.
-      while (aKeys[aEnd] === node) {
+      while (aKeys[aEnd] === key) {
         result[bEnd] = update(
           sNode,
           sChildren[aEnd--],
-          bOps[bEnd],
+          bVNodes[bEnd],
           updateFlags,
         );
         if (start > --bEnd || start > aEnd) {
           break outer;
         }
-        node = bKeys[bEnd];
+        key = bKeys[bEnd];
       }
 
       // Update nodes with the same key at the beginning.
@@ -682,36 +820,39 @@ const _updateList = (
     if (start > aEnd) {
       // All nodes from `a` are updated, insert the rest from `b`.
       while (bEnd >= start) {
-        result[bEnd] = mount(sNode, bOps[bEnd--]);
+        result[bEnd] = mount(sNode, bVNodes[bEnd--]);
       }
     } else if (start > bEnd) {
       // All nodes from `b` are updated, remove the rest from `a`.
-      i = start;
+      bLength = start;
       do {
-        _unmount(sChildren[i++]);
-      } while (i <= aEnd);
+        _unmount(sChildren[bLength++]);
+      } while (bLength <= aEnd);
     } else { // Step 3
-      // When `pos === RearrangeNodes`, it means that one of the nodes is in the wrong position and we should rearrange
-      // nodes with LIS-based algorithm `markLIS()`.
-      var pos = 0;
-      var bLength = bEnd - start + 1;
-      var sources = new _Int32Array(bLength); // Maps positions in the new children list to positions in the old list.
-      var keyIndex = new _Map<any, number>(); // Maps keys to their positions in the new children list.
-      for (i = 0; i < bLength; ++i) {
+      let bLength = bEnd - start + 1;
+      const sources = new _Int32Array(bLength); // Maps positions in the new children list to positions in the old list.
+      const keyIndex = new _Map<any, number>(); // Maps keys to their positions in the new children list.
+      for (let i = 0; i < bLength; i++) {
         // `NewNodeMark` value indicates that node doesn't exist in the old children list.
         sources[i] = MagicValues.NewNodeMark;
-        j = i + start;
+        const j = start + i;
         keyIndex.set(bKeys[j], j);
       }
 
-      for (i = start; i <= aEnd; ++i) {
-        node = sChildren[i];
-        if ((j = keyIndex.get(aKeys[i])) !== void 0) {
-          pos = (pos < j) ? j : MagicValues.RearrangeNodes;
-          sources[j - start] = i;
-          result[j] = node;
+      // When `nodePosition === RearrangeNodes`, it means that one of the nodes is in the wrong position and we should
+      // rearrange nodes with LIS-based algorithm `markLIS()`.
+      let nodePosition = 0;
+      for (let i = start; i <= aEnd; i++) {
+        const sChild = sChildren[i];
+        const nextPosition = keyIndex.get(aKeys[i]);
+        if (nextPosition !== void 0) {
+          nodePosition = (nodePosition < nextPosition)
+            ? nextPosition
+            : MagicValues.RearrangeNodes;
+          sources[nextPosition - start] = i;
+          result[nextPosition] = sChild;
         } else {
-          _unmount(node);
+          _unmount(sChild);
         }
       }
 
@@ -719,21 +860,21 @@ const _updateList = (
 
       // Mark LIS nodes only when this node weren't moved `moveNode === false` and we've detected that one of the
       // children nodes were moved `pos === MagicValues.MovedChildren`.
-      if (!(updateFlags & Flags.DisplaceNode) && pos === MagicValues.RearrangeNodes) {
+      if (!(updateFlags & Flags.DisplaceNode) && nodePosition === MagicValues.RearrangeNodes) {
         markLIS(sources);
       }
       while (bLength-- > 0) {
         bEnd = bLength + start;
-        node = bOps[bEnd];
-        j = sources[bLength];
-        result[bEnd] = (j === -1)
+        const node = bVNodes[bEnd];
+        const lisValue = sources[bLength];
+        result[bEnd] = (lisValue === -1)
           ? mount(sNode, node)
           : update(
             sNode,
             result[bEnd],
             node,
             updateFlags |
-            ((pos === MagicValues.RearrangeNodes && j !== MagicValues.LISMark)
+            ((nodePosition === MagicValues.RearrangeNodes && lisValue !== MagicValues.LISMark)
               ? Flags.DisplaceNode
               : 0),
           );
@@ -746,7 +887,7 @@ const _updateList = (
       result[--start] = update(
         sNode,
         sChildren[start],
-        bOps[start],
+        bVNodes[start],
         updateFlags,
       );
     }
@@ -776,15 +917,15 @@ const _updateList = (
  * @__NOINLINE__
  */
 const markLIS = (a: Int32Array): void => {
-  var length = a.length;
-  var parent = new _Int32Array(length);
-  var index = new _Int32Array(length);
-  var indexLength = 0;
-  var i = 0;
-  var j: number;
-  var k: number;
-  var lo: number;
-  var hi: number;
+  const length = a.length;
+  const parent = new _Int32Array(length);
+  const index = new _Int32Array(length);
+  let indexLength = 0;
+  let i = 0;
+  let j: number;
+  let k: number;
+  let lo: number;
+  let hi: number;
 
   // Skip -1 values at the start of the input array `a`.
   for (; a[i] === MagicValues.NewNodeMark; i++) { /**/ }
@@ -942,8 +1083,8 @@ export const component = <P>(
  * @param hook Unmount hook.
  */
 export const useUnmount = (component: Component, hook: () => void): void => {
-  var s = component.s;
-  var hooks = s.u;
+  const s = component.s;
+  const hooks = s.u;
   s.u = (hooks === null)
     ? hook
     : (typeof hooks === "function")
@@ -959,7 +1100,7 @@ export const useUnmount = (component: Component, hook: () => void): void => {
 export const invalidate = (c: Component): void => {
   if (!(c.f & Flags.Dirty)) {
     c.f |= Flags.Dirty;
-    var parent = c.p;
+    let parent = c.p;
     while (parent !== null) {
       if (parent.f & Flags.DirtySubtree) {
         return;
@@ -1006,39 +1147,30 @@ export const List = <E, K>(
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
 export const dirtyCheck = (sNode: SNode, updateFlags: number): void => {
-  var state,
-    op,
-    type,
-    value,
-    c,
-    i,
-    j,
-    parentElement,
-    rootNode,
-    childOpCodes,
-    ctx = RENDER_CONTEXT,
-    children = sNode.c,
-    flags = sNode.f;
+  const ctx = RENDER_CONTEXT;
+  const children = sNode.c;
+  const flags = sNode.f;
   if (flags & Flags.Template) {
-    rootNode = sNode.s[0];
+    const rootDOMNode = sNode.s[0];
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
-      nodeInsertBefore.call(ctx.p, rootNode, ctx.n);
+      nodeInsertBefore.call(ctx.p, rootDOMNode, ctx.n);
     }
     if (flags & Flags.DirtySubtree) {
-      j = 0;
-      parentElement = ctx.p;
-      ctx.p = rootNode;
+      ctx.p = rootDOMNode;
       ctx.n = null;
-      state = (sNode as STemplate).s;
-      childOpCodes = (sNode as STemplate).v.d.p1.c;
-      for (i = 0; i < childOpCodes.length; i++) {
-        op = childOpCodes[i];
-        type = op & ChildOpCode.Type;
-        value = op >> ChildOpCode.ValueShift;
+      const parentDOMElement = ctx.p;
+      const state = (sNode as STemplate).s;
+      const childOpCodes = (sNode as STemplate).v.d.p1.c;
+      let childrenIndex = 0;
+      for (let i = 0; i < childOpCodes.length; i++) {
+        const op = childOpCodes[i];
+        const type = op & ChildOpCode.Type;
+        const value = op >> ChildOpCode.ValueShift;
         if (type === ChildOpCode.Child) {
-          if ((c = (children as (SNode | null)[])[j++]) !== null) {
-            dirtyCheck(c, updateFlags);
+          const sChild = (children as (SNode | null)[])[childrenIndex++];
+          if (sChild !== null) {
+            dirtyCheck(sChild, updateFlags);
           }
         } else if (type === ChildOpCode.SetNext) {
           ctx.n = (state as Node[])[value];
@@ -1047,9 +1179,9 @@ export const dirtyCheck = (sNode: SNode, updateFlags: number): void => {
           ctx.n = null;
         }
       }
-      ctx.p = parentElement;
+      ctx.p = parentDOMElement;
     }
-    ctx.n = rootNode;
+    ctx.n = rootDOMNode;
   } else if (flags & Flags.Text) {
     if (updateFlags & Flags.DisplaceNode) {
       nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
@@ -1067,14 +1199,15 @@ export const dirtyCheck = (sNode: SNode, updateFlags: number): void => {
       dirtyCheck(children as SNode, updateFlags);
     }
   } else { // Array || List
-    i = (children as Array<SNode | null>).length;
+    let i = (children as Array<SNode | null>).length;
     while (--i >= 0) {
-      if ((state = (children as Array<SNode | null>)[i]) !== null) {
-        dirtyCheck(state, updateFlags);
+      const sChild = (children as Array<SNode | null>)[i];
+      if (sChild !== null) {
+        dirtyCheck(sChild, updateFlags);
       }
     }
   }
-  sNode.f &= Flags.CleanSNodeMask;
+  sNode.f &= Flags.TypeMask;
 };
 
 /**
@@ -1092,7 +1225,6 @@ export const update = (
   next: VAny,
   updateFlags: number,
 ): SNode | null => {
-  var flags, prev;
   if (next === null) {
     _unmount(sNode);
     return null;
@@ -1101,12 +1233,12 @@ export const update = (
     return mount(parentSNode, next);
   }
 
-  flags = sNode.f & Flags.TypeMask;
+  const flags = sNode.f & Flags.TypeMask;
 
   if (flags === Flags.Text) {
-    return _updateText(parentSNode, sNode, next as string, updateFlags);
+    return _updateText(parentSNode, sNode as SText, next as string, updateFlags);
   }
-  prev = sNode.v;
+  const prev = sNode.v;
   sNode.v = next;
   if (prev === next) {
     dirtyCheck(sNode, updateFlags);
@@ -1132,7 +1264,7 @@ export const update = (
     _updateList(sNode, (prev as VList).p, (next as VList).p, updateFlags);
   }
 
-  sNode.f &= Flags.CleanSNodeMask;
+  sNode.f &= Flags.TypeMask;
   return sNode;
 };
 
@@ -1144,37 +1276,37 @@ export const update = (
  * @returns Mounted Stateful Node.
  */
 export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
-  var i, c, s, d, e;
   if (v !== null) {
     if (typeof v === "object") {
       if (_isArray(v)) {
         return _mountList(parentSNode, Flags.Array, v, v);
       } else {
-        d = v.d;
-        i = d.f & (Flags.Template | Flags.Component);
-        if (i === Flags.Template) {
+        const descriptor = v.d;
+        const type = descriptor.f & (Flags.Template | Flags.Component);
+        if (type === Flags.Template) {
           return _mountTemplate(parentSNode, v as VTemplate);
-        } else if (i === Flags.Component) {
-          e = { r: null, u: null } satisfies ComponentState;
-          s = createSNode<VComponent, ComponentState>(
+        } else if (type === Flags.Component) {
+          const componentState = { r: null, u: null } satisfies ComponentState;
+          const sNode = createSNode<VComponent, ComponentState>(
             Flags.Component,
             v as VComponent,
             null,
-            e,
+            componentState,
             parentSNode,
           );
-          (e as ComponentState).r = c = (d as ComponentDescriptor).p1(s as Component);
-          s.c = mount(s, c((v as VComponent).p));
-          return s;
+          const renderFn = (descriptor as ComponentDescriptor).p1(sNode as Component);
+          (componentState as ComponentState).r = renderFn;
+          sNode.c = mount(sNode, renderFn((v as VComponent).p));
+          return sNode;
         }
         // List
         return _mountList(parentSNode, Flags.List, (v as VList).p.v, v);
       }
     } else {
-      c = RENDER_CONTEXT;
-      e = doc.createTextNode(v as string);
-      nodeInsertBefore!.call(c.p, e, c.n);
-      c.n = e;
+      const ctx = RENDER_CONTEXT;
+      const e = doc.createTextNode(v as string);
+      nodeInsertBefore.call(ctx.p, e, ctx.n);
+      ctx.n = e;
       return createSNode(Flags.Text, v, null, e, parentSNode);
     }
   }
@@ -1188,35 +1320,38 @@ export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
  * @param detach Detach root DOM nodes from the DOM.
  */
 export const unmount = (sNode: SNode, detach: boolean): void => {
-  var c, i, v, f = sNode.f;
+  const flags = sNode.f;
 
-  if (detach === true && (f & (Flags.Template | Flags.Text))) {
+  if (detach === true && (flags & (Flags.Template | Flags.Text))) {
     detach = false;
-    nodeRemoveChild!.call(
+    nodeRemoveChild.call(
       RENDER_CONTEXT.p,
-      (f & Flags.Template)
+      (flags & Flags.Template)
         ? (sNode as STemplate).s[0]
         : (sNode as SText).s
     );
   }
-  if ((c = sNode.c) !== null) {
-    if (_isArray(c)) {
-      for (i = 0; i < c.length; i++) {
-        if ((v = c[i]) !== null) {
-          unmount(v, detach);
+  const sChildren = sNode.c;
+  if (sChildren !== null) {
+    if (_isArray(sChildren)) {
+      for (let i = 0; i < sChildren.length; i++) {
+        const sChild = sChildren[i];
+        if (sChild !== null) {
+          unmount(sChild, detach);
         }
       }
     } else {
-      unmount(c as SNode, detach);
+      unmount(sChildren as SNode, detach);
     }
   }
-  if (f & Flags.Component) {
-    if ((c = (sNode as SComponent).s.u) !== null) {
-      if (typeof c === "function") {
-        c();
+  if (flags & Flags.Component) {
+    const unmountHooks = (sNode as SComponent).s.u;
+    if (unmountHooks !== null) {
+      if (typeof unmountHooks === "function") {
+        unmountHooks();
       } else {
-        for (i = 0; i < c.length; i++) {
-          c[i]();
+        for (let i = 0; i < unmountHooks.length; i++) {
+          unmountHooks[i]();
         }
       }
     }

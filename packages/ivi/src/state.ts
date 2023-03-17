@@ -116,7 +116,7 @@ export const useReducer = <S, A>(
 ): [() => S, Dispatch<A>] => ([
   () => state,
   (action: A) => {
-    var nextState = reducer(state, action);
+    const nextState = reducer(state, action);
     if (state !== nextState) {
       state = nextState;
       invalidate(component);

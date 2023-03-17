@@ -17,8 +17,7 @@ export const enum VisitNodesDirective {
 }
 
 /**
- * visitNodes traverses SNode tree and invokes `visitor` function for each
- * SNode.
+ * Traverses stateful tree and invokes `visitor` function on each {@link SNode}.
  *
  * @param sNode {@link SNode}.
  * @param visitor Visitor function.
@@ -28,12 +27,12 @@ export const visitNodes = (
   sNode: SNode,
   visitor: (opState: SNode) => VisitNodesDirective,
 ): VisitNodesDirective => {
-  var i = visitor(sNode!);
+  let i = visitor(sNode);
   if (i !== VisitNodesDirective.Continue) {
     return (i & VisitNodesDirective.StopImmediate);
   }
 
-  var { f, c } = sNode!;
+  const { f, c } = sNode;
   if (f & (Flags.Array | Flags.List)) {
     for (i = 0; i < (c as Array<SNode | null>).length; i++) {
       if (

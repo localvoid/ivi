@@ -13,7 +13,7 @@ const DESCRIPTORS = new WeakMap<TemplateStringsArray, TemplateDescriptor>();
  * @param errorCol Line column.
  */
 const formatErrorMsg = (errorMsg: string, errorCol: number): string => {
-  var msg = "";
+  let msg = "";
   while (--errorCol >= 0) {
     msg += " ";
   }
@@ -43,8 +43,8 @@ const formatError = (
     textOffset += statics[i].length;
   }
 
-  var msg = "\n";
-  var text = statics[0];
+  let msg = "\n";
+  let text = statics[0];
   for (let i = 1; i < statics.length; i++) {
     text += "${" + (i - 1) + "}" + statics[i];
   }
@@ -93,11 +93,9 @@ const formatError = (
  *     }
  */
 export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
-  var factory;
-  var template;
-  var result;
-  var d = DESCRIPTORS.get(strings);
-  if (d === void 0) {
+  let descriptor = DESCRIPTORS.get(strings);
+  if (descriptor === void 0) {
+    let result;
     try {
       result = compileTemplate(strings, false, tryHoistExpr);
     } catch (e) {
@@ -109,7 +107,9 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
       }
       throw e;
     }
-    template = result.template;
+
+    let factory;
+    let template = result.template;
     if (typeof template === "string") {
       factory = _hE(template);
     } else {
@@ -122,7 +122,7 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
     }
     DESCRIPTORS.set(
       strings,
-      d = _T(
+      descriptor = _T(
         factory,
         result.flags,
         result.propOpCodes,
@@ -133,7 +133,7 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
     );
   }
 
-  return _t(d, exprs);
+  return _t(descriptor, exprs);
 };
 
 /**
@@ -165,11 +165,9 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
  *     }
  */
 export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
-  var factory;
-  var template;
-  var result;
-  var d = DESCRIPTORS.get(strings);
-  if (d === void 0) {
+  let descriptor = DESCRIPTORS.get(strings);
+  if (descriptor === void 0) {
+    let result;
     try {
       result = compileTemplate(strings, true, tryHoistExpr);
     } catch (e) {
@@ -181,7 +179,8 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
       }
       throw e;
     }
-    template = result.template;
+    let factory;
+    let template = result.template;
     if (typeof template === "string") {
       factory = _sE(template);
     } else {
@@ -194,7 +193,7 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
     }
     DESCRIPTORS.set(
       strings,
-      d = _T(
+      descriptor = _T(
         factory,
         result.flags,
         result.propOpCodes,
@@ -205,5 +204,5 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
     );
   }
 
-  return _t(d, exprs);
+  return _t(descriptor, exprs);
 };
