@@ -4,15 +4,15 @@ importers:
 
   .:
     specifiers:
-      '@types/node': ^18.15.0
+      '@types/node': ^18.15.3
       global-jsdom: ^8.7.0
       jsdom: ^21.1.1
-      typescript: ^4.9.5
+      typescript: ^5.0.2
     devDependencies:
-      '@types/node': 18.15.0
+      '@types/node': 18.15.3
       global-jsdom: 8.7.0_jsdom@21.1.1
       jsdom: 21.1.1
-      typescript: 4.9.5
+      typescript: 5.0.2
 
   packages/@ivi/babel-plugin:
     specifiers:
@@ -347,8 +347,8 @@ packages:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: false
 
-  /@types/node/18.15.0:
-    resolution: {integrity: sha512-z6nr0TTEOBGkzLGmbypWOGnpSpSIBorEhC4L+4HeQ2iezKCi4f77kyslRwvHeNitymGQ+oFyIWGP96l/DPSV9w==}
+  /@types/node/18.15.3:
+    resolution: {integrity: sha512-p6ua9zBxz5otCmbpb5D3U4B5Nanw6Pk3PPyX05xnxbB/fRv71N7CPmORg7uAD5P70T0xmx1pzAx/FUfa5X+3cw==}
     dev: true
 
   /abab/2.0.6:
@@ -836,9 +836,9 @@ packages:
       prelude-ls: 1.1.2
     dev: true
 
-  /typescript/4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
+  /typescript/5.0.2:
+    resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
+    engines: {node: '>=12.20'}
     hasBin: true
     dev: true
 

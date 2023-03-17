@@ -1005,7 +1005,7 @@ export const List = <E, K>(
  * @param sNode Stateful Node.
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
-export const dirtyCheck = (sNode: SNode, updateFlags: Flags): void => {
+export const dirtyCheck = (sNode: SNode, updateFlags: number): void => {
   var state,
     op,
     type,
@@ -1090,7 +1090,7 @@ export const update = (
   parentSNode: SNode,
   sNode: SNode | null,
   next: VAny,
-  updateFlags: Flags,
+  updateFlags: number,
 ): SNode | null => {
   var flags, prev;
   if (next === null) {

@@ -13,7 +13,6 @@
     "removeComments": false,
 
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,

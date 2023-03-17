@@ -16,7 +16,7 @@ export const findDOMNode = <T extends Node | Text>(
     return null;
   }
 
-  var i = (sNode as SNode).f;
+  var i: number = (sNode as SNode).f;
   var c: SNode | Node | null;
   if (i & (Flags.Template | Flags.Text)) {
     return (i & Flags.Template)
