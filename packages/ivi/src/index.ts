@@ -739,6 +739,242 @@ const enum MagicValues {
 /**
  * Update children list with track by key algorithm.
  *
+ * High-level overview of the algorithm that is implemented in this function:
+ *
+ * This algorithm finds a minimum number of DOM operations. It works in
+ * several steps:
+ *
+ * 1. Common prefix and suffix optimization.
+ *
+ * Look for nodes with identical keys by simultaneously iterating through nodes
+ * in the old children list `A` and new children list `B` from both sides.
+ *
+ *     A: -> [a b c d] <-
+ *     B: -> [a b d] <-
+ *
+ * Skip nodes "a" and "b" at the start, and node "d" at the end.
+ *
+ *     A: -> [c] <-
+ *     B: -> [] <-
+ *
+ * 2. Zero length optimizations.
+ *
+ * Check if the size of one of the list is equal to zero. When length of the
+ * old children list is zero, insert remaining nodes from the new list. When
+ * length of the new children list is zero, remove remaining nodes from the old
+ * list.
+ *
+ *     A: -> [a b c g] <-
+ *     B: -> [a g] <-
+ *
+ * Skip nodes "a" and "g" (prefix and suffix optimization).
+ *
+ *     A: [b c]
+ *     B: []
+ *
+ * Remove nodes "b" and "c".
+ *
+ * 3. Index and unmount removed nodes.
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *     P: [. . . . .] // . == -1
+ *
+ * Create array `P` (`sources`) with the length of the new children list and
+ * fills it with `NewNodeMark` values. This mark indicates that node at this
+ * position should be mounted. Later we will assign node positions in the old
+ * children list to this array.
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *     P: [. . . . .] // . == -1
+ *     I: {
+ *       c: 0, // B[0] == c
+ *       b: 1, // B[1] == b
+ *       h: 2,
+ *       f: 3,
+ *       e: 4,
+ *     }
+ *     last = 0
+ *
+ * Create reverse index `I` that maps keys to node positions in the new
+ * children list.
+ *
+ *     A: [b c d e f]
+ *         ^
+ *     B: [c b h f e]
+ *     P: [. 0 . . .] // . == -1
+ *     I: {
+ *       c: 0,
+ *       b: 1, <-
+ *       h: 2,
+ *       f: 3,
+ *       e: 4,
+ *     }
+ *     last = 1
+ *
+ * Assign original positions of the nodes from the old children list to the
+ * array `P`.
+ *
+ * Iterate through nodes in the old children list and gets their new positions
+ * from the index `I`. Assign old node position to the array `P`. When index
+ * `I` doesn't have a key for the old node, it means that it should be
+ * unmounted.
+ *
+ * When we assigning positions to the array `P`, we also store position of the
+ * last seen node in the new children list `pos`, if the last seen position is
+ * greater than the current position of the node at the new list, then we are
+ * switching `rearrangeNodes` flag to `true` (`pos === RearrangeNodes`).
+ *
+ *     A: [b c d e f]
+ *           ^
+ *     B: [c b h f e]
+ *     P: [1 0 . . .] // . == -1
+ *     I: {
+ *       c: 0, <-
+ *       b: 1,
+ *       h: 2,
+ *       f: 3,
+ *       e: 4,
+ *     }
+ *     last = 1 // last > 0; rearrangeNodes = true
+ *
+ * The last position `1` is greater than the current position of the node at the
+ * new list `0`, switch `rearrangeNodes` flag to `true`.
+ *
+ *     A: [b c d e f]
+ *             ^
+ *     B: [c b h f e]
+ *     P: [1 0 . . .] // . == -1
+ *     I: {
+ *       c: 0,
+ *       b: 1,
+ *       h: 2,
+ *       f: 3,
+ *       e: 4,
+ *     }
+ *     rearrangeNodes = true
+ *
+ * Node with key "d" doesn't exist in the index `I`, unmounts node `d`.
+ *
+ *     A: [b c d e f]
+ *               ^
+ *     B: [c b h f e]
+ *     P: [1 0 . . 3] // . == -1
+ *     I: {
+ *       c: 0,
+ *       b: 1,
+ *       h: 2,
+ *       f: 3,
+ *       e: 4, <-
+ *     }
+ *     rearrangeNodes = true
+ *
+ * Assign position `3` for `e` node.
+ *
+ *     A: [b c d e f]
+ *                 ^
+ *     B: [c b h f e]
+ *     P: [1 0 . 4 3] // . == -1
+ *     I: {
+ *       c: 0,
+ *       b: 1,
+ *       h: 2,
+ *       f: 3, <-
+ *       e: 4,
+ *     }
+ *     rearrangeNodes = true
+ *
+ * Assign position `4` for 'f' node.
+ *
+ * 4. Find minimum number of moves when `rearrangeNodes` flag is on and mount
+ *    new nodes.
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *     P: [1 * . 4 *] // . == -1  * == -2
+ *
+ * When `rearrangeNodes` is on, mark all nodes in the array `P` that belong to
+ * the [longest increasing subsequence](http://en.wikipedia.org/wiki/Longest_increasing_subsequence)
+ * and move all nodes that doesn't belong to this subsequence.
+ *
+ * Iterate over the new children list and the `P` array simultaneously. When
+ * value from `P` array is equal to `NewNodeMark`, mount a new node. When it
+ * isn't equal to `LisMark`, move it to a new position.
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *                 ^  // new_pos == 4
+ *     P: [1 * . 4 *] // . == NewNodeMark  * == LisMark
+ *                 ^
+ *
+ * Node "e" has `LisMark` value in the array `P`, nothing changes.
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *               ^    // new_pos == 3
+ *     P: [1 * . 4 *] // . == NewNodeMark  * == LisMark
+ *               ^
+ *
+ * Node "f" has `4` value in the array `P`, move it before the next node "e".
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *             ^      // new_pos == 2
+ *     P: [1 * . 4 *] // . == NewNodeMark  * == LisMark
+ *             ^
+ *
+ * Node "h" has `NewNodeMark` value in the array `P`, mount new node "h".
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *           ^        // new_pos == 1
+ *     P: [1 * . 4 *] // . == NewNodeMark  * == LisMark
+ *           ^
+ *
+ * Node "b" has `LisMark` value in the array `P`, nothing changes.
+ *
+ *     A: [b c d e f]
+ *     B: [c b h f e]
+ *         ^          // new_pos == 0
+ *     P: [1 * . 4 *] // . == NewNodeMark  * == LisMark
+ *
+ * Node "c" has `1` value in the array `P`, move it before the next node "b".
+ *
+ * When `rearrangeNodes` flag is off, skip LIS algorithm and mount nodes that
+ * have `NewNodeMark` value in the array `P`.
+ *
+ * NOTE: There are many variations of this algorithm that are used by many UI
+ * libraries and many implementations are still using an old optimization
+ * technique that were removed several years ago from this implementation. This
+ * optimization were used to improve performance of simple moves/swaps. E.g.
+ *
+ *     A: -> [a b c] <-
+ *     B: -> [c b a] <-
+ *
+ * Move "a" and "c" nodes to the other edge.
+ *
+ *     A: -> [b] <-
+ *     B: -> [b] <-
+ *
+ * Skip node "b".
+ *
+ * This optimization were removed because it breaks invariant that insert and
+ * remove operations shouldn't trigger a move operation. E.g.
+ *
+ *     A: -> [a b]
+ *     B:    [c a] <-
+ *
+ * Move node "a" to the end.
+ *
+ *     A: [b]
+ *     B: [c]
+ *
+ * Remove node "b" and insert node "c".
+ *
+ * In this use case, this optimization performs one unnecessary operation.
+ * Instead of removing node "b" and inserting node "c", it also moves node "a".
+ *
  * @param sNode {@link SList} node.
  * @param a Previous {@link ListProps}.
  * @param b Next {@link ListProps}.
