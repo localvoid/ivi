@@ -1286,16 +1286,16 @@ export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
         if (type === Flags.Template) {
           return _mountTemplate(parentSNode, v as VTemplate);
         } else if (type === Flags.Component) {
-          const componentState = { r: null, u: null } satisfies ComponentState;
-          const sNode = createSNode<VComponent, ComponentState>(
+          const componentState: ComponentState = { r: null, u: null };
+          const sNode: Component = createSNode<VComponent, ComponentState>(
             Flags.Component,
             v as VComponent,
             null,
             componentState,
             parentSNode,
           );
-          const renderFn = (descriptor as ComponentDescriptor).p1(sNode as Component);
-          (componentState as ComponentState).r = renderFn;
+          const renderFn = (descriptor as ComponentDescriptor).p1(sNode);
+          componentState.r = renderFn;
           sNode.c = mount(sNode, renderFn((v as VComponent).p));
           return sNode;
         }
