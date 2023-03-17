@@ -664,7 +664,7 @@ Example:
 
 ```js
 const Example = component((c) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(c, 0);
   const timer = useEffect(c, shallowEq, ({ interval }) => {
     const tid = setInterval(() => { setCount(count() + 1); }, interval);
     return () => { clearInterval(tid); };
@@ -987,7 +987,7 @@ function useInterval(component, fn) {
 }
 
 const Example = component((c) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(c, 0);
   const timer = useInterval(c, () => { setCount(count() + 1); });
   return (time) => (
     timer(time),
