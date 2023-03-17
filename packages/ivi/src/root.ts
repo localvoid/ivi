@@ -118,6 +118,8 @@ export const forceUpdateRoot = (root: SRoot<null>): void => {
       // Force update flag.
       Flags.ForceUpdate,
     );
+    // Flags should always be reassigned on update to clear dirty flags.
+    root.f = Flags.Root;
   }
 };
 
@@ -129,6 +131,8 @@ export const forceUpdateRoot = (root: SRoot<null>): void => {
  */
 export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
   if (root.c !== null) {
+    // Clear dirty flags.
+    root.f = Flags.Root;
     // Assign parent element to the render context.
     RENDER_CONTEXT.p = root.v.p.p;
     // Unmounts a root subtree.
