@@ -18,7 +18,7 @@ import { createRoot, updateRoot } from "ivi/root";
 import { htm } from "ivi/template";
 
 const Counter = component((c) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(c, 0);
   const inc = () => { setCount(count() + 1); };
 
   return () => htm`
@@ -1147,9 +1147,9 @@ interface ComponentState {
 ```
 
 This data structures were carefully designed to have small memory overhead
-and static shapes. Static shapes are important for performance, so that all
-call-sites that accessing this data structures will be in a
-[monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
+with the same object shape for all node types. Shared object shapes are
+important for performance, so that all call-sites that accessing this data
+structures will be in a [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 #### Template Data Structures
 
@@ -1281,8 +1281,8 @@ generating a lot of small chunks.
 
 ivi is designed as an embeddable solution, so that it can be integrated into
 existing frameworks or web components. The core module `ivi` doesn't provide
-any schedulers. When ivi component is invalidated it will find a `SRoot` node
-and invoke `OnRootInvalidated()` hook.
+any schedulers. When ivi component is invalidated it will find a stateful
+node `SRoot` and invoke `OnRootInvalidated()` hook.
 
 ```ts
 type OnRootInvalidated<S> = (root: SRoot<S>) => void;
@@ -1428,8 +1428,8 @@ export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
 
 #### Using `requestAnimationFrame()` for Scheduling UI Updates
 
-Be careful when creating a scheduling algorithm with `rAF`, it can create
-issues with race conditions.
+Scheduling algorithm with `rAF` batching has some potential footguns with race
+conditions.
 
 ```js
 function formStateReducer(state, action) {
@@ -1480,7 +1480,7 @@ it is possible to get an execution order like this:
   `<input type="submit" .disabled={false} />`
 - `rAF` event is triggered, submit button goes into disabled state.
 
-The simplest way to avoid issues like this is to use microtasks for scheduling.
+The simplest way to avoid issues like this is to use microtasks for batching.
 But if you really want to add `rAF` scheduling, it is possible to solve issues like this by introducing some synchronization primitives:
 
 ```js
