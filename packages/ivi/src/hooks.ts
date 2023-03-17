@@ -31,6 +31,7 @@ export const useEffect = <P>(
   areEqual: (prev: P, next: P) => boolean,
   hook: (props?: P) => (() => void) | void,
 ): (props: P) => void => {
+  // var usage is intentional, see `index.js` module for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
   return (next: P) => {
