@@ -1,8 +1,10 @@
 examples/**/dist
 packages/**/dist
+
+target
+*.mm_profdata
 node_modules
 coverage
-
 *.tsbuildinfo
 npm-debug.log
 
