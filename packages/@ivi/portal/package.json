@@ -1,0 +1,32 @@
+{
+  "name": "@ivi/portal",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "!dist/**/*.tsbuildinfo",
+    "!src/**/__tests__",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "ivi": "workspace:^"
+  },
+  "devDependencies": {
+    "ivi": "workspace:^"
+  },
+  "description": "ivi portal.",
+  "license": "MIT",
+  "keywords": [
+    "ivi"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "repository": "github:localvoid/ivi"
+}
