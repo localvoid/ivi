@@ -1341,7 +1341,7 @@ export const invalidate = (c: Component): void => {
 /**
  * VDescriptor for List nodes.
  */
-const LIST: ListDescriptor = { f: Flags.List, p1: null, p2: null };
+export const LIST_DESCRIPTOR: ListDescriptor = { f: Flags.List, p1: null, p2: null };
 
 /**
  * Creates a dynamic list.
@@ -1358,7 +1358,7 @@ export const List = <E, K>(
   getKey: (entry: E, index: number) => K,
   render: (entry: E) => VAny,
 ): VList => ({
-  d: LIST,
+  d: LIST_DESCRIPTOR,
   p: {
     k: entries.map(getKey),
     v: entries.map(render),
