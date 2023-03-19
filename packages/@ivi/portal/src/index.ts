@@ -1,5 +1,5 @@
 import type { VComponent, VAny, Component } from "ivi";
-import { component, useUnmount, invalidate, LIST_DESCRIPTOR } from "ivi";
+import { component, useUnmount, invalidate, List } from "ivi";
 
 export interface PortalEntry {
   v: VAny;
@@ -11,6 +11,7 @@ const invalidatePortalContainers = (containers: Component[]) => {
   }
 };
 
+const portalEntryKey = (entry: PortalEntry) => entry;
 const renderPortalEntry = (entry: PortalEntry) => entry.v;
 
 /**
@@ -38,15 +39,7 @@ export const createPortal = (): [VComponent, (v: VAny) => VComponent] => {
       });
       // Manually create stateless node for dynamic lists, so that we can use
       // object identity as keys without creating additional arrays.
-      return () => ({
-        d: LIST_DESCRIPTOR,
-        p: {
-          // Keys
-          k: _entries,
-          // Stateless Nodes
-          v: _entries.map(renderPortalEntry),
-        }
-      });
+      return () => List(_entries, portalEntryKey, renderPortalEntry);
     })(),
     // Portal component factory.
     component<VAny>((c) => {
