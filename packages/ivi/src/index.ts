@@ -1606,7 +1606,11 @@ export const useEffect = <P>(
   var reset: (() => void) | void;
   var prev: P | undefined;
   return (next?: P) => {
-    if (areEqual === void 0 || areEqual(prev as P, next as P) === false) {
+    if (
+      areEqual === void 0 ||
+      prev === void 0 ||
+      areEqual(prev as P, next as P) === false
+    ) {
       if (reset !== void 0) {
         reset();
       }
