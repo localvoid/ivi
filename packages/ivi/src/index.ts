@@ -575,7 +575,7 @@ const _updateTemplate = (
 ) => {
   const ctx = RENDER_CONTEXT;
   const parentElement = ctx.p;
-  const children = sNode.c as (SNode | null)[];
+  const children = sNode.c as ((SNode | null)[] | null);
   const state = sNode.s;
   const prevProps = prev.p;
   const nextProps = next.p;
@@ -598,7 +598,7 @@ const _updateTemplate = (
     !!(tplData.f & TemplateFlags.Svg),
   );
 
-  if (children.length > 0) {
+  if (children !== null) {
     ctx.p = rootDOMNode;
     ctx.n = null;
 
