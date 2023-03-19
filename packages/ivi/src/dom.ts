@@ -32,7 +32,7 @@ export const findDOMNode = <T extends Node | Text>(
     }
     return null;
   }
-  return findDOMNode(sNode as SNode);
+  return findDOMNode(children as SNode | null);
 };
 
 /**
