@@ -778,7 +778,7 @@ function shallowEq<T extends Record<string | symbol, unknown>>(a: T, b: T): bool
 function shallowEqArray<T>(a: T[], b: T[]): boolean;
 ```
 
-### State Tree DOM Utils
+### Stateful Tree DOM Utils
 
 `ivi/dom` module.
 
@@ -1308,12 +1308,7 @@ export const updateRoot = (
  * @param root Root Node.
  */
 export const forceUpdateRoot = (root: SRoot<null>): void => {
-  dirtyCheck(
-    // Parent SNode should always be a root node.
-    root,
-    // Force update flag.
-    Flags.ForceUpdate,
-  );
+  dirtyCheck(root, Flags.ForceUpdate);
 };
 
 /**
@@ -1323,14 +1318,9 @@ export const forceUpdateRoot = (root: SRoot<null>): void => {
  * @param detach Detach root nodes from the DOM.
  */
 export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
-  // Unmounts a root subtree.
-  unmount(
-    // Root node.
-    root,
-    // Detach DOM nodes.
-    detach,
-  );
+  unmount(root, detach);
 };
+
 ```
 
 #### Using `requestAnimationFrame()` for Scheduling UI Updates
