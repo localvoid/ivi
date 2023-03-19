@@ -1,4 +1,4 @@
-# [ivi](ttps://github.com/localvoid/ivi) Rollup Plugin
+# [ivi](https://github.com/localvoid/ivi) Rollup Plugin
 
 ## Example Configuration
 

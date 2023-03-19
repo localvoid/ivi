@@ -1,4 +1,4 @@
-# [ivi](ttps://github.com/localvoid/ivi) Template Compiler
+# [ivi](https://github.com/localvoid/ivi) Template Compiler
 
 Babel plugins for template precompilation and optimization.
 

@@ -1,4 +1,4 @@
-# [ivi](ttps://github.com/localvoid/ivi) Template Compiler
+# [ivi](https://github.com/localvoid/ivi) Template Compiler
 
 Template compiler is implemented as a throwaway optimized code, it was designed
 precisely for the current set of features. Please, don't try to shoehorn some
