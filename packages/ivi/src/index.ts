@@ -158,6 +158,8 @@ export interface RenderContext {
   n: Node | null;
   /** Template state index. */
   si: number;
+  /** DOM Side Effects */
+  e: Array<() => void>;
 }
 
 // When object is sealed and stored in a const variable, JIT compiler can
@@ -169,6 +171,7 @@ export const RENDER_CONTEXT: RenderContext = _Object.seal({
   p: null!,
   n: null,
   si: 0,
+  e: [],
 });
 
 // Types are stored as bit flags so that we could perform multiple tests with a
@@ -382,6 +385,16 @@ export type VArray = VAny[];
  */
 export type ElementDirective = <E extends Element>(element: E) => void;
 
+const _flushDOMEffects = () => {
+  const e = RENDER_CONTEXT.e;
+  if (e.length > 0) {
+    RENDER_CONTEXT.e = [];
+    for (let i = 0; i < e.length; i++) {
+      e[i]();
+    }
+  }
+};
+
 const _updateTemplateProperties = (
   currentElement: Element,
   opCodes: PropOpCode[],
@@ -537,7 +550,7 @@ const _mountTemplate = (parentSNode: SNode, vNode: VTemplate) => {
       const type = childOpCode & ChildOpCode.Type;
       const value = childOpCode >> ChildOpCode.ValueShift;
       if (type === ChildOpCode.Child) {
-        children[childrenIndex++] = mount(stateNode, props[value]);
+        children[childrenIndex++] = _mount(stateNode, props[value]);
       } else if (type === ChildOpCode.SetNext) {
         ctx.n = state[value];
       } else { // ChildOpCode.SetParent
@@ -595,7 +608,7 @@ const _updateTemplate = (
       const value = childOpCode >> ChildOpCode.ValueShift;
       if (type === ChildOpCode.Child) {
         children[childrenIndex] =
-          update(
+          _update(
             sNode,
             children[childrenIndex++],
             nextProps[value],
@@ -625,7 +638,7 @@ const _mountList = (
   const sChildren = _Array(i);
   const sNode = createSNode(flags, vNode, sChildren, null, parentState);
   while (i > 0) {
-    sChildren[--i] = mount(sNode, children[i]);
+    sChildren[--i] = _mount(sNode, children[i]);
   }
   return sNode;
 };
@@ -652,7 +665,7 @@ const _updateText = (
     return sNode;
   }
   nodeRemoveChild!.call(ctx.p, s);
-  return mount(parentSNode, next)!;
+  return _mount(parentSNode, next)!;
 };
 
 const _updateComponent = (
@@ -671,14 +684,14 @@ const _updateComponent = (
       (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
     )
   ) {
-    sNode.c = update(
+    sNode.c = _update(
       sNode,
       child as SNode,
       sNode.s.r!(nextProps),
       updateFlags,
     );
   } else if (child !== null) {
-    dirtyCheck(child as SNode, updateFlags);
+    _dirtyCheck(child as SNode, updateFlags);
   }
 };
 
@@ -689,13 +702,14 @@ const _updateArray = (
   updateFlags: Flags,
 ): SNode | null => {
   if (!_isArray(next)) {
-    unmount(sNode, true);
-    return mount(parentSNode, next);
+    _unmount(sNode, true);
+    return _mount(parentSNode, next);
   }
   let nextLength = next.length;
   if (nextLength === 0) {
-    unmount(sNode, true);
+    _unmount(sNode, true);
   } else {
+    sNode.f = Flags.Array;
     const sChildren = sNode.c as (SNode | null)[];
     let prevLength = sChildren.length;
     if (nextLength !== prevLength) {
@@ -704,15 +718,15 @@ const _updateArray = (
       while (prevLength > nextLength) {
         const sChild = sChildren[--prevLength];
         if (sChild !== null) {
-          unmount(sChild, true);
+          _unmount(sChild, true);
         }
       }
       while (nextLength > prevLength) {
-        newSChildren[--nextLength] = mount(sNode, next[nextLength]);
+        newSChildren[--nextLength] = _mount(sNode, next[nextLength]);
       }
     }
     while (nextLength > 0) {
-      sChildren[--nextLength] = update(
+      sChildren[--nextLength] = _update(
         sNode,
         sChildren[nextLength],
         next[nextLength],
@@ -720,8 +734,240 @@ const _updateArray = (
       );
     }
   }
-  sNode.f = Flags.Array;
   return sNode;
+};
+
+/**
+ * Updates a Stateful Node with a new Stateless Node.
+ *
+ * @param parentSNode Parent Stateul Node.
+ * @param sNode Stateful Node to update.
+ * @param next New Stateless Node.
+ * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
+ * @returns Stateful Node.
+ */
+const _update = (
+  parentSNode: SNode,
+  sNode: SNode | null,
+  next: VAny,
+  updateFlags: number,
+): SNode | null => {
+  if (sNode === null) {
+    return _mount(parentSNode, next);
+  }
+  if (next === null) {
+    _unmount(sNode, true);
+    return null;
+  }
+
+  const flags = sNode.f & Flags.TypeMask;
+
+  if (flags === Flags.Text) {
+    return _updateText(parentSNode, sNode as SText, next as string, updateFlags);
+  }
+  const prev = sNode.v;
+  sNode.v = next;
+  if (prev === next) {
+    _dirtyCheck(sNode, updateFlags);
+    return sNode;
+  }
+  if (flags === Flags.Array) {
+    return _updateArray(parentSNode, sNode, next, updateFlags);
+  }
+
+  // Text and Array should be checked before Component, Template and List
+  // because their stateless nodes are represented with basic string and array
+  // types.
+  if ((prev as VNode).d !== (next as VNode).d) {
+    _unmount(sNode, true);
+    return _mount(parentSNode, next);
+  }
+
+  sNode.f &= Flags.TypeMask;
+  if (flags === Flags.Component) {
+    _updateComponent(
+      sNode as Component,
+      prev as VComponent,
+      next as VComponent,
+      updateFlags,
+    );
+  } else if (flags === Flags.Template) {
+    _updateTemplate(
+      sNode as STemplate,
+      prev as VTemplate,
+      next as VTemplate,
+      updateFlags,
+    );
+  } else {
+    _updateList(
+      sNode,
+      (prev as VList).p,
+      (next as VList).p,
+      updateFlags,
+    );
+  }
+
+  return sNode;
+};
+
+/**
+ * Mounts Stateless Node.
+ *
+ * @param parentSNode Parent Stateful Node.
+ * @param v Stateless Node.
+ * @returns Mounted Stateful Node.
+ */
+const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
+  if (v !== null) {
+    if (typeof v === "object") {
+      if (_isArray(v)) {
+        return _mountList(parentSNode, Flags.Array, v, v);
+      } else {
+        const descriptor = v.d;
+        const type = descriptor.f & (Flags.Template | Flags.Component);
+        if (type === Flags.Template) {
+          return _mountTemplate(parentSNode, v as VTemplate);
+        } else if (type === Flags.Component) {
+          const componentState: ComponentState = { r: null, u: null };
+          const sNode: Component = createSNode<VComponent, ComponentState>(
+            Flags.Component,
+            v as VComponent,
+            null,
+            componentState,
+            parentSNode,
+          );
+          const renderFn = (descriptor as ComponentDescriptor).p1(sNode);
+          componentState.r = renderFn;
+          sNode.c = _mount(sNode, renderFn((v as VComponent).p));
+          return sNode;
+        }
+        // List
+        return _mountList(parentSNode, Flags.List, (v as VList).p.v, v);
+      }
+    } else {
+      const ctx = RENDER_CONTEXT;
+      const e = doc.createTextNode(v as string);
+      nodeInsertBefore.call(ctx.p, e, ctx.n);
+      ctx.n = e;
+      return createSNode(Flags.Text, v, null, e, parentSNode);
+    }
+  }
+  return null;
+};
+
+/**
+ * Performs a Dirty Checking in a Stateful Node Subtree.
+ *
+ * @param sNode Stateful Node.
+ * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
+ */
+const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
+  const ctx = RENDER_CONTEXT;
+  const children = sNode.c;
+  const flags = sNode.f;
+  sNode.f &= Flags.TypeMask;
+  if (flags & Flags.Template) {
+    const rootDOMNode = (sNode as STemplate).s[0] as Element;
+    if (updateFlags & Flags.DisplaceNode) {
+      updateFlags ^= Flags.DisplaceNode;
+      nodeInsertBefore.call(ctx.p, rootDOMNode, ctx.n);
+    }
+    if (flags & Flags.DirtySubtree) {
+      ctx.p = rootDOMNode;
+      ctx.n = null;
+      const parentDOMElement = ctx.p;
+      const state = (sNode as STemplate).s;
+      const childOpCodes = (sNode as STemplate).v.d.p1.c;
+      let childrenIndex = 0;
+      for (let i = 0; i < childOpCodes.length; i++) {
+        const op = childOpCodes[i];
+        const type = op & ChildOpCode.Type;
+        const value = op >> ChildOpCode.ValueShift;
+        if (type === ChildOpCode.Child) {
+          const sChild = (children as (SNode | null)[])[childrenIndex++];
+          if (sChild !== null) {
+            _dirtyCheck(sChild, updateFlags);
+          }
+        } else if (type === ChildOpCode.SetNext) {
+          ctx.n = (state as Node[])[value];
+        } else { // ChildOpCode.SetParent
+          ctx.p = state[value] as Element;
+          ctx.n = null;
+        }
+      }
+      ctx.p = parentDOMElement;
+    }
+    ctx.n = rootDOMNode;
+  } else if (flags & Flags.Text) {
+    if (updateFlags & Flags.DisplaceNode) {
+      nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
+    }
+    ctx.n = sNode.s;
+  } else if (flags & Flags.Component) {
+    if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
+      sNode.c = _update(
+        sNode,
+        children as SNode,
+        (sNode as Component).s.r!((sNode as Component).v.p),
+        updateFlags,
+      );
+    } else if (children !== null) {
+      _dirtyCheck(children as SNode, updateFlags);
+    }
+  } else { // Array || List
+    let i = (children as Array<SNode | null>).length;
+    while (--i >= 0) {
+      const sChild = (children as Array<SNode | null>)[i];
+      if (sChild !== null) {
+        _dirtyCheck(sChild, updateFlags);
+      }
+    }
+  }
+};
+
+/**
+ * Unmounts Stateful Node.
+ *
+ * @param sNode Stateful Node.
+ * @param detach Detach root DOM nodes from the DOM.
+ */
+const _unmount = (sNode: SNode, detach: boolean): void => {
+  const flags = sNode.f;
+
+  if (detach === true && (flags & (Flags.Template | Flags.Text))) {
+    detach = false;
+    nodeRemoveChild.call(
+      RENDER_CONTEXT.p,
+      (flags & Flags.Template)
+        ? (sNode as STemplate).s[0]
+        : (sNode as SText).s
+    );
+  }
+  const sChildren = sNode.c;
+  if (sChildren !== null) {
+    if (_isArray(sChildren)) {
+      for (let i = 0; i < sChildren.length; i++) {
+        const sChild = sChildren[i];
+        if (sChild !== null) {
+          _unmount(sChild, detach);
+        }
+      }
+    } else {
+      _unmount(sChildren as SNode, detach);
+    }
+  }
+  if (flags & Flags.Component) {
+    const unmountHooks = (sNode as SComponent).s.u;
+    if (unmountHooks !== null) {
+      if (typeof unmountHooks === "function") {
+        unmountHooks();
+      } else {
+        for (let i = 0; i < unmountHooks.length; i++) {
+          unmountHooks[i]();
+        }
+      }
+    }
+  }
 };
 
 const enum MagicValues {
@@ -1000,11 +1246,11 @@ const _updateList = (
 
   if (bLength === 0) { // New children list is empty.
     if (aLength > 0) { // Unmount nodes from the old children list.
-      unmount(sNode, true);
+      _unmount(sNode, true);
     }
   } else if (aLength === 0) { // Old children list is empty.
     while (bLength > 0) { // Mount nodes from the new children list.
-      result[--bLength] = mount(sNode, bVNodes[bLength]);
+      result[--bLength] = _mount(sNode, bVNodes[bLength]);
     }
   } else {
     const sChildren = sNode.c as Array<SNode | null>;
@@ -1017,7 +1263,7 @@ const _updateList = (
     outer: while (true) {
       // Update nodes with the same key at the end.
       while (aKeys[aEnd] === key) {
-        result[bEnd] = update(
+        result[bEnd] = _update(
           sNode,
           sChildren[aEnd--],
           bVNodes[bEnd],
@@ -1041,7 +1287,7 @@ const _updateList = (
     if (start > aEnd) {
       // All nodes from `a` are updated, insert the rest from `b`.
       while (bEnd >= start) {
-        result[bEnd] = mount(sNode, bVNodes[bEnd--]);
+        result[bEnd] = _mount(sNode, bVNodes[bEnd--]);
       }
     } else if (start > bEnd) {
       // All nodes from `b` are updated, remove the rest from `a`.
@@ -1049,7 +1295,7 @@ const _updateList = (
       do {
         const sChild = sChildren[bLength++];
         if (sChild !== null) {
-          unmount(sChild, true);
+          _unmount(sChild, true);
         }
       } while (bLength <= aEnd);
     } else { // Step 3
@@ -1076,7 +1322,7 @@ const _updateList = (
           sources[nextPosition - start] = i;
           result[nextPosition] = sChild;
         } else if (sChild !== null) {
-          unmount(sChild, true);
+          _unmount(sChild, true);
         }
       }
 
@@ -1092,8 +1338,8 @@ const _updateList = (
         const node = bVNodes[bEnd];
         const lisValue = sources[bLength];
         result[bEnd] = (lisValue === -1)
-          ? mount(sNode, node)
-          : update(
+          ? _mount(sNode, node)
+          : _update(
             sNode,
             result[bEnd],
             node,
@@ -1108,7 +1354,7 @@ const _updateList = (
     // Delayed update for nodes from Step 1 (prefix only). Reconciliation algorithm always updates nodes from right to
     // left.
     while (start > 0) {
-      result[--start] = update(
+      result[--start] = _update(
         sNode,
         sChildren[start],
         bVNodes[start],
@@ -1293,6 +1539,11 @@ export const component = <P>(
 );
 
 /**
+ * Prevents triggering updates.
+ */
+export const preventUpdates = (p: any) => true;
+
+/**
  * Adds an unmount hook.
  *
  * @example
@@ -1314,6 +1565,64 @@ export const useUnmount = (component: Component, hook: () => void): void => {
     : (typeof hooks === "function")
       ? [hooks, hook]
       : (hooks.push(hook), hooks);
+};
+
+/**
+ * Creates a side effect hook.
+ *
+ * @example
+ *
+ *     const Example = component((c) => {
+ *       const [count, setCount] = useState(0);
+ *       const timer = useEffect(c, shallowEq, ({ interval }) => {
+ *         const tid = setInterval(() => { setCount(count() + 1); }, interval);
+ *         return () => { clearInterval(tid); };
+ *       });
+ *
+ *       return (interval) => (
+ *         timer({ interval }),
+ *
+ *         htm`span.Counter ${i}`
+ *       );
+ *     });
+ *
+ * @typeparam T Hook props type.
+ * @param component Component instance.
+ * @param hook Side effect function.
+ * @param areEqual Function that checks if input value hasn't changed.
+ * @returns Side effect hook.
+ */
+export const useEffect = <P>(
+  component: Component,
+  hook: undefined extends P
+    ? () => (() => void) | void
+    : (props: P) => (() => void) | void,
+  areEqual?: (prev: P, next: P) => boolean,
+): undefined extends P
+  ? () => void
+  : (props: P) => void => {
+  // var usage is intentional, see `index.js` module for an explanation.
+  var reset: (() => void) | void;
+  var prev: P | undefined;
+  return (next?: P) => {
+    if (areEqual === void 0 || areEqual(prev as P, next as P) === false) {
+      if (reset !== void 0) {
+        reset();
+      }
+      RENDER_CONTEXT.e.push(() => {
+        reset = hook(next!);
+        if (component !== void 0 && reset !== void 0) {
+          useUnmount(component, () => {
+            if (reset !== void 0) {
+              reset();
+            }
+          });
+          component = (void 0)!;
+        }
+      });
+    }
+    prev = next;
+  };
 };
 
 /**
@@ -1366,234 +1675,57 @@ export const List = <E, K>(
 });
 
 /**
- * Performs a Dirty Checking in a Stateful Node Subtree.
+ * Performs a Dirty Checking in a root subtree.
  *
- * @param sNode Stateful Node.
+ * @param root Stateful Root Node.
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
-export const dirtyCheck = (sNode: SNode, updateFlags: number): void => {
-  const ctx = RENDER_CONTEXT;
-  const children = sNode.c;
-  const flags = sNode.f;
-  if (flags & Flags.Template) {
-    const rootDOMNode = (sNode as STemplate).s[0] as Element;
-    if (updateFlags & Flags.DisplaceNode) {
-      updateFlags ^= Flags.DisplaceNode;
-      nodeInsertBefore.call(ctx.p, rootDOMNode, ctx.n);
-    }
-    if (flags & Flags.DirtySubtree) {
-      ctx.p = rootDOMNode;
-      ctx.n = null;
-      const parentDOMElement = ctx.p;
-      const state = (sNode as STemplate).s;
-      const childOpCodes = (sNode as STemplate).v.d.p1.c;
-      let childrenIndex = 0;
-      for (let i = 0; i < childOpCodes.length; i++) {
-        const op = childOpCodes[i];
-        const type = op & ChildOpCode.Type;
-        const value = op >> ChildOpCode.ValueShift;
-        if (type === ChildOpCode.Child) {
-          const sChild = (children as (SNode | null)[])[childrenIndex++];
-          if (sChild !== null) {
-            dirtyCheck(sChild, updateFlags);
-          }
-        } else if (type === ChildOpCode.SetNext) {
-          ctx.n = (state as Node[])[value];
-        } else { // ChildOpCode.SetParent
-          ctx.p = state[value] as Element;
-          ctx.n = null;
-        }
-      }
-      ctx.p = parentDOMElement;
-    }
-    ctx.n = rootDOMNode;
-  } else if (flags & Flags.Text) {
-    if (updateFlags & Flags.DisplaceNode) {
-      nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
-    }
-    ctx.n = sNode.s;
-  } else if (flags & Flags.Component) {
-    if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
-      sNode.c = update(
-        sNode,
-        children as SNode,
-        (sNode as Component).s.r!((sNode as Component).v.p),
-        updateFlags,
-      );
-    } else if (children !== null) {
-      dirtyCheck(children as SNode, updateFlags);
-    }
-  } else { // Array || List
-    let i = (children as Array<SNode | null>).length;
-    while (--i >= 0) {
-      const sChild = (children as Array<SNode | null>)[i];
-      if (sChild !== null) {
-        dirtyCheck(sChild, updateFlags);
-      }
+export const dirtyCheck = (root: SRoot, updateFlags: number): void => {
+  while (root.f & Flags.DirtySubtree) {
+    root.f = Flags.Root;
+    if (root.c !== null) {
+      const domSlot = root.v.p;
+      RENDER_CONTEXT.p = domSlot.p;
+      RENDER_CONTEXT.n = domSlot.n;
+      _dirtyCheck(root.c as SNode, updateFlags);
+      updateFlags = 0;
+      _flushDOMEffects();
     }
   }
-  sNode.f &= Flags.TypeMask;
 };
 
 /**
- * Updates a Stateful Node with a new Stateless Node.
+ * Updates a root subtree.
  *
- * @param parentSNode Parent Stateul Node.
- * @param sNode Stateful Node to update.
+ * @param root Stateful Root Node.
  * @param next New Stateless Node.
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
- * @returns Stateful Node.
  */
-export const update = (
-  parentSNode: SNode,
-  sNode: SNode | null,
-  next: VAny,
-  updateFlags: number,
-): SNode | null => {
-  if (sNode === null) {
-    return mount(parentSNode, next);
-  }
-  if (next === null) {
-    unmount(sNode, true);
-    return null;
-  }
-
-  const flags = sNode.f & Flags.TypeMask;
-
-  if (flags === Flags.Text) {
-    return _updateText(parentSNode, sNode as SText, next as string, updateFlags);
-  }
-  const prev = sNode.v;
-  sNode.v = next;
-  if (prev === next) {
-    dirtyCheck(sNode, updateFlags);
-    return sNode;
-  }
-  if (flags === Flags.Array) {
-    return _updateArray(parentSNode, sNode, next, updateFlags);
-  }
-
-  // Text and Array should be checked before Component, Template and List
-  // because their stateless nodes are represented with basic string and array
-  // types.
-  if ((prev as VNode).d !== (next as VNode).d) {
-    unmount(sNode, true);
-    return mount(parentSNode, next);
-  }
-
-  if (flags === Flags.Component) {
-    _updateComponent(
-      sNode as Component,
-      prev as VComponent,
-      next as VComponent,
-      updateFlags,
-    );
-  } else if (flags === Flags.Template) {
-    _updateTemplate(
-      sNode as STemplate,
-      prev as VTemplate,
-      next as VTemplate,
-      updateFlags,
-    );
-  } else {
-    _updateList(
-      sNode,
-      (prev as VList).p,
-      (next as VList).p,
-      updateFlags,
-    );
-  }
-
-  sNode.f &= Flags.TypeMask;
-  return sNode;
+export const update = (root: SRoot, next: VAny, updateFlags: number): void => {
+  const domSlot = root.v.p;
+  RENDER_CONTEXT.p = domSlot.p;
+  RENDER_CONTEXT.n = domSlot.n;
+  root.f = Flags.Root;
+  root.c = _update(
+    root,
+    root.c as SNode,
+    next,
+    updateFlags,
+  );
+  _flushDOMEffects();
+  dirtyCheck(root, 0);
 };
 
 /**
- * Mounts Stateless Node.
+ * Unmounts root node.
  *
- * @param parentSNode Parent Stateful Node.
- * @param v Stateless Node.
- * @returns Mounted Stateful Node.
- */
-export const mount = (parentSNode: SNode, v: VAny): SNode | null => {
-  if (v !== null) {
-    if (typeof v === "object") {
-      if (_isArray(v)) {
-        return _mountList(parentSNode, Flags.Array, v, v);
-      } else {
-        const descriptor = v.d;
-        const type = descriptor.f & (Flags.Template | Flags.Component);
-        if (type === Flags.Template) {
-          return _mountTemplate(parentSNode, v as VTemplate);
-        } else if (type === Flags.Component) {
-          const componentState: ComponentState = { r: null, u: null };
-          const sNode: Component = createSNode<VComponent, ComponentState>(
-            Flags.Component,
-            v as VComponent,
-            null,
-            componentState,
-            parentSNode,
-          );
-          const renderFn = (descriptor as ComponentDescriptor).p1(sNode);
-          componentState.r = renderFn;
-          sNode.c = mount(sNode, renderFn((v as VComponent).p));
-          return sNode;
-        }
-        // List
-        return _mountList(parentSNode, Flags.List, (v as VList).p.v, v);
-      }
-    } else {
-      const ctx = RENDER_CONTEXT;
-      const e = doc.createTextNode(v as string);
-      nodeInsertBefore.call(ctx.p, e, ctx.n);
-      ctx.n = e;
-      return createSNode(Flags.Text, v, null, e, parentSNode);
-    }
-  }
-  return null;
-};
-
-/**
- * Unmounts Stateful Node.
- *
- * @param sNode Stateful Node.
+ * @param root Stateful Root Node.
  * @param detach Detach root DOM nodes from the DOM.
  */
-export const unmount = (sNode: SNode, detach: boolean): void => {
-  const flags = sNode.f;
-
-  if (detach === true && (flags & (Flags.Template | Flags.Text))) {
-    detach = false;
-    nodeRemoveChild.call(
-      RENDER_CONTEXT.p,
-      (flags & Flags.Template)
-        ? (sNode as STemplate).s[0]
-        : (sNode as SText).s
-    );
-  }
-  const sChildren = sNode.c;
-  if (sChildren !== null) {
-    if (_isArray(sChildren)) {
-      for (let i = 0; i < sChildren.length; i++) {
-        const sChild = sChildren[i];
-        if (sChild !== null) {
-          unmount(sChild, detach);
-        }
-      }
-    } else {
-      unmount(sChildren as SNode, detach);
-    }
-  }
-  if (flags & Flags.Component) {
-    const unmountHooks = (sNode as SComponent).s.u;
-    if (unmountHooks !== null) {
-      if (typeof unmountHooks === "function") {
-        unmountHooks();
-      } else {
-        for (let i = 0; i < unmountHooks.length; i++) {
-          unmountHooks[i]();
-        }
-      }
-    }
+export const unmount = (root: SRoot, detach: boolean): void => {
+  if (root.c !== null) {
+    root.f = Flags.Root;
+    RENDER_CONTEXT.p = root.v.p.p;
+    _unmount(root.c as SNode, detach);
   }
 };

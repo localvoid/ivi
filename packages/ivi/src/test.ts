@@ -1,8 +1,6 @@
-import { findDOMNode } from "./dom.js";
 import type { RootDescriptor, SNode, SRoot, VAny, VRoot } from "./index.js";
-import {
-  Flags, RENDER_CONTEXT, createSNode, dirtyCheck, update, unmount,
-} from "./index.js";
+import { Flags, createSNode, dirtyCheck, update, unmount } from "./index.js";
+import { findDOMNode } from "./dom.js";
 
 const TEST_ROOT_DESCRIPTOR: RootDescriptor<TestRoot> = {
   f: Flags.Root,
@@ -27,39 +25,21 @@ export class TestRoot {
   }
 
   update(v: VAny, forceUpdate: boolean = false) {
-    const root = this._root;
-    const domSlot = root.v.p;
-    RENDER_CONTEXT.p = domSlot.p;
-    RENDER_CONTEXT.n = domSlot.n;
-    root.c = update(
-      root,
-      root.c as SNode | null,
+    update(
+      this._root,
       v,
       forceUpdate === true
         ? Flags.ForceUpdate
         : 0,
     );
-    root.f = Flags.Root;
   }
 
   dirtyCheck() {
-    const root = this._root;
-    const domSlot = root.v.p;
-    RENDER_CONTEXT.p = domSlot.p;
-    RENDER_CONTEXT.n = domSlot.n;
-    if (root.c !== null) {
-      dirtyCheck(root.c as SNode, 0);
-    }
-    root.f = Flags.Root;
+    dirtyCheck(this._root, 0);
   }
 
   dispose() {
-    const root = this._root;
-    if (root.c !== null) {
-      root.f = Flags.Root;
-      RENDER_CONTEXT.p = root.v.p.p;
-      unmount(root.c as SNode, true);
-    }
+    unmount(this._root, true);
   }
 
   _invalidate() {

@@ -485,6 +485,12 @@ function component<P>(
 ): (props: P) => VComponent<P>;
 
 /**
+ * Prevents triggering updates.
+ */
+function preventUpdates(p: any): true;
+
+
+/**
  * Invalidates a component.
  *
  * @param c Component instance.
@@ -498,6 +504,55 @@ function invalidate(c: Component): void;
  * @param hook Unmount hook.
  */
 function useUnmount(component: Component, hook: () => void): void;
+
+/**
+ * useEffect creates a side effect hook.
+ *
+ * @typeparam P Hook props type.
+ * @param component Component instance.
+ * @param areEqual Function that checks if input value hasn't changed.
+ * @param hook Side effect function.
+ * @returns Side effect hook.
+ */
+function useEffect = <P>(
+  component: Component,
+  hook: (props?: P) => (() => void) | void,
+  areEqual?: (prev: P, next: P) => boolean,
+): (props: P) => void;
+```
+#### Example
+
+Using escape hatches to integrate CodeMirror.
+
+```js
+import { component, useEffect, preventUpdates } from "ivi";
+import { createRoot, updateRoot } from "ivi/root";
+import { htm } from "ivi/template";
+import { EditorView, basicSetup } from "codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+
+const App = component((c) => {
+  let _container: HTMLElement;
+  let _editor: EditorView;
+
+  const ref = (e: HTMLElement) => { _container = e; };
+  useEffect(c, () => {
+    _editor = new EditorView({
+      extensions: [basicSetup, javascript()],
+      parent: _container,
+    });
+  })();
+
+  return () => htm`
+    div.App
+      div.CodeMirror $${ref}
+  `;
+});
+
+updateRoot(
+  createRoot(document.body),
+  App(),
+);
 ```
 
 ### Stateless Components
@@ -636,44 +691,6 @@ const Example = component((c) => {
       div.counter ${counter()}
       button @click=${inc} 'Increment'
   `;
-});
-```
-
-## Component Hooks
-
-### Effect
-
-```ts
-/**
- * useEffect creates a side effect hook.
- *
- * @typeparam T Hook props type.
- * @param component Component instance.
- * @param areEqual Function that checks if input value hasn't changed.
- * @param hook Side effect function.
- * @returns Side effect hook.
- */
-function useEffect = <P>(
-  component: Component,
-  areEqual: (prev: P, next: P) => boolean,
-  hook: (props?: P) => (() => void) | void,
-): (props: P) => void;
-```
-
-Example:
-
-```js
-const Example = component((c) => {
-  const [count, setCount] = useState(c, 0);
-  const timer = useEffect(c, shallowEq, ({ interval }) => {
-    const tid = setInterval(() => { setCount(count() + 1); }, interval);
-    return () => { clearInterval(tid); };
-  });
-
-  return (interval) => (
-    timer({ interval }),
-    htm`span.Counter ${i}`
-  );
 });
 ```
 
@@ -910,91 +927,6 @@ behavior as runtime compiler. It is quite easy to figure out during
 precompilation that two templates have similar shapes, but the major downside
 is that we will need to switch to whole program deduplication and it is going
 to have an impact on the chunking algorithm.
-
-#### Side Effects in Components
-
-Side Effects in Components doesn't use any "magic" behind the scenes and it is
-recommended to understand how they are implemented in ivi, because in a lot of
-use cases we can avoid using generic `useEffect()` function and just write
-effects as simple closures.
-
-```ts
-function useEffect<P>(
-  component: Component,
-  areEqual: (prev: P, next: P) => boolean,
-  hook: (props?: P) => (() => void) | void,
-): (props: P) => void {
-  // When effect is updated, its previous state is cleared with reset closure.
-  // When reset has an `undefined` value, it means that it is either invoked
-  // for the first time, or effect doesn't need to clear internal state.
-  let reset: (() => void) | void;
-  // Previous input value that is used to avoid triggering side effects when
-  // its input value hasn't changed.
-  let prev: P | undefined;
-  return (next: P) => {
-    // Updates only when its input value has changed.
-    if (areEqual(prev as P, next as P) !== true) {
-      // Resets previous state.
-      if (reset !== void 0) {
-        reset();
-      }
-      // Invokes effect hook and assigns a new reset function.
-      reset = hook(next);
-      // When we add an unmount hook, we are dropping a reference to component
-      // instance, since we no longer need it.
-      // To avoid adding multiple unmount hooks, we just checking if component
-      // is referencing any component instances.
-      // And in cases when effect hook doesn't have any reset function, we can
-      // ignore adding any unmount hooks.
-      if (component !== void 0 && reset !== void 0) {
-        // Adds unmount hook.
-        useUnmount(component, () => {
-          // Checks if reset still holds a reference to a reset function to
-          // avoid issues when effect hook uses a reset function only in some
-          // cases.
-          if (reset !== void 0) {
-            // Invokes a reset function.
-            reset();
-          }
-        });
-        // Drops a reference to component instance.
-        component = (void 0)!;
-      }
-    }
-    // Always updates previous input value to reduce memory consumption.
-    // The latest values are most likely to be stored in the app or component
-    // state, so it is better to drop all references to old values.
-    prev = next;
-  };
-}
-```
-
-Below is a simple example that follows a similar logic that is implemented in
-a generic `useEffect()` function.
-
-```js
-function useInterval(component, fn) {
-  let prevTime;
-  let tid;
-  useUnmount(component, () => { clearInterval(tid); });
-  return (time) => {
-    if (prevTime !== time) {
-      prevTime = time;
-      clearInterval(tid);
-      tid = setInterval(fn, time);
-    }
-  };
-}
-
-const Example = component((c) => {
-  const [count, setCount] = useState(c, 0);
-  const timer = useInterval(c, () => { setCount(count() + 1); });
-  return (time) => (
-    timer(time),
-    htm`span.Counter ${i}`
-  );
-});
-```
 
 #### Forcing Component Updates
 
@@ -1292,6 +1224,9 @@ As an example, there is a simple scheduler implemented in an `ivi/root`
 module that uses microtasks to batch updates.
 
 ```ts
+import type { RootDescriptor, SRoot, VAny } from "./index.js";
+import { Flags, createSNode, dirtyCheck, update, unmount } from "./index.js";
+
 const _queueMicrotask = queueMicrotask;
 
 const ROOT_DESCRIPTOR: RootDescriptor = {
@@ -1299,16 +1234,9 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
   f: Flags.Root,
   // OnRootInvalidated hook
   p1: (root: SRoot) => {
+    // Schedules a microtask for dirty checking.
     _queueMicrotask(() => {
-      // Retrieves DOM slot from VNode object.
-      const domSlot = root.v.p;
-      // Assign parent element and next node to the render context.
-      RENDER_CONTEXT.p = domSlot.p;
-      RENDER_CONTEXT.n = domSlot.n;
-      // Updates invalidated components.
-      dirtyCheck(root.c as SNode, 0);
-      // Flags should always be reassigned to clear dirty flags.
-      root.f = Flags.Root;
+      dirtyCheck(root, 0);
     });
   },
   // p2 should always be initialized with `null` value. This propery is
@@ -1355,33 +1283,21 @@ export const createRoot = (p: Element, n: Node | null = null): SRoot<null> => (
  * Updates a root subtree.
  *
  * @param root Root Node.
- * @param v Stateless Node.
+ * @param next Stateless Node.
  * @param forceUpdate Force update for all components.
  */
 export const updateRoot = (
   root: SRoot<null>,
-  v: VAny,
+  next: VAny,
   forceUpdate: boolean = false,
 ): void => {
-  // Retrieves DOM slot from VNode object.
-  const domSlot = root.v.p;
-  // Assign parent element and next node to the render context.
-  RENDER_CONTEXT.p = domSlot.p;
-  RENDER_CONTEXT.n = domSlot.n;
-  root.c = update(
-    // Parent SNode should always be a root node.
+  update(
     root,
-    // Previous UI state.
-    root.c as SNode,
-    // UI Representation.
-    v,
-    // Force update.
+    next,
     forceUpdate === true
       ? Flags.ForceUpdate
       : 0,
   );
-  // Flags should always be reassigned on update to clear dirty flags.
-  root.f = Flags.Root;
 };
 
 /**
@@ -1390,21 +1306,12 @@ export const updateRoot = (
  * @param root Root Node.
  */
 export const forceUpdateRoot = (root: SRoot<null>): void => {
-  // Checks if a Root Node has any children.
-  if (root.c !== null) {
-    update(
-      // Parent SNode should always be a root node.
-      root,
-      // Previous Stateful Node
-      root.c as SNode,
-      // Previous Stateless Node.
-      (root.c as SNode).v,
-      // Force update flag.
-      Flags.ForceUpdate,
-    );
-    // Flags should always be reassigned on update to clear dirty flags.
-    root.f = Flags.Root;
-  }
+  dirtyCheck(
+    // Parent SNode should always be a root node.
+    root,
+    // Force update flag.
+    Flags.ForceUpdate,
+  );
 };
 
 /**
@@ -1414,19 +1321,13 @@ export const forceUpdateRoot = (root: SRoot<null>): void => {
  * @param detach Detach root nodes from the DOM.
  */
 export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
-  if (root.c !== null) {
-    // Clear dirty flags.
-    root.f = Flags.Root;
-    // Assign parent element to the render context.
-    RENDER_CONTEXT.p = root.v.p.p;
-    // Unmounts a root subtree.
-    unmount(
-      // Previous UI state.
-      root.c as SNode,
-      // Detach root nodes.
-      detach,
-    );
-  }
+  // Unmounts a root subtree.
+  unmount(
+    // Root node.
+    root,
+    // Detach DOM nodes.
+    detach,
+  );
 };
 ```
 

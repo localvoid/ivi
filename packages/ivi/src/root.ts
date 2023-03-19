@@ -1,12 +1,5 @@
-import type { RootDescriptor, SNode, SRoot, VAny } from "./index.js";
-import {
-  Flags,
-  RENDER_CONTEXT,
-  createSNode,
-  dirtyCheck,
-  update,
-  unmount,
-} from "./index.js";
+import type { RootDescriptor, SRoot, VAny } from "./index.js";
+import { Flags, createSNode, dirtyCheck, update, unmount } from "./index.js";
 
 const _queueMicrotask = queueMicrotask;
 
@@ -15,16 +8,9 @@ const ROOT_DESCRIPTOR: RootDescriptor = {
   f: Flags.Root,
   // OnRootInvalidated hook
   p1: (root: SRoot) => {
+    // Schedules a microtask for dirty checking.
     _queueMicrotask(() => {
-      // Retrieves DOM slot from VNode object.
-      const domSlot = root.v.p;
-      // Assign parent element and next node to the render context.
-      RENDER_CONTEXT.p = domSlot.p;
-      RENDER_CONTEXT.n = domSlot.n;
-      // Updates invalidated components.
-      dirtyCheck(root.c as SNode, 0);
-      // Flags should always be reassigned to clear dirty flags.
-      root.f = Flags.Root;
+      dirtyCheck(root, 0);
     });
   },
   // p2 should always be initialized with `null` value. This propery is
@@ -71,33 +57,21 @@ export const createRoot = (p: Element, n: Node | null = null): SRoot<null> => (
  * Updates a root subtree.
  *
  * @param root Root Node.
- * @param v Stateless Node.
+ * @param next Stateless Node.
  * @param forceUpdate Force update for all components.
  */
 export const updateRoot = (
   root: SRoot<null>,
-  v: VAny,
+  next: VAny,
   forceUpdate: boolean = false,
 ): void => {
-  // Retrieves DOM slot from VNode object.
-  const domSlot = root.v.p;
-  // Assign parent element and next node to the render context.
-  RENDER_CONTEXT.p = domSlot.p;
-  RENDER_CONTEXT.n = domSlot.n;
-  root.c = update(
-    // Parent SNode should always be a root node.
+  update(
     root,
-    // Previous UI state.
-    root.c as SNode,
-    // UI Representation.
-    v,
-    // Force update.
+    next,
     forceUpdate === true
       ? Flags.ForceUpdate
       : 0,
   );
-  // Flags should always be reassigned on update to clear dirty flags.
-  root.f = Flags.Root;
 };
 
 /**
@@ -106,21 +80,12 @@ export const updateRoot = (
  * @param root Root Node.
  */
 export const forceUpdateRoot = (root: SRoot<null>): void => {
-  // Checks if a Root Node has any children.
-  if (root.c !== null) {
-    update(
-      // Parent SNode should always be a root node.
-      root,
-      // Previous Stateful Node
-      root.c as SNode,
-      // Previous Stateless Node.
-      (root.c as SNode).v,
-      // Force update flag.
-      Flags.ForceUpdate,
-    );
-    // Flags should always be reassigned on update to clear dirty flags.
-    root.f = Flags.Root;
-  }
+  dirtyCheck(
+    // Parent SNode should always be a root node.
+    root,
+    // Force update flag.
+    Flags.ForceUpdate,
+  );
 };
 
 /**
@@ -130,17 +95,11 @@ export const forceUpdateRoot = (root: SRoot<null>): void => {
  * @param detach Detach root nodes from the DOM.
  */
 export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
-  if (root.c !== null) {
-    // Clear dirty flags.
-    root.f = Flags.Root;
-    // Assign parent element to the render context.
-    RENDER_CONTEXT.p = root.v.p.p;
-    // Unmounts a root subtree.
-    unmount(
-      // Previous UI state.
-      root.c as SNode,
-      // Detach root nodes.
-      detach,
-    );
-  }
+  // Unmounts a root subtree.
+  unmount(
+    // Root node.
+    root,
+    // Detach DOM nodes.
+    detach,
+  );
 };
