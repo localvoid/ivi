@@ -26,6 +26,12 @@ importers:
       '@babel/types': 7.21.2
       '@ivi/template-compiler': link:../template-compiler
 
+  packages/@ivi/portal:
+    specifiers:
+      ivi: workspace:^
+    devDependencies:
+      ivi: link:../../ivi
+
   packages/@ivi/rollup-plugin:
     specifiers:
       '@babel/core': ^7.21.0
