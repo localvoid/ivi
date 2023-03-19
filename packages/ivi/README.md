@@ -9,7 +9,7 @@ performance.
 - [Small memory footprint](#internal-data-structures).
 - [Embeddable](#custom-scheduler)
 
-## Basic Example
+## Examples
 
 ```js
 import { component, invalidate } from "ivi";
@@ -33,6 +33,8 @@ updateRoot(
   Counter(),
 );
 ```
+
+- [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
 
 ## Templates
 
