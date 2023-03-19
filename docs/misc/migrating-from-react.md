@@ -3,6 +3,34 @@
 This document shows how to rewrite examples from the https://react.dev/learn/
 documentation with ivi API.
 
+## Table of Contents
+
+- [Describing the UI](#describing-the-ui)
+  - [Your first component](#your-first-component)
+  - [Importing and exporting component](#importing-and-exporting-components)
+  - [Writing markup with JSX](#writing-markup-with-jsx)
+  - [Javascript in JSX with curly braces](#javascript-in-jsx-with-curly-braces)
+  - [Passing props to components](#passing-props-to-a-component)
+  - [Conditional rendering](#conditional-rendering)
+  - [Rendering lists](#rendering-lists)
+  - [Keeping components pure](#keeping-components-pure)
+- [Adding interactivity](#adding-interactivity)
+  - [Responding to events](#responding-to-events)
+  - [State: a component's memory](#state-a-components-memory)
+  - [Updating objects in state](#updating-objects-in-state)
+- [Managing state](#managing-state)
+  - [Reacting to input with state](#reacting-to-input-with-state)
+  - [Choosing the state structure](#choosing-the-state-structure)
+  - [Preserving and resetting state](#preserving-and-resetting-state)
+  - [Extracting state logic into a reducer](#extracting-state-logic-into-a-reducer)
+  - [Passing data deeply with context](#passing-data-deeply-with-context)
+- [Escape hatches](#escape-hatches)
+  - [Referencing values with refs](#referencing-values-with-refs)
+  - [Manipulating the DOM with refs](#manipulating-the-dom-with-refs)
+  - [Synchronizing with Effects](#synchronizing-with-effects)
+  - [Removing Effect dependencies](#removing-effect-dependencies)
+  - [Reusing logic with custom hooks](#reusing-logic-with-custom-hooks)
+
 ## [Describing the UI](https://react.dev/learn/describing-the-ui)
 
 ### [Your first component](https://react.dev/learn/describing-the-ui#your-first-component)
