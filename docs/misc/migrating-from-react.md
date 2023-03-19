@@ -1036,7 +1036,40 @@ const contacts = [
 ];
 ```
 
-ivi: TODO.
+ivi:
+
+```js
+import { component } from 'ivi';
+import { useState } from 'ivi/state';
+import { htm } from 'ivi/template';
+import { Identity } from '@ivi/identity';
+import Chat from './Chat.js';
+import ContactList from './ContactList.js';
+
+const Messenger = component((c) => {
+  const [_to, setTo] = useState(contacts[0]);
+  const onSelect = (contact) => { setTo(contact); };
+  return () => {
+    const to = _to();
+    return htm`
+      div
+        ${ContactList({
+            contacts,
+            selectedContact: to,
+            onSelect,
+        })}
+        ${Identity({ key: to.email, contact: to })}
+    `;
+  }
+});
+export default Messenger;
+
+const contacts = [
+  { name: 'Taylor', email: 'taylor@mail.com' },
+  { name: 'Alice', email: 'alice@mail.com' },
+  { name: 'Bob', email: 'bob@mail.com' }
+];
+```
 
 ### [Extracting state logic into a reducer](https://react.dev/learn/managing-state#extracting-state-logic-into-a-reducer)
 
@@ -1358,7 +1391,7 @@ const VideoPlayer = component((c) => {
 });
 
 const App = component((c) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(c, false);
   return [
     htm`button @click=${onClick} ${isPlaying() ? 'Pause' : 'Play'}`,
     VideoPlayer({
@@ -1547,11 +1580,16 @@ function Dot({ position, opacity }) {
 ivi:
 
 ```js
-import { component, useEffect } from 'ivi';
-import { useState } from 'ivi/state';
+import { Component, component, useEffect } from "ivi";
+import { shallowEqArray } from "ivi/equal";
+import { createRoot, updateRoot } from "ivi/root";
+import { useState } from "ivi/state";
+import { htm } from "ivi/template";
 
-function useDelayedValue(c, value, delay) {
-  const [delayedValue, setDelayedValue] = useState(c, value);
+const ZERO: Point = { x: 0, y: 0 };
+
+function useDelayedValue(c: Component) {
+  const [delayedValue, setDelayedValue] = useState(c, ZERO);
 
   return [
     delayedValue,
@@ -1564,29 +1602,29 @@ function useDelayedValue(c, value, delay) {
 }
 
 function usePointerPosition(c) {
-  const [position, setPosition] = useState(c, { x: 0, y: 0 });
+  const [position, setPosition] = useState(c, ZERO);
   useEffect(c, () => {
-    function handleMove(e) {
+    const onMove = (e) => {
       setPosition({ x: e.clientX, y: e.clientY });
-    }
-    window.addEventListener('pointermove', handleMove);
-    return () => window.removeEventListener('pointermove', handleMove);
+    };
+    window.addEventListener('pointermove', onMove);
+    return () => window.removeEventListener('pointermove', onMove);
   })();
   return position;
 }
 
 const Canvas = component((c) => {
-  const pos1 = usePointerPosition(c);
-  const [pos2, updatePos2] = useDelayedValue(pos1, 100);
-  const [pos3, updatePos3] = useDelayedValue(pos2, 200);
-  const [pos4, updatePos4] = useDelayedValue(pos3, 100);
-  const [pos5, updatePos5] = useDelayedValue(pos3, 50);
+  const _pos1 = usePointerPosition(c);
+  const [_pos2, updatePos2] = useDelayedValue(c);
+  const [_pos3, updatePos3] = useDelayedValue(c);
+  const [_pos4, updatePos4] = useDelayedValue(c);
+  const [_pos5, updatePos5] = useDelayedValue(c);
   return () => {
-    const pos1 = pos1();
-    const pos2 = pos2();
-    const pos3 = pos3()
-    const pos4 = pos4()
-    const pos5 = pos5()
+    const pos1 = _pos1();
+    const pos2 = _pos2();
+    const pos3 = _pos3();
+    const pos4 = _pos4();
+    const pos5 = _pos5();
     updatePos2([pos1, 100]);
     updatePos3([pos2, 200]);
     updatePos4([pos3, 100]);
@@ -1600,12 +1638,16 @@ const Canvas = component((c) => {
     ];
   };
 });
-export default Canvas;
 
 const Dot = ({ position, opacity }) => htm`
   div
-    :style='position:absolute;background-color:pink;border-radius:50%;pointer-events:none;left:-20;top:-20;width:40;height:40'
+    :style='position:absolute;background-color:pink;border-radius:50%;pointer-events:none;left:-20px;top:-20px;width:40px;height:40px'
     ~opacity=${opacity}
     ~transform=${`translate(${position.x}px,${position.y}px)`}
 `;
+
+updateRoot(
+  createRoot(document.getElementById("app")!),
+  Canvas(),
+);
 ```
