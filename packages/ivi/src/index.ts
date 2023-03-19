@@ -387,9 +387,10 @@ export type ElementDirective = <E extends Element>(element: E) => void;
 
 const _flushDOMEffects = () => {
   const e = RENDER_CONTEXT.e;
-  if (e.length > 0) {
+  let i = e.length;
+  if (i > 0) {
     RENDER_CONTEXT.e = [];
-    for (let i = 0; i < e.length; i++) {
+    while (--i >= 0) {
       e[i]();
     }
   }
