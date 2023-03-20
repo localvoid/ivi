@@ -225,7 +225,7 @@ export default TodoList;
 
 React:
 
-```js
+```jsx
 import { getImageUrl } from './utils.js'
 
 export default function Profile() {
@@ -1543,7 +1543,7 @@ export default App;
 
 React:
 
-```js
+```jsx
 import { useState, useEffect } from 'react';
 
 function useDelayedValue(value, delay) {
@@ -1588,19 +1588,21 @@ export default function Canvas() {
 }
 
 function Dot({ position, opacity }) {
+  const style = {
+    position: 'absolute',
+    backgroundColor: 'pink',
+    borderRadius: '50%',
+    opacity,
+    transform: `translate(${position.x}px, ${position.y}px)`,
+    pointerEvents: 'none',
+    left: -20,
+    top: -20,
+    width: 40,
+    height: 40,
+  };
+
   return (
-    <div style={{
-      position: 'absolute',
-      backgroundColor: 'pink',
-      borderRadius: '50%',
-      opacity,
-      transform: `translate(${position.x}px, ${position.y}px)`,
-      pointerEvents: 'none',
-      left: -20,
-      top: -20,
-      width: 40,
-      height: 40,
-    }} />
+    <div style={style} />
   );
 }
 ```
