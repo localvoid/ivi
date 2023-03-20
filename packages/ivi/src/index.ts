@@ -504,130 +504,6 @@ const _assignTemplateSlots = (
   }
 };
 
-const _mountTemplate = (parentSNode: SNode, vNode: VTemplate) => {
-  const ctx = RENDER_CONTEXT;
-  const descriptor = vNode.d;
-  const props = vNode.p;
-  const tplData = descriptor.p1;
-  const rootNode = descriptor.p2();
-  const stateOpCodes = tplData.s;
-  const flags = tplData.f;
-  const state = _Array<Node>(flags & TemplateFlags.Mask10);
-  state[0] = rootNode;
-
-  if (stateOpCodes.length > 0) {
-    ctx.si = 0;
-    _assignTemplateSlots(
-      nodeGetFirstChild.call(rootNode),
-      stateOpCodes,
-      0,
-      stateOpCodes.length,
-      state,
-    );
-  }
-  _updateTemplateProperties(
-    rootNode,
-    tplData.p,
-    tplData.d,
-    state,
-    null,
-    props,
-    !!(tplData.f & TemplateFlags.Svg),
-  );
-
-  const parentElement = ctx.p;
-  const nextNode = ctx.n;
-  const stateNode = createSNode(Flags.Template, vNode, null, state, parentSNode);
-  const childrenSize = flags >> TemplateFlags.ChildrenSizeShift;
-  if (childrenSize > 0) {
-    const childOpCodes = tplData.c;
-    const children = _Array(childrenSize);
-    stateNode.c = children;
-    ctx.p = rootNode;
-    ctx.n = null;
-    let childrenIndex = 0;
-    for (let i = 0; i < childOpCodes.length; i++) {
-      const childOpCode = childOpCodes[i];
-      const type = childOpCode & ChildOpCode.Type;
-      const value = childOpCode >> ChildOpCode.ValueShift;
-      if (type === ChildOpCode.Child) {
-        children[childrenIndex++] = _mount(stateNode, props[value]);
-      } else if (type === ChildOpCode.SetNext) {
-        ctx.n = state[value];
-      } else { // ChildOpCode.SetParent
-        ctx.p = state[value] as Element;
-        ctx.n = null;
-      }
-    }
-    ctx.p = parentElement;
-  }
-  ctx.n = rootNode;
-
-  nodeInsertBefore!.call(parentElement, rootNode, nextNode);
-  return stateNode;
-};
-
-const _updateTemplate = (
-  sNode: STemplate,
-  prev: VTemplate,
-  next: VTemplate,
-  updateFlags: Flags,
-) => {
-  const ctx = RENDER_CONTEXT;
-  const parentElement = ctx.p;
-  const children = sNode.c as ((SNode | null)[] | null);
-  const state = sNode.s;
-  const prevProps = prev.p;
-  const nextProps = next.p;
-  const tplData = next.d.p1;
-  const rootDOMNode = state[0] as Element;
-  const childrenOpCodes = tplData.c;
-
-  if (updateFlags & Flags.DisplaceNode) {
-    updateFlags ^= Flags.DisplaceNode;
-    nodeInsertBefore!.call(parentElement, rootDOMNode, ctx.n);
-  }
-
-  _updateTemplateProperties(
-    rootDOMNode,
-    tplData.p,
-    tplData.d,
-    state as Node[],
-    prevProps,
-    nextProps,
-    !!(tplData.f & TemplateFlags.Svg),
-  );
-
-  if (children !== null) {
-    ctx.p = rootDOMNode;
-    ctx.n = null;
-
-    let childrenIndex = 0;
-    for (let i = 0; i < childrenOpCodes.length; i++) {
-      const childOpCode = childrenOpCodes[i];
-      const type = childOpCode & ChildOpCode.Type;
-      const value = childOpCode >> ChildOpCode.ValueShift;
-      if (type === ChildOpCode.Child) {
-        children[childrenIndex] =
-          _update(
-            sNode,
-            children[childrenIndex++],
-            nextProps[value],
-            updateFlags,
-          );
-      } else if (type === ChildOpCode.SetNext) {
-        ctx.n = state[value];
-      } else { // ChildOpCode.SetParent
-        ctx.p = state[value] as Element;
-        ctx.n = null;
-      }
-    }
-
-    ctx.p = parentElement;
-  }
-
-  ctx.n = rootDOMNode;
-};
 
 const _mountList = (
   parentState: SNode,
@@ -667,33 +543,6 @@ const _updateText = (
   }
   nodeRemoveChild!.call(ctx.p, s);
   return _mount(parentSNode, next)!;
-};
-
-const _updateComponent = (
-  sNode: SComponent,
-  prev: VComponent,
-  next: VComponent,
-  updateFlags: Flags,
-) => {
-  const child = sNode.c;
-  const prevProps = prev.p;
-  const descriptor = next.d;
-  const nextProps = next.p;
-  if (
-    ((sNode.f | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) || (
-      (prevProps !== nextProps) &&
-      (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
-    )
-  ) {
-    sNode.c = _update(
-      sNode,
-      child as SNode,
-      sNode.s.r!(nextProps),
-      updateFlags,
-    );
-  } else if (child !== null) {
-    _dirtyCheck(child as SNode, updateFlags);
-  }
 };
 
 const _updateArray = (
@@ -772,34 +621,93 @@ const _update = (
     return _updateArray(parentSNode, sNode, next, updateFlags);
   }
 
+  const descriptor = (next as VNode).d;
   // Text and Array should be checked before Component, Template and List
   // because their stateless nodes are represented with basic string and array
   // types.
-  if ((prev as VNode).d !== (next as VNode).d) {
+  if ((prev as VNode).d !== descriptor) {
     _unmount(sNode, true);
     return _mount(parentSNode, next);
   }
+  const prevProps = (prev as VNode).p;
+  const nextProps = (next as VNode).p;
 
   sNode.f &= Flags.TypeMask;
   if (flags === Flags.Component) {
-    _updateComponent(
-      sNode as Component,
-      prev as VComponent,
-      next as VComponent,
-      updateFlags,
-    );
+    const child = (sNode as Component).c;
+    if (
+      ((sNode.f | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) || (
+        (prevProps !== nextProps) &&
+        (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
+      )
+    ) {
+      sNode.c = _update(
+        sNode,
+        child as SNode,
+        sNode.s.r!(nextProps),
+        updateFlags,
+      );
+    } else if (child !== null) {
+      _dirtyCheck(child as SNode, updateFlags);
+    }
   } else if (flags === Flags.Template) {
-    _updateTemplate(
-      sNode as STemplate,
-      prev as VTemplate,
-      next as VTemplate,
-      updateFlags,
+    const ctx = RENDER_CONTEXT;
+    const parentElement = ctx.p;
+    const children = sNode.c as ((SNode | null)[] | null);
+    const state = sNode.s;
+    const tplData = (descriptor as TemplateDescriptor).p1;
+    const rootDOMNode = state[0] as Element;
+    const childrenOpCodes = tplData.c;
+
+    if (updateFlags & Flags.DisplaceNode) {
+      updateFlags ^= Flags.DisplaceNode;
+      nodeInsertBefore!.call(parentElement, rootDOMNode, ctx.n);
+    }
+
+    _updateTemplateProperties(
+      rootDOMNode,
+      tplData.p,
+      tplData.d,
+      state as Node[],
+      prevProps,
+      nextProps,
+      !!(tplData.f & TemplateFlags.Svg),
     );
+
+    if (children !== null) {
+      ctx.p = rootDOMNode;
+      ctx.n = null;
+
+      let childrenIndex = 0;
+      for (let i = 0; i < childrenOpCodes.length; i++) {
+        const childOpCode = childrenOpCodes[i];
+        const type = childOpCode & ChildOpCode.Type;
+        const value = childOpCode >> ChildOpCode.ValueShift;
+        if (type === ChildOpCode.Child) {
+          children[childrenIndex] =
+            _update(
+              sNode,
+              children[childrenIndex++],
+              nextProps[value],
+              updateFlags,
+            );
+        } else if (type === ChildOpCode.SetNext) {
+          ctx.n = state[value];
+        } else { // ChildOpCode.SetParent
+          ctx.p = state[value] as Element;
+          ctx.n = null;
+        }
+      }
+
+      ctx.p = parentElement;
+    }
+
+    ctx.n = rootDOMNode;
   } else {
     _updateList(
       sNode,
-      (prev as VList).p,
-      (next as VList).p,
+      prevProps,
+      nextProps,
       updateFlags,
     );
   }
@@ -821,9 +729,67 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
         return _mountList(parentSNode, Flags.Array, v, v);
       } else {
         const descriptor = v.d;
+        const props = v.p;
         const type = descriptor.f & (Flags.Template | Flags.Component);
         if (type === Flags.Template) {
-          return _mountTemplate(parentSNode, v as VTemplate);
+          const ctx = RENDER_CONTEXT;
+          const tplData = (descriptor as TemplateDescriptor).p1;
+          const rootNode = (descriptor as TemplateDescriptor).p2();
+          const stateOpCodes = tplData.s;
+          const flags = tplData.f;
+          const state = _Array<Node>(flags & TemplateFlags.Mask10);
+          state[0] = rootNode;
+
+          if (stateOpCodes.length > 0) {
+            ctx.si = 0;
+            _assignTemplateSlots(
+              nodeGetFirstChild.call(rootNode),
+              stateOpCodes,
+              0,
+              stateOpCodes.length,
+              state,
+            );
+          }
+          _updateTemplateProperties(
+            rootNode,
+            tplData.p,
+            tplData.d,
+            state,
+            null,
+            props,
+            !!(tplData.f & TemplateFlags.Svg),
+          );
+
+          const parentElement = ctx.p;
+          const nextNode = ctx.n;
+          const stateNode = createSNode(Flags.Template, v, null, state, parentSNode);
+          const childrenSize = flags >> TemplateFlags.ChildrenSizeShift;
+          if (childrenSize > 0) {
+            const childOpCodes = tplData.c;
+            const children = _Array(childrenSize);
+            stateNode.c = children;
+            ctx.p = rootNode;
+            ctx.n = null;
+            let childrenIndex = 0;
+            for (let i = 0; i < childOpCodes.length; i++) {
+              const childOpCode = childOpCodes[i];
+              const type = childOpCode & ChildOpCode.Type;
+              const value = childOpCode >> ChildOpCode.ValueShift;
+              if (type === ChildOpCode.Child) {
+                children[childrenIndex++] = _mount(stateNode, props[value]);
+              } else if (type === ChildOpCode.SetNext) {
+                ctx.n = state[value];
+              } else { // ChildOpCode.SetParent
+                ctx.p = state[value] as Element;
+                ctx.n = null;
+              }
+            }
+            ctx.p = parentElement;
+          }
+          ctx.n = rootNode;
+
+          nodeInsertBefore!.call(parentElement, rootNode, nextNode);
+          return stateNode;
         } else if (type === Flags.Component) {
           const componentState: ComponentState = { r: null, u: null };
           const sNode: Component = createSNode<VComponent, ComponentState>(
@@ -835,11 +801,11 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
           );
           const renderFn = (descriptor as ComponentDescriptor).p1(sNode);
           componentState.r = renderFn;
-          sNode.c = _mount(sNode, renderFn((v as VComponent).p));
+          sNode.c = _mount(sNode, renderFn(props));
           return sNode;
         }
         // List
-        return _mountList(parentSNode, Flags.List, (v as VList).p.v, v);
+        return _mountList(parentSNode, Flags.List, (props as ListProps).v, v);
       }
     } else {
       const ctx = RENDER_CONTEXT;
