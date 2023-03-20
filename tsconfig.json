@@ -5,6 +5,7 @@
     { "path": "packages/@ivi/template-compiler" },
     { "path": "packages/@ivi/rollup-plugin" },
     { "path": "packages/@ivi/portal" },
+    { "path": "packages/@ivi/identity" },
   ],
   "exclude": [
     "node_modules"
