@@ -706,34 +706,30 @@ const _updateArray = (
     _unmount(sNode, true);
     return _mount(parentSNode, next);
   }
+  sNode.f = Flags.Array;
+  const prevSChildren = sNode.c as (SNode | null)[];
+  let nextSChildren = prevSChildren;
+  let prevLength = prevSChildren.length;
   let nextLength = next.length;
-  if (nextLength === 0) {
-    _unmount(sNode, true);
-  } else {
-    sNode.f = Flags.Array;
-    const sChildren = sNode.c as (SNode | null)[];
-    let prevLength = sChildren.length;
-    if (nextLength !== prevLength) {
-      const newSChildren = _Array(nextLength);
-      sNode.c = newSChildren;
-      while (prevLength > nextLength) {
-        const sChild = sChildren[--prevLength];
-        if (sChild !== null) {
-          _unmount(sChild, true);
-        }
-      }
-      while (nextLength > prevLength) {
-        newSChildren[--nextLength] = _mount(sNode, next[nextLength]);
+  if (nextLength !== prevLength) {
+    sNode.c = nextSChildren = _Array(nextLength);
+    while (prevLength > nextLength) {
+      const sChild = prevSChildren[--prevLength];
+      if (sChild !== null) {
+        _unmount(sChild, true);
       }
     }
-    while (nextLength > 0) {
-      sChildren[--nextLength] = _update(
-        sNode,
-        sChildren[nextLength],
-        next[nextLength],
-        updateFlags,
-      );
+    while (nextLength > prevLength) {
+      nextSChildren[--nextLength] = _mount(sNode, next[nextLength]);
     }
+  }
+  while (nextLength > 0) {
+    nextSChildren[--nextLength] = _update(
+      sNode,
+      prevSChildren[nextLength],
+      next[nextLength],
+      updateFlags,
+    );
   }
   return sNode;
 };
