@@ -1,8 +1,10 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { compileTemplate } from "../index.js";
-import { ChildOpCode, PropOpCode, StateOpCode, TemplateFlags } from "../format.js";
+import { compileTemplate } from "../compiler.js";
+import { ChildOpCode, PropOpCode, StateOpCode, TemplateCompilationArtifact, TemplateFlags, TemplateNode, TemplateNodeType } from "../format.js";
+import { INode, INodeElement, INodeExpr, INodeText, INodeType, IProperty, IPropertyAttribute, IPropertyType, ITemplate, ITemplateType } from "../ir.js";
 
+const _ = void 0;
 const ONLY = { only: true };
 ONLY;
 
@@ -23,656 +25,520 @@ const pSN = (n: number) => PropOpCode.SetNode | ((n + 1) << PropOpCode.DataShift
 const pClass = (n: number) => PropOpCode.Common | (n << PropOpCode.InputShift);
 const pAttr = (k: number, n: number) => PropOpCode.Attribute | (k << PropOpCode.DataShift) | (n << PropOpCode.InputShift);
 
-const noHoistExpr = (i: number) => false;
-const h = (strings: TemplateStringsArray, ...exprs: any[]): any => (
-  compileTemplate(strings, false, noHoistExpr)
-);
+const c = (tpl: ITemplate) => compileTemplate(tpl);
+
+const h = (children: INode[]): ITemplate => ({
+  type: ITemplateType.Htm,
+  children,
+});
+
+const el = (tag: string, properties: IProperty[] = [], children: INode[] = []): INodeElement => ({
+  type: INodeType.Element,
+  tag,
+  properties,
+  children,
+});
+
+const text = (value: string): INodeText => ({
+  type: INodeType.Text,
+  value,
+});
+
+const expr = (index: number): INodeExpr => ({
+  type: INodeType.Expr,
+  index,
+});
+
+const attr = (key: string, value: string | number | boolean): IPropertyAttribute => ({
+  type: IPropertyType.Attribute,
+  key,
+  value,
+  static: false,
+});
+
+const result = (roots: TemplateNode[]): TemplateCompilationArtifact => ({ roots });
 
 describe("template compilation", () => {
   describe("static templates", () => {
     test("single element", () => {
       deepStrictEqual(
-        h`div`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
+        c(h([el("div")])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: `div`,
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
       );
     });
 
-    test("spaces at the start", () => {
+
+    test("child text", () => {
       deepStrictEqual(
-        h`  \tdiv`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
+        c(h([el("div", _, [text("ab")])])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<div`, `>`, `ab`, `</div>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
       );
     });
 
-    test("spaces at the end", () => {
+    test("child element", () => {
       deepStrictEqual(
-        h`div  \t`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("new line before the root element", () => {
-      deepStrictEqual(
-        h`
-        div`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("new line after the root element", () => {
-      deepStrictEqual(
-        h`div
-        `,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("inline text 1", () => {
-      deepStrictEqual(
-        h`div 'ab'`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, `>`, `ab`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("inline text 2", () => {
-      deepStrictEqual(
-        h`div #'a#b'#`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, `>`, `a#b`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("inline text 3", () => {
-      deepStrictEqual(
-        h`div ##'a#b'##`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, `>`, `a#b`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("inline element", () => {
-      deepStrictEqual(
-        h`div span`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, `>`, `<span`, `>`, `</span>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
+        c(h([el("div", _, [el("span")])])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<div`, `>`, `<span`, `>`, `</span>`, `</div>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
       );
     });
 
     test("nested elements 1", () => {
       deepStrictEqual(
-        h`
-        h1
-          h2`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<h1`, `>`, `<h2`, `>`, `</h2>`, `</h1>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
+        c(h([
+          el("h1", _, [
+            el("h2", _, [el("h3")]),
+            el("h4"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<h1`, `>`, `<h2`, `>`, `<h3`, `>`, `</h3>`, `</h2>`, `<h4`, `>`, `</h4>`, `</h1>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
       );
     });
 
-    test("nested elements 2", () => {
+    test("attribute", () => {
       deepStrictEqual(
-        h`
-        h1
-          h2
-            h3
-          h2`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<h1`, `>`, `<h2`, `>`, `<h3`, `>`, `</h3>`, `</h2>`, `<h2`, `>`, `</h2>`, `</h1>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("nested text", () => {
-      deepStrictEqual(
-        h`
-        h1
-          h2 'a'
-            h3 'b'
-          h2`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<h1`, `>`, `<h2`, `>`, `a`, `<h3`, `>`, `b`, `</h3>`, `</h2>`, `<h2`, `>`, `</h2>`, `</h1>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("class name", () => {
-      deepStrictEqual(
-        h`div.ab`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, ` class="ab"`, `>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("multiple class names", () => {
-      deepStrictEqual(
-        h`div.ab.cd`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, ` class="ab cd"`, `>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
+        c(h([
+          el("div", [attr("class", "ab")]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<div`, ` class="ab"`, `>`, `</div>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
       );
     });
 
     test("bool attribute", () => {
       deepStrictEqual(
-        h`div :autofocus`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, ` autofocus`, `>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("attribute with a value", () => {
-      deepStrictEqual(
-        h`div :attr='value'`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, ` attr="value"`, `>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("multiline attributes", () => {
-      deepStrictEqual(
-        h`
-        div
-          :autofocus
-          :attr='ok'`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, ` autofocus`, ` attr="ok"`, `>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-  });
-
-  describe("escaping", () => {
-    test("attributes", () => {
-      deepStrictEqual(
-        h`div :attr=#'a<b>#c&d"e'f'#`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, ` attr="a<b>#c&amp;d&quot;e'f"`, `>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
-      );
-    });
-
-    test("text nodes", () => {
-      deepStrictEqual(
-        h`div #'a<b>#c&d"e'f'#`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 0),
-          template: [`<div`, `>`, `a&lt;b>#c&amp;d"e'f`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [],
-        },
+        c(h([
+          el("div", [attr("autofocus", true)]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<div`, ` autofocus`, `>`, `</div>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
       );
     });
   });
 
   describe("dynamic children", () => {
-    test("inline expr", () => {
-      deepStrictEqual(
-        h`div ${0}`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 1),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [cC(0)],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [0],
-        },
-      );
-    });
-
     test("single child expr", () => {
       deepStrictEqual(
-        h`
-        div
-          ${0}`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 1),
-          template: `div`,
-          propOpCodes: [],
-          childOpCodes: [cC(0)],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            expr(0),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 1),
+            template: `div`,
+            props: [],
+            child: [cC(0)],
+            state: [],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr after text", () => {
       deepStrictEqual(
-        h`
-        div
-          'a'
-          ${0}`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 1),
-          template: [`<div`, `>`, `a`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cC(0)],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            text("a"),
+            expr(0),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 1),
+            template: [`<div`, `>`, `a`, `</div>`],
+            props: [],
+            child: [cC(0)],
+            state: [],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr before text", () => {
       deepStrictEqual(
-        h`
-        div
-          ${0}
-          'b'`,
-        {
-          disableCloning: false,
-          flags: F(false, 1, 1),
-          template: [`<div`, `>`, `b`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0)],
-          stateOpCodes: [S],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            expr(0),
+            text("b"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<div`, `>`, `b`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0)],
+            state: [S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr between texts", () => {
       deepStrictEqual(
-        h`
-        div
-          'a'
-          ${0}
-          'b'`,
-        {
-          disableCloning: false,
-          flags: F(false, 1, 1),
-          template: [`<div`, `>`, `a`, `<!>`, `b`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0)],
-          stateOpCodes: [N, R],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            text("a"),
+            expr(0),
+            text("b"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<div`, `>`, `a`, `<!>`, `b`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0)],
+            state: [N, R],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr after element", () => {
       deepStrictEqual(
-        h`
-        div
-          a
-          ${0}`,
-        {
-          disableCloning: false,
-          flags: F(false, 0, 1),
-          template: [`<div`, `>`, `<a`, `>`, `</a>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cC(0)],
-          stateOpCodes: [],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            el("a"),
+            expr(0),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 1),
+            template: [`<div`, `>`, `<a`, `>`, `</a>`, `</div>`],
+            props: [],
+            child: [cC(0)],
+            state: [],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr before element", () => {
       deepStrictEqual(
-        h`
-        div
-          ${0}
-          b`
-        ,
-        {
-          disableCloning: false,
-          flags: F(false, 1, 1),
-          template: [`<div`, `>`, `<b`, `>`, `</b>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0)],
-          stateOpCodes: [S],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            expr(0),
+            el("b"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<div`, `>`, `<b`, `>`, `</b>`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0)],
+            state: [S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr between elements", () => {
       deepStrictEqual(
-        h`
-        div
-          a
-          ${0}
-          b`,
-        {
-          disableCloning: false,
-          flags: F(false, 1, 1),
-          template: [`<div`, `>`, `<a`, `>`, `</a>`, `<b`, `>`, `</b>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0)],
-          stateOpCodes: [N, S],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            el("a"),
+            expr(0),
+            el("b"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<div`, `>`, `<a`, `>`, `</a>`, `<b`, `>`, `</b>`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0)],
+            state: [N, S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr between text and element", () => {
       deepStrictEqual(
-        h`
-        div
-          'a'
-          ${0}
-          b`,
-        {
-          disableCloning: false,
-          flags: F(false, 1, 1),
-          template: [`<div`, `>`, `a`, `<b`, `>`, `</b>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0)],
-          stateOpCodes: [N, S],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            text("a"),
+            expr(0),
+            el("b"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<div`, `>`, `a`, `<b`, `>`, `</b>`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0)],
+            state: [N, S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("expr between element and text", () => {
       deepStrictEqual(
-        h`
-        div
-          a
-          ${0}
-          'b'`,
-        {
-          disableCloning: false,
-          flags: F(false, 1, 1),
-          template: [`<div`, `>`, `<a`, `>`, `</a>`, `b`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0)],
-          stateOpCodes: [N, S],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            el("a"),
+            expr(0),
+            text("b"),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<div`, `>`, `<a`, `>`, `</a>`, `b`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0)],
+            state: [N, S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("1", () => {
       deepStrictEqual(
-        h`
-        div
-          a ${0}
-          h1 h2 ${1}
-          ${2}
-          ${3}
-        `,
-
-        {
-          disableCloning: false,
-          flags: F(false, 2, 4),
-          template: [`<div`, `>`, `<a`, `>`, `</a>`, `<h1`, `>`, `<h2`, `>`, `</h2>`, `</h1>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cC(3), cC(2), cSP(1), cC(1), cSP(0), cC(0)],
-          stateOpCodes: [S | N, E(1), S],
-          data: [],
-          dynamicExprs: [0, 1, 2, 3],
-        },
+        c(h([
+          el("div", _, [
+            el("a", _, [expr(0)]),
+            el("h1", _, [
+              el("h2", _, [expr(1)]),
+            ]),
+            expr(2),
+            expr(3),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 2, 4),
+            template: [`<div`, `>`, `<a`, `>`, `</a>`, `<h1`, `>`, `<h2`, `>`, `</h2>`, `</h1>`, `</div>`],
+            props: [],
+            child: [cC(3), cC(2), cSP(1), cC(1), cSP(0), cC(0)],
+            state: [S | N, E(1), S],
+            data: [],
+            exprs: [0, 1, 2, 3],
+          },
+        ]),
       );
     });
 
     test("2", () => {
       deepStrictEqual(
-        h`
-        div
-          a
-            b
-            ${0}
-            c
-        `,
-        {
-          disableCloning: false,
-          flags: F(false, 2, 1),
-          template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSP(0), cSN(1), cC(0)],
-          stateOpCodes: [E(2) | S, N, S],
-          data: [],
-          dynamicExprs: [0],
-        },
+        c(h([
+          el("div", _, [
+            el("a", _, [
+              el("b"),
+              expr(0),
+              el("c"),
+            ]),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 2, 1),
+            template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
+            props: [],
+            child: [cSP(0), cSN(1), cC(0)],
+            state: [E(2) | S, N, S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
       );
     });
 
     test("3", () => {
       deepStrictEqual(
-        h`
-        div
-          a
-            b
-              ${0}
-            ${1}
-        `,
-        {
-          disableCloning: false,
-          flags: F(false, 2, 2),
-          template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `</a>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSP(0), cC(1), cSP(1), cC(0)],
-          stateOpCodes: [E(1) | S, S],
-          data: [],
-          dynamicExprs: [0, 1],
-        },
+        c(h([
+          el("div", _, [
+            el("a", _, [
+              el("b", _, [expr(0)]),
+              expr(1),
+            ]),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 2, 2),
+            template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `</a>`, `</div>`],
+            props: [],
+            child: [cSP(0), cC(1), cSP(1), cC(0)],
+            state: [E(1) | S, S],
+            data: [],
+            exprs: [0, 1],
+          },
+        ]),
       );
     });
 
     test("4", () => {
       deepStrictEqual(
-        h`
-        div
-          ${0}
-          a
-            b ${1}
-            c
-        `,
-        {
-          disableCloning: false,
-          flags: F(false, 2, 2),
-          template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
-          propOpCodes: [],
-          childOpCodes: [cSN(0), cC(0), cSP(1), cC(1)],
-          stateOpCodes: [E(1) | S, S],
-          data: [],
-          dynamicExprs: [0, 1],
-        },
+        c(h([
+          el("div", _, [
+            expr(0),
+            el("a", _, [
+              el("b", _, [expr(1)]),
+              el("c"),
+            ]),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 2, 2),
+            template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
+            props: [],
+            child: [cSN(0), cC(0), cSP(1), cC(1)],
+            state: [E(1) | S, S],
+            data: [],
+            exprs: [0, 1],
+          },
+        ]),
       );
     });
 
     test("5", () => {
       deepStrictEqual(
-        h`
-        a
-          b ${0}
-          c d${1} ${2}
-          ${3}
-        `,
-
-        {
-          disableCloning: false,
-          flags: F(false, 2, 3),
-          template: [`<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `<d`, `>`, `</d>`, `</c>`, `</a>`],
-          propOpCodes: [pSN(1), pClass(1)],
-          childOpCodes: [cC(3), cSP(1), cC(2), cSP(0), cC(0)],
-          stateOpCodes: [S | N, E(1), S],
-          data: [],
-          dynamicExprs: [0, 1, 2, 3],
-        },
+        c(h([
+          el("a", _, [
+            el("b", _, [expr(0)]),
+            el("c", _, [
+              el("d", [attr("class", 1)], [expr(2)]),
+            ]),
+            expr(3),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 2, 3),
+            template: [`<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `<d`, `>`, `</d>`, `</c>`, `</a>`],
+            props: [pSN(1), pClass(1)],
+            child: [cC(3), cSP(1), cC(2), cSP(0), cC(0)],
+            state: [S | N, E(1), S],
+            data: [],
+            exprs: [0, 1, 2, 3],
+          },
+        ]),
       );
     });
 
     test("6", () => {
       deepStrictEqual(
-        h`
-        a${0}
-          :key=${1}
-          ${2}
-        `,
-
-        {
-          disableCloning: false,
-          flags: F(false, 0, 1),
-          template: `a`,
-          propOpCodes: [pClass(0), pAttr(0, 1)],
-          childOpCodes: [cC(2)],
-          stateOpCodes: [],
-          data: ["key"],
-          dynamicExprs: [0, 1, 2],
-        },
+        c(h([
+          el("a", [attr("class", 0), attr("key", 1)], [
+            expr(2),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 1),
+            template: `a`,
+            props: [pClass(0), pAttr(0, 1)],
+            child: [cC(2)],
+            state: [],
+            data: ["key"],
+            exprs: [0, 1, 2],
+          },
+        ]),
       );
     });
   });

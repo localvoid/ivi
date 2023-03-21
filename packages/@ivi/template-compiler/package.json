@@ -4,7 +4,9 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
-    "./format": "./dist/format.js"
+    "./ir": "./dist/ir.js",
+    "./format": "./dist/format.js",
+    "./compiler": "./dist/compiler.js"
   },
   "sideEffects": false,
   "files": [
