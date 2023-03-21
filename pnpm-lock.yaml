@@ -19,12 +19,28 @@ importers:
       '@babel/helper-module-imports': ^7.18.6
       '@babel/helper-plugin-utils': ^7.20.2
       '@babel/types': ^7.21.2
+      '@ivi/iml': workspace:*
       '@ivi/template-compiler': workspace:*
     dependencies:
       '@babel/helper-module-imports': 7.18.6
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/types': 7.21.2
+      '@ivi/iml': link:../iml
       '@ivi/template-compiler': link:../template-compiler
+
+  packages/@ivi/identity:
+    specifiers:
+      ivi: workspace:^
+    devDependencies:
+      ivi: link:../../ivi
+
+  packages/@ivi/iml:
+    specifiers:
+      '@ivi/template-compiler': workspace:*
+      ivi: workspace:*
+    devDependencies:
+      '@ivi/template-compiler': link:../template-compiler
+      ivi: link:../../ivi
 
   packages/@ivi/portal:
     specifiers:
