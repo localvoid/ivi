@@ -144,40 +144,38 @@ export class TemplateParser extends TemplateScanner {
           throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
         }
         this.dynamicProp(properties, IPropertyType.Event, key);
-      } else if (c === 36) { // $${directive}
-        this.i++;
-        const value = this.expr();
-        if (value === -1) {
-          throw new TemplateParserError("Expected an attribute directive expression.", this.e, this.i);
-        }
-        properties.push({
-          type: IPropertyType.Directive,
-          key: null,
-          value,
-          static: false,
-        });
       } else {
-        const key = this.regExp(IDENTIFIER);
-        if (key === void 0) {
-          throw new TemplateParserError("Expected a valid attribute name.", this.e, this.i);
-        }
+        let value: string | boolean | number = this.expr();
+        if (value !== -1) {
+          properties.push({
+            type: IPropertyType.Directive,
+            key: null,
+            value,
+            static: false,
+          });
+        } else {
+          const key = this.regExp(IDENTIFIER);
+          if (key === void 0) {
+            throw new TemplateParserError("Expected a valid attribute name.", this.e, this.i);
+          }
 
-        let value: string | boolean | number = true;
-        if (this.charCode(CharCode.EqualsTo)) { // =
-          value = this.parseString(true);
-          if (value === "") {
-            value = this.expr();
-            if (value === -1) {
-              throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
+          value = true;
+          if (this.charCode(CharCode.EqualsTo)) { // =
+            value = this.parseString(true);
+            if (value === "") {
+              value = this.expr();
+              if (value === -1) {
+                throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
+              }
             }
           }
+          properties.push({
+            type: IPropertyType.Attribute,
+            key,
+            value,
+            static: false,
+          });
         }
-        properties.push({
-          type: IPropertyType.Attribute,
-          key,
-          value,
-          static: false,
-        });
       }
 
       this.skipWhitespace();
