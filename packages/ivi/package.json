@@ -5,7 +5,6 @@
   "exports": {
     ".": "./dist/index.js",
     "./equal": "./dist/equal.js",
-    "./template": "./dist/template.js",
     "./root": "./dist/root.js",
     "./state": "./dist/state.js",
     "./visitor": "./dist/visitor.js",
