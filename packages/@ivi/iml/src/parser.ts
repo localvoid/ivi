@@ -19,7 +19,7 @@ export const parseTemplate = (
   try {
     return {
       type,
-      children: parseChildrenList(comp.indent),
+      children: parseChildrenList(-1),
     };
   } finally {
     comp.statics = null!;
@@ -45,6 +45,7 @@ const parseChildrenList = (indent: number): INode[] => {
   const comp = COMPILER;
   const eSize = comp.statics.length - 1;
   const children: INode[] = [];
+  whitespace();
   while (comp.indent > indent) {
     if (comp.i < comp.text.length) {
       const s = parseString(false);
