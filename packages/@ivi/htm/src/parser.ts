@@ -41,6 +41,8 @@ export class TemplateParser extends TemplateScanner {
       if (c !== -1) {
         if (c === CharCode.LessThan) {
           children.push(this.parseElement());
+        } else if (c === CharCode.MoreThan) {
+          break;
         } else {
           children.push({
             type: INodeType.Text,
@@ -77,15 +79,33 @@ export class TemplateParser extends TemplateScanner {
     this.skipWhitespace();
     const properties = this.parseAttributes();
 
+    if (!this.charCode(CharCode.MoreThan)) {
+      throw new TemplateParserError("Expected a '>' character.", this.e, this.i);
+    }
+
+    let children: INode[];
+    if (isVoidElement(tag)) {
+      children = [];
+    } else {
+      children = this.parseChildrenList();
+      if (!this.charCode(CharCode.MoreThan)) {
+        throw new TemplateParserError("Expected a '<' character.", this.e, this.i);
+      }
+      this.skipWhitespace();
+      if (!this.string(tag)) {
+        throw new TemplateParserError(`Expected a '${tag}' tag name.`, this.e, this.i);
+      }
+      this.skipWhitespace();
+      if (!this.charCode(CharCode.LessThan)) {
+        throw new TemplateParserError("Expected a '>' character.", this.e, this.i);
+      }
+    }
+
     return {
       type: INodeType.Element,
       tag,
       properties,
-      children: (
-        isVoidElement(tag)
-          ? []
-          : this.parseChildrenList()
-      ),
+      children,
     };
   }
 
