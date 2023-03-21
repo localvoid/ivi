@@ -1,0 +1,35 @@
+{
+  "name": "@ivi/htm",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./parser": "./dist/parser.js"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "!dist/**/*.tsbuildinfo",
+    "!src/**/__tests__",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "@ivi/template-compiler": "workspace:*",
+    "ivi": "workspace:*"
+  },
+  "devDependencies": {
+    "@ivi/template-compiler": "workspace:*",
+    "ivi": "workspace:*"
+  },
+  "description": "ivi HTML-like markup language.",
+  "license": "MIT",
+  "keywords": [
+    "ivi"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "repository": "github:localvoid/ivi"
+}
