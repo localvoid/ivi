@@ -1,6 +1,8 @@
 import { declare } from "@babel/helper-plugin-utils";
 import moduleImports from "@babel/helper-module-imports";
-import { compileTemplate, TemplateCompilerError } from "@ivi/template-compiler";
+import { compileTemplate } from "@ivi/template-compiler/compiler";
+import { TemplateParserError } from "@ivi/template-compiler/parser";
+import { parseTemplate } from "@ivi/iml/parser";
 
 export const ivi = declare((api) => {
   api.assertVersion(7);
@@ -29,6 +31,102 @@ export const ivi = declare((api) => {
     };
   }
 
+  function staticTemplateToExpr(s, exprs) {
+    let lastStringLiteral = t.stringLiteral("");
+    let result = lastStringLiteral;
+    for (const c of s) {
+      if (typeof c === "string") {
+        lastStringLiteral.value += c;
+      } else {
+        result = t.binaryExpression(
+          "+",
+          t.binaryExpression(
+            "+",
+            result,
+            exprs[c],
+          ),
+          lastStringLiteral = t.stringLiteral(""),
+        );
+      }
+    }
+    return result;
+  }
+
+  function createTemplateDescriptor(importSymbol, exprsNodes, type, clone, id, root) {
+    const template = root.template;
+    let factoryFnId;
+    let factoryFnArg;
+    if (typeof template === "string") {
+      factoryFnArg = t.stringLiteral(template);
+      if (type === "htm") {
+        factoryFnId = "_hE";
+      } else {
+        factoryFnId = "_sE";
+      }
+    } else {
+      factoryFnArg = staticTemplateToExpr(template, exprsNodes);
+      if (type === "htm") {
+        if (clone) {
+          factoryFnId = "_hN";
+        } else {
+          factoryFnId = "_h";
+        }
+      } else {
+        if (clone) {
+          factoryFnId = "_s";
+        } else {
+          factoryFnId = "_sN";
+        }
+      }
+    }
+
+    return t.variableDeclaration("const", [
+      t.variableDeclarator(
+        id,
+        t.addComment(
+          t.callExpression(
+            importSymbol("ivi", "_T"),
+            [
+              t.callExpression(
+                importSymbol("ivi", factoryFnId),
+                [factoryFnArg],
+              ),
+              t.numericLiteral(root.flags),
+              t.arrayExpression(root.props.map(toNumeric)),
+              t.arrayExpression(root.child.map(toNumeric)),
+              t.arrayExpression(root.state.map(toNumeric)),
+              t.arrayExpression(root.data.map(toString)),
+            ],
+          ),
+          "leading",
+          "@__PURE__ @__IVI_TPL__",
+        ),
+      ),
+    ]);
+  }
+
+  function transformRootNode(importSymbol, path, exprsNodes, type, clone, root) {
+    switch (root.type) {
+      case 0: // Element
+        const dynamicExprs = root.exprs.map((e) => exprsNodes[e]);
+        const id = path.scope.generateUidIdentifier("__tpl_");
+        hoistExpr(
+          path,
+          createTemplateDescriptor(importSymbol, exprsNodes, type, clone, id, root),
+        );
+        return t.callExpression(
+          importSymbol("ivi", "_t"),
+          (dynamicExprs.length > 0)
+            ? [id, t.arrayExpression(dynamicExprs)]
+            : [id],
+        );
+      case 1: // Text
+        return t.stringLiteral(root.value);
+      case 2: // Expr
+        return exprsNodes[root.value];
+    }
+  }
+
   return {
     name: "ivi",
     visitor: {
@@ -49,9 +147,9 @@ export const ivi = declare((api) => {
         exit(path, state) {
           let type;
           const tag = path.get("tag");
-          if (tag.referencesImport("ivi/template", "htm")) {
+          if (tag.referencesImport("@ivi/iml", "htm")) {
             type = "htm";
-          } else if (tag.referencesImport("ivi/template", "svg")) {
+          } else if (tag.referencesImport("ivi/iml", "svg")) {
             type = "svg";
           }
           if (type !== void 0) {
@@ -60,15 +158,36 @@ export const ivi = declare((api) => {
             const exprs = path.get("quasi").get("expressions");
             const exprsNodes = path.node.quasi.expressions;
 
-            let result;
             try {
-              result = compileTemplate(
+              const leadingComments = path.node.leadingComments;
+              if (leadingComments) {
+                for (const comment of leadingComments) {
+                  if (comment.value.trim() === "-c") {
+                    state.templates.push(path);
+                    break;
+                  }
+                }
+              }
+
+              const clone = false;
+              const template = parseTemplate(
                 statics,
-                type === "svg",
+                type === "svg" ? 1 : 0,
                 (i) => tryHoistExpr(exprs[i]),
               );
+              const result = compileTemplate(template);
+              const roots = result.roots;
+              if (roots.length === 1) {
+                path.replaceWith(
+                  transformRootNode(importSymbol, path, exprsNodes, type, clone, roots[0]),
+                );
+              } else {
+                path.replaceWith(t.arrayExpression(roots.map((root) => (
+                  transformRootNode(importSymbol, path, exprsNodes, type, clone, root)
+                ))));
+              }
             } catch (e) {
-              if (e instanceof TemplateCompilerError) {
+              if (e instanceof TemplateParserError) {
                 const s = path.get("quasi").get("quasis")[e.staticsOffset];
                 const c = s.node.value.cooked;
                 let offset = 0;
@@ -85,72 +204,6 @@ export const ivi = declare((api) => {
               }
               throw path.buildCodeFrameError(e.message);
             }
-
-            const dynamicExprs = result.dynamicExprs.map((i) => exprsNodes[i]);
-
-            let template = result.template;
-            let factoryFnId;
-            let factoryFnArg;
-            if (typeof template === "string") {
-              factoryFnArg = t.stringLiteral(template);
-              if (type === "htm") {
-                factoryFnId = "_hE";
-              } else {
-                factoryFnId = "_sE";
-              }
-            } else {
-              factoryFnArg = staticTemplateToExpr(t, template, exprsNodes);
-              if (type === "htm") {
-                if (result.disableCloning) {
-                  factoryFnId = "_hN";
-                } else {
-                  factoryFnId = "_h";
-                }
-              } else {
-                if (result.disableCloning) {
-                  factoryFnId = "_sN";
-                } else {
-                  factoryFnId = "_s";
-                }
-              }
-            }
-
-            const id = path.scope.generateUidIdentifier("__tpl_");
-            hoistExpr(
-              path,
-              t.variableDeclaration("const", [
-                t.variableDeclarator(
-                  id,
-                  t.addComment(
-                    t.callExpression(
-                      importSymbol("ivi", "_T"),
-                      [
-                        t.callExpression(
-                          importSymbol("ivi", factoryFnId),
-                          [factoryFnArg],
-                        ),
-                        t.numericLiteral(result.flags),
-                        t.arrayExpression(result.propOpCodes.map(toNumeric)),
-                        t.arrayExpression(result.childOpCodes.map(toNumeric)),
-                        t.arrayExpression(result.stateOpCodes.map(toNumeric)),
-                        t.arrayExpression(result.data.map(toString)),
-                      ],
-                    ),
-                    "leading",
-                    "@__PURE__ @__IVI_TPL__",
-                  ),
-                ),
-              ]),
-            );
-
-            path.replaceWith(
-              t.callExpression(
-                importSymbol("ivi", "_t"),
-                (dynamicExprs.length > 0)
-                  ? [id, t.arrayExpression(dynamicExprs)]
-                  : [id],
-              ),
-            );
           }
         }
       },
@@ -161,6 +214,30 @@ export const ivi = declare((api) => {
 export const iviOptimizer = declare((api) => {
   api.assertVersion(7);
   const t = api.types;
+  const stringify = JSON.stringify;
+
+  function addSharedFactory(sharedStore, factory) {
+    const node = factory.node;
+    const key = node.callee.name + ":" + stringify(t.cloneNode(node.arguments[0], true, true), void 0, 0);
+    let entries = sharedStore.get(key);
+    if (entries === void 0) {
+      sharedStore.set(key, [factory]);
+    } else {
+      entries.push(factory);
+    }
+  }
+
+  const opCodeValue = (el) => el.value;
+
+  function addSharedOpCodes(sharedStore, opCodes) {
+    const key = stringify(opCodes.node.elements.map(opCodeValue), void 0, 0);
+    let entries = sharedStore.get(key);
+    if (entries === void 0) {
+      sharedStore.set(key, [opCodes]);
+    } else {
+      entries.push(opCodes);
+    }
+  }
 
   return {
     name: "ivi-optimizer",
@@ -221,7 +298,7 @@ export const iviOptimizer = declare((api) => {
             // the same values.
             for (const tpl of templates) {
               const args = tpl.get("arguments");
-              addSharedFactory(t, sharedFactories, args[0]);
+              addSharedFactory(sharedFactories, args[0]);
               addSharedOpCodes(sharedOpCodes, args[2]);
               addSharedOpCodes(sharedOpCodes, args[3]);
               addSharedOpCodes(sharedOpCodes, args[4]);
@@ -320,27 +397,6 @@ function tryHoistExpr(expr) {
   return state.isProgramScope;
 }
 
-function staticTemplateToExpr(t, s, exprs) {
-  let lastStringLiteral = t.stringLiteral("");
-  let result = lastStringLiteral;
-  for (const c of s) {
-    if (typeof c === "string") {
-      lastStringLiteral.value += c;
-    } else {
-      result = t.binaryExpression(
-        "+",
-        t.binaryExpression(
-          "+",
-          result,
-          exprs[c],
-        ),
-        lastStringLiteral = t.stringLiteral(""),
-      );
-    }
-  }
-  return result;
-}
-
 function hoistExpr(path, expr) {
   let prev = path;
   while (path && !path.isProgram()) {
@@ -352,27 +408,3 @@ function hoistExpr(path, expr) {
   }
 }
 
-const stringify = JSON.stringify;
-
-function addSharedFactory(t, sharedStore, factory) {
-  const node = factory.node;
-  const key = node.callee.name + ":" + stringify(t.cloneNode(node.arguments[0], true, true), void 0, 0);
-  let entries = sharedStore.get(key);
-  if (entries === void 0) {
-    sharedStore.set(key, [factory]);
-  } else {
-    entries.push(factory);
-  }
-}
-
-const opCodeValue = (el) => el.value;
-
-function addSharedOpCodes(sharedStore, opCodes) {
-  const key = stringify(opCodes.node.elements.map(opCodeValue), void 0, 0);
-  let entries = sharedStore.get(key);
-  if (entries === void 0) {
-    sharedStore.set(key, [opCodes]);
-  } else {
-    entries.push(opCodes);
-  }
-}
