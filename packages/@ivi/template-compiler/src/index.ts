@@ -1,640 +1,527 @@
-import { TemplateFlags, StateOpCode, CommonPropType, PropOpCode, ChildOpCode } from "./format.js";
+import {
+  type TemplateCompilationArtifact, type TemplateNode, type TemplateNodeBlock,
+  TemplateNodeType, TemplateFlags, ChildOpCode, CommonPropType, PropOpCode,
+  StateOpCode,
+} from "./format.js";
+import {
+  type INode, type ITemplate, type INodeElement, type IProperty,
+  INodeType, IPropertyType, ITemplateType,
+} from "./ir.js";
 
-/**
- * ASCII Char Codes.
- */
-const enum CharCode {
-  /** \\t */Tab = 9,
-  /** \\n */Newline = 10,
-  /** \\r */CarriageReturn = 13,
-  /**     */Space = 32,
-  /**  \" */DoubleQuote = 34,
-  /**  \# */Hash = 35,
-  /**   & */Ampersand = 38,
-  /**   ' */Quote = 39,
-  /**  \* */Asterisk = 42,
-  /**  \+ */PlusSign = 43,
-  /**  \- */MinusSign = 45,
-  /**   . */Dot = 46,
-  /**   : */Colon = 58,
-  /**   < */LessThan = 60,
-  /**   = */EqualsTo = 61,
-  /**   @ */AtSign = 64,
-  /**   ~ */Tilde = 126,
-}
-
-/**
- * Template Compiler.
- */
-interface TemplateCompiler {
-  /** Static strings. */
-  statics: string[] | TemplateStringsArray;
-  /** Current static string. */
-  text: string;
-  /** Text index. */
-  i: number;
-  /** Expr index. */
-  e: number;
-
-  /** Curent node indentation level. */
-  indent: number;
-  /** Try hoist expression. */
-  tryHoistExpr: (i: number) => boolean,
-
-  // output:
-  /** Root element tag name */
-  rootTagName: string,
-  /** Basic template (element without static attributes or children) */
-  isBasic: boolean,
-  /** The number of children slots. */
-  childrenSize: number,
-  /** Static template strings and expressions. */
-  template: (string | number)[];
-  /** Static data. */
-  data: string[],
-  /** State opCodes */
-  stateOpCodes: StateOpCode[],
-  /** Dynamic expressions */
-  dynamicExprs: number[],
-}
-
-const COMPILER: TemplateCompiler = Object.seal({
-  statics: null!,
-  text: "",
-  i: 0,
-  e: 0,
-  indent: 0,
-  tryHoistExpr: null!,
-  rootTagName: "",
-  isBasic: true,
-  childrenSize: 0,
-  template: [],
-  data: [],
-  stateOpCodes: [],
-  dynamicExprs: [],
-});
-
-const IDENTIFIER = /[a-zA-Z_][\w-]*/y;
-const JS_PROPERTY = /[a-zA-Z_$][\w]*/y;
+export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => {
+  return {
+    roots: tpl.children.map((node) => compileTemplateNode(node, tpl.type)),
+  };
+};
 
 export class TemplateCompilerError extends Error {
-  staticsOffset: number;
-  textOffset: number;
-
-  constructor(message: string, staticsOffset: number, textOffset: number) {
-    super(message);
-    this.staticsOffset = staticsOffset;
-    this.textOffset = textOffset;
+  constructor(msg: string) {
+    super(msg);
   }
 }
 
-const error = (msg: string): never => {
-  throw new TemplateCompilerError(msg, COMPILER.e, COMPILER.i);
-};
-
-const expr = (): number => {
-  const c = COMPILER;
-  let e;
-  return (c.i === c.text.length && (e = c.e) < (c.statics.length - 1))
-    ? (c.i = 0, c.text = c.statics[++c.e], e)
-    : -1;
-};
-
-/**
- * `RegExp` should have sticky "y" flag.
- */
-const regexp = (re: RegExp): string | undefined => {
-  const c = COMPILER;
-  re.lastIndex = c.i;
-  const match = re.exec(c.text);
-  if (match !== null) {
-    const m = match[0];
-    c.i += m.length;
-    return m;
-  }
-  return void 0;
-};
-
-/**
- * Skips whitespace and returns indentation level.
- *
- * @returns Indentation level.
- */
-const whitespace = (): boolean => {
-  const comp = COMPILER;
-  const text = comp.text;
-  let i = comp.i;
-  let indent = comp.indent;
-  while (i < text.length) {
-    const c = text.charCodeAt(i++);
-    if (c === CharCode.Space || c === CharCode.Tab) {
-      indent++;
-      continue;
-    }
-    if (c === CharCode.Newline || c === CharCode.CarriageReturn) {
-      indent = 0;
-      continue;
-    }
-    i--;
-    break;
-  }
-
-  return (i !== comp.i)
-    ? (comp.indent = indent, comp.i = i, true)
-    : false;
-};
-
-/**
- * Two types of strings:
- *
- * 'basic string'
- * ##'stri'n'g'##
- */
-const string = (isAttribute: boolean): string => {
-  const comp = COMPILER;
-  const text = comp.text;
-  const textLength = text.length;
-  let i = comp.i;
-  if (i < textLength) {
-    let s = "";
-    let hashDelim = 0;
-    let c;
-
-    while ((c = text.charCodeAt(i++)) === CharCode.Hash && i < textLength) {
-      hashDelim++;
-    }
-
-    if (c === CharCode.Quote) {
-      let start = i;
-      outer: while (i < textLength) {
-        c = c = text.charCodeAt(i++);
-        if (c === CharCode.Quote) {
-          const end = i - 1;
-          const j = i + hashDelim;
-          if (j > textLength) {
-            error("invalid string");
-          }
-          while (i < j) {
-            if (text.charCodeAt(i) !== CharCode.Hash) {
-              continue outer;
-            }
-            i++;
-          }
-          comp.i = i;
-          return s + text.substring(start, end);
-        }
-
-        let escaped: string;
-        if (c === CharCode.Ampersand) {
-          escaped = "&amp;"; // &
-        } else if (isAttribute === true) {
-          if (c !== CharCode.DoubleQuote) {
-            continue;
-          }
-          escaped = "&quot;";
-        } else if (c === CharCode.LessThan) { // StringContext.Text
-          escaped = "&lt;";
-        } else {
-          continue;
-        }
-
-        s += text.substring(start, i - 1) + escaped;
-        start = i;
-      }
-    }
-  }
-  return "";
-};
-
-const eq = (): boolean => {
-  const comp = COMPILER;
-  const text = comp.text;
-  return (comp.i < text.length && text.charCodeAt(comp.i) === CharCode.EqualsTo)
-    ? (comp.i++, true)
-    : false;
-};
-
-const attributeProp = (opCodes: PropOpCode[], key: string) => {
-  const comp = COMPILER;
-  if (eq()) { // =
-    let value;
-    if ((value = string(true)) !== "") {
-      comp.isBasic = false;
-      comp.template.push(' ' + key + '="' + value + '"');
-    } else {
-      if ((value = expr()) === -1) {
-        error("expected a string or an expression");
-      }
-      if (comp.tryHoistExpr(value) === true) {
-        comp.isBasic = false;
-        comp.template.push(' ' + key + '="', value, '"');
-      } else {
-        opCodes.push(
-          PropOpCode.Attribute
-          | (dynamicExpr(value) << PropOpCode.InputShift)
-          | (comp.data.length << PropOpCode.DataShift)
-        );
-        comp.data.push(key);
-      }
-    }
-  } else {
-    comp.isBasic = false;
-    comp.template.push(' ' + key);
+const compileTemplateNode = (node: INode, type: ITemplateType): TemplateNode => {
+  switch (node.type) {
+    case INodeType.Element:
+      return compileRootElement(node, type);
+    case INodeType.Expr:
+      return {
+        type: TemplateNodeType.Expr,
+        value: node.index,
+      };
+    case INodeType.Text:
+      return {
+        type: TemplateNodeType.Text,
+        value: node.value,
+      };
   }
 };
 
-const dynamicProp = (opCodes: PropOpCode[], opCode: PropOpCode, key: string) => {
-  if (!eq()) {
-    error("expected a '=' character");
-  }
-  const data = COMPILER.data;
-  const v = expr();
-  if (v === -1) {
-    error("expected an expression");
-  }
-  opCodes.push(
-    opCode
-    | (dynamicExpr(v) << PropOpCode.InputShift)
-    | (data.length << PropOpCode.DataShift)
-  );
-  data.push(key);
-};
-
-interface ParsedElement {
-  /** `stateOpCodesStart` */
+interface SNode<T extends INode = INode> {
+  readonly node: T;
   stateIndex: number;
-  /** Property opCodes */
-  propOpCodes: PropOpCode[];
-  /** Direct children opCodes */
-  childOpCodes: ChildOpCode[];
-  /** Subtree */
-  children: ParsedElement[];
+  children: SNode[] | null;
+  propsExprs: number,
+  childrenExprs: number;
 }
+
+const compileRootElement = (
+  element: INodeElement,
+  type: ITemplateType,
+): TemplateNodeBlock => {
+  // Emits a static template. It can be either a string if it is an element
+  // without any static parts, or an array of strings and expression indices.
+  const template = emitStaticTemplate(element);
+  // Creates a new tree with additional data for compilation.
+  const sRoot = createSNode(element);
+  // Assigns state slots in DFS LTR order.
+  assignStateSlots(sRoot);
+  // Creates dynamic expressions map that stores expr indices that will be
+  // used in the current template block.
+  const exprMap = createExprMap(element);
+  // Emits state OpCodes and traverses tree in DFS LTR order.
+  const state = emitStateOpCodes(sRoot);
+  // Emits props OpCodes and traverses tree in DFS LTR order.
+  const data: string[] = [];
+  const props = emitPropsOpCodes(sRoot, data, exprMap);
+  // Emits child OpCodes and traverses tree in DFS RTL order.
+  const child = emitChildOpCodes(sRoot, exprMap);
+
+  return {
+    type: TemplateNodeType.Block,
+    flags: (
+      (countStateSlots(state)) |
+      (countChildSlots(child) << TemplateFlags.ChildrenSizeShift) |
+      (type === ITemplateType.Svg ? TemplateFlags.Svg : 0)
+    ),
+    template,
+    props,
+    child,
+    state,
+    data,
+    exprs: Array.from(exprMap.keys()),
+  };
+};
+
+const countStateSlots = (stateOpCodes: number[]) => {
+  let count = 1; // Root node always occupy 1 slot.
+  for (let i = 0; i < stateOpCodes.length; i++) {
+    const op = stateOpCodes[i];
+    if (
+      (op & StateOpCode.Save) ||
+      ((op & StateOpCode.EnterOrRemove) && (op >> StateOpCode.OffsetShift) === 0)
+    ) {
+      count++;
+    }
+  }
+  return count;
+};
+
+const countChildSlots = (childOpCodes: number[]) => {
+  let count = 0;
+  for (let i = 0; i < childOpCodes.length; i++) {
+    if ((childOpCodes[i] & ChildOpCode.Type) === ChildOpCode.Child) {
+      count++;
+    }
+  }
+  return count;
+};
+
+const createExprMap = (
+  root: INodeElement,
+) => {
+  const exprMap = new Map<number, number>();
+  _createExprMap(exprMap, root);
+  return exprMap;
+};
+
+const _createExprMap = (
+  exprMap: Map<number, number>,
+  node: INodeElement,
+) => {
+  const { properties, children } = node;
+  for (let i = 0; i < properties.length; i++) {
+    const prop = properties[i];
+    const value = prop.value;
+    if (typeof value === "number") {
+      if (!isStaticProperty(prop)) {
+        exprMap.set(value, exprMap.size);
+      }
+    }
+  }
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    const type = child.type;
+    if (type === INodeType.Element) {
+      _createExprMap(exprMap, child);
+    } else if (type === INodeType.Expr) {
+      exprMap.set(child.index, exprMap.size);
+    }
+  }
+};
+
+const emitStaticTemplate = (root: INodeElement) => {
+  const staticTemplate: Array<string | number> = [];
+  _emitStaticTemplate(staticTemplate, root);
+  if (staticTemplate.length <= 3 && staticTemplate[1] === ">") {
+    return root.tag;
+  }
+  return staticTemplate;
+};
 
 const VOID_ELEMENTS = /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/;
 
-const enum ParseElementState {
-  Initial = 0,
+const _emitStaticTemplate = (
+  staticTemplate: Array<string | number>,
+  node: INodeElement,
+) => {
+  const { tag, properties, children } = node;
+
+  staticTemplate.push(`<${tag}`);
+  for (let i = 0; i < properties.length; i++) {
+    const prop = properties[i];
+    const type = prop.type;
+    if (type === IPropertyType.Attribute) {
+      const { key, value } = prop;
+      if (typeof value === "number") {
+        if (key === "class" && prop.static === true) {
+          staticTemplate.push(value);
+        }
+      } else if (value === true) {
+        staticTemplate.push(` ${key}`);
+      } else {
+        staticTemplate.push(` ${key}="${value}"`);
+      }
+    }
+  }
+  staticTemplate.push(`>`);
+  if (children.length > 0) {
+    if (VOID_ELEMENTS.test(tag)) {
+      throw new TemplateCompilerError(`Invalid template, void element '${tag}' shouldn't have any children.`);
+    }
+    let state = 0;
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      switch (child.type) {
+        case INodeType.Element:
+          _emitStaticTemplate(staticTemplate, child);
+          state = 0;
+          break;
+        case INodeType.Text:
+          if ((state & 3) === 3) {
+            staticTemplate.push("<!>");
+          }
+          state = 1;
+          staticTemplate.push(child.value);
+          break;
+        case INodeType.Expr:
+          state |= 2;
+          break;
+      }
+    }
+  }
+  staticTemplate.push(`</${tag}>`);
+};
+
+const getDataIndex = (
+  data: string[],
+  dataMap: Map<string, number>,
+  key: string,
+) => {
+  let index = dataMap.get(key);
+  if (index === void 0) {
+    index = data.length;
+    data.push(key);
+    dataMap.set(key, index);
+  }
+  return index;
+};
+
+const emitPropsOpCodes = (
+  root: SNode,
+  data: string[],
+  exprMap: Map<number, number>,
+): number[] => {
+  const dataMap = new Map<string, number>();
+  const opCodes: number[] = [];
+  _emitPropsOpCodes(opCodes, root, true, data, dataMap, exprMap);
+  return opCodes;
+};
+const _emitPropsOpCodes = (
+  opCodes: number[],
+  node: SNode,
+  isRoot: boolean,
+  data: string[],
+  dataMap: Map<string, number>,
+  exprMap: Map<number, number>,
+) => {
+  const iNode = node.node;
+  if (iNode.type === INodeType.Element) {
+    if (node.propsExprs > 0) {
+      if (isRoot === false) {
+        opCodes.push(PropOpCode.SetNode | (node.stateIndex << PropOpCode.DataShift));
+      }
+      const properties = iNode.properties;
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+        const value = prop.value;
+        if (typeof value === "number") {
+          const { type, key } = prop;
+          switch (type) {
+            case IPropertyType.Attribute:
+              const exprIndex = exprMap.get(value)!;
+              if (exprIndex !== -1) {
+                if (key === "class") {
+                  opCodes.push(
+                    PropOpCode.Common |
+                    (CommonPropType.ClassName << PropOpCode.DataShift) |
+                    (exprMap.get(value)! << PropOpCode.InputShift)
+                  );
+                } else {
+                  opCodes.push(
+                    PropOpCode.Attribute |
+                    (exprMap.get(value)! << PropOpCode.InputShift) |
+                    (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                  );
+                }
+              }
+              break;
+            case IPropertyType.Value:
+              if (key === "textContent") {
+                opCodes.push(
+                  PropOpCode.Common |
+                  (CommonPropType.TextContent << PropOpCode.DataShift) |
+                  (exprMap.get(value)! << PropOpCode.InputShift)
+                );
+              } else {
+                opCodes.push(
+                  PropOpCode.Property |
+                  (exprMap.get(value)! << PropOpCode.InputShift) |
+                  (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                );
+              }
+              break;
+            case IPropertyType.DOMValue:
+              opCodes.push(
+                PropOpCode.Property |
+                PropOpCode.DiffDOMProperty |
+                (exprMap.get(value)! << PropOpCode.InputShift) |
+                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+              );
+              break;
+            case IPropertyType.Style:
+              opCodes.push(
+                PropOpCode.Style |
+                (exprMap.get(value)! << PropOpCode.InputShift) |
+                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+              );
+              break;
+            case IPropertyType.Event:
+              opCodes.push(
+                PropOpCode.Event |
+                (exprMap.get(value)! << PropOpCode.InputShift) |
+                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+              );
+              break;
+            case IPropertyType.Directive:
+              opCodes.push(
+                PropOpCode.Directive |
+                (exprMap.get(value)! << PropOpCode.InputShift)
+              );
+              break;
+          }
+        }
+      }
+    }
+
+    const children = node.children;
+    if (children !== null) {
+      for (let i = 0; i < children.length; i++) {
+        _emitPropsOpCodes(opCodes, children[i], false, data, dataMap, exprMap);
+      }
+    }
+  }
+};
+
+const emitStateOpCodes = (root: SNode<INodeElement>): number[] => {
+  const opCodes: number[] = [];
+  _emitStateOpCodes(opCodes, root, -1);
+  return opCodes;
+};
+
+const enum VisitState {
   PrevText = 1,
   PrevExpr = 1 << 1,
-
-  /** Indentation level for inline nodes. */
-  InlineIndentLevel = 1 << 16
 }
 
-/**
- * Adds a dynamic expr and returns its index.
- */
-const dynamicExpr = (i: number) => COMPILER.dynamicExprs.push(i) - 1;
-
-/**
- * `stateIndex` points to `Enter` opCode for the current element. `-1` value
- * indicates that it is a root node.
- */
-const element = (stateIndex: number): ParsedElement | null => {
-  let tmp;
-  let v;
-  const propOpCodes: PropOpCode[] = [];
-  const childOpCodes: ChildOpCode[] = [];
-  const children: ParsedElement[] = [];
-  const comp = COMPILER;
-  const eSize = comp.statics.length - 1;
-  const indent = comp.indent;
-  const stateOpCodes: StateOpCode[] = comp.stateOpCodes;
-  const template = comp.template;
-  const tagName = regexp(IDENTIFIER);
-  if (tagName === void 0) {
-    error("expected a valid tag name");
-  }
-  if (stateIndex === -1) {
-    comp.rootTagName = tagName!;
-  }
-  if (indent < ParseElementState.InlineIndentLevel) {
-    comp.indent = ParseElementState.InlineIndentLevel;
-  }
-  template.push("<" + tagName);
-  // Dynamic class name
-  v = expr();
-  if (v !== -1) {
-    if (comp.tryHoistExpr(v) === true) {
-      comp.isBasic = false;
-      template.push(' class="', v, '"');
-    } else {
-      propOpCodes.push(
-        PropOpCode.Common
-        | (CommonPropType.ClassName << PropOpCode.DataShift)
-        | (dynamicExpr(v) << PropOpCode.InputShift)
-      );
-    }
-  } else {
-    // parse class names, e.g. `div.classA.classB`
-    let className;
-    while (comp.i < comp.text.length) {
-      const c = comp.text.charCodeAt(comp.i);
-      if (c === CharCode.Dot) {
-        comp.i++;
-        const id = regexp(IDENTIFIER);
-        if (id === void 0) {
-          error("expected a valid class name");
-        }
-        className = (className === void 0)
-          ? id
-          : className + " " + id;
-      } else {
-        break;
+const _emitStateOpCodes = (
+  opCodes: number[],
+  node: SNode<INodeElement>,
+  startIndex: number,
+) => {
+  const children = node.children;
+  if (children !== null) {
+    let state = 0;
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      switch (child.node.type) {
+        case INodeType.Element:
+          const currentOpCodeIndex = opCodes.length;
+          opCodes.push(0);
+          _emitStateOpCodes(opCodes, child as SNode<INodeElement>, currentOpCodeIndex);
+          const childrenOffset = opCodes.length - (currentOpCodeIndex + 1);
+          if (childrenOffset > 0) {
+            opCodes[currentOpCodeIndex] = StateOpCode.EnterOrRemove | (childrenOffset << StateOpCode.OffsetShift);
+          } else {
+            opCodes[currentOpCodeIndex] = StateOpCode.Next;
+          }
+          if (child.childrenExprs > 0 || child.propsExprs > 0 || state & VisitState.PrevExpr) {
+            opCodes[currentOpCodeIndex] |= StateOpCode.Save;
+          }
+          state = 0;
+          break;
+        case INodeType.Text:
+          if ((state & (VisitState.PrevText | VisitState.PrevExpr)) === (VisitState.PrevText | VisitState.PrevExpr)) {
+            opCodes.push(
+              StateOpCode.EnterOrRemove,
+            );
+          } else if (state & VisitState.PrevExpr) {
+            opCodes.push(
+              StateOpCode.Next | StateOpCode.Save,
+            );
+          } else {
+            opCodes.push(StateOpCode.Next);
+          }
+          state = 1;
+          break;
+        case INodeType.Expr:
+          state |= VisitState.PrevExpr;
+          break;
       }
-    }
-    if (className !== void 0) {
-      comp.isBasic = false;
-      template.push(' class="' + className + '"');
+
     }
   }
 
-  whitespace();
-  while (comp.indent > indent && comp.i < comp.text.length) {
-    const c = comp.text.charCodeAt(comp.i);
-    if (c === CharCode.Colon) { // :attribute
-      comp.i++;
-      if ((tmp = regexp(IDENTIFIER)) === void 0) {
-        error("expected a valid attribute name");
-      }
-      attributeProp(propOpCodes, tmp!);
-    } else if (c === CharCode.EqualsTo) { // =textContent
-      comp.i++;
-      if ((tmp = expr()) === -1) {
-        error("expected a text content expression");
-      }
-      propOpCodes.push(
-        PropOpCode.Common |
-        (CommonPropType.TextContent << PropOpCode.DataShift) |
-        (dynamicExpr(tmp) << PropOpCode.InputShift),
-      );
-    } else if (c === CharCode.Dot) { // .property
-      comp.i++;
-      if ((tmp = regexp(JS_PROPERTY)) === void 0) {
-        error("expected a valid property name");
-      }
-      dynamicProp(propOpCodes, PropOpCode.Property, tmp!);
-    } else if (c === CharCode.Asterisk) { // *value
-      comp.i++;
-      if ((tmp = regexp(JS_PROPERTY)) === void 0) {
-        error("expected a valid property name");
-      }
-      dynamicProp(propOpCodes, PropOpCode.DiffDOMProperty, tmp!);
-    } else if (c === CharCode.Tilde) { // ~style
-      comp.i++;
-      if ((tmp = regexp(IDENTIFIER)) === void 0) {
-        error("expected a valid property name");
-      }
-      dynamicProp(propOpCodes, PropOpCode.Style, tmp!);
-    } else if (c === CharCode.AtSign) { // @event
-      comp.i++;
-      if ((tmp = regexp(IDENTIFIER)) === void 0) {
-        error("expected a valid event name");
-      }
-      dynamicProp(propOpCodes, PropOpCode.Event, tmp!);
-    } else if (c === 36) { // $${directive}
-      comp.i++;
-      if ((tmp = expr()) === -1) {
-        error("expected an attribute directive expression");
-      }
-      propOpCodes.push(PropOpCode.Directive | (dynamicExpr(tmp) << PropOpCode.InputShift));
-    } else {
+  // remove trailing NEXT or ENTER opCodes.
+  let i = opCodes.length;
+  while (--i > startIndex) {
+    const op = opCodes[i];
+    if (op & StateOpCode.Save) {
+      opCodes[i] = StateOpCode.Save;
       break;
     }
-
-    whitespace();
-  }
-  template.push(">");
-
-  if (!VOID_ELEMENTS.test(tagName!)) {
-    let state = ParseElementState.Initial;
-
-    while (comp.indent > indent) {
-      if (comp.i < comp.text.length) {
-        comp.isBasic = false;
-
-        if (state & ParseElementState.PrevExpr) {
-          childOpCodes.push(ChildOpCode.SetNext | (stateOpCodes.length << ChildOpCode.ValueShift));
-          stateOpCodes.push(StateOpCode.Next | StateOpCode.Save | StateOpCode.AssignSlot);
-        } else {
-          stateOpCodes.push(StateOpCode.Next);
-        }
-
-        if ((v = string(false)) !== "") {
-          // Inject marker nodes when expression is between two texts.
-          if (
-            (state & (ParseElementState.PrevExpr | ParseElementState.PrevText)) ===
-            (ParseElementState.PrevExpr | ParseElementState.PrevText)
-          ) {
-            template.push("<!>");
-            stateOpCodes.pop();
-            stateOpCodes.push(
-              StateOpCode.EnterOrRemove | StateOpCode.AssignSlot,
-              StateOpCode.Next,
-            );
-          }
-          state = ParseElementState.PrevText;
-          template.push(v);
-        } else {
-          state = 0;
-          tmp = stateOpCodes.length;
-          if ((v = element(tmp - 1)) !== null) {
-            children.push(v);
-          }
-          if (stateOpCodes.length !== tmp) {
-            stateOpCodes[tmp - 1] = (
-              StateOpCode.EnterOrRemove
-              | ((stateOpCodes.length - tmp) << StateOpCode.OffsetShift)
-              | (stateOpCodes[tmp - 1] & (StateOpCode.Save | StateOpCode.AssignSlot))
-            );
-            stateOpCodes.push(StateOpCode.Next);
-          }
-        }
-      } else if (comp.e < eSize) {
-        state |= ParseElementState.PrevExpr;
-        childOpCodes.push(dynamicExpr(expr()) << ChildOpCode.ValueShift);
-        comp.childrenSize++;
-      } else {
-        break;
-      }
-
-      whitespace();
+    // Remove operation implies that current text node should be saved.
+    if ((op & StateOpCode.EnterOrRemove) && (op >> StateOpCode.OffsetShift) === 0) {
+      break;
     }
-
-    template.push("</" + tagName + ">");
-
-    // remove trailing NEXT or ENTER opCodes.
-    v = stateOpCodes.length;
-    while (--v > stateIndex) {
-      tmp = stateOpCodes[v];
-      if (tmp & StateOpCode.AssignSlot) {
-        // Workaround to preserve Remove opCodes
-        if (tmp & (StateOpCode.Next | (StateOpCode.Mask10 << StateOpCode.OffsetShift))) {
-          stateOpCodes[v] = StateOpCode.Save | StateOpCode.AssignSlot;
-        }
-        break;
-      } else {
-        stateOpCodes.pop();
-      }
-    }
+    opCodes.pop();
   }
-
-  if (stateIndex !== -1 && (propOpCodes.length > 0 || childOpCodes.length > 0)) {
-    stateOpCodes[stateIndex] |= StateOpCode.Save | StateOpCode.AssignSlot;
-  } else if (propOpCodes.length === 0 && childOpCodes.length === 0 && children.length === 0) {
-    return null;
-  }
-
-  return { stateIndex, propOpCodes, childOpCodes, children };
 };
 
-const emitOpCodes = (
-  propOpCodes: number[],
-  childOpCodes: number[],
-  stateOpCodes: number[],
-  element: ParsedElement,
+const emitChildOpCodes = (
+  root: SNode<INodeElement>,
+  exprMap: Map<number, number>,
+): number[] => {
+  const opCodes: number[] = [];
+  _emitChildOpCodes(opCodes, root, true, exprMap);
+  return opCodes;
+};
+
+const _emitChildOpCodes = (
+  opCodes: number[],
+  node: SNode,
+  isRoot: boolean,
+  exprMap: Map<number, number>,
 ) => {
-  let op;
-  let i;
-  let elementSlot;
-  let arr: PropOpCode[] | ChildOpCode[] | ParsedElement[] = element.propOpCodes;
-  if ((elementSlot = element.stateIndex) !== -1) {
-    elementSlot = stateOpCodes[elementSlot] >> StateOpCode.SaveSlotShift;
-  }
-
-  if (arr.length > 0) {
-    if (elementSlot !== -1) {
-      propOpCodes.push(PropOpCode.SetNode | (elementSlot << PropOpCode.DataShift));
-    }
-    propOpCodes.push(...arr);
-  }
-
-  arr = element.childOpCodes;
-  i = arr.length;
-  if (i > 0) {
-    if (elementSlot !== -1) {
-      childOpCodes.push(ChildOpCode.SetParent | (elementSlot << ChildOpCode.ValueShift));
-    }
-    do {
-      op = arr[--i];
-      if (op & ChildOpCode.SetNext) {
-        childOpCodes.push(
-          ChildOpCode.SetNext
-          | ((stateOpCodes[op >> ChildOpCode.ValueShift] >> StateOpCode.SaveSlotShift) << ChildOpCode.ValueShift)
-        );
-      } else {
-        childOpCodes.push(op);
+  if (node.childrenExprs > 0) {
+    const children = node.children;
+    if (children !== null) {
+      // Do not emit SetParent for root nodes
+      if (isRoot === false) {
+        opCodes.push(ChildOpCode.SetParent | (node.stateIndex << ChildOpCode.ValueShift));
       }
-    } while (i > 0);
+      let prev: SNode | undefined;
+      let i = children.length;
+      while (--i >= 0) {
+        const child = children[i];
+        if (child.node.type === INodeType.Expr) {
+          if (prev !== void 0 && prev.node.type !== INodeType.Expr) {
+            opCodes.push(ChildOpCode.SetNext | (prev.stateIndex << ChildOpCode.ValueShift));
+          }
+          opCodes.push(ChildOpCode.Child | (exprMap.get(child.node.index)! << ChildOpCode.ValueShift));
+        }
+        prev = child;
+      }
+    }
   }
-
-  arr = element.children;
-  i = arr.length;
-  while (--i >= 0) {
-    emitOpCodes(propOpCodes, childOpCodes, stateOpCodes, arr[i]);
+  const children = node.children;
+  if (children !== null) {
+    let i = children.length;
+    while (--i >= 0) {
+      const child = children[i];
+      if (child.node.type === INodeType.Element) {
+        _emitChildOpCodes(opCodes, child, false, exprMap);
+      }
+    }
   }
 };
 
-export interface TemplateCompilationArtifact {
-  /** Template Cloning disabled */
-  disableCloning: boolean,
-  /** Template Flags */
-  flags: TemplateFlags;
-  /** Static Template */
-  template: (string | number)[] | string,
-  /** Prop OpCodes */
-  propOpCodes: PropOpCode[],
-  /** Child OpCodes */
-  childOpCodes: ChildOpCode[],
-  /** State OpCodes */
-  stateOpCodes: StateOpCode[],
-  /** Data */
-  data: string[],
-  /** Dynamic Expressions */
-  dynamicExprs: number[],
-}
+const assignStateSlots = (root: SNode): number => (
+  _assignStateSlots(root, 1)
+);
 
-export const compileTemplate = (
-  s: string[] | TemplateStringsArray,
-  svg: boolean,
-  tryHoistExpr: (i: number) => boolean,
-): TemplateCompilationArtifact => {
-  if (s.length === 0) {
-    error("empty template");
-  }
-  let op;
-  let node;
-  let i;
-  let disableCloning = false;
-  let stateSize = 1;
-  const propOpCodes: PropOpCode[] = [];
-  const childOpCodes: ChildOpCode[] = [];
-  const comp = COMPILER;
-  const stateOpCodes = comp.stateOpCodes;
-  const text = s[0];
-  comp.text = text;
-  comp.statics = s;
-  comp.tryHoistExpr = tryHoistExpr;
-
-  try {
-    // Parse flags:
-    //   -c Disable template cloning.
-    if (text.length > 1) {
-      if (text.charCodeAt(0) === CharCode.MinusSign) {
-        if (text.charCodeAt(1) === 99) { // "c"
-          disableCloning = true;
-          comp.i = 2;
-          if (!whitespace()) {
-            error("expected a whitespace");
+const _assignStateSlots = (node: SNode, stateIndex: number): number => {
+  const children = node.children;
+  if (children !== null) {
+    let prevExpr = false;
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      switch (child.node.type) {
+        case INodeType.Element:
+          if (prevExpr) {
+            child.stateIndex = stateIndex++;
+            prevExpr = false;
+          } else if (child.propsExprs > 0 || child.childrenExprs > 0) {
+            child.stateIndex = stateIndex++;
           }
-        } else {
-          error("expected an option flag");
-        }
-      } else {
-        whitespace();
+          stateIndex = _assignStateSlots(child, stateIndex);
+        case INodeType.Text:
+          if (prevExpr) {
+            child.stateIndex = stateIndex++;
+            prevExpr = false;
+          }
+          break;
+        case INodeType.Expr:
+          prevExpr = true;
       }
     }
-
-    if ((node = element(-1)) !== null) {
-      // Assign slots in state opCodes.
-      for (i = 0; i < stateOpCodes.length; i++) {
-        op = stateOpCodes[i];
-        if (op & StateOpCode.AssignSlot) {
-          stateOpCodes[i] = (
-            (op & ((1 << StateOpCode.SaveSlotShift) - 1))
-            | (stateSize++ << StateOpCode.SaveSlotShift)
-          );
-        }
-      }
-      emitOpCodes(propOpCodes, childOpCodes, stateOpCodes, node);
-      // Clean slots in state opCodes.
-      for (i = 0; i < stateOpCodes.length; i++) {
-        stateOpCodes[i] &= (1 << StateOpCode.SaveSlotShift) - 1;
-      }
-    }
-
-    return {
-      disableCloning,
-      flags: ((svg === true) ? TemplateFlags.Svg : 0) | stateSize | (comp.childrenSize << 10),
-      template: (comp.isBasic) ? comp.rootTagName : comp.template,
-      propOpCodes,
-      childOpCodes,
-      stateOpCodes,
-      data: comp.data,
-      dynamicExprs: comp.dynamicExprs,
-    };
-  } finally {
-    comp.statics = null!;
-    comp.text = "";
-    comp.e = 0;
-    comp.i = 0;
-    comp.indent = 0;
-    comp.isBasic = true;
-    comp.childrenSize = 0;
-    comp.template = [];
-    comp.data = [];
-    comp.stateOpCodes = [];
-    comp.dynamicExprs = [];
   }
+  return stateIndex;
+};
+
+const isStaticProperty = (prop: IProperty) => (
+  (typeof prop.value !== "number") ||
+  (prop.type !== IPropertyType.Attribute) ||
+  (prop.key === "class" && prop.static === true)
+);
+
+const createSNode = <T extends INode>(node: T): SNode<T> => {
+  if (node.type !== INodeType.Element) {
+    return {
+      node,
+      stateIndex: 0,
+      children: null,
+      childrenExprs: 0,
+      propsExprs: 0,
+    };
+  }
+
+  const properties = node.properties;
+  let propsExprs = 0;
+  for (let i = 0; i < properties.length; i++) {
+    if (!isStaticProperty(properties[i])) {
+      propsExprs++;
+    }
+  }
+
+  const children: SNode[] = [];
+  const iChildren = node.children;
+  let childrenExprs = 0;
+  for (let i = 0; i < iChildren.length; i++) {
+    const child = iChildren[i];
+    const sNode = createSNode(child);
+    if (child.type === INodeType.Expr) {
+      childrenExprs++;
+    }
+    children.push(sNode);
+  }
+
+  return {
+    node,
+    stateIndex: 0,
+    children,
+    childrenExprs,
+    propsExprs,
+  };
 };

@@ -1,8 +1,15 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { compileTemplate } from "../compiler.js";
-import { ChildOpCode, PropOpCode, StateOpCode, TemplateCompilationArtifact, TemplateFlags, TemplateNode, TemplateNodeType } from "../format.js";
-import { INode, INodeElement, INodeExpr, INodeText, INodeType, IProperty, IPropertyAttribute, IPropertyType, ITemplate, ITemplateType } from "../ir.js";
+import { compileTemplate } from "../index.js";
+import {
+  type TemplateCompilationArtifact, type TemplateNode,
+  ChildOpCode, PropOpCode, StateOpCode, TemplateFlags, TemplateNodeType,
+} from "../format.js";
+import {
+  type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
+  type IPropertyAttribute, type ITemplate,
+  INodeType, IPropertyType, ITemplateType
+} from "../ir.js";
 
 const _ = void 0;
 const ONLY = { only: true };

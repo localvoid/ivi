@@ -6,7 +6,7 @@
     ".": "./dist/index.js",
     "./ir": "./dist/ir.js",
     "./format": "./dist/format.js",
-    "./compiler": "./dist/compiler.js"
+    "./parser": "./dist/parser.js"
   },
   "sideEffects": false,
   "files": [
