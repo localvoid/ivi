@@ -103,7 +103,6 @@ export class TemplateParser extends TemplateScanner {
         if (key === void 0) {
           throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
         }
-        this.dynamicProp(properties, IPropertyType.Value, key);
       } else if (c === CharCode.Asterisk) { // *value
         this.i++;
         const key = this.regExp(JS_PROPERTY);

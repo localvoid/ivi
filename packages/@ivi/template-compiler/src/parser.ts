@@ -112,6 +112,64 @@ const HTML_VOID_ELEMENTS = (
 export const isVoidElement = (tag: string) => HTML_VOID_ELEMENTS.test(tag);
 
 /**
+ * Formats error message.
+ *
+ * @param errorMsg Error message.
+ * @param errorCol Line column.
+ */
+const formatErrorMsg = (errorMsg: string, errorCol: number): string => {
+  let msg = "";
+  while (--errorCol >= 0) {
+    msg += " ";
+  }
+  msg += "^\nError: " + errorMsg + "\n";
+  return msg;
+};
+
+/**
+ * Formats compiler errors.
+ *
+ * @param statics Statics.
+ * @param errorMsg Error message.
+ * @param staticsOffset Expression offset.
+ * @param textOffset Text offset.
+ * @returns Formatted error message.
+ */
+export const formatError = (
+  statics: TemplateStringsArray,
+  errorMsg: string,
+  staticsOffset: number,
+  textOffset: number,
+): string => {
+  for (let i = 0; i < staticsOffset; i++) {
+    if (i > 0) {
+      textOffset += 4 + (Math.log10(i) | 0); // ${i}
+    }
+    textOffset += statics[i].length;
+  }
+
+  let msg = "\n";
+  let text = statics[0];
+  for (let i = 1; i < statics.length; i++) {
+    text += "${" + (i - 1) + "}" + statics[i];
+  }
+
+  for (const line of text.split("\n")) {
+    msg += line + "\n";
+    if (textOffset >= 0 && textOffset < line.length) {
+      msg += formatErrorMsg(errorMsg, textOffset);
+    }
+    textOffset -= (line.length + 1);
+  }
+
+  if (textOffset >= 0) {
+    msg += formatErrorMsg(errorMsg, textOffset);
+  }
+
+  return msg;
+};
+
+/**
  * ASCII Char Codes.
  */
 export const enum CharCode {
