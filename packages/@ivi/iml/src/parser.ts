@@ -42,9 +42,15 @@ export class TemplateParser extends TemplateScanner {
       const c = this.peekCharCode();
       if (c !== -1) {
         if (c === CharCode.SingleQuote || c === CharCode.Hash) {
+          const value = this.parseString(false);
+          if (value.length > (1 << 16)) {
+            throw new TemplateParserError("Text string is too long (>64k)", this.e, this.i - 1);
+            // Text nodes are splitted into two nodes when they exceed their length limit (64k).
+            // https://github.com/chromium/chromium/blob/91159249db3086f17b28b7a060f55ec0345c24c7/third_party/blink/renderer/core/dom/text.h#L42
+          }
           children.push({
             type: INodeType.Text,
-            value: this.parseString(false),
+            value,
           });
         } else {
           children.push(this.parseElement());
