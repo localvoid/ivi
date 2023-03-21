@@ -1,6 +1,6 @@
 import { declare } from "@babel/helper-plugin-utils";
 import moduleImports from "@babel/helper-module-imports";
-import { compileTemplate } from "@ivi/template-compiler/compiler";
+import { compileTemplate } from "@ivi/template-compiler";
 import { TemplateParserError } from "@ivi/template-compiler/parser";
 import { parseTemplate } from "@ivi/iml/parser";
 
@@ -18,13 +18,14 @@ export const ivi = declare((api) => {
     return (moduleName, name) => {
       let symbols = modules.get(moduleName);
       if (!symbols) {
-        modules.set(moduleName, symbols = new Map());
+        modules.set(moduleName, (symbols = new Map()));
       }
       let symbolName = symbols.get(name);
       if (!symbolName) {
-        symbolName = name === "default"
-          ? moduleImports.addDefault(path, moduleName)
-          : moduleImports.addNamed(path, name, moduleName);
+        symbolName =
+          name === "default"
+            ? moduleImports.addDefault(path, moduleName)
+            : moduleImports.addNamed(path, name, moduleName);
         symbols.set(name, symbolName);
       }
       return symbolName;
@@ -40,19 +41,22 @@ export const ivi = declare((api) => {
       } else {
         result = t.binaryExpression(
           "+",
-          t.binaryExpression(
-            "+",
-            result,
-            exprs[c],
-          ),
-          lastStringLiteral = t.stringLiteral(""),
+          t.binaryExpression("+", result, exprs[c]),
+          (lastStringLiteral = t.stringLiteral(""))
         );
       }
     }
     return result;
   }
 
-  function createTemplateDescriptor(importSymbol, exprsNodes, type, clone, id, root) {
+  function createTemplateDescriptor(
+    importSymbol,
+    exprsNodes,
+    type,
+    clone,
+    id,
+    root
+  ) {
     const template = root.template;
     let factoryFnId;
     let factoryFnArg;
@@ -84,41 +88,47 @@ export const ivi = declare((api) => {
       t.variableDeclarator(
         id,
         t.addComment(
-          t.callExpression(
-            importSymbol("ivi", "_T"),
-            [
-              t.callExpression(
-                importSymbol("ivi", factoryFnId),
-                [factoryFnArg],
-              ),
-              t.numericLiteral(root.flags),
-              t.arrayExpression(root.props.map(toNumeric)),
-              t.arrayExpression(root.child.map(toNumeric)),
-              t.arrayExpression(root.state.map(toNumeric)),
-              t.arrayExpression(root.data.map(toString)),
-            ],
-          ),
+          t.callExpression(importSymbol("ivi", "_T"), [
+            t.callExpression(importSymbol("ivi", factoryFnId), [factoryFnArg]),
+            t.numericLiteral(root.flags),
+            t.arrayExpression(root.props.map(toNumeric)),
+            t.arrayExpression(root.child.map(toNumeric)),
+            t.arrayExpression(root.state.map(toNumeric)),
+            t.arrayExpression(root.data.map(toString)),
+          ]),
           "leading",
-          "@__PURE__ @__IVI_TPL__",
-        ),
+          "@__PURE__ @__IVI_TPL__"
+        )
       ),
     ]);
   }
 
-  function transformRootNode(importSymbol, path, exprsNodes, type, clone, root) {
+  function transformRootNode(
+    importSymbol,
+    path,
+    exprsNodes,
+    type,
+    clone,
+    root
+  ) {
     switch (root.type) {
       case 0: // Element
         const dynamicExprs = root.exprs.map((e) => exprsNodes[e]);
         const id = path.scope.generateUidIdentifier("__tpl_");
         hoistExpr(
           path,
-          createTemplateDescriptor(importSymbol, exprsNodes, type, clone, id, root),
+          createTemplateDescriptor(
+            importSymbol,
+            exprsNodes,
+            type,
+            clone,
+            id,
+            root
+          )
         );
         return t.callExpression(
           importSymbol("ivi", "_t"),
-          (dynamicExprs.length > 0)
-            ? [id, t.arrayExpression(dynamicExprs)]
-            : [id],
+          dynamicExprs.length > 0 ? [id, t.arrayExpression(dynamicExprs)] : [id]
         );
       case 1: // Text
         return t.stringLiteral(root.value);
@@ -160,31 +170,50 @@ export const ivi = declare((api) => {
 
             try {
               const leadingComments = path.node.leadingComments;
+              let clone = true;
               if (leadingComments) {
                 for (const comment of leadingComments) {
                   if (comment.value.trim() === "-c") {
-                    state.templates.push(path);
+                    console.log("clone");
+                    clone = false;
                     break;
                   }
                 }
               }
 
-              const clone = false;
               const template = parseTemplate(
                 statics,
                 type === "svg" ? 1 : 0,
-                (i) => tryHoistExpr(exprs[i]),
+                (i) => tryHoistExpr(exprs[i])
               );
               const result = compileTemplate(template);
               const roots = result.roots;
               if (roots.length === 1) {
                 path.replaceWith(
-                  transformRootNode(importSymbol, path, exprsNodes, type, clone, roots[0]),
+                  transformRootNode(
+                    importSymbol,
+                    path,
+                    exprsNodes,
+                    type,
+                    clone,
+                    roots[0]
+                  )
                 );
               } else {
-                path.replaceWith(t.arrayExpression(roots.map((root) => (
-                  transformRootNode(importSymbol, path, exprsNodes, type, clone, root)
-                ))));
+                path.replaceWith(
+                  t.arrayExpression(
+                    roots.map((root) =>
+                      transformRootNode(
+                        importSymbol,
+                        path,
+                        exprsNodes,
+                        type,
+                        clone,
+                        root
+                      )
+                    )
+                  )
+                );
               }
             } catch (e) {
               if (e instanceof TemplateParserError) {
@@ -192,20 +221,26 @@ export const ivi = declare((api) => {
                 const c = s.node.value.cooked;
                 let offset = 0;
                 for (let i = 0; i < e.textOffset; i++) {
-                  if (c.charCodeAt(i) === 10) { // "\n"
+                  if (c.charCodeAt(i) === 10) {
+                    // "\n"
                     offset = 0;
                   } else {
                     offset++;
                   }
                 }
                 throw s.buildCodeFrameError(
-                  e.message + "\n\n" + s.node.value.cooked + "\n" + "^".padStart(offset) + "\n",
+                  e.message +
+                  "\n\n" +
+                  s.node.value.cooked +
+                  "\n" +
+                  "^".padStart(offset) +
+                  "\n"
                 );
               }
-              throw path.buildCodeFrameError(e.message);
+              throw e;
             }
           }
-        }
+        },
       },
     },
   };
@@ -218,7 +253,10 @@ export const iviOptimizer = declare((api) => {
 
   function addSharedFactory(sharedStore, factory) {
     const node = factory.node;
-    const key = node.callee.name + ":" + stringify(t.cloneNode(node.arguments[0], true, true), void 0, 0);
+    const key =
+      node.callee.name +
+      ":" +
+      stringify(t.cloneNode(node.arguments[0], true, true), void 0, 0);
     let entries = sharedStore.get(key);
     if (entries === void 0) {
       sharedStore.set(key, [factory]);
@@ -272,8 +310,8 @@ export const iviOptimizer = declare((api) => {
             sharedDecls.push(
               t.variableDeclarator(
                 shareDataId,
-                t.arrayExpression(data.map((d) => t.stringLiteral(d))),
-              ),
+                t.arrayExpression(data.map((d) => t.stringLiteral(d)))
+              )
             );
 
             for (const tpl of templates) {
@@ -285,10 +323,12 @@ export const iviOptimizer = declare((api) => {
                 const value = op.node.value;
                 const type = value & 0b111;
 
-                if (type > 1) { // Ignore SetNode and Common
+                if (type > 1) {
+                  // Ignore SetNode and Common
                   const i = (value >> 3) & ((1 << 10) - 1);
                   const newDataIndex = dataIndex.get(dataElements[i].value);
-                  op.node.value = (value & (~0b1111111111000)) | (newDataIndex << 3);
+                  op.node.value =
+                    (value & ~0b1111111111000) | (newDataIndex << 3);
                 }
               }
               data.replaceWith(shareDataId);
@@ -315,9 +355,12 @@ export const iviOptimizer = declare((api) => {
                   t.variableDeclaration("const", [
                     t.variableDeclarator(
                       id,
-                      t.callExpression(factoryNode.callee, factoryNode.arguments),
+                      t.callExpression(
+                        factoryNode.callee,
+                        factoryNode.arguments
+                      )
                     ),
-                  ]),
+                  ])
                 );
 
                 for (const p of vs) {
@@ -333,8 +376,8 @@ export const iviOptimizer = declare((api) => {
                 sharedDecls.push(
                   t.variableDeclarator(
                     id,
-                    t.arrayExpression(vs[0].node.elements),
-                  ),
+                    t.arrayExpression(vs[0].node.elements)
+                  )
                 );
 
                 for (const p of vs) {
@@ -407,4 +450,3 @@ function hoistExpr(path, expr) {
     prev.insertBefore(expr);
   }
 }
-

@@ -31,7 +31,7 @@ export class TemplateScanner {
   isEnd(): boolean {
     return (
       this.i === this.text.length &&
-      this.e === this.statics.length
+      this.e === this.exprCount
     );
   }
 
@@ -43,23 +43,25 @@ export class TemplateScanner {
 
   charCode(c: number): boolean {
     if (this.i < this.text.length && this.text.charCodeAt(this.i) === c) {
+      this.i++;
       return true;
     }
     return false;
   }
 
-  peekExpr(): boolean {
-    return (
-      this.i === this.text.length &&
-      this.e < this.exprCount
-    );
+  peekExpr(): number {
+    const e = this.e;
+    return (e < this.exprCount && this.i === this.text.length)
+      ? e
+      : -1;
   }
 
   expr(): number {
-    if (this.i === this.text.length && this.e < this.exprCount) {
+    const e = this.e;
+    if (e < this.exprCount && this.i === this.text.length) {
       this.i = 0;
       this.text = this.statics[++this.e];
-      return this.e;
+      return e;
     }
     return -1;
   }
@@ -89,8 +91,7 @@ export class TemplateScanner {
     re.lastIndex = this.i;
     const match = re.exec(this.text);
     if (match !== null) {
-      const m = match[0];
-      return m;
+      return match[0];
     }
     return void 0;
   }

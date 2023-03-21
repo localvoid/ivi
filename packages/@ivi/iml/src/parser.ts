@@ -40,23 +40,25 @@ export class TemplateParser extends TemplateScanner {
     this.skipWhitespace();
     while (this.indent > indent && !this.isEnd()) {
       const c = this.peekCharCode();
-      if (c === CharCode.SingleQuote || c === CharCode.Hash) {
-        children.push({
-          type: INodeType.Text,
-          value: this.parseString(false),
-        });
+      if (c !== -1) {
+        if (c === CharCode.SingleQuote || c === CharCode.Hash) {
+          children.push({
+            type: INodeType.Text,
+            value: this.parseString(false),
+          });
+        } else {
+          children.push(this.parseElement());
+        }
       } else {
-        children.push(this.parseElement());
-      }
-
-      const expr = this.expr();
-      if (expr !== -1) {
-        children.push({
-          type: INodeType.Expr,
-          index: expr,
-        });
-      } else {
-        break;
+        const expr = this.expr();
+        if (expr !== -1) {
+          children.push({
+            type: INodeType.Expr,
+            index: expr,
+          });
+        } else {
+          break;
+        }
       }
 
       this.skipWhitespace();
@@ -293,16 +295,17 @@ export class TemplateParser extends TemplateScanner {
     let i = this.i;
     let indent = this.indent;
     while (i < text.length) {
-      const c = text.charCodeAt(i++);
+      const c = text.charCodeAt(i);
       if (c === CharCode.Space || c === CharCode.Tab) {
+        i++;
         indent++;
         continue;
       }
       if (c === CharCode.Newline || c === CharCode.CarriageReturn) {
+        i++;
         indent = 0;
         continue;
       }
-      i--;
       break;
     }
 

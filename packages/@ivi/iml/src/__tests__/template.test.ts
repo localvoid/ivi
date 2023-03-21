@@ -1,9 +1,9 @@
 import { strictEqual } from "node:assert";
 import { describe, test } from "node:test";
 import "global-jsdom/register";
-import { createRoot } from "../test.js";
-import { htm } from "../template.js";
-import { type VAny } from "../index.js";
+import { createRoot } from "ivi/test";
+import { htm } from "../index.js";
+import { type VAny } from "ivi";
 
 describe("template", () => {
   describe("mount", () => {

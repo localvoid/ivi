@@ -284,7 +284,6 @@ const _emitPropsOpCodes = (
               break;
             case IPropertyType.DOMValue:
               opCodes.push(
-                PropOpCode.Property |
                 PropOpCode.DiffDOMProperty |
                 (exprMap.get(value)! << PropOpCode.InputShift) |
                 (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
@@ -482,8 +481,11 @@ const _assignStateSlots = (node: SNode, stateIndex: number): number => {
 
 const isStaticProperty = (prop: IProperty) => (
   (typeof prop.value !== "number") ||
-  (prop.type !== IPropertyType.Attribute) ||
-  (prop.key === "class" && prop.static === true)
+  (
+    prop.type === IPropertyType.Attribute &&
+    prop.key === "class" &&
+    prop.static === true
+  )
 );
 
 const createSNode = <T extends INode>(node: T): SNode<T> => {
