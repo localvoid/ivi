@@ -3,12 +3,12 @@ import { describe, test } from "node:test";
 import { compileTemplate } from "../index.js";
 import {
   type TemplateCompilationArtifact, type TemplateNode,
-  ChildOpCode, PropOpCode, StateOpCode, TemplateFlags, TemplateNodeType,
+  ChildOpCode, PropOpCode, StateOpCode, TemplateFlags, TemplateNodeType, CommonPropType,
 } from "../format.js";
 import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
-  type IPropertyAttribute, type ITemplate,
-  INodeType, IPropertyType, ITemplateType
+  type IPropertyAttribute, type IPropertyValue, type ITemplate,
+  INodeType, IPropertyType, ITemplateType,
 } from "../ir.js";
 
 const _ = void 0;
@@ -30,6 +30,7 @@ const cC = (n: number) => ChildOpCode.Child | (n << ChildOpCode.ValueShift);
 
 const pSN = (n: number) => PropOpCode.SetNode | ((n + 1) << PropOpCode.DataShift);
 const pClass = (n: number) => PropOpCode.Common | (n << PropOpCode.InputShift);
+const pTextContent = (n: number) => PropOpCode.Common | (CommonPropType.TextContent << PropOpCode.DataShift) | (n << PropOpCode.InputShift);
 const pAttr = (k: number, n: number) => PropOpCode.Attribute | (k << PropOpCode.DataShift) | (n << PropOpCode.InputShift);
 
 const c = (tpl: ITemplate) => compileTemplate(tpl);
@@ -58,6 +59,13 @@ const expr = (index: number): INodeExpr => ({
 
 const attr = (key: string, value: string | number | boolean): IPropertyAttribute => ({
   type: IPropertyType.Attribute,
+  key,
+  value,
+  static: false,
+});
+
+const prop = (key: string, value: number): IPropertyValue => ({
+  type: IPropertyType.Value,
   key,
   value,
   static: false,
@@ -548,5 +556,34 @@ describe("template compilation", () => {
         ]),
       );
     });
+
+    test("7", () => {
+      deepStrictEqual(
+        c(h([
+          el("h1", _, [
+            el("h2", _, [
+              el("h3", [attr("class", 0)], [text("t")]),
+            ]),
+            el("h2", _, [
+              el("h3", [prop("textContent", 1)]),
+              expr(2),
+            ]),
+          ]),
+        ])).roots[0],
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 3, 1),
+            template: ["<h1", ">", "<h2", ">", "<h3", ">", "t", "</h3>", "</h2>", "<h2", ">", "<h3", ">", "</h3>", "</h2>", "</h1>"],
+            props: [pSN(0), pClass(0), pSN(2), pTextContent(1)],
+            child: [cSP(1), cC(2)],
+            state: [E(1), S, N, S | E(1), S],
+            data: [],
+            exprs: [0, 1, 2],
+          },
+        ]).roots[0],
+      );
+    });
+
   });
 });

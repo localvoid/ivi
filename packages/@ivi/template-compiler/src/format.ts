@@ -91,13 +91,12 @@ export const enum TemplateFlags {
  */
 export const enum StateOpCode {
   /** Moves cursor to the next node. */
-  Next = 0b00,
+  Next = 0b001,
   /** Enter or Remove operation. */
-  EnterOrRemove = 0b01,
+  EnterOrRemove = 0b010,
   /** Saves current node */
-  Save = 0b10,
-  OffsetShift = 2,
-  Mask6 = (1 << 6) - 1,
+  Save = 0b100,
+  OffsetShift = 3,
 }
 
 /**

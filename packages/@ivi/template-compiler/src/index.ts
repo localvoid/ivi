@@ -361,13 +361,12 @@ const _emitStateOpCodes = (
       switch (child.node.type) {
         case INodeType.Element:
           const currentOpCodeIndex = opCodes.length;
-          opCodes.push(0);
+          opCodes.push(StateOpCode.Next);
           _emitStateOpCodes(opCodes, child as SNode<INodeElement>, currentOpCodeIndex);
           const childrenOffset = opCodes.length - (currentOpCodeIndex + 1);
           if (childrenOffset > 0) {
             opCodes[currentOpCodeIndex] = StateOpCode.EnterOrRemove | (childrenOffset << StateOpCode.OffsetShift);
-          } else {
-            opCodes[currentOpCodeIndex] = StateOpCode.Next;
+            opCodes.push(StateOpCode.Next);
           }
           if (child.childrenExprs > 0 || child.propsExprs > 0 || state & VisitState.PrevExpr) {
             opCodes[currentOpCodeIndex] |= StateOpCode.Save;
@@ -392,7 +391,6 @@ const _emitStateOpCodes = (
           state |= VisitState.PrevExpr;
           break;
       }
-
     }
   }
 
