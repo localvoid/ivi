@@ -40,9 +40,10 @@ export class TemplateParser extends TemplateScanner {
       const c = this.peekCharCode();
       if (c !== -1) {
         if (c === CharCode.LessThan) {
+          if (this.peekCharCode(1) === CharCode.Slash) {
+            break;
+          }
           children.push(this.parseElement());
-        } else if (c === CharCode.MoreThan) {
-          break;
         } else {
           children.push({
             type: INodeType.Text,
@@ -88,15 +89,18 @@ export class TemplateParser extends TemplateScanner {
       children = [];
     } else {
       children = this.parseChildrenList();
-      if (!this.charCode(CharCode.MoreThan)) {
+      if (!this.charCode(CharCode.LessThan)) {
         throw new TemplateParserError("Expected a '<' character.", this.e, this.i);
+      }
+      if (!this.charCode(CharCode.Slash)) {
+        throw new TemplateParserError("Expected a '/' character.", this.e, this.i);
       }
       this.skipWhitespace();
       if (!this.string(tag)) {
         throw new TemplateParserError(`Expected a '${tag}' tag name.`, this.e, this.i);
       }
       this.skipWhitespace();
-      if (!this.charCode(CharCode.LessThan)) {
+      if (!this.charCode(CharCode.MoreThan)) {
         throw new TemplateParserError("Expected a '>' character.", this.e, this.i);
       }
     }
@@ -111,58 +115,58 @@ export class TemplateParser extends TemplateScanner {
 
   parseAttributes(): IProperty[] {
     const properties: IProperty[] = [];
-    let c;
-    while ((c = this.peekCharCode()) !== -1) {
-      if (c === CharCode.MoreThan) {
-        this.i++;
-        break;
-      }
-      if (c === CharCode.Dot) { // .property
-        this.i++;
-        const key = this.regExp(JS_PROPERTY);
-        if (key === void 0) {
-          throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
+    while (!this.isEnd()) {
+      const c = this.peekCharCode();
+      if (c !== -1) {
+        if (c === CharCode.MoreThan) {
+          return properties;
         }
-      } else if (c === CharCode.Asterisk) { // *value
-        this.i++;
-        const key = this.regExp(JS_PROPERTY);
-        if (key === void 0) {
-          throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
-        }
-        this.dynamicProp(properties, IPropertyType.DOMValue, key);
-      } else if (c === CharCode.Tilde) { // ~style
-        this.i++;
-        const key = this.regExp(IDENTIFIER);
-        if (key === void 0) {
-          throw new TemplateParserError("Expected a valid style name.", this.e, this.i);
-        }
-        this.dynamicProp(properties, IPropertyType.Style, key);
-      } else if (c === CharCode.AtSign) { // @event
-        this.i++;
-        const key = this.regExp(IDENTIFIER);
-        if (key === void 0) {
-          throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
-        }
-        this.dynamicProp(properties, IPropertyType.Event, key);
-      } else {
-        let value: string | boolean | number = this.expr();
-        if (value !== -1) {
-          properties.push({
-            type: IPropertyType.Directive,
-            key: null,
-            value,
-            static: false,
-          });
+        if (c === CharCode.Dot) { // .property
+          this.i++;
+          const key = this.regExp(JS_PROPERTY);
+          if (key === void 0) {
+            throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
+          }
+          this.dynamicProp(properties, IPropertyType.Value, key);
+        } else if (c === CharCode.Asterisk) { // *value
+          this.i++;
+          const key = this.regExp(JS_PROPERTY);
+          if (key === void 0) {
+            throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
+          }
+          this.dynamicProp(properties, IPropertyType.DOMValue, key);
+        } else if (c === CharCode.Tilde) { // ~style
+          this.i++;
+          const key = this.regExp(IDENTIFIER);
+          if (key === void 0) {
+            throw new TemplateParserError("Expected a valid style name.", this.e, this.i);
+          }
+          this.dynamicProp(properties, IPropertyType.Style, key);
+        } else if (c === CharCode.AtSign) { // @event
+          this.i++;
+          const key = this.regExp(IDENTIFIER);
+          if (key === void 0) {
+            throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
+          }
+          this.dynamicProp(properties, IPropertyType.Event, key);
         } else {
           const key = this.regExp(IDENTIFIER);
           if (key === void 0) {
             throw new TemplateParserError("Expected a valid attribute name.", this.e, this.i);
           }
+          this.skipWhitespace();
 
-          value = true;
+          let value: string | boolean | number = true;
           if (this.charCode(CharCode.EqualsTo)) { // =
-            value = this.parseString(true);
-            if (value === "") {
+            this.skipWhitespace();
+            const c = this.peekCharCode();
+            if (c !== -1) {
+              if (c === CharCode.DoubleQuote) {
+                value = this.parseAttributeString();
+              } else {
+                throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
+              }
+            } else {
               value = this.expr();
               if (value === -1) {
                 throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
@@ -176,12 +180,21 @@ export class TemplateParser extends TemplateScanner {
             static: false,
           });
         }
+        this.skipWhitespace();
+        continue;
       }
-
+      const value: string | boolean | number = this.expr();
+      if (value !== -1) {
+        properties.push({
+          type: IPropertyType.Directive,
+          key: null,
+          value,
+          static: false,
+        });
+      }
       this.skipWhitespace();
     }
-
-    return properties;
+    throw new TemplateParserError("Expected a '>' character", this.e, this.i);
   }
 
   dynamicProp(properties: IProperty[], type: IPropertyType, key: string) {
@@ -199,59 +212,37 @@ export class TemplateParser extends TemplateScanner {
     } as IProperty);
   }
 
-  parseString(isAttribute: boolean): string {
+  parseAttributeString(): string {
     const text = this.text;
     const textLength = text.length;
     let i = this.i;
-    if (i < textLength) {
-      let s = "";
-      let hashDelim = 0;
-      let c;
+    let s = "";
+    let c = text.charCodeAt(i);
 
-      while ((c = text.charCodeAt(i++)) === CharCode.Hash && i < textLength) {
-        hashDelim++;
-      }
+    let delimCharCode: number;
+    if (c === CharCode.SingleQuote) {
+      delimCharCode = CharCode.SingleQuote;
+    } else if (c === CharCode.DoubleQuote) {
+      delimCharCode = CharCode.DoubleQuote;
+    } else {
+      throw new TemplateParserError("Expected ' or \" character.", this.e, i);
+    }
 
-      if (c === CharCode.SingleQuote) {
-        let start = i;
-        outer: while (i < textLength) {
-          c = c = text.charCodeAt(i++);
-          if (c === CharCode.SingleQuote) {
-            const end = i - 1;
-            const j = i + hashDelim;
-            if (j > textLength) {
-              throw new TemplateParserError("Invalid string.", this.e, this.i);
-            }
-            while (i < j) {
-              if (text.charCodeAt(i) !== CharCode.Hash) {
-                continue outer;
-              }
-              i++;
-            }
-            this.i = i;
-            return s + text.substring(start, end);
-          }
-
-          let escaped: string;
-          if (c === CharCode.Ampersand) {
-            escaped = "&amp;"; // &
-          } else if (isAttribute === true) {
-            if (c !== CharCode.DoubleQuote) {
-              continue;
-            }
-            escaped = "&quot;";
-          } else if (c === CharCode.LessThan) { // StringContext.Text
-            escaped = "&lt;";
-          } else {
-            continue;
-          }
-
-          s += text.substring(start, i - 1) + escaped;
-          start = i;
-        }
+    let start = ++i;
+    while (i < textLength) {
+      c = text.charCodeAt(i++);
+      if (c === delimCharCode) {
+        const end = i - 1;
+        this.i = i;
+        return s + text.substring(start, end);
       }
     }
-    return "";
+
+    throw new TemplateParserError(
+      `Attribute string should be closed with a '${String.fromCharCode(delimCharCode)}' character`,
+      this.e,
+      i,
+    );
   }
 
   parseText(): string {
@@ -259,10 +250,10 @@ export class TemplateParser extends TemplateScanner {
     let chars = [];
     let skipWhitespace = true;
     while (true) {
-      if (!this.isEnd()) {
+      if (this.isEnd()) {
         throw new TemplateParserError("Unexpected end of template", this.e, this.i);
       }
-      if (this.peekExpr()) {
+      if (this.peekExpr() !== -1) {
         break;
       }
       if ((char = this.peekCharCode()) === CharCode.LessThan) {
