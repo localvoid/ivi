@@ -9,7 +9,7 @@ export const ivi = declare((api) => {
   const t = api.types;
 
   const getStaticValue = (s) => s.value.cooked;
-  const pure = (n) => t.addComment(n, "leading", "#__PURE__");
+  const pure = (n) => t.addComment(n, "leading", "@__PURE__");
   const toNumeric = (i) => t.numericLiteral(i);
   const toString = (s) => t.stringLiteral(s);
 
@@ -148,7 +148,7 @@ export const ivi = declare((api) => {
 
       CallExpression(path) {
         // Add `@__PURE__` comment for `component(() => {..})` exprs.
-        if (path.get("tag").referencesImport("ivi", "component")) {
+        if (path.get("callee").referencesImport("ivi", "component")) {
           path.replaceWith(pure(path.node));
         }
       },
