@@ -3,12 +3,16 @@
   "version": "2.0.0",
   "type": "module",
   "exports": {
-    ".": "./index.js"
+    ".": "./index.js",
+    "./optimizer": "./optimizer.js"
   },
   "sideEffects": false,
   "files": [
     "index.js",
     "index.d.ts",
+    "optimizer.js",
+    "optimizer.d.ts",
+    "shared.js",
     "README.md",
     "LICENSE"
   ],

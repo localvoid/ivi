@@ -1,7 +1,8 @@
 import type { Plugin } from "rollup";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
 import { transformAsync } from "@babel/core";
-import { ivi as iviBabel, iviOptimizer as iviBabelOptimizer } from "@ivi/babel-plugin";
+import iviBabel, { TemplateLanguage } from "@ivi/babel-plugin";
+import iviBabelOptimizer from "@ivi/babel-plugin/optimizer";
 
 export interface IviOptions {
   include?: FilterPattern | undefined;
@@ -14,19 +15,49 @@ export function ivi(options?: IviOptions): Plugin {
     options?.exclude,
   );
 
+  let lazyPreload = true;
+  let iviLang: typeof import("@ivi/tpl/parser") | undefined;
+  let htmLang: typeof import("@ivi/htm/parser") | undefined;
+
   return {
     name: "ivi",
+
+    async buildStart() {
+      if (lazyPreload) {
+        const _iviLang = import("@ivi/tpl/parser");
+        const _htmLang = import("@ivi/htm/parser");
+        try {
+          iviLang = await _iviLang;
+        } catch (err) { }
+        try {
+          htmLang = await _htmLang;
+        } catch (err) { }
+        if (iviLang === void 0 && htmLang === void 0) {
+          this.warn("Unable to find template language parser.");
+        }
+      }
+    },
 
     async transform(code: string, id: string) {
       if (!filter(id)) {
         return null;
       }
+      const templateLanguages: TemplateLanguage[] = [];
+      if (iviLang) {
+        templateLanguages.push({ module: "@ivi/tpl", parse: iviLang.parseTemplate });
+      }
+      if (htmLang) {
+        templateLanguages.push({ module: "@ivi/htm", parse: htmLang.parseTemplate });
+      }
+
       const result = await transformAsync(code, {
         configFile: false,
         babelrc: false,
         browserslistConfigFile: false,
         filename: id,
-        plugins: [iviBabel],
+        plugins: [iviBabel({
+          templateLanguages,
+        })],
         sourceMaps: true,
         sourceType: "module",
       });
