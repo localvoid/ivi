@@ -2,6 +2,9 @@ import { declare } from "@babel/helper-plugin-utils";
 import { hoistExpr } from "./shared.js";
 
 // const enum `PropOpCode` from "@ivi/template-compiler/format"
+const PROP_TYPE_SET_NODE = 0;
+const PROP_TYPE_COMMON = 1;
+const PROP_TYPE_DIRECTIVE = 7;
 const PROP_DATA_SHIFT = 9;
 const PROP_TYPE_MASK = 0b111;
 
@@ -80,8 +83,11 @@ const iviOptimizer = declare((api) => {
                 const value = op.node.value;
                 const type = value & PROP_TYPE_MASK;
 
-                if (type > 1) {
-                  // Ignore SetNode and Common
+                if (
+                  type !== PROP_TYPE_SET_NODE &&
+                  type !== PROP_TYPE_COMMON &&
+                  type !== PROP_TYPE_DIRECTIVE
+                ) {
                   const i = (value >> PROP_DATA_SHIFT);
                   const newDataIndex = dataIndex.get(dataElements[i].value);
                   op.node.value = (
