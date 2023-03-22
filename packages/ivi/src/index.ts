@@ -387,10 +387,9 @@ export type ElementDirective = <E extends Element>(element: E) => void;
 
 const _flushDOMEffects = () => {
   const e = RENDER_CONTEXT.e;
-  let i = e.length;
-  if (i > 0) {
+  if (e.length > 0) {
     RENDER_CONTEXT.e = [];
-    while (--i >= 0) {
+    for (let i = 0; i < e.length; i++) {
       e[i]();
     }
   }
@@ -409,14 +408,14 @@ const _updateTemplateProperties = (
     let style: CSSStyleDeclaration | undefined;
     const op = opCodes[i];
     const type = op & PropOpCode.TypeMask;
-    const dataIndex = (op >> PropOpCode.DataShift) & PropOpCode.Mask10;
+    const dataIndex = op >> PropOpCode.DataShift;
     if (type === PropOpCode.SetNode) {
       currentElement = state[dataIndex] as Element;
       style = void 0;
     } else {
-      let prev;
-      const propsIndex = op >> PropOpCode.InputShift;
+      const propsIndex = (op >> PropOpCode.InputShift) & PropOpCode.Mask6;
       const next = nextProps[propsIndex];
+      let prev;
       if (prevProps !== null) {
         prev = prevProps[propsIndex];
       }
@@ -503,7 +502,6 @@ const _assignTemplateSlots = (
     }
   }
 };
-
 
 const _mountList = (
   parentState: SNode,
@@ -671,7 +669,7 @@ const _update = (
       state as Node[],
       prevProps,
       nextProps,
-      !!(tplData.f & TemplateFlags.Svg),
+      (tplData.f & TemplateFlags.Svg) === TemplateFlags.Svg,
     );
 
     if (children !== null) {
@@ -737,7 +735,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
           const rootNode = (descriptor as TemplateDescriptor).p2();
           const stateOpCodes = tplData.s;
           const flags = tplData.f;
-          const state = _Array<Node>(flags & TemplateFlags.Mask10);
+          const state = _Array<Node>(flags & TemplateFlags.Mask6);
           state[0] = rootNode;
 
           if (stateOpCodes.length > 0) {
@@ -757,16 +755,16 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
             state,
             null,
             props,
-            !!(tplData.f & TemplateFlags.Svg),
+            (tplData.f & TemplateFlags.Svg) === TemplateFlags.Svg,
           );
 
           const parentElement = ctx.p;
           const nextNode = ctx.n;
           const stateNode = createSNode(Flags.Template, v, null, state, parentSNode);
-          const childrenSize = flags >> TemplateFlags.ChildrenSizeShift;
+          const childrenSize = (flags >> TemplateFlags.ChildrenSizeShift) & TemplateFlags.Mask6;
           if (childrenSize > 0) {
             const childOpCodes = tplData.c;
-            const children = _Array(childrenSize);
+            const children = _Array<SNode | null>(childrenSize);
             stateNode.c = children;
             ctx.p = rootNode;
             ctx.n = null;

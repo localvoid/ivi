@@ -246,6 +246,10 @@ export const ivi = declare((api) => {
   };
 });
 
+// const enum `PropOpCode` from "@ivi/template-compiler/format"
+const PROP_DATA_SHIFT = 9;
+const PROP_TYPE_MASK = 0b111;
+
 export const iviOptimizer = declare((api) => {
   api.assertVersion(7);
   const t = api.types;
@@ -321,14 +325,18 @@ export const iviOptimizer = declare((api) => {
               const dataElements = data.node.elements;
               for (const op of propOpCodes) {
                 const value = op.node.value;
-                const type = value & 0b111;
+                const type = value & PROP_TYPE_MASK;
 
                 if (type > 1) {
                   // Ignore SetNode and Common
-                  const i = (value >> 3) & ((1 << 10) - 1);
+                  const i = (value >> PROP_DATA_SHIFT);
                   const newDataIndex = dataIndex.get(dataElements[i].value);
-                  op.node.value =
-                    (value & ~0b1111111111000) | (newDataIndex << 3);
+                  op.node.value = (
+                    // Removes old data index
+                    (value & ~((1 << PROP_DATA_SHIFT) - 1)) |
+                    // Adds new data index
+                    (newDataIndex << PROP_DATA_SHIFT)
+                  );
                 }
               }
               data.replaceWith(shareDataId);

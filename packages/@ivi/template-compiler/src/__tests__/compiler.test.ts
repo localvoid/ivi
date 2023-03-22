@@ -21,7 +21,7 @@ const S = StateOpCode.Save;
 const N = StateOpCode.Next;
 
 const F = (svg: boolean, stateSize: number, childrenSize: number) => (
-  (svg ? TemplateFlags.Svg : 0) | (stateSize + 1) | (childrenSize << 10)
+  (svg ? TemplateFlags.Svg : 0) | (stateSize + 1) | (childrenSize << TemplateFlags.ChildrenSizeShift)
 );
 
 const cSP = (n: number) => ChildOpCode.SetParent | ((n + 1) << ChildOpCode.ValueShift);

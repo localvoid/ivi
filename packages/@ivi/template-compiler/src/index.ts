@@ -59,6 +59,10 @@ const compileRootElement = (
   // Creates dynamic expressions map that stores expr indices that will be
   // used in the current template block.
   const exprMap = createExprMap(element);
+  if (exprMap.size > 64) {
+    throw Error("Exceeded maximum number (64) of expressions per template block.");
+  }
+
   // Emits state OpCodes and traverses tree in DFS LTR order.
   const state = emitStateOpCodes(sRoot);
   // Emits props OpCodes and traverses tree in DFS LTR order.
@@ -67,11 +71,21 @@ const compileRootElement = (
   // Emits child OpCodes and traverses tree in DFS RTL order.
   const child = emitChildOpCodes(sRoot, exprMap);
 
+  const stateSlots = countStateSlots(state);
+  if (stateSlots > 64) {
+    throw Error("Exceeded maximum number (64) of state slots per template block.");
+  }
+
+  const childSlots = countChildSlots(child);
+  if (childSlots > 64) {
+    throw Error("Exceeded maximum number (64) of child slots per template block.");
+  }
+
   return {
     type: TemplateNodeType.Block,
     flags: (
-      (countStateSlots(state)) |
-      (countChildSlots(child) << TemplateFlags.ChildrenSizeShift) |
+      (stateSlots) |
+      (childSlots << TemplateFlags.ChildrenSizeShift) |
       (type === ITemplateType.Svg ? TemplateFlags.Svg : 0)
     ),
     template,
@@ -261,8 +275,8 @@ const _emitPropsOpCodes = (
                 } else {
                   opCodes.push(
                     PropOpCode.Attribute |
-                    (exprMap.get(value)! << PropOpCode.InputShift) |
-                    (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                    (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
+                    (exprMap.get(value)! << PropOpCode.InputShift)
                   );
                 }
               }
@@ -277,30 +291,30 @@ const _emitPropsOpCodes = (
               } else {
                 opCodes.push(
                   PropOpCode.Property |
-                  (exprMap.get(value)! << PropOpCode.InputShift) |
-                  (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                  (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
+                  (exprMap.get(value)! << PropOpCode.InputShift)
                 );
               }
               break;
             case IPropertyType.DOMValue:
               opCodes.push(
                 PropOpCode.DiffDOMProperty |
-                (exprMap.get(value)! << PropOpCode.InputShift) |
-                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
+                (exprMap.get(value)! << PropOpCode.InputShift)
               );
               break;
             case IPropertyType.Style:
               opCodes.push(
                 PropOpCode.Style |
-                (exprMap.get(value)! << PropOpCode.InputShift) |
-                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
+                (exprMap.get(value)! << PropOpCode.InputShift)
               );
               break;
             case IPropertyType.Event:
               opCodes.push(
                 PropOpCode.Event |
-                (exprMap.get(value)! << PropOpCode.InputShift) |
-                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift)
+                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
+                (exprMap.get(value)! << PropOpCode.InputShift)
               );
               break;
             case IPropertyType.Directive:

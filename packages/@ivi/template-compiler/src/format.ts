@@ -51,8 +51,8 @@ export type TemplateNode =
  * instantiated.
  *
  *     TemplateFlags {
- *       stateSize:10,    // The number of state slots
- *       childrenSize:10, // The number of children slots
+ *       stateSize:6,    // The number of state slots
+ *       childrenSize:6, // The number of children slots
  *       svg:1,
  *     }
  *
@@ -61,10 +61,10 @@ export type TemplateNode =
  *     svg = flags & Svg;
  */
 export const enum TemplateFlags {
-  ChildrenSizeShift = 10,
+  ChildrenSizeShift = 6,
   /** Template contains SVG elements */
-  Svg = 1 << 20,
-  Mask10 = (1 << 10) - 1,
+  Svg = 1 << 12,
+  Mask6 = (1 << 6) - 1,
 }
 
 /**
@@ -73,8 +73,7 @@ export const enum TemplateFlags {
  *     OpCode {
  *       type:1,      // Next | EnterOrRemove
  *       save:1,
- *       offset:10,   // Assigned to Enter opCodes
- *       saveSlot:10, // Assigned to Save opCodes (used during compilation)
+ *       offset:..,   // Assigned to Enter opCodes
  *     }
  *
  * To disambiguate between Enter and Remove operations we can check for the
@@ -92,15 +91,13 @@ export const enum TemplateFlags {
  */
 export const enum StateOpCode {
   /** Moves cursor to the next node. */
-  Next = 0b01,
+  Next = 0b00,
   /** Enter or Remove operation. */
-  EnterOrRemove = 0b10,
+  EnterOrRemove = 0b01,
   /** Saves current node */
-  Save = 0b100,
-  OffsetShift = 3,
-  SaveSlotShift = 13,
-  AssignSlot = 1 << SaveSlotShift,
-  Mask10 = (1 << 10) - 1,
+  Save = 0b10,
+  OffsetShift = 2,
+  Mask6 = (1 << 6) - 1,
 }
 
 /**
@@ -116,17 +113,17 @@ export const enum CommonPropType {
  *
  *     PropOpCode(SetNode) {
  *       type:3,   // SetNode
- *       data:10,  // State index
+ *       index:6,  // State index
  *     }
  *     PropOpCode(Common) {
  *       type:3,   // Common
- *       data:10,  // Common Property Type
- *       input:10, // Expr index
+ *       input:6,  // Expr index
+ *       data:..,   // Common Property Type
  *     }
  *     PropOpCode(..) {
  *       type:3,
- *       data:10,  // Data Index
- *       input:10, // Expr index
+ *       input:6,  // Expr index
+ *       data:..,  // Data Index
  *     }
  */
 export const enum PropOpCode {
@@ -148,12 +145,12 @@ export const enum PropOpCode {
   Directive = 7,
   /** propType = `op & PropTypeMask` */
   TypeMask = 0b111,
-  /** dataIndex = `(op >> DataShift) & Mask10` */
-  DataShift = 3,
-  /** inputIndex = `op >> InputShift` */
-  InputShift = 13,
+  /** inputIndex = `(op >> InputShift) & Mask6` */
+  InputShift = 3,
+  /** dataIndex = `op >> DataShift` */
+  DataShift = 9,
   /** Masks 10 lowest bits. */
-  Mask10 = (1 << 10) - 1,
+  Mask6 = (1 << 6) - 1,
 }
 
 /**
@@ -169,6 +166,6 @@ export const enum ChildOpCode {
   SetNext = 0b01,
   SetParent = 0b11,
   Type = 0b11,
-  SetNodeType = 0b1,
+  SetNodeType = 0b01,
   ValueShift = 2,
 }
