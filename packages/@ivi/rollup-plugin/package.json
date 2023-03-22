@@ -1,6 +1,6 @@
 {
   "name": "@ivi/rollup-plugin",
-  "version": "2.0.0",
+  "version": "3.0.0-beta.0",
   "type": "module",
   "exports": {
     ".": "./dist/index.js"
@@ -18,10 +18,6 @@
     "@babel/core": "^7.21.0",
     "@rollup/pluginutils": "^5.0.2",
     "@ivi/babel-plugin": "workspace:*"
-  },
-  "peerDependencies": {
-    "@ivi/tpl": "workspace:*",
-    "@ivi/htm": "workspace:*"
   },
   "devDependencies": {
     "@types/babel__core": "^7.20.0",

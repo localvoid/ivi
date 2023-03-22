@@ -1,6 +1,6 @@
 {
   "name": "@ivi/htm",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.0",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
