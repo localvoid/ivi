@@ -19,9 +19,15 @@
     "@rollup/pluginutils": "^5.0.2",
     "@ivi/babel-plugin": "workspace:*"
   },
+  "peerDependencies": {
+    "@ivi/tpl": "workspace:*",
+    "@ivi/htm": "workspace:*"
+  },
   "devDependencies": {
     "@types/babel__core": "^7.20.0",
-    "rollup": "^3.19.1"
+    "rollup": "^3.19.1",
+    "@ivi/tpl": "workspace:*",
+    "@ivi/htm": "workspace:*"
   },
   "description": "Rollup plugin for ivi library.",
   "license": "MIT",

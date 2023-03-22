@@ -3,7 +3,7 @@
   "references": [
     { "path": "packages/ivi" },
     { "path": "packages/@ivi/template-compiler" },
-    { "path": "packages/@ivi/iml" },
+    { "path": "packages/@ivi/tpl" },
     { "path": "packages/@ivi/htm" },
     { "path": "packages/@ivi/rollup-plugin" },
     { "path": "packages/@ivi/portal" },
