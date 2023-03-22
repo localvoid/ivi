@@ -184,7 +184,6 @@ const ivi = (config) => declare((api) => {
               if (leadingComments) {
                 for (const comment of leadingComments) {
                   if (comment.value.trim() === "-c") {
-                    console.log("clone");
                     clone = false;
                     break;
                   }
