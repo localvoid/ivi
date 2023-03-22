@@ -604,9 +604,10 @@ const _update = (
     return null;
   }
 
-  const flags = sNode.f & Flags.TypeMask;
+  const flags = sNode.f;
+  const type = flags & Flags.TypeMask;
 
-  if (flags === Flags.Text) {
+  if (type === Flags.Text) {
     return _updateText(parentSNode, sNode as SText, next as string, updateFlags);
   }
   const prev = sNode.v;
@@ -615,7 +616,7 @@ const _update = (
     _dirtyCheck(sNode, updateFlags);
     return sNode;
   }
-  if (flags === Flags.Array) {
+  if (type === Flags.Array) {
     return _updateArray(parentSNode, sNode, next, updateFlags);
   }
 
@@ -630,14 +631,13 @@ const _update = (
   const prevProps = (prev as VNode).p;
   const nextProps = (next as VNode).p;
 
-  sNode.f &= Flags.TypeMask;
-  if (flags === Flags.Component) {
+  sNode.f = type;
+  if (type === Flags.Component) {
     const child = (sNode as Component).c;
     if (
-      ((sNode.f | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) || (
-        (prevProps !== nextProps) &&
-        (descriptor.p2 === void 0 || descriptor.p2(prevProps, nextProps) !== true)
-      )
+      ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) ||
+      (descriptor.p2 === void 0) ||
+      (descriptor.p2(prevProps, nextProps) !== true)
     ) {
       sNode.c = _update(
         sNode,
@@ -648,7 +648,7 @@ const _update = (
     } else if (child !== null) {
       _dirtyCheck(child as SNode, updateFlags);
     }
-  } else if (flags === Flags.Template) {
+  } else if (type === Flags.Template) {
     const ctx = RENDER_CONTEXT;
     const parentElement = ctx.p;
     const children = sNode.c as ((SNode | null)[] | null);
