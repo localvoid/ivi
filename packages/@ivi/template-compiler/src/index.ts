@@ -37,12 +37,22 @@ const compileTemplateNode = (node: INode, type: ITemplateType): TemplateNode => 
   }
 };
 
+const enum SNodeFlags {
+  /** Has expressions in the subtree. */
+  HasExpressions = 1,
+  /** Has expressions in the subtrees of next siblings. */
+  HasNextExpressions = 1 << 1,
+  /** Has next DOM node. */
+  HasNextDOMNode = 1 << 2,
+}
+
 interface SNode<T extends INode = INode> {
   readonly node: T;
   stateIndex: number;
   children: SNode[] | null;
   propsExprs: number,
   childrenExprs: number;
+  flags: number;
 }
 
 const compileRootElement = (
@@ -53,7 +63,7 @@ const compileRootElement = (
   // without any static parts, or an array of strings and expression indices.
   const template = emitStaticTemplate(element);
   // Creates a new tree with additional data for compilation.
-  const sRoot = createSNode(element);
+  const sRoot = createSNode(element, 0);
   // Assigns state slots in DFS LTR order.
   assignStateSlots(sRoot);
   // Creates dynamic expressions map that stores expr indices that will be
@@ -339,7 +349,7 @@ const _emitPropsOpCodes = (
 
 const emitStateOpCodes = (root: SNode<INodeElement>): number[] => {
   const opCodes: number[] = [];
-  _emitStateOpCodes(opCodes, root, -1);
+  _emitStateOpCodes(opCodes, root);
   return opCodes;
 };
 
@@ -351,62 +361,74 @@ const enum VisitState {
 const _emitStateOpCodes = (
   opCodes: number[],
   node: SNode<INodeElement>,
-  startIndex: number,
 ) => {
   const children = node.children;
   if (children !== null) {
     let state = 0;
-    for (let i = 0; i < children.length; i++) {
+    outer: for (let i = 0; i < children.length; i++) {
       const child = children[i];
       switch (child.node.type) {
-        case INodeType.Element:
-          const currentOpCodeIndex = opCodes.length;
-          opCodes.push(StateOpCode.Next);
-          _emitStateOpCodes(opCodes, child as SNode<INodeElement>, currentOpCodeIndex);
-          const childrenOffset = opCodes.length - (currentOpCodeIndex + 1);
-          if (childrenOffset > 0) {
-            opCodes[currentOpCodeIndex] = StateOpCode.EnterOrRemove | (childrenOffset << StateOpCode.OffsetShift);
-            opCodes.push(StateOpCode.Next);
+        case INodeType.Element: {
+          let opCode = 0;
+          if (
+            state & VisitState.PrevExpr ||
+            child.childrenExprs > 0 ||
+            child.propsExprs > 0
+          ) {
+            opCode = StateOpCode.Save;
           }
-          if (child.childrenExprs > 0 || child.propsExprs > 0 || state & VisitState.PrevExpr) {
-            opCodes[currentOpCodeIndex] |= StateOpCode.Save;
+          if (
+            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) ===
+            (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
+          ) {
+            opCode |= StateOpCode.Next;
+          }
+          const currentOpCodeIndex = opCodes.length;
+          if (child.flags & SNodeFlags.HasExpressions) {
+            opCodes.push(opCode);
+            _emitStateOpCodes(opCodes, child as SNode<INodeElement>);
+            const childrenOffset = opCodes.length - (currentOpCodeIndex + 1);
+            if (childrenOffset > 0) {
+              opCodes[currentOpCodeIndex] |= StateOpCode.EnterOrRemove | (childrenOffset << StateOpCode.OffsetShift);
+            } else if (opCode === 0) {
+              opCodes.pop();
+            }
+          } else if (opCode !== 0) {
+            opCodes.push(opCode);
+          }
+          if (!(opCode & StateOpCode.Next)) {
+            break outer;
           }
           state = 0;
           break;
-        case INodeType.Text:
+        }
+        case INodeType.Text: {
+          let opCode = 0;
           if ((state & (VisitState.PrevText | VisitState.PrevExpr)) === (VisitState.PrevText | VisitState.PrevExpr)) {
-            opCodes.push(
-              StateOpCode.EnterOrRemove,
-            );
+            opCode = StateOpCode.EnterOrRemove;
           } else if (state & VisitState.PrevExpr) {
-            opCodes.push(
-              StateOpCode.Next | StateOpCode.Save,
-            );
-          } else {
-            opCodes.push(StateOpCode.Next);
+            opCode = StateOpCode.Save;
+          }
+          if (
+            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) ===
+            (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
+          ) {
+            opCode |= StateOpCode.Next;
+          }
+          if (opCode !== 0) {
+            opCodes.push(opCode);
+          }
+          if (!(opCode & StateOpCode.Next)) {
+            break outer;
           }
           state = 1;
           break;
+        }
         case INodeType.Expr:
           state |= VisitState.PrevExpr;
           break;
       }
     }
-  }
-
-  // remove trailing NEXT or ENTER opCodes.
-  let i = opCodes.length;
-  while (--i > startIndex) {
-    const op = opCodes[i];
-    if (op & StateOpCode.Save) {
-      opCodes[i] = StateOpCode.Save;
-      break;
-    }
-    // Remove operation implies that current text node should be saved.
-    if ((op & StateOpCode.EnterOrRemove) && (op >> StateOpCode.OffsetShift) === 0) {
-      break;
-    }
-    opCodes.pop();
   }
 };
 
@@ -500,18 +522,10 @@ const isStaticProperty = (prop: IProperty) => (
   )
 );
 
-const createSNode = <T extends INode>(node: T): SNode<T> => {
-  if (node.type !== INodeType.Element) {
-    return {
-      node,
-      stateIndex: 0,
-      children: null,
-      childrenExprs: 0,
-      propsExprs: 0,
-    };
-  }
-
+const createSNode = (node: INodeElement, flags: number): SNode<INodeElement> => {
   const properties = node.properties;
+  const iChildren = node.children;
+
   let propsExprs = 0;
   for (let i = 0; i < properties.length; i++) {
     if (!isStaticProperty(properties[i])) {
@@ -519,16 +533,50 @@ const createSNode = <T extends INode>(node: T): SNode<T> => {
     }
   }
 
-  const children: SNode[] = [];
-  const iChildren = node.children;
+  let siblingsFlags = 0;
   let childrenExprs = 0;
-  for (let i = 0; i < iChildren.length; i++) {
-    const child = iChildren[i];
-    const sNode = createSNode(child);
-    if (child.type === INodeType.Expr) {
-      childrenExprs++;
+  let i = iChildren.length;
+  const children: SNode[] = Array(i);
+
+  while (i > 0) {
+    const child = iChildren[--i];
+    switch (child.type) {
+      case INodeType.Element:
+        const sNode = createSNode(child, siblingsFlags);
+        if (sNode.flags & SNodeFlags.HasExpressions) {
+          flags |= SNodeFlags.HasExpressions;
+          siblingsFlags |= SNodeFlags.HasNextExpressions;
+        }
+        siblingsFlags |= SNodeFlags.HasNextDOMNode;
+        children[i] = sNode;
+        break;
+      case INodeType.Expr:
+        siblingsFlags |= SNodeFlags.HasNextExpressions;
+        childrenExprs++;
+        children[i] = {
+          node: child,
+          stateIndex: 0,
+          children: null,
+          childrenExprs: 0,
+          propsExprs: 0,
+          flags: siblingsFlags,
+        };
+        break;
+      case INodeType.Text:
+        children[i] = {
+          node: child,
+          stateIndex: 0,
+          children: null,
+          childrenExprs: 0,
+          propsExprs: 0,
+          flags: siblingsFlags,
+        };
+        siblingsFlags |= SNodeFlags.HasNextDOMNode;
     }
-    children.push(sNode);
+  }
+
+  if (propsExprs > 0 || childrenExprs > 0) {
+    flags |= SNodeFlags.HasExpressions;
   }
 
   return {
@@ -537,5 +585,6 @@ const createSNode = <T extends INode>(node: T): SNode<T> => {
     children,
     childrenExprs,
     propsExprs,
+    flags,
   };
 };

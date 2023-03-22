@@ -577,7 +577,7 @@ describe("template compilation", () => {
             template: ["<h1", ">", "<h2", ">", "<h3", ">", "t", "</h3>", "</h2>", "<h2", ">", "<h3", ">", "</h3>", "</h2>", "</h1>"],
             props: [pSN(0), pClass(0), pSN(2), pTextContent(1)],
             child: [cSP(1), cC(2)],
-            state: [E(1), S, N, S | E(1), S],
+            state: [N | E(1), S, S | E(1), S],
             data: [],
             exprs: [0, 1, 2],
           },

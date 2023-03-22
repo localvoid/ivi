@@ -497,7 +497,8 @@ const _assignTemplateSlots = (
         state[++ctx.si] = currentNode = nodeGetNextSibling.call(currentNode);
         commentNode.remove();
       }
-    } else { // Next
+    }
+    if (op & StateOpCode.Next) {
       currentNode = nodeGetNextSibling.call(currentNode);
     }
   }
