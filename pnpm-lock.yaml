@@ -4,13 +4,13 @@ importers:
 
   .:
     specifiers:
-      '@types/node': ^18.15.3
-      global-jsdom: ^8.7.0
+      '@types/node': ^18.15.5
+      global-jsdom: ^8.8.0
       jsdom: ^21.1.1
       typescript: ^5.0.2
     devDependencies:
-      '@types/node': 18.15.3
-      global-jsdom: 8.7.0_jsdom@21.1.1
+      '@types/node': 18.15.5
+      global-jsdom: 8.8.0_jsdom@21.1.1
       jsdom: 21.1.1
       typescript: 5.0.2
 
@@ -19,27 +19,25 @@ importers:
       '@babel/helper-module-imports': ^7.18.6
       '@babel/helper-plugin-utils': ^7.20.2
       '@babel/types': ^7.21.2
-      '@ivi/iml': workspace:*
       '@ivi/template-compiler': workspace:*
     dependencies:
       '@babel/helper-module-imports': 7.18.6
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/types': 7.21.2
-      '@ivi/iml': link:../iml
       '@ivi/template-compiler': link:../template-compiler
 
-  packages/@ivi/identity:
-    specifiers:
-      ivi: workspace:^
-    devDependencies:
-      ivi: link:../../ivi
-
-  packages/@ivi/iml:
+  packages/@ivi/htm:
     specifiers:
       '@ivi/template-compiler': workspace:*
       ivi: workspace:*
     devDependencies:
       '@ivi/template-compiler': link:../template-compiler
+      ivi: link:../../ivi
+
+  packages/@ivi/identity:
+    specifiers:
+      ivi: workspace:^
+    devDependencies:
       ivi: link:../../ivi
 
   packages/@ivi/portal:
@@ -52,6 +50,8 @@ importers:
     specifiers:
       '@babel/core': ^7.21.0
       '@ivi/babel-plugin': workspace:*
+      '@ivi/htm': workspace:*
+      '@ivi/tpl': workspace:*
       '@rollup/pluginutils': ^5.0.2
       '@types/babel__core': ^7.20.0
       rollup: ^3.19.1
@@ -60,11 +60,21 @@ importers:
       '@ivi/babel-plugin': link:../babel-plugin
       '@rollup/pluginutils': 5.0.2_rollup@3.19.1
     devDependencies:
+      '@ivi/htm': link:../htm
+      '@ivi/tpl': link:../tpl
       '@types/babel__core': 7.20.0
       rollup: 3.19.1
 
   packages/@ivi/template-compiler:
     specifiers: {}
+
+  packages/@ivi/tpl:
+    specifiers:
+      '@ivi/template-compiler': workspace:*
+      ivi: workspace:*
+    devDependencies:
+      '@ivi/template-compiler': link:../template-compiler
+      ivi: link:../../ivi
 
   packages/ivi:
     specifiers:
@@ -369,8 +379,8 @@ packages:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: false
 
-  /@types/node/18.15.3:
-    resolution: {integrity: sha512-p6ua9zBxz5otCmbpb5D3U4B5Nanw6Pk3PPyX05xnxbB/fRv71N7CPmORg7uAD5P70T0xmx1pzAx/FUfa5X+3cw==}
+  /@types/node/18.15.5:
+    resolution: {integrity: sha512-Ark2WDjjZO7GmvsyFFf81MXuGTA/d6oP38anyxWOL6EREyBKAxKoFHwBhaZxCfLRLpO8JgVXwqOwSwa7jRcjew==}
     dev: true
 
   /abab/2.0.6:
@@ -584,8 +594,8 @@ packages:
     engines: {node: '>=6.9.0'}
     dev: false
 
-  /global-jsdom/8.7.0_jsdom@21.1.1:
-    resolution: {integrity: sha512-4k0/8VSY75UgchV48rzaexFfK0k4L6DxkTiyISFobiOiqOFh4IL2Ju3WiLqlT43xh6L1LqKoS2LvDu5Wkr5Bkw==}
+  /global-jsdom/8.8.0_jsdom@21.1.1:
+    resolution: {integrity: sha512-7DDRdzE+SYL+LUz5XCTONfmEC95wjKY83KHcfdo3f1tDmXohk2amMR35DWbb9jaZe7OgYsQshbxbe9TWShW80A==}
     engines: {node: '>=12'}
     peerDependencies:
       jsdom: '>=10.0.0 <22'
