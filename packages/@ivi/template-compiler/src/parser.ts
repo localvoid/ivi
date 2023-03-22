@@ -35,9 +35,10 @@ export class TemplateScanner {
     );
   }
 
-  peekCharCode(): number {
-    return this.i < this.text.length
-      ? this.text.charCodeAt(this.i)
+  peekCharCode(i: number = 0): number {
+    i += this.i;
+    return i < this.text.length
+      ? this.text.charCodeAt(i)
       : -1;
   }
 
