@@ -383,6 +383,8 @@ const ScientistsList = () => htm`
           </p>
         </li>
       `)}
+    </ul>
+  </article>
 `;
 export default ScientistsList;
 ```
