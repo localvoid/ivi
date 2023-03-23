@@ -377,49 +377,43 @@ const _emitStateOpCodes = (
           ) {
             opCode = StateOpCode.Save;
           }
-          if (
-            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) ===
-            (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
-          ) {
-            opCode |= StateOpCode.Next;
-          }
+
           const currentOpCodeIndex = opCodes.length;
+          opCodes.push(opCode);
+
           if (child.flags & SNodeFlags.HasExpressions) {
-            opCodes.push(opCode);
             _emitStateOpCodes(opCodes, child as SNode<INodeElement>);
             const childrenOffset = opCodes.length - (currentOpCodeIndex + 1);
             if (childrenOffset > 0) {
-              opCodes[currentOpCodeIndex] |= StateOpCode.EnterOrRemove | (childrenOffset << StateOpCode.OffsetShift);
-            } else if (opCode === 0) {
+              opCode |= StateOpCode.EnterOrRemove | (childrenOffset << StateOpCode.OffsetShift);
+              opCodes[currentOpCodeIndex] = opCode;
+            }
+          }
+          if (
+            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) !==
+            (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
+          ) {
+            if (opCode === 0) {
               opCodes.pop();
             }
-          } else if (opCode !== 0) {
-            opCodes.push(opCode);
-          }
-          if (!(opCode & StateOpCode.Next)) {
             break outer;
           }
           state = 0;
           break;
         }
         case INodeType.Text: {
-          let opCode = 0;
           if ((state & (VisitState.PrevText | VisitState.PrevExpr)) === (VisitState.PrevText | VisitState.PrevExpr)) {
-            opCode = StateOpCode.EnterOrRemove;
+            opCodes.push(StateOpCode.EnterOrRemove);
           } else if (state & VisitState.PrevExpr) {
-            opCode = StateOpCode.Save;
+            opCodes.push(StateOpCode.Save);
           }
           if (
-            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) ===
+            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) !==
             (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
           ) {
-            opCode |= StateOpCode.Next;
-          }
-          if (opCode !== 0) {
-            opCodes.push(opCode);
-          }
-          if (!(opCode & StateOpCode.Next)) {
             break outer;
+          } else {
+            opCodes.push(0);
           }
           state = 1;
           break;

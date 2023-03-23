@@ -18,7 +18,6 @@ ONLY;
 const E = (n: number) => StateOpCode.EnterOrRemove | (n << StateOpCode.OffsetShift);
 const R = StateOpCode.EnterOrRemove;
 const S = StateOpCode.Save;
-const N = StateOpCode.Next;
 
 const F = (svg: boolean, stateSize: number, childrenSize: number) => (
   (svg ? TemplateFlags.Svg : 0) | (stateSize + 1) | (childrenSize << TemplateFlags.ChildrenSizeShift)
@@ -279,7 +278,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `a`, `<!>`, `b`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [N, R],
+            state: [0, R],
             data: [],
             exprs: [0],
           },
@@ -349,7 +348,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `</a>`, `<b`, `>`, `</b>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [N, S],
+            state: [0, S],
             data: [],
             exprs: [0],
           },
@@ -373,7 +372,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `a`, `<b`, `>`, `</b>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [N, S],
+            state: [0, S],
             data: [],
             exprs: [0],
           },
@@ -397,7 +396,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `</a>`, `b`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [N, S],
+            state: [0, S],
             data: [],
             exprs: [0],
           },
@@ -424,7 +423,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `</a>`, `<h1`, `>`, `<h2`, `>`, `</h2>`, `</h1>`, `</div>`],
             props: [],
             child: [cC(3), cC(2), cSP(1), cC(1), cSP(0), cC(0)],
-            state: [S | N, E(1), S],
+            state: [S, E(1), S],
             data: [],
             exprs: [0, 1, 2, 3],
           },
@@ -450,7 +449,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
             props: [],
             child: [cSP(0), cSN(1), cC(0)],
-            state: [E(2) | S, N, S],
+            state: [E(2) | S, 0, S],
             data: [],
             exprs: [0],
           },
@@ -527,7 +526,7 @@ describe("template compilation", () => {
             template: [`<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `<d`, `>`, `</d>`, `</c>`, `</a>`],
             props: [pSN(1), pClass(1)],
             child: [cC(3), cSP(1), cC(2), cSP(0), cC(0)],
-            state: [S | N, E(1), S],
+            state: [S, E(1), S],
             data: [],
             exprs: [0, 1, 2, 3],
           },
@@ -577,7 +576,7 @@ describe("template compilation", () => {
             template: ["<h1", ">", "<h2", ">", "<h3", ">", "t", "</h3>", "</h2>", "<h2", ">", "<h3", ">", "</h3>", "</h2>", "</h1>"],
             props: [pSN(0), pClass(0), pSN(2), pTextContent(1)],
             child: [cSP(1), cC(2)],
-            state: [N | E(1), S, S | E(1), S],
+            state: [E(1), S, S | E(1), S],
             data: [],
             exprs: [0, 1, 2],
           },
@@ -585,5 +584,30 @@ describe("template compilation", () => {
       );
     });
 
+    test("8", () => {
+      deepStrictEqual(
+        c(h([
+          el("h1", _, [
+            el("h2", _, [
+              el("h3", _, [
+                expr(0)
+              ]),
+            ]),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 1, 1),
+            template: [`<h1`, `>`, `<h2`, `>`, `<h3`, `>`, `</h3>`, `</h2>`, `</h1>`],
+            props: [],
+            child: [cSP(0), cC(0)],
+            state: [E(1), S],
+            data: [],
+            exprs: [0],
+          },
+        ]),
+      );
+    });
   });
 });

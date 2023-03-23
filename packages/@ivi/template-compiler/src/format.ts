@@ -17,11 +17,11 @@ export interface TemplateNodeBlock {
   /** Static Template */
   readonly template: (string | number)[] | string,
   /** Prop OpCodes */
-  readonly props: PropOpCode[],
+  readonly props: number[],
   /** Child OpCodes */
-  readonly child: ChildOpCode[],
+  readonly child: number[],
   /** State OpCodes */
-  readonly state: StateOpCode[],
+  readonly state: number[],
   /** Data */
   readonly data: string[],
   /** Dynamic Expressions */
@@ -90,13 +90,11 @@ export const enum TemplateFlags {
  * saved.
  */
 export const enum StateOpCode {
-  /** Moves cursor to the next node. */
-  Next = 0b001,
   /** Enter or Remove operation. */
-  EnterOrRemove = 0b010,
+  EnterOrRemove = 0b10,
   /** Saves current node */
-  Save = 0b100,
-  OffsetShift = 3,
+  Save = 0b01,
+  OffsetShift = 2,
 }
 
 /**

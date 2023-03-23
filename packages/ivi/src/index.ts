@@ -473,7 +473,7 @@ const _assignTemplateSlots = (
   state: Node[],
 ) => {
   const ctx = RENDER_CONTEXT;
-  while (offset < endOffset) {
+  while (true) {
     const op = opCodes[offset++];
     if (op & StateOpCode.Save) {
       state[++ctx.si] = currentNode;
@@ -498,9 +498,10 @@ const _assignTemplateSlots = (
         commentNode.remove();
       }
     }
-    if (op & StateOpCode.Next) {
-      currentNode = nodeGetNextSibling.call(currentNode);
+    if (offset === endOffset) {
+      return;
     }
+    currentNode = nodeGetNextSibling.call(currentNode);
   }
 };
 
