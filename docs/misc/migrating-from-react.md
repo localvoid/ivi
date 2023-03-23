@@ -62,20 +62,22 @@ export default function Gallery() {
 ivi:
 
 ```js
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 
 const Profile = () => htm`
-  img
-    :src='https://i.imgur.com/MK3eW3As.jpg'
-    :alt='Katherine Johnson'
+  <img
+    src="https://i.imgur.com/MK3eW3As.jpg"
+    alt="Katherine Johnson"
+  />
 `;
 
 const Gallery = () => htm`
-  section
-    h1 'Amazing scientists'
+  <section>
+    <h1>Amazing scientists</h1>
     ${Profile()}
     ${Profile()}
     ${Profile()}
+  </section>
 `;
 export default Gallery;
 ```
@@ -102,7 +104,7 @@ export default function Gallery() {
 ivi:
 
 ```js
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 import Profile from './Profile.js';
 
 const Gallery = () => htm`
@@ -143,22 +145,21 @@ export default function TodoList() {
 ivi:
 
 ```js
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 
-const TodoList = () => [
-  htm`h1 'Hedy Lamarr's Todos`,
-  htm`
-    img.photo
-      :src='https://i.imgur.com/yXOvdOSs.jpg'
-      :alt='Hedy Lamarr'
-  `,
-  htm`
-    ul
-      li 'Invent new traffic lights'
-      li 'Rehearse a movie scene'
-      li 'Improve spectrum technology'
-  `
-];
+const TodoList = () => htm`
+  <h1>Hedy Lamarr's Todos</h1>
+  <img
+    class"photo"
+    src="https://i.imgur.com/yXOvdOSs.jpg"
+    alt="Hedy Lamarr"
+  />
+  <ul>
+    <li>Invent new traffic lights</li>
+    <li>Rehearse a movie scene</li>
+    <li>Improve spectrum technology</li>
+  </ul>
+`;
 export default TodoList;
 ```
 ### [JavaScript in JSX with curly braces](https://react.dev/learn/describing-the-ui#javascript-in-jsx-with-curly-braces)
@@ -205,18 +206,22 @@ const person = {
 };
 
 const TodoList = () => htm`
-  div
-    ~backgroundColor=${person.theme.backgroundColor}
+  <div
+    ~background-color=${person.theme.backgroundColor}
     ~color=${person.theme.color}
-
-    h1 ${person.name} #''s Todos'#
-    img.avatar
-      :src='https://i.imgur.com/7vQD0fPs.jpg'
-      :alt='Gregorio Y. Zara'
-    ul
-      li 'Improve the videophone'
-      li 'Prepare aeronautics lectures'
-      li 'Work on the alcohol-fuelled engine'
+  >
+    <h1>${person.name}'s Todos</h1>
+    <img
+      class="avatar"
+      src="https://i.imgur.com/7vQD0fPs.jpg"
+      alt="Gregorio Y. Zara"
+    />
+    <ul>
+      <li>Improve the videophone</li>
+      <li>Prepare aeronautics lectures</li>
+      <li>Work on the alcohol-fuelled engine</li>
+    </ul>
+  </div>
 `;
 export default TodoList;
 ```
@@ -301,19 +306,23 @@ export default function PackingList() {
 ivi:
 
 ```js
-import { htm } from "ivi/template";
+import { htm } from "@ivi/htm";
 
 const Item = ({ name, isPacked }) => htm`
-  li.item ${name} ' ' ${isPacked ? '✔' : ''}
+  <li class="item">
+    ${name} ${isPacked && '✔'}
+  </li>
 `;
 
 const PackingList = () => htm`
-  section
-    h1 'Sally Ride's Packing List'
-    ul
+  <section>
+    <h1>Sally Ride's Packing List</h1>
+    <ul>
       ${Item({ isPacked: true, name: 'Space suit' })}
       ${Item({ isPacked: true, name: 'Helmet with a golden leaf' })}
       ${Item({ isPacked: false, name: 'Photo of Tam' })}
+    </ul>
+  </section>
 `;
 export default PackingList;
 ```
@@ -353,23 +362,26 @@ ivi:
 
 ```js
 import { List } from 'ivi';
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 import { people } from './data.js';
 import { getImageUrl } from './utils.js';
 
 const ScientistsList = () => htm`
-  article
-    h1 'Scientists'
-    ul
+  <article>
+    <h1>Scientists</h1>
+    <ul>
       ${List(people, (person) => person.id, (person) => htm`
-        li
-          img
-            :src=${getImageUrl(person)}
-            :alt=${person.name}
-          p
-            b ${person.name}
-            ' ' ${person.profession} ' '
-            'known for ' ${person.accomplishment}
+        <li>
+          <img
+            src=${getImageUrl(person)}
+            alt=${person.name}
+          />
+          <p>
+            <b>${person.name}:</b>
+            \v ${person.profession}
+            \v known for  ${person.accomplishment}
+          </p>
+        </li>
       `)}
 `;
 export default ScientistsList;
@@ -398,10 +410,10 @@ export default function TeaSet() {
 ivi:
 
 ```js
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 
 const Cup = ({ guest }) => htm`
-  h2 'Tea cup for guest #' ${guest}
+  <h2>Tea cup for guest #${guest}</h2>
 `;
 
 const TeaSet = () => [
@@ -453,7 +465,8 @@ function Button({ onClick, children }) {
 ivi:
 
 ```js
-import { component, htm } from 'ivi';
+import { component } from 'ivi';
+import { htm } from '@ivi/htm';
 import { useState } from 'ivi/state';
 
 const App = component((c) => {
@@ -464,13 +477,16 @@ const App = component((c) => {
 export default App;
 
 const Toolbar = ({ onPlayMovie, onUploadImage }) => htm`
-  div
+  <div>
     ${Button({ onClick: onPlayMovie, children: 'Play Movie' })}
     ${Button({ onClick: onUploadImage, children: 'Upload Image' })}
+  </div>
 `;
 
 const Button = ({ onClick, children }) => htm`
-  button @click=${onClick} ${children}
+  <button @click=${onClick}>
+    ${children}
+  </button>
 `;
 ```
 
@@ -523,7 +539,8 @@ export default function Gallery() {
 ivi:
 
 ```js
-import { component, htm } from 'ivi';
+import { component } from 'ivi';
+import { htm } from '@ivi/htm';
 import { useState } from 'ivi/state';
 import { sculptureList } from './data.js';
 
@@ -543,25 +560,22 @@ const Gallery = () => {
     const index = index();
     const showMore = showMore();
     const sculpture = sculptureList[index];
-    return [
-      htm`button @click=${handleNextClick} 'Next'`,
-      htm`
-        h2
-          i ${sculpture.name}
-          'by ' ${sculpture.artist}
-      `,
-      htm`h3 '(' ${index + 1} ' of ' ${sculptureList.length}`,
-      htm`
-        button @click=${handleMoreClick}
-          ${showMore ? 'Hide' : 'Show'} ' details'
-      `,
-      showMore ? htm`p ${sculpture.description}` : null,
-      htm`
-        img
-          :src=${sculpture.url}
-          :alt=${sculpture.alt}
-      `,
-    ];
+    return htm`
+      <button @click=${handleNextClick}>Next</button>
+      <h2>
+        <i>${sculpture.name}</i>
+        \v by ${sculpture.artist}
+      </h2>
+      <h3>(${index + 1} of ${sculptureList.length}</h3>
+      <button @click=${handleMoreClick}>
+        ${showMore ? 'Hide' : 'Show'} details
+      </button>
+      ${showMore && htm`<p>${sculpture.description}</p>`}
+      <img
+        src=${sculpture.url}
+        alt=${sculpture.alt}
+      />
+    `;
   };
 }
 export default Gallery;
@@ -690,7 +704,8 @@ export default function Form() {
 ivi:
 
 ```js
-import { component, htm } from 'ivi';
+import { component } from 'ivi';
+import { htm } from '@ivi/htm';
 import { useState } from 'ivi/state';
 
 const Form = component((c) => {
@@ -745,48 +760,46 @@ const Form = component((c) => {
 
   return () => {
     const p = person();
-    return [
-      htm`
-        label
-         'Name:'
-         input
-           *value=${p.name}
-           @input=${handleNameChange}
-      `,
-      htm`
-        label
-         'Title:'
-         input
-           *value=${p.artwork.title}
-           @input=${handleTitleChange}
-      `,
-      htm`
-        label
-         'City:'
-         input
-           *value=${p.artwork.city}
-           @input=${handleCityChange}
-      `,
-      htm`
-        label
-         'Image:'
-         input
-           *value=${p.artwork.image}
-           @input=${handleImageChange}
-      `,
-      htm`
-        p
-          i ${p.artwork.title}
-          ' by ' ${p.name}
-          br
-          '(located in ' ${p.artwork.city} ')'
-      `,
-      htm`
-        img
-          :src=${p.artwork.image}
-          :alt=${p.artwork.title}
-      `,
-    ];
+    return htm`
+      <label>
+        Name:
+        <input
+          *value=${p.name}
+          @input=${handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          *value=${p.artwork.title}
+          @input=${handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          *value=${p.artwork.city}
+          @input=${handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          *value=${p.artwork.image}
+          @input=${handleImageChange}
+        />
+      </label>
+      <p>
+        <i>${p.artwork.title}</i>
+        \v by ${p.name}
+        <br>
+        (located in ${p.artwork.city} )
+      </p>
+      <img
+        src=${p.artwork.image}
+        alt=${p.artwork.title}
+      />
+    `;
   };
 });
 export default Form;
@@ -875,7 +888,7 @@ ivi:
 
 ```js
 import { component } from 'ivi';
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 import { useState } from 'ivi/state';
 
 const Form = component((c) => {
@@ -904,28 +917,28 @@ const Form = component((c) => {
     if (status() === 'success') {
       return htm`h1 'That's right!`;
     }
-    return [
-      htm`h2 'City quiz'`,
-      htm`p 'In which city is there a billboard that turns air into drinkable water?'`,
-      htm`
-        form @submit=${handleSubmit}
-          textarea
-            *value=${answer()}
-            @input=${handleTextareaChange}
-            .disabled=${status() === 'submitting'}
-          br
-          button
-            .disabled=${
-              answer().length === 0 ||
-              status() === 'submitting'
-            }
-            'Submit'
-          ${error() !== null
-            ? htm`p.Error ${error().message}`
-            : null
+    return htm`
+      <h2>City quiz</h2>
+      <p>
+        In which city is there a billboard that turns air into drinkable water?
+      </p>
+      <form @submit=${handleSubmit}>
+        <textarea
+          *value=${answer()}
+          @input=${handleTextareaChange}
+          disabled=${status() === 'submitting'}
+        />
+        <br>
+        <button
+          disabled=${
+            answer().length === 0 ||
+            status() === 'submitting'
           }
-      `,
-    ];
+          Submit
+        />
+        ${error() && htm`<p class="Error">${error().message}</p>`}
+      </form>
+    `;
   };
 });
 
@@ -994,8 +1007,8 @@ ivi:
 
 ```js
 import { component } from 'ivi';
+import { htm } from '@ivi/htm';
 import { useState } from 'ivi/state';
-import { htm } from 'ivi/template';
 
 const Form = component((c) => {
   const [firstName, setFirstName] = useState(c, '');
@@ -1012,24 +1025,20 @@ const Form = component((c) => {
   return () => {
     const fullName = firstName + ' ' + lastName;
 
-    return [
-      htm`h2 #'Let's check you in'#`
-      htm`
-        label
-          'First Name: '
-          input *value=${firstName()} @input=${handleFirstNameChange}
-      `,
-      htm`
-        label
-          'Last name: '
-          input *value=${lastName()} @input=${handleLastNameChange}
-      `,
-      htm`
-        p
-          'Your ticket will be issued to: '
-          b ${fullName}
-      `,
-    ];
+    return htm`
+      <h2>Let's check you in</h2>
+      <label>
+        First Name: \v
+        <input *value=${firstName()} @input=${handleFirstNameChange} />
+      </label>
+      <label>
+        Last name: \v
+        <input *value=${lastName()} @input=${handleLastNameChange} />
+      <p>
+        Your ticket will be issued to: \v
+        <b>${fullName}</b>
+      </p>
+    `;
   };
 });
 ```
@@ -1069,7 +1078,7 @@ ivi:
 ```js
 import { component } from 'ivi';
 import { useState } from 'ivi/state';
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 import { Identity } from '@ivi/identity';
 import Chat from './Chat.js';
 import ContactList from './ContactList.js';
@@ -1080,13 +1089,14 @@ const Messenger = component((c) => {
   return () => {
     const to = _to();
     return htm`
-      div
+      <div>
         ${ContactList({
             contacts,
             selectedContact: to,
             onSelect,
         })}
         ${Identity({ key: to.email, contact: to })}
+      </div>
     `;
   }
 });
@@ -1190,7 +1200,7 @@ ivi:
 
 ```js
 import { component } from 'ivi';
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 import { useReducer } from 'ivi/state';
 import AddTask from './AddTask.js';
 import TaskList from './TaskList.js';
@@ -1220,15 +1230,15 @@ const TaskApp = component((c) => {
     });
   }
 
-  return () => [
-    htm`h1 'Prague itinerary'`
-    AddTask({ onAddTask }),
-    TaskList({
+  return () => htm`
+    <h1>Prague itinerary</h1>
+    ${AddTask({ onAddTask })}
+    ${TaskList({
       tasks,
       onChangeTask: handleChangeTask,
       onDeleteTask: handleDeleteTask,
-    }),
-  ];
+    })}
+  `;
 });
 export default TaskApp;
 
@@ -1300,7 +1310,7 @@ ivi:
 
 ```js
 import { component } from 'ivi';
-import { htm } from 'ivi/template';
+import { htm } from '@ivi/htm';
 
 const Counter = component((c) => {
   let _ref = 0;
@@ -1310,7 +1320,7 @@ const Counter = component((c) => {
     alert('You clicked ' + _ref + ' times!');
   }
 
-  return htm`button @click=${handleClick} 'Click me!'`;
+  return htm`<button @click=${handleClick}>Click me!</button>`;
 });
 export default Counter;
 ```
@@ -1344,6 +1354,7 @@ ivi:
 
 ```js
 import { component } from 'ivi';
+import { htm } from '@ivi/htm';
 
 const Form = component((c) => {
   let _inputRef = null;
@@ -1353,10 +1364,10 @@ const Form = component((c) => {
     inputRef.current.focus();
   }
 
-  return () => [
-    htm`input $${onInputRef}`,
-    htm`button @click=${handleClick} 'Focus the input'`,
-  ];
+  return () => htm`
+    <input ${onInputRef}/>
+    <button @click=${handleClick}>Focus the input</button>
+  `;
 });
 ```
 
@@ -1400,7 +1411,8 @@ export default function App() {
 ivi:
 
 ```js
-import { useState, useRef, useEffect } from 'react';
+import { component, useEffect } from 'ivi';
+import { htm } from '@ivi/htm';
 
 const VideoPlayer = component((c) => {
   let _ref = null;
@@ -1415,18 +1427,18 @@ const VideoPlayer = component((c) => {
 
   return ({ src, isPlaying }) => (
     update(isPlaying),
-    htm`video $${getRef} :src=${src} :loop :playsInline`);
+    htm`<video ${getRef} src=${src} loop playsInline />`);
 });
 
 const App = component((c) => {
   const [isPlaying, setIsPlaying] = useState(c, false);
-  return [
-    htm`button @click=${onClick} ${isPlaying() ? 'Pause' : 'Play'}`,
-    VideoPlayer({
+  return htm`
+    <button @click=${onClick}>${isPlaying() ? 'Pause' : 'Play'}</button>
+    ${VideoPlayer({
       isPlaying: isPlaying(),
       src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
-    }),
-  ];
+    })}
+  `;
 });
 
 export default App;
@@ -1489,6 +1501,7 @@ ivi:
 
 ```js
 import { component, useEffect } from 'ivi';
+import { htm } from '@ivi/htm';
 import { useState } from 'ivi/state';
 import { createConnection } from './chat.js';
 
@@ -1511,30 +1524,30 @@ const ChatRoom = component((c) => {
 
   return ({ roomId }) => (
     updateRoomConnection(roomId),
-    [
-      htm`h1 'Welcome to the ' ${roomId} ' room!'`,
-      htm`input *value=${message} @input=${onInput}`,
-    ]
+    htm`
+      <h1>Welcome to the ${roomId} room!</h1>
+      <input *value=${message()} @input=${onInput} />
+    `,
   );
 });
 
 const App = component((c) => {
   const [roomId, setRoomId] = useState('general');
   const onChange = (ev) => setRoomId(ev.target.value);
-  return [
-    htm`
-      label
-        'Choose the chat room: '
-        select
-          *value=${roomId}
-          @change=${onChange}
-          option :value='general' 'general'
-          option :value='travel'  'travel'
-          option :value='music'   'music'
-    `,
-    htm`hr`,
-    ChatRoom({ roomId: roomId() }),
-  ];
+  return htm`
+    <label>
+      Choose the chat room: \v
+      <select
+        *value=${roomId}
+        @change=${onChange}
+      >
+        <option value="general">general</option>
+        <option value="travel">travel</option>
+        <option value="music">music</option>
+      </select>
+    <hr>
+    ${ChatRoom({ roomId: roomId() })}
+  `;
 });
 export default App;
 ```
@@ -1611,10 +1624,10 @@ ivi:
 
 ```js
 import { Component, component, useEffect } from "ivi";
+import { htm } from "@ivi/htm";
 import { shallowEqArray } from "ivi/equal";
 import { createRoot, updateRoot } from "ivi/root";
 import { useState } from "ivi/state";
-import { htm } from "ivi/template";
 
 const ZERO: Point = { x: 0, y: 0 };
 
@@ -1670,10 +1683,11 @@ const Canvas = component((c) => {
 });
 
 const Dot = ({ position, opacity }) => htm`
-  div
-    :style='position:absolute;background-color:pink;border-radius:50%;pointer-events:none;left:-20px;top:-20px;width:40px;height:40px'
+  <div
+    style="position:absolute;background-color:pink;border-radius:50%;pointer-events:none;left:-20px;top:-20px;width:40px;height:40px"
     ~opacity=${opacity}
     ~transform=${`translate(${position.x}px,${position.y}px)`}
+  />
 `;
 
 updateRoot(
