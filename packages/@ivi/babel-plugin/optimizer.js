@@ -92,7 +92,7 @@ const iviOptimizer = declare((api) => {
                   const newDataIndex = dataIndex.get(dataElements[i].value);
                   op.node.value = (
                     // Removes old data index
-                    (value & ~((1 << PROP_DATA_SHIFT) - 1)) |
+                    (value & ((1 << PROP_DATA_SHIFT) - 1)) |
                     // Adds new data index
                     (newDataIndex << PROP_DATA_SHIFT)
                   );

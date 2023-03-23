@@ -609,5 +609,25 @@ describe("template compilation", () => {
         ]),
       );
     });
+
+    test("9", () => {
+      deepStrictEqual(
+        c(h([
+          el("h1", [attr("a", 0), prop("textContent", 1)]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: `h1`,
+            props: [pAttr(0, 0), pTextContent(1)],
+            child: [],
+            state: [],
+            data: ["a"],
+            exprs: [0, 1],
+          },
+        ]),
+      );
+    });
   });
 });

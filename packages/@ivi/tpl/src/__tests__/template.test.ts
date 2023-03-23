@@ -183,6 +183,20 @@ describe("template", () => {
         `)!;
         strictEqual(n.childNodes[0], e);
       });
+
+      test("click and textContent", () => {
+        let clicked = 0;
+        const onClick = () => { clicked++; };
+        const n = mount<HTMLDivElement>(htm`
+          td.TableCell
+            @click=${onClick}
+            =${"ab"}
+          `
+        )!;
+        n.click();
+        strictEqual(n.childNodes[0].nodeValue, "ab");
+        strictEqual(clicked, 1);
+      });
     });
   });
 });
