@@ -92,7 +92,7 @@ export interface INodeText {
 
 export interface INodeExpr {
   readonly type: INodeType.Expr;
-  readonly index: number;
+  readonly value: number;
 }
 
 export type INode = INodeElement | INodeText | INodeExpr;

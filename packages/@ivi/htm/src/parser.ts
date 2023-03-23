@@ -63,7 +63,7 @@ export class TemplateParser extends TemplateScanner {
         if (expr !== -1) {
           children.push({
             type: INodeType.Expr,
-            index: expr,
+            value: expr,
           });
         } else {
           break;

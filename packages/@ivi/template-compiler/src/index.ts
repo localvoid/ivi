@@ -27,7 +27,7 @@ const compileTemplateNode = (node: INode, type: ITemplateType): TemplateNode => 
     case INodeType.Expr:
       return {
         type: TemplateNodeType.Expr,
-        value: node.index,
+        value: node.value,
       };
     case INodeType.Text:
       return {
@@ -160,7 +160,7 @@ const _createExprMap = (
     if (type === INodeType.Element) {
       _createExprMap(exprMap, child);
     } else if (type === INodeType.Expr) {
-      exprMap.set(child.index, exprMap.size);
+      exprMap.set(child.value, exprMap.size);
     }
   }
 };
@@ -456,7 +456,7 @@ const _emitChildOpCodes = (
           if (prev !== void 0 && prev.node.type !== INodeType.Expr) {
             opCodes.push(ChildOpCode.SetNext | (prev.stateIndex << ChildOpCode.ValueShift));
           }
-          opCodes.push(ChildOpCode.Child | (exprMap.get(child.node.index)! << ChildOpCode.ValueShift));
+          opCodes.push(ChildOpCode.Child | (exprMap.get(child.node.value)! << ChildOpCode.ValueShift));
         }
         prev = child;
       }

@@ -51,9 +51,9 @@ const text = (value: string): INodeText => ({
   value,
 });
 
-const expr = (index: number): INodeExpr => ({
+const expr = (value: number): INodeExpr => ({
   type: INodeType.Expr,
-  index,
+  value,
 });
 
 const attr = (key: string, value: string | number | boolean): IPropertyAttribute => ({
