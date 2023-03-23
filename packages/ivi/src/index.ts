@@ -365,14 +365,16 @@ export interface ListProps<K = any> {
  * Stateless Tree Node.
  */
 export type VAny =
-  | null
-  | string
-  | number
-  | VRoot
-  | VTemplate
-  | VComponent
-  | VList
-  | VArray
+  | null       // Hole
+  | undefined  // Hole
+  | false      // Hole
+  | string     // Text
+  | number     // Text
+  | VRoot      // Root
+  | VTemplate  // Template
+  | VComponent // Component
+  | VList      // Dynamic List with track by key algo
+  | VArray     // Dynamic List with track by index algo
   ;
 
 /**
@@ -601,7 +603,7 @@ const _update = (
   if (sNode === null) {
     return _mount(parentSNode, next);
   }
-  if (next === null) {
+  if (next === false || next == null) {
     _unmount(sNode, true);
     return null;
   }
@@ -723,7 +725,7 @@ const _update = (
  * @returns Mounted Stateful Node.
  */
 const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
-  if (v !== null) {
+  if (v !== false && v != null) {
     if (typeof v === "object") {
       if (_isArray(v)) {
         return _mountList(parentSNode, Flags.Array, v, v);
