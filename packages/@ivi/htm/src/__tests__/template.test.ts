@@ -6,12 +6,120 @@ import { htm } from "../index.js";
 import { type VAny } from "ivi";
 
 describe("template", () => {
+  const mount = <T extends Node>(v: VAny) => {
+    const root = createRoot();
+    root.update(v);
+    return root.findDOMNode<T>();
+  };
+
   describe("mount", () => {
-    const mount = <T extends Node>(v: VAny) => {
-      const root = createRoot();
-      root.update(v);
-      return root.findDOMNode<T>();
-    };
+    describe("whitespaces", () => {
+      test("1", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 0);
+      });
+
+      test("2", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 0);
+      });
+
+      test("3", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1> </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, " ");
+      });
+
+      test("4", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <div>
+            <h2></h2>
+            <h2></h2>
+          </div>
+        `)!;
+        strictEqual(n.tagName, "DIV");
+        strictEqual(n.childNodes.length, 2);
+        strictEqual((n.childNodes[0] as Element).tagName, "H2");
+        strictEqual((n.childNodes[1] as Element).tagName, "H2");
+      });
+
+      test("5", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+            ab
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, "ab");
+      });
+
+      test("6", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+            ab
+            cd
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, "ab cd");
+      });
+
+      test("7", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+            ab  cd
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, "ab cd");
+      });
+
+      test("8", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>  ab  cd  </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, " ab cd ");
+      });
+
+      test("9", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+            \vab
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, " ab");
+      });
+
+      test("10", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <h1>
+            ab\v
+          </h1>
+        `)!;
+        strictEqual(n.tagName, "H1");
+        strictEqual(n.childNodes.length, 1);
+        strictEqual(n.childNodes[0].nodeValue, "ab ");
+      });
+    });
 
     describe("structure", () => {
       test("1", () => {

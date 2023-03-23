@@ -176,6 +176,7 @@ export const formatError = (
 export const enum CharCode {
   /** "\\t" */Tab = 9,
   /** "\\n" */Newline = 10,
+  /** "\\v" */VerticalTab = 11,
   /** "\\r" */CarriageReturn = 13,
   /** [space] */Space = 32,
   /** "!" */ExclamationMark = 33,
