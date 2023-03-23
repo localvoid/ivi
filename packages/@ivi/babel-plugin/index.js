@@ -73,9 +73,9 @@ const ivi = (config) => declare((api) => {
       factoryFnArg = staticTemplateToExpr(template, exprsNodes);
       if (type === "htm") {
         if (clone) {
-          factoryFnId = "_hN";
-        } else {
           factoryFnId = "_h";
+        } else {
+          factoryFnId = "_hN";
         }
       } else {
         if (clone) {
