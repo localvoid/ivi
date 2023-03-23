@@ -1,6 +1,6 @@
 {
   "name": "@ivi/tpl",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
