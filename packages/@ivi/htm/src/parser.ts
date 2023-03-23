@@ -169,6 +169,7 @@ export class TemplateParser extends TemplateScanner {
           }
           this.whitespace();
 
+          let staticAttr = false;
           let value: string | boolean | number = true;
           if (this.charCode(CharCode.EqualsTo)) { // =
             this.whitespace();
@@ -184,13 +185,16 @@ export class TemplateParser extends TemplateScanner {
               if (value === -1) {
                 throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
               }
+              if (key === "class" && this.tryHoistExpr(value)) {
+                staticAttr = true;
+              }
             }
           }
           properties.push({
             type: IPropertyType.Attribute,
             key,
             value,
-            static: false,
+            static: staticAttr,
           });
         }
         this.whitespace();
