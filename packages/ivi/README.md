@@ -36,6 +36,9 @@ updateRoot(
 ```
 
 - [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
+- [TodoMVC (HTML templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
+- [TodoMVC (ivi templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
+- [ivi REPL](https://github.com/localvoid/ivi-repl)
 
 ## Declarative UI
 
