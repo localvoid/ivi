@@ -1644,7 +1644,7 @@ export const List = <E, K>(
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
 export const dirtyCheck = (root: SRoot, updateFlags: number): void => {
-  while (root.f & Flags.DirtySubtree) {
+  while ((updateFlags | root.f) & (Flags.DirtySubtree | Flags.ForceUpdate)) {
     root.f = Flags.Root;
     if (root.c !== null) {
       const domSlot = root.v.p;
