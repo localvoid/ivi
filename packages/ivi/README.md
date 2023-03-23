@@ -17,7 +17,7 @@ import { useState } from "ivi/state";
 import { createRoot, updateRoot } from "ivi/root";
 import { htm } from "@ivi/htm";
 
-const Counter = component((c) => {
+const Example = component((c) => {
   const [count, setCount] = useState(c, 0);
   const inc = () => { setCount(count() + 1); };
 
@@ -31,7 +31,7 @@ const Counter = component((c) => {
 
 updateRoot(
   createRoot(document.getElementById("app")),
-  Counter(),
+  Example(),
 );
 ```
 
@@ -45,53 +45,65 @@ updateRoot(
 ### Templates
 
 ivi supports different template languages and it is easy to create a new one.
-All compilation complexities are abstracted away in a `@ivi/template-compiler`
+All compilation complexities are abstracted away in the `@ivi/template-compiler`
 package.
 
 #### HTML Template Language
 
-HTML Template Language supports additional syntax to work with DOM properties,
-events, etc.
+`@ivi/htm` package provides an [HTML Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/htm/README.md).
 
-- `.name=${expr}` - Property `element[name] = expr`.
-- `*name=${expr}` - Property `element[name] = expr`, diffs against a DOM value.
-- `~name=${expr}` - Style `element.style.setProperty(name, expr)`
-- `@name=${expr}` - Event `element.addEventListener(name, expr)`
-- `${directive}` - Directive `directive(element)`
+It is a simple HTML-like language with dynamic expressions.
 
 ```js
-const Example = htm`
-  <div
-    attribute="name"
-    @event=${onEvent}
-    .property=${value}
-    ~style=${value}
-  >
-    ${expr}
-  </div>
-`;
+import { htm } from "@ivi/htm";
+const Example = component((c) => {
+  // ...
+  return () => htm`
+    <div class="app">
+      <div>${count()}</div>
+      <button @click=${inc}>Increment</button>
+    </div>
+  `;
+});
 ```
 
 #### ivi Template Language
 
-[ivi Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/tpl/README.md)
-was designed as a concise language for defining DOM tree structures and uses
+`@ivi/tpl` package provides an [ivi Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/tpl/README.md).
+
+It was designed as a concise language for defining DOM tree structures and uses
 indentation for nesting.
 
 ```js
-const Example = htm`
-  div.ClassName @click=${onClick}
-    span.InnerClassName ${expr}
-`;
+import { htm } from "@ivi/tpl";
+const Example = component((c) => {
+  // ...
+  return () => htm`
+    div.app
+      div ${count()}
+      button @click=${inc} "Increment"
+  `;
+});
 ```
 
 ### Expressions
 
 #### Conditionals
 
+```js
+const Example = component((c) => {
+  // ...
+  return (show) => htm`
+    <div>
+      ${show && htm`<span>Show</span>`}
+    </div>
+  `;
+});
+```
+
 #### Arrays
 
-Basic javascript arrays can be used for composing UI nodes:
+Javascript arrays can be used for composing UI nodes:
 
 ```js
 const ArraysInsideTemplates = () => htm`
@@ -717,7 +729,7 @@ Templates with just one element that doesn't have any static properties will
 be created with [`document.createElement()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement).
 
 ```js
-htm`div :attr=${0} ${1}`
+htm`<div attr=${0}>${1}</div>`;
 ```
 
 ### Internal Data Structures
@@ -749,6 +761,8 @@ interface VNode<D extends VDescriptor, P> {
 type VArray = VAny[];
 type VAny =
   | null       // empty slot
+  | undefined  // empty slot
+  | false      // empty slot
   | string     // text
   | number     // text
   | VRoot      // VNode<RootDescriptor, RootProps>
@@ -918,10 +932,10 @@ template factory functions. E.g.
 import { className } from "styles.css";
 
 const a = (id) => htm`
-div${className} :id=${id}
+<div class=${className} id=${id}></div>
 `;
 const b = (id) => htm`
-div${className} :id=${id}
+<div class=${className} id=${id}></div>
 `;
 ```
 

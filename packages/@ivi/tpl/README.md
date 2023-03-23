@@ -71,29 +71,8 @@ HTML:
 
 ### Text Nodes
 
-Static text nodes are declared either with `'text'` or a `#'text'#` syntax to
-remove ambiguity that we can often see in HTML-like template languages:
-
-```html
-<div>
-  text
-  <span></span>
-</div>
-```
-
-Some template languages will create text nodes with a `"prefix "` text node and
-some will create a `"prefix"` text node.
-
-```js
-htm`
-div
-  'text'
-  span
-`
-```
-
-In this example we can immediately see that there won't be any whitespaces
-between text node and a span element.
+Static text nodes are declared either with `'text'`, `"text"` or a `#'text'#`
+syntax.
 
 Text nodes are escaped automatically:
 
