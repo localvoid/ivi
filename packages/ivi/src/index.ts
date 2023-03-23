@@ -424,7 +424,9 @@ const _updateTemplateProperties = (
       if (prev !== next || type === PropOpCode.DiffDOMProperty) {
         if (type === PropOpCode.Common) {
           if (dataIndex === CommonPropType.ClassName) {
-            elementSetClassName.call(currentElement, next);
+            if (next !== "" || prev !== void 0) {
+              elementSetClassName.call(currentElement, next);
+            }
           } else { // CommonPropType.TextContent
             if (prev === void 0) {
               nodeSetTextContent.call(currentElement, next);
