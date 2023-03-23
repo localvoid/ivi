@@ -524,31 +524,6 @@ const _mountList = (
   return sNode;
 };
 
-const _updateText = (
-  parentSNode: SNode,
-  sNode: SText,
-  next: string,
-  updateFlags: Flags,
-): SNode => {
-  const ctx = RENDER_CONTEXT;
-  const s = sNode.s;
-  if (typeof next !== "object") {
-    const prev = sNode.v;
-    // Reassign to reduce memory consumption even if next value is strictly
-    // equal the prev value.
-    sNode.v = next;
-    if (prev !== next) {
-      s.nodeValue = next as string;
-    }
-    if (updateFlags & Flags.DisplaceNode) {
-      nodeInsertBefore!.call(ctx.p, s, ctx.n);
-    }
-    return sNode;
-  }
-  nodeRemoveChild!.call(ctx.p, s);
-  return _mount(parentSNode, next)!;
-};
-
 const _updateArray = (
   parentSNode: SNode,
   sNode: SNode,
@@ -614,8 +589,25 @@ const _update = (
   const type = flags & Flags.TypeMask;
 
   if (type === Flags.Text) {
-    return _updateText(parentSNode, sNode as SText, next as string, updateFlags);
+    const ctx = RENDER_CONTEXT;
+    const textNode = (sNode as SText).s;
+    if (typeof next !== "object") {
+      const prev = (sNode as SText).v;
+      // Reassign to reduce memory consumption even if next value is strictly
+      // equal the prev value.
+      sNode.v = next;
+      if (prev !== next) {
+        textNode.nodeValue = next as string;
+      }
+      if (updateFlags & Flags.DisplaceNode) {
+        nodeInsertBefore!.call(ctx.p, textNode, ctx.n);
+      }
+      return sNode;
+    }
+    nodeRemoveChild!.call(ctx.p, textNode);
+    return _mount(parentSNode, next)!;
   }
+
   const prev = sNode.v;
   sNode.v = next;
   if (prev === next) {
