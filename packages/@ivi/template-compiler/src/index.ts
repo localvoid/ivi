@@ -200,29 +200,31 @@ const _emitStaticTemplate = (
     }
   }
   staticTemplate.push(`>`);
-  if (children.length > 0) {
-    if (VOID_ELEMENTS.test(tag)) {
+  if (VOID_ELEMENTS.test(tag)) {
+    if (children.length > 0) {
       throw new TemplateCompilerError(`Invalid template, void element '${tag}' shouldn't have any children.`);
     }
-    let state = 0;
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
-      switch (child.type) {
-        case INodeType.Element:
-          _emitStaticTemplate(staticTemplate, child);
-          state = 0;
-          break;
-        case INodeType.Text:
-          if ((state & 3) === 3) {
-            staticTemplate.push("<!>");
-          }
-          state = 1;
-          staticTemplate.push(child.value);
-          break;
-        case INodeType.Expr:
-          state |= 2;
-          break;
-      }
+    return;
+  }
+
+  let state = 0;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    switch (child.type) {
+      case INodeType.Element:
+        _emitStaticTemplate(staticTemplate, child);
+        state = 0;
+        break;
+      case INodeType.Text:
+        if ((state & 3) === 3) {
+          staticTemplate.push("<!>");
+        }
+        state = 1;
+        staticTemplate.push(child.value);
+        break;
+      case INodeType.Expr:
+        state |= 2;
+        break;
     }
   }
   staticTemplate.push(`</${tag}>`);
