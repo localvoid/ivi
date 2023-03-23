@@ -8,13 +8,34 @@
 
 ```js
 htm`
-<div id="app">
-  <h1>Template Example</h1>
-  <div class="content">
-    ${condition ? "true" : "false"}
+  <div id="app">
+    <h1>Template Example</h1>
+    <div class="content">
+      ${condition ? "true" : "false"}
+    </div>
   </div>
-</div>
+`;
+```
+
+## Multiple Root Nodes
+
+```js
+htm`
+  <div></div>
+  ${expr}
+  text
+  <div></div>
 `
+```
+
+## Elements can be closed with a `/>` syntax
+
+```js
+htm`
+  <div
+    class="a"
+  />
+`;
 ```
 
 ## Element Attributes Syntax
@@ -31,15 +52,55 @@ events, etc.
 - `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`
 - `<div ${directive} />` - Directive `directive(element)`
 
-```js
-const Example = htm`
-  <div
-    attribute="name"
-    @event=${onEvent}
-    .property=${value}
-    ~style=${value}
-  >
-    ${expr}
-  </div>
-`;
+## Whitespaces
+
+1. Whitespaces around newlines are removed:
+
+```htm
+<div>
+  <p></p>
+  ab
+  <p></p>
+</div>
+```
+
+```htm
+<div><p></p>ab<p></p></div>
+```
+
+2. Inline whitespaces are collapsed into one whitespace:
+
+```htm
+<div>  <span>  a  b  </span>  </div>
+```
+
+```htm
+<div> <span> a b </span> </div>
+```
+
+3. Whitespaces around newlines in text nodes are collapsed into one whitespace:
+
+```htm
+<div>
+  ab
+  cd
+</div>
+```
+
+```htm
+<div>ab cd</div>
+```
+
+4. Vertical tab `\v` character prevents from removing all whitespaces around
+newlines:
+
+```htm
+<div>
+  <b>1</b>
+  \v item left
+<div>
+```
+
+```htm
+<div><b>1</b> item left</div>
 ```

@@ -69,7 +69,7 @@ HTML:
 <div>prefix{expr}suffix</div>
 ```
 
-### Text Nodes
+## Text Nodes
 
 Static text nodes are declared either with `'text'`, `"text"` or a `#'text'#`
 syntax.
@@ -86,9 +86,7 @@ HTML:
 <div>escape &amp; &lt;</div>
 ```
 
-### Multiple Root Nodes
-
-Templates can have multiple root nodes.
+## Multiple Root Nodes
 
 ```js
 htm`
@@ -99,17 +97,7 @@ htm`
 `
 ```
 
-Instead of using multiple root nodes in a template, template nodes can be
-composed with javascript arrays. E.g.
-
-```js
-[
-  htm`div 'a'`,
-  htm`div 'b'`,
-]
-```
-
-### Element Properties Syntax
+## Element Properties Syntax
 
 - [`div.classA.classB`](#class-names) - Static class names `<div class="classA classB">`
 - [`div${expr}`](#class-names) - Dynamic class names `element.className = expr`
@@ -135,7 +123,7 @@ div :inline-attr1 :inline-attr2
 `
 ```
 
-#### Class Names
+### Class Names
 
 Static class names are declared with a `.` character immediately after a tag
 name:
@@ -165,7 +153,7 @@ HTML:
 
 Static and dynamic class names cannot be mixed together.
 
-#### Attributes
+### Attributes
 
 - `div :name='value'` - Static attribute with a value `<div name="value">`.
 - `div :name` - Static attribute without a value `<div name>`.
@@ -188,7 +176,7 @@ HTML:
 <div name="escape &amp; &quot;"></div>
 ```
 
-#### Properties
+### Properties
 
 - `div .name=${expr}` - Property `element[name] = expr`.
 - `div *name=${expr}` - Property `element[name] = expr`, diffs against a DOM value.
@@ -198,7 +186,7 @@ Properties are assigned with an assignment operator `Element.name = value`.
 Diffing with a DOM value is useful in use cases when we use `<input>` values to
 avoid triggering unnecessary `change` events.
 
-#### Styles
+### Styles
 
 - `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
 
@@ -208,7 +196,7 @@ method.
 When style has an `undefined` value, it will be removed with a
 `CSSStyleDeclaration.removeProperty(..)` method.
 
-#### Events
+### Events
 
 - `div @name=${expr}` - Event `element.addEventListener(name, expr)`
 
@@ -217,7 +205,7 @@ Events are assigned with an `EventTarget.addEventListener(..)` method.
 When event has an `undefined` value, it will be removed with an
 `EventTarget.removeEventListener(..)` method.
 
-#### Text Content
+### Text Content
 
 - `div =${expr}` - Text Content `element.textContent = expr`
 
@@ -228,7 +216,7 @@ property and won't have any stateful nodes associated with a text node.
 
 Text content value should have a string or a number type.
 
-#### Directives
+### Directives
 
 - `div $${directive}` - Directive `directive(element)`
 
