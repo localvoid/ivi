@@ -116,11 +116,11 @@ import {
 // Store global variables in a local scope as const variables so that JIT
 // compiler could easily inline functions and eliminate checks in case global
 // variables are overriden.
-const _Object = Object;
-const _Array = Array;
-const _isArray: <T = any>(a: any) => a is T[] = _Array.isArray;
-const _Map = Map;
-const _Int32Array = Int32Array;
+export const _Object = Object;
+export const _Array = Array;
+export const _isArray: <T = any>(a: any) => a is T[] = _Array.isArray;
+export const _Map = Map;
+export const _Int32Array = Int32Array;
 
 const nodeProto = Node.prototype;
 const elementProto = Element.prototype;
@@ -139,35 +139,41 @@ const SVG_TEMPLATE_CONTENT = _SVG_TEMPLATE.content.firstChild as Element;
 // avoid megamorphic call-sites when accessing DOM nodes.
 
 /** `Node.prototype.insertBefore` */
-const nodeInsertBefore = nodeProto.insertBefore;
+export const nodeInsertBefore = nodeProto.insertBefore;
 /** `Node.prototype.removeChild`. */
-const nodeRemoveChild = nodeProto.removeChild;
+export const nodeRemoveChild = nodeProto.removeChild;
 /** `Node.prototype.cloneNode`. */
-const nodeCloneNode = nodeProto.cloneNode;
+export const nodeCloneNode = nodeProto.cloneNode;
 /** `Element.prototype.setAttribute` */
-const elementSetAttribute = elementProto.setAttribute;
+export const elementGetAttribute = elementProto.getAttribute;
+/** `Element.prototype.setAttribute` */
+export const elementSetAttribute = elementProto.setAttribute;
 /** `Element.prototype.removeAttribute` */
-const elementRemoveAttribute = elementProto.removeAttribute;
+export const elementRemoveAttribute = elementProto.removeAttribute;
 /** `EventTarget.prototype.addEventListener` */
-const elementAddEventListener = elementProto.addEventListener;
+export const elementAddEventListener = elementProto.addEventListener;
 /** `EventTarget.prototype.removeEventListener` */
-const elementRemoveEventListener = elementProto.removeEventListener;
+export const elementRemoveEventListener = elementProto.removeEventListener;
 
 /** `Object.getOwnPropertyDescriptor(o, p)` */
 const getDescriptor = (o: any, p: string | number | symbol) => _Object.getOwnPropertyDescriptor(o, p);
 
 /** `Node.prototype.getFirstChild` */
-const nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
+export const nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
+/** `Node.prototype.getLastChild` */
+export const nodeGetLastChild = /*@__PURE__*/getDescriptor(nodeProto, "lastChild")!.get!;
 /** `Node.prototype.getNextSibling` */
-const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
+export const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
+/** `Node.prototype.getPrevSibling` */
+export const nodeGetPrevSibling = /*@__PURE__*/getDescriptor(nodeProto, "prevSibling")!.get!;
 /** `Node.prototype.setTextContent` */
-const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
+export const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
 /** `Element.prototype.className` */
-const elementSetClassName = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
+export const elementSetClassName = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
 /** `HTMLElement.prototype.style`. */
-const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "style")!.get!;
+export const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "style")!.get!;
 /** `SVGElement.prototype.style` */
-const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
+export const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
 
 /**
  * Render Context.
@@ -408,7 +414,7 @@ export type VArray = VAny[];
  */
 export type ElementDirective = <E extends Element>(element: E) => void;
 
-const _flushDOMEffects = () => {
+export const _flushDOMEffects = () => {
   const e = RENDER_CONTEXT.e;
   if (e.length > 0) {
     RENDER_CONTEXT.e = [];

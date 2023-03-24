@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
+    "./hydrate": "./dist/hydrate.js",
     "./equal": "./dist/equal.js",
     "./root": "./dist/root.js",
     "./state": "./dist/state.js",
