@@ -501,7 +501,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0), cSP(1), cC(1)],
-            state: [E(1) | S, S | X],
+            state: [E(1) | S | X, S],
             data: [],
             exprs: [0, 1],
           },
