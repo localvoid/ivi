@@ -18,6 +18,7 @@ ONLY;
 const E = (n: number) => StateOpCode.EnterOrRemove | (n << StateOpCode.OffsetShift);
 const R = StateOpCode.EnterOrRemove;
 const S = StateOpCode.Save;
+const X = StateOpCode.PrevExpr;
 
 const F = (svg: boolean, stateSize: number, childrenSize: number) => (
   (svg ? TemplateFlags.Svg : 0) | (stateSize + 1) | (childrenSize << TemplateFlags.ChildrenSizeShift)
@@ -254,7 +255,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `b`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [S],
+            state: [S | X],
             data: [],
             exprs: [0],
           },
@@ -278,7 +279,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `a`, `<!>`, `b`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [0, R],
+            state: [0, R | X],
             data: [],
             exprs: [0],
           },
@@ -324,7 +325,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<b`, `>`, `</b>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [S],
+            state: [S | X],
             data: [],
             exprs: [0],
           },
@@ -348,7 +349,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `</a>`, `<b`, `>`, `</b>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [0, S],
+            state: [0, S | X],
             data: [],
             exprs: [0],
           },
@@ -372,7 +373,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `a`, `<b`, `>`, `</b>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [0, S],
+            state: [0, S | X],
             data: [],
             exprs: [0],
           },
@@ -396,7 +397,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `</a>`, `b`, `</div>`],
             props: [],
             child: [cSN(0), cC(0)],
-            state: [0, S],
+            state: [0, S | X],
             data: [],
             exprs: [0],
           },
@@ -449,7 +450,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
             props: [],
             child: [cSP(0), cSN(1), cC(0)],
-            state: [E(2) | S, 0, S],
+            state: [E(2) | S, 0, S | X],
             data: [],
             exprs: [0],
           },
@@ -500,7 +501,7 @@ describe("template compilation", () => {
             template: [`<div`, `>`, `<a`, `>`, `<b`, `>`, `</b>`, `<c`, `>`, `</c>`, `</a>`, `</div>`],
             props: [],
             child: [cSN(0), cC(0), cSP(1), cC(1)],
-            state: [E(1) | S, S],
+            state: [E(1) | S, S | X],
             data: [],
             exprs: [0, 1],
           },
