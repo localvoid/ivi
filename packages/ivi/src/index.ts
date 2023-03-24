@@ -313,7 +313,7 @@ export type ComponentDescriptor<P = any> = VDescriptor<
 >;
 
 /** List Descriptor */
-export type ListDescriptor = VDescriptor<null, null>;
+export type ListDescriptor = VDescriptor<boolean, null>;
 
 /**
  * Stateless Node.
@@ -699,13 +699,18 @@ const _update = (
     }
 
     ctx.n = rootDOMNode;
-  } else {
-    _updateList(
-      sNode,
-      prevProps,
-      nextProps,
-      updateFlags,
-    );
+  } else { // Dynamic Lists
+    if (
+      (descriptor as ListDescriptor).p1 === false ||
+      (prevProps as ListProps).k !== (nextProps as ListProps).k
+    ) {
+      _updateList(
+        sNode,
+        prevProps,
+        nextProps,
+        updateFlags,
+      );
+    }
   }
 
   return sNode;
@@ -1613,7 +1618,20 @@ export const invalidate = (c: Component): void => {
 /**
  * VDescriptor for List nodes.
  */
-export const LIST_DESCRIPTOR: ListDescriptor = { f: Flags.List, p1: null, p2: null };
+export const LIST_DESCRIPTOR: ListDescriptor = {
+  f: Flags.List,
+  p1: true,
+  p2: null,
+};
+
+/**
+ * VDescriptor for Immutable List nodes.
+ */
+export const ILIST_DESCRIPTOR: ListDescriptor = {
+  f: Flags.List,
+  p1: false,
+  p2: null,
+};
 
 /**
  * Creates a dynamic list.
@@ -1634,6 +1652,25 @@ export const List = <E, K>(
   p: {
     k: entries.map(getKey),
     v: entries.map(render),
+  },
+});
+
+/**
+ * Creates a dynamic list that uses Immutable data.
+ *
+ * @typeparam E Entry type.
+ * @param k Entries.
+ * @param render Render entry function.
+ * @returns Dynamic list.
+ */
+export const IList = <E>(
+  k: E[],
+  render: (entry: E) => VAny,
+): VList => ({
+  d: ILIST_DESCRIPTOR,
+  p: {
+    k,
+    v: k.map(render),
   },
 });
 
