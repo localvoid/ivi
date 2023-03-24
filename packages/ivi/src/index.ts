@@ -82,6 +82,27 @@
 // 0x618b089    89  7f03                 jg 0x618b08e < +0x8e >
 // 0x618b08b    8b  c21000               ret 0x10;
 //
+// ## Dynamic Lists
+//
+// Just some reminders:
+//
+// ### Lazy rendering
+//
+// It may seem like a good idea to render dynamic lists lazily and even avoid
+// storing keys in memory, but it may lead to some subtle bugs with mutable
+// entries.
+//
+// ### Dynamic Lists with Immutable Entries
+//
+// It is possible to create stateless node for immutable lists by storing
+// entries, key function and render function in a stateless node. On initial
+// mount we will need to invoke render function for each entry and keys can be
+// completely ignored. And when dynamic list is updated, we can lazily recover
+// old keys from previous entries.
+//
+// Don't think that it is worth it in most real-world scenarios, and we can
+// always just memoize stateless node with dynamic list in a component state.
+//
 // ## Additional Resources
 //
 // - https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html
@@ -1625,15 +1646,6 @@ export const LIST_DESCRIPTOR: ListDescriptor = {
 };
 
 /**
- * VDescriptor for Immutable List nodes.
- */
-export const ILIST_DESCRIPTOR: ListDescriptor = {
-  f: Flags.List,
-  p1: false,
-  p2: null,
-};
-
-/**
  * Creates a dynamic list.
  *
  * @typeparam E Entry type.
@@ -1652,25 +1664,6 @@ export const List = <E, K>(
   p: {
     k: entries.map(getKey),
     v: entries.map(render),
-  },
-});
-
-/**
- * Creates a dynamic list that uses Immutable data.
- *
- * @typeparam E Entry type.
- * @param k Entries.
- * @param render Render entry function.
- * @returns Dynamic list.
- */
-export const IList = <E>(
-  k: E[],
-  render: (entry: E) => VAny,
-): VList => ({
-  d: ILIST_DESCRIPTOR,
-  p: {
-    k,
-    v: k.map(render),
   },
 });
 
