@@ -1,5 +1,9 @@
 import { INodeElement, INodeType, IPropertyType, ITemplate } from "./ir.js";
 
+export interface CompileToStaticOptions {
+  readonly slotAttr: string;
+}
+
 export type StaticTemplate = (string | Expr)[];
 
 export interface Expr {
@@ -17,8 +21,12 @@ interface Context {
   last: string | null;
 }
 
-export const compileTemplateToStatic = (tpl: ITemplate): StaticTemplate => {
+export const compileTemplateToStatic = (
+  tpl: ITemplate,
+  options?: CompileToStaticOptions,
+): StaticTemplate => {
   const result: StaticTemplate = [];
+  const slotAttr = options?.slotAttr ?? "&";
   const ctx: Context = {
     result,
     last: null,
@@ -28,7 +36,7 @@ export const compileTemplateToStatic = (tpl: ITemplate): StaticTemplate => {
     const child = children[i];
     switch (child.type) {
       case INodeType.Element:
-        compileNode(ctx, child);
+        compileNode(ctx, child, slotAttr);
         break;
       case INodeType.Expr:
         expr(ctx, ExprType.Text, child.value);
@@ -36,6 +44,9 @@ export const compileTemplateToStatic = (tpl: ITemplate): StaticTemplate => {
       case INodeType.Text:
         emit(ctx, child.value);
     }
+  }
+  if (ctx.last !== null) {
+    result.push(ctx.last);
   }
   return result;
 };
@@ -57,27 +68,51 @@ const expr = (ctx: Context, type: ExprType, value: number) => {
   }
 };
 
-const compileNode = (ctx: Context, node: INodeElement) => {
+const compileNode = (ctx: Context, node: INodeElement, slotAttr: string) => {
   const { tag, properties, children } = node;
 
-  emit(ctx, `<${tag}`);
-  for (let i = 0; i < properties.length; i++) {
-    const prop = properties[i];
-    const type = prop.type;
-    if (type === IPropertyType.Attribute) {
-      const { key, value } = prop;
-      if (typeof value === "number") {
-        emit(ctx, ` ${key}="`);
-        expr(ctx, ExprType.Attribute, value);
-        emit(ctx, `"`);
-      } else if (value === true) {
-        emit(ctx, ` ${key}`);
-      } else {
-        emit(ctx, ` ${key}="${value}"`);
+  emit(ctx, `<${tag} ${slotAttr}`); // TODO: Optimize slot attrs.
+  if (properties.length > 0) {
+    let styles: (string | number)[] = [];
+    for (let i = 0; i < properties.length; i++) {
+      const { key, value, type } = properties[i];
+      if (type === IPropertyType.Attribute) {
+        if (typeof value === "number") {
+          emit(ctx, ` ${key}="`);
+          expr(ctx, ExprType.Attribute, value);
+          emit(ctx, `"`);
+        } else if (value === true) {
+          emit(ctx, ` ${key}`);
+        } else {
+          emit(ctx, ` ${key}="${value}"`);
+        }
+      } else if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
+        if (tag === "input" || tag === "textarea") {
+          if (key === "value") {
+            emit(ctx, ` value="`);
+            expr(ctx, ExprType.Attribute, value);
+            emit(ctx, `"`);
+          }
+        }
+      } else if (type === IPropertyType.Style) {
+        styles.push(`${key}:${value};`);
       }
+    }
+    if (styles.length > 0) {
+      emit(ctx, ` style="`);
+      for (let i = 0; i < styles.length; i++) {
+        const s = styles[i];
+        if (typeof s === "string") {
+          emit(ctx, s);
+        } else {
+          expr(ctx, ExprType.Attribute, s);
+        }
+      }
+      emit(ctx, `"`);
     }
   }
   emit(ctx, `>`);
+
   if (VOID_ELEMENTS.test(tag)) {
     if (children.length > 0) {
       throw new Error(`Invalid template, void element '${tag}' shouldn't have any children.`);
@@ -90,7 +125,7 @@ const compileNode = (ctx: Context, node: INodeElement) => {
     const child = children[i];
     switch (child.type) {
       case INodeType.Element:
-        compileNode(ctx, child);
+        compileNode(ctx, child, slotAttr);
         state = 0;
         break;
       case INodeType.Text:
