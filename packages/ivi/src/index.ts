@@ -165,7 +165,7 @@ export const nodeGetLastChild = /*@__PURE__*/getDescriptor(nodeProto, "lastChild
 /** `Node.prototype.getNextSibling` */
 export const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
 /** `Node.prototype.getPrevSibling` */
-export const nodeGetPrevSibling = /*@__PURE__*/getDescriptor(nodeProto, "prevSibling")!.get!;
+export const nodeGetPrevSibling = /*@__PURE__*/getDescriptor(nodeProto, "previousSibling")!.get!;
 /** `Node.prototype.setTextContent` */
 export const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
 /** `Element.prototype.className` */
