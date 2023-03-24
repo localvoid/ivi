@@ -334,7 +334,7 @@ export type ComponentDescriptor<P = any> = VDescriptor<
 >;
 
 /** List Descriptor */
-export type ListDescriptor = VDescriptor<boolean, null>;
+export type ListDescriptor = VDescriptor<null, null>;
 
 /**
  * Stateless Node.
@@ -608,29 +608,29 @@ const _update = (
 
   const flags = sNode.f;
   const type = flags & Flags.TypeMask;
+  const prev = sNode.v;
+  // Reassign to reduce memory consumption even if next value is strictly
+  // equal to the prev value.
+  sNode.v = next;
 
+  // Text and Array should be checked before Component, Template and List
+  // because their stateless nodes are represented with basic string and array
+  // types.
   if (type === Flags.Text) {
-    const ctx = RENDER_CONTEXT;
     const textNode = (sNode as SText).s;
     if (typeof next !== "object") {
-      const prev = (sNode as SText).v;
-      // Reassign to reduce memory consumption even if next value is strictly
-      // equal the prev value.
-      sNode.v = next;
       if (prev !== next) {
         textNode.nodeValue = next as string;
       }
       if (updateFlags & Flags.DisplaceNode) {
-        nodeInsertBefore!.call(ctx.p, textNode, ctx.n);
+        nodeInsertBefore!.call(RENDER_CONTEXT.p, textNode, RENDER_CONTEXT.n);
       }
       return sNode;
     }
-    nodeRemoveChild!.call(ctx.p, textNode);
+    nodeRemoveChild!.call(RENDER_CONTEXT.p, textNode);
     return _mount(parentSNode, next)!;
   }
 
-  const prev = sNode.v;
-  sNode.v = next;
   if (prev === next) {
     _dirtyCheck(sNode, updateFlags);
     return sNode;
@@ -640,9 +640,6 @@ const _update = (
   }
 
   const descriptor = (next as VNode).d;
-  // Text and Array should be checked before Component, Template and List
-  // because their stateless nodes are represented with basic string and array
-  // types.
   if ((prev as VNode).d !== descriptor) {
     _unmount(sNode, true);
     return _mount(parentSNode, next);
@@ -721,17 +718,12 @@ const _update = (
 
     ctx.n = rootDOMNode;
   } else { // Dynamic Lists
-    if (
-      (descriptor as ListDescriptor).p1 === false ||
-      (prevProps as ListProps).k !== (nextProps as ListProps).k
-    ) {
-      _updateList(
-        sNode,
-        prevProps,
-        nextProps,
-        updateFlags,
-      );
-    }
+    _updateList(
+      sNode,
+      prevProps,
+      nextProps,
+      updateFlags,
+    );
   }
 
   return sNode;
@@ -1641,7 +1633,7 @@ export const invalidate = (c: Component): void => {
  */
 export const LIST_DESCRIPTOR: ListDescriptor = {
   f: Flags.List,
-  p1: true,
+  p1: null,
   p2: null,
 };
 
@@ -1674,9 +1666,9 @@ export const List = <E, K>(
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
 export const dirtyCheck = (root: SRoot, updateFlags: number): void => {
-  if (root.c !== null) {
-    while ((updateFlags | root.f) & (Flags.DirtySubtree | Flags.ForceUpdate)) {
-      root.f = Flags.Root;
+  while ((updateFlags | root.f) & (Flags.DirtySubtree | Flags.ForceUpdate)) {
+    root.f = Flags.Root;
+    if (root.c !== null) {
       const domSlot = root.v.p;
       RENDER_CONTEXT.p = domSlot.p;
       RENDER_CONTEXT.n = domSlot.n;
