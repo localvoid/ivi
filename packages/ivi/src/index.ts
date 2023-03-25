@@ -103,6 +103,12 @@
 // Don't think that it is worth it in most real-world scenarios, and we can
 // always just memoize stateless node with dynamic list in a component state.
 //
+// ## Root Entry Functions
+//
+// Entry functions (update, dirtyCheck, unmount) should save and restore render
+// context to avoid edge cases when they invoked synchronously in a different
+// root context.
+//
 // ## Additional Resources
 //
 // - https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html
@@ -1673,6 +1679,8 @@ export const List = <E, K>(
  */
 export const dirtyCheck = (root: SRoot, updateFlags: number): void => {
   while ((updateFlags | root.f) & (Flags.DirtySubtree | Flags.ForceUpdate)) {
+    const ctx = RENDER_CONTEXT;
+    const { p, n } = ctx;
     root.f = Flags.Root;
     if (root.c !== null) {
       const domSlot = root.v.p;
@@ -1682,6 +1690,8 @@ export const dirtyCheck = (root: SRoot, updateFlags: number): void => {
       updateFlags = 0;
       _flushDOMEffects();
     }
+    ctx.p = p;
+    ctx.n = n;
   }
 };
 
@@ -1693,9 +1703,11 @@ export const dirtyCheck = (root: SRoot, updateFlags: number): void => {
  * @param updateFlags Update flags (ForceUpdate and DisplaceNode).
  */
 export const update = (root: SRoot, next: VAny, updateFlags: number): void => {
+  const ctx = RENDER_CONTEXT;
+  const { p, n } = ctx;
   const domSlot = root.v.p;
-  RENDER_CONTEXT.p = domSlot.p;
-  RENDER_CONTEXT.n = domSlot.n;
+  ctx.p = domSlot.p;
+  ctx.n = domSlot.n;
   root.f = Flags.Root;
   root.c = _update(
     root,
@@ -1704,6 +1716,8 @@ export const update = (root: SRoot, next: VAny, updateFlags: number): void => {
     updateFlags,
   );
   _flushDOMEffects();
+  ctx.p = p;
+  ctx.n = n;
   dirtyCheck(root, 0);
 };
 
@@ -1715,8 +1729,12 @@ export const update = (root: SRoot, next: VAny, updateFlags: number): void => {
  */
 export const unmount = (root: SRoot, detach: boolean): void => {
   if (root.c !== null) {
+    const ctx = RENDER_CONTEXT;
+    const { p, n } = ctx;
+    ctx.p = root.v.p.p;
     root.f = Flags.Root;
-    RENDER_CONTEXT.p = root.v.p.p;
     _unmount(root.c as SNode, detach);
+    ctx.p = p;
+    ctx.n = n;
   }
 };
