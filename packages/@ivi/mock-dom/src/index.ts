@@ -1,4 +1,4 @@
-const enum NodeType {
+export const enum NodeType {
   Element = 1,
   Attribute = 2,
   Text = 3,
@@ -135,6 +135,12 @@ export class Text extends Node {
 
   get nodeValue(): string {
     return this._nodeValue;
+  }
+}
+
+export class Comment extends Node {
+  constructor() {
+    super(NodeType.Comment, "");
   }
 }
 
@@ -359,11 +365,17 @@ function parseChildren(
   while (ctx.i < s.length) {
     const c = s.charCodeAt(ctx.i);
     if (c === CharCode.LessThan) {
-      if (ctx.i + 1 < s.length && s.charCodeAt(ctx.i + 1) === CharCode.Slash) {
-        break;
-      } else {
-        parent.appendChild(parseElement(ctx, namespaceURI));
+      const i2 = ctx.i + 1;
+      if (i2 < s.length) {
+        const c2 = s.charCodeAt(i2);
+        if (c2 === CharCode.Slash) {
+          break;
+        } else if (c2 === CharCode.ExclamationMark) {
+          parent.appendChild(parseComment(ctx));
+          continue;
+        }
       }
+      parent.appendChild(parseElement(ctx, namespaceURI));
     } else {
       parent.appendChild(parseText(ctx));
     }
@@ -445,6 +457,20 @@ function parseAttributeString(ctx: HTMLParserContext): string {
   throw new Error(`Invalid HTML [${ctx.i}]: invalid attribute value, expected a '"' character\n${ctx.s}`);
 }
 
+// Supports only <!> syntax.
+function parseComment(ctx: HTMLParserContext): Comment {
+  if (!parseCharCode(ctx, CharCode.LessThan)) {
+    throw new Error(`Invalid HTML [${ctx.i}]: expected a '<' character\n${ctx.s}`);
+  }
+  if (!parseCharCode(ctx, CharCode.ExclamationMark)) {
+    throw new Error(`Invalid HTML [${ctx.i}]: expected a '!' character\n${ctx.s}`);
+  }
+  if (!parseCharCode(ctx, CharCode.MoreThan)) {
+    throw new Error(`Invalid HTML [${ctx.i}]: expected a '>' character\n${ctx.s}`);
+  }
+  return new Comment();
+}
+
 function parseText(ctx: HTMLParserContext): Text {
   const s = ctx.s;
   let start = ctx.i;
@@ -506,6 +532,7 @@ const enum CharCode {
   /** "\\v" */VerticalTab = 11,
   /** "\\r" */CarriageReturn = 13,
   /** [space] */Space = 32,
+  /** "!" */ExclamationMark = 33,
   /** "\\"" */DoubleQuote = 34,
   /** "&" */Ampersand = 38,
   /** "/" */Slash = 47,

@@ -1,7 +1,7 @@
 import { strictEqual } from "node:assert";
 import { test } from "node:test";
 import "../global.js";
-import { HTMLElement } from "../index.js";
+import { NodeType, HTMLElement } from "../index.js";
 
 test("<span></span>", () => {
   const e = document.createElement("div");
@@ -107,4 +107,14 @@ test(`<div><input><span></span></div>`, () => {
   strictEqual(b?.nodeName, "SPAN");
   strictEqual(a?.nextSibling, b);
   strictEqual(b?.previousSibling, a);
+});
+
+test("<span><!></span>", () => {
+  const e = document.createElement("div");
+  e.innerHTML = "<span><!></span>";
+  const root = e.firstChild;
+  const a = root?.firstChild;
+  strictEqual(a?.nodeType, NodeType.Comment);
+  strictEqual(a?.nextSibling, null);
+  strictEqual(a?.previousSibling, null);
 });

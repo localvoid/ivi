@@ -14,9 +14,6 @@
     "README.md",
     "LICENSE"
   ],
-  "devDependencies": {
-    "@types/node": "^18.15.5"
-  },
   "description": "ivi DOM mocking tools.",
   "license": "MIT",
   "keywords": [
