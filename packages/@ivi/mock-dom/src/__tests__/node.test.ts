@@ -1,13 +1,6 @@
 import { strictEqual } from "node:assert";
 import { test } from "node:test";
 import "../global.js";
-import { Node, NodeType } from "../index.js";
-
-test("constructor", () => {
-  const n = new Node(NodeType.Text, "test");
-  strictEqual(n.nodeType, NodeType.Text);
-  strictEqual(n.nodeName, "test");
-});
 
 test("append child", () => {
   const parent = document.createElement("div");

@@ -16,7 +16,7 @@ export class DOMException extends Error {
   }
 }
 
-export class Node {
+export abstract class Node {
   _nodeType: NodeType;
   _nodeName: string;
   _nodeValue: any;
@@ -67,6 +67,17 @@ export class Node {
 
   get lastChild(): Node | null {
     return this._lastChild;
+  }
+
+  set textContent(s: string) {
+    let node = this._firstChild;
+    while (node !== null) {
+      this.removeChild(node);
+      node = node._nextSibling;
+    }
+    if (s !== "") {
+      this.appendChild(new Text(s));
+    }
   }
 
   appendChild(child: Node) {
@@ -211,30 +222,16 @@ export class Element extends Node {
     }
   }
 
-  dispatchEvent(event: Event) {
-    const type = event.type;
+  dispatchEvent(type: string) {
     let target: Element | null = this;
-    event.target = target;
     do {
-      event.currentTarget = target;
       const handlers = target._eventHandlers.get(type);
       if (handlers !== void 0) {
         for (const h of handlers) {
-          h(event);
+          h();
         }
       }
     } while (target = (target.parentNode as Element | null));
-  }
-
-  set textContent(s: string) {
-    let node = this._firstChild;
-    while (node !== null) {
-      this.removeChild(node);
-      node = node._nextSibling;
-    }
-    if (s !== "") {
-      this.appendChild(new Text(s));
-    }
   }
 
   set innerHTML(html: string) {
@@ -303,10 +300,13 @@ export class Document extends Element {
     if (tagName === "template") {
       return new Template();
     }
-    return new Element(NodeType.Element, tagName.toUpperCase());
+    return new HTMLElement(tagName.toUpperCase());
   }
 
   createElementNS(namespace: string, tagName: string) {
+    if (namespace === "http://www.w3.org/2000/svg") {
+      return new SVGElement(tagName.toUpperCase());
+    }
     return new Element(NodeType.Element, tagName.toUpperCase(), namespace);
   }
 
@@ -317,23 +317,7 @@ export class Document extends Element {
   reset() { }
 }
 
-export type EventHandler = (ev: Event) => void;
-
-export class Event {
-  _type: string;
-  currentTarget: Element | null;
-  target: Element | null;
-
-  constructor(type: string) {
-    this._type = type;
-    this.currentTarget = null;
-    this.target = null;
-  }
-
-  get type() {
-    return this._type;
-  }
-}
+export type EventHandler = () => void;
 
 export class CSSStyleDeclaration {
   _styles: Map<string, string>;
@@ -350,8 +334,8 @@ export class CSSStyleDeclaration {
     this._styles.delete(key);
   }
 
-  getPropertyValue(key: string) {
-    this._styles.get(key);
+  getPropertyValue(key: string): string {
+    return this._styles.get(key) ?? "";
   }
 }
 

@@ -33,5 +33,6 @@ declare global {
 (global as any).Template = _Template;
 (global as any).DocumentFragment = _DocumentFragment;
 (global as any).Document = _Document;
+(global as any).CSSStyleDeclaration = _CSSStyleDeclaration;
 
 (global as any).document = new _Document();
