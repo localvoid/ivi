@@ -17,6 +17,7 @@ export class DOMException extends Error {
 }
 
 export abstract class Node {
+  readonly uid: number;
   _nodeType: NodeType;
   _nodeName: string;
   _nodeValue: any;
@@ -26,7 +27,8 @@ export abstract class Node {
   _firstChild: Node | null;
   _lastChild: Node | null;
 
-  constructor(nodeType: NodeType, nodeName: string) {
+  constructor(uid: number, nodeType: NodeType, nodeName: string) {
+    this.uid = uid;
     this._nodeType = nodeType;
     this._nodeName = nodeName;
     this._nodeValue = null;
@@ -72,11 +74,12 @@ export abstract class Node {
   set textContent(s: string) {
     let node = this._firstChild;
     while (node !== null) {
+      const next = node._nextSibling;
       this.removeChild(node);
-      node = node._nextSibling;
+      node = next;
     }
     if (s !== "") {
-      this.appendChild(new Text(s));
+      this.appendChild(document.createTextNode(s));
     }
   }
 
@@ -112,7 +115,7 @@ export abstract class Node {
   }
 
   removeChild(child: Node) {
-    if (child._parentNode !== this) {
+    if (child._parentNode?.uid !== this.uid) {
       throw new Error("Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
     }
     const prev = child._previousSibling;
@@ -141,8 +144,8 @@ export abstract class Node {
 }
 
 export class Text extends Node {
-  constructor(text: string = "") {
-    super(NodeType.Text, "");
+  constructor(uid: number, text: string = "") {
+    super(uid, NodeType.Text, "");
     this._nodeValue = text;
   }
 
@@ -152,8 +155,8 @@ export class Text extends Node {
 }
 
 export class Comment extends Node {
-  constructor() {
-    super(NodeType.Comment, "");
+  constructor(uid: number) {
+    super(uid, NodeType.Comment, "");
   }
 }
 
@@ -165,11 +168,12 @@ export class Element extends Node {
   _eventHandlers: Map<string, EventHandler[]>;
 
   constructor(
+    uid: number,
     nodeType: number,
     tagName: string,
     namespaceURI: string = "http://www.w3.org/1999/xhtml"
   ) {
-    super(nodeType, tagName);
+    super(uid, nodeType, tagName);
     this._namespaceURI = namespaceURI;
     this._attributes = new Map();
     this._properties = new Map();
@@ -274,28 +278,28 @@ const ELEMENT_PROXY_HANDLER: ProxyHandler<Element> = {
 };
 
 export class HTMLElement extends Element {
-  constructor(tagName: string) {
-    super(NodeType.Element, tagName);
+  constructor(uid: number, tagName: string) {
+    super(uid, NodeType.Element, tagName);
   }
 }
 export class SVGElement extends Element {
-  constructor(tagName: string) {
-    super(NodeType.Element, tagName, "http://www.w3.org/2000/svg");
+  constructor(uid: number, tagName: string) {
+    super(uid, NodeType.Element, tagName, "http://www.w3.org/2000/svg");
   }
 }
 
 export class DocumentFragment extends Node {
-  constructor() {
-    super(NodeType.DocumentFragment, "");
+  constructor(uid: number) {
+    super(uid, NodeType.DocumentFragment, "");
   }
 }
 
 export class Template extends Element {
   _content: DocumentFragment;
 
-  constructor() {
-    super(NodeType.Element, "TEMPLATE");
-    this._content = new DocumentFragment();
+  constructor(uid: number) {
+    super(uid, NodeType.Element, "TEMPLATE");
+    this._content = document.createDocumentFragment();
   }
 
   get content() {
@@ -319,16 +323,19 @@ export class Template extends Element {
 }
 
 export class Document extends Element {
+  _nextUid: number;
+
   constructor() {
-    super(NodeType.Document, "#document");
+    super(0, NodeType.Document, "#document");
+    this._nextUid = 1;
   }
 
   createElement(tagName: string) {
     if (tagName === "template") {
-      return new Template();
+      return new Template(this._nextUid++);
     }
     return new Proxy(
-      new HTMLElement(tagName.toUpperCase()),
+      new HTMLElement(this._nextUid++, tagName.toUpperCase()),
       ELEMENT_PROXY_HANDLER,
     );
   }
@@ -336,21 +343,36 @@ export class Document extends Element {
   createElementNS(namespace: string, tagName: string) {
     if (namespace === "http://www.w3.org/2000/svg") {
       return new Proxy(
-        new SVGElement(tagName.toUpperCase()),
+        new SVGElement(this._nextUid++, tagName.toUpperCase()),
         ELEMENT_PROXY_HANDLER,
       );
     }
     return new Proxy(
-      new Element(NodeType.Element, tagName.toUpperCase(), namespace),
+      new Element(
+        this._nextUid++,
+        NodeType.Element,
+        tagName.toUpperCase(),
+        namespace,
+      ),
       ELEMENT_PROXY_HANDLER,
     );
   }
 
   createTextNode(text: string) {
-    return new Text(text);
+    return new Text(this._nextUid++, text);
   }
 
-  reset() { }
+  createDocumentFragment() {
+    return new DocumentFragment(this._nextUid++);
+  }
+
+  createComment() {
+    return new Comment(this._nextUid++);
+  }
+
+  reset() {
+    this._nextUid = 1;
+  }
 }
 
 export type EventHandler = () => void;
@@ -387,7 +409,7 @@ function parseHTML(html: string, namespaceURI: string): DocumentFragment {
     s: html,
     i: 0,
   };
-  const fragment = new DocumentFragment();
+  const fragment = document.createDocumentFragment();
   parseChildren(ctx, fragment, namespaceURI);
   return fragment;
 }
@@ -429,7 +451,7 @@ function parseElement(ctx: HTMLParserContext, namespaceURI: string): Element {
     throw new Error(`Invalid HTML [${ctx.i}]: expected a valid tag name\n${ctx.s}`);
   }
   const element = new Proxy(
-    new Element(NodeType.Element, tagName.toUpperCase(), namespaceURI),
+    document.createElementNS(namespaceURI, tagName),
     ELEMENT_PROXY_HANDLER,
   );
   parseSkipWhitespace(ctx);
@@ -507,7 +529,7 @@ function parseComment(ctx: HTMLParserContext): Comment {
   if (!parseCharCode(ctx, CharCode.MoreThan)) {
     throw new Error(`Invalid HTML [${ctx.i}]: expected a '>' character\n${ctx.s}`);
   }
-  return new Comment();
+  return document.createComment();
 }
 
 function parseText(ctx: HTMLParserContext): Text {
@@ -520,7 +542,7 @@ function parseText(ctx: HTMLParserContext): Text {
     }
     ctx.i++;
   }
-  return new Text(s.substring(start, ctx.i));
+  return document.createTextNode(s.substring(start, ctx.i));
 }
 
 function parseSkipWhitespace(ctx: HTMLParserContext): void {

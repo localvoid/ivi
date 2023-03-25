@@ -168,3 +168,26 @@ test("move node between different element", () => {
   strictEqual(parentB.lastChild, a);
   strictEqual(a.parentNode, parentB);
 });
+
+test(`textContent=""`, () => {
+  const parent = document.createElement("div");
+  const a = document.createElement("span");
+  const b = document.createElement("span");
+  const c = document.createElement("span");
+  parent.insertBefore(a, null);
+  parent.insertBefore(b, null);
+  parent.insertBefore(c, null);
+
+  strictEqual(a.parentNode, parent);
+  strictEqual(b.parentNode, parent);
+  strictEqual(c.parentNode, parent);
+
+  parent.textContent = "";
+
+  strictEqual(parent.firstChild, null);
+  strictEqual(parent.lastChild, null);
+
+  strictEqual(a.parentNode, null);
+  strictEqual(b.parentNode, null);
+  strictEqual(c.parentNode, null);
+});
