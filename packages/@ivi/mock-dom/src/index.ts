@@ -141,6 +141,15 @@ export abstract class Node {
       this._parentNode.removeChild(this);
     }
   }
+
+  toSnapshot(depth: number) {
+    let s = indent(depth, `<${this.nodeName}#${this.uid}>\n`);
+    let child = this._firstChild;
+    while (child !== null) {
+      s += child.toSnapshot(depth + 2);
+    }
+    return s + indent(depth, `</${this.nodeName}#${this.uid}>\n`);
+  }
 }
 
 export class Text extends Node {
@@ -151,6 +160,16 @@ export class Text extends Node {
 
   get nodeValue(): string {
     return this._nodeValue;
+  }
+
+  toSnapshot(depth: number) {
+    let s = indent(depth, `<TEXT:${this.uid}>\n`);
+    const childDepth = depth + 2;
+    s += (this._nodeValue as string)
+      .split("\n")
+      .map((s) => indent(childDepth, `${s}\n`))
+      .join("");
+    return s + indent(depth, `</TEXT#${this.uid}>\n`);
   }
 }
 
@@ -257,6 +276,29 @@ export class Element extends Node {
       this.appendChild(node);
       node = node._nextSibling;
     }
+  }
+
+  toSnapshot(depth: number) {
+    let s = indent(depth, `<${this.nodeName}:${this.uid}\n`);
+    const innerDepth = depth + 2;
+    this._attributes.forEach((v, k) => {
+      s += indent(innerDepth, `${k}="${v}"\n`);
+    });
+    this._properties.forEach((v, k) => {
+      s += indent(innerDepth, `.${k.toString()}={ ${v.toString()} }\n`);
+    });
+    this._styles.forEach((v, k) => {
+      s += indent(innerDepth, `~${k}="${v}"\n`);
+    });
+    this._eventHandlers.forEach((v, k) => {
+      s += indent(innerDepth, `@${k}=${v.length}\n`);
+    });
+    s += indent(depth, `>`);
+    let child = this._firstChild;
+    while (child !== null) {
+      s += child.toSnapshot(depth + 2);
+    }
+    return s + indent(depth, `</${this.nodeName}#${this.uid}>\n`);
   }
 }
 
@@ -586,6 +628,14 @@ function parseRegExp(ctx: HTMLParserContext, re: RegExp): string | undefined {
 const VOID_ELEMENTS = (
   /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/
 );
+
+function indent(i: number, s: string) {
+  let r = "";
+  while (i > 0) {
+    r += " ";
+  }
+  return r + s;
+}
 
 const enum CharCode {
   /** "\\t" */Tab = 9,
