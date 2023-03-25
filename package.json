@@ -9,7 +9,7 @@
     "test:only": "node --enable-source-maps --test-only --test packages/@ivi/ packages/ivi/dist/__tests__/"
   },
   "devDependencies": {
-    "@types/node": "^18.15.5",
+    "@types/node": "^18.15.9",
     "global-jsdom": "^8.8.0",
     "jsdom": "^21.1.1",
     "typescript": "^5.0.2"

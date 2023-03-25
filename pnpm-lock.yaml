@@ -4,12 +4,12 @@ importers:
 
   .:
     specifiers:
-      '@types/node': ^18.15.5
+      '@types/node': ^18.15.9
       global-jsdom: ^8.8.0
       jsdom: ^21.1.1
       typescript: ^5.0.2
     devDependencies:
-      '@types/node': 18.15.5
+      '@types/node': 18.15.9
       global-jsdom: 8.8.0_jsdom@21.1.1
       jsdom: 21.1.1
       typescript: 5.0.2
@@ -41,10 +41,7 @@ importers:
       ivi: link:../../ivi
 
   packages/@ivi/mock-dom:
-    specifiers:
-      '@types/node': ^18.15.5
-    devDependencies:
-      '@types/node': 18.15.5
+    specifiers: {}
 
   packages/@ivi/portal:
     specifiers:
@@ -385,8 +382,8 @@ packages:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: false
 
-  /@types/node/18.15.5:
-    resolution: {integrity: sha512-Ark2WDjjZO7GmvsyFFf81MXuGTA/d6oP38anyxWOL6EREyBKAxKoFHwBhaZxCfLRLpO8JgVXwqOwSwa7jRcjew==}
+  /@types/node/18.15.9:
+    resolution: {integrity: sha512-dUxhiNzBLr6IqlZXz6e/rN2YQXlFgOei/Dxy+e3cyXTJ4txSUbGT2/fmnD6zd/75jDMeW5bDee+YXxlFKHoV0A==}
     dev: true
 
   /abab/2.0.6:
