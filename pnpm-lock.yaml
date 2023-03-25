@@ -40,6 +40,12 @@ importers:
     devDependencies:
       ivi: link:../../ivi
 
+  packages/@ivi/mock-dom:
+    specifiers:
+      '@types/node': ^18.15.5
+    devDependencies:
+      '@types/node': 18.15.5
+
   packages/@ivi/portal:
     specifiers:
       ivi: workspace:^

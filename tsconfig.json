@@ -8,6 +8,7 @@
     { "path": "packages/@ivi/rollup-plugin" },
     { "path": "packages/@ivi/portal" },
     { "path": "packages/@ivi/identity" },
+    { "path": "packages/@ivi/mock-dom" },
   ],
   "exclude": [
     "node_modules"
