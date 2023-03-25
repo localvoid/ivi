@@ -160,6 +160,7 @@ export class Comment extends Node {
 export class Element extends Node {
   _namespaceURI: string;
   _attributes: Map<string, string>;
+  _properties: Map<string | symbol, any>;
   _styles: Map<string, string>;
   _eventHandlers: Map<string, EventHandler[]>;
 
@@ -171,6 +172,7 @@ export class Element extends Node {
     super(nodeType, tagName);
     this._namespaceURI = namespaceURI;
     this._attributes = new Map();
+    this._properties = new Map();
     this._styles = new Map();
     this._eventHandlers = new Map();
   }
@@ -197,6 +199,14 @@ export class Element extends Node {
 
   getAttribute(key: string): string | null {
     return this._attributes.get(key) ?? null;
+  }
+
+  setProperty(key: string | symbol, value: any) {
+    this._properties.set(key, value);
+  }
+
+  getProperty(key: string | symbol): any {
+    return this._properties.get(key) ?? null;
   }
 
   removeAttribute(key: string) {
@@ -245,6 +255,23 @@ export class Element extends Node {
     }
   }
 }
+
+const ELEMENT_PROXY_HANDLER: ProxyHandler<Element> = {
+  get(target, p) {
+    if (p in target) {
+      return (target as any)[p];
+    }
+    return target.getProperty(p) ?? void 0;
+  },
+  set(target, p, newValue) {
+    if (p in target) {
+      (target as any)[p] = newValue;
+    } else {
+      target.setProperty(p, newValue);
+    }
+    return true;
+  },
+};
 
 export class HTMLElement extends Element {
   constructor(tagName: string) {
@@ -300,14 +327,23 @@ export class Document extends Element {
     if (tagName === "template") {
       return new Template();
     }
-    return new HTMLElement(tagName.toUpperCase());
+    return new Proxy(
+      new HTMLElement(tagName.toUpperCase()),
+      ELEMENT_PROXY_HANDLER,
+    );
   }
 
   createElementNS(namespace: string, tagName: string) {
     if (namespace === "http://www.w3.org/2000/svg") {
-      return new SVGElement(tagName.toUpperCase());
+      return new Proxy(
+        new SVGElement(tagName.toUpperCase()),
+        ELEMENT_PROXY_HANDLER,
+      );
     }
-    return new Element(NodeType.Element, tagName.toUpperCase(), namespace);
+    return new Proxy(
+      new Element(NodeType.Element, tagName.toUpperCase(), namespace),
+      ELEMENT_PROXY_HANDLER,
+    );
   }
 
   createTextNode(text: string) {
@@ -392,7 +428,10 @@ function parseElement(ctx: HTMLParserContext, namespaceURI: string): Element {
   if (tagName === void 0) {
     throw new Error(`Invalid HTML [${ctx.i}]: expected a valid tag name\n${ctx.s}`);
   }
-  const element = new Element(NodeType.Element, tagName.toUpperCase(), namespaceURI);
+  const element = new Proxy(
+    new Element(NodeType.Element, tagName.toUpperCase(), namespaceURI),
+    ELEMENT_PROXY_HANDLER,
+  );
   parseSkipWhitespace(ctx);
   parseAttributes(ctx, element);
   if (!parseCharCode(ctx, CharCode.MoreThan)) {

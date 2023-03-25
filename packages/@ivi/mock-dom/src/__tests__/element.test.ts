@@ -47,3 +47,10 @@ test("events", () => {
   n.dispatchEvent("test");
   strictEqual(i, 2);
 });
+
+test("properties", () => {
+  const n = document.createElement("div") as any;
+  strictEqual(n["a"], void 0);
+  (n as any)["a"] = 123;
+  strictEqual(n["a"], 123);
+});
