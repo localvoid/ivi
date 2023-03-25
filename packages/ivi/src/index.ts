@@ -1506,6 +1506,16 @@ export const _T = (
 
 export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
 
+export type ComponentFactory = {
+  (factory: (c: Component) => () => VAny): () => VComponent<undefined>;
+  <P>(
+    factory: (
+      c: Component,
+      areEqual?: (prev: P, next: P) => boolean
+    ) => (props: P) => VAny,
+  ): (props: P) => VComponent<P>;
+};
+
 /**
  * Creates a factory that produces component nodes.
  *
@@ -1514,18 +1524,13 @@ export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
  * @param p2 Function that checks `props` for equality.
  * @returns Factory that produces component nodes.
  */
-export const component = <P>(
-  p1: undefined extends P
-    ? (c: Component) => () => VAny
-    : (c: Component) => (props: P) => VAny,
+export const component: ComponentFactory = <P>(
+  p1: (c: Component) => (props?: P) => VAny,
   p2?: (prev: P, next: P) => boolean,
-): undefined extends P
-  ? () => VComponent<undefined>
-  : (props: P) => VComponent<P> => (
-  (
-    p1 = { f: Flags.Component, p1, p2 } satisfies ComponentDescriptor as any,
-    (p: P) => ({ d: p1, p })) as any
-);
+): (p?: any) => VComponent<P> => {
+  const d: ComponentDescriptor = { f: Flags.Component, p1, p2 };
+  return (p: P) => ({ d, p });
+};
 
 /**
  * Prevents triggering updates.
@@ -1556,6 +1561,19 @@ export const useUnmount = (component: Component, hook: () => void): void => {
       : (hooks.push(hook), hooks);
 };
 
+
+export type UseEffectFactory = {
+  (
+    ccomponent: Component,
+    effect: () => (() => void) | void,
+  ): () => void;
+  <P>(
+    component: Component,
+    effect: (props: P) => (() => void) | void,
+    areEqual?: (prev: P, next: P) => boolean
+  ): (props: P) => void;
+};
+
 /**
  * Creates a side effect hook.
  *
@@ -1581,15 +1599,11 @@ export const useUnmount = (component: Component, hook: () => void): void => {
  * @param areEqual Function that checks if input value hasn't changed.
  * @returns Side effect hook.
  */
-export const useEffect = <P>(
+export const useEffect: UseEffectFactory = <P>(
   component: Component,
-  hook: undefined extends P
-    ? () => (() => void) | void
-    : (props: P) => (() => void) | void,
+  hook: (props?: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
-): undefined extends P
-  ? () => void
-  : (props: P) => void => {
+): (props?: P) => void => {
   // var usage is intentional, see `index.js` module for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
