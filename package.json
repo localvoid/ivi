@@ -1,10 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "dist": "tsc -b",
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w --pretty",
+    "build:force": "tsc -b --force --pretty",
     "clean": "tsc -b --clean",
-    "ts:watch": "tsc -b -w --pretty",
-    "ts:force": "tsc -b --force --pretty",
     "test": "node --enable-source-maps --test packages/@ivi/ packages/ivi/dist/__tests__/",
     "test:only": "node --enable-source-maps --test-only --test packages/@ivi/ packages/ivi/dist/__tests__/"
   },
@@ -13,5 +13,9 @@
     "global-jsdom": "^8.8.0",
     "jsdom": "^21.1.1",
     "typescript": "^5.0.2"
+  },
+  "volta": {
+    "node": "18.15.0",
+    "pnpm": "7.30.3"
   }
 }
