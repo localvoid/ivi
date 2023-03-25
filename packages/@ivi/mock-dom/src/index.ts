@@ -104,8 +104,8 @@ export class Node {
     if (child._parentNode !== this) {
       throw new Error("Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
     }
-    const prev = this._previousSibling;
-    const next = this._nextSibling;
+    const prev = child._previousSibling;
+    const next = child._nextSibling;
     if (prev !== null) {
       prev._nextSibling = next;
     } else {
@@ -116,7 +116,9 @@ export class Node {
     } else {
       this._lastChild = prev;
     }
-    this._parentNode = null;
+    child._parentNode = null;
+    child._previousSibling = null;
+    child._nextSibling = null;
     return child;
   }
 
@@ -268,7 +270,7 @@ export class Template extends Element {
   _content: DocumentFragment;
 
   constructor() {
-    super(NodeType.Element, "template");
+    super(NodeType.Element, "TEMPLATE");
     this._content = new DocumentFragment();
   }
 
@@ -277,7 +279,18 @@ export class Template extends Element {
   }
 
   set innerHTML(html: string) {
-    this._content = parseHTML(html, this.namespaceURI);
+    const frag = parseHTML(html, this.namespaceURI);
+    let n = this._content._firstChild;
+    while (n !== null) {
+      n.remove();
+      n = n._nextSibling;
+    }
+
+    n = frag._firstChild;
+    while (n !== null) {
+      this._content.appendChild(n);
+      n = n._nextSibling;
+    }
   }
 }
 
@@ -287,6 +300,9 @@ export class Document extends Element {
   }
 
   createElement(tagName: string) {
+    if (tagName === "template") {
+      return new Template();
+    }
     return new Element(NodeType.Element, tagName.toUpperCase());
   }
 

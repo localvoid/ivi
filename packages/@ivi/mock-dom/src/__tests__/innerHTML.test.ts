@@ -1,7 +1,7 @@
 import { strictEqual } from "node:assert";
 import { test } from "node:test";
 import "../global.js";
-import { NodeType, HTMLElement } from "../index.js";
+import { NodeType, HTMLElement, Element } from "../index.js";
 
 test("<span></span>", () => {
   const e = document.createElement("div");
@@ -117,4 +117,11 @@ test("<span><!></span>", () => {
   strictEqual(a?.nodeType, NodeType.Comment);
   strictEqual(a?.nextSibling, null);
   strictEqual(a?.previousSibling, null);
+});
+
+test("namespace", () => {
+  const e = document.createElementNS("NS", "div");
+  e.innerHTML = "<span></span>";
+  const root = e.firstChild as Element;
+  strictEqual(root.namespaceURI, "NS");
 });
