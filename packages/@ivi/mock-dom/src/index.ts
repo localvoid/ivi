@@ -163,7 +163,7 @@ export class Text extends Node {
   }
 
   toSnapshot(depth: number) {
-    let s = indent(depth, `<TEXT:${this.uid}>\n`);
+    let s = indent(depth, `<TEXT#${this.uid}>\n`);
     const childDepth = depth + 2;
     s += (this._nodeValue as string)
       .split("\n")
@@ -279,26 +279,47 @@ export class Element extends Node {
   }
 
   toSnapshot(depth: number) {
-    let s = indent(depth, `<${this.nodeName}:${this.uid}\n`);
+    let s = indent(depth, `<${this.nodeName}:${this.uid}`);
+    let propsString = "";
     const innerDepth = depth + 2;
     this._attributes.forEach((v, k) => {
-      s += indent(innerDepth, `${k}="${v}"\n`);
+      propsString += indent(innerDepth, `${k}="${v}"\n`);
     });
     this._properties.forEach((v, k) => {
-      s += indent(innerDepth, `.${k.toString()}={ ${v.toString()} }\n`);
+      propsString += indent(innerDepth, `.${k.toString()}={ ${v.toString()} }\n`);
     });
     this._styles.forEach((v, k) => {
-      s += indent(innerDepth, `~${k}="${v}"\n`);
+      propsString += indent(innerDepth, `~${k}="${v}"\n`);
     });
     this._eventHandlers.forEach((v, k) => {
-      s += indent(innerDepth, `@${k}=${v.length}\n`);
+      propsString += indent(innerDepth, `@${k}=${v.length}\n`);
     });
-    s += indent(depth, `>`);
     let child = this._firstChild;
+    let childrenString = "";
     while (child !== null) {
-      s += child.toSnapshot(depth + 2);
+      childrenString += child.toSnapshot(depth + 2);
     }
-    return s + indent(depth, `</${this.nodeName}#${this.uid}>\n`);
+
+    if (propsString === "") {
+      if (childrenString === "") {
+        s += "/>\n";
+      } else {
+        s += ">\n";
+        s += childrenString;
+        s += indent(depth, `</${this.nodeName}#${this.uid}>\n`);
+      }
+    } else {
+      s += "\n";
+      s += propsString;
+      if (childrenString === "") {
+        s += indent(depth, "/>\n");
+      } else {
+        s += indent(depth, ">\n");
+        s += childrenString;
+        s += indent(depth, `</${this.nodeName}#${this.uid}>\n`);
+      }
+    }
+    return s;
   }
 }
 
