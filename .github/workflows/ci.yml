@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       - uses: actions/setup-node@v3
         with:
           node-version-file: "package.json"
           cache: "pnpm"
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
       - run: pnpm install
       - run: pnpm build
       - run: pnpm test
