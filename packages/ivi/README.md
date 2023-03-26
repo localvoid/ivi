@@ -795,44 +795,53 @@ interface:
 
 ```ts
 // 32 bytes
-interface SNode<V extends VAny, S> {
+interface SNode1<V extends VAny, S1> {
   // Stateless node associated with the current state.
   v: V;
   // Bitflags
   f: Flags; // SMI value - Small Integer
   // Children nodes.
   c: SNode | (SNode | null)[] | null;
-  // Additional State that depends on the type of the SNode.
-  s: S;
   // Parent node.
   p: SNode | null,
+  // State Slot #1.
+  s1: S1;
 }
+
+// 36 bytes
+interface SNode2<V = VAny, S1 = any, S2 = any> extends SNode1<V, S1> {
+  // State slot #2.
+  s2: S2;
+}
+
+// Stateful Nodes are using two different shapes. Call-sites that accessing its
+// flags to determine node type will be in a polymorphic state. In this case it
+// is perfectly fine to use polymorphic call-sites to reduce memory usage.
+type SNode<V = VAny> = SNode1<V> | SNode2<V>;
 
 // Additional state size of the root nodes depends on the implementation of
 // root nodes. Default root implementation doesn't use any additional state and
 // stores `null` value in the additional state slot.
-type SRoot<S> = SNode<VRoot, S>;
+type SRoot<S> = SNode1<VRoot, S>;
 // Text nodes are storing a reference to a Text DOM node.
-type SText = SNode<string | number, Text>;
+type SText = SNode1<string | number, Text>;
 // Template nodes are storing a reference to a root DOM node, DOM nodes with
 // dynamic properties and DOM nodes that will be used as a reference for
 // `parent.insertBefore(node, nextNode)` operations. Slots for DOM nodes with
 // dynamic properties that also used as a reference for insertBefore operation
 // will share the same slots, there won't be any duplicated references.
-type STemplate = SNode<VTemplate, Node[]>;
+type STemplate = SNode1<VTemplate, Node[]>;
 // Dynamic lists don't have any additional state.
-type SList = SNode<VList, null>;
-// See component state below.
-type SComponent = SNode<VComponent, ComponentState>;
-
-// 20 bytes.
-interface ComponentState {
+type SList = SNode1<VList, null>;
+// Components are using State Nodes with 2 state slots.
+type SComponent = SNode2<
+  VComponent,
   // Render function.
   //
   // Stateless components will share the same function.
   // Stateful components will create closures and its memory usage will depend
   // on the size of the closure context.
-  r: null | ((props: any) => VAny),
+  null | ((props: any) => VAny),
   // Unmount hooks.
   //
   // Usually components don't have any unmount hooks, or they have just one
@@ -845,14 +854,16 @@ interface ComponentState {
   //
   // 1. https://en.wikipedia.org/wiki/Dynamic_array#Growth_factor
   // 2. https://github.com/v8/v8/blob/1e6775a539a3b88b25cc0ffdb52529c68aad2be8/src/objects/js-objects.h#L584-L590
-  u: null | (() => void) | (() => void)[];
-}
+  null | (() => void) | (() => void)[]
+>;
 ```
 
 This data structures were carefully designed to have small memory overhead
-with the same object shape for all node types. Shared object shapes are
-important for performance, so that all call-sites that accessing this data
-structures will be in a [monomorphic state](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
+and avoid a lot of polymorphic/megamorphic call-sites that access this data
+structures.
+
+To understand why monomorphic call-sites are important for performance, it is
+recommended to read a great article on this topic: ["What's up with monomorphism?"](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 #### Template Data Structures
 

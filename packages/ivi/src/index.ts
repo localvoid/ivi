@@ -82,6 +82,16 @@
 // 0x618b089    89  7f03                 jg 0x618b08e < +0x8e >
 // 0x618b08b    8b  c21000               ret 0x10;
 //
+// ## Polymorphic Call-Sites
+//
+// It is not always a good idea to optimize for monomorphic call-sites. If there
+// is a low degree polymorphism, it can be better to use different shapes.
+//
+// In some cases compiler can optimize several polymorphic call-sites and
+// perform just one shape check. To understand how to reorganize code, so that
+// compiler could better optimize it, it is necessary to understand aliasing:
+// https://en.wikipedia.org/wiki/Aliasing_(computing)
+//
 // ## Dynamic Lists
 //
 // Just some reminders:
@@ -260,6 +270,9 @@ export interface SNode2<V = VAny, S1 = any, S2 = any> extends SNode1<V, S1> {
   s2: S2;
 }
 
+/**
+ * Stateful Node.
+ */
 export type SNode<V = VAny> = SNode1<V> | SNode2<V>;
 
 /** Stateful Root Node. */
