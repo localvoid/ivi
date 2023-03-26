@@ -46,7 +46,7 @@ export const containsDOMElement = (
   parent: SNode,
   element: Element,
 ): boolean => {
-  let result = false;
+  var result = false;
   visitNodes(parent, (sNode) => (
     (sNode.f & Flags.Template) // polymorphic call-site
       ? ((((sNode as STemplate).s1[0] as Element).contains(element) === true)
@@ -68,7 +68,7 @@ export const hasDOMElement = (
   parent: SNode,
   child: Element,
 ): boolean => {
-  let result = false;
+  var result = false;
   visitNodes(parent, (sNode) => (
     (sNode.f & Flags.Template) // polymorphic call-site
       ? (((sNode as STemplate).s1[0] === child)
