@@ -8,7 +8,7 @@ import {
 } from "./index.js";
 import {
   ChildOpCode, PropOpCode, StateOpCode, TemplateFlags,
-} from "@ivi/template-compiler/format";
+} from "./template/format.js";
 
 export const hydrate = (root: SRoot, v: VAny): void => {
   const domSlot = root.v.p;

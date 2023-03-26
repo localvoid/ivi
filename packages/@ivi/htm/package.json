@@ -16,11 +16,9 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "@ivi/template-compiler": "workspace:*",
     "ivi": "workspace:*"
   },
   "devDependencies": {
-    "@ivi/template-compiler": "workspace:*",
     "ivi": "workspace:*"
   },
   "description": "ivi HTML-like markup language.",

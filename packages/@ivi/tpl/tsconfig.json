@@ -6,7 +6,6 @@
     "declarationDir": "dist"
   },
   "references": [
-    { "path": "../template-compiler" },
     { "path": "../../ivi" },
   ],
   "include": [

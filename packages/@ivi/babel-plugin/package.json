@@ -16,11 +16,13 @@
     "README.md",
     "LICENSE"
   ],
+  "peerDependencies": {
+    "ivi": "workspace:*"
+  },
   "dependencies": {
     "@babel/types": "^7.21.2",
     "@babel/helper-plugin-utils": "^7.20.2",
-    "@babel/helper-module-imports": "^7.18.6",
-    "@ivi/template-compiler": "workspace:*"
+    "@babel/helper-module-imports": "^7.18.6"
   },
   "description": "Babel plugins for ivi library.",
   "license": "MIT",

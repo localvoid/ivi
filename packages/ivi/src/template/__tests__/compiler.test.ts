@@ -1,6 +1,6 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { compileTemplate } from "../index.js";
+import { compileTemplate } from "../compiler.js";
 import {
   type TemplateCompilationArtifact, type TemplateNode,
   ChildOpCode, PropOpCode, StateOpCode, TemplateFlags, TemplateNodeType, CommonPropType,

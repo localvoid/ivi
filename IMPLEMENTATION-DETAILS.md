@@ -1,3 +1,5 @@
+# Template Compiler
+
 ## Markers
 
 Comment markers `<!>` should be inserted into template to delineate a slot
@@ -38,7 +40,7 @@ should be empty, and `childOpCodes` should have only `UpdateChild` opCode.
 
 ## Ideas
 
-## SMI Arrays vs Strings for OpCodes
+### SMI Arrays vs Strings for OpCodes
 
 It is possible to encode OpCodes as strings and get deduplication via string
 interning. OpCodes encoded as strings should also have smaller size and faster
@@ -67,3 +69,9 @@ data = ((op >> 7) & Mask4) | (op >> 17);
 And since we are deduplicating all data and storing it in a shared array,
 we can sort it by the number of occurences in templates, so that indexes for
 the 16 most common keys will be able to fit into 4 bits.
+
+### Store string length in StateOpCodes to separate static text nodes
+
+It is possible to avoid injecting `<!>` comment nodes to separate static
+strings by replacing remove opCode with split opCode that is going to store
+string length.

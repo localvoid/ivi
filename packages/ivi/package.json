@@ -10,7 +10,11 @@
     "./state": "./dist/state.js",
     "./visitor": "./dist/visitor.js",
     "./dom": "./dist/dom.js",
-    "./test": "./dist/test.js"
+    "./test": "./dist/test.js",
+    "./template/format": "./dist/template/format.js",
+    "./template/compiler": "./dist/template/compiler.js",
+    "./template/parser": "./dist/template/parser.js",
+    "./template/ir": "./dist/template/ir.js"
   },
   "sideEffects": false,
   "files": [
@@ -21,9 +25,6 @@
     "README.md",
     "LICENSE"
   ],
-  "dependencies": {
-    "@ivi/template-compiler": "workspace:*"
-  },
   "description": "Lightweight Embeddable Web UI Library.",
   "license": "MIT",
   "keywords": [

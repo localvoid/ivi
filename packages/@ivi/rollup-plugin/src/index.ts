@@ -38,6 +38,13 @@ export function ivi(options?: IviOptions): Plugin {
       }
     },
 
+    resolveId(source, importer, options) {
+      if ((options as any)?.ssr && source === "ivi") {
+        return "ivi/ssr";
+      }
+      return void 0;
+    },
+
     async transform(code: string, id: string) {
       if (!filter(id)) {
         return null;

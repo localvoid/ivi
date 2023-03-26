@@ -5,9 +5,6 @@
     "outDir": "dist",
     "declarationDir": "dist"
   },
-  "references": [
-    { "path": "../@ivi/template-compiler" }
-  ],
   "include": [
     "src/**/*.ts"
   ]

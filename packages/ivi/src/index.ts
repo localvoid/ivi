@@ -117,7 +117,7 @@
 
 import {
   TemplateFlags, ChildOpCode, PropOpCode, StateOpCode, CommonPropType,
-} from "@ivi/template-compiler/format";
+} from "./template/format.js";
 
 // Store global variables in a local scope as const variables so that JIT
 // compiler could easily inline functions and eliminate checks in case global
