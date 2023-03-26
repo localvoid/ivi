@@ -582,7 +582,6 @@ const _updateArray = (
     _unmount(sNode, true);
     return _mount(parentSNode, next);
   }
-  sNode.f = Flags.Array;
   const prevSChildren = sNode.c as (SNode1 | null)[];
   let nextSChildren = prevSChildren;
   let prevLength = prevSChildren.length;
@@ -670,6 +669,9 @@ const _update = (
     _dirtyCheck(sNode, updateFlags);
     return sNode;
   }
+  // Dirty flags should be cleared after dirty checking.
+  sNode.f = type;
+
   if (type === Flags.Array) {
     return _updateArray(parentSNode, sNode, next, updateFlags);
   }
@@ -719,7 +721,7 @@ const _update = (
       state as Node[],
       prevProps,
       nextProps,
-      (flags & TemplateFlags.Svg) === TemplateFlags.Svg,
+      !!(flags & TemplateFlags.Svg),
     );
 
     if (children !== null) {
@@ -857,8 +859,9 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
             s1: null!,
             s2: null,
           };
-          sNode.c = _mount(sNode, (descriptorP1 as ComponentFactoryFn)(sNode)(props));
-          sNode.s1 = (descriptorP1 as ComponentFactoryFn)(sNode);
+          const renderFn = (descriptorP1 as ComponentFactoryFn)(sNode);
+          sNode.c = _mount(sNode, renderFn(props));
+          sNode.s1 = renderFn;
           return sNode;
         }
         // List
@@ -932,7 +935,7 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
       sNode.c = _update(
         sNode,
         children as SNode,
-        (state as ComponentRenderFn)!((v as any).p),
+        (state as ComponentRenderFn)!((v as VComponent).p),
         updateFlags,
       );
     } else if (children !== null) {
