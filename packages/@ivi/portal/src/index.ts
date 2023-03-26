@@ -18,7 +18,10 @@ const renderPortalEntry = (entry: PortalEntry) => entry.v;
  * Creates a stateless node for a portal container and component factory that
  * renders into a portal container.
  */
-export const createPortal = (): [VComponent, (v: VAny) => VComponent] => {
+export const createPortal = (): [
+  VComponent,
+  (v: VAny) => VComponent<VAny>,
+] => {
   // Can't imagine any use case when there are many entries rendered into a
   // portal, so we can use an array, and remove from it with an O(n) operation.
   var _entries: PortalEntry[] = [];
