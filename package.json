@@ -9,7 +9,7 @@
     "test:only": "node --enable-source-maps --test-only --test packages/"
   },
   "devDependencies": {
-    "@types/node": "^18.15.9",
+    "@types/node": "^18.15.10",
     "global-jsdom": "^8.8.0",
     "jsdom": "^21.1.1",
     "typescript": "^5.0.2"

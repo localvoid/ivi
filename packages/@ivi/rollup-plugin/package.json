@@ -15,15 +15,15 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/core": "^7.21.0",
-    "@rollup/pluginutils": "^5.0.2",
-    "@ivi/babel-plugin": "workspace:*"
+    "@babel/core": "^7.21.3",
+    "@ivi/babel-plugin": "workspace:*",
+    "@rollup/pluginutils": "^5.0.2"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.20.0",
-    "rollup": "^3.19.1",
+    "@ivi/htm": "workspace:*",
     "@ivi/tpl": "workspace:*",
-    "@ivi/htm": "workspace:*"
+    "@types/babel__core": "^7.20.0",
+    "rollup": "^3.20.2"
   },
   "description": "Rollup plugin for ivi library.",
   "license": "MIT",
