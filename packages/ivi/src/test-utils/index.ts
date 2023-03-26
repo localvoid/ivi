@@ -1,6 +1,6 @@
-import type { RootDescriptor, SNode, SRoot, VAny, VRoot } from "./index.js";
-import { Flags, createSNode, dirtyCheck, update, unmount } from "./index.js";
-import { findDOMNode } from "./dom.js";
+import type { RootDescriptor, SNode, SRoot, VAny, VRoot } from "../index.js";
+import { Flags, createSNode, dirtyCheck, update, unmount } from "../index.js";
+import { findDOMNode } from "../dom.js";
 
 const TEST_ROOT_DESCRIPTOR: RootDescriptor<TestRoot> = {
   f: Flags.Root,

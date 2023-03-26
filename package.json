@@ -5,8 +5,8 @@
     "build:watch": "tsc -b -w --pretty",
     "build:force": "tsc -b --force --pretty",
     "clean": "tsc -b --clean",
-    "test": "node --enable-source-maps --test packages/@ivi/ packages/ivi/dist/__tests__/ packages/ivi/dist/template/__tests__/",
-    "test:only": "node --enable-source-maps --test-only --test packages/@ivi/ packages/ivi/dist/__tests__/ packages/ivi/dist/template/__tests__/"
+    "test": "node --enable-source-maps --test packages/@ivi/",
+    "test:only": "node --enable-source-maps --test-only --test packages/@ivi/"
   },
   "devDependencies": {
     "@types/node": "^18.15.9",
