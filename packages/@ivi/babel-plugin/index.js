@@ -1,7 +1,7 @@
 import { declare } from "@babel/helper-plugin-utils";
 import moduleImports from "@babel/helper-module-imports";
-import { compileTemplate } from "@ivi/template-compiler";
-import { TemplateParserError } from "@ivi/template-compiler/parser";
+import { compileTemplate } from "ivi/template/compiler";
+import { TemplateParserError } from "ivi/template/parser";
 import { hoistExpr } from "./shared.js";
 
 const ivi = (config) => declare((api) => {

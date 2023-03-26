@@ -19,10 +19,13 @@ importers:
       '@babel/helper-module-imports': ^7.18.6
       '@babel/helper-plugin-utils': ^7.20.2
       '@babel/types': ^7.21.3
+      ivi: workspace:*
     dependencies:
       '@babel/helper-module-imports': 7.18.6
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/types': 7.21.3
+    devDependencies:
+      ivi: link:../../ivi
 
   packages/@ivi/htm:
     specifiers:

@@ -24,6 +24,9 @@
     "@babel/helper-plugin-utils": "^7.20.2",
     "@babel/types": "^7.21.3"
   },
+  "devDependencies": {
+    "ivi": "workspace:*"
+  },
   "description": "Babel plugins for ivi library.",
   "license": "MIT",
   "keywords": [
