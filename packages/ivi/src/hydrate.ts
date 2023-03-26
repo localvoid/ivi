@@ -1,7 +1,7 @@
 import {
-  type SNode, type SRoot, type VAny, type VArray, type VComponent,
+  type SNode, type SNode1, type SRoot, type VAny, type VArray, type VComponent,
   type TemplateDescriptor, type Component, type ComponentDescriptor,
-  type ComponentState, type ListProps, type ElementDirective,
+  type ListProps, type ElementDirective,
   _Array, _isArray, Flags, RENDER_CONTEXT, _flushDOMEffects,
   nodeGetFirstChild, nodeGetLastChild, nodeGetNextSibling, nodeGetPrevSibling,
   elementAddEventListener, elementGetAttribute, createSNode, dirtyCheck,
@@ -91,7 +91,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           }
 
           const parentElement = ctx.p;
-          const stateNode = createSNode(Flags.Template, v, null, state, parentSNode);
+          const stateNode = createSNode(Flags.Template, v, null, parentSNode, state);
           const childrenSize = (flags >> TemplateFlags.ChildrenSizeShift) & TemplateFlags.Mask6;
           if (childrenSize > 0) {
             const childOpCodes = tplData.c;
@@ -118,17 +118,17 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           ctx.n = currentDOMNode;
           return stateNode;
         } else if (type === Flags.Component) {
-          const componentState: ComponentState = { r: null, u: null };
-          const sNode: Component = createSNode<VComponent, ComponentState>(
-            Flags.Component,
-            v as VComponent,
-            null,
-            componentState,
-            parentSNode,
-          );
+          const sNode: Component = {
+            f: Flags.Component,
+            v: v as VComponent,
+            c: null,
+            p: parentSNode,
+            s1: null!,
+            s2: null,
+          };
           const renderFn = (descriptor as ComponentDescriptor).p1(sNode);
-          componentState.r = renderFn;
           sNode.c = _hydrate(sNode, renderFn(props));
+          sNode.s1 = renderFn;
           return sNode;
         }
         // List
@@ -142,7 +142,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
     } else {
       const node = _getCurrentDOMNode();
       RENDER_CONTEXT.n = node;
-      return createSNode(Flags.Text, v, null, node, parentSNode);
+      return createSNode(Flags.Text, v, null, parentSNode, node);
     }
   }
   return null;
@@ -166,7 +166,7 @@ const _hydrateList = (
   flags: Flags,
   children: VArray,
   vNode: VAny,
-): SNode => {
+): SNode1 => {
   let i = children.length;
   const sChildren = _Array(i);
   const sNode = createSNode(flags, vNode, sChildren, null, parentState);

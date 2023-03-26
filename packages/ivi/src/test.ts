@@ -4,7 +4,7 @@ import { findDOMNode } from "./dom.js";
 
 const TEST_ROOT_DESCRIPTOR: RootDescriptor<TestRoot> = {
   f: Flags.Root,
-  p1: (root) => { root.s._invalidate(); },
+  p1: (root) => { root.s1._invalidate(); },
   p2: null,
 };
 
@@ -65,8 +65,8 @@ export const createRoot = (
       },
     },
     null,
-    testRoot,
     null,
+    testRoot,
   );
   testRoot._root = sNode;
   return testRoot;

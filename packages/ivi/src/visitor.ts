@@ -32,7 +32,7 @@ export const visitNodes = (
     return (i & VisitNodesDirective.StopImmediate);
   }
 
-  const { f, c } = sNode;
+  const { f, c } = sNode; // polymorphic call-site
   if (f & (Flags.Array | Flags.List)) {
     for (i = 0; i < (c as Array<SNode | null>).length; i++) {
       if (

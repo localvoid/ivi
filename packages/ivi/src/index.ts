@@ -232,43 +232,54 @@ export const enum Flags {
 }
 
 /**
- * Stateful Node.
+ * Stateful Node with 1 state slot.
  *
- * @typeparam S Internal state.
+ * @typeparam S1 State slot #1.
  */
-export interface SNode<V = VAny, S = any> {
+export interface SNode1<V = VAny, S1 = any> {
   /** Stateless Node. */
   v: V;
   /** See {@link Flags} for details. */
   f: Flags;
   /** Children Stateful Nodes. */
   c: SNode | (SNode | null)[] | null;
-  /** State. */
-  s: S;
   /** Parent Stateful Node. */
   p: SNode | null,
+  /** State slot #1. */
+  s1: S1;
 }
+
+/**
+ * Stateful Node with 2 state slots.
+ *
+ * @typeparam S1 State slot #1.
+ * @typeparam S2 State slot #2.
+ */
+export interface SNode2<V = VAny, S1 = any, S2 = any> extends SNode1<V, S1> {
+  /** State slot #2. */
+  s2: S2;
+}
+
+export type SNode<V = VAny> = SNode1<V> | SNode2<V>;
 
 /** Stateful Root Node. */
-export type SRoot<S = any> = SNode<VRoot, S>;
+export type SRoot<S = any> = SNode1<VRoot, S>;
 /** Stateful Text Node. */
-export type SText = SNode<string | number, Text>;
+export type SText = SNode1<string | number, Text>;
 /** Stateful Template Node. */
-export type STemplate = SNode<VTemplate, Node[]>;
+export type STemplate = SNode1<VTemplate, Node[]>;
 /** Stateful List Node. */
-export type SList = SNode<VList, null>;
+export type SList = SNode1<VList, null>;
 /** Stateful Component Node. */
-export type SComponent = SNode<VComponent, ComponentState>;
+export type SComponent = SNode2<
+  VComponent,
+  /** Render function. */
+  null | ((props: any) => VAny),
+  /** Unmount hooks. */
+  null | (() => void) | (() => void)[]
+>;
 /** Stateful Component Node. */
 export type Component = SComponent;
-
-/** Component State in a Stateful Component Node. */
-export interface ComponentState {
-  /** Render function. */
-  r: null | ((props: any) => VAny),
-  /** Unmount hooks. */
-  u: null | (() => void) | (() => void)[];
-}
 
 /**
  * Creates a Stateful Node instance.
@@ -279,10 +290,10 @@ export interface ComponentState {
 export const createSNode = <V extends VAny, S>(
   f: Flags,
   v: V,
-  c: SNode | Array<SNode | null> | null,
-  s: S,
+  c: SNode | Array<SNode1 | null> | null,
   p: SNode | null,
-): SNode<V, S> => ({ f, v, c, s, p });
+  s1: S,
+): SNode1<V, S> => ({ f, v, c, p, s1 });
 
 /**
  * Stateless Node Descriptor.
@@ -543,11 +554,11 @@ const _assignTemplateSlots = (
 };
 
 const _mountList = (
-  parentState: SNode,
+  parentState: SNode1,
   flags: Flags,
   children: VArray,
   vNode: VAny,
-): SNode => {
+): SNode1 => {
   let i = children.length;
   const sChildren = _Array(i);
   const sNode = createSNode(flags, vNode, sChildren, null, parentState);
@@ -558,17 +569,17 @@ const _mountList = (
 };
 
 const _updateArray = (
-  parentSNode: SNode,
-  sNode: SNode,
+  parentSNode: SNode1,
+  sNode: SNode1,
   next: VAny,
   updateFlags: Flags,
-): SNode | null => {
+): SNode1 | null => {
   if (!_isArray(next)) {
     _unmount(sNode, true);
     return _mount(parentSNode, next);
   }
   sNode.f = Flags.Array;
-  const prevSChildren = sNode.c as (SNode | null)[];
+  const prevSChildren = sNode.c as (SNode1 | null)[];
   let nextSChildren = prevSChildren;
   let prevLength = prevSChildren.length;
   let nextLength = next.length;
@@ -618,7 +629,7 @@ const _update = (
     return null;
   }
 
-  const flags = sNode.f;
+  const flags = sNode.f; // polymorphic call-site
   const type = flags & Flags.TypeMask;
   const prev = sNode.v;
   // Reassign to reduce memory consumption even if next value is strictly
@@ -629,7 +640,7 @@ const _update = (
   // because their stateless nodes are represented with basic string and array
   // types.
   if (type === Flags.Text) {
-    const textNode = (sNode as SText).s;
+    const textNode = (sNode as SText).s1;
     if (typeof next !== "object") {
       if (prev !== next) {
         textNode.nodeValue = next as string;
@@ -670,7 +681,7 @@ const _update = (
       sNode.c = _update(
         sNode,
         child as SNode,
-        sNode.s.r!(nextProps),
+        (sNode as SComponent).s1!(nextProps),
         updateFlags,
       );
     } else if (child !== null) {
@@ -680,7 +691,7 @@ const _update = (
     const ctx = RENDER_CONTEXT;
     const parentElement = ctx.p;
     const children = sNode.c as ((SNode | null)[] | null);
-    const state = sNode.s;
+    const state = sNode.s1;
     const tplData = (descriptor as TemplateDescriptor).p1;
     const rootDOMNode = state[0] as Element;
     const childrenOpCodes = tplData.c;
@@ -731,7 +742,7 @@ const _update = (
     ctx.n = rootDOMNode;
   } else { // Dynamic Lists
     _updateList(
-      sNode,
+      sNode as SList,
       prevProps,
       nextProps,
       updateFlags,
@@ -788,7 +799,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
 
           const parentElement = ctx.p;
           const nextNode = ctx.n;
-          const stateNode = createSNode(Flags.Template, v, null, state, parentSNode);
+          const stateNode = createSNode(Flags.Template, v, null, parentSNode, state);
           const childrenSize = (flags >> TemplateFlags.ChildrenSizeShift) & TemplateFlags.Mask6;
           if (childrenSize > 0) {
             const childOpCodes = tplData.c;
@@ -817,17 +828,17 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
           nodeInsertBefore!.call(parentElement, rootNode, nextNode);
           return stateNode;
         } else if (type === Flags.Component) {
-          const componentState: ComponentState = { r: null, u: null };
-          const sNode: Component = createSNode<VComponent, ComponentState>(
-            Flags.Component,
-            v as VComponent,
-            null,
-            componentState,
-            parentSNode,
-          );
+          const sNode: Component = {
+            f: Flags.Component,
+            v: v as VComponent,
+            c: null,
+            p: parentSNode,
+            s1: null!,
+            s2: null,
+          };
           const renderFn = (descriptor as ComponentDescriptor).p1(sNode);
-          componentState.r = renderFn;
           sNode.c = _mount(sNode, renderFn(props));
+          sNode.s1 = renderFn;
           return sNode;
         }
         // List
@@ -838,7 +849,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
       const e = doc.createTextNode(v as string);
       nodeInsertBefore.call(ctx.p, e, ctx.n);
       ctx.n = e;
-      return createSNode(Flags.Text, v, null, e, parentSNode);
+      return createSNode(Flags.Text, v, null, parentSNode, e);
     }
   }
   return null;
@@ -853,10 +864,10 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
 const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
   const ctx = RENDER_CONTEXT;
   const children = sNode.c;
-  const flags = sNode.f;
+  const flags = sNode.f; // polymorphic call-site
   sNode.f &= Flags.TypeMask;
   if (flags & Flags.Template) {
-    const rootDOMNode = (sNode as STemplate).s[0] as Element;
+    const rootDOMNode = (sNode as STemplate).s1[0] as Element;
     if (updateFlags & Flags.DisplaceNode) {
       updateFlags ^= Flags.DisplaceNode;
       nodeInsertBefore.call(ctx.p, rootDOMNode, ctx.n);
@@ -865,7 +876,7 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
       ctx.p = rootDOMNode;
       ctx.n = null;
       const parentDOMElement = ctx.p;
-      const state = (sNode as STemplate).s;
+      const state = (sNode as STemplate).s1;
       const childOpCodes = (sNode as STemplate).v.d.p1.c;
       let childrenIndex = 0;
       for (let i = 0; i < childOpCodes.length; i++) {
@@ -873,7 +884,7 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
         const type = op & ChildOpCode.Type;
         const value = op >> ChildOpCode.ValueShift;
         if (type === ChildOpCode.Child) {
-          const sChild = (children as (SNode | null)[])[childrenIndex++];
+          const sChild = (children as (SNode1 | null)[])[childrenIndex++];
           if (sChild !== null) {
             _dirtyCheck(sChild, updateFlags);
           }
@@ -889,15 +900,15 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
     ctx.n = rootDOMNode;
   } else if (flags & Flags.Text) {
     if (updateFlags & Flags.DisplaceNode) {
-      nodeInsertBefore.call(ctx.p, sNode.s, ctx.n);
+      nodeInsertBefore.call(ctx.p, sNode.s1, ctx.n);
     }
-    ctx.n = sNode.s;
+    ctx.n = sNode.s1;
   } else if (flags & Flags.Component) {
     if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
       sNode.c = _update(
         sNode,
         children as SNode,
-        (sNode as Component).s.r!((sNode as Component).v.p),
+        (sNode as Component).s1!((sNode as Component).v.p),
         updateFlags,
       );
     } else if (children !== null) {
@@ -921,18 +932,18 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
  * @param detach Detach root DOM nodes from the DOM.
  */
 const _unmount = (sNode: SNode, detach: boolean): void => {
-  const flags = sNode.f;
+  const flags = sNode.f; // polymorphic call-site
 
   if (detach === true && (flags & (Flags.Template | Flags.Text))) {
     detach = false;
     nodeRemoveChild.call(
       RENDER_CONTEXT.p,
       (flags & Flags.Template)
-        ? (sNode as STemplate).s[0]
-        : (sNode as SText).s
+        ? (sNode as STemplate).s1[0]
+        : (sNode as SText).s1
     );
   }
-  const sChildren = sNode.c;
+  const sChildren = sNode.c; // polymorphic call-site
   if (sChildren !== null) {
     if (_isArray(sChildren)) {
       for (let i = 0; i < sChildren.length; i++) {
@@ -946,7 +957,7 @@ const _unmount = (sNode: SNode, detach: boolean): void => {
     }
   }
   if (flags & Flags.Component) {
-    const unmountHooks = (sNode as SComponent).s.u;
+    const unmountHooks = (sNode as SComponent).s2;
     if (unmountHooks !== null) {
       if (typeof unmountHooks === "function") {
         unmountHooks();
@@ -1221,7 +1232,7 @@ const enum MagicValues {
  * @__NOINLINE__
  */
 const _updateList = (
-  sNode: SNode,
+  sNode: SList,
   a: ListProps<any>,
   b: ListProps<any>,
   updateFlags: Flags,
@@ -1509,10 +1520,8 @@ export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
 export type ComponentFactory = {
   (factory: (c: Component) => () => VAny): () => VComponent<undefined>;
   <P>(
-    factory: (
-      c: Component,
-      areEqual?: (prev: P, next: P) => boolean
-    ) => (props: P) => VAny,
+    factory: (c: Component) => (props: P) => VAny,
+    areEqual?: (prev: P, next: P) => boolean
   ): (props: P) => VComponent<P>;
 };
 
@@ -1552,9 +1561,8 @@ export const preventUpdates = (p: any) => true;
  * @param hook Unmount hook.
  */
 export const useUnmount = (component: Component, hook: () => void): void => {
-  const s = component.s;
-  const hooks = s.u;
-  s.u = (hooks === null)
+  const hooks = component.s2;
+  component.s2 = (hooks === null)
     ? hook
     : (typeof hooks === "function")
       ? [hooks, hook]
@@ -1643,11 +1651,12 @@ export const invalidate = (c: Component): void => {
     let prev: SNode = c;
     let parent = c.p;
     while (parent !== null) {
+      // All parent call-sites are polymorphic:
       if (parent.f & Flags.DirtySubtree) {
         return;
       }
-      parent.f |= Flags.DirtySubtree;
       prev = parent;
+      parent.f |= Flags.DirtySubtree;
       parent = parent.p;
     }
     (prev as SRoot).v.d.p1(prev as SRoot);

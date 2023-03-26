@@ -16,11 +16,11 @@ export const findDOMNode = <T extends Node | Text>(
     return null;
   }
 
-  let flags: number = sNode.f;
+  let flags: number = sNode.f; // polymorphic call-site
   if (flags & (Flags.Template | Flags.Text)) {
     return (flags & Flags.Template)
-      ? (sNode as STemplate).s[0] as T
-      : (sNode as SText).s as T;
+      ? (sNode as STemplate).s1[0] as T
+      : (sNode as SText).s1 as T;
   }
   const children = sNode.c;
   if (flags & (Flags.Array | Flags.List)) {
@@ -48,8 +48,8 @@ export const containsDOMElement = (
 ): boolean => {
   let result = false;
   visitNodes(parent, (sNode) => (
-    (sNode.f & Flags.Template)
-      ? ((((sNode as STemplate).s[0] as Element).contains(element) === true)
+    (sNode.f & Flags.Template) // polymorphic call-site
+      ? ((((sNode as STemplate).s1[0] as Element).contains(element) === true)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)
       : VisitNodesDirective.Continue
@@ -70,8 +70,8 @@ export const hasDOMElement = (
 ): boolean => {
   let result = false;
   visitNodes(parent, (sNode) => (
-    (sNode.f & Flags.Template)
-      ? (((sNode as STemplate).s[0] === child)
+    (sNode.f & Flags.Template) // polymorphic call-site
+      ? (((sNode as STemplate).s1[0] === child)
         ? (result = true, VisitNodesDirective.StopImmediate)
         : VisitNodesDirective.Stop)
       : VisitNodesDirective.Continue
