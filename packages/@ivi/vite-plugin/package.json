@@ -1,0 +1,42 @@
+{
+  "name": "@ivi/vite-plugin",
+  "version": "3.0.0-beta.1",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "!dist/**/*.tsbuildinfo",
+    "!src/**/__tests__",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.21.3",
+    "@ivi/babel-plugin": "workspace:*",
+    "@rollup/pluginutils": "^5.0.2"
+  },
+  "devDependencies": {
+    "@ivi/htm": "workspace:*",
+    "@ivi/tpl": "workspace:*",
+    "@types/babel__core": "^7.20.0",
+    "vite": "^4.2.1"
+  },
+  "description": "Vite plugin for ivi library.",
+  "license": "MIT",
+  "keywords": [
+    "ivi",
+    "rollup",
+    "plugin",
+    "rollup-plugin",
+    "vite",
+    "vite-plugin"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "repository": "github:localvoid/ivi"
+}
