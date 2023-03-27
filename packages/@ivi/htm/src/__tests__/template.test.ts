@@ -5,13 +5,13 @@ import { createRoot } from "ivi/test";
 import { htm } from "../index.js";
 import { type VAny } from "ivi";
 
-describe("template", () => {
-  const mount = <T extends Node>(v: VAny) => {
-    const root = createRoot();
-    root.update(v);
-    return root.findDOMNode<T>();
-  };
+const mount = <T extends Node>(v: VAny) => {
+  const root = createRoot();
+  root.update(v);
+  return root.findDOMNode<T>();
+};
 
+describe("template", () => {
   describe("mount", () => {
     describe("whitespaces", () => {
       test("1", () => {
@@ -272,7 +272,7 @@ describe("template", () => {
         strictEqual(clicked, 1);
       });
 
-      test("=textContent", () => {
+      test(".textContent", () => {
         const n = mount<HTMLDivElement>(htm`
           <div .textContent=${"a"}></div>
         `)!;
@@ -290,5 +290,29 @@ describe("template", () => {
         strictEqual(n.childNodes[0], e);
       });
     });
+  });
+});
+
+describe("update", () => {
+  test(".textContent: '' => 'a'", () => {
+    const test = (s: string) => htm`
+        <div .textContent=${s}></div>
+      `;
+    const root = createRoot();
+    root.update(test(""));
+    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild, null);
+    root.update(test("a"));
+    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild?.nodeValue, "a");
+  });
+
+  test(".textContent: 'a' => 'b'", () => {
+    const test = (s: string) => htm`
+        <div .textContent=${s}></div>
+      `;
+    const root = createRoot();
+    root.update(test("a"));
+    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild?.nodeValue, "a");
+    root.update(test("b"));
+    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild?.nodeValue, "b");
   });
 });

@@ -492,7 +492,12 @@ const _updateTemplateProperties = (
             if (prev === void 0) {
               nodeSetTextContent.call(currentElement, next);
             } else {
-              nodeGetFirstChild.call(currentElement).nodeValue = next;
+              const child = nodeGetFirstChild.call(currentElement);
+              if (child !== null) {
+                child.nodeValue = next;
+              } else {
+                nodeSetTextContent.call(currentElement, next);
+              }
             }
           }
         } else if (type === PropOpCode.Directive) {
