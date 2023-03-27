@@ -106,10 +106,11 @@ htm`
 - [`div :name=${expr}`](#attributes) - Dynamic attribute `element.setAttribute(name, expr)`.
 - [`div .name=${expr}`](#properties) - Property `element[name] = expr`.
 - [`div *name=${expr}`](#properties) - Property `element[name] = expr`, diffs against a DOM value.
-- [`div ~name=${expr}`](#styles) - Style `element.style.setProperty(name, expr)`
-- [`div @name=${expr}`](#events) - Event `element.addEventListener(name, expr)`
-- [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`
-- [`div $${directive}`](#directives) - Directive `directive(element)`
+- [`div ~name='value'`](#styles) - Static style `<div style="value">`.
+- [`div ~name=${expr}`](#styles) - Dynamic style `element.style.setProperty(name, expr)`.
+- [`div @name=${expr}`](#events) - Event `element.addEventListener(name, expr)`.
+- [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`.
+- [`div $${directive}`](#directives) - Directive `directive(element)`.
 
 Element properties can be declared on the same line as element or with an
 indentation level.
@@ -188,9 +189,12 @@ avoid triggering unnecessary `change` events.
 
 ### Styles
 
-- `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
+- `div ~name='value'` - Static style `<div style="value">`.
+- `div ~name=${expr}` - Dynamic style `element.style.setProperty(name, expr)`
 
-Styles are assigned with a `CSSStyleDeclaration.setProperty(..)`
+Static styles are automatically merged with `:style="value"` attribute.
+
+Dynamic styles are assigned with a `CSSStyleDeclaration.setProperty(..)`
 method.
 
 When style has an `undefined` value, it will be removed with a

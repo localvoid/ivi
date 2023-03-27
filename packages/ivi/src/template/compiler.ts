@@ -181,23 +181,44 @@ const _emitStaticTemplate = (
   node: INodeElement,
 ) => {
   const { tag, properties, children } = node;
+  let style = "";
 
   staticTemplate.push(`<${tag}`);
   for (let i = 0; i < properties.length; i++) {
     const prop = properties[i];
-    const type = prop.type;
+    const { type, key, value } = prop;
     if (type === IPropertyType.Attribute) {
-      const { key, value } = prop;
-      if (typeof value === "number") {
-        if (key === "class" && prop.static === true) {
-          staticTemplate.push(value);
+      if (key === "style") {
+        if (typeof value === "string") {
+          if (style !== "") {
+            style += `;${value}`;
+          } else {
+            style = value;
+          }
         }
-      } else if (value === true) {
-        staticTemplate.push(` ${key}`);
       } else {
-        staticTemplate.push(` ${key}="${value}"`);
+        if (typeof value === "number") {
+          if (key === "class" && prop.static === true) {
+            staticTemplate.push(value);
+          }
+        } else if (value === true) {
+          staticTemplate.push(` ${key}`);
+        } else {
+          staticTemplate.push(` ${key}="${value}"`);
+        }
+      }
+    } else if (type === IPropertyType.Style) {
+      if (typeof value === "string") {
+        if (style !== "") {
+          style += `;${key}:${value}`;
+        } else {
+          style = `${key}:${value}`;
+        }
       }
     }
+  }
+  if (style !== "") {
+    staticTemplate.push(` style="${style}"`);
   }
   staticTemplate.push(`>`);
   if (VOID_ELEMENTS.test(tag)) {

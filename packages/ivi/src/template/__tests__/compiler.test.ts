@@ -8,6 +8,7 @@ import {
 import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
   type IPropertyAttribute, type IPropertyValue, type ITemplate,
+  type IPropertyStyle,
   INodeType, IPropertyType, ITemplateType,
 } from "../ir.js";
 
@@ -66,6 +67,13 @@ const attr = (key: string, value: string | number | boolean): IPropertyAttribute
 
 const prop = (key: string, value: number): IPropertyValue => ({
   type: IPropertyType.Value,
+  key,
+  value,
+  static: false,
+});
+
+const styl = (key: string, value: string | number): IPropertyStyle => ({
+  type: IPropertyType.Style,
   key,
   value,
   static: false,
@@ -630,5 +638,72 @@ describe("template compilation", () => {
         ]),
       );
     });
+  });
+});
+
+
+describe("static styles", () => {
+  test("1", () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [styl("top", "1px")]),
+      ])),
+      result([
+        {
+          type: TemplateNodeType.Block,
+          flags: F(false, 0, 0),
+          template: [`<div`, ` style="top:1px"`, `>`, `</div>`],
+          props: [],
+          child: [],
+          state: [],
+          data: [],
+          exprs: [],
+        },
+      ]),
+    );
+  });
+
+  test("2", () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [styl("top", "1px"), styl("left", "2px")]),
+      ])),
+      result([
+        {
+          type: TemplateNodeType.Block,
+          flags: F(false, 0, 0),
+          template: [`<div`, ` style="top:1px;left:2px"`, `>`, `</div>`],
+          props: [],
+          child: [],
+          state: [],
+          data: [],
+          exprs: [],
+        },
+      ]),
+    );
+  });
+
+  test("merge with attribute", () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          styl("top", "1px"),
+          attr("style", "margin:0"),
+          styl("left", "2px"),
+        ]),
+      ])),
+      result([
+        {
+          type: TemplateNodeType.Block,
+          flags: F(false, 0, 0),
+          template: [`<div`, ` style="top:1px;margin:0;left:2px"`, `>`, `</div>`],
+          props: [],
+          child: [],
+          state: [],
+          data: [],
+          exprs: [],
+        },
+      ]),
+    );
   });
 });

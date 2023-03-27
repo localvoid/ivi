@@ -1686,7 +1686,14 @@ const Canvas = component((c) => {
 
 const Dot = ({ position, opacity }) => htm`
   <div
-    style="position:absolute;background-color:pink;border-radius:50%;pointer-events:none;left:-20px;top:-20px;width:40px;height:40px"
+    ~position="absolute"
+    ~background-color="pink"
+    ~border-radius="50%"
+    ~pointer-events="none"
+    ~left="-20px"
+    ~top="-20px"
+    ~width="40px"
+    ~height="40px"
     ~opacity=${opacity}
     ~transform=${`translate(${position.x}px,${position.y}px)`}
   />

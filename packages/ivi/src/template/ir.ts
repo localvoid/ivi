@@ -51,7 +51,7 @@ export interface IPropertyDOMValue {
 export interface IPropertyStyle {
   readonly type: IPropertyType.Style;
   readonly key: string;
-  readonly value: number;
+  readonly value: string | number;
   readonly static: boolean;
 }
 

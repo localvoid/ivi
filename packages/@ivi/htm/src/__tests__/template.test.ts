@@ -240,7 +240,22 @@ describe("template", () => {
         strictEqual(n.ariaValueMin, "a");
       });
 
-      test("~style", () => {
+      test("static style 1", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <div ~top="10px"></div>
+        `)!;
+        strictEqual(n.style.top, "10px");
+      });
+
+      test("static style merge with attribute", () => {
+        const n = mount<HTMLDivElement>(htm`
+          <div style="left:5px" ~top="10px"></div>
+        `)!;
+        strictEqual(n.style.left, "5px");
+        strictEqual(n.style.top, "10px");
+      });
+
+      test("dynamic style 1", () => {
         const n = mount<HTMLDivElement>(htm`
           <div ~top=${"10px"}></div>
         `)!;

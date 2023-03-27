@@ -154,7 +154,28 @@ export class TemplateParser extends TemplateScanner {
           if (key === void 0) {
             throw new TemplateParserError("Expected a valid style name.", this.e, this.i);
           }
-          this.dynamicProp(properties, IPropertyType.Style, key);
+          let value: string | number;
+          if (!this.charCode(CharCode.EqualsTo)) {
+            throw new TemplateParserError("Expected a '=' character.", this.e, this.i);
+          }
+          const c = this.peekCharCode();
+          if (c !== -1) {
+            if (c !== CharCode.DoubleQuote) {
+              throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
+            }
+            value = this.parseAttributeString();
+          } else {
+            value = this.expr();
+            if (value === -1) {
+              throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
+            }
+          }
+          properties.push({
+            type: IPropertyType.Style,
+            key,
+            value,
+            static: false,
+          });
         } else if (c === CharCode.AtSign) { // @event
           this.i++;
           const key = this.regExp(IDENTIFIER);
@@ -172,14 +193,12 @@ export class TemplateParser extends TemplateScanner {
           let staticAttr = false;
           let value: string | boolean | number = true;
           if (this.charCode(CharCode.EqualsTo)) { // =
-            this.whitespace();
             const c = this.peekCharCode();
             if (c !== -1) {
-              if (c === CharCode.DoubleQuote) {
-                value = this.parseAttributeString();
-              } else {
+              if (c !== CharCode.DoubleQuote) {
                 throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
               }
+              value = this.parseAttributeString();
             } else {
               value = this.expr();
               if (value === -1) {

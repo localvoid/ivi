@@ -10,6 +10,7 @@
     "./state": "./dist/state.js",
     "./visitor": "./dist/visitor.js",
     "./dom": "./dist/dom.js",
+    "./ssr": "./dist/ssr.js",
     "./test": "./dist/test-utils/index.js",
     "./template/format": "./dist/template/format.js",
     "./template/compiler": "./dist/template/compiler.js",

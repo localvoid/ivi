@@ -48,9 +48,10 @@ events, etc.
 - `<div name=${expr} />` - Dynamic attribute `element.setAttribute(name, expr)`.
 - `<div .name=${expr} />` - Property `element[name] = expr`.
 - `<div *name=${expr} />` - Property `element[name] = expr`, diffs against a DOM value.
-- `<div ~name=${expr} />` - Style `element.style.setProperty(name, expr)`
-- `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`
-- `<div ${directive} />` - Directive `directive(element)`
+- `<div ~name="value" />` - Static style `<div style="value">`.
+- `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`.
+- `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`.
+- `<div ${directive} />` - Directive `directive(element)`.
 
 ## Whitespaces
 
