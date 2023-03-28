@@ -1303,12 +1303,11 @@ const _updateList = (
     let aEnd = aLength - 1;
     let bEnd = bLength - 1;
     let start = 0;
-    let key = bKeys[bEnd];
 
     // Step 1
     outer: while (true) {
       // Update nodes with the same key at the end.
-      while (aKeys[aEnd] === key) {
+      while (aKeys[aEnd] === bKeys[bEnd]) {
         result[bEnd] = _update(
           sNode,
           sChildren[aEnd--],
@@ -1318,7 +1317,6 @@ const _updateList = (
         if (start > --bEnd || start > aEnd) {
           break outer;
         }
-        key = bKeys[bEnd];
       }
 
       // Update nodes with the same key at the beginning.
