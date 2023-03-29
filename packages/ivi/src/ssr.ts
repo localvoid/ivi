@@ -163,7 +163,6 @@ const renderNode = (v: VAny) => {
   if (v === false || v == null) {
     return;
   }
-  const ctx = RENDER_CONTEXT;
   if (typeof v === "object") {
     if (_isArray(v)) {
       for (let i = 0; i < v.length; i++) {
@@ -176,79 +175,71 @@ const renderNode = (v: VAny) => {
         const child = tNodes[i];
         if (typeof child === "object") { // Element
           renderTElement(exprs, child);
-          ctx.s = (ctx.s + 1) & RenderState.OffsetMask;
         } else if (typeof child === "string") { // Text
-          if (ctx.s & RenderState.PrevText) {
-            ctx.t += "<!>";
-          }
-          ctx.s = (ctx.s + 1) | RenderState.PrevText;
-          ctx.t += escapeText(child);
+          renderText(escapeText(child));
         } else { // Expr
           renderNode(exprs[child]);
         }
       }
     }
   } else { // text
-    if (typeof v === "number") {
-      v = v.toString();
-    } else {
-      v = escapeAttr(v);
-    }
-    if (ctx.s & RenderState.PrevText) {
-      ctx.t += "<!>";
-    }
-    ctx.s = (ctx.s + 1) | RenderState.PrevText;
-    ctx.t += v;
+    renderText(
+      (typeof v === "number")
+        ? v.toString()
+        : escapeText(v)
+    );
   }
 };
 
+const renderText = (text: string) => {
+  const ctx = RENDER_CONTEXT;
+  if (ctx.s & RenderState.PrevText) {
+    ctx.t += "<!>";
+  }
+  ctx.s = (ctx.s + 1) | RenderState.PrevText;
+  ctx.t += text;
+};
+
 const renderTElement = (exprs: any[], e: TElement) => {
-  let openElement = e.prefix;
+  const ctx = RENDER_CONTEXT;
   const flags = e.flags;
-  const offsets = (flags & TFlags.GenerateOffsets) ? [] as number[] : void 0;
+  const offsets: number[] | undefined = (flags & TFlags.GenerateOffsets)
+    ? []
+    : void 0;
   const suffix = e.suffix;
   const children = e.children;
   const props = e.props;
-  const ctx = RENDER_CONTEXT;
+  let openElement = e.prefix;
+
   if (props !== null) {
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
-      openElement += prop.prefix + exprs[prop.i];
+      openElement += prop.prefix + escapeAttr(exprs[prop.i]);
     }
     openElement += '"';
   }
 
   if (children === null) {
     ctx.t += openElement + ">" + suffix;
+    ctx.s = (ctx.s + 1) & RenderState.OffsetMask;
     return;
   }
 
-  let childrenString = "";
+  const prevT = ctx.t;
+  const prevS = ctx.s;
+  ctx.t = "";
+  ctx.s = 0;
+
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     if (typeof child === "object") { // Element
-      const prevT = ctx.t;
-      const prevS = ctx.s;
-      ctx.t = "";
-      ctx.s = 0;
       renderTElement(exprs, child);
-      childrenString += ctx.t;
-      ctx.t = prevT;
-      ctx.s = prevS & RenderState.OffsetMask;
     } else if (typeof child === "string") { // Text
-      if (ctx.s & RenderState.PrevText) {
-        childrenString += "<!>";
-      }
-      ctx.s |= RenderState.PrevText;
-      childrenString += child;
+      renderText(child);
     } else { // Expr
-      const prevT = ctx.t;
       const prevS = ctx.s;
-      ctx.t = "";
       ctx.s &= RenderState.PrevText;
       renderNode(exprs[child]);
-      childrenString += ctx.t;
-      ctx.t = prevT;
       const offset = ctx.s & RenderState.OffsetMask;
       ctx.s = prevS | (ctx.s & RenderState.PrevText);
       if (offsets !== void 0) {
@@ -261,7 +252,9 @@ const renderTElement = (exprs: any[], e: TElement) => {
   } else {
     openElement += `>`;
   }
-  ctx.t += openElement + childrenString + suffix;
+
+  ctx.t = prevT + openElement + ctx.t + suffix;
+  ctx.s = (prevS + 1) & RenderState.OffsetMask;
 };
 
 const enum RenderState {
