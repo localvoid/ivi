@@ -31,26 +31,38 @@ export const compileTemplate = (tpl: ITemplate): TemplateDescriptor => {
   return result;
 };
 
+const pushAttr = (
+  props: TProperty[] | undefined,
+  separator: string,
+  prefix: string,
+  i: number,
+) => {
+  if (props === void 0) {
+    props = [];
+  } else {
+    prefix = separator + prefix;
+  }
+  props.push({ prefix, i });
+  return props;
+};
+
 const createTElement = (sNode: SNode<INodeElement>): TElement => {
   const node = sNode.node;
   const { tag, properties } = node;
   const children: TNode[] = [];
-  const props: TProperty[] = [];
-  let styleDynamic: TProperty[] | undefined;
+  let props: TProperty[] | undefined;
   let suffix: string;
   let flags = 0;
   let prefix = `<${tag}`;
 
   if (properties.length > 0) {
+    let styleDynamic: TProperty[] | undefined;
     let stylePrefix = "";
     for (let i = 0; i < properties.length; i++) {
       const { key, value, type } = properties[i];
       if (type === IPropertyType.Attribute) {
         if (typeof value === "number") {
-          props.push({
-            prefix: ` ${key}="`,
-            i: value,
-          });
+          props = pushAttr(props, '"', ` ${key}="`, value);
         } else if (value === true) {
           prefix += ` ${key}`;
         } else {
@@ -67,17 +79,11 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
       } else if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
         if (key === "value") {
           if (tag === "input" || tag === "textarea") {
-            props.push({
-              prefix: ` value="`,
-              i: value,
-            });
+            props = pushAttr(props, '"', ` value="`, value);
           }
         } else if (key === "checked") {
           if (tag === "input") {
-            props.push({
-              prefix: ` checked="`,
-              i: value,
-            });
+            props = pushAttr(props, '"', ` checked="`, value);
           }
         }
       } else if (type === IPropertyType.Style) {
@@ -108,9 +114,9 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
       for (let i = 0; i < styleDynamic.length; i++) {
         const s = styleDynamic[i];
         if (i === 0) {
-          s.prefix = `${stylePrefix}${s.prefix}:`;
+          props = pushAttr(props, "", `${stylePrefix}${s.prefix}:`, s.i);
         } else {
-          s.prefix = `;${s.prefix}:`;
+          props = pushAttr(props, "", `;${s.prefix}:`, s.i);
         }
       }
     }
@@ -147,11 +153,8 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
     flags,
     prefix,
     suffix,
-    props: props.length !== 0
+    props: props !== void 0
       ? props
-      : null,
-    style: styleDynamic !== void 0
-      ? styleDynamic
       : null,
     children: children.length !== 0
       ? children

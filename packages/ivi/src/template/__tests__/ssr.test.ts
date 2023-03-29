@@ -75,7 +75,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -95,7 +94,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             "a",
           ],
@@ -117,7 +115,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             0,
           ],
@@ -140,7 +137,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             0,
             "a",
@@ -164,7 +160,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             "a",
             0,
@@ -188,14 +183,12 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             {
               flags: 0,
               prefix: `<p`,
               suffix: `</p>`,
               props: null,
-              style: null,
               children: null,
             },
             0,
@@ -221,14 +214,12 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             {
               flags: 0,
               prefix: `<p`,
               suffix: `</p>`,
               props: null,
-              style: null,
               children: [
                 0,
               ],
@@ -256,7 +247,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: [
             0,
             {
@@ -264,7 +254,6 @@ describe("ssr compiler", () => {
               prefix: `<p`,
               suffix: `</p>`,
               props: null,
-              style: null,
               children: [
                 1,
               ],
@@ -289,7 +278,6 @@ describe("ssr compiler", () => {
           prefix: `<div a="1"`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -309,7 +297,6 @@ describe("ssr compiler", () => {
           prefix: `<div a`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -330,7 +317,6 @@ describe("ssr compiler", () => {
           prefix: `<div a="1" b="2"`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -352,7 +338,6 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` a="`, i: 0 },
           ],
-          style: null,
           children: null,
         },
       ],
@@ -375,7 +360,6 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` b="`, i: 0 },
           ],
-          style: null,
           children: null,
         },
       ],
@@ -398,7 +382,29 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` a="`, i: 0 },
           ],
-          style: null,
+          children: null,
+        },
+      ],
+    );
+  });
+
+  test(`<div a={0} b={1}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          attr("a", 0),
+          attr("b", 1),
+        ]),
+      ])),
+      [
+        {
+          flags: 0,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: [
+            { prefix: ` a="`, i: 0 },
+            { prefix: `" b="`, i: 1 },
+          ],
           children: null,
         },
       ],
@@ -418,7 +424,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -439,7 +444,6 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -459,7 +463,6 @@ describe("ssr compiler", () => {
           prefix: `<div style="top:10px"`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -480,7 +483,6 @@ describe("ssr compiler", () => {
           prefix: `<div style="top:10px;left:20px"`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -502,7 +504,6 @@ describe("ssr compiler", () => {
           prefix: `<div style="top:10px;margin:0;left:20px"`,
           suffix: `</div>`,
           props: null,
-          style: null,
           children: null,
         },
       ],
@@ -522,8 +523,7 @@ describe("ssr compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: null,
-          style: [
+          props: [
             {
               prefix: ` style="left:20px;top:`, i: 0,
             },
@@ -547,8 +547,7 @@ describe("ssr compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: null,
-          style: [
+          props: [
             {
               prefix: ` style="left:20px;top:`, i: 0,
             },
@@ -572,8 +571,7 @@ describe("ssr compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: null,
-          style: [
+          props: [
             {
               prefix: ` style="left:`, i: 0,
             },
@@ -601,8 +599,7 @@ describe("ssr compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: null,
-          style: [
+          props: [
             {
               prefix: ` style="margin:0;left:20px;top:`, i: 0,
             },
@@ -627,8 +624,7 @@ describe("ssr compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: null,
-          style: [
+          props: [
             {
               prefix: ` style="left:20px;margin:0;top:`, i: 0,
             },
@@ -654,7 +650,6 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` value="`, i: 0 },
           ],
-          style: null,
           children: null,
         },
       ],
@@ -676,7 +671,6 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` value="`, i: 0 },
           ],
-          style: null,
           children: null,
         },
       ],
@@ -698,7 +692,6 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` checked="`, i: 0 },
           ],
-          style: null,
           children: null,
         },
       ],
@@ -720,7 +713,6 @@ describe("ssr compiler", () => {
           props: [
             { prefix: ` value="`, i: 0 },
           ],
-          style: null,
           children: null,
         },
       ],

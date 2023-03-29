@@ -13,7 +13,6 @@ describe("render to string", () => {
             `</div>`,
             null,
             null,
-            null,
           ),
         ]),
       ),
@@ -29,7 +28,6 @@ describe("render to string", () => {
             0,
             `<div`,
             `</div>`,
-            null,
             null,
             [
               "a",
@@ -50,13 +48,11 @@ describe("render to string", () => {
             `<div`,
             `</div>`,
             null,
-            null,
             [
               _T(
                 0,
                 `<p`,
                 `</p>`,
-                null,
                 null,
                 null,
               ),
@@ -77,14 +73,12 @@ describe("render to string", () => {
             `<div`,
             `</div>`,
             null,
-            null,
             [
               "a",
               _T(
                 0,
                 `<p`,
                 `</p>`,
-                null,
                 null,
                 null,
               ),
@@ -105,13 +99,11 @@ describe("render to string", () => {
             `<div`,
             `</div>`,
             null,
-            null,
             [
               _T(
                 0,
                 `<p`,
                 `</p>`,
-                null,
                 null,
                 null,
               ),
@@ -133,14 +125,12 @@ describe("render to string", () => {
             `<div`,
             `</div>`,
             null,
-            null,
             [
               "a",
               _T(
                 0,
                 `<p`,
                 `</p>`,
-                null,
                 null,
                 null,
               ),
@@ -162,7 +152,6 @@ describe("render to string", () => {
             `<div`,
             `</div>`,
             null,
-            null,
             [
               _T(
                 0,
@@ -170,13 +159,11 @@ describe("render to string", () => {
                 `</p>`,
                 null,
                 null,
-                null,
               ),
               _T(
                 0,
                 `<b`,
                 `</b>`,
-                null,
                 null,
                 null,
               ),
@@ -197,13 +184,11 @@ describe("render to string", () => {
             `<div`,
             `</div>`,
             null,
-            null,
             [
               _T(
                 0,
                 `<p`,
                 `</p>`,
-                null,
                 null,
                 [
                   "c"
@@ -227,7 +212,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
               ],
@@ -249,7 +233,6 @@ describe("render to string", () => {
               0,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 "a",
@@ -274,7 +257,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
                 "b",
@@ -297,7 +279,6 @@ describe("render to string", () => {
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 "a",
@@ -323,13 +304,11 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 _T(
                   0,
                   `<b`,
                   `</b>`,
-                  null,
                   null,
                   null,
                 ),
@@ -354,14 +333,12 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
                 _T(
                   0,
                   `<b`,
                   `</b>`,
-                  null,
                   null,
                   null,
                 ),
@@ -385,14 +362,12 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 "a",
                 _T(
                   0,
                   `<b`,
                   `</b>`,
-                  null,
                   null,
                   null,
                 ),
@@ -417,7 +392,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
                 1,
@@ -440,7 +414,6 @@ describe("render to string", () => {
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 0,
@@ -466,7 +439,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
                 "b",
@@ -491,7 +463,6 @@ describe("render to string", () => {
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 0,
@@ -520,7 +491,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
               ],
@@ -544,7 +514,6 @@ describe("render to string", () => {
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 0,
@@ -571,7 +540,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
               ],
@@ -595,7 +563,6 @@ describe("render to string", () => {
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 0,
@@ -622,7 +589,6 @@ describe("render to string", () => {
               `<div`,
               `</div>`,
               null,
-              null,
               [
                 0,
               ],
@@ -646,7 +612,6 @@ describe("render to string", () => {
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
-              null,
               null,
               [
                 0,
@@ -676,7 +641,6 @@ describe("render to string", () => {
                 _P(` a="`, 0),
               ],
               null,
-              null,
             ),
           ],
           [
@@ -699,9 +663,8 @@ describe("render to string", () => {
               `</div>`,
               [
                 _P(` a="`, 0),
-                _P(` b="`, 1),
+                _P(`" b="`, 1),
               ],
-              null,
               null,
             ),
           ],
@@ -724,7 +687,6 @@ describe("render to string", () => {
               0,
               `<div`,
               `</div>`,
-              null,
               [
                 _P(` style="a:`, 0),
               ],
@@ -749,7 +711,6 @@ describe("render to string", () => {
               0,
               `<div`,
               `</div>`,
-              null,
               [
                 _P(` style="a:`, 0),
                 _P(`;b:`, 1),

@@ -9,7 +9,6 @@ export interface TElement {
   readonly prefix: string;
   readonly suffix: string;
   readonly props: TProperty[] | null;
-  readonly style: TProperty[] | null;
   readonly children: TNode[] | null;
 }
 
@@ -122,14 +121,12 @@ export const _T = (
   prefix: string,
   suffix: string,
   props: TProperty[] | null,
-  style: TProperty[] | null,
   children: TNode[] | null,
 ): TElement => ({
   flags,
   prefix,
   suffix,
   props,
-  style,
   children,
 });
 
@@ -211,18 +208,11 @@ const renderTElement = (exprs: any[], e: TElement) => {
   const offsets = (flags & TFlags.GenerateOffsets) ? [] as number[] : void 0;
   const suffix = e.suffix;
   const children = e.children;
-  const style = e.style;
   const props = e.props;
   const ctx = RENDER_CONTEXT;
   if (props !== null) {
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
-      openElement += prop.prefix + exprs[prop.i] + '"';
-    }
-  }
-  if (style !== null) {
-    for (let i = 0; i < style.length; i++) {
-      const prop = style[i];
       openElement += prop.prefix + exprs[prop.i];
     }
     openElement += '"';
