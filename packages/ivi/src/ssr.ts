@@ -42,7 +42,7 @@ export interface VTemplate {
   /** Template Descriptor. */
   readonly d: TemplateDescriptor;
   /** Expressions. */
-  readonly e: any[];
+  readonly e: any[] | undefined;
 }
 
 export type TemplateDescriptor = TNode[];
@@ -144,7 +144,7 @@ export const _t = (
 ): VTemplate => ({
   d,
   e,
-} as any);
+});
 
 export const render = (v: VAny): string => {
   let result;
@@ -174,11 +174,11 @@ const renderNode = (v: VAny) => {
       for (let i = 0; i < tNodes.length; i++) {
         const child = tNodes[i];
         if (typeof child === "object") { // Element
-          renderTElement(exprs, child);
+          renderTElement(exprs!, child);
         } else if (typeof child === "string") { // Text
           renderText(escapeText(child));
         } else { // Expr
-          renderNode(exprs[child]);
+          renderNode(exprs![child]);
         }
       }
     }

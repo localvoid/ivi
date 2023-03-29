@@ -2,7 +2,7 @@ import { declare } from "@babel/helper-plugin-utils";
 import moduleImports from "@babel/helper-module-imports";
 import { compileTemplate } from "ivi/template/compiler";
 import { TemplateParserError } from "ivi/template/parser";
-import { hoistExpr } from "./shared.js";
+import { importSymbolFactory, hoistExpr, tryHoistExpr } from "./shared.js";
 
 const ivi = (config) => declare((api) => {
   api.assertVersion(7);
@@ -14,25 +14,6 @@ const ivi = (config) => declare((api) => {
   const pure = (n) => t.addComment(n, "leading", "@__PURE__");
   const toNumeric = (i) => t.numericLiteral(i);
   const toString = (s) => t.stringLiteral(s);
-
-  function importSymbolFactory(path) {
-    const modules = new Map();
-    return (moduleName, name) => {
-      let symbols = modules.get(moduleName);
-      if (!symbols) {
-        modules.set(moduleName, (symbols = new Map()));
-      }
-      let symbolName = symbols.get(name);
-      if (!symbolName) {
-        symbolName =
-          name === "default"
-            ? moduleImports.addDefault(path, moduleName)
-            : moduleImports.addNamed(path, name, moduleName);
-        symbols.set(name, symbolName);
-      }
-      return symbolName;
-    };
-  }
 
   function staticTemplateToExpr(s, exprs) {
     let lastStringLiteral = t.stringLiteral("");
@@ -255,33 +236,3 @@ const ivi = (config) => declare((api) => {
   };
 });
 export default ivi;
-
-function isProgramScopeIdentifier(path, state) {
-  const node = path.node;
-  let scope = path.scope;
-
-  while (scope) {
-    if (scope.hasOwnBinding(node.name)) {
-      if (!scope.path.isProgram()) {
-        state.isProgramScope = false;
-      }
-      return;
-    }
-
-    scope = scope.parent;
-  }
-}
-
-const isProgramScopeVisitor = {
-  Identifier: isProgramScopeIdentifier,
-};
-
-function tryHoistExpr(expr) {
-  const state = { isProgramScope: true };
-  if (expr.isReferencedIdentifier()) {
-    isProgramScopeIdentifier(expr, state);
-  } else {
-    expr.traverse(isProgramScopeVisitor, state);
-  }
-  return state.isProgramScope;
-}

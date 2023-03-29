@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     ".": "./index.js",
-    "./optimizer": "./optimizer.js"
+    "./optimizer": "./optimizer.js",
+    "./ssr": "./ssr.js"
   },
   "sideEffects": false,
   "files": [

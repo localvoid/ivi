@@ -2,6 +2,7 @@ import type { Plugin } from "vite";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
 import { transformAsync } from "@babel/core";
 import iviBabel, { TemplateLanguage } from "@ivi/babel-plugin";
+import iviSSRBabel from "@ivi/babel-plugin/ssr";
 import iviBabelOptimizer from "@ivi/babel-plugin/optimizer";
 
 export interface IviOptions {
@@ -39,7 +40,7 @@ export function ivi(options?: IviOptions): Plugin[] {
         }
       },
 
-      async transform(code: string, id: string) {
+      async transform(code, id, options) {
         if (!filter(id)) {
           return null;
         }
@@ -51,14 +52,15 @@ export function ivi(options?: IviOptions): Plugin[] {
           templateLanguages.push({ module: "@ivi/htm", parse: htmLang.parseTemplate });
         }
 
+        const babelPlugin = options?.ssr
+          ? iviSSRBabel({ templateLanguages })
+          : iviBabel({ templateLanguages });
         const result = await transformAsync(code, {
           configFile: false,
           babelrc: false,
           browserslistConfigFile: false,
           filename: id,
-          plugins: [iviBabel({
-            templateLanguages,
-          })],
+          plugins: [babelPlugin],
           sourceMaps: true,
           sourceType: "module",
         });
@@ -68,7 +70,7 @@ export function ivi(options?: IviOptions): Plugin[] {
         return { code: result.code!, map: result.map };
       },
 
-      async renderChunk(code, chunk, options) {
+      async renderChunk(code, chunk) {
         const result = await transformAsync(code, {
           configFile: false,
           babelrc: false,
