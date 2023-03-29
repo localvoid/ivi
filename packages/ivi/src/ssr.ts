@@ -133,15 +133,39 @@ export const _T = (
   children,
 });
 
+export const _P = (
+  prefix: string,
+  i: number,
+): TProperty => ({
+  prefix,
+  i,
+});
+
+export const _S = (
+  prefix: string,
+  dynamic: TProperty[],
+): TStyle => ({
+  prefix,
+  dynamic,
+});
+
+export const _t = (
+  d: TemplateDescriptor,
+  e?: any[],
+): VTemplate => ({
+  d,
+  e,
+} as any);
+
 export const render = (v: VAny): string => {
   let result;
   const ctx = RENDER_CONTEXT;
   try {
     renderNode(v);
-    result = ctx.s;
+    result = ctx.t;
   } finally {
-    ctx.s = "";
-    ctx.i = 0;
+    ctx.t = "";
+    ctx.s = 0;
   }
   return result;
 };
@@ -150,22 +174,26 @@ const renderNode = (v: VAny) => {
   if (v === false || v == null) {
     return;
   }
+  const ctx = RENDER_CONTEXT;
   if (typeof v === "object") {
     if (_isArray(v)) {
       for (let i = 0; i < v.length; i++) {
         renderNode(v[i]);
       }
     } else { // Element
-      const ctx = RENDER_CONTEXT;
       const exprs = v.e;
       const tNodes = v.d;
       for (let i = 0; i < tNodes.length; i++) {
         const child = tNodes[i];
         if (typeof child === "object") { // Element
           renderTElement(exprs, child);
+          ctx.s = (ctx.s + 1) & RenderState.OffsetMask;
         } else if (typeof child === "string") { // Text
-          ctx.i++;
-          ctx.s += escapeText(child);
+          if (ctx.s & RenderState.PrevText) {
+            ctx.t += "<!>";
+          }
+          ctx.s = (ctx.s + 1) | RenderState.PrevText;
+          ctx.t += escapeText(child);
         } else { // Expr
           renderNode(exprs[child]);
         }
@@ -177,14 +205,16 @@ const renderNode = (v: VAny) => {
     } else {
       v = escapeAttr(v);
     }
-    RENDER_CONTEXT.s += v;
-    RENDER_CONTEXT.i++;
+    if (ctx.s & RenderState.PrevText) {
+      ctx.t += "<!>";
+    }
+    ctx.s = (ctx.s + 1) | RenderState.PrevText;
+    ctx.t += v;
   }
 };
 
 const renderTElement = (exprs: any[], e: TElement) => {
-  let offset = 0;
-  let s = e.prefix;
+  let openElement = e.prefix;
   const flags = e.flags;
   const offsets = (flags & TFlags.GenerateOffsets) ? [] as number[] : void 0;
   const suffix = e.suffix;
@@ -195,55 +225,81 @@ const renderTElement = (exprs: any[], e: TElement) => {
   if (props !== null) {
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
-      s += prop.prefix + exprs[prop.i];
+      openElement += prop.prefix + exprs[prop.i];
     }
-    s += '"';
+    openElement += '"';
   }
   if (style !== null) {
-    s += style.prefix;
+    openElement += style.prefix;
     const dynamicStyle = style.dynamic;
     for (let i = 0; i < dynamicStyle.length; i++) {
       const dynamic = dynamicStyle[i];
-      s += dynamic.prefix + exprs[dynamic.i];
+      openElement += dynamic.prefix + exprs[dynamic.i];
     }
-    s += '"';
+    openElement += '"';
   }
-  if (children !== null) {
-    for (let i = 0; children.length; i++) {
-      const child = children[i];
-      if (typeof child === "object") { // Element
-        renderTElement(exprs, child);
-      } else if (typeof child === "string") { // Text
-        offset++;
-        s += child;
-      } else { // Expr
-        const prevOffsets = ctx.i;
-        ctx.i = 0;
-        renderNode(exprs[child]);
-        const offset = ctx.i;
-        ctx.i = prevOffsets;
-        if (offsets !== void 0) {
-          offsets.push(offset);
-        }
+
+  if (children === null) {
+    ctx.t += openElement + ">" + suffix;
+    return;
+  }
+
+  let childrenString = "";
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (typeof child === "object") { // Element
+      const prevT = ctx.t;
+      const prevS = ctx.s;
+      ctx.t = "";
+      ctx.s = 0;
+      renderTElement(exprs, child);
+      childrenString += ctx.t;
+      ctx.t = prevT;
+      ctx.s = prevS & RenderState.OffsetMask;
+    } else if (typeof child === "string") { // Text
+      if (ctx.s & RenderState.PrevText) {
+        childrenString += "<!>";
+      }
+      ctx.s |= RenderState.PrevText;
+      childrenString += child;
+    } else { // Expr
+      const prevT = ctx.t;
+      const prevS = ctx.s;
+      ctx.t = "";
+      ctx.s &= RenderState.PrevText;
+      renderNode(exprs[child]);
+      childrenString += ctx.t;
+      ctx.t = prevT;
+      const offset = ctx.s & RenderState.OffsetMask;
+      ctx.s = prevS | (ctx.s & RenderState.PrevText);
+      if (offsets !== void 0) {
+        offsets.push(offset);
       }
     }
   }
-  if (flags & TFlags.GenerateOffsets) {
+  if (offsets !== void 0) {
+    openElement += ` &="${offsets.join("")}">`;
+  } else {
+    openElement += `>`;
   }
-  ctx.s += s + suffix;
-  ctx.i += offset;
+  ctx.t += openElement + childrenString + suffix;
 };
 
+const enum RenderState {
+  PrevText = 1 << 24,
+  OffsetMask = (1 << 24) - 1,
+}
+
 interface RenderContext {
-  /** Rendered string. */
-  s: string;
-  /** Children offset. */
-  i: number;
+  /** Rendered text. */
+  t: string;
+  /** Render State. */
+  s: number;
 }
 
 const RENDER_CONTEXT: RenderContext = Object.seal({
-  s: "",
-  i: 0,
+  t: "",
+  s: 0,
 });
 
 const _Array = Array;

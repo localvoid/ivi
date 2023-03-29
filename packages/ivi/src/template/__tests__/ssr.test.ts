@@ -626,7 +626,7 @@ describe("ssr compiler", () => {
         {
           flags: 0,
           prefix: `<input`,
-          suffix: `>`,
+          suffix: ``,
           props: [
             { prefix: ` value="`, i: 0 },
           ],
@@ -648,7 +648,7 @@ describe("ssr compiler", () => {
         {
           flags: 0,
           prefix: `<input`,
-          suffix: `>`,
+          suffix: ``,
           props: [
             { prefix: ` value="`, i: 0 },
           ],
@@ -670,7 +670,7 @@ describe("ssr compiler", () => {
         {
           flags: 0,
           prefix: `<input`,
-          suffix: `>`,
+          suffix: ``,
           props: [
             { prefix: ` checked="`, i: 0 },
           ],

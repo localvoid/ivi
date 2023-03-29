@@ -126,7 +126,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
     if (sChildren !== null) {
       throw new Error(`Invalid template, void element '${tag}' shouldn't have any children.`);
     }
-    suffix = ">";
+    suffix = "";
   } else {
     if (sChildren !== null) {
       for (let i = 0; i < sChildren.length; i++) {
