@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { render, TFlags, _t, _T } from "../ssr.js";
+import { render, TFlags, _P, _t, _T } from "../ssr.js";
 
 describe("render to string", () => {
   test(`<div></div>`, () => {
@@ -660,6 +660,110 @@ describe("render to string", () => {
         ),
       ),
       `<div &="0">b</div>`
+    );
+  });
+
+  test(`<div a={"0"}></div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              [
+                _P(` a="`, 0),
+              ],
+              null,
+              null,
+            ),
+          ],
+          [
+            "0",
+          ],
+        ),
+      ),
+      `<div a="0"></div>`
+    );
+  });
+
+  test(`<div a={"0"} b={"1"}></div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              [
+                _P(` a="`, 0),
+                _P(` b="`, 1),
+              ],
+              null,
+              null,
+            ),
+          ],
+          [
+            "0",
+            "1",
+          ],
+        ),
+      ),
+      `<div a="0" b="1"></div>`
+    );
+  });
+
+  test(`<div style="{a:0}"></div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              [
+                _P(` style="a:`, 0),
+              ],
+              null,
+            ),
+          ],
+          [
+            "0",
+          ],
+        ),
+      ),
+      `<div style="a:0"></div>`
+    );
+  });
+
+  test(`<div style="{a:0,b:1}"></div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              [
+                _P(` style="a:`, 0),
+                _P(`;b:`, 1),
+              ],
+              null,
+            ),
+          ],
+          [
+            "0",
+            "1",
+          ],
+        ),
+      ),
+      `<div style="a:0;b:1"></div>`
     );
   });
 });

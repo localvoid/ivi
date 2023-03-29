@@ -523,12 +523,11 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: {
-            prefix: ` style="left:20px`,
-            dynamic: [{
-              prefix: ";top:", i: 0,
-            }],
-          },
+          style: [
+            {
+              prefix: ` style="left:20px;top:`, i: 0,
+            },
+          ],
           children: null,
         },
       ],
@@ -549,12 +548,39 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: {
-            prefix: ` style="left:20px`,
-            dynamic: [{
-              prefix: ";top:", i: 0,
-            }],
-          },
+          style: [
+            {
+              prefix: ` style="left:20px;top:`, i: 0,
+            },
+          ],
+          children: null,
+        },
+      ],
+    );
+  });
+
+  test(`<div ~left={0} ~top={1}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          styl("left", 0),
+          styl("top", 1),
+        ]),
+      ])),
+      [
+        {
+          flags: 0,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: null,
+          style: [
+            {
+              prefix: ` style="left:`, i: 0,
+            },
+            {
+              prefix: `;top:`, i: 1,
+            },
+          ],
           children: null,
         },
       ],
@@ -576,12 +602,11 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: {
-            prefix: ` style="margin:0;left:20px`,
-            dynamic: [{
-              prefix: ";top:", i: 0,
-            }],
-          },
+          style: [
+            {
+              prefix: ` style="margin:0;left:20px;top:`, i: 0,
+            },
+          ],
           children: null,
         },
       ],
@@ -603,12 +628,11 @@ describe("ssr compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          style: {
-            prefix: ` style="left:20px;margin:0`,
-            dynamic: [{
-              prefix: ";top:", i: 0,
-            }],
-          },
+          style: [
+            {
+              prefix: ` style="left:20px;margin:0;top:`, i: 0,
+            },
+          ],
           children: null,
         },
       ],

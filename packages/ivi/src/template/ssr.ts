@@ -36,13 +36,13 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
   const { tag, properties } = node;
   const children: TNode[] = [];
   const props: TProperty[] = [];
-  let flags = 0;
   let styleDynamic: TProperty[] | undefined;
-  let stylePrefix = "";
-  let prefix = `<${tag}`;
   let suffix: string;
+  let flags = 0;
+  let prefix = `<${tag}`;
 
   if (properties.length > 0) {
+    let stylePrefix = "";
     for (let i = 0; i < properties.length; i++) {
       const { key, value, type } = properties[i];
       if (type === IPropertyType.Attribute) {
@@ -98,24 +98,19 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
     if (styleDynamic === void 0) {
       if (stylePrefix !== "") {
         prefix += stylePrefix + '"';
-        stylePrefix = "";
       }
     } else {
-      // TODO: refactor
-      if (stylePrefix !== "") {
-        for (let i = 0; i < styleDynamic.length; i++) {
-          const s = styleDynamic[i];
-          s.prefix = `;${s.prefix}:`;
-        }
-        styleDynamic.map((s) => `;${s}:`);
+      if (stylePrefix === "") {
+        stylePrefix = ` style="`;
       } else {
-        for (let i = 0; i < styleDynamic.length; i++) {
-          const s = styleDynamic[i];
-          if (i === 0) {
-            s.prefix = ` style="${s.prefix}:`;
-          } else {
-            s.prefix = `;${s.prefix}:`;
-          }
+        stylePrefix += ";";
+      }
+      for (let i = 0; i < styleDynamic.length; i++) {
+        const s = styleDynamic[i];
+        if (i === 0) {
+          s.prefix = `${stylePrefix}${s.prefix}:`;
+        } else {
+          s.prefix = `;${s.prefix}:`;
         }
       }
     }
@@ -156,10 +151,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
       ? props
       : null,
     style: styleDynamic !== void 0
-      ? {
-        prefix: stylePrefix,
-        dynamic: styleDynamic,
-      }
+      ? styleDynamic
       : null,
     children: children.length !== 0
       ? children

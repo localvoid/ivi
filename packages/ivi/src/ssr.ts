@@ -9,7 +9,7 @@ export interface TElement {
   readonly prefix: string;
   readonly suffix: string;
   readonly props: TProperty[] | null;
-  readonly style: TStyle | null;
+  readonly style: TProperty[] | null;
   readonly children: TNode[] | null;
 }
 
@@ -122,7 +122,7 @@ export const _T = (
   prefix: string,
   suffix: string,
   props: TProperty[] | null,
-  style: TStyle | null,
+  style: TProperty[] | null,
   children: TNode[] | null,
 ): TElement => ({
   flags,
@@ -139,14 +139,6 @@ export const _P = (
 ): TProperty => ({
   prefix,
   i,
-});
-
-export const _S = (
-  prefix: string,
-  dynamic: TProperty[],
-): TStyle => ({
-  prefix,
-  dynamic,
 });
 
 export const _t = (
@@ -225,16 +217,13 @@ const renderTElement = (exprs: any[], e: TElement) => {
   if (props !== null) {
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
-      openElement += prop.prefix + exprs[prop.i];
+      openElement += prop.prefix + exprs[prop.i] + '"';
     }
-    openElement += '"';
   }
   if (style !== null) {
-    openElement += style.prefix;
-    const dynamicStyle = style.dynamic;
-    for (let i = 0; i < dynamicStyle.length; i++) {
-      const dynamic = dynamicStyle[i];
-      openElement += dynamic.prefix + exprs[dynamic.i];
+    for (let i = 0; i < style.length; i++) {
+      const prop = style[i];
+      openElement += prop.prefix + exprs[prop.i];
     }
     openElement += '"';
   }
