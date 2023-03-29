@@ -407,7 +407,7 @@ describe("render to string", () => {
     );
   });
 
-  test(`<div>{"a"}{"b"}</div>`, () => {
+  test(`<div>{"0"}{"1"}</div>`, () => {
     strictEqual(
       render(
         _t(
@@ -424,10 +424,242 @@ describe("render to string", () => {
               ],
             ),
           ],
-          ["a", "b"],
+          ["0", "1"],
         ),
       ),
-      `<div>a<!>b</div>`
+      `<div>0<!>1</div>`
+    );
+  });
+
+  test(`<div>{"0"}{"1"}b</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              TFlags.GenerateOffsets,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+                1,
+                "b",
+              ],
+            ),
+          ],
+          ["0", "1"],
+        ),
+      ),
+      `<div &="1 1">0<!>1<!>b</div>`
+    );
+  });
+
+  test(`<div>{["0", "1"]}b</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              TFlags.GenerateOffsets,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+                "b",
+              ],
+            ),
+          ],
+          [
+            ["0", "1"],
+          ],
+        ),
+      ),
+      `<div &="2">0<!>1<!>b</div>`
+    );
+  });
+
+  test(`<div>{["0", "1"]}{"2"}b</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              TFlags.GenerateOffsets,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+                1,
+                "b",
+              ],
+            ),
+          ],
+          [
+            ["0", "1"],
+            "2",
+          ],
+        ),
+      ),
+      `<div &="2 1">0<!>1<!>2<!>b</div>`
+    );
+  });
+
+  test(`<div>{null}</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+              ],
+            ),
+          ],
+          [
+            null,
+          ],
+        ),
+      ),
+      `<div></div>`
+    );
+  });
+
+  test(`<div>{null}b</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              TFlags.GenerateOffsets,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+                "b",
+              ],
+            ),
+          ],
+          [
+            null,
+          ],
+        ),
+      ),
+      `<div &="0">b</div>`
+    );
+  });
+
+  test(`<div>{undefined}</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+              ],
+            ),
+          ],
+          [
+            void 0,
+          ],
+        ),
+      ),
+      `<div></div>`
+    );
+  });
+
+  test(`<div>{undefined}b</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              TFlags.GenerateOffsets,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+                "b",
+              ],
+            ),
+          ],
+          [
+            void 0,
+          ],
+        ),
+      ),
+      `<div &="0">b</div>`
+    );
+  });
+
+  test(`<div>{false}</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+              ],
+            ),
+          ],
+          [
+            false,
+          ],
+        ),
+      ),
+      `<div></div>`
+    );
+  });
+
+  test(`<div>{false}b</div>`, () => {
+    strictEqual(
+      render(
+        _t(
+          [
+            _T(
+              TFlags.GenerateOffsets,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              [
+                0,
+                "b",
+              ],
+            ),
+          ],
+          [
+            false,
+          ],
+        ),
+      ),
+      `<div &="0">b</div>`
     );
   });
 });

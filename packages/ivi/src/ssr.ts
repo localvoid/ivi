@@ -278,7 +278,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
     }
   }
   if (offsets !== void 0) {
-    openElement += ` &="${offsets.join("")}">`;
+    openElement += ` &="${offsets.join(" ")}">`;
   } else {
     openElement += `>`;
   }
