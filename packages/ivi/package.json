@@ -15,7 +15,8 @@
     "./template/format": "./dist/template/format.js",
     "./template/compiler": "./dist/template/compiler.js",
     "./template/parser": "./dist/template/parser.js",
-    "./template/ir": "./dist/template/ir.js"
+    "./template/ir": "./dist/template/ir.js",
+    "./template/ssr": "./dist/template/ssr.js"
   },
   "sideEffects": false,
   "files": [
