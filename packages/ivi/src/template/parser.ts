@@ -1,3 +1,5 @@
+export { isVoidElement } from "./shared.js";
+
 export class TemplateParserError extends Error {
   staticsOffset: number;
   textOffset: number;
@@ -105,12 +107,6 @@ export class TemplateScanner {
     return r;
   }
 }
-
-const HTML_VOID_ELEMENTS = (
-  /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/
-);
-
-export const isVoidElement = (tag: string) => HTML_VOID_ELEMENTS.test(tag);
 
 /**
  * Formats error message.

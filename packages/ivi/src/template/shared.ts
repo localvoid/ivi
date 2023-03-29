@@ -32,45 +32,47 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
     }
   }
 
+  let children: SNode[] | null = null;
   let siblingsFlags = 0;
   let childrenExprs = 0;
   let i = iChildren.length;
-  const children: SNode[] = Array(i);
-
-  while (i > 0) {
-    const child = iChildren[--i];
-    switch (child.type) {
-      case INodeType.Element:
-        const sNode = createSNode(child, siblingsFlags);
-        if (sNode.flags & SNodeFlags.HasExpressions) {
-          flags |= SNodeFlags.HasExpressions;
+  if (i > 0) {
+    children = Array(i);
+    while (i > 0) {
+      const child = iChildren[--i];
+      switch (child.type) {
+        case INodeType.Element:
+          const sNode = createSNode(child, siblingsFlags);
+          if (sNode.flags & SNodeFlags.HasExpressions) {
+            flags |= SNodeFlags.HasExpressions;
+            siblingsFlags |= SNodeFlags.HasNextExpressions;
+          }
+          siblingsFlags |= SNodeFlags.HasNextDOMNode;
+          children[i] = sNode;
+          break;
+        case INodeType.Expr:
           siblingsFlags |= SNodeFlags.HasNextExpressions;
-        }
-        siblingsFlags |= SNodeFlags.HasNextDOMNode;
-        children[i] = sNode;
-        break;
-      case INodeType.Expr:
-        siblingsFlags |= SNodeFlags.HasNextExpressions;
-        childrenExprs++;
-        children[i] = {
-          node: child,
-          stateIndex: 0,
-          children: null,
-          childrenExprs: 0,
-          propsExprs: 0,
-          flags: siblingsFlags,
-        };
-        break;
-      case INodeType.Text:
-        children[i] = {
-          node: child,
-          stateIndex: 0,
-          children: null,
-          childrenExprs: 0,
-          propsExprs: 0,
-          flags: siblingsFlags,
-        };
-        siblingsFlags |= SNodeFlags.HasNextDOMNode;
+          childrenExprs++;
+          children[i] = {
+            node: child,
+            stateIndex: 0,
+            children: null,
+            childrenExprs: 0,
+            propsExprs: 0,
+            flags: siblingsFlags,
+          };
+          break;
+        case INodeType.Text:
+          children[i] = {
+            node: child,
+            stateIndex: 0,
+            children: null,
+            childrenExprs: 0,
+            propsExprs: 0,
+            flags: siblingsFlags,
+          };
+          siblingsFlags |= SNodeFlags.HasNextDOMNode;
+      }
     }
   }
 
@@ -96,3 +98,9 @@ export const isStaticProperty = (prop: IProperty) => (
     prop.static === true
   )
 );
+
+const HTML_VOID_ELEMENTS = (
+  /^(embed|input|param|source|track|area|base|link|meta|br|col|hr|img|wbr)$/
+);
+
+export const isVoidElement = (tag: string) => HTML_VOID_ELEMENTS.test(tag);

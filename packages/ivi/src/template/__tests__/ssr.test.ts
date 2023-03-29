@@ -3,8 +3,8 @@ import { describe, test } from "node:test";
 import { compileTemplate } from "../ssr.js";
 import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
-  type IPropertyAttribute, type IPropertyValue, type ITemplate,
-  type IPropertyStyle,
+  type IPropertyAttribute, type IPropertyDOMValue, type IPropertyValue,
+  type ITemplate, type IPropertyStyle,
   INodeType, IPropertyType, ITemplateType,
 } from "../ir.js";
 import { TFlags } from "../../ssr.js";
@@ -44,6 +44,13 @@ const attr = (key: string, value: string | number | boolean): IPropertyAttribute
 
 const prop = (key: string, value: number): IPropertyValue => ({
   type: IPropertyType.Value,
+  key,
+  value,
+  static: false,
+});
+
+const dprop = (key: string, value: number): IPropertyDOMValue => ({
+  type: IPropertyType.DOMValue,
   key,
   value,
   static: false,
@@ -602,6 +609,94 @@ describe("ssr compiler", () => {
               prefix: ";top:", i: 0,
             }],
           },
+          children: null,
+        },
+      ],
+    );
+  });
+
+  test(`<input .value={0}>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("input", [
+          prop("value", 0),
+        ]),
+      ])),
+      [
+        {
+          flags: 0,
+          prefix: `<input`,
+          suffix: `>`,
+          props: [
+            { prefix: ` value="`, i: 0 },
+          ],
+          style: null,
+          children: null,
+        },
+      ],
+    );
+  });
+
+  test(`<input *value={0}>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("input", [
+          dprop("value", 0),
+        ]),
+      ])),
+      [
+        {
+          flags: 0,
+          prefix: `<input`,
+          suffix: `>`,
+          props: [
+            { prefix: ` value="`, i: 0 },
+          ],
+          style: null,
+          children: null,
+        },
+      ],
+    );
+  });
+
+  test(`<input *checked={0}>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("input", [
+          dprop("checked", 0),
+        ]),
+      ])),
+      [
+        {
+          flags: 0,
+          prefix: `<input`,
+          suffix: `>`,
+          props: [
+            { prefix: ` checked="`, i: 0 },
+          ],
+          style: null,
+          children: null,
+        },
+      ],
+    );
+  });
+
+  test(`<textarea *value={0}></textarea>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("textarea", [
+          dprop("value", 0),
+        ]),
+      ])),
+      [
+        {
+          flags: 0,
+          prefix: `<textarea`,
+          suffix: `</textarea>`,
+          props: [
+            { prefix: ` value="`, i: 0 },
+          ],
+          style: null,
           children: null,
         },
       ],

@@ -1,7 +1,9 @@
 import {
   type INodeElement, type ITemplate, INodeType, IPropertyType
 } from "./ir.js";
-import { type SNode, SNodeFlags, createSNode } from "./shared.js";
+import {
+  type SNode, SNodeFlags, createSNode, isVoidElement,
+} from "./shared.js";
 import {
   type TElement, type TemplateDescriptor, type TNode, type TProperty,
   TFlags
@@ -63,10 +65,17 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
           }
         }
       } else if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
-        if (tag === "input" || tag === "textarea") {
-          if (key === "value") {
+        if (key === "value") {
+          if (tag === "input" || tag === "textarea") {
             props.push({
-              prefix: ` ${key}="`,
+              prefix: ` value="`,
+              i: value,
+            });
+          }
+        } else if (key === "checked") {
+          if (tag === "input") {
+            props.push({
+              prefix: ` checked="`,
               i: value,
             });
           }
@@ -113,7 +122,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
   }
 
   const sChildren = sNode.children;
-  if (VOID_ELEMENTS.test(tag)) {
+  if (isVoidElement(tag)) {
     if (sChildren !== null) {
       throw new Error(`Invalid template, void element '${tag}' shouldn't have any children.`);
     }
@@ -157,7 +166,3 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
       : null,
   };
 };
-
-const VOID_ELEMENTS = (
-  /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/
-);
