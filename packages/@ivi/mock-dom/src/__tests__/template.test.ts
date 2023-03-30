@@ -20,12 +20,12 @@ describe("mock-dom/template", () => {
       [
         `createElement("template") => 2`,
         `[2] Template.content`,
-        `[2] Node.nodeType`,
-        `[2] Node.nodeName`,
+        `[2] Node.nodeType => 1`,
+        `[2] Node.nodeName => "TEMPLATE"`,
         `[2] Template.content`,
-        `[3] Node.firstChild`,
+        `[3] Node.firstChild => null`,
         `[2] Template.content`,
-        `[3] Node.lastChild`,
+        `[3] Node.lastChild => null`,
       ],
     );
   });
@@ -44,10 +44,9 @@ describe("mock-dom/template", () => {
         `createElement("template") => 2`,
         `[2] Template.content`,
         `[2] Template.innerHTML = "<a></a>"`,
-        `[2] Element.namespaceURI`,
         `[2] Template.content`,
-        `[3] Node.firstChild`,
-        `[5] Node.nodeName`,
+        `[3] Node.firstChild => 5`,
+        `[5] Node.nodeName => "A"`,
       ],
     );
   });

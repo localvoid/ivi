@@ -1,318 +1,739 @@
-import { strictEqual } from "node:assert";
-import { describe, test } from "node:test";
-import "global-jsdom/register";
+import { deepStrictEqual, strictEqual } from "node:assert";
+import { beforeEach, describe, test } from "node:test";
+import { reset, trace, toSnapshot, emit } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "../index.js";
-import { type VAny } from "ivi";
 
-const mount = <T extends Node>(v: VAny) => {
-  const root = createRoot();
-  root.update(v);
-  return root.findDOMNode<T>();
-};
+describe("htm", () => {
+  beforeEach(reset);
 
-describe("template", () => {
-  describe("mount", () => {
-    describe("whitespaces", () => {
-      test("1", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("<h1></h1>", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <h1></h1>
+        `);
+      }),
+      [
+        `createElement("h1") => 2`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#2/>
+      `.trim()
+    );
+  });
+
+  test("<h1>a</h1>", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <h1>a</h1>
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1>a</h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6>a</TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
+
+  test("whitespace 1", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 0);
-      });
+        `);
+      }),
+      [
+        `createElement("h1") => 2`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#2/>
+      `.trim()
+    );
+  });
 
-      test("2", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 2", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
 
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 0);
-      });
+        `);
+      }),
+      [
+        `createElement("h1") => 2`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#2/>
+      `.trim()
+    );
+  });
 
-      test("3", () => {
-        const n = mount<HTMLDivElement>(htm`
-          <h1> </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, " ");
-      });
+  test("whitespace 3", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <h1>  </h1>
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1> </h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6> </TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
 
-      test("4", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 4", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div>
             <h2></h2>
             <h2></h2>
           </div>
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 2);
-        strictEqual((n.childNodes[0] as Element).tagName, "H2");
-        strictEqual((n.childNodes[1] as Element).tagName, "H2");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div><h2></h2><h2></h2></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 6`,
+        `[1] Node.insertBefore(6, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#6>
+  <H2#7/>
+  <H2#8/>
+</DIV#6>
+      `.trim()
+    );
+  });
 
-      test("5", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 5", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
             ab
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "ab");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1>ab</h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6>ab</TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
 
-      test("6", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 6", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
             ab
             cd
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "ab cd");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1>ab cd</h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6>ab cd</TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
 
-      test("7", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 7", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
             ab  cd
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "ab cd");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1>ab cd</h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6>ab cd</TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
 
-      test("8", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 8", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>  ab  cd  </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, " ab cd ");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1> ab cd </h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6> ab cd </TEXT#6>
+</H1#5>
+     `.trim()
+    );
+  });
 
-      test("9", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 9", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
             \vab
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, " ab");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1> ab</h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6> ab</TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
 
-      test("10", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 10", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <h1>
             ab\v
           </h1>
-        `)!;
-        strictEqual(n.tagName, "H1");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "ab ");
-      });
-    });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<h1>ab </h1>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<H1#5>
+  <TEXT#6>ab </TEXT#6>
+</H1#5>
+      `.trim()
+    );
+  });
 
-    describe("structure", () => {
-      test("1", () => {
-        const n = mount<HTMLDivElement>(htm`<div></div>`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.children.length, 0);
-      });
-
-      test("2", () => {
-        const n = mount<HTMLDivElement>(htm`<div><span></span></div>`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.children.length, 1);
-        strictEqual(n.children[0].tagName, "SPAN");
-      });
-
-      test("3", () => {
-        const n = mount<HTMLDivElement>(htm`<div>a</div>`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-      });
-
-      test("4", () => {
-        const n = mount<HTMLDivElement>(htm`
-          <div>
-            <span></span>
-          </div>
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.children.length, 1);
-        strictEqual(n.children[0].tagName, "SPAN");
-      });
-
-      test("7", () => {
-        const n = mount<HTMLDivElement>(htm`
-          <div>
-            a
-          </div>
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-      });
-
-      test("8", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("whitespace 11", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div>
             a
             <span>
               b
             </span>
           </div>
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 2);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-        strictEqual((n.childNodes[1] as Element).tagName, "SPAN");
-        strictEqual(n.childNodes[1].childNodes[0].nodeValue, "b");
-      });
-    });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div>a<span>b</span></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 7`,
+        `[1] Node.insertBefore(7, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#7>
+  <TEXT#8>a</TEXT#8>
+  <SPAN#9>
+    <TEXT#10>b</TEXT#10>
+  </SPAN#9>
+</DIV#7>
+      `.trim()
+    );
+  });
 
-    describe("properties", () => {
-      test("className 1", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`<div class="a b"></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div class="a b"></div>
-        `)!;
-        strictEqual(n.className, "a b");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div class="a b"></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 4`,
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  class="a b"
+/>
+      `.trim()
+    );
+  });
 
-      test("attr 1", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("attr 1", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div attr></div>
-        `)!;
-        strictEqual(n.getAttribute("attr"), "");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div attr></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 4`,
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  attr=""
+/>
+      `.trim()
+    );
+  });
 
-      test("attr 2", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test("attr 2", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div
             attr
           ></div>
-        `)!;
-        strictEqual(n.getAttribute("attr"), "");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div attr></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 4`,
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  attr=""
+/>
+      `.trim()
+    );
+  });
 
-      test("attr 3", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`attr 3`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div attr="a"></div>
-        `)!;
-        strictEqual(n.getAttribute("attr"), "a");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div attr="a"></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 4`,
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  attr="a"
+/>
+      `.trim()
+    );
+  });
 
-      test(".className", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`<div class={"a b"}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div class=${"a b"}></div>
-        `)!;
-        strictEqual(n.className, "a b");
-      });
+        `);
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.className = "a b"`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  class="a b"
+/>
+      `.trim()
+    );
+  });
 
-      test(":attr", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`<div attr={"a"}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div attr=${"a"}></div>
-        `)!;
-        strictEqual(n.getAttribute("attr"), "a");
-      });
+        `);
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.setAttribute("attr", "a")`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  attr="a"
+/>
+      `.trim()
+    );
+  });
 
-      test(".prop", () => {
-        const n = mount<HTMLDivElement>(htm`
-          <div .ariaValueMin=${"a"}></div>
-        `)!;
-        strictEqual(n.ariaValueMin, "a");
-      });
+  test(`<div .a={"0"}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <div .a=${"0"}></div>
+        `);
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.setProperty("a", "0")`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  .a="0"
+/>
+      `.trim()
+    );
+  });
 
-      test("*prop", () => {
-        const n = mount<HTMLDivElement>(htm`
-          <div *ariaValueMin=${"a"}></div>
-        `)!;
-        strictEqual(n.ariaValueMin, "a");
-      });
+  test(`<div *a={"1"}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <div *a=${"1"}></div>
+        `);
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.setProperty("a", "1")`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  .a="1"
+/>
+      `.trim()
+    );
+  });
 
-      test("static style 1", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`<div ~top="10px"></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div ~top="10px"></div>
-        `)!;
-        strictEqual(n.style.top, "10px");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div style="top:10px"></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 4`,
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  style="top:10px"
+/>
+      `.trim()
+    );
+  });
 
-      test("static style merge with attribute", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`<div style="left:5px" ~top="10px"></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div style="left:5px" ~top="10px"></div>
-        `)!;
-        strictEqual(n.style.left, "5px");
-        strictEqual(n.style.top, "10px");
-      });
+        `);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div style="left:5px;top:10px"></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 4`,
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  style="left:5px;top:10px"
+/>
+      `.trim()
+    );
+  });
 
-      test("dynamic style 1", () => {
-        const n = mount<HTMLDivElement>(htm`
+  test(`<div ~top={"10px"}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div ~top=${"10px"}></div>
-        `)!;
-        strictEqual(n.style.top, "10px");
-      });
+        `);
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] HTMLElement.style`,
+        `[2] style.setProperty(top, "10px")`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  ~top="10px"
+/>
+      `.trim()
+    );
+  });
 
-      test("@event", () => {
+  test(`<div @click={onClick}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
         let clicked = 0;
         const onClick = () => { clicked++; };
-        const n = mount<HTMLDivElement>(htm`
+        root.update(htm`
           <div @click=${onClick}></div>
-        `)!;
-        n.click();
+        `);
+        emit(root.findDOMNode(), "click");
         strictEqual(clicked, 1);
-      });
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.addEventListener("click", onClick)`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  @click=[onClick]
+/>
+      `.trim()
+    );
 
-      test(".textContent", () => {
-        const n = mount<HTMLDivElement>(htm`
+  });
+
+  test(`<div .textContent={"a"}></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
           <div .textContent=${"a"}></div>
-        `)!;
-        strictEqual(n.textContent, "a");
-      });
+        `);
+      }),
+      [
+        `createElement("div") => 2`,
+        `[2] Node.textContent = "a"`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2>
+  <TEXT#3>a</TEXT#3>
+</DIV#2>
+      `.trim()
+    );
+  });
 
-      test("$directive", () => {
+  test(`<div><span \${onMount}></span></div>`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
         let e;
         const onMount = (element: Element) => { e = element; };
-        const n = mount<HTMLDivElement>(htm`
+        root.update(htm`
           <div>
             <span ${onMount}></span>
           </div>
-        `)!;
-        strictEqual(n.childNodes[0], e);
-      });
-    });
+        `);
+        strictEqual((e as any).uid, 6);
+      }),
+      [
+        `[-7] Template.innerHTML = "<div><span></span></div>"`,
+        `[-6] Node.firstChild => 3`,
+        `[3] Node.cloneNode(true) => 5`,
+        `[5] Node.firstChild => 6`,
+        `[1] Node.insertBefore(5, null)`,
+      ],
+    );
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <SPAN#6/>
+</DIV#5>
+      `.trim()
+    );
   });
-});
 
-describe("update", () => {
-  test(".textContent: '' => 'a'", () => {
+  test(`.textContent: "" => "a"`, () => {
     const test = (s: string) => htm`
         <div .textContent=${s}></div>
       `;
     const root = createRoot();
     root.update(test(""));
-    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild, null);
-    root.update(test("a"));
-    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild?.nodeValue, "a");
+    deepStrictEqual(
+      trace(() => {
+        root.update(test("a"));
+      }),
+      [
+        `[2] Node.firstChild => null`,
+        `[2] Node.textContent = "a"`,
+      ],
+    );
   });
 
-  test(".textContent: 'a' => 'b'", () => {
+  test(`.textContent: "a" => "b"`, () => {
     const test = (s: string) => htm`
         <div .textContent=${s}></div>
       `;
     const root = createRoot();
     root.update(test("a"));
-    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild?.nodeValue, "a");
-    root.update(test("b"));
-    strictEqual(root.findDOMNode<HTMLDivElement>()!.firstChild?.nodeValue, "b");
+    deepStrictEqual(
+      trace(() => {
+        root.update(test("b"));
+      }),
+      [
+        `[2] Node.firstChild => 3`,
+        `[3] Node.nodeValue = "b"`,
+      ],
+    );
   });
 });

@@ -29,7 +29,13 @@ export abstract class Node {
   _lastChild: Node | null;
   _eventHandlers: Map<string, EventHandler[]> | null;
 
-  constructor(doc: Document, uid: number, nodeType: NodeType, nodeName: string) {
+  constructor(
+    doc: Document,
+    uid: number,
+    nodeType: NodeType,
+    nodeName: string,
+    eventHandlers: Map<string, EventHandler[]> | null = null,
+  ) {
     this.uid = uid;
     this._document = doc;
     this._nodeType = nodeType;
@@ -40,21 +46,21 @@ export abstract class Node {
     this._nextSibling = null;
     this._firstChild = null;
     this._lastChild = null;
-    this._eventHandlers = null;
+    this._eventHandlers = eventHandlers;
   }
 
   get nodeType(): number {
-    this._trace("Node.nodeType");
+    this._trace(`Node.nodeType => ${this._nodeType}`);
     return this._nodeType;
   }
 
   get nodeName(): string {
-    this._trace("Node.nodeName");
+    this._trace(`Node.nodeName => "${this._nodeName}"`);
     return this._nodeName;
   }
 
   get nodeValue(): any {
-    this._trace("Node.nodeValue");
+    this._trace(`Node.nodeValue => "${this._nodeValue}"`);
     return this._nodeValue;
   }
 
@@ -64,27 +70,27 @@ export abstract class Node {
   }
 
   get parentNode(): Node | null {
-    this._trace("Node.parentNode");
+    this._trace(`Node.parentNode => ${this._parentNode === null ? "null" : this._parentNode.uid}`);
     return this._parentNode;
   }
 
   get previousSibling(): Node | null {
-    this._trace("Node.previousSibling");
+    this._trace(`Node.previousSibling => ${this._previousSibling === null ? "null" : this._previousSibling.uid}`);
     return this._previousSibling;
   }
 
   get nextSibling(): Node | null {
-    this._trace("Node.nextSibling");
+    this._trace(`Node.nextSibling => ${this._nextSibling === null ? "null" : this._nextSibling.uid}`);
     return this._nextSibling;
   }
 
   get firstChild(): Node | null {
-    this._trace("Node.firstChild");
+    this._trace(`Node.firstChild => ${this._firstChild === null ? "null" : this._firstChild.uid}`);
     return this._firstChild;
   }
 
   get lastChild(): Node | null {
-    this._trace("Node.lastChild");
+    this._trace(`Node.lastChild => ${this._lastChild === null ? "null" : this._lastChild.uid}`);
     return this._lastChild;
   }
 
@@ -189,6 +195,16 @@ export abstract class Node {
   _trace(s: string) {
     this._document._trace(`[${this.uid}] ${s}`);
   }
+
+  cloneNode(deep: boolean): Node {
+    const n = this._cloneNode(deep);
+    this._trace(`Node.cloneNode(${deep}) => ${n.uid}`);
+    return n;
+  }
+
+  _cloneNode(deep: boolean): Node {
+    return cloneNode(this, deep);
+  }
 }
 
 export class Text extends Node {
@@ -215,24 +231,29 @@ export class Element extends Node {
     uid: number,
     nodeType: number,
     tagName: string,
-    namespaceURI: string = "http://www.w3.org/1999/xhtml"
+    namespaceURI: string = "http://www.w3.org/1999/xhtml",
+    attributes: Map<string, string> = new Map(),
+    properties: Map<string | symbol, any> = new Map(),
+    styles: Map<string, string> = new Map(),
+    eventHandlers: Map<string, EventHandler[]> | null = null,
   ) {
-    super(document, uid, nodeType, tagName);
+    super(document, uid, nodeType, tagName, eventHandlers);
     this._namespaceURI = namespaceURI;
-    this._attributes = new Map();
-    this._properties = new Map();
-    this._styles = new Map();
-    this._eventHandlers = new Map();
+    this._attributes = attributes;
+    this._properties = properties;
+    this._styles = styles;
+    this._eventHandlers = eventHandlers;
   }
 
   get namespaceURI() {
-    this._trace(`Element.namespaceURI`);
+    this._trace(`Element.namespaceURI => "${this._namespaceURI}"`);
     return this._namespaceURI;
   }
 
   get className(): string {
-    this._trace(`Element.className`);
-    return this._getAttribute("class") ?? "";
+    const r = this._getAttribute("class") ?? "";
+    this._trace(`Element.className => "${r}"`);
+    return r;
   }
 
   set className(v: string) {
@@ -242,7 +263,7 @@ export class Element extends Node {
 
   setAttribute(key: string, value: string) {
     this._trace(`Element.setAttribute("${key}", ${JSON.stringify(value)})`);
-    this._setAttribute(key, value);
+    this._setAttribute(key, "" + value);
   }
 
   _setAttribute(key: string, value: string) {
@@ -250,8 +271,9 @@ export class Element extends Node {
   }
 
   getAttribute(key: string): string | null {
-    this._trace(`Element.getAttribute("${key}")`);
-    return this._getAttribute(key);
+    const v = this._getAttribute(key);
+    this._trace(`Element.getAttribute("${key}") => ${JSON.stringify(v)}`);
+    return v;
   }
 
   _getAttribute(key: string): string | null {
@@ -268,12 +290,13 @@ export class Element extends Node {
   }
 
   getProperty(key: string | symbol) {
-    this._trace(`Element.getProperty("${key.toString()}")`);
-    return this._getProperty(key);
+    const v = this._getProperty(key);
+    this._trace(`Element.getProperty("${key.toString()}") => ${JSON.stringify(v)}`);
+    return v;
   }
 
   _getProperty(key: string | symbol): any {
-    return this._properties.get(key) ?? null;
+    return this._properties.get(key);
   }
 
   removeAttribute(key: string) {
@@ -327,7 +350,7 @@ export class Element extends Node {
   }
 
   _setInnerHTML(html: string) {
-    const fragment = parseHTML(this._document, html, this.namespaceURI);
+    const fragment = parseHTML(this._document, html, this._namespaceURI);
     this._firstChild = null;
     this._lastChild = null;
     let node = fragment._firstChild;
@@ -356,8 +379,26 @@ const ELEMENT_PROXY_HANDLER: ProxyHandler<Element> = {
 };
 
 export class HTMLElement extends Element {
-  constructor(document: Document, uid: number, tagName: string) {
-    super(document, uid, NodeType.Element, tagName);
+  constructor(
+    document: Document,
+    uid: number,
+    tagName: string,
+    attributes: Map<string, string> = new Map(),
+    properties: Map<string | symbol, any> = new Map(),
+    styles: Map<string, string> = new Map(),
+    eventHandlers: Map<string, EventHandler[]> | null = null,
+  ) {
+    super(
+      document,
+      uid,
+      NodeType.Element,
+      tagName,
+      "http://www.w3.org/1999/xhtml",
+      attributes,
+      properties,
+      styles,
+      eventHandlers,
+    );
   }
 
   get style() {
@@ -370,8 +411,26 @@ export class HTMLElement extends Element {
   }
 }
 export class SVGElement extends Element {
-  constructor(document: Document, uid: number, tagName: string) {
-    super(document, uid, NodeType.Element, tagName, "http://www.w3.org/2000/svg");
+  constructor(
+    document: Document,
+    uid: number,
+    tagName: string,
+    attributes: Map<string, string> = new Map(),
+    properties: Map<string | symbol, any> = new Map(),
+    styles: Map<string, string> = new Map(),
+    eventHandlers: Map<string, EventHandler[]> | null = null,
+  ) {
+    super(
+      document,
+      uid,
+      NodeType.Element,
+      tagName,
+      "http://www.w3.org/2000/svg",
+      attributes,
+      properties,
+      styles,
+      eventHandlers,
+    );
   }
 
   get style() {
@@ -409,7 +468,7 @@ export class Template extends Element {
   }
 
   _setInnerHTML(html: string) {
-    const frag = parseHTML(this._document, html, this.namespaceURI);
+    const frag = parseHTML(this._document, html, this._namespaceURI);
     let n = this._content._firstChild;
     while (n !== null) {
       n._remove();
@@ -430,9 +489,9 @@ export class Document extends Element {
   _body: Element;
 
   constructor() {
-    super(null!, 0, NodeType.Document, "#document");
+    super(null!, -9, NodeType.Document, "#document");
     this._log = null;
-    this._nextUid = 1;
+    this._nextUid = -8;
     this._body = this._createElement("body");
   }
 
@@ -544,8 +603,8 @@ export class CSSStyleDeclaration {
   }
 
   setProperty(key: string, value: string) {
-    this._element._trace(`style.setProperty(${key}, ${JSON.stringify(value)})`);
-    this._setProperty(key, value);
+    this._element._trace(`style.setProperty(${key}, "${value}")`);
+    this._setProperty(key, "" + value);
   }
 
   _setProperty(key: string, value: string) {
@@ -562,14 +621,95 @@ export class CSSStyleDeclaration {
   }
 
   getPropertyValue(key: string) {
-    this._element._trace(`style.getPropertyValue(${key})`);
-    return this._getPropertyValue(key);
+    const v = this._getPropertyValue(key);
+    this._element._trace(`style.getPropertyValue(${key}) => "${v}"`);
+    return v;
   }
 
   _getPropertyValue(key: string): string {
     return this._styles.get(key) ?? "";
   }
 }
+
+const cloneNode = (node: Node, deep: boolean) => {
+  const uid = node._document._nextUid++;
+  if (node instanceof Text) {
+    const n = new Text(node._document, uid, node._nodeValue);
+    return n;
+  }
+
+  if (node instanceof HTMLElement) {
+    const n = new HTMLElement(
+      node._document,
+      uid,
+      node._nodeName,
+      new Map(node._attributes.entries()),
+      new Map(node._properties.entries()),
+      new Map(node._styles.entries()),
+      node._eventHandlers === null
+        ? new Map()
+        : new Map(node._eventHandlers.entries()),
+    );
+    if (deep) {
+      _cloneChildren(node, n);
+    }
+    return n;
+  }
+
+  if (node instanceof SVGElement) {
+    const n = new SVGElement(
+      node._document,
+      uid,
+      node._nodeName,
+      new Map(node._attributes.entries()),
+      new Map(node._properties.entries()),
+      new Map(node._styles.entries()),
+      node._eventHandlers === null
+        ? new Map()
+        : new Map(node._eventHandlers.entries()),
+    );
+    if (deep) {
+      _cloneChildren(node, n);
+    }
+    return n;
+  }
+
+  if (node instanceof Element) {
+    const n = new Element(
+      node._document,
+      uid,
+      node._nodeType,
+      node._nodeName,
+      node._namespaceURI,
+      new Map(node._attributes.entries()),
+      new Map(node._properties.entries()),
+      new Map(node._styles.entries()),
+      node._eventHandlers === null
+        ? new Map()
+        : new Map(node._eventHandlers.entries()),
+    );
+    if (deep) {
+      _cloneChildren(node, n);
+    }
+    return n;
+  }
+
+  if (node instanceof Comment) {
+    const n = new Comment(node._document, uid);
+    return n;
+  }
+
+  throw Error("This node type doesn't support cloning");
+};
+
+
+const _cloneChildren = (from: Element, to: Element) => {
+  let child = from._firstChild;
+  while (child !== null) {
+    to._appendChild(cloneNode(child, true));
+    child = child._nextSibling;
+  }
+};
 
 export const toSnapshot = (node: any): string => (
   _toSnapshot(node as Node, 0).trimEnd()
@@ -593,7 +733,7 @@ const _toSnapshot = (node: Node, depth: number) => {
       propsString += indent(innerDepth, `${k}="${v}"\n`);
     });
     node._properties.forEach((v, k) => {
-      propsString += indent(innerDepth, `.${k.toString()}={ ${v.toString()} }\n`);
+      propsString += indent(innerDepth, `.${k.toString()}=${JSON.stringify(v)}\n`);
     });
     node._styles.forEach((v, k) => {
       propsString += indent(innerDepth, `~${k}="${v}"\n`);

@@ -18,11 +18,11 @@ describe("mock-dom/element", () => {
       }),
       [
         `createElement("div") => 2`,
-        `[2] Element.getAttribute("a")`,
+        `[2] Element.getAttribute("a") => null`,
         `[2] Element.setAttribute("a", "1")`,
-        `[2] Element.getAttribute("a")`,
+        `[2] Element.getAttribute("a") => "1"`,
         `[2] Element.setAttribute("b", "2")`,
-        `[2] Element.getAttribute("b")`,
+        `[2] Element.getAttribute("b") => "2"`,
       ],
     );
   });
@@ -38,10 +38,10 @@ describe("mock-dom/element", () => {
       }),
       [
         `createElement("div") => 2`,
-        `[2] Element.className`,
+        `[2] Element.className => ""`,
         `[2] Element.className = "a b"`,
-        `[2] Element.className`,
-        `[2] Element.getAttribute("class")`,
+        `[2] Element.className => "a b"`,
+        `[2] Element.getAttribute("class") => "a b"`,
       ],
     );
   });
@@ -63,13 +63,13 @@ describe("mock-dom/element", () => {
       [
         `createElement("div") => 2`,
         `[2] HTMLElement.style`,
-        `[2] style.getPropertyValue(a)`,
+        `[2] style.getPropertyValue(a) => ""`,
         `[2] style.setProperty(a, "1")`,
-        `[2] style.getPropertyValue(a)`,
+        `[2] style.getPropertyValue(a) => "1"`,
         `[2] style.setProperty(b, "2")`,
-        `[2] style.getPropertyValue(b)`,
+        `[2] style.getPropertyValue(b) => "2"`,
         `[2] style.removeProperty(a)`,
-        `[2] style.getPropertyValue(a)`,
+        `[2] style.getPropertyValue(a) => ""`,
       ],
     );
   });
@@ -109,9 +109,9 @@ describe("mock-dom/element", () => {
       }),
       [
         `createElement("div") => 2`,
-        `[2] Element.getProperty("a")`,
+        `[2] Element.getProperty("a") => undefined`,
         `[2] Element.setProperty("a", 123)`,
-        `[2] Element.getProperty("a")`,
+        `[2] Element.getProperty("a") => 123`,
       ],
     );
   });

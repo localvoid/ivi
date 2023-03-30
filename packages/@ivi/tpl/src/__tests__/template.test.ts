@@ -1,217 +1,334 @@
 import { strictEqual } from "node:assert";
-import { describe, test } from "node:test";
-import "global-jsdom/register";
+import { beforeEach, describe, test } from "node:test";
+import { reset, toSnapshot } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "../index.js";
-import { type VAny } from "ivi";
 
-describe("template", () => {
-  describe("mount", () => {
-    const mount = <T extends Node>(v: VAny) => {
-      const root = createRoot();
-      root.update(v);
-      return root.findDOMNode<T>();
-    };
+describe("tpl", () => {
+  beforeEach(reset);
 
-    describe("structure", () => {
-      test("1", () => {
-        const n = mount<HTMLDivElement>(htm`div`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.children.length, 0);
-      });
+  test(`1`, () => {
+    const root = createRoot();
+    root.update(htm`div`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2/>
+      `.trim(),
+    );
+  });
 
-      test("2", () => {
-        const n = mount<HTMLDivElement>(htm`div span`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.children.length, 1);
-        strictEqual(n.children[0].tagName, "SPAN");
-      });
+  test(`2`, () => {
+    const root = createRoot();
+    root.update(htm`div span`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <SPAN#6/>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("3", () => {
-        const n = mount<HTMLDivElement>(htm`div 'a'`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-      });
+  test(`3`, () => {
+    const root = createRoot();
+    root.update(htm`div 'a'`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <TEXT#6>a</TEXT#6>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("4", () => {
-        const n = mount<HTMLDivElement>(htm`div 'a' 'b'`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "ab");
-      });
+  test(`4`, () => {
+    const root = createRoot();
+    root.update(htm`div "a"`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <TEXT#6>a</TEXT#6>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("5", () => {
-        const n = mount<HTMLDivElement>(htm`div 'a' span 'b'`)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 2);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-        strictEqual((n.childNodes[1] as Element).tagName, "SPAN");
-        strictEqual(n.childNodes[1].childNodes[0].nodeValue, "b");
-      });
+  test(`5`, () => {
+    const root = createRoot();
+    root.update(htm`div #"a"#`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <TEXT#6>a</TEXT#6>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("6", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div
-            span
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.children.length, 1);
-        strictEqual(n.children[0].tagName, "SPAN");
-      });
+  test(`6`, () => {
+    const root = createRoot();
+    root.update(htm`div ##"a"##`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <TEXT#6>a</TEXT#6>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("7", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div
-            'a'
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 1);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-      });
+  test(`7`, () => {
+    const root = createRoot();
+    root.update(htm`div 'a' 'b'`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <TEXT#6>ab</TEXT#6>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("8", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div
-            'a'
-            span
-              'b'
-        `)!;
-        strictEqual(n.tagName, "DIV");
-        strictEqual(n.childNodes.length, 2);
-        strictEqual(n.childNodes[0].nodeValue, "a");
-        strictEqual((n.childNodes[1] as Element).tagName, "SPAN");
-        strictEqual(n.childNodes[1].childNodes[0].nodeValue, "b");
-      });
-    });
+  test(`8`, () => {
+    const root = createRoot();
+    root.update(htm`div 'a' span 'b'`);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#7>
+  <TEXT#8>a</TEXT#8>
+  <SPAN#9>
+    <TEXT#10>b</TEXT#10>
+  </SPAN#9>
+</DIV#7>
+      `.trim(),
+    );
+  });
 
-    describe("properties", () => {
-      test("className 1", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div.a.b
-        `)!;
-        strictEqual(n.className, "a b");
-      });
+  test(`9`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div
+        span
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <SPAN#6/>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("attr 1", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div :attr
-        `)!;
-        strictEqual(n.getAttribute("attr"), "");
-      });
+  test(`10`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div
+        'a'
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#5>
+  <TEXT#6>a</TEXT#6>
+</DIV#5>
+      `.trim(),
+    );
+  });
 
-      test("attr 2", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div
-            :attr
-        `)!;
-        strictEqual(n.getAttribute("attr"), "");
-      });
+  test(`11`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div
+        'a'
+        span
+          'b'
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#7>
+  <TEXT#8>a</TEXT#8>
+  <SPAN#9>
+    <TEXT#10>b</TEXT#10>
+  </SPAN#9>
+</DIV#7>
+      `.trim(),
+    );
+  });
 
-      test("attr 3", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div :attr='a'
-        `)!;
-        strictEqual(n.getAttribute("attr"), "a");
-      });
+  test(`div.a.b`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div.a.b
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  class="a b"
+/>
+      `.trim(),
+    );
+  });
 
-      test("attr 4", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div
-            :attr='a'
-        `)!;
-        strictEqual(n.getAttribute("attr"), "a");
-      });
+  test(`div :attr #1`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div :attr
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  attr=""
+/>
+      `.trim(),
+    );
+  });
 
-      test(".className", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div${"a b"}
-        `)!;
-        strictEqual(n.className, "a b");
-      });
+  test(`div :attr #2`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div
+        :attr
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  attr=""
+/>
+      `.trim(),
+    );
+  });
 
-      test(":attr", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div :attr=${"a"}
-        `)!;
-        strictEqual(n.getAttribute("attr"), "a");
-      });
+  test(`div :attr='a'`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div
+        :attr='a'
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  attr="a"
+/>
+      `.trim(),
+    );
+  });
 
-      test(".prop", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div .ariaValueMin=${"a"}
-        `)!;
-        strictEqual(n.ariaValueMin, "a");
-      });
+  test(`div{"a b"}`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div${"a b"}
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  class="a b"
+/>
+      `.trim(),
+    );
+  });
 
-      test("*prop", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div *ariaValueMin=${"a"}
-        `)!;
-        strictEqual(n.ariaValueMin, "a");
-      });
+  test(`div :a={"0"}`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div :a=${"0"}
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  a="0"
+/>
+      `.trim(),
+    );
+  });
 
-      test("static style 1", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div ~top="10px"
-        `)!;
-        strictEqual(n.style.top, "10px");
-      });
+  test(`div .a={"0"}`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div .a=${"0"}
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  .a="0"
+/>
+      `.trim(),
+    );
+  });
 
-      test("static style merge with attribute", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div :style="left:5px" ~top="10px"
-        `)!;
-        strictEqual(n.style.left, "5px");
-        strictEqual(n.style.top, "10px");
-      });
+  test(`div *a={"0"}`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div *a=${"0"}
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  .a="0"
+/>
+      `.trim(),
+    );
+  });
 
-      test("~style", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div ~top=${"10px"}
-        `)!;
-        strictEqual(n.style.top, "10px");
-      });
+  test(`div ~top="10px"`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div ~top="10px"
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  style="top:10px"
+/>
+      `.trim(),
+    );
+  });
 
-      test("@event", () => {
-        let clicked = 0;
-        const onClick = () => { clicked++; };
-        const n = mount<HTMLDivElement>(htm`
-          div @click=${onClick}
-        `)!;
-        n.click();
-        strictEqual(clicked, 1);
-      });
+  test(`div :style="left:5px" ~top="10px`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div :style="left:5px" ~top="10px"
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#4
+  style="left:5px;top:10px"
+/>
+      `.trim(),
+    );
+  });
 
-      test("=textContent", () => {
-        const n = mount<HTMLDivElement>(htm`
-          div =${"a"}
-        `)!;
-        strictEqual(n.textContent, "a");
-      });
-
-      test("$directive", () => {
-        let e;
-        const onMount = (element: Element) => { e = element; };
-        const n = mount<HTMLDivElement>(htm`
-          div span $${onMount}
-        `)!;
-        strictEqual(n.childNodes[0], e);
-      });
-
-      test("click and textContent", () => {
-        let clicked = 0;
-        const onClick = () => { clicked++; };
-        const n = mount<HTMLDivElement>(htm`
-          td.TableCell
-            @click=${onClick}
-            =${"ab"}
-          `
-        )!;
-        n.click();
-        strictEqual(n.childNodes[0].nodeValue, "ab");
-        strictEqual(clicked, 1);
-      });
-    });
+  test(`div ~top={"10px"}`, () => {
+    const root = createRoot();
+    root.update(htm`
+      div ~top=${"10px"}
+    `);
+    strictEqual(
+      toSnapshot(root.findDOMNode()),
+      `
+<DIV#2
+  ~top="10px"
+/>
+      `.trim(),
+    );
   });
 });

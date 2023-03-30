@@ -19,7 +19,8 @@
     "ivi": "workspace:*"
   },
   "devDependencies": {
-    "ivi": "workspace:*"
+    "ivi": "workspace:*",
+    "@ivi/mock-dom": "workspace:*"
   },
   "description": "ivi Template Language.",
   "license": "MIT",

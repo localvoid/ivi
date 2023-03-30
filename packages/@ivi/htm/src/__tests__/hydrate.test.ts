@@ -6,9 +6,7 @@ import { htm } from "../index.js";
 import { component, invalidate } from "ivi";
 
 describe("hydrate", () => {
-  beforeEach(() => {
-    reset();
-  });
+  beforeEach(reset);
 
   test(`<div></div>`, () => {
     document.body.innerHTML = `<div></div>`;
@@ -20,7 +18,7 @@ describe("hydrate", () => {
         );
       }),
       [
-        "[1] Node.lastChild",
+        "[1] Node.lastChild => 3",
       ]
     );
     strictEqual(toSnapshot(root.findDOMNode()), `<DIV#3/>`);
@@ -46,11 +44,11 @@ describe("hydrate", () => {
     deepStrictEqual(
       trace(() => { root.hydrate(Test()); }),
       [
-        `[1] Node.lastChild`,
-        `[3] Node.firstChild`,
-        `[4] Node.nextSibling`,
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[4] Node.nextSibling => 6`,
         `[6] Element.addEventListener("click", onClick)`,
-        `[4] Node.lastChild`,
+        `[4] Node.lastChild => 5`,
       ],
     );
     strictEqual(toSnapshot(root.findDOMNode()), `

@@ -17,9 +17,9 @@ describe("mock-dom/document", () => {
       }),
       [
         `createElement("div") => 2`,
-        `[2] Node.nodeType`,
-        `[2] Node.nodeName`,
-        `[2] Element.namespaceURI`,
+        `[2] Node.nodeType => 1`,
+        `[2] Node.nodeName => "DIV"`,
+        `[2] Element.namespaceURI => "http://www.w3.org/1999/xhtml"`,
       ],
     );
   });
@@ -35,9 +35,9 @@ describe("mock-dom/document", () => {
       }),
       [
         `createElementNS("NS", "tagName") => 2`,
-        `[2] Node.nodeType`,
-        `[2] Node.nodeName`,
-        `[2] Element.namespaceURI`,
+        `[2] Node.nodeType => 1`,
+        `[2] Node.nodeName => "TAGNAME"`,
+        `[2] Element.namespaceURI => "NS"`,
       ],
     );
   });
@@ -51,8 +51,8 @@ describe("mock-dom/document", () => {
       }),
       [
         `createTextNode("a b") => 2`,
-        `[2] Node.nodeType`,
-        `[2] Node.nodeValue`,
+        `[2] Node.nodeType => 3`,
+        `[2] Node.nodeValue => "a b"`,
       ],
     );
   });
