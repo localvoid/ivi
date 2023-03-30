@@ -49,7 +49,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           if (stateOpCodes.length > 0) {
             ctx.si = 0;
             _hydrateAssignTemplateSlots(
-              currentDOMNode,
+              nodeGetFirstChild.call(currentDOMNode),
               stateOpCodes,
               0,
               stateOpCodes.length,
@@ -62,27 +62,27 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
             for (let i = 0; i < propOpCodes.length; i++) {
               const op = propOpCodes[i];
               const type = op & (
+                PropOpCode.SetNode |
                 PropOpCode.Directive |
                 PropOpCode.Property |
                 PropOpCode.DiffDOMProperty |
                 PropOpCode.Event
               );
-              if (type) {
-                const dataIndex = op >> PropOpCode.DataShift;
-                if (type === PropOpCode.SetNode) {
-                  currentElement = state[dataIndex] as Element;
+              const dataIndex = op >> PropOpCode.DataShift;
+              // TODO: optimize (skip attributes)
+              if (type === PropOpCode.SetNode) {
+                currentElement = state[dataIndex] as Element;
+              } else {
+                const prop = props[(op >> PropOpCode.InputShift) & PropOpCode.Mask6];
+                if (type === PropOpCode.Directive) {
+                  (prop as ElementDirective)(currentElement);
                 } else {
-                  const prop = props[(op >> PropOpCode.InputShift) & PropOpCode.Mask6];
-                  if (type === PropOpCode.Directive) {
-                    (prop as ElementDirective)(currentElement);
-                  } else {
-                    const key = data[dataIndex];
-                    if (type === PropOpCode.Event) {
-                      elementAddEventListener.call(currentElement, key, prop);
-                    } else { // type === PropOpCode.Property || type === PropOpCode.DiffDOMProperty
-                      if ((currentElement as Record<string, any>)[key] !== prop) {
-                        (currentElement as Record<string, any>)[key] = prop;
-                      }
+                  const key = data[dataIndex];
+                  if (type === PropOpCode.Event) {
+                    elementAddEventListener.call(currentElement, key, prop);
+                  } else { // type === PropOpCode.Property || type === PropOpCode.DiffDOMProperty
+                    if ((currentElement as Record<string, any>)[key] !== prop) {
+                      (currentElement as Record<string, any>)[key] = prop;
                     }
                   }
                 }
@@ -139,7 +139,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           v,
         );
       }
-    } else {
+    } else { // Text
       const node = _getCurrentDOMNode();
       RENDER_CONTEXT.n = node;
       return createSNode(Flags.Text, v, null, parentSNode, node);
@@ -150,15 +150,9 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
 
 const _getCurrentDOMNode = (): Node => {
   const ctx = RENDER_CONTEXT;
-  let node: Node = (ctx.n === null)
+  return (ctx.n === null)
     ? nodeGetLastChild.call(ctx.p)
     : nodeGetPrevSibling.call(ctx.n);
-  while (node.nodeType === NodeType.Comment) {
-    const comment = node as Comment;
-    node = nodeGetPrevSibling.call(node);
-    comment.remove();
-  }
-  return node;
 };
 
 const _hydrateList = (

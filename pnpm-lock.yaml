@@ -29,8 +29,10 @@ importers:
 
   packages/@ivi/htm:
     specifiers:
+      '@ivi/mock-dom': workspace:*
       ivi: workspace:*
     devDependencies:
+      '@ivi/mock-dom': link:../mock-dom
       ivi: link:../../ivi
 
   packages/@ivi/identity:
