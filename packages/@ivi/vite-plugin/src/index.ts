@@ -92,15 +92,10 @@ export function ivi(options?: IviOptions): Plugin[] {
 
       resolveId(source, importer, options) {
         if (options.ssr && source === "ivi") {
-          return SSR_MODULE_ID;
+          return this.resolve("ivi/ssr", importer, options);
         }
         return void 0;
       },
     },
   ];
 }
-
-const SSR_MODULE_ID = {
-  external: true,
-  id: "ivi/ssr",
-};

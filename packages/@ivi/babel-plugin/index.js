@@ -126,7 +126,25 @@ const ivi = (config) => declare((api) => {
       Program: {
         enter(path, state) {
           state.importSymbol = importSymbolFactory(path);
+          state.removeImports = [];
         },
+        exit(path, state) {
+          const removeImports = state.removeImports;
+          for (let i = 0; i < removeImports.length; i++) {
+            removeImports[i].remove();
+          }
+        }
+      },
+
+      ImportDeclaration(path, state) {
+        const removeImports = state.removeImports;
+        const source = path.node.source.value;
+        for (let i = 0; i < templateLanguages.length; i++) {
+          const lang = templateLanguages[i];
+          if (source === lang.module) {
+            removeImports.push(path);
+          }
+        }
       },
 
       CallExpression(path) {

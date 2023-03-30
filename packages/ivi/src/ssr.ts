@@ -146,11 +146,11 @@ export const _t = (
   e,
 });
 
-export const render = (v: VAny): string => {
+export const render = (v: any): string => {
   let result;
   const ctx = RENDER_CONTEXT;
   try {
-    renderNode(v);
+    renderNode(v as VAny);
     result = ctx.t;
   } finally {
     ctx.t = "";
