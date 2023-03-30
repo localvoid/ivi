@@ -1,5 +1,6 @@
 import type { RootDescriptor, SNode, SRoot, VAny, VRoot } from "../index.js";
 import { Flags, createSNode, dirtyCheck, update, unmount } from "../index.js";
+import { hydrate } from "../hydrate.js";
 import { findDOMNode } from "../dom.js";
 
 const TEST_ROOT_DESCRIPTOR: RootDescriptor<TestRoot> = {
@@ -32,6 +33,10 @@ export class TestRoot {
         ? Flags.ForceUpdate
         : 0,
     );
+  }
+
+  hydrate(v: VAny) {
+    hydrate(this._root, v);
   }
 
   dirtyCheck() {
