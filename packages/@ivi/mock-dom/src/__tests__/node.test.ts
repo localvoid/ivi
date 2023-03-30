@@ -1,193 +1,400 @@
-import { strictEqual } from "node:assert";
-import { test } from "node:test";
-import "../global.js";
+import { deepStrictEqual, strictEqual } from "node:assert";
+import { beforeEach, describe, test } from "node:test";
+import { reset, trace } from "../global.js";
 
-test("append child", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  parent.appendChild(a);
-  strictEqual(parent.firstChild, a);
-  strictEqual(parent.lastChild, a);
-  strictEqual(a.parentNode, parent);
-  strictEqual(a.previousSibling, null);
-  strictEqual(a.nextSibling, null);
-});
+describe("mock-dom/node", () => {
+  beforeEach(reset);
+  test("append child", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        parent.appendChild(a);
+        strictEqual(parent.firstChild, a);
+        strictEqual(parent.lastChild, a);
+        strictEqual(a.parentNode, parent);
+        strictEqual(a.previousSibling, null);
+        strictEqual(a.nextSibling, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `[2] Node.appendChild(3)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.parentNode`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("append 2 child", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  parent.appendChild(a);
-  parent.appendChild(b);
-  strictEqual(parent.firstChild, a);
-  strictEqual(parent.lastChild, b);
-  strictEqual(a.parentNode, parent);
-  strictEqual(b.parentNode, parent);
+  test("append 2 child", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        parent.appendChild(a);
+        parent.appendChild(b);
+        strictEqual(parent.firstChild, a);
+        strictEqual(parent.lastChild, b);
+        strictEqual(a.parentNode, parent);
+        strictEqual(b.parentNode, parent);
 
-  strictEqual(a.previousSibling, null);
-  strictEqual(a.nextSibling, b);
-  strictEqual(b.previousSibling, a);
-  strictEqual(b.nextSibling, null);
-});
+        strictEqual(a.previousSibling, null);
+        strictEqual(a.nextSibling, b);
+        strictEqual(b.previousSibling, a);
+        strictEqual(b.nextSibling, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `[2] Node.appendChild(3)`,
+        `[2] Node.appendChild(4)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.parentNode`,
+        `[4] Node.parentNode`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("insertBefore before 1 node", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, a);
-  strictEqual(parent.firstChild, b);
-  strictEqual(parent.lastChild, a);
-  strictEqual(a.parentNode, parent);
-  strictEqual(b.parentNode, parent);
+  test("insertBefore before 1 node", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, a);
+        strictEqual(parent.firstChild, b);
+        strictEqual(parent.lastChild, a);
+        strictEqual(a.parentNode, parent);
+        strictEqual(b.parentNode, parent);
 
-  strictEqual(a.previousSibling, b);
-  strictEqual(a.nextSibling, null);
-  strictEqual(b.previousSibling, null);
-  strictEqual(b.nextSibling, a);
-});
+        strictEqual(a.previousSibling, b);
+        strictEqual(a.nextSibling, null);
+        strictEqual(b.previousSibling, null);
+        strictEqual(b.nextSibling, a);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, 3)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.parentNode`,
+        `[4] Node.parentNode`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("insertBefore between 2 nodes", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  const c = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, null);
-  parent.insertBefore(c, b);
-  strictEqual(parent.firstChild, a);
-  strictEqual(parent.lastChild, b);
-  strictEqual(a.parentNode, parent);
-  strictEqual(b.parentNode, parent);
-  strictEqual(c.parentNode, parent);
+  test("insertBefore between 2 nodes", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        const c = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, null);
+        parent.insertBefore(c, b);
+        strictEqual(parent.firstChild, a);
+        strictEqual(parent.lastChild, b);
+        strictEqual(a.parentNode, parent);
+        strictEqual(b.parentNode, parent);
+        strictEqual(c.parentNode, parent);
 
-  strictEqual(a.previousSibling, null);
-  strictEqual(a.nextSibling, c);
-  strictEqual(b.previousSibling, c);
-  strictEqual(b.nextSibling, null);
-  strictEqual(c.previousSibling, a);
-  strictEqual(c.nextSibling, b);
-});
+        strictEqual(a.previousSibling, null);
+        strictEqual(a.nextSibling, c);
+        strictEqual(b.previousSibling, c);
+        strictEqual(b.nextSibling, null);
+        strictEqual(c.previousSibling, a);
+        strictEqual(c.nextSibling, b);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `createElement("span") => 5`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.insertBefore(5, 4)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.parentNode`,
+        `[4] Node.parentNode`,
+        `[5] Node.parentNode`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+        `[5] Node.previousSibling`,
+        `[5] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("remove first node", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  const c = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, null);
-  parent.insertBefore(c, null);
-  parent.removeChild(a);
+  test("remove first node", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        const c = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, null);
+        parent.insertBefore(c, null);
+        parent.removeChild(a);
 
-  strictEqual(parent.firstChild, b);
-  strictEqual(parent.lastChild, c);
+        strictEqual(parent.firstChild, b);
+        strictEqual(parent.lastChild, c);
 
-  strictEqual(a.previousSibling, null);
-  strictEqual(a.nextSibling, null);
-  strictEqual(b.previousSibling, null);
-  strictEqual(b.nextSibling, c);
-  strictEqual(c.previousSibling, b);
-  strictEqual(c.nextSibling, null);
-});
+        strictEqual(a.previousSibling, null);
+        strictEqual(a.nextSibling, null);
+        strictEqual(b.previousSibling, null);
+        strictEqual(b.nextSibling, c);
+        strictEqual(c.previousSibling, b);
+        strictEqual(c.nextSibling, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `createElement("span") => 5`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.insertBefore(5, null)`,
+        `[2] Node.removeChild(3)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+        `[5] Node.previousSibling`,
+        `[5] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("remove middle node", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  const c = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, null);
-  parent.insertBefore(c, null);
-  parent.removeChild(b);
+  test("remove middle node", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        const c = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, null);
+        parent.insertBefore(c, null);
+        parent.removeChild(b);
 
-  strictEqual(parent.firstChild, a);
-  strictEqual(parent.lastChild, c);
+        strictEqual(parent.firstChild, a);
+        strictEqual(parent.lastChild, c);
 
-  strictEqual(a.previousSibling, null);
-  strictEqual(a.nextSibling, c);
-  strictEqual(b.previousSibling, null);
-  strictEqual(b.nextSibling, null);
-  strictEqual(c.previousSibling, a);
-  strictEqual(c.nextSibling, null);
-});
+        strictEqual(a.previousSibling, null);
+        strictEqual(a.nextSibling, c);
+        strictEqual(b.previousSibling, null);
+        strictEqual(b.nextSibling, null);
+        strictEqual(c.previousSibling, a);
+        strictEqual(c.nextSibling, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `createElement("span") => 5`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.insertBefore(5, null)`,
+        `[2] Node.removeChild(4)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+        `[5] Node.previousSibling`,
+        `[5] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("remove last node", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  const c = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, null);
-  parent.insertBefore(c, null);
-  parent.removeChild(c);
+  test("remove last node", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        const c = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, null);
+        parent.insertBefore(c, null);
+        parent.removeChild(c);
 
-  strictEqual(parent.firstChild, a);
-  strictEqual(parent.lastChild, b);
+        strictEqual(parent.firstChild, a);
+        strictEqual(parent.lastChild, b);
 
-  strictEqual(a.previousSibling, null);
-  strictEqual(a.nextSibling, b);
-  strictEqual(b.previousSibling, a);
-  strictEqual(b.nextSibling, null);
-  strictEqual(c.previousSibling, null);
-  strictEqual(c.nextSibling, null);
-});
+        strictEqual(a.previousSibling, null);
+        strictEqual(a.nextSibling, b);
+        strictEqual(b.previousSibling, a);
+        strictEqual(b.nextSibling, null);
+        strictEqual(c.previousSibling, null);
+        strictEqual(c.nextSibling, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `createElement("span") => 5`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.insertBefore(5, null)`,
+        `[2] Node.removeChild(5)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+        `[5] Node.previousSibling`,
+        `[5] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("move node", () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  const c = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, null);
-  parent.insertBefore(c, b);
-  parent.insertBefore(b, a);
+  test("move node", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        const c = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, null);
+        parent.insertBefore(c, b);
+        parent.insertBefore(b, a);
 
-  strictEqual(parent.firstChild, b);
-  strictEqual(parent.lastChild, c);
+        strictEqual(parent.firstChild, b);
+        strictEqual(parent.lastChild, c);
 
-  strictEqual(b.previousSibling, null);
-  strictEqual(b.nextSibling, a);
-  strictEqual(a.previousSibling, b);
-  strictEqual(a.nextSibling, c);
-  strictEqual(c.previousSibling, a);
-  strictEqual(c.nextSibling, null);
-});
+        strictEqual(b.previousSibling, null);
+        strictEqual(b.nextSibling, a);
+        strictEqual(a.previousSibling, b);
+        strictEqual(a.nextSibling, c);
+        strictEqual(c.previousSibling, a);
+        strictEqual(c.nextSibling, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `createElement("span") => 5`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.insertBefore(5, 4)`,
+        `[2] Node.insertBefore(4, 3)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[4] Node.previousSibling`,
+        `[4] Node.nextSibling`,
+        `[3] Node.previousSibling`,
+        `[3] Node.nextSibling`,
+        `[5] Node.previousSibling`,
+        `[5] Node.nextSibling`,
+      ],
+    );
+  });
 
-test("move node between different element", () => {
-  const parentA = document.createElement("div");
-  const parentB = document.createElement("div");
-  const a = document.createElement("span");
-  parentA.insertBefore(a, null);
-  strictEqual(parentA.firstChild, a);
-  strictEqual(a.parentNode, parentA);
+  test("move node between different element", () => {
+    deepStrictEqual(
+      trace(() => {
+        const parentA = document.createElement("div");
+        const parentB = document.createElement("div");
+        const a = document.createElement("span");
+        parentA.insertBefore(a, null);
+        strictEqual(parentA.firstChild, a);
+        strictEqual(a.parentNode, parentA);
 
-  parentB.insertBefore(a, null);
-  strictEqual(parentA.firstChild, null);
-  strictEqual(parentA.lastChild, null);
-  strictEqual(parentB.firstChild, a);
-  strictEqual(parentB.lastChild, a);
-  strictEqual(a.parentNode, parentB);
-});
+        parentB.insertBefore(a, null);
+        strictEqual(parentA.firstChild, null);
+        strictEqual(parentA.lastChild, null);
+        strictEqual(parentB.firstChild, a);
+        strictEqual(parentB.lastChild, a);
+        strictEqual(a.parentNode, parentB);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("div") => 3`,
+        `createElement("span") => 4`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.firstChild`,
+        `[4] Node.parentNode`,
+        `[3] Node.insertBefore(4, null)`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.firstChild`,
+        `[3] Node.lastChild`,
+        `[4] Node.parentNode`,
+      ],
+    );
+  });
 
-test(`textContent=""`, () => {
-  const parent = document.createElement("div");
-  const a = document.createElement("span");
-  const b = document.createElement("span");
-  const c = document.createElement("span");
-  parent.insertBefore(a, null);
-  parent.insertBefore(b, null);
-  parent.insertBefore(c, null);
+  test(`textContent=""`, () => {
+    deepStrictEqual(
+      trace(() => {
+        const parent = document.createElement("div");
+        const a = document.createElement("span");
+        const b = document.createElement("span");
+        const c = document.createElement("span");
+        parent.insertBefore(a, null);
+        parent.insertBefore(b, null);
+        parent.insertBefore(c, null);
 
-  strictEqual(a.parentNode, parent);
-  strictEqual(b.parentNode, parent);
-  strictEqual(c.parentNode, parent);
+        strictEqual(a.parentNode, parent);
+        strictEqual(b.parentNode, parent);
+        strictEqual(c.parentNode, parent);
 
-  parent.textContent = "";
+        parent.textContent = "";
 
-  strictEqual(parent.firstChild, null);
-  strictEqual(parent.lastChild, null);
+        strictEqual(parent.firstChild, null);
+        strictEqual(parent.lastChild, null);
 
-  strictEqual(a.parentNode, null);
-  strictEqual(b.parentNode, null);
-  strictEqual(c.parentNode, null);
+        strictEqual(a.parentNode, null);
+        strictEqual(b.parentNode, null);
+        strictEqual(c.parentNode, null);
+      }),
+      [
+        `createElement("div") => 2`,
+        `createElement("span") => 3`,
+        `createElement("span") => 4`,
+        `createElement("span") => 5`,
+        `[2] Node.insertBefore(3, null)`,
+        `[2] Node.insertBefore(4, null)`,
+        `[2] Node.insertBefore(5, null)`,
+        `[3] Node.parentNode`,
+        `[4] Node.parentNode`,
+        `[5] Node.parentNode`,
+        `[2] Node.textContent = ""`,
+        `[2] Node.firstChild`,
+        `[2] Node.lastChild`,
+        `[3] Node.parentNode`,
+        `[4] Node.parentNode`,
+        `[5] Node.parentNode`,
+      ],
+    );
+  });
 });

@@ -1,3 +1,4 @@
+export { toSnapshot } from "./index.js";
 import {
   DOMException as _DOMException,
   Node as _Node,
@@ -36,3 +37,34 @@ declare global {
 (global as any).CSSStyleDeclaration = _CSSStyleDeclaration;
 
 (global as any).document = new _Document();
+
+export const trace = (fn: () => void): string[] => {
+  let log;
+  try {
+    document._startTracing();
+    fn();
+  } finally {
+    log = document._log;
+    document._stopTracing();
+  }
+  return log!;
+};
+
+export const reset = () => {
+  document._reset();
+};
+
+export const emit = (node: any, type: string) => {
+  let target: _Node | null = node;
+  while (target !== null) {
+    if (target._eventHandlers !== null) {
+      const handlers = target._eventHandlers.get(type);
+      if (handlers !== void 0) {
+        for (const h of handlers) {
+          h();
+        }
+      }
+    }
+    target = target._parentNode;
+  }
+};

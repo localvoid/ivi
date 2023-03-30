@@ -18,6 +18,7 @@ export class DOMException extends Error {
 
 export abstract class Node {
   readonly uid: number;
+  _document: Document;
   _nodeType: NodeType;
   _nodeName: string;
   _nodeValue: any;
@@ -26,9 +27,11 @@ export abstract class Node {
   _nextSibling: Node | null;
   _firstChild: Node | null;
   _lastChild: Node | null;
+  _eventHandlers: Map<string, EventHandler[]> | null;
 
-  constructor(uid: number, nodeType: NodeType, nodeName: string) {
+  constructor(doc: Document, uid: number, nodeType: NodeType, nodeName: string) {
     this.uid = uid;
+    this._document = doc;
     this._nodeType = nodeType;
     this._nodeName = nodeName;
     this._nodeValue = null;
@@ -37,59 +40,90 @@ export abstract class Node {
     this._nextSibling = null;
     this._firstChild = null;
     this._lastChild = null;
+    this._eventHandlers = null;
   }
 
   get nodeType(): number {
+    this._trace("Node.nodeType");
     return this._nodeType;
   }
 
   get nodeName(): string {
+    this._trace("Node.nodeName");
     return this._nodeName;
   }
 
   get nodeValue(): any {
+    this._trace("Node.nodeValue");
     return this._nodeValue;
   }
 
+  set nodeValue(s: any) {
+    this._trace(`Node.nodeValue = ${JSON.stringify(s)}`);
+    this._nodeValue = s.toString();
+  }
+
   get parentNode(): Node | null {
+    this._trace("Node.parentNode");
     return this._parentNode;
   }
 
   get previousSibling(): Node | null {
+    this._trace("Node.previousSibling");
     return this._previousSibling;
   }
 
   get nextSibling(): Node | null {
+    this._trace("Node.nextSibling");
     return this._nextSibling;
   }
 
   get firstChild(): Node | null {
+    this._trace("Node.firstChild");
     return this._firstChild;
   }
 
   get lastChild(): Node | null {
+    this._trace("Node.lastChild");
     return this._lastChild;
   }
 
   set textContent(s: string) {
+    this._trace(`Node.textContent = "${s}"`);
+    this._setTextContent(s);
+  }
+
+  _setTextContent(s: string) {
     let node = this._firstChild;
     while (node !== null) {
       const next = node._nextSibling;
-      this.removeChild(node);
+      this._removeChild(node);
       node = next;
     }
     if (s !== "") {
-      this.appendChild(document.createTextNode(s));
+      this._appendChild(document._createTextNode(s));
     }
   }
 
   appendChild(child: Node) {
-    this.insertBefore(child, null);
+    this._trace(`Node.appendChild(${child.uid})`);
+    return this._appendChild(child);
+  }
+
+  _appendChild(child: Node) {
+    this._insertBefore(child, null);
     return child;
   }
 
-  insertBefore(child: Node, ref: Node | null = null) {
-    child.remove();
+  insertBefore(child: Node, ref: Node | null) {
+    this._trace(
+      `Node.insertBefore(${child.uid}, ${ref === null ? "null" : ref.uid})`
+    );
+    this._insertBefore(child, ref);
+  }
+
+  _insertBefore(child: Node, ref: Node | null = null) {
+    child._remove();
     child._parentNode = this;
     if (ref === null) {
       const last = this._lastChild;
@@ -115,6 +149,11 @@ export abstract class Node {
   }
 
   removeChild(child: Node) {
+    this._trace(`Node.removeChild(${child.uid})`);
+    return this._removeChild(child);
+  }
+
+  _removeChild(child: Node) {
     if (child._parentNode?.uid !== this.uid) {
       throw new Error("Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
     }
@@ -137,50 +176,31 @@ export abstract class Node {
   }
 
   remove() {
+    this._trace("Node.remove()");
+    this._remove();
+  }
+
+  _remove() {
     if (this._parentNode !== null) {
-      this._parentNode.removeChild(this);
+      this._parentNode._removeChild(this);
     }
   }
 
-  toSnapshot(depth: number) {
-    let s = indent(depth, `<${this.nodeName}#${this.uid}>\n`);
-    let child = this._firstChild;
-    while (child !== null) {
-      s += child.toSnapshot(depth + 2);
-      child = child._nextSibling;
-    }
-    return s + indent(depth, `</${this.nodeName}#${this.uid}>\n`);
+  _trace(s: string) {
+    this._document._trace(`[${this.uid}] ${s}`);
   }
 }
 
 export class Text extends Node {
-  constructor(uid: number, text: string = "") {
-    super(uid, NodeType.Text, "");
+  constructor(document: Document, uid: number, text: string = "") {
+    super(document, uid, NodeType.Text, "");
     this._nodeValue = text;
-  }
-
-  get nodeValue(): string {
-    return this._nodeValue;
-  }
-
-  set nodeValue(s: any) {
-    this._nodeValue = s.toString();
-  }
-
-  toSnapshot(depth: number) {
-    let s = indent(depth, `<TEXT#${this.uid}>\n`);
-    const childDepth = depth + 2;
-    s += (this._nodeValue as string)
-      .split("\n")
-      .map((s) => indent(childDepth, `${s}\n`))
-      .join("");
-    return s + indent(depth, `</TEXT#${this.uid}>\n`);
   }
 }
 
 export class Comment extends Node {
-  constructor(uid: number) {
-    super(uid, NodeType.Comment, "");
+  constructor(document: Document, uid: number) {
+    super(document, uid, NodeType.Comment, "");
   }
 }
 
@@ -189,15 +209,15 @@ export class Element extends Node {
   _attributes: Map<string, string>;
   _properties: Map<string | symbol, any>;
   _styles: Map<string, string>;
-  _eventHandlers: Map<string, EventHandler[]>;
 
   constructor(
+    document: Document,
     uid: number,
     nodeType: number,
     tagName: string,
     namespaceURI: string = "http://www.w3.org/1999/xhtml"
   ) {
-    super(uid, nodeType, tagName);
+    super(document, uid, nodeType, tagName);
     this._namespaceURI = namespaceURI;
     this._attributes = new Map();
     this._properties = new Map();
@@ -206,126 +226,115 @@ export class Element extends Node {
   }
 
   get namespaceURI() {
+    this._trace(`Element.namespaceURI`);
     return this._namespaceURI;
   }
 
-  get style() {
-    return new CSSStyleDeclaration(this._styles);
-  }
-
   get className(): string {
-    return this.getAttribute("class") ?? "";
+    this._trace(`Element.className`);
+    return this._getAttribute("class") ?? "";
   }
 
   set className(v: string) {
-    this.setAttribute("class", v);
+    this._trace(`Element.className = "${v}"`);
+    this._setAttribute("class", v);
   }
 
   setAttribute(key: string, value: string) {
+    this._trace(`Element.setAttribute("${key}", ${JSON.stringify(value)})`);
+    this._setAttribute(key, value);
+  }
+
+  _setAttribute(key: string, value: string) {
     this._attributes.set(key, value);
   }
 
   getAttribute(key: string): string | null {
+    this._trace(`Element.getAttribute("${key}")`);
+    return this._getAttribute(key);
+  }
+
+  _getAttribute(key: string): string | null {
     return this._attributes.get(key) ?? null;
   }
 
   setProperty(key: string | symbol, value: any) {
+    this._trace(`Element.setProperty("${key.toString()}", ${JSON.stringify(value)})`);
+    this._setProperty(key, value);
+  }
+
+  _setProperty(key: string | symbol, value: any) {
     this._properties.set(key, value);
   }
 
-  getProperty(key: string | symbol): any {
+  getProperty(key: string | symbol) {
+    this._trace(`Element.getProperty("${key.toString()}")`);
+    return this._getProperty(key);
+  }
+
+  _getProperty(key: string | symbol): any {
     return this._properties.get(key) ?? null;
   }
 
   removeAttribute(key: string) {
+    this._trace(`Element.removeAttribute("${key}")`);
+    this._removeAttribute(key);
+  }
+
+  _removeAttribute(key: string) {
     this._attributes.delete(key);
   }
 
   addEventListener(type: string, handler: EventHandler) {
-    let handlers = this._eventHandlers.get(type);
-    if (handlers === void 0) {
+    this._trace(`Element.addEventListener("${type}", ${handler.name})`);
+    this._addEventListener(type, handler);
+  }
+
+  _addEventListener(type: string, handler: EventHandler) {
+    if (this._eventHandlers === null) {
+      this._eventHandlers = new Map();
       this._eventHandlers.set(type, [handler]);
     } else {
-      handlers.push(handler);
+      let handlers = this._eventHandlers.get(type);
+      if (handlers === void 0) {
+        this._eventHandlers.set(type, [handler]);
+      } else {
+        handlers.push(handler);
+      }
     }
   }
 
   removeEventListener(type: string, handler: EventHandler) {
-    const handlers = this._eventHandlers.get(type);
-    if (handlers !== void 0) {
-      const idx = handlers.findIndex((h) => h === handler);
-      if (idx !== -1) {
-        handlers.splice(idx, 1);
-      }
-    }
+    this._trace(`Element.removeEventListener("${type}", ${handler.name})`);
+    this._removeEventListener(type, handler);
   }
 
-  dispatchEvent(type: string) {
-    let target: Element | null = this;
-    do {
-      const handlers = target._eventHandlers.get(type);
+  _removeEventListener(type: string, handler: EventHandler) {
+    if (this._eventHandlers !== null) {
+      const handlers = this._eventHandlers.get(type);
       if (handlers !== void 0) {
-        for (const h of handlers) {
-          h();
+        const idx = handlers.findIndex((h) => h === handler);
+        if (idx !== -1) {
+          handlers.splice(idx, 1);
         }
       }
-    } while (target = (target.parentNode as Element | null));
+    }
   }
 
   set innerHTML(html: string) {
-    const fragment = parseHTML(html, this.namespaceURI);
-    this._firstChild = null;
-    this._lastChild = null;
-    let node = fragment.firstChild;
-    while (node !== null) {
-      this.appendChild(node);
-      node = node._nextSibling;
-    }
+    this._trace(`Element.innerHTML = "${html}"`);
+    this._setInnerHTML(html);
   }
 
-  toSnapshot(depth: number) {
-    let s = indent(depth, `<${this.nodeName}#${this.uid}`);
-    let propsString = "";
-    const innerDepth = depth + 2;
-    this._attributes.forEach((v, k) => {
-      propsString += indent(innerDepth, `${k}="${v}"\n`);
-    });
-    this._properties.forEach((v, k) => {
-      propsString += indent(innerDepth, `.${k.toString()}={ ${v.toString()} }\n`);
-    });
-    this._styles.forEach((v, k) => {
-      propsString += indent(innerDepth, `~${k}="${v}"\n`);
-    });
-    this._eventHandlers.forEach((v, k) => {
-      propsString += indent(innerDepth, `@${k}=${v.length}\n`);
-    });
-    let child = this._firstChild;
-    let childrenString = "";
-    while (child !== null) {
-      childrenString += child.toSnapshot(depth + 2);
-      child = child._nextSibling;
+  _setInnerHTML(html: string) {
+    const fragment = parseHTML(this._document, html, this.namespaceURI);
+    this._firstChild = null;
+    this._lastChild = null;
+    let node = fragment._firstChild;
+    while (node !== null) {
+      this._appendChild(node);
+      node = node._nextSibling;
     }
-
-    if (propsString === "") {
-      if (childrenString === "") {
-        s += "/>\n";
-      } else {
-        s += ">\n";
-        s += childrenString;
-        s += indent(depth, `</${this.nodeName}#${this.uid}>\n`);
-      }
-    } else {
-      s += "\n";
-      s += propsString;
-      if (childrenString === "") {
-        s += indent(depth, "/>\n");
-      } else {
-        s += indent(depth, ">\n");
-        s += childrenString;
-        s += indent(depth, `</${this.nodeName}#${this.uid}>\n`);
-      }
-    }
-    return s;
   }
 }
 
@@ -347,67 +356,84 @@ const ELEMENT_PROXY_HANDLER: ProxyHandler<Element> = {
 };
 
 export class HTMLElement extends Element {
-  constructor(uid: number, tagName: string) {
-    super(uid, NodeType.Element, tagName);
+  constructor(document: Document, uid: number, tagName: string) {
+    super(document, uid, NodeType.Element, tagName);
   }
 
   get style() {
-    return new CSSStyleDeclaration(this._styles);
+    this._trace(`HTMLElement.style`);
+    return this._getStyle();
   }
 
+  _getStyle() {
+    return new CSSStyleDeclaration(this, this._styles);
+  }
 }
 export class SVGElement extends Element {
-  constructor(uid: number, tagName: string) {
-    super(uid, NodeType.Element, tagName, "http://www.w3.org/2000/svg");
+  constructor(document: Document, uid: number, tagName: string) {
+    super(document, uid, NodeType.Element, tagName, "http://www.w3.org/2000/svg");
   }
 
   get style() {
-    return new CSSStyleDeclaration(this._styles);
+    this._trace(`SVGElement.style`);
+    return this._getStyle();
+  }
+
+  _getStyle() {
+    return new CSSStyleDeclaration(this, this._styles);
   }
 }
 
 export class DocumentFragment extends Node {
-  constructor(uid: number) {
-    super(uid, NodeType.DocumentFragment, "");
+  constructor(document: Document, uid: number) {
+    super(document, uid, NodeType.DocumentFragment, "");
   }
 }
 
 export class Template extends Element {
   _content: DocumentFragment;
 
-  constructor(uid: number) {
-    super(uid, NodeType.Element, "TEMPLATE");
-    this._content = document.createDocumentFragment();
+  constructor(document: Document, uid: number) {
+    super(document, uid, NodeType.Element, "TEMPLATE");
+    this._content = document._createDocumentFragment();
   }
 
   get content() {
+    this._trace(`Template.content`);
     return this._content;
   }
 
   set innerHTML(html: string) {
-    const frag = parseHTML(html, this.namespaceURI);
+    this._trace(`Template.innerHTML = "${html}"`);
+    this._setInnerHTML(html);
+  }
+
+  _setInnerHTML(html: string) {
+    const frag = parseHTML(this._document, html, this.namespaceURI);
     let n = this._content._firstChild;
     while (n !== null) {
-      n.remove();
+      n._remove();
       n = n._nextSibling;
     }
 
     n = frag._firstChild;
     while (n !== null) {
-      this._content.appendChild(n);
+      this._content._appendChild(n);
       n = n._nextSibling;
     }
   }
 }
 
 export class Document extends Element {
+  _log: string[] | null;
   _nextUid: number;
-  _body: HTMLElement;
+  _body: Element;
 
   constructor() {
-    super(0, NodeType.Document, "#document");
+    super(null!, 0, NodeType.Document, "#document");
+    this._log = null;
     this._nextUid = 1;
-    this._body = this.createElement("body");
+    this._body = this._createElement("body");
   }
 
   get body() {
@@ -415,24 +441,37 @@ export class Document extends Element {
   }
 
   createElement(tagName: string) {
+    const n = this._createElement(tagName);
+    this._trace(`createElement("${tagName}") => ${n.uid}`);
+    return n;
+  }
+
+  _createElement(tagName: string) {
     if (tagName === "template") {
-      return new Template(this._nextUid++);
+      return new Template(this, this._nextUid++);
     }
     return new Proxy(
-      new HTMLElement(this._nextUid++, tagName.toUpperCase()),
+      new HTMLElement(this, this._nextUid++, tagName.toUpperCase()),
       ELEMENT_PROXY_HANDLER,
     );
   }
 
   createElementNS(namespace: string, tagName: string) {
+    const n = this._createElementNS(namespace, tagName);
+    this._trace(`createElementNS("${namespace}", "${tagName}") => ${n.uid}`);
+    return n;
+  }
+
+  _createElementNS(namespace: string, tagName: string) {
     if (namespace === "http://www.w3.org/2000/svg") {
       return new Proxy(
-        new SVGElement(this._nextUid++, tagName.toUpperCase()),
+        new SVGElement(this, this._nextUid++, tagName.toUpperCase()),
         ELEMENT_PROXY_HANDLER,
       );
     }
     return new Proxy(
       new Element(
+        this,
         this._nextUid++,
         NodeType.Element,
         tagName.toUpperCase(),
@@ -443,70 +482,184 @@ export class Document extends Element {
   }
 
   createTextNode(text: string) {
-    return new Text(this._nextUid++, text);
+    const n = this._createTextNode(text);
+    this._trace(`createTextNode(${JSON.stringify(text)}) => ${n.uid}`);
+    return n;
+  }
+
+  _createTextNode(text: string) {
+    return new Text(this, this._nextUid++, text);
   }
 
   createDocumentFragment() {
-    return new DocumentFragment(this._nextUid++);
+    const n = this._createDocumentFragment();
+    this._trace(`createDocumentFragment() => ${n.uid}`);
+    return n;
+  }
+
+  _createDocumentFragment() {
+    return new DocumentFragment(this, this._nextUid++);
   }
 
   createComment() {
-    return new Comment(this._nextUid++);
+    const n = this._createComment();
+    this._trace(`createComment() => ${n.uid}`);
+    return n;
   }
 
-  reset() {
+  _createComment() {
+    return new Comment(this, this._nextUid++);
+  }
+
+  _reset() {
+    this._log = null;
     this._nextUid = 1;
-    this._body.textContent = "";
+    this._body = this._createElement("body");
+  }
+
+  _trace(s: string) {
+    if (this._log !== null) {
+      this._log.push(s);
+    }
+  }
+
+  _startTracing() {
+    this._log = [];
+  }
+
+  _stopTracing() {
+    this._log = null;
   }
 }
 
 export type EventHandler = () => void;
 
 export class CSSStyleDeclaration {
+  _element: Element;
   _styles: Map<string, string>;
 
-  constructor(styles: Map<string, string>) {
+  constructor(element: Element, styles: Map<string, string>) {
+    this._element = element;
     this._styles = styles;
   }
 
   setProperty(key: string, value: string) {
+    this._element._trace(`style.setProperty(${key}, ${JSON.stringify(value)})`);
+    this._setProperty(key, value);
+  }
+
+  _setProperty(key: string, value: string) {
     this._styles.set(key, value);
   }
 
   removeProperty(key: string) {
+    this._element._trace(`style.removeProperty(${key})`);
+    this._removeProperty(key);
+  }
+
+  _removeProperty(key: string) {
     this._styles.delete(key);
   }
 
-  getPropertyValue(key: string): string {
+  getPropertyValue(key: string) {
+    this._element._trace(`style.getPropertyValue(${key})`);
+    return this._getPropertyValue(key);
+  }
+
+  _getPropertyValue(key: string): string {
     return this._styles.get(key) ?? "";
   }
 }
 
-export const reset = () => {
-  document.reset();
-};
-
-export const emit = (node: any, type: string) => {
-  (node as Element).dispatchEvent(type);
-};
-
 export const toSnapshot = (node: any): string => (
-  (node as Node).toSnapshot(0).trimEnd()
+  _toSnapshot(node as Node, 0).trimEnd()
 );
 
+const _toSnapshot = (node: Node, depth: number) => {
+  const uid = node.uid;
+  if (node instanceof Text) {
+    return (
+      indent(depth, `<TEXT#${uid}>`) +
+      (node._nodeValue as string) +
+      `</TEXT#${uid}>\n`
+    );
+  }
+
+  if (node instanceof Element) {
+    let s = indent(depth, `<${node._nodeName}#${uid}`);
+    let propsString = "";
+    const innerDepth = depth + 2;
+    node._attributes.forEach((v, k) => {
+      propsString += indent(innerDepth, `${k}="${v}"\n`);
+    });
+    node._properties.forEach((v, k) => {
+      propsString += indent(innerDepth, `.${k.toString()}={ ${v.toString()} }\n`);
+    });
+    node._styles.forEach((v, k) => {
+      propsString += indent(innerDepth, `~${k}="${v}"\n`);
+    });
+    if (node._eventHandlers !== null) {
+      node._eventHandlers.forEach((v, k) => {
+        propsString += indent(innerDepth, `@${k}=[${v.map((v) => v.name).join(", ")}]\n`);
+      });
+    }
+    let child = node._firstChild;
+    let childrenString = "";
+    while (child !== null) {
+      childrenString += _toSnapshot(child, depth + 2);
+      child = child._nextSibling;
+    }
+
+    if (propsString === "") {
+      if (childrenString === "") {
+        s += "/>\n";
+      } else {
+        s += ">\n";
+        s += childrenString;
+        s += indent(depth, `</${node.nodeName}#${uid}>\n`);
+      }
+    } else {
+      s += "\n";
+      s += propsString;
+      if (childrenString === "") {
+        s += indent(depth, "/>\n");
+      } else {
+        s += indent(depth, ">\n");
+        s += childrenString;
+        s += indent(depth, `</${node.nodeName}#${uid}>\n`);
+      }
+    }
+    return s;
+  }
+
+  if (node instanceof Comment) {
+    return indent(depth, `<!>\n`);
+  }
+
+  let s = indent(depth, `<${node._nodeName}#${uid}>\n`);
+  let child = node._firstChild;
+  while (child !== null) {
+    s += _toSnapshot(child, depth + 2);
+    child = child._nextSibling;
+  }
+  return s + indent(depth, `</${node._nodeName}#${uid}>\n`);
+};
+
 interface HTMLParserContext {
+  doc: Document;
   s: string;
   i: number;
 }
 
 // It is not a valid HTML parser, and it was designed this way intentionally,
 // so that we could catch extra whitespaces, etc.
-function parseHTML(html: string, namespaceURI: string): DocumentFragment {
+function parseHTML(doc: Document, html: string, namespaceURI: string): DocumentFragment {
   const ctx: HTMLParserContext = {
+    doc,
     s: html,
     i: 0,
   };
-  const fragment = document.createDocumentFragment();
+  const fragment = doc._createDocumentFragment();
   parseChildren(ctx, fragment, namespaceURI);
   return fragment;
 }
@@ -526,13 +679,13 @@ function parseChildren(
         if (c2 === CharCode.Slash) {
           break;
         } else if (c2 === CharCode.ExclamationMark) {
-          parent.appendChild(parseComment(ctx));
+          parent._appendChild(parseComment(ctx));
           continue;
         }
       }
-      parent.appendChild(parseElement(ctx, namespaceURI));
+      parent._appendChild(parseElement(ctx, namespaceURI));
     } else {
-      parent.appendChild(parseText(ctx));
+      parent._appendChild(parseText(ctx));
     }
   }
 }
@@ -548,7 +701,7 @@ function parseElement(ctx: HTMLParserContext, namespaceURI: string): Element {
     throw new Error(`Invalid HTML [${ctx.i}]: expected a valid tag name\n${ctx.s}`);
   }
   const element = new Proxy(
-    document.createElementNS(namespaceURI, tagName),
+    document._createElementNS(namespaceURI, tagName),
     ELEMENT_PROXY_HANDLER,
   );
   parseSkipWhitespace(ctx);
@@ -590,9 +743,9 @@ function parseAttributes(ctx: HTMLParserContext, element: Element) {
     }
     if (parseCharCode(ctx, CharCode.EqualsTo)) {
       const value = parseAttributeString(ctx);
-      element.setAttribute(key, value);
+      element._setAttribute(key, value);
     } else {
-      element.setAttribute(key, "");
+      element._setAttribute(key, "");
     }
     parseSkipWhitespace(ctx);
   }
@@ -626,7 +779,7 @@ function parseComment(ctx: HTMLParserContext): Comment {
   if (!parseCharCode(ctx, CharCode.MoreThan)) {
     throw new Error(`Invalid HTML [${ctx.i}]: expected a '>' character\n${ctx.s}`);
   }
-  return document.createComment();
+  return document._createComment();
 }
 
 function parseText(ctx: HTMLParserContext): Text {
@@ -639,7 +792,7 @@ function parseText(ctx: HTMLParserContext): Text {
     }
     ctx.i++;
   }
-  return document.createTextNode(s.substring(start, ctx.i));
+  return document._createTextNode(s.substring(start, ctx.i));
 }
 
 function parseSkipWhitespace(ctx: HTMLParserContext): void {
@@ -681,7 +834,7 @@ function parseRegExp(ctx: HTMLParserContext, re: RegExp): string | undefined {
 }
 
 const VOID_ELEMENTS = (
-  /^(audio|video|embed|input|param|source|textarea|track|area|base|link|meta|br|col|hr|img|wbr)$/
+  /^(embed|input|param|source|track|area|base|link|meta|br|col|hr|img|wbr)$/
 );
 
 function indent(i: number, s: string) {

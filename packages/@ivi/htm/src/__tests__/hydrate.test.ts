@@ -1,7 +1,6 @@
-import { strictEqual } from "node:assert";
+import { deepStrictEqual, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import "@ivi/mock-dom/global";
-import { reset, emit, toSnapshot } from "@ivi/mock-dom";
+import { reset, trace, emit, toSnapshot } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "../index.js";
 import { component, invalidate } from "ivi";
@@ -14,10 +13,17 @@ describe("hydrate", () => {
   test(`<div></div>`, () => {
     document.body.innerHTML = `<div></div>`;
     const root = createRoot();
-    root.hydrate(
-      htm`<div></div>`,
+    deepStrictEqual(
+      trace(() => {
+        root.hydrate(
+          htm`<div></div>`,
+        );
+      }),
+      [
+        "[1] Node.lastChild",
+      ]
     );
-    strictEqual(toSnapshot(root.findDOMNode()), `<DIV#2/>`);
+    strictEqual(toSnapshot(root.findDOMNode()), `<DIV#3/>`);
   });
 
   test(`1`, () => {
@@ -37,42 +43,48 @@ describe("hydrate", () => {
 
     document.body.innerHTML = `<div><span>1</span><button>Click Me</button></div>`;
     const root = createRoot();
-    root.hydrate(Test());
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test()); }),
+      [
+        `[1] Node.lastChild`,
+        `[3] Node.firstChild`,
+        `[4] Node.nextSibling`,
+        `[6] Element.addEventListener("click", onClick)`,
+        `[4] Node.lastChild`,
+      ],
+    );
     strictEqual(toSnapshot(root.findDOMNode()), `
-<DIV#2>
-  <SPAN#3>
-    <TEXT#4>
-      1
-    </TEXT#4>
-  </SPAN#3>
-  <BUTTON#5
-    @click=1
+<DIV#3>
+  <SPAN#4>
+    <TEXT#5>1</TEXT#5>
+  </SPAN#4>
+  <BUTTON#6
+    @click=[onClick]
   >
-    <TEXT#6>
-      Click Me
-    </TEXT#6>
-  </BUTTON#5>
-</DIV#2>
+    <TEXT#7>Click Me</TEXT#7>
+  </BUTTON#6>
+</DIV#3>
 `.trim());
 
     emit(document.body.firstChild!.firstChild!.nextSibling!, "click");
     strictEqual(root.isDirty, true);
-    root.dirtyCheck();
+    deepStrictEqual(
+      trace(() => { root.dirtyCheck(); }),
+      [
+        `[5] Node.nodeValue = 2`,
+      ],
+    );
     strictEqual(toSnapshot(root.findDOMNode()), `
-<DIV#2>
-  <SPAN#3>
-    <TEXT#4>
-      2
-    </TEXT#4>
-  </SPAN#3>
-  <BUTTON#5
-    @click=1
+<DIV#3>
+  <SPAN#4>
+    <TEXT#5>2</TEXT#5>
+  </SPAN#4>
+  <BUTTON#6
+    @click=[onClick]
   >
-    <TEXT#6>
-      Click Me
-    </TEXT#6>
-  </BUTTON#5>
-</DIV#2>
+    <TEXT#7>Click Me</TEXT#7>
+  </BUTTON#6>
+</DIV#3>
 `.trim());
   });
 });

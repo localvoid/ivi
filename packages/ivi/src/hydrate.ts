@@ -43,7 +43,9 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           const data = tplData.d;
           const flags = tplData.f;
           const state = _Array<Node>(flags & TemplateFlags.Mask6);
-          const currentDOMNode = _getCurrentDOMNode();
+          const currentDOMNode = (ctx.n === null)
+            ? nodeGetLastChild.call(ctx.p)
+            : nodeGetPrevSibling.call(ctx.n);
           state[0] = currentDOMNode;
 
           if (stateOpCodes.length > 0) {
@@ -140,20 +142,17 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
         );
       }
     } else { // Text
-      const node = _getCurrentDOMNode();
-      RENDER_CONTEXT.n = node;
+      const ctx = RENDER_CONTEXT;
+      const node = (ctx.n === null)
+        ? nodeGetLastChild.call(ctx.p)
+        : nodeGetPrevSibling.call(ctx.n);
+      ctx.n = node;
       return createSNode(Flags.Text, v, null, parentSNode, node);
     }
   }
   return null;
 };
 
-const _getCurrentDOMNode = (): Node => {
-  const ctx = RENDER_CONTEXT;
-  return (ctx.n === null)
-    ? nodeGetLastChild.call(ctx.p)
-    : nodeGetPrevSibling.call(ctx.n);
-};
 
 const _hydrateList = (
   parentState: SNode,

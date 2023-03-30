@@ -6,8 +6,6 @@
     "declarationDir": "dist",
     "lib": ["ESNext"],
   },
-  "references": [
-  ],
   "include": [
     "src/**/*.ts"
   ]
