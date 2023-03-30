@@ -513,7 +513,10 @@ const _updateTemplateProperties = (
           } else if (type === PropOpCode.Property) {
             (currentElement as Record<string, any>)[key] = next;
           } else if (type === PropOpCode.DiffDOMProperty) {
-            if ((currentElement as Record<string, any>)[key] !== next) {
+            if (
+              prev === void 0 ||
+              (currentElement as Record<string, any>)[key] !== next
+            ) {
               (currentElement as Record<string, any>)[key] = next;
             }
           } else if (type === PropOpCode.Style) {
