@@ -147,6 +147,7 @@ export abstract class Node {
     let child = this._firstChild;
     while (child !== null) {
       s += child.toSnapshot(depth + 2);
+      child = child._nextSibling;
     }
     return s + indent(depth, `</${this.nodeName}#${this.uid}>\n`);
   }
@@ -160,6 +161,10 @@ export class Text extends Node {
 
   get nodeValue(): string {
     return this._nodeValue;
+  }
+
+  set nodeValue(s: any) {
+    this._nodeValue = s.toString();
   }
 
   toSnapshot(depth: number) {
@@ -279,7 +284,7 @@ export class Element extends Node {
   }
 
   toSnapshot(depth: number) {
-    let s = indent(depth, `<${this.nodeName}:${this.uid}`);
+    let s = indent(depth, `<${this.nodeName}#${this.uid}`);
     let propsString = "";
     const innerDepth = depth + 2;
     this._attributes.forEach((v, k) => {
@@ -298,6 +303,7 @@ export class Element extends Node {
     let childrenString = "";
     while (child !== null) {
       childrenString += child.toSnapshot(depth + 2);
+      child = child._nextSibling;
     }
 
     if (propsString === "") {
@@ -344,10 +350,19 @@ export class HTMLElement extends Element {
   constructor(uid: number, tagName: string) {
     super(uid, NodeType.Element, tagName);
   }
+
+  get style() {
+    return new CSSStyleDeclaration(this._styles);
+  }
+
 }
 export class SVGElement extends Element {
   constructor(uid: number, tagName: string) {
     super(uid, NodeType.Element, tagName, "http://www.w3.org/2000/svg");
+  }
+
+  get style() {
+    return new CSSStyleDeclaration(this._styles);
   }
 }
 
@@ -387,10 +402,16 @@ export class Template extends Element {
 
 export class Document extends Element {
   _nextUid: number;
+  _body: HTMLElement;
 
   constructor() {
     super(0, NodeType.Document, "#document");
     this._nextUid = 1;
+    this._body = this.createElement("body");
+  }
+
+  get body() {
+    return this._body;
   }
 
   createElement(tagName: string) {
@@ -435,6 +456,7 @@ export class Document extends Element {
 
   reset() {
     this._nextUid = 1;
+    this._body.textContent = "";
   }
 }
 
@@ -459,6 +481,18 @@ export class CSSStyleDeclaration {
     return this._styles.get(key) ?? "";
   }
 }
+
+export const reset = () => {
+  document.reset();
+};
+
+export const emit = (node: any, type: string) => {
+  (node as Element).dispatchEvent(type);
+};
+
+export const toSnapshot = (node: any): string => (
+  (node as Node).toSnapshot(0).trimEnd()
+);
 
 interface HTMLParserContext {
   s: string;
@@ -652,8 +686,9 @@ const VOID_ELEMENTS = (
 
 function indent(i: number, s: string) {
   let r = "";
-  while (i > 0) {
+  while (i-- > 0) {
     r += " ";
+
   }
   return r + s;
 }
