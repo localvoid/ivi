@@ -111,14 +111,17 @@ const ssr = (config) => declare((api) => {
                 createTemplateDescriptor(
                   importSymbol,
                   descriptorId,
-                  result,
+                  result.roots,
                 )
               );
               path.replaceWith(
                 t.callExpression(
                   importSymbol("ivi", "_t"),
                   exprs.length > 0
-                    ? [descriptorId, t.arrayExpression(exprs.map((e) => e.node))]
+                    ? [
+                      descriptorId,
+                      t.arrayExpression(result.exprs.map((i) => exprs[i].node))
+                    ]
                     : [descriptorId]
                 )
               );

@@ -184,7 +184,7 @@ const _emitStaticTemplate = (
         }
       } else {
         if (typeof value === "number") {
-          if (key === "class" && prop.static === true) {
+          if (key === "class" && prop.hoist === true) {
             staticTemplate.push(value);
           }
         } else if (value === true) {

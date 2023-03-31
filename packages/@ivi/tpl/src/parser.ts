@@ -94,7 +94,7 @@ export class TemplateParser extends TemplateScanner {
         type: IPropertyType.Attribute,
         key: "class",
         value: classNameExpr,
-        static: staticExpr,
+        hoist: staticExpr,
       });
     } else {
       // parse class names, e.g. `div.classA.classB`
@@ -119,7 +119,7 @@ export class TemplateParser extends TemplateScanner {
           type: IPropertyType.Attribute,
           key: "class",
           value,
-          static: false,
+          hoist: false,
         });
       }
     }
@@ -257,7 +257,7 @@ export class TemplateParser extends TemplateScanner {
       type: IPropertyType.Attribute,
       key,
       value,
-      static: false,
+      hoist: false,
     });
   }
 

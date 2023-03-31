@@ -95,7 +95,7 @@ export const isStaticProperty = (prop: IProperty) => (
   (
     prop.type === IPropertyType.Attribute &&
     prop.key === "class" &&
-    prop.static === true
+    prop.hoist === true
   )
 );
 

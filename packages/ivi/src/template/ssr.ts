@@ -1,34 +1,96 @@
 import {
-  type INodeElement, type ITemplate, INodeType, IPropertyType
+  type INode, type INodeElement, type ITemplate, type IProperty,
+  INodeType, IPropertyType,
 } from "./ir.js";
 import {
   type SNode, SNodeFlags, createSNode, isVoidElement,
 } from "./shared.js";
 import {
-  type TElement, type TemplateDescriptor, type TNode, type TProperty,
+  type TElement, type TNode, type TProperty,
   TFlags
 } from "../server/core.js";
 
-export const compileTemplate = (tpl: ITemplate): TemplateDescriptor => {
-  const result: TemplateDescriptor = [];
+export interface TemplateCompilationArtifact {
+  readonly roots: TNode[];
+  readonly exprs: number[];
+}
+
+export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => {
+  const exprMap = createExprMap(tpl);
+  const roots = [];
   const children = tpl.children;
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     switch (child.type) {
       case INodeType.Element:
         const sNode = createSNode(child, 0);
-        result.push(createTElement(sNode));
+        roots.push(createTElement(exprMap, sNode));
         break;
       case INodeType.Text:
-        result.push(child.value);
+        roots.push(child.value);
         break;
       case INodeType.Expr:
-        result.push(child.value);
+        roots.push(exprMap.get(child.value)!);
         break;
     }
   }
 
-  return result;
+  return {
+    roots,
+    exprs: Array.from(exprMap.keys()),
+  };
+};
+
+const createExprMap = (tpl: ITemplate): Map<number, number> => {
+  const exprMap = new Map<number, number>();
+  const children = tpl.children;
+  for (let i = 0; i < children.length; i++) {
+    _createExprMap(exprMap, children[i]);
+  }
+  return exprMap;
+};
+
+const isSerializableDynamicProp = (prop: IProperty): boolean => {
+  const type = prop.type;
+  if (type === IPropertyType.Attribute) {
+    if (prop.key === "class" && prop.hoist === true) {
+      return false;
+    }
+    return true;
+  }
+  if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
+    const key = prop.key;
+    if (key === "value" || key === "checked") {
+      return true;
+    }
+    return false;
+  }
+  if (type === IPropertyType.Style) {
+    return true;
+  }
+  return false;
+};
+
+const _createExprMap = (exprMap: Map<number, number>, node: INode) => {
+  switch (node.type) {
+    case INodeType.Element:
+      const { properties, children } = node;
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+        const value = prop.value;
+        if (typeof value === "number" && isSerializableDynamicProp(prop)) {
+          exprMap.set(value, exprMap.size);
+        }
+      }
+      for (let i = 0; i < children.length; i++) {
+        _createExprMap(exprMap, children[i]);
+      }
+      break;
+    case INodeType.Text:
+      break;
+    case INodeType.Expr:
+      exprMap.set(node.value, exprMap.size);
+  }
 };
 
 const pushAttr = (
@@ -46,7 +108,10 @@ const pushAttr = (
   return props;
 };
 
-const createTElement = (sNode: SNode<INodeElement>): TElement => {
+const createTElement = (
+  exprMap: Map<number, number>,
+  sNode: SNode<INodeElement>,
+): TElement => {
   const node = sNode.node;
   const { tag, properties } = node;
   const children: TNode[] = [];
@@ -62,7 +127,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
       const { key, value, type } = properties[i];
       if (type === IPropertyType.Attribute) {
         if (typeof value === "number") {
-          props = pushAttr(props, '"', ` ${key}="`, value);
+          props = pushAttr(props, '"', ` ${key}="`, exprMap.get(value)!);
         } else if (value === true) {
           prefix += ` ${key}`;
         } else {
@@ -79,11 +144,11 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
       } else if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
         if (key === "value") {
           if (tag === "input" || tag === "textarea") {
-            props = pushAttr(props, '"', ` value="`, value);
+            props = pushAttr(props, '"', ` value="`, exprMap.get(value)!);
           }
         } else if (key === "checked") {
           if (tag === "input") {
-            props = pushAttr(props, '"', ` checked="`, value);
+            props = pushAttr(props, '"', ` checked="`, exprMap.get(value)!);
           }
         }
       } else if (type === IPropertyType.Style) {
@@ -97,7 +162,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
           if (styleDynamic === void 0) {
             styleDynamic = [];
           }
-          styleDynamic.push({ prefix: key, i: value });
+          styleDynamic.push({ prefix: key, i: exprMap.get(value)! });
         }
       }
     }
@@ -134,7 +199,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
         const child = sChildren[i];
         switch (child.node.type) {
           case INodeType.Element:
-            children.push(createTElement(child as SNode<INodeElement>));
+            children.push(createTElement(exprMap, child as SNode<INodeElement>));
             break;
           case INodeType.Text:
             children.push(child.node.value);
@@ -143,7 +208,7 @@ const createTElement = (sNode: SNode<INodeElement>): TElement => {
             if (child.flags & SNodeFlags.HasNextDOMNode) {
               flags |= TFlags.GenerateOffsets;
             }
-            children.push(child.node.value);
+            children.push(exprMap.get(child.node.value)!);
         }
       }
     }

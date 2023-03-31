@@ -31,42 +31,42 @@ export interface IPropertyAttribute {
   readonly type: IPropertyType.Attribute;
   readonly key: string;
   readonly value: string | boolean | number;
-  readonly static: boolean;
+  readonly hoist: boolean;
 }
 
 export interface IPropertyValue {
   readonly type: IPropertyType.Value;
   readonly key: string;
   readonly value: number;
-  readonly static: boolean;
+  readonly hoist: boolean;
 }
 
 export interface IPropertyDOMValue {
   readonly type: IPropertyType.DOMValue;
   readonly key: string;
   readonly value: number;
-  readonly static: boolean;
+  readonly hoist: boolean;
 }
 
 export interface IPropertyStyle {
   readonly type: IPropertyType.Style;
   readonly key: string;
   readonly value: string | number;
-  readonly static: boolean;
+  readonly hoist: boolean;
 }
 
 export interface IPropertyEvent {
   readonly type: IPropertyType.Event;
   readonly key: string;
   readonly value: number;
-  readonly static: boolean;
+  readonly hoist: boolean;
 }
 
 export interface IPropertyDirective {
   readonly type: IPropertyType.Directive;
   readonly key: null;
   readonly value: number;
-  readonly static: boolean;
+  readonly hoist: boolean;
 }
 
 export type IProperty =

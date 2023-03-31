@@ -213,7 +213,7 @@ export class TemplateParser extends TemplateScanner {
             type: IPropertyType.Attribute,
             key,
             value,
-            static: staticAttr,
+            hoist: staticAttr,
           });
         }
         this.whitespace();

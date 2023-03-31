@@ -62,21 +62,21 @@ const attr = (key: string, value: string | number | boolean): IPropertyAttribute
   type: IPropertyType.Attribute,
   key,
   value,
-  static: false,
+  hoist: false,
 });
 
 const prop = (key: string, value: number): IPropertyValue => ({
   type: IPropertyType.Value,
   key,
   value,
-  static: false,
+  hoist: false,
 });
 
 const styl = (key: string, value: string | number): IPropertyStyle => ({
   type: IPropertyType.Style,
   key,
   value,
-  static: false,
+  hoist: false,
 });
 
 const result = (roots: TemplateNode[]): TemplateCompilationArtifact => ({ roots });
