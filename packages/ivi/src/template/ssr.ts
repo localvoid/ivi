@@ -7,7 +7,7 @@ import {
 import {
   type TElement, type TemplateDescriptor, type TNode, type TProperty,
   TFlags
-} from "../ssr.js";
+} from "../server/core.js";
 
 export const compileTemplate = (tpl: ITemplate): TemplateDescriptor => {
   const result: TemplateDescriptor = [];

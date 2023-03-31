@@ -25,6 +25,9 @@
     "@types/babel__core": "^7.20.0",
     "rollup": "^3.20.2"
   },
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  },
   "description": "Rollup plugin for ivi library.",
   "license": "MIT",
   "keywords": [

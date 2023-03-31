@@ -1,4 +1,9 @@
 /**
+ * Prevents triggering updates.
+ */
+export const preventUpdates = (a: any, b: any) => true;
+
+/**
  * Checks if values are equal with a strict equality operator `===`.
  *
  * @param a

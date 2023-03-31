@@ -4,7 +4,6 @@
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
     "build:force": "tsc -b --force --pretty",
-    "clean": "tsc -b --clean",
     "test": "node --enable-source-maps --test packages/",
     "test:only": "node --enable-source-maps --test-only --test packages/"
   },
@@ -14,6 +13,6 @@
   },
   "volta": {
     "node": "19.8.0",
-    "pnpm": "7.30.3"
+    "pnpm": "8.1.0"
   }
 }

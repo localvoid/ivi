@@ -7,9 +7,6 @@
     "./hydrate": "./dist/hydrate.js",
     "./equal": "./dist/equal.js",
     "./root": "./dist/root.js",
-    "./state": "./dist/state.js",
-    "./visitor": "./dist/visitor.js",
-    "./dom": "./dist/dom.js",
     "./ssr": "./dist/ssr.js",
     "./test": "./dist/test-utils/index.js",
     "./template/format": "./dist/template/format.js",
@@ -27,6 +24,9 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  },
   "description": "Lightweight Embeddable Web UI Library.",
   "license": "MIT",
   "keywords": [

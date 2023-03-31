@@ -22,6 +22,9 @@
     "ivi": "workspace:*",
     "@ivi/mock-dom": "workspace:*"
   },
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  },
   "description": "ivi HTML-like markup language.",
   "license": "MIT",
   "keywords": [

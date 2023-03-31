@@ -1,5 +1,7 @@
-import type { VComponent, VAny, Component } from "ivi";
-import { component, useUnmount, invalidate, List } from "ivi";
+import {
+  type Component, type VAny,
+  component, useUnmount, invalidate, List
+} from "ivi";
 
 export interface PortalEntry {
   v: VAny;
@@ -19,8 +21,8 @@ const renderPortalEntry = (entry: PortalEntry) => entry.v;
  * renders into a portal container.
  */
 export const createPortal = (): [
-  VComponent,
-  (v: VAny) => VComponent<VAny>,
+  VAny,
+  (v: VAny) => VAny,
 ] => {
   // Can't imagine any use case when there are many entries rendered into a
   // portal, so we can use an array, and remove from it with an O(n) operation.

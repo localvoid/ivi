@@ -1,5 +1,5 @@
-import type { Component } from "./index.js";
-import { invalidate } from "./index.js";
+import type { Component } from "./core.js";
+import { invalidate } from "./core.js";
 
 /**
  * Creates a memoized function.
@@ -7,7 +7,7 @@ import { invalidate } from "./index.js";
  * @example
  *
  *     const Example = component((c) => {
- *       const fullName = memo(shallowEqArray, ([firstName, lastName]) => (
+ *       const fullName = useMemo(shallowEqArray, ([firstName, lastName]) => (
  *         `${firstName} ${lastName}`
  *       ));
  *
@@ -22,7 +22,7 @@ import { invalidate } from "./index.js";
  * @param fn Function to memoize.
  * @returns Memoized function.
  */
-export const memo = <T, U>(
+export const useMemo = <T, U>(
   areEqual: (prev: T, next: T) => boolean,
   fn: (props: T) => U,
 ): (props: T) => U => {
@@ -59,17 +59,20 @@ export const memo = <T, U>(
 export const useState = <S>(
   component: Component,
   state: S,
-): [() => S, (s: S) => void] => ([
-  // getter
-  () => state,
-  // setter
-  (next: S) => {
-    if (next !== state) {
-      state = next;
-      invalidate(component);
+): [
+    get: () => S,
+    set: (s: S) => void,
+  ] => ([
+    // getter
+    () => state,
+    // setter
+    (next: S) => {
+      if (next !== state) {
+        state = next;
+        invalidate(component);
+      }
     }
-  }
-]);
+  ]);
 
 /**
  * Reducer Dispatch Function.
@@ -113,14 +116,17 @@ export const useReducer = <S, A>(
   component: Component,
   state: S,
   reducer: (state: S, action: A) => S,
-): [() => S, Dispatch<A>] => ([
-  () => state,
-  (action: A) => {
-    const nextState = reducer(state, action);
-    if (state !== nextState) {
-      state = nextState;
-      invalidate(component);
+): [
+    get: () => S,
+    dispatch: Dispatch<A>,
+  ] => ([
+    () => state,
+    (action: A) => {
+      const nextState = reducer(state, action);
+      if (state !== nextState) {
+        state = nextState;
+        invalidate(component);
+      }
+      return state;
     }
-    return state;
-  }
-]);
+  ]);

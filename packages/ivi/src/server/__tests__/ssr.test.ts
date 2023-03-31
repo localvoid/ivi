@@ -1,6 +1,6 @@
 import { strictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { render, TFlags, _P, _t, _T } from "../ssr.js";
+import { render, TFlags, _P, _t, _T } from "../core.js";
 
 describe("render to string", () => {
   test(`<div></div>`, () => {

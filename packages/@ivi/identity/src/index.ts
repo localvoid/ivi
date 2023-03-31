@@ -1,5 +1,4 @@
-import type { VAny } from "ivi";
-import { component } from "ivi";
+import { type VAny, component } from "ivi";
 
 export interface PortalEntry {
   v: VAny;
@@ -16,8 +15,8 @@ export interface IdentityProps {
 }
 
 export const Identity = component<IdentityProps>(() => {
-  let _prevKey: any;
-  let _prevType = A;
+  var _prevKey: any;
+  var _prevType = A;
   return ({ key, children }) => {
     if (_prevKey !== key) {
       _prevKey = key;

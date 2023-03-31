@@ -25,6 +25,9 @@
     "@types/babel__core": "^7.20.0",
     "vite": "^4.2.1"
   },
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  },
   "description": "Vite plugin for ivi library.",
   "license": "MIT",
   "keywords": [

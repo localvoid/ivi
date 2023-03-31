@@ -15,6 +15,9 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  },
   "description": "ivi DOM mocking tools.",
   "license": "MIT",
   "keywords": [

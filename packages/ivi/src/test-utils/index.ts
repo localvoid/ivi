@@ -1,16 +1,10 @@
-import type { RootDescriptor, SNode, SRoot, VAny, VRoot } from "../index.js";
-import { Flags, createSNode, dirtyCheck, update, unmount } from "../index.js";
-import { hydrate } from "../hydrate.js";
-import { findDOMNode } from "../dom.js";
-
-const TEST_ROOT_DESCRIPTOR: RootDescriptor<TestRoot> = {
-  f: Flags.Root,
-  p1: (root) => { root.s1._invalidate(); },
-  p2: null,
-};
+import {
+  type Root, type VAny,
+  root, dirtyCheck, unmount, hydrate, findDOMNode, update,
+} from "../index.js";
 
 export class TestRoot {
-  _root: SRoot;
+  _root: Root;
   _isDirty: boolean;
 
   get root() { return this._root; }
@@ -22,29 +16,23 @@ export class TestRoot {
   }
 
   findDOMNode<T extends Node>(): T | null {
-    return findDOMNode<T>(this._root.c as SNode | null);
+    return findDOMNode<T>(this._root);
   }
 
-  update(v: VAny, forceUpdate: boolean = false) {
-    update(
-      this._root,
-      v,
-      forceUpdate === true
-        ? Flags.ForceUpdate
-        : 0,
-    );
+  update(v: VAny, forceUpdate?: boolean) {
+    update(this._root, v, forceUpdate);
   }
 
-  hydrate(v: VAny) {
-    hydrate(this._root, v);
-  }
-
-  dirtyCheck() {
-    dirtyCheck(this._root, 0);
+  dirtyCheck(forceUpdate?: boolean) {
+    dirtyCheck(this._root, forceUpdate);
   }
 
   dispose() {
     unmount(this._root, true);
+  }
+
+  hydrate(v: VAny) {
+    hydrate(this._root, v);
   }
 
   _invalidate() {
@@ -52,27 +40,16 @@ export class TestRoot {
   }
 }
 
-/**
- * # Unstable API. It may change in the future versions.
- */
 export const createRoot = (
   parentElement: Element = document.body,
   nextNode: Node | null = null,
 ) => {
   const testRoot = new TestRoot();
-  const sNode = createSNode<VRoot, TestRoot>(
-    Flags.Root,
-    {
-      d: TEST_ROOT_DESCRIPTOR,
-      p: {
-        p: parentElement,
-        n: nextNode,
-      },
-    },
-    null,
-    null,
-    testRoot,
-  );
-  testRoot._root = sNode;
+  const root = _createRoot(parentElement, nextNode, testRoot);
+  testRoot._root = root;
   return testRoot;
 };
+
+const _createRoot = root<TestRoot>(
+  (root, state) => { state._invalidate(); },
+);
