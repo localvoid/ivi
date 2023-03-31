@@ -16,11 +16,9 @@ export {
   type RootFactory,
   root, dirtyCheck, update, unmount, hydrate,
   createRoot,
-  // Utils
-  findDOMNode,
 } from "./client/core.js";
 export {
-  containsDOMElement, hasDOMElement,
+  emit, findDOMNode, containsDOMElement, hasDOMElement,
 } from "./client/utils.js";
 export {
   useMemo,

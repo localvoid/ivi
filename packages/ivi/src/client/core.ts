@@ -1914,39 +1914,6 @@ const _hydrateAssignTemplateSlots = (
   }
 };
 
-/**
- * Finds the closest DOM node from a Stateful Tree {@link SNode}.
- *
- * @typeparam T DOM node type.
- * @param sNode Stateful Tree {@link SNode}.
- * @returns DOM node.
- */
-export const findDOMNode = <T extends Node | Text>(
-  sNode: SNode | null,
-): T | null => {
-  if (sNode === null) {
-    return null;
-  }
-
-  let flags: number = sNode.f; // polymorphic call-site
-  if (flags & (Flags.Template | Flags.Text)) {
-    return (flags & Flags.Template)
-      ? (sNode as STemplate).s1[0] as T
-      : (sNode as SText).s1 as T;
-  }
-  const children = sNode.c;
-  if (flags & (Flags.Array | Flags.List)) {
-    for (let i = 0; i < (children as Array<SNode | null>).length; i++) {
-      const c = findDOMNode((children as Array<SNode | null>)[i]);
-      if (c !== null) {
-        return c as T;
-      }
-    }
-    return null;
-  }
-  return findDOMNode(children as SNode | null);
-};
-
 export type RootFactory = {
   (
     onInvalidate: (root: Root<undefined>) => void

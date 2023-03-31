@@ -1,4 +1,95 @@
-import { type SNode, type STemplate, Flags } from "./core.js";
+import {
+  type SNode, type Component, type STemplate, type SText,
+  Flags
+} from "./core.js";
+
+/**
+ * Emit options.
+ */
+export interface EmitOptions {
+  /**
+   * Option indicating whether the event bubbles. The default is `false`.
+   */
+  bubbles?: boolean;
+  /**
+   * Option indicating whether the event can be cancelled. The default is
+   * `false`.
+   */
+  cancelable?: boolean;
+  /**
+   * Option indicating whether the event will trigger listeners outside of a
+   * shadow root. The default is `false`.
+   */
+  composed?: boolean;
+}
+
+/**
+ * Finds the closest child DOM node and emits a CustomEvent with
+ * `EventTarget.dispatchEvent()` method.
+ *
+ * Emit invokes event handlers synchronously. All event handlers are invoked
+ * before `emit()` returns.
+ *
+ * *Throws an exception in SSR context*
+ *
+ * @typeparam T Data type.
+ * @param component Component node.
+ * @param eventType Event type.
+ * @param detail Event data.
+ * @param options {@link EmitOptions}.
+ * @returns `false` if event is cancelable, and at least one of the event
+ *   handlers which received event called `Event.preventDefault()`. Otherwise
+ *   `true`.
+ */
+export const emit = <T>(
+  component: Component,
+  eventType: string,
+  detail: T,
+  options?: EmitOptions,
+): boolean => (
+  findDOMNode(component)!.dispatchEvent(new _CustomEvent(eventType, {
+    ...options,
+    detail,
+  }))
+);
+
+const _CustomEvent = CustomEvent;
+
+/**
+ * Finds the closest DOM node from a Stateful Tree {@link SNode}.
+ *
+ * *Throws an exception in SSR context.*
+ *
+ * @typeparam T DOM node type.
+ * @param sNode Stateful Tree {@link SNode}.
+ * @returns DOM node.
+ */
+export const findDOMNode = <T extends Node | Text>(
+  sNode: SNode | null,
+): T | null => {
+  if (sNode === null) {
+    return null;
+  }
+
+  let flags: number = sNode.f; // polymorphic call-site
+  if (flags & (Flags.Template | Flags.Text)) {
+    return (flags & Flags.Template)
+      ? (sNode as STemplate).s1[0] as T
+      : (sNode as SText).s1 as T;
+  }
+  const children = sNode.c;
+  if (flags & (Flags.Array | Flags.List)) {
+    for (let i = 0; i < (children as Array<SNode | null>).length; i++) {
+      const c = findDOMNode((children as Array<SNode | null>)[i]);
+      if (c !== null) {
+        return c as T;
+      }
+    }
+    return null;
+  }
+  return findDOMNode(children as SNode | null);
+};
+
 
 /**
  * VisitNodesDirective controls the {@link visitNodes} traversal algorithm.
@@ -50,6 +141,8 @@ export const visitNodes = (
 /**
  * Checks if a Stateful Tree {@link SNode} contains a DOM element.
  *
+ * *Throws an exception in SSR context.*
+ *
  * @param node Stateful Tree {@link SNode}.
  * @param element DOM element.
  * @returns True when parent contains an element.
@@ -71,6 +164,8 @@ export const containsDOMElement = (
 
 /**
  * Checks if a Stateful Tree {@link SNode} has a child DOM element.
+ *
+ * *Throws an exception in SSR context.*
  *
  * @param node Stateful Tree {@link SNode}.
  * @param child DOM element.
