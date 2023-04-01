@@ -14,7 +14,7 @@ export {
   List,
   // Root
   type RootFactory,
-  root, dirtyCheck, update, unmount, hydrate,
+  defineRoot, dirtyCheck, update, unmount, hydrate,
   createRoot,
 } from "./client/core.js";
 export {

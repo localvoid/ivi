@@ -1448,8 +1448,8 @@ export type ComponentFactory = {
  * Creates a factory that produces component nodes.
  *
  * @typeparam P Property type.
- * @param p1 Function that creates stateful render functions.
- * @param p2 Function that checks `props` for equality.
+ * @param factory Function that produces stateful render functions.
+ * @param areEqyal Function that checks `props` for equality.
  * @returns Factory that produces component nodes.
  */
 export const component: ComponentFactory = <P>(
@@ -1608,6 +1608,15 @@ export const List = <E, K>(
   },
 });
 
+/**
+ * Performs dirty checking in a root subtree.
+ *
+ * When `forceUpdate` option is enabled, all components in a root subtree will
+ * be updated.
+ *
+ * @param root Root Node.
+ * @param forceUpdate Force update components.
+ */
 export const dirtyCheck = (root: Root, forceUpdate?: boolean): void => {
   _dirtyCheckRoot(
     root,
@@ -1669,10 +1678,13 @@ const _updateRoot = (root: SRoot, next: VAny, updateFlags: number): void => {
 
 
 /**
- * Unmounts a root subtree and triggers unmount hooks.
+ * Unmounts a root subtree.
  *
- * @param root Stateful Root Node.
- * @param detach Detach root DOM nodes from the DOM tree.
+ * When `detach` option is enabled, root DOM nodes will be detached from the
+ * DOM.
+ *
+ * @param root Root Node.
+ * @param detach Detach root DOM nodes from the DOM.
  */
 export const unmount = (root: Root, detach: boolean): void => {
   if (root.c !== null) {
@@ -1686,6 +1698,12 @@ export const unmount = (root: Root, detach: boolean): void => {
   }
 };
 
+/**
+ * Hydrates a root subtree.
+ *
+ * @param root Root Node.
+ * @param v Stateless View Node.
+ */
 export const hydrate = (root: Root, v: VAny): void => {
   const domSlot = root.v.p;
   RENDER_CONTEXT.p = domSlot.p;
@@ -1917,15 +1935,21 @@ const _hydrateAssignTemplateSlots = (
 export type RootFactory = {
   (
     onInvalidate: (root: Root<undefined>) => void
-  ): (parentElement: Element, nextNode: Node | null) => Root<undefined>;
+  ): (parentElement: Element, nextNode?: Node | null) => Root<undefined>;
   <S>(
     onInvalidate: (root: Root<S>, state: S) => void,
   ): (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
 };
 
-export const root: RootFactory = (
+/**
+ * Defines a root node with a custom invalidation hook.
+ *
+ * @param onInvalidate Invalidated Hook.
+ * @returns Root Node factory.
+ */
+export const defineRoot: RootFactory = (
   p1: (root: SRoot<any>, state?: any) => void,
-): (p: Element, n: Node | null, s?: any) => SRoot<any> => {
+): (p: Element, n?: Node | null, s?: any) => SRoot<any> => {
   var d: RootDescriptor = { f: Flags.Root, p1, p2: null };
   return (p: Element, n: Node | null = null, s: any) => createSNode<VRoot, any>(
     Flags.Root,
@@ -1952,13 +1976,13 @@ export const root: RootFactory = (
 };
 
 /**
- * Creates a new root.
+ * Creates a root node that uses microtask queue for scheduling updates.
  *
- * @param p Parent DOM Element.
- * @param n Next DOM Element.
+ * @param parentElement Parent DOM Element.
+ * @param nextNode Next DOM Node.
  * @returns Root Node.
  */
-export const createRoot = /*@__PURE__*/root(
+export const createRoot = /*@__PURE__*/defineRoot(
   // OnRootInvalidated hook
   (root: Root) => {
     // Schedules a microtask for dirty checking.
@@ -1971,14 +1995,17 @@ export const createRoot = /*@__PURE__*/root(
 /**
  * Updates a root subtree.
  *
+ * When `forceUpdate` option is enabled, all components in a root subtree will
+ * be updated.
+ *
  * @param root Root Node.
- * @param next Stateless Node.
- * @param forceUpdate Force update for all components.
+ * @param v Stateless View Node.
+ * @param forceUpdate Force update components.
  */
-export const update = (root: Root, next: VAny, forceUpdate?: boolean): void => {
+export const update = (root: Root, v: VAny, forceUpdate?: boolean): void => {
   _updateRoot(
     root,
-    next,
+    v,
     forceUpdate === true
       ? Flags.ForceUpdate
       : 0,

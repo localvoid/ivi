@@ -1,6 +1,6 @@
 import {
   type Root, type VAny,
-  root, dirtyCheck, unmount, hydrate, findDOMNode, update,
+  defineRoot, dirtyCheck, unmount, hydrate, findDOMNode, update,
 } from "../index.js";
 
 export class TestRoot {
@@ -50,6 +50,6 @@ export const createRoot = (
   return testRoot;
 };
 
-const _createRoot = root<TestRoot>(
+const _createRoot = defineRoot<TestRoot>(
   (root, state) => { state._invalidate(); },
 );
