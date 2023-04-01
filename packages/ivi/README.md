@@ -12,9 +12,7 @@ performance.
 ## Examples
 
 ```js
-import { component, invalidate } from "ivi";
-import { useState } from "ivi/state";
-import { createRoot, updateRoot } from "ivi/root";
+import { component, useState, createRoot, update } from "ivi";
 import { htm } from "@ivi/htm";
 
 const Example = component((c) => {
@@ -133,9 +131,9 @@ const ComponentsWithMultipleRootNodes = component((c) => () => ([
 When arrays are diffed, stateless tree nodes mapped onto their stateful nodes
 by their position in the array.
 
-When array contains a conditional expression that returns a "hole" `null`
-value, the hole will occupy a slot in a stateful tree, so that all nodes will
-be correclty mapped onto their stateful nodes. E.g.
+When array contains a conditional expression that returns a "hole"
+`null | undefined | false` value, the hole will occupy a slot in a stateful
+tree, so that all nodes will be correclty mapped onto their stateful nodes. E.g.
 
 ```js
 [
@@ -262,9 +260,8 @@ function useEffect = <P>(
 Using escape hatches to integrate CodeMirror.
 
 ```js
-import { component, useEffect, preventUpdates } from "ivi";
-import { createRoot, updateRoot } from "ivi/root";
-import { htm } from "ivi/template";
+import { createRoot, update, component, useEffect, preventUpdates } from "ivi";
+import { htm } from "@ivi/htm";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 
@@ -287,7 +284,7 @@ const App = component((c) => {
   `;
 });
 
-updateRoot(
+update(
   createRoot(document.body),
   App(),
 );
@@ -318,12 +315,6 @@ const Button = component(
 
 ## Component State
 
-`ivi/state` module provides simple abstractions for managing component state.
-
-This primitives are optional and it is ok to create different high-level
-primitives for managing component state, or to use a low-level `invalidate()`
-API.
-
 ### Memoized Functions
 
 ```ts
@@ -336,7 +327,7 @@ API.
  * @param fn Function to memoize.
  * @returns Memoized function.
  */
-function memo<T, U>(
+function useMemo<T, U>(
   areEqual: (prev: T, next: T) => boolean,
   fn: (props: T) => U,
 ): (props: T) => U;
@@ -346,7 +337,7 @@ Example:
 
 ```js
 const Example = component((c) => {
-  const fullName = memo(shallowEqArray, ([firstName, lastName]) => (
+  const fullName = useMemo(shallowEqArray, ([firstName, lastName]) => (
     `${firstName} ${lastName}`
   ));
 
@@ -437,7 +428,7 @@ const Example = component((c) => {
 });
 ```
 
-## Root Node
+## Root
 
 `ivi/root` module provides a basic root nodes implementation that uses
 [`queueMicrotask()`](https://developer.mozilla.org/en-US/docs/Web/API/queueMicrotask) to schedule updates.
@@ -481,9 +472,6 @@ function disposeRoot(root: SRoot<null>, detach: boolean): void;
 
 ### Equality Functions
 
-`ivi/equal` module provides functions that can be used to check input values
-for changes.
-
 ```ts
 /**
  * Checks if values are equal with a strict equality operator `===`.
@@ -520,8 +508,6 @@ function shallowEqArray<T>(a: T[], b: T[]): boolean;
 ```
 
 ### Stateful Tree DOM Utils
-
-`ivi/dom` module.
 
 ```ts
 /**
@@ -679,7 +665,7 @@ switching between light/dark themes.
 
 Instead of creating a lot of subscriptions to this variables, it is recommended
 to use simple javascript values and rerender entire UI subtree with
-`forceUpdateRoot()` when this values are changed.
+`dirtyCheck(root, true)` when this values are changed.
 
 ```js
 const root = createRoot(document.getElementById("app"));
@@ -688,7 +674,7 @@ let theme = "Light";
 function setTheme(t) {
   if (theme !== t) {
     theme = t;
-    forceUpdateRoot(root);
+    dirtyCheck(root, true);
   }
 }
 
@@ -867,7 +853,7 @@ recommended to read a great article on this topic: ["What's up with monomorphism
 
 #### Template Data Structures
 
-Templates are compiled into a static part that is stored in a
+Templates are precompiled into a static part that is stored in a
 `TemplateDescriptor` object and an array of dynamic expressions.
 
 ```js
@@ -994,113 +980,28 @@ generating a lot of small chunks.
 ### Custom Scheduler
 
 ivi is designed as an embeddable solution, so that it can be integrated into
-existing frameworks or web components. The core module `ivi` doesn't provide
-any schedulers. When ivi component is invalidated it will find a stateful
-node `SRoot` and invoke `OnRootInvalidated()` hook.
+existing frameworks or web components. The basic root node instantiated with
+`createRoot()` function is using microtask queue to schedule updates. Root
+nodes with custom scheduling algorithm can be created by defining new root
+factories with `defineRoot()` function.
 
 ```ts
-type OnRootInvalidated<S> = (root: SRoot<S>) => void;
+function defineRoot(onInvalidate: (root: Root<undefined>) => void)
+  : (parentElement: Element, nextNode: Node | null) => Root<undefined>;
+function defineRoot<S>(onInvalidate: (root: Root<S>) => void)
+  : (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
 ```
 
-As an example, there is a simple scheduler implemented in an `ivi/root`
-module that uses microtasks to batch updates.
+As an example, to remove any batching and immediately update root subtree
+when it is invalidated we can define the following root node:
 
 ```ts
-import type { RootDescriptor, SRoot, VAny } from "./index.js";
-import { Flags, createSNode, dirtyCheck, update, unmount } from "./index.js";
+import { defineRoot } from "ivi";
 
-const _queueMicrotask = queueMicrotask;
-
-const ROOT_DESCRIPTOR: RootDescriptor = {
-  // Root Descriptor should always have a `Flags.Root` flag.
-  f: Flags.Root,
-  // OnRootInvalidated hook
-  p1: (root: SRoot) => {
-    // Schedules a microtask for dirty checking.
-    _queueMicrotask(() => {
-      dirtyCheck(root, 0);
-    });
-  },
-  // p2 should always be initialized with `null` value. This propery is
-  // initialized so that all `Descriptor` objects will have the same object
-  // shape and all call-sites that access Descriptor objects will be in a
-  // monorphic state.
-  p2: null,
-};
-
-/**
- * Creates a new root.
- *
- * @param p Parent DOM Element.
- * @param n Next DOM Element.
- * @returns Root Node.
- */
-export const createRoot = (p: Element, n: Node | null = null): SRoot<null> => (
-  createSNode(
-    // SRoot node should always have a `Flags.Root` flag.
-    Flags.Root,
-    // VNode object.
-    {
-      // VNode descriptor should be initialized with `RootDescriptor`
-      d: ROOT_DESCRIPTOR,
-      // VNode props object contains the location in the DOM tree where subtree
-      // should be rendered.
-      p: {
-        // Parent DOM Element.
-        p,
-        // Next DOM Node.
-        n,
-      },
-    },
-    // Children should always be initialized with `null` value.
-    null,
-    // State `SRoot<State>` that can be used to store any value.
-    null,
-    // Parent SNode should always have a `null` value.
-    null,
-  )
-);
-
-/**
- * Updates a root subtree.
- *
- * @param root Root Node.
- * @param next Stateless Node.
- * @param forceUpdate Force update for all components.
- */
-export const updateRoot = (
-  root: SRoot<null>,
-  next: VAny,
-  forceUpdate: boolean = false,
-): void => {
-  update(
-    root,
-    next,
-    forceUpdate === true
-      ? Flags.ForceUpdate
-      : 0,
-  );
-};
-
-/**
- * Force update for all components in a root subtree.
- *
- * @param root Root Node.
- */
-export const forceUpdateRoot = (root: SRoot<null>): void => {
-  dirtyCheck(root, Flags.ForceUpdate);
-};
-
-/**
- * Disposes a root subtree and triggers all unmount hooks.
- *
- * @param root Root Node.
- * @param detach Detach root nodes from the DOM.
- */
-export const disposeRoot = (root: SRoot<null>, detach: boolean): void => {
-  unmount(root, detach);
-};
-
+const createSyncRoot = defineRoot((root) => {
+  // Immediately triggers dirty checking.
+  dirtyCheck(root);
+});
 ```
 
 #### Using `requestAnimationFrame()` for Scheduling UI Updates

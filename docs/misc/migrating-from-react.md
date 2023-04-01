@@ -467,9 +467,8 @@ function Button({ onClick, children }) {
 ivi:
 
 ```js
-import { component } from 'ivi';
+import { component, useState } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useState } from 'ivi/state';
 
 const App = component((c) => {
   const onPlayMovie = () => alert('Playing!');
@@ -541,9 +540,8 @@ export default function Gallery() {
 ivi:
 
 ```js
-import { component } from 'ivi';
+import { component, useState } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useState } from 'ivi/state';
 import { sculptureList } from './data.js';
 
 const Gallery = () => {
@@ -706,9 +704,8 @@ export default function Form() {
 ivi:
 
 ```js
-import { component } from 'ivi';
+import { component, useState } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useState } from 'ivi/state';
 
 const Form = component((c) => {
   const [person, setPerson] = useState(c, {
@@ -889,9 +886,8 @@ function submitForm(answer) {
 ivi:
 
 ```js
-import { component } from 'ivi';
+import { component, useState } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useState } from 'ivi/state';
 
 const Form = component((c) => {
   const [answer, setAnswer] = useState('');
@@ -1008,9 +1004,8 @@ export default function Form() {
 ivi:
 
 ```js
-import { component } from 'ivi';
+import { component, useState } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useState } from 'ivi/state';
 
 const Form = component((c) => {
   const [firstName, setFirstName] = useState(c, '');
@@ -1078,8 +1073,7 @@ const contacts = [
 ivi:
 
 ```js
-import { component } from 'ivi';
-import { useState } from 'ivi/state';
+import { component, useState } from 'ivi';
 import { htm } from '@ivi/htm';
 import { Identity } from '@ivi/identity';
 import Chat from './Chat.js';
@@ -1201,9 +1195,8 @@ const initialTasks = [
 ivi:
 
 ```js
-import { component } from 'ivi';
+import { component, useReducer } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useReducer } from 'ivi/state';
 import AddTask from './AddTask.js';
 import TaskList from './TaskList.js';
 
@@ -1281,7 +1274,7 @@ const initialTasks = [
 
 ### [Passing data deeply with context](https://react.dev/learn/managing-state#passing-data-deeply-with-context)
 
-ivi doesn't provide contexts.
+ivi doesn't provide contexts (yet).
 
 ## [Escape Hatches](https://react.dev/learn/escape-hatches)
 
@@ -1502,9 +1495,8 @@ export default function App() {
 ivi:
 
 ```js
-import { component, useEffect } from 'ivi';
+import { component, useState, useEffect } from 'ivi';
 import { htm } from '@ivi/htm';
-import { useState } from 'ivi/state';
 import { createConnection } from './chat.js';
 
 const serverUrl = 'https://localhost:1234';
@@ -1625,15 +1617,14 @@ function Dot({ position, opacity }) {
 ivi:
 
 ```js
-import { Component, component, useEffect } from "ivi";
+import {
+  createRoot, update, component, useState, useEffect, shallowEqArray,
+} from "ivi";
 import { htm } from "@ivi/htm";
-import { shallowEqArray } from "ivi/equal";
-import { createRoot, updateRoot } from "ivi/root";
-import { useState } from "ivi/state";
 
 const ZERO: Point = { x: 0, y: 0 };
 
-function useDelayedValue(c: Component) {
+function useDelayedValue(c) {
   const [delayedValue, setDelayedValue] = useState(c, ZERO);
 
   return [
@@ -1699,7 +1690,7 @@ const Dot = ({ position, opacity }) => htm`
   />
 `;
 
-updateRoot(
+update(
   createRoot(document.getElementById("app")!),
   Canvas(),
 );
