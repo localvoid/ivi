@@ -144,7 +144,7 @@ export class TemplateParser extends TemplateScanner {
           type: IPropertyType.Value,
           key: "textContent",
           value,
-          static: false,
+          hoist: false,
         });
       } else if (c === CharCode.Dot) { // .property
         this.i++;
@@ -191,7 +191,7 @@ export class TemplateParser extends TemplateScanner {
           type: IPropertyType.Style,
           key,
           value,
-          static: false,
+          hoist: false,
         });
       } else if (c === CharCode.AtSign) { // @event
         this.i++;
@@ -211,7 +211,7 @@ export class TemplateParser extends TemplateScanner {
           type: IPropertyType.Directive,
           key: null,
           value,
-          static: false,
+          hoist: false,
         });
       } else {
         break;
