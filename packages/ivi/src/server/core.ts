@@ -277,8 +277,14 @@ const RENDER_CONTEXT: RenderContext = Object.seal({
 const _Array = Array;
 const _isArray = _Array.isArray;
 
+const ESCAPE_ATTR_SYMBOLS = /["&]/;
+
 const escapeAttr = (s: string): string => {
   if (s.length === 0) {
+    return s;
+  }
+
+  if (!ESCAPE_ATTR_SYMBOLS.test(s)) {
     return s;
   }
 
@@ -309,8 +315,14 @@ const escapeAttr = (s: string): string => {
   return out;
 };
 
+const ESCAPE_TEXT_SYMBOLS = /[<&]/;
+
 const escapeText = (s: string): string => {
   if (s.length === 0) {
+    return s;
+  }
+
+  if (!ESCAPE_TEXT_SYMBOLS.test(s)) {
     return s;
   }
 
