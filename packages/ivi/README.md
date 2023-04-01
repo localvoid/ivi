@@ -85,7 +85,7 @@ runtime for declarative UI rendering.
     - [`List(entries, getKey, render)`](#list-1)
   - [Context](#context)
     - [`contextType()`](#contexttype)
-    - [`context(component, type)`](#context-1)
+    - [`getContextValue(component, type)`](#getcontextvalue)
     - [`Context(type, value)`](#context-2)
   - [DOM Utilities](#dom-utilities)
     - [`emit(node, eventName, detail, options)`](#emit)
@@ -114,9 +114,9 @@ runtime for declarative UI rendering.
 
 ## Setup
 
-It is an optional step, ivi templates will work without any precompilation for
-Client-Side Rendering, but it is highly recommended to use precompilation to
-improve performance and reduce code size.
+ivi templates will work without any precompilation for Client-Side Rendering,
+but it is highly recommended to use precompilation to improve performance and
+reduce code size.
 
 ### Vite
 
@@ -733,16 +733,16 @@ function contextType<T>(): ContextType<T>;
 
 `contextType` creates unique context type.
 
-#### **`context()`**
+#### **`getContextValue()`**
 
 ```ts
-function context<T>(
+function getContextValue<T>(
   component: Component,
   type: ContextType<T>,
 ): T | undefined;
 ```
 
-`getContext` retrieves context value associated with a context type.
+`getContextValue` retrieves context value associated with a context type.
 
 #### **`Context()`**
 
