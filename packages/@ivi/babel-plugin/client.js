@@ -1,10 +1,9 @@
 import { declare } from "@babel/helper-plugin-utils";
-import moduleImports from "@babel/helper-module-imports";
 import { compileTemplate } from "ivi/template/compiler";
 import { TemplateParserError } from "ivi/template/parser";
 import { importSymbolFactory, hoistExpr, tryHoistExpr } from "./shared.js";
 
-const ivi = (config) => declare((api) => {
+const client = (config) => declare((api) => {
   api.assertVersion(7);
   const t = api.types;
 
@@ -253,4 +252,4 @@ const ivi = (config) => declare((api) => {
     },
   };
 });
-export default ivi;
+export default client;

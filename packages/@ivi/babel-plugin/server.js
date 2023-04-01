@@ -3,7 +3,7 @@ import { compileTemplate } from "ivi/template/ssr";
 import { TemplateParserError } from "ivi/template/parser";
 import { importSymbolFactory, tryHoistExpr, hoistExpr } from "./shared.js";
 
-const ssr = (config) => declare((api) => {
+const server = (config) => declare((api) => {
   api.assertVersion(7);
 
   const t = api.types;
@@ -155,4 +155,4 @@ const ssr = (config) => declare((api) => {
     },
   }
 });
-export default ssr;
+export default server;

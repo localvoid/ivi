@@ -3,16 +3,19 @@
   "version": "3.0.0-beta.1",
   "type": "module",
   "exports": {
-    ".": "./index.js",
-    "./optimizer": "./optimizer.js",
-    "./ssr": "./ssr.js"
+    "./client": "./client.js",
+    "./client-optimizer": "./client-optimizer.js",
+    "./server": "./server.js",
+    "./package.json": "./package.json"
   },
   "sideEffects": false,
   "files": [
-    "index.js",
-    "index.d.ts",
-    "optimizer.js",
-    "optimizer.d.ts",
+    "client.js",
+    "client.d.ts",
+    "client-optimizer.js",
+    "client-optimizer.d.ts",
+    "server.js",
+    "server.d.ts",
     "shared.js",
     "README.md",
     "LICENSE"
@@ -21,9 +24,9 @@
     "ivi": "workspace:*"
   },
   "dependencies": {
-    "@babel/helper-module-imports": "^7.18.6",
+    "@babel/helper-module-imports": "^7.21.4",
     "@babel/helper-plugin-utils": "^7.20.2",
-    "@babel/types": "^7.21.3"
+    "@babel/types": "^7.21.4"
   },
   "devDependencies": {
     "ivi": "workspace:*"

@@ -16,5 +16,5 @@ export interface PluginConfig {
   readonly templateLanguages?: TemplateLanguage[];
 }
 
-declare const ivi: (config: PluginConfig) => babel.PluginObj;
-export default ivi;
+declare const client: (config: PluginConfig) => babel.PluginObj;
+export default client;

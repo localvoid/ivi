@@ -1,8 +1,8 @@
 import type { Plugin } from "rollup";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
 import { transformAsync } from "@babel/core";
-import iviBabel, { TemplateLanguage } from "@ivi/babel-plugin";
-import iviBabelOptimizer from "@ivi/babel-plugin/optimizer";
+import iviClient, { TemplateLanguage } from "@ivi/babel-plugin/client";
+import iviClientOptimizer from "@ivi/babel-plugin/client-optimizer";
 
 export interface IviOptions {
   include?: FilterPattern | undefined;
@@ -55,7 +55,7 @@ export function ivi(options?: IviOptions): Plugin {
         babelrc: false,
         browserslistConfigFile: false,
         filename: id,
-        plugins: [iviBabel({
+        plugins: [iviClient({
           templateLanguages,
         })],
         sourceMaps: true,
@@ -73,7 +73,7 @@ export function ivi(options?: IviOptions): Plugin {
         babelrc: false,
         browserslistConfigFile: false,
         filename: chunk.fileName,
-        plugins: [iviBabelOptimizer],
+        plugins: [iviClientOptimizer],
         sourceMaps: true,
         sourceType: "module",
       });

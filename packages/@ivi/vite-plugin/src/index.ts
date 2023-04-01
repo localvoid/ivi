@@ -1,9 +1,9 @@
 import type { Plugin } from "vite";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
 import { transformAsync } from "@babel/core";
-import iviBabel, { TemplateLanguage } from "@ivi/babel-plugin";
-import iviSSRBabel from "@ivi/babel-plugin/ssr";
-import iviBabelOptimizer from "@ivi/babel-plugin/optimizer";
+import iviClient, { TemplateLanguage } from "@ivi/babel-plugin/client";
+import iviClientOptimizer from "@ivi/babel-plugin/client-optimizer";
+import iviServer from "@ivi/babel-plugin/server";
 
 export interface IviOptions {
   include?: FilterPattern | undefined;
@@ -53,8 +53,8 @@ export function ivi(options?: IviOptions): Plugin[] {
         }
 
         const babelPlugin = options?.ssr
-          ? iviSSRBabel({ templateLanguages })
-          : iviBabel({ templateLanguages });
+          ? iviServer({ templateLanguages })
+          : iviClient({ templateLanguages });
         const result = await transformAsync(code, {
           configFile: false,
           babelrc: false,
@@ -76,7 +76,7 @@ export function ivi(options?: IviOptions): Plugin[] {
           babelrc: false,
           browserslistConfigFile: false,
           filename: chunk.fileName,
-          plugins: [iviBabelOptimizer],
+          plugins: [iviClientOptimizer],
           sourceMaps: true,
           sourceType: "module",
         });
