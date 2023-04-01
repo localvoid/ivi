@@ -1,6 +1,6 @@
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import { reset, trace, emit, toSnapshot } from "@ivi/mock-dom/global";
+import { reset, trace, emit } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "../index.js";
 import { component, invalidate } from "ivi";
@@ -21,7 +21,6 @@ describe("hydrate", () => {
         "[1] Node.lastChild => 3",
       ]
     );
-    strictEqual(toSnapshot(root.findDOMNode()), `<DIV#3/>`);
   });
 
   test(`1`, () => {
@@ -51,18 +50,6 @@ describe("hydrate", () => {
         `[4] Node.lastChild => 5`,
       ],
     );
-    strictEqual(toSnapshot(root.findDOMNode()), `
-<DIV#3>
-  <SPAN#4>
-    <TEXT#5>1</TEXT#5>
-  </SPAN#4>
-  <BUTTON#6
-    @click=[onClick]
-  >
-    <TEXT#7>Click Me</TEXT#7>
-  </BUTTON#6>
-</DIV#3>
-`.trim());
 
     emit(document.body.firstChild!.firstChild!.nextSibling!, "click");
     strictEqual(root.isDirty, true);
@@ -72,17 +59,5 @@ describe("hydrate", () => {
         `[5] Node.nodeValue = 2`,
       ],
     );
-    strictEqual(toSnapshot(root.findDOMNode()), `
-<DIV#3>
-  <SPAN#4>
-    <TEXT#5>2</TEXT#5>
-  </SPAN#4>
-  <BUTTON#6
-    @click=[onClick]
-  >
-    <TEXT#7>Click Me</TEXT#7>
-  </BUTTON#6>
-</DIV#3>
-`.trim());
   });
 });

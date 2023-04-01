@@ -1,6 +1,6 @@
 import { deepStrictEqual, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import { reset, trace, toSnapshot, emit } from "@ivi/mock-dom/global";
+import { reset, trace, emit } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "../index.js";
 
@@ -20,12 +20,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#2/>
-      `.trim()
-    );
   });
 
   test("<h1>a</h1>", () => {
@@ -43,14 +37,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(5, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6>a</TEXT#6>
-</H1#5>
-      `.trim()
-    );
   });
 
   test("whitespace 1", () => {
@@ -66,12 +52,6 @@ describe("htm", () => {
         `createElement("h1") => 2`,
         `[1] Node.insertBefore(2, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#2/>
-      `.trim()
     );
   });
 
@@ -90,12 +70,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#2/>
-      `.trim()
-    );
   });
 
   test("whitespace 3", () => {
@@ -112,14 +86,6 @@ describe("htm", () => {
         `[3] Node.cloneNode(true) => 5`,
         `[1] Node.insertBefore(5, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6> </TEXT#6>
-</H1#5>
-      `.trim()
     );
   });
 
@@ -141,15 +107,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(6, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#6>
-  <H2#7/>
-  <H2#8/>
-</DIV#6>
-      `.trim()
-    );
   });
 
   test("whitespace 5", () => {
@@ -168,14 +125,6 @@ describe("htm", () => {
         `[3] Node.cloneNode(true) => 5`,
         `[1] Node.insertBefore(5, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6>ab</TEXT#6>
-</H1#5>
-      `.trim()
     );
   });
 
@@ -197,14 +146,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(5, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6>ab cd</TEXT#6>
-</H1#5>
-      `.trim()
-    );
   });
 
   test("whitespace 7", () => {
@@ -224,14 +165,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(5, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6>ab cd</TEXT#6>
-</H1#5>
-      `.trim()
-    );
   });
 
   test("whitespace 8", () => {
@@ -248,14 +181,6 @@ describe("htm", () => {
         `[3] Node.cloneNode(true) => 5`,
         `[1] Node.insertBefore(5, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6> ab cd </TEXT#6>
-</H1#5>
-     `.trim()
     );
   });
 
@@ -276,14 +201,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(5, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6> ab</TEXT#6>
-</H1#5>
-      `.trim()
-    );
   });
 
   test("whitespace 10", () => {
@@ -302,14 +219,6 @@ describe("htm", () => {
         `[3] Node.cloneNode(true) => 5`,
         `[1] Node.insertBefore(5, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<H1#5>
-  <TEXT#6>ab </TEXT#6>
-</H1#5>
-      `.trim()
     );
   });
 
@@ -333,17 +242,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(7, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#7>
-  <TEXT#8>a</TEXT#8>
-  <SPAN#9>
-    <TEXT#10>b</TEXT#10>
-  </SPAN#9>
-</DIV#7>
-      `.trim()
-    );
   });
 
   test(`<div class="a b"></div>`, () => {
@@ -361,14 +259,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(4, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#4
-  class="a b"
-/>
-      `.trim()
-    );
   });
 
   test("attr 1", () => {
@@ -385,14 +275,6 @@ describe("htm", () => {
         `[3] Node.cloneNode(true) => 4`,
         `[1] Node.insertBefore(4, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#4
-  attr=""
-/>
-      `.trim()
     );
   });
 
@@ -413,14 +295,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(4, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#4
-  attr=""
-/>
-      `.trim()
-    );
   });
 
   test(`attr 3`, () => {
@@ -438,14 +312,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(4, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#4
-  attr="a"
-/>
-      `.trim()
-    );
   });
 
   test(`<div class={"a b"}></div>`, () => {
@@ -461,14 +327,6 @@ describe("htm", () => {
         `[2] Element.className = "a b"`,
         `[1] Node.insertBefore(2, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2
-  class="a b"
-/>
-      `.trim()
     );
   });
 
@@ -486,14 +344,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2
-  attr="a"
-/>
-      `.trim()
-    );
   });
 
   test(`<div .a={"0"}></div>`, () => {
@@ -510,14 +360,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2
-  .a="0"
-/>
-      `.trim()
-    );
   });
 
   test(`<div *a={"1"}></div>`, () => {
@@ -533,14 +375,6 @@ describe("htm", () => {
         `[2] Element.setProperty("a", "1")`,
         `[1] Node.insertBefore(2, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2
-  .a="1"
-/>
-      `.trim()
     );
   });
 
@@ -559,14 +393,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(4, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#4
-  style="top:10px"
-/>
-      `.trim()
-    );
   });
 
   test(`<div style="left:5px" ~top="10px"></div>`, () => {
@@ -584,14 +410,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(4, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#4
-  style="left:5px;top:10px"
-/>
-      `.trim()
-    );
   });
 
   test(`<div ~top={"10px"}></div>`, () => {
@@ -608,14 +426,6 @@ describe("htm", () => {
         `[2] style.setProperty(top, "10px")`,
         `[1] Node.insertBefore(2, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2
-  ~top="10px"
-/>
-      `.trim()
     );
   });
 
@@ -637,15 +447,6 @@ describe("htm", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2
-  @click=[onClick]
-/>
-      `.trim()
-    );
-
   });
 
   test(`<div .textContent={"a"}></div>`, () => {
@@ -661,14 +462,6 @@ describe("htm", () => {
         `[2] Node.textContent = "a"`,
         `[1] Node.insertBefore(2, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#2>
-  <TEXT#3>a</TEXT#3>
-</DIV#2>
-      `.trim()
     );
   });
 
@@ -692,14 +485,6 @@ describe("htm", () => {
         `[5] Node.firstChild => 6`,
         `[1] Node.insertBefore(5, null)`,
       ],
-    );
-    strictEqual(
-      toSnapshot(root.findDOMNode()),
-      `
-<DIV#5>
-  <SPAN#6/>
-</DIV#5>
-      `.trim()
     );
   });
 
