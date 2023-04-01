@@ -8,10 +8,13 @@ import {
   INodeType, IPropertyType, ITemplateType,
 } from "../ir.js";
 import { TFlags } from "../../ssr.js";
+import { TNode } from "../../server/core.js";
 
 const _ = void 0;
 
 const c = (tpl: ITemplate) => compileTemplate(tpl);
+
+const r = (roots: TNode[], exprs: number[] = []) => ({ roots, exprs });
 
 const h = (children: INode[]): ITemplate => ({
   type: ITemplateType.Htm,
@@ -69,7 +72,7 @@ describe("ssr compiler", () => {
       c(h([
         el("div"),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -77,7 +80,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -88,7 +91,7 @@ describe("ssr compiler", () => {
           text("a"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -98,7 +101,7 @@ describe("ssr compiler", () => {
             "a",
           ],
         },
-      ],
+      ]),
     );
   });
 
@@ -109,7 +112,7 @@ describe("ssr compiler", () => {
           expr(0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -119,7 +122,7 @@ describe("ssr compiler", () => {
             0,
           ],
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -131,7 +134,7 @@ describe("ssr compiler", () => {
           text("a"),
         ]),
       ])),
-      [
+      r([
         {
           flags: TFlags.GenerateOffsets,
           prefix: `<div`,
@@ -142,7 +145,7 @@ describe("ssr compiler", () => {
             "a",
           ],
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -154,7 +157,7 @@ describe("ssr compiler", () => {
           expr(0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -165,7 +168,7 @@ describe("ssr compiler", () => {
             0,
           ],
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -177,7 +180,7 @@ describe("ssr compiler", () => {
           expr(0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -194,7 +197,7 @@ describe("ssr compiler", () => {
             0,
           ],
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -208,7 +211,7 @@ describe("ssr compiler", () => {
           expr(1),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -227,7 +230,7 @@ describe("ssr compiler", () => {
             1,
           ],
         },
-      ],
+      ], [0, 1]),
     );
   });
 
@@ -241,7 +244,7 @@ describe("ssr compiler", () => {
           ]),
         ]),
       ])),
-      [
+      r([
         {
           flags: TFlags.GenerateOffsets,
           prefix: `<div`,
@@ -260,7 +263,7 @@ describe("ssr compiler", () => {
             },
           ],
         },
-      ],
+      ], [0, 1]),
     );
   });
 
@@ -272,7 +275,7 @@ describe("ssr compiler", () => {
           attr("a", "1"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div a="1"`,
@@ -280,7 +283,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -291,7 +294,7 @@ describe("ssr compiler", () => {
           attr("a", true),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div a`,
@@ -299,7 +302,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -311,7 +314,7 @@ describe("ssr compiler", () => {
           attr("b", "2"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div a="1" b="2"`,
@@ -319,7 +322,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -330,7 +333,7 @@ describe("ssr compiler", () => {
           attr("a", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -340,7 +343,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -352,7 +355,7 @@ describe("ssr compiler", () => {
           attr("b", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div a="1"`,
@@ -362,7 +365,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -374,7 +377,7 @@ describe("ssr compiler", () => {
           attr("b", "1"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div b="1"`,
@@ -384,7 +387,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -396,7 +399,7 @@ describe("ssr compiler", () => {
           attr("b", 1),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -407,7 +410,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0, 1]),
     );
   });
 
@@ -418,7 +421,7 @@ describe("ssr compiler", () => {
           prop("a", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -426,7 +429,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -438,7 +441,7 @@ describe("ssr compiler", () => {
           prop("b", 1),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -446,7 +449,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -457,7 +460,7 @@ describe("ssr compiler", () => {
           styl("top", "10px"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div style="top:10px"`,
@@ -465,7 +468,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -477,7 +480,7 @@ describe("ssr compiler", () => {
           styl("left", "20px"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div style="top:10px;left:20px"`,
@@ -485,7 +488,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -498,7 +501,7 @@ describe("ssr compiler", () => {
           styl("left", "20px"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div style="top:10px;margin:0;left:20px"`,
@@ -506,7 +509,7 @@ describe("ssr compiler", () => {
           props: null,
           children: null,
         },
-      ],
+      ]),
     );
   });
 
@@ -518,7 +521,7 @@ describe("ssr compiler", () => {
           styl("left", "20px"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -530,7 +533,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -542,7 +545,7 @@ describe("ssr compiler", () => {
           styl("top", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -554,7 +557,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -566,7 +569,7 @@ describe("ssr compiler", () => {
           styl("top", 1),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -581,7 +584,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0, 1]),
     );
   });
 
@@ -594,7 +597,7 @@ describe("ssr compiler", () => {
           styl("left", "20px"),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -606,7 +609,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -619,7 +622,7 @@ describe("ssr compiler", () => {
           styl("top", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<div`,
@@ -631,7 +634,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -642,7 +645,7 @@ describe("ssr compiler", () => {
           prop("value", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<input`,
@@ -652,7 +655,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -663,7 +666,7 @@ describe("ssr compiler", () => {
           dprop("value", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<input`,
@@ -673,7 +676,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -684,7 +687,7 @@ describe("ssr compiler", () => {
           dprop("checked", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<input`,
@@ -694,7 +697,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 
@@ -705,7 +708,7 @@ describe("ssr compiler", () => {
           dprop("value", 0),
         ]),
       ])),
-      [
+      r([
         {
           flags: 0,
           prefix: `<textarea`,
@@ -715,7 +718,7 @@ describe("ssr compiler", () => {
           ],
           children: null,
         },
-      ],
+      ], [0]),
     );
   });
 });
