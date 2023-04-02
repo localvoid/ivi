@@ -4,8 +4,8 @@
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
     "build:force": "tsc -b --force --pretty",
-    "test": "node --enable-source-maps --test packages/",
-    "test:only": "node --enable-source-maps --test-only --test packages/"
+    "test": "node --enable-source-maps --test packages/ tests/dist/",
+    "test:only": "node --enable-source-maps --test-only --test packages/ tests/dist/"
   },
   "devDependencies": {
     "@types/node": "^18.15.10",

@@ -10,6 +10,7 @@
     { "path": "packages/@ivi/portal" },
     { "path": "packages/@ivi/identity" },
     { "path": "packages/@ivi/mock-dom" },
+    { "path": "tests" },
   ],
   "exclude": [
     "node_modules"

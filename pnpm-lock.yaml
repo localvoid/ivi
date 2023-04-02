@@ -127,6 +127,18 @@ importers:
 
   packages/ivi: {}
 
+  tests:
+    devDependencies:
+      '@ivi/htm':
+        specifier: workspace:*
+        version: link:../packages/@ivi/htm
+      '@ivi/mock-dom':
+        specifier: workspace:*
+        version: link:../packages/@ivi/mock-dom
+      ivi:
+        specifier: workspace:*
+        version: link:../packages/ivi
+
 packages:
 
   /@ampproject/remapping@2.2.0:

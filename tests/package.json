@@ -1,0 +1,13 @@
+{
+  "name": "ivi-integration-tests",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "ivi": "workspace:*",
+    "@ivi/htm": "workspace:*",
+    "@ivi/mock-dom": "workspace:*"
+  },
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  }
+}

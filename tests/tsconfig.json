@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.composite.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist"
+  },
+  "references": [
+    { "path": "../packages/ivi" },
+    { "path": "../packages/@ivi/htm" },
+    { "path": "../packages/@ivi/mock-dom" },
+  ],
+  "include": [
+    "src/**/*.ts"
+  ]
+}
