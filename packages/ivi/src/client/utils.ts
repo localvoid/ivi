@@ -30,7 +30,7 @@ export interface EmitOptions {
  * Emit invokes event handlers synchronously. All event handlers are invoked
  * before `emit()` returns.
  *
- * *Throws an exception in SSR context*
+ * *SSR: Throws an exception.*
  *
  * @typeparam T Data type.
  * @param component Component node.
@@ -58,7 +58,7 @@ const _CustomEvent = CustomEvent;
 /**
  * Finds the closest DOM node from a Stateful Tree {@link SNode}.
  *
- * *Throws an exception in SSR context.*
+ * *SSR: Throws an exception.*
  *
  * @typeparam T DOM node type.
  * @param sNode Stateful Tree {@link SNode}.
@@ -89,7 +89,6 @@ export const findDOMNode = <T extends Node | Text>(
   }
   return findDOMNode(children as SNode | null);
 };
-
 
 /**
  * VisitNodesDirective controls the {@link visitNodes} traversal algorithm.
@@ -141,7 +140,7 @@ export const visitNodes = (
 /**
  * Checks if a Stateful Tree {@link SNode} contains a DOM element.
  *
- * *Throws an exception in SSR context.*
+ * *SSR: Throws an exception.*
  *
  * @param node Stateful Tree {@link SNode}.
  * @param element DOM element.
@@ -165,7 +164,7 @@ export const containsDOMElement = (
 /**
  * Checks if a Stateful Tree {@link SNode} has a child DOM element.
  *
- * *Throws an exception in SSR context.*
+ * *SSR: Throws an exception.*
  *
  * @param node Stateful Tree {@link SNode}.
  * @param child DOM element.

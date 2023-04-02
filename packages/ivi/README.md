@@ -4,10 +4,12 @@ Lightweight Embeddable Web UI library.
 
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
+- [Vite](#vite) / [Astro](#astro) plugins.
 - [Precompiled](#template-optimizations) templates optimized for size and
 performance.
 - [Small memory footprint](#internal-data-structures).
 - [Embeddable](#custom-scheduler).
+- Server-Side Rendering and Client-Side Hydration.
 
 ## Examples
 
@@ -33,8 +35,10 @@ update(
 );
 ```
 
-The size of the precompiled example above is just 2.7KB and it includes entire
-runtime for declarative UI rendering.
+The size of the precompiled example above is just 2.7KB. It includes entire
+runtime for declarative UI rendering. Precompiled templates are
+[optimized](#template-optimizations) for code size and cold-start performance.
+In SSR+Hydration mode, templates doesn't produce any additional code.
 
 - [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
 - [TodoMVC (HTML templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
@@ -118,7 +122,7 @@ reduce code size.
 
 ### Vite
 
-`"@ivi/vite-plugin"` package provides a [Vite](https://vitejs.dev/) plugin that
+`"@ivi/vite-plugin"` package provides [Vite](https://vitejs.dev/) plugin that
 supports Client-Side Rendering and
 [Server-Side Rendering](https://vitejs.dev/guide/ssr.html).
 
@@ -132,9 +136,25 @@ export default defineConfig({
 });
 ```
 
+### Astro
+
+`"@ivi/astro"` package provides [Astro](https://astro.build/) integration plugin
+that supports Server-Side Rendering and Client-Side Hydration.
+
+```ts
+// astro.config.mjs
+import { defineConfig } from "astro/config";
+import ivi from "@ivi/astro";
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [ivi()],
+});
+```
+
 ### Rollup
 
-`"@ivi/rollup-plugin"` package provides a
+`"@ivi/rollup-plugin"` package provides
 [Rollup](https://rollupjs.org/) / [Vite](https://vitejs.dev/) plugin that
 supports Client-Side Rendering only.
 
@@ -448,6 +468,7 @@ type VAny =
   | VRoot      // Root
   | VTemplate  // Template
   | VComponent // Component
+  | VContext   // Context Provider
   | VList      // Dynamic List with track by key algo
   | VAny[]     // Dynamic List with track by index algo
   ;
@@ -455,6 +476,7 @@ type VAny =
 type VRoot = Opaque;
 type VTemplate = Opaque;
 type VComponent = Opaque;
+type VContext = Opaque;
 type VList = Opaque;
 ```
 
