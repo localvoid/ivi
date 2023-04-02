@@ -107,15 +107,16 @@ export const enum Flags {
   Array = 1 << 3,
   Text = 1 << 4,
   Root = 1 << 5,
-  TypeMask = (1 << 6) - 1,
+  Context = 1 << 6,
+  TypeMask = (1 << 7) - 1,
 
   // Component Dirty Flags
-  Dirty = 1 << 6,
-  DirtySubtree = 1 << 7,
+  Dirty = 1 << 7,
+  DirtySubtree = 1 << 8,
 
   // Update Flags
-  ForceUpdate = 1 << 8,
-  DisplaceNode = 1 << 9,
+  ForceUpdate = 1 << 9,
+  DisplaceNode = 1 << 10,
 }
 
 /**
@@ -128,6 +129,7 @@ export type SAny =
   | STemplate  // Template
   | SList      // Dynamic List
   | SComponent // Component
+  | SContext   // Context
   ;
 
 /**
@@ -187,6 +189,8 @@ export type Component = SComponent;
 
 export type ComponentRenderFn = <P = any>(props: P) => VAny;
 
+export type SContext = SNode1<VContext, null>;
+
 /**
  * Creates a Stateful Node instance.
  *
@@ -213,6 +217,7 @@ export type VAny =
   | VRoot      // Root
   | VTemplate  // Template
   | VComponent // Component
+  | VContext   // Context
   | VList      // Dynamic List with track by key algo
   | VAny[]     // Dynamic List with track by index algo
   ;
@@ -247,6 +252,9 @@ export type ComponentDescriptor<P = any> = VDescriptor<
 
 export type ComponentFactoryFn<P = any> = (component: Component) => (props: P) => VAny;
 
+/** Context Descriptor */
+export type ContextDescriptor = VDescriptor<null, null>;
+
 /** List Descriptor */
 export type ListDescriptor = VDescriptor<null, null>;
 
@@ -269,6 +277,8 @@ export type VRoot = VNode<RootDescriptor, RootProps>;
 export type VTemplate<P = any> = VNode<TemplateDescriptor, P>;
 /** Stateless Component Node. */
 export type VComponent<P = any> = VNode<ComponentDescriptor, P>;
+/** Stateless Context Node. */
+export type VContext<T = any> = VNode<ContextDescriptor, ContextProps<T>>;
 /** Stateless List Node. */
 export type VList<K = any> = VNode<ListDescriptor, ListProps<K>>;
 
@@ -282,6 +292,16 @@ export interface RootProps {
   p: Element,
   /** Next Node */
   n: Node | null,
+}
+
+/**
+ * Stateless Context Node Props.
+ */
+export interface ContextProps<T = any> {
+  /** Context Value. */
+  v: T;
+  /** Stateless Child Node. */
+  c: VAny;
 }
 
 /**
@@ -627,11 +647,21 @@ const _update = (
     }
 
     ctx.n = rootDOMNode;
-  } else { // Dynamic Lists
+  } else if (type === Flags.List) {
     _updateList(
       sNode as SList,
       prevProps,
       nextProps,
+      updateFlags,
+    );
+  } else { // Context
+    if (prevProps.v !== nextProps.v) {
+      updateFlags |= Flags.ForceUpdate;
+    }
+    sNode.c = _update(
+      sNode,
+      children as SNode | null,
+      nextProps.c,
       updateFlags,
     );
   }
@@ -690,7 +720,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
             !!(flags & TemplateFlags.Svg),
           );
 
-          const stateNode = createSNode(
+          const sNode = createSNode(
             Flags.Template,
             v,
             null,
@@ -701,7 +731,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
             const children = _Array<SNode | null>(
               (flags >> TemplateFlags.ChildrenSizeShift) & TemplateFlags.Mask6
             );
-            stateNode.c = children;
+            sNode.c = children;
             ctx.p = rootDOMNode;
             ctx.n = null;
             let childrenIndex = 0;
@@ -710,7 +740,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
               const type = childOpCode & ChildOpCode.Type;
               const value = childOpCode >> ChildOpCode.ValueShift;
               if (type === ChildOpCode.Child) {
-                children[childrenIndex++] = _mount(stateNode, props[value]);
+                children[childrenIndex++] = _mount(sNode, props[value]);
               } else if (type === ChildOpCode.SetNext) {
                 ctx.n = state[value];
               } else { // ChildOpCode.SetParent
@@ -723,7 +753,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
           ctx.n = rootDOMNode;
 
           nodeInsertBefore!.call(parentDOMElement, rootDOMNode, nextDOMNode);
-          return stateNode;
+          return sNode;
         } else if (type === Flags.Component) {
           const sNode: Component = {
             f: Flags.Component,
@@ -737,9 +767,13 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
           sNode.c = _mount(sNode, renderFn(props));
           sNode.s1 = renderFn;
           return sNode;
+        } else if (type === Flags.List) {
+          return _mountList(parentSNode, Flags.List, (props as ListProps).v, v);
         }
-        // List
-        return _mountList(parentSNode, Flags.List, (props as ListProps).v, v);
+        // Context
+        const sNode = createSNode(Flags.Context, v, null, parentSNode, null);
+        sNode.c = _mount(sNode, (props as ContextProps).c);
+        return sNode;
       }
     } else {
       const ctx = RENDER_CONTEXT;
@@ -799,12 +833,12 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
       ctx.p = parentDOMElement;
     }
     ctx.n = rootDOMNode;
-  } else if (flags === Flags.Text) {
+  } else if (type === Flags.Text) {
     if (updateFlags & Flags.DisplaceNode) {
       nodeInsertBefore.call(ctx.p, state as Text, ctx.n);
     }
     ctx.n = state as Text;
-  } else if (flags & Flags.Component) {
+  } else if (type === Flags.Component) {
     if ((flags | updateFlags) & (Flags.Dirty | Flags.ForceUpdate)) {
       sNode.c = _update(
         sNode,
@@ -813,6 +847,10 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
         updateFlags,
       );
     } else if (children !== null) {
+      _dirtyCheck(children as SNode, updateFlags);
+    }
+  } else if (type === Flags.Context) {
+    if (children !== null) {
       _dirtyCheck(children as SNode, updateFlags);
     }
   } else { // Array || List
@@ -2090,4 +2128,29 @@ export const update = (root: Root, v: VAny, forceUpdate?: boolean): void => {
       ? Flags.ForceUpdate
       : 0,
   );
+};
+
+export const context = <T>(): [
+  get: (component: Component) => T | undefined,
+  provider: (value: T, child: VAny) => VContext<T>,
+] => {
+  const d: ContextDescriptor = { f: Flags.Component, p1: null, p2: null };
+  return [
+    (c: Component) => _getContextValue(c, d),
+    (v: T, c: VAny) => ({ d, p: { v, c } }),
+  ];
+};
+
+const _getContextValue = <T>(
+  c: Component,
+  d: ContextDescriptor,
+): T | undefined => {
+  let node: SNode | null = c.p;
+  while (node !== null) {
+    if (node.f & Flags.Context && (node as SContext).v.d === d) {
+      return (node as SContext).v.p.v;
+    }
+    node = node.p;
+  }
+  return void 0;
 };
