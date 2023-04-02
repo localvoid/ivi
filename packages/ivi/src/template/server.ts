@@ -8,7 +8,7 @@ import {
 import {
   type TElement, type TNode, type TProperty,
   TFlags
-} from "../server/core.js";
+} from "../server/template.js";
 
 export interface TemplateCompilationArtifact {
   readonly roots: TNode[];

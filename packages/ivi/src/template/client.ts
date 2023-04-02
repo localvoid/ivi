@@ -1,8 +1,6 @@
 import {
-  type TemplateCompilationArtifact, type TemplateNode, type TemplateNodeBlock,
-  TemplateNodeType, TemplateFlags, ChildOpCode, CommonPropType, PropOpCode,
-  StateOpCode,
-} from "./format.js";
+  TemplateFlags, ChildOpCode, CommonPropType, PropOpCode, StateOpCode,
+} from "../client/template.js";
 import {
   type INode, type ITemplate, type INodeElement,
   INodeType, IPropertyType, ITemplateType,
@@ -11,6 +9,52 @@ import {
   type SNode, SNodeFlags,
   createSNode, isStaticProperty,
 } from "./shared.js";
+
+export interface TemplateCompilationArtifact {
+  /** Root Nodes */
+  readonly roots: TemplateNode[],
+}
+
+export const enum TemplateNodeType {
+  Block = 0,
+  Text = 1,
+  Expr = 2,
+}
+
+export interface TemplateNodeBlock {
+  /** Node type */
+  readonly type: TemplateNodeType.Block;
+  /** Template Flags */
+  readonly flags: TemplateFlags;
+  /** Static Template */
+  readonly template: (string | number)[] | string,
+  /** Prop OpCodes */
+  readonly props: number[],
+  /** Child OpCodes */
+  readonly child: number[],
+  /** State OpCodes */
+  readonly state: number[],
+  /** Data */
+  readonly data: string[],
+  /** Dynamic Expressions */
+  readonly exprs: number[],
+}
+
+export interface TemplateNodeText {
+  readonly type: TemplateNodeType.Text;
+  readonly value: string;
+}
+
+export interface TemplateNodeExpr {
+  readonly type: TemplateNodeType.Expr;
+  readonly value: number;
+}
+
+export type TemplateNode =
+  | TemplateNodeBlock
+  | TemplateNodeText
+  | TemplateNodeExpr
+  ;
 
 export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => {
   return {

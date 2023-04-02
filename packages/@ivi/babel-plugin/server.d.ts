@@ -16,5 +16,5 @@ export interface PluginConfig {
   readonly templateLanguages?: TemplateLanguage[];
 }
 
-declare const ssr: (config: PluginConfig) => babel.PluginObj;
-export default ssr;
+declare const server: (config: PluginConfig) => babel.PluginObj;
+export default server;

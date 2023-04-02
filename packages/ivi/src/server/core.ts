@@ -1,32 +1,20 @@
-export type TNode =
-  | TElement // Element
-  | string   // Text
-  | number   // Expr index
-  ;
+import {
+  type TNode, type TProperty, type TElement, TFlags,
+} from "./template.js";
+import { escapeAttr, escapeText } from "./escape.js";
 
-export interface TElement {
-  readonly flags: number;
-  readonly prefix: string;
-  readonly suffix: string;
-  readonly props: TProperty[] | null;
-  readonly children: TNode[] | null;
-}
-
-export const enum TFlags {
-  GenerateOffsets = 1,
-}
-
-export interface TProperty {
-  /** Attribute prefix. */
-  prefix: string;
-  /** Expression index. */
-  readonly i: number;
-}
-
-export interface TStyle {
-  readonly prefix: string;
-  readonly dynamic: TProperty[];
-}
+export type SAny = undefined;
+export type SNode = undefined;
+export type SNode1 = undefined;
+export type SNode2 = undefined;
+export type SRoot = undefined;
+export type SText = undefined;
+export type STemplate = undefined;
+export type SList = undefined;
+export type SContext = undefined;
+export type SComponent = undefined;
+export type Root = undefined;
+export type Component = undefined;
 
 export type VAny =
   | null       // Empty slot
@@ -35,40 +23,113 @@ export type VAny =
   | string     // Text
   | number     // Text
   | VTemplate  // Template
+  | VComponent // Component
+  | VContext   // Context
   | VAny[]     // Array / List
   ;
 
-export interface VTemplate {
-  /** Template Descriptor. */
-  readonly d: TemplateDescriptor;
-  /** Expressions. */
-  readonly e: any[] | undefined;
+export const enum VNodeType {
+  Template = 0,
+  Component = 1,
+  Context = 2,
 }
 
-export type TemplateDescriptor = TNode[];
+export interface TemplateDescriptor {
+  readonly t: VNodeType.Template;
+  readonly s: TNode[];
+}
 
-export type Component = undefined;
+export interface VTemplate {
+  readonly d: TemplateDescriptor;
+  /** Expressions. */
+  readonly p: any[] | undefined;
+}
+
+export interface ComponentDescriptor<P = any> {
+  readonly t: VNodeType.Component;
+  readonly s: (component: Component) => (props: P) => VAny;
+}
+
+export interface VComponent<P = any> {
+  readonly d: ComponentDescriptor<P>;
+  /** Component Props. */
+  readonly p: P;
+}
+
+export interface ContextDescriptor<T = any> {
+  readonly t: VNodeType.Context;
+  readonly s: T;
+}
+
+export interface ContextProps<T = any> {
+  /** Context Value. */
+  readonly v: T;
+  /** Context Children. */
+  readonly c: VAny;
+}
+
+export interface VContext<T = any> {
+  readonly d: ContextDescriptor<T>;
+  readonly p: ContextProps<T>;
+}
+
+export type VList = VAny[];
+
+const NOOP_1 = (arg1: any) => { };
+
+export const defineRoot = NOOP_1;
+
+export const contextType = <T>(): ContextDescriptor<T> => ({
+  t: VNodeType.Context,
+  s: null!,
+});
+
+export type ContextType<T> = ContextDescriptor<T>;
+
+export const getContextValue = <T>(
+  component: Component,
+  type: ContextType<T>,
+): T | undefined => {
+  const ctxStack = RENDER_CONTEXT.c;
+  let i = ctxStack.length;
+  while (i-- > 0) {
+    const c = ctxStack[i];
+    if (c.d === type) {
+      return c.p.v;
+    }
+  }
+  return void 0;
+};
+
+export const Context = <T>(
+  d: ContextType<T>,
+  v: T,
+  c: VAny,
+): VContext<T> => ({
+  d,
+  p: { v, c },
+});
 
 export type ComponentFactory = {
-  (factory: (c: Component) => () => VAny): () => VAny;
+  (
+    factory: (c: Component) => () => VAny,
+  ): () => VComponent<undefined>;
   <P>(
-    factory: (
-      c: Component,
-      areEqual?: (prev: P, next: P) => boolean
-    ) => (props: P) => VAny,
-  ): (props: P) => VAny;
+    factory: (c: Component) => (props: P) => VAny,
+    areEqual?: (prev: P, next: P) => boolean
+  ): (props: P) => VComponent<P>;
 };
 
 export const component: ComponentFactory = <P>(
-  factory: (c: Component) => (props?: P) => VAny,
+  s: (component: Component) => (props?: P) => VAny,
   areEqual?: (prev: P, next: P) => boolean,
-): (props?: P) => VAny => (
-  (props?: P) => factory(void 0)(props)
-);
+): (props?: P) => VComponent => {
+  const d: ComponentDescriptor = { t: VNodeType.Component, s };
+  return (p?: P) => ({ d, p });
+};
 
-const NOOP = () => { };
-export const preventUpdates = NOOP;
-export const useUnmount = NOOP;
+/** Noop function. */
+export const useUnmount = NOOP_1;
 
 export type UseEffectFactory = {
   (
@@ -82,13 +143,18 @@ export type UseEffectFactory = {
   ): (props: P) => void;
 };
 
+/** Returns noop function. */
 export const useEffect: UseEffectFactory = <P>(
   component: Component,
   hook: (props?: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
-): (props?: P) => void => NOOP;
+): (props?: P) => void => NOOP_1;
 
-export const invalidate = NOOP;
+/** Returns noop function. */
+export const useLayoutEffect = useEffect;
+
+/** Returns noop function. */
+export const useIdleEffect = useEffect;
 
 export const List = <E, K>(
   entries: E[],
@@ -96,27 +162,12 @@ export const List = <E, K>(
   render: (entry: E) => VAny,
 ): VAny => entries.map(render);
 
-export const dirtyCheck = NOOP;
-export const update = NOOP;
-export const unmount = NOOP;
+export const _$T = (s: TNode[]): TemplateDescriptor => ({
+  t: VNodeType.Template,
+  s,
+});
 
-/**
- * Arrays, Template, Strings, Holes
- *
- */
-export type TemplatePart =
-  | null
-  | undefined
-  | false
-  | string
-  | number
-  | TemplateBlock
-  ;
-
-export type TemplateBlock = (string | number)[];
-export type Emitter = (s: string) => void;
-
-export const _T = (
+export const _$E = (
   flags: number,
   prefix: string,
   suffix: string,
@@ -130,7 +181,7 @@ export const _T = (
   children,
 });
 
-export const _P = (
+export const _$P = (
   prefix: string,
   i: number,
 ): TProperty => ({
@@ -138,15 +189,15 @@ export const _P = (
   i,
 });
 
-export const _t = (
+export const _$t = (
   d: TemplateDescriptor,
-  e?: any[],
+  p?: any[],
 ): VTemplate => ({
   d,
-  e,
+  p,
 });
 
-export const render = (v: any): string => {
+export const renderToString = (v: any): string => {
   let result;
   const ctx = RENDER_CONTEXT;
   try {
@@ -155,6 +206,7 @@ export const render = (v: any): string => {
   } finally {
     ctx.t = "";
     ctx.s = 0;
+    ctx.c.length = 0;
   }
   return result;
 };
@@ -168,18 +220,28 @@ const renderNode = (v: VAny) => {
       for (let i = 0; i < v.length; i++) {
         renderNode(v[i]);
       }
-    } else { // Element
-      const exprs = v.e;
-      const tNodes = v.d;
-      for (let i = 0; i < tNodes.length; i++) {
-        const child = tNodes[i];
-        if (typeof child === "object") { // Element
-          renderTElement(exprs!, child);
-        } else if (typeof child === "string") { // Text
-          renderText(escapeText(child));
-        } else { // Expr
-          renderNode(exprs![child]);
+    } else {
+      const { d, p } = v;
+      const { t, s } = d;
+      if (t === VNodeType.Template) {
+        const roots: TNode[] = s;
+        for (let i = 0; i < roots.length; i++) {
+          const child = roots[i];
+          if (typeof child === "object") { // Element
+            renderTElement(p, child);
+          } else if (typeof child === "string") { // Text
+            renderText(escapeText(child));
+          } else { // Expr
+            renderNode(p![child]);
+          }
         }
+      } else if (t === VNodeType.Component) {
+        renderNode(s(void 0)(p));
+      } else { // Context
+        const ctxStack = RENDER_CONTEXT.c;
+        ctxStack.push(v as VContext);
+        renderNode(p);
+        ctxStack.pop();
       }
     }
   } else { // text
@@ -267,88 +329,60 @@ interface RenderContext {
   t: string;
   /** Render State. */
   s: number;
+  /** Context stack. */
+  c: VContext[];
 }
 
 const RENDER_CONTEXT: RenderContext = Object.seal({
   t: "",
   s: 0,
+  c: [],
 });
 
 const _Array = Array;
 const _isArray = _Array.isArray;
 
-const ESCAPE_ATTR_SYMBOLS = /["&]/;
-
-const escapeAttr = (s: string): string => {
-  if (s.length === 0) {
-    return s;
-  }
-
-  if (!ESCAPE_ATTR_SYMBOLS.test(s)) {
-    return s;
-  }
-
-  let last = 0;
-  let i = 0;
-  let out = "";
-  let escape = "";
-
-  for (; i < s.length; i++) {
-    const c = s.charCodeAt(i);
-    if (c === 34) {
-      escape = "&quot;";
-    } else if (c === 38) {
-      escape = "&amp;";
-    } else {
-      continue;
-    }
-
-    if (i !== last) {
-      out += s.slice(last, i);
-    }
-    out += escape;
-    last = i + 1;
-  }
-  if (i !== last) {
-    out += s.slice(last, i);
-  }
-  return out;
+export const _h = () => {
+  throw Error("_h function isn't available during Server-Side Rendering.");
+};
+export const _hN = () => {
+  throw Error("_hN function isn't available during Server-Side Rendering.");
+};
+export const _hE = () => {
+  throw Error("_hE function isn't available during Server-Side Rendering.");
+};
+export const _s = () => {
+  throw Error("_s function isn't available during Server-Side Rendering.");
+};
+export const _sN = () => {
+  throw Error("_sN function isn't available during Server-Side Rendering.");
+};
+export const _sE = () => {
+  throw Error("_sE function isn't available during Server-Side Rendering.");
+};
+export const _T = () => {
+  throw Error("_T function isn't available during Server-Side Rendering.");
+};
+export const _t = () => {
+  throw Error("_t function isn't available during Server-Side Rendering.");
 };
 
-const ESCAPE_TEXT_SYMBOLS = /[<&]/;
+export const invalidate = () => {
+  throw Error("invalidate function isn't available during Server-Side Rendering.");
+};
 
-const escapeText = (s: string): string => {
-  if (s.length === 0) {
-    return s;
-  }
-
-  if (!ESCAPE_TEXT_SYMBOLS.test(s)) {
-    return s;
-  }
-
-  let last = 0;
-  let i = 0;
-  let out = "";
-  let escape = "";
-
-  for (; i < s.length; i++) {
-    const c = s.charCodeAt(i);
-    if (c === 60) {
-      escape = "&lt;";
-    } else if (c === 38) {
-      escape = "&amp;";
-    } else {
-      continue;
-    }
-
-    if (i !== last) {
-      out += s.slice(last, i);
-    }
-    out += escape;
-    last = i + 1;
-  }
-  if (i !== last) {
-    out += s.slice(last, i);
-  }
-  return out;
+export const createRoot = () => {
+  throw Error("createRoot function isn't available during Server-Side Rendering.");
+};
+export const dirtyCheck = () => {
+  throw Error("dirtyCheck function isn't available during Server-Side Rendering.");
+};
+export const update = () => {
+  throw Error("update function isn't available during Server-Side Rendering.");
+};
+export const unmount = () => {
+  throw Error("unmount function isn't available during Server-Side Rendering.");
+};
+export const hydrate = () => {
+  throw Error("hydrate function isn't available during Server-Side Rendering.");
 };

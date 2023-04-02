@@ -1,5 +1,5 @@
 import { declare } from "@babel/helper-plugin-utils";
-import { compileTemplate } from "ivi/template/ssr";
+import { compileTemplate } from "ivi/template/server";
 import { TemplateParserError } from "ivi/template/parser";
 import { importSymbolFactory, tryHoistExpr, hoistExpr } from "./shared.js";
 
@@ -15,22 +15,24 @@ const server = (config) => declare((api) => {
     return t.variableDeclaration("const", [
       t.variableDeclarator(
         id,
-        t.arrayExpression(
-          tpl.map((root) => createTNode(importSymbol, root)),
-        ),
+        t.callExpression(importSymbol("ivi/server", "_$T"), [
+          t.arrayExpression(
+            tpl.map((root) => createTNode(importSymbol, root)),
+          ),
+        ]),
       )
     ]);
   }
 
   function createTNode(importSymbol, node) {
     if (typeof node === "object") { // Element
-      return t.callExpression(importSymbol("ivi", "_T"), [
+      return t.callExpression(importSymbol("ivi/server", "_$E"), [
         t.numericLiteral(node.flags),
         t.stringLiteral(node.prefix),
         t.stringLiteral(node.suffix),
         node.props
           ? t.arrayExpression(
-            node.props.map((p) => t.callExpression(importSymbol("ivi", "_P"), [
+            node.props.map((p) => t.callExpression(importSymbol("ivi/server", "_$P"), [
               t.stringLiteral(p.prefix),
               t.numericLiteral(p.i),
             ])))
@@ -50,7 +52,7 @@ const server = (config) => declare((api) => {
   }
 
   return {
-    name: "ivi-ssr",
+    name: "ivi-server",
     visitor: {
       Program: {
         enter(path, state) {
@@ -116,7 +118,7 @@ const server = (config) => declare((api) => {
               );
               path.replaceWith(
                 t.callExpression(
-                  importSymbol("ivi", "_t"),
+                  importSymbol("ivi/server", "_$t"),
                   exprs.length > 0
                     ? [
                       descriptorId,

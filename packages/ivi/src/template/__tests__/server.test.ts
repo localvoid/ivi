@@ -1,14 +1,13 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { compileTemplate } from "../ssr.js";
+import { compileTemplate } from "../server.js";
 import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
   type IPropertyAttribute, type IPropertyDOMValue, type IPropertyValue,
   type ITemplate, type IPropertyStyle,
   INodeType, IPropertyType, ITemplateType,
 } from "../ir.js";
-import { TFlags } from "../../ssr.js";
-import { TNode } from "../../server/core.js";
+import { TFlags, TNode } from "../../server/template.js";
 
 const _ = void 0;
 
@@ -66,7 +65,7 @@ const styl = (key: string, value: string | number): IPropertyStyle => ({
   hoist: false,
 });
 
-describe("ssr compiler", () => {
+describe("server compiler", () => {
   test(`<div/>`, () => {
     deepStrictEqual(
       c(h([

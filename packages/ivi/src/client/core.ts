@@ -1,6 +1,7 @@
 import {
+  type TemplateData,
   TemplateFlags, ChildOpCode, PropOpCode, StateOpCode, CommonPropType,
-} from "../template/format.js";
+} from "./template.js";
 
 // Store global variables in a local scope as const variables so that JIT
 // compiler could easily inline functions and eliminate checks in case global
@@ -116,6 +117,23 @@ export const enum Flags {
 }
 
 /**
+ * Stateful Node.
+ */
+export type SAny =
+  | null       // Hole
+  | SRoot      // Root
+  | SText      // Text
+  | STemplate  // Template
+  | SList      // Dynamic List
+  | SComponent // Component
+  ;
+
+/**
+ * Stateful Node.
+ */
+export type SNode<V = VAny> = SNode1<V> | SNode2<V>;
+
+/**
  * Stateful Node with 1 state slot.
  *
  * @typeparam S1 State slot #1.
@@ -144,13 +162,10 @@ export interface SNode2<V = VAny, S1 = any, S2 = any> extends SNode1<V, S1> {
   s2: S2;
 }
 
-/**
- * Stateful Node.
- */
-export type SNode<V = VAny> = SNode1<V> | SNode2<V>;
-
 /** Stateful Root Node. */
 export type SRoot<S = any> = SNode1<VRoot, S>;
+/** Stateful Root Node. */
+export type Root<S = any> = SRoot<S>;
 /** Stateful Text Node. */
 export type SText = SNode1<string | number, Text>;
 /** Stateful Template Node. */
@@ -167,7 +182,6 @@ export type SComponent = SNode2<
 >;
 /** Stateful Component Node. */
 export type Component = SComponent;
-export type Root<S = any> = SRoot<S>;
 
 export type ComponentRenderFn = <P = any>(props: P) => VAny;
 
@@ -186,6 +200,22 @@ export const createSNode = <V extends VAny, S>(
 ): SNode1<V, S> => ({ f, v, c, p, s1 });
 
 /**
+ * Stateless Tree Node.
+ */
+export type VAny =
+  | null       // Hole
+  | undefined  // Hole
+  | false      // Hole
+  | string     // Text
+  | number     // Text
+  | VRoot      // Root
+  | VTemplate  // Template
+  | VComponent // Component
+  | VList      // Dynamic List with track by key algo
+  | VAny[]     // Dynamic List with track by index algo
+  ;
+
+/**
  * Stateless Node Descriptor.
  */
 export interface VDescriptor<P1 = any, P2 = any> {
@@ -201,39 +231,6 @@ export interface VDescriptor<P1 = any, P2 = any> {
 export type OnRootInvalidated<S> = (root: SRoot<S>, state: S) => void;
 /** Root Descriptor. */
 export type RootDescriptor<S = any> = VDescriptor<OnRootInvalidated<S>, null>;
-
-/** Template Data. */
-export interface TemplateData {
-  /**
-   * SMI (Small Integer) value that packs several values:
-   *
-   *     struct Data {
-   *       stateSize:10;    // The number of state slots
-   *       childrenSize:10; // The number of children slots
-   *       svg:1;           // Template with SVG elements
-   *     }
-   *
-   * stateSize and childrenSize are used for preallocating arrays with
-   * exact number to avoid dynamic growth and reduce memory consumption.
-   */
-  f: number,
-  /**
-   * Array of SMI values that stores OpCodes for updating element properties.
-   */
-  p: PropOpCode[],
-  /**
-   * Array of SMI values that stores OpCodes for updating children nodes.
-   */
-  c: ChildOpCode[],
-  /**
-   * Array of SMI values that stores opCodes for traversing DOM nodes and
-   * saving references to DOM nodes into internal state when template is
-   * instantiated.
-   */
-  s: StateOpCode[],
-  /** Array of string values that stores keys for dynamic properties. */
-  d: any[],
-}
 
 /** Template Descriptor */
 export type TemplateDescriptor = VDescriptor<TemplateData, () => Element>;
@@ -296,22 +293,6 @@ export interface ListProps<K = any> {
   /** Stateless Nodes. */
   v: VAny[],
 }
-
-/**
- * Stateless Tree Node.
- */
-export type VAny =
-  | null       // Hole
-  | undefined  // Hole
-  | false      // Hole
-  | string     // Text
-  | number     // Text
-  | VRoot      // Root
-  | VTemplate  // Template
-  | VComponent // Component
-  | VList      // Dynamic List with track by key algo
-  | VAny[]     // Dynamic List with track by index algo
-  ;
 
 /**
  * Element Directive.
@@ -456,7 +437,7 @@ const _mountList = (
 ): SNode1 => {
   let i = children.length;
   const sChildren = _Array(i);
-  const sNode = createSNode(flags, vNode, sChildren, null, parentState);
+  const sNode = createSNode(flags, vNode, sChildren, parentState, null);
   while (i > 0) {
     sChildren[--i] = _mount(sNode, children[i]);
   }
@@ -1855,7 +1836,7 @@ const _hydrateList = (
 ): SNode1 => {
   let i = children.length;
   const sChildren = _Array(i);
-  const sNode = createSNode(flags, vNode, sChildren, null, parentState);
+  const sNode = createSNode(flags, vNode, sChildren, parentState, null);
   while (i > 0) {
     sChildren[--i] = _hydrate(sNode, children[i]);
   }

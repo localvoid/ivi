@@ -169,8 +169,7 @@ rendering.
 ### Templates
 
 ivi supports different template languages and it is easy to create a new one.
-All compilation complexity is abstracted away in the `"ivi/template/compiler"`
-module.
+All compilation complexity is abstracted away in `"ivi/template/..."` modules.
 
 #### HTML Template Language
 

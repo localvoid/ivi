@@ -1,10 +1,12 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { compileTemplate } from "../compiler.js";
 import {
-  type TemplateCompilationArtifact, type TemplateNode,
-  ChildOpCode, PropOpCode, StateOpCode, TemplateFlags, TemplateNodeType, CommonPropType,
-} from "../format.js";
+  ChildOpCode, PropOpCode, StateOpCode, TemplateFlags, CommonPropType,
+} from "../../client/template.js";
+import {
+  type TemplateCompilationArtifact, type TemplateNode, TemplateNodeType,
+  compileTemplate,
+} from "../client.js";
 import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
   type IPropertyAttribute, type IPropertyValue, type ITemplate,

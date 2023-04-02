@@ -4,16 +4,12 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
-    "./hydrate": "./dist/hydrate.js",
-    "./equal": "./dist/equal.js",
-    "./root": "./dist/root.js",
-    "./ssr": "./dist/ssr.js",
+    "./server": "./dist/server.js",
     "./test": "./dist/test-utils/index.js",
-    "./template/format": "./dist/template/format.js",
-    "./template/compiler": "./dist/template/compiler.js",
+    "./template/client": "./dist/template/client.js",
+    "./template/server": "./dist/template/server.js",
     "./template/parser": "./dist/template/parser.js",
-    "./template/ir": "./dist/template/ir.js",
-    "./template/ssr": "./dist/template/ssr.js"
+    "./template/ir": "./dist/template/ir.js"
   },
   "sideEffects": false,
   "files": [

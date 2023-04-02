@@ -1,5 +1,5 @@
 import { declare } from "@babel/helper-plugin-utils";
-import { compileTemplate } from "ivi/template/compiler";
+import { compileTemplate } from "ivi/template/client";
 import { TemplateParserError } from "ivi/template/parser";
 import { importSymbolFactory, hoistExpr, tryHoistExpr } from "./shared.js";
 

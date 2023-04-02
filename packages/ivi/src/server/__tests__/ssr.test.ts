@@ -1,20 +1,21 @@
 import { strictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { render, TFlags, _P, _t, _T } from "../core.js";
+import { TFlags } from "../template.js";
+import { renderToString, _$T, _$P, _$t, _$E } from "../core.js";
 
 describe("render to string", () => {
   test(`<div></div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             null,
           ),
-        ]),
+        ])),
       ),
       `<div></div>`
     );
@@ -22,9 +23,9 @@ describe("render to string", () => {
 
   test(`<div>a</div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
@@ -33,7 +34,7 @@ describe("render to string", () => {
               "a",
             ],
           ),
-        ]),
+        ])),
       ),
       `<div>a</div>`
     );
@@ -41,15 +42,15 @@ describe("render to string", () => {
 
   test(`<div><p></p></div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             [
-              _T(
+              _$E(
                 0,
                 `<p`,
                 `</p>`,
@@ -58,7 +59,7 @@ describe("render to string", () => {
               ),
             ],
           ),
-        ]),
+        ])),
       ),
       `<div><p></p></div>`
     );
@@ -66,16 +67,16 @@ describe("render to string", () => {
 
   test(`<div>a<p></p></div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             [
               "a",
-              _T(
+              _$E(
                 0,
                 `<p`,
                 `</p>`,
@@ -84,7 +85,7 @@ describe("render to string", () => {
               ),
             ],
           ),
-        ]),
+        ])),
       ),
       `<div>a<p></p></div>`
     );
@@ -92,15 +93,15 @@ describe("render to string", () => {
 
   test(`<div><p></p>b</div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             [
-              _T(
+              _$E(
                 0,
                 `<p`,
                 `</p>`,
@@ -110,7 +111,7 @@ describe("render to string", () => {
               "b",
             ],
           ),
-        ]),
+        ])),
       ),
       `<div><p></p>b</div>`
     );
@@ -118,16 +119,16 @@ describe("render to string", () => {
 
   test(`<div>a<p></p>b</div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             [
               "a",
-              _T(
+              _$E(
                 0,
                 `<p`,
                 `</p>`,
@@ -137,7 +138,7 @@ describe("render to string", () => {
               "b",
             ],
           ),
-        ]),
+        ])),
       ),
       `<div>a<p></p>b</div>`
     );
@@ -145,22 +146,22 @@ describe("render to string", () => {
 
   test(`<div><p></p><b></b></div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             [
-              _T(
+              _$E(
                 0,
                 `<p`,
                 `</p>`,
                 null,
                 null,
               ),
-              _T(
+              _$E(
                 0,
                 `<b`,
                 `</b>`,
@@ -169,7 +170,7 @@ describe("render to string", () => {
               ),
             ],
           ),
-        ]),
+        ])),
       ),
       `<div><p></p><b></b></div>`
     );
@@ -177,15 +178,15 @@ describe("render to string", () => {
 
   test(`<div><p>c</p></div>`, () => {
     strictEqual(
-      render(
-        _t([
-          _T(
+      renderToString(
+        _$t(_$T([
+          _$E(
             0,
             `<div`,
             `</div>`,
             null,
             [
-              _T(
+              _$E(
                 0,
                 `<p`,
                 `</p>`,
@@ -196,7 +197,7 @@ describe("render to string", () => {
               ),
             ],
           ),
-        ]),
+        ])),
       ),
       `<div><p>c</p></div>`
     );
@@ -204,10 +205,10 @@ describe("render to string", () => {
 
   test(`<div>{"0"}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
@@ -216,7 +217,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -226,10 +227,10 @@ describe("render to string", () => {
 
   test(`<div>a{"0"}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
@@ -239,7 +240,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -249,10 +250,10 @@ describe("render to string", () => {
 
   test(`<div>{"0"}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -262,7 +263,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -272,10 +273,10 @@ describe("render to string", () => {
 
   test(`<div>a{"0"}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -286,7 +287,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -296,16 +297,16 @@ describe("render to string", () => {
 
   test(`<div><b></b>{"0"}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
               null,
               [
-                _T(
+                _$E(
                   0,
                   `<b`,
                   `</b>`,
@@ -315,7 +316,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -325,17 +326,17 @@ describe("render to string", () => {
 
   test(`<div>{"0"}<b></b></div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
               null,
               [
                 0,
-                _T(
+                _$E(
                   0,
                   `<b`,
                   `</b>`,
@@ -344,7 +345,7 @@ describe("render to string", () => {
                 ),
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -354,17 +355,17 @@ describe("render to string", () => {
 
   test(`<div>a<b></b>{"0"}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
               null,
               [
                 "a",
-                _T(
+                _$E(
                   0,
                   `<b`,
                   `</b>`,
@@ -374,7 +375,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           ["0"],
         ),
       ),
@@ -384,10 +385,10 @@ describe("render to string", () => {
 
   test(`<div>{"0"}{"1"}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
@@ -397,7 +398,7 @@ describe("render to string", () => {
                 1,
               ],
             ),
-          ],
+          ]),
           ["0", "1"],
         ),
       ),
@@ -407,10 +408,10 @@ describe("render to string", () => {
 
   test(`<div>{"0"}{"1"}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -421,7 +422,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           ["0", "1"],
         ),
       ),
@@ -431,10 +432,10 @@ describe("render to string", () => {
 
   test(`<div>{["0", "1"]}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -444,7 +445,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             ["0", "1"],
           ],
@@ -456,10 +457,10 @@ describe("render to string", () => {
 
   test(`<div>{["0", null]}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -469,7 +470,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             ["0", null],
           ],
@@ -481,10 +482,10 @@ describe("render to string", () => {
 
   test(`<div>{["0", undefined]}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -494,7 +495,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             ["0", void 0],
           ],
@@ -506,10 +507,10 @@ describe("render to string", () => {
 
   test(`<div>{["0", false]}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -519,7 +520,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             ["0", false],
           ],
@@ -531,10 +532,10 @@ describe("render to string", () => {
 
   test(`<div>{["0", <b></b>]}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -544,17 +545,17 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             [
               "0",
-              _t([_T(
+              _$t(_$T([_$E(
                 0,
                 `<b`,
                 `</b>`,
                 null,
                 null,
-              )]),
+              )])),
             ],
           ],
         ),
@@ -565,10 +566,10 @@ describe("render to string", () => {
 
   test(`<div>{["0", "1"]}{"2"}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -579,7 +580,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             ["0", "1"],
             "2",
@@ -592,10 +593,10 @@ describe("render to string", () => {
 
   test(`<div>{null}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
@@ -604,7 +605,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           [
             null,
           ],
@@ -616,10 +617,10 @@ describe("render to string", () => {
 
   test(`<div>{null}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -629,7 +630,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             null,
           ],
@@ -641,10 +642,10 @@ describe("render to string", () => {
 
   test(`<div>{undefined}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
@@ -653,7 +654,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           [
             void 0,
           ],
@@ -665,10 +666,10 @@ describe("render to string", () => {
 
   test(`<div>{undefined}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -678,7 +679,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             void 0,
           ],
@@ -690,10 +691,10 @@ describe("render to string", () => {
 
   test(`<div>{false}</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
@@ -702,7 +703,7 @@ describe("render to string", () => {
                 0,
               ],
             ),
-          ],
+          ]),
           [
             false,
           ],
@@ -714,10 +715,10 @@ describe("render to string", () => {
 
   test(`<div>{false}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -727,7 +728,7 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             false,
           ],
@@ -739,19 +740,19 @@ describe("render to string", () => {
 
   test(`<div a={"0"}></div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
               [
-                _P(` a="`, 0),
+                _$P(` a="`, 0),
               ],
               null,
             ),
-          ],
+          ]),
           [
             "0",
           ],
@@ -763,20 +764,20 @@ describe("render to string", () => {
 
   test(`<div a={"0"} b={"1"}></div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
               [
-                _P(` a="`, 0),
-                _P(`" b="`, 1),
+                _$P(` a="`, 0),
+                _$P(`" b="`, 1),
               ],
               null,
             ),
-          ],
+          ]),
           [
             "0",
             "1",
@@ -789,19 +790,19 @@ describe("render to string", () => {
 
   test(`<div style="{a:0}"></div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
               [
-                _P(` style="a:`, 0),
+                _$P(` style="a:`, 0),
               ],
               null,
             ),
-          ],
+          ]),
           [
             "0",
           ],
@@ -813,20 +814,20 @@ describe("render to string", () => {
 
   test(`<div style="{a:0,b:1}"></div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               0,
               `<div`,
               `</div>`,
               [
-                _P(` style="a:`, 0),
-                _P(`;b:`, 1),
+                _$P(` style="a:`, 0),
+                _$P(`;b:`, 1),
               ],
               null,
             ),
-          ],
+          ]),
           [
             "0",
             "1",
@@ -839,10 +840,10 @@ describe("render to string", () => {
 
   test(`<div>{["a",<b>{"1"}c</b>]}b</div>`, () => {
     strictEqual(
-      render(
-        _t(
-          [
-            _T(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
               TFlags.GenerateOffsets,
               `<div`,
               `</div>`,
@@ -852,13 +853,13 @@ describe("render to string", () => {
                 "b",
               ],
             ),
-          ],
+          ]),
           [
             [
               "0",
-              _t(
-                [
-                  _T(
+              _$t(
+                _$T([
+                  _$E(
                     TFlags.GenerateOffsets,
                     `<b`,
                     `</b>`,
@@ -868,7 +869,7 @@ describe("render to string", () => {
                       "c",
                     ],
                   ),
-                ],
+                ]),
                 ["1"],
               ),
             ],

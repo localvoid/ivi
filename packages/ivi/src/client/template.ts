@@ -1,48 +1,35 @@
-export interface TemplateCompilationArtifact {
-  /** Root Nodes */
-  readonly roots: TemplateNode[],
+/** Template Data. */
+export interface TemplateData {
+  /**
+   * SMI (Small Integer) value that packs several values:
+   *
+   *     struct Data {
+   *       stateSize:10;    // The number of state slots
+   *       childrenSize:10; // The number of children slots
+   *       svg:1;           // Template with SVG elements
+   *     }
+   *
+   * stateSize and childrenSize are used for preallocating arrays with
+   * exact number to avoid dynamic growth and reduce memory consumption.
+   */
+  f: number,
+  /**
+   * Array of SMI values that stores OpCodes for updating element properties.
+   */
+  p: PropOpCode[],
+  /**
+   * Array of SMI values that stores OpCodes for updating children nodes.
+   */
+  c: ChildOpCode[],
+  /**
+   * Array of SMI values that stores opCodes for traversing DOM nodes and
+   * saving references to DOM nodes into internal state when template is
+   * instantiated.
+   */
+  s: StateOpCode[],
+  /** Array of string values that stores keys for dynamic properties. */
+  d: any[],
 }
-
-export const enum TemplateNodeType {
-  Block = 0,
-  Text = 1,
-  Expr = 2,
-}
-
-export interface TemplateNodeBlock {
-  /** Node type */
-  readonly type: TemplateNodeType.Block;
-  /** Template Flags */
-  readonly flags: TemplateFlags;
-  /** Static Template */
-  readonly template: (string | number)[] | string,
-  /** Prop OpCodes */
-  readonly props: number[],
-  /** Child OpCodes */
-  readonly child: number[],
-  /** State OpCodes */
-  readonly state: number[],
-  /** Data */
-  readonly data: string[],
-  /** Dynamic Expressions */
-  readonly exprs: number[],
-}
-
-export interface TemplateNodeText {
-  readonly type: TemplateNodeType.Text;
-  readonly value: string;
-}
-
-export interface TemplateNodeExpr {
-  readonly type: TemplateNodeType.Expr;
-  readonly value: number;
-}
-
-export type TemplateNode =
-  | TemplateNodeBlock
-  | TemplateNodeText
-  | TemplateNodeExpr
-  ;
 
 /**
  * Template flags.
