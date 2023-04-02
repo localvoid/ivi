@@ -126,9 +126,6 @@ export const component: ComponentFactory = <P>(
   return (p?: P) => ({ d, p });
 };
 
-/** Noop function. */
-export const useUnmount = NOOP_1;
-
 export type UseEffectFactory = {
   (
     ccomponent: Component,
@@ -367,6 +364,9 @@ export const _t = () => {
 
 export const invalidate = () => {
   throw Error("invalidate function isn't available during Server-Side Rendering.");
+};
+export const useUnmount = () => {
+  throw Error("useUnmount function isn't available during Server-Side Rendering.");
 };
 
 export const createRoot = () => {
