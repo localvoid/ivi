@@ -128,6 +128,9 @@ export const component: ComponentFactory = <P>(
   return (p?: P) => ({ d, p });
 };
 
+// SSR passes props value instead of component node
+export const getProps = (component: any) => component;
+
 export type UseEffectFactory = {
   (
     ccomponent: Component,
@@ -233,7 +236,7 @@ const renderNode = (v: VAny) => {
           }
         }
       } else if (t === VNodeType.Component) {
-        renderNode(s(void 0)(p));
+        renderNode(s(p)(p));
       } else { // Context
         const ctxStack = RENDER_CONTEXT.c;
         ctxStack.push(v as VContext);

@@ -177,17 +177,17 @@ export type STemplate = SNode1<VTemplate, Node[]>;
 /** Stateful List Node. */
 export type SList = SNode1<VList, null>;
 /** Stateful Component Node. */
-export type SComponent = SNode2<
+export type SComponent<P = any> = SNode2<
   VComponent,
   /** Render function. */
-  null | ComponentRenderFn,
+  null | ComponentRenderFn<P>,
   /** Unmount hooks. */
   null | (() => void) | (() => void)[]
 >;
 /** Stateful Component Node. */
-export type Component = SComponent;
+export type Component<P = any> = SComponent<P>;
 
-export type ComponentRenderFn = <P = any>(props: P) => VAny;
+export type ComponentRenderFn<P = any> = (props: P) => VAny;
 
 export type SContext = SNode1<VContext, null>;
 
@@ -1480,6 +1480,17 @@ export const component: ComponentFactory = <P>(
   const d: ComponentDescriptor = { f: Flags.Component, p1, p2 };
   return (p: P) => ({ d, p });
 };
+
+/**
+ * Gets current component props.
+ *
+ * @typeparam P Property type.
+ * @param component Component node.
+ * @returns Current component props.
+ */
+export const getProps = <P>(component: Component<P>): P => (
+  component.v.p
+);
 
 /**
  * Adds an unmount hook.

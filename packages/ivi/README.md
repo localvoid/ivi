@@ -76,8 +76,9 @@ and doesn't generate any additional code for hydration.
     - [`defineRoot(onInvalidate)`](#defineroot)
   - [Components](#components)
     - [`component(factory, areEqual)`](#component)
-    - [`useUnmount(component, hook)`](#useunmount)
+    - [`getProps(component)`](#getprops)
     - [`invalidate(component)`](#invalidate)
+    - [`useUnmount(component, hook)`](#useunmount)
   - [Component State](#component-state)
     - [`useMemo(areEqual, fn)`](#usememo)
     - [`useState(component, value)`](#usestate)
@@ -596,6 +597,14 @@ function component<P>(
 as an optimization hint to avoid updates when properties didn't change. When
 root subtree is updated with `forceUpdate` option, `areEqual` hint is ignored
 and all components are updated.
+
+#### **`getProps()`**
+
+```ts
+function getProps = <P>(component: Component<P>): P;
+```
+
+`getProps` gets current component props.
 
 #### **`invalidate()`**
 
