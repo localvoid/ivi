@@ -12,6 +12,8 @@ const _isArray: <T = any>(a: any) => a is T[] = _Array.isArray;
 const _Map = Map;
 const _Int32Array = Int32Array;
 const _queueMicrotask = queueMicrotask;
+const _requestAnimationFrame = requestAnimationFrame;
+const _requestIdleCallback = requestIdleCallback;
 
 const nodeProto = Node.prototype;
 const elementProto = Element.prototype;
@@ -1507,7 +1509,7 @@ export const useEffect: Effect = <P>(
   hook: (props?: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean,
 ): (props?: P) => void => {
-  // var usage is intentional, see `index.js` module for an explanation.
+  // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
   return (next?: P) => {
@@ -1520,6 +1522,103 @@ export const useEffect: Effect = <P>(
         reset();
       }
       RENDER_CONTEXT.e.push(() => {
+        reset = hook(next!);
+        if (component !== void 0 && reset !== void 0) {
+          useUnmount(component, () => {
+            if (reset !== void 0) {
+              reset();
+            }
+          });
+          component = (void 0)!;
+        }
+      });
+    }
+    prev = next;
+  };
+};
+
+let _layoutEffects: (() => void)[] = [];
+let _idleEffects: (() => void)[] = [];
+
+const _flushLayoutEffects = () => {
+  while (_layoutEffects.length > 0) {
+    const e = _layoutEffects;
+    _layoutEffects = [];
+    for (let i = 0; i < e.length; i++) {
+      e[i];
+    }
+  }
+};
+
+const _flushIdleEffects = () => {
+  while (_idleEffects.length > 0) {
+    const e = _idleEffects;
+    _idleEffects = [];
+    for (let i = 0; i < e.length; i++) {
+      e[i];
+    }
+  }
+};
+
+export const useLayoutEffect: Effect = <P>(
+  component: Component,
+  hook: (props?: P) => (() => void) | void,
+  areEqual?: (prev: P, next: P) => boolean,
+): (props?: P) => void => {
+  // var usage is intentional, see `docs/internals/perf.md` for an explanation.
+  var reset: (() => void) | void;
+  var prev: P | undefined;
+  return (next?: P) => {
+    if (
+      areEqual === void 0 ||
+      prev === void 0 ||
+      areEqual(prev as P, next as P) === false
+    ) {
+      if (reset !== void 0) {
+        reset();
+      }
+      const queue = _layoutEffects;
+      if (queue.length === 0) {
+        _requestAnimationFrame(_flushLayoutEffects);
+      }
+      queue.push(() => {
+        reset = hook(next!);
+        if (component !== void 0 && reset !== void 0) {
+          useUnmount(component, () => {
+            if (reset !== void 0) {
+              reset();
+            }
+          });
+          component = (void 0)!;
+        }
+      });
+    }
+    prev = next;
+  };
+};
+
+export const useIdleEffect: Effect = <P>(
+  component: Component,
+  hook: (props?: P) => (() => void) | void,
+  areEqual?: (prev: P, next: P) => boolean,
+): (props?: P) => void => {
+  // var usage is intentional, see `docs/internals/perf.md` for an explanation.
+  var reset: (() => void) | void;
+  var prev: P | undefined;
+  return (next?: P) => {
+    if (
+      areEqual === void 0 ||
+      prev === void 0 ||
+      areEqual(prev as P, next as P) === false
+    ) {
+      if (reset !== void 0) {
+        reset();
+      }
+      const queue = _idleEffects;
+      if (queue.length === 0) {
+        _requestIdleCallback(_flushIdleEffects);
+      }
+      queue.push(() => {
         reset = hook(next!);
         if (component !== void 0 && reset !== void 0) {
           useUnmount(component, () => {

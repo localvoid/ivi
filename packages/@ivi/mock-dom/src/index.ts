@@ -1,3 +1,34 @@
+let _animationFrameQueue: ((t: number) => void)[] = [];
+let _idleCallbackQueue: (() => void)[] = [];
+
+export const requestAnimationFrame = (cb: (t: number) => void) => {
+  _animationFrameQueue.push(cb);
+};
+
+export const requestIdleCallback = (cb: () => void) => {
+  _idleCallbackQueue.push(cb);
+};
+
+export const flushAnimationFrames = (t: number) => {
+  const queue = _animationFrameQueue;
+  if (queue.length > 0) {
+    _animationFrameQueue = [];
+    for (let i = 0; i < queue.length; i++) {
+      queue[i](t);
+    }
+  }
+};
+
+export const flushIdleCallbacks = () => {
+  const queue = _idleCallbackQueue;
+  if (queue.length > 0) {
+    _animationFrameQueue = [];
+    for (let i = 0; i < queue.length; i++) {
+      queue[i]();
+    }
+  }
+};
+
 export const enum NodeType {
   Element = 1,
   Attribute = 2,

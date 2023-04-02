@@ -1,5 +1,9 @@
-export { toSnapshot } from "./index.js";
+export {
+  toSnapshot, flushAnimationFrames, flushIdleCallbacks,
+} from "./index.js";
 import {
+  requestAnimationFrame as _requestAnimationFrame,
+  requestIdleCallback as _requestIdleCallback,
   DOMException as _DOMException,
   Node as _Node,
   Element as _Element,
@@ -12,6 +16,8 @@ import {
 } from "./index.js";
 
 declare global {
+  let requestAnimationFrame: typeof _requestAnimationFrame;
+  let requestIdleCallback: typeof _requestIdleCallback;
   let DOMException: typeof _DOMException;
   let Node: typeof _Node;
   let Element: typeof _Element;
@@ -26,6 +32,8 @@ declare global {
 
 // TODO: How to avoid (global as any). It seems that extending NodeJ.Global
 // doesn't work.
+(global as any).requestAnimationFrame = _requestAnimationFrame;
+(global as any).requestIdleCallback = _requestIdleCallback;
 (global as any).DOMException = _DOMException;
 (global as any).Node = _Node;
 (global as any).Element = _Element;

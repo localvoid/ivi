@@ -9,7 +9,7 @@ export {
   _h, _hN, _hE, _s, _sN, _sE, _T, _t,
   // Components
   type ComponentFactory, type Effect,
-  component, useUnmount, useEffect, invalidate,
+  component, useUnmount, useEffect, useLayoutEffect, useIdleEffect, invalidate,
   // Dynamic List
   List,
   // Root
