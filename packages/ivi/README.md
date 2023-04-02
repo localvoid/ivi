@@ -37,8 +37,8 @@ update(
 
 The size of the precompiled example above is just 2.7KB. It includes entire
 runtime for declarative UI rendering. Precompiled templates are
-[optimized](#template-optimizations) for code size and cold-start performance.
-In SSR+Hydration mode, templates doesn't produce any additional code.
+[optimized](#template-optimizations) for code size and cold-start performance
+and doesn't generate any additional code for hydration.
 
 - [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
 - [TodoMVC (HTML templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
@@ -49,6 +49,7 @@ In SSR+Hydration mode, templates doesn't produce any additional code.
 
 - [Setup](#setup)
   - [Vite](#vite)
+  - [Astro](#astro)
   - [Rollup](#rollup)
   - [Babel Plugin](#babel-plugin)
 - [Declarative UI](#declarative-ui)
