@@ -17,6 +17,9 @@
   "peerDependencies": {
     "ivi": "workspace:^"
   },
+  "devDependencies": {
+    "ivi": "workspace:^"
+  },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
   },

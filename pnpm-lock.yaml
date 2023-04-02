@@ -53,7 +53,7 @@ importers:
         version: link:../../ivi
 
   packages/@ivi/identity:
-    dependencies:
+    devDependencies:
       ivi:
         specifier: workspace:^
         version: link:../../ivi
@@ -61,7 +61,7 @@ importers:
   packages/@ivi/mock-dom: {}
 
   packages/@ivi/portal:
-    dependencies:
+    devDependencies:
       ivi:
         specifier: workspace:^
         version: link:../../ivi
