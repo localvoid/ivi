@@ -1,0 +1,47 @@
+{
+  "name": "@ivi/astro",
+  "version": "1.0.0-beta.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client.js": "./dist/client.js",
+    "./server.js": "./dist/server.js",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "!dist/**/*.tsbuildinfo",
+    "!src/**/__tests__",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@ivi/vite-plugin": "workspace:*"
+  },
+  "peerDependencies": {
+    "ivi": "workspace:*",
+    "@ivi/htm": "workspace:*"
+  },
+  "devDependencies": {
+    "astro": "^2.1.9",
+    "ivi": "workspace:*",
+    "@ivi/htm": "workspace:*"
+  },
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+  },
+  "description": "Use ivi components within Astro.",
+  "license": "MIT",
+  "keywords": [
+    "astro-integration",
+    "astro-component",
+    "renderer",
+    "ivi"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "repository": "github:localvoid/ivi"
+}
