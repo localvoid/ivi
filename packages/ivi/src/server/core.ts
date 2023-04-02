@@ -90,19 +90,21 @@ export const context = <T>(): [
 ] => {
   const d: ContextDescriptor = { t: VNodeType.Context, s: null! };
   return [
-    (component: Component) => {
-      const ctxStack = RENDER_CONTEXT.c;
-      let i = ctxStack.length;
-      while (i-- > 0) {
-        const c = ctxStack[i];
-        if (c.d === d) {
-          return c.p.v;
-        }
-      }
-      return void 0;
-    },
+    (component: Component) => _getContextValue(d),
     (v: T, c: VAny) => ({ d, p: { v, c } }),
   ];
+};
+
+const _getContextValue = (d: ContextDescriptor) => {
+  const ctxStack = RENDER_CONTEXT.c;
+  let i = ctxStack.length;
+  while (i-- > 0) {
+    const c = ctxStack[i];
+    if (c.d === d) {
+      return c.p.v;
+    }
+  }
+  return void 0;
 };
 
 export type ContextType<T> = ContextDescriptor<T>;
