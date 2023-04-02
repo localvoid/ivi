@@ -1,9 +1,7 @@
 export {
-  toSnapshot, flushAnimationFrames, flushIdleCallbacks,
+  toSnapshot,
 } from "./index.js";
 import {
-  requestAnimationFrame as _requestAnimationFrame,
-  requestIdleCallback as _requestIdleCallback,
   DOMException as _DOMException,
   Node as _Node,
   Element as _Element,
@@ -16,8 +14,8 @@ import {
 } from "./index.js";
 
 declare global {
-  let requestAnimationFrame: typeof _requestAnimationFrame;
-  let requestIdleCallback: typeof _requestIdleCallback;
+  let requestAnimationFrame: (cb: (t: number) => void) => void;
+  let requestIdleCallback: (cb: () => void) => void;
   let DOMException: typeof _DOMException;
   let Node: typeof _Node;
   let Element: typeof _Element;
@@ -30,10 +28,42 @@ declare global {
   let document: _Document;
 }
 
+let _animationFrameQueue: ((t: number) => void)[] = [];
+let _idleCallbackQueue: (() => void)[] = [];
+
+const requestAnimationFrame = (cb: (t: number) => void) => {
+  _animationFrameQueue.push(cb);
+};
+
+const requestIdleCallback = (cb: () => void) => {
+  _idleCallbackQueue.push(cb);
+};
+
+export const flushAnimationFrames = (t: number) => {
+  const queue = _animationFrameQueue;
+  if (queue.length > 0) {
+    _animationFrameQueue = [];
+    for (let i = 0; i < queue.length; i++) {
+      queue[i](t);
+    }
+  }
+};
+
+export const flushIdleCallbacks = () => {
+  const queue = _idleCallbackQueue;
+  if (queue.length > 0) {
+    _animationFrameQueue = [];
+    for (let i = 0; i < queue.length; i++) {
+      queue[i]();
+    }
+  }
+};
+
+
 // TODO: How to avoid (global as any). It seems that extending NodeJ.Global
 // doesn't work.
-(global as any).requestAnimationFrame = _requestAnimationFrame;
-(global as any).requestIdleCallback = _requestIdleCallback;
+(global as any).requestAnimationFrame = requestAnimationFrame;
+(global as any).requestIdleCallback = requestIdleCallback;
 (global as any).DOMException = _DOMException;
 (global as any).Node = _Node;
 (global as any).Element = _Element;
@@ -60,6 +90,8 @@ export const trace = (fn: () => void): string[] => {
 
 export const reset = () => {
   document._reset();
+  _animationFrameQueue = [];
+  _idleCallbackQueue = [];
 };
 
 export const emit = (node: any, type: string) => {
