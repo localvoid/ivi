@@ -1,24 +1,24 @@
-import { deepStrictEqual, strictEqual } from "node:assert";
+import { deepStrictEqual, ok, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { type Component, component, getProps } from "ivi";
+import {
+  type Component, component, getProps, useUnmount, invalidate,
+} from "ivi";
 
 describe("text", () => {
   beforeEach(reset);
 
   test(`() => null`, () => {
-    let _create = 0;
-    let _render = 0;
+    let _trace: string[] = [];
     const t = component(() => {
-      _create++;
+      _trace.push("create");
       return () => {
-        _render++;
+        _trace.push("render");
         return null;
       };
     });
-    strictEqual(_create, 0);
-    strictEqual(_render, 0);
+    deepStrictEqual(_trace, []);
 
     const root = createRoot();
     deepStrictEqual(
@@ -30,17 +30,15 @@ describe("text", () => {
       [
       ],
     );
-    strictEqual(_create, 1);
-    strictEqual(_render, 1);
+    deepStrictEqual(_trace, ["create", "render"]);
   });
 
   test(`() => 1`, () => {
-    let _create = 0;
-    let _render = 0;
+    let _trace: string[] = [];
     const t = component(() => {
-      _create++;
+      _trace.push("create");
       return () => {
-        _render++;
+        _trace.push("render");
         return 1;
       };
     });
@@ -56,17 +54,15 @@ describe("text", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(_create, 1);
-    strictEqual(_render, 1);
+    deepStrictEqual(_trace, ["create", "render"]);
   });
 
   test(`({ a: 1 }) => a`, () => {
-    let _create = 0;
-    let _render = 0;
+    let _trace: string[] = [];
     const t = component<{ a: number; }>(() => {
-      _create++;
+      _trace.push("create");
       return ({ a }) => {
-        _render++;
+        _trace.push("render");
         return a;
       };
     });
@@ -82,17 +78,15 @@ describe("text", () => {
         `[1] Node.insertBefore(2, null)`,
       ],
     );
-    strictEqual(_create, 1);
-    strictEqual(_render, 1);
+    deepStrictEqual(_trace, ["create", "render"]);
   });
 
   test(`update #1`, () => {
-    let _create = 0;
-    let _render = 0;
+    let _trace: string[] = [];
     const t = component<{ a: number; }>(() => {
-      _create++;
+      _trace.push("create");
       return ({ a }) => {
-        _render++;
+        _trace.push("render");
         return a;
       };
     });
@@ -100,6 +94,8 @@ describe("text", () => {
     root.update(
       t({ a: 1 }),
     );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
     deepStrictEqual(
       trace(() => {
         root.update(
@@ -110,17 +106,15 @@ describe("text", () => {
         `[2] Node.nodeValue = 2`,
       ],
     );
-    strictEqual(_create, 1);
-    strictEqual(_render, 2);
+    deepStrictEqual(_trace, ["render"]);
   });
 
   test(`unmount #1`, () => {
-    let _create = 0;
-    let _render = 0;
+    let _trace: string[] = [];
     const t = component(() => {
-      _create++;
+      _trace.push("create");
       return () => {
-        _render++;
+        _trace.push("render");
         return 1;
       };
     });
@@ -138,8 +132,7 @@ describe("text", () => {
         `[1] Node.removeChild(2)`,
       ],
     );
-    strictEqual(_create, 1);
-    strictEqual(_render, 1);
+    deepStrictEqual(_trace, ["create", "render"]);
   });
 
   test(`getProps`, () => {
@@ -161,5 +154,152 @@ describe("text", () => {
       t(props2),
     );
     strictEqual(getProps(_c!), props2);
+  });
+
+  test(`useUnmount 1`, () => {
+    let _unmounted = 0;
+    const t = component((c) => {
+      useUnmount(c, () => {
+        _unmounted++;
+      });
+      return () => null;
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    strictEqual(_unmounted, 0);
+    root.update(
+      null,
+    );
+    strictEqual(_unmounted, 1);
+  });
+
+  test(`useUnmount 2`, () => {
+    let _unmounted: number[] = [];
+    const t = component((c) => {
+      useUnmount(c, () => {
+        _unmounted.push(0);
+      });
+      useUnmount(c, () => {
+        _unmounted.push(1);
+      });
+      return () => null;
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_unmounted, []);
+    root.update(
+      null,
+    );
+    deepStrictEqual(_unmounted, [0, 1]);
+  });
+
+  test(`useUnmount 3`, () => {
+    let _unmounted: number[] = [];
+    const t = component((c) => {
+      useUnmount(c, () => {
+        _unmounted.push(0);
+      });
+      useUnmount(c, () => {
+        _unmounted.push(1);
+      });
+      useUnmount(c, () => {
+        _unmounted.push(2);
+      });
+      return () => null;
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_unmounted, []);
+    root.update(
+      null,
+    );
+    deepStrictEqual(_unmounted, [0, 1, 2]);
+  });
+
+  test(`invalidate 1`, () => {
+    let _trace: string[] = [];
+    let _c: Component;
+    const t = component((c) => {
+      _trace.push("create");
+      _c = c;
+      return () => {
+        _trace.push("render");
+        return null;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    invalidate(_c!);
+    deepStrictEqual(_trace, []);
+    ok(root.isDirty);
+    root.dirtyCheck();
+    ok(!root.isDirty);
+    deepStrictEqual(_trace, ["render"]);
+  });
+
+  test(`invalidate 2`, () => {
+    let _trace: string[] = [];
+    let _c: Component;
+    const t = component((c) => {
+      _trace.push("create");
+      _c = c;
+      return () => {
+        _trace.push("render");
+        return null;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    invalidate(_c!);
+    invalidate(_c!);
+    deepStrictEqual(_trace, []);
+    ok(root.isDirty);
+    root.dirtyCheck();
+    ok(!root.isDirty);
+    deepStrictEqual(_trace, ["render"]);
+  });
+
+  test(`invalidate 3`, () => {
+    let _trace: string[] = [];
+    let _c: Component;
+    const t = component((c) => {
+      _trace.push("create");
+      _c = c;
+      return () => {
+        _trace.push("render");
+        return null;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    invalidate(_c!);
+    deepStrictEqual(_trace, []);
+    ok(root.isDirty);
+    root.dirtyCheck();
+    deepStrictEqual(_trace, ["render"]);
+    _trace = [];
+    invalidate(_c!);
+    deepStrictEqual(_trace, []);
+    ok(root.isDirty);
+    root.dirtyCheck();
+    deepStrictEqual(_trace, ["render"]);
   });
 });

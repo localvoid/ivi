@@ -21,14 +21,17 @@ export class TestRoot {
 
   update(v: VAny, forceUpdate?: boolean) {
     update(this._root, v, forceUpdate);
+    this._isDirty = false;
   }
 
   dirtyCheck(forceUpdate?: boolean) {
     dirtyCheck(this._root, forceUpdate);
+    this._isDirty = false;
   }
 
   dispose() {
     unmount(this._root, true);
+    this._isDirty = false;
   }
 
   hydrate(v: VAny) {
