@@ -103,7 +103,7 @@ and doesn't generate any additional code for hydration.
     - [`shallowEqArray(a, b)`](#shalloweqarray)
 - [CheatSheet](#cheatsheet)
   - [Stateless Components with `areEqual` hook](#stateless-components-with-areequal-hook)
-  - [Integrating External Widgets](#integrating-external-widgets)
+  - [Integrating External/Imperative Libraries](#integrating-externalimperative-libraries)
 - [Advanced](#advanced)
   - [Component Invalidation and Dirty Checking](#component-invalidation-and-dirty-checking)
   - [Right-to-Left Updates](#right-to-left-updates)
@@ -903,30 +903,29 @@ const Button = component(
 );
 ```
 
-### Integrating External Widgets
+### Integrating External/Imperative Libraries
 
 ```js
-import { createRoot, update, component, useEffect } from "ivi";
+import { createRoot, update, component, findDOMNode, useEffect } from "ivi";
 import { htm } from "@ivi/htm";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 
 const App = component((c) => {
-  let _container: HTMLElement;
-  let _editor: EditorView;
+  let _editor;
 
-  const ref = (e: HTMLElement) => { _container = e; };
   useEffect(c, () => {
     _editor = new EditorView({
       extensions: [basicSetup, javascript()],
-      parent: _container,
+      parent: findDOMNode(c),
     });
+    return () => {
+      _editor.destroy();
+    };
   })();
 
   return () => htm`
-    <div class="App">
-      <div class="CodeMirror" ${ref}></div>
-    </div>
+    <div class="CodeMirror"></div>
   `;
 });
 
