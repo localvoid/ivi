@@ -75,7 +75,7 @@ and doesn't generate any additional code for hydration.
     - [`hydrate(root, v)`](#hydrate)
     - [`defineRoot(onInvalidate)`](#defineroot)
   - [Components](#components)
-    - [`component(factory)`](#component)
+    - [`component(factory, areEqual)`](#component)
     - [`useUnmount(component, hook)`](#useunmount)
     - [`invalidate(component)`](#invalidate)
   - [Component State](#component-state)
@@ -83,15 +83,15 @@ and doesn't generate any additional code for hydration.
     - [`useState(component, value)`](#usestate)
     - [`useReducer(component, value, reducer)`](#usereducer)
   - [Side Effects](#side-effects)
-    - [`useEffect(component, effect)`](#useeffect)
-    - [`useLayoutEffect(component, effect)`](#uselayouteffect)
-    - [`useIdleEffect(component, effect)`](#useidleeffect)
+    - [`useEffect(component, effect, areEqual)`](#useeffect)
+    - [`useLayoutEffect(component, effect, areEqual)`](#uselayouteffect)
+    - [`useIdleEffect(component, effect, areEqual)`](#useidleeffect)
   - [List](#list)
     - [`List(entries, getKey, render)`](#list-1)
   - [Context](#context)
     - [`context()`](#context-1)
   - [DOM Utilities](#dom-utilities)
-    - [`emit(node, eventName, detail, options)`](#emit)
+    - [`eventDispatcher(eventType, options)`](#eventdispatcher)
     - [`findDOMNode(node)`](#finddomnode)
     - [`containsDOMElement(node, element)`](#containsdomelement)
     - [`hasDOMElement(node, element)`](#hasdomelement)
@@ -760,29 +760,42 @@ function context = <T>(): [
 
 ### DOM Utilities
 
-#### **`emit()`**
+#### **`eventDispatcher()`**
 
 ```ts
-interface EmitOptions {
+interface DispatchEventOptions {
+  // Option indicating whether the event bubbles. The default
+  // is `false`.
   bubbles?: boolean;
+  // Option indicating whether the event can be cancelled. The
+  // default is `false`.
   cancelable?: boolean;
+  // Option indicating whether the event will trigger listeners
+  // outside of a shadow root. The default is `false`.
   composed?: boolean;
 }
 
-function emit<T>(
-  component: Component,
+type EventDispatcher = {
+  (component: Component): boolean;
+  <T>(component: Component, value: T): boolean;
+};
+
+function eventDispatcher = <T>(
   eventType: string,
-  detail: T,
-  options?: EmitOptions,
-): boolean;
+  options?: DispatchEventOptions,
+): EventDispatcher;
 ```
 
-`emit` function finds the closest child DOM node and emits a
+`eventDispatcher` creates an event dispatcher that finds the closest child DOM
+node and emits a
 [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)
 with [`EventTarget.dispatchEvent()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent)
 method.
 
-> *SSR: Throws an exception.*
+Event dispatcher invokes event handlers synchronously. All event handlers are
+invoked before event dispatcher returns.
+
+> *SSR: Event dispatcher throws an exception.*
 
 #### **`findDOMNode()`**
 
@@ -1098,7 +1111,7 @@ type VAny =
   | VRoot      // VNode<RootDescriptor, RootProps>
   | VTemplate  // VNode<TemplateDescriptor, P>
   | VComponent // VNode<ComponentDescriptor, P>
-  | VContext   // VNode(ContextDescriptor, ContextProps<T>)
+  | VContext   // VNode<ContextDescriptor, ContextProps<T>>
   | VList      // VNode<ListDescriptor, ListProps<K>>
   | VArray     // VAny[]
   ;

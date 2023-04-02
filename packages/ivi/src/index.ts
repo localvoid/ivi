@@ -18,7 +18,7 @@ export {
   createRoot,
 } from "./client/core.js";
 export {
-  emit, findDOMNode, containsDOMElement, hasDOMElement,
+  eventDispatcher, findDOMNode, containsDOMElement, hasDOMElement,
 } from "./client/utils.js";
 export {
   useMemo,

@@ -4,9 +4,9 @@ import {
 } from "./core.js";
 
 /**
- * Emit options.
+ * Dispatch Event options.
  */
-export interface EmitOptions {
+export interface DispatchEventOptions {
   /**
    * Option indicating whether the event bubbles. The default is `false`.
    */
@@ -23,30 +23,31 @@ export interface EmitOptions {
   composed?: boolean;
 }
 
+export type EventDispatcher = {
+  (component: Component): boolean;
+  <T>(component: Component, value: T): boolean;
+};
+
 /**
- * Finds the closest child DOM node and emits a CustomEvent with
- * `EventTarget.dispatchEvent()` method.
+ * Creates an event dispatcher that finds the closest child DOM node and emits
+ * a CustomEvent with `EventTarget.dispatchEvent()` method.
  *
- * Emit invokes event handlers synchronously. All event handlers are invoked
- * before `emit()` returns.
+ * Event dispatcher invokes event handlers synchronously. All event handlers are
+ * invoked before event dispatcher returns.
  *
- * *SSR: Throws an exception.*
+ * *SSR: Event dispatcher throws an exception.*
  *
  * @typeparam T Data type.
- * @param component Component node.
  * @param eventType Event type.
- * @param detail Event data.
- * @param options {@link EmitOptions}.
+ * @param options {@link DispatchEventOptions}.
  * @returns `false` if event is cancelable, and at least one of the event
  *   handlers which received event called `Event.preventDefault()`. Otherwise
  *   `true`.
  */
-export const emit = <T>(
-  component: Component,
+export const eventDispatcher = <T>(
   eventType: string,
-  detail: T,
-  options?: EmitOptions,
-): boolean => (
+  options?: DispatchEventOptions,
+): EventDispatcher => (component: Component, detail?: T) => (
   findDOMNode(component)!.dispatchEvent(new _CustomEvent(eventType, {
     ...options,
     detail,

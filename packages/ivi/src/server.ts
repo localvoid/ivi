@@ -18,5 +18,5 @@ export {
   useReducer,
 } from "./server/state.js";
 export {
-  emit, findDOMNode, containsDOMElement, hasDOMElement,
+  eventDispatcher, findDOMNode, containsDOMElement, hasDOMElement,
 } from "./server/utils.js";
