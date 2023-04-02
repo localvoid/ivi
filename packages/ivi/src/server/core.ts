@@ -113,6 +113,7 @@ export type ContextType<T> = ContextDescriptor<T>;
 export type ComponentFactory = {
   (
     factory: (c: Component) => () => VAny,
+    areEqual?: () => boolean
   ): () => VComponent<undefined>;
   <P>(
     factory: (c: Component) => (props: P) => VAny,

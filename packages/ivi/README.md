@@ -582,6 +582,7 @@ function defineRoot<S>(
 ```ts
 function component(
   factory: (c: Component) => () => VComponent<undefined>,
+  areEqual?: () => boolean
 ): () => VComponent<undefined>;
 function component<P>(
   factory: (c: Component) => (props: P) => VAny,

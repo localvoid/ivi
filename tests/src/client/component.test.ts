@@ -109,6 +109,167 @@ describe("text", () => {
     deepStrictEqual(_trace, ["render"]);
   });
 
+  test(`update #2`, () => {
+    let _trace: string[] = [];
+    const t = component(() => {
+      _trace.push("create");
+      return () => {
+        _trace.push("render");
+        return 1;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["render"]);
+  });
+
+  test(`update: areEqual => false`, () => {
+    let _trace: string[] = [];
+    const t = component(() => {
+      _trace.push("create");
+      return () => {
+        _trace.push("render");
+        return 1;
+      };
+    }, () => false);
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, ["render"]);
+  });
+
+  test(`update: areEqual => true`, () => {
+    let _trace: string[] = [];
+    const t = component<{ a: number; }>(() => {
+      _trace.push("create");
+      return ({ a }) => {
+        _trace.push("render");
+        return a;
+      };
+    }, () => true);
+    const root = createRoot();
+    root.update(
+      t({ a: 1 }),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.update(
+      t({ a: 2 }),
+    );
+    deepStrictEqual(_trace, []);
+  });
+
+  test(`forceUpdate: areEqual => true`, () => {
+    let _trace: string[] = [];
+    const t = component<{ a: number; }>(() => {
+      _trace.push("create");
+      return ({ a }) => {
+        _trace.push("render");
+        return a;
+      };
+    }, () => true);
+    const root = createRoot();
+    root.update(
+      t({ a: 1 }),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.update(
+      t({ a: 2 }),
+      true,
+    );
+    deepStrictEqual(_trace, ["render"]);
+  });
+
+  test(`dirtyCheck #1`, () => {
+    let _trace: string[] = [];
+    const t = component<{ a: number; }>(() => {
+      _trace.push("create");
+      return ({ a }) => {
+        _trace.push("render");
+        return a;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t({ a: 1 }),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.dirtyCheck();
+    deepStrictEqual(_trace, []);
+  });
+
+  test(`dirtyCheck: areEqual => false`, () => {
+    let _trace: string[] = [];
+    const t = component<{ a: number; }>(() => {
+      _trace.push("create");
+      return ({ a }) => {
+        _trace.push("render");
+        return a;
+      };
+    }, () => false);
+    const root = createRoot();
+    root.update(
+      t({ a: 1 }),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.dirtyCheck();
+    deepStrictEqual(_trace, []);
+  });
+
+  test(`dirtyCheck: areEqual => true`, () => {
+    let _trace: string[] = [];
+    const t = component<{ a: number; }>(() => {
+      _trace.push("create");
+      return ({ a }) => {
+        _trace.push("render");
+        return a;
+      };
+    }, () => true);
+    const root = createRoot();
+    root.update(
+      t({ a: 1 }),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.dirtyCheck();
+    deepStrictEqual(_trace, []);
+  });
+
+  test(`dirtyCheck+forceUpdate: areEqual => true`, () => {
+    let _trace: string[] = [];
+    const t = component<{ a: number; }>(() => {
+      _trace.push("create");
+      return ({ a }) => {
+        _trace.push("render");
+        return a;
+      };
+    }, () => true);
+    const root = createRoot();
+    root.update(
+      t({ a: 1 }),
+    );
+    deepStrictEqual(_trace, ["create", "render"]);
+    _trace = [];
+    root.dirtyCheck(true);
+    deepStrictEqual(_trace, ["render"]);
+  });
+
   test(`unmount #1`, () => {
     let _trace: string[] = [];
     const t = component(() => {

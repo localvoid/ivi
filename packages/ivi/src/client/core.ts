@@ -1458,6 +1458,7 @@ export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
 export type ComponentFactory = {
   (
     factory: (c: Component) => () => VAny,
+    areEqual?: () => boolean
   ): () => VComponent<undefined>;
   <P>(
     factory: (c: Component) => (props: P) => VAny,
