@@ -1098,6 +1098,7 @@ type VAny =
   | VRoot      // VNode<RootDescriptor, RootProps>
   | VTemplate  // VNode<TemplateDescriptor, P>
   | VComponent // VNode<ComponentDescriptor, P>
+  | VContext   // VNode(ContextDescriptor, ContextProps<T>)
   | VList      // VNode<ListDescriptor, ListProps<K>>
   | VArray     // VAny[]
   ;
@@ -1109,6 +1110,15 @@ interface RootProps {
   p: Element,
   // Next Node
   n: Node | null,
+}
+
+// 20 bytes
+// Context Props stores a context value and stateless child node.
+interface ContextProps<T> {
+  // Context value
+  v: T;
+  // Stateless child
+  c: VAny;
 }
 
 // 20 bytes
@@ -1161,7 +1171,7 @@ type SText = SNode1<string | number, Text>;
 // dynamic properties that also used as a reference for insertBefore operation
 // will share the same slots, there won't be any duplicated references.
 type STemplate = SNode1<VTemplate, Node[]>;
-// Dynamic lists don't have any additional state.
+// Dynamic lists doesn't have any additional state.
 type SList = SNode1<VList, null>;
 // Components are using State Nodes with 2 state slots.
 type SComponent = SNode2<
@@ -1186,6 +1196,8 @@ type SComponent = SNode2<
   // 2. https://github.com/v8/v8/blob/1e6775a539a3b88b25cc0ffdb52529c68aad2be8/src/objects/js-objects.h#L584-L590
   null | (() => void) | (() => void)[]
 >;
+// Contexts doesn't have any additional state.
+type SContext = SNode1<null, null>;
 ```
 
 This data structures were carefully designed to have small memory overhead
