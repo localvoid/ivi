@@ -1,5 +1,6 @@
 examples/**/dist
 packages/**/dist
+tests/dist
 
 target
 *.mm_profdata
