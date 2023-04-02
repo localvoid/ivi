@@ -613,7 +613,7 @@ function useUnmount(component: Component, hook: () => void): void;
 
 Adds an unmount hook.
 
-> *SSR: noop.*
+> *SSR: Throws an exception.*
 
 ### Component State
 
