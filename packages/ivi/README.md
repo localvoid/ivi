@@ -84,9 +84,7 @@ runtime for declarative UI rendering.
   - [List](#list)
     - [`List(entries, getKey, render)`](#list-1)
   - [Context](#context)
-    - [`contextType()`](#contexttype)
-    - [`getContextValue(component, type)`](#getcontextvalue)
-    - [`Context(type, value)`](#context-2)
+    - [`context()`](#context-1)
   - [DOM Utilities](#dom-utilities)
     - [`emit(node, eventName, detail, options)`](#emit)
     - [`findDOMNode(node)`](#finddomnode)
@@ -722,38 +720,20 @@ function List<E, K>(
 
 ### Context
 
-#### **`contextType()`**
+### **`context()`**
 
 ```ts
-type ContextType<T> = Opaque<T>;
-
-function contextType<T>(): ContextType<T>;
+function context = <T>(): [
+  get: (component: Component) => T | undefined,
+  provider: (value: T, children: VAny) => VContext<T>,
+]
 ```
 
-`contextType` creates unique context type.
+`context` creates context getter and context provider functions.
 
-#### **`getContextValue()`**
+`get` function finds the closest context value.
 
-```ts
-function getContextValue<T>(
-  component: Component,
-  type: ContextType<T>,
-): T | undefined;
-```
-
-`getContextValue` retrieves context value associated with a context type.
-
-#### **`Context()`**
-
-```ts
-function Context(
-  type: ContextType<T>,
-  value: T,
-): VContext<T>;
-```
-
-`Context` creates stateless context node with a value associated with a context
-type.
+`provider` function creates stateless context nodes.
 
 ### DOM Utilities
 

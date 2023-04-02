@@ -84,31 +84,29 @@ export const contextType = <T>(): ContextDescriptor<T> => ({
   s: null!,
 });
 
-export type ContextType<T> = ContextDescriptor<T>;
-
-export const getContextValue = <T>(
-  component: Component,
-  type: ContextType<T>,
-): T | undefined => {
-  const ctxStack = RENDER_CONTEXT.c;
-  let i = ctxStack.length;
-  while (i-- > 0) {
-    const c = ctxStack[i];
-    if (c.d === type) {
-      return c.p.v;
-    }
-  }
-  return void 0;
+export const context = <T>(): [
+  get: (component: Component) => T | undefined,
+  provider: (value: T, children: VAny) => VContext<T>,
+] => {
+  const d: ContextDescriptor = { t: VNodeType.Context, s: null! };
+  return [
+    (component: Component) => {
+      const ctxStack = RENDER_CONTEXT.c;
+      let i = ctxStack.length;
+      while (i-- > 0) {
+        const c = ctxStack[i];
+        if (c.d === d) {
+          return c.p.v;
+        }
+      }
+      return void 0;
+    },
+    (v: T, c: VAny) => ({ d, p: { v, c } }),
+  ];
 };
 
-export const Context = <T>(
-  d: ContextType<T>,
-  v: T,
-  c: VAny,
-): VContext<T> => ({
-  d,
-  p: { v, c },
-});
+export type ContextType<T> = ContextDescriptor<T>;
+
 
 export type ComponentFactory = {
   (
