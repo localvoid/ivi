@@ -2146,7 +2146,7 @@ export const context = <T>(): [
   get: (component: Component) => T | undefined,
   provider: (value: T, child: VAny) => VContext<T>,
 ] => {
-  const d: ContextDescriptor = { f: Flags.Component, p1: null, p2: null };
+  const d: ContextDescriptor = { f: Flags.Context, p1: null, p2: null };
   return [
     (c: Component) => _getContextValue(c, d),
     (v: T, c: VAny) => ({ d, p: { v, c } }),

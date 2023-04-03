@@ -79,11 +79,6 @@ const NOOP_1 = (arg1: any) => { };
 
 export const defineRoot = NOOP_1;
 
-export const contextType = <T>(): ContextDescriptor<T> => ({
-  t: VNodeType.Context,
-  s: null!,
-});
-
 export const context = <T>(): [
   get: (component: Component) => T | undefined,
   provider: (value: T, children: VAny) => VContext<T>,

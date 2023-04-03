@@ -1,11 +1,11 @@
 export { strictEq, shallowEq, shallowEqArray } from "./shared/equal.js";
 export {
   type VAny,
-  type VContext, contextType,
   type Component, type ComponentFactory, type UseEffectFactory,
   component, getProps, invalidate,
   useUnmount, useEffect, useLayoutEffect, useIdleEffect,
   List,
+  type VContext, context,
   type Root,
   defineRoot, createRoot, dirtyCheck, update, unmount, hydrate,
   renderToString,
