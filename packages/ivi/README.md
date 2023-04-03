@@ -1055,7 +1055,7 @@ const App = component((c) => {
   `;
 });
 
-updateRoot(root, App());
+update(root, App());
 ```
 
 ### Template Cloning
@@ -1419,7 +1419,7 @@ const Form = component((c) => {
   `;
 });
 
-updateRoot(
+update(
   createRoot(document.getElementById("app")!),
   Form(),
 );
