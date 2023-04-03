@@ -14,6 +14,8 @@ export interface TElement {
 
 export const enum TFlags {
   GenerateOffsets = 1,
+  // <textarea .value={} />
+  EscapeInnerHTML = 1 << 1,
 }
 
 export interface TProperty {

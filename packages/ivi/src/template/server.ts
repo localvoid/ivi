@@ -144,8 +144,11 @@ const createTElement = (
         }
       } else if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
         if (key === "value") {
-          if (tag === "input" || tag === "textarea") {
+          if (tag === "input") {
             props = pushAttr(props, '"', ` value="`, exprMap.get(value)!);
+          } else if (tag === "textarea") {
+            flags |= TFlags.EscapeInnerHTML;
+            innerHTML = exprMap.get(value);
           }
         } else if (key === "checked") {
           if (tag === "input") {

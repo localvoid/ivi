@@ -904,4 +904,47 @@ describe("render to string", () => {
     );
   });
 
+  test(`<textarea .value={undefined}></div>`, () => {
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              TFlags.EscapeInnerHTML,
+              `<textarea`,
+              `</textarea>`,
+              null,
+              0,
+            ),
+          ]),
+          [
+            void 0,
+          ],
+        ),
+      ),
+      `<textarea></textarea>`
+    );
+  });
+
+  test(`<textarea .value={"<text>"}></div>`, () => {
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              TFlags.EscapeInnerHTML,
+              `<textarea`,
+              `</textarea>`,
+              null,
+              0,
+            ),
+          ]),
+          [
+            "<text>",
+          ],
+        ),
+      ),
+      `<textarea>&lt;text></textarea>`
+    );
+  });
 });

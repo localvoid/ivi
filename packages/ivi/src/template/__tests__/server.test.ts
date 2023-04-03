@@ -700,6 +700,25 @@ describe("server compiler", () => {
     );
   });
 
+  test(`<textarea .value={0}></textarea>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("textarea", [
+          prop("value", 0),
+        ]),
+      ])),
+      r([
+        {
+          flags: TFlags.EscapeInnerHTML,
+          prefix: `<textarea`,
+          suffix: `</textarea>`,
+          props: null,
+          children: 0,
+        },
+      ], [0]),
+    );
+  });
+
   test(`<textarea *value={0}></textarea>`, () => {
     deepStrictEqual(
       c(h([
@@ -709,13 +728,11 @@ describe("server compiler", () => {
       ])),
       r([
         {
-          flags: 0,
+          flags: TFlags.EscapeInnerHTML,
           prefix: `<textarea`,
           suffix: `</textarea>`,
-          props: [
-            { prefix: ` value="`, i: 0 },
-          ],
-          children: null,
+          props: null,
+          children: 0,
         },
       ], [0]),
     );

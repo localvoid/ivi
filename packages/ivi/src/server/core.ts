@@ -168,7 +168,7 @@ export const _$E = (
   prefix: string,
   suffix: string,
   props: TProperty[] | null,
-  children: TNode[] | null,
+  children: TNode[] | number | null,
 ): TElement => ({
   flags,
   prefix,
@@ -321,8 +321,15 @@ const renderTElement = (exprs: any[], e: TElement) => {
 
     ctx.t = prevT + openElement + ctx.t + suffix;
     ctx.s = (prevS + 1) & RenderState.OffsetMask;
-  } else { // innerHTML
-    ctx.t += openElement + ">" + exprs[children] + suffix;
+  } else { // innerHTML / <textarea .value={} />
+    const v = exprs[children];
+    ctx.t += openElement + ">";
+    if (v !== void 0) {
+      ctx.t += (flags & TFlags.EscapeInnerHTML)
+        ? escapeText(v)
+        : v;
+    }
+    ctx.t += suffix;
   }
 };
 
