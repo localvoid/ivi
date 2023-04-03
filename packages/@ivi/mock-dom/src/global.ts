@@ -52,7 +52,7 @@ export const flushAnimationFrames = (t: number) => {
 export const flushIdleCallbacks = () => {
   const queue = _idleCallbackQueue;
   if (queue.length > 0) {
-    _animationFrameQueue = [];
+    _idleCallbackQueue = [];
     for (let i = 0; i < queue.length; i++) {
       queue[i]();
     }

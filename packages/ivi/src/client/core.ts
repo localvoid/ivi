@@ -872,6 +872,7 @@ const _dirtyCheck = (sNode: SNode, updateFlags: number): void => {
  */
 const _unmount = (sNode: SNode, detach: boolean): void => {
   const flags = sNode.f; // polymorphic call-site
+  const sChildren = sNode.c;
 
   if (detach === true && (flags & (Flags.Template | Flags.Text))) {
     detach = false;
@@ -881,20 +882,6 @@ const _unmount = (sNode: SNode, detach: boolean): void => {
         ? (sNode as STemplate).s1[0]
         : (sNode as SText).s1
     );
-  }
-  // polymorphic call-site
-  const sChildren = sNode.c;
-  if (sChildren !== null) {
-    if (_isArray(sChildren)) {
-      for (let i = 0; i < sChildren.length; i++) {
-        const sChild = sChildren[i];
-        if (sChild !== null) {
-          _unmount(sChild, detach);
-        }
-      }
-    } else {
-      _unmount(sChildren as SNode, detach);
-    }
   }
   if (flags & Flags.Component) {
     const unmountHooks = (sNode as SComponent).s2;
@@ -906,6 +893,19 @@ const _unmount = (sNode: SNode, detach: boolean): void => {
           unmountHooks[i]();
         }
       }
+    }
+  }
+
+  if (sChildren !== null) {
+    if (_isArray(sChildren)) {
+      for (let i = 0; i < sChildren.length; i++) {
+        const sChild = sChildren[i];
+        if (sChild !== null) {
+          _unmount(sChild, detach);
+        }
+      }
+    } else {
+      _unmount(sChildren as SNode, detach);
     }
   }
 };
@@ -1562,24 +1562,32 @@ export const useEffect: Effect = <P>(
   // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
+  var pending = false;
   return (next?: P) => {
     if (
-      areEqual === void 0 ||
-      prev === void 0 ||
-      areEqual(prev as P, next as P) === false
+      pending === false && (
+        areEqual === void 0 ||
+        prev === void 0 ||
+        areEqual(prev as P, next as P) === false
+      )
     ) {
-      if (reset !== void 0) {
-        reset();
+      pending = true;
+      if (component !== void 0) {
+        useUnmount(component, () => {
+          pending = false;
+          if (reset !== void 0) {
+            reset();
+          }
+        });
+        component = (void 0)!;
       }
       RENDER_CONTEXT.e.push(() => {
-        reset = hook(next!);
-        if (component !== void 0 && reset !== void 0) {
-          useUnmount(component, () => {
-            if (reset !== void 0) {
-              reset();
-            }
-          });
-          component = (void 0)!;
+        if (pending === true) {
+          pending = false;
+          if (reset !== void 0) {
+            reset();
+          }
+          reset = hook(next!);
         }
       });
     }
@@ -1595,7 +1603,7 @@ const _flushLayoutEffects = () => {
     const e = _layoutEffects;
     _layoutEffects = [];
     for (let i = 0; i < e.length; i++) {
-      e[i];
+      e[i]();
     }
   }
 };
@@ -1605,7 +1613,7 @@ const _flushIdleEffects = () => {
     const e = _idleEffects;
     _idleEffects = [];
     for (let i = 0; i < e.length; i++) {
-      e[i];
+      e[i]();
     }
   }
 };
@@ -1618,28 +1626,36 @@ export const useLayoutEffect: Effect = <P>(
   // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
+  var pending = false;
   return (next?: P) => {
     if (
-      areEqual === void 0 ||
-      prev === void 0 ||
-      areEqual(prev as P, next as P) === false
+      pending == false && (
+        areEqual === void 0 ||
+        prev === void 0 ||
+        areEqual(prev as P, next as P) === false
+      )
     ) {
-      if (reset !== void 0) {
-        reset();
+      pending = true;
+      if (component !== void 0) {
+        useUnmount(component, () => {
+          pending = false;
+          if (reset !== void 0) {
+            reset();
+          }
+        });
+        component = (void 0)!;
       }
       const queue = _layoutEffects;
       if (queue.length === 0) {
         _requestAnimationFrame(_flushLayoutEffects);
       }
       queue.push(() => {
-        reset = hook(next!);
-        if (component !== void 0 && reset !== void 0) {
-          useUnmount(component, () => {
-            if (reset !== void 0) {
-              reset();
-            }
-          });
-          component = (void 0)!;
+        if (pending === true) {
+          pending = false;
+          if (reset !== void 0) {
+            reset();
+          }
+          reset = hook(next!);
         }
       });
     }
@@ -1655,28 +1671,36 @@ export const useIdleEffect: Effect = <P>(
   // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
+  var pending = false;
   return (next?: P) => {
     if (
-      areEqual === void 0 ||
-      prev === void 0 ||
-      areEqual(prev as P, next as P) === false
+      pending === false && (
+        areEqual === void 0 ||
+        prev === void 0 ||
+        areEqual(prev as P, next as P) === false
+      )
     ) {
-      if (reset !== void 0) {
-        reset();
+      if (component !== void 0) {
+        useUnmount(component, () => {
+          pending = false;
+          if (reset !== void 0) {
+            reset();
+          }
+        });
+        component = (void 0)!;
       }
+      pending = true;
       const queue = _idleEffects;
       if (queue.length === 0) {
         _requestIdleCallback(_flushIdleEffects);
       }
       queue.push(() => {
-        reset = hook(next!);
-        if (component !== void 0 && reset !== void 0) {
-          useUnmount(component, () => {
-            if (reset !== void 0) {
-              reset();
-            }
-          });
-          component = (void 0)!;
+        if (pending === true) {
+          pending = false;
+          if (reset !== void 0) {
+            reset();
+          }
+          reset = hook(next!);
         }
       });
     }
