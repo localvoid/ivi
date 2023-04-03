@@ -36,34 +36,44 @@ const client = (config) => declare((api) => {
     exprsNodes,
     type,
     clone,
+    ssrOnly,
     id,
     root
   ) {
     const template = root.template;
-    let factoryFnId;
-    let factoryFnArg;
-    if (typeof template === "string") {
-      factoryFnArg = t.stringLiteral(template);
-      if (type === "htm") {
-        factoryFnId = "_hE";
-      } else {
-        factoryFnId = "_sE";
-      }
+    let factory;
+    if (ssrOnly) {
+      factory = t.numericLiteral(0);
     } else {
-      factoryFnArg = staticTemplateToExpr(template, exprsNodes);
-      if (type === "htm") {
-        if (clone) {
-          factoryFnId = "_h";
+      let factoryFnId;
+      let factoryFnArg;
+      if (typeof template === "string") {
+        factoryFnArg = t.stringLiteral(template);
+        if (type === "htm") {
+          factoryFnId = "_hE";
         } else {
-          factoryFnId = "_hN";
+          factoryFnId = "_sE";
         }
       } else {
-        if (clone) {
-          factoryFnId = "_s";
+        factoryFnArg = staticTemplateToExpr(template, exprsNodes);
+        if (type === "htm") {
+          if (clone) {
+            factoryFnId = "_h";
+          } else {
+            factoryFnId = "_hN";
+          }
         } else {
-          factoryFnId = "_sN";
+          if (clone) {
+            factoryFnId = "_s";
+          } else {
+            factoryFnId = "_sN";
+          }
         }
       }
+      factory = t.callExpression(
+        importSymbol("ivi", factoryFnId),
+        [factoryFnArg],
+      );
     }
 
     return t.variableDeclaration("const", [
@@ -71,7 +81,7 @@ const client = (config) => declare((api) => {
         id,
         t.addComment(
           t.callExpression(importSymbol("ivi", "_T"), [
-            t.callExpression(importSymbol("ivi", factoryFnId), [factoryFnArg]),
+            factory,
             t.numericLiteral(root.flags),
             t.arrayExpression(root.props.map(toNumeric)),
             t.arrayExpression(root.child.map(toNumeric)),
@@ -91,6 +101,7 @@ const client = (config) => declare((api) => {
     exprsNodes,
     type,
     clone,
+    ssrOnly,
     root
   ) {
     switch (root.type) {
@@ -104,6 +115,7 @@ const client = (config) => declare((api) => {
             exprsNodes,
             type,
             clone,
+            ssrOnly,
             id,
             root
           )
@@ -179,11 +191,14 @@ const client = (config) => declare((api) => {
             try {
               const leadingComments = path.node.leadingComments;
               let clone = true;
+              let ssrOnly = false;
               if (leadingComments) {
                 for (const comment of leadingComments) {
-                  if (comment.value.trim() === "-c") {
+                  const value = comment.value.trim();
+                  if (value === "-c") {
                     clone = false;
-                    break;
+                  } else if (value === "ssr") {
+                    ssrOnly = true;
                   }
                 }
               }
@@ -203,6 +218,7 @@ const client = (config) => declare((api) => {
                     exprsNodes,
                     type,
                     clone,
+                    ssrOnly,
                     roots[0]
                   )
                 );
@@ -216,6 +232,7 @@ const client = (config) => declare((api) => {
                         exprsNodes,
                         type,
                         clone,
+                        ssrOnly,
                         root
                       )
                     )

@@ -14,14 +14,16 @@ const iviOptimizer = declare((api) => {
   const stringify = JSON.stringify;
 
   function addSharedFactory(sharedStore, factory) {
-    const node = factory.node;
-    const key = node.callee.name + ":" +
-      stringify(t.cloneNode(node.arguments[0], true, true), void 0, 0);
-    let entries = sharedStore.get(key);
-    if (entries === void 0) {
-      sharedStore.set(key, [factory]);
-    } else {
-      entries.push(factory);
+    if (!factory.isNumericLiteral()) {
+      const node = factory.node;
+      const key = node.callee.name + ":" +
+        stringify(t.cloneNode(node.arguments[0], true, true), void 0, 0);
+      let entries = sharedStore.get(key);
+      if (entries === void 0) {
+        sharedStore.set(key, [factory]);
+      } else {
+        entries.push(factory);
+      }
     }
   }
 
