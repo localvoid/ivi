@@ -1,8 +1,14 @@
 import { strictEqual } from "node:assert";
 import { describe, test } from "node:test";
-import { strictEq, shallowEq, shallowEqArray } from "../equal.js";
+import {
+  preventUpdates, strictEq, shallowEq, shallowEqArray,
+} from "../equal.js";
 
 describe("equal", () => {
+  test("preventUpdates", () => {
+    strictEqual(preventUpdates(0, 1), true);
+  });
+
   describe("strictEq", () => {
     test("same instance", () => {
       const a = { a: 1 };
