@@ -159,7 +159,10 @@ describe("text", () => {
         _trace.push("render");
         return a;
       };
-    }, () => true);
+    }, (a, b) => {
+      _trace.push(`areEqual(${a.a}, ${b.a})`);
+      return true;
+    });
     const root = createRoot();
     root.update(
       t({ a: 1 }),
@@ -169,7 +172,7 @@ describe("text", () => {
     root.update(
       t({ a: 2 }),
     );
-    deepStrictEqual(_trace, []);
+    deepStrictEqual(_trace, ["areEqual(1, 2)"]);
   });
 
   test(`forceUpdate: areEqual => true`, () => {
