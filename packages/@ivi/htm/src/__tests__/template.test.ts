@@ -7,6 +7,21 @@ import { htm } from "../index.js";
 describe("htm", () => {
   beforeEach(reset);
 
+  test("<h1/>", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <h1/>
+        `);
+      }),
+      [
+        `createElement("h1") => 2`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+  });
+
   test("<h1></h1>", () => {
     const root = createRoot();
     deepStrictEqual(

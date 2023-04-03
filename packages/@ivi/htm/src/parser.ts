@@ -131,7 +131,7 @@ export class TemplateParser extends TemplateScanner {
     while (!this.isEnd()) {
       const c = this.peekCharCode();
       if (c !== -1) {
-        if (c === CharCode.MoreThan) {
+        if (c === CharCode.Slash || c === CharCode.MoreThan) {
           return properties;
         }
         if (c === CharCode.Dot) { // .property
