@@ -27,7 +27,6 @@ export default (element: HTMLElement) =>
       if (children != null) {
         props.children = StaticSlot(children);
       }
-      console.log(element);
       hydrate(createRoot(element), Component(props));
     }
   };

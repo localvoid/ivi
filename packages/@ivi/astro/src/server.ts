@@ -16,15 +16,16 @@ function renderToStaticMarkup(
   props: Record<string, any>,
   { default: children, ...slotted }: Record<string, any>
 ) {
+  const p: any = {};
   for (const [name, value] of Object.entries(slotted)) {
-    props[name] = StaticSlot(value, name);
+    p[name] = StaticSlot(value, name);
   }
   if (children != null) {
-    props.children = StaticSlot(children);
+    p.children = StaticSlot(children);
   }
 
   return {
-    html: renderToString(Component(props)),
+    html: renderToString(Component(p)),
   };
 }
 
