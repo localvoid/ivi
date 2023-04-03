@@ -1566,25 +1566,24 @@ export const useEffect: Effect = <P>(
   // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
-  var pending = false;
+  var pending: boolean | undefined;
   return (next?: P) => {
     if (
-      pending === false && (
+      pending !== true && (
         areEqual === void 0 ||
         prev === void 0 ||
         areEqual(prev as P, next as P) === false
       )
     ) {
-      pending = true;
-      if (component !== void 0) {
+      if (pending === void 0) {
         useUnmount(component, () => {
           pending = false;
           if (reset !== void 0) {
             reset();
           }
         });
-        component = (void 0)!;
       }
+      pending = true;
       RENDER_CONTEXT.e.push(() => {
         if (pending === true) {
           pending = false;
@@ -1630,25 +1629,24 @@ export const useLayoutEffect: Effect = <P>(
   // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
-  var pending = false;
+  var pending: boolean | undefined;
   return (next?: P) => {
     if (
-      pending == false && (
+      pending !== true && (
         areEqual === void 0 ||
         prev === void 0 ||
         areEqual(prev as P, next as P) === false
       )
     ) {
-      pending = true;
-      if (component !== void 0) {
+      if (pending === void 0) {
         useUnmount(component, () => {
           pending = false;
           if (reset !== void 0) {
             reset();
           }
         });
-        component = (void 0)!;
       }
+      pending = true;
       const queue = _layoutEffects;
       if (queue.length === 0) {
         _requestAnimationFrame(_flushLayoutEffects);
@@ -1675,23 +1673,22 @@ export const useIdleEffect: Effect = <P>(
   // var usage is intentional, see `docs/internals/perf.md` for an explanation.
   var reset: (() => void) | void;
   var prev: P | undefined;
-  var pending = false;
+  var pending: boolean | undefined;
   return (next?: P) => {
     if (
-      pending === false && (
+      pending !== true && (
         areEqual === void 0 ||
         prev === void 0 ||
         areEqual(prev as P, next as P) === false
       )
     ) {
-      if (component !== void 0) {
+      if (pending === void 0) {
         useUnmount(component, () => {
           pending = false;
           if (reset !== void 0) {
             reset();
           }
         });
-        component = (void 0)!;
       }
       pending = true;
       const queue = _idleEffects;

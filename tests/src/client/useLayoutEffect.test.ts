@@ -135,9 +135,12 @@ describe("useLayoutEffect", () => {
     root.update(
       null,
     );
-    flushAnimationFrames(0);
     deepStrictEqual(_trace, [
       "reset1",
+    ]);
+    _trace = [];
+    flushAnimationFrames(0);
+    deepStrictEqual(_trace, [
     ]);
   });
 
@@ -431,6 +434,90 @@ describe("useLayoutEffect", () => {
     deepStrictEqual(_trace, [
       "reset1",
       "reset2",
+    ]);
+  });
+
+  test(`unmount before effect #1`, () => {
+    let _trace: string[] = [];
+    const t = component((c) => {
+      _trace.push("create");
+      const e1 = useLayoutEffect(c, () => {
+        _trace.push("effect1");
+        return () => {
+          _trace.push("reset1");
+        };
+      });
+      return () => {
+        _trace.push("render");
+        e1();
+        return null;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, [
+      "create",
+      "render",
+    ]);
+    _trace = [];
+    root.update(
+      null,
+    );
+    deepStrictEqual(_trace, [
+    ]);
+    flushAnimationFrames(0);
+    deepStrictEqual(_trace, [
+    ]);
+  });
+
+  test(`unmount before effect #2`, () => {
+    let _trace: string[] = [];
+    const t = component((c) => {
+      _trace.push("create");
+      const e1 = useLayoutEffect(c, () => {
+        _trace.push("effect1");
+        return () => {
+          _trace.push("reset1");
+        };
+      });
+      return () => {
+        _trace.push("render");
+        e1();
+        return null;
+      };
+    });
+    const root = createRoot();
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, [
+      "create",
+      "render",
+    ]);
+    _trace = [];
+    flushAnimationFrames(0);
+    deepStrictEqual(_trace, [
+      "effect1",
+    ]);
+    _trace = [];
+    root.update(
+      t(),
+    );
+    deepStrictEqual(_trace, [
+      "render",
+    ]);
+    _trace = [];
+    root.update(
+      null,
+    );
+    deepStrictEqual(_trace, [
+      "reset1",
+    ]);
+    _trace = [];
+    flushAnimationFrames(0);
+    deepStrictEqual(_trace, [
     ]);
   });
 });
