@@ -689,7 +689,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
         const descriptor = v.d;
         const props = v.p;
         const descriptorP1 = descriptor.p1;
-        const type = descriptor.f & (Flags.Template | Flags.Component);
+        const type = descriptor.f & (Flags.Template | Flags.Component | Flags.List);
         if (type === Flags.Template) {
           const ctx = RENDER_CONTEXT;
           const parentDOMElement = ctx.p;
