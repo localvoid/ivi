@@ -738,6 +738,30 @@ describe("render to string", () => {
     );
   });
 
+  test(`<div a={undefined}></div>`, () => {
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              0,
+              `<div`,
+              `</div>`,
+              [
+                _$P(` a="`, 0),
+              ],
+              null,
+            ),
+          ]),
+          [
+            void 0,
+          ],
+        ),
+      ),
+      `<div></div>`
+    );
+  });
+
   test(`<div a={"0"}></div>`, () => {
     strictEqual(
       renderToString(

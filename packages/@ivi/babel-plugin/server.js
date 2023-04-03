@@ -37,10 +37,11 @@ const server = (config) => declare((api) => {
               t.numericLiteral(p.i),
             ])))
           : t.nullLiteral(),
-        node.children
-          ? t.arrayExpression(
-            node.children.map((n) => createTNode(importSymbol, n)),
-          )
+        node.children !== null
+          ? typeof node.children === "number"
+            ? t.numericLiteral(node.children)
+            : t.arrayExpression(node.children.map((n) => createTNode(importSymbol, n)),
+            )
           : t.nullLiteral(),
       ]);
     }

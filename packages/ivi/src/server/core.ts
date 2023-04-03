@@ -270,11 +270,18 @@ const renderTElement = (exprs: any[], e: TElement) => {
   let openElement = e.prefix;
 
   if (props !== null) {
+    let close = false;
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
-      openElement += prop.prefix + escapeAttr(exprs[prop.i]);
+      const value = exprs[prop.i];
+      if (value !== void 0) {
+        close = true;
+        openElement += prop.prefix + escapeAttr(value);
+      }
     }
-    openElement += '"';
+    if (close) {
+      openElement += '"';
+    }
   }
 
   if (children === null) {
@@ -315,7 +322,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
     ctx.t = prevT + openElement + ctx.t + suffix;
     ctx.s = (prevS + 1) & RenderState.OffsetMask;
   } else { // innerHTML
-    ctx.t += openElement + exprs[children] + suffix;
+    ctx.t += openElement + ">" + exprs[children] + suffix;
   }
 };
 
