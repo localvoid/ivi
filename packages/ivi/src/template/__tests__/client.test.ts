@@ -34,6 +34,7 @@ const cC = (n: number) => ChildOpCode.Child | (n << ChildOpCode.ValueShift);
 const pSN = (n: number) => PropOpCode.SetNode | ((n + 1) << PropOpCode.DataShift);
 const pClass = (n: number) => PropOpCode.Common | (n << PropOpCode.InputShift);
 const pTextContent = (n: number) => PropOpCode.Common | (CommonPropType.TextContent << PropOpCode.DataShift) | (n << PropOpCode.InputShift);
+const pInnerHTML = (n: number) => PropOpCode.Common | (CommonPropType.InnerHTML << PropOpCode.DataShift) | (n << PropOpCode.InputShift);
 const pAttr = (k: number, n: number) => PropOpCode.Attribute | (k << PropOpCode.DataShift) | (n << PropOpCode.InputShift);
 
 const c = (tpl: ITemplate) => compileTemplate(tpl);
@@ -640,9 +641,28 @@ describe("template compilation", () => {
         ]),
       );
     });
+
+    test("innerHTML", () => {
+      deepStrictEqual(
+        c(h([
+          el("a", [prop("innerHTML", 0)]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: `a`,
+            props: [pInnerHTML(0)],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [0],
+          },
+        ]),
+      );
+    });
   });
 });
-
 
 describe("static styles", () => {
   test("1", () => {

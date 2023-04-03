@@ -351,6 +351,12 @@ const _emitPropsOpCodes = (
                   (CommonPropType.TextContent << PropOpCode.DataShift) |
                   (exprMap.get(value)! << PropOpCode.InputShift)
                 );
+              } else if (key === "innerHTML") {
+                opCodes.push(
+                  PropOpCode.Common |
+                  (CommonPropType.InnerHTML << PropOpCode.DataShift) |
+                  (exprMap.get(value)! << PropOpCode.InputShift)
+                );
               } else {
                 opCodes.push(
                   PropOpCode.Property |
@@ -360,11 +366,25 @@ const _emitPropsOpCodes = (
               }
               break;
             case IPropertyType.DOMValue:
-              opCodes.push(
-                PropOpCode.DiffDOMProperty |
-                (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
-                (exprMap.get(value)! << PropOpCode.InputShift)
-              );
+              if (key === "textContent") {
+                opCodes.push(
+                  PropOpCode.Common |
+                  (CommonPropType.TextContent << PropOpCode.DataShift) |
+                  (exprMap.get(value)! << PropOpCode.InputShift)
+                );
+              } else if (key === "innerHTML") {
+                opCodes.push(
+                  PropOpCode.Common |
+                  (CommonPropType.InnerHTML << PropOpCode.DataShift) |
+                  (exprMap.get(value)! << PropOpCode.InputShift)
+                );
+              } else {
+                opCodes.push(
+                  PropOpCode.DiffDOMProperty |
+                  (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
+                  (exprMap.get(value)! << PropOpCode.InputShift)
+                );
+              }
               break;
             case IPropertyType.Style:
               opCodes.push(

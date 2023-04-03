@@ -61,6 +61,8 @@ const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!
 const nodeGetPrevSibling = /*@__PURE__*/getDescriptor(nodeProto, "previousSibling")!.get!;
 /** `Node.prototype.setTextContent` */
 const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
+/** `Element.prototype.setInnerHTML` */
+const elementSetInnerHTML = /*@__PURE__*/getDescriptor(elementProto, "innerHTML")!.set!;
 /** `Element.prototype.className` */
 const elementSetClassName = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
 /** `HTMLElement.prototype.style`. */
@@ -361,7 +363,7 @@ const _updateTemplateProperties = (
             if (next !== "" || prev !== void 0) {
               elementSetClassName.call(currentElement, next);
             }
-          } else { // CommonPropType.TextContent
+          } else if (dataIndex === CommonPropType.TextContent) { // CommonPropType.TextContent
             if (prev === void 0) {
               nodeSetTextContent.call(currentElement, next);
             } else {
@@ -372,6 +374,8 @@ const _updateTemplateProperties = (
                 nodeSetTextContent.call(currentElement, next);
               }
             }
+          } else {
+            elementSetInnerHTML.call(currentElement, next);
           }
         } else if (type === PropOpCode.Directive) {
           (next as ElementDirective)(currentElement);

@@ -95,6 +95,7 @@ export const enum StateOpCode {
 export const enum CommonPropType {
   ClassName = 0,
   TextContent = 1,
+  InnerHTML = 2,
 }
 
 /**
