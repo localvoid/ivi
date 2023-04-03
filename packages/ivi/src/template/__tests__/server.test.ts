@@ -720,4 +720,23 @@ describe("server compiler", () => {
       ], [0]),
     );
   });
+
+  test(`<div .innerHTML={0}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          prop("innerHTML", 0),
+        ]),
+      ])),
+      r([
+        {
+          flags: 0,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: null,
+          children: 0,
+        },
+      ], [0]),
+    );
+  });
 });

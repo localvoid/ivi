@@ -60,7 +60,7 @@ const isSerializableDynamicProp = (prop: IProperty): boolean => {
   }
   if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
     const key = prop.key;
-    if (key === "value" || key === "checked") {
+    if (key === "value" || key === "checked" || key === "innerHTML") {
       return true;
     }
     return false;
@@ -114,7 +114,8 @@ const createTElement = (
 ): TElement => {
   const node = sNode.node;
   const { tag, properties } = node;
-  const children: TNode[] = [];
+  let children: TNode[] | number | null = null;
+  let innerHTML: number | undefined;
   let props: TProperty[] | undefined;
   let suffix: string;
   let flags = 0;
@@ -150,6 +151,8 @@ const createTElement = (
           if (tag === "input") {
             props = pushAttr(props, '"', ` checked="`, exprMap.get(value)!);
           }
+        } else if (key === "innerHTML") {
+          innerHTML = value;
         }
       } else if (type === IPropertyType.Style) {
         if (typeof value === "string") {
@@ -194,7 +197,10 @@ const createTElement = (
     }
     suffix = "";
   } else {
-    if (sChildren !== null) {
+    if (innerHTML !== void 0) {
+      children = innerHTML;
+    } else if (sChildren !== null && sChildren.length > 0) {
+      children = [];
       for (let i = 0; i < sChildren.length; i++) {
         const child = sChildren[i];
         switch (child.node.type) {
@@ -221,8 +227,6 @@ const createTElement = (
     props: props !== void 0
       ? props
       : null,
-    children: children.length !== 0
-      ? children
-      : null,
+    children,
   };
 };

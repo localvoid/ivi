@@ -283,36 +283,40 @@ const renderTElement = (exprs: any[], e: TElement) => {
     return;
   }
 
-  const prevT = ctx.t;
-  const prevS = ctx.s;
-  ctx.t = "";
-  ctx.s = 0;
+  if (typeof children === "object") {
+    const prevT = ctx.t;
+    const prevS = ctx.s;
+    ctx.t = "";
+    ctx.s = 0;
 
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (typeof child === "object") { // Element
-      renderTElement(exprs, child);
-    } else if (typeof child === "string") { // Text
-      renderText(child);
-    } else { // Expr
-      const prevS = ctx.s;
-      ctx.s &= RenderState.PrevText;
-      renderNode(exprs[child]);
-      const offset = ctx.s & RenderState.OffsetMask;
-      ctx.s = prevS | (ctx.s & RenderState.PrevText);
-      if (offsets !== void 0) {
-        offsets.push(offset);
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      if (typeof child === "object") { // Element
+        renderTElement(exprs, child);
+      } else if (typeof child === "string") { // Text
+        renderText(child);
+      } else { // Expr
+        const prevS = ctx.s;
+        ctx.s &= RenderState.PrevText;
+        renderNode(exprs[child]);
+        const offset = ctx.s & RenderState.OffsetMask;
+        ctx.s = prevS | (ctx.s & RenderState.PrevText);
+        if (offsets !== void 0) {
+          offsets.push(offset);
+        }
       }
     }
-  }
-  if (offsets !== void 0) {
-    openElement += ` &="${offsets.join(" ")}">`;
-  } else {
-    openElement += `>`;
-  }
+    if (offsets !== void 0) {
+      openElement += ` &="${offsets.join(" ")}">`;
+    } else {
+      openElement += `>`;
+    }
 
-  ctx.t = prevT + openElement + ctx.t + suffix;
-  ctx.s = (prevS + 1) & RenderState.OffsetMask;
+    ctx.t = prevT + openElement + ctx.t + suffix;
+    ctx.s = (prevS + 1) & RenderState.OffsetMask;
+  } else { // innerHTML
+    ctx.t += openElement + exprs[children] + suffix;
+  }
 };
 
 const enum RenderState {

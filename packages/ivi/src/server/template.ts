@@ -9,7 +9,7 @@ export interface TElement {
   readonly prefix: string;
   readonly suffix: string;
   readonly props: TProperty[] | null;
-  readonly children: TNode[] | null;
+  readonly children: TNode[] | number | null;
 }
 
 export const enum TFlags {
