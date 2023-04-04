@@ -3,7 +3,7 @@ import { describe, test } from "node:test";
 import { parseTemplate } from "../parser.js";
 import {
   INodeType, INodeText, INodeExpr, INodeElement, ITemplateType, INode,
-  IProperty, IPropertyType, IPropertyAttribute,
+  IProperty, IPropertyType, IPropertyAttribute, IPropertyValue, IPropertyDOMValue, IPropertyStyle, IPropertyEvent, IPropertyDirective,
 } from "ivi/template/ir";
 
 const _ = void 0;
@@ -13,6 +13,41 @@ const ATTR = (key: string, value: string | boolean | number, hoist = false): IPr
   key,
   value,
   hoist,
+});
+
+const PROP = (key: string, value: number): IPropertyValue => ({
+  type: IPropertyType.Value,
+  key,
+  value,
+  hoist: false,
+});
+
+const DPROP = (key: string, value: number): IPropertyDOMValue => ({
+  type: IPropertyType.DOMValue,
+  key,
+  value,
+  hoist: false,
+});
+
+const STYLE = (key: string, value: number | string): IPropertyStyle => ({
+  type: IPropertyType.Style,
+  key,
+  value,
+  hoist: false,
+});
+
+const EVENT = (key: string, value: number): IPropertyEvent => ({
+  type: IPropertyType.Event,
+  key,
+  value,
+  hoist: false,
+});
+
+const DIRECTIVE = (value: number): IPropertyDirective => ({
+  type: IPropertyType.Directive,
+  key: null,
+  value,
+  hoist: false,
 });
 
 const E = (tag: string, properties: IProperty[] = [], children: INode[] = []): INodeElement => ({
@@ -475,6 +510,114 @@ describe("@ivi/htm/parser", () => {
           E("div", [
             ATTR("a", "1"),
             ATTR("b", "2"),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`.prop`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<div .a=`, `/>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            PROP("a", 0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`*prop`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<div *a=`, `/>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            DPROP("a", 0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`~style="0"`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<div ~a="0"/>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            STYLE("a", "0"),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`~style={0}`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<div ~a=`, `/>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            STYLE("a", 0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`@event={0}`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<div @a=`, `/>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            EVENT("a", 0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`directive`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<div `, `/>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            DIRECTIVE(0),
           ]),
         ],
       },

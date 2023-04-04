@@ -245,6 +245,7 @@ export class TemplateParser extends TemplateScanner {
       type,
       key,
       value,
+      hoist: false,
     } as IProperty);
   }
 
