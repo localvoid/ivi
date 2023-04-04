@@ -60,4 +60,27 @@ describe("hydrate", () => {
       ],
     );
   });
+
+  test(`element directive`, () => {
+    document.body.innerHTML = `<div></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        let e: any;
+        let h: boolean | undefined;
+        const directive = (element: Element, hydrate?: boolean) => {
+          e = element;
+          h = hydrate;
+        };
+        root.hydrate(
+          htm`<div ${directive}></div>`,
+        );
+        strictEqual(e.uid, 3);
+        strictEqual(h, true);
+      }),
+      [
+        "[1] Node.lastChild => 3",
+      ]
+    );
+  });
 });

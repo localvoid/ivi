@@ -484,14 +484,19 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        let e;
-        const onMount = (element: Element) => { e = element; };
+        let e: any;
+        let h: boolean | undefined;
+        const onMount = (element: Element, hydrate: boolean) => {
+          e = element;
+          h = hydrate;
+        };
         root.update(htm`
           <div>
             <span ${onMount}></span>
           </div>
         `);
         strictEqual((e as any).uid, 6);
+        strictEqual(h, void 0);
       }),
       [
         `[-7] Template.innerHTML = "<div><span></span></div>"`,

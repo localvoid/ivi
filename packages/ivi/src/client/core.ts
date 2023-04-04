@@ -321,7 +321,10 @@ export interface ListProps<K = any> {
 /**
  * Element Directive.
  */
-export type ElementDirective = <E extends Element>(element: E) => void;
+export type ElementDirective = <E extends Element>(
+  element: E,
+  hydrate?: boolean,
+) => void;
 
 export const _flushDOMEffects = () => {
   const e = RENDER_CONTEXT.e;
@@ -1926,7 +1929,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
               } else {
                 const prop = props[(op >> PropOpCode.InputShift) & PropOpCode.Mask6];
                 if (type === PropOpCode.Directive) {
-                  (prop as ElementDirective)(currentElement);
+                  (prop as ElementDirective)(currentElement, true);
                 } else {
                   const key = data[dataIndex];
                   if (type === PropOpCode.Event) {
