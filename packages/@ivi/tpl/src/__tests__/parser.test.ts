@@ -577,4 +577,66 @@ describe("@ivi/tpl/parser", () => {
       },
     );
   });
+
+  test(`textContent: ={0}`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`div =`, ``],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            PROP("textContent", 0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`escape attr value`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `
+          div :a='a&b"c<d'
+          `,
+        ],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            ATTR("a", "a&amp;b&quot;c<d"),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`escape text value`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `
+          div 'a&b"c<d'
+          `,
+        ],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", _, [
+            T(`a&amp;b"c&lt;d`),
+          ]),
+        ],
+      },
+    );
+  });
 });
