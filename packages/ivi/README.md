@@ -40,10 +40,11 @@ runtime for declarative UI rendering. Precompiled templates are
 [optimized](#template-optimizations) for code size and cold-start performance
 and doesn't generate any additional code for hydration.
 
-- [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
+- [Astro+ivi HackerNews Client (SSR + Partial Hydration)](https://github.com/localvoid/astro-ivi-hackernews) &middot; [Live Demo](https://astro-ivi-hackernews.netlify.app/)
+- [ivi REPL](https://github.com/localvoid/ivi-repl) &middot; [Live Demo](https://localvoid.github.io/ivi-repl/)
 - [TodoMVC (HTML templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
 - [TodoMVC (ivi templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
-- [ivi REPL](https://github.com/localvoid/ivi-repl)
+- [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
 
 ## Table of Contents
 
