@@ -15,7 +15,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/core": "^7.21.3",
+    "@babel/core": "^7.21.4",
     "@ivi/babel-plugin": "workspace:*",
     "@rollup/pluginutils": "^5.0.2"
   },

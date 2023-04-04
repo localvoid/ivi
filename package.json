@@ -8,8 +8,8 @@
     "test:only": "node --enable-source-maps --test-only --test packages/ tests/dist/"
   },
   "devDependencies": {
-    "@types/node": "^18.15.10",
-    "typescript": "^5.0.2"
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.3"
   },
   "volta": {
     "node": "19.8.0",
