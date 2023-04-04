@@ -110,6 +110,7 @@ and doesn't generate any additional code for hydration.
   - [Template Call-Site Unique Identity](#template-call-site-unique-identity)
   - [Forcing Component Updates](#forcing-component-updates)
   - [Template Cloning](#template-cloning)
+  - [Disabling Static Template Generation for Client-Side Rendering](#disabling-static-template-generation-for-client-side-rendering)
   - [Internal Data Structures](#internal-data-structures)
     - [UI Tree](#ui-tree-data-structures)
     - [Templates](#template-data-structures)
@@ -182,7 +183,7 @@ optimizing templates.
 applied in a module transformation pass for Client-Side Rendering.
 - `"@ivi/babel-plugin/client-optimizer"` deduplicates shared data and should be applied in a chunk transformation pass for Client-Side Rendering.
 - `"@ivi/babel-plugin/server"` plugin precompiles templates for Server-Side
-rendering.
+Rendering.
 
 ## Declarative UI
 
@@ -911,18 +912,23 @@ import { htm } from "@ivi/htm";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 
-const App = component((c) => {
+const CodeMirror = component((c) => {
   let _editor;
 
   useEffect(c, () => {
     _editor = new EditorView({
       extensions: [basicSetup, javascript()],
+      // findDOMNode finds the closest child DOM node.
       parent: findDOMNode(c),
     });
+
+    // Reset function will be invoked when component is unmounted.
     return () => {
       _editor.destroy();
     };
   })();
+  // ^ When effect doesn't have any dependencies, it can be executed just
+  // once in the outer scope. Effect will run when its DOM tree is mounted.
 
   return () => htm`
     <div class="CodeMirror"></div>
@@ -931,7 +937,7 @@ const App = component((c) => {
 
 update(
   createRoot(document.body),
-  App(),
+  CodeMirror(),
 );
 ```
 
@@ -1082,6 +1088,39 @@ be created with [`document.createElement()`](https://developer.mozilla.org/en-US
 
 ```js
 htm`<div attr=${0}>${1}</div>`;
+```
+
+### Disabling Static Template Generation for Client-Side Rendering
+
+When templates are precompiled, they are producing static HTML template string
+and OpCodes for dynamic updates. In a lot of use cases with Server-Side
+Rendering and partial hydration, static template part is generated on the
+server and client just needs OpCodes to perform dynamic updates.
+
+To reduce code size that is transfered to the client in such scenarios, it is
+possible to disable static template generation with `/*ssr*/` comment.
+
+```js
+export default component((c) => {
+  let _open = true;
+  const onClick = () => {
+    _open = !_open;
+    invalidate(c);
+  };
+
+  return ({ children }) => {
+    return /*ssr*/ htm`
+    <div class="toggle" class=${_open ? "toggle open" : "toggle"}>
+      <a @click=${onClick}>
+        ${_open ? "[-]" : "[+] comments collapsed"}
+      </a>
+    </div>
+    <ul class="comment-children" ~display=${_open ? "block" : "none"}>
+      ${children}
+    </ul>
+    `;
+  };
+});
 ```
 
 ### Internal Data Structures
