@@ -5,6 +5,7 @@
   "devDependencies": {
     "ivi": "workspace:*",
     "@ivi/htm": "workspace:*",
+    "@ivi/tpl": "workspace:*",
     "@ivi/mock-dom": "workspace:*"
   },
   "scripts": {

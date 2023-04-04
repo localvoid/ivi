@@ -135,6 +135,9 @@ importers:
       '@ivi/mock-dom':
         specifier: workspace:*
         version: link:../packages/@ivi/mock-dom
+      '@ivi/tpl':
+        specifier: workspace:*
+        version: link:../packages/@ivi/tpl
       ivi:
         specifier: workspace:*
         version: link:../packages/ivi

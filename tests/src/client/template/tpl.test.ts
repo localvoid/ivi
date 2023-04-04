@@ -2,7 +2,7 @@ import { strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, toSnapshot } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "../index.js";
+import { htm } from "@ivi/tpl";
 
 describe("tpl", () => {
   beforeEach(reset);
