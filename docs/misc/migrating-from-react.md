@@ -1274,7 +1274,131 @@ const initialTasks = [
 
 ### [Passing data deeply with context](https://react.dev/learn/managing-state#passing-data-deeply-with-context)
 
-ivi doesn't provide contexts (yet).
+React:
+
+```js
+import { createContext, useContext } from 'react';
+const LevelContext = createContext(0);
+
+function Heading({ children }) {
+  const level = useContext(LevelContext);
+  switch (level) {
+    case 0:
+      throw Error('Heading must be inside a Section!');
+    case 1:
+      return <h1>{children}</h1>;
+    case 2:
+      return <h2>{children}</h2>;
+    case 3:
+      return <h3>{children}</h3>;
+    case 4:
+      return <h4>{children}</h4>;
+    case 5:
+      return <h5>{children}</h5>;
+    case 6:
+      return <h6>{children}</h6>;
+    default:
+      throw Error('Unknown level: ' + level);
+  }
+}
+
+function Section({ children }) {
+  const level = useContext(LevelContext);
+  return (
+    <section className="section">
+      <LevelContext.Provider value={level + 1}>
+        {children}
+      </LevelContext.Provider>
+    </section>
+  );
+}
+
+function Page() {
+  return (
+    <Section>
+      <Heading>Title</Heading>
+      <Section>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Section>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Section>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+          </Section>
+        </Section>
+      </Section>
+    </Section>
+  );
+}
+```
+
+ivi:
+
+```js
+import { component, context } from 'ivi';
+import { htm } from '@ivi/htm';
+
+const [getLevelContext, LevelContext] = context();
+
+const Heading = (c) => {
+  const level = getLevelContext(c);
+  return (children) => {
+    switch (level) {
+      case 0:
+        throw Error('Heading must be inside a Section!');
+      case 1:
+        return htm`<h1>${children}</h1>`;
+      case 2:
+        return htm`<h2>${children}</h2>`;
+      case 3:
+        return htm`<h3>${children}</h3>`;
+      case 4:
+        return htm`<h4>${children}</h4>`;
+      case 5:
+        return htm`<h5>${children}</h5>`;
+      case 6:
+        return htm`<h6>${children}</h6>`;
+      default:
+        throw Error('Unknown level: ' + level);
+    }
+  }
+}
+
+const Section = component(c) => {
+  const level = useContext(LevelContext);
+  return (children) => htm`
+    <section class="section">
+      ${LevelContext(level + 1, children)}
+    </section>
+  `;
+}
+
+const Page = () => (
+  Section([
+    Heading("Title"),
+    Section([
+      Heading("Heading"),
+      Heading("Heading"),
+      Heading("Heading"),
+    ]),
+    Section([
+      Heading("Sub-heading"),
+      Heading("Sub-heading"),
+      Heading("Sub-heading"),
+      Section([
+        Heading("Sub-sub-heading"),
+        Heading("Sub-sub-heading"),
+        Heading("Sub-sub-heading"),
+      ]),
+    ]),
+  ])
+);
+```
 
 ## [Escape Hatches](https://react.dev/learn/escape-hatches)
 
