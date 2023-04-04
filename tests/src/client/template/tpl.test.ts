@@ -4,7 +4,7 @@ import { reset, toSnapshot } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "@ivi/tpl";
 
-describe("tpl", () => {
+describe("@ivi/tpl", () => {
   beforeEach(reset);
 
   test(`1`, () => {

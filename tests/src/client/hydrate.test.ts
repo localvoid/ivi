@@ -2,7 +2,7 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace, emit } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "../index.js";
+import { htm } from "@ivi/htm";
 import { component, invalidate } from "ivi";
 
 describe("hydrate", () => {
