@@ -1919,7 +1919,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           const data = tplData.d;
           const flags = tplData.f;
           const state = _Array<Node>(flags & TemplateFlags.Mask6);
-          const currentDOMNode = (ctx.n === null)
+          const currentDOMNode = ctx.n === null
             ? nodeGetLastChild.call(ctx.p)
             : nodeGetPrevSibling.call(ctx.n);
           state[0] = currentDOMNode;
@@ -1927,6 +1927,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           if (stateOpCodes.length > 0) {
             ctx.si = 0;
             _hydrateAssignTemplateSlots(
+              currentDOMNode,
               nodeGetFirstChild.call(currentDOMNode),
               stateOpCodes,
               0,
@@ -2019,9 +2020,15 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
       }
     } else { // Text
       const ctx = RENDER_CONTEXT;
-      const node = (ctx.n === null)
+      let node = ctx.n === null
         ? nodeGetLastChild.call(ctx.p)
         : nodeGetPrevSibling.call(ctx.n);
+      // Edge case: [dynamic text, dynamic text]
+      while (node.nodeType === NodeType.Comment) {
+        const comment = node as Comment;
+        node = nodeGetPrevSibling.call(node);
+        comment.remove();
+      }
       ctx.n = node;
       return createSNode(Flags.Text, v, null, parentSNode, node);
     }
@@ -2055,6 +2062,7 @@ const _parseInt = parseInt;
 const _parseOffset = (s: string, _i: number) => _parseInt(s, 16);
 
 const _hydrateAssignTemplateSlots = (
+  parentElement: Element,
   currentNode: Node,
   opCodes: StateOpCode[],
   offset: number,
@@ -2069,7 +2077,7 @@ const _hydrateAssignTemplateSlots = (
     if (op & StateOpCode.PrevExpr) {
       // Lazy getAttribute call.
       if (exprOffsets === void 0) {
-        exprOffsets = elementGetAttribute.call(currentNode, "^")!
+        exprOffsets = elementGetAttribute.call(parentElement, "&")!
           .split(" ")
           .map(_parseOffset);
       }
@@ -2093,6 +2101,7 @@ const _hydrateAssignTemplateSlots = (
       if (enterOffset) { // Enter
         let node = nodeGetFirstChild.call(currentNode);
         _hydrateAssignTemplateSlots(
+          currentNode as Element,
           node,
           opCodes,
           offset,

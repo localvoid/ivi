@@ -48,6 +48,7 @@ describe("hydrate", () => {
         `[4] Node.nextSibling => 6`,
         `[6] Element.addEventListener("click", onClick)`,
         `[4] Node.lastChild => 5`,
+        `[5] Node.nodeType => 3`,
       ],
     );
 
@@ -57,6 +58,130 @@ describe("hydrate", () => {
       trace(() => { root.dirtyCheck(); }),
       [
         `[5] Node.nodeValue = 2`,
+      ],
+    );
+  });
+
+  test(`2`, () => {
+    const Test = (a: number, b: number) => htm`<div>${[a, b]}3</div>`;
+
+    document.body.innerHTML = `<div &="2">1<!>2<!>3</div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "2"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 8`,
+        `[5] Node.nextSibling => 6`,
+        `[5] Node.remove()`,
+        `[6] Node.nextSibling => 7`,
+        `[7] Node.nodeType => 8`,
+        `[7] Node.nextSibling => 8`,
+        `[7] Node.remove()`,
+        `[8] Node.previousSibling => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`3`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${[
+          htm`<a>${a}</a>`,
+          htm`<b>${b}</b>`,
+        ]}
+        <c/>
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="2"><a>1</a><b>2</b><c></c></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "2"`,
+        `[4] Node.nextSibling => 6`,
+        `[6] Node.nodeType => 1`,
+        `[6] Node.nextSibling => 8`,
+        `[8] Node.nodeType => 1`,
+        `[8] Node.previousSibling => 6`,
+        `[6] Node.lastChild => 7`,
+        `[7] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 4`,
+        `[4] Node.lastChild => 5`,
+        `[5] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[7] Node.nodeValue = 6`,
+        `[5] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`4`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${"a"}
+        ${[
+          htm`<a>${a}</a>`,
+          htm`<b>${b}</b>`,
+        ]}
+        <c/>
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="3">a<a>1</a><b>2</b><c></c></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "3"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 1`,
+        `[5] Node.nextSibling => 7`,
+        `[7] Node.nodeType => 1`,
+        `[7] Node.nextSibling => 9`,
+        `[9] Node.nodeType => 1`,
+        `[9] Node.previousSibling => 7`,
+        `[7] Node.lastChild => 8`,
+        `[8] Node.nodeType => 3`,
+        `[7] Node.previousSibling => 5`,
+        `[5] Node.lastChild => 6`,
+        `[6] Node.nodeType => 3`,
+        `[5] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[8] Node.nodeValue = 6`,
+        `[6] Node.nodeValue = 5`,
       ],
     );
   });

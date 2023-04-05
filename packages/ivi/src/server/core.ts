@@ -293,6 +293,8 @@ const renderTElement = (exprs: any[], e: TElement) => {
   }
 
   if (typeof children === "object") {
+    let pushOffset = false;
+    let offset = 0;
     const prevT = ctx.t;
     const prevS = ctx.s;
     ctx.t = "";
@@ -301,18 +303,26 @@ const renderTElement = (exprs: any[], e: TElement) => {
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
       if (typeof child === "object") { // Element
+        if (pushOffset) {
+          pushOffset = false;
+          offsets!.push(offset);
+        }
         renderTElement(exprs, child);
       } else if (typeof child === "string") { // Text
+        if (pushOffset) {
+          pushOffset = false;
+          offsets!.push(offset);
+        }
         renderText(child);
       } else { // Expr
         const prevS = ctx.s;
         ctx.s &= RenderState.PrevText;
         renderNode(exprs[child]);
-        const offset = ctx.s & RenderState.OffsetMask;
-        ctx.s = prevS | (ctx.s & RenderState.PrevText);
         if (offsets !== void 0) {
-          offsets.push(offset);
+          offset += ctx.s & RenderState.OffsetMask;
+          pushOffset = true;
         }
+        ctx.s = prevS | (ctx.s & RenderState.PrevText);
       }
     }
     if (offsets !== void 0) {

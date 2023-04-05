@@ -4,9 +4,9 @@ export const enum NodeType {
   Text = 3,
   CData = 4,
   EntityReference = 5,
-  Comment = 6,
   ProcessingInstruction = 7,
-  Document = 8,
+  Comment = 8,
+  Document = 9,
   DocumentFragment = 11,
 }
 
@@ -831,6 +831,7 @@ function parseChildren(
 }
 
 const IDENTIFIER = /[a-zA-Z_][\w-]*/y;
+const ATTR_IDENTIFIER = /[&a-zA-Z_][\w-]*/y;
 
 function parseElement(ctx: HTMLParserContext, namespaceURI: string): Element {
   if (!parseCharCode(ctx, CharCode.LessThan)) {
@@ -877,7 +878,7 @@ function parseAttributes(ctx: HTMLParserContext, element: Element) {
     if (c === CharCode.MoreThan) {
       return;
     }
-    const key = parseRegExp(ctx, IDENTIFIER);
+    const key = parseRegExp(ctx, ATTR_IDENTIFIER);
     if (key === void 0) {
       throw new Error(`Invalid HTML [${ctx.i}]: invalid attribute name\n${ctx.s}`);
     }
