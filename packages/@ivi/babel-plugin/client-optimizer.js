@@ -67,8 +67,11 @@ const iviOptimizer = (config) =>
                   const localSharedData = new Set();
                   // deduplicating data strings
                   for (const { tpl } of templates) {
-                    for (const s of tpl.get("arguments")[5].node.elements) {
-                      localSharedData.add(s.value);
+                    const propData = tpl.get("arguments")[5];
+                    if (propData.isArrayExpression()) {
+                      for (const s of propData.node.elements) {
+                        localSharedData.add(s.value);
+                      }
                     }
                   }
 
@@ -100,7 +103,7 @@ const iviOptimizer = (config) =>
                       propDataPath.replaceWith(sharedPropDataId);
                     } else {
                       // bundle
-                      propData = data.split(",").map((s) => parseInt(s, 10));
+                      propData = data.split(",");
                     }
                     for (const op of propOpCodes) {
                       const value = op.node.value;
