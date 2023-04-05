@@ -17,11 +17,10 @@ export function ivi(options?: IviOptions): Plugin[] {
     options?.include ?? /\.(m?js|m?ts)$/,
     options?.exclude,
   );
-  const dedupeOpCodes = options?.dedupeOpCodes ?? "chunk";
+  let dedupeOpCodes = options?.dedupeOpCodes ?? "chunk";
   let dedupePropData = options?.dedupePropData ?? "bundle";
   let sharedPropData = new Set<string>();
 
-  let config;
   let lazyPreload = true;
   let iviLang: typeof import("@ivi/tpl/parser") | undefined;
   let htmLang: typeof import("@ivi/htm/parser") | undefined;
@@ -32,9 +31,9 @@ export function ivi(options?: IviOptions): Plugin[] {
       name: "ivi",
 
       configResolved(resolvedConfig) {
-        config = resolvedConfig;
-        if (config.command === "serve") {
-          dedupePropData = "chunk";
+        if (resolvedConfig.command === "serve") {
+          dedupeOpCodes = false;
+          dedupePropData = false;
         }
       },
 
