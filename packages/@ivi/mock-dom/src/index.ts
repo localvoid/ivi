@@ -978,14 +978,7 @@ const VOID_ELEMENTS = (
   /^(embed|input|param|source|track|area|base|link|meta|br|col|hr|img|wbr)$/
 );
 
-function indent(i: number, s: string) {
-  let r = "";
-  while (i-- > 0) {
-    r += " ";
-
-  }
-  return r + s;
-}
+const indent = (i: number, s: string) => " ".repeat(i) + s;
 
 const enum CharCode {
   /** "\\t" */Tab = 9,
