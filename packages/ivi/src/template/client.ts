@@ -57,8 +57,9 @@ export type TemplateNode =
   ;
 
 export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => {
+  const children = mergeTextNodes(tpl.children);
   return {
-    roots: tpl.children.map((node) => compileTemplateNode(node, tpl.type)),
+    roots: children.map((node) => compileTemplateNode(node, tpl.type)),
   };
 };
 
@@ -67,6 +68,48 @@ export class TemplateCompilerError extends Error {
     super(msg);
   }
 }
+
+const mergeTextNodes = (nodes: INode[]): INode[] => {
+  const n: INode[] = [];
+  let text = "";
+  for (let i = 0; i < nodes.length; i++) {
+    const c = nodes[i];
+    switch (c.type) {
+      case INodeType.Element:
+        if (text !== "") {
+          n.push({
+            type: INodeType.Text,
+            value: text,
+          });
+          text = "";
+        }
+        n.push({
+          ...c,
+          children: mergeTextNodes(c.children),
+        });
+        break;
+      case INodeType.Expr:
+        if (text !== "") {
+          n.push({
+            type: INodeType.Text,
+            value: text,
+          });
+          text = "";
+        }
+        n.push(c);
+        break;
+      case INodeType.Text:
+        text += c.value;
+    }
+  }
+  if (text !== "") {
+    n.push({
+      type: INodeType.Text,
+      value: text,
+    });
+  }
+  return n;
+};
 
 const compileTemplateNode = (node: INode, type: ITemplateType): TemplateNode => {
   switch (node.type) {

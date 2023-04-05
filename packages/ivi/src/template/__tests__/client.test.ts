@@ -123,6 +123,60 @@ describe("template compilation", () => {
       );
     });
 
+    test("merge text #1", () => {
+      deepStrictEqual(
+        c(h([el("div", _, [text("a"), text("b")])])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<div`, `>`, `ab`, `</div>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
+      );
+    });
+
+    test("merge text #2", () => {
+      deepStrictEqual(
+        c(h([el("div", _, [text("a"), text("b"), el("a")])])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 0),
+            template: [`<div`, `>`, `ab`, `<a`, `>`, `</a>`, `</div>`],
+            props: [],
+            child: [],
+            state: [],
+            data: [],
+            exprs: [],
+          },
+        ]),
+      );
+    });
+
+
+    test("merge text #3", () => {
+      deepStrictEqual(
+        c(h([el("div", _, [text("a"), text("b"), expr(0)])])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 0, 1),
+            template: [`<div`, `>`, `ab`, `</div>`],
+            props: [],
+            child: [0],
+            state: [],
+            data: [],
+            exprs: [0],
+          },
+        ]),
+      );
+    });
     test("child element", () => {
       deepStrictEqual(
         c(h([el("div", _, [el("span")])])),
