@@ -91,32 +91,34 @@ const iviOptimizer = (config) =>
 
                 for (const { tpl, data } of templates) {
                   const args = tpl.get("arguments");
-                  const propOpCodes = args[2].get("elements");
-                  let propData;
-                  if (dedupePropData === "chunk") {
-                    const propDataPath = args[5];
-                    propData = propDataPath.node.elements.map((e) => e.value);
-                    propDataPath.replaceWith(sharedPropDataId);
-                  } else {
-                    // bundle
-                    propData = data.split(",").map((s) => parseInt(s, 10));
-                  }
-                  for (const op of propOpCodes) {
-                    const value = op.node.value;
-                    const type = value & PROP_TYPE_MASK;
+                  if (args[2].isArrayExpression()) {
+                    const propOpCodes = args[2].get("elements");
+                    let propData;
+                    if (dedupePropData === "chunk") {
+                      const propDataPath = args[5];
+                      propData = propDataPath.node.elements.map((e) => e.value);
+                      propDataPath.replaceWith(sharedPropDataId);
+                    } else {
+                      // bundle
+                      propData = data.split(",").map((s) => parseInt(s, 10));
+                    }
+                    for (const op of propOpCodes) {
+                      const value = op.node.value;
+                      const type = value & PROP_TYPE_MASK;
 
-                    if (
-                      type !== PROP_TYPE_SET_NODE &&
-                      type !== PROP_TYPE_COMMON &&
-                      type !== PROP_TYPE_DIRECTIVE
-                    ) {
-                      const i = value >> PROP_DATA_SHIFT;
-                      const newDataIndex = sharedPropData.get(propData[i]);
-                      op.node.value =
-                        // Removes old data index
-                        (value & ((1 << PROP_DATA_SHIFT) - 1)) |
-                        // Adds new data index
-                        (newDataIndex << PROP_DATA_SHIFT);
+                      if (
+                        type !== PROP_TYPE_SET_NODE &&
+                        type !== PROP_TYPE_COMMON &&
+                        type !== PROP_TYPE_DIRECTIVE
+                      ) {
+                        const i = value >> PROP_DATA_SHIFT;
+                        const newDataIndex = sharedPropData.get(propData[i]);
+                        op.node.value =
+                          // Removes old data index
+                          (value & ((1 << PROP_DATA_SHIFT) - 1)) |
+                          // Adds new data index
+                          (newDataIndex << PROP_DATA_SHIFT);
+                      }
                     }
                   }
                 }
