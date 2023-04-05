@@ -91,9 +91,15 @@ const client = (config) => declare((api) => {
             t.callExpression(importSymbol("ivi", "_T"), [
               factory,
               t.numericLiteral(root.flags),
-              t.arrayExpression(root.props.map(toNumeric)),
-              t.arrayExpression(root.child.map(toNumeric)),
-              t.arrayExpression(root.state.map(toNumeric)),
+              root.props.length === 0
+                ? importSymbol("ivi", "EMPTY_ARRAY")
+                : t.arrayExpression(root.props.map(toNumeric)),
+              root.child.length === 0
+                ? importSymbol("ivi", "EMPTY_ARRAY")
+                : t.arrayExpression(root.child.map(toNumeric)),
+              root.state.length === 0
+                ? importSymbol("ivi", "EMPTY_ARRAY")
+                : t.arrayExpression(root.state.map(toNumeric)),
             ]),
             "leading",
             `@__PURE__ @__IVI_TPL__(${data.join(",")})`,
@@ -109,10 +115,18 @@ const client = (config) => declare((api) => {
           t.callExpression(importSymbol("ivi", "_Td"), [
             factory,
             t.numericLiteral(root.flags),
-            t.arrayExpression(root.props.map(toNumeric)),
-            t.arrayExpression(root.child.map(toNumeric)),
-            t.arrayExpression(root.state.map(toNumeric)),
-            t.arrayExpression(root.data.map(toString)),
+            root.props.length === 0
+              ? importSymbol("ivi", "EMPTY_ARRAY")
+              : t.arrayExpression(root.props.map(toNumeric)),
+            root.child.length === 0
+              ? importSymbol("ivi", "EMPTY_ARRAY")
+              : t.arrayExpression(root.child.map(toNumeric)),
+            root.state.length === 0
+              ? importSymbol("ivi", "EMPTY_ARRAY")
+              : t.arrayExpression(root.state.map(toNumeric)),
+            root.data.length === 0
+              ? importSymbol("ivi", "EMPTY_ARRAY")
+              : t.arrayExpression(root.data.map(toString)),
           ]),
           "leading",
           "@__PURE__ @__IVI_TPL__",

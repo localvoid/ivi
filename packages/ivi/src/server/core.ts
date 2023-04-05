@@ -3,6 +3,8 @@ import {
 } from "./template.js";
 import { escapeAttr, escapeText } from "./escape.js";
 
+export const EMPTY_ARRAY: any[] = [];
+
 export type SAny = undefined;
 export type SNode = undefined;
 export type SNode1 = undefined;

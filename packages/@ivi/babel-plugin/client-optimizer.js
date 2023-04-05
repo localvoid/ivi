@@ -36,12 +36,14 @@ const iviOptimizer = (config) =>
     const opCodeValue = (el) => el.value;
 
     function addSharedOpCodes(sharedStore, opCodes) {
-      const key = stringify(opCodes.node.elements.map(opCodeValue), void 0, 0);
-      let entries = sharedStore.get(key);
-      if (entries === void 0) {
-        sharedStore.set(key, [opCodes]);
-      } else {
-        entries.push(opCodes);
+      if (opCodes.isArrayExpression()) {
+        const key = stringify(opCodes.node.elements.map(opCodeValue), void 0, 0);
+        let entries = sharedStore.get(key);
+        if (entries === void 0) {
+          sharedStore.set(key, [opCodes]);
+        } else {
+          entries.push(opCodes);
+        }
       }
     }
 

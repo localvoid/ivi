@@ -1,4 +1,5 @@
 export {
+  EMPTY_ARRAY,
   // Opaque Stateful Nodes
   type SNode,
   type Root, type Component,

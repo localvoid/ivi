@@ -1,5 +1,6 @@
 export { strictEq, shallowEq, shallowEqArray } from "./shared/equal.js";
 export {
+  EMPTY_ARRAY,
   type VAny,
   type Component, type ComponentFactory, type UseEffectFactory,
   component, getProps, invalidate,
