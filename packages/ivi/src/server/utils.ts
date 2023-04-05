@@ -5,7 +5,7 @@ import { type Component } from "./core.js";
  */
 export interface DispatchEventOptions {
   /**
-   * Option indicating whether the event bubbles. The default is `false`.
+   * Option indicating whether the event bubbles. The default is `true`.
    */
   bubbles?: boolean;
   /**

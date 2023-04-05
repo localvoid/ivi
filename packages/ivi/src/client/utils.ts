@@ -8,7 +8,7 @@ import {
  */
 export interface DispatchEventOptions {
   /**
-   * Option indicating whether the event bubbles. The default is `false`.
+   * Option indicating whether the event bubbles. The default is `true`.
    */
   bubbles?: boolean;
   /**
@@ -48,10 +48,15 @@ export const eventDispatcher = <T>(
   eventType: string,
   options?: DispatchEventOptions,
 ): EventDispatcher => (component: Component, detail?: T) => (
-  findDOMNode(component)!.dispatchEvent(new _CustomEvent(eventType, {
-    ...options,
-    detail,
-  }))
+  findDOMNode(component)!.dispatchEvent(
+    new _CustomEvent(eventType,
+      {
+        bubbles: true,
+        detail,
+        ...options,
+      },
+    ),
+  )
 );
 
 const _CustomEvent = CustomEvent;
