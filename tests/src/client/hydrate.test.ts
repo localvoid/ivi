@@ -186,6 +186,81 @@ describe("hydrate", () => {
     );
   });
 
+  test(`5`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${a}
+        <b/>
+        ${b}
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="1">1<a></a>2</div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "1"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 1`,
+        `[3] Node.lastChild => 6`,
+        `[6] Node.nodeType => 3`,
+        `[5] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`6`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${htm`
+          ${a}
+          <a/>
+          ${b}
+          <b/>
+        `
+        }
+      </div>
+      `
+    );
+
+    document.body.innerHTML = `<div>1<a></a>2<b></b></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.lastChild => 7`,
+        `[7] Node.previousSibling => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 5`,
+        `[5] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
   test(`element directive`, () => {
     document.body.innerHTML = `<div></div>`;
     const root = createRoot();
@@ -205,6 +280,72 @@ describe("hydrate", () => {
       }),
       [
         "[1] Node.lastChild => 3",
+      ]
+    );
+  });
+
+  test(`input #1`, () => {
+    document.body.innerHTML = `<input value="abc">`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.hydrate(
+          htm`<input *value=${"abc"} />`,
+        );
+      }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Element.getProperty("value") => "abc"`,
+      ]
+    );
+  });
+
+  test(`input #2`, () => {
+    document.body.innerHTML = `<input value="abc">`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.hydrate(
+          htm`<input *value=${"def"} />`,
+        );
+      }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Element.getProperty("value") => "abc"`,
+        `[3] Element.setProperty("value", "def")`,
+      ]
+    );
+  });
+
+  test(`textarea #1`, () => {
+    document.body.innerHTML = `<textarea>abc</textarea>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.hydrate(
+          htm`<textarea *value=${"abc"} />`,
+        );
+      }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Element.getProperty("value") => "abc"`,
+      ]
+    );
+  });
+
+  test(`textarea #2`, () => {
+    document.body.innerHTML = `<textarea>abc</textarea>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.hydrate(
+          htm`<textarea *value=${"def"} />`,
+        );
+      }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Element.getProperty("value") => "abc"`,
+        `[3] Element.setProperty("value", "def")`,
       ]
     );
   });

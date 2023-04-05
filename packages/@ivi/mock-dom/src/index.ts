@@ -289,14 +289,18 @@ export class Element extends Node {
     this._properties.set(key, value);
   }
 
-  getProperty(key: string | symbol) {
+  getProperty(key: string) {
     const v = this._getProperty(key);
     this._trace(`Element.getProperty("${key.toString()}") => ${JSON.stringify(v)}`);
     return v;
   }
 
-  _getProperty(key: string | symbol): any {
-    return this._properties.get(key);
+  _getProperty(key: string): any {
+    const prop = this._properties.get(key);
+    if (prop !== void 0) {
+      return prop;
+    }
+    return this._attributes.get(key);
   }
 
   removeAttribute(key: string) {
@@ -366,7 +370,7 @@ const ELEMENT_PROXY_HANDLER: ProxyHandler<Element> = {
     if (p in target) {
       return (target as any)[p];
     }
-    return target.getProperty(p) ?? void 0;
+    return target.getProperty(p as string) ?? void 0;
   },
   set(target, p, newValue) {
     if (p in target) {
@@ -851,7 +855,19 @@ function parseElement(ctx: HTMLParserContext, namespaceURI: string): Element {
     throw new Error(`Invalid HTML [${ctx.i}]: expected a '>' character\n${ctx.s}`);
   }
   if (!VOID_ELEMENTS.test(tagName)) {
-    parseChildren(ctx, element, namespaceURI);
+    if (tagName === "textarea") {
+      let start = ctx.i;
+      while (ctx.i < ctx.s.length) {
+        const c = ctx.s.charCodeAt(ctx.i);
+        if (c === CharCode.LessThan) {
+          break;
+        }
+        ctx.i++;
+      }
+      element._setProperty("value", ctx.s.substring(start, ctx.i));
+    } else {
+      parseChildren(ctx, element, namespaceURI);
+    }
     if (!parseCharCode(ctx, CharCode.LessThan)) {
       throw new Error(`Invalid HTML [${ctx.i}]: expected a '<' character\n${ctx.s}`);
     }

@@ -1940,13 +1940,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
             let currentElement = currentDOMNode as Element;
             for (let i = 0; i < propOpCodes.length; i++) {
               const op = propOpCodes[i];
-              const type = op & (
-                PropOpCode.SetNode |
-                PropOpCode.Directive |
-                PropOpCode.Property |
-                PropOpCode.DiffDOMProperty |
-                PropOpCode.Event
-              );
+              const type = op & PropOpCode.TypeMask;
               const dataIndex = op >> PropOpCode.DataShift;
               // TODO: optimize (skip attributes)
               if (type === PropOpCode.SetNode) {
