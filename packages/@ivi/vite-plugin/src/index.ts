@@ -8,6 +8,8 @@ import iviServer from "@ivi/babel-plugin/server";
 export interface IviOptions {
   include?: FilterPattern | undefined;
   exclude?: FilterPattern | undefined;
+  dedupeOpCodes?: false | "chunk" | "bundle";
+  dedupePropData?: false | "chunk" | "bundle";
 }
 
 export function ivi(options?: IviOptions): Plugin[] {
@@ -15,24 +17,27 @@ export function ivi(options?: IviOptions): Plugin[] {
     options?.include ?? /\.(m?js|m?ts)$/,
     options?.exclude,
   );
+  const dedupeOpCodes = options?.dedupeOpCodes ?? "chunk";
+  const dedupePropData = options?.dedupePropData ?? "bundle";
+  const sharedPropData = new Set<string>();
 
   let lazyPreload = true;
   let iviLang: typeof import("@ivi/tpl/parser") | undefined;
   let htmLang: typeof import("@ivi/htm/parser") | undefined;
+  let sortedSharedPropData: Map<string, number> | undefined;
 
   return [
     {
       name: "ivi",
 
       async buildStart() {
+        sortedSharedPropData = void 0;
         if (lazyPreload) {
-          const _iviLang = import("@ivi/tpl/parser");
-          const _htmLang = import("@ivi/htm/parser");
           try {
-            iviLang = await _iviLang;
+            iviLang = await import("@ivi/tpl/parser");
           } catch (err) { }
           try {
-            htmLang = await _htmLang;
+            htmLang = await import("@ivi/htm/parser");
           } catch (err) { }
           if (iviLang === void 0 && htmLang === void 0) {
             this.warn("Unable to find template language parser.");
@@ -54,7 +59,12 @@ export function ivi(options?: IviOptions): Plugin[] {
 
         const babelPlugin = options?.ssr
           ? iviServer({ templateLanguages })
-          : iviClient({ templateLanguages });
+          : iviClient({
+            templateLanguages,
+            dedupeOpCodes,
+            dedupePropData,
+            sharedPropData,
+          });
         const result = await transformAsync(code, {
           configFile: false,
           babelrc: false,
@@ -71,12 +81,23 @@ export function ivi(options?: IviOptions): Plugin[] {
       },
 
       async renderChunk(code, chunk) {
+        if (dedupePropData === "bundle" && sortedSharedPropData === void 0) {
+          const _data = Array.from(sharedPropData);
+          _data.sort();
+          sortedSharedPropData = new Map();
+          for (let i = 0; i < _data.length; i++) {
+            sortedSharedPropData.set(_data[i], i);
+          }
+        }
         const result = await transformAsync(code, {
           configFile: false,
           babelrc: false,
           browserslistConfigFile: false,
           filename: chunk.fileName,
-          plugins: [iviClientOptimizer],
+          plugins: [iviClientOptimizer({
+            dedupePropData,
+            sharedPropData: sortedSharedPropData,
+          })],
           sourceMaps: true,
           sourceType: "module",
         });

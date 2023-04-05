@@ -7,6 +7,8 @@ import iviClientOptimizer from "@ivi/babel-plugin/client-optimizer";
 export interface IviOptions {
   include?: FilterPattern | undefined;
   exclude?: FilterPattern | undefined;
+  dedupeOpCodes?: false | "chunk" | "bundle";
+  dedupePropData?: false | "chunk" | "bundle";
 }
 
 export function ivi(options?: IviOptions): Plugin {
@@ -14,6 +16,10 @@ export function ivi(options?: IviOptions): Plugin {
     options?.include ?? /\.(m?js|m?ts)$/,
     options?.exclude,
   );
+  const dedupeOpCodes = options?.dedupeOpCodes ?? "chunk";
+  const dedupePropData = options?.dedupePropData ?? "bundle";
+  const sharedPropData = new Set<string>();
+  let sortedSharedPropData: Map<string, number> | undefined;
 
   let lazyPreload = true;
   let iviLang: typeof import("@ivi/tpl/parser") | undefined;
@@ -57,6 +63,9 @@ export function ivi(options?: IviOptions): Plugin {
         filename: id,
         plugins: [iviClient({
           templateLanguages,
+          dedupeOpCodes,
+          dedupePropData,
+          sharedPropData,
         })],
         sourceMaps: true,
         sourceType: "module",
@@ -68,12 +77,23 @@ export function ivi(options?: IviOptions): Plugin {
     },
 
     async renderChunk(code, chunk) {
+      if (dedupePropData === "bundle" && sortedSharedPropData === void 0) {
+        const _data = Array.from(sharedPropData);
+        _data.sort();
+        sortedSharedPropData = new Map();
+        for (let i = 0; i < _data.length; i++) {
+          sortedSharedPropData.set(_data[i], i);
+        }
+      }
       const result = await transformAsync(code, {
         configFile: false,
         babelrc: false,
         browserslistConfigFile: false,
         filename: chunk.fileName,
-        plugins: [iviClientOptimizer],
+        plugins: [iviClientOptimizer({
+          dedupePropData,
+          sharedPropData: sortedSharedPropData,
+        })],
         sourceMaps: true,
         sourceType: "module",
       });

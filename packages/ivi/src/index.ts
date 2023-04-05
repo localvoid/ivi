@@ -6,7 +6,7 @@ export {
   type VAny, type VRoot, type VTemplate, type VComponent, type VList,
   // Template
   type TemplateDescriptor, type ElementDirective,
-  _h, _hN, _hE, _s, _sN, _sE, _T, _t,
+  _h, _hN, _hE, _s, _sN, _sE, _T, _Td, _t,
   // Components
   type ComponentFactory, type Effect,
   component, getProps, invalidate,

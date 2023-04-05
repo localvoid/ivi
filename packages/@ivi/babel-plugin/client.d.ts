@@ -14,7 +14,10 @@ export interface TemplateLanguage {
 
 export interface PluginConfig {
   readonly templateLanguages?: TemplateLanguage[];
+  readonly dedupeOpCodes?: false | "chunk" | "bundle";
+  readonly dedupePropData?: false | "chunk" | "bundle";
+  readonly sharedPropData?: Set<string>;
 }
 
-declare const client: (config: PluginConfig) => babel.PluginObj;
+declare const client: (config?: PluginConfig) => babel.PluginObj;
 export default client;

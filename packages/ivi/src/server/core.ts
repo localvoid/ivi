@@ -377,6 +377,9 @@ export const _sE = () => {
 export const _T = () => {
   throw Error("_T function isn't available during Server-Side Rendering.");
 };
+export const _Td = () => {
+  throw Error("_Td function isn't available during Server-Side Rendering.");
+};
 export const _t = () => {
   throw Error("_t function isn't available during Server-Side Rendering.");
 };

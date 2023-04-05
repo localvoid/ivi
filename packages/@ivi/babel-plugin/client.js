@@ -8,6 +8,9 @@ const client = (config) => declare((api) => {
   const t = api.types;
 
   const templateLanguages = config?.templateLanguages ?? [];
+  const dedupeOpCodes = config?.dedupeOpCodes ?? false;
+  const dedupePropData = config?.dedupePropData ?? false;
+  const sharedPropData = config?.sharedPropData;
 
   const getStaticValue = (s) => s.value.cooked;
   const pure = (n) => t.addComment(n, "leading", "@__PURE__");
@@ -76,11 +79,34 @@ const client = (config) => declare((api) => {
       );
     }
 
+    if (dedupePropData === "bundle") {
+      const data = root.data;
+      for (let i = 0; i < data.length; i++) {
+        sharedPropData.add(data[i]);
+      }
+      return t.variableDeclaration("const", [
+        t.variableDeclarator(
+          id,
+          t.addComment(
+            t.callExpression(importSymbol("ivi", "_T"), [
+              factory,
+              t.numericLiteral(root.flags),
+              t.arrayExpression(root.props.map(toNumeric)),
+              t.arrayExpression(root.child.map(toNumeric)),
+              t.arrayExpression(root.state.map(toNumeric)),
+            ]),
+            "leading",
+            `@__PURE__ @__IVI_TPL__(${data.join(",")})`,
+          )
+        ),
+      ]);
+    }
+
     return t.variableDeclaration("const", [
       t.variableDeclarator(
         id,
         t.addComment(
-          t.callExpression(importSymbol("ivi", "_T"), [
+          t.callExpression(importSymbol("ivi", "_Td"), [
             factory,
             t.numericLiteral(root.flags),
             t.arrayExpression(root.props.map(toNumeric)),
@@ -89,7 +115,7 @@ const client = (config) => declare((api) => {
             t.arrayExpression(root.data.map(toString)),
           ]),
           "leading",
-          "@__PURE__ @__IVI_TPL__"
+          "@__PURE__ @__IVI_TPL__",
         )
       ),
     ]);

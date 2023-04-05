@@ -43,7 +43,7 @@ and doesn't generate any additional code for hydration.
 - [Astro+ivi HackerNews Client (SSR + Partial Hydration)](https://github.com/localvoid/astro-ivi-hackernews) &middot; [Live Demo](https://astro-ivi-hackernews.netlify.app/)
 - [ivi REPL](https://github.com/localvoid/ivi-repl) &middot; [Live Demo](https://localvoid.github.io/ivi-repl/)
 - [TodoMVC (HTML templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
-- [TodoMVC (ivi templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc-htm)
+- [TodoMVC (ivi templates)](https://github.com/localvoid/ivi-examples/tree/master/apps/todomvc)
 - [Examples from the https://react.dev/learn rewritten with ivi API](https://github.com/localvoid/ivi/blob/master/docs/misc/migrating-from-react.md)
 
 ## Table of Contents
@@ -1021,14 +1021,8 @@ function TemplateUniqueIdentity(condition, text) {
 }
 ```
 
-In this example, when `condition` is changed, update algorithm will replace
-entire div element with a new one, instead of updating just text node.
-
-It is designed this way so that even with precompilation it will have the same
-behavior as runtime compiler. It is quite easy to figure out during
-precompilation that two templates have similar shapes, but the major downside
-is that we will need to switch to whole program deduplication and it is going
-to have an impact on the chunking algorithm.
+In th example above, when `condition` is changed, instead of updating text node,
+update algorithm will replace entire div element with a new one.
 
 ### Forcing Component Updates
 
@@ -1385,15 +1379,12 @@ const a = (id) => _t(_tpl_a, [id]);
 const b = (id) => _t(_tpl_b, [id]);
 ```
 
-Quite often, OpCodes that are used for different purposes (prop,child,state)
+Quite often, OpCodes that are used for different purposes (props,child,state)
 are going to have similar values, so when OpCodes are deduplicated they are
 treated as simple arrays with integers that can be used for different purposes.
 
 Shared data `SHARED_DATA` is deduplicated into one array that is shared between
 all templates.
-
-Data structures are deduplicated only in the same chunk scope to avoid
-generating a lot of small chunks.
 
 ### Custom Scheduler
 

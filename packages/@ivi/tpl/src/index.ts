@@ -5,7 +5,7 @@ import { ITemplateType } from "ivi/template/ir";
 import { TemplateParserError, formatError } from "ivi/template/parser";
 import {
   type TemplateDescriptor, type VAny,
-  _h, _hN, _hE, _s, _sN, _sE, _T, _t,
+  _h, _hN, _hE, _s, _sN, _sE, _Td, _t,
 } from "ivi";
 import { parseTemplate } from "./parser.js";
 
@@ -146,7 +146,7 @@ const prepareRootNode = (root: TemplateNode,
       const template = root.template;
       return {
         map: root.exprs,
-        descriptor: _T(
+        descriptor: _Td(
           (typeof template === "string")
             ? createElement(template)
             : cloneTemplate(template.join("")),
