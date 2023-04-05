@@ -37,7 +37,7 @@ update(
 
 The size of the precompiled example above is just 2.7KB. It includes entire
 runtime for declarative UI rendering. Precompiled templates are
-[optimized](#template-optimizations) for code size and cold-start performance
+[optimized](#template-optimizations) for code size, cold-start performance
 and doesn't generate any additional code for hydration.
 
 - [Astro+ivi HackerNews Client (SSR + Partial Hydration)](https://github.com/localvoid/astro-ivi-hackernews) &middot; [Live Demo](https://astro-ivi-hackernews.netlify.app/)
@@ -103,6 +103,8 @@ and doesn't generate any additional code for hydration.
     - [`shallowEq(a, b)`](#shalloweq)
     - [`shallowEqArray(a, b)`](#shalloweqarray)
 - [CheatSheet](#cheatsheet)
+  - [Passive Event Listener](#passive-event-listener)
+  - [Dynamic Argument Name](#dynamic-argument-name)
   - [Stateless Components with `areEqual` hook](#stateless-components-with-areequal-hook)
   - [Integrating External/Imperative Libraries](#integrating-externalimperative-libraries)
 - [Advanced](#advanced)
@@ -196,7 +198,7 @@ All compilation complexity is abstracted away in `"ivi/template/..."` modules.
 
 `"@ivi/htm"` package provides [HTML Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/htm/README.md).
 
-It is a simple HTML-like language with dynamic expressions.
+It is an HTML-like language with dynamic expressions.
 
 ```js
 import { htm } from "@ivi/htm";
@@ -246,8 +248,6 @@ const Example = component((c) => {
 ```
 
 #### Arrays
-
-Javascript arrays can be used for composing UI nodes:
 
 ```js
 const ArraysInsideTemplates = () => htm`
@@ -614,6 +614,8 @@ function getProps = <P>(component: Component<P>): P;
 function invalidate(c: Component): void;
 ```
 
+`invalidate` invalidates component and schedules an update.
+
 > *SSR: Throws an exception.*
 
 #### **`useUnmount()`**
@@ -776,7 +778,7 @@ function context = <T>(): [
 ```ts
 interface DispatchEventOptions {
   // Option indicating whether the event bubbles. The default
-  // is `false`.
+  // is `true`.
   bubbles?: boolean;
   // Option indicating whether the event can be cancelled. The
   // default is `false`.
@@ -885,6 +887,48 @@ function shallowEqArray<T>(a: T[], b: T[]): boolean;
 strict equality operator to check individual values for equality.
 
 ## CheatSheet
+
+### Passive Event Listener
+
+```js
+const Example = component(() => {
+  const _onTouchDown = (ev) => {};
+  const onTouchDown = (element) => {
+    element.addEventListener("touchdown", _onTouchDown, { passive: true });
+  };
+
+  return () => htm`
+    <div ${onTouchDown}></div>
+  `;
+});
+```
+
+### Dynamic Argument Name
+
+```js
+const useDynamicArg = () => {
+  let prevKey;
+  let prevValue;
+  return (key, value) => (element) => {
+    if (prevKey !== key) {
+      if (prevKey) {
+        element.removeAttribute(prevKey);
+      }
+      element.setAttribute(key, value);
+    } else if (prevValue !== value) {
+      element.setAttribute(key, value);
+    }
+  };
+};
+
+const Example = component(() => {
+  const arg = useDynamicArg();
+
+  return ([key, value]) => htm`
+    <div ${arg(key, value)}></div>
+  `;
+});
+```
 
 ### Stateless Components with `areEqual` hook
 
