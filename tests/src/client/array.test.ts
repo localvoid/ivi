@@ -408,7 +408,7 @@ describe("arrays", () => {
       }),
       [
         `createTextNode("b") => 4`,
-        `[1] Node.insertBefore(4, null)`,
+        `[1] Node.insertBefore(4, 2)`,
       ],
     );
   });

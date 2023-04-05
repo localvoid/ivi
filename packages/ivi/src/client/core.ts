@@ -556,20 +556,22 @@ const _update = (
   // because their stateless nodes are represented with basic string and array
   // types.
   if (type === Flags.Text) {
+    const ctx = RENDER_CONTEXT;
     if (typeof next !== "object") {
       if (prev !== next) {
         (state as Text).nodeValue = next as string;
       }
       if (updateFlags & Flags.DisplaceNode) {
         nodeInsertBefore!.call(
-          RENDER_CONTEXT.p,
+          ctx.p,
           (state as Text),
-          RENDER_CONTEXT.n,
+          ctx.n,
         );
       }
+      ctx.n = state;
       return sNode;
     }
-    nodeRemoveChild!.call(RENDER_CONTEXT.p, (state as Text));
+    nodeRemoveChild!.call(ctx.p, (state as Text));
     return _mount(parentSNode, next)!;
   }
 
