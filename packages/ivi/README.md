@@ -1070,10 +1070,11 @@ By default, template cloning is enabled for all templates. But sometimes it
 would be wasteful to create a template for cloning and instantiate from it when
 this template is rendered just once on the page.
 
-To disable cloning, template should have a leading comment `/*-c*/`. E.g.
+To disable cloning, template should have a leading comment `/* preventClone */`.
+E.g.
 
 ```js
-const Example = () => /*-c*/htm`
+const Example = () => /* preventClone */htm`
   <div class="Title">${text}</div>
 `;
 ```
@@ -1093,7 +1094,7 @@ Rendering and partial hydration, static template part is generated on the
 server and client just needs OpCodes to perform dynamic updates.
 
 To reduce code size that is transfered to the client in such scenarios, it is
-possible to disable static template generation with `/*ssr*/` comment.
+possible to disable static template generation with `/* ssr */` comment.
 
 ```js
 export default component((c) => {
@@ -1104,7 +1105,7 @@ export default component((c) => {
   };
 
   return ({ children }) => {
-    return /*ssr*/ htm`
+    return /* ssr */ htm`
     <div class="toggle" class=${_open ? "toggle open" : "toggle"}>
       <a @click=${onClick}>
         ${_open ? "[-]" : "[+] comments collapsed"}

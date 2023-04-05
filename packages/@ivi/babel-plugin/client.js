@@ -235,7 +235,7 @@ const client = (config) => declare((api) => {
               if (leadingComments) {
                 for (const comment of leadingComments) {
                   const value = comment.value.trim();
-                  if (value === "-c") {
+                  if (value === "preventClone") {
                     clone = false;
                   } else if (value === "ssr") {
                     ssrOnly = true;
