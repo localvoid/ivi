@@ -2,7 +2,8 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { List } from "ivi";
+import { List, component } from "ivi";
+import { htm } from "@ivi/htm";
 
 const r = (i: number) => i;
 
@@ -877,6 +878,136 @@ describe("List", () => {
       trace(() => {
         root.update(
           List([1, 0], r, r),
+        );
+      }),
+      [
+        `[1] Node.insertBefore(2, 3)`,
+      ],
+    );
+  });
+
+  test(`[0, 1, 2, 3] => [3, 2, 1, 0]`, () => {
+    const root = createRoot();
+    root.update(
+      List([0, 1, 2, 3], r, r),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([3, 2, 1, 0], r, r),
+        );
+      }),
+      [
+        `[1] Node.insertBefore(4, 5)`,
+        `[1] Node.insertBefore(3, 4)`,
+        `[1] Node.insertBefore(2, 3)`,
+      ],
+    );
+  });
+
+  test(`[0, 1, 2, 3] => [0, 2, 3, 1]`, () => {
+    const root = createRoot();
+    root.update(
+      List([0, 1, 2, 3], r, r),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([0, 2, 3, 1], r, r),
+        );
+      }),
+      [
+        `[1] Node.insertBefore(4, null)`,
+      ],
+    );
+  });
+
+  test(`[0, 1] => [2, 1, 0]`, () => {
+    const root = createRoot();
+    root.update(
+      List([0, 1], r, r),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([2, 1, 0], r, r),
+        );
+      }),
+      [
+        `[1] Node.insertBefore(2, 3)`,
+        `createTextNode(2) => 4`,
+        `[1] Node.insertBefore(4, 2)`,
+      ],
+    );
+  });
+
+  test(`[0, 1] => [3, 1, 2, 0]`, () => {
+    const root = createRoot();
+    root.update(
+      List([0, 1], r, r),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([3, 1, 2, 0], r, r),
+        );
+      }),
+      [
+        `createTextNode(2) => 4`,
+        `[1] Node.insertBefore(4, 3)`,
+        `[1] Node.insertBefore(2, 4)`,
+        `createTextNode(3) => 5`,
+        `[1] Node.insertBefore(5, 2)`,
+      ],
+    );
+  });
+
+  test(`elements: [0, 1] => [1, 0]`, () => {
+    const root = createRoot();
+    const div = htm`<div/>`;
+    root.update(
+      List([0, 1], r, () => div),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([1, 0], r, () => div),
+        );
+      }),
+      [
+        `[1] Node.insertBefore(2, 3)`,
+      ],
+    );
+  });
+
+  test(`components: [0, 1] => [1, 0]`, () => {
+    const root = createRoot();
+    const C = component<number>(() => (i) => i);
+    root.update(
+      List([0, 1], r, C),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([1, 0], r, C),
+        );
+      }),
+      [
+        `[1] Node.insertBefore(2, 3)`,
+      ],
+    );
+  });
+
+  test(`components (preventUpdates): [0, 1] => [1, 0]`, () => {
+    const root = createRoot();
+    const C = component<number>(() => (i) => i, () => true);
+    root.update(
+      List([0, 1], r, C),
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          List([1, 0], r, C),
         );
       }),
       [
