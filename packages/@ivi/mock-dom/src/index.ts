@@ -256,9 +256,9 @@ export class Element extends Node {
     return r;
   }
 
-  set className(v: string) {
-    this._trace(`Element.className = "${v}"`);
-    this._setAttribute("class", v);
+  set className(value: string) {
+    this._trace(`Element.className = ${JSON.stringify(value)}`);
+    this._setAttribute("class", value);
   }
 
   setAttribute(key: string, value: string) {

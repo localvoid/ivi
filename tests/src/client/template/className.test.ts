@@ -6,6 +6,7 @@ import { htm } from "@ivi/htm";
 
 describe("@ivi/htm className", () => {
   beforeEach(reset);
+  const T = (v: undefined | null | false | string | number) => htm`<div class=${v} />`;
 
   test(`"a"`, () => {
     const root = createRoot();
@@ -36,7 +37,7 @@ describe("@ivi/htm className", () => {
   test(`{undefined}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class=${void 0} />`); }),
+      trace(() => { root.update(T(void 0)); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -47,7 +48,7 @@ describe("@ivi/htm className", () => {
   test(`{null}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class=${null} />`); }),
+      trace(() => { root.update(T(null)); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -58,7 +59,7 @@ describe("@ivi/htm className", () => {
   test(`{false}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class=${false} />`); }),
+      trace(() => { root.update(T(false)); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -69,7 +70,7 @@ describe("@ivi/htm className", () => {
   test(`{""}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class=${""} />`); }),
+      trace(() => { root.update(T("")); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -80,10 +81,10 @@ describe("@ivi/htm className", () => {
   test(`{0}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class=${0} />`); }),
+      trace(() => { root.update(T(0)); }),
       [
         `createElement("div") => 2`,
-        `[2] Element.className = "0"`,
+        `[2] Element.className = 0`,
         `[1] Node.insertBefore(2, null)`,
       ],
     );
@@ -92,9 +93,7 @@ describe("@ivi/htm className", () => {
   test(`{"a b"}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`<div class=${"a b"} />`);
-      }),
+      trace(() => { root.update(T("a b")); }),
       [
         `createElement("div") => 2`,
         `[2] Element.className = "a b"`,
@@ -105,7 +104,6 @@ describe("@ivi/htm className", () => {
 
   test(`empty transitions`, () => {
     const root = createRoot();
-    const T = (v: undefined | null | false | "") => htm`<div class=${v} />`;
     root.update(T(void 0));
     deepStrictEqual(trace(() => { root.update(T(null)); }), []);
     deepStrictEqual(trace(() => { root.update(T(void 0)); }), []);
@@ -125,7 +123,6 @@ describe("@ivi/htm className", () => {
 
   test(`undefined => "a" => undefined`, () => {
     const root = createRoot();
-    const T = (v: undefined | null | false | string) => htm`<div class=${v} />`;
     root.update(T(void 0));
     deepStrictEqual(trace(() => { root.update(T("a")); }),
       [`[2] Element.className = "a"`],
@@ -137,7 +134,6 @@ describe("@ivi/htm className", () => {
 
   test(`null => "a" => null`, () => {
     const root = createRoot();
-    const T = (v: undefined | null | false | string) => htm`<div class=${v} />`;
     root.update(T(null));
     deepStrictEqual(trace(() => { root.update(T("a")); }),
       [`[2] Element.className = "a"`],
@@ -149,7 +145,6 @@ describe("@ivi/htm className", () => {
 
   test(`false => "a" => false`, () => {
     const root = createRoot();
-    const T = (v: undefined | null | false | string) => htm`<div class=${v} />`;
     root.update(T(false));
     deepStrictEqual(trace(() => { root.update(T("a")); }),
       [`[2] Element.className = "a"`],
@@ -161,7 +156,6 @@ describe("@ivi/htm className", () => {
 
   test(`"" => "a" => ""`, () => {
     const root = createRoot();
-    const T = (v: undefined | null | false | string) => htm`<div class=${v} />`;
     root.update(T(""));
     deepStrictEqual(trace(() => { root.update(T("a")); }),
       [`[2] Element.className = "a"`],
@@ -173,7 +167,6 @@ describe("@ivi/htm className", () => {
 
   test(`"a" => "b"`, () => {
     const root = createRoot();
-    const T = (v: undefined | null | false | string) => htm`<div class=${v} />`;
     root.update(T("a"));
     deepStrictEqual(trace(() => { root.update(T("b")); }),
       [`[2] Element.className = "b"`],
@@ -182,7 +175,6 @@ describe("@ivi/htm className", () => {
 
   test(`0 => "0"`, () => {
     const root = createRoot();
-    const T = (v: string | number) => htm`<div class=${v} />`;
     root.update(T(0));
     deepStrictEqual(trace(() => { root.update(T("0")); }),
       [`[2] Element.className = "0"`],

@@ -6,15 +6,12 @@ import { htm } from "@ivi/htm";
 
 describe("@ivi/htm attribute", () => {
   beforeEach(reset);
+  const T = (v: undefined | null | false | string | number) => htm`<div attr=${v} />`;
 
-  test("attr 1", () => {
+  test("short form", () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div attr></div>
-        `);
-      }),
+      trace(() => { root.update(htm`<div attr />`); }),
       [
         `[-7] Template.innerHTML = "<div attr></div>"`,
         `[-6] Node.firstChild => 3`,
@@ -24,33 +21,10 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test("attr 2", () => {
+  test(`"a"`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div
-            attr
-          ></div>
-        `);
-      }),
-      [
-        `[-7] Template.innerHTML = "<div attr></div>"`,
-        `[-6] Node.firstChild => 3`,
-        `[3] Node.cloneNode(true) => 4`,
-        `[1] Node.insertBefore(4, null)`,
-      ],
-    );
-  });
-
-  test(`attr 3`, () => {
-    const root = createRoot();
-    deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div attr="a"></div>
-        `);
-      }),
+      trace(() => { root.update(htm`<div attr="a" />`); }),
       [
         `[-7] Template.innerHTML = "<div attr="a"></div>"`,
         `[-6] Node.firstChild => 3`,
@@ -60,14 +34,10 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test(`<div attr={undefined}></div>`, () => {
+  test(`{undefined}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div attr=${void 0}></div>
-        `);
-      }),
+      trace(() => { root.update(T(void 0)); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -75,14 +45,10 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test(`<div attr={null}></div>`, () => {
+  test(`{null}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div attr=${null}></div>
-        `);
-      }),
+      trace(() => { root.update(T(null)); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -90,14 +56,10 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test(`<div attr={false}></div>`, () => {
+  test(`{false}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div attr=${false}></div>
-        `);
-      }),
+      trace(() => { root.update(T(false)); }),
       [
         `createElement("div") => 2`,
         `[1] Node.insertBefore(2, null)`,
@@ -105,14 +67,34 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test(`<div attr={"a"}></div>`, () => {
+  test(`{""}`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div attr=${"a"}></div>
-        `);
-      }),
+      trace(() => { root.update(T("")); }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.setAttribute("attr", "")`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+  });
+
+  test(`{0}`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.update(T(0)); }),
+      [
+        `createElement("div") => 2`,
+        `[2] Element.setAttribute("attr", 0)`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+  });
+
+  test(`{"a"}`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.update(T("a")); }),
       [
         `createElement("div") => 2`,
         `[2] Element.setAttribute("attr", "a")`,
@@ -121,119 +103,75 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test(`attr: undefined => "1"`, () => {
-    const test = (s: string | undefined) => htm`
-        <div a=${s}></div>
-      `;
+  test(`empty transitions`, () => {
     const root = createRoot();
-    deepStrictEqual(
-      trace(() => {
-        root.update(test(void 0));
-      }),
-      [
-        `createElement("div") => 2`,
-        `[1] Node.insertBefore(2, null)`,
-      ],
-    );
+    root.update(T(void 0));
+    deepStrictEqual(trace(() => { root.update(T(null)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(false)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(null)); }), []);
 
-    deepStrictEqual(
-      trace(() => {
-        root.update(test("1"));
-      }),
-      [
-        `[2] Element.setAttribute("a", "1")`,
-      ],
+    deepStrictEqual(trace(() => { root.update(T(false)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(null)); }), []);
+
+    deepStrictEqual(trace(() => { root.update(T(false)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }), []);
+  });
+
+  test(`undefined => "a" => undefined`, () => {
+    const root = createRoot();
+    root.update(T(void 0));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Element.setAttribute("attr", "a")`],
+    );
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }),
+      [`[2] Element.removeAttribute("attr")`],
     );
   });
 
-  test(`attr: false => "1"`, () => {
-    const test = (s: string | false) => htm`
-        <div a=${s}></div>
-      `;
+  test(`null => "a" => null`, () => {
     const root = createRoot();
-    deepStrictEqual(
-      trace(() => {
-        root.update(test(false));
-      }),
-      [
-        `createElement("div") => 2`,
-        `[1] Node.insertBefore(2, null)`,
-      ],
+    root.update(T(null));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Element.setAttribute("attr", "a")`],
     );
-
-    deepStrictEqual(
-      trace(() => {
-        root.update(test("1"));
-      }),
-      [
-        `[2] Element.setAttribute("a", "1")`,
-      ],
+    deepStrictEqual(trace(() => { root.update(T(null)); }),
+      [`[2] Element.removeAttribute("attr")`],
     );
   });
 
-  test(`attr: null => "1"`, () => {
-    const test = (s: string | null) => htm`
-        <div a=${s}></div>
-      `;
+  test(`false => "a" => false`, () => {
     const root = createRoot();
-    deepStrictEqual(
-      trace(() => {
-        root.update(test(null));
-      }),
-      [
-        `createElement("div") => 2`,
-        `[1] Node.insertBefore(2, null)`,
-      ],
+    root.update(T(null));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Element.setAttribute("attr", "a")`],
     );
-
-    deepStrictEqual(
-      trace(() => {
-        root.update(test("1"));
-      }),
-      [
-        `[2] Element.setAttribute("a", "1")`,
-      ],
+    deepStrictEqual(trace(() => { root.update(T(false)); }),
+      [`[2] Element.removeAttribute("attr")`],
     );
   });
 
-  test(`attr: "1" => undefined => false => null => "2`, () => {
-    const test = (s: string | null | undefined | false) => htm`
-        <div a=${s}></div>
-      `;
+  test(`"" => "a"`, () => {
     const root = createRoot();
-    root.update(test("1"));
-    deepStrictEqual(
-      trace(() => {
-        root.update(test(void 0));
-      }),
-      [
-        `[2] Element.removeAttribute("a")`,
-      ],
+    root.update(T(""));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Element.setAttribute("attr", "a")`],
     );
+  });
 
-    deepStrictEqual(
-      trace(() => {
-        root.update(test(false));
-      }),
-      [
-      ],
+  test(`"a" => ""`, () => {
+    const root = createRoot();
+    root.update(T("a"));
+    deepStrictEqual(trace(() => { root.update(T("")); }),
+      [`[2] Element.setAttribute("attr", "")`],
     );
+  });
 
-    deepStrictEqual(
-      trace(() => {
-        root.update(test(null));
-      }),
-      [
-      ],
-    );
-
-    deepStrictEqual(
-      trace(() => {
-        root.update(test("2"));
-      }),
-      [
-        `[2] Element.setAttribute("a", "2")`,
-      ],
+  test(`"a" => "b"`, () => {
+    const root = createRoot();
+    root.update(T("a"));
+    deepStrictEqual(trace(() => { root.update(T("b")); }),
+      [`[2] Element.setAttribute("attr", "b")`],
     );
   });
 });
