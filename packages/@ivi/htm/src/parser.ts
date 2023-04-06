@@ -284,30 +284,29 @@ export class TemplateParser extends TemplateScanner {
 
   parseText(state: number): string {
     const text = this.text;
-    let i = this.i;
     let chars = [];
     while (true) {
       if (this.isEnd()) {
         throw new TemplateParserError("Unexpected end of template", this.e, this.i);
       }
 
-      if (i < text.length) {
-        const c = text.charCodeAt(i);
+      if (this.i < text.length) {
+        const c = text.charCodeAt(this.i);
         if (c === CharCode.LessThan) {
           break;
         }
         if (c === CharCode.Space || c === CharCode.Tab) {
-          i++;
+          this.i++;
           state |= WhitespaceState.Whitespace;
           continue;
         }
         if (c === CharCode.Newline || c === CharCode.CarriageReturn) {
-          i++;
+          this.i++;
           state |= WhitespaceState.ContainsNewline;
           continue;
         }
         if (c === CharCode.VerticalTab) {
-          i++;
+          this.i++;
           state |= WhitespaceState.ContainsVerticalTab;
           continue;
         }
@@ -321,7 +320,7 @@ export class TemplateParser extends TemplateScanner {
         }
         state = WhitespaceState.TextContent;
         chars.push(c);
-        i++;
+        this.i++;
       }
 
       if (this.peekExpr() !== -1) {
@@ -329,7 +328,6 @@ export class TemplateParser extends TemplateScanner {
       }
     }
 
-    this.i = i;
     if (state & WhitespaceState.Whitespace) {
       if (!(state & WhitespaceState.ContainsNewline) || (state & WhitespaceState.ContainsVerticalTab)) {
         chars.push(CharCode.Space);
