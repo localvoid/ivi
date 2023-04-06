@@ -289,7 +289,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
       const value = exprs[prop.i];
-      if (value !== void 0) {
+      if (value != null) {
         if (typeof value === "string") {
           if (value === "") {
             if (!(prop.flags & TFlags.IgnoreEmptyString)) {
@@ -303,7 +303,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
             openElement += prop.prefix;
           }
         } else {
-          openElement += prop.prefix + + '="' + value + '"';
+          openElement += prop.prefix + '="' + value + '"';
         }
       }
     }
@@ -315,8 +315,14 @@ const renderTElement = (exprs: any[], e: TElement) => {
       for (let i = 0; i < dyn.length; i++) {
         const prop = dyn[i];
         const value = exprs[prop.i];
-        if (value !== void 0) {
-          s += prop.prefix + value + ';';
+        if (value != null) {
+          if (typeof value === "string") {
+            if (value !== "") {
+              s += prop.prefix + escapeAttr(value) + ';';
+            }
+          } else if (value !== false) {
+            s += prop.prefix + value + ';';
+          }
         }
       }
     }

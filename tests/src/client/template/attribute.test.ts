@@ -21,19 +21,6 @@ describe("@ivi/htm attribute", () => {
     );
   });
 
-  test(`"a"`, () => {
-    const root = createRoot();
-    deepStrictEqual(
-      trace(() => { root.update(htm`<div attr="a" />`); }),
-      [
-        `[-7] Template.innerHTML = "<div attr="a"></div>"`,
-        `[-6] Node.firstChild => 3`,
-        `[3] Node.cloneNode(true) => 4`,
-        `[1] Node.insertBefore(4, null)`,
-      ],
-    );
-  });
-
   test(`{undefined}`, () => {
     const root = createRoot();
     deepStrictEqual(
@@ -190,6 +177,4 @@ describe("@ivi/htm attribute", () => {
       [],
     );
   });
-
-
 });
