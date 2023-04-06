@@ -438,7 +438,7 @@ describe("@ivi/htm", () => {
       [
         `createElement("div") => 2`,
         `[2] HTMLElement.style`,
-        `[2] style.setProperty(top, "10px")`,
+        `[2] style.setProperty("top", "10px")`,
         `[1] Node.insertBefore(2, null)`,
       ],
     );
@@ -554,7 +554,7 @@ describe("@ivi/htm", () => {
       }),
       [
         `[2] HTMLElement.style`,
-        `[2] style.removeProperty(a)`,
+        `[2] style.removeProperty("a")`,
       ],
     );
   });

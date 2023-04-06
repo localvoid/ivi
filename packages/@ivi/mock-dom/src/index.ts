@@ -607,7 +607,7 @@ export class CSSStyleDeclaration {
   }
 
   setProperty(key: string, value: string) {
-    this._element._trace(`style.setProperty(${key}, "${value}")`);
+    this._element._trace(`style.setProperty("${key}", "${value}")`);
     this._setProperty(key, "" + value);
   }
 
@@ -616,7 +616,7 @@ export class CSSStyleDeclaration {
   }
 
   removeProperty(key: string) {
-    this._element._trace(`style.removeProperty(${key})`);
+    this._element._trace(`style.removeProperty("${key}")`);
     this._removeProperty(key);
   }
 
