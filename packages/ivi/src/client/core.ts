@@ -431,7 +431,9 @@ const _updateTemplateProperties = (
               if (prev != null && prev !== false) {
                 elementRemoveEventListener.call(currentElement, key, prev);
               }
-              elementAddEventListener.call(currentElement, key, next);
+              if (next != null && next !== false) {
+                elementAddEventListener.call(currentElement, key, next);
+              }
             }
           }
         }
