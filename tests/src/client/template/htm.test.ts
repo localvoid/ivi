@@ -541,4 +541,21 @@ describe("@ivi/htm", () => {
       ],
     );
   });
+
+  test(`style: "1" => undefined`, () => {
+    const test = (s: string | undefined) => htm`
+        <div ~a=${s}></div>
+      `;
+    const root = createRoot();
+    root.update(test("1"));
+    deepStrictEqual(
+      trace(() => {
+        root.update(test(void 0));
+      }),
+      [
+        `[2] HTMLElement.style`,
+        `[2] style.removeProperty(a)`,
+      ],
+    );
+  });
 });

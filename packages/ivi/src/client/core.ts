@@ -367,7 +367,16 @@ const _updateTemplateProperties = (
       if (prevProps !== null) {
         prev = prevProps[propsIndex];
       }
-      if (prev !== next || type === PropOpCode.DiffDOMProperty) {
+
+      if (type === PropOpCode.DiffDOMProperty) {
+        const key = data[dataIndex];
+        if (
+          prev === void 0 ||
+          (currentElement as Record<string, any>)[key] !== next
+        ) {
+          (currentElement as Record<string, any>)[key] = next;
+        }
+      } else if (prev !== next) {
         if (type === PropOpCode.Common) {
           if (dataIndex === CommonPropType.ClassName) {
             if (next !== "" || prev !== void 0) {
@@ -399,20 +408,17 @@ const _updateTemplateProperties = (
             }
           } else if (type === PropOpCode.Property) {
             (currentElement as Record<string, any>)[key] = next;
-          } else if (type === PropOpCode.DiffDOMProperty) {
-            if (
-              prev === void 0 ||
-              (currentElement as Record<string, any>)[key] !== next
-            ) {
-              (currentElement as Record<string, any>)[key] = next;
-            }
           } else if (type === PropOpCode.Style) {
             if (style === void 0) {
               style = (svg === false)
                 ? htmlElementGetStyle.call(currentElement as HTMLElement)
                 : svgElementGetStyle.call(currentElement as SVGElement);
             }
-            style!.setProperty(key, next as string);
+            if (next !== void 0) {
+              style!.setProperty(key, next as string);
+            } else {
+              style!.removeProperty(key);
+            }
           } else { // PropOpCode.Event
             if (prev !== void 0) {
               elementRemoveEventListener.call(currentElement, key, prev);
