@@ -95,7 +95,7 @@ export abstract class Node {
   }
 
   set textContent(s: string) {
-    this._trace(`Node.textContent = "${s}"`);
+    this._trace(`Node.textContent = ${JSON.stringify(s)}`);
     this._setTextContent(s);
   }
 

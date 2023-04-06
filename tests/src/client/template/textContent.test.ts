@@ -7,79 +7,143 @@ import { htm } from "@ivi/htm";
 describe("@ivi/htm textContent", () => {
   beforeEach(reset);
 
-  test(`<div .textContent={"a"}></div>`, () => {
+  const T = (v: undefined | null | false | string | number) => htm`<div .textContent=${v} />`;
+
+  test(`undefined`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => {
-        root.update(htm`
-          <div .textContent=${"a"}></div>
-        `);
-      }),
+      trace(() => { root.update(T(void 0)); }),
       [
         `createElement("div") => 2`,
-        `[2] Node.textContent = "a"`,
         `[1] Node.insertBefore(2, null)`,
       ],
     );
   });
 
-  test(`.textContent: null => "a"`, () => {
-    const test = (s: string | null) => htm`
-        <div .textContent=${s}></div>
-      `;
+  test(`null`, () => {
     const root = createRoot();
-    root.update(test(null));
     deepStrictEqual(
-      trace(() => {
-        root.update(test("a"));
-      }),
+      trace(() => { root.update(T(null)); }),
       [
-        `[2] Node.textContent = "a"`,
+        `createElement("div") => 2`,
+        `[1] Node.insertBefore(2, null)`,
       ],
     );
   });
 
-  test(`.textContent: null => ""`, () => {
-    const test = (s: string | null) => htm`
-        <div .textContent=${s}></div>
-      `;
+  test(`false`, () => {
     const root = createRoot();
-    root.update(test(null));
     deepStrictEqual(
-      trace(() => {
-        root.update(test(""));
-      }),
+      trace(() => { root.update(T(false)); }),
       [
+        `createElement("div") => 2`,
+        `[1] Node.insertBefore(2, null)`,
       ],
     );
   });
 
-  test(`.textContent: "" => "a"`, () => {
-    const test = (s: string) => htm`
-        <div .textContent=${s}></div>
-      `;
+  test(`""`, () => {
     const root = createRoot();
-    root.update(test(""));
     deepStrictEqual(
-      trace(() => {
-        root.update(test("a"));
-      }),
+      trace(() => { root.update(T("")); }),
       [
-        `[2] Node.textContent = "a"`,
+        `createElement("div") => 2`,
+        `[1] Node.insertBefore(2, null)`,
       ],
     );
   });
 
-  test(`.textContent: "a" => "b"`, () => {
-    const test = (s: string) => htm`
-        <div .textContent=${s}></div>
-      `;
+  test(`0`, () => {
     const root = createRoot();
-    root.update(test("a"));
     deepStrictEqual(
-      trace(() => {
-        root.update(test("b"));
-      }),
+      trace(() => { root.update(T(0)); }),
+      [
+        `createElement("div") => 2`,
+        `[2] Node.textContent = 0`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+  });
+
+  test(`"0"`, () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.update(T("0")); }),
+      [
+        `createElement("div") => 2`,
+        `[2] Node.textContent = "0"`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+  });
+
+  test(`empty transitions`, () => {
+    const root = createRoot();
+    root.update(T(void 0));
+    deepStrictEqual(trace(() => { root.update(T(null)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(false)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }), []);
+    deepStrictEqual(trace(() => { root.update(T("")); }), []);
+
+    deepStrictEqual(trace(() => { root.update(T(null)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(false)); }), []);
+    deepStrictEqual(trace(() => { root.update(T(null)); }), []);
+    deepStrictEqual(trace(() => { root.update(T("")); }), []);
+
+    deepStrictEqual(trace(() => { root.update(T(false)); }), []);
+    deepStrictEqual(trace(() => { root.update(T("")); }), []);
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }), []);
+  });
+
+  test(`undefined => "a" => undefined`, () => {
+    const root = createRoot();
+    root.update(T(void 0));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Node.textContent = "a"`],
+    );
+    deepStrictEqual(trace(() => { root.update(T(void 0)); }),
+      [`[2] Node.textContent = ""`],
+    );
+  });
+
+  test(`null => "a" => null`, () => {
+    const root = createRoot();
+    root.update(T(null));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Node.textContent = "a"`],
+    );
+    deepStrictEqual(trace(() => { root.update(T(null)); }),
+      [`[2] Node.textContent = ""`],
+    );
+  });
+
+  test(`false => "a" => false`, () => {
+    const root = createRoot();
+    root.update(T(null));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Node.textContent = "a"`],
+    );
+    deepStrictEqual(trace(() => { root.update(T(false)); }),
+      [`[2] Node.textContent = ""`],
+    );
+  });
+
+  test(`"" => "a" => ""`, () => {
+    const root = createRoot();
+    root.update(T(""));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [`[2] Node.textContent = "a"`],
+    );
+    deepStrictEqual(trace(() => { root.update(T("")); }),
+      [`[2] Node.textContent = ""`],
+    );
+  });
+
+  test(`"a" => "b"`, () => {
+    const root = createRoot();
+    root.update(T("a"));
+    deepStrictEqual(trace(() => { root.update(T("b")); }),
       [
         `[2] Node.firstChild => 3`,
         `[3] Node.nodeValue = "b"`,
