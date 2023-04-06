@@ -558,4 +558,57 @@ describe("@ivi/htm", () => {
       ],
     );
   });
+
+  test(`*a: undefined => "1"`, () => {
+    const test = (s: string | undefined) => htm`
+        <div *a=${s}></div>
+      `;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(test(void 0));
+      }),
+      [
+        `createElement("div") => 2`,
+        `[1] Node.insertBefore(2, null)`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => {
+        root.update(test("1"));
+      }),
+      [
+        `[2] Element.getProperty("a") => undefined`,
+        `[2] Element.setProperty("a", "1")`,
+      ],
+    );
+  });
+
+  test(`*a: "1" => undefined => "2`, () => {
+    const test = (s: string | undefined) => htm`
+        <div *a=${s}></div>
+      `;
+    const root = createRoot();
+    root.update(test("1"));
+    deepStrictEqual(
+      trace(() => {
+        root.update(test(void 0));
+      }),
+      [
+        `[2] Element.getProperty("a") => "1"`,
+        `[2] Element.setProperty("a", undefined)`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => {
+        root.update(test("2"));
+      }),
+      [
+        `[2] Element.getProperty("a") => undefined`,
+        `[2] Element.setProperty("a", "2")`,
+      ],
+    );
+  });
 });

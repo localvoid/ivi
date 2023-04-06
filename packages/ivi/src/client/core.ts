@@ -363,67 +363,71 @@ const _updateTemplateProperties = (
     } else {
       const propsIndex = (op >> PropOpCode.InputShift) & PropOpCode.Mask6;
       const next = nextProps[propsIndex];
-      let prev;
-      if (prevProps !== null) {
-        prev = prevProps[propsIndex];
-      }
 
       if (type === PropOpCode.DiffDOMProperty) {
         const key = data[dataIndex];
-        if (
-          prev === void 0 ||
-          (currentElement as Record<string, any>)[key] !== next
-        ) {
+        if (prevProps === null) {
+          if (next !== void 0) {
+            (currentElement as Record<string, any>)[key] = next;
+          }
+        } else if ((currentElement as Record<string, any>)[key] !== next) {
           (currentElement as Record<string, any>)[key] = next;
         }
-      } else if (prev !== next) {
-        if (type === PropOpCode.Common) {
-          if (dataIndex === CommonPropType.ClassName) {
-            if (next !== "" || prev !== void 0) {
-              elementSetClassName.call(currentElement, next);
-            }
-          } else if (dataIndex === CommonPropType.TextContent) {
-            if (prev === void 0) {
-              nodeSetTextContent.call(currentElement, next);
-            } else {
-              const child = nodeGetFirstChild.call(currentElement);
-              if (child !== null) {
-                child.nodeValue = next;
-              } else {
-                nodeSetTextContent.call(currentElement, next);
+      } else {
+        let prev;
+        if (prevProps !== null) {
+          prev = prevProps[propsIndex];
+        }
+
+        if (prev !== next) {
+          if (type === PropOpCode.Common) {
+            if (dataIndex === CommonPropType.ClassName) {
+              if (next !== "" || prev !== void 0) {
+                elementSetClassName.call(currentElement, next);
               }
+            } else if (dataIndex === CommonPropType.TextContent) {
+              if (prev === void 0) {
+                nodeSetTextContent.call(currentElement, next);
+              } else {
+                const child = nodeGetFirstChild.call(currentElement);
+                if (child !== null) {
+                  child.nodeValue = next;
+                } else {
+                  nodeSetTextContent.call(currentElement, next);
+                }
+              }
+            } else { // CommonPropType.InnerHTML
+              elementSetInnerHTML.call(currentElement, next);
             }
-          } else { // CommonPropType.InnerHTML
-            elementSetInnerHTML.call(currentElement, next);
-          }
-        } else if (type === PropOpCode.Directive) {
-          (next as ElementDirective)(currentElement);
-        } else {
-          const key = data[dataIndex];
-          if (type === PropOpCode.Attribute) {
-            if (next !== void 0) {
-              elementSetAttribute.call(currentElement, key, next as string);
-            } else {
-              elementRemoveAttribute.call(currentElement, key);
+          } else if (type === PropOpCode.Directive) {
+            (next as ElementDirective)(currentElement);
+          } else {
+            const key = data[dataIndex];
+            if (type === PropOpCode.Attribute) {
+              if (next !== void 0) {
+                elementSetAttribute.call(currentElement, key, next as string);
+              } else {
+                elementRemoveAttribute.call(currentElement, key);
+              }
+            } else if (type === PropOpCode.Property) {
+              (currentElement as Record<string, any>)[key] = next;
+            } else if (type === PropOpCode.Style) {
+              if (style === void 0) {
+                style = (svg === false)
+                  ? htmlElementGetStyle.call(currentElement as HTMLElement)
+                  : svgElementGetStyle.call(currentElement as SVGElement);
+              }
+              if (next !== void 0) {
+                style!.setProperty(key, next as string);
+              } else {
+                style!.removeProperty(key);
+              }
+            } else { // PropOpCode.Event
+              if (prev !== void 0) {
+                elementRemoveEventListener.call(currentElement, key, prev);
+              }
+              elementAddEventListener.call(currentElement, key, next);
             }
-          } else if (type === PropOpCode.Property) {
-            (currentElement as Record<string, any>)[key] = next;
-          } else if (type === PropOpCode.Style) {
-            if (style === void 0) {
-              style = (svg === false)
-                ? htmlElementGetStyle.call(currentElement as HTMLElement)
-                : svgElementGetStyle.call(currentElement as SVGElement);
-            }
-            if (next !== void 0) {
-              style!.setProperty(key, next as string);
-            } else {
-              style!.removeProperty(key);
-            }
-          } else { // PropOpCode.Event
-            if (prev !== void 0) {
-              elementRemoveEventListener.call(currentElement, key, prev);
-            }
-            elementAddEventListener.call(currentElement, key, next);
           }
         }
       }
