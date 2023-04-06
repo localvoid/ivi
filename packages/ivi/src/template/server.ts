@@ -9,7 +9,6 @@ import {
   type TElement, type TNode, type TProperty, type TStyle,
   TFlags,
 } from "../server/template.js";
-import { escapeText } from "../server/escape.js";
 
 export interface TemplateCompilationArtifact {
   readonly roots: TNode[];
@@ -28,7 +27,7 @@ export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => 
         roots.push(createTElement(exprMap, sNode));
         break;
       case INodeType.Text:
-        roots.push(escapeText(child.value));
+        roots.push(child.value);
         break;
       case INodeType.Expr:
         roots.push(exprMap.get(child.value)!);
@@ -178,7 +177,7 @@ const createTElement = (
             children.push(createTElement(exprMap, child as SNode<INodeElement>));
             break;
           case INodeType.Text:
-            children.push(escapeText(child.node.value));
+            children.push(child.node.value);
             break;
           case INodeType.Expr:
             if (child.flags & SNodeFlags.HasNextDOMNode) {
