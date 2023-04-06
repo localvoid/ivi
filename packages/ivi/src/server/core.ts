@@ -345,12 +345,14 @@ const renderTElement = (exprs: any[], e: TElement) => {
         if (pushOffset) {
           pushOffset = false;
           offsets!.push(offset);
+          offset = 0;
         }
         renderTElement(exprs, child);
       } else if (typeof child === "string") { // Text
         if (pushOffset) {
           pushOffset = false;
           offsets!.push(offset);
+          offset = 0;
         }
         renderText(child);
       } else { // Expr

@@ -10,4 +10,32 @@ describe("ssr: template/element", () => {
       `<div></div>`,
     );
   });
+
+  test(`<div><a/></div>`, () => {
+    strictEqual(
+      renderToString(htm`<div><a/></div>`),
+      `<div><a></a></div>`,
+    );
+  });
+
+  test(`<div><a/><b/></div>`, () => {
+    strictEqual(
+      renderToString(htm`<div><a/><b/></div>`),
+      `<div><a></a><b></b></div>`,
+    );
+  });
+
+  test(`<div>a<a/>b<b/>c</div>`, () => {
+    strictEqual(
+      renderToString(htm`<div>a<a/>b<b/>c</div>`),
+      `<div>a<a></a>b<b></b>c</div>`,
+    );
+  });
+
+  test(`<div><a>a</a></div>`, () => {
+    strictEqual(
+      renderToString(htm`<div><a>a</a></div>`),
+      `<div><a>a</a></div>`,
+    );
+  });
 });

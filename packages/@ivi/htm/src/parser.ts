@@ -285,11 +285,7 @@ export class TemplateParser extends TemplateScanner {
   parseText(state: number): string {
     const text = this.text;
     let chars = [];
-    while (true) {
-      if (this.isEnd()) {
-        throw new TemplateParserError("Unexpected end of template", this.e, this.i);
-      }
-
+    while (!this.isEnd()) {
       if (this.i < text.length) {
         const c = text.charCodeAt(this.i);
         if (c === CharCode.LessThan) {

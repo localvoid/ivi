@@ -59,4 +59,32 @@ describe("ssr: template/text", () => {
       `<div>a<!>b</div>`,
     );
   });
+
+  test(`<div>{"a"}b{"c"}</div>`, () => {
+    strictEqual(
+      renderToString(htm`<div>${"a"}b${"c"}</div>`),
+      `<div &="1">a<!>b<!>c</div>`,
+    );
+  });
+
+  test(`<div>{"a"}b{"c"}d</div>`, () => {
+    strictEqual(
+      renderToString(htm`<div>${"a"}b${"c"}d</div>`),
+      `<div &="1 1">a<!>b<!>c<!>d</div>`,
+    );
+  });
+
+  test(`a`, () => {
+    strictEqual(
+      renderToString(htm`a`),
+      `a`,
+    );
+  });
+
+  test(`a{"b"}c{"d"}`, () => {
+    strictEqual(
+      renderToString(htm`a${"b"}c${"d"}`),
+      `a<!>b<!>c<!>d`,
+    );
+  });
 });

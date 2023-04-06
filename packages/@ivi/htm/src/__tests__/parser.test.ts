@@ -70,6 +70,22 @@ const X = (value: number): INodeExpr => ({
 const preventHoist = () => false;
 
 describe("@ivi/htm/parser", () => {
+  test(`a`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`a`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          T("a"),
+        ],
+      },
+    );
+  });
+
   test(`<a/>`, () => {
     deepStrictEqual(
       parseTemplate(
@@ -133,6 +149,96 @@ describe("@ivi/htm/parser", () => {
           E("a", _, [
             X(0),
           ]),
+        ],
+      },
+    );
+  });
+
+  test(`<a>a{0}</a>`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<a>a`, `</a>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            T("a"), X(0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`<a>{0}b</a>`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<a>`, `b</a>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            X(0), T("b"),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`<a>a{0}b</a>`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`<a>a`, `b</a>`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            T("a"), X(0), T("b"),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`a<a/>b`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`a<a/>b`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          T("a"),
+          E("a"),
+          T("b"),
+        ],
+      },
+    );
+  });
+
+  test(`a{0}b`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`a`, `b`],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          T("a"),
+          X(0),
+          T("b"),
         ],
       },
     );
