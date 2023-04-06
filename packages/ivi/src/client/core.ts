@@ -382,22 +382,27 @@ const _updateTemplateProperties = (
         if (prev !== next) {
           if (type === PropOpCode.Common) {
             if (dataIndex === CommonPropType.ClassName) {
-              if (next !== "" || prev !== void 0) {
+              if (next !== "" && next != null) {
                 elementSetClassName.call(currentElement, next);
+              } else if (prev !== "" && prev != null) {
+                elementSetClassName.call(currentElement, "");
               }
             } else if (dataIndex === CommonPropType.TextContent) {
-              if (prev === void 0) {
-                nodeSetTextContent.call(currentElement, next);
-              } else {
-                const child = nodeGetFirstChild.call(currentElement);
-                if (child !== null) {
-                  child.nodeValue = next;
-                } else {
+              if (next != null && next !== "") {
+                if (prev == null || prev === "") {
                   nodeSetTextContent.call(currentElement, next);
+                } else if (next != null || next !== "") {
+                  nodeGetFirstChild.call(currentElement).nodeValue = next;
                 }
+              } else if (prev != null && prev !== "") {
+                nodeSetTextContent.call(currentElement, "");
               }
             } else { // CommonPropType.InnerHTML
-              elementSetInnerHTML.call(currentElement, next);
+              if (next !== "" && next != null) {
+                elementSetInnerHTML.call(currentElement, next);
+              } else if (prev != null && prev !== "") {
+                nodeSetTextContent.call(currentElement, "");
+              }
             }
           } else if (type === PropOpCode.Directive) {
             (next as ElementDirective)(currentElement);
@@ -417,13 +422,13 @@ const _updateTemplateProperties = (
                   ? htmlElementGetStyle.call(currentElement as HTMLElement)
                   : svgElementGetStyle.call(currentElement as SVGElement);
               }
-              if (next !== void 0) {
+              if (next !== false && next != null) {
                 style!.setProperty(key, next as string);
-              } else {
+              } else if (prev !== false && prev != null) {
                 style!.removeProperty(key);
               }
             } else { // PropOpCode.Event
-              if (prev !== void 0) {
+              if (prev != null && prev !== false) {
                 elementRemoveEventListener.call(currentElement, key, prev);
               }
               elementAddEventListener.call(currentElement, key, next);
@@ -1962,7 +1967,9 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
                 } else {
                   const key = data[dataIndex];
                   if (type === PropOpCode.Event) {
-                    elementAddEventListener.call(currentElement, key, prop);
+                    if (prop != null && prop !== false) {
+                      elementAddEventListener.call(currentElement, key, prop);
+                    }
                   } else { // type === PropOpCode.Property || type === PropOpCode.DiffDOMProperty
                     if ((currentElement as Record<string, any>)[key] !== prop) {
                       (currentElement as Record<string, any>)[key] = prop;

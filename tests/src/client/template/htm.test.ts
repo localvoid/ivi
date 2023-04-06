@@ -553,6 +553,37 @@ describe("@ivi/htm", () => {
     );
   });
 
+  test(`.textContent: null => "a"`, () => {
+    const test = (s: string | null) => htm`
+        <div .textContent=${s}></div>
+      `;
+    const root = createRoot();
+    root.update(test(null));
+    deepStrictEqual(
+      trace(() => {
+        root.update(test("a"));
+      }),
+      [
+        `[2] Node.textContent = "a"`,
+      ],
+    );
+  });
+
+  test(`.textContent: null => ""`, () => {
+    const test = (s: string | null) => htm`
+        <div .textContent=${s}></div>
+      `;
+    const root = createRoot();
+    root.update(test(null));
+    deepStrictEqual(
+      trace(() => {
+        root.update(test(""));
+      }),
+      [
+      ],
+    );
+  });
+
   test(`.textContent: "" => "a"`, () => {
     const test = (s: string) => htm`
         <div .textContent=${s}></div>
@@ -564,7 +595,6 @@ describe("@ivi/htm", () => {
         root.update(test("a"));
       }),
       [
-        `[2] Node.firstChild => null`,
         `[2] Node.textContent = "a"`,
       ],
     );
