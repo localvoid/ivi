@@ -352,8 +352,8 @@ const _updateTemplateProperties = (
   nextProps: any[],
   svg: boolean,
 ) => {
+  let style: CSSStyleDeclaration | undefined;
   for (let i = 0; i < opCodes.length; i++) {
-    let style: CSSStyleDeclaration | undefined;
     const op = opCodes[i];
     const type = op & PropOpCode.TypeMask;
     const dataIndex = op >> PropOpCode.DataShift;
@@ -417,14 +417,19 @@ const _updateTemplateProperties = (
             } else if (type === PropOpCode.Property) {
               (currentElement as Record<string, any>)[key] = next;
             } else if (type === PropOpCode.Style) {
-              if (style === void 0) {
-                style = (svg === false)
-                  ? htmlElementGetStyle.call(currentElement as HTMLElement)
-                  : svgElementGetStyle.call(currentElement as SVGElement);
-              }
               if (next !== false && next != null) {
+                if (style === void 0) {
+                  style = (svg === false)
+                    ? htmlElementGetStyle.call(currentElement as HTMLElement)
+                    : svgElementGetStyle.call(currentElement as SVGElement);
+                }
                 style!.setProperty(key, next as string);
               } else if (prev !== false && prev != null) {
+                if (style === void 0) {
+                  style = (svg === false)
+                    ? htmlElementGetStyle.call(currentElement as HTMLElement)
+                    : svgElementGetStyle.call(currentElement as SVGElement);
+                }
                 style!.removeProperty(key);
               }
             } else { // PropOpCode.Event

@@ -21,9 +21,7 @@ describe("useEffect", () => {
       };
     });
     const root = createRoot();
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "create",
       "render",
@@ -31,29 +29,22 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "render",
       "effect1",
     ]);
     _trace = [];
 
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "render",
       "effect1",
     ]);
     _trace = [];
 
-    root.update(
-      null,
-    );
-    deepStrictEqual(_trace, [
-    ]);
+    root.update(null);
+    deepStrictEqual(_trace, []);
   });
 
   test(`#2`, () => {
@@ -73,9 +64,7 @@ describe("useEffect", () => {
       };
     });
     const root = createRoot();
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "create",
       "render",
@@ -83,9 +72,7 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "render",
       "reset1",
@@ -93,9 +80,7 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "render",
       "reset1",
@@ -103,9 +88,7 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      null,
-    );
+    root.update(null);
     deepStrictEqual(_trace, [
       "reset1",
     ]);
@@ -135,9 +118,7 @@ describe("useEffect", () => {
       };
     });
     const root = createRoot();
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "create",
       "render",
@@ -146,9 +127,7 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "render",
       "reset1",
@@ -158,9 +137,7 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      t(),
-    );
+    root.update(t());
     deepStrictEqual(_trace, [
       "render",
       "reset1",
@@ -170,9 +147,7 @@ describe("useEffect", () => {
     ]);
     _trace = [];
 
-    root.update(
-      null,
-    );
+    root.update(null);
     deepStrictEqual(_trace, [
       "reset1",
       "reset2",

@@ -180,4 +180,12 @@ describe("@ivi/htm className", () => {
       [`[2] Element.className = "0"`],
     );
   });
+
+  test(`"a" => "a"`, () => {
+    const root = createRoot();
+    root.update(T("a"));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [],
+    );
+  });
 });

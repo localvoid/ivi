@@ -174,4 +174,22 @@ describe("@ivi/htm attribute", () => {
       [`[2] Element.setAttribute("attr", "b")`],
     );
   });
+
+  test(`0 => "0"`, () => {
+    const root = createRoot();
+    root.update(T(0));
+    deepStrictEqual(trace(() => { root.update(T("0")); }),
+      [`[2] Element.setAttribute("attr", "0")`],
+    );
+  });
+
+  test(`"a" => "a"`, () => {
+    const root = createRoot();
+    root.update(T("a"));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [],
+    );
+  });
+
+
 });

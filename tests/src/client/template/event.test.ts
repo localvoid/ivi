@@ -132,4 +132,13 @@ describe("@ivi/htm event", () => {
       ],
     );
   });
+
+  test(`onClick => onClick`, () => {
+    const root = createRoot();
+    root.update(T(onClick));
+    deepStrictEqual(
+      trace(() => { root.update(T(onClick)); }),
+      [],
+    );
+  });
 });

@@ -150,4 +150,12 @@ describe("@ivi/htm textContent", () => {
       ],
     );
   });
+
+  test(`"a" => "a"`, () => {
+    const root = createRoot();
+    root.update(T("a"));
+    deepStrictEqual(trace(() => { root.update(T("a")); }),
+      [],
+    );
+  });
 });
