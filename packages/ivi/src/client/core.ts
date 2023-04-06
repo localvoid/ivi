@@ -404,9 +404,9 @@ const _updateTemplateProperties = (
           } else {
             const key = data[dataIndex];
             if (type === PropOpCode.Attribute) {
-              if (next !== void 0) {
+              if (next !== false && next != null) {
                 elementSetAttribute.call(currentElement, key, next as string);
-              } else {
+              } else if (prev !== false && prev != null) {
                 elementRemoveAttribute.call(currentElement, key);
               }
             } else if (type === PropOpCode.Property) {
