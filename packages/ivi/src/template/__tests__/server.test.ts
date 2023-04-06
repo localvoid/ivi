@@ -77,6 +77,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -96,6 +97,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             "a",
           ],
@@ -117,6 +119,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             0,
           ],
@@ -139,6 +142,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             0,
             "a",
@@ -162,6 +166,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             "a",
             0,
@@ -185,12 +190,14 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             {
               flags: 0,
               prefix: `<p`,
               suffix: `</p>`,
               props: null,
+              style: null,
               children: null,
             },
             0,
@@ -216,12 +223,14 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             {
               flags: 0,
               prefix: `<p`,
               suffix: `</p>`,
               props: null,
+              style: null,
               children: [
                 0,
               ],
@@ -249,6 +258,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: [
             0,
             {
@@ -256,6 +266,7 @@ describe("server compiler", () => {
               prefix: `<p`,
               suffix: `</p>`,
               props: null,
+              style: null,
               children: [
                 1,
               ],
@@ -265,7 +276,6 @@ describe("server compiler", () => {
       ], [0, 1]),
     );
   });
-
 
   test(`<div a="1"></div>`, () => {
     deepStrictEqual(
@@ -280,6 +290,7 @@ describe("server compiler", () => {
           prefix: `<div a="1"`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -299,6 +310,7 @@ describe("server compiler", () => {
           prefix: `<div a`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -319,6 +331,7 @@ describe("server compiler", () => {
           prefix: `<div a="1" b="2"`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -338,8 +351,9 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: [
-            { prefix: ` a="`, i: 0 },
+            { prefix: ` a`, flags: 0, i: 0 },
           ],
+          style: null,
           children: null,
         },
       ], [0]),
@@ -360,8 +374,9 @@ describe("server compiler", () => {
           prefix: `<div a="1"`,
           suffix: `</div>`,
           props: [
-            { prefix: ` b="`, i: 0 },
+            { prefix: ` b`, flags: 0, i: 0 },
           ],
+          style: null,
           children: null,
         },
       ], [0]),
@@ -382,8 +397,9 @@ describe("server compiler", () => {
           prefix: `<div b="1"`,
           suffix: `</div>`,
           props: [
-            { prefix: ` a="`, i: 0 },
+            { prefix: ` a`, flags: 0, i: 0 },
           ],
+          style: null,
           children: null,
         },
       ], [0]),
@@ -404,9 +420,10 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: [
-            { prefix: ` a="`, i: 0 },
-            { prefix: `" b="`, i: 1 },
+            { prefix: ` a`, flags: 0, i: 0 },
+            { prefix: ` b`, flags: 0, i: 1 },
           ],
+          style: null,
           children: null,
         },
       ], [0, 1]),
@@ -426,6 +443,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -446,6 +464,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -462,9 +481,10 @@ describe("server compiler", () => {
       r([
         {
           flags: 0,
-          prefix: `<div style="top:10px"`,
+          prefix: `<div style="top:10px;"`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -482,9 +502,10 @@ describe("server compiler", () => {
       r([
         {
           flags: 0,
-          prefix: `<div style="top:10px;left:20px"`,
+          prefix: `<div style="top:10px;left:20px;"`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -503,9 +524,10 @@ describe("server compiler", () => {
       r([
         {
           flags: 0,
-          prefix: `<div style="top:10px;margin:0;left:20px"`,
+          prefix: `<div style="top:10px;margin:0;left:20px;"`,
           suffix: `</div>`,
           props: null,
+          style: null,
           children: null,
         },
       ]),
@@ -525,11 +547,13 @@ describe("server compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: [
-            {
-              prefix: ` style="left:20px;top:`, i: 0,
-            },
-          ],
+          props: null,
+          style: {
+            stat: `left:20px;`,
+            dyn: [
+              { prefix: `top:`, flags: 0, i: 0 },
+            ],
+          },
           children: null,
         },
       ], [0]),
@@ -549,11 +573,13 @@ describe("server compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: [
-            {
-              prefix: ` style="left:20px;top:`, i: 0,
-            },
-          ],
+          props: null,
+          style: {
+            stat: `left:20px;`,
+            dyn: [
+              { prefix: `top:`, flags: 0, i: 0 },
+            ],
+          },
           children: null,
         },
       ], [0]),
@@ -573,14 +599,14 @@ describe("server compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: [
-            {
-              prefix: ` style="left:`, i: 0,
-            },
-            {
-              prefix: `;top:`, i: 1,
-            },
-          ],
+          props: null,
+          style: {
+            stat: "",
+            dyn: [
+              { prefix: `left:`, flags: 0, i: 0 },
+              { prefix: `top:`, flags: 0, i: 1 },
+            ],
+          },
           children: null,
         },
       ], [0, 1]),
@@ -601,11 +627,11 @@ describe("server compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: [
-            {
-              prefix: ` style="margin:0;left:20px;top:`, i: 0,
-            },
-          ],
+          props: null,
+          style: {
+            stat: `margin:0;left:20px;`,
+            dyn: [{ prefix: `top:`, flags: 0, i: 0 }],
+          },
           children: null,
         },
       ], [0]),
@@ -626,11 +652,11 @@ describe("server compiler", () => {
           flags: 0,
           prefix: `<div`,
           suffix: `</div>`,
-          props: [
-            {
-              prefix: ` style="left:20px;margin:0;top:`, i: 0,
-            },
-          ],
+          props: null,
+          style: {
+            stat: `left:20px;margin:0;`,
+            dyn: [{ prefix: `top:`, flags: 0, i: 0 }]
+          },
           children: null,
         },
       ], [0]),
@@ -650,8 +676,9 @@ describe("server compiler", () => {
           prefix: `<input`,
           suffix: ``,
           props: [
-            { prefix: ` value="`, i: 0 },
+            { flags: TFlags.IgnoreEmptyString, prefix: ` value`, i: 0 },
           ],
+          style: null,
           children: null,
         },
       ], [0]),
@@ -671,8 +698,9 @@ describe("server compiler", () => {
           prefix: `<input`,
           suffix: ``,
           props: [
-            { prefix: ` value="`, i: 0 },
+            { flags: TFlags.IgnoreEmptyString, prefix: ` value`, i: 0 },
           ],
+          style: null,
           children: null,
         },
       ], [0]),
@@ -692,8 +720,9 @@ describe("server compiler", () => {
           prefix: `<input`,
           suffix: ``,
           props: [
-            { prefix: ` checked="`, i: 0 },
+            { prefix: ` checked`, flags: 0, i: 0 },
           ],
+          style: null,
           children: null,
         },
       ], [0]),
@@ -713,6 +742,7 @@ describe("server compiler", () => {
           prefix: `<textarea`,
           suffix: `</textarea>`,
           props: null,
+          style: null,
           children: 0,
         },
       ], [0]),
@@ -732,6 +762,49 @@ describe("server compiler", () => {
           prefix: `<textarea`,
           suffix: `</textarea>`,
           props: null,
+          style: null,
+          children: 0,
+        },
+      ], [0]),
+    );
+  });
+
+  test(`<option .selected={0}></textarea>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("option", [
+          prop("selected", 0),
+        ]),
+      ])),
+      r([
+        {
+          flags: 0,
+          prefix: `<option`,
+          suffix: `</option>`,
+          props: [
+            { prefix: ` selected`, flags: 0, i: 0 },
+          ],
+          style: null,
+          children: null,
+        },
+      ], [0]),
+    );
+  });
+
+  test(`<div .textContent={0}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          prop("textContent", 0),
+        ]),
+      ])),
+      r([
+        {
+          flags: TFlags.EscapeInnerHTML,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: null,
+          style: null,
           children: 0,
         },
       ], [0]),
@@ -751,25 +824,7 @@ describe("server compiler", () => {
           prefix: `<div`,
           suffix: `</div>`,
           props: null,
-          children: 0,
-        },
-      ], [0]),
-    );
-  });
-
-  test(`<div *innerHTML={0}></div>`, () => {
-    deepStrictEqual(
-      c(h([
-        el("div", [
-          dprop("innerHTML", 0),
-        ]),
-      ])),
-      r([
-        {
-          flags: 0,
-          prefix: `<div`,
-          suffix: `</div>`,
-          props: null,
+          style: null,
           children: 0,
         },
       ], [0]),

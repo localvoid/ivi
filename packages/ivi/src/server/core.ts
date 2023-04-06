@@ -1,5 +1,5 @@
 import {
-  type TNode, type TProperty, type TElement, TFlags,
+  type TNode, type TProperty, type TStyle, type TElement, TFlags,
 } from "./template.js";
 import { escapeAttr, escapeText } from "./escape.js";
 
@@ -106,7 +106,6 @@ const _getContextValue = (d: ContextDescriptor) => {
 
 export type ContextType<T> = ContextDescriptor<T>;
 
-
 export type ComponentFactory = {
   (
     factory: (c: Component) => () => VAny,
@@ -170,21 +169,33 @@ export const _$E = (
   prefix: string,
   suffix: string,
   props: TProperty[] | null,
+  style: TStyle | null,
   children: TNode[] | number | null,
 ): TElement => ({
   flags,
   prefix,
   suffix,
   props,
+  style,
   children,
 });
 
 export const _$P = (
   prefix: string,
+  flags: number,
   i: number,
 ): TProperty => ({
   prefix,
+  flags,
   i,
+});
+
+export const _$S = (
+  stat: string,
+  dyn: TProperty[] | null,
+): TStyle => ({
+  stat,
+  dyn,
 });
 
 export const _$t = (
@@ -228,7 +239,7 @@ const renderNode = (v: VAny) => {
           if (typeof child === "object") { // Element
             renderTElement(p, child);
           } else if (typeof child === "string") { // Text
-            renderText(escapeText(child));
+            renderText(child);
           } else { // Expr
             renderNode(p![child]);
           }
@@ -243,11 +254,13 @@ const renderNode = (v: VAny) => {
       }
     }
   } else { // text
-    renderText(
-      (typeof v === "number")
-        ? v.toString()
-        : escapeText(v)
-    );
+    if (v !== "") {
+      renderText(
+        typeof v === "number"
+          ? "" + v
+          : escapeText(v),
+      );
+    }
   }
 };
 
@@ -269,20 +282,46 @@ const renderTElement = (exprs: any[], e: TElement) => {
   const suffix = e.suffix;
   const children = e.children;
   const props = e.props;
+  const style = e.style;
   let openElement = e.prefix;
 
   if (props !== null) {
-    let close = false;
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
       const value = exprs[prop.i];
       if (value !== void 0) {
-        close = true;
-        openElement += prop.prefix + escapeAttr(value);
+        if (typeof value === "string") {
+          if (value === "") {
+            if (!(prop.flags & TFlags.IgnoreEmptyString)) {
+              openElement += prop.prefix;
+            }
+          } else {
+            openElement += prop.prefix + '="' + escapeAttr(value) + '"';
+          }
+        } else if (typeof value === "boolean") {
+          if (value === true) {
+            openElement += prop.prefix;
+          }
+        } else {
+          openElement += prop.prefix + + '="' + value + '"';
+        }
       }
     }
-    if (close) {
-      openElement += '"';
+  }
+  if (style !== null) {
+    const dyn = style.dyn;
+    let s = style.stat;
+    if (dyn !== null) {
+      for (let i = 0; i < dyn.length; i++) {
+        const prop = dyn[i];
+        const value = exprs[prop.i];
+        if (value !== void 0) {
+          s += prop.prefix + value + ';';
+        }
+      }
+    }
+    if (s !== "") {
+      openElement += ' style="' + s + '"';
     }
   }
 
@@ -333,13 +372,17 @@ const renderTElement = (exprs: any[], e: TElement) => {
 
     ctx.t = prevT + openElement + ctx.t + suffix;
     ctx.s = (prevS + 1) & RenderState.OffsetMask;
-  } else { // innerHTML / <textarea .value={} />
+  } else { // textContent / innerHTML / <textarea .value={} />
     const v = exprs[children];
     ctx.t += openElement + ">";
-    if (v !== void 0) {
-      ctx.t += (flags & TFlags.EscapeInnerHTML)
-        ? escapeText(v)
-        : v;
+    if (v != null) {
+      if (typeof v === "string") {
+        ctx.t += (flags & TFlags.EscapeInnerHTML)
+          ? escapeText(v)
+          : v;
+      } else if (v !== false) {
+        ctx.t += v;
+      }
     }
     ctx.t += suffix;
   }

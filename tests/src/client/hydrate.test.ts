@@ -191,7 +191,7 @@ describe("hydrate", () => {
       htm`
       <div>
         ${a}
-        <b/>
+        <a/>
         ${b}
       </div>`
     );
@@ -248,6 +248,162 @@ describe("hydrate", () => {
         `[6] Node.nodeType => 3`,
         `[6] Node.previousSibling => 5`,
         `[5] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`7`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${["", a, "", b]}
+        <b/>
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="2">1<!>2<b></b></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "2"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 8`,
+        `[5] Node.nextSibling => 6`,
+        `[5] Node.remove()`,
+        `[6] Node.nextSibling => 7`,
+        `[7] Node.nodeType => 1`,
+        `[7] Node.previousSibling => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`8`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${[false, a, false, b]}
+        <b/>
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="2">1<!>2<b></b></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "2"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 8`,
+        `[5] Node.nextSibling => 6`,
+        `[5] Node.remove()`,
+        `[6] Node.nextSibling => 7`,
+        `[7] Node.nodeType => 1`,
+        `[7] Node.previousSibling => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`9`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${[null, a, null, b]}
+        <b/>
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="2">1<!>2<b></b></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "2"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 8`,
+        `[5] Node.nextSibling => 6`,
+        `[5] Node.remove()`,
+        `[6] Node.nextSibling => 7`,
+        `[7] Node.nodeType => 1`,
+        `[7] Node.previousSibling => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 4`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test(5, 6)); }),
+      [
+        `[6] Node.nodeValue = 6`,
+        `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`10`, () => {
+    const Test = (a: number, b: number) => (
+      htm`
+      <div>
+        ${[void 0, a, void 0, b]}
+        <b/>
+      </div>`
+    );
+
+    document.body.innerHTML = `<div &="2">1<!>2<b></b></div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test(1, 2)); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.firstChild => 4`,
+        `[3] Element.getAttribute("&") => "2"`,
+        `[4] Node.nextSibling => 5`,
+        `[5] Node.nodeType => 8`,
+        `[5] Node.nextSibling => 6`,
+        `[5] Node.remove()`,
+        `[6] Node.nextSibling => 7`,
+        `[7] Node.nodeType => 1`,
+        `[7] Node.previousSibling => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 4`,
         `[4] Node.nodeType => 3`,
       ],
     );

@@ -6,9 +6,10 @@ import {
   type SNode, SNodeFlags, createSNode, isVoidElement,
 } from "./shared.js";
 import {
-  type TElement, type TNode, type TProperty,
-  TFlags
+  type TElement, type TNode, type TProperty, type TStyle,
+  TFlags,
 } from "../server/template.js";
+import { escapeText } from "../server/escape.js";
 
 export interface TemplateCompilationArtifact {
   readonly roots: TNode[];
@@ -27,7 +28,7 @@ export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => 
         roots.push(createTElement(exprMap, sNode));
         break;
       case INodeType.Text:
-        roots.push(child.value);
+        roots.push(escapeText(child.value));
         break;
       case INodeType.Expr:
         roots.push(exprMap.get(child.value)!);
@@ -50,35 +51,14 @@ const createExprMap = (tpl: ITemplate): Map<number, number> => {
   return exprMap;
 };
 
-const isSerializableDynamicProp = (prop: IProperty): boolean => {
-  const type = prop.type;
-  if (type === IPropertyType.Attribute) {
-    if (prop.key === "class" && prop.hoist === true) {
-      return false;
-    }
-    return true;
-  }
-  if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
-    const key = prop.key;
-    if (key === "value" || key === "checked" || key === "innerHTML") {
-      return true;
-    }
-    return false;
-  }
-  if (type === IPropertyType.Style) {
-    return true;
-  }
-  return false;
-};
-
 const _createExprMap = (exprMap: Map<number, number>, node: INode) => {
   switch (node.type) {
     case INodeType.Element:
-      const { properties, children } = node;
+      const { tag, properties, children } = node;
       for (let i = 0; i < properties.length; i++) {
         const prop = properties[i];
         const value = prop.value;
-        if (typeof value === "number" && isSerializableDynamicProp(prop)) {
+        if (typeof value === "number" && isSerializableDynamicProp(tag, prop)) {
           exprMap.set(value, exprMap.size);
         }
       }
@@ -93,51 +73,34 @@ const _createExprMap = (exprMap: Map<number, number>, node: INode) => {
   }
 };
 
-const pushAttr = (
-  props: TProperty[] | undefined,
-  separator: string,
-  prefix: string,
-  i: number,
-) => {
-  if (props === void 0) {
-    props = [];
-  } else {
-    prefix = separator + prefix;
-  }
-  props.push({ prefix, i });
-  return props;
-};
-
 const createTElement = (
   exprMap: Map<number, number>,
   sNode: SNode<INodeElement>,
 ): TElement => {
   const node = sNode.node;
   const { tag, properties } = node;
-  let children: TNode[] | number | null = null;
+
   let innerHTML: number | undefined;
-  let props: TProperty[] | undefined;
   let suffix: string;
+  let children: TNode[] | number | null = null;
+  let props: TProperty[] | null = null;
+  let style: TStyle | null = null;
   let flags = 0;
   let prefix = `<${tag}`;
 
   if (properties.length > 0) {
-    let styleDynamic: TProperty[] | undefined;
-    let stylePrefix = "";
+    let styleDynamic: TProperty[] | null = null;
+    let styleStatic = "";
     for (let i = 0; i < properties.length; i++) {
       const { key, value, type } = properties[i];
       if (type === IPropertyType.Attribute) {
         if (typeof value === "number") {
-          props = pushAttr(props, '"', ` ${key}="`, exprMap.get(value)!);
+          props = pushProp(props, ` ${key}`, 0, exprMap.get(value)!);
         } else if (value === true) {
           prefix += ` ${key}`;
         } else {
           if (key === "style") {
-            if (stylePrefix === "") {
-              stylePrefix = ` style="${value}`;
-            } else {
-              stylePrefix += `;${value}`;
-            }
+            styleStatic += `${value};`;
           } else {
             prefix += ` ${key}="${value}"`;
           }
@@ -145,51 +108,55 @@ const createTElement = (
       } else if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
         if (key === "value") {
           if (tag === "input") {
-            props = pushAttr(props, '"', ` value="`, exprMap.get(value)!);
+            props = pushProp(
+              props,
+              ` value`,
+              TFlags.IgnoreEmptyString,
+              exprMap.get(value)!,
+            );
           } else if (tag === "textarea") {
             flags |= TFlags.EscapeInnerHTML;
             innerHTML = exprMap.get(value);
           }
         } else if (key === "checked") {
           if (tag === "input") {
-            props = pushAttr(props, '"', ` checked="`, exprMap.get(value)!);
+            props = pushProp(
+              props,
+              ` checked`,
+              0,
+              exprMap.get(value)!,
+            );
           }
+        } else if (key === "selected") {
+          if (tag === "option") {
+            props = pushProp(
+              props,
+              ` selected`,
+              0,
+              exprMap.get(value)!,
+            );
+          }
+        } else if (key === "textContent") {
+          flags |= TFlags.EscapeInnerHTML;
+          innerHTML = exprMap.get(value);
         } else if (key === "innerHTML") {
-          innerHTML = value;
+          innerHTML = exprMap.get(value);
         }
       } else if (type === IPropertyType.Style) {
         if (typeof value === "string") {
-          if (stylePrefix === "") {
-            stylePrefix = ` style="${key}:${value}`;
-          } else {
-            stylePrefix += `;${key}:${value}`;
-          }
+          styleStatic += `${key}:${value};`;
         } else {
-          if (styleDynamic === void 0) {
-            styleDynamic = [];
-          }
-          styleDynamic.push({ prefix: key, i: exprMap.get(value)! });
+          styleDynamic = pushProp(styleDynamic, `${key}:`, 0, exprMap.get(value)!);
         }
       }
     }
-    if (styleDynamic === void 0) {
-      if (stylePrefix !== "") {
-        prefix += stylePrefix + '"';
-      }
-    } else {
-      if (stylePrefix === "") {
-        stylePrefix = ` style="`;
-      } else {
-        stylePrefix += ";";
-      }
-      for (let i = 0; i < styleDynamic.length; i++) {
-        const s = styleDynamic[i];
-        if (i === 0) {
-          props = pushAttr(props, "", `${stylePrefix}${s.prefix}:`, s.i);
-        } else {
-          props = pushAttr(props, "", `;${s.prefix}:`, s.i);
-        }
-      }
+    if (styleDynamic !== null) {
+      style = {
+        stat: styleStatic,
+        dyn: styleDynamic,
+      };
+    } else if (styleStatic) {
+      prefix += ` style="${styleStatic}"`;
     }
   }
 
@@ -211,7 +178,7 @@ const createTElement = (
             children.push(createTElement(exprMap, child as SNode<INodeElement>));
             break;
           case INodeType.Text:
-            children.push(child.node.value);
+            children.push(escapeText(child.node.value));
             break;
           case INodeType.Expr:
             if (child.flags & SNodeFlags.HasNextDOMNode) {
@@ -227,9 +194,55 @@ const createTElement = (
     flags,
     prefix,
     suffix,
-    props: props !== void 0
-      ? props
-      : null,
+    props,
+    style,
     children,
   };
+};
+
+const pushProp = (
+  props: TProperty[] | null,
+  prefix: string,
+  flags: number,
+  i: number,
+): TProperty[] => {
+  if (props === null) {
+    props = [];
+  }
+  props.push({ flags, prefix, i });
+  return props;
+};
+
+const isSerializableDynamicProp = (tag: string, prop: IProperty): boolean => {
+  const type = prop.type;
+  if (type === IPropertyType.Attribute) {
+    if (prop.key === "class" && prop.hoist === true) {
+      return false;
+    }
+    return true;
+  }
+  if (type === IPropertyType.Value || type === IPropertyType.DOMValue) {
+    const key = prop.key;
+    if (tag === "input") {
+      if (key === "value" || key === "checked") {
+        return true;
+      }
+    } else if (tag === "textarea") {
+      if (key === "value") {
+        return true;
+      }
+    } else if (tag === "option") {
+      if (key === "selected") {
+        return true;
+      }
+    }
+    if (key === "textContent" || key === "innerHTML") {
+      return true;
+    }
+    return false;
+  }
+  if (type === IPropertyType.Style) {
+    return true;
+  }
+  return false;
 };

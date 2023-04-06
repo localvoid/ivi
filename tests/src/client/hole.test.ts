@@ -131,4 +131,33 @@ describe("hole", () => {
       ],
     );
   });
+
+  test(`"a" => "" => "b"`, () => {
+    const root = createRoot();
+    root.update(
+      "a",
+    );
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          "",
+        );
+      }),
+      [
+        `[1] Node.removeChild(2)`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => {
+        root.update(
+          "b",
+        );
+      }),
+      [
+        `createTextNode("b") => 3`,
+        `[1] Node.insertBefore(3, null)`,
+      ],
+    );
+  });
 });

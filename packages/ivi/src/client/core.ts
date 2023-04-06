@@ -541,7 +541,7 @@ const _update = (
   if (sNode === null) {
     return _mount(parentSNode, next);
   }
-  if (next === false || next == null) {
+  if (next === false || next == null || next === "") {
     _unmount(sNode, true);
     return null;
   }
@@ -797,7 +797,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
         sNode.c = _mount(sNode, (props as ContextProps).c);
         return sNode;
       }
-    } else {
+    } else if (v !== "") { // text
       const ctx = RENDER_CONTEXT;
       const next = ctx.n;
       const e = doc.createTextNode(v as string);
@@ -2018,7 +2018,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           v,
         );
       }
-    } else { // Text
+    } else if (v !== "") { // Text
       const ctx = RENDER_CONTEXT;
       let node = ctx.n === null
         ? nodeGetLastChild.call(ctx.p)
