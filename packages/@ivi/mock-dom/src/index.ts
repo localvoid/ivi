@@ -349,7 +349,7 @@ export class Element extends Node {
   }
 
   set innerHTML(html: string) {
-    this._trace(`Element.innerHTML = "${html}"`);
+    this._trace(`Element.innerHTML = ${JSON.stringify(html)}`);
     this._setInnerHTML(html);
   }
 

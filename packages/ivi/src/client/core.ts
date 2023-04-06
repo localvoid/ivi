@@ -388,19 +388,19 @@ const _updateTemplateProperties = (
                 elementSetClassName.call(currentElement, "");
               }
             } else if (dataIndex === CommonPropType.TextContent) {
-              if (next != null && next !== "") {
-                if (prev == null || prev === "") {
+              if (next != null && next !== "" && next !== false) {
+                if (prev == null || prev === "" || prev === false) {
                   nodeSetTextContent.call(currentElement, next);
                 } else if (next != null || next !== "") {
                   nodeGetFirstChild.call(currentElement).nodeValue = next;
                 }
-              } else if (prev != null && prev !== "") {
+              } else if (prev != null && prev !== "" && prev !== false) {
                 nodeSetTextContent.call(currentElement, "");
               }
             } else { // CommonPropType.InnerHTML
-              if (next !== "" && next != null) {
+              if (next !== "" && next != null && next !== false) {
                 elementSetInnerHTML.call(currentElement, next);
-              } else if (prev != null && prev !== "") {
+              } else if (prev !== "" && prev != null && prev !== false) {
                 nodeSetTextContent.call(currentElement, "");
               }
             }
