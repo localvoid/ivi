@@ -382,9 +382,9 @@ const _updateTemplateProperties = (
         if (prev !== next) {
           if (type === PropOpCode.Common) {
             if (dataIndex === CommonPropType.ClassName) {
-              if (next !== "" && next != null) {
+              if (next !== "" && next != null && next !== false) {
                 elementSetClassName.call(currentElement, next);
-              } else if (prev !== "" && prev != null) {
+              } else if (prev !== "" && prev != null && prev !== false) {
                 elementSetClassName.call(currentElement, "");
               }
             } else if (dataIndex === CommonPropType.TextContent) {
