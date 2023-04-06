@@ -21,13 +21,13 @@
     "@ivi/vite-plugin": "workspace:*"
   },
   "peerDependencies": {
-    "ivi": "workspace:*",
-    "@ivi/htm": "workspace:*"
+    "@ivi/htm": "workspace:*",
+    "ivi": "workspace:*"
   },
   "devDependencies": {
-    "astro": "^2.1.9",
-    "ivi": "workspace:*",
-    "@ivi/htm": "workspace:*"
+    "@ivi/htm": "workspace:*",
+    "astro": "^2.2.0",
+    "ivi": "workspace:*"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
