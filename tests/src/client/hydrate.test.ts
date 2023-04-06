@@ -3,7 +3,7 @@ import { beforeEach, describe, test } from "node:test";
 import { reset, trace, emit } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { htm } from "@ivi/htm";
-import { component, invalidate } from "ivi";
+import { List, component, invalidate } from "ivi";
 
 describe("hydrate", () => {
   beforeEach(reset);
@@ -257,6 +257,33 @@ describe("hydrate", () => {
       [
         `[6] Node.nodeValue = 6`,
         `[4] Node.nodeValue = 5`,
+      ],
+    );
+  });
+
+  test(`List 1`, () => {
+    const r = (i: number) => i;
+    const Test = (entries: number[]) => htm`<div>${List(entries, r, r)}</div>`;
+    document.body.innerHTML = `<div>1<!>2</div>`;
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => { root.hydrate(Test([1, 2])); }),
+      [
+        `[1] Node.lastChild => 3`,
+        `[3] Node.lastChild => 6`,
+        `[6] Node.nodeType => 3`,
+        `[6] Node.previousSibling => 5`,
+        `[5] Node.nodeType => 8`,
+        `[5] Node.previousSibling => 4`,
+        `[5] Node.remove()`,
+        `[4] Node.nodeType => 3`,
+      ],
+    );
+
+    deepStrictEqual(
+      trace(() => { root.update(Test([2, 1])); }),
+      [
+        `[3] Node.insertBefore(6, 4)`,
       ],
     );
   });
