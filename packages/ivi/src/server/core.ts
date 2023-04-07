@@ -249,7 +249,7 @@ const renderNode = (v: VAny) => {
       } else { // Context
         const ctxStack = RENDER_CONTEXT.c;
         ctxStack.push(v as VContext);
-        renderNode(p);
+        renderNode(p.c);
         ctxStack.pop();
       }
     }
