@@ -6,7 +6,7 @@ import {
   type Component, component, getProps, useUnmount, invalidate,
 } from "ivi";
 
-describe("text", () => {
+describe("component", () => {
   beforeEach(reset);
 
   test(`() => null`, () => {
