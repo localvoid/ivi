@@ -443,34 +443,6 @@ const RENDER_CONTEXT: RenderContext = Object.seal({
 const _Array = Array;
 const _isArray = _Array.isArray;
 
-export const _h = () => {
-  throw Error("_h function isn't available during Server-Side Rendering.");
-};
-export const _hN = () => {
-  throw Error("_hN function isn't available during Server-Side Rendering.");
-};
-export const _hE = () => {
-  throw Error("_hE function isn't available during Server-Side Rendering.");
-};
-export const _s = () => {
-  throw Error("_s function isn't available during Server-Side Rendering.");
-};
-export const _sN = () => {
-  throw Error("_sN function isn't available during Server-Side Rendering.");
-};
-export const _sE = () => {
-  throw Error("_sE function isn't available during Server-Side Rendering.");
-};
-export const _T = () => {
-  throw Error("_T function isn't available during Server-Side Rendering.");
-};
-export const _Td = () => {
-  throw Error("_Td function isn't available during Server-Side Rendering.");
-};
-export const _t = () => {
-  throw Error("_t function isn't available during Server-Side Rendering.");
-};
-
 export const invalidate = () => {
   throw Error("invalidate function isn't available during Server-Side Rendering.");
 };

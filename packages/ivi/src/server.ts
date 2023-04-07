@@ -11,7 +11,6 @@ export {
   defineRoot, createRoot, dirtyCheck, update, unmount, hydrate,
   renderToString,
   _$T, _$E, _$P, _$t,
-  _h, _hN, _hE, _s, _sN, _sE, _T, _t,
 } from "./server/core.js";
 export {
   useMemo,
