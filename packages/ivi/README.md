@@ -163,6 +163,8 @@ export default defineConfig({
 `"@ivi/rollup-plugin"` package provides
 [Rollup](https://rollupjs.org/) plugin that supports Client-Side Rendering only.
 
+*IMPORTANT: Rollup plugin doesn't work with Vite.*
+
 ```js
 // rollup.config.mjs
 import { ivi } from "@ivi/rollup-plugin";
