@@ -205,6 +205,22 @@ export abstract class Node {
   _cloneNode(deep: boolean): Node {
     return cloneNode(this, deep);
   }
+
+  contains(node: Node | null): boolean {
+    const r = this._contains(node);
+    this._trace(`Node.contains(${node?.uid ?? "null"}) => ${r}`);
+    return r;
+  }
+
+  _contains(node: Node | null): boolean {
+    while (node !== null) {
+      if (this.uid === node.uid) {
+        return true;
+      }
+      node = node._parentNode;
+    }
+    return false;
+  }
 }
 
 export class Text extends Node {
