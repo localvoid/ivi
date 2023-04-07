@@ -1,6 +1,6 @@
 # [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE)
 
-Lightweight Embeddable Web UI library.
+ivi is a JavaScript library that enables you to create dynamic user interfaces using template literals with embedded JavaScript expressions. It identifies the static and dynamic parts of your templates and efficiently updates only the changed portions. ivi has a small memory footprint, supports lightweight components, Server-Side Rendering, and Client-Side Hydration, all of which can help improve the performance and efficiency of your web application.
 
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
@@ -92,6 +92,7 @@ and doesn't generate any additional code for hydration.
     - [`List(entries, getKey, render)`](#list-1)
   - [Context](#context)
     - [`context()`](#context-1)
+  - [Element Directive](#element-directive)
   - [DOM Utilities](#dom-utilities)
     - [`eventDispatcher(eventType, options)`](#eventdispatcher)
     - [`findDOMNode(node)`](#finddomnode)
@@ -102,6 +103,9 @@ and doesn't generate any additional code for hydration.
     - [`strictEq(a, b)`](#stricteq)
     - [`shallowEq(a, b)`](#shalloweq)
     - [`shallowEqArray(a, b)`](#shalloweqarray)
+  - [Escape Functions](#escape-functions)
+    - [`escapeHTMLAttribute(str)`](#escapehtmlattribute)
+    - [`escapeHTMLText(str)`](#escapehtmltext)
 - [CheatSheet](#cheatsheet)
   - [Passive Event Listener](#passive-event-listener)
   - [Dynamic Argument Name](#dynamic-argument-name)
@@ -133,7 +137,7 @@ supports Client-Side Rendering and
 [Server-Side Rendering](https://vitejs.dev/guide/ssr.html).
 
 ```ts
-// vite.config.ts
+// vite.config.mjs
 import { defineConfig } from "vite";
 import { ivi } from "@ivi/vite-plugin";
 
@@ -193,14 +197,31 @@ Rendering.
 
 ### Templates
 
-ivi supports different template languages and it is easy to create a new one.
-All compilation complexity is abstracted away in `"ivi/template/..."` modules.
+The ivi library allows you to create HTML templates using JavaScript template literals. These literals can be tagged with either `htm` or `svg`, and are comprised of static HTML and dynamic expessions that will be evaluated at runtime, allowing for dynamic content in the template.
+
+When you write an ivi template expression, it does not immediately create or update the DOM. Instead, it describes the DOM structure as a `VTemplate` object. To actually create or update the DOM based on this description, you will need to pass the `VTemplate` to the [`update()`](#update) function, along with a root node where the template will be rendered.
+
+```js
+import { createRoot, update } from "ivi";
+import { htm } from "@ivi/htm";
+
+const dynamicExpr = "World";
+const example = htm`<h1>Hello ${dynamicExpr}</h1>`
+
+update(
+  createRoot(document.body),
+  example,
+);
+```
+
+*The ivi library provides support for various template languages, and it's easy to create a new one. The complexity involved in compiling these templates is abstracted away in the `"ivi/template/..."` modules.*
 
 #### HTML Template Language
 
 `"@ivi/htm"` package provides [HTML Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/htm/README.md).
 
-It is an HTML-like language with dynamic expressions.
+The ivi HTML Template Language has an HTML-like syntax with additional syntax
+for DOM properties, events and whitespace removal.
 
 ```js
 import { htm } from "@ivi/htm";
@@ -219,8 +240,7 @@ const Example = component((c) => {
 
 `"@ivi/tpl"` package provides [ivi Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/tpl/README.md).
 
-It was designed as a concise language for defining DOM tree structures and uses
-indentation for nesting.
+The ivi Template Language was designed as a concise language for defining DOM tree structures and uses indentation for nesting DOM nodes.
 
 ```js
 import { htm } from "@ivi/tpl";
@@ -236,7 +256,20 @@ const Example = component((c) => {
 
 ### Expressions
 
+In ivi templates, you can include dynamic content called expressions. An expression is just a piece of JavaScript code that gets evaluated when the template is rendered. Whatever value the expression produces at that time will be included in the final rendered template.
+
+```js
+htm`
+<div attr=${attributeValueExpr}>
+  ${childExpr}
+</div>`;
+```
+
 #### Conditionals
+
+You can use regular JavaScript expressions in your templates, which means you can use any javascript control flow constructs like conditional operators, function calls, and if or switch statements to generate dynamic content based on runtime conditions.
+
+This means you can create templates with complex logic that conditionally renders different content based on what's happening in your application. You can even nest template expressions inside one another to build up more complex templates, and you can store the results of templates in variables to use them later in your code.
 
 ```js
 const Example = component((c) => {
@@ -251,37 +284,37 @@ const Example = component((c) => {
 
 #### Arrays
 
+If an expression is used in the child position of an HTML element and it returns an array, ivi will render all of the items in that array as separate nodes.
+
 ```js
-const ArraysInsideTemplates = () => htm`
+const Example = () => htm`
   <div>
     ${[
-      htm`<div>a</div>`,
-      htm`<div>b</div>`,
+      "Text Node 1",
+      "Text Node 2",
     ]}
   </div>
 `;
-
-const NestedArrays = () => htm`
-  <div>
-    ${[
-      [htm`<div>a</div>`, htm`<div>b</div>`],
-      [htm`<div>c</div>`, htm`<div>d</div>`],
-    ]}
-  </div>
-`;
-
-const ComponentsWithMultipleRootNodes = component((c) => () => ([
-  htm`<div>a</div>`,
-  htm`<div>b</div>`,
-]));
 ```
 
-When arrays are diffed, stateless tree nodes mapped onto their stateful nodes
-by their position in the array.
+ivi allows components to return arrays of elements as their root nodes. This means that a component can return multiple top-level elements instead of just one.
 
-When array contains a conditional expression that returns a "hole"
-`null`, `undefined` or `false` value, the hole will occupy a slot in a stateful
-tree, so that all nodes will be correclty mapped onto their stateful nodes. E.g.
+For example, a component could return an array of `<li>` elements that make up a list. When this component is used in a parent component, ivi will treat the array of `<li>` elements as a set of top-level elements, just like it would with a single root element.
+
+This feature provides more flexibility when building complex UI components, as it allows you to create components that generate a dynamic number of top-level elements depending on their input.
+
+```js
+const Example = component((c) => {
+  return (entries) => entries.map((e) => htm`
+    <li>${e}</li>
+  `);
+);
+// Example([1, 2, 3])
+```
+
+When arrays are updated, stateless tree nodes are mapped onto their stateful nodes by their position in the array.
+
+When array contains a conditional expression that returns a "hole" value (`null`, `undefined` or `false`), the hole will occupy a slot in a stateful tree, so that all nodes will be correclty mapped onto their stateful nodes. E.g.
 
 ```js
 [
@@ -290,19 +323,16 @@ tree, so that all nodes will be correclty mapped onto their stateful nodes. E.g.
 ]
 ```
 
-In the example above, when `conditional` expression goes from a text to a hole
-and vice versa, `StatefulComponent` will preserve its internal state.
+In the example above, when `conditional` expression goes from a text to a hole and vice versa, `StatefulComponent` will preserve its internal state.
 
-When array grows or shrinks in size, stateful nodes will be removed and created
-at the end.
+When array grows or shrinks in size, stateful nodes will be created or removed at the end of an array.
 
 #### Dynamic Lists
 
-Dynamic lists that map stateless nodes onto a stateful ones is not an
-optimization technique. It is used to correctly preserve components state, custom DOM elements state, CSS animations state, etc.
+In ivi, you can render lists of items using a `map()` function that loops through an array of data and returns a list of elements. However, when list is
+updated, it is important to correctly map rendered items onto their stateful views. This means that if an item is rendered as a component that has internal state that could change as a result of user actions or external events, item should be always mapped onto the same component instance.
 
-Stateless nodes are mapped onto their stateful nodes by their unique key
-`getKey()`, dynamic lists shouldn't have any duplicated keys.
+To render dynamic lists, ivi provides a `List()` function.
 
 ```ts
 function List<E, K>(
@@ -315,7 +345,9 @@ function List<E, K>(
 ): VList;
 ```
 
-Example:
+It creates a dynamic lists with an array of keys that uniquely identify each item in the list. When list is updated, ivi uses keys to map items onto their stateful nodes.
+
+It's important to note that when rendering a dynamic list, you should always use a unique identifier as the key. This helps ivi identify each element in the list and avoid rendering errors. If you use an index or a random value as the key, ivi may not be able to identify the correct elements in the list, which can cause errors.
 
 ```ts
 interface DataEntry {
@@ -332,26 +364,19 @@ const ListView = (data: DataEntry[]) => htm`
 `;
 ```
 
-Dynamic lists are using an optimal algorithm that uses minimal number of
-`Node.insertBefore()` operations to rearrange DOM nodes. Almost all popular
-libraries are using naive algorithms and can handle efficiently only basic use
-cases. And some libraries optimizing their list diffing algorithms only for use
-cases that are used in benchmarks.
+ivi is using an optimal algorithm for dynamic lists that uses the minimum number of `Node.insertBefore()` operations to rearrange DOM nodes.
 
-Reducing `Node.insertBefore()` operations is important not just because it
-invalidates internal data structures, but also because each time one of
-the DOM nodes attached to the document is moved, it may produce a
-[MutationObserver notification](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
-And a lot of popular extensions are using Mutation Observers to observe entire
-document subtree, so each `insertBefore` operation can become quite costly when
-it is used outside of benchmarking sandboxes.
+Almost all popular libraries are using naive algorithms and can handle efficiently only basic use cases. And some libraries optimizing their list diffing algorithms only for use cases that are used in benchmarks.
+
+Reducing `Node.insertBefore()` operations is important not just because it invalidates internal DOM state, but also because each time one of the DOM nodes attached to the document is moved, it may produce a [MutationObserver notification](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver). And a lot of popular extensions are using Mutation Observers to observe entire document subtree, so each `insertBefore` operation can become quite costly when it is used outside of benchmarking sandboxes.
 
 ## Components
 
+Components can be either stateful or stateless. Stateful components are used when you need to manage state that changes over time, such as user input, network requests, or animations.
+
 ### Stateful Components
 
-[`component()`](#component) function is used to declare components. It creates
-a factory function that produces stateless view nodes.
+Stateful components are declared with [`component()`](#component) function. It creates a factory function that produces component nodes.
 
 ```js
 const Example = component((c) => {
@@ -370,42 +395,31 @@ update(
 );
 ```
 
-Stateful components are using javascript closures to store internal state.
+Stateful components are using JavaScript closures to store internal state.
 
 ```js
 const Example = component((c) => {
   // Internal state.
-  let _i = 0;
+  let _counter = 0;
 
-  // Render function.
-  return () => (
-    htm`<div>${_i}</div>`
-  );
-});
-```
-
-When internal state is mutated, it doesn't trigger component updates and it
-should be manually invalidated with [`invalidate()`](#invalidate) function.
-
-```js
-const Example = component((c) => {
-  // Internal state.
-  let _i = 0;
-  const onClick = () => {
-    _i++;
-    // Marks component as dirty and schedules an update.
+  const increment = () => {
+    // Mutate internal state.
+    _counter++;
+    // Invalidate component and schedule an update.
     invalidate(c);
   };
+
   // Render function.
-  return () => (
-    htm`
+  return () => htm`
     <div>
-      ${_i}
-      <button @click=${onClick} />
-    </div>`
-  );
+      <p>Count: ${_counter}</p>
+      <button @click=${increment}>Increment</button>
+    </div>
+  `;
 });
 ```
+
+When internal state is mutated, it doesn't trigger component updates automatically and should be manually invalidated with [`invalidate()`](#invalidate) function.
 
 There are high-level APIs like [`useState()`](#usestate) or
 [`useReducer()`](#usereducer) that use low-level [`invalidate()`](#invalidate)
@@ -415,16 +429,19 @@ state is mutated:
 ```js
 const Example = component((c) => {
   // Internal state.
-  const [i, setI] = useState(c, 0);
-  const onClick = () => {
-    set(i() + 1);
+  const [counter, setCounter] = useState(c, 0);
+
+  const increment = () => {
+    // Automatically invalidates component when counter value is mutated.
+    setCounter(counter() + 1);
   };
+
   // Render function.
   return () => (
     htm`
     <div>
-      ${i()}
-      <button @click=${onClick} />
+      <p>Count: ${counter()}</p>
+      <button @click=${increment}>Increment</button>
     </div>`
   );
 });
@@ -432,7 +449,7 @@ const Example = component((c) => {
 
 ### Stateless Components
 
-Basic stateless components can be implemented with simple functions.
+Stateless components in ivi are just basic JavaScript functions. They are faster and more lightweight than stateful components, which makes them a good choice for simple, reusable components that don't need to manage state.
 
 ```js
 const Button = (text, onClick) => htm`
@@ -773,6 +790,20 @@ function context = <T>(): [
 
 `provider` function creates stateless context nodes.
 
+### Element Directive
+
+```ts
+type ElementDirective = <E extends Element>(
+  element: E,
+  hydrate?: boolean,
+) => void | string | { a?: string, c?: string; };
+```
+
+`ElementDirective` is an escape hatch that allows extending ivi rendering
+algorithm.
+
+
+
 ### DOM Utilities
 
 #### **`eventDispatcher()`**
@@ -810,7 +841,7 @@ method.
 Event dispatcher invokes event handlers synchronously. All event handlers are
 invoked before event dispatcher returns.
 
-> *SSR: Event dispatcher throws an exception.*
+> *SSR: `EventDispatcher` function throws an exception.*
 
 #### **`findDOMNode()`**
 
@@ -887,6 +918,24 @@ function shallowEqArray<T>(a: T[], b: T[]): boolean;
 
 `shallowEqArray` checks arrays with shallow equality algorithm and uses
 strict equality operator to check individual values for equality.
+
+### Escape Functions
+
+#### **`escapeHTMLAttribute()`**
+
+```ts
+function escapeHTMLAttribute(str: string): string;
+```
+
+`escapeHTMLAttribute` escapes HTML attribute values.
+
+#### **`escapeHTMLText()`**
+
+```ts
+function escapeHTMLText(str: string): string;
+```
+
+`escapeHTMLText` escapes HTML text nodes.
 
 ## CheatSheet
 
