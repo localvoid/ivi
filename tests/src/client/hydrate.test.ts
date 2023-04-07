@@ -429,7 +429,7 @@ describe("hydrate", () => {
           h = hydrate;
         };
         root.hydrate(
-          htm`<div ${directive}></div>`,
+          htm`<div &=${directive}></div>`,
         );
         strictEqual(e.uid, 3);
         strictEqual(h, true);

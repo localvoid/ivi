@@ -51,7 +51,9 @@ events, etc.
 - `<div ~name="value" />` - Static style `<div style="value">`.
 - `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`.
 - `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`.
-- `<div ${directive} />` - Directive `directive(element)`.
+- `<div ${directive} />` - Client-Side Directive `directive(element)`.
+- `<div &=${directive} />` - Client-Side Directive `directive(element)`.
+- `<div &:ssr=${directive} />` - Server-Side Directive `directive(element, hydrate)`.
 
 ## Whitespaces
 

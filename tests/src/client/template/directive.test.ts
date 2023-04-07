@@ -7,7 +7,7 @@ import { type ElementDirective } from "ivi";
 
 describe("@ivi/htm directive", () => {
   beforeEach(reset);
-  const T = (directive: ElementDirective) => htm`<div ${directive} />`;
+  const T = (directive: ElementDirective) => htm`<div &=${directive} />`;
 
   test(`root element`, () => {
     let e: any;
@@ -38,7 +38,7 @@ describe("@ivi/htm directive", () => {
 
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div><span ${d} /></div>`); }),
+      trace(() => { root.update(htm`<div><span &=${d} /></div>`); }),
       [
         `[-7] Template.innerHTML = "<div><span></span></div>"`,
         `[-6] Node.firstChild => 3`,

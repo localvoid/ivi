@@ -10,21 +10,23 @@ import { htm } from "@ivi/htm";
 describe("containsDOMElement", () => {
   beforeEach(reset);
 
+  const DEEP = (ref: (element: Element) => void) => htm`
+    <div>
+      <span &=${ref}/>
+    </div>
+  `;
+
   test(`null`, () => {
     const root = createRoot();
     const el = document.createElement("div");
-    root.update(
-      null,
-    );
+    root.update(null);
     ok(!containsDOMElement(root.root, el));
   });
 
   test(`element 1`, () => {
     const root = createRoot();
     const el = document.createElement("div");
-    root.update(
-      htm`<div/>`,
-    );
+    root.update(htm`<div/>`);
     ok(!containsDOMElement(root.root, el));
   });
 
@@ -32,13 +34,7 @@ describe("containsDOMElement", () => {
     const root = createRoot();
     let el: Element;
     const ref = (element: Element) => { el = element; };
-    root.update(
-      htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
-    );
+    root.update(DEEP(ref));
     ok(containsDOMElement(root.root, el!));
   });
 
@@ -48,11 +44,7 @@ describe("containsDOMElement", () => {
     const ref = (element: Element) => { el = element; };
     root.update([
       "a",
-      htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
+      DEEP(ref),
       "b",
     ]);
     ok(containsDOMElement(root.root, el!));
@@ -63,14 +55,7 @@ describe("containsDOMElement", () => {
     let el: Element;
     const ref = (element: Element) => { el = element; };
     const T = component<VAny>(() => (child) => child);
-    root.update(
-      T(htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
-      ),
-    );
+    root.update(T(DEEP(ref)));
     ok(containsDOMElement(root.root, el!));
   });
 
@@ -79,15 +64,7 @@ describe("containsDOMElement", () => {
     let el: Element;
     const ref = (element: Element) => { el = element; };
     const [_, provider] = context<number>();
-    root.update(
-      provider(1,
-        htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
-      ),
-    );
+    root.update(provider(1, DEEP(ref)));
     ok(containsDOMElement(root.root, el!));
   });
 
@@ -99,11 +76,7 @@ describe("containsDOMElement", () => {
     root.update(
       List([
         1,
-        htm`
-        <div>
-          <span ${ref}/>
-        </div>
-        `,
+        DEEP(ref),
         2,
       ], r, r),
     );

@@ -1,7 +1,7 @@
-import type {
-  ITemplate, IProperty, INode, INodeElement, ITemplateType, INodeText,
+import {
+  type ITemplate, type IProperty, type INode, type INodeElement, type INodeText,
+  ITemplateType, IDirectiveType, IPropertyType, INodeType,
 } from "ivi/template/ir";
-import { IPropertyType, INodeType } from "ivi/template/ir";
 import {
   CharCode, isVoidElement, TemplateParserError, TemplateScanner,
 } from "ivi/template/parser";
@@ -130,34 +130,101 @@ export class TemplateParser extends TemplateScanner {
     const properties: IProperty[] = [];
     while (!this.isEnd()) {
       const c = this.peekCharCode();
-      if (c !== -1) {
-        if (c === CharCode.Slash || c === CharCode.MoreThan) {
-          return properties;
+
+      if (c === -1) { // shorthand syntax for directives
+        properties.push({
+          type: IPropertyType.Directive,
+          key: IDirectiveType.Client,
+          value: this.expr(),
+          hoist: false,
+        });
+
+        this.whitespace();
+        continue;
+      }
+      if (c === CharCode.Slash || c === CharCode.MoreThan) {
+        return properties;
+      }
+      if (c === CharCode.Dot) { // .property
+        this.i++;
+        const key = this.regExp(JS_PROPERTY);
+        if (key === void 0) {
+          throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
         }
-        if (c === CharCode.Dot) { // .property
-          this.i++;
-          const key = this.regExp(JS_PROPERTY);
-          if (key === void 0) {
-            throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
+        this.dynamicProp(properties, IPropertyType.Value, key);
+      } else if (c === CharCode.Asterisk) { // *value
+        this.i++;
+        const key = this.regExp(JS_PROPERTY);
+        if (key === void 0) {
+          throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
+        }
+        this.dynamicProp(properties, IPropertyType.DOMValue, key);
+      } else if (c === CharCode.Tilde) { // ~style
+        this.i++;
+        const key = this.regExp(IDENTIFIER);
+        if (key === void 0) {
+          throw new TemplateParserError("Expected a valid style name.", this.e, this.i);
+        }
+        let value: string | number;
+        if (!this.charCode(CharCode.EqualsTo)) {
+          throw new TemplateParserError("Expected a '=' character.", this.e, this.i);
+        }
+        const c = this.peekCharCode();
+        if (c !== -1) {
+          if (c !== CharCode.DoubleQuote) {
+            throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
           }
-          this.dynamicProp(properties, IPropertyType.Value, key);
-        } else if (c === CharCode.Asterisk) { // *value
-          this.i++;
-          const key = this.regExp(JS_PROPERTY);
-          if (key === void 0) {
-            throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
+          value = this.parseAttributeString();
+        } else {
+          value = this.expr();
+          if (value === -1) {
+            throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
           }
-          this.dynamicProp(properties, IPropertyType.DOMValue, key);
-        } else if (c === CharCode.Tilde) { // ~style
-          this.i++;
-          const key = this.regExp(IDENTIFIER);
-          if (key === void 0) {
-            throw new TemplateParserError("Expected a valid style name.", this.e, this.i);
+        }
+        properties.push({
+          type: IPropertyType.Style,
+          key,
+          value,
+          hoist: false,
+        });
+      } else if (c === CharCode.AtSign) { // @event
+        this.i++;
+        const key = this.regExp(IDENTIFIER);
+        if (key === void 0) {
+          throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
+        }
+        this.dynamicProp(properties, IPropertyType.Event, key);
+      } else if (c === CharCode.Ampersand) { // &={directive} &:ssr={directive}
+        this.i++;
+        let key = IDirectiveType.Client;
+        if (this.charCode(CharCode.Colon)) {
+          if (!this.string("ssr")) {
+            throw new TemplateParserError("Expected a 'ssr' keyword.", this.e, this.i);
           }
-          let value: string | number;
-          if (!this.charCode(CharCode.EqualsTo)) {
-            throw new TemplateParserError("Expected a '=' character.", this.e, this.i);
-          }
+          key = IDirectiveType.Server;
+        }
+        if (!this.charCode(CharCode.EqualsTo)) {
+          throw new TemplateParserError("Expected a '=' character.", this.e, this.i);
+        }
+        const value: string | boolean | number = this.expr();
+        if (value === -1) {
+          throw new TemplateParserError("Expected an element directive expression.", this.e, this.i);
+        }
+        properties.push({
+          type: IPropertyType.Directive,
+          key,
+          value,
+          hoist: false,
+        });
+      } else {
+        const key = this.regExp(IDENTIFIER);
+        if (key === void 0) {
+          throw new TemplateParserError("Expected a valid attribute name.", this.e, this.i);
+        }
+
+        let staticAttr = false;
+        let value: string | boolean | number = true;
+        if (this.charCode(CharCode.EqualsTo)) { // =
           const c = this.peekCharCode();
           if (c !== -1) {
             if (c !== CharCode.DoubleQuote) {
@@ -169,63 +236,16 @@ export class TemplateParser extends TemplateScanner {
             if (value === -1) {
               throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
             }
-          }
-          properties.push({
-            type: IPropertyType.Style,
-            key,
-            value,
-            hoist: false,
-          });
-        } else if (c === CharCode.AtSign) { // @event
-          this.i++;
-          const key = this.regExp(IDENTIFIER);
-          if (key === void 0) {
-            throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
-          }
-          this.dynamicProp(properties, IPropertyType.Event, key);
-        } else {
-          const key = this.regExp(IDENTIFIER);
-          if (key === void 0) {
-            throw new TemplateParserError("Expected a valid attribute name.", this.e, this.i);
-          }
-          this.whitespace();
-
-          let staticAttr = false;
-          let value: string | boolean | number = true;
-          if (this.charCode(CharCode.EqualsTo)) { // =
-            const c = this.peekCharCode();
-            if (c !== -1) {
-              if (c !== CharCode.DoubleQuote) {
-                throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
-              }
-              value = this.parseAttributeString();
-            } else {
-              value = this.expr();
-              if (value === -1) {
-                throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
-              }
-              if (key === "class" && this.tryHoistExpr(value)) {
-                staticAttr = true;
-              }
+            if (key === "class" && this.tryHoistExpr(value)) {
+              staticAttr = true;
             }
           }
-          properties.push({
-            type: IPropertyType.Attribute,
-            key,
-            value,
-            hoist: staticAttr,
-          });
         }
-        this.whitespace();
-        continue;
-      }
-      const value: string | boolean | number = this.expr();
-      if (value !== -1) {
         properties.push({
-          type: IPropertyType.Directive,
-          key: null,
+          type: IPropertyType.Attribute,
+          key,
           value,
-          hoist: false,
+          hoist: staticAttr,
         });
       }
       this.whitespace();

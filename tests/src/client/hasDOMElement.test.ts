@@ -10,21 +10,29 @@ import { htm } from "@ivi/htm";
 describe("hasDOMElement", () => {
   beforeEach(reset);
 
+  const ROOT = (ref: (element: Element) => void) => htm`
+    <div &=${ref}>
+      <span/>
+    </div>
+  `;
+
+  const DEEP = (ref: (element: Element) => void) => htm`
+    <div>
+      <span &=${ref}/>
+    </div>
+  `;
+
   test(`null`, () => {
     const root = createRoot();
     const el = document.createElement("div");
-    root.update(
-      null,
-    );
+    root.update(null);
     ok(!hasDOMElement(root.root, el));
   });
 
   test(`element 1`, () => {
     const root = createRoot();
     const el = document.createElement("div");
-    root.update(
-      htm`<div/>`,
-    );
+    root.update(htm`<div/>`);
     ok(!hasDOMElement(root.root, el));
   });
 
@@ -32,13 +40,7 @@ describe("hasDOMElement", () => {
     const root = createRoot();
     let el: Element;
     const ref = (element: Element) => { el = element; };
-    root.update(
-      htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
-    );
+    root.update(DEEP(ref));
     ok(!hasDOMElement(root.root, el!));
   });
 
@@ -46,11 +48,7 @@ describe("hasDOMElement", () => {
     const root = createRoot();
     let el: Element;
     const ref = (element: Element) => { el = element; };
-    root.update(
-      htm`
-        <div ${ref} />
-      `,
-    );
+    root.update(ROOT(ref));
     ok(hasDOMElement(root.root, el!));
   });
 
@@ -60,11 +58,7 @@ describe("hasDOMElement", () => {
     const ref = (element: Element) => { el = element; };
     root.update([
       "a",
-      htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
+      DEEP(ref),
       "b",
     ]);
     ok(!hasDOMElement(root.root, el!));
@@ -76,9 +70,7 @@ describe("hasDOMElement", () => {
     const ref = (element: Element) => { el = element; };
     root.update([
       "a",
-      htm`
-        <div ${ref} />
-      `,
+      ROOT(ref),
       "b",
     ]);
     ok(hasDOMElement(root.root, el!));
@@ -89,14 +81,7 @@ describe("hasDOMElement", () => {
     let el: Element;
     const ref = (element: Element) => { el = element; };
     const T = component<VAny>(() => (child) => child);
-    root.update(
-      T(htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
-      ),
-    );
+    root.update(T(DEEP(ref)));
     ok(!hasDOMElement(root.root, el!));
   });
 
@@ -105,12 +90,7 @@ describe("hasDOMElement", () => {
     let el: Element;
     const ref = (element: Element) => { el = element; };
     const T = component<VAny>(() => (child) => child);
-    root.update(
-      T(htm`
-        <div ${ref} />
-      `,
-      ),
-    );
+    root.update(T(ROOT(ref)));
     ok(hasDOMElement(root.root, el!));
   });
 
@@ -119,15 +99,7 @@ describe("hasDOMElement", () => {
     let el: Element;
     const ref = (element: Element) => { el = element; };
     const [_, provider] = context<number>();
-    root.update(
-      provider(1,
-        htm`
-        <div>
-          <span ${ref}/>
-        </div>
-      `,
-      ),
-    );
+    root.update(provider(1, DEEP(ref)));
     ok(!hasDOMElement(root.root, el!));
   });
 
@@ -136,13 +108,7 @@ describe("hasDOMElement", () => {
     let el: Element;
     const ref = (element: Element) => { el = element; };
     const [_, provider] = context<number>();
-    root.update(
-      provider(1,
-        htm`
-        <div ${ref} />
-      `,
-      ),
-    );
+    root.update(provider(1, ROOT(ref)));
     ok(hasDOMElement(root.root, el!));
   });
 
@@ -154,11 +120,7 @@ describe("hasDOMElement", () => {
     root.update(
       List([
         1,
-        htm`
-        <div>
-          <span ${ref}/>
-        </div>
-        `,
+        DEEP(ref),
         2,
       ], r, r),
     );
@@ -173,9 +135,7 @@ describe("hasDOMElement", () => {
     root.update(
       List([
         1,
-        htm`
-        <div ${ref} />
-        `,
+        ROOT(ref),
         2,
       ], r, r),
     );

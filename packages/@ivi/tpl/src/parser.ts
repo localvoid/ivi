@@ -1,7 +1,7 @@
-import type {
-  ITemplate, IProperty, INode, INodeElement, ITemplateType,
+import {
+  type ITemplate, type IProperty, type INode, type INodeElement,
+  ITemplateType, IDirectiveType, IPropertyType, INodeType,
 } from "ivi/template/ir";
-import { IPropertyType, INodeType } from "ivi/template/ir";
 import {
   CharCode, isVoidElement, TemplateParserError, TemplateScanner,
 } from "ivi/template/parser";
@@ -201,15 +201,25 @@ export class TemplateParser extends TemplateScanner {
         }
 
         this.dynamicProp(properties, IPropertyType.Event, key);
-      } else if (c === 36) { // $${directive}
+      } else if (c === CharCode.Ampersand) { // &=${directive} &:ssr=${directive}
         this.i++;
+        let key = IDirectiveType.Client;
+        if (this.charCode(CharCode.Colon)) {
+          if (!this.string("ssr")) {
+            throw new TemplateParserError("Expected a 'ssr' keyword.", this.e, this.i);
+          }
+          key = IDirectiveType.Server;
+        }
+        if (!this.charCode(CharCode.EqualsTo)) {
+          throw new TemplateParserError("Expected a '=' character.", this.e, this.i);
+        }
         const value = this.expr();
         if (value === -1) {
-          throw new TemplateParserError("Expected an attribute directive expression.", this.e, this.i);
+          throw new TemplateParserError("Expected an element directive expression.", this.e, this.i);
         }
         properties.push({
           type: IPropertyType.Directive,
-          key: null,
+          key,
           value,
           hoist: false,
         });

@@ -4,7 +4,7 @@ import { renderToString } from "ivi/server";
 import { htm } from "../render.js";
 
 describe("ssr: template/directive", () => {
-  const T = (d: () => void) => htm`<div ${d} />`;
+  const T = (d: () => void) => htm`<div &=${d} />`;
 
   test(`should ignore`, () => {
     let _i = 0;

@@ -2,8 +2,11 @@ import { deepStrictEqual, } from "node:assert";
 import { describe, test } from "node:test";
 import { parseTemplate } from "../parser.js";
 import {
-  INodeType, INodeText, INodeExpr, INodeElement, ITemplateType, INode,
-  IProperty, IPropertyType, IPropertyAttribute, IPropertyValue, IPropertyDOMValue, IPropertyStyle, IPropertyEvent, IPropertyDirective,
+  type INodeText, type INodeExpr, type INodeElement, type INode,
+  type IProperty, type IPropertyAttribute, type IPropertyValue,
+  type IPropertyDOMValue, type IPropertyStyle, type IPropertyEvent,
+  type IPropertyDirective,
+  INodeType, ITemplateType, IPropertyType, IDirectiveType,
 } from "ivi/template/ir";
 
 const _ = void 0;
@@ -43,9 +46,12 @@ const EVENT = (key: string, value: number): IPropertyEvent => ({
   hoist: false,
 });
 
-const DIRECTIVE = (value: number): IPropertyDirective => ({
+const DIRECTIVE = (
+  value: number,
+  key: IDirectiveType = IDirectiveType.Client,
+): IPropertyDirective => ({
   type: IPropertyType.Directive,
-  key: null,
+  key,
   value,
   hoist: false,
 });
@@ -563,7 +569,7 @@ describe("@ivi/tpl/parser", () => {
   test(`directive`, () => {
     deepStrictEqual(
       parseTemplate(
-        [`div $`, ``],
+        [`div &=`, ``],
         ITemplateType.Htm,
         preventHoist,
       ),
@@ -572,6 +578,24 @@ describe("@ivi/tpl/parser", () => {
         children: [
           E("div", [
             DIRECTIVE(0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`ssr directive`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [`div &:ssr=`, ``],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("div", [
+            DIRECTIVE(0, IDirectiveType.Server),
           ]),
         ],
       },

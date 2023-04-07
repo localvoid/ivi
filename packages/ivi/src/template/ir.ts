@@ -27,6 +27,11 @@ export const enum IPropertyType {
   Directive = 5,
 }
 
+export const enum IDirectiveType {
+  Client = 0,
+  Server = 1,
+}
+
 export interface IPropertyAttribute {
   readonly type: IPropertyType.Attribute;
   readonly key: string;
@@ -64,7 +69,7 @@ export interface IPropertyEvent {
 
 export interface IPropertyDirective {
   readonly type: IPropertyType.Directive;
-  readonly key: null;
+  readonly key: IDirectiveType;
   readonly value: number;
   readonly hoist: boolean;
 }

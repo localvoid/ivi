@@ -110,7 +110,8 @@ htm`
 - [`div ~name=${expr}`](#styles) - Dynamic style `element.style.setProperty(name, expr)`.
 - [`div @name=${expr}`](#events) - Event `element.addEventListener(name, expr)`.
 - [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`.
-- [`div $${directive}`](#directives) - Directive `directive(element)`.
+- [`div &=${directive}`](#directives) - Client-Side Directive `directive(element)`.
+- [`div &:ssr=${directive}`](#directives) - Server-Side Directive `directive(element, hydrate)`.
 
 Element properties can be declared on the same line as element or with an
 indentation level.
@@ -222,13 +223,14 @@ Text content value should have a string or a number type.
 
 ### Directives
 
-- `div $${directive}` - Directive `directive(element)`
+- `div &=${directive}` - Client-Side Directive `directive(element)`
+- `div &:ssr=${directive}` - Server-Side Directive `directive(element, hydrate)`
 
 Directive is a function that is invoked each time template is updated and
 receives a DOM element associated with a directive:
 
 ```ts
-type ElementDirective = <E extends Element>(element: E) => void;
+type ElementDirective = <E extends Element>(element: E, hydrate?: true) => void;
 ```
 
 Directive function is invoked only when template is created with a
@@ -242,7 +244,7 @@ const Example = component((c) => {
   };
   return () => htm`
     div.outer
-      div.inner $${onCreated}
+      div.inner &=${onCreated}
   `;
 });
 ```
@@ -268,7 +270,7 @@ function createStatefulDirective() {
 const Example = component((c) => {
   const directive = createStatefulDirective();
   return (i) => htm`
-    div $${directive(i)}
+    div &=${directive(i)}
   `;
 });
 ```
