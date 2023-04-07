@@ -1,6 +1,6 @@
 # [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE)
 
-ivi is a JavaScript library that enables you to create dynamic user interfaces using template literals with embedded JavaScript expressions. It identifies the static and dynamic parts of your templates and efficiently updates only the changed portions. ivi has a small memory footprint, supports lightweight components, Server-Side Rendering, and Client-Side Hydration, all of which can help improve the performance and efficiency of your web application.
+ivi is a JavaScript library that enables you to create dynamic user interfaces using template literals with embedded JavaScript expressions. It identifies the static and dynamic parts of your templates and efficiently updates only the changed parts. ivi has a small memory footprint, supports lightweight components, Server-Side Rendering, and Client-Side Hydration, all of which can help improve the performance and efficiency of your web application.
 
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
@@ -58,9 +58,10 @@ and doesn't generate any additional code for hydration.
     - [HTML Template Language](#html-template-language)
     - [ivi Template Language](#ivi-template-language)
   - [Expressions](#expressions)
-  - [Conditionals](#conditionals)
-  - [Arrays](#arrays)
-  - [Dynamic Lists](#dynamic-lists)
+    - [HTML Template Language Syntax](#html-template-language-syntax)
+    - [Conditionals](#conditionals)
+    - [Arrays](#arrays)
+    - [Dynamic Lists](#dynamic-lists)
   - [Components](#components)
     - [Stateful Components](#stateful-components)
     - [Stateless Components](#stateless-components)
@@ -256,7 +257,7 @@ const Example = component((c) => {
 
 ### Expressions
 
-In ivi templates, you can include dynamic content called expressions. An expression is just a piece of JavaScript code that gets evaluated when the template is rendered. Whatever value the expression produces at that time will be included in the final rendered template.
+In ivi templates, you can include dynamic content called expressions. An expression is just a piece of JavaScript code that gets evaluated when template is rendered. Whatever value an expression produces at that time will be included in the final rendered template.
 
 ```js
 htm`
@@ -265,11 +266,27 @@ htm`
 </div>`;
 ```
 
+#### HTML Template Language Syntax
+
+HTML Template Language supports additional syntax to work with DOM properties, events, etc.
+
+- `<div name="value" />` - Static attribute.
+- `<div name />` - Static attribute.
+- `<div name=${expr} />` - Dynamic attribute `element.setAttribute(name, expr)`.
+- `<div .name=${expr} />` - Property `element[name] = expr`.
+- `<div *name=${expr} />` - Property `element[name] = expr`, diffs against a DOM value.
+- `<div ~name="value" />` - Static style `<div style="name:value;">`.
+- `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`.
+- `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`.
+- `<div ${directive} />` - Client-Side Element Directive `directive(element)`.
+- `<div &=${directive} />` - Client-Side Element Directive `directive(element)`.
+- `<div &:ssr=${directive} />` - Element Directive that works during Client-Side and Server-Side Rendering `directive(element, hydrate)`.
+
 #### Conditionals
 
 You can use regular JavaScript expressions in your templates, which means you can use any javascript control flow constructs like conditional operators, function calls, and if or switch statements to generate dynamic content based on runtime conditions.
 
-This means you can create templates with complex logic that conditionally renders different content based on what's happening in your application. You can even nest template expressions inside one another to build up more complex templates, and you can store the results of templates in variables to use them later in your code.
+This means you can create templates with complex logic that conditionally renders different content based on what's happening in your application. You can nest template expressions inside one another to build up more complex templates, and you can store the results of templates in variables to use them later in your code.
 
 ```js
 const Example = component((c) => {
@@ -630,7 +647,7 @@ function getProps = <P>(component: Component<P>): P;
 #### **`invalidate()`**
 
 ```ts
-function invalidate(c: Component): void;
+function invalidate(component: Component): void;
 ```
 
 `invalidate` invalidates component and schedules an update.
@@ -640,7 +657,10 @@ function invalidate(c: Component): void;
 #### **`useUnmount()`**
 
 ```ts
-function useUnmount(component: Component, hook: () => void): void;
+function useUnmount(
+  component: Component,
+  hook: () => void,
+): void;
 ```
 
 Adds an unmount hook.
@@ -790,6 +810,25 @@ function context = <T>(): [
 
 `provider` function creates stateless context nodes.
 
+```js
+// Creates a getter and provider functions.
+const [getContextValue, contextValueProvider] = context();
+
+const Example = component((c) => {
+  return () => htm`
+    <h1>Hello ${getContextValue(c)}</h1>
+  `;
+});
+
+update(
+  createRoot(document.body),
+  contextValueProvider(
+    "World",
+    Example(),
+  ),
+);
+```
+
 ### Element Directive
 
 ```ts
@@ -801,8 +840,6 @@ type ElementDirective = <E extends Element>(
 
 `ElementDirective` is an escape hatch that allows extending ivi rendering
 algorithm.
-
-
 
 ### DOM Utilities
 
@@ -944,12 +981,17 @@ function escapeHTMLText(str: string): string;
 ```js
 const Example = component(() => {
   const _onTouchDown = (ev) => {};
-  const onTouchDown = (element) => {
-    element.addEventListener("touchdown", _onTouchDown, { passive: true });
+
+  const addPassiveTouchDown = (element) => {
+    element.addEventListener(
+      "touchdown",
+      _onTouchDown,
+      { passive: true },
+    );
   };
 
   return () => htm`
-    <div ${onTouchDown}></div>
+    <div ${addPassiveTouchDown}></div>
   `;
 });
 ```
