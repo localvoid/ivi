@@ -11,6 +11,7 @@ export interface TElement {
   readonly props: TProperty[] | null;
   readonly style: TStyle | null;
   readonly children: TNode[] | number | null;
+  readonly directives: number[] | null;
 }
 
 export const enum TFlags {

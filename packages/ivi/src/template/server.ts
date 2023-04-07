@@ -1,6 +1,6 @@
 import {
   type INode, type INodeElement, type ITemplate, type IProperty,
-  INodeType, IPropertyType,
+  INodeType, IPropertyType, IDirectiveType,
 } from "./ir.js";
 import {
   type SNode, SNodeFlags, normalizeTemplate, createSNode, isVoidElement,
@@ -80,6 +80,7 @@ const createTElement = (
 
   let innerHTML: number | undefined;
   let suffix: string;
+  let directives: number[] | null = null;
   let children: TNode[] | number | null = null;
   let props: TProperty[] | null = null;
   let style: TStyle | null = null;
@@ -146,6 +147,15 @@ const createTElement = (
         } else {
           styleDynamic = pushProp(styleDynamic, `${key}:`, 0, exprMap.get(value)!);
         }
+      } else if (type === IPropertyType.Directive) {
+        if (key === IDirectiveType.Server) {
+          const j = exprMap.get(value)!;
+          if (directives === null) {
+            directives = [j];
+          } else {
+            directives.push(j);
+          }
+        }
       }
     }
     if (styleDynamic !== null) {
@@ -195,6 +205,7 @@ const createTElement = (
     props,
     style,
     children,
+    directives,
   };
 };
 
@@ -241,6 +252,9 @@ const isSerializableDynamicProp = (tag: string, prop: IProperty): boolean => {
   }
   if (type === IPropertyType.Style) {
     return true;
+  }
+  if (type === IPropertyType.Directive) {
+    return (prop.key === IDirectiveType.Server);
   }
   return false;
 };

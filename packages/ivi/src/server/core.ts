@@ -171,6 +171,7 @@ export const _$E = (
   props: TProperty[] | null,
   style: TStyle | null,
   children: TNode[] | number | null,
+  directives: number[] | null,
 ): TElement => ({
   flags,
   prefix,
@@ -178,6 +179,7 @@ export const _$E = (
   props,
   style,
   children,
+  directives,
 });
 
 export const _$P = (
@@ -280,9 +282,10 @@ const renderTElement = (exprs: any[], e: TElement) => {
     ? []
     : void 0;
   const suffix = e.suffix;
-  const children = e.children;
   const props = e.props;
   const style = e.style;
+  const directives = e.directives;
+  let children: number | TNode[] | null | string = e.children;
   let openElement = e.prefix;
 
   if (props !== null) {
@@ -328,6 +331,25 @@ const renderTElement = (exprs: any[], e: TElement) => {
     }
     if (s !== "") {
       openElement += ' style="' + s + '"';
+    }
+  }
+  if (directives !== null) {
+    for (let i = 0; i < directives.length; i++) {
+      const v = exprs[directives[i]]();
+      if (v !== void 0) {
+        if (typeof v === "string") {
+          openElement += " " + v;
+        } else {
+          const attrs = v.a;
+          const child = v.c;
+          if (attrs !== void 0) {
+            openElement += " " + attrs;
+          }
+          if (child !== void 0) {
+            children = child;
+          }
+        }
+      }
     }
   }
 
@@ -380,7 +402,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
 
     ctx.t = prevT + openElement + ctx.t + suffix;
     ctx.s = (prevS + 1) & RenderState.OffsetMask;
-  } else { // textContent / innerHTML / <textarea .value={} />
+  } else if (typeof children === "number") { // textContent / innerHTML / <textarea .value={} />
     const v = exprs[children];
     ctx.t += openElement + ">";
     if (v != null) {
@@ -393,6 +415,8 @@ const renderTElement = (exprs: any[], e: TElement) => {
       }
     }
     ctx.t += suffix;
+  } else { // element directive
+    ctx.t += openElement + ">" + children + suffix;
   }
 };
 

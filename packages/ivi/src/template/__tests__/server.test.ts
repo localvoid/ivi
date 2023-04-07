@@ -4,8 +4,8 @@ import { compileTemplate } from "../server.js";
 import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
   type IPropertyAttribute, type IPropertyDOMValue, type IPropertyValue,
-  type ITemplate, type IPropertyStyle,
-  INodeType, IPropertyType, ITemplateType,
+  type ITemplate, type IPropertyStyle, type IPropertyDirective,
+  INodeType, IPropertyType, ITemplateType, IDirectiveType,
 } from "../ir.js";
 import { TFlags, TNode } from "../../server/template.js";
 
@@ -65,6 +65,13 @@ const styl = (key: string, value: string | number): IPropertyStyle => ({
   hoist: false,
 });
 
+const dir = (value: number, ssr?: boolean): IPropertyDirective => ({
+  type: IPropertyType.Directive,
+  key: ssr ? IDirectiveType.Server : IDirectiveType.Client,
+  value,
+  hoist: false,
+});
+
 describe("server compiler", () => {
   test(`<div/>`, () => {
     deepStrictEqual(
@@ -79,6 +86,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -101,6 +109,7 @@ describe("server compiler", () => {
           children: [
             "a",
           ],
+          directives: null,
         },
       ]),
     );
@@ -123,6 +132,7 @@ describe("server compiler", () => {
           children: [
             0,
           ],
+          directives: null,
         },
       ], [0]),
     );
@@ -147,6 +157,7 @@ describe("server compiler", () => {
             0,
             "a",
           ],
+          directives: null,
         },
       ], [0]),
     );
@@ -171,6 +182,7 @@ describe("server compiler", () => {
             "a",
             0,
           ],
+          directives: null,
         },
       ], [0]),
     );
@@ -199,9 +211,11 @@ describe("server compiler", () => {
               props: null,
               style: null,
               children: null,
+              directives: null,
             },
             0,
           ],
+          directives: null,
         },
       ], [0]),
     );
@@ -234,9 +248,11 @@ describe("server compiler", () => {
               children: [
                 0,
               ],
+              directives: null,
             },
             1,
           ],
+          directives: null,
         },
       ], [0, 1]),
     );
@@ -270,8 +286,10 @@ describe("server compiler", () => {
               children: [
                 1,
               ],
+              directives: null,
             },
           ],
+          directives: null,
         },
       ], [0, 1]),
     );
@@ -292,6 +310,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -312,6 +331,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -333,6 +353,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -355,6 +376,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -378,6 +400,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -401,6 +424,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -425,6 +449,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0, 1]),
     );
@@ -445,6 +470,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -466,6 +492,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -486,6 +513,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -507,6 +535,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -529,6 +558,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: null,
+          directives: null,
         },
       ]),
     );
@@ -555,6 +585,7 @@ describe("server compiler", () => {
             ],
           },
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -581,6 +612,7 @@ describe("server compiler", () => {
             ],
           },
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -608,6 +640,7 @@ describe("server compiler", () => {
             ],
           },
           children: null,
+          directives: null,
         },
       ], [0, 1]),
     );
@@ -633,6 +666,7 @@ describe("server compiler", () => {
             dyn: [{ prefix: `top:`, flags: 0, i: 0 }],
           },
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -658,6 +692,7 @@ describe("server compiler", () => {
             dyn: [{ prefix: `top:`, flags: 0, i: 0 }]
           },
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -680,6 +715,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -702,6 +738,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -724,6 +761,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -744,6 +782,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: 0,
+          directives: null,
         },
       ], [0]),
     );
@@ -764,6 +803,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: 0,
+          directives: null,
         },
       ], [0]),
     );
@@ -786,6 +826,7 @@ describe("server compiler", () => {
           ],
           style: null,
           children: null,
+          directives: null,
         },
       ], [0]),
     );
@@ -806,6 +847,7 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: 0,
+          directives: null,
         },
       ], [0]),
     );
@@ -826,8 +868,73 @@ describe("server compiler", () => {
           props: null,
           style: null,
           children: 0,
+          directives: null,
         },
       ], [0]),
+    );
+  });
+
+  test(`<div {0}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          dir(0),
+        ]),
+      ])),
+      r([
+        {
+          flags: 0,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: null,
+          style: null,
+          children: null,
+          directives: null,
+        },
+      ], []),
+    );
+  });
+
+  test(`<div &:ssr={0}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          dir(0, true),
+        ]),
+      ])),
+      r([
+        {
+          flags: 0,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: null,
+          style: null,
+          children: null,
+          directives: [0],
+        },
+      ], [0]),
+    );
+  });
+
+  test(`<div &:ssr={0} &:ssr={1}></div>`, () => {
+    deepStrictEqual(
+      c(h([
+        el("div", [
+          dir(0, true),
+          dir(1, true),
+        ]),
+      ])),
+      r([
+        {
+          flags: 0,
+          prefix: `<div`,
+          suffix: `</div>`,
+          props: null,
+          style: null,
+          children: null,
+          directives: [0, 1],
+        },
+      ], [0, 1]),
     );
   });
 });

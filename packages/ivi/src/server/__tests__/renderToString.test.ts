@@ -3,7 +3,7 @@ import { describe, test } from "node:test";
 import { TFlags } from "../template.js";
 import { renderToString, _$T, _$P, _$S, _$t, _$E } from "../core.js";
 
-describe("render to string", () => {
+describe("renderToString", () => {
   test(`<div></div>`, () => {
     strictEqual(
       renderToString(
@@ -12,6 +12,7 @@ describe("render to string", () => {
             0,
             `<div`,
             `</div>`,
+            null,
             null,
             null,
             null,
@@ -35,6 +36,7 @@ describe("render to string", () => {
             [
               "a",
             ],
+            null,
           ),
         ])),
       ),
@@ -60,8 +62,10 @@ describe("render to string", () => {
                 null,
                 null,
                 null,
+                null,
               ),
             ],
+            null,
           ),
         ])),
       ),
@@ -88,8 +92,10 @@ describe("render to string", () => {
                 null,
                 null,
                 null,
+                null,
               ),
             ],
+            null,
           ),
         ])),
       ),
@@ -115,9 +121,11 @@ describe("render to string", () => {
                 null,
                 null,
                 null,
+                null,
               ),
               "b",
             ],
+            null,
           ),
         ])),
       ),
@@ -144,9 +152,11 @@ describe("render to string", () => {
                 null,
                 null,
                 null,
+                null,
               ),
               "b",
             ],
+            null,
           ),
         ])),
       ),
@@ -172,6 +182,7 @@ describe("render to string", () => {
                 null,
                 null,
                 null,
+                null,
               ),
               _$E(
                 0,
@@ -180,8 +191,10 @@ describe("render to string", () => {
                 null,
                 null,
                 null,
+                null,
               ),
             ],
+            null,
           ),
         ])),
       ),
@@ -209,8 +222,10 @@ describe("render to string", () => {
                 [
                   "c"
                 ],
+                null,
               ),
             ],
+            null,
           ),
         ])),
       ),
@@ -232,6 +247,7 @@ describe("render to string", () => {
               [
                 0,
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -256,6 +272,7 @@ describe("render to string", () => {
                 "a",
                 0,
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -280,6 +297,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -305,6 +323,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -333,9 +352,11 @@ describe("render to string", () => {
                   null,
                   null,
                   null,
+                  null,
                 ),
                 0,
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -365,8 +386,10 @@ describe("render to string", () => {
                   null,
                   null,
                   null,
+                  null,
                 ),
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -396,9 +419,11 @@ describe("render to string", () => {
                   null,
                   null,
                   null,
+                  null,
                 ),
                 0,
               ],
+              null,
             ),
           ]),
           ["0"],
@@ -423,6 +448,7 @@ describe("render to string", () => {
                 0,
                 1,
               ],
+              null,
             ),
           ]),
           ["0", "1"],
@@ -448,6 +474,7 @@ describe("render to string", () => {
                 1,
                 "b",
               ],
+              null,
             ),
           ]),
           ["0", "1"],
@@ -472,6 +499,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -498,6 +526,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -524,6 +553,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -550,6 +580,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -576,6 +607,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -585,6 +617,7 @@ describe("render to string", () => {
                 0,
                 `<b`,
                 `</b>`,
+                null,
                 null,
                 null,
                 null,
@@ -613,6 +646,7 @@ describe("render to string", () => {
                 1,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -639,6 +673,7 @@ describe("render to string", () => {
               [
                 0,
               ],
+              null,
             ),
           ]),
           [
@@ -665,6 +700,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -690,6 +726,7 @@ describe("render to string", () => {
               [
                 0,
               ],
+              null,
             ),
           ]),
           [
@@ -716,6 +753,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -741,6 +779,7 @@ describe("render to string", () => {
               [
                 0,
               ],
+              null,
             ),
           ]),
           [
@@ -767,6 +806,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -790,6 +830,7 @@ describe("render to string", () => {
               [
                 _$P(` a`, 0, 0),
               ],
+              null,
               null,
               null,
             ),
@@ -817,6 +858,7 @@ describe("render to string", () => {
               ],
               null,
               null,
+              null,
             ),
           ]),
           [
@@ -840,6 +882,7 @@ describe("render to string", () => {
               [
                 _$P(` a`, 0, 0),
               ],
+              null,
               null,
               null,
             ),
@@ -868,6 +911,7 @@ describe("render to string", () => {
               ],
               null,
               null,
+              null,
             ),
           ]),
           [
@@ -894,6 +938,7 @@ describe("render to string", () => {
                 "",
                 [_$P(`a:`, 0, 0)],
               ),
+              null,
               null,
             ),
           ]),
@@ -924,6 +969,7 @@ describe("render to string", () => {
                 ],
               ),
               null,
+              null,
             ),
           ]),
           [
@@ -951,6 +997,7 @@ describe("render to string", () => {
                 0,
                 "b",
               ],
+              null,
             ),
           ]),
           [
@@ -968,6 +1015,7 @@ describe("render to string", () => {
                       0,
                       "c",
                     ],
+                    null,
                   ),
                 ]),
                 ["1"],
@@ -992,6 +1040,7 @@ describe("render to string", () => {
               null,
               null,
               0,
+              null,
             ),
           ]),
           [
@@ -1015,6 +1064,7 @@ describe("render to string", () => {
               null,
               null,
               0,
+              null,
             ),
           ]),
           [
@@ -1038,6 +1088,7 @@ describe("render to string", () => {
               null,
               null,
               0,
+              null,
             ),
           ]),
           [
@@ -1061,6 +1112,7 @@ describe("render to string", () => {
               null,
               null,
               0,
+              null,
             ),
           ]),
           [
@@ -1084,6 +1136,7 @@ describe("render to string", () => {
               [
                 _$P(` value`, 0, 0),
               ],
+              null,
               null,
               null,
             ),
@@ -1111,6 +1164,7 @@ describe("render to string", () => {
               ],
               null,
               null,
+              null,
             ),
           ]),
           [
@@ -1136,6 +1190,7 @@ describe("render to string", () => {
               ],
               null,
               null,
+              null,
             ),
           ]),
           [
@@ -1144,6 +1199,108 @@ describe("render to string", () => {
         ),
       ),
       `<input>`
+    );
+  });
+
+  test(`<div &:ssr={undefined} />`, () => {
+    const dir = () => void 0;
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              null,
+              [0],
+            ),
+          ]),
+          [
+            dir,
+          ],
+        ),
+      ),
+      `<div></div>`
+    );
+  });
+
+  test(`<div &:ssr={"a"} />`, () => {
+    const dir = () => "a";
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              null,
+              [0],
+            ),
+          ]),
+          [
+            dir,
+          ],
+        ),
+      ),
+      `<div a></div>`
+    );
+  });
+
+  test(`<div &:ssr={{ a: "a", c: "c" }} />`, () => {
+    const dir = () => ({ a: "a", c: "c" });
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              null,
+              [0],
+            ),
+          ]),
+          [
+            dir,
+          ],
+        ),
+      ),
+      `<div a>c</div>`
+    );
+  });
+
+  test(`<div &:ssr={"a"} &:ssr={"b"} />`, () => {
+    const dirA = () => "a";
+    const dirB = () => "b";
+    strictEqual(
+      renderToString(
+        _$t(
+          _$T([
+            _$E(
+              0,
+              `<div`,
+              `</div>`,
+              null,
+              null,
+              null,
+              [0, 1],
+            ),
+          ]),
+          [
+            dirA,
+            dirB,
+          ],
+        ),
+      ),
+      `<div a b></div>`
     );
   });
 });
