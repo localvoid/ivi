@@ -1932,7 +1932,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
       } else {
         const descriptor = v.d;
         const props = v.p;
-        const type = descriptor.f & (Flags.Template | Flags.Component);
+        const type = descriptor.f & Flags.TypeMask;
         if (type === Flags.Template) {
           const ctx = RENDER_CONTEXT;
           const tplData = (descriptor as TemplateDescriptor).p1;
@@ -2027,14 +2027,18 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           sNode.c = _hydrate(sNode, renderFn(props));
           sNode.s1 = renderFn;
           return sNode;
+        } else if (type === Flags.List) {
+          return _hydrateList(
+            parentSNode,
+            Flags.List,
+            (props as ListProps).v,
+            v,
+          );
         }
-        // List
-        return _hydrateList(
-          parentSNode,
-          Flags.List,
-          (props as ListProps).v,
-          v,
-        );
+        // Context
+        const sNode = createSNode(Flags.Context, v, null, parentSNode, null);
+        sNode.c = _hydrate(sNode, (props as ContextProps).c);
+        return sNode;
       }
     } else if (v !== "") { // Text
       const ctx = RENDER_CONTEXT;
