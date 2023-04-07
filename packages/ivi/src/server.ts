@@ -22,3 +22,4 @@ export {
 export {
   eventDispatcher, findDOMNode, containsDOMElement, hasDOMElement,
 } from "./server/utils.js";
+export { escapeHTMLAttribute, escapeHTMLText } from "./shared/escape.js";

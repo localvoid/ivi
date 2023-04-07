@@ -1,7 +1,7 @@
 import {
   type TNode, type TProperty, type TStyle, type TElement, TFlags,
 } from "./template.js";
-import { escapeAttr, escapeText } from "./escape.js";
+import { escapeHTMLAttribute, escapeHTMLText } from "../shared/escape.js";
 
 export const EMPTY_ARRAY: any[] = [];
 
@@ -260,7 +260,7 @@ const renderNode = (v: VAny) => {
       renderText(
         typeof v === "number"
           ? "" + v
-          : escapeText(v),
+          : escapeHTMLText(v),
       );
     }
   }
@@ -299,7 +299,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
               openElement += prop.prefix;
             }
           } else {
-            openElement += prop.prefix + '="' + escapeAttr(value) + '"';
+            openElement += prop.prefix + '="' + escapeHTMLAttribute(value) + '"';
           }
         } else if (typeof value === "boolean") {
           if (value === true) {
@@ -321,7 +321,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
         if (value != null) {
           if (typeof value === "string") {
             if (value !== "") {
-              s += prop.prefix + escapeAttr(value) + ';';
+              s += prop.prefix + escapeHTMLAttribute(value) + ';';
             }
           } else if (value !== false) {
             s += prop.prefix + value + ';';
@@ -408,7 +408,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
     if (v != null) {
       if (typeof v === "string") {
         ctx.t += (flags & TFlags.EscapeInnerHTML)
-          ? escapeText(v)
+          ? escapeHTMLText(v)
           : v;
       } else if (v !== false) {
         ctx.t += v;

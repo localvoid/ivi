@@ -1,4 +1,4 @@
-export const escapeAttr = (s: string): string => {
+export const escapeHTMLAttribute = (s: string): string => {
   if (s.length === 0) {
     return s;
   }
@@ -34,7 +34,7 @@ export const escapeAttr = (s: string): string => {
   return out;
 };
 
-export const escapeText = (s: string): string => {
+export const escapeHTMLText = (s: string): string => {
   if (s.length === 0) {
     return s;
   }

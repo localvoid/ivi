@@ -32,3 +32,4 @@ export {
 export {
   preventUpdates, strictEq, shallowEq, shallowEqArray,
 } from "./shared/equal.js";
+export { escapeHTMLAttribute, escapeHTMLText } from "./shared/escape.js";
