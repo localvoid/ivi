@@ -3,6 +3,48 @@ import {
   INodeType, IPropertyType
 } from "./ir.js";
 
+export const normalizeTemplate = (nodes: INode[]): INode[] => {
+  const n: INode[] = [];
+  let text = "";
+  for (let i = 0; i < nodes.length; i++) {
+    const c = nodes[i];
+    switch (c.type) {
+      case INodeType.Element:
+        if (text !== "") {
+          n.push({
+            type: INodeType.Text,
+            value: text,
+          });
+          text = "";
+        }
+        n.push({
+          ...c,
+          children: normalizeTemplate(c.children),
+        });
+        break;
+      case INodeType.Expr:
+        if (text !== "") {
+          n.push({
+            type: INodeType.Text,
+            value: text,
+          });
+          text = "";
+        }
+        n.push(c);
+        break;
+      case INodeType.Text:
+        text += c.value;
+    }
+  }
+  if (text !== "") {
+    n.push({
+      type: INodeType.Text,
+      value: text,
+    });
+  }
+  return n;
+};
+
 export const enum SNodeFlags {
   /** Has expressions in the subtree. */
   HasExpressions = 1,

@@ -3,7 +3,7 @@ import {
   INodeType, IPropertyType,
 } from "./ir.js";
 import {
-  type SNode, SNodeFlags, createSNode, isVoidElement,
+  type SNode, SNodeFlags, normalizeTemplate, createSNode, isVoidElement,
 } from "./shared.js";
 import {
   type TElement, type TNode, type TProperty, type TStyle,
@@ -16,9 +16,9 @@ export interface TemplateCompilationArtifact {
 }
 
 export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => {
-  const exprMap = createExprMap(tpl);
   const roots = [];
-  const children = tpl.children;
+  const children = normalizeTemplate(tpl.children);
+  const exprMap = createExprMap(children);
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     switch (child.type) {
@@ -41,9 +41,8 @@ export const compileTemplate = (tpl: ITemplate): TemplateCompilationArtifact => 
   };
 };
 
-const createExprMap = (tpl: ITemplate): Map<number, number> => {
+const createExprMap = (children: INode[]): Map<number, number> => {
   const exprMap = new Map<number, number>();
-  const children = tpl.children;
   for (let i = 0; i < children.length; i++) {
     _createExprMap(exprMap, children[i]);
   }
