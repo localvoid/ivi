@@ -276,7 +276,7 @@ const renderText = (text: string) => {
 const renderTElement = (exprs: any[], e: TElement) => {
   const ctx = RENDER_CONTEXT;
   const flags = e.flags;
-  const offsets: number[] | undefined = (flags & TFlags.GenerateOffsets)
+  const offsets: string[] | undefined = (flags & TFlags.GenerateOffsets)
     ? []
     : void 0;
   const suffix = e.suffix;
@@ -350,14 +350,14 @@ const renderTElement = (exprs: any[], e: TElement) => {
       if (typeof child === "object") { // Element
         if (pushOffset) {
           pushOffset = false;
-          offsets!.push(offset);
+          offsets!.push(offset.toString(16));
           offset = 0;
         }
         renderTElement(exprs, child);
       } else if (typeof child === "string") { // Text
         if (pushOffset) {
           pushOffset = false;
-          offsets!.push(offset);
+          offsets!.push(offset.toString(16));
           offset = 0;
         }
         renderText(child);
