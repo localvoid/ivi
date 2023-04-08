@@ -1,6 +1,6 @@
 {
   "name": "@ivi/babel-plugin",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0",
   "type": "module",
   "exports": {
     "./client": "./client.js",
