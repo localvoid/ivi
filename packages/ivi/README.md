@@ -1,10 +1,10 @@
 # [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE)
 
-ivi is a JavaScript library that enables you to create dynamic user interfaces using template literals with embedded JavaScript expressions. It identifies the static and dynamic parts of your templates and efficiently updates only the changed parts. ivi has a small memory footprint, supports lightweight components, Server-Side Rendering, and Client-Side Hydration, all of which can help improve the performance and efficiency of your web application.
+ivi is a JavaScript library that enables you to create dynamic user interfaces using template literals with embedded JavaScript expressions. It identifies static and dynamic parts of your templates and efficiently updates only changed parts. ivi has a small memory footprint, supports lightweight stateful components, Server-Side Rendering, and Client-Side Hydration, all of which can help improve performance and efficiency of your web application.
 
 - `f(state) => UI`
 - The [basic example](#examples) is just 2.7KB.
-- [Vite](#vite) / [Astro](#astro) plugins.
+- [Vite](#vite) / [Astro](#astro) / [Rollup](#rollup) plugins.
 - [Precompiled](#template-optimizations) templates optimized for size and
 performance.
 - [Small memory footprint](#internal-data-structures).
@@ -30,15 +30,12 @@ const Example = component((c) => {
 });
 
 update(
-  createRoot(document.getElementById("app")),
+  createRoot(document.body),
   Example(),
 );
 ```
 
-The size of the precompiled example above is just 2.7KB. It includes entire
-runtime for declarative UI rendering. Precompiled templates are
-[optimized](#template-optimizations) for code size, cold-start performance
-and doesn't generate any additional code for hydration.
+The size of the precompiled example above is just 2.7KB (minified+brotli). It includes entire runtime for declarative UI rendering. Precompiled templates are [optimized](#template-optimizations) for code size, cold-start performance and doesn't generate any additional code for hydration.
 
 - [Astro+ivi HackerNews Client (SSR + Partial Hydration)](https://github.com/localvoid/astro-ivi-hackernews) &middot; [Live Demo](https://astro-ivi-hackernews.netlify.app/)
 - [ivi REPL](https://github.com/localvoid/ivi-repl) &middot; [Live Demo](https://localvoid.github.io/ivi-repl/)
@@ -127,15 +124,11 @@ and doesn't generate any additional code for hydration.
 
 ## Setup
 
-ivi templates will work without any precompilation for Client-Side Rendering,
-but it is highly recommended to use precompilation to improve performance and
-reduce code size.
+ivi templates will work without any precompilation for Client-Side Rendering,but it is highly recommended to use precompilation to improve performance and reduce code size.
 
 ### Vite
 
-`"@ivi/vite-plugin"` package provides [Vite](https://vitejs.dev/) plugin that
-supports Client-Side Rendering and
-[Server-Side Rendering](https://vitejs.dev/guide/ssr.html).
+`"@ivi/vite-plugin"` package provides [Vite](https://vitejs.dev/) plugin that supports Client-Side Rendering and [Server-Side Rendering](https://vitejs.dev/guide/ssr.html).
 
 ```ts
 // vite.config.mjs
@@ -149,8 +142,7 @@ export default defineConfig({
 
 ### Astro
 
-`"@ivi/astro"` package provides [Astro](https://astro.build/) integration plugin
-that supports Server-Side Rendering and Client-Side Hydration.
+`"@ivi/astro"` package provides [Astro](https://astro.build/) integration plugin that supports Server-Side Rendering and Client-Side Hydration.
 
 ```ts
 // astro.config.mjs
@@ -165,10 +157,9 @@ export default defineConfig({
 
 ### Rollup
 
-`"@ivi/rollup-plugin"` package provides
-[Rollup](https://rollupjs.org/) plugin that supports Client-Side Rendering only.
+`"@ivi/rollup-plugin"` package provides [Rollup](https://rollupjs.org/) plugin that supports Client-Side Rendering only.
 
-*IMPORTANT: Rollup plugin doesn't work with Vite.*
+*IMPORTANT: Rollup plugin doesn't work with Vite in DEV mode.*
 
 ```js
 // rollup.config.mjs
@@ -185,22 +176,19 @@ export default {
 
 ### Babel Plugin
 
-`"@ivi/babel-plugin"` package provides babel plugins for precompiling and
-optimizing templates.
+`"@ivi/babel-plugin"` package provides babel plugins for precompiling and optimizing templates.
 
-- `"@ivi/babel-plugin/client"` plugin precompiles templates and should be
-applied in a module transformation pass for Client-Side Rendering.
+- `"@ivi/babel-plugin/client"` plugin precompiles templates and should be applied in a module transformation pass for Client-Side Rendering.
 - `"@ivi/babel-plugin/client-optimizer"` deduplicates shared data and should be applied in a chunk transformation pass for Client-Side Rendering.
-- `"@ivi/babel-plugin/server"` plugin precompiles templates for Server-Side
-Rendering.
+- `"@ivi/babel-plugin/server"` plugin precompiles templates for Server-Side Rendering.
 
 ## Declarative UI
 
 ### Templates
 
-The ivi library allows you to create HTML templates using JavaScript template literals. These literals can be tagged with either `htm` or `svg`, and are comprised of static HTML and dynamic expessions that will be evaluated at runtime, allowing for dynamic content in the template.
+The ivi library allows you to create HTML templates using JavaScript template literals. These literals can be tagged with either `htm` or `svg`, and are comprised of static HTML and dynamic expessions that will be evaluated at runtime, allowing for dynamic content in templates.
 
-When you write an ivi template expression, it does not immediately create or update the DOM. Instead, it describes the DOM structure as a `VTemplate` object. To actually create or update the DOM based on this description, you will need to pass the `VTemplate` to the [`update()`](#update) function, along with a root node where the template will be rendered.
+When you write an ivi template expression, it does not immediately create or update the DOM. Instead, it describes the DOM structure as a `VTemplate` object. To actually create or update the DOM based on this description, you will need to pass `VTemplate` object to the [`update()`](#update) function, along with a root node which will contain the rendered template.
 
 ```js
 import { createRoot, update } from "ivi";
@@ -215,14 +203,13 @@ update(
 );
 ```
 
-*The ivi library provides support for various template languages, and it's easy to create a new one. The complexity involved in compiling these templates is abstracted away in the `"ivi/template/..."` modules.*
+*The ivi library provides support for various template languages, and it's easy to create a new one. The complexity involved in compiling these templates is abstracted away in `"ivi/template/..."` modules.*
 
 #### HTML Template Language
 
 `"@ivi/htm"` package provides [HTML Template Language](https://github.com/localvoid/ivi/blob/master/packages/@ivi/htm/README.md).
 
-The ivi HTML Template Language has an HTML-like syntax with additional syntax
-for DOM properties, events and whitespace removal.
+The ivi HTML Template Language has an HTML-like syntax with additional syntax for DOM properties, events and whitespace removal.
 
 ```js
 import { htm } from "@ivi/htm";
@@ -316,7 +303,7 @@ const Example = () => htm`
 
 ivi allows components to return arrays of elements as their root nodes. This means that a component can return multiple top-level elements instead of just one.
 
-For example, a component could return an array of `<li>` elements that make up a list. When this component is used in a parent component, ivi will treat the array of `<li>` elements as a set of top-level elements, just like it would with a single root element.
+For example, a component could return an array of `<li>` elements that make up a list. When this component is rendered, ivi will treat the array of `<li>` elements as a set of top-level elements, just like it would with a single root element.
 
 This feature provides more flexibility when building complex UI components, as it allows you to create components that generate a dynamic number of top-level elements depending on their input.
 
@@ -331,7 +318,7 @@ const Example = component((c) => {
 
 When arrays are updated, stateless tree nodes are mapped onto their stateful nodes by their position in the array.
 
-When array contains a conditional expression that returns a "hole" value (`null`, `undefined` or `false`), the hole will occupy a slot in a stateful tree, so that all nodes will be correclty mapped onto their stateful nodes. E.g.
+When array contains a conditional expression that returns a "hole" value (`null`, `undefined` or `false`), the hole will occupy a slot in a stateful tree, so that all nodes will be correclty mapped onto their stateful nodes.
 
 ```js
 [
@@ -340,16 +327,15 @@ When array contains a conditional expression that returns a "hole" value (`null`
 ]
 ```
 
-In the example above, when `conditional` expression goes from a text to a hole and vice versa, `StatefulComponent` will preserve its internal state.
+In the example above, when `conditional` expression goes from a text to a "hole" and vice versa, `StatefulComponent` will preserve its internal state.
 
 When array grows or shrinks in size, stateful nodes will be created or removed at the end of an array.
 
 #### Dynamic Lists
 
-In ivi, you can render lists of items using a `map()` function that loops through an array of data and returns a list of elements. However, when list is
-updated, it is important to correctly map rendered items onto their stateful views. This means that if an item is rendered as a component that has internal state that could change as a result of user actions or external events, item should be always mapped onto the same component instance.
+In ivi, you can render lists of items using the `map()` function that loops through an array of data and returns a list of elements. However, when list is updated, it is important to correctly map rendered items onto their stateful views. This means that if an item is rendered as a component that has internal state that could change as a result of user actions or external events, it should be mapped onto the same component instance.
 
-To render dynamic lists, ivi provides a `List()` function.
+To render dynamic lists, ivi provides the [`List()`](#list-1) function.
 
 ```ts
 function List<E, K>(
@@ -362,9 +348,9 @@ function List<E, K>(
 ): VList;
 ```
 
-It creates a dynamic lists with an array of keys that uniquely identify each item in the list. When list is updated, ivi uses keys to map items onto their stateful nodes.
+It creates a dynamic list with an array of keys that uniquely identify each item in the list. When list is updated, ivi uses keys to map items onto their stateful nodes.
 
-It's important to note that when rendering a dynamic list, you should always use a unique identifier as the key. This helps ivi identify each element in the list and avoid rendering errors. If you use an index or a random value as the key, ivi may not be able to identify the correct elements in the list, which can cause errors.
+It's important to note that when rendering a dynamic list, you should always use a unique identifier as a key. This helps ivi identify each element in a list and avoid rendering errors. If you use an index or a random value as a key, ivi may not be able to identify correct elements in a list, which can cause errors.
 
 ```ts
 interface DataEntry {
@@ -396,7 +382,11 @@ Components can be either stateful or stateless. Stateful components are used whe
 Stateful components are declared with [`component()`](#component) function. It creates a factory function that produces component nodes.
 
 ```js
+// `component()` function creates a factory function for component
+// nodes of this type.
 const Example = component((c) => {
+  // When component state is initialized, it should return a render
+  // function.
   return (props) => (
     htm`<div>${props.value}</div>`
   );
@@ -404,11 +394,7 @@ const Example = component((c) => {
 
 update(
   document.body,
-  htm`
-  <div>
-    ${Example({ value: "Hello World" })}
-  </div>
-  `
+  Example({ value: "Hello World" }),
 );
 ```
 
@@ -419,6 +405,7 @@ const Example = component((c) => {
   // Internal state.
   let _counter = 0;
 
+  // Event handler.
   const increment = () => {
     // Mutate internal state.
     _counter++;
@@ -436,12 +423,10 @@ const Example = component((c) => {
 });
 ```
 
-When internal state is mutated, it doesn't trigger component updates automatically and should be manually invalidated with [`invalidate()`](#invalidate) function.
+When internal state is mutated, it doesn't trigger component updates automatically and it should be manually invalidated with [`invalidate()`](#invalidate) function.
 
 There are high-level APIs like [`useState()`](#usestate) or
-[`useReducer()`](#usereducer) that use low-level [`invalidate()`](#invalidate)
-function behind the scenes to automatically invalidate components when internal
-state is mutated:
+[`useReducer()`](#usereducer) that use the low-level [`invalidate()`](#invalidate) function behind the scenes to automatically invalidate components when internal state is mutated.
 
 ```js
 const Example = component((c) => {
@@ -478,11 +463,9 @@ const Button = (text, onClick) => htm`
 
 ### Opaque Types
 
-Opaque type hides its internal representation at boundaries between a module
-and code that works with the module.
+Opaque type hides its internal representation at boundaries between a module and code that works with the module.
 
-It is useful in use cases like Server-Side Rendering. When code is executed on
-the server, some types will have completely different internal representation.
+It is useful in use cases like Server-Side Rendering. When code is executed in the SSR context, some ivi types will have completely different internal  representation.
 
 ### Stateful Tree
 
@@ -492,8 +475,7 @@ type Root<State> = Opaque<State>;
 type Component<Props> = Opaque<Props>;
 ```
 
-> *Server-Side Rendering doesn't use stateful trees to render into a string. All
-stateful nodes will have an `undefined` value on the server.*
+> *Server-Side Rendering doesn't use stateful trees to render into a string. All stateful nodes will have an `undefined` value on the server.*
 
 ### Stateless Tree
 
@@ -521,7 +503,11 @@ type VList = Opaque;
 
 ### Root Nodes
 
+A root node is the topmost node in a stateful tree, from which all other nodes are rendered. It represents an entry point for the ivi rendering algorithm and stores a position in the DOM tree.
+
 #### **`createRoot()`**
+
+`createRoot` creates a root node that uses microtask queue for scheduling updates.
 
 ```ts
 function createRoot(
@@ -530,12 +516,14 @@ function createRoot(
 ): Root;
 ```
 
-`createRoot` creates a root node that uses microtask queue for scheduling
-updates.
+- `parentElement` - Parent DOM Element.
+- `nextNode` - Next DOM Node.
 
 > *SSR: Throws an exception.*
 
 #### **`dirtyCheck()`**
+
+`dirtyCheck` performs the dirty checking algorithm in a root subtree and updates all dirty components.
 
 ```ts
 function dirtyCheck(
@@ -544,14 +532,14 @@ function dirtyCheck(
 ): void;
 ```
 
-`dirtyCheck` performs dirty checking in a root subtree.
-
-When `forceUpdate` option is enabled, all components in a root subtree will be
-updated.
+- `root` - Root node.
+- `forceUpdate` - Force all components to update, even when they are using optimization hints to reduce updates.
 
 > *SSR: Throws an exception.*
 
 #### **`update()`**
+
+`update` updates a root subtree with a new representation.
 
 ```ts
 function update(
@@ -561,14 +549,15 @@ function update(
 ): void;
 ```
 
-`update` updates a root subtree.
-
-When `forceUpdate` option is enabled, all components in a root subtree will be
-updated.
+- `root` - Root node.
+- `v` - New representation.
+- `forceUpdate` - Force all components to update, even when they are using optimization hints to reduce updates.
 
 > *SSR: Throws an exception.*
 
 #### **`unmount()`**
+
+`unmount` unmounts a root subtree from the DOM and triggers unmount hooks in components.
 
 ```ts
 function unmount(
@@ -577,13 +566,14 @@ function unmount(
 ): void;
 ```
 
-`unmount` unmounts a root subtree.
-
-When `detach` option is enabled, root DOM nodes will be detached from the DOM.
+- `root` - Root node.
+- `detach` - Detach the topmost DOM nodes from the DOM subtree.
 
 > *SSR: Throws an exception.*
 
 #### **`hydrate()`**
+
+`hydrate` hydrates a Server-Side Rendered root subtree.
 
 ```ts
 function hydrate(
@@ -592,11 +582,14 @@ function hydrate(
 ): void;
 ```
 
-`hydrate` hydrates a root subtree.
+- `root` - Root node.
+- `v` - Current representation.
 
 > *SSR: Throws an exception.*
 
 #### **`defineRoot()`**
+
+`defineRoot` creates a root node factory that uses a custom `OnRootInvalidated` hook.
 
 ```ts
 function defineRoot(
@@ -608,13 +601,13 @@ function defineRoot<S>(
 ) : (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
 ```
 
-`defineRoot` defines a root node with a custom invalidated hook.
-
-`onInvalidate` is a custom invalidate hook.
+- `onInvalidate` - `OnRootInvalidated` hook that receives a root node and custom state associated with that root node.
 
 ### Components
 
 #### **`component()`**
+
+`component` creates a factory that produces component nodes.
 
 ```ts
 function component(
@@ -627,34 +620,36 @@ function component<P>(
 ): (props: P) => VComponent<P>;
 ```
 
-`component` creates a factory that produces component nodes.
+- `factory` - Function that produces stateful component render functions.
+- `areEqual` - Optional function that checks input properties for changes and is used as an optimization hint to reduce unnecessary updates when properties didn't change.
 
-`factory` is a function that produces stateful component render functions.
-
-`areEqual` is a function that checks input properties for changes and is used
-as an optimization hint to avoid updates when properties didn't change. When
-root subtree is updated with `forceUpdate` option, `areEqual` hint is ignored
-and all components are updated.
+*When root subtree is updated with `forceUpdate` option, `areEqual` hint is ignored and all components are updated.*
 
 #### **`getProps()`**
+
+`getProps` gets current component props from component instance.
 
 ```ts
 function getProps = <P>(component: Component<P>): P;
 ```
 
-`getProps` gets current component props.
+- `component` - Component instance.
 
 #### **`invalidate()`**
+
+`invalidate` invalidates component and schedules an update.
 
 ```ts
 function invalidate(component: Component): void;
 ```
 
-`invalidate` invalidates component and schedules an update.
+- `component` - Component instance.
 
 > *SSR: Throws an exception.*
 
 #### **`useUnmount()`**
+
+Adds an unmount hook.
 
 ```ts
 function useUnmount(
@@ -662,14 +657,16 @@ function useUnmount(
   hook: () => void,
 ): void;
 ```
-
-Adds an unmount hook.
+- `component` - Component instance.
+- `hook` - Unmount hook.
 
 > *SSR: Throws an exception.*
 
 ### Component State
 
 #### **`useMemo()`**
+
+`useMemo` creates a memoized function.
 
 ```ts
 function useMemo<T, U>(
@@ -678,11 +675,14 @@ function useMemo<T, U>(
 ): (props: T) => U;
 ```
 
-`useMemo` creates a memoized function.
+- `areEqual` - Checks input properties for changes to avoid recomputations.
+- `fn` - Function to memoize.
 
 > *SSR: Returns a `fn` function.*
 
 #### **`useState()`**
+
+`useState` creates a reactive component state.
 
 ```ts
 function useState<S>(
@@ -694,17 +694,22 @@ function useState<S>(
 ];
 ```
 
-`useState` creates a reactive value.
+- `component` - Component instance.
+- `state` - Initial state.
+
+Returns state getter and state setter functions.
 
 > *SSR: `set` function throws an exception.*
 
 #### **`useReducer()`**
 
+`useReducer` creates a reactive component state reducer.
+
 ```ts
 type Dispatch<A> = (action: A) => void;
 
 function useReducer<S, A>(
-  c: Component,
+  component: Component,
   state: S,
   reducer: (state: S, action: A) => S,
 ): [
@@ -713,71 +718,97 @@ function useReducer<S, A>(
 ];
 ```
 
-`useReducer` creates a reactive state reducer.
+- `component` - Component instance.
+- `state` - Initial state.
+- `reducer` - State reducer function.
+
+Returns state getter and action dispatcher functions.
 
 > *SSR: `dispatch` function throws an exception.*
 
 ### Side Effects
 
+Side effects lets you specify how your components should behave with external systems such as imperative API calls, timer manipulations, or direct DOM interactions.
+
+You can think of it as a combination of `mount`, `update` and `unmount` lifecycles hooks.
+
 #### **`useEffect()`**
+
+`useEffect` creates a side effect that is executed immediately after root node finishes an update.
 
 ```ts
 function useEffect(
-  c: Component,
+  component: Component,
   effect: () => (() => void) | void,
 ): () => void;
 function useEffect<P>(
-  c: Component,
+  component: Component,
   effect: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean
 ): (props: P) => void;
 ```
 
-Side effects created with `useEffect` are executed immediately after `Root`
-node finishes an update.
+- `component` - Component instance.
+- `effect` - Effect hook.
+- `areEqual` - Optional function that checks input properties for changes and is used to control when an effect should be updated.
+
+Returns a side effect function that should be invoked in a render function.
 
 > *SSR: Returns a noop function.*
 
 #### **`useLayoutEffect()`**
 
+`useLayoutEffect` creates a side effect that is executed before [animation frame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
+
 ```ts
 function useLayoutEffect(
-  c: Component,
+  component: Component,
   effect: () => (() => void) | void,
 ): () => void;
 function useLayoutEffect<P>(
-  c: Component,
+  component: Component,
   effect: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean
 ): (props: P) => void;
 ```
 
-Layout effects created with `useLayoutEffect` are executed before animation
-frame.
+- `component` - Component instance.
+- `effect` - Effect hook.
+- `areEqual` - Optional function that checks input properties for changes and is used to control when an effect should be updated.
+
+Returns a side effect function that should be invoked in a render function.
 
 > *SSR: Returns a noop function.*
 
 #### **`useIdleEffect()`**
 
+`useIdleEffect` creates a side effect that is executed when browser is [idle](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback).
+
 ```ts
 function useIdleEffect(
-  c: Component,
+  ccomponent: Component,
   effect: () => (() => void) | void,
 ): () => void;
 function useIdleEffect<P>(
-  c: Component,
+  ccomponent: Component,
   effect: (props: P) => (() => void) | void,
   areEqual?: (prev: P, next: P) => boolean
 ): (props: P) => void;
 ```
 
-Idle effects created with `useIdleEffect` are executed when browser is idle.
+- `component` - Component instance.
+- `effect` - Effect hook.
+- `areEqual` - Optional function that checks input properties for changes and is used to control when an effect should be updated.
+
+Returns a side effect function that should be invoked in a render function.
 
 > *SSR: Returns a noop function.*
 
 ### List
 
 #### **`List()`**
+
+`List` creates a dynamic lists.
 
 ```ts
 function List<E, K>(
@@ -787,15 +818,15 @@ function List<E, K>(
 ): VList;
 ```
 
-`List` creates a stateless view node for dynamic lists.
-
-`getKey` function should return a unique key for an entry.
-
-`render` function renders an entry.
+- `entries` - Input data.
+- `getKey` - Function that should return an unique key for each data entry.
+- `render` - Function that renders an entry.
 
 ### Context
 
 ### **`context()`**
+
+`context` creates context getter and context provider functions.
 
 ```ts
 function context = <T>(): [
@@ -804,11 +835,7 @@ function context = <T>(): [
 ]
 ```
 
-`context` creates context getter and context provider functions.
-
-`get` function finds the closest context value.
-
-`provider` function creates stateless context nodes.
+Returns a `get` function that finds the closest context value, and a `provider` function that creates context nodes.
 
 ```js
 // Creates a getter and provider functions.
@@ -831,6 +858,9 @@ update(
 
 ### Element Directive
 
+`ElementDirective` is an escape hatch that allows extending ivi rendering
+algorithm.
+
 ```ts
 type ElementDirective = <E extends Element>(
   element: E,
@@ -838,12 +868,13 @@ type ElementDirective = <E extends Element>(
 ) => void | string | { a?: string, c?: string; };
 ```
 
-`ElementDirective` is an escape hatch that allows extending ivi rendering
-algorithm.
-
 ### DOM Utilities
 
 #### **`eventDispatcher()`**
+
+`eventDispatcher` creates an event dispatcher that finds the closest child DOM
+node and emits a [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) with [`EventTarget.dispatchEvent()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent) method.
+
 
 ```ts
 interface DispatchEventOptions {
@@ -869,18 +900,16 @@ function eventDispatcher = <T>(
 ): EventDispatcher;
 ```
 
-`eventDispatcher` creates an event dispatcher that finds the closest child DOM
-node and emits a
-[`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)
-with [`EventTarget.dispatchEvent()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent)
-method.
+- `eventType` - Event type.
+- `options` - Event options that will be used when event is dispatched.
 
-Event dispatcher invokes event handlers synchronously. All event handlers are
-invoked before event dispatcher returns.
+Event dispatcher invokes event handlers synchronously. All event handlers are invoked before event dispatcher returns.
 
 > *SSR: `EventDispatcher` function throws an exception.*
 
 #### **`findDOMNode()`**
+
+`findDOMNode` finds the closest DOM node child that belongs to a stateful node subtree.
 
 ```ts
 function findDOMNode<T extends Node | Text>(
@@ -888,12 +917,13 @@ function findDOMNode<T extends Node | Text>(
 ): T | null;
 ```
 
-`findDOMNode` finds the closest DOM node child that belongs to a stateful node
-subtree.
+- `node` - Stateful node.
 
 > *SSR: Throws an exception.*
 
 #### **`containsDOMElement()`**
+
+`containsDOMElement` checks if a stateful node contains a DOM elements in its subtree.
 
 ```ts
 function containsDOMElement(
@@ -902,12 +932,14 @@ function containsDOMElement(
 ): boolean;
 ```
 
-`containsDOMElement` checks if a stateful node contains a DOM elements in its
-subtree.
+- `node` - Stateful node.
+- `element` - DOM Element.
 
 > *SSR: Throws an exception.*
 
 #### **`hasDOMElement()`**
+
+`hasDOMElement` checks if a stateful node has a DOM element as its child.
 
 ```ts
 function hasDOMElement(
@@ -916,7 +948,8 @@ function hasDOMElement(
 ): boolean;
 ```
 
-`hasDOMElement` checks if a stateful node has a DOM element as its child.
+- `node` - Stateful node.
+- `child` - DOM Element.
 
 > *SSR: Throws an exception.*
 
@@ -924,55 +957,55 @@ function hasDOMElement(
 
 ### **`preventUpdates()`**
 
+`preventUpdates` is a noop function that always returns `true` value.
+
 ```ts
 function preventUpdates<T>(a: T, b: T): true;
 ```
 
-`preventUpdates` is a noop function that always returns `true` value.
-
 #### **`strictEq()`**
+
+`strictEq` checks values for equality with strict equality operator `===`.
 
 ```ts
 function strictEq<T>(a: T, b: T): boolean;
 ```
 
-`strictEq` checks values for equality with strict equality operator `===`.
-
 #### **`shallowEq()`**
+
+`shallowEq` checks objects with shallow equality algorithm and uses strict equality operator to check individual values for equality.
 
 ```ts
 function shallowEq<T extends object>(a: T, b: T): boolean;
 ```
 
-`shallowEq` checks objects with shallow equality algorithm and uses strict
-equality operator to check individual values for equality.
-
 #### **`shallowEqArray()`**
+
+`shallowEqArray` checks arrays with shallow equality algorithm and uses strict equality operator to check individual values for equality.
 
 ```ts
 function shallowEqArray<T>(a: T[], b: T[]): boolean;
 ```
 
-`shallowEqArray` checks arrays with shallow equality algorithm and uses
-strict equality operator to check individual values for equality.
-
 ### Escape Functions
 
+When creating [`ElementDirective`](#element-directive) functions that support Server-Side Rendering, it is important to escape attribute values and children text nodes to prevent cross-site scripting (XSS) attacks.
+
 #### **`escapeHTMLAttribute()`**
+
+`escapeHTMLAttribute` escapes HTML attribute values.
 
 ```ts
 function escapeHTMLAttribute(str: string): string;
 ```
 
-`escapeHTMLAttribute` escapes HTML attribute values.
-
 #### **`escapeHTMLText()`**
+
+`escapeHTMLText` escapes HTML text nodes.
 
 ```ts
 function escapeHTMLText(str: string): string;
 ```
-
-`escapeHTMLText` escapes HTML text nodes.
 
 ## CheatSheet
 
@@ -1082,10 +1115,7 @@ update(
 
 ### Component Invalidation and Dirty Checking
 
-Component invalidation algorithm is implemented by marking component as dirty
-and marking all its parent nodes with a flag that they have a dirty subtree.
-When marking algorithm reaches root node, it invokes `OnRootInvalidated()` hook
-that can be used to implement a [custom scheduler](#custom-scheduler).
+Component invalidation algorithm is implemented by marking component as dirty and marking all its parent nodes with a flag that they have a dirty subtree. When marking algorithm reaches a root node, it invokes `OnRootInvalidated()` hook that can be used to implement a [custom scheduler](#custom-scheduler).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://localvoid.github.io/ivi/images/component-invalidated-1-dark.png">
@@ -1095,15 +1125,10 @@ that can be used to implement a [custom scheduler](#custom-scheduler).
 
 1. Component invalidated and marked with `Dirty` flag.
 2. Node marked with `DirtySubtree` flag.
-3. Root Node marked with `DirtySubtree` flag, `OnRootInvalidated()` hook
-invoked.
-4. Component invalidated and marked with `Dirty` flag, parents already marked
-with `DirtySubtree` flag.
+3. Root Node marked with `DirtySubtree` flag, `OnRootInvalidated()` hook invoked.
+4. Component invalidated and marked with `Dirty` flag, parents already marked with `DirtySubtree` flag.
 
-When scheduler decides to update a root node with a dirty subtree, it starts a
-dirty checking algorithm. This algorithm goes top-down in a right-to-left order,
-visiting all nodes with a dirty subtree flag until it reaches a dirty component
-and updates it.
+When scheduler decides to update a root node with a dirty subtree, it starts a dirty checking algorithm. This algorithm goes top-down in a right-to-left order, visiting all nodes with a dirty subtree flag until it reaches a dirty  component and updates it.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://localvoid.github.io/ivi/images/dirty-checking-1-dark.png">
@@ -1120,34 +1145,15 @@ and updates it.
 
 ### Right-to-Left Updates
 
-One of the reasons why the core library is so small is because update algorithm
-is implemented in RTL order. Algorithm that performs updates in RTL order
-simplifies a lot of complex issues with DOM updates. The main issue with DOM
-updates is that when we start updating a DOM tree structure, we need to have
-a reference to a parent and a next DOM node, so that we can use
-`parent.insertBefore(newNode, nextNode)`. In most cases it is easy to retrieve
-a next DOM node, but there are edge cases like when we have two adjacent
-conditional expressions and one of their states is that it completely removes
-a DOM node from the tree, or two adjacent components with conditionals at their
-roots, etc.
+One of the reasons why the core library is so small is because update algorithm is implemented in RTL order. Algorithm that performs updates in RTL order simplifies a lot of complex issues with DOM updates. The main issue with DOM updates is that when we start updating a DOM tree structure, we need to have a reference to a parent and a next DOM node, so that we can use `parent.insertBefore(newNode, nextNode)`. In most cases it is easy to retrieve a next DOM node, but there are edge cases like when we have two adjacent conditional expressions and one of their states is that it completely removes a DOM node from the tree, or two adjacent components with conditionals at their roots, etc.
 
-Majority of libraries are dealing with this edge cases by introducing marker
-DOM nodes (comment or an empty text node). For example, to implement
-conditional expressions we can add an empty text node when conditional doesn't
-render any DOM node and when conditional goes into a state when it needs to
-add a DOM node, it will use a marker node as a next DOM node reference. In some
-edge case scenarios, some libraries can [insert a lot](https://github.com/sveltejs/svelte/issues/3586) of marker nodes. Update algorithm in ivi doesn't
-use any marker nodes.
+Majority of libraries are dealing with this edge cases by introducing marker DOM nodes (comment or an empty text node). For example, to implement conditional expressions we can add an empty text node when conditional doesn't render any DOM node and when conditional goes into a state when it needs to add a DOM node, it will use a marker node as a next DOM node reference. In some edge case scenarios, some libraries can [insert a lot](https://github.com/sveltejs/svelte/issues/3586) of marker nodes. Update algorithm in ivi doesn't use any marker nodes.
 
-The RTL algorithm that is used in ivi also makes it way much easier to implement
-node displacements without introducing any additional code paths, fragments and
-pretty much everything that involves updating a DOM structure.
+The RTL algorithm that is used in ivi also makes it way much easier to implement node displacements without introducing any additional code paths, fragments and pretty much everything that involves updating a DOM structure.
 
 ### Template Call-Site Unique Identity
 
-Each call-site that creates template has unique identity, so even identical
-templates created from different call-sites won't be able to diff against each
-other.
+Each call-site that creates template has unique identity, so even identical templates created from different call-sites won't be able to diff against each other.
 
 ```js
 function TemplateUniqueIdentity(condition, text) {
@@ -1157,18 +1163,13 @@ function TemplateUniqueIdentity(condition, text) {
 }
 ```
 
-In th example above, when `condition` is changed, instead of updating text node,
-update algorithm will replace entire div element with a new one.
+In th example above, when `condition` is changed, instead of updating text node, update algorithm will replace entire div element with a new one.
 
 ### Forcing Component Updates
 
-There are some use cases that require a lot of frequent reads from a reactive
-variable. And whenever this variable changes, it affects a lot of UI nodes, like
-switching between light/dark themes.
+There are some use cases that require a lot of frequent reads from a reactive variable. And whenever this variable changes, it affects a lot of UI nodes, like switching between light/dark themes.
 
-Instead of creating a lot of subscriptions to this variables, it is recommended
-to use simple javascript values and rerender entire UI subtree with
-`dirtyCheck(root, true)` when this values are changed.
+Instead of creating a lot of subscriptions to this variables, it is recommended to use simple javascript values and rerender entire UI subtree with `dirtyCheck(root, true)` when this values are changed.
 
 ```js
 const root = createRoot(document.getElementById("app"));
@@ -1198,16 +1199,11 @@ update(root, App());
 ### Template Cloning
 
 Template cloning is an optimization that is used for cloning HTML templates
-with a
-[`Node.cloneNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode)
-method.
+with a [`Node.cloneNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode) method.
 
-By default, template cloning is enabled for all templates. But sometimes it
-would be wasteful to create a template for cloning and instantiate from it when
-this template is rendered just once on the page.
+By default, template cloning is enabled for all templates. But sometimes it would be wasteful to create a template for cloning and instantiate from it when this template is rendered just once on the page.
 
-To disable cloning, template should have a leading comment `/* preventClone */`.
-E.g.
+To disable cloning, template should have a leading comment `/* preventClone */`. E.g.
 
 ```js
 const Example = () => /* preventClone */htm`
@@ -1215,8 +1211,7 @@ const Example = () => /* preventClone */htm`
 `;
 ```
 
-Templates with just one element that doesn't have any static properties will
-be created with [`document.createElement()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement).
+Templates with just one element that doesn't have any static properties will be created with [`document.createElement()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement).
 
 ```js
 htm`<div attr=${0}>${1}</div>`;
@@ -1224,13 +1219,9 @@ htm`<div attr=${0}>${1}</div>`;
 
 ### Disabling Static Template Generation for Client-Side Rendering
 
-When templates are precompiled, they are producing static HTML template string
-and OpCodes for dynamic updates. In a lot of use cases with Server-Side
-Rendering and partial hydration, static template part is generated on the
-server and client just needs OpCodes to perform dynamic updates.
+When templates are precompiled, they are producing static HTML template string and OpCodes for dynamic updates. In a lot of use cases with Server-Side Rendering and partial hydration, static template part is generated on the server and client just needs OpCodes to perform dynamic updates.
 
-To reduce code size that is transfered to the client in such scenarios, it is
-possible to disable static template generation with `/* ssr */` comment.
+To reduce code size that is transfered to the client in such scenarios, it is possible to disable static template generation with `/* ssr */` comment.
 
 ```js
 export default component((c) => {
@@ -1257,16 +1248,13 @@ export default component((c) => {
 
 ### Internal Data Structures
 
-To get a rough estimate of memory usage it is important to understand internal
-data structures.
+To get a rough estimate of memory usage it is important to understand internal data structures.
 
-In the description below we are going to calculate memory usage in a
-Chromium-based engines with [Pointer Compression in V8](https://v8.dev/blog/pointer-compression).
+In the description below we are going to calculate memory usage in a Chromium-based engines with [Pointer Compression in V8](https://v8.dev/blog/pointer-compression).
 
 #### UI Tree
 
-UI Tree is implemented with a stateful tree `SNode` and immutable stateless
-tree `VAny`.
+UI Tree is implemented with a stateful tree `SNode` and immutable stateless tree `VAny`.
 
 Stateless Tree has a simple data structure:
 
@@ -1393,17 +1381,13 @@ type SComponent = SNode2<
 type SContext = SNode1<null, null>;
 ```
 
-This data structures were carefully designed to have small memory overhead
-and avoid a lot of polymorphic/megamorphic call-sites that access this data
-structures.
+This data structures were carefully designed to have small memory overhead and avoid a lot of polymorphic/megamorphic call-sites that access this data structures.
 
-To understand why monomorphic call-sites are important for performance, it is
-recommended to read a great article on this topic: ["What's up with monomorphism?"](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
+To understand why monomorphic call-sites are important for performance, it is recommended to read a great article on this topic: ["What's up with ,onomorphism?"](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 #### Template
 
-Templates are precompiled into a static part that is stored in a
-`TemplateDescriptor` object and an array of dynamic expressions.
+Templates are precompiled into a static part that is stored in a `TemplateDescriptor` object and an array of dynamic expressions.
 
 ```js
 const Example = (attr, child) => htm`div :attr=${attr} span ${child}`;
@@ -1467,12 +1451,9 @@ type VTemplate<P = any> = VNode<TemplateDescriptor, P>;
 
 ### Template Optimizations
 
-`@ivi/babel-plugin` module contains a babel plugin with a template compiler and
-optimizer that significantly improves start-up performance.
+`@ivi/babel-plugin` module contains a babel plugin with a template compiler and optimizer that significantly improves start-up performance.
 
-Template compiler doesn't just eliminate compilation step during runtime, it
-also hoists static expressions and deduplicates OpCodes, static data and
-template factory functions. E.g.
+Template compiler doesn't just eliminate compilation step during runtime, it also hoists static expressions and deduplicates OpCodes, static data and template factory functions. E.g.
 
 ```js
 import { className } from "styles.css";
@@ -1516,20 +1497,13 @@ const a = (id) => _t(_tpl_a, [id]);
 const b = (id) => _t(_tpl_b, [id]);
 ```
 
-Quite often, OpCodes that are used for different purposes (props,child,state)
-are going to have similar values, so when OpCodes are deduplicated they are
-treated as simple arrays with integers that can be used for different purposes.
+Quite often, OpCodes that are used for different purposes (props,child,state) are going to have similar values, so when OpCodes are deduplicated they are treated as simple arrays with integers that can be used for different purposes.
 
-Shared data `SHARED_DATA` is deduplicated into one array that is shared between
-all templates.
+Shared data `SHARED_DATA` is deduplicated into one array that is shared between all templates.
 
 ### Custom Scheduler
 
-ivi is designed as an embeddable solution, so that it can be integrated into
-existing frameworks or web components. The basic root node instantiated with
-`createRoot()` function is using microtask queue to schedule updates. Root
-nodes with custom scheduling algorithm can be created by defining new root
-factories with `defineRoot()` function.
+ivi is designed as an embeddable solution, so that it can be integrated into existing frameworks or web components. The basic root node instantiated with `createRoot()` function is using microtask queue to schedule updates. Root nodes with custom scheduling algorithm can be created by defining new root factories with `defineRoot()` function.
 
 ```ts
 function defineRoot(onInvalidate: (root: Root<undefined>) => void)
@@ -1538,8 +1512,7 @@ function defineRoot<S>(onInvalidate: (root: Root<S>) => void)
   : (parentElement: Element, nextNode: Node | null, state: S) => Root<S>;
 ```
 
-As an example, to remove any batching and immediately update root subtree
-when it is invalidated we can define the following root node:
+As an example, to remove any batching and immediately update root subtree when it is invalidated we can define the following root node:
 
 ```ts
 import { defineRoot } from "ivi";
@@ -1552,8 +1525,7 @@ const createSyncRoot = defineRoot((root) => {
 
 #### Using `requestAnimationFrame()` for Scheduling UI Updates
 
-Scheduling algorithm with `rAF` batching has some potential footguns with race
-conditions.
+Scheduling algorithm with `rAF` batching has some potential footguns with race conditions.
 
 ```js
 function formStateReducer(state, action) {
@@ -1593,8 +1565,7 @@ update(
 );
 ```
 
-In this example, if the user types really fast and pushes an `[enter]` button,
-it is possible to get an execution order like this:
+In this example, if the user types really fast and pushes an `[enter]` button, it is possible to get an execution order like this:
 
 - User types `0` into `<input>`.
 - `onChange()` event handler is triggered, `state.valid` switches into a `false`
@@ -1604,8 +1575,7 @@ it is possible to get an execution order like this:
   `<input type="submit" .disabled={false} />`
 - `rAF` event is triggered, submit button goes into disabled state.
 
-The simplest way to avoid issues like this is to use microtasks for batching.
-But if you really want to add `rAF` scheduling, it is possible to solve issues like this by introducing some synchronization primitives:
+The simplest way to avoid issues like this is to use microtasks for batching. But if you really want to add `rAF` scheduling, it is possible to solve issues like this by introducing some synchronization primitives:
 
 ```js
 import { uiReady } from "my-custom-scheduler";
