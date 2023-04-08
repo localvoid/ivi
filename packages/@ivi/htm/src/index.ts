@@ -18,11 +18,18 @@ const DESCRIPTORS = new WeakMap<TemplateStringsArray, (exprs: any[]) => VAny>();
  *
  * ### Element Syntax:
  *
- * - `div .name=${expr}` - Property `element[name] = expr`.
- * - `div *name=${expr}` - Property `element[name] = expr`, uses DOM value for diffing.
- * - `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
- * - `div @name=${expr}` - Event `element.addEventListener(name, expr)`
- * - `div $${directive}` - Directive `directive(element)`
+ * - `<div name="value" />` - Static Attribute.
+ * - `<div name />` - Static Attribute.
+ * - `<div name=${expr} />` - Dynamic attribute `element.setAttribute(name, expr)`.
+ * - `<div .name=${expr} />` - Property `element[name] = expr`.
+ * - `<div *name=${expr} />` - Property `element[name] = expr`, diffs against a DOM value.
+ * - `<div ~name="value" />` - Static style `<div style="name:value;">`
+ * - `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`
+ * - `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`
+ * - `<div ${directive} />` - Client-Side Directive `directive(element)`
+ * - `<div &=${directive} />` - Client-Side Element Directive `directive(element)`.
+ * - `<div &:ssr=${directive} />` - Element Directive that works during Client-Side and
+ *  Server-Side Rendering `directive(element, hydrate)`.
  *
  * @example
  *
@@ -71,11 +78,18 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
  *
  * ### Element Syntax:
  *
- * - `div .name=${expr}` - Property `element[name] = expr`.
- * - `div *name=${expr}` - Property `element[name] = expr`, uses DOM value for diffing.
- * - `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
- * - `div @name=${expr}` - Event `element.addEventListener(name, expr)`
- * - `div $${directive}` - Directive `directive(element)`
+ * - `<div name="value" />` - Static Attribute.
+ * - `<div name />` - Static Attribute.
+ * - `<div name=${expr} />` - Dynamic attribute `element.setAttribute(name, expr)`.
+ * - `<div .name=${expr} />` - Property `element[name] = expr`.
+ * - `<div *name=${expr} />` - Property `element[name] = expr`, diffs against a DOM value.
+ * - `<div ~name="value" />` - Static style `<div style="name:value;">`
+ * - `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`
+ * - `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`
+ * - `<div ${directive} />` - Client-Side Directive `directive(element)`
+ * - `<div &=${directive} />` - Client-Side Element Directive `directive(element)`.
+ * - `<div &:ssr=${directive} />` - Element Directive that works during Client-Side and
+ *  Server-Side Rendering `directive(element, hydrate)`.
  *
  * @example
  *
@@ -84,8 +98,11 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
  *         <svg height="210" width="500">
  *           <polygon
  *             points="100,10 40,198 190,78 10,78 160,198"
- *             style="fill:lime;stroke:purple;stroke-width:5;fill-rule:nonzero"
- *           ></polygon>
+ *             ~fill="lime"
+ *             ~stroke="purple"
+ *             ~stroke-width="5"
+ *             ~fill-rule="nonzero"
+ *           />
  *         </svg>
  *       `;
  *     }

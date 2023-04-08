@@ -28,8 +28,8 @@ const DESCRIPTORS = new WeakMap<TemplateStringsArray, (exprs: any[]) => VAny>();
  * - `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
  * - `div @name=${expr}` - Event `element.addEventListener(name, expr)`
  * - `div =${expr}`      - Text Content `element.textContent = expr`
- * - `div $${directive}` - Directive `directive(element)`
- *
+ * - `div $=${expr}`     - Element Directive `directive(element, hydrate)`
+ * - `div $:ssr=${expr}` - Element Directive `directive(element, hydrate)`
  *
  * @example
  *
@@ -87,7 +87,8 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
  * - `div ~name=${expr}` - Style `element.style.setProperty(name, expr)`
  * - `div @name=${expr}` - Event `element.addEventListener(name, expr)`
  * - `div =${expr}`      - Text Content `element.textContent = expr`
- * - `div $${directive}` - Directive `directive(element)`
+ * - `div $=${expr}`     - Element Directive `directive(element, hydrate)`
+ * - `div $:ssr=${expr}` - Element Directive `directive(element, hydrate)`
  *
  * @example
  *

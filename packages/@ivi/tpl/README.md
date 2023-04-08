@@ -1,7 +1,6 @@
 # [ivi](https://github.com/localvoid/ivi) Template Language
 
-`@ivi/tpl` module provides an interface for creating templates with
-[tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates):
+`@ivi/tpl` module provides an interface for creating ivi templates with[templates literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates):
 
 - `htm` creates a template with [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) nodes.
 - `svg` creates a template with [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) nodes.
@@ -15,9 +14,7 @@ div :id='app'
 `
 ```
 
-In this example we are creating a root element `<div id="app">` with two
-children: `<h1>TemplateExample</h1>` and `<div class="content">{..}</div>`.
-In an HTML it could look something like that:
+In this example we are creating a root element `<div id="app">` with two children: `<h1>TemplateExample</h1>` and `<div class="content">{..}</div>`. In an HTML it could look something like that:
 
 ```html
 <div id="app">
@@ -28,9 +25,7 @@ In an HTML it could look something like that:
 </div>
 ```
 
-As we can see from this example, indentation level is used for children nesting.
-Also, children node can be nested by declaring them on the same line as their
-parent. E.g.
+As we can see from this example, indentation level is used for children nesting. Also, children node can be nested by declaring them on the same line as their parent. E.g.
 
 ```js
 htm`div a ${expr}`
@@ -71,8 +66,7 @@ HTML:
 
 ## Text Nodes
 
-Static text nodes are declared either with `'text'`, `"text"` or a `#'text'#`
-syntax.
+Static text nodes are declared either with `'text'`, `"text"` or a `#'text'#` syntax.
 
 Text nodes are escaped automatically:
 
@@ -110,11 +104,11 @@ htm`
 - [`div ~name=${expr}`](#styles) - Dynamic style `element.style.setProperty(name, expr)`.
 - [`div @name=${expr}`](#events) - Event `element.addEventListener(name, expr)`.
 - [`div =${expr}`](#text-content) - Text Content `element.textContent = expr`.
-- [`div &=${directive}`](#directives) - Client-Side Directive `directive(element)`.
-- [`div &:ssr=${directive}`](#directives) - Server-Side Directive `directive(element, hydrate)`.
+- [`div &=${directive}`](#directives) - Client-Side Element Directive `directive(element)`.
+- [`div &:ssr=${directive}`](#directives) - Element Directive that works during Client-Side and Server-Side Rendering `directive(element, hydrate)`.
 
-Element properties can be declared on the same line as element or with an
-indentation level.
+
+Element properties can be declared on the same line as element or with an indentation level.
 
 ```js
 htm`
@@ -127,8 +121,7 @@ div :inline-attr1 :inline-attr2
 
 ### Class Names
 
-Static class names are declared with a `.` character immediately after a tag
-name:
+Static class names are declared with a `.` character immediately after a tag name:
 
 ```js
 htm`div.class-one.class-two ${expr}`
@@ -140,8 +133,7 @@ HTML:
 <div class="class-one class-two"></div>
 ```
 
-Dynamic class names are declared with an expression immediately after a tag
-name:
+Dynamic class names are declared with an expression immediately after a tag name:
 
 ```js
 htm`div${condition ? "class-one" : "class-two"}`
@@ -163,8 +155,7 @@ Static and dynamic class names cannot be mixed together.
 
 DOM attributes are assigned with `Element.setAttribute(..)`.
 
-When dynamic attribute has an `undefined` value, it will be removed from the
-DOM element with `Element.removeAttribute(..)` method.
+When dynamic attribute has an `undefined`, `null` or `false` value, it will be removed from the DOM element with `Element.removeAttribute(..)` method.
 
 Attribute values are escaped automatically:
 
@@ -185,52 +176,48 @@ HTML:
 
 Properties are assigned with an assignment operator `Element.name = value`.
 
-Diffing with a DOM value is useful in use cases when we use `<input>` values to
-avoid triggering unnecessary `change` events.
+Diffing with a DOM value is useful in use cases when we use `<input>` values to avoid triggering unnecessary `input` events.
 
 ### Styles
 
 - `div ~name='value'` - Static style `<div style="value">`.
-- `div ~name=${expr}` - Dynamic style `element.style.setProperty(name, expr)`
+- `div ~name=${expr}` - Dynamic style `element.style.setProperty(name, expr)`.
 
 Static styles are automatically merged with `:style="value"` attribute.
 
-Dynamic styles are assigned with a `CSSStyleDeclaration.setProperty(..)`
-method.
+Dynamic styles are assigned with a `CSSStyleDeclaration.setProperty(..)` method.
 
-When style has an `undefined` value, it will be removed with a
-`CSSStyleDeclaration.removeProperty(..)` method.
+When style has an `undefined`, `null` or `false` value, it will be removed with `CSSStyleDeclaration.removeProperty(..)` method.
 
 ### Events
 
-- `div @name=${expr}` - Event `element.addEventListener(name, expr)`
+- `div @name=${expr}` - Event `element.addEventListener(name, expr)`.
 
 Events are assigned with an `EventTarget.addEventListener(..)` method.
 
-When event has an `undefined` value, it will be removed with an
-`EventTarget.removeEventListener(..)` method.
+When event has an `undefined`, `null` or `false` value, it will be removed with `EventTarget.removeEventListener(..)` method.
 
 ### Text Content
 
-- `div =${expr}` - Text Content `element.textContent = expr`
+- `div =${expr}` - Text Content `element.textContent = expr`.
 
-Text content property can be used as an optimization that slightly reduces
-[memory overhead](#ui-tree-data-structures) for elements with a text child. It
-will create a text node with a [`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
-property and won't have any stateful nodes associated with a text node.
+Text content property can be used as an optimization that slightly reduces memory consumption for elements with a text child. It will create a text node with a [`Node.textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent) property and won't have any stateful nodes associated with a text node.
 
-Text content value should have a string or a number type.
+Text content value should have an `undefined`, `null`, `false`, `string` or a `number` type.
 
 ### Directives
 
-- `div &=${directive}` - Client-Side Directive `directive(element)`
-- `div &:ssr=${directive}` - Server-Side Directive `directive(element, hydrate)`
+- `div &=${directive}` - Client-Side Element Directive `directive(element)`.
+- `div &:ssr=${directive}` - Element Directive that works during Client-Side and Server-Side Rendering `directive(element, hydrate)`.
 
 Directive is a function that is invoked each time template is updated and
 receives a DOM element associated with a directive:
 
 ```ts
-type ElementDirective = <E extends Element>(element: E, hydrate?: true) => void;
+type ElementDirective = <E extends Element>(
+  element: E,
+  hydrate?: boolean,
+) => void | string | { a?: string, c?: string; };
 ```
 
 Directive function is invoked only when template is created with a
@@ -249,8 +236,7 @@ const Example = component((c) => {
 });
 ```
 
-Directives can be used not just as a simple DOM created callbacks, but also as
-a stateful directives. E.g.
+Directives can be used not just as a simple DOM created callbacks, but also as stateful directives. E.g.
 
 ```js
 function createStatefulDirective() {
