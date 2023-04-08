@@ -1,4 +1,12 @@
-# [ivi](https://github.com/localvoid/ivi) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/localvoid/ivi/blob/master/LICENSE)
+<p align="center">
+  <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".https://localvoid.github.io/ivi/images/ivi-logo-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://localvoid.github.io/ivi/images/ivi-logo-light.svg">
+      <img width="120" height="120" src="https://localvoid.github.io/ivi/images/ivi-logo-light.svg" alt="ivi logo">
+    </picture>
+  </a>
+</p>
 
 ivi is a JavaScript library that enables you to create dynamic user interfaces using template literals with embedded JavaScript expressions. It identifies static and dynamic parts of your templates and efficiently updates only changed parts. ivi has a small memory footprint, supports lightweight stateful components, Server-Side Rendering, and Client-Side Hydration, all of which can help improve performance and efficiency of your web application.
 
