@@ -30,13 +30,11 @@ export function ivi(options?: IviOptions): Plugin {
 
     async buildStart() {
       if (lazyPreload) {
-        const _iviLang = import("@ivi/tpl/parser");
-        const _htmLang = import("@ivi/htm/parser");
         try {
-          iviLang = await _iviLang;
+          iviLang = await import("@ivi/tpl/parser");
         } catch (err) { }
         try {
-          htmLang = await _htmLang;
+          htmLang = await import("@ivi/htm/parser");
         } catch (err) { }
         if (iviLang === void 0 && htmLang === void 0) {
           this.warn("Unable to find template language parser.");
