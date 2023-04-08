@@ -1511,7 +1511,7 @@ export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
 export type ComponentFactory = {
   (
     factory: (c: Component) => () => VAny,
-    areEqual?: () => boolean
+    areEqual?: (a?: any, b?: any) => boolean
   ): () => VComponent<undefined>;
   <P>(
     factory: (c: Component) => (props: P) => VAny,
@@ -1574,6 +1574,7 @@ export type Effect = {
   (
     component: Component,
     effect: () => (() => void) | void,
+    areEqual?: (prev?: any, next?: any) => boolean
   ): () => void;
   <P>(
     component: Component,
