@@ -1,6 +1,6 @@
 # [ivi](https://github.com/localvoid/ivi) Template Language
 
-`@ivi/tpl` module provides an interface for creating ivi templates with[templates literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates):
+`@ivi/tpl` module provides an interface for creating ivi templates with [templates literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates):
 
 - `htm` creates a template with [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) nodes.
 - `svg` creates a template with [SVGElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement) nodes.
@@ -66,7 +66,7 @@ HTML:
 
 ## Text Nodes
 
-Static text nodes are declared either with `'text'`, `"text"` or a `#'text'#` syntax.
+Static text nodes are declared either with `'text'`, `"text"` or `#'text'#` syntax.
 
 Text nodes are escaped automatically:
 

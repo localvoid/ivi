@@ -97,8 +97,8 @@ HTML Template Language supports additional syntax to work with DOM properties,
 events, etc.
 
 - [`<div name="value" />`](#attributes) - Static attribute.
-- [`<div name />`]](#attributes) - Static attribute.
-- [`<div name=${expr} />`]](#attributes) - Dynamic attribute `element.setAttribute(name, expr)`.
+- [`<div name />`](#attributes) - Static attribute.
+- [`<div name=${expr} />`](#attributes) - Dynamic attribute `element.setAttribute(name, expr)`.
 - [`<div .name=${expr} />`](#properties) - Property `element[name] = expr`.
 - [`<div *name=${expr} />`](#properties) - Property `element[name] = expr`, diffs against a DOM value.
 - [`<div ~name="value" />`](#styles) - Static style `<div style="name:value;">`.
