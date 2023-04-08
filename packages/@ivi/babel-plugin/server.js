@@ -37,11 +37,25 @@ const server = (config) => declare((api) => {
               t.numericLiteral(p.i),
             ])))
           : t.nullLiteral(),
+        node.style !== null
+          ? t.callExpression(importSymbol("ivi/server", "_$S"), [
+            t.stringLiteral(node.style.stat),
+            t.arrayExpression(
+              node.style.dyn.map((p) => t.callExpression(importSymbol("ivi/server", "_$P"), [
+                t.stringLiteral(p.prefix),
+                t.numericLiteral(p.i),
+              ])),
+            ),
+          ])
+          : t.nullLiteral(),
         node.children !== null
           ? typeof node.children === "number"
             ? t.numericLiteral(node.children)
             : t.arrayExpression(node.children.map((n) => createTNode(importSymbol, n)),
             )
+          : t.nullLiteral(),
+        node.directives !== null
+          ? t.arrayExpression(node.directives)
           : t.nullLiteral(),
       ]);
     }

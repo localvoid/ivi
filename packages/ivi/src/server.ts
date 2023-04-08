@@ -10,7 +10,7 @@ export {
   type Root,
   defineRoot, createRoot, dirtyCheck, update, unmount, hydrate,
   renderToString,
-  _$T, _$E, _$P, _$t,
+  _$T, _$E, _$P, _$S, _$t,
 } from "./server/core.js";
 export {
   useMemo,
