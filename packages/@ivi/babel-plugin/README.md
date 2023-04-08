@@ -4,8 +4,7 @@ Babel plugins for template precompilation and optimization.
 
 ## Compiler
 
-Precompiles `htm` and `svg` templates into a set of OpCodes and hoists static
-expressions.
+Precompiles `htm` and `svg` templates into a set of OpCodes and hoists static expressions.
 
 ## Optimizer
 
