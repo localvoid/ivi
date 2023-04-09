@@ -5,15 +5,13 @@
 ## Example
 
 ```ts
-import { component } from "ivi";
-import { createRoot, updateRoot } from "ivi/root";
-import { htm } from "ivi/template";
-import { useState } from "ivi/state";
+import { createRoot, update, component, useState } from "ivi";
+import { htm } from "@ivi/htm";
 import { createPortal } from "@ivi/portal";
 
 const [portalContainer, portal] = createPortal();
 
-updateRoot(
+update(
   createRoot(document.getElementById("overlay")!),
   portalContainer,
 );
@@ -26,17 +24,20 @@ const App = component((c) => {
 
   return () => (
     htm`
-      div.App
-        span
-          @mouseenter=${onMouseEnter}
-          @mouseleave=${onMouseLeave}
-          'Portal Example'
-        ${visible() ? portal(htm`span 'portal'`) : null}
+    <div class="App">
+      <span
+        @mouseenter=${onMouseEnter}
+        @mouseleave=${onMouseLeave}
+      >
+        Portal Example
+      </span>
+      ${visible() && portal(htm`<span>rendered inside of a portal</span>`)}
+    </div>
     `
   );
 });
 
-updateRoot(
+update(
   createRoot(document.getElementById("root")!),
   App(),
 );

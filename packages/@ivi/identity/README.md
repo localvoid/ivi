@@ -5,17 +5,15 @@ Identity component is used to reset internal state.
 ## Example
 
 ```ts
-import { component, useEffect } from "ivi";
-import { createRoot, updateRoot } from "ivi/root";
-import { htm } from "ivi/template";
-import { useState } from "ivi/state";
+import { createRoot, update, component, useState, useEffect } from "ivi";
+import { htm } from "@ivi/htm";
 import { Identity } from "@ivi/identity";
 
 const Timer = component((c) => {
   const [time, setTime] = useState(c, 0);
 
   useEffect(c, () => {
-    let t = setInterval(() => {
+    const t = setInterval(() => {
       setTime(time() + 100);
     }, 100);
     return () => { clearInterval(t); };
@@ -31,14 +29,15 @@ const App = component((c) => {
 
   return () => (
     htm`
-      div.App
-        button @click=${onClick} 'Next'
-        ${Identity({ key: key(), children: Timer() })}
+    <div class="App">
+      <button @click=${onClick}>Next</button>
+      ${Identity({ key: key(), children: Timer() })}
+    </div>
     `
   );
 });
 
-updateRoot(
+update(
   createRoot(document.body),
   App(),
 );
