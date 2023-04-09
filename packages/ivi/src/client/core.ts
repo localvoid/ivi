@@ -388,10 +388,10 @@ const _updateTemplateProperties = (
                 elementSetClassName.call(currentElement, "");
               }
             } else if (dataIndex === CommonPropType.TextContent) {
-              if (next != null && next !== "" && next !== false) {
+              if (next !== "" && next != null && next !== false) {
                 if (prev == null || prev === "" || prev === false) {
                   nodeSetTextContent.call(currentElement, next);
-                } else if (next != null || next !== "") {
+                } else {
                   nodeGetFirstChild.call(currentElement).nodeValue = next;
                 }
               } else if (prev != null && prev !== "" && prev !== false) {
