@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "@babel/core": "^7.21.4",
-    "@ivi/babel-plugin": "workspace:*",
+    "@ivi/babel-plugin": "workspace:^",
     "@rollup/pluginutils": "^5.0.2"
   },
   "devDependencies": {

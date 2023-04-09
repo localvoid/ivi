@@ -18,11 +18,11 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@ivi/vite-plugin": "workspace:*"
+    "@ivi/vite-plugin": "workspace:^"
   },
   "peerDependencies": {
-    "@ivi/htm": "workspace:*",
-    "ivi": "workspace:*"
+    "@ivi/htm": "workspace:^",
+    "ivi": "workspace:^"
   },
   "devDependencies": {
     "@ivi/htm": "workspace:*",

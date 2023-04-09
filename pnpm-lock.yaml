@@ -14,7 +14,7 @@ importers:
   packages/@ivi/astro:
     dependencies:
       '@ivi/vite-plugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../vite-plugin
     devDependencies:
       '@ivi/htm':
@@ -55,7 +55,7 @@ importers:
   packages/@ivi/identity:
     devDependencies:
       ivi:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../ivi
 
   packages/@ivi/mock-dom: {}
@@ -63,7 +63,7 @@ importers:
   packages/@ivi/portal:
     devDependencies:
       ivi:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../ivi
 
   packages/@ivi/rollup-plugin:
@@ -72,7 +72,7 @@ importers:
         specifier: ^7.21.4
         version: 7.21.4
       '@ivi/babel-plugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../babel-plugin
       '@rollup/pluginutils':
         specifier: ^5.0.2
@@ -106,7 +106,7 @@ importers:
         specifier: ^7.21.4
         version: 7.21.4
       '@ivi/babel-plugin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../babel-plugin
       '@rollup/pluginutils':
         specifier: ^5.0.2

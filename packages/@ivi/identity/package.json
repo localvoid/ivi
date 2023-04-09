@@ -19,7 +19,7 @@
     "ivi": "workspace:^"
   },
   "devDependencies": {
-    "ivi": "workspace:^"
+    "ivi": "workspace:*"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
