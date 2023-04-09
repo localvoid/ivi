@@ -16,7 +16,7 @@ function renderToStaticMarkup(
   props: Record<string, any>,
   { default: children, ...slotted }: Record<string, any>
 ) {
-  const p: any = {};
+  const p: any = { ...props };
   for (const [name, value] of Object.entries(slotted)) {
     p[name] = StaticSlot(value, name);
   }
