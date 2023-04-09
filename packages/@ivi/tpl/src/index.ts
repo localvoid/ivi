@@ -97,7 +97,10 @@ export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
  *         svg :height='210' :width='500'
  *           polygon
  *             :points='100,10 40,198 190,78 10,78 160,198'
- *             :style='fill:lime;stroke:purple;stroke-width:5;fill-rule:nonzero'
+ *             ~fill='lime'
+ *             ~stroke='purple'
+ *             ~stroke-width='5'
+ *             ~fill-rule='nonzero'
  *       `;
  *     }
  */
@@ -106,7 +109,7 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
   if (fn === void 0) {
     let result;
     try {
-      const tpl = parseTemplate(strings, ITemplateType.Htm, tryHoistExpr);
+      const tpl = parseTemplate(strings, ITemplateType.Svg, tryHoistExpr);
       result = compileTemplate(tpl);
     } catch (e) {
       if (e instanceof TemplateParserError) {
