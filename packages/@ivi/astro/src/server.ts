@@ -2,9 +2,11 @@ import { type SSRResult } from "astro";
 import { renderToString } from "ivi/server";
 import { htm } from "@ivi/htm";
 
-function check() {
-  return true;
-}
+const check = () => true;
+
+const StaticSlot = (value: string, name?: string) => htm`
+  <astro-slot name=${name} .innerHTML=${value} />
+`;
 
 type RendererContext = {
   result: SSRResult;
@@ -16,22 +18,21 @@ function renderToStaticMarkup(
   props: Record<string, any>,
   { default: children, ...slotted }: Record<string, any>
 ) {
-  const p: any = { ...props };
-  for (const [name, value] of Object.entries(slotted)) {
-    p[name] = StaticSlot(value, name);
+  props = { ...props };
+  const entries = Object.entries(slotted);
+  if (entries.length > 0) {
+    for (const [name, child] of entries) {
+      props[name] = StaticSlot(child);
+    }
   }
   if (children != null) {
-    p.children = StaticSlot(children);
+    props.children = StaticSlot(children);
   }
 
   return {
-    html: renderToString(Component(p)),
+    html: renderToString(Component(props)),
   };
 }
-
-const StaticSlot = (value: string, name?: string) => htm`
-  <astro-slot name=${name} .innerHTML=${value} />
-`;
 
 export default {
   check,

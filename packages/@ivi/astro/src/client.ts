@@ -1,4 +1,4 @@
-import { createRoot, hydrate, component, preventUpdates, VAny } from "ivi";
+import { type VAny, createRoot, hydrate, component, preventUpdates } from "ivi";
 import { htm } from "@ivi/htm";
 
 interface StaticSlotPops {
@@ -21,12 +21,20 @@ export default (element: HTMLElement) =>
     { default: children, ...slotted }: Record<string, any>
   ) => {
     if (element.hasAttribute("ssr")) {
-      for (const [name, value] of Object.entries(slotted)) {
-        props[name] = StaticSlot({ value, name });
+      props = { ...props };
+      const entries = Object.entries(slotted);
+      if (entries.length > 0) {
+        for (const [name, child] of entries) {
+          props[name] = StaticSlot(child);
+        }
       }
       if (children != null) {
         props.children = StaticSlot(children);
       }
-      hydrate(createRoot(element), Component(props));
+
+      hydrate(
+        createRoot(element),
+        Component(props),
+      );
     }
   };
