@@ -11,7 +11,7 @@ const StaticSlot = component<StaticSlotPops>(() => {
   return ({ value, name }) =>
     slot !== void 0
       ? slot
-      : (slot = htm`<astro-slot name=${name} .innerHTML=${value}></astro-slot>`);
+      : (slot = /* ssr */htm`<astro-slot name=${name} .innerHTML=${value} />`);
 }, preventUpdates);
 
 export default (element: HTMLElement) =>

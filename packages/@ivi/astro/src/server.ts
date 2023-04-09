@@ -30,7 +30,7 @@ function renderToStaticMarkup(
 }
 
 const StaticSlot = (value: string, name?: string) => htm`
-  <astro-slot name=${name} .innerHTML=${value}></astro-slot>
+  <astro-slot name=${name} .innerHTML=${value} />
 `;
 
 export default {
