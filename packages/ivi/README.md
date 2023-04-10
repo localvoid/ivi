@@ -1391,7 +1391,7 @@ type SContext = SNode1<null, null>;
 
 This data structures were carefully designed to have small memory overhead and avoid a lot of polymorphic/megamorphic call-sites that access this data structures.
 
-To understand why monomorphic call-sites are important for performance, it is recommended to read a great article on this topic: ["What's up with ,onomorphism?"](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
+To understand why monomorphic call-sites are important for performance, it is recommended to read a great article on this topic: ["What's up with monomorphism?"](https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html).
 
 #### Template
 
