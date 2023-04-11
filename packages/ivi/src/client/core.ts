@@ -2097,6 +2097,15 @@ const _hydrateAssignTemplateSlots = (
   const ctx = RENDER_CONTEXT;
   let exprOffsetIndex = 0;
   let exprOffsets: number[] | undefined;
+  // text edge cases:
+  //
+  //   [text, { element }, text]
+  //                      ^ prevExpr flag
+  //
+  //   [text, <!>, { text }, <!>, { text }, <!>, text]
+  //                                       ^ prevExpr flag
+  //         [            ] [            ] [         ]
+  //
   while (true) {
     const op = opCodes[offset++];
     if (op & StateOpCode.PrevExpr) {
@@ -2108,12 +2117,12 @@ const _hydrateAssignTemplateSlots = (
       }
       let exprOffset = exprOffsets[exprOffsetIndex++];
       while (exprOffset-- > 0) {
-        currentNode = nodeGetNextSibling.call(currentNode);
         if (nodeGetNodeType.call(currentNode) === NodeType.Comment) {
           const comment = currentNode as Comment;
           currentNode = nodeGetNextSibling.call(currentNode);
           comment.remove();
         }
+        currentNode = nodeGetNextSibling.call(currentNode);
       }
     }
     if (op & StateOpCode.Save) {
@@ -2134,11 +2143,15 @@ const _hydrateAssignTemplateSlots = (
           state,
         );
       } else { // Remove
-        // Remove operation implies that current node is always a comment node
+        // Remove operation implies that current node can be a comment node
         // followed by a text node.
-        const commentNode = currentNode as Comment;
-        state[++ctx.si] = currentNode = nodeGetNextSibling.call(currentNode);
-        commentNode.remove();
+        if (nodeGetNodeType.call(currentNode) === NodeType.Comment) {
+          const comment = currentNode as Comment;
+          currentNode = nodeGetNextSibling.call(currentNode);
+          comment.remove();
+        }
+
+        state[++ctx.si] = currentNode;
       }
     }
     if (offset === endOffset) {

@@ -38,4 +38,11 @@ describe("ssr: template/element", () => {
       `<div><a>a</a></div>`,
     );
   });
+
+  test(`<div>a{<span/>}b</div>`, () => {
+    strictEqual(
+      renderToString(htm`<div>a${htm`<span/>`}b</div>`),
+      `<div &="1">a<span></span>b</div>`,
+    );
+  });
 });

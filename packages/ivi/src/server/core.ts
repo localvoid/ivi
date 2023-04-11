@@ -353,9 +353,9 @@ const renderTElement = (exprs: any[], e: TElement) => {
     }
   }
 
+  ctx.s = (ctx.s + 1) & RenderState.OffsetMask;
   if (children === null) {
     ctx.t += openElement + ">" + suffix;
-    ctx.s = (ctx.s + 1) & RenderState.OffsetMask;
     return;
   }
 
@@ -391,7 +391,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
           offset += ctx.s & RenderState.OffsetMask;
           pushOffset = true;
         }
-        ctx.s = prevS | (ctx.s & RenderState.PrevText);
+        ctx.s = (prevS & RenderState.OffsetMask) | (ctx.s & RenderState.PrevText);
       }
     }
     if (offsets !== void 0) {
@@ -401,7 +401,7 @@ const renderTElement = (exprs: any[], e: TElement) => {
     }
 
     ctx.t = prevT + openElement + ctx.t + suffix;
-    ctx.s = (prevS + 1) & RenderState.OffsetMask;
+    ctx.s = prevS;
   } else if (typeof children === "number") { // textContent / innerHTML / <textarea .value={} />
     const v = exprs[children];
     ctx.t += openElement + ">";
