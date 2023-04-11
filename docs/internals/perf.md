@@ -91,5 +91,7 @@ https://en.wikipedia.org/wiki/Aliasing_(computing)
 
 ## Additional Resources
 
+- https://v8.dev/docs/turbofan
 - https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html
 - https://benediktmeurer.de/2017/06/29/javascript-optimization-patterns-part2/
+- https://github.com/thlorenz/v8-perf/blob/master/language-features.md
