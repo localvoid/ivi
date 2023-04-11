@@ -58,23 +58,25 @@ const elementRemoveEventListener = elementProto.removeEventListener;
 /** `Object.getOwnPropertyDescriptor(o, p)` */
 const getDescriptor = (o: any, p: string | number | symbol) => _Object.getOwnPropertyDescriptor(o, p);
 
-/** `Node.prototype.getFirstChild` */
+/** `get Node.prototype.firstChild` */
 const nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
-/** `Node.prototype.getLastChild` */
+/** `get Node.prototype.lastChild` */
 const nodeGetLastChild = /*@__PURE__*/getDescriptor(nodeProto, "lastChild")!.get!;
-/** `Node.prototype.getNextSibling` */
+/** `get Node.prototype.nextSibling` */
 const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
-/** `Node.prototype.getPrevSibling` */
-const nodeGetPrevSibling = /*@__PURE__*/getDescriptor(nodeProto, "previousSibling")!.get!;
-/** `Node.prototype.setTextContent` */
+/** `get Node.prototype.previousSibling` */
+const nodeGetPreviousSibling = /*@__PURE__*/getDescriptor(nodeProto, "previousSibling")!.get!;
+/** `set Node.prototype.textContent` */
 const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
-/** `Element.prototype.setInnerHTML` */
+/** `get Node.prototype.nodeType` */
+const nodeGetNodeType = /*@__PURE__*/getDescriptor(nodeProto, "nodeType")!.get!;
+/** `set Element.prototype.innerHTML` */
 const elementSetInnerHTML = /*@__PURE__*/getDescriptor(elementProto, "innerHTML")!.set!;
-/** `Element.prototype.className` */
+/** `set Element.prototype.className` */
 const elementSetClassName = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
-/** `HTMLElement.prototype.style`. */
+/** `get HTMLElement.prototype.style`. */
 const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "style")!.get!;
-/** `SVGElement.prototype.style` */
+/** `get SVGElement.prototype.style` */
 const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
 
 /**
@@ -1944,7 +1946,7 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           const state = _Array<Node>(flags & TemplateFlags.Mask6);
           const currentDOMNode = ctx.n === null
             ? nodeGetLastChild.call(ctx.p)
-            : nodeGetPrevSibling.call(ctx.n);
+            : nodeGetPreviousSibling.call(ctx.n);
           state[0] = currentDOMNode;
 
           if (stateOpCodes.length > 0) {
@@ -2045,11 +2047,11 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
       const ctx = RENDER_CONTEXT;
       let node = ctx.n === null
         ? nodeGetLastChild.call(ctx.p)
-        : nodeGetPrevSibling.call(ctx.n);
+        : nodeGetPreviousSibling.call(ctx.n);
       // Edge case: [dynamic text, dynamic text]
-      while (node.nodeType === NodeType.Comment) {
+      while (nodeGetNodeType.call(node) === NodeType.Comment) {
         const comment = node as Comment;
-        node = nodeGetPrevSibling.call(node);
+        node = nodeGetPreviousSibling.call(node);
         comment.remove();
       }
       ctx.n = node;
@@ -2107,7 +2109,7 @@ const _hydrateAssignTemplateSlots = (
       let exprOffset = exprOffsets[exprOffsetIndex++];
       while (exprOffset-- > 0) {
         currentNode = nodeGetNextSibling.call(currentNode);
-        if (currentNode.nodeType === NodeType.Comment) {
+        if (nodeGetNodeType.call(currentNode) === NodeType.Comment) {
           const comment = currentNode as Comment;
           currentNode = nodeGetNextSibling.call(currentNode);
           comment.remove();
