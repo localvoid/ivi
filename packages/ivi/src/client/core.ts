@@ -39,17 +39,17 @@ const SVG_TEMPLATE_CONTENT = _SVG_TEMPLATE.content.firstChild as Element;
 // avoid megamorphic call-sites when accessing DOM nodes.
 
 /** `Node.prototype.insertBefore` */
-const nodeInsertBefore = nodeProto.insertBefore;
+const nodeInsertBefore: <T extends Node>(this: Node, node: T, child: Node | null) => T = nodeProto.insertBefore;
 /** `Node.prototype.removeChild`. */
-const nodeRemoveChild = nodeProto.removeChild;
+const nodeRemoveChild: <T extends Node>(this: Node, node: T) => T = nodeProto.removeChild;
 /** `Node.prototype.cloneNode`. */
-const nodeCloneNode = nodeProto.cloneNode;
+const nodeCloneNode: (this: Node, deep?: boolean | undefined) => Node = nodeProto.cloneNode;
 /** `Element.prototype.setAttribute` */
-const elementGetAttribute = elementProto.getAttribute;
+const elementGetAttribute: (this: Element, qualifiedName: string) => string | null = elementProto.getAttribute;
 /** `Element.prototype.setAttribute` */
-const elementSetAttribute = elementProto.setAttribute;
+const elementSetAttribute: (this: Element, qualifiedName: string, value: string) => void = elementProto.setAttribute;
 /** `Element.prototype.removeAttribute` */
-const elementRemoveAttribute = elementProto.removeAttribute;
+const elementRemoveAttribute: (this: Element, qualifiedName: string) => void = elementProto.removeAttribute;
 /** `EventTarget.prototype.addEventListener` */
 const elementAddEventListener = elementProto.addEventListener;
 /** `EventTarget.prototype.removeEventListener` */
@@ -59,25 +59,25 @@ const elementRemoveEventListener = elementProto.removeEventListener;
 const getDescriptor = (o: any, p: string | number | symbol) => _Object.getOwnPropertyDescriptor(o, p);
 
 /** `get Node.prototype.firstChild` */
-const nodeGetFirstChild = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
+const nodeGetFirstChild: (this: Node) => ChildNode | null = /*@__PURE__*/getDescriptor(nodeProto, "firstChild")!.get!;
 /** `get Node.prototype.lastChild` */
-const nodeGetLastChild = /*@__PURE__*/getDescriptor(nodeProto, "lastChild")!.get!;
+const nodeGetLastChild: (this: Node) => ChildNode | null = /*@__PURE__*/getDescriptor(nodeProto, "lastChild")!.get!;
 /** `get Node.prototype.nextSibling` */
-const nodeGetNextSibling = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
+const nodeGetNextSibling: (this: Node) => ChildNode | null = /*@__PURE__*/getDescriptor(nodeProto, "nextSibling")!.get!;
 /** `get Node.prototype.previousSibling` */
-const nodeGetPreviousSibling = /*@__PURE__*/getDescriptor(nodeProto, "previousSibling")!.get!;
+const nodeGetPreviousSibling: (this: Node) => ChildNode | null = /*@__PURE__*/getDescriptor(nodeProto, "previousSibling")!.get!;
 /** `set Node.prototype.textContent` */
-const nodeSetTextContent = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
+const nodeSetTextContent: (this: Node, value: string | number) => void = /*@__PURE__*/getDescriptor(nodeProto, "textContent")!.set!;
 /** `get Node.prototype.nodeType` */
-const nodeGetNodeType = /*@__PURE__*/getDescriptor(nodeProto, "nodeType")!.get!;
+const nodeGetNodeType: (this: Node) => number = /*@__PURE__*/getDescriptor(nodeProto, "nodeType")!.get!;
 /** `set Element.prototype.innerHTML` */
-const elementSetInnerHTML = /*@__PURE__*/getDescriptor(elementProto, "innerHTML")!.set!;
+const elementSetInnerHTML: (this: Element, value: string) => void = /*@__PURE__*/getDescriptor(elementProto, "innerHTML")!.set!;
 /** `set Element.prototype.className` */
-const elementSetClassName = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
+const elementSetClassName: (this: Element, value: string) => void = /*@__PURE__*/getDescriptor(elementProto, "className")!.set!;
 /** `get HTMLElement.prototype.style`. */
-const htmlElementGetStyle = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "style")!.get!;
+const htmlElementGetStyle: (this: HTMLElement) => CSSStyleDeclaration = /*@__PURE__*/getDescriptor(HTMLElement.prototype, "style")!.get!;
 /** `get SVGElement.prototype.style` */
-const svgElementGetStyle = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
+const svgElementGetStyle: (this: SVGElement) => CSSStyleDeclaration = /*@__PURE__*/getDescriptor(SVGElement.prototype, "style")!.get!;
 
 /**
  * Render Context.
@@ -394,7 +394,7 @@ const _updateTemplateProperties = (
                 if (prev == null || prev === "" || prev === false) {
                   nodeSetTextContent.call(currentElement, next);
                 } else {
-                  nodeGetFirstChild.call(currentElement).nodeValue = next;
+                  nodeGetFirstChild.call(currentElement)!.nodeValue = next;
                 }
               } else if (prev != null && prev !== "" && prev !== false) {
                 nodeSetTextContent.call(currentElement, "");
@@ -468,7 +468,7 @@ const _assignTemplateSlots = (
       // operations. Remove operations will always have a 0 enterOffset.
       if (enterOffset) { // Enter
         _assignTemplateSlots(
-          nodeGetFirstChild.call(currentNode),
+          nodeGetFirstChild.call(currentNode)!,
           opCodes,
           offset,
           offset += enterOffset,
@@ -478,14 +478,14 @@ const _assignTemplateSlots = (
         // Remove operation implies that current node is always a comment node
         // followed by a text node.
         const commentNode = currentNode as Comment;
-        state[++ctx.si] = currentNode = nodeGetNextSibling.call(currentNode);
+        state[++ctx.si] = currentNode = nodeGetNextSibling.call(currentNode)!;
         commentNode.remove();
       }
     }
     if (offset === endOffset) {
       return;
     }
-    currentNode = nodeGetNextSibling.call(currentNode);
+    currentNode = nodeGetNextSibling.call(currentNode as ChildNode)!;
   }
 };
 
@@ -743,7 +743,7 @@ const _mount = (parentSNode: SNode, v: VAny): SNode | null => {
           if (stateOpCodes.length > 0) {
             ctx.si = 0;
             _assignTemplateSlots(
-              nodeGetFirstChild.call(rootDOMNode),
+              nodeGetFirstChild.call(rootDOMNode)!,
               stateOpCodes,
               0,
               stateOpCodes.length,
@@ -1945,15 +1945,15 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
           const flags = tplData.f;
           const state = _Array<Node>(flags & TemplateFlags.Mask6);
           const currentDOMNode = ctx.n === null
-            ? nodeGetLastChild.call(ctx.p)
-            : nodeGetPreviousSibling.call(ctx.n);
+            ? nodeGetLastChild.call(ctx.p)!
+            : nodeGetPreviousSibling.call(ctx.n)!;
           state[0] = currentDOMNode;
 
           if (stateOpCodes.length > 0) {
             ctx.si = 0;
             _hydrateAssignTemplateSlots(
-              currentDOMNode,
-              nodeGetFirstChild.call(currentDOMNode),
+              currentDOMNode as Element,
+              nodeGetFirstChild.call(currentDOMNode)!,
               stateOpCodes,
               0,
               stateOpCodes.length,
@@ -2049,9 +2049,9 @@ const _hydrate = (parentSNode: SNode, v: VAny): SNode | null => {
         ? nodeGetLastChild.call(ctx.p)
         : nodeGetPreviousSibling.call(ctx.n);
       // Edge case: [dynamic text, dynamic text]
-      while (nodeGetNodeType.call(node) === NodeType.Comment) {
+      while (nodeGetNodeType.call(node!) === NodeType.Comment) {
         const comment = node as Comment;
-        node = nodeGetPreviousSibling.call(node);
+        node = nodeGetPreviousSibling.call(node!);
         comment.remove();
       }
       ctx.n = node;
@@ -2119,10 +2119,10 @@ const _hydrateAssignTemplateSlots = (
       while (exprOffset-- > 0) {
         if (nodeGetNodeType.call(currentNode) === NodeType.Comment) {
           const comment = currentNode as Comment;
-          currentNode = nodeGetNextSibling.call(currentNode);
+          currentNode = nodeGetNextSibling.call(currentNode)!;
           comment.remove();
         }
-        currentNode = nodeGetNextSibling.call(currentNode);
+        currentNode = nodeGetNextSibling.call(currentNode)!;
       }
     }
     if (op & StateOpCode.Save) {
@@ -2133,7 +2133,7 @@ const _hydrateAssignTemplateSlots = (
       // Enter offset is used to disambiguate between enter and remove
       // operations. Remove operations will always have a 0 enterOffset.
       if (enterOffset) { // Enter
-        let node = nodeGetFirstChild.call(currentNode);
+        let node = nodeGetFirstChild.call(currentNode)!;
         _hydrateAssignTemplateSlots(
           currentNode as Element,
           node,
@@ -2147,7 +2147,7 @@ const _hydrateAssignTemplateSlots = (
         // followed by a text node.
         if (nodeGetNodeType.call(currentNode) === NodeType.Comment) {
           const comment = currentNode as Comment;
-          currentNode = nodeGetNextSibling.call(currentNode);
+          currentNode = nodeGetNextSibling.call(currentNode)!;
           comment.remove();
         }
 
@@ -2157,7 +2157,7 @@ const _hydrateAssignTemplateSlots = (
     if (offset === endOffset) {
       return;
     }
-    currentNode = nodeGetNextSibling.call(currentNode);
+    currentNode = nodeGetNextSibling.call(currentNode)!;
   }
 };
 
