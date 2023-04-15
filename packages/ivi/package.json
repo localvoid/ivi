@@ -17,6 +17,7 @@
     "dist",
     "src",
     "!dist/**/*.tsbuildinfo",
+    "!dist/**/__tests__",
     "!src/**/__tests__",
     "README.md",
     "LICENSE"
