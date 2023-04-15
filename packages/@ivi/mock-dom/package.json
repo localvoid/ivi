@@ -1,7 +1,6 @@
 {
   "name": "@ivi/mock-dom",
-  "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
@@ -12,6 +11,7 @@
     "dist",
     "src",
     "!dist/**/*.tsbuildinfo",
+    "!dist/**/__tests__",
     "!src/**/__tests__",
     "README.md",
     "LICENSE"
