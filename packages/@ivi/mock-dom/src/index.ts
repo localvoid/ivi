@@ -1003,7 +1003,6 @@ function parseRegExp(ctx: HTMLParserContext, re: RegExp): string | undefined {
     ctx.i += s.length;
     return s;
   }
-  return void 0;
 }
 
 const VOID_ELEMENTS = (

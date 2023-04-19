@@ -96,7 +96,6 @@ export class TemplateScanner {
     if (match !== null) {
       return match[0];
     }
-    return void 0;
   }
 
   regExp(re: RegExp): string | undefined {

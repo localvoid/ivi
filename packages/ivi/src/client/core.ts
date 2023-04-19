@@ -2263,5 +2263,4 @@ const _getContextValue = <T>(
     }
     node = node.p;
   }
-  return void 0;
 };

@@ -122,7 +122,6 @@ export function ivi(options?: IviOptions): Plugin[] {
         if (options.ssr && source === "ivi") {
           return this.resolve("ivi/server", importer, options);
         }
-        return void 0;
       },
     },
   ];

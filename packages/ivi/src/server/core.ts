@@ -101,7 +101,6 @@ const _getContextValue = (d: ContextDescriptor) => {
       return c.p.v;
     }
   }
-  return void 0;
 };
 
 export type ContextType<T> = ContextDescriptor<T>;
