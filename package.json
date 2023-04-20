@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@8.3.1",
   "scripts": {
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
@@ -13,7 +13,7 @@
     "typescript": "^5.1.0-beta"
   },
   "volta": {
-    "node": "19.8.0",
-    "pnpm": "8.2.0"
+    "node": "20.0.0",
+    "pnpm": "8.3.1"
   }
 }
