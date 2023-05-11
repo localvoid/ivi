@@ -8,7 +8,7 @@ importers:
         specifier: ^20.1.2
         version: 20.1.2
       typescript:
-        specifier: ^5.0.0
+        specifier: ^5.0.4
         version: 5.0.4
 
   packages/@ivi/astro:
