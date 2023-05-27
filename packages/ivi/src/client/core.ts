@@ -1516,7 +1516,7 @@ export type ComponentFactory = {
     areEqual?: (a?: any, b?: any) => boolean
   ): () => VComponent<undefined>;
   <P>(
-    factory: (c: Component) => (props: P) => VAny,
+    factory: (c: Component<P>) => (props: P) => VAny,
     areEqual?: (prev: P, next: P) => boolean
   ): (props: P) => VComponent<P>;
 };
