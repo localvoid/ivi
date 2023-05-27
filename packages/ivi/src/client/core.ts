@@ -1591,16 +1591,16 @@ export type Effect = {
  * @example
  *
  *     const Example = component((c) => {
- *       const [count, setCount] = useState(0);
- *       const timer = useEffect(c, shallowEq, ({ interval }) => {
+ *       const [count, setCount] = useState(c, 0);
+ *       const timer = useEffect(c, ({ interval }) => {
  *         const tid = setInterval(() => { setCount(count() + 1); }, interval);
  *         return () => { clearInterval(tid); };
- *       });
+ *       }, shallowEq);
  *
  *       return (interval) => (
  *         timer({ interval }),
  *
- *         htm`span.Counter ${i}`
+ *         htm`<span>${count()}</span>`
  *       );
  *     });
  *
