@@ -25,7 +25,7 @@
     "@ivi/htm": "workspace:*",
     "@ivi/tpl": "workspace:*",
     "@types/babel__core": "^7.20.1",
-    "rollup": "^3.23.0"
+    "rollup": "^3.23.1"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
