@@ -9,8 +9,8 @@
     "test:only": "node --enable-source-maps --test-only --test packages/ tests/dist/"
   },
   "devDependencies": {
-    "@types/node": "^20.2.5",
-    "typescript": "^5.1.3"
+    "@types/node": "^20.5.9",
+    "typescript": "^5.2.2"
   },
   "volta": {
     "node": "20.2.0",
