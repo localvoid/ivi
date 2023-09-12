@@ -577,6 +577,80 @@ describe("@ivi/htm/parser", () => {
     );
   });
 
+  test(`whitespace #15`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `<a> `,
+          ` `,
+          ` </a>`,
+        ],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            T(" "),
+            X(0),
+            T(" "),
+            X(1),
+            T(" "),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`whitespace #16`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `<a>
+          `,
+          `
+          </a>`,
+        ],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            X(0),
+          ]),
+        ],
+      },
+    );
+  });
+
+  test(`whitespace #17`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `<a>
+          \v`,
+          `\v
+          </a>`,
+        ],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            T(" "),
+            X(0),
+            T(" "),
+          ]),
+        ],
+      },
+    );
+  });
+
   test(`attr #1`, () => {
     deepStrictEqual(
       parseTemplate(
