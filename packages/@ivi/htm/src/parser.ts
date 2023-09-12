@@ -61,6 +61,14 @@ export class TemplateParser extends TemplateScanner {
       } else {
         const expr = this.expr();
         if (expr !== -1) {
+          if (whitespaceState & WhitespaceState.Whitespace) {
+            if (
+              !(whitespaceState & WhitespaceState.ContainsNewline) ||
+              (whitespaceState & WhitespaceState.ContainsVerticalTab)
+            ) {
+              children.push(SPACE_TEXT_NODE);
+            }
+          }
           children.push({
             type: INodeType.Expr,
             value: expr,
