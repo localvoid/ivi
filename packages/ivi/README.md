@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer">
+  <a href="https://github.com/localvoid/ivi" target="_blank" rel="noopener noreferrer">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset=".https://localvoid.github.io/ivi/images/ivi-logo-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="https://localvoid.github.io/ivi/images/ivi-logo-light.svg">
