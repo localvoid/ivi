@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@8.5.1",
+  "packageManager": "pnpm@8.10.0",
   "scripts": {
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
@@ -9,11 +9,11 @@
     "test:only": "node --enable-source-maps --test-only --test packages/ tests/dist/"
   },
   "devDependencies": {
-    "@types/node": "^20.6.0",
+    "@types/node": "^20.8.9",
     "typescript": "^5.2.2"
   },
   "volta": {
-    "node": "20.6.0",
-    "pnpm": "8.7.1"
+    "node": "20.9.0",
+    "pnpm": "8.10.0"
   }
 }

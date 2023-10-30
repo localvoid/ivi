@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@ivi/htm": "workspace:*",
-    "astro": "^3.0.12",
+    "astro": "^3.4.0",
     "ivi": "workspace:*"
   },
   "scripts": {
