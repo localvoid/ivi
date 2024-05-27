@@ -17,15 +17,15 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/core": "^7.23.2",
+    "@babel/core": "^7.24.6",
     "@ivi/babel-plugin": "workspace:^",
-    "@rollup/pluginutils": "^5.0.5"
+    "@rollup/pluginutils": "^5.1.0"
   },
   "devDependencies": {
     "@ivi/htm": "workspace:*",
     "@ivi/tpl": "workspace:*",
-    "@types/babel__core": "^7.20.3",
-    "vite": "^4.5.0"
+    "@types/babel__core": "^7.20.5",
+    "vite": "^5.2.11"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"

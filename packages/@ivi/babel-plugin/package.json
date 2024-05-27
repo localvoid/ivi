@@ -24,9 +24,9 @@
     "ivi": "workspace:^"
   },
   "dependencies": {
-    "@babel/helper-module-imports": "^7.22.15",
-    "@babel/helper-plugin-utils": "^7.22.5",
-    "@babel/types": "^7.23.0"
+    "@babel/helper-module-imports": "^7.24.6",
+    "@babel/helper-plugin-utils": "^7.24.6",
+    "@babel/types": "^7.24.6"
   },
   "devDependencies": {
     "ivi": "workspace:*"

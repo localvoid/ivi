@@ -1,19 +1,19 @@
 {
   "private": true,
-  "packageManager": "pnpm@8.10.0",
+  "packageManager": "pnpm@9.1.3",
   "scripts": {
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
     "build:force": "tsc -b --force --pretty",
-    "test": "node --enable-source-maps --test packages/ tests/dist/",
-    "test:only": "node --enable-source-maps --test-only --test packages/ tests/dist/"
+    "test": "node --enable-source-maps --test",
+    "test:only": "node --enable-source-maps --test-only --test packages/**/*.test.js tests/dist/**/*.test.js"
   },
   "devDependencies": {
-    "@types/node": "^20.8.9",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5"
   },
   "volta": {
-    "node": "20.9.0",
-    "pnpm": "8.10.0"
+    "node": "22.2.0",
+    "pnpm": "9.1.3"
   }
 }

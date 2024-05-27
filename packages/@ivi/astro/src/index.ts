@@ -1,4 +1,5 @@
 import type { AstroConfig, AstroIntegration, AstroRenderer } from "astro";
+import type { UserConfig } from "vite";
 import { ivi } from "@ivi/vite-plugin";
 
 function getRenderer(): AstroRenderer {
@@ -9,7 +10,7 @@ function getRenderer(): AstroRenderer {
   };
 }
 
-async function getViteConfiguration(isDev: boolean, astroConfig: AstroConfig) {
+async function getViteConfiguration(isDev: boolean, astroConfig: AstroConfig): Promise<UserConfig> {
   return {
     optimizeDeps: {
       include: ["ivi"],
