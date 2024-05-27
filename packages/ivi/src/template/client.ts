@@ -483,14 +483,15 @@ const _emitStateOpCodes = (
             opCodes.push(StateOpCode.EnterOrRemove | StateOpCode.PrevExpr);
           } else if (state & VisitState.PrevExpr) {
             opCodes.push(StateOpCode.Save | StateOpCode.PrevExpr);
-          }
-          if (
-            (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) !==
-            (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
-          ) {
-            break outer;
           } else {
-            opCodes.push(0);
+            if (
+              (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) !==
+              (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)
+            ) {
+              break outer;
+            } else {
+              opCodes.push(0);
+            }
           }
           state = 1;
           break;

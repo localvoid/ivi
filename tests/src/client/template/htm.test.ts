@@ -258,4 +258,64 @@ describe("@ivi/htm", () => {
       ],
     );
   });
+
+  test("whitespace 12", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <div>
+            ${"a"} ${"b"} ${"c"}
+          </div>
+        `);
+      }),
+      [
+        '[-7] Template.innerHTML = "<div> <!> </div>"',
+        '[-6] Node.firstChild => 3',
+        '[3] Node.cloneNode(true) => 7',
+        '[7] Node.firstChild => 8',
+        '[8] Node.nextSibling => 9',
+        '[9] Node.nextSibling => 10',
+        '[9] Node.remove()',
+        'createTextNode("c") => 11',
+        '[7] Node.insertBefore(11, null)',
+        'createTextNode("b") => 12',
+        '[7] Node.insertBefore(12, 10)',
+        'createTextNode("a") => 13',
+        '[7] Node.insertBefore(13, 8)',
+        '[1] Node.insertBefore(7, null)',
+      ],
+    );
+  });
+
+  test("whitespace 13", () => {
+    const root = createRoot();
+    deepStrictEqual(
+      trace(() => {
+        root.update(htm`
+          <div>
+            ${"a"}\v
+            ${"b"}\v
+            ${"c"}
+          </div>
+        `);
+      }),
+      [
+        '[-7] Template.innerHTML = "<div> <!> </div>"',
+        '[-6] Node.firstChild => 3',
+        '[3] Node.cloneNode(true) => 7',
+        '[7] Node.firstChild => 8',
+        '[8] Node.nextSibling => 9',
+        '[9] Node.nextSibling => 10',
+        '[9] Node.remove()',
+        'createTextNode("c") => 11',
+        '[7] Node.insertBefore(11, null)',
+        'createTextNode("b") => 12',
+        '[7] Node.insertBefore(12, 10)',
+        'createTextNode("a") => 13',
+        '[7] Node.insertBefore(13, 8)',
+        '[1] Node.insertBefore(7, null)',
+      ],
+    );
+  });
 });

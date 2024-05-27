@@ -651,6 +651,30 @@ describe("@ivi/htm/parser", () => {
     );
   });
 
+  test(`whitespace #18`, () => {
+    deepStrictEqual(
+      parseTemplate(
+        [
+          `<a> `, ` `, ` </a>`
+        ],
+        ITemplateType.Htm,
+        preventHoist,
+      ),
+      {
+        type: ITemplateType.Htm,
+        children: [
+          E("a", _, [
+            T(" "),
+            X(0),
+            T(" "),
+            X(1),
+            T(" "),
+          ]),
+        ],
+      },
+    );
+  });
+
   test(`attr #1`, () => {
     deepStrictEqual(
       parseTemplate(

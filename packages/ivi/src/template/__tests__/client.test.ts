@@ -352,6 +352,32 @@ describe("template compilation", () => {
       );
     });
 
+    test("expr between texts 2", () => {
+      deepStrictEqual(
+        c(h([
+          el("div", _, [
+            expr(0),
+            text("a"),
+            expr(1),
+            text("b"),
+            expr(2),
+          ]),
+        ])),
+        result([
+          {
+            type: TemplateNodeType.Block,
+            flags: F(false, 2, 3),
+            template: [`<div`, `>`, `a`, `<!>`, `b`, `</div>`],
+            props: [],
+            child: [cC(2), cSN(1), cC(1), cSN(0), cC(0)],
+            state: [S | X, R | X],
+            data: [],
+            exprs: [0, 1, 2],
+          },
+        ]),
+      );
+    });
+
     test("expr after element", () => {
       deepStrictEqual(
         c(h([
