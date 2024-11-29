@@ -6,8 +6,8 @@ import {
   type IProperty, type IPropertyAttribute, type IPropertyValue,
   type IPropertyDOMValue, type IPropertyStyle, type IPropertyEvent,
   type IPropertyDirective,
-  INodeType, ITemplateType, IPropertyType, IDirectiveType,
-} from "ivi/template/ir";
+  INodeType, ITemplateType, IPropertyType,
+} from "../../ir.js";
 
 const _ = void 0;
 
@@ -48,10 +48,9 @@ const EVENT = (key: string, value: number): IPropertyEvent => ({
 
 const DIRECTIVE = (
   value: number,
-  key: IDirectiveType = IDirectiveType.Client,
 ): IPropertyDirective => ({
   type: IPropertyType.Directive,
-  key,
+  key: null,
   value,
   hoist: false,
 });
@@ -895,42 +894,6 @@ describe("@ivi/htm/parser", () => {
         children: [
           E("div", [
             DIRECTIVE(0),
-          ]),
-        ],
-      },
-    );
-  });
-
-  test(`directive`, () => {
-    deepStrictEqual(
-      parseTemplate(
-        [`<div &=`, `/>`],
-        ITemplateType.Htm,
-        preventHoist,
-      ),
-      {
-        type: ITemplateType.Htm,
-        children: [
-          E("div", [
-            DIRECTIVE(0),
-          ]),
-        ],
-      },
-    );
-  });
-
-  test(`directive`, () => {
-    deepStrictEqual(
-      parseTemplate(
-        [`<div &:ssr=`, `/>`],
-        ITemplateType.Htm,
-        preventHoist,
-      ),
-      {
-        type: ITemplateType.Htm,
-        children: [
-          E("div", [
-            DIRECTIVE(0, IDirectiveType.Server),
           ]),
         ],
       },

@@ -1,6 +1,6 @@
 import {
   type ITemplate, type IProperty, type INode, type INodeElement, type INodeText,
-  ITemplateType, IDirectiveType, IPropertyType, INodeType,
+  ITemplateType, IPropertyType, INodeType,
 } from "../ir.js";
 import {
   CharCode, isVoidElement, TemplateParserError, TemplateScanner,
@@ -142,7 +142,7 @@ export class TemplateParser extends TemplateScanner {
       if (c === -1) { // shorthand syntax for directives
         properties.push({
           type: IPropertyType.Directive,
-          key: IDirectiveType.Client,
+          key: null,
           value: this.expr(),
           hoist: false,
         });
@@ -202,28 +202,6 @@ export class TemplateParser extends TemplateScanner {
           throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
         }
         this.dynamicProp(properties, IPropertyType.Event, key);
-      } else if (c === CharCode.Ampersand) { // &={directive} &:ssr={directive}
-        this.i++;
-        let key = IDirectiveType.Client;
-        if (this.charCode(CharCode.Colon)) {
-          if (!this.string("ssr")) {
-            throw new TemplateParserError("Expected a 'ssr' keyword.", this.e, this.i);
-          }
-          key = IDirectiveType.Server;
-        }
-        if (!this.charCode(CharCode.EqualsTo)) {
-          throw new TemplateParserError("Expected a '=' character.", this.e, this.i);
-        }
-        const value: string | boolean | number = this.expr();
-        if (value === -1) {
-          throw new TemplateParserError("Expected an element directive expression.", this.e, this.i);
-        }
-        properties.push({
-          type: IPropertyType.Directive,
-          key,
-          value,
-          hoist: false,
-        });
       } else {
         const key = this.regExp(IDENTIFIER);
         if (key === void 0) {
