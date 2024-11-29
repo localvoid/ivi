@@ -3,8 +3,7 @@
   "version": "3.0.2",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./package.json": "./package.json"
+    ".": "./dist/index.js"
   },
   "sideEffects": false,
   "files": [
@@ -17,15 +16,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/core": "^7.24.6",
-    "@ivi/babel-plugin": "workspace:^",
-    "@rollup/pluginutils": "^5.1.0"
-  },
-  "devDependencies": {
-    "@ivi/htm": "workspace:*",
-    "@ivi/tpl": "workspace:*",
-    "@types/babel__core": "^7.20.5",
-    "vite": "^5.2.11"
+    "@ivi/rollup-plugin": "workspace:*"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
