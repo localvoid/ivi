@@ -1,6 +1,10 @@
 {
   "private": true,
-  "packageManager": "pnpm@9.1.3",
+  "workspaces": [
+    "tests",
+    "packages/@ivi/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
@@ -9,11 +13,7 @@
     "test:only": "node --enable-source-maps --test-only --test packages/**/*.test.js tests/dist/**/*.test.js"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
-    "typescript": "^5.4.5"
-  },
-  "volta": {
-    "node": "22.2.0",
-    "pnpm": "9.1.3"
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
   }
 }

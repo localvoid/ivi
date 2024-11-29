@@ -14,14 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: "package.json"
-          cache: "pnpm"
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm test
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun test
         env:
           CI: true
-          COVERAGE: true
+
