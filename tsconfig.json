@@ -2,7 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/ivi" },
-    { "path": "packages/@ivi/htm" },
+    { "path": "packages/@ivi/ts-transformer" },
     { "path": "packages/@ivi/rollup-plugin" },
     { "path": "packages/@ivi/vite-plugin" },
     { "path": "packages/@ivi/portal" },

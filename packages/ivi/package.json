@@ -10,6 +10,8 @@
     "./template/server": "./dist/template/server.js",
     "./template/parser": "./dist/template/parser.js",
     "./template/ir": "./dist/template/ir.js",
+    "./template/html": "./dist/template/html/index.js",
+    "./template/html/parser": "./dist/template/html/parser.js",
     "./package.json": "./package.json"
   },
   "sideEffects": false,

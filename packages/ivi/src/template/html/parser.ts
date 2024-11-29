@@ -1,10 +1,10 @@
 import {
   type ITemplate, type IProperty, type INode, type INodeElement, type INodeText,
   ITemplateType, IDirectiveType, IPropertyType, INodeType,
-} from "ivi/template/ir";
+} from "../ir.js";
 import {
   CharCode, isVoidElement, TemplateParserError, TemplateScanner,
-} from "ivi/template/parser";
+} from "../parser.js";
 
 export const parseTemplate = (
   s: string[] | TemplateStringsArray,

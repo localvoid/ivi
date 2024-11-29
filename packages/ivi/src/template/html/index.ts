@@ -1,12 +1,12 @@
 import {
   type TemplateNode, TemplateNodeType, compileTemplate,
 } from "ivi/template/client";
-import { ITemplateType } from "ivi/template/ir";
-import { TemplateParserError, formatError } from "ivi/template/parser";
 import {
   type TemplateDescriptor, type VAny,
   _h, _hN, _hE, _s, _sN, _sE, _Td, _t
 } from "ivi";
+import { ITemplateType } from "../ir.js";
+import { TemplateParserError, formatError } from "../parser.js";
 import { parseTemplate } from "./parser.js";
 
 const tryHoistExpr = (i: number) => false;
