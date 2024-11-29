@@ -1419,6 +1419,8 @@ const markLIS = (a: Int32Array): void => {
 
 /**
  * Creates a HTML Template cloning factory.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _h = (t: string | Node): () => Element => (
   () => {
@@ -1432,6 +1434,8 @@ export const _h = (t: string | Node): () => Element => (
 
 /**
  * Creates a HTML Template factory.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _hN = (t: string): () => Element => (
   () => (
@@ -1442,6 +1446,8 @@ export const _hN = (t: string): () => Element => (
 
 /**
  * Creates a HTML Element factory.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _hE = (t: string): () => Element => (
   () => doc.createElement(t)
@@ -1462,6 +1468,8 @@ export const _s = (t: string | Node): () => Element => (
 
 /**
  * Creates a SVG Template factory.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _sN = (t: string): () => Element => (
   () => (
@@ -1472,6 +1480,8 @@ export const _sN = (t: string): () => Element => (
 
 /**
  * Creates a SVG Element factory.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _sE = (t: string): () => Element => (
   () => doc.createElementNS("http://www.w3.org/2000/svg", t)
@@ -1479,6 +1489,8 @@ export const _sE = (t: string): () => Element => (
 
 /**
  * Creates a template descriptor with globally shared data.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _T = (
   p2: () => Element,
@@ -1494,6 +1506,8 @@ export const _T = (
 
 /**
  * Creates a template descriptor.
+ * 
+ * @__NO_SIDE_EFFECTS__
  */
 export const _Td = (
   p2: () => Element,
@@ -1508,6 +1522,9 @@ export const _Td = (
   p2,
 });
 
+/**
+ * @__NO_SIDE_EFFECTS__
+ */
 export const _t = (d: TemplateDescriptor, p: any[]): VTemplate => ({ d, p });
 
 export type ComponentFactory = {
@@ -1528,6 +1545,7 @@ export type ComponentFactory = {
  * @param factory Function that produces stateful render functions.
  * @param areEqyal Function that checks `props` for equality.
  * @returns Factory that produces component nodes.
+ * @__NO_SIDE_EFFECTS__
  */
 export const component: ComponentFactory = <P>(
   p1: (c: Component) => (props?: P) => VAny,
