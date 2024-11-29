@@ -2,11 +2,9 @@
   "files": [],
   "references": [
     { "path": "packages/ivi" },
-    { "path": "packages/@ivi/tpl" },
     { "path": "packages/@ivi/htm" },
     { "path": "packages/@ivi/rollup-plugin" },
     { "path": "packages/@ivi/vite-plugin" },
-    { "path": "packages/@ivi/astro" },
     { "path": "packages/@ivi/portal" },
     { "path": "packages/@ivi/identity" },
     { "path": "packages/@ivi/mock-dom" },

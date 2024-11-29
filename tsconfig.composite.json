@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
+    "rootDir": "${configDir}/src",
+    "outDir": "${configDir}/dist",
+    "declarationDir": "${configDir}/dist",
     "composite": true,
     "incremental": true,
-    "target": "es2022",
-    "module": "es2022",
+    "target": "ES2023",
+    "module": "ES2022",
     "moduleResolution": "Bundler",
     "declaration": true,
     "declarationMap": true,
@@ -12,11 +15,21 @@
     "noEmitHelpers": true,
     "removeComments": false,
 
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": false,
+    "noImplicitOverride": true,
     "noUnusedLocals": true,
-    "skipLibCheck": true
-  }
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": false,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedSideEffectImports": true,
+    "skipLibCheck": true,
+  },
+  "include": [
+    "${configDir}/src/**/*.ts",
+  ],
+  "exclude": [
+    "${configDir}/src/**/*.test.ts",
+  ]
 }

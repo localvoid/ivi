@@ -1,15 +1,6 @@
 {
   "extends": "../../../tsconfig.composite.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "dist"
-  },
   "references": [
-    { "path": "../tpl" },
     { "path": "../htm" },
   ],
-  "include": [
-    "src/**/*.ts"
-  ]
 }
