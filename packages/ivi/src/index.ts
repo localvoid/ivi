@@ -18,18 +18,18 @@ export {
   List,
   // Root
   type RootFactory,
-  defineRoot, dirtyCheck, update, unmount, hydrate,
+  defineRoot, dirtyCheck, update, unmount,
   createRoot,
-} from "./client/core.js";
+} from "./lib/core.js";
 export {
   eventDispatcher, findDOMNode, containsDOMElement, hasDOMElement,
-} from "./client/utils.js";
+} from "./lib/utils.js";
 export {
   useMemo,
   useState,
   type Dispatch, useReducer,
-} from "./client/state.js";
+} from "./lib/state.js";
 export {
   preventUpdates, strictEq, shallowEq, shallowEqArray,
-} from "./shared/equal.js";
-export { escapeHTMLAttribute, escapeHTMLText } from "./shared/escape.js";
+} from "./lib/equal.js";
+export { htm, svg } from "./html/index.js";

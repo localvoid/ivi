@@ -1,6 +1,6 @@
 import {
   type Root, type VAny,
-  defineRoot, dirtyCheck, unmount, hydrate, findDOMNode, update,
+  defineRoot, dirtyCheck, unmount, findDOMNode, update,
 } from "../index.js";
 
 export class TestRoot {
@@ -32,10 +32,6 @@ export class TestRoot {
   dispose() {
     unmount(this._root, true);
     this._isDirty = false;
-  }
-
-  hydrate(v: VAny) {
-    hydrate(this._root, v);
   }
 
   _invalidate() {

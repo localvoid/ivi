@@ -1,6 +1,6 @@
 import {
   TemplateFlags, ChildOpCode, CommonPropType, PropOpCode, StateOpCode,
-} from "../client/template.js";
+} from "../lib/template.js";
 import {
   type INode, type ITemplate, type INodeElement,
   INodeType, IPropertyType, ITemplateType,

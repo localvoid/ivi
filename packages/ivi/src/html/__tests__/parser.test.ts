@@ -7,7 +7,7 @@ import {
   type IPropertyDOMValue, type IPropertyStyle, type IPropertyEvent,
   type IPropertyDirective,
   INodeType, ITemplateType, IPropertyType,
-} from "../../ir.js";
+} from "../../template/ir.js";
 
 const _ = void 0;
 
