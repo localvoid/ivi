@@ -21,13 +21,16 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
       const text = sourceFile.text;
       const factory = context.factory;
       const checker = getTypeChecker(sourceFile.fileName, text);
-      const iviModuleIdentifier = factory.createUniqueName("__ivi_");
       const scopes: HoistScope[] = [];
+      let iviModuleIdentifier: undefined | ts.Identifier;
 
       const visitor = withHoistScope(factory, scopes, (node: ts.Node): ts.Node => {
         if (ts.isTaggedTemplateExpression(node)) {
           const tplType = isIviTaggedTemplateExpression(node, checker);
           if (tplType) {
+            if (iviModuleIdentifier === void 0) {
+              iviModuleIdentifier = factory.createUniqueName("__ivi_");
+            }
             const ref = findHoistRef(node, scopes[0]);
 
             let clone = true;
@@ -66,18 +69,15 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                   const expr = expressions[i];
                   if (staticPart) {
                     return isHoistableToScope(checker, scopes[0], expr);
-                  } else {
-                    if (!hoist) {
-                      return false;
-                    }
-                    const scope = findOutermostScope(checker, scopes, expr);
-                    if (scope !== scopes[scopes.length - 1]) {
-                      expressions[i] = hoistExpr(factory, "__ivi_hoist_", expr, scope, findHoistRef(expr, scope));
-                      return true;
-                    }
+                  }
+                  if (!hoist) {
                     return false;
                   }
-
+                  const scope = findOutermostScope(checker, scopes, expr);
+                  if (scope !== scopes[scopes.length - 1]) {
+                    expressions[i] = hoistExpr(factory, "__ivi_hoist_", expr, scope, findHoistRef(expr, scope));
+                    return true;
+                  }
                   return false;
                 }
               );
@@ -91,7 +91,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                       "__ivi_tpl_",
                       createTemplateDescriptor(
                         factory,
-                        iviModuleIdentifier,
+                        iviModuleIdentifier!,
                         expressions,
                         tplType,
                         clone,
@@ -102,7 +102,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                     );
 
                     return factory.createCallExpression(
-                      factory.createPropertyAccessExpression(iviModuleIdentifier, "_t"),
+                      factory.createPropertyAccessExpression(iviModuleIdentifier!, "_t"),
                       void 0,
                       dynamicExprs.length > 0
                         ? [id, factory.createArrayLiteralExpression(dynamicExprs)]
@@ -128,13 +128,16 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
       });
 
       sourceFile = ts.visitNode(sourceFile, visitor) as ts.SourceFile;
-      return factory.updateSourceFile(
-        sourceFile,
-        [
-          createImportNamespaceDeclaration(factory, iviModuleIdentifier, "ivi"),
-          ...sourceFile.statements,
-        ],
-      );
+      if (iviModuleIdentifier !== void 0) {
+        return factory.updateSourceFile(
+          sourceFile,
+          [
+            createImportNamespaceDeclaration(factory, iviModuleIdentifier, "ivi"),
+            ...sourceFile.statements,
+          ],
+        );
+      }
+      return sourceFile;
     }
   );
 
