@@ -12,12 +12,18 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install
-      - run: bun run build
-      - run: bun config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: bun publish -r --provenance --access public --no-git-checks
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          registry-url: 'https://registry.npmjs.org'
+          cache: "pnpm"
+      - run: make init
+      - run: make build
+      - run: pnpm publish -r --provenance --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
