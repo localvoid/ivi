@@ -24,12 +24,7 @@
   "description": "Vite plugin for ivi library.",
   "license": "MIT",
   "keywords": [
-    "ivi",
-    "rollup",
-    "plugin",
-    "rollup-plugin",
-    "vite",
-    "vite-plugin"
+    "ivi"
   ],
   "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
   "homepage": "https://github.com/localvoid/ivi",
