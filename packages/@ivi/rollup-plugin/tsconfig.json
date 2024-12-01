@@ -1,6 +1,6 @@
 {
   "extends": "../../../tsconfig.composite.json",
   "references": [
-    { "path": "../htm" },
+    { "path": "../../ivi" },
   ],
 }
