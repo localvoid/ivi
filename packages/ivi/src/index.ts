@@ -1,4 +1,8 @@
 export {
+  type TemplateData,
+  StateOpCode, PropOpCode, ChildOpCode,
+} from "./lib/template.js";
+export {
   EMPTY_ARRAY,
   // Opaque Stateful Nodes
   type SNode,
