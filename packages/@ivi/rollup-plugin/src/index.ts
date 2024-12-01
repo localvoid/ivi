@@ -18,7 +18,7 @@ export function ivi(options?: IviOptions): Plugin {
     name: "ivi",
 
     transform(code: string, id: string) {
-      if (!filter(id)) {
+      if (!filter(id) && !IMPORT_RE.test(code)) {
         return null;
       }
 
@@ -53,3 +53,5 @@ export function ivi(options?: IviOptions): Plugin {
     },
   };
 }
+
+const IMPORT_RE = /^import.*from.*['"]ivi['"].*$/m;
