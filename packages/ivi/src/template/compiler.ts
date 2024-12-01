@@ -450,9 +450,6 @@ const _emitStateOpCodes = (
             child.propsExprs > 0
           ) {
             opCode = StateOpCode.Save;
-            if (state & VisitState.PrevExpr) {
-              opCode |= StateOpCode.PrevExpr;
-            }
           }
 
           const currentOpCodeIndex = opCodes.length;
@@ -480,9 +477,9 @@ const _emitStateOpCodes = (
         }
         case INodeType.Text: {
           if ((state & (VisitState.PrevText | VisitState.PrevExpr)) === (VisitState.PrevText | VisitState.PrevExpr)) {
-            opCodes.push(StateOpCode.EnterOrRemove | StateOpCode.PrevExpr);
+            opCodes.push(StateOpCode.EnterOrRemove);
           } else if (state & VisitState.PrevExpr) {
-            opCodes.push(StateOpCode.Save | StateOpCode.PrevExpr);
+            opCodes.push(StateOpCode.Save);
           } else {
             if (
               (child.flags & (SNodeFlags.HasNextExpressions | SNodeFlags.HasNextDOMNode)) !==

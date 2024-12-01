@@ -77,16 +77,10 @@ export const enum TemplateFlags {
  */
 export const enum StateOpCode {
   /** Saves current node */
-  Save = 0b001,
+  Save = 0b01,
   /** Enter or Remove operation. */
-  EnterOrRemove = 0b010,
-  /**
-   * Expression before DOM node.
-   *
-   * Used during hydration to figure out correct DOM offsets.
-   */
-  PrevExpr = 0b100,
-  OffsetShift = 3,
+  EnterOrRemove = 0b10,
+  OffsetShift = 2,
 }
 
 /**
