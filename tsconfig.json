@@ -9,4 +9,5 @@
     { "path": "packages/@ivi/mock-dom" },
     { "path": "tests" },
   ],
+  "files": []
 }

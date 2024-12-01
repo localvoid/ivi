@@ -1,16 +1,10 @@
 {
   "private": true,
-  "workspaces": [
-    "tests",
-    "packages/@ivi/*",
-    "packages/*"
-  ],
   "scripts": {
+    "clean": "rm -rf ./node_modules",
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
-    "build:force": "tsc -b --force --pretty",
-    "test": "node --enable-source-maps --test",
-    "test:only": "node --enable-source-maps --test-only --test packages/**/*.test.js tests/dist/**/*.test.js"
+    "build:force": "tsc -b --force --pretty"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
