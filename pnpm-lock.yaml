@@ -37,6 +37,9 @@ importers:
       '@rollup/pluginutils':
         specifier: ^5.1.3
         version: 5.1.3(rollup@4.28.0)
+      ivi:
+        specifier: workspace:^
+        version: link:../../ivi
     devDependencies:
       rollup:
         specifier: ^4.27.4

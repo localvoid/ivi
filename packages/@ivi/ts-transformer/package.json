@@ -16,7 +16,9 @@
     "LICENSE"
   ],
   "dependencies": {
-    "typescript": "^5.7.2",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
     "ivi": "workspace:^"
   },
   "scripts": {

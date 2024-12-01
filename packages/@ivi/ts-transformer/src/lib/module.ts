@@ -1,5 +1,6 @@
 import * as ts from "typescript";
 import { parseTemplate } from "ivi/html/parser";
+import { TemplateParserError } from "ivi/template/parser";
 import { ITemplateType } from "ivi/template/ir";
 import { compileTemplate, TemplateNodeType } from "ivi/template/compiler";
 import { SharedStrings } from "./SharedStrings.js";
@@ -10,6 +11,15 @@ import { findHoistRef, findOutermostScope, hoistExpr, HoistScope, isHoistableToS
 export interface TransformModuleOptions {
   readonly code: string;
   readonly sharedStrings?: SharedStrings;
+}
+
+export class TransformModuleError extends Error {
+  readonly pos: number;
+
+  constructor(message: string, pos: number) {
+    super(message);
+    this.pos = pos;
+  }
 }
 
 export function transformModule(options: TransformModuleOptions): ts.TranspileOutput {
@@ -129,7 +139,21 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                 return factory.createArrayLiteralExpression(roots);
               }
             } catch (err) {
-              throw err;
+              if (err instanceof TemplateParserError) {
+                if (err.staticsOffset === 0) {
+                  if (ts.isTemplateExpression(template)) {
+                    throw new TransformModuleError(err.message, template.head.getStart() + err.textOffset);
+                  } else { // NoSubstitutionTemplateLiteral
+                    throw new TransformModuleError(err.message, template.getStart() + err.textOffset);
+                  }
+                } else {
+                  if (ts.isTemplateExpression(template)) {
+                    const span = template.templateSpans[err.staticsOffset - 1];
+                    throw new TransformModuleError(err.message, span.getStart() + err.textOffset);
+                  }
+                }
+              }
+              throw new TransformModuleError(err.message, template.getStart());
             }
           }
         }

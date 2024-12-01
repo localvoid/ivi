@@ -1,6 +1,6 @@
 import type { Plugin } from "rollup";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
-import { SharedStrings, transformModule, transformChunk } from "@ivi/ts-transformer";
+import { SharedStrings, transformModule, transformChunk, TransformModuleError } from "@ivi/ts-transformer";
 
 export interface IviOptions {
   include?: FilterPattern | undefined;
@@ -22,14 +22,20 @@ export function ivi(options?: IviOptions): Plugin {
         return null;
       }
 
-      const result = transformModule({
-        code,
-        sharedStrings,
-      });
-      if (result.sourceMapText !== void 0) {
-        return { code: result.outputText.slice(0, -35), map: result.sourceMapText };
+      try {
+        const result = transformModule({
+          code,
+          sharedStrings,
+        });
+        if (result.sourceMapText !== void 0) {
+          return { code: result.outputText.slice(0, -35), map: result.sourceMapText };
+        }
+        return { code: result.outputText.slice(0, -35) };
+      } catch (err) {
+        if (err instanceof TransformModuleError) {
+          this.error(err.message, err.pos);
+        }
       }
-      return { code: result.outputText.slice(0, -35) };
     },
 
     renderStart() {
