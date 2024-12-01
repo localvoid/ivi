@@ -1,4 +1,4 @@
-import { type VAny, component } from "ivi";
+import { type VAny, type VComponent, component } from "ivi";
 
 export interface PortalEntry {
   v: VAny;
@@ -14,7 +14,7 @@ export interface IdentityProps {
   readonly children: VAny;
 }
 
-export const Identity = component<IdentityProps>(() => {
+export const Identity: (props: IdentityProps) => VComponent<IdentityProps> = component<IdentityProps>(() => {
   var _prevKey: any;
   var _prevType = A;
   return ({ key, children }) => {
