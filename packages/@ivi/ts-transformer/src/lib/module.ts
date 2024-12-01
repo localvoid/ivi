@@ -5,7 +5,7 @@ import { compileTemplate, TemplateNodeType } from "ivi/template/compiler";
 import { SharedStrings } from "./SharedStrings.js";
 import { compilerOptions, getTypeChecker } from "./checker.js";
 import { createImportNamespaceDeclaration, createTemplateDescriptor } from "./ast.js";
-import { findHoistRef, hoistExpr, HoistScope, isHoistableToScope, withHoistScope } from "./hoist.js";
+import { findHoistRef, findOutermostScope, hoistExpr, HoistScope, isHoistableToScope, withHoistScope } from "./hoist.js";
 
 export interface TransformModuleOptions {
   readonly code: string;
@@ -62,14 +62,23 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                 tplType === "html"
                   ? ITemplateType.Htm
                   : ITemplateType.Svg,
-                (i) => {
+                (i, staticPart) => {
                   const expr = expressions[i];
-                  if (!hoist) {
+                  if (staticPart) {
+                    return isHoistableToScope(checker, scopes[0], expr);
+                  } else {
+                    if (!hoist) {
+                      return false;
+                    }
+                    const scope = findOutermostScope(checker, scopes, expr);
+                    if (scope !== scopes[scopes.length - 1]) {
+                      expressions[i] = hoistExpr(factory, "__ivi_hoist_", expr, scope, findHoistRef(expr, scope));
+                      return true;
+                    }
                     return false;
                   }
-                  return isHoistableToScope(checker, scopes[0], expr);
 
-                  // return false;
+                  return false;
                 }
               );
               const result = compileTemplate(tir);

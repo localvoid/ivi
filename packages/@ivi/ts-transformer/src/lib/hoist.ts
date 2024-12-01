@@ -78,7 +78,7 @@ export const withHoistScope = (
         if (hoisted !== void 0) {
           const n = (r ?? node) as ts.ArrowFunction;
           const statements: ts.Statement[] = hoisted.map((h) => createVarStmt(factory, h.name, h.expr));
-          statements.push(factory.createReturnStatement(node.body));
+          statements.push(factory.createReturnStatement(n.body as ts.Expression));
           return factory.updateArrowFunction(
             n,
             n.modifiers,

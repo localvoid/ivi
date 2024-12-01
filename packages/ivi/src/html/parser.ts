@@ -9,7 +9,7 @@ import {
 export const parseTemplate = (
   s: string[] | TemplateStringsArray,
   type: ITemplateType,
-  tryHoistExpr: (i: number) => boolean,
+  tryHoistExpr: (i: number, staticPart: boolean) => boolean,
 ): ITemplate => {
   const parser = new TemplateParser(s, tryHoistExpr);
   return {
@@ -19,11 +19,11 @@ export const parseTemplate = (
 };
 
 export class TemplateParser extends TemplateScanner {
-  readonly tryHoistExpr: (i: number) => boolean;
+  readonly tryHoistExpr: (i: number, staticPart: boolean) => boolean;
 
   constructor(
     statics: string[] | TemplateStringsArray,
-    tryHoistExpr: (i: number) => boolean,
+    tryHoistExpr: (i: number, staticPart: boolean) => boolean,
   ) {
     super(statics);
     this.tryHoistExpr = tryHoistExpr;
@@ -222,7 +222,7 @@ export class TemplateParser extends TemplateScanner {
             if (value === -1) {
               throw new TemplateParserError("Expected a string or an expression.", this.e, this.i);
             }
-            if (key === "class" && this.tryHoistExpr(value)) {
+            if (key === "class" && this.tryHoistExpr(value, true)) {
               staticAttr = true;
             }
           }
@@ -246,6 +246,9 @@ export class TemplateParser extends TemplateScanner {
     const value = this.expr();
     if (value === -1) {
       throw new TemplateParserError("Expected an expression.", this.e, this.i);
+    }
+    if (type === IPropertyType.Event) {
+      this.tryHoistExpr(value, false);
     }
     properties.push({
       type,
