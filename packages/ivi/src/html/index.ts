@@ -1,6 +1,6 @@
 import {
   type TemplateDescriptor, type VAny,
-  _h, _hN, _hE, _s, _sN, _sE, _Td, _t
+  _h, _hN, _hE, _s, _sN, _sE, _T, _t
 } from "ivi";
 import { type TemplateNode, TemplateNodeType, compileTemplate } from "../template/compiler.js";
 import { ITemplateType } from "../template/ir.js";
@@ -151,7 +151,7 @@ const prepareRootNode = (root: TemplateNode,
       const template = root.template;
       return {
         map: root.exprs,
-        descriptor: _Td(
+        descriptor: _T(
           (typeof template === "string")
             ? createElement(template)
             : cloneTemplate(template.join("")),

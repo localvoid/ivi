@@ -15,6 +15,7 @@ export interface TransformModuleOptions {
 export function transformModule(options: TransformModuleOptions): ts.TranspileOutput {
   const {
     code,
+    sharedStrings,
   } = options;
   const moduleTransformer: ts.TransformerFactory<ts.SourceFile> = (context: ts.TransformationContext): ts.Transformer<ts.SourceFile> => (
     (sourceFile: ts.SourceFile): ts.SourceFile => {
@@ -36,6 +37,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
             let clone = true;
             let hoist = true;
 
+            // Workaround to retrieve leading comments for expressions.
             // https://github.com/microsoft/TypeScript/issues/54906
             const tagText = node.tag.getFullText();
             if (PREVENT_CLONE_RE.test(tagText)) {
@@ -85,6 +87,13 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
               const roots = result.roots.map((root) => {
                 switch (root.type) {
                   case TemplateNodeType.Block: // Element
+                    if (sharedStrings !== void 0) {
+                      const strings = root.data;
+                      for (let i = 0; i < strings.length; i++) {
+                        sharedStrings.add(strings[i]);
+                      }
+                    }
+
                     const dynamicExprs = root.exprs.map((e) => expressions[e]);
                     const id = hoistExpr(
                       factory,

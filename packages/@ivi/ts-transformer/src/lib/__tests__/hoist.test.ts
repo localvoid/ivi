@@ -22,7 +22,7 @@ import * as __ivi_1 from "ivi";
 import { html } from "ivi";
 const cn1 = "a";
 const cn2 = "b";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._h("<div class=\\"" + (cn1 + " " + cn2) + "\\"></div>"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._h("<div class=\\"" + (cn1 + " " + cn2) + "\\"></div>"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1);
 };
@@ -47,7 +47,7 @@ const C = () => {
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
 const cn1 = "a";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [1], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [1], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const C = () => {
     const cn2 = "b";
     return () => __ivi_1._t(__ivi_tpl_1, [cn1 + " " + cn2]);
@@ -73,7 +73,7 @@ import * as __ivi_1 from "ivi";
 import { component, html } from "ivi";
 const a = "a";
 const __ivi_hoist_1 = () => a;
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
 const C = component(() => {
     const b = "b";
     return (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]);
@@ -98,7 +98,7 @@ const C = component(() => {
 import * as __ivi_1 from "ivi";
 import { component, html } from "ivi";
 const a = "a";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
 const C = component(() => {
     const b = "b";
     const __ivi_hoist_1 = () => a + b;
@@ -124,7 +124,7 @@ const C = component(() => {
 import * as __ivi_1 from "ivi";
 import { component, html } from "ivi";
 const a = "a";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
 const C = component(() => {
     const b = "b";
     return (c) => __ivi_1._t(__ivi_tpl_1, [() => a + b + c]);
@@ -134,7 +134,7 @@ const C = component(() => {
     );
   });
 
-  test.only(`hoist event 4`, () => {
+  test(`hoist event 4`, () => {
     deepStrictEqual(
       t(`
 import { component, html } from "ivi";
@@ -146,7 +146,7 @@ const C = component((b) => (c) => html\`<div @click=\${() => a + b}></div>\`);
 import * as __ivi_1 from "ivi";
 import { component, html } from "ivi";
 const a = "a";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
 const C = component((b) => { const __ivi_hoist_1 = () => a + b; return (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]); });
 //# sourceMappingURL=module.js.map
       `.trim(),

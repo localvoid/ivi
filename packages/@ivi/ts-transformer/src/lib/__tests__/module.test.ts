@@ -17,7 +17,7 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [123]);
 };
@@ -41,8 +41,8 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
-const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => [__ivi_1._t(__ivi_tpl_1, [1]), __ivi_1._t(__ivi_tpl_2, [2])];
 };
@@ -63,7 +63,7 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { svg } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._sE("div"), 4161, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._sE("div"), 4161, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [123]);
 };
@@ -87,8 +87,8 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { svg } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._sE("div"), 4161, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
-const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._sE("div"), 4161, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._sE("div"), 4161, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._sE("div"), 4161, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => [__ivi_1._t(__ivi_tpl_1, [1]), __ivi_1._t(__ivi_tpl_2, [2])];
 };
@@ -109,7 +109,7 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [2], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["a"]);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [2], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["a"]);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [123]);
 };
@@ -130,7 +130,7 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hE("div"), 1, [2, 522], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["a", "b"]);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [2, 522], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["a", "b"]);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [1, 2]);
 };
@@ -151,7 +151,7 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._h("<div>abc</div>"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._h("<div>abc</div>"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1);
 };
@@ -172,7 +172,7 @@ const C = () => {
       `
 import * as __ivi_1 from "ivi";
 import { html } from "ivi";
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._Td(__ivi_1._hN("<div>abc</div>"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hN("<div>abc</div>"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => /* preventClone */ __ivi_1._t(__ivi_tpl_1);
 };

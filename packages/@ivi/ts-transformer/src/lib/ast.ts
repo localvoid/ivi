@@ -81,7 +81,7 @@ export function createTemplateDescriptor(
   }
   return ts.addSyntheticLeadingComment(
     factory.createCallExpression(
-      factory.createPropertyAccessExpression(iviModuleIdentifier, "_Td"),
+      factory.createPropertyAccessExpression(iviModuleIdentifier, "_T"),
       void 0,
       args,
     ),
