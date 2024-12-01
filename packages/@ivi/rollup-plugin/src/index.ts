@@ -27,9 +27,9 @@ export function ivi(options?: IviOptions): Plugin {
         sharedStrings,
       });
       if (result.sourceMapText !== void 0) {
-        return { code: result.outputText, map: result.sourceMapText };
+        return { code: result.outputText.slice(0, -35), map: result.sourceMapText };
       }
-      return { code: result.outputText };
+      return { code: result.outputText.slice(0, -35) };
     },
 
     renderStart() {
@@ -47,9 +47,9 @@ export function ivi(options?: IviOptions): Plugin {
         sharedStrings,
       });
       if (result.sourceMapText !== void 0) {
-        return { code: result.outputText, map: result.sourceMapText };
+        return { code: result.outputText.slice(0, -35), map: result.sourceMapText };
       }
-      return { code: result.outputText };
+      return { code: result.outputText.slice(0, -35) };
     },
   };
 }

@@ -2,7 +2,7 @@ import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
 import { transformModule } from "../module.js";
 
-const t = (code: string) => transformModule({ code }).outputText;
+const t = (code: string) => transformModule({ code }).outputText.slice(0, -35);
 
 describe("transform module", () => {
   test(`singular root (html)`, () => {
@@ -21,7 +21,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [123]);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -46,7 +45,6 @@ const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.
 const C = () => {
     return () => [__ivi_1._t(__ivi_tpl_1, [1]), __ivi_1._t(__ivi_tpl_2, [2])];
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -67,7 +65,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._sE("div"), 4161, __ivi_
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [123]);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -92,7 +89,6 @@ const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._sE("div"), 4161, __ivi_
 const C = () => {
     return () => [__ivi_1._t(__ivi_tpl_1, [1]), __ivi_1._t(__ivi_tpl_2, [2])];
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -113,7 +109,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [2], __iv
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [123]);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -134,7 +129,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [2, 522],
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [1, 2]);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -155,7 +149,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._h("<div>abc</div>"), 1,
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -176,7 +169,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hN("<div>abc</div>"), 1
 const C = () => {
     return () => /* preventClone */ __ivi_1._t(__ivi_tpl_1);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -196,7 +188,6 @@ import { html } from "ivi";
 const C = () => {
     return () => "abc";
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });

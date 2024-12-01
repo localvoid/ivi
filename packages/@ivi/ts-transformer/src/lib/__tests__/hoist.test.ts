@@ -2,7 +2,7 @@ import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
 import { transformModule } from "../module.js";
 
-const t = (code: string) => transformModule({ code }).outputText;
+const t = (code: string) => transformModule({ code }).outputText.slice(0, -35);
 
 describe("transform module", () => {
   test(`hoist className`, () => {
@@ -26,7 +26,6 @@ const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._h("<div class=\\"" + (c
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -52,7 +51,6 @@ const C = () => {
     const cn2 = "b";
     return () => __ivi_1._t(__ivi_tpl_1, [cn1 + " " + cn2]);
 };
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -78,7 +76,6 @@ const C = component(() => {
     const b = "b";
     return (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]);
 });
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -104,7 +101,6 @@ const C = component(() => {
     const __ivi_hoist_1 = () => a + b;
     return (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]);
 });
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -129,7 +125,6 @@ const C = component(() => {
     const b = "b";
     return (c) => __ivi_1._t(__ivi_tpl_1, [() => a + b + c]);
 });
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
@@ -148,7 +143,6 @@ import { component, html } from "ivi";
 const a = "a";
 const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
 const C = component((b) => { const __ivi_hoist_1 = () => a + b; return (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]); });
-//# sourceMappingURL=module.js.map
       `.trim(),
     );
   });
