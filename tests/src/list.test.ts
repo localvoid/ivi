@@ -3,7 +3,7 @@ import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { List, component } from "ivi";
-import { htm } from "@ivi/htm";
+import { htm } from "ivi";
 
 const r = (i: number) => i;
 

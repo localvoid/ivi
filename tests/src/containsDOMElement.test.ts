@@ -5,7 +5,7 @@ import {
   type VAny, containsDOMElement, component, context, List,
 } from "ivi";
 import { createRoot } from "ivi/test";
-import { htm } from "@ivi/htm";
+import { htm } from "ivi";
 
 describe("containsDOMElement", () => {
   beforeEach(reset);

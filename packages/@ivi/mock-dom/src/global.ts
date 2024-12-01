@@ -2,7 +2,7 @@ export {
   toSnapshot,
 } from "./index.js";
 import {
-  DOMException as _DOMException,
+  // DOMException as _DOMException,
   Node as _Node,
   Element as _Element,
   HTMLElement as _HTMLElement,
@@ -16,7 +16,7 @@ import {
 declare global {
   let requestAnimationFrame: (cb: (t: number) => void) => void;
   let requestIdleCallback: (cb: () => void) => void;
-  let DOMException: typeof _DOMException;
+  // let DOMException: typeof _DOMException;
   let Node: typeof _Node;
   let Element: typeof _Element;
   let HTMLElement: typeof _HTMLElement;
@@ -64,7 +64,7 @@ export const flushIdleCallbacks = () => {
 // doesn't work.
 (global as any).requestAnimationFrame = requestAnimationFrame;
 (global as any).requestIdleCallback = requestIdleCallback;
-(global as any).DOMException = _DOMException;
+// (global as any).DOMException = _DOMException;
 (global as any).Node = _Node;
 (global as any).Element = _Element;
 (global as any).HTMLElement = _HTMLElement;

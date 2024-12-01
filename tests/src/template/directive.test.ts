@@ -2,12 +2,12 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "@ivi/htm";
+import { htm } from "ivi";
 import { type ElementDirective } from "ivi";
 
-describe("@ivi/htm directive", () => {
+describe("directive", () => {
   beforeEach(reset);
-  const T = (directive: ElementDirective) => htm`<div &=${directive} />`;
+  const T = (directive: ElementDirective) => htm`<div ${directive} />`;
 
   test(`root element`, () => {
     let e: any;
@@ -38,7 +38,7 @@ describe("@ivi/htm directive", () => {
 
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div><span &=${d} /></div>`); }),
+      trace(() => { root.update(htm`<div><span ${d} /></div>`); }),
       [
         `[-7] Template.innerHTML = "<div><span></span></div>"`,
         `[-6] Node.firstChild => 3`,
@@ -53,15 +53,15 @@ describe("@ivi/htm directive", () => {
 
   test(`reuse`, () => {
     let _trace: string[] = [];
-    const d = (element: Element, hydrate?: boolean) => {
-      _trace.push(`directive(${(element as any).uid}, ${hydrate})`);
+    const d = (element: Element) => {
+      _trace.push(`directive(${(element as any).uid})`);
     };
     const root = createRoot();
     root.update(T(d));
     deepStrictEqual(
       _trace,
       [
-        `directive(2, undefined)`,
+        `directive(2)`,
       ],
     );
     _trace = [];
@@ -77,18 +77,18 @@ describe("@ivi/htm directive", () => {
 
   test(`update`, () => {
     let _trace: string[] = [];
-    const d1 = (element: Element, hydrate?: boolean) => {
-      _trace.push(`directive1(${(element as any).uid}, ${hydrate})`);
+    const d1 = (element: Element) => {
+      _trace.push(`directive1(${(element as any).uid})`);
     };
-    const d2 = (element: Element, hydrate?: boolean) => {
-      _trace.push(`directive2(${(element as any).uid}, ${hydrate})`);
+    const d2 = (element: Element) => {
+      _trace.push(`directive2(${(element as any).uid})`);
     };
     const root = createRoot();
     root.update(T(d1));
     deepStrictEqual(
       _trace,
       [
-        `directive1(2, undefined)`,
+        `directive1(2)`,
       ],
     );
     _trace = [];
@@ -99,7 +99,7 @@ describe("@ivi/htm directive", () => {
     deepStrictEqual(
       _trace,
       [
-        `directive2(2, undefined)`,
+        `directive2(2)`,
       ],
     );
   });

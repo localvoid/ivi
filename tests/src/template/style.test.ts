@@ -2,7 +2,7 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "@ivi/htm";
+import { htm } from "ivi";
 
 describe("@ivi/htm style", () => {
   beforeEach(reset);

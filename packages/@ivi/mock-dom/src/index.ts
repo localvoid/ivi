@@ -10,11 +10,11 @@ export const enum NodeType {
   DocumentFragment = 11,
 }
 
-export class DOMException extends Error {
-  constructor(msg: string) {
-    super(msg);
-  }
-}
+// export class DOMException extends Error {
+//   constructor(msg: string) {
+//     super(msg);
+//   }
+// }
 
 export abstract class Node {
   readonly uid: number;
@@ -482,12 +482,12 @@ export class Template extends Element {
     return this._content;
   }
 
-  set innerHTML(html: string) {
+  override set innerHTML(html: string) {
     this._trace(`Template.innerHTML = "${html}"`);
     this._setInnerHTML(html);
   }
 
-  _setInnerHTML(html: string) {
+  override _setInnerHTML(html: string) {
     const frag = parseHTML(this._document, html, this._namespaceURI);
     let n = this._content._firstChild;
     while (n !== null) {
@@ -596,7 +596,7 @@ export class Document extends Element {
     this._body = this._createElement("body");
   }
 
-  _trace(s: string) {
+  override _trace(s: string) {
     if (this._log !== null) {
       this._log.push(s);
     }

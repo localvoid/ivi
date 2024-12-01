@@ -3,7 +3,7 @@ import { beforeEach, describe, test } from "node:test";
 import { reset } from "@ivi/mock-dom/global";
 import { component, context, List } from "ivi";
 import { createRoot } from "ivi/test";
-import { htm } from "@ivi/htm";
+import { htm } from "ivi";
 
 describe("findDOMNode", () => {
   beforeEach(reset);

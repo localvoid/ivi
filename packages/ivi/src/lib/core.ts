@@ -324,7 +324,6 @@ export interface ListProps<K = any> {
  */
 export type ElementDirective = <E extends Element>(
   element: E,
-  hydrate?: boolean,
 ) => void | string | { a?: string, c?: string; };
 
 export const _flushDOMEffects = () => {
