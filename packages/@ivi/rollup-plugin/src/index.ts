@@ -26,7 +26,10 @@ export function ivi(options?: IviOptions): Plugin {
         code,
         sharedStrings,
       });
-      return { code: result.code, map: result.map };
+      if (result.sourceMapText !== void 0) {
+        return { code: result.outputText, map: result.sourceMapText };
+      }
+      return { code: result.outputText };
     },
 
     renderStart() {
@@ -43,7 +46,10 @@ export function ivi(options?: IviOptions): Plugin {
         code,
         sharedStrings,
       });
-      return { code: result.code, map: result.map };
+      if (result.sourceMapText !== void 0) {
+        return { code: result.outputText, map: result.sourceMapText };
+      }
+      return { code: result.outputText };
     },
   };
 }
