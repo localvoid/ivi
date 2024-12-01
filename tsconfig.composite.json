@@ -29,7 +29,4 @@
   "include": [
     "${configDir}/src/**/*.ts",
   ],
-  "exclude": [
-    "${configDir}/src/**/*.test.ts",
-  ]
 }

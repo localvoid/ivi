@@ -1,5 +1,4 @@
 {
-  "files": [],
   "references": [
     { "path": "packages/ivi" },
     { "path": "packages/@ivi/ts-transformer" },
@@ -10,7 +9,4 @@
     { "path": "packages/@ivi/mock-dom" },
     { "path": "tests" },
   ],
-  "exclude": [
-    "node_modules"
-  ]
 }
