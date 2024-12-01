@@ -45,15 +45,16 @@ export interface HoistedExpr {
 
 export function hoistExpr(
   factory: ts.NodeFactory,
+  namePrefix: string,
   expr: ts.Expression,
   scope: HoistScope,
   ref: HoistedExprRef | null,
-): ts.Node {
+): ts.Identifier {
   let h = scope.hoisted;
   if (h === void 0) {
     scope.hoisted = h = [];
   }
-  const name = factory.createUniqueName("__ivi_");
+  const name = factory.createUniqueName(namePrefix);
   h.push({
     name,
     expr,
@@ -103,7 +104,7 @@ export const withHoistScope = (
         const newStatements: ts.Statement[] = [];
         for (let i = 0; i < statements.length; i++) {
           const stmt = statements[i];
-          if (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
+          while (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
             newStatements.push(createVarStmt(factory, h.name, h.expr));
             if (hIndex < hoisted.length) {
               h = hoisted[hIndex++];
@@ -129,7 +130,7 @@ export const withHoistScope = (
         const newStatements: ts.Statement[] = [];
         for (let i = 0; i < statements.length; i++) {
           const stmt = statements[i];
-          if (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
+          while (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
             newStatements.push(createVarStmt(factory, h.name, h.expr));
             if (hIndex < hoisted.length) {
               h = hoisted[hIndex++];
@@ -203,7 +204,7 @@ export function isHoistableToScope(checker: ts.TypeChecker, scope: HoistScope, n
   let result = true;
   const visitor = (node: ts.Node): ts.VisitResult<ts.Node | undefined> => {
     if (result === false) {
-      return;
+      return node;
     }
     if (ts.isIdentifier(node)) {
       const symbol = checker.getSymbolAtLocation(node);
@@ -211,7 +212,7 @@ export function isHoistableToScope(checker: ts.TypeChecker, scope: HoistScope, n
         const resolvedSymbol = checker.resolveName(symbol.name, scope.node, symbol.flags, /*excludeGlobals*/ false);
         if (resolvedSymbol !== symbol) {
           result = false;
-          return;
+          return node;
         }
       }
     }

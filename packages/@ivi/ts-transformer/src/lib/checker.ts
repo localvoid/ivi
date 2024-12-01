@@ -22,6 +22,7 @@ export const compilerOptions: ts.CompilerOptions = {
   moduleResolution: ts.ModuleResolutionKind.Bundler,
   sourceMap: true,
   noCheck: true,
+  noEmitHelpers: true,
   skipDefaultLibCheck: true,
   skipLibCheck: true,
 };

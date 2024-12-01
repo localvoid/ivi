@@ -16,7 +16,8 @@
     "LICENSE"
   ],
   "dependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "ivi": "workspace:^"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
