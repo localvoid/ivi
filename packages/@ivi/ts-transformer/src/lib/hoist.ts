@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import { createVarStmt } from "./ast.js";
 
 export interface HoistScope {
   readonly node: ts.SourceFile | ts.Block | ts.ArrowFunction;
@@ -97,24 +98,10 @@ export const withHoistScope = (
       const s = scopes.pop()!;
       const hoisted = s.hoisted;
       if (hoisted !== void 0) {
-        let h: HoistedExpr | undefined = hoisted[0];
-        let hIndex = 1;
-
-        const statements = r.statements;
-        const newStatements: ts.Statement[] = [];
-        for (let i = 0; i < statements.length; i++) {
-          const stmt = statements[i];
-          while (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
-            newStatements.push(createVarStmt(factory, h.name, h.expr));
-            if (hIndex < hoisted.length) {
-              h = hoisted[hIndex++];
-            } else {
-              h = void 0;
-            }
-          }
-          newStatements.push(stmt);
-        }
-        return factory.updateBlock(r, newStatements);
+        return factory.updateBlock(
+          r,
+          updateStatements(factory, r.statements, hoisted),
+        );
       }
       return r;
     } else if (ts.isSourceFile(node)) {
@@ -123,24 +110,10 @@ export const withHoistScope = (
       const s = scopes.pop()!;
       const hoisted = s.hoisted;
       if (hoisted !== void 0) {
-        let h: HoistedExpr | undefined = hoisted[0];
-        let hIndex = 1;
-
-        const statements = r.statements;
-        const newStatements: ts.Statement[] = [];
-        for (let i = 0; i < statements.length; i++) {
-          const stmt = statements[i];
-          while (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
-            newStatements.push(createVarStmt(factory, h.name, h.expr));
-            if (hIndex < hoisted.length) {
-              h = hoisted[hIndex++];
-            } else {
-              h = void 0;
-            }
-          }
-          newStatements.push(stmt);
-        }
-        return factory.updateSourceFile(r, newStatements);
+        return factory.updateSourceFile(
+          r,
+          updateStatements(factory, r.statements, hoisted),
+        );
       }
       return r;
     }
@@ -148,6 +121,28 @@ export const withHoistScope = (
     return visitor(node);
   }
 );
+
+function updateStatements(factory: ts.NodeFactory, statements: ts.NodeArray<ts.Statement>, hoisted: HoistedExpr[]): ts.Statement[] {
+  const newStatements: ts.Statement[] = [];
+  if (hoisted.length > 1) {
+    let h: HoistedExpr | undefined = hoisted[0];
+    let hIndex = 1;
+
+    for (let i = 0; i < statements.length; i++) {
+      const stmt = statements[i];
+      while (h !== void 0 && stmt.pos === h.ref!.stmt.pos) {
+        newStatements.push(createVarStmt(factory, h.name, h.expr));
+        if (hIndex < hoisted.length) {
+          h = hoisted[hIndex++];
+        } else {
+          h = void 0;
+        }
+      }
+      newStatements.push(stmt);
+    }
+  }
+  return newStatements;
+}
 
 export function findHoistRef(node: ts.Node, scope: HoistScope): HoistedExprRef | null {
   const scopeNode = scope.node;
@@ -236,14 +231,3 @@ function findOutermostScopeForSymbol(checker: ts.TypeChecker, scopes: HoistScope
   return result;
 }
 
-function createVarStmt(factory: ts.NodeFactory, name: ts.Identifier, expr: ts.Expression): ts.VariableStatement {
-  return factory.createVariableStatement(
-    void 0,
-    factory.createVariableDeclarationList(
-      [
-        factory.createVariableDeclaration(name, void 0, void 0, expr),
-      ],
-      ts.NodeFlags.Const,
-    )
-  );
-}

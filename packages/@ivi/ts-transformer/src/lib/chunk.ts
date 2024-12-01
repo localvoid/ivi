@@ -35,7 +35,6 @@ class SharedData {
     if (ts.isCallExpression(node)) {
       const arg0 = node.arguments[0];
       const key = node.expression.getText() + ":" + arg0.getText();
-      console.log(key);
       let entries = this.factories.get(key);
       if (entries === void 0) {
         this.factories.set(key, [node]);

@@ -1,6 +1,18 @@
 import * as ts from "typescript";
 import { type TemplateNodeBlock } from "ivi/template/compiler";
 
+export function createVarStmt(factory: ts.NodeFactory, name: ts.Identifier, expr: ts.Expression): ts.VariableStatement {
+  return factory.createVariableStatement(
+    void 0,
+    factory.createVariableDeclarationList(
+      [
+        factory.createVariableDeclaration(name, void 0, void 0, expr),
+      ],
+      ts.NodeFlags.Const,
+    )
+  );
+}
+
 export function createImportNamespaceDeclaration(
   factory: ts.NodeFactory,
   namespace: ts.Identifier,
