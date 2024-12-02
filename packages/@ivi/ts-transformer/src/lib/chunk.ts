@@ -21,6 +21,9 @@ const stringLiteralToString = (n: ts.Node): string => {
   return n.text;
 };
 
+/**
+ * SharedData is used for deduplicating template factories and numeric arrays.
+ */
 class SharedData {
   readonly factories: Map<string, ts.CallExpression[]>;
   readonly arrays: Map<string, ts.ArrayLiteralExpression[]>;
@@ -80,18 +83,19 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
             const args = node.arguments;
             if (args.length < 5) {
               throw new Error("Expected at least 5 arguments");
-            } const arg0 = args[0];
-            const arg1 = args[1];
-            let arg2 = args[2];
-            const arg3 = args[3];
-            const arg4 = args[4];
+            }
+            const arg0 = args[0]; // Template DOM factory
+            const arg1 = args[1]; // Flags
+            let arg2 = args[2]; // Prop OpCodes
+            const arg3 = args[3]; // Child OpCodes
+            const arg4 = args[4]; // State OpCodes
             sharedData.addFactory(arg0);
             sharedData.addArray(arg3);
             sharedData.addArray(arg4);
 
             // Replace strings with shared strings
             if (strings !== void 0 && args.length > 5) {
-              const arg5 = args[5];
+              const arg5 = args[5]; // Strings
               if (ts.isArrayLiteralExpression(arg2) && ts.isArrayLiteralExpression(arg5)) {
                 const tplStrings = arg5.elements.map(stringLiteralToString);
 
