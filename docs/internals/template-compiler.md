@@ -28,10 +28,10 @@ When children `ChildOpCode` are starting to update:
 Because of this invariants we can avoid generating state and children opcodes
 in cases like:
 
-```txt
-div
-  span
-  ${expr}
+```html
+<div>
+  <span>${expr}</span>
+</div>
 ```
 
 Here we don't need to traverse DOM tree when mounting, because we already know
@@ -67,7 +67,7 @@ data = ((op >> 7) & Mask4) | (op >> 17);
 ```
 
 And since we are deduplicating all data and storing it in a shared array,
-we can sort it by the number of occurences in templates, so that indexes for
+we can sort it by the number of occurences in templates, so that indices for
 the 16 most common keys will be able to fit into 4 bits.
 
 ### Store string length in StateOpCodes to separate static text nodes
