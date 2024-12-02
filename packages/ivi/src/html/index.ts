@@ -25,14 +25,11 @@ const DESCRIPTORS = new WeakMap<TemplateStringsArray, (exprs: any[]) => VAny>();
  * - `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`
  * - `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`
  * - `<div ${directive} />` - Client-Side Directive `directive(element)`
- * - `<div &=${directive} />` - Client-Side Element Directive `directive(element)`.
- * - `<div &:ssr=${directive} />` - Element Directive that works during Client-Side and
- *  Server-Side Rendering `directive(element, hydrate)`.
  *
  * @example
  *
  *     function MyApp(content) {
- *       return htm`
+ *       return html`
  *         <div id="App">
  *           <h1 class="Title">MyApp</h1>
  *           <div>Content ${content}</div>
@@ -85,9 +82,6 @@ export const html = (strings: TemplateStringsArray, ...exprs: any[]) => {
  * - `<div ~name=${expr} />` - Dynamic style `element.style.setProperty(name, expr)`
  * - `<div @name=${expr} />` - Event `element.addEventListener(name, expr)`
  * - `<div ${directive} />` - Client-Side Directive `directive(element)`
- * - `<div &=${directive} />` - Client-Side Element Directive `directive(element)`.
- * - `<div &:ssr=${directive} />` - Element Directive that works during Client-Side and
- *  Server-Side Rendering `directive(element, hydrate)`.
  *
  * @example
  *

@@ -4,10 +4,10 @@ export {
 } from "./lib/template.js";
 export {
   EMPTY_ARRAY,
-  // Opaque Stateful Nodes
+  // Stateful Nodes
   type SNode,
   type Root, type Component,
-  // Opaque Stateless Nodes
+  // Stateless Nodes
   type VAny, type VRoot, type VTemplate, type VComponent, type VList,
   // Template
   type TemplateDescriptor, type ElementDirective,

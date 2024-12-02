@@ -5,8 +5,7 @@
 ## Example
 
 ```ts
-import { createRoot, update, component, useState } from "ivi";
-import { htm } from "@ivi/htm";
+import { createRoot, update, component, useState, html } from "ivi";
 import { createPortal } from "@ivi/portal";
 
 const [portalContainer, portal] = createPortal();
@@ -23,7 +22,7 @@ const App = component((c) => {
   const onMouseLeave = () => { setVisible(false); };
 
   return () => (
-    htm`
+    html`
     <div class="App">
       <span
         @mouseenter=${onMouseEnter}
@@ -31,7 +30,7 @@ const App = component((c) => {
       >
         Portal Example
       </span>
-      ${visible() && portal(htm`<span>rendered inside of a portal</span>`)}
+      ${visible() && portal(html`<span>rendered inside of a portal</span>`)}
     </div>
     `
   );

@@ -1592,7 +1592,7 @@ export type Effect = {
  *       return (interval) => (
  *         timer({ interval }),
  *
- *         htm`<span>${count()}</span>`
+ *         html`<span>${count()}</span>`
  *       );
  *     });
  *

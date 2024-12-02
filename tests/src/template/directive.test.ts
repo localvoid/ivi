@@ -12,9 +12,8 @@ describe("directive", () => {
   test(`root element`, () => {
     let e: any;
     let h: boolean | undefined;
-    const d = (element: Element, hydrate?: boolean) => {
+    const d = (element: Element) => {
       e = element;
-      h = hydrate;
     };
     const root = createRoot();
     deepStrictEqual(
@@ -31,9 +30,8 @@ describe("directive", () => {
   test(`deep element`, () => {
     let e: any;
     let h: boolean | undefined;
-    const d = (element: Element, hydrate?: boolean) => {
+    const d = (element: Element) => {
       e = element;
-      h = hydrate;
     };
 
     const root = createRoot();

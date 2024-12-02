@@ -35,14 +35,13 @@ export type EventDispatcher = {
  * Event dispatcher invokes event handlers synchronously. All event handlers are
  * invoked before event dispatcher returns.
  *
- * *SSR: Event dispatcher throws an exception.*
- *
  * @typeparam T Data type.
  * @param eventType Event type.
  * @param options {@link DispatchEventOptions}.
  * @returns `false` if event is cancelable, and at least one of the event
  *   handlers which received event called `Event.preventDefault()`. Otherwise
  *   `true`.
+ * @__NO_SIDE_EFFECTS__
  */
 export const eventDispatcher = <T>(
   eventType: string,
@@ -63,8 +62,6 @@ const _CustomEvent = CustomEvent;
 
 /**
  * Finds the closest DOM node from a Stateful Tree {@link SNode}.
- *
- * *SSR: Throws an exception.*
  *
  * @typeparam T DOM node type.
  * @param sNode Stateful Tree {@link SNode}.
@@ -146,8 +143,6 @@ export const visitNodes = (
 /**
  * Checks if a Stateful Tree {@link SNode} contains a DOM element.
  *
- * *SSR: Throws an exception.*
- *
  * @param node Stateful Tree {@link SNode}.
  * @param element DOM element.
  * @returns True when parent contains an element.
@@ -169,8 +164,6 @@ export const containsDOMElement = (
 
 /**
  * Checks if a Stateful Tree {@link SNode} has a child DOM element.
- *
- * *SSR: Throws an exception.*
  *
  * @param node Stateful Tree {@link SNode}.
  * @param child DOM element.

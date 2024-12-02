@@ -11,7 +11,7 @@ import { invalidate } from "./core.js";
  *         `${firstName} ${lastName}`
  *       ));
  *
- *       return ({firstName, lastName}) => htm`
+ *       return ({firstName, lastName}) => html`
  *         div.fullName ${fullName([firstName, lastName])}
  *       `;
  *     });
@@ -44,7 +44,7 @@ export const useMemo = <T, U>(
  *       const [getCounter, setCounter] = useState(c, 0);
  *       const inc = () => { setCounter(getCounter() + 1); };
  *
- *       return () => htm`
+ *       return () => html`
  *         div.app
  *           div.counter ${getCounter()}
  *           button @click=${inc} 'Increment'
@@ -98,7 +98,7 @@ export type Dispatch<A> = (action: A) => void;
  *        const [counter, dispatch] = useReducer(c, 0, reducer);
  *        const inc = () => { dispatch("inc"); };
  *
- *       return () => htm`
+ *       return () => html`
  *         div.app
  *           div.counter ${counter()}
  *           button @click=${inc} 'Increment'
