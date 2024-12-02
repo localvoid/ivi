@@ -1,6 +1,7 @@
 {
+  "private": true,
   "name": "@ivi/mock-dom",
-  "version": "0.1.1",
+  "version": "0.2.0-beta.1",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
