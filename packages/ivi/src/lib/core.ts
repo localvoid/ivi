@@ -1794,6 +1794,7 @@ export const LIST_DESCRIPTOR: ListDescriptor = {
  * @param getKey Get key from entry function.
  * @param render Render entry function.
  * @returns Dynamic list.
+ * @__NO_SIDE_EFFECTS__
  */
 export const List = <E, K>(
   entries: E[],
@@ -1911,6 +1912,7 @@ export type RootFactory = {
  *
  * @param onInvalidate Invalidated Hook.
  * @returns Root Node factory.
+ * @__NO_SIDE_EFFECTS__
  */
 export const defineRoot: RootFactory = (
   p1: (root: SRoot<any>, state?: any) => void,
@@ -1977,6 +1979,12 @@ export const update = (root: Root, v: VAny, forceUpdate?: boolean): void => {
   );
 };
 
+/**
+ * Context.
+ * 
+ * @returns Context getter and context provider.
+ * @__NO_SIDE_EFFECTS__
+ */
 export const context = <T>(): [
   get: (component: Component) => T | undefined,
   provider: (value: T, child: VAny) => VContext<T>,
