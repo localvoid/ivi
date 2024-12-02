@@ -1254,7 +1254,7 @@ html`<div attr=${0}>${1}</div>`;
 
 ### Event Handlers Hoisting
 
-By default, event handlers are automatically hoisted to the outermost scope.
+By default, event handlers (arrow function expressions) are automatically hoisted to the outermost scope.
 
 ```js
 const Example = component((c) => {

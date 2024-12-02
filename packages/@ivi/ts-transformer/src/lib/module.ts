@@ -81,7 +81,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                   if (!hoist) {
                     return false;
                   }
-                  if (!ts.isIdentifier(expr)) {
+                  if (ts.isArrowFunction(expr)) {
                     const scope = findOutermostScope(checker, scopes, expr);
                     if (scope !== scopes[scopes.length - 1]) {
                       expressions[i] = hoistExpr(factory, "__ivi_hoist_", expr, scope, findHoistRef(expr, scope));

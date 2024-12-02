@@ -146,4 +146,40 @@ const C = component((b) => { const __ivi_hoist_1 = () => a + b; return (c) => __
       `.trim(),
     );
   });
+
+  test(`hoist event 5 (Identifier)`, () => {
+    deepStrictEqual(
+      t(`
+import { component, html } from "ivi";
+
+const a = "a";
+const C = component((b) => (c) => html\`<div @click=\${a}></div>\`);
+      `),
+      `
+import * as __ivi_1 from "ivi";
+import { component, html } from "ivi";
+const a = "a";
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const C = component((b) => (c) => __ivi_1._t(__ivi_tpl_1, [a]));
+      `.trim(),
+    );
+  });
+
+  test(`hoist event 5 (CallExpression)`, () => {
+    deepStrictEqual(
+      t(`
+import { component, html } from "ivi";
+
+const a = () => { };
+const C = component((b) => (c) => html\`<div @click=\${a()}></div>\`);
+      `),
+      `
+import * as __ivi_1 from "ivi";
+import { component, html } from "ivi";
+const a = () => { };
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const C = component((b) => (c) => __ivi_1._t(__ivi_tpl_1, [a()]));
+      `.trim(),
+    );
+  });
 });
