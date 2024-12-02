@@ -51,16 +51,23 @@ The size of the precompiled example above is just 2.7KB (minified+brotli). It in
 - [Setup](#setup)
   - [Vite](#vite)
   - [Rollup](#rollup)
-- [Declarative UI](#declarative-ui)
-  - [Templates](#templates)
+- [Template Language](#template-language)
+  - [Multiple Root Nodes](#multiple-root-nodes)
+  - [Childless Elements](#childless-elements)
+  - [Whitespace Rules](#whitespace-rules)
   - [Expressions](#expressions)
-    - [HTML Template Language Syntax](#html-template-language-syntax)
-    - [Conditionals](#conditionals)
-    - [Arrays](#arrays)
-    - [Dynamic Lists](#dynamic-lists)
-  - [Components](#components)
-    - [Stateful Components](#stateful-components)
-    - [Stateless Components](#stateless-components)
+  - [Element Properties](#element-properties)
+    - [Attributes](#attributes)
+    - [Properties](#properties)
+    - [Styles](#styles)
+    - [Events](#events)
+    - [Directives](#directives)
+  - [Conditionals](#conditionals)
+  - [Arrays](#arrays)
+  - [Dynamic Lists](#dynamic-lists)
+- [Components](#components)
+  - [Stateful Components](#stateful-components)
+  - [Stateless Components](#stateless-components)
 - [API](#api)
   - [Opaque Types](#opaque-types)
   - [Stateful Tree](#stateful-tree)
@@ -153,9 +160,7 @@ export default {
 };
 ```
 
-## Declarative UI
-
-### Templates
+## Template Language
 
 ivi template language has an HTML-like syntax with additional syntax for DOM properties, events and whitespace removal.
 
@@ -175,7 +180,7 @@ const Example = component((c) => {
 });
 ```
 
-#### Multiple Root Nodes
+### Multiple Root Nodes
 
 Templates can have multiple root nodes.
 
@@ -188,7 +193,9 @@ html`
 `
 ```
 
-#### Childless elements can be self closed with a `/>` syntax
+### Childless Elements
+
+Childless elements can be self closed with a `/>` syntax.
 
 ```js
 html`
@@ -198,7 +205,7 @@ html`
 `;
 ```
 
-#### Whitespaces
+### Whitespace Rules
 
 1. Whitespaces around newlines are removed:
 
@@ -251,7 +258,7 @@ newlines:
 <div><b>1</b> item left</div>
 ```
 
-#### Expressions
+### Expressions
 
 In ivi templates, you can include dynamic content called expressions. An expression is just a piece of JavaScript code that gets evaluated when template is rendered. Whatever value an expression produces at that time will be included in the final rendered template.
 
@@ -262,7 +269,7 @@ html`
 </div>`;
 ```
 
-#### Template Language Syntax
+### Element Properties
 
 ivi template language supports additional syntax to work with DOM properties, events, etc.
 
@@ -378,7 +385,7 @@ const Example = component((c) => {
 });
 ```
 
-#### Conditionals
+### Conditionals
 
 You can use regular JavaScript expressions in your templates, which means you can use any javascript control flow constructs like conditional operators, function calls, and if or switch statements to generate dynamic content based on runtime conditions.
 
@@ -395,7 +402,7 @@ const Example = component((c) => {
 });
 ```
 
-#### Arrays
+### Arrays
 
 If an expression is used in the child position of an HTML element and it returns an array, ivi will render all of the items in that array as separate nodes.
 
@@ -440,7 +447,7 @@ In the example above, when `conditional` expression goes from a text to a "hole"
 
 When array grows or shrinks in size, stateful nodes will be created or removed at the end of an array.
 
-#### Dynamic Lists
+### Dynamic Lists
 
 In ivi, you can render lists of items using the `List()` function that loops through an array of data and returns a list of elements. However, when list is updated, it is important to correctly map rendered items onto their stateful views. This means that if an item is rendered as a component that has internal state that could change as a result of user actions or external events, it should be mapped onto the same component instance.
 
