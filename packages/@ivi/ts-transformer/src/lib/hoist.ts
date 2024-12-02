@@ -124,7 +124,7 @@ export const withHoistScope = (
 
 function updateStatements(factory: ts.NodeFactory, statements: ts.NodeArray<ts.Statement>, hoisted: HoistedExpr[]): ts.Statement[] {
   const newStatements: ts.Statement[] = [];
-  if (hoisted.length > 1) {
+  if (hoisted.length > 0) {
     let h: HoistedExpr | undefined = hoisted[0];
     let hIndex = 1;
 
