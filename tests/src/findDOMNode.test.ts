@@ -3,7 +3,7 @@ import { beforeEach, describe, test } from "node:test";
 import { reset } from "@ivi/mock-dom/global";
 import { component, context, List } from "ivi";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("findDOMNode", () => {
   beforeEach(reset);
@@ -51,7 +51,7 @@ describe("findDOMNode", () => {
   test(`div`, () => {
     const root = createRoot();
     root.update(
-      htm`<div/>`,
+      html`<div/>`,
     );
     strictEqual((root.findDOMNode() as any).uid, 2);
   });

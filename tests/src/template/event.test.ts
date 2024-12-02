@@ -2,11 +2,11 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("@ivi/htm event", () => {
   beforeEach(reset);
-  const T = (h: (() => void) | undefined | null | false) => htm`<div @click=${h} />`;
+  const T = (h: (() => void) | undefined | null | false) => html`<div @click=${h} />`;
   const onClick = () => { };
 
   test(`{undefined}`, () => {

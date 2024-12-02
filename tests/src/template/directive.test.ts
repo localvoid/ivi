@@ -2,12 +2,12 @@ import { deepStrictEqual, strictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 import { type ElementDirective } from "ivi";
 
 describe("directive", () => {
   beforeEach(reset);
-  const T = (directive: ElementDirective) => htm`<div ${directive} />`;
+  const T = (directive: ElementDirective) => html`<div ${directive} />`;
 
   test(`root element`, () => {
     let e: any;
@@ -38,7 +38,7 @@ describe("directive", () => {
 
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div><span ${d} /></div>`); }),
+      trace(() => { root.update(html`<div><span ${d} /></div>`); }),
       [
         `[-7] Template.innerHTML = "<div><span></span></div>"`,
         `[-6] Node.firstChild => 3`,

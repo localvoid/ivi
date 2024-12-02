@@ -2,16 +2,16 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("@ivi/htm className", () => {
   beforeEach(reset);
-  const T = (v: undefined | null | false | string | number) => htm`<div class=${v} />`;
+  const T = (v: undefined | null | false | string | number) => html`<div class=${v} />`;
 
   test(`"a"`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class="a" />`); }),
+      trace(() => { root.update(html`<div class="a" />`); }),
       [
         `[-7] Template.innerHTML = "<div class="a"></div>"`,
         `[-6] Node.firstChild => 3`,
@@ -24,7 +24,7 @@ describe("@ivi/htm className", () => {
   test(`"a b"`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div class="a b" />`); }),
+      trace(() => { root.update(html`<div class="a b" />`); }),
       [
         `[-7] Template.innerHTML = "<div class="a b"></div>"`,
         `[-6] Node.firstChild => 3`,

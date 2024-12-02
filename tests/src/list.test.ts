@@ -3,7 +3,7 @@ import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
 import { List, component } from "ivi";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 const r = (i: number) => i;
 
@@ -964,7 +964,7 @@ describe("List", () => {
 
   test(`elements: [0, 1] => [1, 0]`, () => {
     const root = createRoot();
-    const div = htm`<div/>`;
+    const div = html`<div/>`;
     root.update(
       List([0, 1], r, () => div),
     );

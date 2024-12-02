@@ -2,16 +2,16 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("@ivi/htm attribute", () => {
   beforeEach(reset);
-  const T = (v: undefined | null | false | string | number) => htm`<div attr=${v} />`;
+  const T = (v: undefined | null | false | string | number) => html`<div attr=${v} />`;
 
   test("short form", () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div attr />`); }),
+      trace(() => { root.update(html`<div attr />`); }),
       [
         `[-7] Template.innerHTML = "<div attr></div>"`,
         `[-6] Node.firstChild => 3`,

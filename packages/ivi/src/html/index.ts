@@ -40,7 +40,7 @@ const DESCRIPTORS = new WeakMap<TemplateStringsArray, (exprs: any[]) => VAny>();
  *       `;
  *     }
  */
-export const htm = (strings: TemplateStringsArray, ...exprs: any[]) => {
+export const html = (strings: TemplateStringsArray, ...exprs: any[]) => {
   let fn = DESCRIPTORS.get(strings);
   if (fn === void 0) {
     let result;

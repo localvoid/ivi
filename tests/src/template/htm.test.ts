@@ -2,7 +2,7 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("@ivi/htm", () => {
   beforeEach(reset);
@@ -11,7 +11,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1/>
         `);
       }),
@@ -26,7 +26,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1></h1>
         `);
       }),
@@ -41,7 +41,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>a</h1>
         `);
       }),
@@ -58,7 +58,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
           </h1>
         `);
@@ -74,7 +74,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
 
           </h1>
@@ -91,7 +91,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>  </h1>
         `);
       }),
@@ -108,7 +108,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <div>
             <h2></h2>
             <h2></h2>
@@ -128,7 +128,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
             ab
           </h1>
@@ -147,7 +147,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
             ab
             cd
@@ -167,7 +167,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
             ab  cd
           </h1>
@@ -186,7 +186,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>  ab  cd  </h1>
         `);
       }),
@@ -203,7 +203,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
             \vab
           </h1>
@@ -222,7 +222,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <h1>
             ab\v
           </h1>
@@ -241,7 +241,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <div>
             a
             <span>
@@ -263,7 +263,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <div>
             ${"a"} ${"b"} ${"c"}
           </div>
@@ -292,7 +292,7 @@ describe("@ivi/htm", () => {
     const root = createRoot();
     deepStrictEqual(
       trace(() => {
-        root.update(htm`
+        root.update(html`
           <div>
             ${"a"}\v
             ${"b"}\v

@@ -2,20 +2,20 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("@ivi/htm style", () => {
   beforeEach(reset);
-  const T = (v: undefined | null | false | string | number) => htm`<div ~a=${v} />`;
+  const T = (v: undefined | null | false | string | number) => html`<div ~a=${v} />`;
   const T2 = (
     a: undefined | null | false | string,
     b: undefined | null | false | string,
-  ) => htm`<div ~a=${a} ~b=${b} />`;
+  ) => html`<div ~a=${a} ~b=${b} />`;
 
   test(`~a="0"`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div ~a="0" />`); }),
+      trace(() => { root.update(html`<div ~a="0" />`); }),
       [
         `[-7] Template.innerHTML = "<div style="a:0"></div>"`,
         `[-6] Node.firstChild => 3`,
@@ -28,7 +28,7 @@ describe("@ivi/htm style", () => {
   test(`style="a:0" ~b="1"`, () => {
     const root = createRoot();
     deepStrictEqual(
-      trace(() => { root.update(htm`<div style="a:0" ~b="1" />`); }),
+      trace(() => { root.update(html`<div style="a:0" ~b="1" />`); }),
       [
         `[-7] Template.innerHTML = "<div style="a:0;b:1"></div>"`,
         `[-6] Node.firstChild => 3`,

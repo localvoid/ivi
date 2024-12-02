@@ -2,11 +2,11 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, trace } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("@ivi/htm property", () => {
   beforeEach(reset);
-  const T = (v: any) => htm`<div .a=${v} />`;
+  const T = (v: any) => html`<div .a=${v} />`;
 
   test(`undefined`, () => {
     const root = createRoot();

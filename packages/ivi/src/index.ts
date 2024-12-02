@@ -36,4 +36,4 @@ export {
 export {
   preventUpdates, strictEq, shallowEq, shallowEqArray,
 } from "./lib/equal.js";
-export { htm, svg } from "./html/index.js";
+export { html, svg } from "./html/index.js";

@@ -5,18 +5,18 @@ import {
   type VAny, hasDOMElement, component, context, List,
 } from "ivi";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("hasDOMElement", () => {
   beforeEach(reset);
 
-  const ROOT = (ref: (element: Element) => void) => htm`
+  const ROOT = (ref: (element: Element) => void) => html`
     <div &=${ref}>
       <span/>
     </div>
   `;
 
-  const DEEP = (ref: (element: Element) => void) => htm`
+  const DEEP = (ref: (element: Element) => void) => html`
     <div>
       <span &=${ref}/>
     </div>
@@ -32,7 +32,7 @@ describe("hasDOMElement", () => {
   test(`element 1`, () => {
     const root = createRoot();
     const el = document.createElement("div");
-    root.update(htm`<div/>`);
+    root.update(html`<div/>`);
     ok(!hasDOMElement(root.root, el));
   });
 

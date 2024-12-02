@@ -5,12 +5,12 @@ import {
   type VAny, containsDOMElement, component, context, List,
 } from "ivi";
 import { createRoot } from "ivi/test";
-import { htm } from "ivi";
+import { html } from "ivi";
 
 describe("containsDOMElement", () => {
   beforeEach(reset);
 
-  const DEEP = (ref: (element: Element) => void) => htm`
+  const DEEP = (ref: (element: Element) => void) => html`
     <div>
       <span &=${ref}/>
     </div>
@@ -26,7 +26,7 @@ describe("containsDOMElement", () => {
   test(`element 1`, () => {
     const root = createRoot();
     const el = document.createElement("div");
-    root.update(htm`<div/>`);
+    root.update(html`<div/>`);
     ok(!containsDOMElement(root.root, el));
   });
 
