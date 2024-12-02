@@ -5,8 +5,7 @@ Identity component is used to reset internal state.
 ## Example
 
 ```ts
-import { createRoot, update, component, useState, useEffect } from "ivi";
-import { htm } from "@ivi/htm";
+import { createRoot, update, component, useState, useEffect, html } from "ivi";
 import { Identity } from "@ivi/identity";
 
 const Timer = component((c) => {
@@ -28,7 +27,7 @@ const App = component((c) => {
   const onClick = () => { setKey(key() + 1); };
 
   return () => (
-    htm`
+    html`
     <div class="App">
       <button @click=${onClick}>Next</button>
       ${Identity({ key: key(), children: Timer() })}
