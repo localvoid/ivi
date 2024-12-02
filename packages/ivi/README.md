@@ -1069,6 +1069,29 @@ html`<div attr=${0}>${1}</div>`;
 
 By default, event handlers are automatically hoisted to the outermost scope.
 
+```js
+const Example = component((c) => {
+  const [count, setCount] = useState(c, 0);
+
+  return () => html`
+    <div @click=${() => { setCount(count() + 1); }}>${count()}</div>
+  `;
+});
+```
+
+After event handler hoisting, it will be transformed into:
+
+```js
+const Example = component((c) => {
+  const [count, setCount] = useState(c, 0);
+  const __ivi_hoist_1 = () => { setCount(count() + 1); };
+
+  return () => html`
+    <div @click=${__ivi_hoist_1}>${count()}</div>
+  `;
+});
+```
+
 To disable event handlers hoisting, template should have a leading comment `/* preventHoist */`. E.g.
 
 ```js
