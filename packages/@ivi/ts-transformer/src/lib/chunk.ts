@@ -91,7 +91,7 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
             sharedData.addArray(arg4);
 
             // Replace strings with shared strings
-            if (sharedStrings !== void 0 && args.length > 4) {
+            if (sharedStrings !== void 0 && args.length > 5) {
               const arg5 = args[5];
               if (ts.isArrayLiteralExpression(arg2) && ts.isArrayLiteralExpression(arg5)) {
                 const strings = arg5.elements.map(stringLiteralToString);
