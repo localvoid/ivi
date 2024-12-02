@@ -1,8 +1,25 @@
 import * as ts from "typescript";
 import { createVarStmt } from "./ast.js";
 
+/**
+ * Scope for hoisted expressions.
+ * 
+ * Possible scopes:
+ * - Source File
+ * - `{}` blocks that can contain statements
+ * - Arrow functions `() => expr`
+ * 
+ * It is possible to add class bodies as possible scopes, but since it would
+ * affect object shapes, it is probably not worth it.
+ */
 export interface HoistScope {
+  /**
+   * Scope node.
+   */
   readonly node: ts.SourceFile | ts.Block | ts.ArrowFunction;
+  /**
+   * Hoisted expressions.
+   */
   hoisted: HoistedExpr[] | undefined;
 }
 
@@ -44,6 +61,16 @@ export interface HoistedExpr {
   readonly ref: HoistedExprRef | null;
 }
 
+/**
+ * Hoist expression.
+ * 
+ * @param factory TypeScript node factory.
+ * @param namePrefix Name prefix for a unique identifier.
+ * @param expr Hoisted expression.
+ * @param scope Scope to hoist an expression.
+ * @param ref Insert hoisted expression before this node.
+ * @returns Unique identifier.
+ */
 export function hoistExpr(
   factory: ts.NodeFactory,
   namePrefix: string,
@@ -64,6 +91,14 @@ export function hoistExpr(
   return name;
 }
 
+/**
+ * Creates a visitor that tracks hoistable scopes.
+ * 
+ * @param factory TypeScript node factory.
+ * @param scopes Hoistable scopes.
+ * @param visitor Inner TypeScript node visitor.
+ * @returns TypeScript node visitor.
+ */
 export const withHoistScope = (
   factory: ts.NodeFactory,
   scopes: HoistScope[],
@@ -144,6 +179,14 @@ function updateStatements(factory: ts.NodeFactory, statements: ts.NodeArray<ts.S
   return newStatements;
 }
 
+/**
+ * Find reference that should be used as an insertion point for a hoisted
+ * expression.
+ * 
+ * @param node Node.
+ * @param scope Hoistable scope.
+ * @returns A reference.
+ */
 export function findHoistRef(node: ts.Node, scope: HoistScope): HoistedExprRef | null {
   const scopeNode = scope.node;
   if (ts.isArrowFunction(scopeNode)) {
@@ -172,6 +215,14 @@ export function findHoistRef(node: ts.Node, scope: HoistScope): HoistedExprRef |
   };
 }
 
+/**
+ * Finds outermost valid scope for an expression.
+ * 
+ * @param checker TypeScript type checker.
+ * @param scopes Hoistable scopes.
+ * @param node Expression.
+ * @returns Outermost hoistable scope.
+ */
 export function findOutermostScope(checker: ts.TypeChecker, scopes: HoistScope[], node: ts.Node) {
   let outer = scopes[0];
   let outerStart = outer.node.getStart();
@@ -195,6 +246,14 @@ export function findOutermostScope(checker: ts.TypeChecker, scopes: HoistScope[]
   return outer;
 }
 
+/**
+ * Checks if an expression can be hoisted to a scope.
+ * 
+ * @param checker TypeScript type checker.
+ * @param scope Hoistable scope.
+ * @param node Expression.
+ * @returns True if an expression can be hoisted to a scope.
+ */
 export function isHoistableToScope(checker: ts.TypeChecker, scope: HoistScope, node: ts.Node): boolean {
   let result = true;
   const visitor = (node: ts.Node): ts.VisitResult<ts.Node | undefined> => {
