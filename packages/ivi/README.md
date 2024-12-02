@@ -1444,6 +1444,15 @@ const onSubmit = async (ev) => {
 };
 ```
 
+## External Dependencies
+
+ivi runtime doesn't depend on any external libraries.
+
+ivi dev tools has a minimal set of dependencies:
+
+- [TypeScript](https://github.com/microsoft/TypeScript/) library is used for template precompilation.
+- [`@rollup/pluginutils`](https://github.com/rollup/plugins) is used in a rollup plugin `@ivi/rollup-plugin` to filter out modules.
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
