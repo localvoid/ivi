@@ -18,7 +18,12 @@ export function ivi(options?: IviOptions): Plugin {
     name: "ivi",
 
     transform(code: string, id: string) {
-      if (!filter(id) && !IMPORT_RE.test(code)) {
+      if (
+        !filter(id) &&
+        // Fast-path to ignore modules that doesn't contain any ivi related
+        // code.
+        !code.includes("ivi")
+      ) {
         return null;
       }
 
@@ -59,5 +64,3 @@ export function ivi(options?: IviOptions): Plugin {
     },
   };
 }
-
-const IMPORT_RE = /^import.*from.*['"]ivi['"].*$/m;
