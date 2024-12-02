@@ -1,7 +1,7 @@
 import {
   type TemplateDescriptor, type VAny,
   _h, _hN, _hE, _s, _sN, _sE, _T, _t
-} from "ivi";
+} from "../lib/core.js";
 import { type TemplateNode, TemplateNodeType, compileTemplate } from "../template/compiler.js";
 import { ITemplateType } from "../template/ir.js";
 import { TemplateParserError, formatError } from "../template/parser.js";
