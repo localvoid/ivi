@@ -1,11 +1,10 @@
 import * as ts from "typescript";
 import { PropOpCode } from "ivi";
 import { compilerOptions } from "./checker.js";
-import { SharedStrings } from "./SharedStrings.js";
 
 export interface TransformChunkOptions {
   readonly code: string,
-  readonly sharedStrings?: SharedStrings,
+  readonly strings?: Map<string, number>,
 }
 
 const parseInt = Number.parseInt;
@@ -58,7 +57,7 @@ class SharedData {
 }
 
 export function transformChunk(options: TransformChunkOptions): ts.TranspileOutput {
-  const { code, sharedStrings } = options;
+  const { code, strings } = options;
 
   const chunkTransformer: ts.TransformerFactory<ts.SourceFile> = (context: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
     const factory = context.factory;
@@ -91,10 +90,10 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
             sharedData.addArray(arg4);
 
             // Replace strings with shared strings
-            if (sharedStrings !== void 0 && args.length > 5) {
+            if (strings !== void 0 && args.length > 5) {
               const arg5 = args[5];
               if (ts.isArrayLiteralExpression(arg2) && ts.isArrayLiteralExpression(arg5)) {
-                const strings = arg5.elements.map(stringLiteralToString);
+                const tplStrings = arg5.elements.map(stringLiteralToString);
 
                 const propOpCodes = arg2.elements.map((op) => {
                   if (!ts.isNumericLiteral(op)) {
@@ -110,7 +109,10 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
                     type !== PropOpCode.Directive
                   ) {
                     const i = value >> PropOpCode.DataShift;
-                    const newDataIndex = sharedStrings.get(strings[i]);
+                    const newDataIndex = strings.get(tplStrings[i]);
+                    if (newDataIndex === void 0) {
+                      throw new Error(`Failed to find a shared string '${tplStrings[i]}`);
+                    }
                     return factory.createNumericLiteral(
                       // Removes old data index
                       (value & ((1 << PropOpCode.DataShift) - 1)) |
@@ -139,13 +141,13 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
             templates.push(node as ts.CallExpression);
             return node;
           }
-        } else if (sharedStrings !== void 0 && ts.isArrayLiteralExpression(node)) {
+        } else if (strings !== void 0 && ts.isArrayLiteralExpression(node)) {
           if (node.getFullText().includes("/*@__IVI_STRINGS__*/")) {
-            const strings = [];
-            for (const key of sharedStrings.keys()) {
-              strings.push(factory.createStringLiteral(key));
+            const s = [];
+            for (const key of strings.keys()) {
+              s.push(factory.createStringLiteral(key));
             }
-            return factory.updateArrayLiteralExpression(node, strings);
+            return factory.updateArrayLiteralExpression(node, s);
           }
         }
 

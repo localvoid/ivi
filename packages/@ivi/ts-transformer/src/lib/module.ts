@@ -3,14 +3,13 @@ import { parseTemplate } from "ivi/html/parser";
 import { TemplateParserError } from "ivi/template/parser";
 import { ITemplateType } from "ivi/template/ir";
 import { compileTemplate, TemplateNodeType } from "ivi/template/compiler";
-import { SharedStrings } from "./SharedStrings.js";
 import { compilerOptions, getTypeChecker } from "./checker.js";
 import { createImportNamespaceDeclaration, createTemplateDescriptor } from "./ast.js";
 import { findHoistRef, findOutermostScope, hoistExpr, HoistScope, isHoistableToScope, withHoistScope } from "./hoist.js";
 
 export interface TransformModuleOptions {
   readonly code: string;
-  readonly sharedStrings?: SharedStrings;
+  readonly strings?: Set<string>;
 }
 
 export class TransformModuleError extends Error {
@@ -23,10 +22,7 @@ export class TransformModuleError extends Error {
 }
 
 export function transformModule(options: TransformModuleOptions): ts.TranspileOutput {
-  const {
-    code,
-    sharedStrings,
-  } = options;
+  const { code, strings } = options;
   const moduleTransformer: ts.TransformerFactory<ts.SourceFile> = (context: ts.TransformationContext): ts.Transformer<ts.SourceFile> => (
     (sourceFile: ts.SourceFile): ts.SourceFile => {
       const text = sourceFile.text;
@@ -99,10 +95,10 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
               const roots = result.roots.map((root) => {
                 switch (root.type) {
                   case TemplateNodeType.Block: // Element
-                    if (sharedStrings !== void 0) {
-                      const strings = root.data;
-                      for (let i = 0; i < strings.length; i++) {
-                        sharedStrings.add(strings[i]);
+                    if (strings !== void 0) {
+                      const tplStrings = root.data;
+                      for (let i = 0; i < tplStrings.length; i++) {
+                        strings.add(tplStrings[i]);
                       }
                     }
 

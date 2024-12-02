@@ -1,35 +1,41 @@
 import { deepStrictEqual } from "node:assert";
 import { describe, test } from "node:test";
 import { transformModule } from "../module.js";
-import { SharedStrings } from "../SharedStrings.js";
 import { transformChunk } from "../chunk.js";
 
-const t = (sharedStrings: SharedStrings, code: string) => transformModule({ code, sharedStrings }).outputText.slice(0, -35);
-const optimize = (sharedStrings: SharedStrings, code: string) => transformChunk({ code, sharedStrings }).outputText.slice(0, -35);
+const t = (strings: Set<string>, code: string) => transformModule({ code, strings }).outputText.slice(0, -35);
+const optimize = (strings: Map<string, number>, code: string) => transformChunk({ code, strings }).outputText.slice(0, -35);
+const stringsToMap = (strings: Set<string>): Map<string, number> => {
+  const result = new Map<string, number>;
+  const ss = Array.from(strings.keys()).sort();
+  for (let i = 0; i < ss.length; i++) {
+    result.set(ss[i], i);
+  }
+  return result;
+};
 
 describe("transform module", () => {
   describe("collect shared strings", () => {
     test(`1`, () => {
-      const shared = new SharedStrings();
-      t(shared, `
+      const strings = new Set<string>();
+      t(strings, `
 import { html } from "ivi";
 const C = () => {
     return () => html\`<div a=\${1} b=\${2}></div>\`;
 };
       `);
-      deepStrictEqual(Array.from(shared.strings), ["a", "b"]);
+      deepStrictEqual(Array.from(strings), ["a", "b"]);
     });
   });
 
   describe("dedupe shared strings", () => {
-    const shared = new SharedStrings();
-    shared.add("a");
-    shared.add("b");
-    shared.sort();
+    const strings = new Map();
+    strings.set("a", 0);
+    strings.set("b", 1);
 
     test(`inject __IVI_STRINGS__`, () => {
       deepStrictEqual(
-        optimize(shared, `
+        optimize(strings, `
 const __IVI_STRINGS__ = /*@__IVI_STRINGS__*/[];
         `),
         `
@@ -39,8 +45,8 @@ const __IVI_STRINGS__ = /*@__IVI_STRINGS__*/ ["a", "b"];
     });
 
     test(`1`, () => {
-      const shared = new SharedStrings();
-      const code = t(shared, `
+      const strings = new Set<string>();
+      const code = t(strings, `
 import { html } from "ivi";
 const __IVI_STRINGS__ = /*@__IVI_STRINGS__*/[];
 const C = () => {
@@ -50,9 +56,8 @@ const D = () => {
     return () => html\`<span b=\${1} a=\${2}></span>\`;
 };
       `);
-      shared.sort();
       deepStrictEqual(
-        optimize(shared, code),
+        optimize(stringsToMap(strings), code),
         `
 import * as __ivi_1 from "ivi";
 const __IVI_STRINGS__ = /*@__IVI_STRINGS__*/ ["a", "b"];
@@ -71,8 +76,8 @@ const D = () => {
 
   describe("dedupe arrays", () => {
     test(`1`, () => {
-      const shared = new SharedStrings();
-      const code = t(shared, `
+      const strings = new Set<string>();
+      const code = t(strings, `
 import { html } from "ivi";
 const C = () => {
     return () => html\`<div a=\${1} b=\${2}></div>\`;
@@ -81,9 +86,8 @@ const D = () => {
     return () => html\`<span a=\${1} b=\${2}></span>\`;
 };
       `);
-      shared.sort();
       deepStrictEqual(
-        optimize(shared, code),
+        optimize(stringsToMap(strings), code),
         `
 import * as __ivi_1 from "ivi";
 const __IVI_OPCODES_1 = [2, 522];
@@ -102,8 +106,8 @@ const D = () => {
 
   describe("dedupe template factories", () => {
     test(`1`, () => {
-      const shared = new SharedStrings();
-      const code = t(shared, `
+      const strings = new Set<string>();
+      const code = t(strings, `
 import { html } from "ivi";
 const C = () => {
     return () => html\`<div a="1">\${1}</div>\`;
@@ -112,10 +116,8 @@ const D = () => {
     return () => html\`<div a="1">\${2}</div>\`;
 };
       `);
-      console.log(code);
-      shared.sort();
       deepStrictEqual(
-        optimize(shared, code),
+        optimize(stringsToMap(strings), code),
         `
 import * as __ivi_1 from "ivi";
 const __IVI_FACTORY_1 = __ivi_1._h("<div a=\\"1\\"></div>"), __IVI_OPCODES_1 = [0];
