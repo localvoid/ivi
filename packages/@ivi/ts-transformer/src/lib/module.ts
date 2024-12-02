@@ -144,14 +144,14 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
               if (err instanceof TemplateParserError) {
                 if (err.staticsOffset === 0) {
                   if (ts.isTemplateExpression(template)) {
-                    throw new TransformModuleError(err.message, template.head.getStart() + err.textOffset);
+                    throw new TransformModuleError(err.message, template.head.getStart() + err.textOffset + 1);
                   } else { // NoSubstitutionTemplateLiteral
-                    throw new TransformModuleError(err.message, template.getStart() + err.textOffset);
+                    throw new TransformModuleError(err.message, template.getStart() + err.textOffset + 1);
                   }
                 } else {
                   if (ts.isTemplateExpression(template)) {
                     const span = template.templateSpans[err.staticsOffset - 1];
-                    throw new TransformModuleError(err.message, span.getStart() + err.textOffset);
+                    throw new TransformModuleError(err.message, span.literal.getStart() + err.textOffset + 1);
                   }
                 }
               }
