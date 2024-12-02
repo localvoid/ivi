@@ -322,9 +322,7 @@ export interface ListProps<K = any> {
 /**
  * Element Directive.
  */
-export type ElementDirective = <E extends Element>(
-  element: E,
-) => void | string | { a?: string, c?: string; };
+export type ElementDirective = <E extends Element>(element: E) => void;
 
 export const _flushDOMEffects = () => {
   const e = RENDER_CONTEXT.e;
