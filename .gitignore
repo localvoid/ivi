@@ -9,6 +9,7 @@ coverage
 *.tsbuildinfo
 npm-debug.log
 
+.rsync-filter
 .DS_Store
 .idea
 .vscode
