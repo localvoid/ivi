@@ -116,6 +116,7 @@ The size of the precompiled example above is just 2.7KB (minified+brotli). It in
     - [Templates](#template-data-structures)
   - [Template Optimizations](#template-optimizations)
   - [Custom Scheduler](#custom-scheduler)
+- [External Dependencies](#external-dependencies)
 
 ## Setup
 
@@ -742,7 +743,7 @@ algorithm.
 ```ts
 type ElementDirective = <E extends Element>(
   element: E,
-) => void | string | { a?: string, c?: string; };
+) => void;
 ```
 
 ### DOM Utilities
@@ -751,7 +752,6 @@ type ElementDirective = <E extends Element>(
 
 `eventDispatcher` creates an event dispatcher that finds the closest child DOM
 node and emits a [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) with [`EventTarget.dispatchEvent()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent) method.
-
 
 ```ts
 interface DispatchEventOptions {
@@ -1406,14 +1406,17 @@ const Form = component((c) => {
     dispatch({ type: "update", value: ev.target.value });
   };
   return () => html`
-    form
-      input
+    <form>
+      <input
         @input=${onInput}
         *value=${state().value}
-      input
-        :type='submit'
-        :value='Submit'
+      />
+      <input
+        type="submit"
+        value="Submit"
         .disabled=${!state().valid}
+      />
+    </form>
   `;
 });
 
