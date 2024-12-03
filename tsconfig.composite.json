@@ -20,7 +20,6 @@
     "noImplicitReturns": false,
     "noImplicitOverride": true,
     "noUnusedLocals": true,
-    "exactOptionalPropertyTypes": true,
     "useUnknownInCatchVariables": false,
     "forceConsistentCasingInFileNames": true,
     "noUncheckedSideEffectImports": true,
