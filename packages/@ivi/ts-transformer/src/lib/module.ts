@@ -4,6 +4,7 @@ import { TemplateParserError } from "ivi/template/parser";
 import { ITemplateType } from "ivi/template/ir";
 import { compileTemplate, TemplateNodeType } from "ivi/template/compiler";
 import { compilerOptions, getTypeChecker } from "./checker.js";
+import { isImportedSymbol } from "./import.js";
 import { createImportNamespaceDeclaration, createTemplateDescriptor } from "./ast.js";
 import { findHoistRef, findOutermostScope, hoistExpr, HoistScope, isHoistableToScope, withHoistScope } from "./hoist.js";
 
@@ -48,7 +49,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
           if (ts.isArrowFunction(inner)) {
             const component = node.parent;
             if (ts.isCallExpression(component)) {
-              if (isIviComponent(component, checker)) {
+              if (isImportedSymbol(component.expression, "ivi", "component", checker)) {
                 const scope = findOutermostScope(checker, scopes, inner);
                 if (scope !== scopes[scopes.length - 1]) {
                   const r = ts.visitEachChild(node, visitor, context) as ts.ArrowFunction;
@@ -72,7 +73,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
             }
           }
         } else if (ts.isTaggedTemplateExpression(node)) {
-          const tplType = isIviTaggedTemplateExpression(node, checker);
+          const tplType = isImportedSymbol(node.tag, "ivi", TAGGED_TEMPLATES, checker);
           if (tplType) {
             if (iviModuleIdentifier === void 0) {
               iviModuleIdentifier = factory.createUniqueName("__ivi_");
@@ -242,151 +243,6 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
   });
 }
 
+const TAGGED_TEMPLATES = ["html", "svg"];
 const PREVENT_CLONE_RE = /\/\*.*preventClone.*\*\//;
 const PREVENT_HOIST_RE = /\/\*.*preventHoist.*\*\//;
-
-function isIviComponent(node: ts.CallExpression, checker: ts.TypeChecker): boolean {
-  if (ts.isIdentifier(node.expression)) {
-    return isIviComponentIdentifier(node.expression, checker);
-  }
-  if (ts.isPropertyAccessExpression(node.expression)) {
-    return isIviComponentPropertyAccessExpression(node.expression, checker);
-  }
-  return false;
-}
-
-function isIviComponentPropertyAccessExpression(node: ts.PropertyAccessExpression, checker: ts.TypeChecker): boolean {
-  if (!ts.isIdentifier(node.name)) {
-    return false;
-  }
-  const text = node.name.text;
-  if (text !== "component") {
-    return false;
-  }
-  if (!ts.isIdentifier(node.expression)) {
-    return false;
-  }
-  const symbol = checker.getSymbolAtLocation(node.expression);
-  if (!symbol) {
-    return false;
-  }
-  const namespaceImport = symbol.declarations?.[0];
-  if (!namespaceImport || !ts.isNamespaceImport(namespaceImport)) {
-    return false;
-  }
-  const importDeclaration = namespaceImport.parent.parent;
-  const specifier = importDeclaration.moduleSpecifier;
-  if (!ts.isStringLiteral(specifier)) {
-    return false;
-  }
-  return (specifier.text === "ivi");
-}
-
-function isIviComponentIdentifier(node: ts.Identifier, checker: ts.TypeChecker): boolean {
-  const symbol = checker.getSymbolAtLocation(node);
-  if (!symbol) {
-    return false;
-  }
-  const iviImport = symbol.declarations?.[0];
-  if (!iviImport || !ts.isImportSpecifier(iviImport)) {
-    return false;
-  }
-  const text = iviImport.propertyName ? iviImport.propertyName.text : iviImport.name.text;
-  if (text !== "component") {
-    return false;
-  }
-  const namedImport = iviImport.parent;
-  if (!ts.isNamedImports(namedImport)) {
-    return false;
-  }
-  const importClause = namedImport.parent;
-  if (!ts.isImportClause(importClause)) {
-    return false;
-  }
-  const importDeclaration = importClause.parent;
-  if (!ts.isImportDeclaration(importDeclaration)) {
-    return false;
-  }
-  const specifier = importDeclaration.moduleSpecifier;
-  if (!ts.isStringLiteral(specifier)) {
-    return false;
-  }
-  return (specifier.text === "ivi");
-}
-
-function isIviTaggedTemplateExpression(node: ts.TaggedTemplateExpression, checker: ts.TypeChecker): undefined | "html" | "svg" {
-  if (ts.isIdentifier(node.tag)) {
-    return isIviTemplateIdentifier(node.tag, checker);
-  }
-  if (ts.isPropertyAccessExpression(node.tag)) {
-    return isIviTemplatePropertyAccessExpression(node.tag, checker);
-  }
-  return;
-}
-
-function isIviTemplatePropertyAccessExpression(node: ts.PropertyAccessExpression, checker: ts.TypeChecker): undefined | "html" | "svg" {
-  if (!ts.isIdentifier(node.name)) {
-    return;
-  }
-  const text = node.name.text;
-  if (text !== "html" && text !== "svg") {
-    return;
-  }
-  if (!ts.isIdentifier(node.expression)) {
-    return;
-  }
-  const symbol = checker.getSymbolAtLocation(node.expression);
-  if (!symbol) {
-    return;
-  }
-  const namespaceImport = symbol.declarations?.[0];
-  if (!namespaceImport || !ts.isNamespaceImport(namespaceImport)) {
-    return;
-  }
-  const importDeclaration = namespaceImport.parent.parent;
-  const specifier = importDeclaration.moduleSpecifier;
-  if (!ts.isStringLiteral(specifier)) {
-    return;
-  }
-  if (specifier.text !== "ivi") {
-    return;
-  }
-
-  return text;
-}
-
-function isIviTemplateIdentifier(node: ts.Identifier, checker: ts.TypeChecker): undefined | "html" | "svg" {
-  const symbol = checker.getSymbolAtLocation(node);
-  if (!symbol) {
-    return;
-  }
-  const iviImport = symbol.declarations?.[0];
-  if (!iviImport || !ts.isImportSpecifier(iviImport)) {
-    return;
-  }
-  const text = iviImport.propertyName ? iviImport.propertyName.text : iviImport.name.text;
-  if (text !== "html" && text !== "svg") {
-    return;
-  }
-  const namedImport = iviImport.parent;
-  if (!ts.isNamedImports(namedImport)) {
-    return;
-  }
-  const importClause = namedImport.parent;
-  if (!ts.isImportClause(importClause)) {
-    return;
-  }
-  const importDeclaration = importClause.parent;
-  if (!ts.isImportDeclaration(importDeclaration)) {
-    return;
-  }
-  const specifier = importDeclaration.moduleSpecifier;
-  if (!ts.isStringLiteral(specifier)) {
-    return;
-  }
-  if (specifier.text !== "ivi") {
-    return;
-  }
-
-  return text;
-}

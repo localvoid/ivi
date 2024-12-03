@@ -34,7 +34,7 @@ export function createTemplateDescriptor(
   factory: ts.NodeFactory,
   iviModuleIdentifier: ts.Identifier,
   exprsNodes: ts.Expression[],
-  type: "html" | "svg",
+  type: string,
   clone: boolean,
   root: TemplateNodeBlock,
 ) {
