@@ -181,7 +181,24 @@ const C = (b) => (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]);
     );
   });
 
-  test(`hoist event 7 (Identifier)`, () => {
+  test(`hoist event 7 (inner symbol)`, () => {
+    deepStrictEqual(
+      t(`
+import { html } from "ivi";
+
+const C = (b) => (c) => html\`<div @click=\${(ev) => ev()}></div>\`;
+      `),
+      `
+import * as __ivi_1 from "ivi";
+import { html } from "ivi";
+const __ivi_hoist_1 = (ev) => ev();
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, [6], __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, ["click"]);
+const C = (b) => (c) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1]);
+      `.trim(),
+    );
+  });
+
+  test(`hoist event 8 (Identifier)`, () => {
     deepStrictEqual(
       t(`
 import { html } from "ivi";
@@ -199,7 +216,7 @@ const C = (b) => (c) => __ivi_1._t(__ivi_tpl_1, [a]);
     );
   });
 
-  test(`hoist event 8 (CallExpression)`, () => {
+  test(`hoist event 9 (CallExpression)`, () => {
     deepStrictEqual(
       t(`
 import { html } from "ivi";
@@ -217,7 +234,7 @@ const C = (b) => (c) => __ivi_1._t(__ivi_tpl_1, [a()]);
     );
   });
 
-  test(`hoist event 9 nested`, () => {
+  test(`hoist event 10 nested`, () => {
     deepStrictEqual(
       t(`
 import { html } from "ivi";
@@ -237,7 +254,7 @@ const C = (b) => { const __ivi_hoist_2 = () => a + b; return (c) => __ivi_1._t(_
     );
   });
 
-  test(`hoist event 8 nested`, () => {
+  test(`hoist event 11 nested`, () => {
     deepStrictEqual(
       t(`
 import { html } from "ivi";
