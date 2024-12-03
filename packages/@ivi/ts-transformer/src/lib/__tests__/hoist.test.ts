@@ -320,4 +320,37 @@ const C = component((c) => ([a, b]) => a + b + c);
       `.trim(),
     );
   });
+
+  test(`hoist component render fn 4`, () => {
+    deepStrictEqual(
+      t(`
+import { component } from "ivi";
+
+const C = component((c) => ([a, b]) => a + b, strictEq);
+        `),
+      `
+import { component } from "ivi";
+const __ivi_hoist_1 = ([a, b]) => a + b;
+const C = component((c) => __ivi_hoist_1, strictEq);
+      `.trim(),
+    );
+  });
+
+  test(`hoist component render fn 5`, () => {
+    deepStrictEqual(
+      t(`
+import { component, html } from "ivi";
+
+const C = component(() => ([a]) => html\`<div @click=\${() => 123}>\${a}</div>\`));
+        `),
+      `
+import * as __ivi_1 from "ivi";
+import { component, html } from "ivi";
+const __ivi_hoist_1 = () => 123;
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, [6], [4], __ivi_1.EMPTY_ARRAY, ["click"]);
+const __ivi_hoist_2 = ([a]) => __ivi_1._t(__ivi_tpl_1, [__ivi_hoist_1, a]);
+const C = component(() => __ivi_hoist_2);
+      `.trim(),
+    );
+  });
 });

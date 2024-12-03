@@ -42,6 +42,8 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
 
       const visitor = withHoistScope(factory, scopes, (node: ts.Node): ts.Node | undefined => {
         if (hoistRenderFunctions && ts.isArrowFunction(node)) {
+          // Right now it can only recognize a basic pattern:
+          // `component(() => () => ...)`
           const inner = node.body;
           if (ts.isArrowFunction(inner)) {
             const component = node.parent;
