@@ -7,9 +7,15 @@ import { compilerOptions, getTypeChecker } from "./checker.js";
 import { createImportNamespaceDeclaration, createTemplateDescriptor } from "./ast.js";
 import { findHoistRef, findOutermostScope, hoistExpr, HoistScope, isHoistableToScope, withHoistScope } from "./hoist.js";
 
+export interface HoistOptions {
+  readonly events?: boolean,
+  readonly renderFunctions?: boolean,
+}
+
 export interface TransformModuleOptions {
   readonly code: string;
-  readonly strings?: Set<string>;
+  readonly strings?: Set<string> | undefined;
+  readonly hoist?: HoistOptions | undefined;
 }
 
 export class TransformModuleError extends Error {
@@ -22,7 +28,10 @@ export class TransformModuleError extends Error {
 }
 
 export function transformModule(options: TransformModuleOptions): ts.TranspileOutput {
-  const { code, strings } = options;
+  const { code, strings, hoist } = options;
+  const hoistEvents = hoist?.events ?? true;
+  const hoistRenderFunctions = hoist?.renderFunctions ?? true;
+
   const moduleTransformer: ts.TransformerFactory<ts.SourceFile> = (context: ts.TransformationContext): ts.Transformer<ts.SourceFile> => (
     (sourceFile: ts.SourceFile): ts.SourceFile => {
       const text = sourceFile.text;
@@ -32,7 +41,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
       let iviModuleIdentifier: undefined | ts.Identifier;
 
       const visitor = withHoistScope(factory, scopes, (node: ts.Node): ts.Node | undefined => {
-        if (ts.isArrowFunction(node)) {
+        if (hoistRenderFunctions && ts.isArrowFunction(node)) {
           const inner = node.body;
           if (ts.isArrowFunction(inner)) {
             const component = node.parent;
@@ -109,7 +118,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                   if (!hoist) {
                     return false;
                   }
-                  if (ts.isArrowFunction(expr)) {
+                  if (hoistEvents && ts.isArrowFunction(expr)) {
                     const scope = findOutermostScope(checker, scopes, expr);
                     if (scope !== scopes[scopes.length - 1]) {
                       hoistedExpressions.set(i, scope);

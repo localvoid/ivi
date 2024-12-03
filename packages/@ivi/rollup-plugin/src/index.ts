@@ -1,10 +1,11 @@
 import type { Plugin } from "rollup";
 import { createFilter, type FilterPattern } from "@rollup/pluginutils";
-import { transformModule, transformChunk, TransformModuleError } from "@ivi/ts-transformer";
+import { transformModule, transformChunk, TransformModuleError, HoistOptions } from "@ivi/ts-transformer";
 
 export interface IviOptions {
   include?: FilterPattern | undefined;
   exclude?: FilterPattern | undefined;
+  hoist?: HoistOptions;
 }
 
 export function ivi(options?: IviOptions): Plugin {
@@ -12,6 +13,7 @@ export function ivi(options?: IviOptions): Plugin {
     options?.include ?? /\.(m?js|m?ts)$/,
     options?.exclude,
   );
+  const hoist = options?.hoist;
   const strings = new Map<string, number>();
 
   return {
@@ -29,7 +31,7 @@ export function ivi(options?: IviOptions): Plugin {
 
       try {
         const strings = new Set<string>();
-        const result = transformModule({ code, strings });
+        const result = transformModule({ code, strings, hoist });
         const meta = strings.size > 0
           ? { ivi: { strings: Array.from(strings.keys()) } }
           : null;
