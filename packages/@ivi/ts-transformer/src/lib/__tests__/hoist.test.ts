@@ -258,33 +258,35 @@ const C = (b) => (c) => __ivi_1._t(__ivi_tpl_2, [__ivi_hoist_2]);
     );
   });
 
-  //   test.only(`hoist render fn 1`, () => {
-  //     deepStrictEqual(
-  //       t(`
-  // import { component, html } from "ivi";
+  test(`hoist component render fn 1`, () => {
+    deepStrictEqual(
+      t(`
+import { component, html } from "ivi";
 
-  // const C = component(() => ([a, b]) => a + b);
-  //       `),
-  //       `
-  // import { component } from "ivi";
-  // const __ivi_hoist_1 = ([a, b]) => a + b;
-  // const C = component(() => __ivi_hoist_1);
-  //       `.trim(),
-  //     );
-  //   });
+const C = component(() => ([a, b]) => a + b);
+        `),
+      `
+import { component } from "ivi";
+const __ivi_hoist_1 = ([a, b]) => a + b;
+const C = component(() => __ivi_hoist_1);
+      `.trim(),
+    );
+  });
 
-  //   test.only(`hoist render fn 2`, () => {
-  //     deepStrictEqual(
-  //       t(`
-  // import { component, html } from "ivi";
+  test(`hoist component render fn 2`, () => {
+    deepStrictEqual(
+      t(`
+import { component, html } from "ivi";
 
-  // const C = component(() => ([a]) => html\`<div>\${a}</div>\`));
-  //       `),
-  //       `
-  // import { component } from "ivi";
-  // const __ivi_hoist_1 = ([a, b]) => a + b;
-  // const C = component(() => __ivi_hoist_1);
-  //       `.trim(),
-  //     );
-  // });
+const C = component(() => ([a]) => html\`<div>\${a}</div>\`));
+        `),
+      `
+import * as __ivi_1 from "ivi";
+import { component, html } from "ivi";
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const __ivi_hoist_1 = ([a]) => __ivi_1._t(__ivi_tpl_1, [a]);
+const C = component(() => __ivi_hoist_1);
+      `.trim(),
+    );
+  });
 });

@@ -32,7 +32,35 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
       let iviModuleIdentifier: undefined | ts.Identifier;
 
       const visitor = withHoistScope(factory, scopes, (node: ts.Node): ts.Node | undefined => {
-        if (ts.isTaggedTemplateExpression(node)) {
+        if (ts.isArrowFunction(node)) {
+          const inner = node.body;
+          if (ts.isArrowFunction(inner)) {
+            const component = node.parent;
+            if (ts.isCallExpression(component)) {
+              if (isIviComponent(component, checker)) {
+                const scope = findOutermostScope(checker, scopes, inner);
+                if (scope !== scopes[scopes.length - 1]) {
+                  const r = ts.visitEachChild(node, visitor, context) as ts.ArrowFunction;
+                  if (ts.isArrowFunction(r)) {
+                    if (ts.isArrowFunction(r.body)) {
+                      const id = hoistExpr(factory, "__ivi_hoist_", r.body as ts.Expression, scope, findHoistRef(node, scope));
+                      return factory.updateArrowFunction(
+                        node,
+                        node.modifiers,
+                        node.typeParameters,
+                        node.parameters,
+                        node.type,
+                        node.equalsGreaterThanToken,
+                        id,
+                      );
+                    }
+                  }
+                  return r;
+                }
+              }
+            }
+          }
+        } else if (ts.isTaggedTemplateExpression(node)) {
           const tplType = isIviTaggedTemplateExpression(node, checker);
           if (tplType) {
             if (iviModuleIdentifier === void 0) {
@@ -179,49 +207,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
         return ts.visitEachChild(node, visitor, context);
       });
 
-      const hoistRender = withHoistScope(factory, scopes, (node: ts.Node): ts.Node | undefined => {
-        if (ts.isCallExpression(node)) {
-          if (isIviComponent(node, checker)) {
-            if (node.arguments.length > 0) {
-              const outer = node.arguments[0];
-              if (ts.isArrowFunction(outer)) {
-                const inner = outer.body;
-                if (ts.isArrowFunction(inner)) {
-                  // const scope = findOutermostScope(checker, scopes, inner);
-                  const scope = scopes[0];
-                  // console.log(scope);
-                  // if (scope !== scopes[scopes.length - 1]) {
-                  const id = hoistExpr(factory, "__ivi_hoist_", inner, scope, findHoistRef(inner, scope));
-                  const newOuter = factory.updateArrowFunction(
-                    outer,
-                    outer.modifiers,
-                    outer.typeParameters,
-                    outer.parameters,
-                    outer.type,
-                    outer.equalsGreaterThanToken,
-                    id,
-                  );
-
-                  return factory.updateCallExpression(
-                    node,
-                    node.expression,
-                    node.typeArguments,
-                    node.arguments.length > 1
-                      ? [newOuter! as ts.Expression, node.arguments[1]]
-                      : [newOuter! as ts.Expression],
-                  );
-                  // }
-                }
-              }
-            }
-            return node;
-          }
-        }
-        return ts.visitEachChild(node, hoistRender, context);
-      });
-
       sourceFile = ts.visitNode(sourceFile, visitor) as ts.SourceFile;
-      // sourceFile = ts.visitNode(sourceFile, hoistRender) as ts.SourceFile;
       if (iviModuleIdentifier !== void 0) {
         return factory.updateSourceFile(
           sourceFile,
