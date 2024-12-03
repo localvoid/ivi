@@ -191,4 +191,25 @@ const C = () => {
       `.trim(),
     );
   });
+
+  test(`nested`, () => {
+    deepStrictEqual(
+      t(`
+import { html } from "ivi";
+
+const C = () => {
+    return () => html\`<div>\${html\`<span/>\`}</div>\`;
+};
+      `),
+      `
+import * as __ivi_1 from "ivi";
+import { html } from "ivi";
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("span"), 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 65, __ivi_1.EMPTY_ARRAY, [0], __ivi_1.EMPTY_ARRAY);
+const C = () => {
+    return () => __ivi_1._t(__ivi_tpl_2, [__ivi_1._t(__ivi_tpl_1)]);
+};
+      `.trim(),
+    );
+  });
 });

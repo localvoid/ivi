@@ -31,7 +31,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
       const scopes: HoistScope[] = [];
       let iviModuleIdentifier: undefined | ts.Identifier;
 
-      const visitor = withHoistScope(factory, scopes, (node: ts.Node): ts.Node => {
+      const visitor = withHoistScope(factory, scopes, (node: ts.Node): ts.Node | undefined => {
         if (ts.isTaggedTemplateExpression(node)) {
           const tplType = isIviTaggedTemplateExpression(node, checker);
           if (tplType) {
@@ -52,9 +52,7 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
               hoist = false;
             }
 
-            const r = ts.visitEachChild(node, visitor, context) ?? node;
-
-            const template = r.template;
+            const template = node.template;
             const statics: string[] = [];
             const expressions: ts.Expression[] = [];
             if (ts.isTemplateExpression(template)) {
@@ -68,6 +66,8 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
             }
 
             try {
+              const hoistedExpressions = new Map<number, HoistScope>();
+
               const tir = parseTemplate(
                 statics,
                 tplType === "html"
@@ -84,57 +84,78 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                   if (ts.isArrowFunction(expr)) {
                     const scope = findOutermostScope(checker, scopes, expr);
                     if (scope !== scopes[scopes.length - 1]) {
-                      expressions[i] = hoistExpr(factory, "__ivi_hoist_", expr, scope, findHoistRef(expr, scope));
+                      hoistedExpressions.set(i, scope);
                       return true;
                     }
                   }
                   return false;
                 }
               );
-              const result = compileTemplate(tir);
-              const roots = result.roots.map((root) => {
-                switch (root.type) {
-                  case TemplateNodeType.Block: // Element
-                    if (strings !== void 0) {
-                      const tplStrings = root.data;
-                      for (let i = 0; i < tplStrings.length; i++) {
-                        strings.add(tplStrings[i]);
-                      }
-                    }
 
-                    const dynamicExprs = root.exprs.map((e) => expressions[e]);
-                    const id = hoistExpr(
-                      factory,
-                      "__ivi_tpl_",
-                      createTemplateDescriptor(
+              const r = ts.visitEachChild(node, visitor, context);
+              if (ts.isTaggedTemplateExpression(r)) {
+                let expressions: ts.Expression[] = [];
+                if (ts.isTemplateExpression(r.template)) {
+                  expressions = r.template.templateSpans.map((s, i) => {
+                    const expr = s.expression;
+                    const scope = hoistedExpressions.get(i);
+                    if (scope !== void 0) {
+                      return hoistExpr(
                         factory,
-                        iviModuleIdentifier!,
-                        expressions,
-                        tplType,
-                        clone,
-                        root,
-                      ),
-                      scopes[0],
-                      ref,
-                    );
-
-                    return factory.createCallExpression(
-                      factory.createPropertyAccessExpression(iviModuleIdentifier!, "_t"),
-                      void 0,
-                      dynamicExprs.length > 0
-                        ? [id, factory.createArrayLiteralExpression(dynamicExprs)]
-                        : [id],
-                    );
-                  case TemplateNodeType.Text: // Text
-                    return factory.createStringLiteral(root.value);
-                  case TemplateNodeType.Expr: // Expr
-                    return expressions[root.value];
+                        "__ivi_hoist_",
+                        expr,
+                        scope,
+                        findHoistRef(node, scope),
+                      );
+                    }
+                    return expr;
+                  });
                 }
-              });
-              if (roots.length === 1) {
-                return roots[0];
-              } else {
-                return factory.createArrayLiteralExpression(roots);
+                const result = compileTemplate(tir);
+                const roots = result.roots.map((root) => {
+                  switch (root.type) {
+                    case TemplateNodeType.Block: // Element
+                      if (strings !== void 0) {
+                        const tplStrings = root.data;
+                        for (let i = 0; i < tplStrings.length; i++) {
+                          strings.add(tplStrings[i]);
+                        }
+                      }
+
+                      const dynamicExprs = root.exprs.map((e) => expressions[e]);
+                      const id = hoistExpr(
+                        factory,
+                        "__ivi_tpl_",
+                        createTemplateDescriptor(
+                          factory,
+                          iviModuleIdentifier!,
+                          expressions,
+                          tplType,
+                          clone,
+                          root,
+                        ),
+                        scopes[0],
+                        ref,
+                      );
+
+                      return factory.createCallExpression(
+                        factory.createPropertyAccessExpression(iviModuleIdentifier!, "_t"),
+                        void 0,
+                        dynamicExprs.length > 0
+                          ? [id, factory.createArrayLiteralExpression(dynamicExprs)]
+                          : [id],
+                      );
+                    case TemplateNodeType.Text: // Text
+                      return factory.createStringLiteral(root.value);
+                    case TemplateNodeType.Expr: // Expr
+                      return expressions[root.value];
+                  }
+                });
+                if (roots.length === 1) {
+                  return roots[0];
+                } else {
+                  return factory.createArrayLiteralExpression(roots);
+                }
               }
             } catch (err) {
               if (err instanceof TemplateParserError) {
@@ -158,7 +179,49 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
         return ts.visitEachChild(node, visitor, context);
       });
 
+      const hoistRender = withHoistScope(factory, scopes, (node: ts.Node): ts.Node | undefined => {
+        if (ts.isCallExpression(node)) {
+          if (isIviComponent(node, checker)) {
+            if (node.arguments.length > 0) {
+              const outer = node.arguments[0];
+              if (ts.isArrowFunction(outer)) {
+                const inner = outer.body;
+                if (ts.isArrowFunction(inner)) {
+                  // const scope = findOutermostScope(checker, scopes, inner);
+                  const scope = scopes[0];
+                  // console.log(scope);
+                  // if (scope !== scopes[scopes.length - 1]) {
+                  const id = hoistExpr(factory, "__ivi_hoist_", inner, scope, findHoistRef(inner, scope));
+                  const newOuter = factory.updateArrowFunction(
+                    outer,
+                    outer.modifiers,
+                    outer.typeParameters,
+                    outer.parameters,
+                    outer.type,
+                    outer.equalsGreaterThanToken,
+                    id,
+                  );
+
+                  return factory.updateCallExpression(
+                    node,
+                    node.expression,
+                    node.typeArguments,
+                    node.arguments.length > 1
+                      ? [newOuter! as ts.Expression, node.arguments[1]]
+                      : [newOuter! as ts.Expression],
+                  );
+                  // }
+                }
+              }
+            }
+            return node;
+          }
+        }
+        return ts.visitEachChild(node, hoistRender, context);
+      });
+
       sourceFile = ts.visitNode(sourceFile, visitor) as ts.SourceFile;
+      // sourceFile = ts.visitNode(sourceFile, hoistRender) as ts.SourceFile;
       if (iviModuleIdentifier !== void 0) {
         return factory.updateSourceFile(
           sourceFile,
@@ -184,6 +247,75 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
 
 const PREVENT_CLONE_RE = /\/\*.*preventClone.*\*\//;
 const PREVENT_HOIST_RE = /\/\*.*preventHoist.*\*\//;
+
+function isIviComponent(node: ts.CallExpression, checker: ts.TypeChecker): boolean {
+  if (ts.isIdentifier(node.expression)) {
+    return isIviComponentIdentifier(node.expression, checker);
+  }
+  if (ts.isPropertyAccessExpression(node.expression)) {
+    return isIviComponentPropertyAccessExpression(node.expression, checker);
+  }
+  return false;
+}
+
+function isIviComponentPropertyAccessExpression(node: ts.PropertyAccessExpression, checker: ts.TypeChecker): boolean {
+  if (!ts.isIdentifier(node.name)) {
+    return false;
+  }
+  const text = node.name.text;
+  if (text !== "component") {
+    return false;
+  }
+  if (!ts.isIdentifier(node.expression)) {
+    return false;
+  }
+  const symbol = checker.getSymbolAtLocation(node.expression);
+  if (!symbol) {
+    return false;
+  }
+  const namespaceImport = symbol.declarations?.[0];
+  if (!namespaceImport || !ts.isNamespaceImport(namespaceImport)) {
+    return false;
+  }
+  const importDeclaration = namespaceImport.parent.parent;
+  const specifier = importDeclaration.moduleSpecifier;
+  if (!ts.isStringLiteral(specifier)) {
+    return false;
+  }
+  return (specifier.text === "ivi");
+}
+
+function isIviComponentIdentifier(node: ts.Identifier, checker: ts.TypeChecker): boolean {
+  const symbol = checker.getSymbolAtLocation(node);
+  if (!symbol) {
+    return false;
+  }
+  const iviImport = symbol.declarations?.[0];
+  if (!iviImport || !ts.isImportSpecifier(iviImport)) {
+    return false;
+  }
+  const text = iviImport.propertyName ? iviImport.propertyName.text : iviImport.name.text;
+  if (text !== "component") {
+    return false;
+  }
+  const namedImport = iviImport.parent;
+  if (!ts.isNamedImports(namedImport)) {
+    return false;
+  }
+  const importClause = namedImport.parent;
+  if (!ts.isImportClause(importClause)) {
+    return false;
+  }
+  const importDeclaration = importClause.parent;
+  if (!ts.isImportDeclaration(importDeclaration)) {
+    return false;
+  }
+  const specifier = importDeclaration.moduleSpecifier;
+  if (!ts.isStringLiteral(specifier)) {
+    return false;
+  }
+  return (specifier.text === "ivi");
+}
 
 function isIviTaggedTemplateExpression(node: ts.TaggedTemplateExpression, checker: ts.TypeChecker): undefined | "html" | "svg" {
   if (ts.isIdentifier(node.tag)) {
