@@ -109,7 +109,6 @@ The size of the precompiled example above is just 2.7KB (minified+brotli). It in
 - [CheatSheet](#cheatsheet)
   - [Passive Event Listener](#passive-event-listener)
   - [Dynamic Argument Name](#dynamic-argument-name)
-  - [Stateless Components with `areEqual` hook](#stateless-components-with-areequal-hook)
   - [Integrating External/Imperative Libraries](#integrating-externalimperative-libraries)
 - [Advanced](#advanced)
   - [Component Invalidation and Dirty Checking](#component-invalidation-and-dirty-checking)
@@ -1090,24 +1089,6 @@ const Example = component(() => {
     <div ${arg(key, value)}></div>
   `;
 });
-```
-
-### Stateless Components with `areEqual` hook
-
-```js
-const _Button = ([text, onClick]) => html`
-  <button @click=${onClick}>${text}</button>
-`;
-const Button = component(
-  // Component factory will reuse the same hoisted render
-  // function for all component instances.
-  () => _Button,
-  // areEqual function
-  (prev, next) => (
-    prev[0] === next[0] &&
-    prev[1] === next[1]
-  ),
-);
 ```
 
 ### Integrating External/Imperative Libraries
