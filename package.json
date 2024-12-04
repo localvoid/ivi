@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "clean": "rm -rf ./node_modules",
+    "clean": "rm -rf ./node_modules ./tsconfig.tsbuildinfo",
     "build": "tsc -b",
     "build:watch": "tsc -b -w --pretty",
     "build:force": "tsc -b --force --pretty"
