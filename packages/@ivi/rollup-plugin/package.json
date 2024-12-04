@@ -1,6 +1,6 @@
 {
   "name": "@ivi/rollup-plugin",
-  "version": "4.0.0-beta.1",
+  "version": "4.0.0",
   "type": "module",
   "exports": {
     ".": "./dist/index.js"
