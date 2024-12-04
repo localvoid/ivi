@@ -19,7 +19,7 @@
     "@ivi/rollup-plugin": "workspace:*"
   },
   "scripts": {
-    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+    "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
   },
   "description": "Vite plugin for ivi library.",
   "license": "MIT",

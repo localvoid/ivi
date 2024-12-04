@@ -7,6 +7,6 @@
     "@ivi/mock-dom": "workspace:*"
   },
   "scripts": {
-    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+    "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
   }
 }

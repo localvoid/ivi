@@ -18,7 +18,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+    "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
   },
   "description": "ivi DOM mocking tools.",
   "license": "MIT",

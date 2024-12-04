@@ -23,7 +23,7 @@
     "rollup": "^4.27.4"
   },
   "scripts": {
-    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+    "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
   },
   "description": "Rollup plugin for ivi library.",
   "license": "MIT",

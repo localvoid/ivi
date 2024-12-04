@@ -24,7 +24,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo"
+    "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
   },
   "description": "Lightweight Embeddable Web UI Library.",
   "license": "MIT",
