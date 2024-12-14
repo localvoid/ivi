@@ -21,39 +21,48 @@ const stringLiteralToString = (n: ts.Node): string => {
   return n.text;
 };
 
+interface SharedExpr<T extends ts.CallExpression | ts.ArrayLiteralExpression> {
+  readonly node: T;
+  /**
+   * When expression is deduplicated, this reference point should be used as an
+   * insertion point for a deduplicated expression.
+   */
+  readonly ref: ts.VariableStatement;
+}
+
 /**
  * SharedData is used for deduplicating template factories and numeric arrays.
  */
 class SharedData {
-  readonly factories: Map<string, ts.CallExpression[]>;
-  readonly arrays: Map<string, ts.ArrayLiteralExpression[]>;
+  readonly factories: Map<string, SharedExpr<ts.CallExpression>[]>;
+  readonly arrays: Map<string, SharedExpr<ts.ArrayLiteralExpression>[]>;
 
   constructor() {
     this.factories = new Map();
     this.arrays = new Map();
   }
 
-  addFactory(node: ts.Expression) {
+  addFactory(node: ts.Expression, ref: ts.VariableStatement) {
     if (ts.isCallExpression(node)) {
       const arg0 = node.arguments[0];
       const key = node.expression.getText() + ":" + arg0.getText();
       let entries = this.factories.get(key);
       if (entries === void 0) {
-        this.factories.set(key, [node]);
+        this.factories.set(key, [{ node, ref }]);
       } else {
-        entries.push(node);
+        entries.push({ node, ref });
       }
     }
   }
 
-  addArray(node: ts.Node) {
+  addArray(node: ts.Node, ref: ts.VariableStatement) {
     if (ts.isArrayLiteralExpression(node)) {
       const key = node.elements.map(opCodeNodeToString).join(",");
       let entries = this.arrays.get(key);
       if (entries === void 0) {
-        this.arrays.set(key, [node]);
+        this.arrays.set(key, [{ node, ref }]);
       } else {
-        entries.push(node);
+        entries.push({ node, ref });
       }
     }
   }
@@ -75,75 +84,84 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
       // - Inject shared strings array `@__IVI_STRINGS__`.
       const firstPass = (node: ts.Node): ts.Node => {
         if (ts.isCallExpression(node)) {
-          // Workaround to retrieve leading comments for expressions.
-          // https://github.com/microsoft/TypeScript/issues/54906
-          if (node.getFullText().includes("/*@__IVI_TPL__*/")) {
-            // Count the number of usages for factories and arrays with
-            // exactly the same values.
-            const args = node.arguments;
-            if (args.length < 5) {
-              throw new Error("Expected at least 5 arguments");
-            }
-            const arg0 = args[0]; // Template DOM factory
-            const arg1 = args[1]; // Flags
-            let arg2 = args[2]; // Prop OpCodes
-            const arg3 = args[3]; // Child OpCodes
-            const arg4 = args[4]; // State OpCodes
-            sharedData.addFactory(arg0);
-            sharedData.addArray(arg3);
-            sharedData.addArray(arg4);
-
-            // Replace strings with shared strings
-            if (strings !== void 0 && args.length > 5) {
-              const arg5 = args[5]; // Strings
-              if (ts.isArrayLiteralExpression(arg2) && ts.isArrayLiteralExpression(arg5)) {
-                const tplStrings = arg5.elements.map(stringLiteralToString);
-
-                const propOpCodes = arg2.elements.map((op) => {
-                  if (!ts.isNumericLiteral(op)) {
-                    throw new Error("Invalid OpCode");
+          const varDecl = node.parent;
+          if (ts.isVariableDeclaration(varDecl)) {
+            const varList = varDecl.parent;
+            if (ts.isVariableDeclarationList(varList)) {
+              const varStmt = varList.parent;
+              if (ts.isVariableStatement(varStmt)) {
+                // Workaround to retrieve leading comments for expressions.
+                // https://github.com/microsoft/TypeScript/issues/54906
+                if (node.getFullText().includes("/*@__IVI_TPL__*/")) {
+                  // Count the number of usages for factories and arrays with
+                  // exactly the same values.
+                  const args = node.arguments;
+                  if (args.length < 5) {
+                    throw new Error("Expected at least 5 arguments");
                   }
-                  const value = parseInt(op.text, 10);
+                  const arg0 = args[0]; // Template DOM factory
+                  const arg1 = args[1]; // Flags
+                  let arg2 = args[2]; // Prop OpCodes
+                  const arg3 = args[3]; // Child OpCodes
+                  const arg4 = args[4]; // State OpCodes
+                  sharedData.addFactory(arg0, varStmt);
+                  sharedData.addArray(arg3, varStmt);
+                  sharedData.addArray(arg4, varStmt);
 
-                  const type = value & PropOpCode.TypeMask;
+                  // Replace strings with shared strings
+                  if (strings !== void 0 && args.length > 5) {
+                    const arg5 = args[5]; // Strings
+                    if (ts.isArrayLiteralExpression(arg2) && ts.isArrayLiteralExpression(arg5)) {
+                      const tplStrings = arg5.elements.map(stringLiteralToString);
 
-                  if (
-                    type !== PropOpCode.SetNode &&
-                    type !== PropOpCode.Common &&
-                    type !== PropOpCode.Directive
-                  ) {
-                    const i = value >> PropOpCode.DataShift;
-                    const newDataIndex = strings.get(tplStrings[i]);
-                    if (newDataIndex === void 0) {
-                      throw new Error(`Failed to find a shared string '${tplStrings[i]}`);
+                      const propOpCodes = arg2.elements.map((op) => {
+                        if (!ts.isNumericLiteral(op)) {
+                          throw new Error("Invalid OpCode");
+                        }
+                        const value = parseInt(op.text, 10);
+
+                        const type = value & PropOpCode.TypeMask;
+
+                        if (
+                          type !== PropOpCode.SetNode &&
+                          type !== PropOpCode.Common &&
+                          type !== PropOpCode.Directive
+                        ) {
+                          const i = value >> PropOpCode.DataShift;
+                          const newDataIndex = strings.get(tplStrings[i]);
+                          if (newDataIndex === void 0) {
+                            throw new Error(`Failed to find a shared string '${tplStrings[i]}`);
+                          }
+                          return factory.createNumericLiteral(
+                            // Removes old data index
+                            (value & ((1 << PropOpCode.DataShift) - 1)) |
+                            // Adds new data index
+                            (newDataIndex << PropOpCode.DataShift)
+                          );
+                        }
+                        return op;
+                      });
+                      node = factory.updateCallExpression(
+                        node,
+                        node.expression,
+                        node.typeArguments,
+                        [
+                          arg0,
+                          arg1,
+                          arg2 = factory.updateArrayLiteralExpression(arg2, propOpCodes),
+                          arg3,
+                          arg4,
+                          // Remove arg5 when strings are shared.
+                        ],
+                      );
+                      sharedData.addArray(arg2, varStmt);
                     }
-                    return factory.createNumericLiteral(
-                      // Removes old data index
-                      (value & ((1 << PropOpCode.DataShift) - 1)) |
-                      // Adds new data index
-                      (newDataIndex << PropOpCode.DataShift)
-                    );
                   }
-                  return op;
-                });
-                node = factory.updateCallExpression(
-                  node,
-                  node.expression,
-                  node.typeArguments,
-                  [
-                    arg0,
-                    arg1,
-                    arg2 = factory.updateArrayLiteralExpression(arg2, propOpCodes),
-                    arg3,
-                    arg4,
-                    // Remove arg5 when strings are shared.
-                  ],
-                );
-                sharedData.addArray(arg2);
+                  templates.push(node as ts.CallExpression);
+                  return node;
+                }
               }
             }
-            templates.push(node as ts.CallExpression);
-            return node;
           }
         } else if (strings !== void 0 && ts.isArrayLiteralExpression(node)) {
           if (node.getFullText().includes("/*@__IVI_STRINGS__*/")) {
@@ -162,7 +180,7 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
 
       if (templates.length > 0) {
         // Find factory and opCode array duplicates.
-        const sharedDecls = [];
+        const sharedDecls = new Map<number, ts.VariableDeclaration[]>();
         const sharedFactories = new Map<ts.Node, ts.Identifier>();
         const sharedArrays = new Map<ts.Node, ts.Identifier>();
 
@@ -170,9 +188,14 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
           if (nodes.length > 1) {
             const expr = nodes[0];
             const id = factory.createUniqueName("__IVI_FACTORY");
-            sharedDecls.push(factory.createVariableDeclaration(id, void 0, void 0, expr));
+            let entries = sharedDecls.get(expr.ref.pos);
+            if (entries === void 0) {
+              entries = [];
+            }
+            entries.push(factory.createVariableDeclaration(id, void 0, void 0, expr.node));
+            sharedDecls.set(expr.ref.pos, entries);
             for (let i = 0; i < nodes.length; i++) {
-              sharedFactories.set(nodes[i], id);
+              sharedFactories.set(nodes[i].node, id);
             }
           }
         }
@@ -181,16 +204,21 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
           if (nodes.length > 1) {
             const expr = nodes[0];
             const id = factory.createUniqueName("__IVI_OPCODES");
-            sharedDecls.push(factory.createVariableDeclaration(id, void 0, void 0, expr));
+            let entries = sharedDecls.get(expr.ref.pos);
+            if (entries === void 0) {
+              entries = [];
+            }
+            entries.push(factory.createVariableDeclaration(id, void 0, void 0, expr.node));
+            sharedDecls.set(expr.ref.pos, entries);
             for (let i = 0; i < nodes.length; i++) {
-              sharedArrays.set(nodes[i], id);
+              sharedArrays.set(nodes[i].node, id);
             }
           }
         }
 
         // Second Pass
         // - Deduplicate template descriptors data.
-        if (sharedDecls.length > 0) {
+        if (sharedDecls.size > 0) {
           const secondPass = (node: ts.Node): ts.Node => {
             if (ts.isCallExpression(node)) {
               const id = sharedFactories.get(node);
@@ -209,21 +237,20 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
 
           const statements = sourceFile.statements;
           const newStatements = [];
-          let i = 0;
-          for (; i < statements.length; i++) {
-            if (!ts.isImportDeclaration(sourceFile.statements[i])) {
-              break;
+          for (let i = 0; i < statements.length; i++) {
+            const stmt = statements[i];
+            if (ts.isVariableStatement(stmt)) {
+              const decl = sharedDecls.get(stmt.pos);
+              if (decl !== void 0) {
+                newStatements.push(
+                  factory.createVariableStatement(
+                    void 0,
+                    factory.createVariableDeclarationList(decl, ts.NodeFlags.Const),
+                  ),
+                );
+              }
             }
-            newStatements.push(statements[i]);
-          }
-          newStatements.push(
-            factory.createVariableStatement(
-              void 0,
-              factory.createVariableDeclarationList(sharedDecls, ts.NodeFlags.Const),
-            ),
-          );
-          for (; i < statements.length; i++) {
-            newStatements.push(statements[i]);
+            newStatements.push(stmt);
           }
 
           return factory.updateSourceFile(

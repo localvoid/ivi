@@ -74,7 +74,9 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
           }
         } else if (ts.isTaggedTemplateExpression(node)) {
           const tplType = isImportedSymbol(node.tag, "ivi", TAGGED_TEMPLATES, checker);
+
           if (tplType) {
+            const sourceMapRange = ts.getSourceMapRange(node);
             if (iviModuleIdentifier === void 0) {
               iviModuleIdentifier = factory.createUniqueName("__ivi_");
             }
@@ -192,9 +194,15 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
                   }
                 });
                 if (roots.length === 1) {
-                  return roots[0];
+                  return ts.setSourceMapRange(
+                    roots[0],
+                    sourceMapRange,
+                  );
                 } else {
-                  return factory.createArrayLiteralExpression(roots);
+                  return ts.setSourceMapRange(
+                    factory.createArrayLiteralExpression(roots),
+                    sourceMapRange,
+                  );
                 }
               }
             } catch (err) {
