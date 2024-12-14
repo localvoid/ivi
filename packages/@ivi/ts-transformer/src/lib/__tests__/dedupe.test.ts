@@ -138,11 +138,19 @@ const D = () => {
       const code = t(strings, `
 import { html } from "ivi";
 const X = 123;
-const C = () => {
-    return () => html\`<div a="1">\${1}</div>\`;
+
+const A1 = () => {
+    return () => html\`<div/>\`;
 };
-const D = () => {
-    return () => html\`<div a="1">\${2}</div>\`;
+const A2 = () => {
+    return () => html\`<div/>\`;
+};
+
+const B1 = () => {
+    return () => html\`<span/>\`;
+};
+const B2 = () => {
+    return () => html\`<span/>\`;
 };
       `);
       deepStrictEqual(
@@ -150,14 +158,23 @@ const D = () => {
         `
 import * as __ivi_1 from "ivi";
 const X = 123;
-const __IVI_FACTORY_1 = __ivi_1._h("<div a=\\"1\\"></div>"), __IVI_OPCODES_1 = [0];
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 65, __ivi_1.EMPTY_ARRAY, __IVI_OPCODES_1, __ivi_1.EMPTY_ARRAY);
-const C = () => {
-    return () => __ivi_1._t(__ivi_tpl_1, [1]);
+const __IVI_FACTORY_1 = __ivi_1._hE("div");
+const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const A1 = () => {
+    return () => __ivi_1._t(__ivi_tpl_1);
 };
-const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 65, __ivi_1.EMPTY_ARRAY, __IVI_OPCODES_1, __ivi_1.EMPTY_ARRAY);
-const D = () => {
-    return () => __ivi_1._t(__ivi_tpl_2, [2]);
+const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const A2 = () => {
+    return () => __ivi_1._t(__ivi_tpl_2);
+};
+const __IVI_FACTORY_2 = __ivi_1._hE("span");
+const __ivi_tpl_3 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_2, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const B1 = () => {
+    return () => __ivi_1._t(__ivi_tpl_3);
+};
+const __ivi_tpl_4 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_2, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const B2 = () => {
+    return () => __ivi_1._t(__ivi_tpl_4);
 };
         `.trim(),
       );
