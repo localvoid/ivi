@@ -1,3 +1,17 @@
+// NOTES:
+//
+// ## `@__IVI_TPL__` comments
+//
+// Template descriptor call expressions are marked with /*@__IVI_TPL__*/ comment so that it would be possible to find
+// templates during chunk optimization pass. I don't think that there is a better way to figure out which call
+// expression are belong to template descriptor creation because when chunks are processed, chunk transformer won't have
+// any infomation about imported symbols and it won't be able to figure out which call expressions are used to create
+// template descriptors.
+//
+// In theory, Rollup provides `importedBindings` inside of a `RenderedChunk` object, so it is probably possible to add
+// an option that uses this information to figure out bindings for template descriptor call expressions. But it is still
+// will be necessary to provide a solution with a comment to support bundlers that doesn't provide such information.
+
 import * as ts from "typescript";
 import { parseTemplate } from "ivi/html/parser";
 import { TemplateParserError } from "ivi/template/parser";
