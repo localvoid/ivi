@@ -216,9 +216,9 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
           }
         }
 
-        // Second Pass
-        // - Deduplicate template descriptors data.
         if (sharedDecls.size > 0) {
+          // Second Pass
+          // - Deduplicate template descriptors data.
           const secondPass = (node: ts.Node): ts.Node => {
             if (ts.isCallExpression(node)) {
               const id = sharedFactories.get(node);
@@ -230,33 +230,27 @@ export function transformChunk(options: TransformChunkOptions): ts.TranspileOutp
               if (id !== void 0) {
                 return id;
               }
+            } else if (ts.isVariableStatement(node)) {
+              const stmt = ts.visitEachChild(node, secondPass, context);
+              const decl = sharedDecls.get(node.pos);
+              if (decl !== void 0) {
+                return factory.updateVariableStatement(
+                  stmt,
+                  stmt.modifiers,
+                  factory.updateVariableDeclarationList(
+                    stmt.declarationList,
+                    [
+                      ...decl,
+                      ...stmt.declarationList.declarations,
+                    ],
+                  )
+                );
+              }
+              return stmt;
             }
             return ts.visitEachChild(node, secondPass, context);
           };
-          sourceFile = ts.visitNode(sourceFile, secondPass) as ts.SourceFile;
-
-          const statements = sourceFile.statements;
-          const newStatements = [];
-          for (let i = 0; i < statements.length; i++) {
-            const stmt = statements[i];
-            if (ts.isVariableStatement(stmt)) {
-              const decl = sharedDecls.get(stmt.pos);
-              if (decl !== void 0) {
-                newStatements.push(
-                  factory.createVariableStatement(
-                    void 0,
-                    factory.createVariableDeclarationList(decl, ts.NodeFlags.Const),
-                  ),
-                );
-              }
-            }
-            newStatements.push(stmt);
-          }
-
-          return factory.updateSourceFile(
-            sourceFile,
-            newStatements,
-          );
+          return ts.visitNode(sourceFile, secondPass) as ts.SourceFile;
         }
       }
 

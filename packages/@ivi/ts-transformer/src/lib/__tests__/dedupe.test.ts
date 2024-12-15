@@ -90,8 +90,7 @@ const D = () => {
         optimize(stringsToMap(strings), code),
         `
 import * as __ivi_1 from "ivi";
-const __IVI_OPCODES_1 = [2, 522];
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, __IVI_OPCODES_1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __IVI_OPCODES_1 = [2, 522], __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__ivi_1._hE("div"), 1, __IVI_OPCODES_1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [1, 2]);
 };
@@ -120,8 +119,7 @@ const D = () => {
         optimize(stringsToMap(strings), code),
         `
 import * as __ivi_1 from "ivi";
-const __IVI_FACTORY_1 = __ivi_1._h("<div a=\\"1\\"></div>"), __IVI_OPCODES_1 = [0];
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 65, __ivi_1.EMPTY_ARRAY, __IVI_OPCODES_1, __ivi_1.EMPTY_ARRAY);
+const __IVI_FACTORY_1 = __ivi_1._h("<div a=\\"1\\"></div>"), __IVI_OPCODES_1 = [0], __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 65, __ivi_1.EMPTY_ARRAY, __IVI_OPCODES_1, __ivi_1.EMPTY_ARRAY);
 const C = () => {
     return () => __ivi_1._t(__ivi_tpl_1, [1]);
 };
@@ -158,8 +156,7 @@ const B2 = () => {
         `
 import * as __ivi_1 from "ivi";
 const X = 123;
-const __IVI_FACTORY_1 = __ivi_1._hE("div");
-const __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __IVI_FACTORY_1 = __ivi_1._hE("div"), __ivi_tpl_1 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const A1 = () => {
     return () => __ivi_1._t(__ivi_tpl_1);
 };
@@ -167,8 +164,7 @@ const __ivi_tpl_2 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_1, 1, __ivi_1.EMPT
 const A2 = () => {
     return () => __ivi_1._t(__ivi_tpl_2);
 };
-const __IVI_FACTORY_2 = __ivi_1._hE("span");
-const __ivi_tpl_3 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_2, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
+const __IVI_FACTORY_2 = __ivi_1._hE("span"), __ivi_tpl_3 = /*@__IVI_TPL__*/ __ivi_1._T(__IVI_FACTORY_2, 1, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY, __ivi_1.EMPTY_ARRAY);
 const B1 = () => {
     return () => __ivi_1._t(__ivi_tpl_3);
 };
