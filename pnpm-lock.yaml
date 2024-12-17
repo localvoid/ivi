@@ -35,8 +35,8 @@ importers:
         specifier: workspace:^
         version: link:../ts-transformer
       '@rollup/pluginutils':
-        specifier: ^5.1.3
-        version: 5.1.3(rollup@4.28.1)
+        specifier: ^5.1.4
+        version: 5.1.4(rollup@4.28.1)
     devDependencies:
       rollup:
         specifier: ^4.28.1
@@ -70,8 +70,8 @@ importers:
 
 packages:
 
-  '@rollup/pluginutils@5.1.3':
-    resolution: {integrity: sha512-Pnsb6f32CD2W3uCaLZIzDmeFyQ2b8UWMFI7xtwUezpcGBDVDW6y9XgAWIlARiGAo6eNF5FK5aQTr0LFyNyqq5A==}
+  '@rollup/pluginutils@5.1.4':
+    resolution: {integrity: sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -207,7 +207,7 @@ packages:
 
 snapshots:
 
-  '@rollup/pluginutils@5.1.3(rollup@4.28.1)':
+  '@rollup/pluginutils@5.1.4(rollup@4.28.1)':
     dependencies:
       '@types/estree': 1.0.6
       estree-walker: 2.0.2
