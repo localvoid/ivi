@@ -7,7 +7,7 @@
     "build:force": "tsc -b --force --pretty"
   },
   "devDependencies": {
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.0",
     "typescript": "^5.7.3"
   }
 }
