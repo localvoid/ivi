@@ -459,7 +459,7 @@ function List<E, K>(
   // Function that retrieves unique key from an entry.
   getKey: (entry: E, index: number) => K,
   // Function that renders an entry.
-  render: (entry: E) => VAny,
+  render: (entry: E, index: number) => VAny,
 ): VList;
 ```
 

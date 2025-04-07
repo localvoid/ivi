@@ -1797,7 +1797,7 @@ export const LIST_DESCRIPTOR: ListDescriptor = {
 export const List = <E, K>(
   entries: E[],
   getKey: (entry: E, index: number) => K,
-  render: (entry: E) => VAny,
+  render: (entry: E, index: number) => VAny,
 ): VList => ({
   d: LIST_DESCRIPTOR,
   p: {
