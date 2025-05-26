@@ -1,6 +1,6 @@
 {
   "name": "ivi",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
