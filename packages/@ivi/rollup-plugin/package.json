@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "@ivi/ts-transformer": "workspace:^",
-    "@rollup/pluginutils": "^5.1.4"
+    "@rollup/pluginutils": "^5.2.0"
   },
   "devDependencies": {
     "rollup": "^4.44.0"
