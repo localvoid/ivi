@@ -20,7 +20,7 @@
     "@rollup/pluginutils": "^5.2.0"
   },
   "devDependencies": {
-    "rollup": "^4.44.1"
+    "rollup": "^4.45.0"
   },
   "scripts": {
     "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo"
