@@ -12,7 +12,7 @@ clean:
 	pnpm run clean
 
 test:
-	node --enable-source-maps --test --test packages/**/*.test.js tests/dist/**/*.test.js
+	node --enable-source-maps --test --test packages/**/*.test.js tests/dist/*.test.js tests/dist/**/*.test.js
 
 test-only:
-	node --enable-source-maps --test-only --test packages/**/*.test.js tests/dist/**/*.test.js
+	node --enable-source-maps --test-only --test packages/**/*.test.js tests/dist/*.test.js tests/dist/**/*.test.js
