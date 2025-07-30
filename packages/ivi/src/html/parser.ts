@@ -1,6 +1,15 @@
 import {
   type ITemplate, type IProperty, type INode, type INodeElement, type INodeText,
-  ITemplateType, IPropertyType, INodeType,
+  type IPropertyType, type ITemplateType,
+  NODE_TYPE_TEXT,
+  NODE_TYPE_EXPR,
+  NODE_TYPE_ELEMENT,
+  PROPERTY_TYPE_DIRECTIVE,
+  PROPERTY_TYPE_VALUE,
+  PROPERTY_TYPE_DOMVALUE,
+  PROPERTY_TYPE_EVENT,
+  PROPERTY_TYPE_STYLE,
+  PROPERTY_TYPE_ATTRIBUTE,
 } from "../template/ir.js";
 import {
   CharCode, isVoidElement, TemplateParserError, TemplateScanner,
@@ -54,7 +63,7 @@ export class TemplateParser extends TemplateScanner {
           children.push(this.parseElement());
         } else {
           children.push({
-            type: INodeType.Text,
+            type: NODE_TYPE_TEXT,
             value: this.parseText(whitespaceState),
           });
         }
@@ -70,7 +79,7 @@ export class TemplateParser extends TemplateScanner {
             }
           }
           children.push({
-            type: INodeType.Expr,
+            type: NODE_TYPE_EXPR,
             value: expr,
           });
         } else {
@@ -127,7 +136,7 @@ export class TemplateParser extends TemplateScanner {
     }
 
     return {
-      type: INodeType.Element,
+      type: NODE_TYPE_ELEMENT,
       tag,
       properties,
       children,
@@ -141,7 +150,7 @@ export class TemplateParser extends TemplateScanner {
 
       if (c === -1) { // shorthand syntax for directives
         properties.push({
-          type: IPropertyType.Directive,
+          type: PROPERTY_TYPE_DIRECTIVE,
           key: null,
           value: this.expr(),
           hoist: false,
@@ -159,14 +168,14 @@ export class TemplateParser extends TemplateScanner {
         if (key === void 0) {
           throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
         }
-        this.dynamicProp(properties, IPropertyType.Value, key);
+        this.dynamicProp(properties, PROPERTY_TYPE_VALUE, key);
       } else if (c === CharCode.Asterisk) { // *value
         this.i++;
         const key = this.regExp(JS_PROPERTY);
         if (key === void 0) {
           throw new TemplateParserError("Expected a valid property name.", this.e, this.i);
         }
-        this.dynamicProp(properties, IPropertyType.DOMValue, key);
+        this.dynamicProp(properties, PROPERTY_TYPE_DOMVALUE, key);
       } else if (c === CharCode.Tilde) { // ~style
         this.i++;
         const key = this.regExp(IDENTIFIER);
@@ -190,7 +199,7 @@ export class TemplateParser extends TemplateScanner {
           }
         }
         properties.push({
-          type: IPropertyType.Style,
+          type: PROPERTY_TYPE_STYLE,
           key,
           value,
           hoist: false,
@@ -201,7 +210,7 @@ export class TemplateParser extends TemplateScanner {
         if (key === void 0) {
           throw new TemplateParserError("Expected a valid event name.", this.e, this.i);
         }
-        this.dynamicProp(properties, IPropertyType.Event, key);
+        this.dynamicProp(properties, PROPERTY_TYPE_EVENT, key);
       } else {
         const key = this.regExp(IDENTIFIER);
         if (key === void 0) {
@@ -228,7 +237,7 @@ export class TemplateParser extends TemplateScanner {
           }
         }
         properties.push({
-          type: IPropertyType.Attribute,
+          type: PROPERTY_TYPE_ATTRIBUTE,
           key,
           value,
           hoist: staticAttr,
@@ -247,7 +256,7 @@ export class TemplateParser extends TemplateScanner {
     if (value === -1) {
       throw new TemplateParserError("Expected an expression.", this.e, this.i);
     }
-    if (type === IPropertyType.Event) {
+    if (type === PROPERTY_TYPE_EVENT) {
       this.tryHoistExpr(value, false);
     }
     properties.push({
@@ -392,6 +401,6 @@ const IDENTIFIER = /[a-zA-Z_][\w-]*/y;
 const JS_PROPERTY = /[a-zA-Z_$][\w]*/y;
 
 const SPACE_TEXT_NODE: INodeText = {
-  type: INodeType.Text,
+  type: NODE_TYPE_TEXT,
   value: " ",
 };

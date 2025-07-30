@@ -1,8 +1,4 @@
 export {
-  type TemplateData,
-  StateOpCode, PropOpCode, ChildOpCode,
-} from "./lib/template.js";
-export {
   EMPTY_ARRAY,
   // Stateful Nodes
   type SNode,

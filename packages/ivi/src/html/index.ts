@@ -3,7 +3,7 @@ import {
   _h, _hN, _hE, _s, _sN, _sE, _T, _t
 } from "../lib/core.js";
 import { type TemplateNode, TemplateNodeType, compileTemplate } from "../template/compiler.js";
-import { ITemplateType } from "../template/ir.js";
+import { TEMPLATE_TYPE_HTM, TEMPLATE_TYPE_SVG } from "../template/ir.js";
 import { TemplateParserError, formatError } from "../template/parser.js";
 import { parseTemplate } from "./parser.js";
 
@@ -42,7 +42,7 @@ export const html = (strings: TemplateStringsArray, ...exprs: any[]) => {
   if (fn === void 0) {
     let result;
     try {
-      const tpl = parseTemplate(strings, ITemplateType.Htm, tryHoistExpr);
+      const tpl = parseTemplate(strings, TEMPLATE_TYPE_HTM, tryHoistExpr);
       result = compileTemplate(tpl);
     } catch (e) {
       if (e instanceof TemplateParserError) {
@@ -104,7 +104,7 @@ export const svg = (strings: TemplateStringsArray, ...exprs: any[]) => {
   if (fn === void 0) {
     let result;
     try {
-      const tpl = parseTemplate(strings, ITemplateType.Svg, tryHoistExpr);
+      const tpl = parseTemplate(strings, TEMPLATE_TYPE_SVG, tryHoistExpr);
       result = compileTemplate(tpl);
     } catch (e) {
       if (e instanceof TemplateParserError) {

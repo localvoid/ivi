@@ -1,6 +1,9 @@
 import {
+  NODE_TYPE_ELEMENT,
+  NODE_TYPE_EXPR,
+  NODE_TYPE_TEXT,
+  PROPERTY_TYPE_ATTRIBUTE,
   type INode, type INodeElement, type IProperty,
-  INodeType, IPropertyType
 } from "./ir.js";
 
 export const normalizeTemplate = (nodes: INode[]): INode[] => {
@@ -9,10 +12,10 @@ export const normalizeTemplate = (nodes: INode[]): INode[] => {
   for (let i = 0; i < nodes.length; i++) {
     const c = nodes[i];
     switch (c.type) {
-      case INodeType.Element:
+      case NODE_TYPE_ELEMENT:
         if (text !== "") {
           n.push({
-            type: INodeType.Text,
+            type: NODE_TYPE_TEXT,
             value: text,
           });
           text = "";
@@ -22,23 +25,23 @@ export const normalizeTemplate = (nodes: INode[]): INode[] => {
           children: normalizeTemplate(c.children),
         });
         break;
-      case INodeType.Expr:
+      case NODE_TYPE_EXPR:
         if (text !== "") {
           n.push({
-            type: INodeType.Text,
+            type: NODE_TYPE_TEXT,
             value: text,
           });
           text = "";
         }
         n.push(c);
         break;
-      case INodeType.Text:
+      case NODE_TYPE_TEXT:
         text += c.value;
     }
   }
   if (text !== "") {
     n.push({
-      type: INodeType.Text,
+      type: NODE_TYPE_TEXT,
       value: text,
     });
   }
@@ -83,7 +86,7 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
     while (i > 0) {
       const child = iChildren[--i];
       switch (child.type) {
-        case INodeType.Element:
+        case NODE_TYPE_ELEMENT:
           const sNode = createSNode(child, siblingsFlags);
           if (sNode.flags & SNodeFlags.HasExpressions) {
             flags |= SNodeFlags.HasExpressions;
@@ -92,7 +95,7 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
           siblingsFlags |= SNodeFlags.HasNextDOMNode;
           children[i] = sNode;
           break;
-        case INodeType.Expr:
+        case NODE_TYPE_EXPR:
           siblingsFlags |= SNodeFlags.HasNextExpressions;
           childrenExprs++;
           children[i] = {
@@ -104,7 +107,7 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
             flags: siblingsFlags,
           };
           break;
-        case INodeType.Text:
+        case NODE_TYPE_TEXT:
           children[i] = {
             node: child,
             stateIndex: 0,
@@ -135,7 +138,7 @@ export const createSNode = (node: INodeElement, flags: number): SNode<INodeEleme
 export const isStaticProperty = (prop: IProperty) => (
   (typeof prop.value !== "number") ||
   (
-    prop.type === IPropertyType.Attribute &&
+    prop.type === PROPERTY_TYPE_ATTRIBUTE &&
     prop.key === "class" &&
     prop.hoist === true
   )

@@ -11,7 +11,13 @@ import {
   type INode, type INodeElement, type INodeExpr, type INodeText, type IProperty,
   type IPropertyAttribute, type IPropertyValue, type ITemplate,
   type IPropertyStyle,
-  INodeType, IPropertyType, ITemplateType,
+  TEMPLATE_TYPE_HTM,
+  NODE_TYPE_ELEMENT,
+  NODE_TYPE_TEXT,
+  NODE_TYPE_EXPR,
+  PROPERTY_TYPE_ATTRIBUTE,
+  PROPERTY_TYPE_VALUE,
+  PROPERTY_TYPE_STYLE,
 } from "../ir.js";
 
 const _ = void 0;
@@ -39,43 +45,43 @@ const pAttr = (k: number, n: number) => PropOpCode.Attribute | (k << PropOpCode.
 const c = (tpl: ITemplate) => compileTemplate(tpl);
 
 const h = (children: INode[]): ITemplate => ({
-  type: ITemplateType.Htm,
+  type: TEMPLATE_TYPE_HTM,
   children,
 });
 
 const el = (tag: string, properties: IProperty[] = [], children: INode[] = []): INodeElement => ({
-  type: INodeType.Element,
+  type: NODE_TYPE_ELEMENT,
   tag,
   properties,
   children,
 });
 
 const text = (value: string): INodeText => ({
-  type: INodeType.Text,
+  type: NODE_TYPE_TEXT,
   value,
 });
 
 const expr = (value: number): INodeExpr => ({
-  type: INodeType.Expr,
+  type: NODE_TYPE_EXPR,
   value,
 });
 
 const attr = (key: string, value: string | number | boolean): IPropertyAttribute => ({
-  type: IPropertyType.Attribute,
+  type: PROPERTY_TYPE_ATTRIBUTE,
   key,
   value,
   hoist: false,
 });
 
 const prop = (key: string, value: number): IPropertyValue => ({
-  type: IPropertyType.Value,
+  type: PROPERTY_TYPE_VALUE,
   key,
   value,
   hoist: false,
 });
 
 const styl = (key: string, value: string | number): IPropertyStyle => ({
-  type: IPropertyType.Style,
+  type: PROPERTY_TYPE_STYLE,
   key,
   value,
   hoist: false,

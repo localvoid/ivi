@@ -2,8 +2,17 @@ import {
   TemplateFlags, ChildOpCode, CommonPropType, PropOpCode, StateOpCode,
 } from "../lib/template.js";
 import {
-  type INode, type ITemplate, type INodeElement,
-  INodeType, IPropertyType, ITemplateType,
+  type INode, type ITemplate, type INodeElement, type ITemplateType,
+  NODE_TYPE_ELEMENT,
+  NODE_TYPE_EXPR,
+  NODE_TYPE_TEXT,
+  TEMPLATE_TYPE_SVG,
+  PROPERTY_TYPE_ATTRIBUTE,
+  PROPERTY_TYPE_STYLE,
+  PROPERTY_TYPE_VALUE,
+  PROPERTY_TYPE_DOMVALUE,
+  PROPERTY_TYPE_EVENT,
+  PROPERTY_TYPE_DIRECTIVE,
 } from "./ir.js";
 import {
   type SNode, SNodeFlags,
@@ -15,7 +24,7 @@ export interface TemplateCompilationArtifact {
   readonly roots: TemplateNode[],
 }
 
-export const enum TemplateNodeType {
+export enum TemplateNodeType {
   Block = 0,
   Text = 1,
   Expr = 2,
@@ -71,14 +80,14 @@ export class TemplateCompilerError extends Error {
 
 const compileTemplateNode = (node: INode, type: ITemplateType): TemplateNode => {
   switch (node.type) {
-    case INodeType.Element:
+    case NODE_TYPE_ELEMENT:
       return compileRootElement(node, type);
-    case INodeType.Expr:
+    case NODE_TYPE_EXPR:
       return {
         type: TemplateNodeType.Expr,
         value: node.value,
       };
-    case INodeType.Text:
+    case NODE_TYPE_TEXT:
       return {
         type: TemplateNodeType.Text,
         value: node.value,
@@ -127,7 +136,7 @@ const compileRootElement = (
     flags: (
       (stateSlots) |
       (childSlots << TemplateFlags.ChildrenSizeShift) |
-      (type === ITemplateType.Svg ? TemplateFlags.Svg : 0)
+      (type === TEMPLATE_TYPE_SVG ? TemplateFlags.Svg : 0)
     ),
     template,
     props,
@@ -188,9 +197,9 @@ const _createExprMap = (
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     const type = child.type;
-    if (type === INodeType.Element) {
+    if (type === NODE_TYPE_ELEMENT) {
       _createExprMap(exprMap, child);
-    } else if (type === INodeType.Expr) {
+    } else if (type === NODE_TYPE_EXPR) {
       exprMap.set(child.value, exprMap.size);
     }
   }
@@ -218,7 +227,7 @@ const _emitStaticTemplate = (
   for (let i = 0; i < properties.length; i++) {
     const prop = properties[i];
     const { type, key, value } = prop;
-    if (type === IPropertyType.Attribute) {
+    if (type === PROPERTY_TYPE_ATTRIBUTE) {
       if (key === "style") {
         if (typeof value === "string") {
           if (style !== "") {
@@ -238,7 +247,7 @@ const _emitStaticTemplate = (
           staticTemplate.push(` ${key}="${value}"`);
         }
       }
-    } else if (type === IPropertyType.Style) {
+    } else if (type === PROPERTY_TYPE_STYLE) {
       if (typeof value === "string") {
         if (style !== "") {
           style += `;${key}:${value}`;
@@ -263,18 +272,18 @@ const _emitStaticTemplate = (
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     switch (child.type) {
-      case INodeType.Element:
+      case NODE_TYPE_ELEMENT:
         _emitStaticTemplate(staticTemplate, child);
         state = 0;
         break;
-      case INodeType.Text:
+      case NODE_TYPE_TEXT:
         if ((state & 3) === 3) {
           staticTemplate.push("<!>");
         }
         state = 1;
         staticTemplate.push(child.value);
         break;
-      case INodeType.Expr:
+      case NODE_TYPE_EXPR:
         state |= 2;
         break;
     }
@@ -315,7 +324,7 @@ const _emitPropsOpCodes = (
   exprMap: Map<number, number>,
 ) => {
   const iNode = node.node;
-  if (iNode.type === INodeType.Element) {
+  if (iNode.type === NODE_TYPE_ELEMENT) {
     if (node.propsExprs > 0) {
       if (isRoot === false) {
         opCodes.push(PropOpCode.SetNode | (node.stateIndex << PropOpCode.DataShift));
@@ -327,7 +336,7 @@ const _emitPropsOpCodes = (
         if (typeof value === "number") {
           const { type, key } = prop;
           switch (type) {
-            case IPropertyType.Attribute:
+            case PROPERTY_TYPE_ATTRIBUTE:
               const exprIndex = exprMap.get(value)!;
               if (exprIndex !== -1) {
                 if (key === "class") {
@@ -345,7 +354,7 @@ const _emitPropsOpCodes = (
                 }
               }
               break;
-            case IPropertyType.Value:
+            case PROPERTY_TYPE_VALUE:
               if (key === "textContent") {
                 opCodes.push(
                   PropOpCode.Common |
@@ -366,7 +375,7 @@ const _emitPropsOpCodes = (
                 );
               }
               break;
-            case IPropertyType.DOMValue:
+            case PROPERTY_TYPE_DOMVALUE:
               if (key === "textContent") {
                 opCodes.push(
                   PropOpCode.Common |
@@ -387,21 +396,21 @@ const _emitPropsOpCodes = (
                 );
               }
               break;
-            case IPropertyType.Style:
+            case PROPERTY_TYPE_STYLE:
               opCodes.push(
                 PropOpCode.Style |
                 (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
                 (exprMap.get(value)! << PropOpCode.InputShift)
               );
               break;
-            case IPropertyType.Event:
+            case PROPERTY_TYPE_EVENT:
               opCodes.push(
                 PropOpCode.Event |
                 (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
                 (exprMap.get(value)! << PropOpCode.InputShift)
               );
               break;
-            case IPropertyType.Directive:
+            case PROPERTY_TYPE_DIRECTIVE:
               opCodes.push(
                 PropOpCode.Directive |
                 (exprMap.get(value)! << PropOpCode.InputShift)
@@ -442,7 +451,7 @@ const _emitStateOpCodes = (
     outer: for (let i = 0; i < children.length; i++) {
       const child = children[i];
       switch (child.node.type) {
-        case INodeType.Element: {
+        case NODE_TYPE_ELEMENT: {
           let opCode = 0;
           if (
             state & VisitState.PrevExpr ||
@@ -475,7 +484,7 @@ const _emitStateOpCodes = (
           state = 0;
           break;
         }
-        case INodeType.Text: {
+        case NODE_TYPE_TEXT: {
           if ((state & (VisitState.PrevText | VisitState.PrevExpr)) === (VisitState.PrevText | VisitState.PrevExpr)) {
             opCodes.push(StateOpCode.EnterOrRemove);
           } else if (state & VisitState.PrevExpr) {
@@ -493,7 +502,7 @@ const _emitStateOpCodes = (
           state = 1;
           break;
         }
-        case INodeType.Expr:
+        case NODE_TYPE_EXPR:
           state |= VisitState.PrevExpr;
           break;
       }
@@ -527,8 +536,8 @@ const _emitChildOpCodes = (
       let i = children.length;
       while (--i >= 0) {
         const child = children[i];
-        if (child.node.type === INodeType.Expr) {
-          if (prev !== void 0 && prev.node.type !== INodeType.Expr) {
+        if (child.node.type === NODE_TYPE_EXPR) {
+          if (prev !== void 0 && prev.node.type !== NODE_TYPE_EXPR) {
             opCodes.push(ChildOpCode.SetNext | (prev.stateIndex << ChildOpCode.ValueShift));
           }
           opCodes.push(ChildOpCode.Child | (exprMap.get(child.node.value)! << ChildOpCode.ValueShift));
@@ -542,7 +551,7 @@ const _emitChildOpCodes = (
     let i = children.length;
     while (--i >= 0) {
       const child = children[i];
-      if (child.node.type === INodeType.Element) {
+      if (child.node.type === NODE_TYPE_ELEMENT) {
         _emitChildOpCodes(opCodes, child, false, exprMap);
       }
     }
@@ -560,7 +569,7 @@ const _assignStateSlots = (node: SNode, stateIndex: number): number => {
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
       switch (child.node.type) {
-        case INodeType.Element:
+        case NODE_TYPE_ELEMENT:
           if (prevExpr) {
             child.stateIndex = stateIndex++;
             prevExpr = false;
@@ -568,13 +577,13 @@ const _assignStateSlots = (node: SNode, stateIndex: number): number => {
             child.stateIndex = stateIndex++;
           }
           stateIndex = _assignStateSlots(child, stateIndex);
-        case INodeType.Text:
+        case NODE_TYPE_TEXT:
           if (prevExpr) {
             child.stateIndex = stateIndex++;
             prevExpr = false;
           }
           break;
-        case INodeType.Expr:
+        case NODE_TYPE_EXPR:
           prevExpr = true;
       }
     }

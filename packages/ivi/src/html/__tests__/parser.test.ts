@@ -6,41 +6,50 @@ import {
   type IProperty, type IPropertyAttribute, type IPropertyValue,
   type IPropertyDOMValue, type IPropertyStyle, type IPropertyEvent,
   type IPropertyDirective,
-  INodeType, ITemplateType, IPropertyType,
+  TEMPLATE_TYPE_HTM,
+  NODE_TYPE_EXPR,
+  NODE_TYPE_TEXT,
+  NODE_TYPE_ELEMENT,
+  PROPERTY_TYPE_ATTRIBUTE,
+  PROPERTY_TYPE_VALUE,
+  PROPERTY_TYPE_DOMVALUE,
+  PROPERTY_TYPE_STYLE,
+  PROPERTY_TYPE_EVENT,
+  PROPERTY_TYPE_DIRECTIVE,
 } from "../../template/ir.js";
 
 const _ = void 0;
 
 const ATTR = (key: string, value: string | boolean | number, hoist = false): IPropertyAttribute => ({
-  type: IPropertyType.Attribute,
+  type: PROPERTY_TYPE_ATTRIBUTE,
   key,
   value,
   hoist,
 });
 
 const PROP = (key: string, value: number): IPropertyValue => ({
-  type: IPropertyType.Value,
+  type: PROPERTY_TYPE_VALUE,
   key,
   value,
   hoist: false,
 });
 
 const DPROP = (key: string, value: number): IPropertyDOMValue => ({
-  type: IPropertyType.DOMValue,
+  type: PROPERTY_TYPE_DOMVALUE,
   key,
   value,
   hoist: false,
 });
 
 const STYLE = (key: string, value: number | string): IPropertyStyle => ({
-  type: IPropertyType.Style,
+  type: PROPERTY_TYPE_STYLE,
   key,
   value,
   hoist: false,
 });
 
 const EVENT = (key: string, value: number): IPropertyEvent => ({
-  type: IPropertyType.Event,
+  type: PROPERTY_TYPE_EVENT,
   key,
   value,
   hoist: false,
@@ -49,26 +58,26 @@ const EVENT = (key: string, value: number): IPropertyEvent => ({
 const DIRECTIVE = (
   value: number,
 ): IPropertyDirective => ({
-  type: IPropertyType.Directive,
+  type: PROPERTY_TYPE_DIRECTIVE,
   key: null,
   value,
   hoist: false,
 });
 
 const E = (tag: string, properties: IProperty[] = [], children: INode[] = []): INodeElement => ({
-  type: INodeType.Element,
+  type: NODE_TYPE_ELEMENT,
   tag,
   properties,
   children,
 });
 
 const T = (value: string): INodeText => ({
-  type: INodeType.Text,
+  type: NODE_TYPE_TEXT,
   value,
 });
 
 const X = (value: number): INodeExpr => ({
-  type: INodeType.Expr,
+  type: NODE_TYPE_EXPR,
   value,
 });
 
@@ -79,11 +88,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`a`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           T("a"),
         ],
@@ -95,11 +104,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a"),
         ],
@@ -111,11 +120,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a></a>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a"),
         ],
@@ -127,11 +136,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a>a</a>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T("a"),
@@ -145,11 +154,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a>`, `</a>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             X(0),
@@ -163,11 +172,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a>a`, `</a>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T("a"), X(0),
@@ -181,11 +190,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a>`, `b</a>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             X(0), T("b"),
@@ -199,11 +208,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<a>a`, `b</a>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T("a"), X(0), T("b"),
@@ -217,11 +226,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`a<a/>b`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           T("a"),
           E("a"),
@@ -235,11 +244,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`a`, `b`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           T("a"),
           X(0),
@@ -258,11 +267,11 @@ describe("@ivi/htm/parser", () => {
           </a>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a"),
         ],
@@ -280,11 +289,11 @@ describe("@ivi/htm/parser", () => {
           </a>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a"),
         ],
@@ -300,11 +309,11 @@ describe("@ivi/htm/parser", () => {
           <a> </a>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [T(" ")]),
         ],
@@ -323,11 +332,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             E("a"),
@@ -348,11 +357,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T("a"),
@@ -373,11 +382,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T("a b"),
@@ -397,11 +406,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T("a b"),
@@ -419,11 +428,11 @@ describe("@ivi/htm/parser", () => {
           <div>  a  b  </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T(" a b "),
@@ -443,11 +452,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T(" a"),
@@ -467,11 +476,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T("a "),
@@ -494,11 +503,11 @@ describe("@ivi/htm/parser", () => {
           </div>
         `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", _, [
             T("a"),
@@ -516,11 +525,11 @@ describe("@ivi/htm/parser", () => {
           `<a> `,
           `</a>`,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T(" "),
@@ -538,11 +547,11 @@ describe("@ivi/htm/parser", () => {
           `<a>`,
           ` </a>`,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             X(0),
@@ -560,11 +569,11 @@ describe("@ivi/htm/parser", () => {
           `<a> `,
           ` </a>`,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T(" "),
@@ -584,11 +593,11 @@ describe("@ivi/htm/parser", () => {
           ` `,
           ` </a>`,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T(" "),
@@ -611,11 +620,11 @@ describe("@ivi/htm/parser", () => {
           `
           </a>`,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             X(0),
@@ -634,11 +643,11 @@ describe("@ivi/htm/parser", () => {
           `\v
           </a>`,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T(" "),
@@ -656,11 +665,11 @@ describe("@ivi/htm/parser", () => {
         [
           `<a> `, ` `, ` </a>`
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("a", _, [
             T(" "),
@@ -682,11 +691,11 @@ describe("@ivi/htm/parser", () => {
           <div a/>
           `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             ATTR("a", true),
@@ -704,11 +713,11 @@ describe("@ivi/htm/parser", () => {
           <div a="1"/>
           `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             ATTR("a", "1"),
@@ -726,11 +735,11 @@ describe("@ivi/htm/parser", () => {
           <div a=`, `/>
           `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             ATTR("a", 0),
@@ -751,11 +760,11 @@ describe("@ivi/htm/parser", () => {
           />
           `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             ATTR("a", "1"),
@@ -777,11 +786,11 @@ describe("@ivi/htm/parser", () => {
           ></div>
           `,
         ],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             ATTR("a", "1"),
@@ -796,11 +805,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<div .a=`, `/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             PROP("a", 0),
@@ -814,11 +823,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<div *a=`, `/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             DPROP("a", 0),
@@ -832,11 +841,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<div ~a="0"/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             STYLE("a", "0"),
@@ -850,11 +859,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<div ~a=`, `/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             STYLE("a", 0),
@@ -868,11 +877,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<div @a=`, `/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             EVENT("a", 0),
@@ -886,11 +895,11 @@ describe("@ivi/htm/parser", () => {
     deepStrictEqual(
       parseTemplate(
         [`<div `, `/>`],
-        ITemplateType.Htm,
+        TEMPLATE_TYPE_HTM,
         preventHoist,
       ),
       {
-        type: ITemplateType.Htm,
+        type: TEMPLATE_TYPE_HTM,
         children: [
           E("div", [
             DIRECTIVE(0),

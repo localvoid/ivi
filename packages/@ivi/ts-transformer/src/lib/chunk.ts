@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import { PropOpCode } from "ivi";
+import { PropOpCode } from "./opcodes.js";
 import { compilerOptions } from "./checker.js";
 
 export interface TransformChunkOptions {

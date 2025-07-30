@@ -15,7 +15,7 @@
 import * as ts from "typescript";
 import { parseTemplate } from "ivi/html/parser";
 import { TemplateParserError } from "ivi/template/parser";
-import { ITemplateType } from "ivi/template/ir";
+import { TEMPLATE_TYPE_HTM, TEMPLATE_TYPE_SVG } from "ivi/template/ir";
 import { compileTemplate, TemplateNodeType } from "ivi/template/compiler";
 import { compilerOptions, getTypeChecker } from "./checker.js";
 import { isImportedSymbol } from "./import.js";
@@ -127,8 +127,8 @@ export function transformModule(options: TransformModuleOptions): ts.TranspileOu
               const tir = parseTemplate(
                 statics,
                 tplType === "html"
-                  ? ITemplateType.Htm
-                  : ITemplateType.Svg,
+                  ? TEMPLATE_TYPE_HTM
+                  : TEMPLATE_TYPE_SVG,
                 (i, staticPart) => {
                   const expr = expressions[i];
                   if (staticPart) {
