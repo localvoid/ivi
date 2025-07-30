@@ -11,14 +11,14 @@ describe("hasDOMElement", () => {
   beforeEach(reset);
 
   const ROOT = (ref: (element: Element) => void) => html`
-    <div &=${ref}>
+    <div ${ref}>
       <span/>
     </div>
   `;
 
   const DEEP = (ref: (element: Element) => void) => html`
     <div>
-      <span &=${ref}/>
+      <span ${ref}/>
     </div>
   `;
 

@@ -12,7 +12,7 @@ describe("containsDOMElement", () => {
 
   const DEEP = (ref: (element: Element) => void) => html`
     <div>
-      <span &=${ref}/>
+      <span ${ref}/>
     </div>
   `;
 
