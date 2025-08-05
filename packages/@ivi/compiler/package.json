@@ -1,0 +1,50 @@
+{
+  "name": "@ivi/compiler",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.d.ts",
+    "index.js"
+  ],
+  "optionalDependencies": {
+    "@ivi/compiler-darwin-arm64": "workspace:*",
+    "@ivi/compiler-darwin-x64": "workspace:*",
+    "@ivi/compiler-linux-arm64-gnu": "workspace:*",
+    "@ivi/compiler-linux-x64-gnu": "workspace:*",
+    "@ivi/compiler-win32-arm64-msvc": "workspace:*",
+    "@ivi/compiler-win32-x64-msvc": "workspace:*"
+  },
+  "napi": {
+    "binaryName": "ivi-compiler",
+    "targets": [
+      "x86_64-pc-windows-msvc",
+      "x86_64-apple-darwin",
+      "x86_64-unknown-linux-gnu",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-apple-darwin",
+      "aarch64-pc-windows-msvc"
+    ]
+  },
+  "engines": {
+    "node": ">= 20.0.0"
+  },
+  "scripts": {
+    "clean": "rm -rf ivi-compiler-*.node"
+  },
+  "description": "ivi compiler NAPI",
+  "license": "MIT",
+  "keywords": [
+    "ivi"
+  ],
+  "author": "Boris Kaul <localvoid@gmail.com> (https://github.com/localvoid)",
+  "homepage": "https://github.com/localvoid/ivi",
+  "bugs": "https://github.com/localvoid/ivi/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/localvoid/ivi.git"
+  }
+}

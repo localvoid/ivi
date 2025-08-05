@@ -2,16 +2,16 @@ import { deepStrictEqual } from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { reset, flushAnimationFrames } from "@ivi/mock-dom/global";
 import { createRoot } from "ivi/test";
-import { component, useLayoutEffect } from "ivi";
+import { component, useAnimationFrameEffect } from "ivi";
 
-describe("useLayoutEffect", () => {
+describe("useAnimationFrameEffect", () => {
   beforeEach(reset);
 
   test(`#1`, () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push("effect1");
       });
       return () => {
@@ -77,7 +77,7 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push("effect1");
         return () => {
           _trace.push("reset1");
@@ -148,13 +148,13 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push("effect1");
         return () => {
           _trace.push("reset1");
         };
       });
-      const e2 = useLayoutEffect(c, () => {
+      const e2 = useAnimationFrameEffect(c, () => {
         _trace.push("effect2");
         return () => {
           _trace.push("reset2");
@@ -229,7 +229,7 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect<number>(c, (i) => {
+      const e1 = useAnimationFrameEffect<number>(c, (i) => {
         _trace.push(`effect1: ${i}`);
         return () => {
           _trace.push("reset1");
@@ -288,7 +288,7 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect<number>(c, (i) => {
+      const e1 = useAnimationFrameEffect<number>(c, (i) => {
         _trace.push(`effect1: ${i}`);
         return () => {
           _trace.push("reset1");
@@ -350,7 +350,7 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t2 = component((c) => {
       _trace.push("create2");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push(`effect2`);
         return () => {
           _trace.push("reset2");
@@ -364,7 +364,7 @@ describe("useLayoutEffect", () => {
     });
     const t1 = component((c) => {
       _trace.push("create1");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push(`effect1`);
         return () => {
           _trace.push("reset1");
@@ -441,7 +441,7 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push("effect1");
         return () => {
           _trace.push("reset1");
@@ -476,7 +476,7 @@ describe("useLayoutEffect", () => {
     let _trace: string[] = [];
     const t = component((c) => {
       _trace.push("create");
-      const e1 = useLayoutEffect(c, () => {
+      const e1 = useAnimationFrameEffect(c, () => {
         _trace.push("effect1");
         return () => {
           _trace.push("reset1");

@@ -1,0 +1,26 @@
+[package]
+name = "ivi_compiler"
+version = "0.1.0"
+edition = "2024"
+authors = ["Boris Kaul <localvoid@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/localvoid/ivi"
+repository = "https://github.com/localvoid/ivi"
+description = "ivi template compiler"
+
+[dependencies]
+thiserror.workspace = true
+rustc-hash.workspace = true
+indexmap.workspace = true
+oxc_allocator.workspace = true
+oxc_ast.workspace = true
+oxc_codegen.workspace = true
+oxc_data_structures.workspace = true
+oxc_diagnostics.workspace = true
+oxc_ecmascript.workspace = true
+oxc_index.workspace = true
+oxc_parser.workspace = true
+oxc_semantic.workspace = true
+oxc_span.workspace = true
+oxc_syntax.workspace = true
+oxc_traverse.workspace = true

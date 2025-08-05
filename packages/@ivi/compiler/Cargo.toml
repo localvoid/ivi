@@ -1,0 +1,23 @@
+
+[package]
+publish = false
+name = "ivi-compiler-napi"
+version = "0.0.1"
+authors = ["Boris Kaul <localvoid@gmail.com>"]
+edition = "2024"
+license = "MIT"
+homepage = "https://github.com/localvoid/ivi"
+repository = "https://github.com/localvoid/ivi"
+description = "ivi compiler NAPI bindings"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rustc-hash.workspace = true
+napi.workspace = true
+napi-derive.workspace = true
+ivi_compiler.workspace = true
+
+[build-dependencies]
+napi-build.workspace = true

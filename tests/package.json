@@ -4,6 +4,7 @@
   "type": "module",
   "devDependencies": {
     "ivi": "workspace:*",
+    "@ivi/compiler": "workspace:*",
     "@ivi/mock-dom": "workspace:*"
   },
   "scripts": {

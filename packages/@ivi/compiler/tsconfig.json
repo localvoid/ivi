@@ -1,0 +1,4 @@
+{
+  "extends": "../../../tsconfig.composite.json",
+  "files": ["./index.d.ts"]
+}

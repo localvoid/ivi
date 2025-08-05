@@ -1,0 +1,14 @@
+{
+  "ivi": {
+    "exports": {
+      "component": {
+        "type": "function",
+        "arguments": [
+          {
+            "hoist": true
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+[workspace]
+members = ["crates/*", "packages/@ivi/compiler"]
+resolver = "3"
+
+[workspace.dependencies]
+thiserror = "2"
+rustc-hash = "2"
+indexmap = "2.10"
+oxc_allocator = "0.80"
+oxc_ast = "0.80"
+oxc_codegen = "0.80"
+oxc_data_structures = "0.80"
+oxc_diagnostics = "0.80"
+oxc_ecmascript = "0.80"
+oxc_index = "3"
+oxc_parser = "0.80"
+oxc_semantic = "0.80"
+oxc_span = "0.80"
+oxc_syntax = "0.80"
+oxc_traverse = "0.80"
+napi = "3"
+napi-derive = "3"
+napi-build = "2"
+ivi_compiler = { path = "./crates/ivi_compiler" }
+
+[workspace.lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+unimplemented = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+allow_attributes = "warn"
+clone_on_ref_ptr = "warn"
+self_named_module_files = "warn"
+empty_drop = "warn"
+empty_structs_with_brackets = "warn"
+exit = "warn"
+get_unwrap = "warn"
+rc_buffer = "warn"
+rc_mutex = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+unnecessary_safety_comment = "warn"
+undocumented_unsafe_blocks = "warn"
+infinite_loop = "warn"
+map_with_unused_argument_over_ranges = "warn"
+unused_result_ok = "warn"
+pathbuf_init_then_push = "warn"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+strip = true
+split-debuginfo = "packed"
+
+[profile.dev]
+debug = false
+
+[profile.release-with-debug]
+inherits = "release"
+strip = false
+debug = true
+
+[profile.coverage]
+inherits = "release"
+opt-level = 2
+codegen-units = 256
+lto = "thin"
+debug-assertions = true
+overflow-checks = true

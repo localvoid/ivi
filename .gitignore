@@ -1,17 +1,22 @@
-examples/**/dist
-packages/**/dist
-tests/dist
-
-target
-*.mm_profdata
-node_modules
-coverage
-*.tsbuildinfo
-npm-debug.log
+/examples/**/dist
+/packages/**/dist
+/tests/dist
 
 .rsync-filter
 .DS_Store
-.idea
-.vscode
 
-.TODO
+# Rust
+/target/
+
+# NAPI-rs
+/napi-artifacts/
+
+# JS
+node_modules
+*.tsbuildinfo
+npm-debug.log
+
+# Editors
+/.idea/
+/.vscode/
+!/.vscode/settings.json

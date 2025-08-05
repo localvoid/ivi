@@ -343,13 +343,13 @@ const _emitPropsOpCodes = (
                   opCodes.push(
                     PropOpCode.Common |
                     (CommonPropType.ClassName << PropOpCode.DataShift) |
-                    (exprMap.get(value)! << PropOpCode.InputShift)
+                    (exprIndex << PropOpCode.InputShift)
                   );
                 } else {
                   opCodes.push(
                     PropOpCode.Attribute |
                     (getDataIndex(data, dataMap, key) << PropOpCode.DataShift) |
-                    (exprMap.get(value)! << PropOpCode.InputShift)
+                    (exprIndex << PropOpCode.InputShift)
                   );
                 }
               }

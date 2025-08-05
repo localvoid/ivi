@@ -1,0 +1,14 @@
+unstable_features = true
+version = "Two"
+style_edition = "2024"
+edition = "2024"
+format_strings = true
+format_code_in_doc_comments = true
+hex_literal_case = "Lower"
+wrap_comments = true
+reorder_modules = true
+reorder_impl_items = true
+use_field_init_shorthand = true
+use_small_heuristics = "Max"
+group_imports = "StdExternalCrate"
+imports_granularity = "Crate"

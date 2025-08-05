@@ -11,7 +11,8 @@
     "./template/ir": "./dist/template/ir.js",
     "./html": "./dist/html/index.js",
     "./html/parser": "./dist/html/parser.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./oveo.json": "./oveo.json"
   },
   "sideEffects": false,
   "files": [
